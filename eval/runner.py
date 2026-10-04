@@ -1185,10 +1185,32 @@ def _harness_failure(result: dict) -> dict | None:
     abnormal; a harness that simply chose to write nothing is worth knowing about too.
     Deliberately **not** folded into `invalid`: the task was measured, so it keeps its
     score. This is the attribution, not a reason to drop the measurement (§2.5.7).
+
+    **The second trigger, and the measured case that forced it.** A non-empty trace is
+    not proof that the harness ran. Measured 2026-10-04 on the current platform:
+    `--harness cli_agent` with no CLI writes exactly one line,
+    `{"error": "HG_CLI is unset: no CLI to run"}`, never calls a model, exits 2 -- and the
+    curve said `score 0.0, harness_failed: null, invalid: null`. The console warned and
+    the verdict file carried the exit code, so the fact existed in two places and not on
+    the point, which is where a reader compares runs.
+
+    So: a harness that **exited non-zero without recording a single model call** is a
+    harness failure too. "A model call" is read from the `usage` block, which the harness
+    contract requires (`INTERFACE.md` §1.2) -- the platform is entitled to rely on it, and
+    it is the only schema-independent evidence that a harness talked to a model. A
+    scripted harness that legitimately makes no calls (`base_harness/oracle`) exits 0 and
+    is not flagged.
     """
-    if (result.get("trace") or "").strip():
+    trace = (result.get("trace") or "").strip()
+    reason = None
+    if not trace:
+        reason = "the harness wrote no trace at all"
+    elif result.get("exit_code") and _last_usage(trace) is None:
+        reason = (f"the harness exited {result['exit_code']} without recording a model "
+                  f"call: its trace has no `usage` block")
+    if reason is None:
         return None
-    return {"exit_code": result.get("exit_code"),
+    return {"reason": reason, "exit_code": result.get("exit_code"),
             "stderr": (result.get("stderr") or "")[-1500:]}
 
 

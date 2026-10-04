@@ -61,6 +61,39 @@ MAX_STEPS = int(os.environ.get("HG_AGENT_MAX_STEPS", "32"))
 #: 一个会自己检查交付物、并把"文件不存在"退回给模型重试的 harness,才是这一步该有的样子。
 SUBMIT_RETRIES = int(os.environ.get("HG_AGENT_SUBMIT_RETRIES", "2"))
 
+#: 模型吐出一段**读不出动作**的回复之后,允许它再试几次。
+#:
+#: 和上面那条同源,方向相反:一条是"模型说做完了,但产物不在",一条是"模型说的话读不出
+#: 动作"。两条以前都会让**整道题**结束。
+#:
+#: 为什么它必须由起点 harness 负责,而不是留给方法去发现 —— 这是数出来的,不是想出来的。
+#: 统计所有跑道里"方法自己写了理由"的 35 个轮次:**16 个在修解析或格式容错**,而且几乎
+#: 每条跑道的第一轮都在修它:
+#:
+#:   `loop-terminal_bench-26452c` 五道题各只调了一次模型就死在
+#:   `parse_error: Extra data`(`calls: 1`),此后每一轮都从同一个不能用的 harness 出发;
+#:   `flash-three-1/2`、`deepseek-eigen-2`、`strong-model-1` 的第一/第二轮全都写成
+#:   "让一次读不懂的回复不再结束整道题"。
+#:
+#: 代价不只是浪费一轮。方法之间开始比"谁先想到修 parser":RRSI 的 leakage critic 两次把
+#: 改 `_parse` 的候选判成 TASK-SPECIALIZATION / LEAKAGE 而拒绝,那一轮于是什么都没改。
+#: 一个起点 harness 必须在被测量之前就活过一次跑题的回复,否则第一轮比较的不是解题能力,
+#: 是管线运气。
+PARSE_RETRIES = int(os.environ.get("HG_AGENT_PARSE_RETRIES", "2"))
+
+#: 步数还剩这么多时,明确要求模型收尾。
+#:
+#: 数出来的,不是猜的:266 条历史轨迹里 **73 条(27%)跑满 32 步、一次都没交卷**,而那些
+#: 轨迹的最后两步常常是同一条命令重复(抽样:`python /app/test_outputs.py 2>&1` 两次、
+#: 同一条 `echo ... >` 两次、同一个 `cat > /app/run.py << 'EOF'` 两次)。那些任务不是
+#: "做错了",是**没停下来交卷**:步数用完,`answer` 是空字符串,平台只能拿检查的判决当分数。
+#: `improvers/skill.md` 早就把这条记成已知失败模式("预算用满、什么都没交"),但起点 harness
+#: 一直没有对应动作。一个被测量的 harness 应该在预算耗尽前把话说完。
+FINISH_NUDGE_STEPS = int(os.environ.get("HG_AGENT_FINISH_NUDGE_STEPS", "4"))
+
+#: 同一条命令连续重复时提醒几次(每条跑道限量,免得把上下文塞满)。
+REPEAT_NUDGE_LIMIT = int(os.environ.get("HG_AGENT_REPEAT_NUDGE_LIMIT", "2"))
+
 SYSTEM = """You are an agent solving a task in a working directory.
 
 You have one tool: run a shell command.
@@ -284,6 +317,9 @@ def run(task: dict, workdir: Path) -> str:
 
     answer = ""
     submits = 0
+    parse_retries = 0
+    repeats = 0
+    last_cmd = ""
     with trace_path.open("w") as trace:
         for step in range(MAX_STEPS):
             reply = _complete(messages)
@@ -292,9 +328,22 @@ def run(task: dict, workdir: Path) -> str:
 
             try:
                 action = _parse(reply)
-            except Exception as exc:  # malformed action is a harness failure
-                trace.write(json.dumps({"step": step, "parse_error": str(exc)}) + "\n")
-                break
+            except Exception as exc:
+                # 退回给模型,而不是结束整道题。trace 里记下第几次重试,因为平台看不到
+                # 容器内部:没有这条记录,一次"读不懂的回复"在记录里和一次"一步就交卷"
+                # 长得一样。次数用完仍然是 harness 失败(它确实读不出动作),但那时记录
+                # 里已经有 N 次尝试,而不是一次。
+                trace.write(json.dumps({"step": step, "parse_error": str(exc),
+                                        "parse_retry": parse_retries}) + "\n")
+                if parse_retries >= PARSE_RETRIES:
+                    break
+                parse_retries += 1
+                messages.append({"role": "user", "content": (
+                    f"Your reply could not be read as an action: {exc}\n"
+                    "Reply with EXACTLY ONE JSON object and nothing else, one of:\n"
+                    '  {"tool": "bash", "command": "<shell command>"}\n'
+                    '  {"answer": "<your final answer>"}')})
+                continue
 
             # **交卷闸门。** 顺序按"它想干什么"判断,而不是按哪个键先出现:
             # 一条回复里同时带 command 和 answer 时,以前"先看 answer"会让那条命令
@@ -322,6 +371,29 @@ def run(task: dict, workdir: Path) -> str:
             trace.write(json.dumps({"step": step, "command": cmd,
                                     "exit": proc.returncode, "output": out}) + "\n")
             messages.append({"role": "user", "content": f"exit={proc.returncode}\n{out}"})
+
+            # **两条提醒,都放在命令跑完之后**,因为它们改变的是"下一步做什么"。
+            #
+            # 先记进 trace 再发出去:平台看不到容器内部,没有这两条记录,"模型在原地打转"
+            # 在一次 32 步的运行里和"模型在认真工作"长得一模一样。
+            if cmd and cmd == last_cmd and repeats < REPEAT_NUDGE_LIMIT:
+                repeats += 1
+                trace.write(json.dumps({"step": step, "repeat_nudge": cmd[:120]}) + "\n")
+                messages.append({"role": "user", "content": (
+                    "That is the same command as the previous step and its output has not "
+                    "changed. Do something different, or finish now with "
+                    '{"answer": "<your final answer>"} if the work is already done.')})
+            last_cmd = cmd
+
+            left = MAX_STEPS - (step + 1)
+            # 只在进入收尾区和最后一步各说一次:每一步都重复同一句话不会更有用,
+            # 只会把最近几轮的命令输出挤远。
+            if left and (left == FINISH_NUDGE_STEPS or left == 1):
+                trace.write(json.dumps({"step": step, "finish_nudge": left}) + "\n")
+                messages.append({"role": "user", "content": (
+                    f"You have {left} step(s) left. Stop exploring. Create every file the "
+                    "task asks for now, then reply with exactly one JSON object: "
+                    '{"answer": "<your final answer>"}')})
 
         # What the run cost. Kept because a harness that cannot say what it spent
         # cannot be compared with a cheaper one at the same score -- and because

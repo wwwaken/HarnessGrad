@@ -52,12 +52,36 @@ def test_an_empty_trace_with_a_crash_is_a_failure():
     assert "openai" in got["stderr"]
 
 
-def test_a_harness_that_left_a_trace_is_not_a_failure():
-    """崩了但留下了 trace 的 harness **不**在此列:§2.2 说那个任务算完成了。
+def test_a_harness_that_worked_and_then_crashed_is_not_a_failure():
+    """干了活之后才崩的 harness **不**在此列:§2.2 说那个任务算完成了,而 trace 能解释它。
 
     把这条判宽会让每一次「最后一条命令失败」的 harness 都被报成故障,警告就没人看了。
     """
-    assert _harness_failure({"trace": '{"step": 0}\n', "exit_code": 1, "stderr": "boom"}) is None
+    worked = '{"step": 0, "reply": "{\\"answer\\": \\"x\\"}"}\n{"usage": {"calls": 1}}\n'
+    assert _harness_failure({"trace": worked, "exit_code": 1, "stderr": "boom"}) is None
+
+
+def test_a_nonzero_exit_without_a_model_call_is_a_failure():
+    """**第二条触发条件,来自一次实测。** 非空 trace 不等于 harness 跑起来了。
+
+    2026-10-04 在当前平台上复现:`--harness cli_agent` 在没有 CLI 时只写一行
+    `{"error": "HG_CLI is unset: no CLI to run"}`,一次模型都没调,退出码 2 —— 而曲线说的是
+    `score 0.0, harness_failed: null`。控制台警告了、verdict 文件里也有退出码,事实存在两处,
+    唯独不在读者比较跑道的地方(曲线点)。
+
+    判据用 `usage` 块,因为它是 harness 契约要求的(`INTERFACE.md` §1.2),也是唯一与 harness
+    内部结构无关的"它调用过模型"的证据。
+    """
+    unset = '{"error": "HG_CLI is unset: no CLI to run"}\n'
+    got = _harness_failure({"trace": unset, "exit_code": 2, "stderr": "no CLI\n"})
+    assert got is not None, "一个从没跑起来的 harness 不该读成干净的 0 分"
+    assert got["exit_code"] == 2 and "without recording a model call" in got["reason"]
+
+
+def test_a_scripted_harness_that_makes_no_calls_and_exits_zero_is_fine():
+    """`base_harness/oracle` 不调模型(它跑参考解),退出码 0 —— 不该被报成故障。"""
+    assert _harness_failure({"trace": '{"step": 0}\n', "exit_code": 0,
+                             "stderr": ""}) is None
 
 
 def test_a_clean_exit_with_no_trace_is_still_reported():
