@@ -169,3 +169,43 @@ def test_the_trace_is_on_disk_before_the_next_command_runs(agent, tmp_path, monk
     agent.run({"goal": "snapshot"}, tmp_path)
     snapshot = (tmp_path / "step0_snapshot.txt").read_text()
     assert '"step": 0' in snapshot, "第 0 步的事件在命令执行前没有落盘"
+
+
+# --------------------------------------------- 上下文管理(本地模型那次) ---
+
+def test_a_huge_command_output_is_clipped_with_a_marker(agent, tmp_path, monkeypatch):
+    """实测:3 道题死于 `maximum context length is 32768 tokens ... at least 32769`。
+
+    起点 harness 把每条命令的**完整**输出一直往历史里追加:一道题里单条输出 11773 字符。
+    那不是模型的问题,是 harness 没有上下文管理。截断必须留痕 —— 悄悄改变模型所见历史的
+    harness 和被测量的 harness 不是同一件事。
+    """
+    monkeypatch.setattr(agent, "OUTPUT_LIMIT", 200)
+    replies = ['{"tool": "bash", "command": "head -c 2000 /dev/zero | tr \\"\\\\0\\" x"}',
+               '{"answer": "done"}']
+    fake, _ = _scripted(agent, replies)
+    monkeypatch.setattr(agent, "_complete", fake)
+    agent.run({"goal": "big output"}, tmp_path)
+    events = _events(tmp_path)
+    clipped = [e for e in events if "output_clipped" in e]
+    assert clipped, "超长输出没有被截断"
+    assert clipped[0]["output_clipped"] >= 2000 and clipped[0]["shown"] <= 260, clipped[0]
+    # 历史里的那条消息也确实短了
+    big = [e for e in events if e.get("exit") is not None]
+    assert big and len(str(big[0]["output"])) >= 2000, "轨迹里仍保留完整输出(给读记录的人)"
+
+
+def test_the_history_is_trimmed_and_the_trim_is_recorded(agent, tmp_path, monkeypatch):
+    """历史超预算就丢最旧的成对消息,并在轨迹里记下丢了几条。"""
+    monkeypatch.setattr(agent, "CONTEXT_CHAR_BUDGET", 800)
+    monkeypatch.setattr(agent, "OUTPUT_LIMIT", 400)
+    reply = '{"tool": "bash", "command": "head -c 400 /dev/zero | tr \\"\\\\0\\" y"}'
+    fake, seen = _scripted(agent, [reply])
+    monkeypatch.setattr(agent, "_complete", fake)
+    monkeypatch.setattr(agent, "MAX_STEPS", 8)
+    agent.run({"goal": "grow"}, tmp_path)
+    events = _events(tmp_path)
+    dropped = [e for e in events if "history_dropped" in e]
+    assert dropped, "历史没有被修剪"
+    # 修剪之后,历史长度不再单调增长 —— 这正是它要保证的
+    assert max(seen) < 8, seen

@@ -1204,10 +1204,14 @@ def _harness_failure(result: dict) -> dict | None:
     trace = (result.get("trace") or "").strip()
     reason = None
     if not trace:
-        reason = "the harness wrote no trace at all"
+        reason = "the harness left no trace at all"
     elif result.get("exit_code") and _last_usage(trace) is None:
-        reason = (f"the harness exited {result['exit_code']} without recording a model "
-                  f"call: its trace has no `usage` block")
+        # **只说平台知道的事。** 第一版这条写的是"没有记录到任何模型调用",而那是错的:
+        # `usage` 块是 harness 跑完之后才写一次的,所以**中途崩溃**永远看起来像"一次都没调
+        # 过模型"。实测(2026-10-04,本地模型,5 道题):三道题各有 15-23 次调用、轨迹 12-14 万
+        # 字节,控制台却按"left no trace"播报 —— 一句假话,而且是我自己上一版引入的。
+        reason = (f"the harness exited {result['exit_code']} and its trace has no `usage` "
+                  f"block, so the run did not reach its end")
     if reason is None:
         return None
     return {"reason": reason, "exit_code": result.get("exit_code"),

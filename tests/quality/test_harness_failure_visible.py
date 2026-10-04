@@ -75,7 +75,11 @@ def test_a_nonzero_exit_without_a_model_call_is_a_failure():
     unset = '{"error": "HG_CLI is unset: no CLI to run"}\n'
     got = _harness_failure({"trace": unset, "exit_code": 2, "stderr": "no CLI\n"})
     assert got is not None, "一个从没跑起来的 harness 不该读成干净的 0 分"
-    assert got["exit_code"] == 2 and "without recording a model call" in got["reason"]
+    # 只说平台知道的事实:`usage` 块是 harness 跑完之后才写的,所以"没有 usage 块"是事实,
+    # "没有调用过模型"是错的推论(实测那三道题各有 15-23 次调用)。
+    assert got["exit_code"] == 2
+    assert "no `usage` block" in got["reason"] and "did not reach its end" in got["reason"]
+    assert "model call" not in got["reason"]
 
 
 def test_a_scripted_harness_that_makes_no_calls_and_exits_zero_is_fine():
@@ -221,7 +225,20 @@ def test_the_empty_trace_case_is_reported_once_not_twice(monkeypatch):
     from harnessgrad import environments
     said = _said(monkeypatch)
     environments._report_harness_failed({
-        "harness_failed": {"t01": {"exit_code": 1, "stderr": "no trace"}},
+        "harness_failed": {"t01": {"exit_code": 1, "stderr": "no trace",
+                                   "reason": "the harness left no trace at all"}},
         "harness_output": {"t01": {"exit_code": 1, "stderr": "no trace"}}},
         "terminal_bench")
     assert len(said) == 1 and "left no trace" in said[0], said
+
+
+def test_an_old_record_without_a_reason_does_not_get_one_invented(monkeypatch):
+    """早于 `reason` 字段的记录里没有它。那时**不能编**一个原因出来 —— 说"没记录原因"
+    比说错一个原因好,这和整个平台"只说知道的事"是同一条规矩。"""
+    from harnessgrad import environments
+    said = _said(monkeypatch)
+    environments._report_harness_failed({
+        "harness_failed": {"t01": {"exit_code": 1, "stderr": "boom"}}},
+        "terminal_bench")
+    assert len(said) == 1
+    assert "no reason recorded" in said[0] and "left no trace" not in said[0], said

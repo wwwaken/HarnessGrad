@@ -94,6 +94,20 @@ FINISH_NUDGE_STEPS = int(os.environ.get("HG_AGENT_FINISH_NUDGE_STEPS", "4"))
 #: 同一条命令连续重复时提醒几次(每条跑道限量,免得把上下文塞满)。
 REPEAT_NUDGE_LIMIT = int(os.environ.get("HG_AGENT_REPEAT_NUDGE_LIMIT", "2"))
 
+#: 单条命令的输出进入消息历史时的字符上限(头部一半 + 尾部一半,中间写明丢了多少)。
+#:
+#: 实测(2026-10-04,本地 9B,5 道题):**3 道题死于
+#: `This model's maximum context length is 32768 tokens ... your prompt contains at least
+#: 32769 input tokens`(BadRequestError 400)**。起点 harness 以前把每条命令的**完整**输出
+#: 一直往历史里追加,永不截断:一道题里单条输出就有 11773 字符,装一次包、cat 一个大文件
+#: 就够撞上 32k 的窗口。那不是模型的问题,是 harness 没有上下文管理。
+OUTPUT_LIMIT = int(os.environ.get("HG_AGENT_OUTPUT_LIMIT", "4000"))
+
+#: 消息历史(不含 system 与题面)的字符预算。按 4 字符 ≈ 1 token 粗估,60k 字符约 15k token,
+#: 给 32k 窗口的模型留出输出空间。超了就丢**最旧的成对消息**,并在轨迹里记下丢了几条 ——
+#: 一个悄悄改变模型所见历史的 harness,和一个被测量的 harness,不是同一件事。
+CONTEXT_CHAR_BUDGET = int(os.environ.get("HG_AGENT_CONTEXT_CHARS", "60000"))
+
 SYSTEM = """You are an agent solving a task in a working directory.
 
 You have one tool: run a shell command.
@@ -303,6 +317,31 @@ def _missing_deliverables(task: dict, workdir: Path) -> list[str]:
     return missing
 
 
+def _clip_output(out: str) -> str:
+    """一条命令的输出,超过 `OUTPUT_LIMIT` 就留住头尾,中间写明丢了多少。"""
+    if len(out) <= OUTPUT_LIMIT:
+        return out
+    half = OUTPUT_LIMIT // 2
+    return (out[:half]
+            + f"\n... [{len(out) - OUTPUT_LIMIT} characters omitted] ...\n"
+            + out[-half:])
+
+
+def _trim_history(messages: list[dict]) -> int:
+    """丢最旧的成对消息,直到历史在 `CONTEXT_CHAR_BUDGET` 以内。返回丢掉的条数。
+
+    `messages[0]` 是 system,`messages[1]` 是题面,两者永不丢。之后严格成对
+    (assistant 动作、user 结果),所以一次删两条,而不是一条 —— 删一条会让"结果"成为
+    历史里的第一条,模型会读到一段没有对应动作的输出。
+    """
+    dropped = 0
+    while len(messages) > 4 and \
+            sum(len(m.get("content") or "") for m in messages) > CONTEXT_CHAR_BUDGET:
+        del messages[2:4]
+        dropped += 2
+    return dropped
+
+
 def run(task: dict, workdir: Path) -> str:
     """Execute one task. Returns the answer string.
 
@@ -378,7 +417,11 @@ def run(task: dict, workdir: Path) -> str:
             out = proc.stdout + proc.stderr
             trace.write(json.dumps({"step": step, "command": cmd,
                                     "exit": proc.returncode, "output": out}) + "\n")
-            messages.append({"role": "user", "content": f"exit={proc.returncode}\n{out}"})
+            shown = _clip_output(out)
+            if shown != out:
+                trace.write(json.dumps({"step": step, "output_clipped": len(out),
+                                        "shown": len(shown)}) + "\n")
+            messages.append({"role": "user", "content": f"exit={proc.returncode}\n{shown}"})
 
             # **两条提醒,都放在命令跑完之后**,因为它们改变的是"下一步做什么"。
             #
@@ -402,6 +445,10 @@ def run(task: dict, workdir: Path) -> str:
                     f"You have {left} step(s) left. Stop exploring. Create every file the "
                     "task asks for now, then reply with exactly one JSON object: "
                     '{"answer": "<your final answer>"}')})
+
+            dropped = _trim_history(messages)
+            if dropped:
+                trace.write(json.dumps({"step": step, "history_dropped": dropped}) + "\n")
 
         # What the run cost. Kept because a harness that cannot say what it spent
         # cannot be compared with a cheaper one at the same score -- and because

@@ -242,9 +242,12 @@ def _report_harness_failed(res: dict | None, dataset: str) -> None:
     for tid, why in sorted((res.get("harness_failed") or {}).items()):
         code = why.get("exit_code")
         tail = " ".join((why.get("stderr") or "").split())
+        # **按 `reason` 播报,不硬编码。** 判据现在有两种形状(轨迹为空 / 有轨迹但没有
+        # `usage` 块),而"中途崩"不是"没留下轨迹":实测那三道题各写了 12-14 万字节的轨迹。
+        # 一句写死的 "left no trace" 会把有证据的失败说成没有证据。
         console.note(
-            f"{tid}: the harness left no trace (exit code {code}), so nothing in "
-            f"dataset {dataset!r} was diagnostic of it -- the score stands, but it is "
+            f"{tid}: the harness failed (exit code {code}) -- "
+            f"{why.get('reason') or 'no reason recorded'}. The score stands, but it is "
             f"the platform's verdict on the artifact, not evidence about the harness."
             + (f" stderr: {tail[-400:]}" if tail else ""),
             level="warn")
