@@ -119,19 +119,27 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
     #: because steps 1-3 needed one attempt each and left the whole remaining quota to one
     #: stuck step. A budget that one step can consume is not a budget for the step.
     STEP_ATTEMPTS = 3
-    steps_done, step_attempts = 0, 0
-    while steps_done < args.rounds:
-        r = steps_done + 1
-        step_attempts += 1
-        if step_attempts > STEP_ATTEMPTS:
-            console.note(
-                f"step {r}: gave up after {STEP_ATTEMPTS} attempts", level="error")
-            console.round_line(r, "gave up", level="error")
-            failed_steps.append({
-                "round": r,
-                "why": f"no completion in {STEP_ATTEMPTS} attempts; the run stops here "
-                       f"because a step that cannot finish is not a step"})
-            break
+    #: **The budget counts *measured states*, not method calls.**
+    #:
+    #: `--rounds N` used to mean "call the method N times, one candidate each". That is the
+    #: one shape an RSI rule cannot use: its content is *how to spend a budget under noise*
+    #: (RRSI's annealed `b_t`, DGM's child counts, SICA's confidence bound). Mode B went the
+    #: other way -- the method owned the schedule, handed over a whole sequence, and got no
+    #: scores to spend the budget on. Two halves of one loop, and neither could express a
+    #: selection rule.
+    #:
+    #: Now one engine: a submission carries one or more steps, every step is measured in
+    #: order, and the method is called again **iff** the budget has room and it did not
+    #: stop. One step per call is the old mode A (feedback between candidates); ten steps in
+    #: one call is the old mode B (a batch, no feedback inside it); three and then three
+    #: more is what neither mode could say.
+    def _invoke_method(r: int):
+        """One method call: stage the evidence, hand over a pristine base, parse the reply.
+
+        Returns `(reply, trajectory)`, or `(None, None)` when the call itself failed -- the
+        caller reads that as "no submission this attempt" and retries, bounded by
+        `STEP_ATTEMPTS`. Kept out of the loop body so the loop can be about the *budget*.
+        """
         prior = curve[-1]
         # The whole curve so far, not just the incumbent: a method whose contribution
         # is its selection rule needs the series, and the cheap way to give it is the
@@ -169,6 +177,11 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                 "workspace": str(method_ws),
                 "round_index": r,
                 "incumbent_score": prior["score"],
+                # How many states this run will still measure. A method that plans its own
+                # budget -- RRSI's `b_t`, DGM's child counts -- needs the size of the pot,
+                # and until now the only number it got was "which round this is".
+                "epochs_total": args.rounds,
+                "epochs_measured": steps_done,
                 "task_ids": task_ids,
                 "train_task_ids": list(train_ids or []),
                 "trajectory_out": str(traj_path),
@@ -202,16 +215,79 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             console.round_line(r, "entrypoint failed", level="error",
                                note=stderr[-120:])
             failed_steps.append({"round": r, "why": f"entrypoint failed: {why}"[:400]})
-            continue
+            return None, None, 0.0
         if not traj_path.exists():
             console.note(f"round {r}: method wrote no trajectory", level="error")
             console.round_line(r, "no trajectory", level="error")
-            failed_steps.append({"round": r,
-                                 "why": "the method wrote no trajectory"})
-            continue
+            failed_steps.append({"round": r, "why": "the method wrote no trajectory"})
+            return None, None, 0.0
 
-        traj = json.loads(traj_path.read_text())
-        step = (traj.get("steps") or [{}])[0]
+        try:
+            traj = json.loads(traj_path.read_text())
+        except (OSError, ValueError) as exc:
+            console.note(f"round {r}: the trajectory is unreadable: {exc}", level="error")
+            failed_steps.append({"round": r,
+                                 "why": f"unreadable trajectory: {exc}"[:400]})
+            return None, None, 0.0, 0.0
+        return reply, traj, gen_s
+
+    steps_done, step_attempts = 0, 0
+    pending: list[dict] = []      # steps of the current submission, not yet measured
+    submission_stop = False       # that submission asked to finish
+    steps_in_submission = 0
+    steps_truncated = 0
+    while steps_done < args.rounds:
+        if pending:
+            r = steps_done + 1
+            step = pending.pop(0)
+            step_index = steps_in_submission - len(pending)
+        else:
+            if submission_stop:
+                break
+            r = steps_done + 1
+            step_attempts += 1
+            if step_attempts > STEP_ATTEMPTS:
+                console.note(
+                    f"step {r}: gave up after {STEP_ATTEMPTS} attempts", level="error")
+                console.round_line(r, "gave up", level="error")
+                failed_steps.append({
+                    "round": r,
+                    "why": f"no completion in {STEP_ATTEMPTS} attempts; the run stops here "
+                           f"because a step that cannot finish is not a step"})
+                break
+            reply, traj, gen_s = _invoke_method(r)
+            if reply is None:
+                continue
+            submitted = list(traj.get("steps") or [])
+            if not submitted:
+                console.note(f"round {r}: the trajectory has no steps", level="error")
+                console.round_line(r, "no steps", level="error")
+                failed_steps.append({"round": r, "why": "the trajectory has no steps"})
+                continue
+            # A single-step submission keeps the old default (`stop` = "nothing changed");
+            # a **batch** is a statement that the method had its say, so it stops unless it
+            # says otherwise. Without that rule the ports that hand over one step per call
+            # would be re-invoked for the rest of the budget.
+            changed = bool(reply.get("changed", True))
+            submission_stop = bool(reply.get(
+                "stop", True if len(submitted) > 1 else not changed))
+            room = args.rounds - steps_done
+            if len(submitted) > room:
+                steps_truncated += len(submitted) - room
+                console.note(
+                    f"round {r}: the submission carried {len(submitted)} steps and the "
+                    f"budget has room for {room}; the rest were not measured (recorded as "
+                    f"`steps_truncated`)", level="warn")
+                submitted = submitted[:room]
+            pending = submitted
+            steps_in_submission = len(submitted)
+            # One method call can buy several measurements, so its generation time is
+            # shared across them: charging it to each step would multiply the method's
+            # cost by the batch size, and a cost-aware rule (RRSI's `Delta C`) reading a
+            # number four times too large is worse than reading none.
+            gen_share = gen_s / max(1, len(submitted))
+            step_index = 0
+            continue
         # **The method's own name, from where it actually is.** It travels in the
         # trajectory's `provenance`, beside `steps` -- not in a step, and not in the
         # method's stdout (`emit` carries only the platform's own fields). Measured the
@@ -331,7 +407,7 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             harness_runtime=(res or {}).get("harness_runtime"),
             split=split,
             env_record=_env_record(envs, task_ids if res else []),
-            cost=_cost_of(res, len(tasks), dt + gen_s,
+            cost=_cost_of(res, len(tasks), dt + gen_share,
                           step.get("claimed_cost")),
             cumulative=cumulative,
             n_trials=(res or {}).get("trials"), score_std=(res or {}).get("score_std"),
@@ -345,6 +421,31 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             candidate_problems=candidate_problems,
             method_reported=step.get("method_reported") or {})
         point["edit_kind"] = step.get("edit_kind")
+        # **The shape of the submission this step came from.** `steps_in_submission > 1`
+        # means the method handed over a batch and therefore saw no score between these
+        # states -- the one thing that separates "used the feedback" from "guessed a
+        # path", and neither mode A nor mode B could record it before.
+        point["step_index"] = step_index
+        point["steps_in_submission"] = steps_in_submission
+        # **Which state the method decided to keep.** A selection rule's whole content is
+        # accept-or-keep, and the platform already let a method act on it (hand back an
+        # earlier tree from `states/`, which is what `harnessx`'s port does). What was
+        # missing is the record: `score` is the *candidate's* measurement, so a curve of
+        # candidate scores cannot show what the rule kept. A step may name
+        # `incumbent_round`; the point then carries that round and its score, and the
+        # "kept" series can be read beside the measured one.
+        kept = step.get("incumbent_round")
+        if kept is None:
+            point["kept_round"] = r
+            point["kept_score"] = point.get("score")
+        else:
+            try:
+                kept_round = int(kept)
+            except (TypeError, ValueError):
+                kept_round = r
+            kept_point = next((q for q in curve if q.get("round") == kept_round), None)
+            point["kept_round"] = kept_round
+            point["kept_score"] = (kept_point or {}).get("score")
         point["measured_by_platform"] = res is not None
         if res is None:
             # Named problems, not "no harness.json": a candidate can be rejected for a
@@ -429,25 +530,18 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         # fair comparison cannot score cautious methods on fewer rounds than eager
         # ones.
         #
-        # `stop` defaults to `not changed`, which is exactly the old behaviour, so
-        # nothing that predates the field changes meaning. A method that rejects a
-        # candidate and wants its next round says so with `stop: false`.
-        changed = bool(reply.get("changed", True))
-        stop = bool(reply.get("stop", not changed))
-        # A method may say why in `note`, and the default has to stay neutral.
-        # The driver cannot tell "I rejected this candidate" (RRSI's leakage screen
-        # dropping a proposal) from "I had nothing to propose" (DGM's editor
-        # declining) -- and calling both "rejected" told the reader something the
-        # method never said. Reported as a confusing message on a DGM run.
+        # `stop` was decided when the submission was read, because it is a statement about
+        # the *submission*, not about this step: a batch of three is finished when all
+        # three are measured, and each of them is still a step. The note is per step.
         note = reply.get("note")
         if note is not None:
             note = str(note)[:160]
-        elif stop:
+        elif submission_stop and not pending:
             note = "no change reported" if not changed else "method asked to stop"
         elif not changed:
             note = "no change this round; continuing"
         console.round_line(r, step.get("label") or "method step", point, note=note)
-        if stop:
+        if submission_stop and not pending:
             break
 
     reset_hard(work, h0_sha)
@@ -459,6 +553,10 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         nominated=None,
         failed_steps=failed_steps,
         rounds_measured=len([p for p in curve if p.get("measured_by_platform")]),
+        # A submission larger than the remaining budget is truncated, and that is a fact a
+        # reader needs: the method asked for more states than the run paid for.
+        steps_truncated=steps_truncated,
+        steps_measured=steps_done,
         final_score=curve[-1].get("score") if curve else None,
         # Both sides of the last measured point. `final_score` alone is the exam
         # only, and a run whose train side moved while this did not is the finding

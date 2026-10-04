@@ -1683,6 +1683,46 @@ carried". Until 2026-10-04 each method read the file itself and four of twelve d
 the other eight the field described a prompt nobody sent. A method with its own skill passes
 it to the model itself and declines the default, and the two cannot then arrive together.
 
+### 4.1.1 The budget counts **measured states**, not method calls
+
+`--rounds N` used to mean "call the method N times, one candidate each". That is the one
+shape an RSI-family rule cannot use: its content is *how to spend a budget under noise*
+(RRSI's annealed `b_t`, DGM's child counts, SICA's confidence bound over repeated
+evaluations). Mode B went the other way -- the method owned the schedule and handed over a
+whole sequence, but the platform measured it *afterwards*, so the method spent its budget
+without ever seeing a score. Two halves of one loop, and neither could express a selection
+rule. Measured: `B2-rrsi` ran three rounds, accepted nothing (`edits_applied: []`,
+`harness_sha` unchanged every round) and its own state absorbed a re-measurement as a real
+gain (`S*` 0.2 -> 0.4667).
+
+One engine now, and `--rounds N` is a cap on **states measured**:
+
+* a submission carries one or more steps (`trajectory.steps[]`); **every** step is measured,
+  in order, and each appends a curve point;
+* the platform calls the method again **iff** the budget has room and the method did not
+  stop. One step per call is the old mode A (a score is visible between candidates); ten
+  steps in one call is the old mode B (a batch, no feedback inside it); three and then three
+  more is what neither could say;
+* `stop` defaults per submission shape: a single step keeps the old default
+  (`not changed`), a **batch** stops unless the method says otherwise -- without that,
+  single-step ports would be re-invoked for the rest of the budget;
+* a submission larger than the remaining budget is truncated, and the truncation is recorded
+  (`run_meta.steps_truncated`) rather than silently dropped. Mode B never enforced the cap at
+  all; it does now.
+
+Fields this adds:
+
+| field | where | what it says |
+| --- | --- | --- |
+| `step_index` | point | which step of its submission this point is (1-based) |
+| `steps_in_submission` | point | how many states that call bought; `> 1` means the method saw **no** score between them |
+| `kept_round`, `kept_score` | point | which state the method decided to **keep**. A selection rule's whole content is accept-or-keep, and the platform already let a method act on it (hand back an earlier tree from `states/`, which `harnessx`'s port does) -- what was missing was the record: `score` is the *candidate's* measurement, so a curve of candidates cannot show what the rule kept. A step names `incumbent_round`; the point carries that round and its score |
+| `steps_measured`, `steps_truncated` | `run_meta` | how much the budget bought and how much of a submission it cut |
+
+`methods/` needs no change: a method that writes one step per call behaves exactly as before.
+`--mode` still selects the loop, but the two loops now share this budget arithmetic and
+report the same two run-level fields, so their curves can be read on one axis.
+
 ### 4.49.1 Open decision: which improver is the *default*, and what a method owes it
 
 `improvers/improvers.json` names **codex -- a CLI -- as the default**, so an ordinary run

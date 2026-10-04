@@ -139,6 +139,20 @@ def _run_mode_b(args, work, man, run_id, mode, curve, h0_sha, run_dir, base,
     if not steps:
         console.note("mode B: trajectory has no steps", level="error")
         return curve
+    # **The budget is a cap in mode B too.** The request has always said so
+    # (`budget = {"rounds": ..., "note": "caps only; mode B owns its rhythm"}`), and the
+    # loop below never enforced it: a method could hand over fifty steps and the platform
+    # would measure all fifty. Under the unified reading of `--rounds` -- a budget of
+    # *measured states* -- an over-large submission is truncated, and the truncation is
+    # recorded rather than silently dropped.
+    steps_truncated = 0
+    if len(steps) > args.rounds:
+        steps_truncated = len(steps) - args.rounds
+        console.note(
+            f"mode B: the trajectory carried {len(steps)} steps and the budget is "
+            f"{args.rounds}; {steps_truncated} were not measured (recorded as "
+            f"`steps_truncated`)", level="warn")
+        steps = steps[:args.rounds]
 
     shape = traj.get("trajectory_shape", "sequence")
     curve_drawn = traj.get("curve_drawn", "per_step")
@@ -310,6 +324,10 @@ def _run_mode_b(args, work, man, run_id, mode, curve, h0_sha, run_dir, base,
     _write_run_meta(
         run_dir, platform_tampered=None, mode="B", trajectory_shape=shape,
         failed_steps=failed_steps,
+        # How much of the submission the budget cut off, and how much it bought. The same
+        # two facts mode A records, so a reader compares the two loops on one axis.
+        steps_truncated=steps_truncated,
+        steps_measured=len([p for p in curve if p.get("measured_by_platform")]),
         curve_drawn=curve_drawn, acceptance_rule=acceptance, replay=False,
         method_entrypoint=argv, base_harness=str(base_dir),
         split=split,
