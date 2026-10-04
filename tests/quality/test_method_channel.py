@@ -136,18 +136,17 @@ def test_an_exam_point_is_refused_rather_than_staged():
         _for_method({"score_kind": "exam", "per_task": {"e01": 1.0}})
 
 
-def test_the_channel_is_staged_by_both_train_loops():
-    """mode B 曾经完全不暂存通道 —— 方法拿到一个空的 base harness。
+def test_the_engine_stages_the_channel_every_round():
+    """通道必须真的暂存 —— `mode B` 当初就完全不暂存,方法拿到一个空的 base harness。
 
-    结构检查而不是端到端:两个循环是两条独立的路径,一条跑得通不代表另一条。
+    结构检查而不是端到端:暂存发生在循环里,而端到端跑一次只能证明"这一轮暂存了"。
     """
     functions = _platform_functions()
-    for name in ("_run_mode_a", "_run_mode_b"):
-        fn = functions.get(name)
-        assert fn is not None, name
-        called = {n.func.id for n in ast.walk(fn)
-                  if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
-        assert "_stage_for_method" in called, f"{name} 不暂存通道"
+    fn = functions.get("_run_mode_a")
+    assert fn is not None
+    called = {n.func.id for n in ast.walk(fn)
+              if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    assert "_stage_for_method" in called, "引擎不暂存通道"
 
 
 # ------------------------------- 通道:一道题自己的那一页(题面/金标/理由) ---
@@ -273,11 +272,11 @@ def test_the_channel_is_removed_from_the_tree_that_gets_measured():
     移除,比等到交换更早),而写死数字的测试会因此失败 —— 那说明它测的是实现形状,不是
     不变量。
     """
-    per_mode: dict[str, int] = {}
-    for name in ("_run_mode_a", "_run_mode_b"):
-        fn = _platform_functions().get(name)
-        assert fn is not None, name
-        hits = 0
+    functions = _platform_functions()
+    fn = functions.get("_run_mode_a")
+    assert fn is not None
+    hits = 0
+    if True:
         for node in ast.walk(fn):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
                     and node.func.attr == "rmtree" and node.args:
@@ -285,12 +284,8 @@ def test_the_channel_is_removed_from_the_tree_that_gets_measured():
                 if isinstance(arg, ast.BinOp) and isinstance(arg.right, ast.Constant) \
                         and arg.right.value == "_harnessgrad":
                     hits += 1
-        per_mode[fn.name] = hits
-    assert set(per_mode) == {"_run_mode_a", "_run_mode_b"}, per_mode
-    missing = [name for name, n in per_mode.items() if n < 1]
-    assert not missing, (
-        f"这些模式没有把通道从被评测的树里移除:{missing} —— 方法失败那一轮会把题面和金标"
-        f"带回工作区")
+    assert hits >= 1, (
+        "引擎没有把通道从被评测的树里移除 —— 方法失败那一轮会把题面和金标带回工作区")
 
 
 def test_the_task_page_carries_the_harness_s_own_crash_reason(tmp_path):

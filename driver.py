@@ -57,7 +57,6 @@ from harnessgrad.environments import (
 from harnessgrad.identity import _identity
 from harnessgrad.loops.eval_side import _eval_from_record, _eval_source, _run_eval_side
 from harnessgrad.loops.mode_a import _run_mode_a
-from harnessgrad.loops.mode_b import _run_mode_b
 from harnessgrad.methods import PlatformTampered, _check_method_entrypoint
 from harnessgrad.records import (
     _cost_of, _curve_point, _require_untampered, _save_round_state, _save_traces,
@@ -209,8 +208,10 @@ def main() -> int:
                     help="measure up to N tasks concurrently (default 1). The tasks share "
                          "one model endpoint and one host, so raise it deliberately")
     ap.add_argument("--mode", default="A", choices=["A", "B"],
-                    help="A=platform drives the loop (default); B=the method runs "
-                         "its own loop and is reached through its own entrypoint")
+                    help="DEPRECATED and ignored: there is one engine. A method that "
+                         "submits its whole sequence in one call behaves as mode B did; "
+                         "one that submits a step per call behaves as mode A did, and "
+                         "`steps_in_submission` on each point says which happened.")
     ap.add_argument("--method-timeout", type=int, default=86400,
                     help="mode B: seconds before the method's own loop is killed")
     # **哪个改进器。** 方法自带改进器时这三个开关是无害的;用一种"把方法拆成规则+
@@ -352,7 +353,11 @@ def main() -> int:
     # my --tasks", which is worse than the refusal itself.
     setups, verifiers, envs = _narrow_to_run(setups, verifiers, envs, side_ids)
     verifier_kinds = sorted({v.get("kind", "answer") for v in verifiers.values()})
-    mode = args.mode
+    # The record says **unified**, not the flag. `--mode` is accepted so existing scripts
+    # keep working, but it selects nothing any more, and a point that said `run_mode: B`
+    # while the unified loop ran A-shaped steps would be the same class of lie as
+    # `agent_model: mock`. Old records keep their own `A`/`B`; these say what is true now.
+    mode = "unified" if args.mode in ("A", "B") else args.mode
 
     run_id = args.run_id or (
         f"{args.harness}-{args.dataset}-{args.sampling}-m{mode}")
@@ -866,16 +871,18 @@ def main() -> int:
             console.note(f"refusing to run:\n  {problem}", level="error")
             return 2
 
-    if mode == "A":
-        curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
-                            base, tasks, task_ids, scorable, sampling, cache,
-                            cumulative, train_ids, split, setups, verifiers,
-                            verifier_kinds, envs, improver=improver)
-    else:
-        curve = _run_mode_b(args, work, man, run_id, mode, curve, h0_sha,
-                            run_dir, base, tasks, task_ids, scorable, sampling, cache,
-                            cumulative, train_ids, split, verifier_kinds,
-                            setups, verifiers, envs, improver=improver)
+    # **One engine.** `--mode A` and `--mode B` selected two loops, and the difference
+    # they encoded was never a property of the *method*: it was (a) which tree the method
+    # may build on -- the incumbent or the pristine base -- and (b) whether it sees a score
+    # between the states it submits. Both are decisions a method makes, and both are now on
+    # the record: `steps_in_submission > 1` means it saw no score between them, and the
+    # request carries the pristine tree as well as the incumbent. So the flag is read as
+    # *nothing*: a B-flavoured method is simply one that submits its whole sequence in one
+    # call, which the loop already allows.
+    curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
+                        base, tasks, task_ids, scorable, sampling, cache,
+                        cumulative, train_ids, split, setups, verifiers,
+                        verifier_kinds, envs, improver=improver)
 
     _write_curve(curve_path, curve)
     console.results(curve, split=split)

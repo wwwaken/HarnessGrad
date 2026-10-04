@@ -95,6 +95,13 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
     # A temporary directory has neither property, and `task_dir` re-binds it after the
     # hides, which is the same mechanism the harness's own working directory uses.
     method_root = Path(tempfile.mkdtemp(prefix=f"hg-method-{run_id}-")).resolve()
+    # **The pristine tree, for the whole run.** Mode B handed the method H0 and nothing else;
+    # mode A hands the current incumbent. Those are two different search strategies and both
+    # are legitimate -- DGM samples parents from an archive, RRSI builds on the state it
+    # decided to keep -- so the request now carries *both* and the method chooses. One copy
+    # per run, made before any step, because it must not move as the run goes on.
+    pristine = method_root / "base_harness"
+    shutil.copytree(work, pristine, ignore=shutil.ignore_patterns(".git"))
 
     #: Rounds whose step did not finish -- the edit sequence never applied. Recorded
     #: rather than only printed: "3 rounds but 2 steps" is a fact a reader comparing two
@@ -174,6 +181,10 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                 "platform_api_version": api_version,
                 "mode": "A",
                 "base_harness": str(base_dir),
+                # H0, unchanged since the run started. A method whose rule picks its own
+                # parent (DGM's archive, HyperAgents' population, Meta-Harness's frontier)
+                # needs this; one that always refines the incumbent ignores it.
+                "pristine_harness": str(pristine),
                 "workspace": str(method_ws),
                 "round_index": r,
                 "incumbent_score": prior["score"],
@@ -231,6 +242,10 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             return None, None, 0.0, 0.0
         return reply, traj, gen_s
 
+    #: What the method said about its own search, recorded from the first trajectory that
+    #: declares it. Mode B read these from the trajectory; with one engine there is no mode
+    #: to imply them, so they come from the method -- which is where they were always true.
+    declared_shape: dict = {}
     steps_done, step_attempts = 0, 0
     pending: list[dict] = []      # steps of the current submission, not yet measured
     submission_stop = False       # that submission asked to finish
@@ -258,6 +273,10 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             reply, traj, gen_s = _invoke_method(r)
             if reply is None:
                 continue
+            for key in ("trajectory_shape", "curve_drawn", "nominated",
+                        "acceptance_rule", "selection_pool_size"):
+                if key in traj and key not in declared_shape:
+                    declared_shape[key] = traj[key]
             submitted = list(traj.get("steps") or [])
             if not submitted:
                 console.note(f"round {r}: the trajectory has no steps", level="error")
@@ -547,10 +566,16 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
     reset_hard(work, h0_sha)
     shutil.rmtree(method_root, ignore_errors=True)
     _write_run_meta(
-        Path(args.runs_root) / run_id, trajectory_shape="sequence",
-        curve_drawn="per_round",
-        # Mode A: the platform owns the schedule, so nobody nominates a step.
-        nominated=None,
+        Path(args.runs_root) / run_id,
+        trajectory_shape=declared_shape.get("trajectory_shape", "sequence"),
+        curve_drawn=declared_shape.get("curve_drawn", "per_round"),
+        # Who nominated which state, when the method says. `None` means it did not say --
+        # which is a fact, and now the *method's* answer rather than the mode's default.
+        nominated=declared_shape.get("nominated"),
+        **({"acceptance_rule": declared_shape["acceptance_rule"]}
+           if declared_shape.get("acceptance_rule") else {}),
+        **({"selection_pool_size": declared_shape["selection_pool_size"]}
+           if "selection_pool_size" in declared_shape else {}),
         failed_steps=failed_steps,
         rounds_measured=len([p for p in curve if p.get("measured_by_platform")]),
         # A submission larger than the remaining budget is truncated, and that is a fact a

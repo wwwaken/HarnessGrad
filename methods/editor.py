@@ -956,6 +956,117 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
     return 0
 
 
+
+def _step_payload(*, harness_dir, label, edit_kind, changed, tokens_now,
+                  method_reported, incumbent_round=None) -> dict:
+    """One step of a trajectory, built the same way however many of them there are.
+
+    `incumbent_round` is the **selection** half of a rule: `score` on a curve point is the
+    *candidate's* measurement, so a method that decides "keep the state from round 3" has to
+    say so, or the record shows only what it tried and never what it kept. Omitted by
+    default, which means "this candidate becomes the base for my next step".
+    """
+    step = {
+        "harness_dir": str(harness_dir),
+        "label": label or ("edit" if changed else "no change"),
+        "edit_kind": edit_kind or ("none" if not changed else "harness_source"),
+        # `generation_tokens` is the contract field and stays the single number a
+        # cost-aware rule reads. The split is kept beside it because it is the part that
+        # says *why* the number is large: measured on our own improver, one round is
+        # ~24 KB of harness sources in and ~200 tokens out, so a rising improver cost is a
+        # source-reading cost, not a thinking cost.
+        "claimed_cost": {"generation_tokens": tokens_now,
+                         "method_input_tokens": None, "method_output_tokens": None,
+                         "method_model_calls": None, "method_model": None},
+        "method_reported": {"score": None, **(method_reported or {})},
+    }
+    if incumbent_round is not None:
+        step["incumbent_round"] = int(incumbent_round)
+    return step
+
+
+def report_many(req: dict, *, method: str, steps: list[dict],
+                acceptance_rule: str = "", tokens: int | None = None,
+                extra: dict | None = None, stop: bool | None = True,
+                note: str | None = None, hypothesis: str = "") -> int:
+    """Report **several** candidate states from one call -- a B-shaped submission.
+
+    One engine now reads `--rounds N` as a budget of *measured states*, so a method may
+    hand over a whole batch: every step is measured, in order, and the platform does not
+    call the method again while the batch lasts (and not at all if `stop`). That is what a
+    method whose algorithm *is* a multi-candidate search needs -- DGM's archive draws k
+    children from sampled parents, HyperAgents' population samples several, Meta-Harness's
+    frontier proposes a set -- and it is the shape our ports did not have: they were written
+    one-candidate-per-round to fit mode A, so their search rule was never really run.
+
+    Each entry of `steps` is a dict with `harness_dir` and optionally `changed`, `files`,
+    `label`, `edit_kind`, `hypothesis`, `method_reported`, `incumbent_round`. Every step
+    that says `changed` is validated here, exactly as `report` validates its one candidate: a
+    batch must not be a way to hand over a tree that is not a harness.
+
+    `tokens` is the whole call's spend (default: what this process spent), and the
+    platform divides it across the states the call bought -- charging it to each would
+    multiply the method's cost by the batch size, and a cost-aware rule reading a number k
+    times too large is worse than reading none.
+    """
+    spent_now = spent()
+    if tokens is None:
+        tokens = spent_now["input"] + spent_now["output"]
+    if not steps:
+        raise SystemExit("report_many needs at least one step; use report for a single one")
+
+    payloads: list[dict] = []
+    for index, entry in enumerate(steps):
+        if not isinstance(entry, dict) or not entry.get("harness_dir"):
+            raise SystemExit(f"step {index} names no harness_dir")
+        changed = bool(entry.get("changed", True))
+        if changed:
+            problems = candidate.validate(Path(entry["harness_dir"]))
+            if problems:
+                raise CandidateInvalid(
+                    f"step {index}: refusing to report a candidate that is not a harness: "
+                    + "; ".join(problems))
+        payloads.append(_step_payload(
+            harness_dir=entry["harness_dir"], label=entry.get("label") or "",
+            edit_kind=entry.get("edit_kind"), changed=changed,
+            tokens_now=tokens, method_reported=entry.get("method_reported"),
+            incumbent_round=entry.get("incumbent_round")))
+
+    trajectory = {
+        "steps": payloads,
+        "trajectory_shape": "sequence",
+        # A batch nominates nothing: there is no single state to point at, and pretending
+        # there is would make `tools/export_harnesses.py` pick one at random.
+        "nominated": 0,
+        "selection_pool_size": len(payloads),
+        "provenance": {
+            "method": method,
+            "acceptance_rule": {"text": acceptance_rule,
+                                "source": f"methods/{method}/run.py",
+                                "calibrated": False},
+            **(extra or {}),
+        },
+    }
+    raw_out = req.get("trajectory_out")
+    out = Path(raw_out) if raw_out else None
+    if out is not None:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(trajectory, indent=1))
+
+    changed_any = any(bool(e.get("changed", True)) for e in steps)
+    files = [f for e in steps for f in (e.get("files") or [])]
+    response = {"modified": changed_any, "changed": changed_any,
+                "files": files, "hypothesis": hypothesis, "steps": len(payloads),
+                "generation_tokens": tokens, "method_usage": spent_now,
+                "method_reported": {"steps": len(payloads)}}
+    if stop is not None:
+        response["stop"] = bool(stop)
+    if note is not None:
+        response["note"] = str(note)[:160]
+    emit(response)
+    return 0
+
+
 def fail(req: dict, *, method: str, exc: BaseException | str, base: Path,
          state: dict | None = None, stop: bool = False) -> int:
     """A trajectory for the error path, and the reason on stderr where it is read.

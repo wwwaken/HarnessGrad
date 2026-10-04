@@ -66,6 +66,7 @@ only choose its parent and record what the archive rule would have retained.
 """
 from __future__ import annotations
 
+import json
 import os
 import random
 import sys
@@ -265,73 +266,139 @@ def build_prompt(base: Path, req: dict, parent: dict, target: str,
 
 
 def main() -> int:
+    """**A B-shaped submission: one call, `k` children from sampled parents.**
+
+    DGM's rule is an archive-wide search, not a per-round step: parent weights are
+    `sigmoid(10*(score-0.5)) / (1+children)` and it draws children from sampled parents.
+    Our port was written one-candidate-per-round to fit mode A, which meant the rule ran
+    exactly one draw per round and the archive could never do its job -- the child-count
+    term needs siblings, and it never had any.
+
+    Now the submission is the algorithm: sample `HG_DGM_CHILDREN` parents (default 3, from
+    the same distribution), produce one candidate per parent, and hand the batch over in
+    one call. Every one of them is measured; the platform's budget caps how many states a
+    run pays for, and the archive's `keep_better` gate lives in the history each round.
+    """
+    import os
+
     req = editor.read_request()
     editor.require_api(req)
     base = Path(req["base_harness"])
     history = editor.load_history(base)
     round_index = int(req.get("round_index", 1))
+    children = max(1, int(os.environ.get("HG_DGM_CHILDREN", "3")))
+    # The budget knows how many states this run still buys; never submit more than that,
+    # because the platform truncates and a truncated batch is a batch the method planned
+    # wrong.
+    remaining = int(req.get("epochs_remaining") or req.get("epochs_total") or children)
+    children = max(1, min(children, remaining))
 
-    parent, report = select_parent(history, round_index)
-    target, target_kind = choose_target(parent)
+    steps: list[dict] = []
+    reports: list[dict] = []
+    errors: list[BaseException] = []
+    for child in range(children):
+        parent, report = select_parent(history, round_index + child)
+        target, target_kind = choose_target(parent)
+        report["target"] = target
+        report["target_kind"] = target_kind
+        report["child"] = child + 1
+        report["children_this_call"] = children
+        report["parent_round"] = parent.get("round")
 
-    # Build on the archive's choice, not on the incumbent. This is the whole
-    # point: with only the incumbent's files a method cannot express any rule
-    # whose contribution is *which state to build on*, and eight published
-    # methods collapse into the same hill-climb.
-    parent_dir = _state_dir(base, parent.get("round"))
-    if not parent_dir or not Path(parent_dir).is_dir():
+        parent_dir = _state_dir(base, parent.get("round"))
+        if not parent_dir or not Path(parent_dir).is_dir():
+            reports.append({**report, "why": "the selected state is not staged"})
+            continue
+
+        dest = editor.candidate_path(req, f"child{child + 1}")
+        try:
+            reply = editor.ask(build_prompt(Path(parent_dir), req, parent, target, report),
+                               system=DGM_SYSTEM, base=base)
+        except SystemExit:
+            raise
+        except Exception as exc:                                       # noqa: BLE001
+            # A provider error is not "this parent had nothing to say": it is the call not
+            # running at all. Timestamps kept in `errors` so that a call where *every* draw
+            # errored is reported through `editor.fail` (which writes `step.error` and
+            # `stop: false`), which is what the record needs to distinguish an outage from a
+            # method with nothing to propose.
+            errors.append(exc)
+            reports.append({**report, "why": f"{type(exc).__name__}: {exc}"[:160]})
+            continue
+
+        edits = [] if "no_change" in reply else reply.get("files")
+        changed, files, note = editor.apply_edits(Path(parent_dir), dest, edits)
+        if "no_change" in reply:
+            hypothesis = str(reply["no_change"])[:200]
+        elif not changed:
+            hypothesis = f"unusable proposal: {note}"
+        else:
+            hypothesis = str(reply.get("hypothesis", ""))[:200]
+        reports.append({**report, "changed": bool(changed), "why": hypothesis})
+        steps.append({
+            "harness_dir": dest, "changed": changed, "files": files,
+            "label": ((f"[DGM parent r{parent.get('round')}] " + hypothesis[:60])
+                      if changed else f"DGM: no edit (parent r{parent.get('round')})"),
+            "edit_kind": "dgm_rule", "hypothesis": hypothesis,
+            "method_reported": {"dgm": report, "dgm_parent": parent.get("round"),
+                                "target": target, "child": child + 1},
+        })
+
+    # **Only the children that produced an edit are submitted.** A step that changed
+    # nothing is a measurement of a state the platform has already measured, and a batch of
+    # them would spend the whole budget saying "no change" k times. The draw as a whole is
+    # still recorded (`method_reported.dgm`), so a reader can see how many parents were
+    # sampled and why each one came back empty.
+    measured = [step for step in steps if step.get("changed")]
+    if not measured:
+        # **Every draw came back empty.** Two different facts, and the record must not
+        # merge them: a provider error is the call not running, while `no_change` is the
+        # model declining. The lineage goes into `method_reported` on *every* path -- the
+        # child-count term reads `dgm_parent` from there, and dropping it on the empty path
+        # would reset a method's own memory exactly when it is drawing again.
+        parents = [r.get("parent_round") for r in reports]
+        carried = {"dgm": reports, "dgm_parent": parents[0] if parents else None,
+                   "dgm_parents": parents,
+                   "children_this_call": children}
+        if errors:
+            return editor.fail(req, method="dgm", exc=errors[0], base=base,
+                               state=carried)
+        reasons = []
+        for report in reports:
+            why = str(report.get("why") or "")
+            if why and why not in reasons:
+                reasons.append(why)
         return editor.report(
             req, method="dgm", harness_dir=base, changed=False,
-            hypothesis=f"the archive chose round {parent.get('round')} but its state "
-                       f"is not staged", edit_kind="dgm_rule",
-            method_reported={"dgm": report, "target": target},
-            acceptance_rule=report.get("rule", "n/a"), label="DGM: selected state unavailable")
+            hypothesis=(f"{len(steps)} child(ren) drew no usable edit this call: "
+                        + " | ".join(reasons))[:200],
+            edit_kind="dgm_rule", method_reported=carried,
+            acceptance_rule=("DGM's archive is maintained by keep_better/keep_all inside "
+                             "the method; the platform's measurement decides the score"),
+            stop=False, label="DGM: no child produced")
 
-    report["target"] = target
-    report["target_kind"] = target_kind
-
-    dest = editor.candidate_path(req)
-    try:
-        reply = editor.ask(build_prompt(Path(parent_dir), req, parent, target, report),
-                           system=DGM_SYSTEM, base=base)
-    except SystemExit:
-        raise
-    except Exception as exc:                                   # noqa: BLE001
-        return editor.fail(req, method="dgm", exc=exc, base=base,
-                           state={"dgm": report, "dgm_parent": parent.get("round")})
-
-    edits = [] if "no_change" in reply else reply.get("files")
-    changed, files, note = editor.apply_edits(Path(parent_dir), dest, edits)
-    if "no_change" in reply:
-        hypothesis = str(reply["no_change"])[:200]
-    elif not changed:
-        hypothesis = f"unusable proposal: {note}"
-    else:
-        hypothesis = str(reply.get("hypothesis", ""))[:200]
-
-    return editor.report(
-        req, method="dgm", harness_dir=dest, changed=changed, files=files,
-             # 没有停止规则:由平台的 --rounds 封顶,不是由编辑器的不作为。
-             stop=False,
-        hypothesis=hypothesis, edit_kind="dgm_rule",
-        method_reported={"dgm": report,                   # carries dgm_parent
-                         "dgm_parent": parent.get("round"),
-                         "target": target},
+    steps = measured
+    return editor.report_many(
+        req, method="dgm", steps=steps,
         acceptance_rule=("DGM's archive is maintained by keep_better/keep_all inside "
                          "the method; the platform's measurement decides the score"),
-        label=(f"[DGM parent r{parent.get('round')}] " + hypothesis[:60]) if changed
-              else f"DGM: no edit (parent r{parent.get('round')})")
+        # A batch is the method's own schedule, so it says what it had to say: the platform
+        # calls it again only if the budget has room and this says otherwise. (The
+        # nothing-usable case returned above with `stop: false`.)
+        stop=True,
+        hypothesis=f"DGM: {len(steps)} children from sampled parents",
+        note=f"DGM: {len(steps)} child(ren) submitted in one call",
+        extra={"children_this_call": len(steps)},
+    )
 
 
 def _state_dir(base: Path, round_no) -> str | None:
     """Where the platform staged a previous round's harness.
 
-    `states/index.json` is read rather than the directory guessed, because a state
-    that could not be materialized is deliberately absent from the index -- a
-    method that guessed the path would find an empty directory and report a
-    failure the platform caused.
+    `states/index.json` is read rather than the directory guessed, because a state that
+    could not be materialized is deliberately absent from the index -- a method that guessed
+    the path would find an empty directory and report a failure the platform caused.
     """
-    import json
     index = editor.channel(base) / "states" / "index.json"
     if not index.exists():
         return None

@@ -256,7 +256,10 @@ def test_the_method_builds_on_the_selected_old_state_not_the_incumbent(
                   reply={"files": [{"path": "agent.py", "content": "print('edited')\n"}],
                          "hypothesis": "h"})
 
-    dest = Path(_request(base, tmp_path)["workspace"]) / "candidate"
+    # **问轨迹要候选,不写死文件名。** `dgm` 现在一次交一批(`child1..k`),`hyperagents`
+    # 仍然交一个 —— 这一族的不变量是"交出来的那棵树来自被选中的旧状态",不是目录叫什么。
+    traj = json.loads(Path(_request(base, tmp_path)["trajectory_out"]).read_text())
+    dest = Path(traj["steps"][0]["harness_dir"])
     assert (dest / "agent.py").read_text() == "print('edited')\n"
     # harness.json 来自被选中的状态,不是凭空造出来的
     assert (dest / "harness.json").is_file()
@@ -281,7 +284,12 @@ def test_the_method_records_which_state_it_built_on(name, tmp_path, monkeypatch)
 
     key = "dgm_parent" if name == "dgm" else "hyper_parent"
     traj = json.loads(Path(_request(base, tmp_path)["trajectory_out"]).read_text())
-    assert traj["steps"][0]["method_reported"][key] == 0, traj["steps"][0]
+    reported = traj["steps"][0]["method_reported"]
+    assert reported[key] == 0, traj["steps"][0]
+    if name == "dgm":
+        # A batch draws k parents, so the lineage is a list; `dgm_parent` stays the first
+        # one because that is the key the child-count term has always read.
+        assert set(reported["dgm_parents"]) == {0}, reported
     assert got["stdout"]["changed"] is False
 
 

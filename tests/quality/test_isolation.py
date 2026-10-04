@@ -200,7 +200,10 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
         # But it does say where it was working, so the failed run is inspectable.
         meta = json.loads((runs / "probe-evil" / "run_meta.json").read_text())
         assert meta["workspace"] == str(tmp_path / "work" / "probe-evil" / "workspace")
-        assert meta["mode"] == "A"
+        # **`unified`, not the flag.** `--mode` is accepted so old scripts keep working but
+        # it selects nothing: there is one engine, and the submission's shape is the
+        # method's own choice (`steps_in_submission` on each point says which it made).
+        assert meta["mode"] == "unified", meta["mode"]
     finally:
         victim.write_bytes(original)
         shutil.rmtree(harness, ignore_errors=True)

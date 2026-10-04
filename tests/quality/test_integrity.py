@@ -91,6 +91,8 @@ def test_the_implementation_package_is_hashed():
     assert "harnessgrad" in PLATFORM
     snap = snapshot(PLATFORM_ROOT)
     for expected in ("harnessgrad/identity.py", "harnessgrad/records.py",
-                     "harnessgrad/loops/mode_a.py", "harnessgrad/loops/mode_b.py"):
+                     # There is one loop now; `mode_b.py` was deleted when the two modes
+                     # became one engine with two implementation shapes.
+                     "harnessgrad/loops/mode_a.py"):
         assert expected in snap, \
             f"{expected} 没有被 hash:裁判侧的实现可以被方法改掉而检测不到"
