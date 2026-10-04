@@ -64,6 +64,66 @@ from harnessgrad.records import (
     _save_verdicts, _scored, _write_curve, _write_run_meta)
 
 
+# --------------------------------------------------- improver capability ---
+
+def _cli_provider_base_url(improver: dict) -> str:
+    """The `base_url` of the provider a CLI improver's *own* config names, if any.
+
+    Derived rather than asked for, because the CLI reads its model and its endpoint from
+    its own config (`tools/improver.py:declared_model` already reads the model that way).
+    A `model_provider` whose definition has a `base_url` is a custom/local endpoint and can
+    be probed; a name with no definition (e.g. `OPENAI`) is the CLI's built-in and cannot.
+    """
+    home = os.environ.get("CODEX_HOME") or str(Path.home() / ".codex")
+    cfg = Path(home) / "config.toml"
+    if not cfg.is_file():
+        return ""
+    try:
+        text = cfg.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    provider = ""
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("model_provider") and "=" in stripped:
+            provider = stripped.partition("=")[2].strip().strip('"').strip("'")
+    if not provider:
+        return ""
+    section = f"[model_providers.{provider}]"
+    inside = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("["):
+            inside = stripped == section
+            continue
+        if inside and stripped.startswith("base_url") and "=" in stripped:
+            return stripped.partition("=")[2].strip().strip('"').strip("'")
+    return ""
+
+
+def _probe_tool_calls(base_url: str, model: str) -> tuple[bool, str]:
+    """Ask the endpoint whether it returns structured tool_calls. Never raises.
+
+    Reuses `tools/probe_tool_calls.py`'s request shapes so the door and the CLI agree on
+    what "supports tool calls" means. `responses` decides, because that is the wire a codex
+    improver uses; `chat` is reported in the detail for a reader who needs to know which
+    path failed.
+    """
+    try:
+        sys.path.insert(0, str(PLATFORM_ROOT))
+        import tools.probe_tool_calls as probe
+    except Exception as exc:                                             # noqa: BLE001
+        return False, f"the probe itself could not be imported: {exc}"
+    key = os.environ.get("HG_AGENT_API_KEY") or "local"
+    try:
+        resp_ok, resp_why = probe._calls_responses(base_url, model, key, 120.0)
+        chat_ok, chat_why = probe._calls_chat(base_url, model, key, 120.0)
+    except Exception as exc:                                             # noqa: BLE001
+        return False, f"the probe raised: {type(exc).__name__}: {exc}"
+    detail = f"responses: {resp_why} | chat: {chat_why}"
+    return resp_ok, detail
+
+
 # --------------------------------------------------------- model config ---
 
 def load_env(path: Path) -> dict:
@@ -363,6 +423,55 @@ def main() -> int:
             level="warn")
         improver = {}
 
+    # **A CLI improver needs a model that emits standard tool_calls, and that is a gate --
+    # not a convention.** Measured (2026-10-04): codex pointed at the local 9B connected,
+    # spent 8,699 tokens and did nothing, because the endpoint returned the model's call as
+    # `<tool_call><function=...>` **text** and codex needs structured calls on
+    # `wire_api = "responses"`. The requirement had been raised before and was written down
+    # nowhere (`grep -rn tool_call docs/ INTERFACE.md` was empty), so it kept being
+    # rediscovered instead of enforced. `tools/probe_tool_calls.py` is the check.
+    #
+    # What it can and cannot decide: a **custom** provider in the CLI's own config names a
+    # `base_url`, so that endpoint can be probed and refused. A hosted provider's endpoint
+    # is the CLI's built-in and cannot be reached from here -- then the result is recorded
+    # as *unprobed*, which is a fact rather than a silent pass.
+    # `HG_IMPROVER_SKIP_TOOL_GATE=1` overrides, for an operator who knows an endpoint's
+    # tool support better than a one-shot probe does.
+    improver_tool_calls: bool | None = None
+    improver_tool_calls_detail = ""
+    if improver.get("ok") and improver.get("kind") == "cli":
+        base_url = _cli_provider_base_url(improver)
+        if base_url:
+            if os.environ.get("HG_IMPROVER_SKIP_TOOL_GATE") == "1":
+                improver_tool_calls_detail = "gate skipped by HG_IMPROVER_SKIP_TOOL_GATE"
+                console.note("improver tool-call gate skipped by request", level="warn")
+            else:
+                improver_tool_calls, improver_tool_calls_detail = _probe_tool_calls(
+                    base_url, improver.get("model") or "")
+                if not improver_tool_calls:
+                    console.note(
+                        "refusing to run: the improver "
+                        f"{improver.get('name')!r} would use model "
+                        f"{improver.get('model')!r} at {base_url}, and that endpoint does "
+                        f"not return structured tool_calls "
+                        f"({improver_tool_calls_detail}).\n"
+                        "  A CLI improver edits files by calling tools; a model whose calls "
+                        "come back as text cannot drive it, and the run would spend its "
+                        "budget producing nothing.\n"
+                        "  Fix the endpoint (server-side parsing: `--enable-auto-tool-choice "
+                        "--tool-call-parser <name>`), or set HG_IMPROVER_SKIP_TOOL_GATE=1 "
+                        "to run anyway.",
+                        level="error")
+                    return 2
+        else:
+            improver_tool_calls_detail = ("the CLI's provider is built in, so its endpoint "
+                                          "cannot be probed from here")
+        console.note(
+            "improver tool calls: "
+            + ("yes" if improver_tool_calls else
+               ("no" if improver_tool_calls is False else "unprobed"))
+            + f" ({improver_tool_calls_detail[:90]})")
+
     # **The capability check goes first, and the order is the whole point.**
     #
     # Both of these refuse before anything is paid for, so either order is "correct" in
@@ -566,6 +675,11 @@ def main() -> int:
         agent_backend=model["backend"],
         framework_version=FRAMEWORK_VERSION,
         method_entrypoint=args.method_entrypoint,
+        # A run-level fact about the *improver's* endpoint, probed once and recorded
+        # beside the improver's identity. `None` is "not probed" (a hosted provider),
+        # never "false" -- the distinction the whole platform keeps making.
+        improver_tool_calls=improver_tool_calls,
+        improver_tool_calls_detail=(improver_tool_calls_detail[:300] or None),
         # The two measurement parameters, on the run itself: `n_trials` rides on each
         # curve point, but "how many tasks at once" is not a property of a point -- it is
         # a property of the run that produced all of them, and a reader comparing two
@@ -640,7 +754,7 @@ def main() -> int:
     h0_sha = commit_state(work, "H0")
     t0 = time.time()
     base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
-                    trials=args.trials, jobs=args.jobs,
+                    trials=args.trials, jobs=args.jobs, progress_dir=run_dir,
                     sandbox=args.sandbox, setups=setups, verifiers=verifiers,
                     envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
                     recordings_root=run_dir / "recordings")

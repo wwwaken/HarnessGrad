@@ -607,7 +607,7 @@ def self_check(platform: Path, image: str) -> dict:
 
 def create(name: str, *, image: str, limits: dict | None = None,
            network: str = "none", extra_mounts: tuple[str, ...] = (),
-           tmpfs: tuple[str, ...] = ()) -> str:
+           tmpfs: tuple[str, ...] = (), run_id: str = "", task_id: str = "") -> str:
     """Create a stopped container that stays behind, so it can be committed.
 
     `sleep infinity` as the command because the image is the task's, and a task image
@@ -622,7 +622,18 @@ def create(name: str, *, image: str, limits: dict | None = None,
     scratch space is a tmpfs that never reaches the host.
     """
     limits = limits or {}
-    cmd = ["create", "--name", name, "--network", network,
+    # **Labelled, because a name is not findable.** A hard kill (SIGKILL, or the harness
+    # process tree being reaped) skips every `finally`, so these containers survive it --
+    # and `services.reap` searches by `label=harnessgrad.run=<id>`, which is how the
+    # *service* containers and the task networks were already findable. The harness
+    # container had only a name, so the one leak that actually happened was the one a
+    # reaper could not see. Measured (2026-10-04): `screen-all-1` was killed at 22:42
+    # with five of these still `running`, and `reap` reported only "network ... has
+    # active endpoints" because it could not name the containers holding them.
+    labels = ["--label", f"harnessgrad.run={run_id}"]
+    if task_id:
+        labels += ["--label", f"harnessgrad.task={task_id}"]
+    cmd = ["create", "--name", name, "--network", network, *labels,
            "--pids-limit", str(limits.get("pids", 1024)),
            "--memory", str(limits.get("memory", "4g")),
            "--cpus", str(limits.get("cpus", "2"))]

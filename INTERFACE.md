@@ -2269,3 +2269,48 @@ Listed so they are not mistaken for oversights:
    detectable from inside the framework and is not yet a required field —
    *flagged as the largest known threat to the validity of any curve this
    produces.*
+
+### 4.49.2 A CLI improver needs a model that emits **standard** `tool_calls`
+
+`--improver codex` means "the improver edits the candidate tree through its own tools". That
+only works if the model behind the CLI returns structured `tool_calls`, and this is a
+property of the **endpoint**, not of the model's willingness: the model may call the tool
+correctly and the wire may still hand the caller text.
+
+Measured 2026-10-04, in this order:
+
+* codex pointed at the local 9B **connected**, used 8,699 tokens, and did nothing. Its
+  output was `<tool_call><function=exec_command><parameter=cmd>…`, and codex 0.160 requires
+  structured calls on `wire_api = "responses"`. The run would have spent its whole budget
+  producing nothing and looked like a weak method.
+* The cause was entirely server-side: vLLM was started without
+  `--enable-auto-tool-choice --tool-call-parser <name>`, so its `/chat/completions` answered
+  `400: "auto" tool choice requires --enable-auto-tool-choice and --tool-call-parser to be
+  set` and `/responses` returned a `message` with no `function_call`.
+* With those flags on, the parser **must match the model's chat template**. `hermes` was
+  wrong for this model (it expects `<tool_call>{"name":…,"arguments":…}</tool_call>`); the
+  model emits the XML form, which vLLM 0.29 registers as `qwen3_xml` / `qwen3_coder`.
+  Wrong parser, same silent nothing.
+* With `qwen3_xml`, both paths return structured calls and codex drives the 9B end to end
+  (it ran `echo -n "nine" > note.txt`; the file held exactly `nine`, 9,054 tokens).
+
+Three things follow, and they are the platform's:
+
+1. **`tools/serve_local_model.sh` starts the server with the flags** (parser overridable via
+   `HARNESSGRAD_TOOL_PARSER`, default `qwen3_xml`; `none` to disable).
+2. **`tools/probe_tool_calls.py` is the check** -- one tool definition, both wires, exit 0
+   only when a structured call comes back. A model that fails it is not a worse model; it is
+   a model that cannot drive an agent shell, and this is the only thing that distinguishes
+   the two.
+3. **The gate is at the door.** `driver.py` probes the endpoint a CLI improver's own config
+   names, refuses the run when that endpoint cannot emit tool calls, and records the result in
+   `run_meta.json` as `improver_tool_calls` + `improver_tool_calls_detail`. A **custom**
+   provider declares a `base_url` and can be probed; a **hosted** one cannot, and then the
+   result is `null` -- *unprobed*, which is a fact, never a silent pass. `HG_IMPROVER_SKIP_TOOL_GATE=1`
+   overrides.
+
+Two record facts changed with it: `tools/improver.py:resolve` now returns `kind` (the gate read
+`improver["kind"]`, which did not exist, so the gate silently did nothing until a test that
+expected a refusal got a completed run), and the resolved `model` is read from the config of
+the **chosen** improver rather than the `default` entry -- `--improver codex` used to report
+`model: deepseek-flash`, a model codex never touched.

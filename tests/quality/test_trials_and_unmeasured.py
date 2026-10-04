@@ -253,3 +253,91 @@ def test_a_changed_tree_is_not_a_cache_hit(tmp_path):
         "echo_base 没有改动这棵树,这条测试就没有测到缓存")
     assert not r1.get("n_cached"), (
         "树变了却复用了缓存:" + str(r1.get("cached_tasks")))
+
+
+# ---------------------------------------- 被杀掉的跑道不能丢掉已经测到的 ---
+
+def test_a_task_is_written_down_the_moment_it_is_measured(tmp_path, monkeypatch):
+    """**一轮的结果不能只在整轮结束时落盘。**
+
+    实测三次同一个设计缺陷的代价:`local-floor-5/6` 和 `loop-terminal_bench-41133` 被防篡改
+    中止时丢掉了已测的题;`screen-all-1`(51 题 × 3 次重复,2 小时 05 分,五个容器还在跑)在
+    22:42 被杀掉,`runs/screen-all-1/` 只剩下 `run_meta.json` 和一行表头。
+
+    所以每道题最后一次试验一结束就写自己:分数、每次试验的分数、判据、判据自带的测试计数、
+    墙钟,以及每次试验的轨迹。写在 `progress/` 下而不是最终路径 —— 未跑完的一轮不能看起来
+    像跑完的。
+    """
+    seq = iter([1.0, 0.0, 1.0])
+
+    def fake(*_a, **_k):
+        score = next(seq)
+        return {"verdict": {"kind": "command", "passed": score == 1.0, "score": score,
+                            "detail": "d", "tests": {"passed": 2, "failed": 1}},
+                "trace": '{"wall_clock_s": {"model": 1.0, "commands": 2.0, "total": 3.5}}\n',
+                "exit_code": 0, "stderr": ""}
+
+    monkeypatch.setattr(runner, "run_one", fake)
+    runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=3,
+                     progress_dir=tmp_path, round_no=0)
+
+    entry = json.loads((tmp_path / "progress" / "round-0" / "t1.json").read_text())
+    assert entry["trial_scores"] == [1.0, 0.0, 1.0], entry
+    assert entry["score"] == pytest.approx(2 / 3)
+    assert entry["n_trials"] == 3 and entry["complete"] is True
+    assert entry["tests"] == {"passed": 2, "failed": 1}
+    assert entry["wall_clock_s"] == 3.5
+    for i in (1, 2, 3):
+        assert (tmp_path / "progress" / "round-0" / "traces" / f"t1.trial{i}.jsonl").is_file()
+
+
+def test_an_unmeasured_task_is_written_down_too(tmp_path, monkeypatch):
+    """测不出来的题也要立刻落盘,否则被杀之后连"这道题平台没测到"都无从得知。"""
+    monkeypatch.setattr(runner, "run_one", lambda *_a, **_k: {
+        "verdict": {"kind": "command", "passed": False, "score": 0.0, "detail": "d"},
+        "trace": "x", "exit_code": 0, "stderr": "",
+        "invalid": {"stage": "prepare", "detail": "the image was not there"}})
+    runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=1,
+                     progress_dir=tmp_path, round_no=0)
+    entry = json.loads((tmp_path / "progress" / "round-0" / "t1.json").read_text())
+    assert entry["invalid"]["stage"] == "prepare", entry
+
+
+def test_what_survives_a_kill_is_what_was_already_measured(tmp_path, monkeypatch):
+    """端到端的性质:第二道题炸掉时,第一道题的数据必须已经在磁盘上。
+
+    这就是 `screen-all-1` 那一夜缺的东西 —— 被杀之后能拿到的是"已经测完的题",不是零。
+    """
+    from pathlib import Path
+
+    def fake(_repo, task, **_kwargs):
+        if task["task_id"] == "t2":
+            raise RuntimeError("simulated hard kill of this task")
+        return {"verdict": {"kind": "command", "passed": True, "score": 1.0, "detail": "ok"},
+                "trace": "TRACE-OF-T1\n", "exit_code": 0, "stderr": ""}
+
+    monkeypatch.setattr(runner, "run_one", fake)
+    with pytest.raises(RuntimeError):
+        runner._evaluate(tmp_path, [{"task_id": "t1"}, {"task_id": "t2"}], {},
+                         trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+    survived = tmp_path / "progress" / "round-0" / "t1.json"
+    assert survived.is_file(), "第一道题已经测完了,却没有留下任何东西"
+    assert json.loads(survived.read_text())["score"] == 1.0
+    assert (tmp_path / "progress" / "round-0" / "traces" / "t1.trial1.jsonl").read_text() == "TRACE-OF-T1\n"
+
+
+def test_a_real_run_leaves_a_progress_record(tmp_path):
+    """端到端:`driver.py` 真的把 `run_dir` 传下去了(不然上面两条都测不到接线)。"""
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "0", "--trials", "1", "--run-id", "progress-record", "--dataset", "demo",
+         "--sampling", "all", "--runs-root", str(runs),
+         "--work-root", str(tmp_path / "work")],
+        cwd=ROOT, capture_output=True, text=True, timeout=600, env=env)
+    assert proc.returncode == 0, f"{proc.stdout[-600:]}\n{proc.stderr[-600:]}"
+    dest = runs / "progress-record" / "progress" / "round-0"
+    files = sorted(p.name for p in dest.glob("*.json"))
+    assert files, f"没有 progress 记录:{sorted(dest.parent.iterdir())}"
+    assert all(json.loads((dest / f).read_text()).get("complete") for f in files)

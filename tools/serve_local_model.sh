@@ -106,20 +106,66 @@ usage() { sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; }
 
 stop_servers() {
     me=$$
-    # Built from pieces: a literal in this script's argv would match the script itself.
+    me_user="$(id -un)"
+    # Two defects were measured here on 2026-10-04, both in this function:
+    #
+    #  1. **It left the engine behind.** `pgrep -f vllm` is case-sensitive, and vLLM's
+    #     worker process is named `VLLM::EngineCore`. So `--stop` killed the API server,
+    #     freed port 8001, and left the engine holding **36 GB of the GPU** -- the next
+    #     `serve` then had nowhere to put the weights. It reported "ports and GPU memory
+    #     should be free" while the GPU was still full.
+    #  2. **It would kill another user's server.** The pattern is machine-wide, and a
+    #     second vLLM on this host belongs to a colleague. That is not a hypothetical: a
+    #     hand-run cleanup tried exactly this and was stopped only by file permissions.
+    #
+    # So: match case-insensitively, and **only touch processes owned by the invoking
+    # user**. Anything else is reported, not killed -- an operator who asked to stop their
+    # own server must not be the reason someone else's run dies.
     name="vl""lm"
-    for p in $(pgrep -f "$name" 2>/dev/null); do
+    for p in $(pgrep -if "$name" 2>/dev/null); do
         [ "$p" = "$me" ] && continue
+        owner=$(ps -o user= -p "$p" 2>/dev/null | tr -d ' ')
+        [ -z "$owner" ] && continue
+        if [ "$owner" != "$me_user" ]; then
+            echo "  left alone: pid $p belongs to $owner"
+            continue
+        fi
         cmd=$(tr '\0' ' ' < "/proc/$p/cmdline" 2>/dev/null) || continue
         case "$cmd" in
-            *serve*|*EngineCore*) kill -9 "$p" 2>/dev/null ;;
+            *serve*|*EngineCore*|*vllm.entrypoints*|*api_server*)
+                echo "  stopping pid $p (${cmd:0:60})"
+                kill -9 "$p" 2>/dev/null ;;
         esac
     done
+    # The port is unambiguous: whoever is listening on it is the server we started.
     for port in 8000 8001 8002; do
         pid=$(ss -ltnp 2>/dev/null | grep ":$port " | grep -oP 'pid=\K[0-9]+' | head -1)
-        [ -n "$pid" ] && kill -9 "$pid" 2>/dev/null
+        [ -z "$pid" ] && continue
+        owner=$(ps -o user= -p "$pid" 2>/dev/null | tr -d ' ')
+        if [ "$owner" != "$me_user" ]; then
+            echo "  port $port is held by pid $pid ($owner); left alone"
+            continue
+        fi
+        echo "  stopping pid $pid on port $port"
+        kill -9 "$pid" 2>/dev/null
     done
+    sleep 2
     echo "stopped; ports 8000-8002 and GPU memory should be free"
+}
+
+#: Which GPU memory is ours, and is it actually free? `--stop` used to say this without
+#: looking, and the engine it missed kept 36 GB. This is the check that would have caught
+#: it, and it names the owner of anything still holding memory so the next reader knows
+#: whether it is their problem.
+show_gpu_state() {
+    echo "GPU memory still held:"
+    nvidia-smi --query-compute-apps=pid,used_memory --format=csv,noheader | while read -r line; do
+        [ -z "$line" ] && continue
+        pid=$(echo "$line" | cut -d, -f1 | tr -d ' ')
+        owner=$(ps -o user= -p "$pid" 2>/dev/null | tr -d ' ')
+        echo "  $line  (user: ${owner:-gone})"
+    done
+    nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv,noheader
 }
 
 list_models() {
@@ -139,7 +185,7 @@ MODEL="" PORT=8001 TP=1 MAXLEN=32768 GPUMEM=0.90 SERVED=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        --stop) stop_servers; exit 0 ;;
+        --stop) stop_servers; show_gpu_state; exit 0 ;;
         --list) list_models; exit 0 ;;
         --model) MODEL="$2"; shift 2 ;;
         --port) PORT="$2"; shift 2 ;;
@@ -246,6 +292,31 @@ echo
 EXTRA_ARGS=()
 if [ "${HARNESSGRAD_DISABLE_THINKING:-1}" = 1 ]; then
     EXTRA_ARGS+=(--default-chat-template-kwargs '{"enable_thinking": false}')
+fi
+
+# **标准 tool_calls 由服务端解析,不是模型的问题。**
+#
+# 实测(2026-10-04):把 codex 指向这个 9B 之后,模型确实调用了工具,但它输出的是
+# `<tool_call><function=exec_command><parameter=cmd>...` 这样的**文本**;codex 读不出,
+# 于是一步都没执行、反复重说同一句话。原因不是模型"不会调工具",是 vLLM 没开解析 ——
+# 没有这两个开关,模型的工具调用标记原样返回,调用方的 tool_calls 永远是空。
+#
+# 而 codex 0.160 只认 `wire_api = "responses"`,即它必须拿到结构化的 tool_calls,
+# 所以"用一个本地模型驱动 codex"这件事能不能成,由这两行决定。
+#
+# **parser 必须对上模型的对话模板,不是"Qwen 就用 hermes"。** 实测(2026-10-04):
+# 先按 `hermes` 起,模型确实调用了工具,但输出是
+#   <tool_call><function=write_note><parameter=text>nine</parameter></function></tool_call>
+# 而 `hermes` 期待的是 `<tool_call>{"name":..., "arguments":{...}}</tool_call>`,于是
+# `tool_calls` 仍然是空。vLLM 0.29 把 `qwen3_xml` / `qwen3_coder` 都映射到
+# `qwen3_engine_tool_parser`,那才是这个 XML 格式的解析器。
+# 不开 `--enable-auto-tool-choice` 时 vLLM 会拒绝带 `tools` 的请求;开了之后只影响
+# **带 tools 的请求**,我们的 harness 走的是纯文本动作,所以 agent 路径不受影响。
+# 换模型时要跟着换 parser(`vllm serve --help` 里列了 granite / hermes / internlm /
+# jamba / llama3_json / mistral / pythonic),所以它可以用环境变量覆盖。
+TOOL_PARSER="${HARNESSGRAD_TOOL_PARSER:-qwen3_xml}"
+if [ "$TOOL_PARSER" != "none" ]; then
+    EXTRA_ARGS+=(--enable-auto-tool-choice --tool-call-parser "$TOOL_PARSER")
 fi
 
 nohup "$VLLM" serve "$MODEL" \

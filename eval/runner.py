@@ -591,6 +591,7 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                 container_mod.create(
                     name, image=env_spec["image"],
                     limits=container_mod.limits_from(env_spec), network=network_name,
+                    run_id=run_id, task_id=task["task_id"],
                     extra_mounts=tuple(
                         ["--mount", f"type=bind,src={repo},dst={repo},readonly"]
                         + [a for pth in (tuple(runtime_paths)
@@ -766,6 +767,74 @@ def _read_json(path: Path) -> dict | None:
     return loaded if isinstance(loaded, dict) else None
 
 
+def _write_progress(progress_dir, round_no: int, tid: str,
+                    measured: list[dict], unmeasured: dict | None) -> None:
+    """Write one task's result the moment it exists, not at the end of the round.
+
+    **Measured, twice, and the second time cost two hours.** A round's results were
+    written only after `evaluate` returned -- every trial, every verdict, every trace --
+    so a run that was killed lost all of it. Measured: `loop-terminal_bench-41133` and
+    `local-floor-5/6` died to the tamper check and discarded their measurements; and
+    `screen-all-1` (51 tasks x 3 trials, 2h05m, five containers still running) was killed
+    by the environment at 22:42 and left **two files**: `run_meta.json` and a header line.
+    Three separate losses from one design choice, and the choice was "the record is the
+    thing you write at the end".
+
+    So each task writes itself here as soon as its last trial finishes:
+
+        <run>/progress/round-<N>/<task>.json      score, per-trial scores, verdict,
+                                                  the check's test tally, wall clock
+        <run>/progress/round-<N>/<task>.trial<i>.jsonl   that trial's trace
+
+    A separate `progress/` directory rather than the final `round<N>_traces/` and
+    `verdicts/`: a partial round must not look like a complete one. The end-of-round
+    savers remain the authoritative record; these are what survives a kill.
+
+    Never raises. A progress write that fails must not turn a measured task into a
+    failed one -- the same rule the teardown helpers follow, for the same reason.
+    """
+    if progress_dir is None:
+        return
+    try:
+        dest = Path(progress_dir) / "progress" / f"round-{round_no}"
+        dest.mkdir(parents=True, exist_ok=True)
+        if unmeasured is not None:
+            (dest / f"{tid}.json").write_text(json.dumps(
+                {"task_id": tid, "round": round_no, "invalid": unmeasured},
+                indent=1, ensure_ascii=False), encoding="utf-8")
+            return
+        scores = [float((r.get("verdict") or {}).get(
+            "score", 1.0 if (r.get("verdict") or {}).get("passed") else 0.0))
+            for r in measured]
+        last = (measured[-1].get("verdict") or {}) if measured else {}
+        wall = None
+        for line in str((measured[-1] if measured else {}).get("trace") or "").splitlines():
+            if '"wall_clock_s"' in line:
+                try:
+                    wall = json.loads(line)["wall_clock_s"].get("total")
+                except (ValueError, AttributeError):
+                    pass
+        (dest / f"{tid}.json").write_text(json.dumps({
+            "task_id": tid, "round": round_no,
+            "score": sum(scores) / len(scores) if scores else None,
+            "trial_scores": scores, "n_trials": len(scores),
+            "passed": last.get("passed"), "kind": last.get("kind"),
+            "detail": last.get("detail"),
+            "tests": last.get("tests"),
+            "wall_clock_s": wall,
+            "complete": True,
+        }, indent=1, ensure_ascii=False), encoding="utf-8")
+        traces = dest / "traces"
+        traces.mkdir(exist_ok=True)
+        for index, result in enumerate(measured, start=1):
+            body = result.get("trace")
+            if body:
+                (traces / f"{tid}.trial{index}.jsonl").write_text(body, encoding="utf-8")
+    except (OSError, ValueError, TypeError) as exc:                      # noqa: BLE001
+        print(f"warning: could not write the progress record for {tid}: {exc}",
+              file=sys.stderr)
+
+
 def _test_report_failures(report: dict | None) -> tuple[list[str], str, dict]:
     """Failing tests from a CTRF report, a one-line summary, and the counts as numbers.
 
@@ -865,7 +934,8 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
         # no network cannot run at all, and reports a reward of 0 that looks exactly like
         # a harness that failed the task. The oracle control is what found this.
         container_mod.create(name, image=snapshot, limits=limits or {},
-                            network=network, extra_mounts=())
+                            network=network, extra_mounts=(),
+                            run_id=run_id or "", task_id=task_id or "")
         created = True
 
         _copy_verifier_inputs(name, spec, staging, task_mount)
@@ -924,6 +994,13 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
             #: check whose tests never ran is not a failed harness (measured: `uvx: command
             #: not found` inside the container, before this host had an egress proxy).
             unmeasured = ""
+            #: The check's own tally, empty until a report is read. **Initialised, not
+            #: conditional**: this is read after the branch below, so a check that declares
+            #: no `evidence_file` -- most `command` verifiers, and every container-state
+            #: task in the test set -- hit `UnboundLocalError` at the verdict instead of
+            #: returning a score. Caught by the full suite, not by the file that exercises
+            #: the path, which is the argument for running the whole suite.
+            numbers: dict = {}
             report_path = spec.get("evidence_file")
             if report_path:
                 got_report = staging / Path(str(report_path)).name
@@ -1267,7 +1344,8 @@ def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
              envs: dict | None = None,
              run_id: str = "", run_seed: str = "",
              recordings_root: Path | None = None,
-             round_no: int = 0, trials: int = 1, jobs: int = 1) -> dict:
+             round_no: int = 0, trials: int = 1, jobs: int = 1,
+             progress_dir: Path | None = None) -> dict:
     """Run a harness over a task set and score it.
 
     `scorable` maps task_id -> expected answer. Scoring lives here, not in the
@@ -1283,7 +1361,7 @@ def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                          sandbox=sandbox, setups=setups, verifiers=verifiers,
                          envs=envs, run_id=run_id, run_seed=run_seed,
                          recordings_root=recordings_root, round_no=round_no,
-                         trials=trials, jobs=jobs)
+                         trials=trials, jobs=jobs, progress_dir=progress_dir)
 
 
 def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
@@ -1330,6 +1408,7 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
               envs: dict | None = None,
               round_no: int = 0,
               run_id: str = "", run_seed: str = "",
+              progress_dir: Path | None = None,
               recordings_root: Path | None = None,
               trials: int = 1, jobs: int = 1) -> dict:
     """Score a harness on a task set.
@@ -1515,7 +1594,9 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             # Not cached, and deliberately: the cache key names the harness, and the reason
             # this task failed was not the harness, so caching it would carry a dataset bug
             # into every later round and hide the round where it was introduced.
+            _write_progress(progress_dir, round_no, tid, [], unmeasured)
             return {"task_id": tid, "invalid": unmeasured}
+        _write_progress(progress_dir, round_no, tid, measured, None)
         return {"task_id": tid, "measured": measured}
 
     outcomes = _in_parallel(tasks, _measure, jobs)

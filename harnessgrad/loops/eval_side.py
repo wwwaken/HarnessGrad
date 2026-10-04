@@ -118,6 +118,7 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
                              f"{(eval_from or {}).get('round')}")
     t0 = time.time()
     res = evaluate(work, tasks, scorable, cache, harness_sha=sha, sandbox=args.sandbox,
+                   progress_dir=run_dir,
                    trials=args.trials, jobs=args.jobs,
                    setups=setups, verifiers=verifiers, envs=envs, run_id=run_id,
                    run_seed=os.environ["HARNESSGRAD_SEED"],

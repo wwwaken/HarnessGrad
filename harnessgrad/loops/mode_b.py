@@ -201,7 +201,7 @@ def _run_mode_b(args, work, man, run_id, mode, curve, h0_sha, run_dir, base,
         t0 = time.time()
         if has_manifest:
             res = evaluate(work, tasks, scorable, cache, harness_sha=sha, jobs=args.jobs,
-                           trials=args.trials,
+                           trials=args.trials, progress_dir=run_dir,
                            sandbox=args.sandbox, setups=setups,
                            verifiers=verifiers, envs=envs, run_id=run_id,
                            run_seed=os.environ["HARNESSGRAD_SEED"],

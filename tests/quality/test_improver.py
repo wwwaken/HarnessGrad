@@ -136,7 +136,8 @@ def test_a_modified_improver_can_be_declared_and_is_visible(monkeypatch):
             return "abc"
 
     monkeypatch.setattr(improver, "candidates", lambda extra=None: [_C()])
-    monkeypatch.setattr(improver, "declared_model", lambda config=None, source=None: "my-model")
+    monkeypatch.setattr(improver, "declared_model",
+                        lambda config=None, source=None, entry=None: "my-model")
     cfg = {"default": "mine",
            "improvers": {"mine": {"name": "mine", "path": "/opt/my-codex/codex",
                                   "modified": True}}}
@@ -337,3 +338,110 @@ def test_the_registry_itself_ships_flash_and_names_the_banned_model():
     assert "deepseek-v4-pro" in cfg.get("_forbidden_models", {})
     assert improver.forbidden_reason(cfg, "deepseek-flash") == ""
     assert improver.forbidden_reason(cfg, "deepseek-v4-pro") != ""
+
+
+def test_a_resolved_improver_reports_its_own_model_not_the_default_s(tmp_path, monkeypatch):
+    """**`resolve` 必须问"选中的那个"它用什么模型,不是问默认条目。**
+
+    实测(2026-10-04):`resolve(requested="codex")` 返回 `model: deepseek-flash` ——
+    那是 `default` 条目(一个端点改进器)的模型。于是曲线点上会写"改进器用的模型是
+    deepseek-flash",而 codex 从头到尾没碰过 deepseek,它用的是自己
+    `~/.codex/config.toml` 里那个。这和 `agent_model: mock` 而实际有真模型回答是同一类
+    谎言,而且它正好卡在"要判断哪个模型得会输出标准 tool_calls"这件事上。
+    """
+    home = tmp_path / "codex-home"
+    home.mkdir()
+    (home / "config.toml").write_text('model = "probe-strong-model"\n')
+    monkeypatch.setenv("CODEX_HOME", str(home))
+
+    class _C:
+        def __init__(self):
+            self.path = Path("/x/codex")
+            self.ok = True
+            self.version = "9.9.9"
+            self.reason = ""
+
+        def as_dict(self):
+            return {"path": str(self.path), "ok": True, "version": self.version,
+                    "reason": ""}
+
+        def sha256(self):
+            return "deadbeef"
+
+    monkeypatch.setattr(improver, "candidates", lambda extra=None: [_C()])
+    config = {"default": "deepseek",
+              "improvers": {"codex": {"kind": "cli", "version": "latest"},
+                            "deepseek": {"kind": "openai-compatible",
+                                         "model": "deepseek-flash"}}}
+    got = improver.resolve(config, version="latest", requested="codex")
+    assert got["ok"], got
+    assert got["name"] == "codex" and got["version"] == "9.9.9"
+    assert got["model"] == "probe-strong-model", (
+        "codex 的模型被记成了默认改进器的模型:" + str(got["model"]))
+
+    # 反向的一半:端点改进器自己的 `model` 仍然优先,而且默认条目照旧可用
+    assert improver.resolve(config, version="", requested="deepseek")["model"] == "deepseek-flash"
+    assert improver.declared_model(config) == "deepseek-flash"
+
+
+# ------------------------------------------- improver 的模型会不会调工具 ---
+
+def test_a_cli_s_custom_provider_endpoint_is_derived_from_its_own_config(tmp_path, monkeypatch):
+    """门要能拿到"codex 到底会连哪个 endpoint",而那个答案在 codex 自己的配置里。"""
+    home = tmp_path / "home"
+    home.mkdir()
+    (home / "config.toml").write_text(
+        'model = "qwen3.5-9b-local"\nmodel_provider = "local9b"\n\n'
+        '[model_providers.local9b]\nname = "local9b"\n'
+        'base_url = "http://127.0.0.1:8001/v1"\nwire_api = "responses"\n')
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    from driver import _cli_provider_base_url
+    assert _cli_provider_base_url({"name": "codex"}) == "http://127.0.0.1:8001/v1"
+
+    # 内置 provider(没有 base_url 定义) -> 探测不到,于是"未探测",不是"不支持"
+    (home / "config.toml").write_text('model = "x"\nmodel_provider = "OPENAI"\n')
+    assert _cli_provider_base_url({"name": "codex"}) == ""
+
+
+def test_the_probe_reports_a_dead_endpoint_instead_of_raising(monkeypatch):
+    """门自己不能成为失败来源:连不上就返回 False + 原因,不抛异常。"""
+    from driver import _probe_tool_calls
+    ok, why = _probe_tool_calls("http://127.0.0.1:9/v1", "nope")
+    assert ok is False and why, why
+
+
+def test_the_gate_refuses_a_cli_improver_whose_model_cannot_emit_tool_calls(tmp_path):
+    """端到端:endpoint 不支持标准 tool_calls 时,**在花钱之前**拒绝。
+
+    实测(2026-10-04):codex 指向本地 9B 时连上了、花了 8,699 tokens、一步都没执行 ——
+    模型的调用以文本形式返回,而 codex 在 `wire_api = "responses"` 上只认结构化调用。
+    """
+    import shutil
+    import subprocess
+
+    if not improver.resolve({"default": "codex", "improvers": {"codex": {}}},
+                            version="latest").get("ok"):
+        pytest.skip("no usable codex on this machine")
+
+    home = tmp_path / "home"
+    home.mkdir()
+    (home / "config.toml").write_text(
+        'model = "probe"\nmodel_provider = "dead"\n\n'
+        '[model_providers.dead]\nname = "dead"\n'
+        'base_url = "http://127.0.0.1:9/v1"\nwire_api = "responses"\n')
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock",
+           "CODEX_HOME": str(home),
+           # 沙箱会把 `tools/` 藏起来,而门在平台侧,所以关掉沙箱跑这条
+           }
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "0", "--run-id", "gate-refuses", "--dataset", "demo",
+         "--sampling", "all", "--improver", "codex", "--no-sandbox",
+         "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=600, env=env)
+    out = proc.stdout + proc.stderr
+    assert proc.returncode == 2, out[-900:]
+    assert "structured tool_calls" in out, out[-900:]
+    assert "HG_IMPROVER_SKIP_TOOL_GATE" in out, out[-900:]

@@ -72,7 +72,8 @@ _SEARCH_GLOBS = (
 _VERSION_RE = re.compile(r"(\d+\.\d+\.\d+)")
 
 
-def declared_model(config: dict | None = None, source: Path | None = None) -> str:
+def declared_model(config: dict | None = None, source: Path | None = None,
+                   entry: dict | None = None) -> str:
     """The model an improver will actually use, read from *its* config, not ours.
 
     A fact about the experiment that the platform cannot see any other way: codex reads
@@ -81,7 +82,17 @@ def declared_model(config: dict | None = None, source: Path | None = None) -> st
     sha -- "which improver" is not answered by a name and a version.
     """
     config = config if config is not None else load_config()
-    entry = (config.get("improvers") or {}).get(config.get("default", "")) or {}
+    # **Which entry we are asking about.** Passing the *chosen* one is not a convenience:
+    # without it this function answered for the config's `default`, so
+    # `resolve(requested="codex")` reported `model: deepseek-flash` -- the endpoint
+    # improver's model -- while codex was about to call whatever its own
+    # `~/.codex/config.toml` names. A curve point that says the improver's model was
+    # deepseek-flash when codex never touched deepseek is the same class of lie as
+    # `agent_model: mock` on a run a live model answered. Measured (2026-10-04), and found
+    # only because writing the unification plan needed to know *which* model has to emit
+    # standard tool calls.
+    if entry is None:
+        entry = (config.get("improvers") or {}).get(config.get("default", "")) or {}
     if entry.get("model"):
         return str(entry["model"])
     home = Path(os.environ.get("CODEX_HOME") or (source or Path.home() / ".codex"))
@@ -461,8 +472,19 @@ def resolve(config: dict | None = None, *, version: str = "", requested: str = "
     return {"ok": True, "path": str(chosen.path), "version": chosen.version,
             "sha256": chosen.sha256(), "requested": requested or "latest",
             "modified": bool(entry.get("modified")),
+            # **Which layer this is**, from the config entry rather than guessed from the
+            # path: a `cli` improver edits files through its own tools and therefore needs
+            # a model that emits standard tool_calls, while an `openai-compatible` one is
+            # driven by `methods/editor.py` and needs nothing of the sort. The driver's gate
+            # read `improver["kind"]` and this dict had no such key, so the gate silently did
+            # nothing -- found by a test that expected a refusal and got a completed run.
+            "kind": str(entry.get("kind") or ""),
             "name": name,
-            "model": model_override or declared_model(config),
+            # The chosen entry's model, or -- for a CLI, which declares none -- the model
+            # that CLI's own config names. `source=config_home()` is what makes a custom
+            # codex report itself rather than the default improver.
+            "model": (model_override
+                      or declared_model(config, source=config_home(), entry=entry)),
             # Not identity: an environment fact. It travels with the resolution because
             # the method sandbox has to bind these trees, and the resolution is the only
             # place that knows which improver was picked (`runtime_trees`).

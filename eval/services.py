@@ -271,19 +271,30 @@ def reap(run_id: str) -> list[str]:
     """
     problems: list[str] = []
     selector = f"label=harnessgrad.run={run_id}"
-    for kind, list_args, remove_args in (
-            ("container", ["container", "ls", "--all", "--quiet"],
-             ["rm", "--force"]),
-            ("network", ["network", "ls", "--quiet"], ["network", "rm"])):
-        try:
-            listed = container_mod.docker(*list_args, "--filter", selector, timeout=60)
-        except (subprocess.TimeoutExpired, OSError) as exc:
-            problems.append(f"{kind} list: {exc}")
-            continue
-        if listed.returncode != 0:
-            problems.append(f"{kind} list: {listed.stderr.strip()[:200]}")
-            continue
-        for ident in listed.stdout.split():
+    #: And by **name**, because the label is not always there. The harness container was
+    #: created with only `--name` until 2026-10-04 (`eval/container.py:create` now labels
+    #: it too), so the containers a hard-killed run actually leaves behind are exactly the
+    #: ones a label search cannot see -- measured on `screen-all-1`: five containers still
+    #: `running`, and this function reported only "network ... has active endpoints".
+    #: `hg-<run_id>-` is the platform's own naming (`_task_name`), so matching it cannot
+    #: reach another run's objects.
+    prefix = f"hg-{run_id}-"
+    for kind, list_args, remove_args, by_name in (
+            ("container", ["container", "ls", "--all", "--quiet"], ["rm", "--force"],
+             True),
+            ("network", ["network", "ls", "--quiet"], ["network", "rm"], True)):
+        found: list[str] = []
+        for flt in ([selector] + ([f"name={prefix}"] if by_name else [])):
+            try:
+                listed = container_mod.docker(*list_args, "--filter", flt, timeout=60)
+            except (subprocess.TimeoutExpired, OSError) as exc:
+                problems.append(f"{kind} list ({flt}): {exc}")
+                continue
+            if listed.returncode != 0:
+                problems.append(f"{kind} list ({flt}): {listed.stderr.strip()[:200]}")
+                continue
+            found += [i for i in listed.stdout.split() if i not in found]
+        for ident in found:
             try:
                 removed = container_mod.docker(*remove_args, ident, timeout=120)
             except (subprocess.TimeoutExpired, OSError) as exc:
