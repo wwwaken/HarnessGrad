@@ -320,7 +320,15 @@ def run(task: dict, workdir: Path) -> str:
     parse_retries = 0
     repeats = 0
     last_cmd = ""
-    with trace_path.open("w") as trace:
+    # **行缓冲,不是默认的 8KB 块缓冲。** 实测(2026-10-04,本地模型跑 `bn-fit-modify`):
+    # harness 已经跑了 8 分钟、正在装 pandas,而 `/app/trace.jsonl` 是 0 字节、打开的 fd
+    # `pos: 0` —— 一行都还没落盘。代价有三条:
+    #   * 实时的轨迹看不见,面板和调试都只能等它结束;
+    #   * 被超时杀掉的题会丢掉缓冲区里的尾巴(≤8KB)。一般长跑无所谓(`adaptive-rejection-sampler`
+    #     那次写了 1MB,尾巴只占零头),但一道死在第一个命令里的题,尾巴就是**全部**;
+    #   * `harness_failed` 的判据是"轨迹为空",于是"被杀"和"从没跑起来"在记录里同形。
+    # 行缓冲每写一行就落盘,这三条一起消失,代价是一次 write 系统调用。
+    with trace_path.open("w", buffering=1) as trace:
         for step in range(MAX_STEPS):
             reply = _complete(messages)
             trace.write(json.dumps({"step": step, "reply": reply}) + "\n")

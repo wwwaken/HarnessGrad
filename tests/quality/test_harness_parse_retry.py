@@ -151,3 +151,21 @@ def test_the_nudges_are_written_to_the_trace_before_they_are_sent(agent, tmp_pat
     events = _run_scripted(agent, tmp_path, monkeypatch, [same], max_steps=6, nudge=2)
     kinds = [k for e in events for k in ("repeat_nudge", "finish_nudge") if k in e]
     assert "repeat_nudge" in kinds and "finish_nudge" in kinds, kinds
+
+
+def test_the_trace_is_on_disk_before_the_next_command_runs(agent, tmp_path, monkeypatch):
+    """行缓冲:命令跑起来之前,上一步的事件已经落盘。
+
+    实测那一次(本地模型跑 `bn-fit-modify`):harness 跑了 8 分钟、正在装 pandas,而
+    `trace.jsonl` 是 0 字节、fd 的 `pos: 0` —— 默认的 8KB 块缓冲把一切都留在内存里。
+    代价是实时轨迹看不见,而且被超时杀掉的题会丢掉缓冲区里的尾巴。
+    """
+    replies = [
+        '{"tool": "bash", "command": "cp trace.jsonl step0_snapshot.txt"}',
+        '{"answer": "done"}',
+    ]
+    fake, _ = _scripted(agent, replies)
+    monkeypatch.setattr(agent, "_complete", fake)
+    agent.run({"goal": "snapshot"}, tmp_path)
+    snapshot = (tmp_path / "step0_snapshot.txt").read_text()
+    assert '"step": 0' in snapshot, "第 0 步的事件在命令执行前没有落盘"
