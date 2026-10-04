@@ -72,6 +72,22 @@ class GatewayUnavailable(RuntimeError):
 # 已经被验证过的路。
 
 
+#: 连接上游的超时。**它只用于握手,不能留在 socket 上。**
+#:
+#: 实测(2026-10-04,本地 vLLM 跑 `terminal_bench`,5 道题并行):`bn-fit-modify` 和
+#: `chess-best-move` 两道题以 `stage: "harness model call"` 记成 invalid,网关自己的账是
+#: "16 connection(s), 16 the model hung up first",错误列表里是 `upstream: TimeoutError:
+#: timed out`。那次归因**指错了对象**:上游没有挂断,是这个网关的读超时挂断的。
+#:
+#: 机制:`create_connection(target, timeout=15)` 设的是**连接**超时,但它会留在 socket 上,
+#: 之后每一次 `recv` 都继承它。本地模型排队或长生成时,上游静默超过 15 秒是常事,于是
+#: `_pump` 抛 `TimeoutError` 退出、把 EOF 半关给客户端,harness 收到
+#: `APIConnectionError: Connection error`。5 道题里死 2 道。
+#:
+#: 所以握手用超时,握手之后把超时清掉:静默多久都不该算断线,只有真正的 EOF 才算。
+UPSTREAM_CONNECT_TIMEOUT_S = 15.0
+
+
 def _pump(src: socket.socket, dst: socket.socket, side: str,
           stats: "GatewayStats", conn: dict) -> None:
     """Copy one direction until it ends, and *say which side ended it*.
@@ -195,7 +211,10 @@ class _Handler(socketserver.BaseRequestHandler):
         stats = server.stats                        # type: ignore[attr-defined]
         stats.connection()
         try:
-            upstream = socket.create_connection(target, timeout=15)
+            upstream = socket.create_connection(target, timeout=UPSTREAM_CONNECT_TIMEOUT_S)
+            # 见 `UPSTREAM_CONNECT_TIMEOUT_S`:那个超时是给握手的,留在 socket 上会把
+            # "上游在想事情"读成"上游挂了"。
+            upstream.settimeout(None)
         except OSError as exc:
             # **Reported now, not swallowed.** The model is down or unreachable, and
             # closing the connection is still the honest answer -- the harness sees a

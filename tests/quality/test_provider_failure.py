@@ -240,3 +240,55 @@ def test_a_record_with_no_gateway_attributes_nothing():
     assert modelgate.describe(None) == ""
     assert modelgate.describe({}) == ""
     assert modelgate.describe({"published": False}) == ""
+
+
+# --------------------------- 网关的读超时不能留在 socket 上(本地模型那次) ---
+
+def test_a_silent_upstream_is_not_mistaken_for_a_hung_up_one(monkeypatch):
+    """**实测那次:5 道题里死 2 道,而网关把责任写成了"the model hung up first"。**
+
+    机制:`create_connection(target, timeout=15)` 的超时是给**握手**的,但它会留在 socket
+    上,之后每一次 `recv` 都继承它。本地模型排队或长生成时,上游静默超过 15 秒是常事,于是
+    泵抛 `TimeoutError` 退出、把 EOF 半关给客户端,harness 收到 `APIConnectionError`。
+
+    这条测试把"连接超时"缩到 0.3 秒、让上游静默 1 秒再回复:修好之后,静默多久都不算断线。
+    """
+    import socket
+    import threading
+
+    import eval.modelgate as modelgate
+
+    monkeypatch.setattr(modelgate, "UPSTREAM_CONNECT_TIMEOUT_S", 0.3)
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(1)
+
+    def serve():
+        conn, _ = listener.accept()
+        with conn:
+            conn.recv(64)                    # 收到请求
+            time.sleep(1.0)                  # 比连接超时长得多,但它是"在上游想事情"
+            conn.sendall(b"HTTP/1.1 200 OK\r\n\r\nlate but fine")
+
+    threading.Thread(target=serve, daemon=True).start()
+    gw = modelgate.ModelGateway(bind_host="127.0.0.1",
+                                target=("127.0.0.1", listener.getsockname()[1])).start()
+    try:
+        client = socket.create_connection(("127.0.0.1", gw.port), timeout=10)
+        client.sendall(b"GET /v1/models HTTP/1.1\r\nConnection: close\r\n\r\n")
+        client.settimeout(10)
+        got = b""
+        while b"late but fine" not in got:
+            chunk = client.recv(4096)
+            if not chunk:
+                break
+            got += chunk
+        client.close()
+        account = gw.account()
+    finally:
+        gw.stop()
+        listener.close()
+    assert b"late but fine" in got, ("上游只是安静,不是挂断", got, account)
+    # 关键断言:修好之前这里会记下 `upstream: TimeoutError: timed out`,客户端拿到的是 EOF。
+    # 上游最后真的关掉连接是对的(它回完就关),所以不断言 `upstream_closed_first`。
+    assert account["read_errors"] == [], account
