@@ -766,8 +766,8 @@ def _read_json(path: Path) -> dict | None:
     return loaded if isinstance(loaded, dict) else None
 
 
-def _test_report_failures(report: dict | None) -> tuple[list[str], str]:
-    """Failing tests from a CTRF report, and a one-line summary of the run.
+def _test_report_failures(report: dict | None) -> tuple[list[str], str, dict]:
+    """Failing tests from a CTRF report, a one-line summary, and the counts as numbers.
 
     A check may write a machine-readable report beside its reward file (the real task
     set passes `--ctrf /logs/verifier/ctrf.json` to pytest). That report is the
@@ -775,24 +775,37 @@ def _test_report_failures(report: dict | None) -> tuple[list[str], str]:
     `test_out_html_bypasses_filter: the XSS bypass failed`, and only the second is
     something a method can act on.
 
+    **The counts come back as numbers too, not only as a sentence.** Measured on the local
+    model (2026-10-04): `large-scale-text-editing` failed `test_input_equiv_expected` in
+    **12 of 12** measurements while passing the other four -- a permanent floor, visible
+    only to someone who parses "4 passed 1 failed" out of a detail string. Under an
+    all-or-nothing reward that task contributes a constant 0, so a task set containing it
+    has one fewer usable task than it looks like it has. `verdict["tests"]` is that fact in
+    a form the platform can act on (task selection) and a reader can check.
+
     Parsed defensively: it is another project's format, and a report this cannot read
     must not take the verdict down with it. An empty list is a fact too -- it means the
     report was there and nothing failed.
     """
     results = (report or {}).get("results")
     if not isinstance(results, dict):
-        return [], ""
+        return [], "", {}
     summary = results.get("summary") if isinstance(results.get("summary"), dict) else {}
     counts = " ".join(
         f"{summary[key]} {name}" for key, name in
         (("passed", "passed"), ("failed", "failed"), ("skipped", "skipped"))
         if isinstance(summary.get(key), int) and summary[key])
+    numbers = {key: summary[key]
+               for key in ("tests", "passed", "failed", "skipped", "pending", "other")
+               if isinstance(summary.get(key), int)}
     failures: list[str] = []
+    failed_names: list[str] = []
     tests = results.get("tests")
     for test in tests if isinstance(tests, list) else []:
         if not isinstance(test, dict) or test.get("status") != "failed":
             continue
         name = str(test.get("name") or "?")
+        failed_names.append(name)
         # The assertion, not the summary. `pytest-json-ctrf` fills `message` with
         # "The test failed in the call phase due to an assertion error" -- true, and
         # useless to a method deciding what to change. The assertion itself is in
@@ -809,7 +822,9 @@ def _test_report_failures(report: dict | None) -> tuple[list[str], str]:
     if len(failures) > VERDICT_FAILED_TESTS:
         rest = len(failures) - VERDICT_FAILED_TESTS
         failures = failures[:VERDICT_FAILED_TESTS] + [f"... and {rest} more"]
-    return failures, counts
+    if failed_names:
+        numbers["failed_names"] = failed_names
+    return failures, counts, numbers
 
 
 def _check_output_detail(out: str, err: str) -> str:
@@ -913,7 +928,8 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
             if report_path:
                 got_report = staging / Path(str(report_path)).name
                 if container_mod.cp_out(name, str(report_path), got_report):
-                    failures, counts = _test_report_failures(_read_json(got_report))
+                    failures, counts, numbers = _test_report_failures(
+                        _read_json(got_report))
                     detail.append(f"check_report {report_path}"
                                   + (f" ({counts})" if counts else ""))
                     detail.extend(f"FAILED {line}" for line in failures)
@@ -926,6 +942,12 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
             detail.append(_check_output_detail(out, err))
             verdict = {"kind": kind, "passed": bool(score), "score": score,
                        "detail": " | ".join(p for p in detail if p)[:VERDICT_DETAIL_LIMIT]}
+            # The check's own tally, structured. `passed` is `bool(score)` and the score
+            # is what the task is worth; this is *how much* of it the artifact satisfied,
+            # which the reward file collapses. Present only when the check wrote a report
+            # -- absent is "this check does not report", not "zero tests passed".
+            if numbers:
+                verdict["tests"] = numbers
             if unmeasured:
                 verdict["unmeasured"] = unmeasured
             return verdict
@@ -1337,6 +1359,17 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     #: only its mean. Absent when `trials == 1`.
     per_task_trials: dict[str, list[float]] = {}
     per_task_std: dict[str, float] = {}
+    #: **Every** trial's trace and verdict, so a task that passed twice out of three can
+    #: be explained (`traces`/`verdicts` keep only the last trial, for compatibility).
+    #: Absent when `trials == 1`, where they would repeat the two dicts above.
+    trial_traces: dict[str, list[str]] = {}
+    trial_verdicts: dict[str, list[dict]] = {}
+    #: Tasks whose measurement was **reused** rather than taken, by task id. Recorded on
+    #: the point because a reused measurement is not an independent one: with the cache
+    #: content-addressed (see `driver.py`), an unchanged tree has exactly one measurement,
+    #: and a reader who sees the same number twice must be able to tell that from two
+    #: measurements that happened to agree.
+    cached_tasks: list[str] = []
     #: Tasks the platform could not measure, as opposed to ones it measured as zero.
     #: Kept out of `per_task` entirely (INTERFACE.md §2.5.7): a task that never ran is
     #: not a task that scored nothing, and putting a `0.0` here is the specific lie
@@ -1499,10 +1532,15 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         # A cached task never ran: its records are copied back exactly as they were stored.
         if "cached" in outcome:
             entry = outcome["cached"]
+            cached_tasks.append(tid)
             per_task[tid] = entry["score"]
             if entry.get("per_task_trials"):
                 per_task_trials[tid] = list(entry["per_task_trials"])
                 per_task_std[tid] = float(entry.get("per_task_std") or 0.0)
+            if entry.get("trial_traces"):
+                trial_traces[tid] = list(entry["trial_traces"])
+            if entry.get("trial_verdicts"):
+                trial_verdicts[tid] = [dict(v) for v in entry["trial_verdicts"]]
             traces[tid] = entry["trace"]
             if entry.get("harness_failed"):
                 harness_failed[tid] = entry["harness_failed"]
@@ -1545,6 +1583,21 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         per_task[tid] = score
         verdicts[tid] = verdict
         traces[tid] = result["trace"]
+        # **Every trial, not only the last one.** Measured on `B2-noop` (2026-10-04):
+        # `cobol-modernization` scored 0.667 -- two of three trials passed -- and the
+        # saved verdict was the *last* trial's, which passed. So the record said
+        # "passed" beside a score of 0.667, and the failing trial's trace and reason
+        # were nowhere: the one question `--trials` exists to answer ("it passed twice
+        # out of three -- what happened the third time?") had no answer. Worse, the
+        # same artifact scored 2/3 in one measurement and 3/3 in the next with a
+        # byte-identical trajectory, which is a statement about the *check* rather than
+        # the harness, and it cannot be checked at all without the other trials.
+        #
+        # Kept as a list beside `traces`/`verdicts` (which stay the last trial, so
+        # every existing reader keeps working) rather than replacing them.
+        if trials > 1:
+            trial_traces[tid] = [res["trace"] for res in measured]
+            trial_verdicts[tid] = [dict(res.get("verdict") or {}) for res in measured]
         # A harness that left no trace is recorded next to its score rather than
         # instead of it. See `_harness_failure` for what this looked like when it was
         # dropped: a crashed harness and a harness that chose not to edit were the same
@@ -1579,6 +1632,12 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         cache[key] = {"score": score, "trace": result["trace"],
                       "per_task_trials": per_task_trials.get(tid),
                       "per_task_std": per_task_std.get(tid),
+                      # The other trials travel with the score too. A cached round used to
+                      # restore only the last trial's trace and verdict, so the round that
+                      # *reused* a measurement was exactly the round whose 2/3 could not be
+                      # explained.
+                      "trial_traces": trial_traces.get(tid),
+                      "trial_verdicts": trial_verdicts.get(tid),
                       "harness_failed": failure,
                       "harness_output": harness_output.get(tid),
                       # The verdict travels with the score. Without this, a cached round
@@ -1636,6 +1695,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     return {"per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
             "per_task_trials": per_task_trials, "trials": trials,
             "traces": traces, "tampered": tampered,
+            "trial_traces": trial_traces, "trial_verdicts": trial_verdicts,
+            "cached_tasks": cached_tasks,
             "verdicts": verdicts,
             "invalid": invalid,
             "harness_failed": harness_failed,

@@ -265,8 +265,13 @@ def test_a_bad_candidate_is_unmeasured_not_scored_zero(tmp_path):
     assert problems, "unmeasured 却没说是哪里不对"
     assert any("JSON" in p or "entrypoint" in p or "manifest" in p for p in problems), \
         problems
-    # 提了什么也要记下来 —— 它和「改了什么」是不同的问题
-    assert point["edits_applied"] == ["harness.json"], point["edits_applied"]
+    # 提了什么、改了什么,是两个问题,两个字段 —— 而这个坏候选正好让它们不同。
+    # `edits_applied` 是平台自己的 diff:候选**整棵树**只剩两个文件,所以除写坏的
+    # `harness.json`,改过的 `agent.py` 和被删掉的 `.gitignore` 也在里面。
+    # `files_claimed` 是方法自己说的:只提了 `harness.json`。
+    assert set(point["edits_applied"]) == {".gitignore", "agent.py", "harness.json"}, \
+        point["edits_applied"]
+    assert point["files_claimed"] == ["harness.json"], point["files_claimed"]
     assert point["method_hypothesis"] == "I broke the manifest on purpose"
 
 
@@ -606,3 +611,155 @@ def test_the_prompt_asks_for_a_replacement_first():
     import editor
     assert "find" in editor.DEFAULT_SYSTEM and "replace" in editor.DEFAULT_SYSTEM
     assert "EXACTLY ONCE" in editor.DEFAULT_SYSTEM
+
+
+# ------------------------------------- 「说要改」和「真的改了」是两件事 ---
+
+_NOOP_CLAIMING_METHOD = '''
+"""A method that claims an edit it did not make.
+
+Measured on `B2-llm` (2026-10-04): `edits_applied` said `["agent.py"]` for two rounds whose
+patch was **0 bytes** and whose `harness_sha` never moved. The local model re-wrote the same
+broken file with the same broken content, so rounds 2 and 3 read as two new candidates.
+"""
+import json, sys
+from pathlib import Path
+
+req = json.load(sys.stdin)
+dest = Path(req["workspace"]) / "candidate"
+dest.mkdir(parents=True, exist_ok=True)
+# A real harness, byte for byte: the tree does not move.
+import shutil
+shutil.copytree(Path(req["base_harness"]), dest, dirs_exist_ok=True)
+
+Path(req["trajectory_out"]).write_text(json.dumps({
+    "steps": [{"harness_dir": str(dest), "label": "agent.py: fixed the parser",
+               "edit_kind": "harness_source",
+               "claimed_cost": {"generation_tokens": 0},
+               "method_reported": {"score": None}}],
+    "trajectory_shape": "sequence", "nominated": 0,
+    "provenance": {"method": "claims_edits", "acceptance_rule": {"text": "none",
+                   "source": "test", "calibrated": False}},
+}))
+sys.stdout.write(json.dumps({"changed": True, "files": ["agent.py"],
+                             "hypothesis": "I rewrote agent.py identically"}))
+'''
+
+
+def test_a_round_that_changed_nothing_does_not_read_as_a_new_candidate(tmp_path):
+    """**「说改了」进 `files_claimed`,「真改了」进 `edits_applied`。**
+
+    这条是照着实测缺口写的:`B2-llm` 的 round 2/3 补丁是 0 字节、`harness_sha` 没变,
+    而 `edits_applied` 写着 `["agent.py"]`,读起来像两个新候选 —— 它们其实是同一棵坏树
+    (而且命中了缓存)。曲线按"方法尝试了几次"来画,而尝试不是测量。
+    """
+    import os
+    import subprocess
+
+    method = tmp_path / "claiming_method.py"
+    method.write_text(_NOOP_CLAIMING_METHOD, encoding="utf-8")
+    runs = tmp_path / "runs"
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "2", "--run-id", "claims-edits", "--dataset", "demo",
+         "--sampling", "all", "--side", "train",
+         "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {method}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=600,
+        env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "claims-edits" / "curve.jsonl").read_text().splitlines() if l.strip()]
+    later = [p for p in points if p["round"] > 0]
+    assert later, points
+    for p in later:
+        assert p["edits_applied"] == [], (
+            f"round {p['round']}: 树没动,却记成了改过 {p['edits_applied']}")
+        assert p["files_claimed"] == ["agent.py"], p.get("files_claimed")
+        assert p["identity"]["harness_sha"] == points[0]["identity"]["harness_sha"], (
+            "前置条件:这棵树在每一轮都必须是同一棵")
+
+
+# ------------------------------------------- 编译不过的候选不是"很弱的 harness" ---
+
+_BREAKS_PYTHON = '''
+"""A method whose edit leaves the harness unable to compile.
+
+Measured on `B2-llm` (2026-10-04): the method replaced `agent.py` with two lines and a
+`SyntaxError`, the platform's own validator said NO PROBLEMS (the syntax check lived only
+in `--smoke`, which the candidate path turns off), and the run recorded five
+`harness_failed` tasks and a 0.000 point. One named problem was the right record.
+"""
+import json, sys
+from pathlib import Path
+
+req = json.load(sys.stdin)
+dest = Path(req["workspace"]) / "candidate"
+dest.mkdir(parents=True, exist_ok=True)
+import shutil
+shutil.copytree(Path(req["base_harness"]), dest, dirs_exist_ok=True)
+# Valid Python? No: an escaping mistake the model actually made.
+(dest / "agent.py").write_text(
+    'content: "x",\\nreplace: "y:"}\\n', encoding="utf-8")
+
+Path(req["trajectory_out"]).write_text(json.dumps({
+    "steps": [{"harness_dir": str(dest), "label": "agent.py: fixed the parser",
+               "edit_kind": "harness_source",
+               "claimed_cost": {"generation_tokens": 0},
+               "method_reported": {"score": None}}],
+    "trajectory_shape": "sequence", "nominated": 0,
+    "provenance": {"method": "breaks_python", "acceptance_rule": {"text": "none",
+                   "source": "test", "calibrated": False}},
+}))
+sys.stdout.write(json.dumps({"changed": True, "files": ["agent.py"],
+                             "hypothesis": "I rewrote agent.py with a syntax error"}))
+'''
+
+
+def test_python_that_does_not_compile_is_a_named_problem(tmp_path):
+    """`--smoke` 能发现它,但候选那条路**关掉了 smoke** —— 所以必须有一步是永远做的。
+
+    `eval/candidate.py` 的文档一直把"Python 编译不过"列在它要分辨的三种结局里,而实现
+    只有 `validate(repo, smoke=False)`。于是这条路上没人检查语法,而这条路上写代码的
+    恰恰是方法。
+    """
+    import tools.validate_harness as validator
+
+    root = _harness(tmp_path / "broken")
+    (root / "agent.py").write_text('def f(:\n    pass\n', encoding="utf-8")
+    problems = validator.validate(root, False)          # smoke=False, 与候选路径一致
+    assert any("agent.py does not compile" in p for p in problems), problems
+    assert any("line 1" in p for p in problems), problems
+
+    # 好的一棵树不受影响:这条检查不能把正常 harness 也拒掉
+    good = _harness(tmp_path / "good")
+    assert validator.validate(good, False) == []
+
+
+def test_a_candidate_that_does_not_compile_is_unmeasured_not_zero(tmp_path):
+    """端到端:`B2-llm` 的形状 —— 编译不过的候选不能记成"五道题都失败了"。"""
+    import os
+    import subprocess
+
+    method = tmp_path / "breaks_python.py"
+    method.write_text(_BREAKS_PYTHON, encoding="utf-8")
+    runs = tmp_path / "runs"
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "1", "--run-id", "breaks-python", "--dataset", "demo",
+         "--sampling", "all", "--side", "train",
+         "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {method}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=600,
+        env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "breaks-python" / "curve.jsonl").read_text().splitlines()
+              if l.strip()]
+    broken = [p for p in points if p.get("unmeasured")]
+    assert broken, (
+        "编译不过的候选被**测量**了 —— 它会变成 N 个 harness_failed 和一个 0.000:\n"
+        + json.dumps(points[-1], ensure_ascii=False)[:600])
+    problems = broken[-1]["unmeasured"]["problems"]
+    assert any("does not compile" in p for p in problems), problems
+    assert broken[-1]["measured_by_platform"] is False

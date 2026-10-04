@@ -191,7 +191,12 @@ def _run_mode_b(args, work, man, run_id, mode, curve, h0_sha, run_dir, base,
             continue
 
         sha = commit_state(work, f"step {i}: {label or 'method step'}")
-        _save_round_diff(run_dir, i, work, curve[-1]["identity"]["harness_sha"], sha)
+        diff = _save_round_diff(run_dir, i, work,
+                                curve[-1]["identity"]["harness_sha"], sha)
+        # Measured, not claimed -- same reason as mode A (`harnessgrad/loops/mode_a.py`):
+        # a method that reports an edit it did not make, or that rewrites a file with
+        # identical content, must not read as a changed tree.
+        changed_files = [f["path"] for f in (diff.get("files") or [])]
         _save_round_state(run_dir, i, work)
         t0 = time.time()
         if has_manifest:
@@ -215,7 +220,8 @@ def _run_mode_b(args, work, man, run_id, mode, curve, h0_sha, run_dir, base,
             cumulative["env_generation_tokens"] += (res.get("env_usage") or {}).get(
                 "input", 0) + (res.get("env_usage") or {}).get("output", 0)
             _save_verdicts(run_dir, i, res, task_ids)
-            _save_traces(run_dir, i, res.get("traces") or {}, train_ids, split)
+            _save_traces(run_dir, i, res.get("traces") or {}, train_ids, split,
+                         trial_traces=res.get("trial_traces"))
 
         point = _curve_point(
             run_id=run_id, round_index=i,
@@ -238,13 +244,16 @@ def _run_mode_b(args, work, man, run_id, mode, curve, h0_sha, run_dir, base,
             cumulative=cumulative,
             n_trials=(res or {}).get("trials"), score_std=(res or {}).get("score_std"),
             per_task_std=(res or {}).get("per_task_std"),
+            per_task_trials=(res or {}).get("per_task_trials"),
+            cached_tasks=(res or {}).get("cached_tasks"),
             selection={
                 "selected_on_reported_set": traj.get("selected_on_reported_set"),
                 "selection_pool_size": traj.get("selection_pool_size"),
             },
             label=label + (" [nominated]" if i == nominated else ""),
             hypothesis=step.get("hypothesis") or (reply or {}).get("hypothesis"),
-            edits_applied=step.get("files") or (reply or {}).get("files"),
+            edits_applied=changed_files,
+            files_claimed=step.get("files") or (reply or {}).get("files"),
             candidate_problems=candidate_problems,
             method_reported=step.get("method_reported") or {})
         point["edit_kind"] = step.get("edit_kind")

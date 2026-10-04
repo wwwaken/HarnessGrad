@@ -1175,10 +1175,15 @@ spread, `jobs` buys wall clock.
   standard deviation (these are all the trials this run took, not a sample of a larger
   population). The point carries `n_trials` and `score_std` **only when `N > 1`**: with one
   sample there is no spread to report, and a recorded `0.0` would claim there was none.
-  *Reason: measured on this platform, **the same unmodified harness scored 0.333 in one run
-  and 0.000 in the next** — the agent model intermittently emits a tool call the harness
-  cannot parse, and the harness then ends the task. A curve that does not say how noisy it
-  is cannot support a claim that an edit helped.*
+  *Reason: measured on this platform. `local-floor-7` and `local-floor-8` ran the **same
+  harness tree** (`harness_sha 134a6ccf88c4`), the same model and the same `--jobs 5`, and
+  `build-pmars` scored **1.0 in the first and 0.0 in the second**. Their aggregate scores also
+  differed (0.333 vs 0.000), but those two runs measured three tasks and five tasks — so the
+  aggregate difference is partly the denominator, and the per-task flip is the part that is a
+  fact about noise. The resolution of this platform's screens agrees: on `local-screen-1` the
+  same harness and task produced `2 passed 2 failed` and then `4 failed` on consecutive
+  measurements. A curve that does not say how noisy it is cannot support a claim that an edit
+  helped; a **single** trial on a binary task reports 0.0 or 1.0 and cannot even say which.*
 * **`--jobs N`** (default 1). Up to N tasks are measured concurrently, and `run_meta.json`
   records the value. The tasks are independent by construction — own container, own network,
   own model gateway, own workspace, own cache key — but they share one model endpoint and
@@ -1216,6 +1221,57 @@ last, is not about telling runs apart but about telling *candidates* apart:
   changed nothing — and dead code looks like work in a diff, in a token count, and in "14
   edits this round".* It is a **diagnostic and never a score**: static, Python-only,
   name-based, with the three ways it is wrong written at the top of that module.
+* **`per_task_trials`** — the per-trial scores themselves, one list per task, present only
+  when `n_trials > 1`. The mean and the standard deviation were already recorded; the trials
+  answer a question neither can: *which* trial failed. *Reason, measured on `B2-noop`
+  (2026-10-04): `cobol-modernization` scored 0.667 — two of three — and the saved verdict was
+  the **last** trial's, which passed, so the file said `passed: true` beside `score: 0.667`
+  and the failing trial was nowhere. The same artifact then scored 2/3 in one measurement and
+  3/3 in the next from a byte-identical trajectory, which is a claim about the **check**
+  rather than the harness, and it is unverifiable without the other trials.* On disk, each
+  trial is also its own file: `round<N>_traces/<task>.trial<i>.jsonl` (numbered from 1) and
+  `<task>.json` under `verdicts/round-<N>/` carries `trial_scores` and `trials[]`.
+* **`edits_applied` / `files_claimed`** — the first is the files whose **content changed**,
+  taken from the platform's own git diff of the round; the second is the list the method said
+  it changed. *Reason, measured on `B2-llm` (2026-10-04): `edits_applied` carried the method's
+  claim and said `["agent.py"]` for two rounds whose patch was **0 bytes** and whose
+  `harness_sha` never moved — the local model rewrote the same broken file with the same
+  broken content. Rounds that changed nothing read as new candidates. The claim is kept
+  rather than overwritten: a method that names a file it did not change is a finding.*
+* **`n_cached` / `cached_tasks`** — present when some tasks were **not measured this round**
+  because the same `(harness_sha, task, trials)` had already been measured. *Reason, measured
+  on `B2-noop`: a control method that changed nothing scored round 0 = 0.267 and round 1 =
+  0.467 on the same `harness_sha`, because the H0 measurement was cached under the literal
+  string `"H0"` while every later round keyed on the content hash. An unchanged tree is now
+  measured once, and the reuse is a recorded fact rather than something a reader has to infer
+  from two coincidentally equal numbers. The spread of a measurement is `--trials`' job.*
+* **`identity.method`** — the method that produced this candidate, as the method itself reported
+  it (the `provenance.method` of its trajectory, e.g. `noop (control)`). *Reason: the point
+  carried `method_model` and the improver's name but never the method's, so the only place the
+  method appeared was `run_meta.method_entrypoint` — a path. A curve is read, plotted and
+  compared outside its run directory, and there two methods in one figure were
+  indistinguishable except by their scores.* Absent on H0, which no method produced, and on an
+  eval run.
+* **`identity.harness_config`** — the harness's own runtime budget, as the harness declared it
+  in its trace (the `config` key of `harness_identity`): `max_steps` and the retry/nudge/output/
+  context knobs of the base loop. *Reason, measured: `HG_AGENT_MAX_STEPS=12` and `=32` run the
+  same file, and the two runs produced curve points that differed in **no field at all** — same
+  `harness_sha` (the file did not change), same `env`, same `agent_model`. Point 7 of
+  `local-floor-9` said 0.333 and point 7 of `local-floor-7` said 0.000 on the same tasks, and a
+  reader could not tell whether the difference was the budget.* The platform promotes the
+  declaration rather than digging it out of `harness_identity`, so one question has one path:
+  `identity.harness_config.max_steps`. Absent when the harness declares nothing, which is a
+  fact about that harness and not a zero. `identity.harness_identity` still carries the raw
+  declaration, including `agent_model` — see §3.
+* **`wall_clock_s`** in the trace, per task (`{"model": ..., "commands": ..., "total": ...}`),
+  with `model_ms` / `command_ms` on each step. *Reason, measured: `build-pmars` was killed at
+  the task's own 900 s budget after 26 steps, and the record could not say whether the model or
+  a `pip install` consumed them — the two have opposite fixes (a smaller step cap or a
+  different model versus a task that is simply expensive). The first run with this field
+  answered it the other way round from our own guess: the local 9B answers in ~0.8 s per call
+  and a 12-step trajectory took 10.2 s end to end, so a step cap was the wrong lever.* Not yet
+  promoted to a curve field: the per-task numbers stay in the traces, and the round's total is
+  already `cost.wall_clock_s`.*
 
 ---
 

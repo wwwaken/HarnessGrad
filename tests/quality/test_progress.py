@@ -217,11 +217,19 @@ def test_a_real_run_narrates_its_tasks_inside_the_round(tmp_path):
     runs = tmp_path / "runs"
     env = {**os.environ, "HG_AGENT_BACKEND": "mock", progress.ENV_BEAT_S: "0.2"}
     proc = subprocess.run(
-        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+        [sys.executable, "driver.py", "--harness", "loop", "--mode", "A",
          "--rounds", "1", "--run-id", "progress-check", "--dataset", "demo",
          "--sampling", "all", "--runs-root", str(runs),
          "--work-root", str(tmp_path / "work"),
-         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"],
+         # `echo_base` 交回一棵**真的变了**的树,所以第一轮候选会被评估一次 —— 用 `noop`
+         # 不行:它不改动,候选与 H0 内容相同,于是命中的是缓存,一条 task 事件都不会有
+         # (那正是下面 `test_a_reused_measurement_narrates_nothing` 钉住的行为)。
+         #
+         # 用 `loop` 而不是 `loop_plain`:`echo_base` 的锚点(`if "answer.txt exists"`)只在
+         # `loop` 里存在,在 `loop_plain` 里它每轮都报"没有改动"。这条测试以前用
+         # `loop_plain` 也能通过,靠的是 H0 缓存键那个缺陷带来的重测 —— 见
+         # `test_each_rounds_task_phases_carry_their_own_round_number` 里的说明。
+         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/echo_base/run.py'}"],
         cwd=ROOT, capture_output=True, text=True, timeout=300, env=env)
     assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
 
@@ -271,12 +279,19 @@ def test_each_rounds_task_phases_carry_their_own_round_number(tmp_path):
     runs = tmp_path / "runs"
     env = {**os.environ, "HG_AGENT_BACKEND": "mock", progress.ENV_BEAT_S: "30"}
     proc = subprocess.run(
-        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+        [sys.executable, "driver.py", "--harness", "loop", "--mode", "A",
          "--rounds", "2", "--run-id", "round-labels", "--dataset", "demo",
          "--sampling", "all", "--runs-root", str(runs),
          "--work-root", str(tmp_path / "work"),
          # `echo_base` 每轮真的改一个文件,所以第一轮候选会被**评估** —— 用 noop 不行:
          # 它报 `changed: false`,平台就停了,没有候选轮的 task 事件可查。
+         #
+         # **而且必须用 `loop`,不能用 `loop_plain`。** `echo_base` 靠一个锚点字符串定位
+         # 它要改的那段(`if "answer.txt exists" in task_text`),那个锚点在 `loop_plain`
+         # 里**不存在**,于是它每轮都返回"没有改动"。这条测试以前用 `loop_plain` 却能通过,
+         # 靠的正是本轮修掉的那个缓存缺陷:H0 的键是字面量 `"H0"`、候选的键是内容哈希,
+         # 内容相同的候选因此永远命不中缓存、被**重测**一遍 —— 于是"候选轮"看起来发生了。
+         # 缓存按内容寻址之后,这个假象消失,测试当场失败:它一直在测一件没发生的事。
          "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/echo_base/run.py'}"],
         cwd=ROOT, capture_output=True, text=True, timeout=600, env=env)
     assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
@@ -286,4 +301,38 @@ def test_each_rounds_task_phases_carry_their_own_round_number(tmp_path):
     # 只看 `verify`:方法调用那一轮本来就叫 `agent` 且轮号是对的,用它当断言等于什么都没测。
     task_rounds = {e.get("round") for e in events
                    if e["kind"] == "phase" and e["phase"] == "verify"}
-    assert task_rounds == {0, 1}, sorted(task_rounds)
+    # H0 加两轮候选:`--rounds 2` 的曲线点是 0、1、2,不是 0、1(断言旧值 `{0, 1}` 之所以
+    # 通过,是因为 `echo_base` 在 `loop_plain` 上什么都没改、平台因此停在第一轮)。
+    assert task_rounds == {0, 1, 2}, sorted(task_rounds)
+
+
+def test_a_reused_measurement_narrates_nothing(tmp_path):
+    """缓存命中的一轮**不该**有 task 事件 —— 因为那四道题这一次没有跑。
+
+    实测(`B2-noop`, 2026-10-04):对照方法不改动任何东西,而 round 1 把五道题重测了一遍,
+    于是事件流看起来像"第二轮做了很多工作"。缓存按内容寻址之后,这一轮什么也没跑,所以
+    也没有可报的进度 —— "复用的测量"和"新做的测量"在事件流里也必须不同形。
+    """
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock", progress.ENV_BEAT_S: "30"}
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "2", "--run-id", "progress-cached", "--dataset", "demo",
+         "--sampling", "all", "--runs-root", str(runs),
+         "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=300, env=env)
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    point = [json.loads(l) for l in
+             (runs / "progress-cached" / "curve.jsonl").read_text().splitlines()
+             if l.strip()][-1]
+    assert point.get("n_cached"), "前置条件:这一轮必须全是缓存命中"
+    events = [json.loads(l) for l in
+              (runs / "progress-cached" / "events.jsonl").read_text().splitlines()
+              if l.strip()]
+    # 真实题目的 task/phase 事件只能属于 round 0(H0 那次测量)。缓存命中的那一轮没有
+    # 跑任何题,所以一条都不该有 —— 它和自己的 round 号绑在一起,不会被误读成"跑了两次"。
+    rounds_with_tasks = {e.get("round") for e in events
+                         if e["kind"] in ("task", "phase")
+                         and (e.get("task") or "").startswith("t")}
+    assert rounds_with_tasks == {0}, sorted(rounds_with_tasks, key=str)

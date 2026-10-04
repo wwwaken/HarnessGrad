@@ -127,9 +127,10 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  method_reported=None, train_scores=None, train_ids=None,
                  split=None, env_record=None, invalid=None, harness_failed=None,
                  model_gateway=None, harness_runtime=None, hypothesis=None,
-                 edits_applied=None, candidate_problems=None,
+                 edits_applied=None, files_claimed=None, candidate_problems=None,
                  side="train", evaluated_from=None,
-                 n_trials=None, score_std=None, per_task_std=None) -> dict:
+                 n_trials=None, score_std=None, per_task_std=None,
+                 per_task_trials=None, cached_tasks=None) -> dict:
     lo, hi = ci95(scores)
     return {
         "run_id": run_id, "round": round_index, "label": label,
@@ -184,6 +185,22 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
            if n_trials and n_trials > 1 and score_std is not None else {}),
         **({"per_task_std": {k: round(float(v), 6) for k, v in (per_task_std or {}).items()}}
            if n_trials and n_trials > 1 else {}),
+        # **The trials themselves**, not only their mean and spread. A mean of 0.667 over
+        # three trials is two passes and one failure, and which one failed -- and why --
+        # decides whether the number is saying something about the harness or about the
+        # check. Measured on `B2-noop` (2026-10-04): `cobol-modernization` produced a
+        # byte-identical trajectory and scored 2/3 in one measurement and 3/3 in the next,
+        # so the *reward* varies for one artifact; that claim cannot be made, or checked,
+        # from a mean and a standard deviation.
+        **({"per_task_trials": {k: [round(float(x), 6) for x in v]
+                                for k, v in (per_task_trials or {}).items()}}
+           if n_trials and n_trials > 1 else {}),
+        # Which tasks this round did not measure, because the same (harness, task, trials)
+        # had already been measured. A reused number and a fresh one that happens to agree
+        # are different facts, and the point has to say which it is -- otherwise a flat
+        # control curve reads as a deterministic harness.
+        **({"n_cached": len(cached_tasks), "cached_tasks": sorted(cached_tasks)}
+           if cached_tasks else {}),
         "per_task": dict(zip(task_ids, scores)),
         # How many tasks were scored, and how many of them earned full credit.
         #
@@ -215,12 +232,20 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         # the **model** made, and says nothing about why. That is the one sentence a
         # reader asking "why no edit" needs, and it was being thrown away.
         "method_hypothesis": hypothesis,
-        # What the method proposed, and whether it applied. `editable_surface_touched`
-        # answers the same question from the diff side; this answers it from the
-        # *protocol* side -- the one that can say "it never applied" as opposed to "it
-        # applied and changed nothing". Measured: three rounds on `build-pmars` reported
-        # the latter while the truth was the former.
+        # **The files whose content actually changed in this round**, from the platform's
+        # own git diff of the round (`_save_round_diff`), never from the method's word.
+        #
+        # This field used to carry the method's claimed `files` list, and on `B2-llm`
+        # (2026-10-04) that list said `["agent.py"]` for two rounds whose patch was **0
+        # bytes** and whose `harness_sha` never moved: the local model re-wrote the same
+        # broken file with the same broken content, so rounds 2 and 3 read as two new
+        # candidates when they were the same tree, already cached. A curve that counts
+        # those as attempts is counting intent, and intent is not a measurement.
         "edits_applied": list(edits_applied or []),
+        # What the method said it changed. Kept beside the fact rather than dropped: a
+        # method that names a file it did not change is itself a finding, and silently
+        # overwriting the claim with the fact would erase it.
+        **({"files_claimed": list(files_claimed)} if files_claimed is not None else {}),
         **({"candidate_problems": list(candidate_problems)}
            if candidate_problems else {}),
         # The same measurement on the side the method was allowed to study. It is
@@ -313,7 +338,8 @@ def _write_run_meta(run_dir: Path, fresh: bool = False, **fields) -> None:
     path.write_text(json.dumps(existing, indent=1))
 
 def _save_traces(run_dir: Path, round_no: int, traces: dict,
-                 task_ids: list[str] | None, split: dict | None = None) -> None:
+                 task_ids: list[str] | None, split: dict | None = None,
+                 trial_traces: dict | None = None) -> None:
     """Persist one round's traces beside the run, for a human to inspect.
 
     **Every task, both sides** -- and this reverses a deliberate earlier decision, so the
@@ -349,6 +375,16 @@ def _save_traces(run_dir: Path, round_no: int, traces: dict,
     dest.mkdir(parents=True, exist_ok=True)
     for tid, body in traces.items():
         (dest / f"{tid}.jsonl").write_text(body)
+
+    # **And one file per trial, when a task was measured more than once.** `<task>.jsonl`
+    # above is the last trial only, which is what every reader had; with `--trials 3` that
+    # meant a score of 0.667 came with the trace of a trial that passed, and the missing
+    # trial -- the one that failed -- was not on disk at all (`B2-noop`,
+    # `cobol-modernization`, 2026-10-04). The trials are numbered from 1 and always start
+    # there, so `trial1` is the first measurement in both a 1-trial and a 3-trial run.
+    for tid, bodies in (trial_traces or {}).items():
+        for index, body in enumerate(bodies, start=1):
+            (dest / f"{tid}.trial{index}.jsonl").write_text(body)
 
     # Which side each trace belongs to, so the directory is readable on its own. Named
     # with a leading dot because it sits beside files named after task ids and must not
@@ -404,6 +440,20 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
             entry["harness"] = harness_out
         if not v and tid in (res.get("invalid") or {}):
             entry["invalid"] = res["invalid"][tid]
+        # **Every trial's reason, not only the last one's.** `entry` above describes the
+        # last trial (`res["verdicts"][tid]`), while `entry["score"]` is the mean over
+        # all of them -- so a task that passed 2 of 3 used to be written as
+        # `score 0.667, passed: true`, and the trial that failed left no record at all.
+        # Measured on `B2-noop` (2026-10-04): `cobol-modernization` was 0.667, the saved
+        # verdict said `passed`, and the question the number raises -- which trial
+        # failed, and why -- had no answer anywhere on disk.
+        trials_v = (res.get("trial_verdicts") or {}).get(tid)
+        if trials_v and len(trials_v) > 1:
+            entry["trial_scores"] = [float((t or {}).get(
+                "score", 1.0 if (t or {}).get("passed") else 0.0)) for t in trials_v]
+            entry["trials"] = [{"passed": (t or {}).get("passed"),
+                                "kind": (t or {}).get("kind"),
+                                "detail": (t or {}).get("detail")} for t in trials_v]
         (dest / f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
 

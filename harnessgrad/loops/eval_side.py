@@ -159,7 +159,8 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
     point["verifier_kinds"] = sorted({(verifiers.get(t) or {}).get("kind", "answer")
                                       for t in scored})
     _save_verdicts(run_dir, 0, res, [t["task_id"] for t in tasks])
-    _save_traces(run_dir, 0, res.get("traces") or {}, None, split)
+    _save_traces(run_dir, 0, res.get("traces") or {}, None, split,
+                 trial_traces=res.get("trial_traces"))
     _write_curve(run_dir / "curve.jsonl", [point])
     console.results([point], split=split)
     return 0

@@ -249,6 +249,51 @@ def remove_network(network: str) -> list[str]:
     return []
 
 
+def reap(run_id: str) -> list[str]:
+    """Remove containers and networks a **previous crash** left under this run id.
+
+    Measured (2026-10-04): a run killed mid-task leaves its per-task networks and any
+    running service container behind -- `local-floor-5/6` and `local-cap12` each left
+    one network per task, and a probe run left a service container up for 15 hours.
+    `docker run --rm` does not help: it removes a container when it *exits*, and a
+    killed driver never stops it. Ctrl-C is handled (`except BaseException` around the
+    service start path), but SIGTERM and SIGKILL are not, and neither is a test that
+    is interrupted.
+
+    The cost is not disk. It is that the **next** run with the same id dies at
+    `docker network create ... already exists`, so a measurement is lost to a failure
+    that belongs to the previous crash and is reported as if it were about this run.
+
+    Called at the run's first write, beside the same decision for the run directory
+    (`_write_run_meta(..., fresh=True)`): a reused id means "start clean". Only this
+    run id's objects are touched, so a different run executing concurrently is not
+    disturbed. Never raises; returns what it could not remove.
+    """
+    problems: list[str] = []
+    selector = f"label=harnessgrad.run={run_id}"
+    for kind, list_args, remove_args in (
+            ("container", ["container", "ls", "--all", "--quiet"],
+             ["rm", "--force"]),
+            ("network", ["network", "ls", "--quiet"], ["network", "rm"])):
+        try:
+            listed = container_mod.docker(*list_args, "--filter", selector, timeout=60)
+        except (subprocess.TimeoutExpired, OSError) as exc:
+            problems.append(f"{kind} list: {exc}")
+            continue
+        if listed.returncode != 0:
+            problems.append(f"{kind} list: {listed.stderr.strip()[:200]}")
+            continue
+        for ident in listed.stdout.split():
+            try:
+                removed = container_mod.docker(*remove_args, ident, timeout=120)
+            except (subprocess.TimeoutExpired, OSError) as exc:
+                problems.append(f"{kind} {ident[:12]}: {exc}")
+                continue
+            if removed.returncode != 0:
+                problems.append(f"{kind} {ident[:12]}: {removed.stderr.strip()[:200]}")
+    return problems
+
+
 def gateway_ip(network: str) -> str:
     """The host-side address of a task network, which is where a gateway can bind.
 

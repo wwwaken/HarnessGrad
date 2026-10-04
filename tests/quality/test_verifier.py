@@ -269,10 +269,16 @@ def test_a_check_report_is_summarised_into_the_verdict():
                       "E       assert [] == [1, 2]\n\nmore frames"},
             {"name": "test_other", "status": "skipped"},
         ]}}
-    failures, counts = _test_report_failures(report)
+    failures, counts, numbers = _test_report_failures(report)
     assert failures == ["test_tasks_cancel_above_max_concurrent: "
                         "assert [] == [1, 2]"], failures
     assert counts == "5 passed 1 failed", counts
+    # 同一件事的结构化版本。句子给人读,数字给平台用 —— 实测:`large-scale-text-editing`
+    # 12/12 次都只失败 `test_input_equiv_expected` 这一条,而 4 个测试一直是通过的。
+    # 要靠"从 detail 字符串里正则抠出 4 passed 1 failed"才能发现一个恒零任务,太脆。
+    assert numbers["passed"] == 5 and numbers["failed"] == 1, numbers
+    assert numbers["tests"] == 6, numbers
+    assert numbers["failed_names"] == ["test_tasks_cancel_above_max_concurrent"], numbers
 
 
 def test_an_unreadable_check_report_cannot_take_the_verdict_down():
@@ -280,9 +286,11 @@ def test_an_unreadable_check_report_cannot_take_the_verdict_down():
     from eval.runner import _test_report_failures
     for junk in (None, {}, {"results": None}, {"results": {"tests": "nope"}},
                  {"results": {"tests": [None, {"status": "failed"}]}}):
-        failures, counts = _test_report_failures(junk)
+        failures, counts, numbers = _test_report_failures(junk)
         assert isinstance(failures, list) and isinstance(counts, str)
-    assert _test_report_failures({"results": {"tests": [{"status": "failed"}]}}) == (["?"], "")
+        assert isinstance(numbers, dict)
+    assert _test_report_failures({"results": {"tests": [{"status": "failed"}]}}) == (
+        ["?"], "", {"failed_names": ["?"]})
 
 
 def test_both_of_a_check_s_streams_reach_the_verdict():

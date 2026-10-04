@@ -37,6 +37,53 @@ ROLES = ("harness", "control")
 #: Keys that are allowed and read by nobody -- documentation for the next reader.
 DOCUMENTATION_ONLY = ("notes",)
 
+#: Directories inside a harness that are not the harness. `.git` is the checkpoint
+#: machinery, `__pycache__` is output, and `_harnessgrad` is the platform<->method channel
+#: (`methods/apply.py:CHANNEL`) -- a harness that shipped a copy of it would be carrying
+#: the platform's own files into a measured tree.
+_NOT_SOURCE = (".git", "__pycache__", "_harnessgrad")
+
+
+def _compile_problems(base: Path) -> list[str]:
+    """Python in this harness that does not compile.
+
+    **Not part of `smoke`.** `smoke` runs the harness, and the candidate path turns it
+    off -- `eval/candidate.py` calls `validate(..., smoke=False)`, because running a
+    candidate to decide whether it is a candidate is circular and expensive. So the syntax
+    of a candidate tree was never checked on the one path where a tree is most likely to
+    be broken: a method wrote it.
+
+    Measured (2026-10-04, `B2-llm`): the method's edit replaced `agent.py` with two lines
+    and a `SyntaxError`; the candidate validated (re-verified by running this validator on
+    the saved state: "NO PROBLEMS"), and the run recorded **five `harness_failed` tasks
+    and a 0.000 curve point** where one named problem belonged. `eval/candidate.py`'s own
+    docstring already listed "Python that does not compile" as one of the three outcomes
+    its check exists to separate.
+
+    Every `.py` file, not only the entrypoint's import closure: the tree *is* the artifact,
+    a file that does not compile cannot be imported by whatever the method adds next, and
+    the message names the file, so the fix is obvious. It is a `compile()` call, so it
+    costs no subprocess and cannot execute anything.
+    """
+    problems: list[str] = []
+    for path in sorted(base.rglob("*.py")):
+        rel = path.relative_to(base)
+        if any(part in _NOT_SOURCE for part in rel.parts):
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            problems.append(f"{rel} could not be read as text: {exc}")
+            continue
+        try:
+            compile(source, str(rel), "exec")
+        except SyntaxError as exc:
+            problems.append(f"{rel} does not compile: {exc.msg} (line {exc.lineno})")
+        except ValueError as exc:
+            # A null byte in the source raises ValueError, not SyntaxError.
+            problems.append(f"{rel} cannot be compiled: {exc}")
+    return problems
+
 
 def validate(root: Path, smoke: bool) -> list[str]:
     errs: list[str] = []
@@ -91,6 +138,9 @@ def validate(root: Path, smoke: bool) -> list[str]:
     role = man.get("role", "harness")
     if role not in ROLES:
         errs.append(f"role {role!r} is not one of {list(ROLES)}")
+
+    # Independent of `smoke`, and that is the whole point: see `_compile_problems`.
+    errs.extend(_compile_problems(base))
 
     install = man.get("install")
     if install and not (base / install).is_file():

@@ -231,3 +231,94 @@ def test_the_point_names_the_skill_the_method_was_given(tmp_path, monkeypatch):
     skill.unlink()
     assert "skill_sha" not in identity._identity(man, "sha", "A"), \
         "没有 skill 就不该报一个空文件的哈希"
+
+
+def test_a_method_that_carries_its_own_improver_records_none(tmp_path):
+    """**记录不能点名一个没干过活的工具。**
+
+    `methods/noop` 是"方法什么都没做"的对照:它不调用任何 improver,曲线就是起点
+    harness 的地板。可 `improvers.json` 里有默认 improver,于是这条跑道的每个 curve
+    point 都写着 `identity.improver: deepseek` —— 一次 deepseek 都没被调用过的运行,
+    却自称用了它。这正是 improver 字段存在要防的那件事(见本文件开头那次
+    `agent_model: mock`)。`--improver none` 是"这个方法自带(或根本不需要)改进器"。
+    """
+    runs = tmp_path / "runs"
+    argv = [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+            "--rounds", "2", "--run-id", "no-improver", "--dataset", "demo",
+            "--sampling", "all", "--improver", "none",
+            "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+            "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"]
+    proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=300,
+                          env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "no-improver" / "curve.jsonl").read_text().splitlines()
+              if l.strip()]
+    assert points, "没有曲线点"
+    for p in points:
+        assert "improver" not in p["identity"], (
+            "--improver none 的跑道仍然在点上点了名:"
+            f"{p['identity'].get('improver')}")
+
+
+def test_the_default_improver_is_still_resolved_when_none_is_not_asked_for(tmp_path):
+    """反向的一半:不加 `--improver none` 时,默认改进器照旧要解析出来。
+
+    否则这条修法就变成了"悄悄关掉记录 improver 的能力",而那会让真正用了改进器的
+    跑道失去归因。
+    """
+    runs = tmp_path / "runs"
+    argv = [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+            "--rounds", "1", "--run-id", "default-improver", "--dataset", "demo",
+            "--sampling", "all",
+            "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+            "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"]
+    proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=300,
+                          env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "default-improver" / "curve.jsonl").read_text().splitlines()
+              if l.strip()]
+    assert points and all("improver" in p["identity"] for p in points), (
+        "默认改进器没有被记录:" + str([p["identity"].get("improver") for p in points]))
+
+
+def test_the_point_names_the_method_that_produced_the_candidate(tmp_path):
+    """曲线点必须能自己说出"这一轮是谁改的"。
+
+    实测的缺口:点上有 `method_model`、有 improver 的名字,却没有**方法**的名字 ——
+    它只出现在 `run_meta.method_entrypoint` 这个路径里。于是把曲线从 run 目录里拿出来
+    (画图、比较、放进论文,都是这么用的)之后,round 1 是 `llm_improver` 还是 `rrsi`
+    就答不上来,两个方法在同一张图里只能靠分数区分。
+    """
+    from harnessgrad.identity import _identity
+
+    man = {"name": "loop", "version": "1"}
+    named = _identity(man, "a" * 40, "A", method="rrsi")
+    assert named["method"] == "rrsi"
+    # 没有方法名时不留一个空字段:"没说"和"没有方法"是两件事
+    assert "method" not in _identity(man, "a" * 40, "A")
+
+
+def test_a_real_run_names_its_method_on_every_point(tmp_path):
+    """端到端的一半:方法自报的名字(`editor.report(method=...)`)真的走到了点上。"""
+    runs = tmp_path / "runs"
+    argv = [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+            "--rounds", "2", "--run-id", "method-named", "--dataset", "demo",
+            "--sampling", "all", "--improver", "none",
+            "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+            "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"]
+    proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=300,
+                          env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "method-named" / "curve.jsonl").read_text().splitlines()
+              if l.strip()]
+    assert points, "没有曲线点"
+    # round 0 是 H0:平台测的起点,还没有任何方法跑过,所以它**不该**有方法名。
+    assert points[0]["round"] == 0 and "method" not in points[0]["identity"], \
+        points[0]["identity"]
+    later = [p for p in points if p["round"] > 0]
+    assert later and all((p["identity"].get("method") or "").startswith("noop")
+                         for p in later), \
+        [(p["round"], p["identity"].get("method")) for p in points]

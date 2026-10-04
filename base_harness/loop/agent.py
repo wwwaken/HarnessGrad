@@ -9,13 +9,25 @@ Deliberately the simplest thing that satisfies the contract in
 
 A method may replace every file here. That is the point.
 
-**What is deliberately absent, and why.** This harness has no context policy, no
-output bounding and no memory. Those are *mechanisms*: named, switchable
-behaviours that a method adds in order to improve the harness. Shipping a set of
-them by default would mean shipping one particular experiment's design as if it
-were the platform's, and would make "this harness is thin" a claim nobody can
-check. A base harness with nothing in it is the honest starting point; what a
-method adds on top is the measurement.
+**What it ships, and why that changed.** This harness used to be a bare loop: no
+context policy, no output bounding, no retries. That is still the design -- but
+these mechanisms are now in it, and each is here because a measurement said the
+bare loop could not be measured at all, not because a mechanism is nice to have:
+
+  * `PARSE_RETRIES`, `SUBMIT_RETRIES`, `FINISH_NUDGE_STEPS`, `REPEAT_NUDGE_LIMIT`
+    -- one unreadable reply, or one premature "I am done", used to end the whole
+    task. Measured: 73 of 266 runs reached the step cap with nothing submitted,
+    and one task died after exactly one model call.
+  * `OUTPUT_LIMIT`, `CONTEXT_CHAR_BUDGET` -- a command that printed a large file
+    left the next call over the model's context limit, which killed the task.
+  * line-buffered trace writes -- a block buffer meant a killed task lost its tail,
+    so "killed at step 30" and "never started" were the same record.
+
+All of them are still named switches with an `HG_AGENT_*` override, so a method
+may change or remove any of them; what a method adds *on top* is the measurement.
+The values actually in force go into the trace (`harness_identity.config`, below)
+and land on the curve point, because two runs of this same file at two different
+step caps are two different harnesses and the file hash cannot tell them apart.
 """
 from __future__ import annotations
 
@@ -150,7 +162,11 @@ def _call_mock(messages: list[dict]) -> str:
 #: calls (history_summary does) is only comparable against a free one if the
 #: spend is visible -- and because a harness whose cost is unknown cannot be
 #: ranked against a cheaper one that scores the same.
-USAGE = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "retries": 0}
+#: `context_trims` 单独计数:它是"模型拒绝了这条 prompt,于是我们削短了历史"的次数。
+#: 和 `retries`(网络/限流)不同 —— 那一种重试发的是同一条 prompt,这一种发的是**更短的**
+#: 一条,模型看到的历史因此和上一步不同。要能分开,才能解释"那一步为什么换了做法"。
+USAGE = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "retries": 0,
+         "context_trims": 0}
 
 
 def _record_usage(usage) -> None:
@@ -219,6 +235,19 @@ def _call_openai(messages: list[dict]) -> str:
             return resp.choices[0].message.content or ""
         except Exception as exc:                      # noqa: BLE001
             last = exc
+            # **历史太长是可恢复的,以前不是。** 实测(2026-10-04):`git-leak-recovery` 和
+            # `regex-chess` 死在 `maximum context length is 32768 tokens ... at least 32769
+            # input tokens`,而两道题之前都已经跑了十几步的有效功。字符预算挡不住它
+            # (见 `_trim_history`),所以这里按模型自己的拒绝削一半历史再试一次 —— 削掉的
+            # 步数记进 `USAGE["context_trims"]`,由主循环写进 trace,不是悄悄改历史。
+            if any(marker in str(exc) for marker in _CONTEXT_ERROR_MARKERS) \
+                    and len(messages) > 4 and attempt + 1 < attempts:
+                dropped = _trim_history(messages, budget=(CONTEXT_CHAR_BUDGET // 2))
+                if not dropped:
+                    dropped = _trim_history(messages, budget=1)
+                USAGE["context_trims"] += 1
+                USAGE["retries"] += 1
+                continue
             if attempt + 1 < attempts:
                 USAGE["retries"] += 1
                 time.sleep(min(2 ** attempt, 30))
@@ -235,6 +264,51 @@ def _complete(messages: list[dict]) -> str:
 
 
 # ------------------------------------------------------------- the loop -----
+
+class _Action(dict):
+    """A parsed action, plus what the parser had to repair to get it.
+
+    An attribute rather than a second return value, because every caller wants the
+    dict and only one wants the repair note. `duplicates` empty means the reply was
+    well formed and nothing was guessed.
+    """
+    duplicates: tuple[str, ...] = ()
+
+
+def _first_key_wins(pairs):
+    """Duplicated JSON keys: keep the **first** value, and say which keys repeated.
+
+    **This is measured, not defensive.** The local 9B (Qwen3.5-9B) writes a file like
+    this, and it is the whole reason `cancel-async-tasks` scored 0.0 in
+    `local-floor-9`:
+
+        {"tool": "bash", "command": "cat > /app/run.py << 'EOF'\n...\nEOF\n", "command": ""}
+
+    The real command is there, and then the model appends `, "command": ""`. JSON says
+    a duplicate key keeps the **last** value, so `json.loads` (and `raw_decode`) handed
+    the harness an empty command. The harness then ran the empty string -- exit 0, no
+    output -- and told the model `exit=0`. The model read that as success, answered
+    "the file /app/run.py has been created", and the verifier found no file. All 16
+    steps of that trajectory are the model writing the file, being told it worked, and
+    checking. Not one step of it wrote anything.
+
+    Taking the first value is the repair that matches intent here: the long command is
+    what the model meant, and the trailing `""` is noise from the same malformation
+    that produces its stray braces. It is recorded (`duplicate_keys` in the trace)
+    because a harness that silently rewrites the model's action and one that does not
+    are different harnesses.
+    """
+    action = _Action()
+    repeated: list[str] = []
+    for key, value in pairs:
+        if key in action:
+            repeated.append(key)
+            continue
+        action[key] = value
+    if repeated:
+        action.duplicates = tuple(repeated)
+    return action
+
 
 def _parse(reply: str) -> dict:
     """The **first JSON object** in a reply, ignoring anything after it.
@@ -272,7 +346,9 @@ def _parse(reply: str) -> dict:
     if reply.startswith("```"):
         reply = reply.split("```")[1]
         reply = reply[4:] if reply.startswith("json") else reply
-    decoder = json.JSONDecoder()
+    # `object_pairs_hook`, so duplicated keys are visible at all -- see
+    # `_first_key_wins` for the trajectory that made this necessary.
+    decoder = json.JSONDecoder(object_pairs_hook=_first_key_wins)
     for i, ch in enumerate(reply):
         if ch != "{":
             continue
@@ -280,7 +356,15 @@ def _parse(reply: str) -> dict:
             obj, _ = decoder.raw_decode(reply[i:])
         except json.JSONDecodeError:
             continue
-        if isinstance(obj, dict):
+        # **An object with no action in it is not this reply's action.** Without this
+        # check the scan returned *any* well-formed object, including one nested inside
+        # a command that was itself cut off mid-string. The loop then ran an empty
+        # command and reported success, which is the same silent no-op as the duplicate
+        # key above -- measured on the same trajectory, where the write attempts that
+        # were truncated mid-heredoc also produced `"command": ""`. Continuing instead
+        # means a reply with no usable action becomes a parse error, so the model is
+        # told and may reformat.
+        if isinstance(obj, dict) and (obj.get("command") or "answer" in obj):
             return obj
     raise ValueError("no JSON object found in reply")
 
@@ -327,19 +411,33 @@ def _clip_output(out: str) -> str:
             + out[-half:])
 
 
-def _trim_history(messages: list[dict]) -> int:
-    """丢最旧的成对消息,直到历史在 `CONTEXT_CHAR_BUDGET` 以内。返回丢掉的条数。
+def _trim_history(messages: list[dict], budget: int | None = None) -> int:
+    """丢最旧的成对消息,直到历史在 `budget`(默认 `CONTEXT_CHAR_BUDGET`)以内。返回丢掉的条数。
 
     `messages[0]` 是 system,`messages[1]` 是题面,两者永不丢。之后严格成对
     (assistant 动作、user 结果),所以一次删两条,而不是一条 —— 删一条会让"结果"成为
     历史里的第一条,模型会读到一段没有对应动作的输出。
+
+    **为什么需要一个更小的 `budget` 参数。** 字符数不是 token 数,两者的比例随内容在
+    2:1 到 4:1 之间浮动:代码、git 对象、base64 每 token 只有一两个字符,英文散文有
+    四个。实测(2026-10-04,`local-screen-1`):60000 字符的历史在 `git-leak-recovery` 和
+    `regex-chess` 上被 vLLM 判为 "at least 32769 input tokens" —— 字符预算满足了,token
+    预算没有。所以唯一可靠的判据是**模型自己说的**那个错误:`_call_openai` 收到它就按
+    一半预算再削一次历史并重试,而不是让整道题死掉。
     """
+    limit = CONTEXT_CHAR_BUDGET if budget is None else budget
     dropped = 0
     while len(messages) > 4 and \
-            sum(len(m.get("content") or "") for m in messages) > CONTEXT_CHAR_BUDGET:
+            sum(len(m.get("content") or "") for m in messages) > limit:
         del messages[2:4]
         dropped += 2
     return dropped
+
+
+#: 模型拒绝一条 prompt 时的两种说法(vLLM/OpenAI 兼容端点各一种)。判据是模型自己的措辞,
+#: 不是我们对 token 的估算 —— 估错了会削掉本该保留的历史,或者留下一个必然失败的长度。
+_CONTEXT_ERROR_MARKERS = ("maximum context length", "context length is", "context_length_exceeded",
+                          "reduce the length of the input prompt")
 
 
 def run(task: dict, workdir: Path) -> str:
@@ -368,9 +466,52 @@ def run(task: dict, workdir: Path) -> str:
     #   * `harness_failed` 的判据是"轨迹为空",于是"被杀"和"从没跑起来"在记录里同形。
     # 行缓冲每写一行就落盘,这三条一起消失,代价是一次 write 系统调用。
     with trace_path.open("w", buffering=1) as trace:
+        # **这份 harness 自己声明它的运行时预算。**
+        #
+        # 平台从外面只能看见 harness 目录的哈希。可哈希相同、行为不同的两份 harness 是
+        # 存在的:`HG_AGENT_MAX_STEPS=16` 和 `=32` 跑同一个文件,一条轨迹 16 步就停、
+        # 另一条能跑 32 步 —— 实测(2026-10-04,本地 9B 跑 `build-pmars`)32 步需要约
+        # 1100 秒,超过题目自带的 900 秒预算,于是它超时;16 步则跑得完。这两次测量的
+        # 曲线点上原来没有任何一个字段不同,读者无法分辨"同一外壳跑两次"和"两个预算
+        # 各跑一次"。
+        #
+        # 所以这里声明一次,由平台记到曲线点上(`harnessgrad/identity.py:harness_config`)。
+        # 同时声明 model/backend:这个 harness 读 `HG_AGENT_MODEL`,但只有它自己知道读到
+        # 了什么,平台的环境变量在别处会因改名而与实际不符(INTERFACE.md §3)。
+        identity = {"harness": "loop", "config": {
+            "max_steps": MAX_STEPS, "submit_retries": SUBMIT_RETRIES,
+            "parse_retries": PARSE_RETRIES, "finish_nudge_steps": FINISH_NUDGE_STEPS,
+            "repeat_nudge_limit": REPEAT_NUDGE_LIMIT, "output_limit": OUTPUT_LIMIT,
+            "context_chars": CONTEXT_CHAR_BUDGET}}
+        for key, value in (("agent_model", os.environ.get("HG_AGENT_MODEL")),
+                           ("agent_backend", _backend())):
+            if value:
+                identity[key] = value
+        trace.write(json.dumps({"harness_identity": identity}) + "\n")
+        # **每一步的时间去哪了。** 实测(2026-10-04):本地 9B 跑 `build-pmars`,26 步撞上
+        # 题目自带的 900 秒预算被杀。可它是"模型慢"还是"命令慢",记录里看不出来 —— trace
+        # 只有步数,没有任何时间字段。这两件事的平台处置完全相反:模型慢要缩步数上限或
+        # 换模型,命令慢是这道题自己的成本(装依赖),换模型没用。
+        #
+        # 所以每步记两个毫秒数:等模型的时间、跑命令的时间。总和不等于墙钟时,差额就是
+        # harness 自己的开销,那也是要看得见的东西。
+        started = time.time()
+        model_s = command_s = 0.0
+        trims_before = USAGE["context_trims"]
         for step in range(MAX_STEPS):
+            t0 = time.time()
             reply = _complete(messages)
-            trace.write(json.dumps({"step": step, "reply": reply}) + "\n")
+            took = time.time() - t0
+            model_s += took
+            trace.write(json.dumps({"step": step, "reply": reply,
+                                    "model_ms": int(took * 1000)}) + "\n")
+            # 这一步的 prompt 被模型拒绝过,harness 因此削短了历史再问。模型这一步看到的
+            # 历史比上一步短 —— 不记下来的话,"它为什么换了做法"在 trace 里没有答案。
+            if USAGE["context_trims"] > trims_before:
+                trace.write(json.dumps({
+                    "step": step, "context_trims": USAGE["context_trims"],
+                    "history_kept": len(messages)}) + "\n")
+                trims_before = USAGE["context_trims"]
             messages.append({"role": "assistant", "content": reply})
 
             try:
@@ -392,6 +533,14 @@ def run(task: dict, workdir: Path) -> str:
                     '  {"answer": "<your final answer>"}')})
                 continue
 
+            # **修过的地方要留痕。** 重复键的回复被解析成"第一个值放前面"之后,模型看到的
+            # 命令和它写的不完全一样(它写了两遍,harness 取了第一遍)。一次被静默改写的
+            # 动作和一次原样执行的动作不是同一件事,记录里必须分开。
+            repaired = getattr(action, "duplicates", ())
+            if repaired:
+                trace.write(json.dumps({"step": step,
+                                        "duplicate_keys": list(repaired)}) + "\n")
+
             # **交卷闸门。** 顺序按"它想干什么"判断,而不是按哪个键先出现:
             # 一条回复里同时带 command 和 answer 时,以前"先看 answer"会让那条命令
             # 永远不执行(实测:`{"tool":"bash","command":"cat > /app/run.py …"}` 被当成
@@ -411,12 +560,16 @@ def run(task: dict, workdir: Path) -> str:
                                         "missing": missing}) + "\n")
                 answer = str(action["answer"])
                 break
+            t0 = time.time()
             proc = subprocess.run(
                 cmd, shell=True, cwd=workdir, capture_output=True, text=True
             )
+            took = time.time() - t0
+            command_s += took
             out = proc.stdout + proc.stderr
             trace.write(json.dumps({"step": step, "command": cmd,
-                                    "exit": proc.returncode, "output": out}) + "\n")
+                                    "exit": proc.returncode,
+                                    "command_ms": int(took * 1000), "output": out}) + "\n")
             shown = _clip_output(out)
             if shown != out:
                 trace.write(json.dumps({"step": step, "output_clipped": len(out),
@@ -449,6 +602,14 @@ def run(task: dict, workdir: Path) -> str:
             dropped = _trim_history(messages)
             if dropped:
                 trace.write(json.dumps({"step": step, "history_dropped": dropped}) + "\n")
+
+        # Where the wall clock went. Separate from `usage` (which counts tokens):
+        # a reader asking "was this killed for being slow, and slow at what" gets one
+        # line, and a harness that is slow on its own shows up as `total` exceeding
+        # model + commands.
+        trace.write(json.dumps({"wall_clock_s": {
+            "model": round(model_s, 1), "commands": round(command_s, 1),
+            "total": round(time.time() - started, 1)}}) + "\n")
 
         # What the run cost. Kept because a harness that cannot say what it spent
         # cannot be compared with a cheaper one at the same score -- and because

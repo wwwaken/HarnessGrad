@@ -209,3 +209,162 @@ def test_the_history_is_trimmed_and_the_trim_is_recorded(agent, tmp_path, monkey
     assert dropped, "历史没有被修剪"
     # 修剪之后,历史长度不再单调增长 —— 这正是它要保证的
     assert max(seen) < 8, seen
+
+
+# ------------------------------------------------ 重复键:一次静默的空动作 ---
+
+#: `local-floor-9` 里 `cancel-async-tasks` 第 0 步**原样**的回复(875 字符)。
+#: 真实命令在里面,末尾又被模型补了一个空的 `"command": ""`。
+_DUPLICATE_KEY_REPLY = (
+    '{"tool": "bash", "command": "cat > /app/run.py << \'EOF\'\\n'
+    "import asyncio\\n\\nasync def run_tasks(tasks, max_concurrent):\\n"
+    "    semaphore = asyncio.Semaphore(max_concurrent)\\n"
+    "EOF\\n\", \"command\": \"\"}")
+
+
+def test_a_duplicated_command_key_keeps_the_first_value(agent):
+    """JSON 说重复键取最后一个。模型把真命令放在**第一个**里,于是命令变成了空串。
+
+    实测(`local-floor-9`,`cancel-async-tasks`):第 0/2/13 步三次写文件的回复全都长这样,
+    每一次 `_parse` 都返回 `{"tool": "bash", "command": ""}`,harness 于是执行空字符串 ——
+    退出码 0、没有输出 —— 并把 `exit=0` 发给模型。模型据此回答"文件已创建",而判分脚本报
+    `File /app/run.py does not exist`。16 步里没有一步写过文件。
+    """
+    action = agent._parse(_DUPLICATE_KEY_REPLY)
+    assert action["command"].startswith("cat > /app/run.py"), action
+    assert action["command"].rstrip().endswith("EOF"), action
+    assert action.duplicates == ("command",), action.duplicates
+
+
+def test_the_repair_is_written_to_the_trace(agent, tmp_path, monkeypatch):
+    """被改写的动作与被原样执行的动作不是同一件事,记录里必须分得开。"""
+    fake, _ = _scripted(agent, [_DUPLICATE_KEY_REPLY, '{"answer": "done"}'])
+    monkeypatch.setattr(agent, "_complete", fake)
+    agent.run({"goal": "say done"}, tmp_path)
+    events = _events(tmp_path)
+    noted = [e for e in events if "duplicate_keys" in e]
+    assert noted and noted[0]["duplicate_keys"] == ["command"], events
+    # 命令真的跑了(而且不是空串)
+    ran = [e for e in events if "command" in e]
+    assert ran and ran[0]["command"].startswith("cat >"), ran
+
+
+def test_a_reply_with_no_action_never_runs_an_empty_command(agent, tmp_path,
+                                                            monkeypatch):
+    """空命令以前是**成功**的一步:exit 0、无输出。它必须是读不懂的回复。"""
+    fake, _ = _scripted(agent, ['{"tool": "bash", "command": ""}',
+                                '{"answer": "done"}'])
+    monkeypatch.setattr(agent, "_complete", fake)
+    agent.run({"goal": "say done"}, tmp_path)
+    events = _events(tmp_path)
+    assert [e for e in events if "parse_error" in e], events
+    assert not [e for e in events if "command" in e], events
+
+
+def test_a_truncated_reply_does_not_lend_its_nested_object(agent):
+    """回复被截断时,里面嵌的那个完整对象不是动作。
+
+    这条是同一个 bug 的第二副面孔:扫描器以前返回**第一个能解析的**对象,嵌套的那个也算。
+    返回它 = 命令为空 = 静默空动作。现在它必须变成一次读不懂的回复。
+    """
+    truncated = ('{"tool": "bash", "command": "cat > /app/x.py << \'EOF\'\\n'
+                 'import json\\nd = {"a": 1}\\n')
+    with pytest.raises(ValueError):
+        agent._parse(truncated)
+
+
+def test_an_empty_answer_is_still_a_valid_reply(agent):
+    """修窄了会伤到这条:`{"answer": ""}` 是一个合法动作(题面可能只要答案为空)。"""
+    assert agent._parse('{"answer": ""}') == {"answer": ""}
+
+
+
+# ------------------------------------- 历史太长是可以恢复的,不是整道题的死因 ---
+
+def _rejecting_provider(limit: int, *, always: bool = False):
+    """A fake `openai` module whose provider refuses any prompt over `limit` chars.
+
+    The real message is vLLM's, verbatim -- the harness keys on the model's own words
+    rather than on an estimate of its own.
+    """
+    import types
+
+    state = {"calls": 0, "rejected": 0, "sizes": []}
+
+    class Completions:
+        def create(self, model, messages, temperature):
+            state["calls"] += 1
+            size = sum(len(m.get("content") or "") for m in messages)
+            state["sizes"].append(size)
+            if always or size > limit:
+                state["rejected"] += 1
+                raise Exception(
+                    "This model's maximum context length is 32768 tokens. However, you "
+                    "requested 0 output tokens and your prompt contains at least 32769 "
+                    "input tokens. Please reduce the length of the input prompt")
+            body = '{"tool": "bash", "command": "head -c 3000 /dev/zero | tr \\"\\\\0\\" z"}'
+            return types.SimpleNamespace(
+                usage=None,
+                choices=[types.SimpleNamespace(
+                    message=types.SimpleNamespace(content=body))])
+
+    module = types.ModuleType("openai")
+    module.OpenAI = lambda **kw: types.SimpleNamespace(
+        chat=types.SimpleNamespace(completions=Completions()))
+    return module, state
+
+
+@pytest.fixture()
+def openai_env(monkeypatch):
+    monkeypatch.setenv("HG_AGENT_BACKEND", "openai")
+    monkeypatch.setenv("HG_AGENT_BASE_URL", "http://127.0.0.1:1/v1")
+    monkeypatch.setenv("HG_AGENT_API_KEY", "probe")
+    monkeypatch.setenv("HG_AGENT_MODEL", "probe")
+    monkeypatch.setenv("HG_AGENT_RETRIES", "3")
+
+
+def test_a_prompt_the_model_rejects_is_trimmed_and_retried(agent, tmp_path, monkeypatch,
+                                                           openai_env):
+    """**实测 `local-screen-1`:`git-leak-recovery` 和 `regex-chess` 就是这样死的。**
+
+    两道题都跑了十几步有效功,然后死在
+    `maximum context length is 32768 tokens ... at least 32769 input tokens`。
+    字符预算挡不住它:代码、git 对象、base64 每 token 只有一两个字符,而预算是按字符
+    算的(见 `_trim_history`)。所以判据改成模型自己的措辞,削一半历史再问 —— 那两道题
+    本来都还能继续做。
+    """
+    module, state = _rejecting_provider(limit=5000)
+    monkeypatch.setitem(sys.modules, "openai", module)
+    monkeypatch.setattr(agent, "MAX_STEPS", 8)
+    monkeypatch.setattr(agent, "OUTPUT_LIMIT", 4000)
+    # 故意留一个挡不住它的字符预算:这正是线上那个 60000
+    monkeypatch.setattr(agent, "CONTEXT_CHAR_BUDGET", 60000)
+
+    agent.run({"goal": "grow"}, tmp_path)
+
+    events = _events(tmp_path)
+    assert state["rejected"] >= 1, "这个测试没有真的触发拒绝"
+    assert len([e for e in events if "command" in e]) == 8, \
+        "被拒绝之后整道题就结束了 —— 这正是要修的那件事"
+    usage = [e["usage"] for e in events if "usage" in e][0]
+    assert usage["context_trims"] == state["rejected"], (usage, state)
+    # 削短过历史这件事必须在记录里,不能悄悄发生
+    trims = [e for e in events if "context_trims" in e and "reply" not in e]
+    assert trims and trims[0]["history_kept"] >= 3, events
+    # 削短之后请求确实变小了
+    assert min(state["sizes"]) < 5000, state["sizes"]
+
+
+def test_a_prompt_that_is_still_too_long_is_a_harness_failure(agent, tmp_path, monkeypatch,
+                                                              openai_env):
+    """反向的一半:修不好的情况必须响亮地失败,而不是继续跑出一个空轨迹。
+
+    一个已经有 N 次尝试的失败和一个"从没跑起来"的失败在记录里长得一样,所以这里要求
+    异常照旧抛出去(平台会记成 harness failure),而不是被吞掉。
+    """
+    module, state = _rejecting_provider(limit=0, always=True)
+    monkeypatch.setitem(sys.modules, "openai", module)
+    monkeypatch.setattr(agent, "MAX_STEPS", 3)
+    with pytest.raises(Exception):
+        agent.run({"goal": "hopeless"}, tmp_path)
+    assert state["rejected"] >= 1

@@ -321,28 +321,42 @@ def main() -> int:
     # point's improver field then depended on a mutable global, and "what does this point
     # claim" could not be answered without running the program that produced it.
     improver: dict = {}
+    # **`--improver none` is a statement, not a failure to resolve.** A method may carry
+    # its own improver -- `methods/noop` carries nothing at all, and the control harness
+    # is the measurement. Without this the control recorded the *default* improver on
+    # every point: a run in which deepseek was never called still said
+    # `identity.improver: deepseek`, which is exactly the "the record names a party that
+    # did no work" defect the improver field exists to prevent. Distinct from the
+    # unresolvable case below, which is reported as a warning because it is unexpected.
+    carries_its_own = (args.improver or "").strip().lower() in ("none", "noop", "null")
+    if carries_its_own:
+        os.environ.pop("HG_IMPROVER_NAME", None)
     # The request travels through the environment, because that is how the improver
     # itself is configured (`HG_IMPROVER*` are what the CLI improver reads) -- resolving
     # and executing must not disagree about which one was chosen.
-    if args.improver:
+    elif args.improver:
         os.environ["HG_IMPROVER_NAME"] = args.improver
     if args.improver_model:
         os.environ["HG_IMPROVER_MODEL"] = args.improver_model
     if args.improver_effort:
         os.environ["HG_IMPROVER_EFFORT"] = args.improver_effort
-    try:
-        improver = resolve_improver(load_improvers(), version="",
-                                    requested=args.improver,
-                                    model_override=args.improver_model)
-    except Exception as exc:                                    # noqa: BLE001
-        improver = {"ok": False, "reason": f"could not read the improver config: {exc}"}
-    if improver.get("ok"):
+    if carries_its_own:
+        console.note("improver none  ← the method carries its own; nothing recorded")
+    else:
+        try:
+            improver = resolve_improver(load_improvers(), version="",
+                                        requested=args.improver,
+                                        model_override=args.improver_model)
+        except Exception as exc:                                # noqa: BLE001
+            improver = {"ok": False,
+                        "reason": f"could not read the improver config: {exc}"}
+    if improver and improver.get("ok"):
         console.note(
             f"improver {improver['name']} {improver['version']}"
             + (f" · model {improver['model']}" if improver.get("model") else "")
             + f" · sha {improver['sha256'][:12]}"
             + ("  ← declared MODIFIED" if improver.get("modified") else ""))
-    else:
+    elif improver:
         console.note(
             f"no improver resolved ({improver.get('reason')}); a method that carries its "
             f"own improver still runs, but this run carries no improver identity",
@@ -523,6 +537,15 @@ def main() -> int:
                 level="error")
             return 2
 
+    # **Same decision as `fresh=True` below, applied to docker objects.** A killed run
+    # leaves its per-task networks (and any service container) behind, and the next run
+    # under the same id then dies of the *previous* crash: `docker network create ...
+    # already exists`. Reusing an id means "start clean", so say it once here.
+    leftovers = services_mod.reap(run_id)
+    if leftovers:
+        console.note("could not remove everything a previous run left behind:\n  "
+                     + "\n  ".join(leftovers[:6]), level="warn")
+
     _write_run_meta(
         run_dir, run_id=run_id, mode=mode, harness=args.harness,
         dataset=args.dataset, sampling_policy=args.sampling,
@@ -602,8 +625,21 @@ def main() -> int:
                   "env_generation_tokens": 0, "wall_clock_s": 0.0}
 
     # ---- round 0: score H0 on everything, then fix the task set from it ----
+    # Committed **before** the measurement, so the measurement can be cached under the
+    # content it actually measured.
+    #
+    # The cache key used to be the literal string `"H0"`, while every later round keyed on
+    # the content sha -- so a candidate that was byte-identical to H0 (a control method,
+    # or a method whose candidates were all rejected) missed the cache and paid for a
+    # second full measurement of the same tree. Measured on `B2-noop` (2026-10-04): round
+    # 1 re-ran all five tasks and scored 0.467 against round 0's 0.267, on the same
+    # `harness_sha`, and the second number was read as the control "moving". Which of
+    # those two numbers a run reports must not depend on whether a cache key happened to
+    # match: content-addressed, an unchanged tree has one measurement, and the spread of
+    # a measurement is what `--trials` is for.
+    h0_sha = commit_state(work, "H0")
     t0 = time.time()
-    base = evaluate(work, tasks_all, scorable, cache, harness_sha="H0",
+    base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
                     trials=args.trials, jobs=args.jobs,
                     sandbox=args.sandbox, setups=setups, verifiers=verifiers,
                     envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
@@ -664,9 +700,9 @@ def main() -> int:
             f"this run scores {len(task_ids)} tasks — the score moves in steps of "
             f"{1.0 / len(task_ids):.3f}", level="warn")
 
-    h0_sha = commit_state(work, "H0")
     # Round 0's state too: "measure H0 on the exam" is the baseline every later eval is
     # read against, and it needs a state to measure exactly like any other round.
+    # (`h0_sha` was committed before the measurement, above.)
     _save_round_state(run_dir, 0, work)
     curve = [_curve_point(
         run_id=run_id, round_index=0,
@@ -685,7 +721,9 @@ def main() -> int:
         cost=_cost_of(base, len(tasks_all), cumulative["wall_clock_s"]),
         cumulative=cumulative, label="H0 (base harness)",
         n_trials=base.get("trials"), score_std=base.get("score_std"),
-        per_task_std=base.get("per_task_std"))]
+        per_task_std=base.get("per_task_std"),
+        per_task_trials=base.get("per_task_trials"),
+        cached_tasks=base.get("cached_tasks"))]
     # The base harness is always evaluated by the platform, so its point is a
     # platform measurement like any other. Leaving the field unset made the
     # exported record claim the score was the method's -- the opposite of true.
@@ -701,7 +739,8 @@ def main() -> int:
     # it ran DGM". The record has to be durable at the moment it is produced.
     _write_curve(curve_path, curve)
     _save_verdicts(run_dir, 0, base, [t["task_id"] for t in tasks])
-    _save_traces(run_dir, 0, base.get("traces") or {}, train_ids, split)
+    _save_traces(run_dir, 0, base.get("traces") or {}, train_ids, split,
+                 trial_traces=base.get("trial_traces"))
 
     # 在分派之前挡住相对的入口路径。放在 main 里,因为 `_run_mode_a/b` 返回的是
     # 曲线,不是退出码 —— 第一次把检查放进 mode 函数时,`return 2` 让 main 拿一个

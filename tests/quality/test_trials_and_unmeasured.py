@@ -78,8 +78,89 @@ def test_trials_reach_the_curve_point_end_to_end(tmp_path):
     point = json.loads((runs / "trials-check" / "curve.jsonl").read_text().splitlines()[0])
     assert point["n_trials"] == 2
     assert "score_std" in point and "per_task_std" in point
-    # 每道题一个方差(float) —— 两次试验的原始分数在 runner 的结果里,不在曲线点上
+    # 每道题一个方差(float),以及**两次试验各自的分数** —— 后者原来只在 runner 的结果里,
+    # 运行结束后就没了(见下面那条测试)。
     assert point["per_task_std"] and all(v >= 0 for v in point["per_task_std"].values())
+    assert point["per_task_trials"], point.keys()
+    assert all(len(v) == 2 for v in point["per_task_trials"].values()), point["per_task_trials"]
+
+
+def test_one_trial_puts_no_trial_list_on_the_point(tmp_path):
+    """反向的一半:只测一次时不留 `per_task_trials`。
+
+    一次试验的"列表"就是分数本身。写出来会让"我只测了一次"和"我测了三次都是同一个数"
+    在记录里长得一样 —— 而后者是重复测量,前者不是。
+    """
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "0", "--trials", "1", "--run-id", "one-trial", "--dataset", "demo",
+         "--sampling", "all", "--runs-root", str(runs),
+         "--work-root", str(tmp_path / "work")],
+        cwd=ROOT, capture_output=True, text=True, timeout=600, env=env)
+    assert proc.returncode == 0, f"{proc.stdout[-500:]}\n{proc.stderr[-500:]}"
+    point = json.loads((runs / "one-trial" / "curve.jsonl").read_text().splitlines()[0])
+    assert "per_task_trials" not in point and "per_task_std" not in point
+
+
+def test_the_runner_keeps_every_trial_s_trace_and_verdict(tmp_path, monkeypatch):
+    """**每题每次试验的轨迹与判据都要留下,不只最后一次。**
+
+    实测(`B2-noop`,`cobol-modernization`):分数 0.667 —— 三次里过了两次;存下来的判据
+    是**最后一次**的,而它passed。于是记录一边写 `passed: true`,一边写 `score: 0.667`,
+    失败那次的轨迹和理由是空的。`--trials` 存在的全部意义就是回答"第三次发生了什么",
+    而这个问题当时没有任何地方能回答。
+    """
+    seq = iter([1.0, 0.0, 1.0])
+
+    def fake(*_a, **_k):
+        score = next(seq)
+        return {"verdict": {"kind": "command", "passed": score == 1.0, "score": score,
+                            "detail": f"trial score {score}"},
+                "trace": f"trace for {score}", "exit_code": 0, "stderr": ""}
+
+    monkeypatch.setattr(runner, "run_one", fake)
+    res = runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=3)
+    assert res["per_task_trials"]["t1"] == [1.0, 0.0, 1.0]
+    assert res["trial_traces"]["t1"] == ["trace for 1.0", "trace for 0.0", "trace for 1.0"]
+    assert [v["passed"] for v in res["trial_verdicts"]["t1"]] == [True, False, True]
+    # 兼容:`verdicts` 仍然是最后一次,老读者照旧
+    assert res["verdicts"]["t1"]["passed"] is True
+    assert res["traces"]["t1"] == "trace for 1.0"
+
+
+def test_a_named_trial_that_failed_is_readable_on_disk(tmp_path):
+    """端到端:失败那次的轨迹和理由要能在磁盘上按名字找到。
+
+    这条测试是拿真实缺口写的:一个 0.667 旁边的 `passed: true`。修复之后,同一个目录里
+    有 `t1.trial2.jsonl`(失败那次),而判据 JSON 里有 `trial_scores: [1, 0, 1]`。
+    """
+    from harnessgrad.records import _save_traces, _save_verdicts
+
+    res = {"per_task": {"t1": 2 / 3}, "per_task_std": {"t1": 0.4714},
+           "per_task_trials": {"t1": [1.0, 0.0, 1.0]},
+           "traces": {"t1": "LAST TRIAL TRACE"},
+           "trial_traces": {"t1": ["FIRST", "SECOND (failed)", "THIRD"]},
+           "verdicts": {"t1": {"kind": "command", "passed": True, "detail": "third passed"}},
+           "trial_verdicts": {"t1": [
+               {"kind": "command", "passed": True, "detail": "first passed"},
+               {"kind": "command", "passed": False, "detail": "second FAILED here"},
+               {"kind": "command", "passed": True, "detail": "third passed"}]}}
+    _save_traces(tmp_path, 0, res["traces"], ["t1"], trial_traces=res["trial_traces"])
+    _save_verdicts(tmp_path, 0, res, ["t1"])
+
+    traces = tmp_path / "round0_traces"
+    assert (traces / "t1.jsonl").read_text() == "LAST TRIAL TRACE"
+    assert (traces / "t1.trial1.jsonl").read_text() == "FIRST"
+    assert (traces / "t1.trial2.jsonl").read_text() == "SECOND (failed)"
+    assert (traces / "t1.trial3.jsonl").read_text() == "THIRD"
+
+    entry = json.loads((tmp_path / "verdicts" / "round-0" / "t1.json").read_text())
+    assert entry["score"] == pytest.approx(2 / 3)
+    assert entry["trial_scores"] == [1.0, 0.0, 1.0], entry
+    assert [t["passed"] for t in entry["trials"]] == [True, False, True], entry
+    assert "second FAILED here" in json.dumps(entry), entry
 
 
 # ------------------------------------------------- 没测到 ≠ 测出来是 0 ---
@@ -107,3 +188,68 @@ def test_a_measured_zero_is_still_a_zero(tmp_path, monkeypatch):
     res = runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=1)
     assert res["per_task"] == {"t1": 0.0}
     assert res["invalid"] == {}
+
+
+# ------------------------------------------------- 重测与复用,不能同形 ---
+
+def test_an_unchanged_tree_is_measured_once_and_says_so(tmp_path):
+    """**同一棵树只测一次;复用的那次要在记录里说明白。**
+
+    实测(`B2-noop`, 2026-10-04):round 0 与 round 1 的 `harness_sha` 完全相同(对照方法
+    什么都没改),可 round 1 把五道题**重测了一遍**,0.267 → 0.467。原因是 H0 的缓存键
+    是字面量 `"H0"`,而后面每一轮用内容哈希 —— 于是"内容相同的候选"永远命不中缓存。
+    谁都能看出这是缺陷(白花钱),但真正的代价是另一面:一个**没动过**的对照曲线因为一次
+    缓存不命中而"上涨了 0.200",而另一条曲线会不会上涨,取决于缓存键恰好对不对得上。
+
+    修法:缓存按内容寻址。代价是噪声不再从"重复测量"里冒出来 —— 那是 `--trials` 的活,
+    而且它现在是显式的;收益是"复用的测量"变成一个可读的事实(`n_cached`)。
+    """
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "2", "--trials", "2", "--run-id", "cache-content", "--dataset", "demo",
+         "--sampling", "all", "--runs-root", str(runs),
+         "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=900, env=env)
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "cache-content" / "curve.jsonl").read_text().splitlines()
+              if l.strip()]
+    r0, r1 = points[0], points[-1]
+    # 前置条件:方法什么都没改,所以两轮测的是同一棵树
+    assert r1["identity"]["harness_sha"] == r0["identity"]["harness_sha"], points
+    assert r1.get("n_cached") == r1["n_scored"], (
+        "同一棵树的第二轮没有复用第一轮的测量 —— 它又跑了一遍:"
+        f"n_cached={r1.get('n_cached')}, n_scored={r1['n_scored']}")
+    assert r1["per_task"] == r0["per_task"]
+    assert r1["per_task_trials"] == r0["per_task_trials"]
+    # 复用是记下来的,不是靠分数相同去猜的
+    assert sorted(r1["cached_tasks"]) == sorted(r0["per_task"]), r1["cached_tasks"]
+
+
+def test_a_changed_tree_is_not_a_cache_hit(tmp_path):
+    """反向的一半:树真的变了就必须重新测,`n_cached` 不能把它吃掉。
+
+    否则这条修法会把"方法改好了"也一起缓存掉 —— 那比白花钱严重得多。
+    """
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop", "--mode", "A",
+         "--rounds", "1", "--trials", "1", "--run-id", "cache-changed", "--dataset", "demo",
+         "--sampling", "all", "--runs-root", str(runs),
+         "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/echo_base/run.py'}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=900, env=env)
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    points = [json.loads(l) for l in
+              (runs / "cache-changed" / "curve.jsonl").read_text().splitlines()
+              if l.strip()]
+    r0, r1 = points[0], points[-1]
+    # 前置条件必须自己先成立,否则这条测试会"通过"但什么都没测
+    assert r1["identity"]["harness_sha"] != r0["identity"]["harness_sha"], (
+        "echo_base 没有改动这棵树,这条测试就没有测到缓存")
+    assert not r1.get("n_cached"), (
+        "树变了却复用了缓存:" + str(r1.get("cached_tasks")))

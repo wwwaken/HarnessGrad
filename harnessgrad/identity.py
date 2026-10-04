@@ -108,7 +108,8 @@ def _improver_runtime(improver: dict | None) -> tuple[str, ...]:
 
 
 def _identity(man: dict, sha: str, mode: str, method_model: str = "n/a",
-              declared: dict | None = None, improver: dict | None = None) -> dict:
+              declared: dict | None = None, improver: dict | None = None,
+              method: str | None = None) -> dict:
     """Who produced this number.
 
     There is no platform-side method identity any more: the method IS the
@@ -147,7 +148,30 @@ def _identity(man: dict, sha: str, mode: str, method_model: str = "n/a",
         **({"improver": _improver_identity(improver)} if improver else {}),
         # Which instructions the improver was given, kept apart from which improver it was.
         **({"skill_sha": s} if (s := _skill_sha()) else {}),
+        # **Which method produced this candidate.** The point carried `method_model` and the
+        # improver's name, but never the *method*: the only place it appeared was
+        # `run_meta.method_entrypoint`, a path. So a curve copied out of its run directory --
+        # which is how a curve is read, plotted and compared -- could not say whether round 1
+        # came from `llm_improver` or from `rrsi`, and two methods in one figure were
+        # indistinguishable except by their scores. The method reports its own name in every
+        # step (`methods/editor.py:report(method=...)`), so this is that name, read from the
+        # step rather than guessed from the entrypoint's directory.
+        **({"method": method} if method else {}),
         **({"harness_identity": declared} if declared else {}),
+        # **The harness's own runtime budget, promoted out of the declaration.**
+        #
+        # `HG_AGENT_MAX_STEPS=16` and `=32` run the same harness file: one trajectory
+        # stops at 16 steps and the other reaches 32. Measured (2026-10-04, local 9B on
+        # `build-pmars`): 32 steps at ~35 s/step is ~1100 s, past the task's own 900 s
+        # agent budget, so the run is killed; 16 steps finishes. Both used to produce
+        # curve points that differed in *no* field, which makes "the same harness
+        # measured twice" and "two harnesses" the same record.
+        #
+        # Promoted rather than left nested so a reader can ask one question --
+        # `identity.harness_config.max_steps` -- without knowing the declaration's
+        # shape. Absent when the harness declares nothing, which is a fact ("this
+        # harness does not say") and not a zero.
+        **({"harness_config": c} if (c := (declared or {}).get("config")) else {}),
         **({"agent_model_conflict": c} if (c := _conflict(declared)) else {}),
     }
 

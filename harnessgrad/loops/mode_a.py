@@ -210,7 +210,16 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                                  "why": "the method wrote no trajectory"})
             continue
 
-        step = (json.loads(traj_path.read_text()).get("steps") or [{}])[0]
+        traj = json.loads(traj_path.read_text())
+        step = (traj.get("steps") or [{}])[0]
+        # **The method's own name, from where it actually is.** It travels in the
+        # trajectory's `provenance`, beside `steps` -- not in a step, and not in the
+        # method's stdout (`emit` carries only the platform's own fields). Measured the
+        # hard way: the first version of this read `step["method"]` and every point came
+        # back with no method at all, which is the gap this is meant to close.
+        step_method = ((traj.get("provenance") or {}).get("method")
+                       or (step.get("provenance") or {}).get("method")
+                       or step.get("method") or reply.get("method"))
         src = step.get("harness_dir")
         if not src or not Path(src).is_dir():
             console.note(f"round {r}: method named no readable harness_dir "
@@ -272,7 +281,19 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         candidate_problems = candidate.validate(work, base_manifest=man)
         has_manifest = not candidate_problems
         sha = commit_state(work, f"round {r}: {step.get('label', 'method step')}")
-        _save_round_diff(run_dir, r, work, curve[-1]["identity"]["harness_sha"], sha)
+        diff = _save_round_diff(run_dir, r, work,
+                                curve[-1]["identity"]["harness_sha"], sha)
+        # **What changed, measured -- as opposed to what the method said it changed.**
+        #
+        # `edits_applied` used to be the method's own `files` list, and on `B2-llm`
+        # (2026-10-04) that list said `["agent.py"]` for two rounds whose patch was
+        # **0 bytes** and whose `harness_sha` never moved: the local model rewrote the
+        # same broken file with the same broken content, and the record read as two new
+        # candidates that were never new. The diff is the platform's own, it is already
+        # computed for the panel, and it cannot be wrong about whether the tree moved.
+        # The method's claim is kept beside it (`files_claimed`) rather than dropped: a
+        # method that names a file it did not change is itself a finding.
+        changed_files = [f["path"] for f in (diff.get("files") or [])]
         _save_round_state(run_dir, r, work)
         t0 = time.time()
         res = (evaluate(work, tasks, scorable, cache, harness_sha=sha, jobs=args.jobs,
@@ -297,7 +318,8 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             identity=_identity(man, sha, mode,
                                method_model=reply.get("method_model") or "n/a",
                                declared=(res or {}).get("identity_declared"),
-                               improver=improver),
+                               improver=improver,
+                               method=step_method),
             sampling=sampling,
             scores=[res["per_task"][t] for t in _scored(res, task_ids)],
             task_ids=_scored(res, task_ids),
@@ -314,9 +336,12 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             cumulative=cumulative,
             n_trials=(res or {}).get("trials"), score_std=(res or {}).get("score_std"),
             per_task_std=(res or {}).get("per_task_std"),
+            per_task_trials=(res or {}).get("per_task_trials"),
+            cached_tasks=(res or {}).get("cached_tasks"),
             label=step.get("label", ""),
             hypothesis=reply.get("hypothesis"),
-            edits_applied=reply.get("files"),
+            edits_applied=changed_files,
+            files_claimed=reply.get("files"),
             candidate_problems=candidate_problems,
             method_reported=step.get("method_reported") or {})
         point["edit_kind"] = step.get("edit_kind")
@@ -388,7 +413,8 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         if res is not None:
             base = res
             _save_verdicts(run_dir, r, res, task_ids)
-            _save_traces(run_dir, r, res.get("traces") or {}, train_ids, split)
+            _save_traces(run_dir, r, res.get("traces") or {}, train_ids, split,
+                         trial_traces=res.get("trial_traces"))
         # `changed: false` was doing two jobs, and mode A conflated them:
         #
         #   "I have nothing more to say"   a method that is finished

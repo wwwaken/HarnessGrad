@@ -418,6 +418,50 @@ def test_a_start_that_fails_does_not_leave_a_network(tmp_path):
     assert left == [], f"a failed start left a network behind: {left}"
 
 
+def _leftovers(run_id: str) -> list[str]:
+    return container.docker(
+        "network", "ls", "--filter", f"label=harnessgrad.run={run_id}",
+        "--format", "{{.Name}}").stdout.split()
+
+
+def test_a_leftover_network_from_a_crash_does_not_kill_the_next_run(tmp_path):
+    """实测(2026-10-04):`local-floor-5/6`、`local-cap12` 被杀之后各留下一串网络。
+
+    代价不是磁盘:下一个用同一个 id 的跑道会死在 `docker network create ... already
+    exists` —— 一次测量死在上一次崩溃的手里,而报错看起来是这一次的问题。
+    """
+    _require_docker()
+    run_id = "reaped-run"
+    leftover = services.create_network(run_id, "s01")
+    try:
+        assert _leftovers(run_id) == [leftover], "前置条件:先有一个崩溃留下的网络"
+        assert services.reap(run_id) == [], "reap 说没能清掉它自己刚留下的东西"
+        assert _leftovers(run_id) == [], "崩溃留下的网络还在,下一次创建还会撞名"
+        # 这条才是 reap 要买的东西:同一个网络名可以被重新创建
+        again = services.create_network(run_id, "s01")
+    finally:
+        for net in _leftovers(run_id):
+            services.remove_network(net)
+    assert again == leftover
+
+
+def test_reap_removes_a_service_container_a_crash_left_running(tmp_path):
+    """`docker run --rm` 只在容器**退出**时删它,而被杀掉的 driver 从不 stop 它。
+
+    实测:一个 probe 跑道的服务容器在宿主上挂了 15 小时。清容器必须在清网络**之前** ——
+    网络上有容器时 `docker network rm` 会失败。
+    """
+    _require_docker()
+    run_id = "reaped-crash"
+    running = services.start([_service()], recordings_root=tmp_path / "rec",
+                             run_id=run_id, task_id="s01", run_seed="R")
+    cid = list(running.containers.values())[0]
+    # 崩溃的样子:不调用 `stop()`。reap 就是下一个跑道做的事。
+    assert services.reap(run_id) == [], "reap 没能清掉一个还在跑的服务容器"
+    assert container.docker("inspect", cid).returncode != 0, "服务容器还活着"
+    assert _leftovers(run_id) == [], "容器没了,网络还在"
+
+
 def test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out(
         tmp_path):
     """`--internal` is what makes "reachable, and not on the internet" true rather than
