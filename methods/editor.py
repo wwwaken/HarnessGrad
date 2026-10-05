@@ -54,27 +54,50 @@ CHANNEL = "_harnessgrad"
 #: else in the directory is a program, and changing the program is the job.
 PROTECTED = {"harness.json"}
 
-#: Text files larger than this are truncated in the prompt. A harness that ships a
-#: 5 MB data file should still be improvable; the model does not need all of it.
+#: Text files larger than this are truncated in the prompt -- head **and tail**. A harness
+#: that ships a 5 MB data file should still be improvable; the model does not need all of it.
 #:
-#: **The number was 12000 and it was silently corrupting every edit.** Methods are asked
-#: to hand back whole files, so a file the model has only partly seen comes back with its
-#: end missing -- and the platform measures that. Measured on the reference harness:
-#: `agent.py` is 14916 characters, the model was shown the first 12000, and its candidate
-#: was a 11880-character file whose tail -- including `def main()` and the
-#: `__main__` guard -- no longer existed. The method's own words for it were "completing
-#: the previously truncated/missing `run` body": it was doing exactly what it was asked,
-#: from a view that could not contain the answer. Every method composed on this editor
-#: (`ahe`, `dgm`, `rrsi`, `sica_ci`, `tthe`, `hyperagents`, `harnessx`, `llm_improver`)
-#: inherited it, which is a plausible explanation for a platform whose curves have never
-#: risen.
+#: **This number has now been wrong twice, the same way.** It was 12000, and methods hand
+#: back whole files, so a file the model had partly seen came back with its end missing:
+#: `agent.py` was 14916 characters, the model saw the first 12000, and its candidate was an
+#: 11880-character file whose tail -- including `def main()` and the `__main__` guard -- no
+#: longer existed. The method's own words were "completing the previously truncated/missing
+#: `run` body": it was doing exactly what it was asked, from a view that could not contain
+#: the answer.
 #:
-#: 24000 shows the reference harness whole while still fitting a 32k-context improver
-#: (the local vLLM's window); a model with a bigger window raises it, per run, with
-#: `HG_METHOD_SOURCE_LIMIT`. Whatever the number, truncation is now **said out loud**
-#: (`load_sources`), because the failure mode of a silent cap is a plausible-looking
-#: candidate that cannot run.
-SOURCE_LIMIT = int(os.environ.get("HG_METHOD_SOURCE_LIMIT", "24000"))
+#: Raising it to 24000 "shows the reference harness whole" was true when it was written and
+#: false by 2026-10-05, when `agent.py` was 28942 characters (most of it Chinese commentary,
+#: which is why the byte count hid it: 34699 bytes, 28942 characters). The cap then cut the
+#: file at line 533 of 636 -- and everything the file *decides* is in the cut part: the
+#: repeat nudge (583), the finish nudge (595), the submit gate's rejection path (551), the
+#: loop's `_trim_history` call (602). What stayed visible was the seven constants at the top
+#: (62-121), each under a comment naming the failure it had been added to fix.
+#:
+#: Measured across eight runs (`v4`-`v10`, one local 9B, codex as the shell): **seven of the
+#: eight edits landed inside those first 533 lines and six of them changed a constant**
+#: (`PARSE_RETRIES`, `FINISH_NUDGE_STEPS`, `OUTPUT_LIMIT`, `SUBMIT_RETRIES`,
+#: `CONTEXT_CHAR_BUDGET`). Both regressions were constant edits; the one edit that landed in
+#: the cut region was the only non-constant change and the only harmless one. The improver
+#: edited where the prompt showed it, and the prompt showed it the knobs.
+#:
+#: So the number is no longer the guard. What protects the prompt now is in `load_sources`:
+#: the **entrypoint is never trimmed**, other files are trimmed head-and-tail before it is,
+#: and any trim says so in the text the model reads. This constant is only the runaway-file
+#: guard it was always described as.
+SOURCE_LIMIT = int(os.environ.get("HG_METHOD_SOURCE_LIMIT", "200000"))
+
+#: How much harness source one prompt may carry, across all files.
+#:
+#: Not a curation number and not about the harness: it is the improver's **context window**
+#: and the operating system's one-argument limit (128 KB) that set it. The whole instruction
+#: travels as a single argv element, and the model reading it has to hold it plus the traces
+#: plus the facts table. 60000 characters is roughly 15-20k tokens, which leaves room in a
+#: 32k-token improver -- the local vLLM's window, which is what the reference runs use.
+#:
+#: When it bites, it bites in the right order: `load_sources` trims the largest
+#: **non-entrypoint** files first, head-and-tail, and the entrypoint only if it alone
+#: exceeds the cap. A half-shown entrypoint is exactly what misdirected every earlier run.
+SOURCE_TOTAL_LIMIT = int(os.environ.get("HG_METHOD_SOURCE_TOTAL", "60000"))
 #: How much of the platform's skill reaches a prompt. A skill is prose read by a model with
 #: a large context, so the limit bounds a runaway file rather than curating one. Raised from
 #: 6000 the moment the platform's own skill outgrew it: it was 8407 characters, and the
@@ -248,13 +271,41 @@ def load_traces(base: Path, limit: int = 6, order: list[str] | None = None) -> s
     return "\n\n".join(blocks)
 
 
-def load_sources(base: Path, limit: int = SOURCE_LIMIT) -> dict[str, str]:
-    """The harness's text files, so the model can see what it is changing.
+def load_sources(base: Path, limit: int = SOURCE_LIMIT,
+                 total: int | None = None,
+                 entrypoint: str | None = None) -> dict[str, str]:
+    """The harness's text files -- **whole**, so the model can see what it is changing.
 
     Walks the tree rather than naming files: a harness is a directory, and a
     method that could only see `agent.py` could not add a module, which is a
     legitimate and often necessary edit.
+
+    **Truncation was the bug, not a safeguard.** A per-file cap of 24,000 characters cut
+    `base_harness/loop/agent.py` (28,942 characters, most of it Chinese commentary) at line
+    533 of 636 -- and everything the file *decides* is in the part that was cut: the repeat
+    nudge (583), the finish nudge (595), the submit gate's rejection path (551), the loop's
+    own `_trim_history` call (602). What stayed visible was the seven constants at the top
+    (lines 62-121), each under a comment naming the failure it had been added to fix. The
+    note appended in place of the rest said "Do NOT rewrite this file wholesale -- you have
+    not seen how it ends", which is advice to stay where the light is.
+
+    Measured across eight runs (`v4`-`v10`, one local 9B, codex as the shell): **seven of the
+    eight edits landed inside those first 533 lines, and six of them changed a constant** --
+    `PARSE_RETRIES`, `FINISH_NUDGE_STEPS`, `OUTPUT_LIMIT`, `SUBMIT_RETRIES`,
+    `CONTEXT_CHAR_BUDGET`. Both regressions (0.200 -> 0.000 and 0.100 -> 0.000) were constant
+    edits; the single edit that landed in the hidden region was the only non-constant change
+    and the only harmless one. The improver edited where the prompt showed it, and the prompt
+    showed it the knobs.
+
+    So the file is shown whole. The only cap left is `SOURCE_TOTAL_LIMIT`, which is not about
+    the harness but about the operating system: the whole instruction travels as **one argv
+    element**, and Linux refuses one longer than 128 KB. When the tree is large enough to
+    approach that, the *largest files other than the entrypoint* are trimmed head-and-tail
+    first, and the entrypoint is trimmed only if it alone exceeds the cap -- because a
+    half-shown entrypoint is precisely what misdirected every earlier run.
     """
+    if total is None:
+        total = SOURCE_TOTAL_LIMIT
     out: dict[str, str] = {}
     for path in sorted(base.rglob("*")):
         if not path.is_file():
@@ -282,15 +333,36 @@ def load_sources(base: Path, limit: int = SOURCE_LIMIT) -> dict[str, str]:
             text = path.read_text()
         except (OSError, UnicodeDecodeError):
             continue
-        rel_s = str(rel)
         if len(text) > limit:
-            # In the text the model reads, not in a log: a model that is told nothing
-            # will re-emit the part it saw and call the result complete.
-            text = (text[:limit]
-                    + f"\n# [platform] TRUNCATED: {limit} of {len(text)} characters are "
-                      f"shown. Do NOT rewrite this file wholesale -- you have not seen "
-                      f"how it ends.\n")
-        out[rel_s] = text
+            # Head and tail, not head alone: the end of a file is where a loop stops and a
+            # program answers, and that was the half the old cap removed.
+            head, tail = limit * 2 // 3, limit // 3
+            text = (text[:head]
+                    + f"\n# [platform] TRUNCATED (this file only): {limit} of {len(text)} "
+                      f"characters are shown, head and tail. Read the file from disk for the "
+                      f"rest.\n"
+                    + text[-tail:])
+        out[str(rel)] = text
+
+    size = sum(len(v) for v in out.values())
+    if size <= total:
+        return out
+    # Non-entrypoint files first, largest first; the entrypoint last.
+    entry = entrypoint if entrypoint is not None else (_read_manifest(base).get("entrypoint") or "")
+    for rel in sorted(out, key=lambda r: (r == entry, -len(out[r]))):
+        if size <= total:
+            break
+        body = out[rel]
+        if len(body) <= 1024:
+            continue
+        room = max(1024, len(body) - (size - total))
+        head, tail = room * 2 // 3, room // 3
+        out[rel] = (body[:head]
+                    + f"\n# [platform] TRUNCATED (to keep the whole prompt inside one argv "
+                      f"element): {room} of {len(body)} characters are shown, head and tail. "
+                      f"Read the file from disk for the rest.\n"
+                    + body[-tail:])
+        size = sum(len(v) for v in out.values())
     return out
 
 

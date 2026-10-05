@@ -751,3 +751,47 @@ def test_the_parents_sources_are_readable_from_inside_the_channel(tmp_path):
 
     top = editor.load_sources(root)
     assert "agent.py" in top and not any("_harnessgrad" in k for k in top)
+
+
+def test_the_entrypoint_reaches_the_prompt_whole():
+    """**参考 harness 的入口必须完整地进 prompt。**
+
+    这条数字错过两次,错过的方式一样:先是 12000(模型交回来的文件连 `def main()` 都没了),
+    提到 24000 时理由是"能放下整个参考 harness" —— 而到 2026-10-05 它是 28942 **字符**
+    (34699 字节,注释是中文,所以字节数掩盖了它),于是 24000 把文件切在第 533/636 行,
+    而文件里**所有做决定的代码**都在被切掉的那一半:重复提醒(583)、收尾提醒(595)、
+    交卷被拒(551)、`_trim_history` 调用(602)。
+
+    实测八轮(`v4`-`v10`):**8 次改动里 7 次落在前 533 行,其中 6 次是改常量**;两次掉分都是
+    常量改动;唯一一次落在被切区域里的改动是唯一一次非常量改动,也是唯一一次无害的。
+    改进器改在 prompt 给它看的地方,而 prompt 给它看的是旋钮。
+    """
+    import editor
+
+    src = editor.load_sources(ROOT / "base_harness" / "loop")
+    assert "TRUNCATED" not in src["agent.py"], "入口又被截断了"
+    original = (ROOT / "base_harness" / "loop" / "agent.py").read_text()
+    assert src["agent.py"] == original, "入口给模型看的内容必须和磁盘上逐字节一致"
+    # 被切掉的那一半里的机制,现在必须在
+    for needle in ("cmd == last_cmd", "finish_nudge", "submit_rejected", "dropped = _trim_history"):
+        assert needle in src["agent.py"], f"入口里的 {needle!r} 没进 prompt"
+
+
+def test_the_total_cap_trims_other_files_before_the_entrypoint(tmp_path):
+    """总长上限必须先削**别的**文件,入口放到最后 —— 半个入口正是历次跑偏的原因。"""
+    import editor
+
+    root = tmp_path / "h"
+    root.mkdir()
+    (root / "harness.json").write_text(json.dumps(
+        {"name": "probe", "version": "1", "entrypoint": "agent.py"}))
+    entry = "print('the entrypoint')\n" * 40          # 约 880 字符,完整放得下
+    (root / "agent.py").write_text(entry)
+    for name in ("big_one.py", "big_two.py"):
+        (root / name).write_text("# padding\n" * 4000)  # 每个约 40000 字符
+
+    src = editor.load_sources(root, total=3000)
+    assert src["agent.py"] == entry, "入口被削了 —— 总长上限削错了对象"
+    assert "TRUNCATED" in src["big_one.py"] or "TRUNCATED" in src["big_two.py"], (
+        "总长超了却什么都没削,会把整条指令顶出 argv 上限")
+    assert sum(len(v) for v in src.values()) < 3 * 3000
