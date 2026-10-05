@@ -401,6 +401,23 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         _require_untampered(res)
         _report_invalid(res, args.dataset)
         _report_harness_failed(res, args.dataset)
+        # **Say it about the round, not only about each task.** `_report_harness_failed`
+        # prints one line per task, and the curve then still carried an ordinary `0.000`.
+        # Measured (`codex-dgm`, 2026-10-05): two rounds whose candidate could not be
+        # invoked at all were indistinguishable, on the curve, from two rounds that ran
+        # and lost. The distinction decides what a reader does next -- a weak harness is a
+        # result, a harness that cannot start is a candidate to reject.
+        startup_failure = (res or {}).get("startup_failure")
+        if startup_failure:
+            skipped = startup_failure.get("not_run") or []
+            console.note(
+                f"round {r}: the harness never started on any task "
+                f"({startup_failure['tasks']} measured, first "
+                f"{startup_failure['first_task']}, exit {startup_failure['exit_code']}) -- "
+                f"the score stands but it is not evidence about the harness: "
+                f"{startup_failure.get('reason')}"
+                + (f"; {len(skipped)} task(s) left unrun" if skipped else ""),
+                level="error")
         dt = time.time() - t0
         if res is not None:
             cumulative["evaluation_trials"] += len(tasks)
@@ -465,6 +482,11 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             kept_point = next((q for q in curve if q.get("round") == kept_round), None)
             point["kept_round"] = kept_round
             point["kept_score"] = (kept_point or {}).get("score")
+        # **What the round says about the *harness*, not about the tasks.** `None` unless
+        # no task in the round got the harness started at all (`eval/runner.py` decides).
+        # On the point because "the candidate never ran" and "the candidate ran and lost"
+        # are both `score 0.000` and only one of them is a measurement of quality.
+        point["startup_failure"] = startup_failure
         point["measured_by_platform"] = res is not None
         if res is None:
             # Named problems, not "no harness.json": a candidate can be rejected for a

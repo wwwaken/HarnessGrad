@@ -1394,11 +1394,50 @@ def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
         for done in futures.as_completed(pending):
             outcome = done.result()
             outcomes[outcome["task_id"]] = outcome
+            # **Stop paying for a harness that cannot start.** See `_all_unstarted`: the
+            # failure is task-independent, so `jobs` agreements are enough, and the rest
+            # of the round can only return the same `0.000` at full price.
+            if _all_unstarted(outcomes, jobs):
+                for fut in pending:
+                    fut.cancel()
+                break
     except BaseException:
         pool.shutdown(wait=True, cancel_futures=True)
         raise
     pool.shutdown(wait=True)
+    # **A cancelled task is not a task that scored nothing.** The merge indexes `outcomes`
+    # by every task, so the cancelled ones are marked `not_run` and kept out of `per_task`
+    # rather than given a zero the platform never measured (§2.5.7).
+    for task in tasks:
+        outcomes.setdefault(task["task_id"],
+                            {"task_id": task["task_id"], "not_run": True})
     return outcomes
+
+
+def _all_unstarted(outcomes: dict[str, dict], jobs: int) -> bool:
+    """Has the harness failed to *start* on every task measured so far, `jobs` of them?
+
+    This is the platform's own question (`_harness_failure`) asked about a round instead of
+    a task. A harness whose entrypoint cannot be invoked fails identically on every task --
+    that is the task-independent part of a run -- so `jobs` agreements are enough to stop
+    the round. Measured (`codex-dgm`, 2026-10-05): the improver's edit dropped the
+    `--task`/`--workdir` contract, all ten tasks produced `FileNotFoundError: '--task'`
+    with no trace, and that happened in **two consecutive rounds** -- twenty
+    task-measurements whose only possible contribution was `0.000` over and over.
+
+    Deliberately not "any task failed to start": a task-specific failure (an image with no
+    interpreter, say) is a fact about *that task*, and stopping the round on it would trade
+    one wrong record for another.
+    """
+    if len(outcomes) < jobs:
+        return False
+    for outcome in outcomes.values():
+        if outcome.get("not_run") or outcome.get("invalid") or "cached" in outcome:
+            return False
+        measured = outcome.get("measured") or []
+        if not measured or not _harness_failure(measured[-1]):
+            return False
+    return True
 
 
 def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
@@ -1454,6 +1493,11 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     #: not a task that scored nothing, and putting a `0.0` here is the specific lie
     #: this whole mechanism exists to prevent.
     invalid: dict[str, dict] = {}
+    #: Tasks the round **stopped short of**, because the harness had already failed to
+    #: start on every task it had tried. Kept out of `per_task` for the same reason
+    #: `invalid` is: those tasks were never measured, and a `0.0` for them would be the
+    #: platform's invention rather than its verdict.
+    not_run: list[str] = []
     #: Tasks the platform *did* measure but whose harness left no trace, with the exit
     #: code and the tail of its stderr. Kept apart from `invalid` on purpose: an invalid
     #: task is absent from `per_task` because there is no measurement, while these keep
@@ -1609,6 +1653,12 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         tid = task["task_id"]
         key = f"{harness_sha}:{tid}:{trials}"
         outcome = outcomes[tid]
+
+        # The round stopped before this task: the harness had already failed to start on
+        # `jobs` others, so there is no measurement here to keep and none to invent.
+        if outcome.get("not_run"):
+            not_run.append(tid)
+            continue
 
         # A cached task never ran: its records are copied back exactly as they were stored.
         if "cached" in outcome:
@@ -1773,6 +1823,31 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         run_scores = [sum(v[i] for v in per_task_trials.values()) / len(per_task_trials)
                       for i in range(width)]
         score_std = _spread(run_scores)
+
+    # **A round whose harness never started anywhere is not a weak harness.** The per-task
+    # facts were already recorded (`harness_failed`) and warned about one by one; what was
+    # missing is the round-level sentence, so a candidate that never ran once reached the
+    # curve as an ordinary `0.000` -- the same number as one that ran and lost. Those two
+    # readings call for different decisions (a weak harness is a result; a harness that
+    # cannot start is a candidate to reject), and `codex-dgm` produced the first while
+    # reading as the second for two rounds running.
+    #
+    # The score is kept rather than dropped: those tasks *were* measured, the platform's
+    # verdict on what the harness left behind stands, and a method that broke the artifact
+    # should see it in its own history. What changes is that the point now names which of
+    # the two it is.
+    startup_failure = None
+    if harness_failed and not (set(per_task) - set(harness_failed)):
+        first = sorted(harness_failed)[0]
+        why = harness_failed[first] or {}
+        startup_failure = {
+            "tasks": len(harness_failed),
+            "first_task": first,
+            "reason": why.get("reason"),
+            "exit_code": why.get("exit_code"),
+            "stderr_tail": " ".join((why.get("stderr") or "").split())[-400:],
+            "not_run": sorted(not_run),
+        }
     return {"per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
             "per_task_trials": per_task_trials, "trials": trials,
             "traces": traces, "tampered": tampered,
@@ -1780,6 +1855,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             "cached_tasks": cached_tasks,
             "verdicts": verdicts,
             "invalid": invalid,
+            "not_run": not_run,
+            "startup_failure": startup_failure,
             "harness_failed": harness_failed,
             "harness_output": harness_output,
             "harness_runtime": runtime_records,

@@ -58,6 +58,35 @@ ROOT = Path(__file__).resolve().parents[1]
 _NOT_HARNESS = frozenset({"_harnessgrad", "__pycache__", ".git", ".codex-home", ".state",
                           "evidence", "node_modules", ".venv"})
 
+#: The rules that hold **whatever the rule's own prompt says**.
+#:
+#: These used to sit at the end of `PROMPT`, and `propose` chose `prompt or PROMPT` -- so a
+#: rule that supplied a prompt of its own (DGM's "target this failure", HyperAgents',
+#: Meta-Harness' frontier) silently replaced the whole instruction, hard rules included.
+#: Measured (2026-10-05, `codex-dgm`, codex driving a local 9B): DGM handed codex a targeted
+#: prompt, codex deleted 625 of the harness's 635 lines, and the replacement read
+#: `sys.argv[1]` exactly where the platform passes `--task`. Every task in two rounds died
+#: at startup, and the run recorded two `0.000` points for a harness that never ran once.
+#:
+#: The rule's prompt is *what to change*; these are *what may not break*. They are not
+#: alternatives, so they are not passed as one.
+HARD_RULES = """\
+Hard rules (the platform rejects a candidate that breaks any of them):
+  * `harness.json` must not be modified.
+  * Do not add or widen `env_kinds`.
+  * The entrypoint named in `harness.json` must still exist and still run. The platform
+    invokes it as `<entrypoint> --task <task.json> --workdir <dir>`: it must keep both
+    flags, exit 0, and write `answer.txt` and `trace.jsonl` into the workdir.
+  * **Change as little as you can.** One targeted change that tests your hypothesis beats a
+    rewrite: the platform scores the tree you leave behind, so lines you delete are lines
+    you are no longer measured on.
+  * Do not run any task from the dataset. You may write and run your own tests of the
+    harness, and you may run the harness's entrypoint on a task you construct yourself.
+
+When you are done, print one short paragraph: what you changed and why it should raise
+the score. If you conclude that nothing should change, make no edits and say so.
+"""
+
 PROMPT = """\
 You are improving a **harness** -- the structured execution layer around a model that
 turns a task into model calls and decides when to stop. Your job is to produce a better
@@ -77,16 +106,19 @@ Everything you may read is under `evidence/`:
 
 The harness you are changing is the current directory. Edit it in place.
 
-Hard rules:
-  * `harness.json` must not be modified.
-  * Do not add or widen `env_kinds`.
-  * The entrypoint named in `harness.json` must still exist and still run.
-  * Do not run any task from the dataset. You may write and run your own tests of the
-    harness, and you may run the harness's entrypoint on a task you construct yourself.
+""" + HARD_RULES
 
-When you are done, print one short paragraph: what you changed and why it should raise
-the score. If you conclude that nothing should change, make no edits and say so.
-"""
+
+def instruction(prompt: str | None) -> str:
+    """The rule's prompt **plus** the hard rules -- never instead of them.
+
+    A rule builds its prompt around its own hypothesis ("target this failure", "build on
+    round 3"), so the rules that keep the artifact measurable cannot be left to it to
+    remember. Returns `PROMPT` when the rule supplied none.
+    """
+    if not prompt:
+        return PROMPT
+    return f"{prompt.rstrip()}\n\n{HARD_RULES}"
 
 
 def applies(req: dict) -> bool:
@@ -212,20 +244,28 @@ def _summary_of(transcript: str) -> str:
     return ""
 
 
-def run(req: dict, base: Path, *, method: str) -> int:
-    """Copy the harness, stage the evidence, run the improver, report what moved.
+def propose(req: dict, parent: Path, *, prompt: str | None = None) -> dict:
+    """Drive the improver on **this tree** and return what moved. No report, no decision.
 
-    Everything here is improver-shaped and nothing is rule-shaped, which is the point: a
-    method with a decision rule of its own calls this only when it has already decided to
-    spend the round, and whatever it does with the result is its own business.
+    Split out of `run` so a method with a rule of its own can use the improver as the
+    *proposal* engine: it picks the parent (its archive's choice), hands the prompt its rule
+    wants, gets back a candidate tree, and then decides what to do with it -- keep it, reject
+    it, or submit it beside the ones its siblings produced. `run` is now the trivial rule on
+    top of this ("accept whatever it produced and report").
+
+    `prompt` is the **rule's** instruction when one is given (DGM's "target this failure",
+    Meta-Harness' frontier), and `PROMPT` when it is not. Either way the improver also gets
+    `evidence/` -- staged here -- so it can read the traces itself, and either way the
+    platform's `HARD_RULES` are appended (`instruction`), because a rule's prompt says what
+    to change and not which contract the result must still satisfy.
     """
     workspace = Path(req["workspace"])
-    candidate = workspace / "candidate"
+    candidate = Path(req.get("candidate") or (workspace / "candidate"))
     if candidate.exists():
         shutil.rmtree(candidate)
     # A git repo, because codex's own `apply_patch` works through one, and because a harness
     # *is* a git repo on this platform (`ckpt/git_state.py`).
-    shutil.copytree(base, candidate, ignore=shutil.ignore_patterns(".git"))
+    shutil.copytree(parent, candidate, ignore=shutil.ignore_patterns(".git"))
     subprocess.run(["git", "init", "-q", str(candidate)], check=True)
     (candidate / ".gitignore").write_text("_harnessgrad/\n__pycache__/\n*.pyc\n.state/\n")
 
@@ -242,7 +282,7 @@ def run(req: dict, base: Path, *, method: str) -> int:
     if effort := os.environ.get("HG_IMPROVER_EFFORT"):
         argv += ["-c", f'model_reasoning_effort="{effort}"']
     argv += shlex.split(os.environ.get("HG_IMPROVER_ARGS", ""))
-    argv += [PROMPT]
+    argv += [instruction(prompt)]
 
     timeout = int(os.environ.get("HG_IMPROVER_TIMEOUT_S", "1800"))
     started = time.time()
@@ -271,7 +311,7 @@ def run(req: dict, base: Path, *, method: str) -> int:
         code = -1
     (workspace / "improver.log").write_text(transcript[-200_000:], encoding="utf-8")
 
-    changed = _changed_files(candidate, base)
+    changed = _changed_files(candidate, parent)
     protected = [f for f in changed if Path(f).name == "harness.json"]
     summary = _summary_of(transcript)
     reported = {
@@ -283,6 +323,22 @@ def run(req: dict, base: Path, *, method: str) -> int:
         "files_changed": changed,
         "note": summary,
     }
+    return {"candidate": candidate, "changed": changed, "files": changed,
+            "protected": protected, "exit_code": code, "seconds": reported["seconds"],
+            "note": summary, "reported": reported, "transcript": transcript}
+
+
+def run(req: dict, base: Path, *, method: str) -> int:
+    """Drive the improver and report what moved -- the trivial rule on top of `propose`.
+
+    Everything here is improver-shaped and nothing is rule-shaped, which is the point: a
+    method with a decision rule of its own calls `propose` when it has already decided to
+    spend the round, and whatever it does with the result is its own business.
+    """
+    result = propose(req, base)
+    candidate, changed = result["candidate"], result["changed"]
+    protected, reported = result["protected"], result["reported"]
+    code, summary = result["exit_code"], result["note"]
     if code != 0 and not changed:
         reported["error"] = (f"the improver exited {code} and changed nothing; see "
                              f"improver.log in the run's method logs")

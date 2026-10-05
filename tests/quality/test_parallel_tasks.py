@@ -141,6 +141,76 @@ def test_a_nonsense_jobs_value_is_refused(tmp_path):
         runner._evaluate(tmp_path, _tasks(1), {}, jobs=0)
 
 
+def _unstarted(seen: dict, lock: threading.Lock, *, broken: set[str] | None = None):
+    """一道题"被测量了但 harness 根本没起来":退出 1,轨迹为空。"""
+    def run(repo, task, **_kw):
+        with lock:
+            seen["live"] += 1
+            seen["max"] = max(seen["max"], seen["live"])
+        time.sleep(0.05)
+        with lock:
+            seen["live"] -= 1
+        tid = task["task_id"]
+        if broken is not None and tid not in broken:
+            return _fake(_seen(), threading.Lock())(repo, {"task_id": tid}, **_kw)
+        return {"task_id": tid, "answer": "", "trace": "", "exit_code": 1,
+                "stderr": "FileNotFoundError: [Errno 2] '--task'", "verdict": {},
+                "env_usage": {}, "model_gateway": None, "identity": None}
+    return run
+
+
+def test_a_harness_that_never_starts_stops_the_round(tmp_path, monkeypatch):
+    """harness 起不来时,平台**不再为剩下每道题各付一次 0.000**。
+
+    实测(`codex-dgm`,2026-10-05):改进器删掉了入口的 `--task/--workdir` 约定,十道题的
+    进程都在启动时崩掉,连续**两轮** —— 二十次测量,只可能产出同一个 0.000。启动失败是
+    与题目无关的那部分,所以前 `jobs` 道题给出同样答案就已经足够下结论。
+
+    而且这个 0.000 要被**说清楚是哪一种**:「跑起来但输了」和「根本没跑起来」在曲线上是同
+    一个数字,但对读记录的人意味着完全不同的下一步。
+    """
+    seen, lock = _seen(), threading.Lock()
+    monkeypatch.setattr(runner, "run_one", _unstarted(seen, lock))
+    started = time.time()
+    res = runner._evaluate(tmp_path, _tasks(10), {}, jobs=3)
+    elapsed = time.time() - started
+    assert res["startup_failure"] is not None, "没识别出「一次都没起来」"
+    assert res["startup_failure"]["exit_code"] == 1
+    assert "--task" in res["startup_failure"]["stderr_tail"]
+    # 起来了的题留下了测量,没跑的题既不在 per_task 里也没有被编一个 0.0 出来
+    assert len(res["harness_failed"]) + len(res["not_run"]) == 10
+    assert len(res["not_run"]) >= 6, f"没有提前收手:{res['not_run']}"
+    assert not (set(res["not_run"]) & set(res["per_task"]))
+    assert set(res["per_task"]) == set(res["harness_failed"])
+    assert elapsed < 0.5, f"还是把十道题都跑完了:{elapsed:.3f}s"
+
+
+def test_a_task_specific_startup_failure_does_not_stop_the_round(tmp_path, monkeypatch):
+    """只有某一道题起不来,是**这道题**的事实,不是 harness 的事实 —— 轮次要跑完。
+
+    镜像里缺解释器这类失败只影响一道题;拿它去停掉整轮,等于用一个新的错记录换掉旧的。
+    """
+    seen, lock = _seen(), threading.Lock()
+    monkeypatch.setattr(runner, "run_one",
+                        _unstarted(seen, lock, broken={"t1"}))
+    res = runner._evaluate(tmp_path, _tasks(4), {}, jobs=2)
+    assert res["startup_failure"] is None, "一道题起不来就停了一整轮"
+    assert res["not_run"] == []
+    assert len(res["per_task"]) == 4
+    assert res["per_task"]["t1"] == 0.0
+    assert set(res["harness_failed"]) == {"t1"}
+
+
+def test_a_clean_round_has_no_startup_failure(tmp_path, monkeypatch):
+    """全跑起来的轮次不许被贴上 startup_failure —— 否则这个字段就没有信息量了。"""
+    seen, lock = _seen(), threading.Lock()
+    monkeypatch.setattr(runner, "run_one", _fake(seen, lock))
+    res = runner._evaluate(tmp_path, _tasks(3), {}, jobs=3)
+    assert res["startup_failure"] is None
+    assert res["not_run"] == []
+    assert res["per_task"] == {"t0": 1.0, "t1": 1.0, "t2": 1.0}
+
+
 def test_jobs_reaches_the_run_through_the_driver(tmp_path):
     """端到端:`--jobs 2` 要能真的跑完一次,并且记在 run_meta 里。"""
     import json
