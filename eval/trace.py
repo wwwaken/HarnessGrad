@@ -80,6 +80,13 @@ def loop_facts(trace_text: str) -> dict:
         missing_at_submit     which paths the task named and the harness had not written
         multi_object_replies  N replies carried more than one JSON object
         parse_errors          N replies could not be parsed at all
+        empty_commands        N executed commands were the empty string (nothing ran)
+        duplicate_keys        N JSON keys the parser had to repair (the model repeated one)
+        context_trims         how many times history was shortened after the model refused
+                              a too-long prompt
+        output_clipped_events / _chars   how often a command's output was clipped for the
+                              model, and how much was hidden
+        history_dropped       N old messages dropped from the model's view
         ended                 see the ENDED_* constants
 
     `commands == 0` with `answers == 1` is the shape that mattered most: the harness
@@ -96,6 +103,16 @@ def loop_facts(trace_text: str) -> dict:
     fixed a round earlier.
     """
     steps = commands = answers = rejected = parse_errors = multi_object = 0
+    #: **The interface events, counted as their own facts.** Every one of these is a case
+    #: where the harness changed what the model did or what it saw, and the summary a method
+    #: reads first did not mention any of them. Measured on `local-floor-9`
+    #: (`cancel-async-tasks`): the summary said `commands: 13` while **ten of them executed
+    #: the empty string** -- the model's real command had been replaced by a duplicated JSON
+    #: key -- and a method reading `13 commands, 0 parse errors` sees a healthy trajectory.
+    #: Counting them separately is what makes "the harness dropped the actions" a fact a
+    #: method can act on instead of something only an operator with grep can find.
+    empty_commands = duplicate_keys = context_trims = 0
+    clipped_events = clipped_chars = history_dropped = 0
     missing: list[str] = []
     usage: dict = {}
     for line in str(trace_text or "").splitlines():
@@ -119,6 +136,17 @@ def loop_facts(trace_text: str) -> dict:
                     multi_object += 1
         if "command" in record:
             commands += 1
+            if not str(record.get("command") or "").strip():
+                empty_commands += 1
+        if record.get("duplicate_keys"):
+            duplicate_keys += len(record["duplicate_keys"])
+        if record.get("context_trims"):
+            context_trims = max(context_trims, int(record["context_trims"]))
+        if "output_clipped" in record:
+            clipped_events += 1
+            clipped_chars += int(record.get("output_clipped") or 0)
+        if record.get("history_dropped"):
+            history_dropped += int(record["history_dropped"])
         if "parse_error" in record:
             parse_errors += 1
         if "submit_rejected" in record:
@@ -133,6 +161,15 @@ def loop_facts(trace_text: str) -> dict:
         "missing_at_submit": sorted(set(missing)),
         "multi_object_replies": multi_object,
         "parse_errors": parse_errors,
+        # The harness-side events. `empty_commands` is the one that mattered most: it is a
+        # step that ran nothing while reporting success, which the score cannot distinguish
+        # from a model that did the wrong thing.
+        "empty_commands": empty_commands,
+        "duplicate_keys": duplicate_keys,
+        "context_trims": context_trims,
+        "output_clipped_events": clipped_events,
+        "output_clipped_chars": clipped_chars,
+        "history_dropped": history_dropped,
         "tokens": (usage.get("input_tokens") or 0) + (usage.get("output_tokens") or 0),
         "ended": _ended(usage, answers, parse_errors, commands, steps),
     }

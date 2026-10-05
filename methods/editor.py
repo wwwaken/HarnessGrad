@@ -134,8 +134,16 @@ def render_trace(text: str, max_events: int = 14, width: int = 220) -> str:
         elif "usage" in event and len(event) <= 2:
             continue                                    # accounting, not behaviour
         elif "command" in event:
-            lines.append(f"  ran: {str(event['command'])[:width]}"
-                         f"  (exit {event.get('exit')})")
+            ran = str(event.get("command") or "")
+            if not ran.strip():
+                # The harness executed the empty string and the shell exited 0, so the model
+                # was told `exit=0` for a step that did nothing. Measured on
+                # `cancel-async-tasks`: ten of thirteen commands were this, and the task
+                # scored 0.0 with a trace that reads as a working harness.
+                lines.append(f"  ran: (EMPTY COMMAND -- nothing ran)"
+                             f"  (exit {event.get('exit')})")
+            else:
+                lines.append(f"  ran: {ran[:width]}  (exit {event.get('exit')})")
             # `output` first, because that is what the reference harness writes
             # (`loop/agent.py`: `{"command": ..., "exit": ..., "output": ...}`). This
             # looked only for `stdout`/`stderr`, so **every** command's output was
@@ -153,7 +161,20 @@ def render_trace(text: str, max_events: int = 14, width: int = 220) -> str:
                         ln[:width] for ln in str(event[key]).strip().splitlines()[:40])
                     lines.append(f"    {label}{body}")
         elif "reply" in event:
-            lines.append(f"  said: {str(event['reply'])[:width]}")
+            # **Head *and* tail.** A reply's tail is where the malformation is: measured on
+            # `local-floor-9`, the real command was in the first 799 characters and the
+            # duplicate `, "command": ""` that replaced it was in the last 40 -- and the
+            # renderer cut every line at `width`, so the one thing that explained the empty
+            # command was the one thing thrown away. A reply longer than the width now shows
+            # both ends with the count of what is between.
+            body = str(event["reply"])
+            if len(body) <= width:
+                lines.append(f"  said: {body}")
+            else:
+                half = max(40, (width - 40) // 2)
+                lines.append(f"  said: {body[:half]}\n"
+                             f"    ... [{len(body) - 2 * half} characters omitted] ...\n"
+                             f"    ...{body[-half:]}")
         elif "parse_error" in event:
             # A bare JSON blob reads as noise; it is not noise. It is the harness
             # discarding its own tool call, which is a harness behaviour and the single
@@ -163,8 +184,35 @@ def render_trace(text: str, max_events: int = 14, width: int = 220) -> str:
             # object, with nothing saying what it meant.
             lines.append(f"  the harness could not read its own reply and dropped the "
                          f"step ({str(event['parse_error'])[:width]})")
+        elif "duplicate_keys" in event:
+            lines.append(f"  ! the reply repeated the key(s) "
+                         f"{', '.join(map(str, event['duplicate_keys']))}; the parser kept "
+                         f"the FIRST value. The model's action may not be the one that ran.")
+        elif "context_trims" in event:
+            lines.append(f"  ! the model refused the prompt for length; history was "
+                         f"shortened to {event.get('history_kept')} messages and retried "
+                         f"({event['context_trims']} so far)")
+        elif "output_clipped" in event:
+            lines.append(f"  ! output clipped for the model: {event['output_clipped']} "
+                         f"characters, {event.get('shown')} shown")
+        elif "history_dropped" in event:
+            lines.append(f"  ! {event['history_dropped']} old messages dropped from the "
+                         f"model's view")
+        elif "harness_identity" in event or "usage" in event or "wall_clock_s" in event:
+            # Accounting, not behaviour. It used to be printed as raw JSON, which spent one
+            # of the `max_events` slots the method has on a line that says nothing about what
+            # the harness did -- and the `harness_identity` record is one this platform added
+            # itself.
+            continue
         else:
             lines.append(f"  {json.dumps(event, ensure_ascii=False)[:width]}")
+    total = len([line for line in str(text or "").splitlines() if line.strip()])
+    shown = min(total, max_events)
+    if total > shown:
+        # Say what was not shown. A silent cap is how a method concludes there was nothing
+        # more, and an operator reads the same file and sees the rest.
+        lines.append(f"  ... {total - shown} more record(s) not shown (max_events="
+                     f"{max_events}); read the trace file for the rest")
     return "\n".join(lines)
 
 

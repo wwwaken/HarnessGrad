@@ -231,3 +231,84 @@ def test_multi_object_replies_are_counted_so_a_fixed_bug_is_not_diagnosed_twice(
     assert f["multi_object_replies"] == 1, f
     assert f["parse_errors"] == 0, f
     assert f["commands"] == 2, f
+
+
+# ------------------------------------- 接口事件必须进摘要和进 prompt ---
+
+def test_the_summary_counts_empty_commands_separately(tmp_path):
+    """**`commands: 13` 和"其中 10 条什么都没执行"是两件事。**
+
+    实测(`local-floor-9`,`cancel-async-tasks`):16 次模型调用、13 条命令、0 个解析错误 ——
+    一个方法读到的是"这只 harness 工作正常"。而其中 10 条执行的是空字符串:重复的 JSON 键
+    把模型的真命令换成了 `""`。这道题得 0.0,原因不在模型。
+    """
+    import eval.trace as trace_mod
+    trace = tmp_path / "t.jsonl"
+    trace.write_text(
+        '{"step": 0, "reply": "{\\"tool\\": \\"bash\\", \\"command\\": \\"ls\\", '
+        '\\"command\\": \\"\\"}"}\n'
+        '{"step": 0, "command": "", "exit": 0, "output": ""}\n'
+        '{"step": 1, "reply": "{\\"tool\\": \\"bash\\", \\"command\\": \\"pwd\\"}"}\n'
+        '{"step": 1, "command": "pwd", "exit": 0, "output": "/app\\n"}\n'
+        '{"step": 2, "reply": "x", "duplicate_keys": ["command"]}\n'
+        '{"step": 2, "command": "echo hi", "exit": 0, "output_clipped": 9000, '
+        '"shown": 4000}\n'
+        '{"step": 3, "history_dropped": 4}\n'
+        '{"usage": {"calls": 3, "input_tokens": 10, "output_tokens": 5}}\n')
+    facts = trace_mod.loop_facts(trace.read_text())
+    assert facts["commands"] == 3, facts            # 三条记录带 command 键
+    assert facts["empty_commands"] == 1, facts      # 其中一条什么都没跑
+    assert facts["duplicate_keys"] == 1, facts
+    assert facts["output_clipped_events"] == 1 and facts["output_clipped_chars"] == 9000, facts
+    assert facts["history_dropped"] == 4, facts
+
+
+def test_the_round_summary_names_the_tasks_the_interface_ate(tmp_path):
+    """轮级摘要(方法读的第一份)必须点名"哪几道题被接口吃掉了"。"""
+    from harnessgrad.channel import _loop_summary
+    good = ('{"step": 0, "reply": "{}"}\n'
+            '{"step": 0, "command": "pwd", "exit": 0, "output": "/app\\n"}\n')
+    eaten = ('{"step": 0, "reply": "{}"}\n'
+             '{"step": 0, "command": "", "exit": 0, "output": ""}\n'
+             '{"step": 1, "duplicate_keys": ["command"]}\n')
+    summary = _loop_summary({"t01": good, "t02": eaten})
+    assert summary["empty_commands_total"] == 1, summary
+    assert summary["tasks_with_empty_commands"] == ["t02"], summary
+    assert summary["tasks_with_duplicate_keys"] == ["t02"], summary
+    # 干净的那道题不该出现在任何"被吃掉"的名单里
+    for key in ("tasks_with_empty_commands", "tasks_with_duplicate_keys",
+                "tasks_with_context_trims", "tasks_with_clipped_output"):
+        assert "t01" not in summary[key], (key, summary[key])
+
+
+def test_the_renderer_keeps_the_diagnostic_tail_and_says_what_it_hid(tmp_path):
+    """渲染给模型看的那份:回复要留尾巴、空命令要点名、截断要说还差几条。
+
+    实测那条回复 875 字符,真命令在前 799 个字符里,而**把命令换成空串的重复键在最后 40 个
+    字符**里 —— 旧渲染器每行截断 220 字符,恰好把这唯一的解释扔掉。
+    """
+    sys.path.insert(0, str(ROOT / "methods"))
+    import editor
+    long_reply = ('{"tool": "bash", "command": "cat > /app/run.py << \'EOF\'\\n'
+                  + "x" * 400 + '\\nEOF\\n", "command": ""}')
+    trace = (f'{{"step": 0, "reply": {json.dumps(long_reply)}}}\n'
+             '{"step": 0, "command": "", "exit": 0, "output": ""}\n'
+             '{"step": 0, "output_clipped": 9000, "shown": 4000}\n'
+             '{"harness_identity": {"agent_model": "probe"}}\n'
+             '{"wall_clock_s": {"model": 1.0, "commands": 0.0, "total": 1.0}}\n'
+             '{"usage": {"calls": 1}}\n')
+    rendered = editor.render_trace(trace, max_events=14, width=220)
+    # 尾巴在:重复键那句看得见
+    assert '"command": ""}' in rendered, rendered
+    assert "characters omitted" in rendered, rendered
+    # 空命令被点名
+    assert "EMPTY COMMAND" in rendered, rendered
+    # 接口事件有话说
+    assert "output clipped" in rendered, rendered
+    # 记账记录不占额度
+    assert "harness_identity" not in rendered and "wall_clock_s" not in rendered, rendered
+    # 被 max_events 砍掉的条数要写出来 —— 只有砍到了才会写,所以换个更小的上限再渲染一次
+    capped = editor.render_trace(trace, max_events=2, width=220)
+    assert "not shown" in capped, capped
+    # 而且账目记录不算进上限(它们本来就不该占额度)
+    assert "harness_identity" not in capped, capped

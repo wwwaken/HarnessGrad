@@ -44,6 +44,19 @@ def _loop_summary(traces: dict) -> dict:
         "model_calls_median": calls[len(calls) // 2] if calls else 0,
         # 只调用一次就结束的题:最可疑的一类 —— 要么它真聪明,要么它根本没动手。
         "single_call_tasks": sorted(t for t, f in facts.items() if f["model_calls"] <= 1),
+        # **被接口吃掉的动作。** `commands: 13` 和"其中 10 条执行的是空字符串"是两件
+        # 事,而方法先读的就是这份摘要:实测 `local-floor-9` 的 `cancel-async-tasks` 正是
+        # 后者(重复的 JSON 键把真命令替换成了 `""`),只给命令条数等于告诉它一切正常。
+        "empty_commands_total": sum(f["empty_commands"] for f in facts.values()),
+        "tasks_with_empty_commands": sorted(t for t, f in facts.items()
+                                           if f["empty_commands"]),
+        "duplicate_keys_total": sum(f["duplicate_keys"] for f in facts.values()),
+        "tasks_with_duplicate_keys": sorted(t for t, f in facts.items()
+                                            if f["duplicate_keys"]),
+        "tasks_with_context_trims": sorted(t for t, f in facts.items()
+                                           if f["context_trims"]),
+        "tasks_with_clipped_output": sorted(t for t, f in facts.items()
+                                            if f["output_clipped_events"]),
     }
 
 def _for_method(point: dict) -> dict:
@@ -222,6 +235,65 @@ def _stage_task_context(work: Path, tasks, setups, verifiers, result,
         (dest / f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
 
+def _trace_index(trace_text: str) -> dict:
+    """A table of contents for one trace: what is in it, and where.
+
+    **Nothing removed, and nothing left to find by scanning.** A method may read the whole
+    file -- the platform stages it byte for byte, all 1.76 MB of `gcode-to-text` -- but a
+    tool-using improver that has to grep its way through eleven traces to discover which
+    record carries the empty command, the clipped output or the failing assertion will not
+    do it. The index says where the diagnostics are, so "let the improver choose what to
+    read" is cheap rather than theoretical.
+
+    Byte offsets, because that is what a reader needs to seek; `kind` and `summary` because
+    that is what it needs to decide whether to bother.
+    """
+    entries: list[dict] = []
+    offset = 0
+    for number, line in enumerate(str(trace_text or "").splitlines(keepends=True)):
+        stripped = line.strip()
+        record: dict = {}
+        if stripped:
+            try:
+                loaded = json.loads(stripped)
+                record = loaded if isinstance(loaded, dict) else {}
+            except json.JSONDecodeError:
+                record = {}
+        kind = "other"
+        for key in ("harness_identity", "reply", "command", "output_clipped",
+                    "history_dropped", "context_trims", "duplicate_keys", "parse_error",
+                    "submit_rejected", "submitted", "repeat_nudge", "finish_nudge",
+                    "wall_clock_s", "usage"):
+            if key in record:
+                kind = key
+                break
+        summary = ""
+        if kind == "command":
+            ran = str(record.get("command") or "").strip()
+            summary = ("EMPTY COMMAND (nothing ran), exit "
+                       f"{record.get('exit')}") if not ran else (
+                f"{ran[:80]} (exit {record.get('exit')}, "
+                f"{len(str(record.get('output') or ''))} chars of output)")
+        elif kind == "reply":
+            summary = str(record.get("reply") or "")[:80]
+        elif kind == "output_clipped":
+            summary = (f"{record.get('output_clipped')} chars clipped, "
+                       f"{record.get('shown')} shown")
+        elif kind == "duplicate_keys":
+            summary = f"parser repaired repeated key(s) {record.get('duplicate_keys')}"
+        elif kind == "parse_error":
+            summary = str(record.get("parse_error") or "")[:80]
+        elif kind == "submit_rejected":
+            summary = f"submit refused; missing {record.get('submit_rejected')}"
+        elif kind == "usage":
+            summary = json.dumps(record.get("usage") or {})[:80]
+        entries.append({"line": number, "offset": offset, "bytes": len(line.encode()),
+                        "kind": kind, "summary": summary})
+        offset += len(line.encode())
+    return {"bytes": len(str(trace_text or "").encode()), "records": len(entries),
+            "entries": entries}
+
+
 def _stage_for_method(work: Path, point: dict, traces: dict,
                       history: list[dict] | None = None,
                       task_ids: list[str] | None = None,
@@ -299,6 +371,10 @@ def _stage_for_method(work: Path, point: dict, traces: dict,
         tid: t for tid, t in traces.items() if tid in set(task_ids)}
     for tid, trace in visible.items():
         (hg / "traces" / f"{tid}.jsonl").write_text(trace)
+        # The table of contents beside it, so a tool-using improver can jump to the
+        # diagnostics instead of scanning (see `_trace_index`).
+        (hg / "traces" / f"{tid}.index.json").write_text(
+            json.dumps(_trace_index(trace), indent=1))
 
     # Each past round's train traces, newest window only, same cap as `states/`.
     for past_round in [p.get("round") for p in

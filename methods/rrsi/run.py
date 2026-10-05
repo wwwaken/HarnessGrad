@@ -78,14 +78,19 @@ method again about a state it already measured). Therefore:
    and labels that record as a re-adjudication of a decision the platform already
    made unconditionally. The forward-looking numbers (S*, delta, the next floor
    `S* - delta`) are reported so the record shows what RRSI would demand next.
-3. **Delta cannot be calibrated from per-trial rewards.** `calibrate.py` builds the
-   null band either from R >= 2 repeated evaluations of the base harness or by
-   bootstrapping over per-trial rewards. The platform records one score per task
-   per round -- no per-trial rewards, no repeated base evaluations -- so neither
-   estimator can be fed here. `_delta_from_repeated_base` transplants the formula
-   verbatim for reference, but `main` reads `delta` from `HG_RRSI_DELTA` and, when
-   that is unset, from `HG_RRSI_DELTA_FALLBACK`, and the record says which one it
-   used.
+3. **Delta IS calibrated now -- the channel arrived with per-trial rewards.** This
+   paragraph used to say the opposite, and it was true when written: the platform
+   recorded one score per task per round, so `calibrate.py`'s two estimators (R >= 2
+   repeated evaluations of the base, or a bootstrap over per-trial rewards) had nothing
+   to read. The record now carries `per_task_trials` and `score_std`, where `score_std`
+   is the platform's own population standard deviation of the **run-level score across
+   trials of one measurement** -- which is exactly `sd(S)` for a fixed harness, tasks and
+   budget. Two independent measurements of the same harness have `sd(Delta S) = sqrt(2) *
+   sd(S)`, so `delta = z * sqrt(2) * score_std` is `_delta_from_repeated_base`'s formula
+   with the platform's number in place of the repeated runs it could not stage. Measured
+   on this platform (5 tasks, 3 trials): `score_std = 0.094` -> **delta ~ 0.27**, which is
+   the size of the re-measurement swing that fooled a control arm into "gaining" +0.200.
+   When the point carries no `score_std` (one trial) the fallback is used and said so.
 4. **A dropped candidate costs the whole trajectory, not one slot.** In RRSI a
    critic rejection or an over-budget proposal is a `gate_failure`: the candidate is
    dropped and another is drafted (`rrsi/loop.py:299-302`). Mode A drafted only one,
@@ -308,16 +313,33 @@ def _delta_from_repeated_base(scores: list[float], z: float = 2.0) -> float | No
 def _delta(history: list[dict], cfg: RRSIConfig) -> tuple[float, str]:
     """The noise band and where it came from.
 
-    RRSI raises rather than guess when no band exists (`rrsi/loop.py:102-107`).
-    Mode A has no calibration channel at all, so the fallback is explicit and
-    reported: an unset `HG_RRSI_DELTA` means `HG_RRSI_DELTA_FALLBACK` (0.0 by
-    default, i.e. "treat every regression as real"), and the record says so.
+    RRSI raises rather than guess when no band exists (`rrsi/loop.py:102-107`); this file
+    has always fallen back explicitly and said so. What changed is that there is now
+    something to calibrate **from**: a curve point carries `score_std` -- the platform's
+    population sd of the run-level score across the trials of that one measurement -- so
+    `delta = z * sqrt(2) * score_std` is `_delta_from_repeated_base`'s estimator fed with
+    the platform's own number instead of repeated runs it could not stage.
+
+    Measured (5 tasks, 3 trials, `noise-1`): `score_std = 0.094` -> delta ~ 0.266, which is
+    the size of the swing that made a control arm look like it gained +0.200. That is the
+    point of the band: a rule that accepts only what clears it cannot be fooled by
+    re-measurement. With `n_trials = 1` the point carries no `score_std`, and the fallback
+    is used with the reason in the record.
     """
     if cfg.delta is not None:
         return float(cfg.delta), "explicit: HG_RRSI_DELTA"
+    incumbent = (history or [{}])[-1]
+    std = incumbent.get("score_std")
+    trials = incumbent.get("n_trials")
+    if isinstance(std, (int, float)) and not isinstance(std, bool) and std > 0 \
+            and isinstance(trials, int) and trials > 1:
+        return cfg.delta_z * float(std) * math.sqrt(2), (
+            f"calibrated: z={cfg.delta_z} * sqrt(2) * score_std={float(std):.4f} "
+            f"(the incumbent's own {trials} trials; RRSI's estimator, the platform's "
+            f"number)")
     return float(cfg.delta_fallback), (
-        "fallback: HG_RRSI_DELTA unset; no calibration channel in mode A "
-        "(rrsi/calibrate.py needs repeated base evals or per-trial rewards)")
+        "fallback: HG_RRSI_DELTA unset and the incumbent point carries no score_std "
+        "(n_trials must be > 1 for the platform to have a spread to report)")
 
 
 def _train_score(point: dict) -> float | None:

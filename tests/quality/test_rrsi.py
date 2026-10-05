@@ -26,6 +26,8 @@ import importlib.util
 import io
 import json
 import sys
+
+import pytest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -470,3 +472,44 @@ def test_prune_set_lists_accepted_machinery_with_nonpositive_recent_yield():
     assert "prompt" in by_component and "skill" not in by_component
     assert by_component["prompt"]["recent_best_gain"] == -0.1
     assert by_component["prompt"]["accepted_edits_in_incumbent"] == 1
+
+
+# --------------------------------------------------- delta 的校准通道 ---
+
+def test_delta_is_calibrated_from_the_platform_s_own_spread():
+    """**RRSI 的噪声带现在有东西可校准了。**
+
+    这段代码以前写着"per-trial rewards 拿不到,所以没法校准" —— 那时是真的。现在每个曲线点
+    都带 `per_task_trials` 和 `score_std`,而 `score_std` 就是**同一次测量内部**运行级分数
+    在多次试验上的总体标准差,也就是固定 harness 下的 `sd(S)`。两次独立测量的
+    `sd(Delta S) = sqrt(2) * sd(S)`,于是 `delta = z * sqrt(2) * score_std` 正是
+    `_delta_from_repeated_base` 的公式,只是喂进去的是平台自己的数。
+
+    实测(5 题 3 次重复):`score_std = 0.094` -> delta ≈ 0.266,正好是那个把对照臂骗成
+    "涨了 0.200" 的重测幅度。噪声带的意义就在这里:只接受越过它的人,就骗不动。
+    """
+    mod = _load()
+    cfg = mod.RRSIConfig(delta=None, delta_fallback=0.0, delta_z=2.0)
+    history = [{"round": 0, "score": 0.2, "score_std": 0.094, "n_trials": 3}]
+    delta, source = mod._delta(history, cfg)
+    assert delta == pytest.approx(2.0 * 0.094 * (2 ** 0.5), rel=1e-6), delta
+    assert delta == pytest.approx(0.2659, abs=1e-3), delta
+    assert "calibrated" in source, source
+    assert "0.0940" in source and "3 trials" in source, source
+
+
+def test_one_trial_has_no_spread_to_calibrate_from():
+    """反向的一半:`n_trials = 1` 时点上没有 `score_std`,于是回落并且说明原因。
+
+    这条边界不能糊:"没有方差可报"和"方差是零"是两件事,而按零方差校准等于把噪声带
+    关掉 —— 那正好会让重测噪声冒充成真增益。
+    """
+    mod = _load()
+    cfg = mod.RRSIConfig(delta=None, delta_fallback=0.11, delta_z=2.0)
+    delta, source = mod._delta([{"round": 0, "score": 0.2}], cfg)
+    assert delta == pytest.approx(0.11), delta
+    assert "fallback" in source and "n_trials" in source, source
+    # 显式给的值照样优先
+    delta2, source2 = mod._delta([{"round": 0, "score_std": 0.5, "n_trials": 3}],
+                                 mod.RRSIConfig(delta=0.05, delta_z=2.0))
+    assert delta2 == pytest.approx(0.05) and "explicit" in source2, (delta2, source2)

@@ -2310,6 +2310,45 @@ Listed so they are not mistaken for oversights:
    *flagged as the largest known threat to the validity of any curve this
    produces.*
 
+### 4.2.1 The evidence a method reads is now complete, indexed, and counted
+
+A method is shown the round's traces, the per-task pages and an aggregate summary. Three
+measured defects made that evidence reach it *lossy*, and each was invisible: the method saw
+a healthy trajectory.
+
+* **The summary counted the harness's interface events as nothing.** `local-floor-9`,
+  `cancel-async-tasks`: `commands: 13`, `parse_errors: 0` -- and **ten of those thirteen
+  commands executed the empty string**, because the model's reply repeated the `command` key
+  and the parser kept the last (empty) one. The score was 0.0 and the summary said the
+  harness was working. `loop_facts` now counts `empty_commands`, `duplicate_keys`,
+  `context_trims`, `output_clipped_events`/`_chars` and `history_dropped` beside the fields it
+  already had, and `_loop_summary` aggregates them for the round
+  (`tasks_with_empty_commands`, `empty_commands_total`, ...), because the summary is the
+  first thing a method reads.
+* **The renderer threw away the diagnostic tail.** `render_trace` cut every line at 220
+  characters; on that trace the real command was in the first 799 and the duplicate
+  `, "command": ""` that replaced it was in the last 40. Replies now show head **and** tail
+  with the omitted count, an executed empty command is rendered as
+  `ran: (EMPTY COMMAND -- nothing ran)`, and the interface events have sentences instead of
+  raw JSON. Accounting records (`harness_identity`, `usage`, `wall_clock_s`) no longer
+  consume one of the `max_events` slots -- one of them was this platform's own addition.
+* **Nothing said where to look.** The platform stages traces **whole** (verified byte-for-byte:
+  1.76 MB of `gcode-to-text` reaches the method), but a tool-using improver would have to scan
+  them to find the diagnostics. Each task now also gets `traces/<task>.index.json`: per record,
+  its `kind`, byte offset, size and a one-line summary -- so "let the improver choose what to
+  read" is cheap rather than theoretical. Nothing is removed.
+
+And the noise band RRSI could not calibrate now can be. `methods/rrsi/run.py` said "delta
+cannot be calibrated from per-trial rewards", which was true when written: the platform kept
+one score per task per round. A point now carries `per_task_trials` and `score_std`, where
+`score_std` is the platform's own population sd of the **run-level score across trials of one
+measurement** -- which is `sd(S)` for a fixed harness, tasks and budget. Two independent
+measurements have `sd(Delta S) = sqrt(2) * sd(S)`, so `delta = z * sqrt(2) * score_std` is
+RRSI's own estimator fed with the platform's number. Measured (5 tasks, 3 trials):
+`score_std = 0.094` -> **delta ~ 0.27**, which is the size of the re-measurement swing that
+made a control arm look like it gained +0.200. `n_trials = 1` carries no `score_std` and the
+fallback is used, with the reason in the record.
+
 ### 4.49.2 A CLI improver needs a model that emits **standard** `tool_calls`
 
 `--improver codex` means "the improver edits the candidate tree through its own tools". That
