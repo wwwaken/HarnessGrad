@@ -86,7 +86,7 @@ def _invoke(mod, request: dict, monkeypatch, respond):
 
     seen: list[dict] = []
 
-    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True):
+    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None):
         seen.append({"prompt": prompt, "system": system})
         return respond(prompt, system)
 
@@ -218,7 +218,7 @@ def test_a_stalled_round_with_untried_components_reserves_an_exploration_slot(mo
 
     # 合规的那次会走到模型 critic,所以这里要打桩,否则测试依赖网络/凭据。
     import editor
-    monkeypatch.setattr(editor, "ask", lambda prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True:
+    monkeypatch.setattr(editor, "ask", lambda prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None:
                         {"verdict": "accept", "reasons": [], "risk_notes": []})
 
     cfg = mod.RRSIConfig()
@@ -246,7 +246,7 @@ def test_the_critic_rejects_a_task_specialized_edit(monkeypatch):
 
     import editor
 
-    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True):
+    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None):
         assert system == mod.CRITIC_SYSTEM
         return {"verdict": "reject",
                 "reasons": ["task-specialization: hard-codes task t03"]}
@@ -272,7 +272,7 @@ def test_an_unparseable_critic_reply_rejects_rather_than_accepts(monkeypatch):
     import editor
     prompts: list[str] = []
 
-    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True):
+    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None):
         prompts.append(prompt)
         return {"no_change": "???"}
 

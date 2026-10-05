@@ -196,7 +196,7 @@ def _invoke(mod, request: dict, monkeypatch, reply: dict) -> dict:
 
     captured: dict = {}
 
-    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True):
+    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None):
         captured["prompt"] = prompt
         return reply
 

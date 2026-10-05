@@ -251,7 +251,15 @@ def choose_target(parent: dict) -> tuple[str, str]:
 def build_prompt(base: Path, req: dict, parent: dict, target: str,
                  report: dict) -> str:
     sources = editor.load_sources(base)
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
+    # **Traces come from the *incumbent*, sources from the parent.** The parent is a staged
+    # state (`states/round-<n>/`) and a staged state is a harness commit -- it carries no
+    # `_harnessgrad/`, so `load_traces(parent)` returns the literal sentence "the platform
+    # staged no traces for this round". Measured tonight: codex-on-the-local-model was handed
+    # that prompt and correctly answered that there was no evidence; the method then reported
+    # "no usable edit". The rule's whole point is to build on an old state, and the evidence
+    # about how that state behaved is the *round's*, which lives in the incumbent's channel.
+    traces = editor.load_traces(Path(req["base_harness"]), limit=6,
+                                order=editor.failing_first(Path(req["base_harness"])))
     return (
         f"DGM round {req.get('round_index', 1)}. "
         f"The archive chose round {parent.get('round')} as this round's parent "
@@ -313,7 +321,7 @@ def main() -> int:
         dest = editor.candidate_path(req, f"child{child + 1}")
         try:
             reply = editor.ask(build_prompt(Path(parent_dir), req, parent, target, report),
-                               system=DGM_SYSTEM, base=base)
+                               system=DGM_SYSTEM, base=base, parent=Path(parent_dir))
         except SystemExit:
             raise
         except Exception as exc:                                       # noqa: BLE001

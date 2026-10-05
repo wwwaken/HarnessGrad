@@ -77,7 +77,7 @@ def _run(mod, request: dict, monkeypatch, *, children=3, reply=None):
 
     seen: list[str] = []
 
-    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True):
+    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None):
         seen.append(prompt)
         n = len(seen)
         return (reply or {"files": [{"path": "agent.py",

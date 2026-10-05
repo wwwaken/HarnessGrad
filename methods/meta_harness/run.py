@@ -404,7 +404,8 @@ def main() -> int:
             reply, dest, apply_problems = editor.propose_and_apply(
                 edit_base, req, META_HARNESS_SYSTEM,
                 lambda problems: build_prompt(edit_base, incumbent, req, frontier, base_why)
-                                 + editor.repair_block(problems, expect=editor.EDIT_EXPECT))
+                                 + editor.repair_block(problems, expect=editor.EDIT_EXPECT),
+                parent=edit_base)
         except SystemExit:
             raise
         except Exception as exc:                                       # noqa: BLE001

@@ -33,6 +33,7 @@ import json
 import os
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -746,8 +747,62 @@ def skill_block(base: Path | None) -> str:
     return ("## How to improve a harness (the platform's skill)\n" + text)
 
 
+
+def cli_improver_identity(base: Path | None) -> dict | None:
+    """The CLI improver this run resolved, if it is one.
+
+    Read from the staged `round.json`, which is the same resolution the curve point names --
+    so a method cannot drive a different improver than the record says. `HG_IMPROVER` is the
+    operator's override and wins, because "run *this* tool" is a deliberate act.
+    """
+    if os.environ.get("HG_IMPROVER"):
+        return {"name": os.environ["HG_IMPROVER"], "kind": "cli", "path": ""}
+    if base is None:
+        return None
+    try:
+        summary = json.loads((channel(base) / "round.json").read_text())
+    except (OSError, ValueError):
+        return None
+    improver = (summary.get("identity") or {}).get("improver") or {}
+    return improver if improver.get("kind") == "cli" else None
+
+
+def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
+    """Propose through a **CLI** improver and return the result as an edit sequence.
+
+    The two improver layers have different shapes: an endpoint returns edits that the method
+    applies, a CLI edits a tree it was given. This bridges them in one place, so a rule
+    written against `ask` -- RRSI's band, DGM's archive, TTHE's gate -- runs on either
+    without knowing which: the CLI is given the **parent tree**, and the difference between
+    what it produced and that parent comes back as `content` edits, which the rule's own
+    `apply_edits` then reproduces onto its candidate path.
+
+    Giving it the parent (not the incumbent) is what keeps a parent-selection rule real: DGM
+    choosing round 3 must have the improver edit round 3's tree.
+    """
+    import cli_improver                                            # noqa: PLC0415
+    workspace = Path(tempfile.mkdtemp(prefix="hg-cli-ask-"))
+    req = {"platform_api_version": "0.1.0", "workspace": str(workspace),
+           "base_harness": str(parent), "candidate": str(workspace / "candidate"),
+           "improver": improver, "channel": str(channel(base)),
+           "trajectory_out": "", "task_ids": [], "train_task_ids": []}
+    result = cli_improver.propose(req, parent, prompt=prompt)
+    edits: list[dict] = []
+    for rel in result["files"]:
+        path = Path(result["candidate"]) / rel
+        try:
+            edits.append({"path": rel, "content": path.read_text(errors="replace")})
+        except OSError:
+            continue
+    if not edits:
+        return {"no_change": result["note"] or (
+            f"the CLI improver exited {result['exit_code']} and changed nothing")}
+    return {"files": edits,
+            "hypothesis": result["note"] or f"{len(edits)} file(s) edited by the CLI"}
+
+
 def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
-        skill: bool = True) -> dict:
+        skill: bool = True, parent: Path | None = None) -> dict:
     """One model call, with a bounded retry when the reply cannot be read.
 
     `base` adds the run's configuration block ahead of the method's own prompt. It is
@@ -757,6 +812,13 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     (`skill_block`), injected by default because it is staged for every method and named on
     every point; `skill=False` is how a method says it wants none.
 
+    **One dispatch point for the improver layer.** When the run resolved a *CLI* improver
+    (codex), this call drives it instead of a chat endpoint -- on the tree named by `parent`
+    (the one the rule chose to build on) -- and returns its edit as an ordinary edit
+    sequence. A rule therefore runs on either layer without knowing which it got, which is
+    what makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
+    `parent=None` means "build on the incumbent", which is what most A-shaped rules want.
+
     Retries because a small model's malformed JSON is intermittent, so a second
     sample usually parses -- but only a bounded number of times, and then it is
     reported. Silently returning `no_change` on a parse failure is the one thing
@@ -765,6 +827,16 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     from openai import OpenAI
 
     base_url, api_key, model = model_settings()
+    # **One dispatch point for the improver layer.** When this run resolved a *CLI* improver
+    # (codex), drive it rather than a chat endpoint -- on the tree the rule chose to build on
+    # (`parent`, defaulting to the incumbent) -- and hand the result back as an ordinary edit
+    # sequence. A rule thus runs on either layer without knowing which it got, which is what
+    # makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
+    cli = cli_improver_identity(base)
+    if cli is not None:
+        tree = Path(parent) if parent is not None else Path(base)
+        return _ask_cli(prompt, Path(base) if base is not None else tree, tree, cli)
+
     client = OpenAI(base_url=base_url, api_key=api_key,
                     timeout=float(os.environ.get("HG_METHOD_TIMEOUT_S", "180")),
                     max_retries=2)
@@ -860,6 +932,7 @@ EDIT_EXPECT = ("Return the complete corrected edit sequence as JSON, with the co
 
 
 def ask_for_json(prompt_for, *, system, base=None, attempts: int = 3,
+                 parent=None,
                  accept=None, what: str = "a JSON reply",
                  skill: bool = True) -> tuple[dict, str]:
     """Retry a JSON-producing model call with the failure fed back to the model.
@@ -888,6 +961,7 @@ def ask_for_json(prompt_for, *, system, base=None, attempts: int = 3,
 
 
 def propose_and_apply(base: Path, req: dict, system: str, prompt_for, *,
+                      parent=None,
                       attempts: int = 3, skill: bool = True) -> tuple[dict, Path, str]:
     """Two phases: propose an edit sequence, then apply and validate it."""
     dest = candidate_path(req)
@@ -899,7 +973,7 @@ def propose_and_apply(base: Path, req: dict, system: str, prompt_for, *,
         return problems
 
     reply, problems = ask_for_json(
-        prompt_for, system=system, base=base, attempts=attempts,
+        prompt_for, system=system, base=base, attempts=attempts, parent=parent,
         accept=accept, what="an edit sequence", skill=skill)
     return reply, dest, problems
 
