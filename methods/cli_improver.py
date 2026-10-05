@@ -85,9 +85,12 @@ Hard rules (the platform rejects a candidate that breaks any of them):
   * The entrypoint named in `harness.json` must still exist and still run. The platform
     invokes it as `<entrypoint> --task <task.json> --workdir <dir>`: it must keep both
     flags, exit 0, and write `answer.txt` and `trace.jsonl` into the workdir.
-  * **Change as little as you can.** One targeted change that tests your hypothesis beats a
-    rewrite: the platform scores the tree you leave behind, so lines you delete are lines
-    you are no longer measured on.
+  * **Make the change your diagnosis needs, and no larger.** A one-line constant is the
+    right answer when a constant is the cause. It is the wrong answer when the cause is
+    structural: a control-flow or bookkeeping defect is fixed *in the function that is
+    wrong*, in a few lines, and that is still a local change. What is ruled out is replacing
+    the harness or rewriting a file whose end you have not read -- not changing several
+    lines that the diagnosis actually implicates.
   * Do not run any task from the dataset. You may write and run your own tests of the
     harness, and you may run the harness's entrypoint on a task you construct yourself.
 

@@ -40,10 +40,21 @@ def test_the_hard_rules_state_the_consequence_and_the_size_rule():
 
     入口那一句必须点名平台**怎么调用**它(`--task`/`--workdir`),因为这次踩的正是这个:
     被删掉的那份文件仍然是个能跑的 Python 程序,只是不认识平台的命令行。
+
+    规模那句在 2026-10-05 改过一次措辞。原来的 `Change as little as you can` 成功止住了
+    635 行的重写(实测:v3 删 625 行 → v6 只改一行),但它把 improver 推到了另一个极端:
+    它诊断出 `repeats=23` 而 `nudges=2`(重复提醒只抓紧挨着的一次),这个缺陷需要结构性
+    改动,而它只敢改一个常量。所以规则改成"改动规模由诊断决定",同时保留"不许整份重写、
+    不许改写你没看到结尾的文件"。
     """
     assert "rejects" in ci.HARD_RULES, "没写违反的后果"
     assert "--task" in ci.HARD_RULES and "--workdir" in ci.HARD_RULES
-    assert "Change as little" in ci.HARD_RULES, "没有「少改」这条"
+    assert "Make the change your diagnosis needs" in ci.HARD_RULES, "没有规模这条"
+    assert "and no larger" in ci.HARD_RULES
+    assert "structural" in ci.HARD_RULES, "没有说清结构性缺陷该怎么办"
+    assert "rewriting a file whose end you have not read" in ci.HARD_RULES, "反重写护栏丢了"
+    # 旧的措辞必须不在了 —— 它正是把改动压到一行的那句话
+    assert "Change as little" not in ci.HARD_RULES
 
 
 def test_the_instruction_is_what_the_improver_is_actually_run_with(monkeypatch, tmp_path):
