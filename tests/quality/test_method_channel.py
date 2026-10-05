@@ -319,3 +319,35 @@ def test_the_task_page_carries_the_harness_s_own_crash_reason(tmp_path):
     assert len(harness["stderr"]) < 1400
     # 判分那一侧的证据也还在(两者是不同的问题)
     assert "check_report" in json.dumps(page)
+
+
+def test_the_channel_carries_every_trial_and_an_index_beside_it(tmp_path):
+    """**每次试验的轨迹都要给方法,不只是最后一次。**
+
+    实测(`noise-1`,5 题 × 3 次):`round0_traces/` 里有 20 个文件(每题 1 份代表 + 3 次试验),
+    而通道的 `traces/` 里只有 5 个 —— 每次试验的那三份没进通道。可"同一道题三次里过了两次、
+    第三次发生了什么"正是噪声感知规则(SICA 的置信下界、RRSI 的噪声带)唯一需要的东西。
+    而且 `history/traces/round-<n>/` 因为 `glob("*.jsonl")` 一直带着它们,于是过去完整、
+    现在残缺,更糟。
+    """
+    from harnessgrad.channel import _stage_for_method
+    work = tmp_path / "work"
+    work.mkdir()
+    result = {
+        "traces": {"t01": "LAST TRIAL\n"},
+        "trial_traces": {"t01": ["first\n", "second\n", "third\n"]},
+        "verdicts": {}, "per_task": {"t01": 0.5}, "harness_output": {},
+    }
+    _stage_for_method(work, {"round": 1, "score": 0.5}, {"t01": "LAST TRIAL\n"},
+                      history=[{"round": 0, "score": 0.0}], task_ids=["t01"],
+                      run_dir=None, tasks=[{"task_id": "t01", "goal": "g"}],
+                      setups={}, verifiers={}, result=result)
+    traces = work / "_harnessgrad" / "traces"
+    assert (traces / "t01.jsonl").read_text() == "LAST TRIAL\n"
+    for i, body in enumerate(("first\n", "second\n", "third\n"), start=1):
+        got = (traces / f"t01.trial{i}.jsonl").read_text()
+        assert got == body, (i, got)
+        # 每份轨迹旁边都有一份目录,能一步指到诊断记录
+        index = json.loads((traces / f"t01.trial{i}.index.json").read_text())
+        assert index["records"] == 1, index
+    assert (traces / "t01.index.json").is_file()

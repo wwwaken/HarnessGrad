@@ -294,6 +294,19 @@ def _trace_index(trace_text: str) -> dict:
             "entries": entries}
 
 
+def _write_trace_with_index(dest: Path, name: str, body: str) -> None:
+    """A trace, and its table of contents beside it.
+
+    The index is what makes "let the improver choose what to read" cheap: it says which
+    record carries the empty command, the clipped output or the parser repair, and where.
+    Nothing is removed -- the trace file is byte-for-byte what the harness wrote.
+    """
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / name).write_text(body)
+    (dest / f"{name[:-len('.jsonl')]}.index.json").write_text(
+        json.dumps(_trace_index(body), indent=1))
+
+
 def _stage_for_method(work: Path, point: dict, traces: dict,
                       history: list[dict] | None = None,
                       task_ids: list[str] | None = None,
@@ -369,12 +382,19 @@ def _stage_for_method(work: Path, point: dict, traces: dict,
             json.dumps(_for_method(past), indent=1))
     visible = traces if task_ids is None else {
         tid: t for tid, t in traces.items() if tid in set(task_ids)}
+    #: The per-trial traces travel with `result`, because **the spread is evidence**. A
+    #: method whose rule reasons about noise (SICA's confidence bound, RRSI's band) needs to
+    #: see that one task passed twice out of three and what the third trial did; the run
+    #: directory kept those files all along (`round<N>_traces/<task>.trial<i>.jsonl`) and the
+    #: channel staged only the last one -- so the one place a method looked had the single
+    #: least informative view of the noise. `history/traces/round-<n>/` had them by accident
+    #: (`glob("*.jsonl")`), which made the inconsistency worse: the past was complete and the
+    #: present was not.
+    trial_traces = (result or {}).get("trial_traces") or {}
     for tid, trace in visible.items():
-        (hg / "traces" / f"{tid}.jsonl").write_text(trace)
-        # The table of contents beside it, so a tool-using improver can jump to the
-        # diagnostics instead of scanning (see `_trace_index`).
-        (hg / "traces" / f"{tid}.index.json").write_text(
-            json.dumps(_trace_index(trace), indent=1))
+        _write_trace_with_index(hg / "traces", f"{tid}.jsonl", trace)
+        for index, body in enumerate(trial_traces.get(tid) or [], start=1):
+            _write_trace_with_index(hg / "traces", f"{tid}.trial{index}.jsonl", body)
 
     # Each past round's train traces, newest window only, same cap as `states/`.
     for past_round in [p.get("round") for p in

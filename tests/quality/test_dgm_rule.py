@@ -179,8 +179,14 @@ def test_a_batch_becomes_one_curve_point_per_child(tmp_path):
          "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
          "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/dgm/run.py'}"],
         cwd=ROOT, capture_output=True, text=True, timeout=900,
+        # **A dead endpoint, and told to give up fast.** This test is about the *shape* of
+        # a batch in the record, not about a model answering; with the default retry budget
+        # (3 children x retries x backoff) it spent 900 s and hit the subprocess timeout --
+        # a test that hangs is worse than one that fails, because it hides the next failure
+        # behind it.
         env={**os.environ, "HG_AGENT_BACKEND": "mock", "HG_METHOD_MODEL": "stub",
              "HG_METHOD_BASE_URL": "http://127.0.0.1:9/v1", "HG_METHOD_API_KEY": "x",
+             "HG_METHOD_PARSE_RETRIES": "1", "HG_METHOD_TIMEOUT_S": "2",
              "HG_DGM_CHILDREN": "3"})
     out = proc.stdout + proc.stderr
     points = [json.loads(l) for l in
