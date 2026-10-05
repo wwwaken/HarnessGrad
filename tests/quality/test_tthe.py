@@ -80,7 +80,7 @@ def _invoke(mod, request: dict, monkeypatch, reply=None, raises=None) -> dict:
 
     captured: dict = {"asked": 0}
 
-    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None):
+    def fake_ask(prompt, system=editor.DEFAULT_SYSTEM, base=None, skill=True, parent=None, endpoint_only=False):
         captured["asked"] += 1
         captured["prompt"] = prompt
         captured["system"] = system

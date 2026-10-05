@@ -831,7 +831,8 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
 
 
 def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
-        skill: bool = True, parent: Path | None = None) -> dict:
+        skill: bool = True, parent: Path | None = None,
+        endpoint_only: bool = False) -> dict:
     """One model call, with a bounded retry when the reply cannot be read.
 
     `base` adds the run's configuration block ahead of the method's own prompt. It is
@@ -848,6 +849,15 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     what makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
     `parent=None` means "build on the incumbent", which is what most A-shaped rules want.
 
+    **`endpoint_only=True` refuses that dispatch.** The caller that needs it is the one
+    asking a *schema* question rather than for an edit: a CLI improver answers by editing a
+    tree and printing a paragraph, so it cannot return `{"verdict": ...}`. Measured
+    (`v4-rrsi`, 2026-10-05): RRSI's leakage critic was routed to codex, codex replied by
+    editing `.gitignore` and quoting the intended verdict inside its prose, the critic's
+    `accept()` predicate found no top-level `verdict`, and the critic rejected **every**
+    candidate in all three rounds -- the A-shaped arm measured no candidate at all, and the
+    reason read on the curve like a weak proposer rather than a mis-routed call.
+
     Retries because a small model's malformed JSON is intermittent, so a second
     sample usually parses -- but only a bounded number of times, and then it is
     reported. Silently returning `no_change` on a parse failure is the one thing
@@ -861,7 +871,7 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     # (`parent`, defaulting to the incumbent) -- and hand the result back as an ordinary edit
     # sequence. A rule thus runs on either layer without knowing which it got, which is what
     # makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
-    cli = cli_improver_identity(base)
+    cli = None if endpoint_only else cli_improver_identity(base)
     if cli is not None:
         tree = Path(parent) if parent is not None else Path(base)
         return _ask_cli(prompt, Path(base) if base is not None else tree, tree, cli)
@@ -961,7 +971,7 @@ EDIT_EXPECT = ("Return the complete corrected edit sequence as JSON, with the co
 
 
 def ask_for_json(prompt_for, *, system, base=None, attempts: int = 3,
-                 parent=None,
+                 parent=None, endpoint_only: bool = False,
                  accept=None, what: str = "a JSON reply",
                  skill: bool = True) -> tuple[dict, str]:
     """Retry a JSON-producing model call with the failure fed back to the model.
@@ -970,12 +980,27 @@ def ask_for_json(prompt_for, *, system, base=None, attempts: int = 3,
     should be placed in the next prompt. This is deliberately shared by proposer and
     critic: repeating the exact same payload after a formatting failure is three copies
     of the same failure, not a repair.
+
+    **`parent` used to be accepted and then dropped.** The parameter was in this signature
+    for the CLI dispatch and never reached `ask`, so every `propose_and_apply(..., parent=...)`
+    drove the improver on `base` -- the *channel* -- instead of the tree the rule chose.
+    Passed through now.
+
+    `endpoint_only` goes with it and says the other half of the same thing: a CLI improver
+    is an editor, so a call that must come back as `{"verdict": ...}` cannot be served by
+    one (`ask` documents the measured case).
     """
     problems = ""
     reply: dict = {}
     for _ in range(max(1, attempts)):
         try:
-            reply = ask(prompt_for(problems), system=system, base=base, skill=skill)
+            call = {"system": system, "base": base, "skill": skill, "parent": parent}
+            # Passed only when set: the stub `ask` in the tests is the seam every rule is
+            # tested through, and a keyword it has never heard of turns a formatting
+            # question into a `TypeError` in the test that was asking it.
+            if endpoint_only:
+                call["endpoint_only"] = True
+            reply = ask(prompt_for(problems), **call)
         except UnparseableReply as exc:
             problems = (f"your reply could not be read as {what}: {exc}. "
                         "Answer with the JSON envelope only, and nothing else.")
