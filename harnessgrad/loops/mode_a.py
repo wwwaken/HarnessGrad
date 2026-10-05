@@ -48,6 +48,42 @@ from harnessgrad.records import _write_curve
 from harnessgrad.records import _write_run_meta
 import eval.candidate as candidate
 
+
+def _no_loadable_change(changed: list[str], unreachable: list[str]) -> dict | None:
+    """A candidate whose every changed file is outside the entrypoint's import closure.
+
+    `unreachable` is `code_metrics.measure()`'s `unreachable_modules`: the `.py` files that
+    are not in the entrypoint's transitive import closure. The entrypoint itself is never in
+    that list (it is the root of the closure), so a candidate that edited the entrypoint --
+    or any module it imports -- comes back clean without needing to be named here, and a
+    non-Python change (a dependency, a config file) is not in the list either and therefore
+    also comes back clean. Only the fully dead case is reported.
+
+    Measured (`v9-dgm`, 2026-10-05): round 1 scored **0.200 against H0's 0.100** and the
+    candidate was `agent.py` byte-identical to H0 plus `agent_backup.py` (a 635-line copy of
+    the original) and `agent_new.py` (an 88-line fragment nothing imports). The score could
+    not have moved because of the edit. A curve point that does not say so reads as a real
+    gain, and this platform has already published one false `+0.200` from an unedited tree
+    (`docs/experiment_noise.md`).
+
+    Recorded rather than enforced: a harness may load a module by scanning a directory, which
+    no import graph can see, so this is a strong claim and not a proof. What it is for is the
+    reading -- nothing the entrypoint can load is different, so the score is not evidence
+    about the edit.
+    """
+    if not changed or not unreachable:
+        return None
+    dead = set(unreachable)
+    if not all(path in dead for path in changed):
+        return None
+    return {
+        "changed": sorted(changed),
+        "why": ("every file this candidate changed is outside the entrypoint's import "
+                "closure, so nothing the entrypoint can load is different: the score is "
+                "not evidence about this edit"),
+    }
+
+
 def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                 task_ids, scorable, sampling, cache, cumulative,
                 train_ids=None, split=None, setups=None,
@@ -545,6 +581,23 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         # `harnessgrad/code_metrics.py` states the three ways static analysis is wrong.
         if src:
             point["candidate_code"] = code_metrics.measure(Path(src))
+            # **A candidate the entrypoint cannot load.** Measured (`v9-dgm`, 2026-10-05):
+            # round 1 scored 0.200 against H0's 0.100 -- a `+0.100` improvement -- and the
+            # candidate was `agent.py` **byte-identical to H0** plus two new files nothing
+            # imports (`agent_backup.py`, a 635-line copy of the original, and
+            # `agent_new.py`, an 88-line fragment). The score could not have moved because
+            # of the edit, and a reader without this field has no way to tell that from a
+            # real gain. The same class of dead work HarnessDev counted, at file
+            # granularity, from an analysis the platform already runs.
+            #
+            # Recorded, not enforced: a harness may load a module by scanning a directory,
+            # which no import graph sees, so this is a strong claim and not a proof. What it
+            # is *for* is the reading -- a curve point that says "nothing the entrypoint can
+            # load changed" cannot be evidence of an improvement, whatever its score.
+            unloadable = _no_loadable_change(
+                changed_files, (point["candidate_code"] or {}).get("unreachable_modules") or [])
+            if unloadable:
+                point["no_loadable_change"] = unloadable
         curve.append(point)
         _write_curve(run_dir / "curve.jsonl", curve)
         # The step finished both phases, so it counts -- and the next step starts with a

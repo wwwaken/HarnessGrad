@@ -61,6 +61,9 @@ def test_the_hard_rules_state_the_consequence_and_push_for_a_structural_change()
     assert "Do not answer a structural defect with a constant" in ci.HARD_RULES
     assert "FINISH_NUDGE_STEPS" in ci.HARD_RULES and "OUTPUT_LIMIT" in ci.HARD_RULES, (
         "没有把三次常量改动失败写进去,它没有理由相信这句话")
+    # 新失败模式(v9):写进一个没人 import 的新文件 = 什么都没改
+    assert "A file nothing loads changes nothing" in ci.HARD_RULES
+    assert "import closure" in ci.HARD_RULES
     # 激进要用验证兜住:改动大就自己跑一遍入口
     assert "must exit 0" in ci.HARD_RULES
     assert "A candidate that cannot start is rejected" in ci.HARD_RULES

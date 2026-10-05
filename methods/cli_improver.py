@@ -85,6 +85,14 @@ Hard rules (the platform rejects a candidate that breaks any of them):
   * The entrypoint named in `harness.json` must still exist and still run. The platform
     invokes it as `<entrypoint> --task <task.json> --workdir <dir>`: it must keep both
     flags, exit 0, and write `answer.txt` and `trace.jsonl` into the workdir.
+  * **A file nothing loads changes nothing.** If you add a module, the entrypoint must reach
+    it: import it, or write your new logic *into* the entrypoint. The platform computes the
+    entrypoint's import closure and records whether your change is inside it; a candidate
+    whose every changed file is outside it cannot have changed the harness's behaviour,
+    whatever score it happens to get. Measured (`v9`, 2026-10-05): one candidate added a
+    635-line backup and an 88-line rewrite that nothing imported, left `agent.py` byte
+    identical, and scored 0.200 against the 0.100 it started from -- a number about noise,
+    not about the edit.
   * If your change is large enough that you are unsure it still starts, **run it**:
     `<entrypoint> --task <a tiny task you wrote> --workdir <a temp dir>` must exit 0 and
     write `answer.txt`. A candidate that cannot start is rejected, and the round is spent

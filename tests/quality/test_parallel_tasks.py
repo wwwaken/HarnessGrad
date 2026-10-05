@@ -230,3 +230,27 @@ def test_jobs_reaches_the_run_through_the_driver(tmp_path):
     assert meta["jobs"] == 2 and meta["trials"] == 1
     point = json.loads((runs / "jobs-check" / "curve.jsonl").read_text().splitlines()[0])
     assert point["per_task"], "一道题都没测出来"
+
+
+# ---------------------------------------------------- 候选是否可能改变行为 ---
+
+def test_a_candidate_the_entrypoint_cannot_load_is_flagged():
+    """`v9-dgm` 那次 +0.100 必须被记成"入口加载不到这次改动"。
+
+    实测:round 1 测出 0.200(H0 是 0.100),而候选是 **`agent.py` 与 H0 逐字节相同**,
+    另加两个没人 import 的新文件(`agent_backup.py` 635 行拷贝、`agent_new.py` 88 行片段)。
+    分数不可能因为这个改动而变 —— 不写下来,这个点读起来就是一次真实提升。
+    """
+    from harnessgrad.loops.mode_a import _no_loadable_change
+
+    got = _no_loadable_change(["agent_backup.py", "agent_new.py"],
+                              ["agent_backup.py", "agent_new.py"])
+    assert got is not None and "not evidence" in got["why"], got
+    # 改了入口本身:入口不在 unreachable 里,所以不算死改动
+    assert _no_loadable_change(["agent.py"], ["agent_backup.py"]) is None
+    # 改了被入口 import 的模块:同理
+    assert _no_loadable_change(["helpers.py"], ["agent_new.py"]) is None
+    # 什么都没改,由 `changed=False` 表达,这里不该重复说
+    assert _no_loadable_change([], ["agent_new.py"]) is None
+    # 非 Python 改动(依赖、配置)不进 unreachable,所以不算死改动
+    assert _no_loadable_change(["requirements.txt"], ["agent_new.py"]) is None
