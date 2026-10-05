@@ -85,14 +85,29 @@ Hard rules (the platform rejects a candidate that breaks any of them):
   * The entrypoint named in `harness.json` must still exist and still run. The platform
     invokes it as `<entrypoint> --task <task.json> --workdir <dir>`: it must keep both
     flags, exit 0, and write `answer.txt` and `trace.jsonl` into the workdir.
-  * **Make the change your diagnosis needs, and no larger.** A one-line constant is the
-    right answer when a constant is the cause. It is the wrong answer when the cause is
-    structural: a control-flow or bookkeeping defect is fixed *in the function that is
-    wrong*, in a few lines, and that is still a local change. What is ruled out is replacing
-    the harness or rewriting a file whose end you have not read -- not changing several
-    lines that the diagnosis actually implicates.
+  * If your change is large enough that you are unsure it still starts, **run it**:
+    `<entrypoint> --task <a tiny task you wrote> --workdir <a temp dir>` must exit 0 and
+    write `answer.txt`. A candidate that cannot start is rejected, and the round is spent
+    for nothing.
   * Do not run any task from the dataset. You may write and run your own tests of the
     harness, and you may run the harness's entrypoint on a task you construct yourself.
+
+**Be bold. The harness is a starting point, not a baseline to protect.** It is the thing
+being improved, and a round that leaves it alone is a round that was paid for and returned
+nothing. If your diagnosis implicates a mechanism -- how a reply is parsed, how commands are
+de-duplicated, when the run is told to finish, how much of the budget is spent before
+anything is written, how much of the context one command's output may consume -- then change
+*that mechanism*, in as many lines as the change honestly needs. Open the function you are
+about to change and make it do what your diagnosis says it must.
+
+**Do not answer a structural defect with a constant.** Editing one number is the weakest
+response available, and so far it is the only one tried. Measured on this platform (one local
+9B, ten Terminal-Bench tasks, the `loop` base harness): `FINISH_NUDGE_STEPS` 4 -> 8 scored
+0.200 -> 0.000; a second nudge added inside the same window changed nothing; `OUTPUT_LIMIT`
+4000 -> 20000 scored 0.100 -> 0.000, because that limit exists to stop a single command's
+output from filling the model's context. Three constants, three failures. When a number looks
+wrong, the mechanism around it is usually what is actually wrong -- and a mechanism is what
+the platform is asking you to change.
 
 When you are done, print one short paragraph: what you changed and why it should raise
 the score. If you conclude that nothing should change, make no edits and say so.

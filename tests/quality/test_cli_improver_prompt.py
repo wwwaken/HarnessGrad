@@ -35,26 +35,35 @@ def test_the_shipped_prompt_is_used_when_a_rule_supplies_none():
     assert ci.HARD_RULES in ci.PROMPT, "默认提示词自己都不含硬规则"
 
 
-def test_the_hard_rules_state_the_consequence_and_the_size_rule():
+def test_the_hard_rules_state_the_consequence_and_push_for_a_structural_change():
     """「不许」要带着后果,否则它只是一句礼貌话。
 
     入口那一句必须点名平台**怎么调用**它(`--task`/`--workdir`),因为这次踩的正是这个:
     被删掉的那份文件仍然是个能跑的 Python 程序,只是不认识平台的命令行。
 
-    规模那句在 2026-10-05 改过一次措辞。原来的 `Change as little as you can` 成功止住了
-    635 行的重写(实测:v3 删 625 行 → v6 只改一行),但它把 improver 推到了另一个极端:
-    它诊断出 `repeats=23` 而 `nudges=2`(重复提醒只抓紧挨着的一次),这个缺陷需要结构性
-    改动,而它只敢改一个常量。所以规则改成"改动规模由诊断决定",同时保留"不许整份重写、
-    不许改写你没看到结尾的文件"。
+    规模那一段改了两次,两次都是被实测推着改的:
+
+    * `Change as little as you can` 止住了 635 行的重写,但把改动压到一行;
+    * `...and no larger` / `a few lines` / `still a local change` 更糟 —— `v7` 两轮六次
+      尝试**一次文件都没写**(诊断全对);
+    * 现在这一版把"小心"全部撤掉,只留契约,并且**点名"用常量回答结构缺陷"这条路已经
+      失败三次**:`FINISH_NUDGE_STEPS` 4->8 掉 0.2、同窗口内多提醒没变化、
+      `OUTPUT_LIMIT` 4000->20000 掉 0.1。
     """
     assert "rejects" in ci.HARD_RULES, "没写违反的后果"
     assert "--task" in ci.HARD_RULES and "--workdir" in ci.HARD_RULES
-    assert "Make the change your diagnosis needs" in ci.HARD_RULES, "没有规模这条"
-    assert "and no larger" in ci.HARD_RULES
-    assert "structural" in ci.HARD_RULES, "没有说清结构性缺陷该怎么办"
-    assert "rewriting a file whose end you have not read" in ci.HARD_RULES, "反重写护栏丢了"
-    # 旧的措辞必须不在了 —— 它正是把改动压到一行的那句话
+    # 反向:不许再把规模压回去
     assert "Change as little" not in ci.HARD_RULES
+    assert "and no larger" not in ci.HARD_RULES
+    assert "a few lines" not in ci.HARD_RULES
+    # 正向:激进 + 点名常量这条路
+    assert "Be bold" in ci.HARD_RULES and "not a baseline to protect" in ci.HARD_RULES
+    assert "Do not answer a structural defect with a constant" in ci.HARD_RULES
+    assert "FINISH_NUDGE_STEPS" in ci.HARD_RULES and "OUTPUT_LIMIT" in ci.HARD_RULES, (
+        "没有把三次常量改动失败写进去,它没有理由相信这句话")
+    # 激进要用验证兜住:改动大就自己跑一遍入口
+    assert "must exit 0" in ci.HARD_RULES
+    assert "A candidate that cannot start is rejected" in ci.HARD_RULES
 
 
 def test_the_instruction_is_what_the_improver_is_actually_run_with(monkeypatch, tmp_path):
