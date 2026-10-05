@@ -717,3 +717,37 @@ def test_an_endpoint_improver_is_not_dispatched_as_a_cli(tmp_path):
         {"identity": {"improver": {"name": "deepseek", "path": "https://api/v1",
                                    "base_url": "https://api/v1"}}}))
     assert editor.cli_improver_identity(root) is None
+
+
+def test_the_parents_sources_are_readable_from_inside_the_channel(tmp_path):
+    """父状态在 `_harnessgrad/states/round-N/` 里,`load_sources` 必须还能读到它的源码。
+
+    实测(`v3-dgm`,2026-10-05):这里用**绝对路径的 parts** 判断 `_harnessgrad`,而 staged
+    state 的绝对路径**必然**含这个词 —— 于是每个文件都被跳过,给改进器的 prompt 里
+    "## The parent's sources" 一节永远是**空的**(20,313 字符的指令里那一节只有 43 字节)。
+    改进器被要求改一个它没看过的 harness,后果两种都实测到了:
+
+    * 聊天模型凭想象写出整个新 harness:635 行删成 179 行,连 `--task`/`--workdir` 约定
+      都丢了,两轮十道题全部启动即崩;
+    * codex 什么都不改(它甚至看不到有什么可改)。
+
+    同一类错误之前已经在 traces 上犯过一次(那次是 `load_traces(parent)`,parent 也在
+    通道里)。判据必须是**相对** root 的路径。
+    """
+    import editor
+
+    root = _write_harness(tmp_path / "h")                  # harness 树 + 通道
+    state = root / "_harnessgrad" / "states" / "round-0"   # 平台 stage 父状态的位置
+    state.mkdir(parents=True)
+    (state / "agent.py").write_text("print('parent')\n")
+    (state / "requirements.txt").write_text("openai\n")
+    (state / "_harnessgrad").mkdir()                       # 嵌套的通道仍然不许泄漏
+    (state / "_harnessgrad" / "secret.json").write_text("{}")
+
+    got = editor.load_sources(state)
+    assert "agent.py" in got, "staged state 的源码读不到 —— 给改进器的 sources 一节会是空的"
+    assert "requirements.txt" in got
+    assert not any("_harnessgrad" in k for k in got), "通道里的文件泄进 prompt"
+
+    top = editor.load_sources(root)
+    assert "agent.py" in top and not any("_harnessgrad" in k for k in top)

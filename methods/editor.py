@@ -257,7 +257,22 @@ def load_sources(base: Path, limit: int = SOURCE_LIMIT) -> dict[str, str]:
     """
     out: dict[str, str] = {}
     for path in sorted(base.rglob("*")):
-        if not path.is_file() or CHANNEL in path.parts:
+        if not path.is_file():
+            continue
+        rel = path.relative_to(base)
+        # **Relative parts, not absolute.** The platform stages each earlier round's
+        # harness *inside the channel* (`<base_harness>/_harnessgrad/states/round-N/`), so
+        # when `base` is one of those states every absolute path contains `_harnessgrad` by
+        # construction and this check rejected every file. The prompt's
+        # "## The parent's sources" section was therefore present and **empty**: the
+        # improver was asked to improve a harness whose code it had not been shown.
+        #
+        # Measured (`v3-dgm`, 2026-10-05): DGM's instruction to codex was 20,313 characters
+        # with that section blank, and codex proposed nothing. The earlier 625-line rewrite
+        # is the same bug with a different improver: a chat model told "propose one change
+        # to this parent" with no source shown invents an entire harness -- and one that
+        # reads `sys.argv[1]` where the platform passes `--task`.
+        if CHANNEL in rel.parts:
             continue
         if path.name in PROTECTED:
             continue
@@ -267,7 +282,7 @@ def load_sources(base: Path, limit: int = SOURCE_LIMIT) -> dict[str, str]:
             text = path.read_text()
         except (OSError, UnicodeDecodeError):
             continue
-        rel = str(path.relative_to(base))
+        rel_s = str(rel)
         if len(text) > limit:
             # In the text the model reads, not in a log: a model that is told nothing
             # will re-emit the part it saw and call the result complete.
@@ -275,7 +290,7 @@ def load_sources(base: Path, limit: int = SOURCE_LIMIT) -> dict[str, str]:
                     + f"\n# [platform] TRUNCATED: {limit} of {len(text)} characters are "
                       f"shown. Do NOT rewrite this file wholesale -- you have not seen "
                       f"how it ends.\n")
-        out[rel] = text
+        out[rel_s] = text
     return out
 
 
