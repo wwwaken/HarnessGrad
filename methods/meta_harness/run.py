@@ -107,7 +107,8 @@ Meta-Harness's method is to give the proposer *more of the prior experience*, no
 edit: the frontier below says which previous candidate is best at which task, and every
 candidate's stated hypothesis and measured outcome is listed. Read them before proposing.
 
-Propose ONE bounded edit sequence. Prefer targeted replacements where you can name the text
+Propose the bounded edit sequence your diagnosis requires -- one or more edits. Prefer
+targeted replacements where you can name the text
 being replaced. Do not rewrite a file wholesale unless the change is genuinely
 whole-file. Return the JSON envelope described below and nothing else.
 """
@@ -313,8 +314,6 @@ def build_prompt(edit_base: Path, channel_base: Path, req: dict, frontier: dict,
     the platform skill -- comes from the incumbent, because a staged state carries no
     `_harnessgrad/`.
     """
-    sources = editor.load_sources(edit_base)
-    traces = editor.load_traces(channel_base, limit=6, order=editor.failing_first(channel_base))
     latest = (req.get("history") or [{}])[-1] if req.get("history") else {}
     rows = "\n".join(
         f"- {row['agent']} · {row['avg_pass_rate']} · {row['outcome']} · "
@@ -333,10 +332,6 @@ def build_prompt(edit_base: Path, channel_base: Path, req: dict, frontier: dict,
         f"{_frontier_table(frontier, protocol.studied_per_task(latest))}\n\n"
         f"## Every prior candidate, as the evolution summary records it\n{rows or '(none)'}\n\n"
         f"## Why this round edits what it edits\n{base_why}\n\n"
-        f"## What the harness did last round\n{traces}\n\n"
-        + "## Current harness sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items())
-        + "\n\nPropose one edit that raises the tasks the frontier shows are failing, "
           "or say no_change."
     )
 

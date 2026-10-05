@@ -191,3 +191,26 @@ def test_the_hard_rules_require_the_edit_to_be_on_disk():
     """
     assert "The submission is the file on disk" in ci.HARD_RULES
     assert "not the analysis" in ci.HARD_RULES
+
+
+def test_the_ask_comes_first_and_the_evidence_is_a_path_not_a_copy():
+    """**要求在最前,证据只给路径。**
+
+    实测(`v4`-`v10`,58,160 字符的指令):那 54 个字符的要求("propose one change, or say
+    no_change")占 0.1%,排在 89.7% 的原始证据**之后**,硬规则更后。小模型读得最轻的正好是
+    唯一告诉它要做什么的那句 —— v7 一轮里 `no_change` 这个免费出口被走了五次。
+
+    这条测试钉两件事:顺序(事实→要求→规则→证据→规则自己的话),以及证据是**路径**。
+    按真实规模(51 题、多文件 harness)编译内容是 ~230 KB,而整条指令是一个 argv 参数,
+    Linux 上限 128 KB:那样工具根本起不来。
+    """
+    full = ci.instruction("RULE'S OWN PROMPT", facts="FACTS-BLOCK",
+                          evidence="EVIDENCE-POINTER")
+    order = [full.index(x) for x in ("FACTS-BLOCK", "## What to produce", "Hard rules",
+                                     "EVIDENCE-POINTER", "RULE'S OWN PROMPT")]
+    assert order == sorted(order), f"顺序不对: {order}"
+    assert "apply them to the tree" in full
+    assert "as many independent edits as it takes" in full
+    assert "one change" not in full, "又写成'一个改动'了"
+    # no_change 不再是免费出口
+    assert "name the\nmechanism you checked" in full or "name the mechanism you checked" in full

@@ -104,12 +104,24 @@ def test_the_editor_is_given_the_traces_the_contract_promises(tmp_path, monkeypa
     mod = _load("llm_improver")
 
     got = _invoke(mod, _request(base, work, tmp_path / "traj.json"), monkeypatch)
-
     prompt = got["prompt"]
-    assert "ran: ls -a" in prompt, "方法没拿到 trace 里的命令"
-    assert "said: I cannot do that" in prompt, "方法没拿到 trace 里的回复"
-    assert "no traces available" not in prompt, \
-        "方法又从错误的路径读 traces 了(workspace 而不是 harness)"
+
+    # **新契约:内容不再编译进 prompt。** 平台把通道 stage 成 `evidence/`,CLI 层拿到的是
+    # **路径**(codex 自己读),聊天端点层(没有文件系统)才拿内容。以前两边都靠把渲染好的
+    # 轨迹和源码塞进 prompt —— 实测 58,160 字符里 89.7% 是证据,按真实规模(51 题)约 230 KB,
+    # 而整条指令是一个 argv 参数,Linux 上限 128 KB,工具根本起不来。
+    import editor
+    assert "ran: ls -a" not in prompt, "轨迹又被编译进方法的 prompt 了"
+    assert "## Current harness sources" not in prompt, "源码又被编译进方法的 prompt 了"
+
+    # 端点层拿内容(它没有文件系统)
+    content = editor.evidence_content(base)
+    assert "ran: ls -a" in content and "said: I cannot do that" in content, content[:300]
+
+    # CLI 层拿路径,而且路径要指名 traces 和索引
+    pointer = editor.evidence_pointer(base)
+    assert "evidence/traces/" in pointer and "index.json" in pointer, pointer
+    assert "ran: ls -a" not in pointer, "指针块里不该有内容"
 
 
 def test_history_is_read_from_the_contract_path(tmp_path, monkeypatch):
@@ -595,7 +607,12 @@ def test_a_prompt_without_pages_still_builds(tmp_path):
     mod = _load("llm_improver")
     root = _write_harness(tmp_path / "base")
     prompt = mod.build_prompt(root, {"round_index": 1, "incumbent_score": 0.0})
-    assert "## Current harness sources" in prompt and "no_change" in prompt
+    # 方法自己的 prompt 现在只讲它的规则;要求(含 no_change 的代价)由平台统一加,
+    # 所以这里断言的是一个**不再重复**的最小 prompt,而不是它自己拼出来的证据节。
+    assert "## Current harness sources" not in prompt
+    import cli_improver
+    full = cli_improver.instruction(prompt, facts="FACTS", evidence="EVIDENCE")
+    assert "no_change" in full and "FACTS" in full and "EVIDENCE" in full
 
 
 # --------------------------------------------- 方法自己的 token 进 cost ---

@@ -257,24 +257,10 @@ def _state_dir(base: Path, round_no) -> str | None:
 
 
 def build_prompt(base: Path, req: dict, parent: dict, report: dict) -> str:
-    sources = editor.load_sources(base)
-    # **Traces come from the *incumbent*, sources from the parent.** The parent is a staged
-    # state (`states/round-<n>/`) and a staged state is a harness commit -- it carries no
-    # `_harnessgrad/`, so `load_traces(parent)` returns the literal sentence "the platform
-    # staged no traces for this round". Measured tonight: codex-on-the-local-model was handed
-    # that prompt and correctly answered that there was no evidence; the method then reported
-    # "no usable edit". The rule's whole point is to build on an old state, and the evidence
-    # about how that state behaved is the *round's*, which lives in the incumbent's channel.
-    traces = editor.load_traces(Path(req["base_harness"]), limit=6,
-                                order=editor.failing_first(Path(req["base_harness"])))
     return (
         f"HyperAgents round {req.get('round_index', 1)}. The archive chose round "
         f"{parent.get('round')} as this round's parent (score {_score(parent):.3f} on "
         f"the tasks you can see; the best candidate is round {report['best_round']}).\n\n"
-        f"## What the harness did on the parent\n{traces}\n\n"
-        "## The parent's sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items())
-        + "\n\nPropose one change to this parent, or say no_change."
     )
 
 

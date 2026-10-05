@@ -122,7 +122,7 @@ SICA_SYSTEM = """You are improving an agent harness, on behalf of a method whose
 selection rule has already decided that this round is worth spending on.
 
 You will be shown the harness's source and the record of running it on a set of \
-tasks. Propose ONE concrete change.
+tasks.
 
 Reply with JSON only:
 
@@ -138,18 +138,12 @@ Rules:
 
 def build_prompt(base, request, chosen, why):
     """The edit is made *in the light of* the rule's choice, not independently of it."""
-    sources = editor.load_sources(base)
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
     return (
         f"Round {request.get('round_index', 1)}. The harness scored "
         f"{request.get('incumbent_score')} on the task set.\n\n"
         f"The selection rule chose round {chosen.get('round')} as the fairest base "
         f"to build on ({why}), so the change should be a step from there rather than "
         f"a restatement of the current state.\n\n"
-        f"## What the harness did last round\n{traces}\n\n"
-        "## Current harness sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items())
-        + "\n\nPropose one change, or say no_change."
     )
 
 

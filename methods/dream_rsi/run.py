@@ -88,7 +88,8 @@ of the tokens it spent, plus a parallelism term), and the version with the highe
 one this round edits. The incumbent is always in that comparison, which is what makes the
 selection non-regressing.
 
-Propose ONE bounded edit sequence for the version named above. Prefer targeted replacements
+Propose the bounded edit sequence your diagnosis requires for the version named above --
+one or more edits. Prefer targeted replacements
 where you can name the text being replaced. Return the JSON envelope described below and
 nothing else.
 """
@@ -226,9 +227,6 @@ def build_prompt(edit_base: Path, channel_base: Path, req: dict, selection: dict
     traces from the edit base would show the proposer nothing on exactly the rounds where the
     selection moved.
     """
-    sources = editor.load_sources(edit_base)
-    traces = editor.load_traces(channel_base, limit=6,
-                                order=editor.failing_first(channel_base))
     table = "\n".join(
         f"| r{r['round']} | {r['quality']} | {r['cost_kilo_tokens']} | {r['k']} | {r['v']} |"
         for r in selection["versions"])
@@ -241,10 +239,6 @@ def build_prompt(edit_base: Path, channel_base: Path, req: dict, selection: dict
         f"incumbent: r{selection['incumbent']} (V={selection['v_incumbent']}), "
         f"guarantee V* >= V^0 holds: {selection['guarantee_holds']}\n\n"
         f"## Why this round edits what it edits\n{base_why}\n\n"
-        f"## What the harness did last round\n{traces}\n\n"
-        "## Current harness sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items())
-        + "\n\nPropose one edit for the selected version, or say no_change."
     )
 
 

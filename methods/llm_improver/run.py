@@ -94,10 +94,8 @@ def failure_digest(base: Path) -> str:
 
 def build_prompt(base: Path, req: dict) -> str:
     """The plain framing: everything the contract allows, nothing interpreted."""
-    sources = editor.load_sources(base)
     round_index = req.get("round_index", 1)
     incumbent = req.get("incumbent_score")
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
     failures = failure_digest(base)
     # No skill block here: the platform's skill is staged for every method and injected by
     # `editor.ask` on the way out (`editor.skill_block`), so pasting it in here too would
@@ -108,10 +106,6 @@ def build_prompt(base: Path, req: dict) -> str:
         f"Round {round_index}. The harness scored {incumbent} on the task set.\n\n"
         + (f"## Why each task failed, as the checks reported it\n{failures}\n\n"
            if failures else "")
-        + f"## What the harness did last round\n{traces}\n\n"
-        "## Current harness sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items())
-        + "\n\nPropose one change that addresses the failures above, or say no_change."
     )
 
 

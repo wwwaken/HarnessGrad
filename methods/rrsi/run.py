@@ -848,8 +848,6 @@ def build_prompt(base: Path, req: dict, rule: dict) -> str:
     (`_train_score`), because selecting on the exam is the leak the split exists to
     prevent.
     """
-    sources = editor.load_sources(base)
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
     lines = [
         f"Round {req.get('round_index', 1)} (RRSI round index t={rule['t']}).",
         "",
@@ -879,14 +877,6 @@ def build_prompt(base: Path, req: dict, rule: dict) -> str:
         lines.append(f"- the round that produced the current harness: "
                      f"{adjudication['reason']}.")
     lines += [
-        "",
-        f"## What the harness did last round\n{traces}",
-        "",
-        "## Current harness sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items()),
-        "",
-        f"Propose at most {rule['budget']} independent edit(s), each tagged with its "
-        f"component, or say no_change.",
     ]
     return "\n".join(lines)
 

@@ -366,6 +366,57 @@ def load_sources(base: Path, limit: int = SOURCE_LIMIT,
     return out
 
 
+def evidence_pointer(base: Path) -> str:
+    """Where the evidence is: **paths, not content.**
+
+    The content used to be compiled in, and that design has a ceiling that is not about
+    politeness. Measured (`v10`, 10 tasks, one harness file of 28,942 characters): 23,146
+    characters of rendered traces plus 29,032 of source -- 89.7% of a 58,160-character
+    instruction, with the ask and the hard rules sharing the remaining 6.9%. At this
+    platform's own intended scale (51 train tasks, a harness of several files) the same
+    proportions give roughly 230 KB, and the whole instruction travels as **one argv
+    element**, which Linux refuses above 128 KB: the improver would not start at all.
+
+    Nothing has to be compiled, because the content is already on disk next to the tree the
+    improver edits: `cli_improver.propose` stages the channel as `evidence/`, which holds the
+    round summary, the traces with a byte-offset index per file, the task pages with the
+    verifier's verdict, the earlier rounds, the earlier harness trees, and the platform's
+    skill. This block names them; a CLI improver reads what its own diagnosis needs, and the
+    prompt stops growing with the dataset.
+    """
+    entrypoint = (_read_manifest(base).get("entrypoint") or "agent.py")
+    return (
+        "## Where the evidence is -- read what your own diagnosis needs\n"
+        f"- the harness you are changing **is the current directory**; its entrypoint is "
+        f"`{entrypoint}`\n"
+        "- this round, per task and in total: `evidence/round.json`\n"
+        "- the incumbent's real conversations, one file per task: "
+        "`evidence/traces/<task>.jsonl`\n"
+        "  each line is one event -- the model's reply, the command it ran, the output it was\n"
+        "  shown. `evidence/traces/<task>.index.json` maps every line to a byte offset and a\n"
+        "  one-line summary, so you can find the step you care about without reading it all.\n"
+        "- the tasks, their grading, and the verifier's verdict: `evidence/tasks/<task>.json`\n"
+        "- earlier rounds: `evidence/history/round-<N>.json`; complete harness trees from\n"
+        "  earlier rounds: `evidence/states/round-<N>/`\n"
+        "- how to improve a harness on this platform: `evidence/SKILL.md` -- read this first\n"
+    )
+
+
+def evidence_content(base: Path, trace_limit: int = 6) -> str:
+    """The same material **inlined**, for an improver that cannot read files.
+
+    The two layers are not the same reader. A CLI improver has a working directory and tools,
+    so it gets `evidence_pointer` and reads what it needs. A chat call has neither: whatever
+    it is not shown, it does not have. So the endpoint path inlines the sources and the traces
+    under `load_sources`' total cap -- the cap is that reader's context window and the
+    operating system's one-argument limit, not a curation choice.
+    """
+    sources = "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in load_sources(base).items())
+    return ("## The harness's sources\n" + (sources or "(no text files)")
+            + "\n\n## What the harness did, failing tasks first\n"
+            + load_traces(base, limit=trace_limit, order=failing_first(base)))
+
+
 def failing_first(base: Path) -> list[str]:
     """Task ids ordered worst-first, from this round's curve point if it says.
 
@@ -950,14 +1001,16 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     # model, the score, and what the harness did on each task. The numbers are one line per
     # task and they are what a hypothesis is made of (`loop_facts_block`).
     facts = "\n\n".join(b for b in (run_facts(base), loop_facts_block(base)) if b)
-    if facts:
-        prompt = facts + "\n\n" + prompt
+    # **The evidence is named, not compiled in.** `propose` has staged the whole channel as
+    # `evidence/` beside the tree the improver edits, so the paths are enough and the prompt
+    # stops growing with the dataset (`evidence_pointer` states the ceiling this removes).
     workspace = Path(tempfile.mkdtemp(prefix="hg-cli-ask-"))
     req = {"platform_api_version": "0.1.0", "workspace": str(workspace),
            "base_harness": str(parent), "candidate": str(workspace / "candidate"),
            "improver": improver, "channel": str(channel(base)),
            "trajectory_out": "", "task_ids": [], "train_task_ids": []}
-    result = cli_improver.propose(req, parent, prompt=prompt)
+    result = cli_improver.propose(req, parent, prompt=prompt, facts=facts,
+                                   evidence=evidence_pointer(base))
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
@@ -1024,9 +1077,14 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     attempts = max(1, int(os.environ.get("HG_METHOD_PARSE_RETRIES", "2")))
     system = system + FORMAT_HINT
     if base is not None:
-        facts = "\n\n".join(b for b in (run_facts(base), loop_facts_block(base)) if b)
-        if facts:
-            prompt = facts + "\n\n" + prompt
+        # The endpoint layer cannot read `evidence/`, so it gets the content inlined; and it
+        # never received the platform's ask or its hard rules before this -- those lived only
+        # in `cli_improver`, which this branch does not go through.
+        import cli_improver                                          # noqa: PLC0415
+        facts = "\n\n".join(
+            b for b in (run_facts(base), loop_facts_block(base), evidence_content(base)) if b)
+        prompt = "\n\n".join(
+            x for x in (cli_improver.CHANGE_REQUEST, cli_improver.HARD_RULES, facts, prompt) if x)
         if skill:
             block = skill_block(base)
             if block:

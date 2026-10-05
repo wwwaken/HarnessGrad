@@ -195,7 +195,7 @@ method TTHE, whose per-round decision rule has already chosen a fixed branch rol
 for this round.
 
 You will be shown the harness's source and the record of running it on a set of \
-tasks. Propose ONE concrete change, and the proposal card that justifies it.
+tasks, and the proposal card that justifies each change.
 
 Reply with JSON only:
 
@@ -442,8 +442,6 @@ def _render_prior_rounds(history: list[dict]) -> str:
 def build_prompt(base: Path, request: dict, history: list[dict], round_index: int,
                  role_name: str, role_text: str, incumbent_name: str) -> str:
     """TTHE's proposer prompt (proposer.py:323-389), against a foreign harness."""
-    sources = editor.load_sources(base)
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
     peers = peer_state_count(base)
     return (
         f"Round {round_index}. You are handed the incumbent harness "
@@ -480,11 +478,6 @@ def build_prompt(base: Path, request: dict, history: list[dict], round_index: in
         f"import, or instantiate the harness yourself, and do not claim the child "
         f"ran or improved.\n\n"
 
-        f"## What the harness did last round (failing tasks first)\n{traces}\n\n"
-
-        "## Current harness sources\n"
-        + "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items())
-        + "\n\n"
 
         f"## Proposal card (mandatory; proposer.py:372-388)\n"
         f"Include it in your JSON reply. The controller fills `candidate`, "
@@ -501,7 +494,7 @@ def build_prompt(base: Path, request: dict, history: list[dict], round_index: in
         f"A missing or mistyped card is discarded and the incumbent is kept "
         f"(proposer.py:154-193,456-515). `verification` may describe only the "
         f"traces the platform staged; the child is unexecuted.\n\n"
-        f'Propose one change with its card, or reply {{"no_change": "<reason>"}}.'
+        f'Include the proposal card in your JSON reply, or reply {{"no_change": "<reason>"}}.'
     )
 
 

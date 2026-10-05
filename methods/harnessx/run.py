@@ -433,7 +433,7 @@ HARNESSX_SYSTEM = """You are the meta-agent of HarnessX, whose acceptance gate \
 decides whether the round you are about to propose survives.
 
 You will be shown the harness's source and the record of running it on a set of \
-tasks. Propose ONE concrete change that is likely to flip failing tasks without \
+tasks. Your changes should flip failing tasks without \
 breaking passing ones.
 
 Before the platform measures your proposal you must pre-register the hypothesis, \
@@ -514,8 +514,6 @@ def _previous_preregistration(history: list[dict]) -> dict | None:
 def build_prompt(base: Path, request: dict, gate: dict, revert_directive: dict | None,
                  prereg: dict | None) -> str:
     """The edit is made in the light of the gate's verdict, not independently of it."""
-    sources = editor.load_sources(base)
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
     lines = [
         f"HarnessX evolve round {request.get('round_index', 1)}. The harness scored "
         f"{request.get('incumbent_score')} on the task set.",
@@ -534,16 +532,6 @@ def build_prompt(base: Path, request: dict, gate: dict, revert_directive: dict |
         lines.append(f"- the round's pre-registered hypothesis was "
                      f"`{prereg.get('hypothesis_id')}` on levers "
                      f"{prereg.get('levers')}")
-    lines += [
-        "",
-        f"## What the harness did last round\n{traces}",
-        "",
-        "## Current harness sources",
-        "\n\n".join(f"### {name}\n```\n{body}\n```"
-                    for name, body in sources.items()),
-        "",
-        "Propose one change and pre-register it, or say no_change.",
-    ]
     return "\n".join(lines)
 
 

@@ -152,16 +152,58 @@ The harness you are changing is the current directory. Edit it in place.
 """ + HARD_RULES
 
 
-def instruction(prompt: str | None) -> str:
-    """The rule's prompt **plus** the hard rules -- never instead of them.
+#: What the round is asking for. **One sentence used to do this job and it was wrong twice.**
+#:
+#: It said "Propose **one** change to this parent, or say no_change" -- 54 characters, 0.1% of a
+#: 58,160-character instruction, placed after 40% of raw traces and 50% of harness source with
+#: the hard rules after that. Two problems, both measured:
+#:
+#: * *one change* is a size limit nothing justified. Every rule in this repository carried it
+#:   (`dgm`, `hyperagents`, `llm_improver`, `ahe`, `harnessx`, `sica_ci`, `tthe`, `dream_rsi`;
+#:   only `rrsi` said "edit(s)"). A diagnosis that implicates a mechanism and the two call
+#:   sites that use it is not one change.
+#: * *or say no_change* is a **free exit**. Taken five times in one run (`v7`), while the
+#:   platform's "the submission is the file on disk" paragraph sat 3,649 characters later.
+#:
+#: So the ask lives here now -- one place, for every rule -- and it says how much, says the
+#: edit must land, and makes `no_change` cost a named mechanism.
+CHANGE_REQUEST = """\
+## What to produce
+
+Propose the changes your diagnosis requires -- as many independent edits as it takes, in as
+many files as it takes -- and **apply them to the tree**. The platform measures the tree you
+leave behind, so an edit that is still in your head, or in a new file that nothing imports, is
+not a proposal. Prefer the mechanism your diagnosis actually implicates over a number that
+makes the symptom smaller.
+
+If the evidence genuinely shows that no change would help, say `no_change` **and name the
+mechanism you checked** that already handles the failure. "Nothing looked wrong" is not a
+diagnosis, and a round that returns it leaves the platform with nothing to learn from.
+"""
+
+
+def instruction(prompt: str | None, evidence: str = "", facts: str = "") -> str:
+    """The rule's prompt, wrapped in the platform's own instruction. **The order is content.**
 
     A rule builds its prompt around its own hypothesis ("target this failure", "build on
     round 3"), so the rules that keep the artifact measurable cannot be left to it to
     remember. Returns `PROMPT` when the rule supplied none.
+
+    Measured (`v4`-`v10`, 58,160 characters assembled): the ask was 0.1% of the prompt and sat
+    *after* 89.7% of raw evidence, with the hard rules after that. A small model reads what it
+    is told to read last. So the order is: what to produce, what may not break, where the
+    evidence is, and only then the rule's own reasoning -- and any rule that appends its own
+    "Propose one change" sentence instead of relying on `CHANGE_REQUEST` is adding a second,
+    weaker ask in a place the model reads last.
     """
     if not prompt:
         return PROMPT
-    return f"{prompt.rstrip()}\n\n{HARD_RULES}"
+    # **The order is the point**: what happened, what to produce, what may not break, where
+    # the evidence is, and only then the rule's own reasoning. The old order put 89.7% of raw
+    # evidence first and the ask last, at 0.1% of the prompt, where a small model reads it
+    # least -- and it took the free `no_change` exit five times in one run.
+    parts = [facts, CHANGE_REQUEST, HARD_RULES, evidence, prompt.rstrip()]
+    return "\n\n".join(x for x in parts if x)
 
 
 def applies(req: dict) -> bool:
@@ -298,7 +340,8 @@ def _summary_of(transcript: str) -> str:
     return ""
 
 
-def propose(req: dict, parent: Path, *, prompt: str | None = None) -> dict:
+def propose(req: dict, parent: Path, *, prompt: str | None = None,
+            evidence: str = "", facts: str = "") -> dict:
     """Drive the improver on **this tree** and return what moved. No report, no decision.
 
     Split out of `run` so a method with a rule of its own can use the improver as the
@@ -347,7 +390,7 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None) -> dict:
     if effort := os.environ.get("HG_IMPROVER_EFFORT"):
         argv += ["-c", f'model_reasoning_effort="{effort}"']
     argv += shlex.split(os.environ.get("HG_IMPROVER_ARGS", ""))
-    argv += [instruction(prompt)]
+    argv += [instruction(prompt, evidence=evidence, facts=facts)]
 
     timeout = int(os.environ.get("HG_IMPROVER_TIMEOUT_S", "1800"))
     started = time.time()

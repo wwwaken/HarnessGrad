@@ -601,8 +601,6 @@ def build_prompt(base: Path, edit_dir: Path, req: dict, history: list[dict],
     incumbent = history[-1] if history else {}
     scored = list(req.get("task_ids") or [])
     shown = list(req.get("train_task_ids") or protocol.studied_task_ids(incumbent))
-    traces = editor.load_traces(base, limit=6, order=editor.failing_first(base))
-    sources = editor.load_sources(edit_dir)
 
     where = ("the incumbent" if edit_dir == base
              else f"round-{history[-2].get('round')} (rolled back)")
@@ -622,15 +620,6 @@ def build_prompt(base: Path, edit_dir: Path, req: dict, history: list[dict],
     ]
     if rollback_note:
         parts += ["", f"Rollback: {rollback_note}."]
-    parts += [
-        "",
-        f"## What the harness did (scored-set diagnostics)\n{traces}",
-        "",
-        f"## Sources of {where}",
-        "\n\n".join(f"### {k}\n```\n{v}\n```" for k, v in sources.items()),
-        "",
-        "Propose one change, declare its manifest, or say no_change.",
-    ]
     return "\n".join(parts)
 
 
