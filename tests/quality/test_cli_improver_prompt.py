@@ -75,3 +75,56 @@ def test_the_instruction_is_what_the_improver_is_actually_run_with(monkeypatch, 
     assert "rule prompt here" in tail
     assert "harness.json" in tail and "--workdir" in tail, (
         "规则自带提示词时,硬规则又没有跟着走")
+
+
+def test_propose_does_not_overwrite_the_harness_own_gitignore(tmp_path, monkeypatch):
+    """平台自己写的 `.gitignore` 不许算成改进器的改动。
+
+    实测两次(`v3-smoke`、`v4-dgm` round 1):harness 树本来就带一个 `.gitignore`
+    (`ckpt/git_state.py` 写 5 行,第一行空行),`propose` 又把它覆盖成 4 行,于是
+    `_changed_files` 把**平台自己造成的**差异报成"改进器改了 `.gitignore`" —— 一个
+    什么都没改的候选因此变成 `changed=True`,被当成新候选提交并被测量(sha 变了,
+    行为一模一样)。
+    """
+    class _Proc:
+        returncode = 0
+        stdout = ""
+        stderr = ""
+
+    monkeypatch.setattr(ci, "_stage_evidence", lambda *a, **k: None)
+    monkeypatch.setattr(ci, "_improver_command", lambda req: ["codex"])
+    monkeypatch.setattr(ci.subprocess, "run", lambda argv, **kw: _Proc())
+
+    parent = tmp_path / "parent"
+    parent.mkdir()
+    (parent / "harness.json").write_text("{}")
+    (parent / "agent.py").write_text("print('x')\n")
+    platform_gitignore = "\n_harnessgrad/\n__pycache__/\n*.pyc\n.state/\n"   # 平台 stage 的那份
+    (parent / ".gitignore").write_text(platform_gitignore)
+
+    workspace = tmp_path / "ws"
+    workspace.mkdir()
+    req = {"workspace": str(workspace), "candidate": str(tmp_path / "cand")}
+    result = ci.propose(req, parent, prompt="rule prompt here")
+
+    assert (result["candidate"] / ".gitignore").read_text() == platform_gitignore, (
+        "平台把自己写的 .gitignore 覆盖了 —— 这会产生一个假的候选改动")
+    assert ci._changed_files(result["candidate"], parent) == [], (
+        "_changed_files 把平台自己的文件报成了改进器的改动")
+
+
+def test_a_gitignore_edit_alone_is_not_a_candidate_change(tmp_path):
+    """codex 只改 `.gitignore` 不算候选改动 —— 它改变不了 harness 被测量时的行为。"""
+    import shutil
+
+    parent = tmp_path / "p"
+    child = tmp_path / "c"
+    parent.mkdir()
+    (parent / "agent.py").write_text("print('x')\n")
+    (parent / ".gitignore").write_text("*.pyc\n")
+    shutil.copytree(parent, child)
+    (child / ".gitignore").write_text("*.pyc\n*.log\n")
+
+    assert ci._changed_files(child, parent) == [], "只改 .gitignore 被当成了候选改动"
+    (child / "agent.py").write_text("print('y')\n")
+    assert ci._changed_files(child, parent) == ["agent.py"]

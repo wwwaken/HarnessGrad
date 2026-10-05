@@ -55,8 +55,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 #: Directories that are never part of the harness: the platform's channel, caches, and the
 #: tool's own session state.
+#: The platform's own plumbing inside a candidate tree. A change to any of these cannot
+#: alter what the harness does when it is measured, so it is not a candidate edit:
+#: `_NOT_HARNESS` decides what `_changed_files` reports, and `changed` decides whether the
+#: round is spent measuring the tree at all.
+#:
+#: `.gitignore` is here because of a measured waste, not a principle: codex was handed a
+#: tree whose `.gitignore` the platform had just rewritten, edited a line of it, and the
+#: round measured a tree that behaves exactly like its parent.
 _NOT_HARNESS = frozenset({"_harnessgrad", "__pycache__", ".git", ".codex-home", ".state",
-                          "evidence", "node_modules", ".venv"})
+                          "evidence", "node_modules", ".venv", ".gitignore"})
 
 #: The rules that hold **whatever the rule's own prompt says**.
 #:
@@ -267,7 +275,18 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None) -> dict:
     # *is* a git repo on this platform (`ckpt/git_state.py`).
     shutil.copytree(parent, candidate, ignore=shutil.ignore_patterns(".git"))
     subprocess.run(["git", "init", "-q", str(candidate)], check=True)
-    (candidate / ".gitignore").write_text("_harnessgrad/\n__pycache__/\n*.pyc\n.state/\n")
+    # **Only when the harness has none.** This used to write unconditionally, and the
+    # harness tree the platform stages already carries a `.gitignore` of its own
+    # (`ckpt/git_state.py` writes a five-line one, starting with a blank line). The
+    # rewrite therefore made every candidate differ from its parent in a file the
+    # *platform* had just written, `_changed_files` reported it as the improver's edit,
+    # and a proposal that changed nothing at all was handed to the round as a new
+    # candidate and measured. Measured twice (`v3-smoke`, `v4-dgm` round 1): codex's
+    # only "change" to the harness was this line, and the curve recorded a new
+    # `harness_sha` for a tree that behaves identically.
+    if not (candidate / ".gitignore").exists():
+        (candidate / ".gitignore").write_text(
+            "_harnessgrad/\n__pycache__/\n*.pyc\n.state/\n")
 
     _stage_evidence(candidate, req)
 
