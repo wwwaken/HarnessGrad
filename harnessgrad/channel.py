@@ -58,6 +58,14 @@ def _loop_summary(traces: dict) -> dict:
                                            if f["context_trims"]),
         "tasks_with_clipped_output": sorted(t for t, f in facts.items()
                                             if f["output_clipped_events"]),
+        # **重复命令。** `repeated_commands_total` 是"重发一条本run已经执行过的命令"的条数;
+        # `repeat_nudges_total` 是 harness 自己的重复提醒触发了几次。两个数的**差距**就是
+        # 那个盲区:提醒只看紧挨着的一次,隔一步的重复它不管 —— 实测 9B 在
+        # `large-scale-text-editing` 上 31 步里有 24 步是重发,轮级记录只有一个 0.000。
+        "repeated_commands_total": sum(f["repeated_commands"] for f in facts.values()),
+        "repeat_nudges_total": sum(f["repeat_nudges"] for f in facts.values()),
+        "tasks_with_repeated_commands": sorted(t for t, f in facts.items()
+                                               if f["repeated_commands"]),
     }
 
 def _for_method(point: dict) -> dict:

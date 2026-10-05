@@ -312,3 +312,61 @@ def test_the_renderer_keeps_the_diagnostic_tail_and_says_what_it_hid(tmp_path):
     assert "not shown" in capped, capped
     # 而且账目记录不算进上限(它们本来就不该占额度)
     assert "harness_identity" not in capped, capped
+
+
+def test_repeated_commands_are_counted_apart_from_the_harness_nudge(tmp_path):
+    """重发的命令要单独计数,并且和 harness 自己的重复提醒**分开**。
+
+    实测(9B,`large-scale-text-editing`,2026-10-05):32 条命令里 **23 条是本轮已经发过的**,
+    而 `repeat_nudge` 只触发 2 次 —— 这个差距就是已知的盲区(提醒只看紧挨着的一次重复)。
+    轮级记录原本只有一个 0.000,方法看不出"预算被原地打转烧光了"。
+    """
+    from eval import trace as trace_mod
+
+    records = [
+        {"step": 0, "command": "ls"},
+        {"step": 1, "command": "cat a"},
+        {"step": 2, "command": "ls"},                       # 重发
+        {"step": 3, "repeat_nudge": "ls"},                  # harness 自己发现了
+        {"step": 4, "command": "ls"},                       # 再重发
+        {"step": 5, "command": ""},                         # 空命令,单独计数
+    ]
+    f = trace_mod.loop_facts("\n".join(json.dumps(r) for r in records))
+    assert f["commands"] == 5, f
+    assert f["repeated_commands"] == 2, f
+    assert f["repeat_nudges"] == 1, f
+    assert f["empty_commands"] == 1, f
+
+
+def test_the_rules_prompt_carries_the_per_task_facts(tmp_path):
+    """给改进器的 prompt 里要有那张按题一行的事实表。
+
+    这张表是"数据告诉方法该修什么"的载体:它一行里同时给出预算用满了几道
+    (`ended budget_exhausted`)、有多少步是重发(`repeats`)而 harness 自己只提醒了几次
+    (`nudges`)。没有它,方法只能去读几十 KB 的 JSONL,而实测它读不出来。
+    """
+    import editor
+
+    root = tmp_path / "h"
+    hg = root / "_harnessgrad"
+    hg.mkdir(parents=True)
+    (hg / "round.json").write_text(json.dumps({
+        "loop_summary": {"per_task": {
+            "large-scale-text-editing": {
+                "model_calls": 32, "commands": 32, "answers": 0,
+                "ended": "budget_exhausted", "repeated_commands": 23,
+                "repeat_nudges": 2, "empty_commands": 0,
+                "output_clipped_events": 0, "parse_errors": 0},
+            "gcode-to-text": {
+                "model_calls": 2, "commands": 2, "answers": 1,
+                "ended": "answered", "repeated_commands": 0, "repeat_nudges": 0,
+                "empty_commands": 0, "output_clipped_events": 0, "parse_errors": 0},
+        }}}))
+
+    block = editor.loop_facts_block(root)
+    assert "large-scale-text-editing" in block and "budget_exhausted" in block
+    assert "repeats" in block and "nudges" in block
+    assert "23" in block and "32" in block
+    # 没有摘要时返回空串,调用方可以直接拼
+    (hg / "round.json").write_text("{}")
+    assert editor.loop_facts_block(root) == ""

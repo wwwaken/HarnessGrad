@@ -593,6 +593,51 @@ def run_facts(base: Path) -> str:
     return "\n".join(lines)
 
 
+def loop_facts_block(base: Path) -> str:
+    """What the harness did on each task, counted by the platform, one line per task.
+
+    The platform computes this (`eval/trace.py:loop_facts`) and stages it in
+    `round.json` under `loop_summary.per_task`, and until now nothing put it in front of
+    the improver: the endpoint path prepended `run_facts` (configuration only) and the CLI
+    path prepended nothing at all. So a method's first job -- "what is wrong with this
+    harness" -- had to be done by reading tens of kilobytes of JSONL, and the two failure
+    modes this session measured are exactly the ones a table answers at a glance:
+
+    * `large-scale-text-editing`: 31 commands, of which **24 re-issued an earlier one**, and
+      the harness's repeat nudge fires only on an immediately consecutive repeat;
+    * `cobol-modernization` and `fix-code-vulnerability`: 32 model calls, `ended step-cap`,
+      no answer -- the budget is what ran out, not the model's ideas.
+
+    Columns are the ones that decided those cases, and the legend says what each means, so a
+    method does not have to guess at a header. Returns "" when the point carries no summary.
+    """
+    try:
+        point = json.loads((channel(base) / "round.json").read_text())
+    except (OSError, json.JSONDecodeError):
+        return ""
+    per_task = ((point.get("loop_summary") or {}).get("per_task") or {})
+    if not per_task:
+        return ""
+    head = ("## What the harness did, counted from its own traces\n"
+            "task                          calls cmds ans  ended             repeats nudges "
+            "empty  clip  perr\n"
+            "  calls=model calls, cmds=commands executed, ans=replies with a final answer,\n"
+            "  repeats=commands re-issued that this run had already run, nudges=the harness's\n"
+            "  own repeat warnings, empty=commands that executed nothing (a repaired reply),\n"
+            "  clip=outputs shortened before the model saw them, perr=unparseable replies\n")
+    rows = []
+    for tid, f in sorted(per_task.items()):
+        # `ended` is not truncated: `budget_exhausted` is the value that matters most and
+        # it is exactly the one a 12-character column turns into `budget_exhau`.
+        rows.append(f"  {tid[:28]:28s} {f.get('model_calls', 0):5d} "
+                    f"{f.get('commands', 0):4d} {f.get('answers', 0):3d}  "
+                    f"{str(f.get('ended') or '?')[:16]:16s} "
+                    f"{f.get('repeated_commands', 0):7d} {f.get('repeat_nudges', 0):6d} "
+                    f"{f.get('empty_commands', 0):5d} {f.get('output_clipped_events', 0):5d} "
+                    f"{f.get('parse_errors', 0):5d}")
+    return head + "\n".join(rows)
+
+
 def hypothesis_of(reply: dict) -> str:
     """The model's one-line rationale, wherever it decided to put it.
 
@@ -810,6 +855,14 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     choosing round 3 must have the improver edit round 3's tree.
     """
     import cli_improver                                            # noqa: PLC0415
+    # **The same facts the endpoint path gets.** `ask` prepends `run_facts` before it
+    # dispatches, and the CLI branch returns before that line -- so a CLI improver was handed
+    # a bare task and had to open `evidence/round.json` itself to learn the backend, the
+    # model, the score, and what the harness did on each task. The numbers are one line per
+    # task and they are what a hypothesis is made of (`loop_facts_block`).
+    facts = "\n\n".join(b for b in (run_facts(base), loop_facts_block(base)) if b)
+    if facts:
+        prompt = facts + "\n\n" + prompt
     workspace = Path(tempfile.mkdtemp(prefix="hg-cli-ask-"))
     req = {"platform_api_version": "0.1.0", "workspace": str(workspace),
            "base_harness": str(parent), "candidate": str(workspace / "candidate"),
@@ -882,7 +935,7 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     attempts = max(1, int(os.environ.get("HG_METHOD_PARSE_RETRIES", "2")))
     system = system + FORMAT_HINT
     if base is not None:
-        facts = run_facts(base)
+        facts = "\n\n".join(b for b in (run_facts(base), loop_facts_block(base)) if b)
         if facts:
             prompt = facts + "\n\n" + prompt
         if skill:

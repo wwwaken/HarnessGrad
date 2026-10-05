@@ -113,6 +113,8 @@ def loop_facts(trace_text: str) -> dict:
     #: method can act on instead of something only an operator with grep can find.
     empty_commands = duplicate_keys = context_trims = 0
     clipped_events = clipped_chars = history_dropped = 0
+    repeated_commands = repeat_nudges = 0
+    seen_commands: set[str] = set()
     missing: list[str] = []
     usage: dict = {}
     for line in str(trace_text or "").splitlines():
@@ -136,8 +138,22 @@ def loop_facts(trace_text: str) -> dict:
                     multi_object += 1
         if "command" in record:
             commands += 1
-            if not str(record.get("command") or "").strip():
+            cmd = str(record.get("command") or "").strip()
+            if not cmd:
                 empty_commands += 1
+            elif cmd in seen_commands:
+                # **A command this run had already issued.** The score cannot see this and
+                # the existing facts did not count it: measured on the 9B
+                # (`large-scale-text-editing`, 2026-10-05), 24 of 31 executed commands were
+                # re-issues of earlier ones, the harness's repeat nudge fires only on an
+                # *immediately* consecutive repeat, and the round recorded a plain 0.000 --
+                # a harness burning its whole step budget in a loop is a harness fact, and
+                # the method reading the summary had no number for it.
+                repeated_commands += 1
+            else:
+                seen_commands.add(cmd)
+        if "repeat_nudge" in record:
+            repeat_nudges += 1
         if record.get("duplicate_keys"):
             duplicate_keys += len(record["duplicate_keys"])
         if record.get("context_trims"):
@@ -166,6 +182,11 @@ def loop_facts(trace_text: str) -> dict:
         # from a model that did the wrong thing.
         "empty_commands": empty_commands,
         "duplicate_keys": duplicate_keys,
+        # Re-issues of a command this run had already executed, and how often the harness's
+        # own repeat nudge fired. Two numbers, because the gap between them *is* the bug:
+        # the nudge only sees a repeat that arrives immediately after itself.
+        "repeated_commands": repeated_commands,
+        "repeat_nudges": repeat_nudges,
         "context_trims": context_trims,
         "output_clipped_events": clipped_events,
         "output_clipped_chars": clipped_chars,
