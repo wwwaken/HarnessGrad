@@ -821,3 +821,41 @@ def test_the_total_cap_trims_other_files_before_the_entrypoint(tmp_path):
     assert "TRUNCATED" in src["big_one.py"] or "TRUNCATED" in src["big_two.py"], (
         "总长超了却什么都没削,会把整条指令顶出 argv 上限")
     assert sum(len(v) for v in src.values()) < 3 * 3000
+
+
+def test_the_edits_land_on_the_parent_the_rule_chose(tmp_path, monkeypatch):
+    """**`parent` 是编辑落地的树,不是 `base`。**
+
+    `ask_for_json(..., parent=parent)` 已经把 **parent** 交给 CLI improver 去改,所以把返回的
+    编辑序列应用到别处,产出的候选就不是规则要的那一棵 —— 而是 `incumbent + parent 的文件`。
+    今天没有调用方传非 incumbent 的 parent(所以是潜伏的),`methods/base.py` 直接自己
+    `apply_edits(rnd.parent, ...)` 绕开了这里;但下一个会选旧状态的规则正是这个参数存在的理由。
+    """
+    import editor
+
+    base = tmp_path / "base"; base.mkdir()
+    (base / "harness.json").write_text(json.dumps(
+        {"name": "h", "version": "1", "entrypoint": "agent.py"}))
+    (base / "agent.py").write_text("OLD = 1\n")
+    parent = tmp_path / "parent"; parent.mkdir()
+    (parent / "harness.json").write_text(json.dumps(
+        {"name": "h", "version": "1", "entrypoint": "agent.py"}))
+    (parent / "agent.py").write_text("OLD = 2\n")
+    (parent / "extra.py").write_text("PARENT_ONLY = True\n")
+
+    req = {"workspace": str(tmp_path / "ws"), "base_harness": str(base),
+           "candidate": str(tmp_path / "ws" / "candidate")}
+
+    def fake_ask_for_json(prompt_for, **kw):
+        # 模拟 improver 只改 agent.py:应用必须落在 parent 上
+        reply = {"files": [{"path": "agent.py", "content": "NEW = 3\n"}]}
+        problems = kw["accept"](reply)
+        return reply, problems
+
+    monkeypatch.setattr(editor, "ask_for_json", fake_ask_for_json)
+    _, dest, problems = editor.propose_and_apply(
+        base, req, "system", lambda p: "prompt", parent=parent)
+    assert not problems, problems
+    # parent 独有的文件必须跟着过来 —— 这正是"落在 base 上"会丢掉的东西
+    assert (dest / "extra.py").is_file(), sorted(p.name for p in dest.iterdir())
+    assert (dest / "agent.py").read_text() == "NEW = 3\n"

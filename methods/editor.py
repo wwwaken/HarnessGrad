@@ -1087,8 +1087,15 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
         # never received the platform's ask or its hard rules before this -- those lived only
         # in `cli_improver`, which this branch does not go through.
         import cli_improver                                          # noqa: PLC0415
+        # **The evidence is about the tree the edits land on.** A CLI improver is driven on
+        # `parent` (above), so a chat endpoint shown the *incumbent's* sources would be
+        # answering a question about a different tree than the one its answer is applied
+        # to. Latent while every caller passes the incumbent as `parent`; wrong the moment
+        # one selects an older state, which is the case the parameter exists for.
+        source = Path(parent) if parent is not None else Path(base)
         facts = "\n\n".join(
-            b for b in (run_facts(base), loop_facts_block(base), evidence_content(base)) if b)
+            b for b in (run_facts(base), loop_facts_block(base),
+                        evidence_content(source)) if b)
         prompt = "\n\n".join(
             x for x in (cli_improver.CHANGE_REQUEST, cli_improver.HARD_RULES, facts, prompt) if x)
         if skill:
@@ -1223,13 +1230,24 @@ def ask_for_json(prompt_for, *, system, base=None, attempts: int = 3,
 def propose_and_apply(base: Path, req: dict, system: str, prompt_for, *,
                       parent=None,
                       attempts: int = 3, skill: bool = True) -> tuple[dict, Path, str]:
-    """Two phases: propose an edit sequence, then apply and validate it."""
+    """Two phases: propose an edit sequence, then apply and validate it.
+
+    **`parent` is the tree the edits land on.** It is what the improver was driven against
+    (`ask_for_json(..., parent=parent)` gives a CLI improver that tree to edit), so
+    applying the returned sequence anywhere else silently produces a different candidate
+    than the one the rule asked for -- `incumbent + parent's files` rather than `parent`.
+    Latent rather than observed: no caller passes a non-incumbent `parent` today, and
+    `methods/base.py` applies onto `rnd.parent` itself instead of coming through here.
+    Fixed anyway, because the next rule that selects an older state is the one this
+    parameter exists for.
+    """
     dest = candidate_path(req)
+    tree = Path(parent) if parent is not None else base
 
     def accept(reply: dict) -> str:
         if isinstance(reply, dict) and "no_change" in reply:
             return ""
-        _, _, problems = apply_edits(base, dest, reply.get("files"))
+        _, _, problems = apply_edits(tree, dest, reply.get("files"))
         return problems
 
     reply, problems = ask_for_json(
