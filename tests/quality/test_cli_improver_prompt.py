@@ -139,3 +139,43 @@ def test_a_gitignore_edit_alone_is_not_a_candidate_change(tmp_path):
     assert ci._changed_files(child, parent) == [], "只改 .gitignore 被当成了候选改动"
     (child / "agent.py").write_text("print('y')\n")
     assert ci._changed_files(child, parent) == ["agent.py"]
+
+
+def test_a_tool_output_line_is_not_recorded_as_the_methods_reason():
+    """改进器的"理由"不能是终端输出。
+
+    实测(`v7-dgm`,2026-10-05):某个 child 被记录下来的理由是
+
+        -rw-r--r-- 1 xubuqiang xubuqiang    12 Oct  5 15:32 requirements.txt
+
+    —— 一行 `ls -l`。74 个字符,不以旧过滤器认识的任何前缀开头,于是一份目录列表进了曲线,
+    摆在"方法声明的假设"那个位置。散文是字母和空格,终端输出不是,比例能干净地分开
+    (那份轨迹里实测:真诊断 1.000,`ls -l` 0.794,一行 Python 0.584)。
+    """
+    transcript = "\n".join([
+        "tokens used 1234",
+        "Looking at the implementation more carefully, when a duplicate key is "
+        "encountered the code adds it to the repeated list and continues",
+        "-rw-r--r-- 1 xubuqiang xubuqiang    12 Oct  5 15:32 requirements.txt",
+    ])
+    got = ci._summary_of(transcript)
+    assert got.startswith("Looking at the implementation"), got
+
+
+def test_a_transcript_with_only_tool_output_has_no_reason():
+    """只有工具输出时,宁可没有理由,也不要编一个出来。"""
+    transcript = "\n".join([
+        "-rw-r--r-- 1 xubuqiang xubuqiang    12 Oct  5 15:32 requirements.txt",
+        "_PATH_RE = __import__(\"re\").compile(r\"/[A-Za-z0-9_./-]+\\.[A-Za-z0-9]{1,6}\\b\")",
+    ])
+    assert ci._summary_of(transcript) == ""
+
+
+def test_the_hard_rules_require_the_edit_to_be_on_disk():
+    """规则必须说清:提交的是磁盘上的文件,不是分析。
+
+    实测(`v7`):两轮六次尝试各自给出了**正确的诊断**(重复 JSON 键丢掉第二个 `Action`;
+    重复提醒只抓紧挨着的重复),但**一次文件都没写**。诊断对了,什么都没交。
+    """
+    assert "The submission is the file on disk" in ci.HARD_RULES
+    assert "not the analysis" in ci.HARD_RULES

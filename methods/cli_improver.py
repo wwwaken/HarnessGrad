@@ -96,6 +96,15 @@ Hard rules (the platform rejects a candidate that breaks any of them):
 
 When you are done, print one short paragraph: what you changed and why it should raise
 the score. If you conclude that nothing should change, make no edits and say so.
+
+**The submission is the file on disk, not the analysis.** A turn that ends with a diagnosis
+and no edit is not a proposal: the platform measures the tree you leave behind, so a correct
+diagnosis you did not apply scores exactly like no diagnosis at all. Apply your change with
+your editing tool *first*, then say what you changed. Measured (`v7`, 2026-10-05): six
+attempts across two rules each named a real defect in the harness -- one named the duplicate
+JSON key that drops the model's second `Action`, another named the stuck-detection that only
+fires on a command repeated *immediately* -- and not one of them wrote a file. The diagnoses
+were right; nothing was submitted.
 """
 
 PROMPT = """\
@@ -240,16 +249,27 @@ def _changed_files(candidate: Path, pristine: Path) -> list[str]:
 
 
 def _summary_of(transcript: str) -> str:
-    """The improver's own sentence: the last substantial non-logging line it printed.
+    """The improver's own sentence: the last substantial line it printed that reads as prose.
 
-    Skipped: its logging (`tokens used`, timestamps, a session id), our diagnostics, and
-    anything short enough to be a label rather than a reason -- measured, the first version
-    reported a fake improver's stderr line as the method's summary.
+    Skipped: its logging (`tokens used`, timestamps, a session id), our diagnostics, anything
+    short enough to be a label rather than a reason -- and, since a measurement, **tool
+    output**. `v7-dgm` recorded a child's reason as
+
+        -rw-r--r-- 1 xubuqiang xubuqiang    12 Oct  5 15:32 requirements.txt
+
+    which is `ls -l`: 74 characters, starting with none of the prefixes the old filter knew,
+    so a directory listing reached the curve where the method's stated hypothesis belongs.
+    Prose is letters, spaces and ordinary punctuation; terminal output and source code are
+    not, and the ratio separates them cleanly (measured on that transcript: 1.000 for each
+    real diagnosis, 0.794 for the `ls -l` line, 0.584 for a line of Python).
     """
     for line in reversed((transcript or "").strip().splitlines()):
         text = line.strip()
         if len(text) < 40 or text.startswith(("ERROR", "warning", "fake", "codex",
                                               "tokens used", "session id")):
+            continue
+        readable = sum(c.isalpha() or c.isspace() or c in ".,;:'\"()" for c in text)
+        if readable / len(text) < 0.90:
             continue
         return text[:400]
     return ""
