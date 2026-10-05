@@ -17,6 +17,7 @@ into <workspace>/_harnessgrad/ before each call.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import secrets
 import shlex
@@ -51,6 +52,7 @@ import eval.services as services_mod
 # lives (`from harnessgrad.loops.mode_a import ...`), so the layer a change belongs to is
 # visible in the import line rather than flattened through the entrypoint.
 from harnessgrad import FRAMEWORK_VERSION
+from harnessgrad import config as platform_config
 from harnessgrad.environments import (
     _check_env_kinds, _env_record, _narrow_to_run, _report_harness_failed,
     _report_invalid, _required_env_kinds, _resolve_envs, _warn_missing_overlay)
@@ -65,39 +67,57 @@ from harnessgrad.records import (
 
 # --------------------------------------------------- improver capability ---
 
-def _cli_provider_base_url(improver: dict) -> str:
-    """The `base_url` of the provider a CLI improver's *own* config names, if any.
+def _cli_provider(improver: dict) -> dict:
+    """What provider a CLI improver's *own* config names: `base_url` and `env_key`.
 
     Derived rather than asked for, because the CLI reads its model and its endpoint from
     its own config (`tools/improver.py:declared_model` already reads the model that way).
     A `model_provider` whose definition has a `base_url` is a custom/local endpoint and can
     be probed; a name with no definition (e.g. `OPENAI`) is the CLI's built-in and cannot.
+
+    **`env_key` comes back too, because probing with the wrong credential is how a valid
+    run gets refused at the door.** The probe below used the *agent's* key for the
+    *improver's* endpoint. Those are two budgets by design (`.env.example`), and when they
+    name different providers the probe authenticates with a credential the endpoint does
+    not accept, gets 401, and reports "this endpoint cannot emit tool calls" -- a refusal
+    about the wrong fact. Measured 2026-10-06: it passed only because this deployment
+    happens to set `HG_AGENT_API_KEY` and `DEEPSEEK_API_KEY` to the same value.
     """
     home = os.environ.get("CODEX_HOME") or str(Path.home() / ".codex")
     cfg = Path(home) / "config.toml"
     if not cfg.is_file():
-        return ""
+        return {}
     try:
         text = cfg.read_text(encoding="utf-8", errors="replace")
     except OSError:
-        return ""
+        return {}
     provider = ""
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("model_provider") and "=" in stripped:
             provider = stripped.partition("=")[2].strip().strip('"').strip("'")
     if not provider:
-        return ""
+        return {}
     section = f"[model_providers.{provider}]"
     inside = False
+    found: dict = {}
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("["):
             inside = stripped == section
             continue
-        if inside and stripped.startswith("base_url") and "=" in stripped:
-            return stripped.partition("=")[2].strip().strip('"').strip("'")
-    return ""
+        if not inside or "=" not in stripped:
+            continue
+        name, _, value = stripped.partition("=")
+        name = name.strip()
+        if name in ("base_url", "env_key"):
+            found[name] = value.strip().strip('"').strip("'")
+    return found
+
+
+def _cli_provider_base_url(improver: dict) -> str:
+    """The endpoint a CLI improver will call, or `""` when it uses a built-in provider."""
+    return _cli_provider(improver).get("base_url", "")
 
 
 def _probe_tool_calls(base_url: str, model: str) -> tuple[bool, str]:
@@ -113,7 +133,15 @@ def _probe_tool_calls(base_url: str, model: str) -> tuple[bool, str]:
         import tools.probe_tool_calls as probe
     except Exception as exc:                                             # noqa: BLE001
         return False, f"the probe itself could not be imported: {exc}"
-    key = os.environ.get("HG_AGENT_API_KEY") or "local"
+    # The improver's own credential, falling back to the agent's only when the CLI's
+    # config names none -- a local endpoint does not check the key, and a hosted one that
+    # does will have said so in `env_key`. Not `HG_AGENT_API_KEY`: see `_cli_provider`.
+    key = ""
+    key_env = _cli_provider({}).get("env_key", "")
+    if key_env:
+        key = os.environ.get(key_env, "")
+    if not key:
+        key = platform_config.current().agent.api_key or "local"
     try:
         resp_ok, resp_why = probe._calls_responses(base_url, model, key, 120.0)
         chat_ok, chat_why = probe._calls_chat(base_url, model, key, 120.0)
@@ -149,6 +177,12 @@ def load_env(path: Path) -> dict:
             continue
         loaded[key] = value
         os.environ.setdefault(key, value)
+    # **`.env` is now part of the process environment, so the configuration snapshot
+    # has to be taken after this.** `harnessgrad/config` may already have been imported
+    # -- `harnessgrad.channel` reads one variable at import -- and without the reset the
+    # run would use a snapshot taken before `.env` existed. `reset()` drops it; the next
+    # `current()` rebuilds from the environment this function just filled in.
+    platform_config.reset()
     return loaded
 
 
@@ -158,9 +192,10 @@ def describe_model() -> dict:
     Reported at the top of a run because the alternative is discovering three
     rounds later that every score came from the mock stand-in.
     """
-    backend = os.environ.get("HG_AGENT_BACKEND", "mock")
-    model = os.environ.get("HG_AGENT_MODEL") or None
-    has_key = bool(os.environ.get("HG_AGENT_API_KEY"))
+    agent = platform_config.current().agent
+    backend = agent.backend
+    model = agent.model
+    has_key = bool(agent.api_key)
     return {
         "backend": backend,
         "model": model,
@@ -179,8 +214,25 @@ def describe_model() -> dict:
 
 # ----------------------------------------------------------------- main ---
 
+def _config_help() -> str:
+    """The configuration surface, rendered for `--help`.
+
+    Derived from `harnessgrad.config.describe()`, so the help text and the declared
+    defaults are one thing: a second hand-written table is how `--help` starts lying.
+    """
+    lines = ["configuration (every value is an environment variable; the effective set "
+             "of a run is recorded in run_meta.json under `config`):"]
+    for row in platform_config.describe():
+        default = row["default"]
+        shown = "" if default in (None, "<redacted>") else f"={default}"
+        lines.append(f"  {row['variable'] + shown:<36} {row['what']}")
+    return "\n".join(lines)
+
+
 def main() -> int:
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=_config_help())
     ap.add_argument("--harness", default="loop")
     ap.add_argument("--dataset", default="demo")
     ap.add_argument("--sampling", default="all",
@@ -262,7 +314,19 @@ def main() -> int:
     ap.add_argument("--work-root", default="../harnessgrad_work",
                     help="where harness working trees live; must be OUTSIDE the "
                          "platform tree, or a harness can reach the platform")
+    ap.add_argument("--show-config", action="store_true",
+                    help="print the effective configuration (the declared `HG_*` "
+                         "environment variables, after `.env` is folded in) as JSON "
+                         "and exit 0 without running anything")
     args = ap.parse_args()
+
+    if args.show_config:
+        # The effective configuration, not the declared one: `.env` is folded in first,
+        # because that is what a run would actually read. Nothing else runs -- no
+        # dataset is loaded, no image is resolved, no improver is probed.
+        load_env(Path(__file__).parent / ".env")
+        print(json.dumps(platform_config.dump(), indent=2))
+        return 0
 
     runs_root = Path(args.runs_root)
     eval_from = None
@@ -394,6 +458,11 @@ def main() -> int:
     # did no work" defect the improver field exists to prevent. Distinct from the
     # unresolvable case below, which is reported as a warning because it is unexpected.
     carries_its_own = (args.improver or "").strip().lower() in ("none", "noop", "null")
+    # **These stay `os.environ` writes on purpose: they are an output of the driver,
+    # not a read of configuration.** The CLI flag has to reach the *method's own
+    # subprocess*, which is a different process that reads `HG_IMPROVER*` from its
+    # inherited environment (via `harnessgrad.methods._method_env`). `harnessgrad.config`
+    # is a frozen snapshot of this process's configuration and cannot be the transport.
     if carries_its_own:
         os.environ.pop("HG_IMPROVER_NAME", None)
     # The request travels through the environment, because that is how the improver
@@ -447,7 +516,7 @@ def main() -> int:
     if improver.get("ok") and improver.get("kind") == "cli":
         base_url = _cli_provider_base_url(improver)
         if base_url:
-            if os.environ.get("HG_IMPROVER_SKIP_TOOL_GATE") == "1":
+            if platform_config.current().improver.skip_tool_gate == "1":
                 improver_tool_calls_detail = "gate skipped by HG_IMPROVER_SKIP_TOOL_GATE"
                 console.note("improver tool-call gate skipped by request", level="warn")
             else:
@@ -629,12 +698,13 @@ def main() -> int:
 
     # `run_one` needs the work root to know which tree to leave visible. Exported
     # rather than passed through every layer: it is a property of this run, and the
-    # runner is the only reader.
+    # runner is the only reader. Kept as an environment *write*: the value is produced
+    # by this run (below), not read as configuration, and it must reach subprocesses.
     os.environ["HARNESSGRAD_WORK_ROOT"] = str(work.parent.parent)
     # The environment's seed is a run-level fact, and it has to exist before any
     # environment is described. `secrets` rather than `random`: this seeds an
     # environment a method may be trying to fit to, and a predictable seed is a
-    # predictable environment.
+    # predictable environment. A write for the same reason as the work root above.
     os.environ["HARNESSGRAD_SEED"] = args.seed or secrets.token_hex(8)
     if any(services_mod.requires_model(spec.get("services") or [])
            for spec in envs.values()):
@@ -643,7 +713,7 @@ def main() -> int:
         # that silently has no model produces a task that fails for a reason nothing
         # records, and §2.5.7 requires `env.model` to be non-null exactly when a
         # service declared it needs one.
-        if not os.environ.get("HG_ENV_MODEL"):
+        if not platform_config.current().environment.model:
             console.note(
                 "refusing to run: a service declares needs_model but HG_ENV_MODEL is "
                 "unset. The environment's model is its own budget -- configure it in "
@@ -666,6 +736,14 @@ def main() -> int:
         workspace=str(work), work_root=str(work.parent.parent),
         platform_root=str(PLATFORM_ROOT),
         sandbox=sandbox_state,
+        # **The effective configuration of this run, recorded in one block.** The
+        # environment half is the declared snapshot (`harnessgrad/config`); the argv
+        # half enters as `run=`, so "what was in force?" is answered from the run
+        # directory alone. Credentials are recorded as present/absent and never by
+        # value -- `dump()` redacts every secret field.
+        config=platform_config.dump(
+            run=platform_config.run_config(
+                args, run_id, seed=os.environ.get("HARNESSGRAD_SEED"), mode=mode)),
         # The run-level view of §2.5.4, beside the per-point one. With no task ids this
         # falls back to every distinct environment the dataset declares, which is the
         # right granularity for a run: a reader should be able to tell what kind of
@@ -712,8 +790,8 @@ def main() -> int:
     # harness would have no model, so every score would be a zero that means nothing,
     # and it would look like a weak harness.
     if "exec" in _required_env_kinds(envs) \
-            and os.environ.get("HG_AGENT_BACKEND", "mock") != "mock":
-        base_url = os.environ.get("HG_AGENT_BASE_URL") or ""
+            and platform_config.current().agent.backend != "mock":
+        base_url = platform_config.current().agent.base_url or ""
         if base_url and not modelgate.is_host_local(base_url):
             offline = sorted(tid for tid, spec in envs.items()
                              if spec.get("kind") == "exec"

@@ -18,9 +18,9 @@ identity with no improver rather than one run's improver leaking into another's 
 from __future__ import annotations
 
 import hashlib
-import os
 
 from harnessgrad import FRAMEWORK_VERSION, PLATFORM_ROOT
+from harnessgrad.config import current as current_config
 
 def _model_of(declared: dict | None) -> str | None:
     """Which model actually answered, and where that answer came from.
@@ -29,20 +29,24 @@ def _model_of(declared: dict | None) -> str | None:
     harness is the only party that knows. When both exist and disagree, both are kept
     (`agent_model_conflict` below) -- resolving it silently in either direction is how
     a record ends up disagreeing with the run it describes.
+
+    The fallback is the declared `AgentConfig.model` field. Before the configuration
+    layer this line read `os.environ.get("HG_AGENT_MODEL")` directly; the variable and
+    the default are unchanged, they are simply declared in `harnessgrad/config` now.
     """
     declared = declared or {}
-    return declared.get("agent_model") or os.environ.get("HG_AGENT_MODEL") or None
+    return declared.get("agent_model") or current_config().agent.model or None
 
 def _backend_of(declared: dict | None) -> str:
     declared = declared or {}
     return (declared.get("agent_backend")
-            or os.environ.get("HG_AGENT_BACKEND") or "mock")
+            or current_config().agent.backend or "mock")
 
 def _conflict(declared: dict | None) -> dict:
     """Both values, when the harness and the platform disagree about the model."""
     declared = declared or {}
     from_harness = declared.get("agent_model")
-    from_env = os.environ.get("HG_AGENT_MODEL")
+    from_env = current_config().agent.model
     if from_harness and from_env and from_harness != from_env:
         return {"harness": from_harness, "platform_env": from_env,
                 "note": "the harness did not use HG_AGENT_MODEL; the declaration is "

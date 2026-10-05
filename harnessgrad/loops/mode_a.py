@@ -27,6 +27,7 @@ from eval.console import CONSOLE as console
 from eval.runner import evaluate
 from harnessgrad import PLATFORM_API_VERSION
 from harnessgrad import code_metrics
+from harnessgrad import config as platform_config
 from harnessgrad import policies
 from harnessgrad.channel import _stage_for_method
 from harnessgrad.environments import _env_record
@@ -644,6 +645,13 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
     shutil.rmtree(method_root, ignore_errors=True)
     _write_run_meta(
         Path(args.runs_root) / run_id,
+        # The run's final write carries the same effective configuration as the
+        # driver's first write. Written here too because this is the write that
+        # completes the record; a reader of the finished file must not have to know
+        # which call site happened to include it. Credentials are present/absent only.
+        config=platform_config.dump(
+            run=platform_config.run_config(
+                args, run_id, seed=os.environ.get("HARNESSGRAD_SEED"), mode=mode)),
         trajectory_shape=declared_shape.get("trajectory_shape", "sequence"),
         curve_drawn=declared_shape.get("curve_drawn", "per_round"),
         # Who nominated which state, when the method says. `None` means it did not say --

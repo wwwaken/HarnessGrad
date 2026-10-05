@@ -40,6 +40,7 @@ import time
 from pathlib import Path
 
 import eval.container as container_mod
+from harnessgrad.config import current as current_config
 
 #: Where a service's recording appears, inside the service container and inside the
 #: check. **Fixed by the platform and never named by the dataset** — a dataset-chosen
@@ -119,9 +120,15 @@ def service_env(services: list[dict], *, task_id: str, run_seed: str) -> dict[st
     if any(svc.get("needs_seed") for svc in services):
         env["HG_ENV_SEED"] = task_seed(run_seed, task_id)
     if any(svc.get("needs_model") for svc in services):
-        for key in ("HG_ENV_MODEL", "HG_ENV_API_KEY", "HG_ENV_BASE_URL"):
-            if os.environ.get(key):
-                env[key] = os.environ[key]
+        # The third model budget, from the declared configuration rather than from
+        # `os.environ` at the point of use. The variable names stay the same because a
+        # service image reads them by name; only the platform's read moved.
+        environment = current_config().environment
+        for key, value in (("HG_ENV_MODEL", environment.model),
+                           ("HG_ENV_API_KEY", environment.api_key),
+                           ("HG_ENV_BASE_URL", environment.base_url)):
+            if value:
+                env[key] = value
     return env
 
 

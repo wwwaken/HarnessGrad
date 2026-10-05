@@ -20,6 +20,7 @@ from eval.console import CONSOLE as console
 import data.registry as datasets
 import eval.container as container
 import eval.harness_runtime as harness_runtime
+from harnessgrad.config import current as current_config
 
 def _required_env_kinds(envs: dict) -> set[str]:
     """What a dataset needs from the environment it runs in.
@@ -137,7 +138,7 @@ def _env_record(envs: dict, task_ids) -> dict:
     # `env.seed` are recorded only when a service actually declares it needs one --
     # otherwise `null`, which is a fact about the run rather than a missing field.
     env_seed = os.environ.get("HARNESSGRAD_SEED") or None
-    env_model = os.environ.get("HG_ENV_MODEL") or None
+    env_model = current_config().environment.model
     record = {
         "kind": first.get("kind", "files"),
         "image_digest": first.get("image_digest"),

@@ -24,6 +24,7 @@ from ckpt.git_state import materialize
 from eval.trace import loop_facts as _loop_facts
 
 from harnessgrad import PLATFORM_ROOT
+from harnessgrad.config import current as current_config
 
 def _loop_summary(traces: dict) -> dict:
     """整轮的 harness 侧事实:每题一次调用就交卷的有几道、预算用满的有几道。
@@ -556,7 +557,11 @@ def _snapshot_channel(hg: Path, run_dir: Path, point: dict) -> None:
 #: `HG_METHOD_HISTORY_ROUNDS=N` restores a bound for a run that needs one; `0` (the
 #: default) means every round. The value is recorded in each round's summary and in
 #: `states/index.json`, so a reader can tell what the method could see.
-HISTORY_ROUNDS = int(os.environ.get("HG_METHOD_HISTORY_ROUNDS", "0") or "0")
+#: Read from the configuration snapshot, at import, exactly as the raw environment read
+#: was: this module is imported before `driver.py` folds `.env` in, so `.env` alone does
+#: not set it (a shell variable does). `harnessgrad/config` is where the variable name
+#: and the `0` default are declared.
+HISTORY_ROUNDS = current_config().method.history_rounds
 #: The window as the record names it. Kept as a name because `states/index.json` and the
 #: round summary have carried a `window` field since the cap existed, and a reader of an old
 #: run needs it to mean what it meant then.

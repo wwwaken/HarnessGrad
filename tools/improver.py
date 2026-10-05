@@ -58,6 +58,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "improvers" / "improvers.json"
 
+#: `harnessgrad.config` lives at the repository root, which is on `sys.path` when this
+#: module is imported as `tools.improver` (the driver and the UI do that) but *not*
+#: when it is run directly (`python3 tools/improver.py --list`). One insert makes the
+#: declared configuration reachable in both cases; it is a no-op for the former.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from harnessgrad.config import current as current_config      # noqa: E402
+
 #: Where a native codex binary may live if the npm wrapper is unusable. Ordered so the
 #: common global install is tried before the version-manager trees; order only decides
 #: what `--list` reports first, never what is chosen (that is the config's job).
@@ -396,10 +404,10 @@ def resolve(config: dict | None = None, *, version: str = "", requested: str = "
         # improver's endpoint, `.env` only names a default for improvers that declare
         # nothing (which is how `local` still works). An operator who wants a different
         # model for a named improver says so with `--improver-model`, which is recorded.
-        base = (entry.get("base_url") or os.environ.get("HG_METHOD_BASE_URL")
+        base = (entry.get("base_url") or current_config().method.base_url
                 or env.get("HG_METHOD_BASE_URL", ""))
         model = (model_override or entry.get("model")
-                 or os.environ.get("HG_METHOD_MODEL")
+                 or current_config().method.model
                  or env.get("HG_METHOD_MODEL", ""))
         key_env = entry.get("api_key_env") or ""
         # The key is not resolved into the record -- it is a secret, and the record is
@@ -537,8 +545,11 @@ def _smoke(resolved: dict, workdir: Path, timeout: int) -> dict:
     prompt = ("Edit note.txt so that it contains exactly the line: smoke ok\n"
               "Do not create or modify anything else.")
     home = workdir / ".codex-home"
-    borrowed = _seed_codex_home(home, Path(os.environ.get("HG_CODEX_HOME_SOURCE",
-                                                          Path.home() / ".codex")))
+    # `opt_raw` in the declaration: unset is the `~/.codex` default, but a set value is
+    # passed to `Path` unchanged -- the same shape the old `os.environ.get(...)` had.
+    source = current_config().improver.codex_home_source
+    borrowed = _seed_codex_home(home, Path(source) if source is not None
+                                else Path.home() / ".codex")
     argv = [resolved["path"], "exec", "--skip-git-repo-check",
             "--sandbox", "danger-full-access", "-C", str(workdir), prompt]
     env = {**os.environ, "CODEX_HOME": str(home)}

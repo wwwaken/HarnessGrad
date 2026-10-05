@@ -65,6 +65,7 @@ import sys
 from pathlib import Path
 
 import eval.container as container
+from harnessgrad.config import current as current_config
 
 #: `install` names a pip requirements file or a shell script (§2.5.6). Only the former
 #: can become a directory of importable packages; a `.sh` is arbitrary code and is
@@ -87,7 +88,7 @@ def overlays_root() -> Path:
     a path that a run is checking for tampering. It is also outside any work root, so
     it survives the per-task `rmtree` and can be shared by every run on the machine.
     """
-    configured = os.environ.get("HG_OVERLAY_ROOT")
+    configured = current_config().runtime.overlay_root
     if configured:
         return Path(configured).expanduser()
     return Path(os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache")) \

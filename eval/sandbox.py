@@ -68,6 +68,7 @@ import tempfile
 from pathlib import Path
 
 from ckpt.git_state import STATE_DIRNAME
+from harnessgrad.config import current as current_config
 
 #: The mount plan's version. Bump it whenever what the subject can see changes.
 #: A curve made under plan 1 and one made under plan 2 are measurements of a
@@ -152,7 +153,7 @@ def _bwrap() -> str:
     used a broken one from `PATH`, and the diagnostic would then be about a different
     program than the one that failed.
     """
-    override = os.environ.get("HG_BWRAP")
+    override = current_config().sandbox.bwrap
     if override:
         if os.access(override, os.X_OK):
             return override
