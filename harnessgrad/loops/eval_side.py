@@ -23,6 +23,7 @@ from harnessgrad.environments import _report_invalid
 from harnessgrad.identity import _identity
 from harnessgrad.records import _cost_of
 from harnessgrad.records import _curve_point
+from harnessgrad.records import test_rate_fields as _test_rate_fields
 from harnessgrad.records import _require_untampered
 from harnessgrad.records import _save_traces
 from harnessgrad.records import _save_verdicts
@@ -155,7 +156,8 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
         cost=_cost_of(res, len(tasks), cumulative["wall_clock_s"]),
         cumulative=cumulative, label="exam", side="eval",
         evaluated_from=eval_from, n_trials=res.get("trials"),
-        score_std=res.get("score_std"), per_task_std=res.get("per_task_std"))
+        score_std=res.get("score_std"), per_task_std=res.get("per_task_std"),
+        **_test_rate_fields(res))
     point["measured_by_platform"] = True
     point["verifier_kinds"] = sorted({(verifiers.get(t) or {}).get("kind", "answer")
                                       for t in scored})

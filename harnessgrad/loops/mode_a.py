@@ -44,6 +44,7 @@ from harnessgrad.records import _save_round_state
 from harnessgrad.records import _save_traces
 from harnessgrad.records import _save_verdicts
 from harnessgrad.records import _scored
+from harnessgrad.records import test_rate_fields as _test_rate_fields
 from harnessgrad.records import _write_curve
 from harnessgrad.records import _write_run_meta
 import eval.candidate as candidate
@@ -486,6 +487,7 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             per_task_std=(res or {}).get("per_task_std"),
             per_task_trials=(res or {}).get("per_task_trials"),
             cached_tasks=(res or {}).get("cached_tasks"),
+            **_test_rate_fields(res),
             label=step.get("label", ""),
             hypothesis=reply.get("hypothesis"),
             edits_applied=changed_files,

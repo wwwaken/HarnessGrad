@@ -60,7 +60,7 @@ from harnessgrad.loops.mode_a import _run_mode_a
 from harnessgrad.methods import PlatformTampered, _check_method_entrypoint
 from harnessgrad.records import (
     _cost_of, _curve_point, _require_untampered, _save_round_state, _save_traces,
-    _save_verdicts, _scored, _write_curve, _write_run_meta)
+    _save_verdicts, _scored, _write_curve, _write_run_meta, test_rate_fields)
 
 
 # --------------------------------------------------- improver capability ---
@@ -842,7 +842,8 @@ def main() -> int:
         n_trials=base.get("trials"), score_std=base.get("score_std"),
         per_task_std=base.get("per_task_std"),
         per_task_trials=base.get("per_task_trials"),
-        cached_tasks=base.get("cached_tasks"))]
+        cached_tasks=base.get("cached_tasks"),
+        **test_rate_fields(base))]
     # The base harness is always evaluated by the platform, so its point is a
     # platform measurement like any other. Leaving the field unset made the
     # exported record claim the score was the method's -- the opposite of true.

@@ -122,6 +122,26 @@ def _scored(res, ids) -> list[str]:
     per_task = (res or {}).get("per_task") or {}
     return [t for t in ids if t in per_task]
 
+def test_rate_fields(res: dict | None) -> dict:
+    """The check's own tally, as the arguments `_curve_point` takes.
+
+    One place, because there are three call sites (the base point, a round point, and the
+    eval-side point) and a field added to one of them is a field missing from the other two
+    -- which is how `per_task_trials` first shipped. A caller that forgets this loses the
+    finer signal without losing the point, so the failure is silent; that is the argument
+    for it being a function rather than five keyword arguments copied three times.
+    """
+    res = res or {}
+    return {
+        "per_task_test_rate": res.get("per_task_test_rate"),
+        "test_rate": res.get("test_rate"),
+        "test_rate_n_tasks": res.get("test_rate_n_tasks"),
+        "tests_passed": res.get("tests_passed"),
+        "tests_total": res.get("tests_total"),
+        "per_task_test_rate_trials": res.get("per_task_test_rate_trials"),
+    }
+
+
 def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  cost, cumulative, selection=None, label="",
                  method_reported=None, train_scores=None, train_ids=None,
@@ -130,7 +150,10 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  edits_applied=None, files_claimed=None, candidate_problems=None,
                  side="train", evaluated_from=None,
                  n_trials=None, score_std=None, per_task_std=None,
-                 per_task_trials=None, cached_tasks=None) -> dict:
+                 per_task_trials=None, cached_tasks=None,
+                 per_task_test_rate=None, test_rate=None, test_rate_n_tasks=0,
+                 tests_passed=0, tests_total=0,
+                 per_task_test_rate_trials=None) -> dict:
     lo, hi = ci95(scores)
     return {
         "run_id": run_id, "round": round_index, "label": label,
@@ -202,6 +225,31 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         **({"n_cached": len(cached_tasks), "cached_tasks": sorted(cached_tasks)}
            if cached_tasks else {}),
         "per_task": dict(zip(task_ids, scores)),
+        # **The same measurement at the resolution the check already provides.** A task set
+        # of ten all-or-nothing checks has a resolution of 0.1 and, measured on this
+        # platform, a noise band of about +/-0.1: the instrument cannot see the effect it
+        # exists to measure. Most `command` checks tally individual tests, and that tally
+        # was already parsed (`eval/runner.py:_test_report_failures`) and already saved in
+        # the verdict's `detail` string -- this is that number, as a number.
+        #
+        # **Always present, `null` when nothing reported.** The rest of this file omits a
+        # field that does not apply, and for a *fact about the harness* that is fine. Here
+        # it is not: `test_rate` missing because no check tallies tests and `test_rate`
+        # missing because this point predates the field are different, and a reader cannot
+        # tell them apart -- which is the defect that let a non-functional candidate be
+        # read as a +0.100 gain (`docs/experiment_noise.md`). `null` says the platform
+        # looked and no check reported a tally; `test_rate_n_tasks` says how many did.
+        "test_rate": (None if test_rate is None else round(float(test_rate), 6)),
+        "test_rate_n_tasks": int(test_rate_n_tasks or 0),
+        "per_task_test_rate": {k: round(float(v), 6)
+                               for k, v in sorted((per_task_test_rate or {}).items())},
+        # Pooled over every trial and every reporting task, so a reader can compute the
+        # rate themselves and cannot be misled by the mean-of-means above.
+        "tests_passed": int(tests_passed or 0),
+        "tests_total": int(tests_total or 0),
+        **({"per_task_test_rate_trials": {k: [round(float(x), 6) for x in v]
+                                          for k, v in per_task_test_rate_trials.items()}}
+           if n_trials and n_trials > 1 and per_task_test_rate_trials else {}),
         # How many tasks were scored, and how many of them earned full credit.
         #
         # These two are what a method is allowed to know about the eval side's
@@ -435,6 +483,16 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
             "passed": v.get("passed"),
             "detail": v.get("detail"),
         }
+        # **The check's own tally, which was being thrown away.** `_test_report_failures`
+        # has parsed `{"passed": 4, "failed": 1}` out of the CTRF report since 2026-10-04
+        # (`eval/runner.py`), the runner set `verdict["tests"]`, and this function -- the
+        # only thing that writes a verdict to disk -- copied six named fields and dropped
+        # it. So the number a reader needs to tell "the artifact got worse" from "nothing
+        # happened" lived in a prose `detail` string and nowhere else. Measured: a harness
+        # edit took `large-scale-text-editing` from 4 of 5 tests to 3 of 5; both scored
+        # 0.0, and the curve said the edit changed nothing.
+        if isinstance(v.get("tests"), dict):
+            entry["tests"] = v["tests"]
         harness_out = (res.get("harness_output") or {}).get(tid)
         if harness_out:
             entry["harness"] = harness_out
@@ -453,7 +511,12 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
                 "score", 1.0 if (t or {}).get("passed") else 0.0)) for t in trials_v]
             entry["trials"] = [{"passed": (t or {}).get("passed"),
                                 "kind": (t or {}).get("kind"),
-                                "detail": (t or {}).get("detail")} for t in trials_v]
+                                "detail": (t or {}).get("detail"),
+                                # The per-trial tally too, for the same reason the per-trial
+                                # score is here: "2 of 3 trials passed" and "the tests went
+                                # 4/5, 5/5, 3/5" are different claims about the artifact.
+                                **({"tests": t["tests"]} if isinstance((t or {}).get("tests"), dict)
+                                   else {})} for t in trials_v]
         (dest / f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
 

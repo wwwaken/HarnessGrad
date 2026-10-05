@@ -835,6 +835,37 @@ def _write_progress(progress_dir, round_no: int, tid: str,
               file=sys.stderr)
 
 
+def test_rate_of(verdict: dict | None) -> float | None:
+    """How much of the check's own test suite the artifact satisfied, or `None`.
+
+    **A second signal beside `score`, and the finer one.** A `command` check usually
+    reports "4 passed 1 failed" and the reward file collapses that to 0. Measured on this
+    platform: `large-scale-text-editing` passed 4 of 5 tests for a binary 0.0, and a harness
+    edit took it to 3 of 5 -- also a binary 0.0. The curve said the edit changed nothing
+    while the artifact got *worse*. Ten all-or-nothing tasks have a resolution of 0.1 and,
+    measured here, a noise band of about +/-0.1: the instrument cannot see the effect it
+    exists to measure, and this number was already parsed and thrown away
+    (`_test_report_failures` has returned it since 2026-10-04; `_save_verdicts` dropped it).
+
+    `None` is not zero. It means this check reports no per-test tally -- most `command`
+    checks outside pytest, and every check without an `evidence_file`. Averaging those in
+    as failures would invent a number the check never produced.
+
+    The denominator is `passed + failed`: tests that *ran*. A skipped test was not
+    measured, and counting it as a failure would blame the artifact for the check's own
+    skip. `summary["tests"]` is deliberately not used -- it counts skipped and pending
+    tests, so it answers a different question.
+    """
+    tests = ((verdict or {}).get("tests"))
+    if not isinstance(tests, dict):
+        return None
+    passed, failed = tests.get("passed"), tests.get("failed")
+    if not isinstance(passed, int) or not isinstance(failed, int):
+        return None
+    ran = passed + failed
+    return (passed / ran) if ran > 0 else None
+
+
 def _test_report_failures(report: dict | None) -> tuple[list[str], str, dict]:
     """Failing tests from a CTRF report, a one-line summary, and the counts as numbers.
 
@@ -1513,6 +1544,21 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     #: of five tasks at 0.0 on `loop-terminal_bench-26452c` with no explanation anywhere
     #: in the run; the explanation had to be reconstructed by hand from the traces.
     harness_output: dict[str, dict] = {}
+    #: The check's own tally, as a rate per task. **A second, finer signal beside
+    #: `score`.** A `command` check usually reports "4 passed 1 failed" and the reward file
+    #: collapses that to 0. Measured on this platform: a task that passed 4 of 5 tests
+    #: scored 0.0, and a harness edit that took it to 3 of 5 also scored 0.0 -- the curve
+    #: said "no change" while the artifact got *worse*, and a task set of ten binary scores
+    #: (resolution 0.1, noise +/-0.1) cannot resolve the effect the platform exists to
+    #: measure. `score` stays the headline and stays comparable; this is the same
+    #: measurement at the resolution the check already provides.
+    #:
+    #: Only tasks whose check reports tests appear, so `test_rate_n_tasks` travels beside
+    #: the mean -- a 0.8 over three tasks and a 0.8 over ten are not the same claim.
+    per_task_test_rate: dict[str, float] = {}
+    per_task_test_rate_trials: dict[str, list[float]] = {}
+    tests_passed_total = 0
+    tests_total_total = 0
     #: Which interpreter ran the harness on each task and where its own dependencies
     #: came from (`eval/harness_runtime.py`). Distinct records, because the version is a
     #: property of the task's image and one run may cross several.
@@ -1712,6 +1758,21 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             per_task_trials[tid] = scores
             per_task_std[tid] = _spread(scores)
         per_task[tid] = score
+        # The same trials, read for the check's own tally instead of its reward. Kept
+        # beside the score rather than replacing it: `score` is what the task is worth and
+        # is what every existing reader and every cross-run comparison uses.
+        rates = [test_rate_of(res.get("verdict")) for res in measured]
+        rates = [r for r in rates if r is not None]
+        if rates:
+            per_task_test_rate[tid] = sum(rates) / len(rates)
+            if trials > 1:
+                per_task_test_rate_trials[tid] = rates
+            for res in measured:
+                tally = (res.get("verdict") or {}).get("tests") or {}
+                passed_n, failed_n = tally.get("passed"), tally.get("failed")
+                if isinstance(passed_n, int) and isinstance(failed_n, int):
+                    tests_passed_total += passed_n
+                    tests_total_total += passed_n + failed_n
         verdicts[tid] = verdict
         traces[tid] = result["trace"]
         # **Every trial, not only the last one.** Measured on `B2-noop` (2026-10-04):
@@ -1850,6 +1911,15 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         }
     return {"per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
             "per_task_trials": per_task_trials, "trials": trials,
+            # The same measurement at the check's own resolution. `test_rate` averages only
+            # the tasks whose check reports a tally, so `test_rate_n_tasks` travels with it.
+            "per_task_test_rate": per_task_test_rate,
+            "per_task_test_rate_trials": per_task_test_rate_trials,
+            "test_rate": (sum(per_task_test_rate.values()) / len(per_task_test_rate)
+                          if per_task_test_rate else None),
+            "test_rate_n_tasks": len(per_task_test_rate),
+            "tests_passed": tests_passed_total,
+            "tests_total": tests_total_total,
             "traces": traces, "tampered": tampered,
             "trial_traces": trial_traces, "trial_verdicts": trial_verdicts,
             "cached_tasks": cached_tasks,

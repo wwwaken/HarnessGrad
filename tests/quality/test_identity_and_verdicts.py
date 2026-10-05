@@ -322,3 +322,90 @@ def test_a_real_run_names_its_method_on_every_point(tmp_path):
     assert later and all((p["identity"].get("method") or "").startswith("noop")
                          for p in later), \
         [(p["round"], p["identity"].get("method")) for p in points]
+
+
+# ------------------------------- 检查自己的测试计数:比 pass/fail 更细的信号 ---
+
+def test_the_check_s_own_tally_becomes_a_rate():
+    """`4 passed 1 failed` 必须变成一个数,而不是只活在 detail 字符串里。
+
+    实测(`ds-dgm`):`large-scale-text-editing` 在 loop harness 下过 4/5,DeepSeek 的机制改动后
+    过 3/5 —— 二值分数两次都是 0.0,曲线说"没变化",而产物**变差了**。10 道全对/全错的题分辨率
+    是 0.1、噪声约 ±0.1:仪器看不见它自己要测的效应,而这个数从 2026-10-04 起就被解析出来了,
+    只是 `_save_verdicts` 手挑六个字段把它丢了。
+    """
+    from eval.runner import test_rate_of
+
+    assert test_rate_of({"tests": {"passed": 4, "failed": 1}}) == 0.8
+    assert test_rate_of({"tests": {"passed": 0, "failed": 5}}) == 0.0
+    assert test_rate_of({"tests": {"passed": 3, "failed": 0}}) == 1.0
+    # `None` 不是 0:这个检查不报测试数,把它当失败是在编造一个检查从未产生的数
+    assert test_rate_of({}) is None
+    assert test_rate_of(None) is None
+    assert test_rate_of({"tests": {"passed": 0, "failed": 0}}) is None
+    # 只数跑过的:skipped 不是失败
+    assert test_rate_of({"tests": {"passed": 4, "failed": 1, "skipped": 9,
+                                   "tests": 14}}) == 0.8
+    # 字段类型不对时不能崩(那是别人的格式)
+    assert test_rate_of({"tests": {"passed": "4", "failed": 1}}) is None
+
+
+def test_the_curve_point_always_says_whether_a_tally_existed(tmp_path):
+    """`test_rate` 缺字段和 `test_rate: null` 必须是两件事。
+
+    这个文件开头那条注释说的就是这件事:曲线报告了结论、没报告任何解释。一个**缺**字段的点
+    和一个"该字段为假"的点读起来一样 —— 正是这个缺陷让一个功能上不可能有差别的候选读成了
+    `+0.100` 的提升(`docs/experiment_noise.md`)。所以字段恒在:`null` 表示平台看过、没有检查
+    报测试数,`test_rate_n_tasks` 说有几道题报了。
+    """
+    from eval.runner import test_rate_of
+    from harnessgrad.records import _curve_point, test_rate_fields
+
+    # 没有任何检查报测试数
+    none_res = {"per_task": {"a": 0.0}, "verdicts": {}}
+    point = _curve_point(run_id="r", round_index=0, identity={}, sampling={},
+                         scores=[0.0], task_ids=["a"], cost={}, cumulative={},
+                         **test_rate_fields(none_res))
+    assert "test_rate" in point and point["test_rate"] is None
+    assert point["test_rate_n_tasks"] == 0
+    assert point["per_task_test_rate"] == {}
+    assert point["tests_total"] == 0
+
+    # 一个检查报 4/5
+    some_res = {"per_task_test_rate": {"a": 0.8}, "test_rate": 0.8,
+                "test_rate_n_tasks": 1, "tests_passed": 4, "tests_total": 5}
+    point = _curve_point(run_id="r", round_index=0, identity={}, sampling={},
+                         scores=[0.0], task_ids=["a"], cost={}, cumulative={},
+                         **test_rate_fields(some_res))
+    assert point["test_rate"] == 0.8
+    assert point["test_rate_n_tasks"] == 1
+    assert point["per_task_test_rate"] == {"a": 0.8}
+    assert (point["tests_passed"], point["tests_total"]) == (4, 5)
+    # 二值分数照旧,没被取代
+    assert point["score"] == 0.0
+    # 检查自己的 rate 函数与这里用的是同一个判据
+    assert test_rate_of({"tests": {"passed": 4, "failed": 1}}) == point["test_rate"]
+
+
+def test_a_verdict_file_carries_the_tally_not_only_the_sentence(tmp_path):
+    """`_save_verdicts` 挑字段写盘,`tests` 被它丢掉了 —— 这是那个数字消失的**确切位置**。
+
+    runner 早就在算它(`_test_report_failures` 返回 `numbers`),verdict 里也早就设了
+    `verdict["tests"]`,而唯一写盘的函数手挑六个字段、把它漏了。所以"产物是变好了还是变坏了"
+    只能靠人从 detail 字符串里正则出 "4 passed 1 failed"。
+    """
+    from harnessgrad.records import _save_verdicts
+
+    run_dir = tmp_path / "run"
+    res = {
+        "per_task": {"t1": 0.0},
+        "verdicts": {"t1": {"kind": "command", "passed": False, "detail": "reward 0",
+                            "tests": {"tests": 5, "passed": 4, "failed": 1}}},
+        "harness_output": {"t1": {"exit_code": 0, "stderr": ""}},
+    }
+    _save_verdicts(run_dir, 0, res, ["t1"])
+    entry = json.loads((run_dir / "verdicts" / "round-0" / "t1.json").read_text())
+    assert entry["tests"] == {"tests": 5, "passed": 4, "failed": 1}, entry
+    # 老的六个字段照旧,现有读者不受影响
+    for field in ("task_id", "round", "score", "kind", "passed", "detail"):
+        assert field in entry, field
