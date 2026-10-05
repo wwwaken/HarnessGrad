@@ -40,6 +40,52 @@ CHANNEL = "_harnessgrad"
 #: Manifests and sources are text. A megabyte is a payload, not an edit.
 MAX_EDIT_BYTES = 2 * 1024 * 1024
 
+#: Directories that are never the harness's own source, so their syntax is not its
+#: problem. Mirrors `tools/validate_harness.py`; the two cannot import each other (a
+#: method's sandbox hides `tools/`) -- see this module's docstring for why that duplication
+#: is a role difference and not an oversight.
+_NOT_SOURCE = {"__pycache__", ".git", "node_modules", ".venv", "venv", CHANNEL}
+
+
+def _compile_problems(repo: Path) -> list[str]:
+    """Python in this harness that does not compile.
+
+    **The check that made the repair attempt useless.** `editor.apply_edits` calls this
+    module's `validate` and, when it reports a problem, hands the text back to the improver
+    for one repair (`editor.repair_block`). The platform's `tools/validate_harness.py` has
+    compiled every `.py` file since 2026-10-04 and this module did not -- so the one class
+    of failure a method is *most* likely to cause was the one class its repair loop could
+    not see. Measured (`v4`-`v12`, and again in stage 3's smoke runs on 2026-10-05): the
+    improver wrote an `agent.py` that did not parse, the method reported `changed: true`,
+    and the platform recorded the round `unmeasured` with `agent.py does not compile:
+    invalid syntax`. A wasted round, and the improver was never told.
+
+    Cannot import `tools/validate_harness.py` -- a method's sandbox hides `tools/` (see
+    this module's docstring) -- so the rule is restated narrowly here, for the same reason
+    the manifest checks are. The platform still re-checks authoritatively.
+
+    Every `.py` file, not only the entrypoint: the tree is the artifact. `compile()` costs
+    no subprocess and cannot execute anything.
+    """
+    problems: list[str] = []
+    for path in sorted(repo.rglob("*.py")):
+        rel = path.relative_to(repo)
+        if any(part in _NOT_SOURCE for part in rel.parts):
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            problems.append(f"{rel} could not be read as text: {exc}")
+            continue
+        try:
+            compile(source, str(rel), "exec")
+        except SyntaxError as exc:
+            problems.append(f"{rel} does not compile: {exc.msg} (line {exc.lineno})")
+        except ValueError as exc:
+            # A null byte in the source raises ValueError, not SyntaxError.
+            problems.append(f"{rel} cannot be compiled: {exc}")
+    return problems
+
 
 def _target(dest: Path, rel: str) -> tuple[Path | None, str | None]:
     """Where an edit lands, or why it may not land there.
@@ -199,6 +245,9 @@ def validate(repo: Path) -> list[str]:
     install = man.get("install")
     if install and not (repo / sub / install).is_file():
         problems.append(f"install file {install!r} not found under {sub!r}")
+    # Last, and unconditionally: a manifest that is fine does not make unparseable Python
+    # a valid harness, and this is the failure a method's own edit causes most often.
+    problems.extend(_compile_problems(repo))
     return problems
 
 
