@@ -69,6 +69,20 @@ export function RunDetailPage() {
     <PageContainer>
       <RunHeader bundle={bundle.data} view={view} certify={certify} />
 
+      {bundle.data.load_problems.length ? (
+        <Section
+          title="Problems reading this run"
+          description="The read API reported these while loading the run directory. A run that is being written right now can be caught mid-write; the response is still a page, not a 500."
+          className="border-warn/30"
+        >
+          <ul className="list-disc space-y-1 pl-4 text-2xs text-warn">
+            {bundle.data.load_problems.map((problem) => (
+              <li key={problem}>{problem}</li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+
       {badge.problems.length ? (
         <Section
           title="Why this run is not quotable"
@@ -141,7 +155,7 @@ export function RunDetailPage() {
             {selectedRound === null ? (
               <ChartSkeleton />
             ) : (
-              <RoundDiffPanel bundle={bundle.data} round={selectedRound} />
+              <RoundDiffPanel runId={bundle.data.run_id} round={selectedRound} />
             )}
           </Section>
         </TabsContent>

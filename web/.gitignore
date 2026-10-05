@@ -7,3 +7,7 @@ node_modules/
 .vite/
 coverage/
 *.tsbuildinfo
+
+# The root `.gitignore` used to ignore `web/src/lib/` through the unanchored Python pattern
+# `lib/`; that pattern is now `/lib/` and this workaround is gone. Kept as a note because the
+# failure was silent -- five source files simply never appeared in `git status`.

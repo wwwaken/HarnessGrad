@@ -23,8 +23,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { EmptyState } from "@/components/common/states";
 import { Value } from "@/components/common/presence-value";
-import { formatDuration, formatScore, formatTimestamp, shortSha } from "@/lib/format";
+import { EM_DASH, formatDuration, formatScore, formatTimestamp, shortSha } from "@/lib/format";
 import { badgeFor, matchesSearch, matchesValidity, type ValidityFilter } from "@/logic/certify";
+import { presenceOf } from "@/logic/presence";
 import { cn } from "@/lib/utils";
 import type { CertifyBadge, BadgeTone } from "@/logic/certify";
 import type { RunSummary } from "@/types";
@@ -179,23 +180,26 @@ const columns = [
     header: "test_rate",
     cell: (info) => {
       const value = info.getValue();
+      // The three-state rule, read through `presence.ts` rather than `=== null`: a run
+      // whose last point predates stage 0 carries *no* `test_rate`, and the API reports
+      // that as `null`. Either way it is "not recorded" and must never render as `0.000`.
+      const presence = presenceOf(
+        info.row.original.summary as unknown as Record<string, unknown>,
+        "last_test_rate",
+      );
+      const known = presence === "present" && typeof value === "number";
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span
-              className={cn(
-                "tabular cursor-help",
-                value === null && "text-muted-foreground/60",
-              )}
-            >
-              {value === null ? "—" : formatScore(value)}
+            <span className={cn("tabular cursor-help", !known && "text-muted-foreground/60")}>
+              {known ? formatScore(value) : EM_DASH}
             </span>
           </TooltipTrigger>
           <TooltipContent className="max-w-xs">
-            {value === null
-              ? "no round in this run carries a test_rate: the checks reported no per-test " +
-                "tally, or every point predates stage 0 (2026-10-05)"
-              : "the check's own test tally, averaged over the tasks that reported one"}
+            {known
+              ? "the check's own test tally, averaged over the tasks that reported one"
+              : "no round in this run carries a test_rate: the checks reported no per-test " +
+                "tally, or every point predates stage 0 (2026-10-05). This is not a zero."}
           </TooltipContent>
         </Tooltip>
       );

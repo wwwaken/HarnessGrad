@@ -40,6 +40,18 @@ export default defineConfig({
     // move to a port the README does not name.
     port: 5273,
     strictPort: true,
+    // In production `web/server/serve.py` serves the built SPA *and* `/api` from one origin,
+    // so no proxy is needed. In development the SPA is on 5273 and the read API on 8791:
+    // this forwards `/api/...` so `resolveBackend()`'s `/api/health` probe and every data
+    // request are same-origin and need no CORS. The API also sets
+    // `Access-Control-Allow-Origin: *`, but a proxy is what makes the dev URLs match the
+    // production ones exactly.
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:8791",
+        changeOrigin: false,
+      },
+    },
   },
   test: {
     environment: "node",

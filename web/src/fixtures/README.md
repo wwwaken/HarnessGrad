@@ -1,6 +1,8 @@
 # Fixtures
 
-Stand-ins for the read API that does not exist yet (stage 5's next task). They are
+Stand-ins for the read API in `web/server/`, used when it is not running: the SPA probes
+`GET /api/health` at startup and only falls back to these files when nothing answers (see
+[Live vs fixture](../README.md#live-vs-fixture) in the web README). They are
 **generated**, not hand-written, and the generator is checked in so they can be audited:
 
 ```bash
@@ -13,7 +15,7 @@ cd web && python3 scripts/build_fixtures.py     # reads ../runs/ read-only
 | file | source | size |
 | --- | --- | --- |
 | `runs-index.json` | 14 curated runs from `runs/`, validated by the platform's own `tools/validate_run.py --json` | 39 KB |
-| `run-ds-dgm.json` | `runs/ds-dgm` — every point, every verdict, both saved round patches | 121 KB |
+| `run-ds-dgm.json` | `runs/ds-dgm` — every point, every verdict, both saved round patches inline (the live API serves a patch from `GET /api/runs/:id/rounds/:n/diff`, not from the bundle) | 121 KB |
 | `run-ds-rrsi.json` | `runs/ds-rrsi` — the compare partner | 164 KB |
 | `task-ds-dgm-r0-cobol-modernization.json` | verdict + full trace for one task | 85 KB |
 | `task-ds-dgm-r0-fix-git.json` | verdict + full trace for one task | 25 KB |

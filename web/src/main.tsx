@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { App } from "@/App";
+import { resolveBackend } from "@/lib/api";
 import "@/index.css";
 
 /**
@@ -18,6 +19,11 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Decide once, before the first screen's queries fire, whether the read API is running.
+// The probe is fire-and-forget: every API call awaits the same promise, and the banner
+// re-renders when it resolves. A failure is not fatal — it selects the fixture backend.
+void resolveBackend();
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root is missing from index.html");

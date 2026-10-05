@@ -453,20 +453,47 @@ export interface RoundDiffFile {
   removed: number;
 }
 
-/** The stat half of a round's saved diff (`records.py:_save_round_diff`). */
+/**
+ * The stat half of a round's saved diff (`records.py:_save_round_diff`).
+ *
+ * `from`, `to`, `added` and `removed` are nullable because the read API still serves the
+ * *patch* when the sibling `round-<n>.json` stat is half-written or unreadable: in that
+ * case it reports `stat: null` and a `stat_error`. Fabricating `0` here would let a patch
+ * with no numstat render as "no textual change", which is the opposite claim.
+ */
 export interface RoundDiffStat {
   round: number;
   /** The harness sha before the round. */
-  from: string;
+  from: string | null;
   /** The harness sha after the round. */
-  to: string;
+  to: string | null;
   files: RoundDiffFile[];
-  added: number;
-  removed: number;
+  added: number | null;
+  removed: number | null;
 }
 
 /** The stat plus the unified patch, which is what Monaco renders. */
 export interface RoundDiff extends RoundDiffStat {
+  patch: string;
+  /** Set when the API could not read the stat file but still served the patch. */
+  stat_error?: string | null;
+}
+
+/**
+ * `GET /api/runs/:id/rounds/:n/diff` — the endpoint the run/compare/task screens read the
+ * patch from.
+ *
+ * The bundle's `diffs` map carries the **stat only**; this endpoint carries the patch. That
+ * split is what keeps a run bundle small enough to load eagerly. A round with no saved
+ * patch is `404`, which the client turns into an explicit absence, not an empty patch.
+ */
+export interface RoundDiffResponse {
+  run_id: string;
+  round: number;
+  /** `null` when the stat file is unreadable while the patch still exists. */
+  stat: RoundDiffStat | null;
+  /** Why `stat` is `null`; `null` when the stat was read. */
+  stat_error: string | null;
   patch: string;
 }
 
@@ -501,11 +528,13 @@ export interface RunSummary {
   /** `run_meta.wall_clock_s`. */
   wall_clock_s: number | null;
   /**
-   * The run's timestamp. `certify()` does not return one; a real API must use
-   * `run_meta`'s mtime or the last point's `timestamp_utc`. Inferred here as the last
-   * point's `timestamp_utc`.
+   * The run's timestamp. `certify()` does not return one; the read API uses the last
+   * point's `timestamp_utc` when the curve has one, otherwise the run directory's mtime.
+   * `timestamp_source` names which, so a reader is never told an mtime is a measurement.
    */
   timestamp_utc: string | null;
+  /** `"curve"` or `"run_meta_mtime"`; absent in the fixture subset. */
+  timestamp_source?: string | null;
   /**
    * Why the run is unreadable, when there is no `run_meta.json` at all. A run directory
    * with no curve is `valid: false, points: 0`; it is not an error to fetch.
@@ -527,11 +556,13 @@ export interface RunBundle {
   /** `round number -> task_id -> verdict`. Loaded from `verdicts/round-<n>/`. */
   verdicts: Record<string, Record<string, Verdict>>;
   /**
-   * `round number -> stat + patch`. A real API should return the stat by default and the
-   * `.patch` from `GET /api/runs/:id/rounds/:n/diff`; the fixtures ship both at once
-   * because a round patch is tens of kilobytes, not megabytes.
+   * `round number -> diff stat`. **Statistic only** — the read API moved the patch to
+   * `GET /api/runs/:id/rounds/:n/diff` so a bundle stays small. The fixture files still
+   * carry `patch` on each entry, which is why the fixture-backed `getRoundDiff` can answer
+   * without a second request. `RoundDiffStat`, not `RoundDiff`: reading a patch out of the
+   * bundle is exactly the client/API mismatch this type now forbids.
    */
-  diffs: Record<string, RoundDiff>;
+  diffs: Record<string, RoundDiffStat>;
   /** Problems reading the run directory; empty for a healthy run. */
   load_problems: string[];
 }

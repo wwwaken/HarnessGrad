@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Columns2, FileDiff } from "lucide-react";
 import { CodeView, DiffView } from "@/components/common/code-view";
-import { EmptyState } from "@/components/common/states";
+import { EmptyState, ErrorState } from "@/components/common/states";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useRoundDiff } from "@/hooks/queries";
 import { shortSha } from "@/lib/format";
-import type { RunBundle } from "@/types";
+import type { RunBundle, RoundDiff } from "@/types";
 import type { RunComparison } from "@/logic/compare";
 
 /**
@@ -19,7 +21,9 @@ import type { RunComparison } from "@/logic/compare";
  * * **Patch vs patch** — where do the two edits disagree? Useful when both methods target the
  *   same harness and one works: the useful signal is the hunk the failing one did not make.
  *
- * A round with no saved patch renders as an explicit absence rather than an empty editor.
+ * Each patch is fetched from `GET /api/runs/:id/rounds/:n/diff`, the endpoint that carries
+ * it: the run bundle holds the diff *stat* only. A round with no saved patch is a `404`
+ * (round 0 by construction), rendered as an explicit absence rather than an empty editor.
  */
 export function CandidateDiffs({
   comparison,
@@ -31,9 +35,32 @@ export function CandidateDiffs({
   rightBundle: RunBundle;
 }) {
   const [mode, setMode] = useState<"side" | "compare">("side");
-  const leftDiff = comparison.leftRound === null ? null : leftBundle.diffs[String(comparison.leftRound)];
-  const rightDiff =
-    comparison.rightRound === null ? null : rightBundle.diffs[String(comparison.rightRound)];
+  const leftQuery = useRoundDiff(leftBundle.run_id, comparison.leftRound);
+  const rightQuery = useRoundDiff(rightBundle.run_id, comparison.rightRound);
+
+  const leftDiff: RoundDiff | null = leftQuery.data ?? null;
+  const rightDiff: RoundDiff | null = rightQuery.data ?? null;
+
+  if (leftQuery.isLoading || rightQuery.isLoading) {
+    return (
+      <div className="grid gap-3 xl:grid-cols-2">
+        <Skeleton className="h-[520px] w-full" />
+        <Skeleton className="h-[520px] w-full" />
+      </div>
+    );
+  }
+  if (leftQuery.error || rightQuery.error) {
+    return (
+      <div className="space-y-2">
+        {leftQuery.error ? (
+          <ErrorState error={leftQuery.error} onRetry={() => void leftQuery.refetch()} />
+        ) : null}
+        {rightQuery.error ? (
+          <ErrorState error={rightQuery.error} onRetry={() => void rightQuery.refetch()} />
+        ) : null}
+      </div>
+    );
+  }
 
   if (!leftDiff && !rightDiff) {
     return (
@@ -66,7 +93,7 @@ export function CandidateDiffs({
           </Button>
         </div>
         <span className="text-2xs text-muted-foreground">
-          read from <span className="font-mono">runs/&lt;id&gt;/diffs/round-&lt;n&gt;.patch</span>
+          read from <span className="font-mono">GET /api/runs/&lt;id&gt;/rounds/&lt;n&gt;/diff</span>
         </span>
       </div>
 
@@ -99,13 +126,8 @@ export function CandidateDiffs({
   );
 }
 
-function Side({
-  title,
-  diff,
-}: {
-  title: string;
-  diff: RunBundle["diffs"][string] | null;
-}) {
+function Side({ title, diff }: { title: string; diff: RoundDiff | null }) {
+  const statKnown = diff !== null && typeof diff.added === "number" && typeof diff.removed === "number";
   return (
     <div className="space-y-1.5">
       <div className="flex flex-wrap items-center gap-2">
@@ -115,8 +137,14 @@ function Side({
             <Badge variant="muted" className="font-mono">
               {shortSha(diff.from)} → {shortSha(diff.to)}
             </Badge>
-            <span className="tabular text-2xs text-pass">+{diff.added}</span>
-            <span className="tabular text-2xs text-fail">−{diff.removed}</span>
+            {statKnown ? (
+              <>
+                <span className="tabular text-2xs text-pass">+{diff.added}</span>
+                <span className="tabular text-2xs text-fail">−{diff.removed}</span>
+              </>
+            ) : (
+              <Badge variant="warn">stat unreadable</Badge>
+            )}
             <span className="text-2xs text-muted-foreground">
               {diff.files.map((f) => f.path).join(", ") || "no textual change"}
             </span>

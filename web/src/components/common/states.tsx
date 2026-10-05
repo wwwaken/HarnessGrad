@@ -57,10 +57,14 @@ export function ErrorState({
   const kind = api?.kind ?? "network";
   const title =
     kind === "not-found"
-      ? "Not in the data this build carries"
-      : kind === "parse"
-        ? "The record could not be parsed"
-        : "Could not load the data";
+      ? "Not found"
+      : kind === "bad-request"
+        ? "The request was refused"
+        : kind === "unavailable"
+          ? "The read API is not available"
+          : kind === "parse"
+            ? "The record could not be parsed"
+            : "Could not load the data";
   return (
     <div
       className={cn(

@@ -3,8 +3,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { FlaskConical, GitCompareArrows, Info, Rocket, Sigma } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BACKEND } from "@/lib/api";
 import { availableRunIds } from "@/lib/api";
+import { useBackend } from "@/hooks/use-backend";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -51,11 +51,15 @@ function NavItem({ to, label, icon: Icon, hint }: (typeof NAV)[number]) {
 /**
  * The shell: a fixed rail, a content column, and one honesty banner.
  *
- * The banner is not removable while the fixtures stand in for the API. A screenshot of this
- * UI will outlive the session that produced it, and a fixture number that reaches a slide
- * without that banner is the exact class of error the platform exists to prevent.
+ * The banner is not removable while the fixtures stand in for the API, and it says which
+ * source is live rather than only whether fixtures are. `useBackend()` re-renders it the
+ * moment the startup `/api/health` probe resolves; a screenshot of this UI will outlive the
+ * session that produced it, and a fixture number that reaches a slide without that banner is
+ * the exact class of error the platform exists to prevent.
  */
 export function AppShell() {
+  const backend = useBackend();
+  const live = backend.mode === "live";
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex min-h-screen">
@@ -76,7 +80,7 @@ export function AppShell() {
           </nav>
           <div className="mt-3 px-3">
             <div className="text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-              Fixture runs
+              {live ? "Shortcuts" : "Fixture runs"}
             </div>
             <div className="mt-1 space-y-0.5">
               {availableRunIds().map((id) => (
@@ -101,8 +105,21 @@ export function AppShell() {
             <div className="flex items-start gap-1.5 text-2xs leading-snug text-muted-foreground">
               <Info className="mt-0.5 h-3 w-3 shrink-0" />
               <span>
-                <span className="font-medium text-foreground">Fixture backend.</span> The read
-                API does not exist yet.
+                <span
+                  className={cn(
+                    "font-medium",
+                    backend.status === "unreachable"
+                      ? "text-fail"
+                      : live
+                        ? "text-pass"
+                        : "text-foreground",
+                  )}
+                >
+                  {backend.label}.
+                </span>{" "}
+                {live
+                  ? `Serving ${backend.runs ?? "?"} run row(s) from the read API.`
+                  : "Reading the curated fixture subset; the read API is not in use."}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -135,7 +152,19 @@ export function AppShell() {
                 ))}
               </nav>
               <div className="hidden min-w-0 flex-1 items-center gap-2 text-2xs text-muted-foreground md:flex">
-                <span className="truncate">{BACKEND.note}</span>
+                <span
+                  className={cn(
+                    "shrink-0 rounded px-1 py-0.5 font-medium",
+                    backend.status === "unreachable"
+                      ? "bg-fail/15 text-fail"
+                      : live
+                        ? "bg-pass/15 text-pass"
+                        : "bg-muted text-foreground",
+                  )}
+                >
+                  {backend.label}
+                </span>
+                <span className="truncate">{backend.note}</span>
               </div>
               <div className="md:hidden">
                 <ThemeToggle />

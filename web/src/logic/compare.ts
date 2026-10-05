@@ -337,10 +337,16 @@ export interface DiffStatRow {
 export function diffStatRows(
   bundle: RunBundle,
   round: number | null,
-): { rows: DiffStatRow[]; added: number; removed: number; from: string | null; to: string | null } {
-  if (round === null) return { rows: [], added: 0, removed: 0, from: null, to: null };
+): {
+  rows: DiffStatRow[];
+  added: number | null;
+  removed: number | null;
+  from: string | null;
+  to: string | null;
+} {
+  if (round === null) return { rows: [], added: null, removed: null, from: null, to: null };
   const diff = bundle.diffs[String(round)];
-  if (!diff) return { rows: [], added: 0, removed: 0, from: null, to: null };
+  if (!diff) return { rows: [], added: null, removed: null, from: null, to: null };
   return {
     rows: diff.files ?? [],
     added: diff.added,

@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, expect, it } from "vitest";
 import { App } from "@/App";
 import { queryKeys } from "@/hooks/queries";
-import type { LaunchOptions, RunBundle, RunSummary, TaskPage } from "@/types";
+import type { LaunchOptions, RoundDiff, RunBundle, RunSummary, TaskPage } from "@/types";
 
 /**
  * Every screen mounts, over the real fixture data.
@@ -36,6 +36,17 @@ function render(route: string): string {
   client.setQueryData(queryKeys.runs, runs);
   client.setQueryData(queryKeys.run("ds-dgm"), dsDgm);
   client.setQueryData(queryKeys.run("ds-rrsi"), dsRrsi);
+  // The patch is its own request now (`GET /api/runs/:id/rounds/:n/diff`). The fixture
+  // bundles still carry it inline, so seed it under the diff query key the panels read.
+  for (const [id, bundle] of [
+    ["ds-dgm", dsDgm],
+    ["ds-rrsi", dsRrsi],
+  ] as const) {
+    const diffs = bundle.diffs as unknown as Record<string, RoundDiff>;
+    for (const [round, diff] of Object.entries(diffs)) {
+      client.setQueryData(queryKeys.roundDiff(id, Number(round)), diff);
+    }
+  }
   client.setQueryData(queryKeys.task("ds-dgm", 0, "cobol-modernization"), cobol);
   client.setQueryData(queryKeys.launchOptions, launchOptions);
   // Radix's Tooltip uses `useLayoutEffect`, which React warns about under `renderToString`.
@@ -113,6 +124,9 @@ describe("Compare", () => {
     expect(html).toContain("Per-task delta");
     expect(html).toContain("Record diff");
     expect(html).toContain("Candidate diffs");
+    // the patches come from the seeded `GET /api/runs/:id/rounds/:n/diff` queries, so the
+    // loaded state renders the view-mode buttons rather than the loading skeleton
+    expect(html).toContain("Both patches");
   });
 
   it("states the hidden change in words when the score is flat and tasks moved", () => {
