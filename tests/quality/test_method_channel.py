@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import ast
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -351,3 +352,90 @@ def test_the_channel_carries_every_trial_and_an_index_beside_it(tmp_path):
         index = json.loads((traces / f"t01.trial{i}.index.json").read_text())
         assert index["records"] == 1, index
     assert (traces / "t01.index.json").is_file()
+
+
+def test_every_past_round_is_staged_not_just_twelve(tmp_path):
+    """**上限关掉了。** 以前硬编码 12 轮,理由是"长跑道会让通道无限涨"。
+
+    那个理由是字节,付出去的却是信息:方法看不到长跑道**早期**的轮次 —— 而一次搜索通常
+    正是在早期决定自己要变成什么。隐藏历史没有科学理由,只有成本,而成本应该由想要长跑道
+    的人承担。`HG_METHOD_HISTORY_ROUNDS` 保留了"确实需要时设一个界"的能力。
+    """
+    from harnessgrad.channel import _stage_for_method
+    work = tmp_path / "work"
+    work.mkdir()
+    history = [{"round": i, "score": 0.1 * i, "identity": {"harness_sha": f"{i:040d}"}}
+               for i in range(20)]
+    _stage_for_method(work, {"round": 20, "score": 0.5}, {"t01": "now\n"},
+                      history=history, task_ids=["t01"], run_dir=None,
+                      tasks=[{"task_id": "t01", "goal": "g"}], setups={}, verifiers={},
+                      result={"traces": {"t01": "now\n"}, "per_task": {"t01": 0.5}})
+    states = json.loads((work / "_harnessgrad" / "states" / "index.json").read_text())
+    assert states["window"] is None, states
+    # `available` 是全部历史轮数,而不是被截到 12 —— 这一条就是"上限关掉了"。
+    # (`kept` 需要真的能 `git archive` 出每棵树,那是端到端测试覆盖的事。)
+    assert states["available"] == 20, states
+
+
+def test_the_round_summary_says_how_much_history_it_handed_over(tmp_path):
+    """记录里要说明"这一轮给了方法多少历史" —— 它以前是个没写下来的 12。"""
+    from harnessgrad import channel
+    work = tmp_path / "work"
+    work.mkdir()
+    _stage = channel._stage_for_method
+    _stage(work, {"round": 0, "score": 0.0}, {"t01": "x\n"}, history=[],
+           task_ids=["t01"], run_dir=None, tasks=[{"task_id": "t01", "goal": "g"}],
+           setups={}, verifiers={}, result={"traces": {"t01": "x\n"},
+                                            "per_task": {"t01": 0.0}})
+    summary = json.loads((work / "_harnessgrad" / "round.json").read_text())
+    assert "history_rounds" in summary, summary
+    assert summary["history_rounds"] is None, summary["history_rounds"]
+
+
+def test_the_archived_snapshot_shares_history_instead_of_duplicating_it(tmp_path):
+    """去掉上限之后,记录**不能**按轮数平方增长。
+
+    实测(5 题 × 3 次,每轮约 2.1 MB 轨迹):每轮快照都含此前所有轮的轨迹,于是 round0
+    3.9 MB、round1 6.1 MB、round2 8.2 MB,20 轮约 440 MB —— 那正是当初设 12 轮上限的理由。
+    现在每轮快照**建在上一轮快照之上**:文件先以硬链接共享,只有这一轮真正重写过的部分
+    (`traces/`、`tasks/`、`round.json`) 才重新落盘。历史因此不花字节,而快照依然完整。
+
+    前提是"每个写通道的人每轮都从头重建它"(`_stage_for_method` 会先 rmtree) —— 就地改写
+    会连带改掉旧快照指向的 inode。这条前提写在这里,因为第一个版本的测试就地改了文件,
+    正好把它抓出来。
+    """
+    import os
+    from harnessgrad.channel import _snapshot_channel
+
+    run_dir = tmp_path / "runs" / "probe"
+    run_dir.mkdir(parents=True)
+    hg = tmp_path / "channel"
+
+    def stage(round_no: int, own_trace: str) -> None:
+        # The real lifecycle: the channel is recreated from scratch every round.
+        shutil.rmtree(hg, ignore_errors=True)
+        (hg / "history" / "traces" / "round-0").mkdir(parents=True)
+        (hg / "traces").mkdir(parents=True)
+        (hg / "tasks").mkdir(parents=True)
+        (hg / "traces" / "t01.jsonl").write_text(own_trace)
+        (hg / "history" / "traces" / "round-0" / "t01.jsonl").write_text("old round\n")
+        (hg / "round.json").write_text(json.dumps({"round": round_no}))
+        _snapshot_channel(hg, run_dir, {"round": round_no})
+
+    stage(1, "first round\n")
+    stage(2, "second round\n")
+
+    hist1 = run_dir / "method_channel" / "round1" / "history" / "traces" / "round-0" / "t01.jsonl"
+    hist2 = run_dir / "method_channel" / "round2" / "history" / "traces" / "round-0" / "t01.jsonl"
+    assert hist1.read_text() == hist2.read_text() == "old round\n"
+    assert os.stat(hist1).st_ino == os.stat(hist2).st_ino, (
+        "未改动的历史又被复制了一份 —— 记录仍按轮数平方增长")
+    # 但这一轮自己的证据必须是新的内容,不能是上一轮的链接
+    assert (run_dir / "method_channel" / "round1" / "traces" / "t01.jsonl").read_text() \
+        == "first round\n"
+    assert (run_dir / "method_channel" / "round2" / "traces" / "t01.jsonl").read_text() \
+        == "second round\n"
+    assert json.loads((run_dir / "method_channel" / "round1" / "round.json").read_text()) \
+        == {"round": 1}
+    assert json.loads((run_dir / "method_channel" / "round2" / "round.json").read_text()) \
+        == {"round": 2}

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+import os
 import shutil
 import subprocess
 
@@ -367,6 +368,10 @@ def _stage_for_method(work: Path, point: dict, traces: dict,
     # "5 道题里 3 道只调用了一次模型"这句话在记录里根本不存在。
     summary = _for_method(point)
     summary["loop_summary"] = _loop_summary(traces or {})
+    # How much history this round handed over. `None` = every round; a number = a bound the
+    # operator asked for (`HG_METHOD_HISTORY_ROUNDS`). Recorded because "what could the
+    # method see" is part of what a curve means, and it used to be an undocumented 12.
+    summary["history_rounds"] = STATES_KEPT
     (hg / "round.json").write_text(json.dumps(summary, indent=1))
     # **The default skill, in the channel.** A method runs with the platform hidden, so
     # it cannot read `improvers/skill.md` -- and the method that needs this copy is
@@ -397,9 +402,10 @@ def _stage_for_method(work: Path, point: dict, traces: dict,
             _write_trace_with_index(hg / "traces", f"{tid}.trial{index}.jsonl", body)
 
     # Each past round's train traces, newest window only, same cap as `states/`.
-    for past_round in [p.get("round") for p in
-                       [x for x in (history or [])
-                        if (x.get("identity") or {}).get("harness_sha")][-STATES_KEPT:]]:
+    stamped = [x for x in (history or [])
+               if (x.get("identity") or {}).get("harness_sha")]
+    window = stamped if STATES_KEPT is None else stamped[-STATES_KEPT:]
+    for past_round in [p.get("round") for p in window]:
         src = (run_dir / f"round{past_round}_traces") if run_dir else None
         if src is None or not src.is_dir():
             continue
@@ -412,7 +418,7 @@ def _stage_for_method(work: Path, point: dict, traces: dict,
     # store, so this works on the dangling commits mode A leaves after `reset_hard`.
     points = [p for p in (history or [])
               if (p.get("identity") or {}).get("harness_sha")]
-    kept = points[-STATES_KEPT:]
+    kept = points if STATES_KEPT is None else points[-STATES_KEPT:]
     index: dict = {"kept": [], "window": STATES_KEPT, "available": len(points)}
     for past in kept:
         name = f"round-{past.get('round', 0)}"
@@ -447,15 +453,106 @@ def _stage_for_method(work: Path, point: dict, traces: dict,
     # record as `state_after_round<N>/`. Everything else is text and small (round.json,
     # the traces, the history points, and each task's page).
     if run_dir is not None and point.get("round") is not None:
-        kept = run_dir / "method_channel" / f"round{point['round']}"
-        shutil.rmtree(kept, ignore_errors=True)
-        shutil.copytree(hg, kept, ignore=shutil.ignore_patterns("states"))
+        _snapshot_channel(hg, run_dir, point)
 
-#: How many past harness states are staged into the method channel each round.
-#: A parent-selection rule needs its candidates to exist on disk; keeping every one
-#: would grow the channel without bound on a long run, so the window is explicit and
-#: `states/index.json` records both the window and how many states exist in total.
-STATES_KEPT = 12
+def _link_or_copy(src: str, dst: str, **kwargs) -> str:
+    """Hard-link when the filesystem allows it, copy when it does not."""
+    try:
+        os.link(src, dst)
+        return dst
+    except OSError:
+        return shutil.copy2(src, dst, **kwargs)
+
+
+def _snapshot_channel(hg: Path, run_dir: Path, point: dict) -> None:
+    """Keep what the method saw this round **in the record**, at linear cost.
+
+    The live channel is a scratch directory: the candidate swap deletes it, so "what did the
+    method actually see?" was unanswerable after a run -- measured, and it came up at once (a
+    reader asked why a method changed nothing, and the answer was in a directory that no
+    longer existed).
+
+    Copying the whole thing each round is **quadratic** once history is not truncated, because
+    every round's snapshot carries all earlier rounds' traces: measured at ~2.1 MB of traces
+    per round (5 tasks x 3 trials), round0 is 3.9 MB, round1 6.1 MB, round2 8.2 MB, and round
+    20 would be ~440 MB. That cost *was* the argument for the 12-round cap that hid history
+    from the method.
+
+    So each snapshot is built **from the previous snapshot**: every file starts as a hard link
+    to the round before (same bytes, ~no cost), and then the parts this round actually rewrote
+    are replaced with fresh copies -- `traces/` and `tasks/` (this round's own evidence) and
+    `round.json`. History is already there by link, so only the round that is new gets copied.
+
+    Safe because a snapshot is written once and never modified, and because every writer of
+    the live channel **recreates it from scratch** each round (`_stage_for_method` rmtrees it
+    first) -- an in-place write to a live file would mutate the inode an older snapshot points
+    at, and that snapshot would silently become a record of the newest round.
+    """
+    round_no = int(point.get("round") or 0)
+    dest = run_dir / "method_channel" / f"round{round_no}"
+    prev = run_dir / "method_channel" / f"round{round_no - 1}"
+    shutil.rmtree(dest, ignore_errors=True)
+    if prev.is_dir():
+        shutil.copytree(prev, dest, copy_function=_link_or_copy)
+    dest.mkdir(parents=True, exist_ok=True)
+
+    # **This round's own evidence**: replaced, because it is new content.
+    for name in ("traces", "tasks"):
+        shutil.rmtree(dest / name, ignore_errors=True)
+        if (hg / name).is_dir():
+            shutil.copytree(hg / name, dest / name, copy_function=_link_or_copy)
+
+    # **The past**: already linked in from the previous snapshot, so only what is *new* is
+    # copied. Overwriting what is there would break the link and pay for the history again --
+    # the first version of this did exactly that (`rmtree` the directory, then copy the live
+    # one) and the test's inode assertion caught it.
+    src_hist = hg / "history"
+    if src_hist.is_dir():
+        for path in sorted(src_hist.rglob("*")):
+            rel = path.relative_to(src_hist)
+            target = dest / "history" / rel
+            if path.is_dir():
+                target.mkdir(parents=True, exist_ok=True)
+            elif not target.exists():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                _link_or_copy(str(path), str(target))
+
+    # Top-level files: `round.json` is this round's and is overwritten; `SKILL.md` is the
+    # same bytes every round and is linked if it is not there.
+    for entry in sorted(hg.iterdir()):
+        if not entry.is_file():
+            continue
+        target = dest / entry.name
+        if entry.name == "round.json" or not target.exists():
+            target.unlink(missing_ok=True)
+            _link_or_copy(str(entry), str(target))
+
+
+#: How many past rounds are staged into the method channel each round. **All of them, by
+#: default.**
+#:
+#: This used to be a hard 12, on the argument that a long run would grow the channel without
+#: bound. That argument is about *bytes*, and it was being paid for with *information*: a
+#: method could not see the early rounds of a long run -- the rounds in which a search is
+#: usually deciding what kind of thing to become -- and a parent-selection rule with a
+#: 12-round memory is not the rule the paper describes. Hiding history has no scientific
+#: reason; it has a cost, and the cost belongs to whoever wants the long run.
+#:
+#: The cost, measured (5 tasks x 3 trials, so ~2.1 MB of traces per round): the *live*
+#: channel is linear in rounds, but each round's **archived snapshot**
+#: (`runs/<id>/method_channel/round<N>/`) contains every earlier round's traces too, so the
+#: record grew quadratically -- round0 3.9 MB, round1 6.1 MB, round2 8.2 MB, and ~440 MB by
+#: round 20. That is fixed at the snapshot instead of here: unchanged files are **hard
+#: linked**, so a round's snapshot costs only what is new in it (see `_snapshot_channel`).
+#:
+#: `HG_METHOD_HISTORY_ROUNDS=N` restores a bound for a run that needs one; `0` (the
+#: default) means every round. The value is recorded in each round's summary and in
+#: `states/index.json`, so a reader can tell what the method could see.
+HISTORY_ROUNDS = int(os.environ.get("HG_METHOD_HISTORY_ROUNDS", "0") or "0")
+#: The window as the record names it. Kept as a name because `states/index.json` and the
+#: round summary have carried a `window` field since the cap existed, and a reader of an old
+#: run needs it to mean what it meant then.
+STATES_KEPT = HISTORY_ROUNDS or None
 
 #: Caps for the per-task context staged into the method channel. The gold is usually a
 #: program and programs are small; a dataset that ships a large asset as a check input

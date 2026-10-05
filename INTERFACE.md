@@ -2310,6 +2310,28 @@ Listed so they are not mistaken for oversights:
    *flagged as the largest known threat to the validity of any curve this
    produces.*
 
+### 4.2.0 The method sees **all** the training history, and the record stays linear
+
+The channel used to stage the last **12** rounds of train traces and states, and that cap was
+the platform's, not the method's: a search that cannot see its own early rounds cannot run the
+rule it published. The cap is **off by default**. `HG_METHOD_HISTORY_ROUNDS=N` restores a
+bound for a run that needs one, and the value is recorded (`round.json`'s `history_rounds`,
+`states/index.json`'s `window`) so a reader knows what the method could see.
+
+The reason the cap existed was *cost*, and the cost was real: each round's **archived
+snapshot** (`runs/<id>/method_channel/round<N>/`) carried every earlier round's traces as a
+fresh copy, so the record grew quadratically -- measured at ~2.1 MB of traces per round
+(5 tasks x 3 trials): round0 3.9 MB, round1 6.1 MB, round2 8.2 MB, ~440 MB by round 20.
+
+That is fixed where it belongs. Each snapshot is now built **from the previous snapshot**:
+files start as hard links (same bytes, ~no cost) and only what this round actually rewrote is
+re-copied (`traces/`, `tasks/`, `round.json`); history is already there by link. Two
+preconditions, both true by construction and both written down: a snapshot is written once and
+never modified, and every writer of the live channel **recreates it from scratch** each round
+(`_stage_for_method` rmtrees it first) -- an in-place write would mutate the inode an older
+snapshot points at, and that snapshot would silently become a record of the newest round. The
+first version of the test did exactly that and caught it.
+
 ### 4.2.1 The evidence a method reads is now complete, indexed, and counted
 
 A method is shown the round's traces, the per-task pages and an aggregate summary. Three
