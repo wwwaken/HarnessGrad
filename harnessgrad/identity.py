@@ -89,8 +89,18 @@ def _skill_sha() -> str | None:
 #: chat model asked to "propose one change" does. `improver.kind` is the difference between
 #: "an RSI rule driving codex" and "an RSI rule driving a bare model", and the record has to
 #: carry it for the method to know which it is.
-IMPROVER_IDENTITY_FIELDS = ("name", "kind", "version", "sha256", "model", "requested",
-                            "modified", "path")
+#: `base_url` is here for one reason: it is the **only** field that separates an endpoint
+#: from a CLI once `resolve` has run, because an endpoint carries `path` = its base URL
+#: (`tools/improver.py:resolve`). Without it in the record, the method-side test
+#: "does this improver carry a path and no base_url?" -- the fallback `cli_improver.applies`
+#: has always documented -- could not tell them apart, and every endpoint improver was
+#: classified as a CLI. Measured (`ds-dgm`, 2026-10-05): `--improver deepseek` reached
+#: `cli_improver._improver_command`, which did `Path("https://api.deepseek.com/v1").exists()`,
+#: and the round died with "the platform named an improver at ... which does not exist inside
+#: this sandbox" -- a true statement about a URL. It is a URL, not a secret: the key is
+#: copied from `api_key_env` and never written here.
+IMPROVER_IDENTITY_FIELDS = ("name", "kind", "base_url", "version", "sha256", "model",
+                            "requested", "modified", "path")
 
 
 def _improver_identity(improver: dict | None) -> dict:

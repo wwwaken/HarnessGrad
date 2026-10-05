@@ -729,10 +729,19 @@ def test_an_endpoint_improver_is_not_dispatched_as_a_cli(tmp_path):
     """
     import editor
 
+    # **用平台真正写记录的那个函数来构造**,而不是手搓一个 dict。上一版这条测试手写了
+    # `base_url`,而平台从来不写它(`IMPROVER_IDENTITY_FIELDS` 里没有),于是一条通过的测试
+    # 掩盖了真实形状会走到 CLI 分支:`--improver deepseek` 去 `Path("https://api.deepseek.com/v1")`,
+    # 整轮以 "the platform named an improver at ... which does not exist inside this sandbox" 死掉。
+    from harnessgrad.identity import _improver_identity
+
     root = _write_harness(tmp_path / "h")
+    recorded = _improver_identity({"name": "deepseek", "kind": "openai-compatible",
+                                   "path": "https://api/v1", "base_url": "https://api/v1",
+                                   "model": "deepseek-flash"})
+    assert recorded.get("base_url") == "https://api/v1", "base_url 没进记录,端点和 CLI 就分不开"
     (root / "_harnessgrad" / "round.json").write_text(json.dumps(
-        {"identity": {"improver": {"name": "deepseek", "path": "https://api/v1",
-                                   "base_url": "https://api/v1"}}}))
+        {"identity": {"improver": recorded}}))
     assert editor.cli_improver_identity(root) is None
 
 

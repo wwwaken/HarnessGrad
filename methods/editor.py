@@ -976,6 +976,12 @@ def cli_improver_identity(base: Path | None) -> dict | None:
     improver = (summary.get("identity") or {}).get("improver") or {}
     if improver.get("kind") == "cli":
         return improver
+    # The fallback for a record written before `kind` was recorded: a CLI carries a `path`
+    # and **no `base_url`**, while an endpoint carries both, with `path` set to the URL
+    # itself (`tools/improver.py:resolve`). This only works because `base_url` is now one of
+    # the fields the platform copies onto the record -- without it, `path` alone made every
+    # endpoint look like a command, and `--improver deepseek` died in the sandbox trying to
+    # `Path()` a URL. Measured: `ds-dgm` round 1.
     if improver.get("path") and not improver.get("base_url"):
         return improver
     return None
