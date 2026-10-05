@@ -351,6 +351,7 @@ def test_the_rules_prompt_carries_the_per_task_facts(tmp_path):
     hg = root / "_harnessgrad"
     hg.mkdir(parents=True)
     (hg / "round.json").write_text(json.dumps({
+        "per_task": {"large-scale-text-editing": 0.0, "gcode-to-text": 1.0},
         "loop_summary": {"per_task": {
             "large-scale-text-editing": {
                 "model_calls": 32, "commands": 32, "answers": 0,
@@ -367,6 +368,12 @@ def test_the_rules_prompt_carries_the_per_task_facts(tmp_path):
     assert "large-scale-text-editing" in block and "budget_exhausted" in block
     assert "repeats" in block and "nudges" in block
     assert "23" in block and "32" in block
+    # **结果列必须在。** 实测(`v5-dgm`):表里只有过程列时,codex 读到"5/10 道题
+    # budget_exhausted",就把收尾提醒从 4 步提前到 8 步,把两道**本来通过**的题打坏
+    # (0.200 -> 0.000)。`ended` 不是目标:round 0 里 `budget_exhausted` 和 `crashed`
+    # 那两道题**都是 1.0**,因为分数看的是 artifact。
+    assert "1.00" in block and "0.00" in block, "没有结果列,方法只能去优化过程指标"
+    assert "score is the platform's verdict on the artifact" in block, "缺那句警告"
     # 没有摘要时返回空串,调用方可以直接拼
     (hg / "round.json").write_text("{}")
     assert editor.loop_facts_block(root) == ""

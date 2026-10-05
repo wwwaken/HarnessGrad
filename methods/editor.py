@@ -618,18 +618,35 @@ def loop_facts_block(base: Path) -> str:
     per_task = ((point.get("loop_summary") or {}).get("per_task") or {})
     if not per_task:
         return ""
+    # **The outcome, beside the process.** Without this column the table is a list of ways a
+    # run *ended*, and `ended` is not the objective: measured (`v5-dgm`, 2026-10-05) round 0
+    # had `cobol-modernization` ending `budget_exhausted` with 3/3 checks passed and
+    # `fix-git` ending `crashed` with 2/2 -- both scored 1.0, because the platform scores
+    # the artifact, not the exit. The improver was handed the process columns alone, saw
+    # "5 of 10 ended budget_exhausted", doubled the wrap-up warning (`FINISH_NUDGE_STEPS`
+    # 4 -> 8) to make runs end `answered` instead, and took the score from 0.200 to
+    # **0.000**: the two passing tasks were the ones that needed the whole budget to finish
+    # their work. A facts table a method can optimize against has to carry the number the
+    # method is paid in.
+    scores = protocol.studied_per_task(point)
     head = ("## What the harness did, counted from its own traces\n"
-            "task                          calls cmds ans  ended             repeats nudges "
-            "empty  clip  perr\n"
+            "task                          score calls cmds ans  ended             repeats "
+            "nudges empty  clip  perr\n"
+            "  **score is the platform's verdict on the artifact; `ended` is only how the run\n"
+            "  stopped. A run that ended `budget_exhausted` or `crashed` can still score 1.0 --\n"
+            "  do not trade a passing task's budget for a tidier ending.**\n"
             "  calls=model calls, cmds=commands executed, ans=replies with a final answer,\n"
             "  repeats=commands re-issued that this run had already run, nudges=the harness's\n"
             "  own repeat warnings, empty=commands that executed nothing (a repaired reply),\n"
             "  clip=outputs shortened before the model saw them, perr=unparseable replies\n")
     rows = []
     for tid, f in sorted(per_task.items()):
+        score = scores.get(tid)
         # `ended` is not truncated: `budget_exhausted` is the value that matters most and
         # it is exactly the one a 12-character column turns into `budget_exhau`.
-        rows.append(f"  {tid[:28]:28s} {f.get('model_calls', 0):5d} "
+        rows.append(f"  {tid[:28]:28s} "
+                    f"{('  n/a' if score is None else f'{float(score):5.2f}')} "
+                    f"{f.get('model_calls', 0):5d} "
                     f"{f.get('commands', 0):4d} {f.get('answers', 0):3d}  "
                     f"{str(f.get('ended') or '?')[:16]:16s} "
                     f"{f.get('repeated_commands', 0):7d} {f.get('repeat_nudges', 0):6d} "
