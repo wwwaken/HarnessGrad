@@ -680,6 +680,12 @@ def main() -> int:
         agent_backend=model["backend"],
         framework_version=FRAMEWORK_VERSION,
         method_entrypoint=args.method_entrypoint,
+        # **The improver the run resolved, not the one a reader assumes from the
+        # method's name.** A curve point already carries it, and this is the run-level
+        # twin: without it, answering "which improver did this run use?" meant opening a
+        # curve point -- and when the field was absent entirely, the answer was
+        # `improver: null` for a run that had used one.
+        improver=improver or None,
         # A run-level fact about the *improver's* endpoint, probed once and recorded
         # beside the improver's identity. `None` is "not probed" (a hosted provider),
         # never "false" -- the distinction the whole platform keeps making.

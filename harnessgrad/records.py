@@ -351,6 +351,56 @@ def _require_untampered(res: dict | None) -> None:
               f"  re-run. `git status --short` shows what moved.")
     raise PlatformTampered(changes)
 
+_PLATFORM_RECORD: dict | None = None
+
+
+def _platform_record() -> dict:
+    """Which code decided what this run's numbers mean.
+
+    **Stamped by the writer, not passed by the caller.** There are two call sites for
+    `_write_run_meta` and both would have to remember; a run record that omits this is
+    indistinguishable from one produced by different code, which is exactly the state
+    measured on 2026-10-05: 82 run directories, none naming its platform, and one run
+    invalidated mid-flight by an edit to `eval/` that no reader could detect.
+
+    `content_sha` is over the platform's own files (`eval/integrity.snapshot`), so an
+    uncommitted edit changes it -- `git rev-parse HEAD` would not have caught the run that
+    was actually invalidated. `git_sha` is recorded beside it because a human reading a
+    directory wants the revision they can check out.
+
+    **Computed once per process, and that is a correctness property.** This runs when the
+    run starts and again when it ends. Without the cache, a platform file edited during the
+    run would be recorded at its *new* hash by the second write -- the record would then
+    attest to code the run never executed, which is the one thing this field exists to
+    prevent. The cache makes both writes report the tree the process loaded. Tampering is
+    still detected independently and at the end (`_require_untampered`); this field is what
+    a reader months later compares against.
+    """
+    global _PLATFORM_RECORD
+    if _PLATFORM_RECORD is not None:
+        return _PLATFORM_RECORD
+    from eval.integrity import PLATFORM_ROOT, content_sha
+    record: dict = {"content_sha": content_sha(PLATFORM_ROOT)}
+    try:
+        import subprocess
+        git_sha = subprocess.run(["git", "-C", str(PLATFORM_ROOT), "rev-parse", "HEAD"],
+                                 capture_output=True, text=True, timeout=10).stdout.strip()
+    except Exception:                                                 # noqa: BLE001
+        git_sha = ""
+    if git_sha:
+        record["git_sha"] = git_sha
+    try:
+        dirty = subprocess.run(["git", "-C", str(PLATFORM_ROOT), "status", "--porcelain"],
+                               capture_output=True, text=True, timeout=10).stdout.strip()
+    except Exception:                                                 # noqa: BLE001
+        dirty = ""
+    # A fact a reader needs: the content hash covers uncommitted edits, but knowing
+    # whether there *were* any is how someone reproduces the exact tree.
+    record["dirty"] = bool(dirty)
+    _PLATFORM_RECORD = record
+    return record
+
+
 def _write_run_meta(run_dir: Path, fresh: bool = False, **fields) -> None:
     """Record what the run was, for readers that only have the run directory.
 
@@ -375,6 +425,10 @@ def _write_run_meta(run_dir: Path, fresh: bool = False, **fields) -> None:
     caller says "I have nothing to say about this", and the workspace path recorded
     before round 0 must survive a later call that does not repeat it.
     """
+    # **Which platform produced these numbers, on every write.** Not a parameter: see
+    # `_platform_record`. A caller that passes its own value overrides this, which is
+    # what a test with a synthetic platform wants.
+    fields.setdefault("platform", _platform_record())
     path = run_dir / "run_meta.json"
     existing = {}
     if path.exists() and not fresh:

@@ -653,6 +653,7 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
            if declared_shape.get("acceptance_rule") else {}),
         **({"selection_pool_size": declared_shape["selection_pool_size"]}
            if "selection_pool_size" in declared_shape else {}),
+        improver=improver or None,
         failed_steps=failed_steps,
         rounds_measured=len([p for p in curve if p.get("measured_by_platform")]),
         # A submission larger than the remaining budget is truncated, and that is a fact a

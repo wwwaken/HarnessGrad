@@ -131,6 +131,31 @@ def diff(before: dict[str, str], after: dict[str, str]) -> dict[str, list[str]]:
     }
 
 
+def content_sha(root: Path) -> str:
+    """One digest for the whole platform: what decided what this run's numbers mean.
+
+    **A run's numbers are only comparable with another run's if the two ran the same
+    platform, and until now nothing on disk said which platform that was.** Measured
+    2026-10-05: 82 run directories, and not one recorded the content of the code that
+    produced it -- so a reader could not tell a curve measured before a fix from one
+    measured after, and an experiment invalidated mid-flight (a platform file edited while
+    the driver ran) was indistinguishable from a valid one. `git rev-parse HEAD` is not
+    enough: it says nothing about an uncommitted edit, which is exactly the case that
+    produced the invalid run.
+
+    Domain-separated by field so a rename cannot collide with a content change: the same
+    property `ckpt.git_state.content_sha` gives a harness, applied to the referee.
+    """
+    snap = snapshot(root)
+    h = hashlib.sha256()
+    for name in sorted(snap):
+        h.update(name.encode("utf-8"))
+        h.update(b"\0")
+        h.update(snap[name].encode("ascii"))
+        h.update(b"\0")
+    return h.hexdigest()
+
+
 def workspace_is_outside_platform(workspace: Path, root: Path) -> bool:
     """A workspace nested in the platform is reachable from the harness by `..`.
 
