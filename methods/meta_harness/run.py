@@ -82,6 +82,7 @@ this file does not do it.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -343,6 +344,20 @@ def build_prompt(edit_base: Path, channel_base: Path, req: dict, frontier: dict,
 # ------------------------------------------------------------------ main ---
 
 def main() -> int:
+    """**A B-shaped submission: one call, `k` proposals from the frontier's base.**
+
+    Meta-Harness' rule is a *frontier* over proposals -- **per task** the best candidate and
+    its pass rate, plus an overall best -- and its proposer reads every historical
+    candidate's sources, scores and traces. Our port was one-candidate-per-round to fit mode
+    A, so a "frontier" had exactly one member per round and the rule degenerated into
+    hill-climbing on the incumbent.
+
+    One call now proposes `HG_META_HARNESS_CANDIDATES` candidates (default 3) from the same
+    edit base -- the overall best staged state, chosen by `base_round`. The diversity inside
+    the batch comes from the model's own sampling rather than from a different parent, which
+    is what the frontier arm of the paper does: several proposals from the frontier, then the
+    frontier is recomputed from what they scored.
+    """
     req = editor.read_request()
     editor.require_api(req)
 
@@ -350,63 +365,99 @@ def main() -> int:
     history = editor.load_history(incumbent)
     frontier = frontier_of(history)
 
-    # The **edit base** may be a different staged state than the incumbent (see
-    # `base_round`); the **channel** -- history, traces, task pages, SKILL.md -- is always the
-    # incumbent's, because a staged state is a harness commit with no `_harnessgrad/` in it.
+    # The **edit base** may be a different staged state than the incumbent (see `base_round`);
+    # the **channel** -- history, traces, task pages, SKILL.md -- is always the incumbent's,
+    # because a staged state is a harness commit with no `_harnessgrad/` in it.
     edit_base, base_why = base_round(frontier, history, incumbent)
     per_task = protocol.studied_per_task(history[-1]) if history else {}
     reason = validity_gate(history, per_task)
 
-    def report(**kw):
+    def carried(children: int, parent_rounds: list) -> dict:
+        return {"meta_harness_frontier": frontier, "meta_harness_base": base_why,
+                "meta_harness_children": children,
+                "meta_harness_parent": parent_rounds[0] if parent_rounds else None,
+                "meta_harness_parents": parent_rounds}
+
+    if reason is not None:
         return editor.report(
-            req, method="meta_harness", harness_dir=kw.pop("harness_dir", incumbent),
-            method_reported={"meta_harness_frontier": frontier,
-                             "meta_harness_base": base_why, **kw.pop("reported", {})},
+            req, method="meta_harness", harness_dir=incumbent, changed=False, stop=False,
+            edit_kind="none", hypothesis=reason,
+            method_reported={**carried(0, []), "declined": reason},
             acceptance_rule=_ACCEPTANCE_RULE,
             extra={"selection_rule": "per-task frontier; base = overall best staged state",
                    "frontier_best": frontier["_best"]},
-            **kw)
+            label=f"the gate declined to spend this round: {reason[:60]}")
 
-    if reason is not None:
-        return report(changed=False, stop=False, edit_kind="none",
-                      hypothesis=reason,
-                      reported={"declined": reason},
-                      label=f"the gate declined to spend this round: {reason[:60]}")
+    candidates = max(1, int(os.environ.get("HG_META_HARNESS_CANDIDATES", "3")))
+    remaining = int(req.get("epochs_remaining") or req.get("epochs_total") or candidates)
+    candidates = max(1, min(candidates, remaining))
+    parent_round = (frontier.get("_best") or {}).get("round")
+    if parent_round is None:
+        parent_round = (history[-1] or {}).get("round") if history else None
 
-    dest = editor.candidate_path(req)
-    try:
-        reply, dest, apply_problems = editor.propose_and_apply(
-            edit_base, req, META_HARNESS_SYSTEM,
-            lambda problems: build_prompt(edit_base, incumbent, req, frontier, base_why)
-                             + editor.repair_block(problems, expect=editor.EDIT_EXPECT))
+    steps: list[dict] = []
+    errors: list[BaseException] = []
+    reported_tail: dict = {}
+    for child in range(candidates):
+        dest = editor.candidate_path(req, f"child{child + 1}")
+        try:
+            reply, dest, apply_problems = editor.propose_and_apply(
+                edit_base, req, META_HARNESS_SYSTEM,
+                lambda problems: build_prompt(edit_base, incumbent, req, frontier, base_why)
+                                 + editor.repair_block(problems, expect=editor.EDIT_EXPECT))
+        except SystemExit:
+            raise
+        except Exception as exc:                                       # noqa: BLE001
+            errors.append(exc)
+            continue
         if apply_problems:
-            return report(harness_dir=dest, changed=False, stop=False, edit_kind="none",
-                          hypothesis=f"the edit sequence did not apply: {apply_problems}",
-                          reported={"rejected": apply_problems})
-    except SystemExit:
-        raise
-    except Exception as exc:                                   # noqa: BLE001
-        return editor.fail(req, method="meta_harness", exc=exc, base=incumbent,
-                           state={"meta_harness_frontier": frontier,
-                                  "meta_harness_base": base_why})
+            reported_tail = {"rejected": apply_problems}
+            continue
+        if isinstance(reply, dict) and "no_change" in reply:
+            editor.apply_edits(edit_base, dest, [])
+            reported_tail = {"declined": str(reply["no_change"])[:200]}
+            continue
+        changed, files, note = editor.apply_edits(edit_base, dest, reply.get("files"))
+        if not changed:
+            reported_tail = {"rejected": note}
+            continue
+        hypothesis = editor.hypothesis_of(reply)[:200]
+        steps.append({
+            "harness_dir": dest, "changed": True, "files": files,
+            "edit_kind": "meta_harness_rule", "hypothesis": hypothesis,
+            "label": f"[Meta-Harness child {child + 1}] {hypothesis[:50]}",
+            "method_reported": {**carried(candidates, [parent_round]),
+                                "child": child + 1},
+        })
 
-    if isinstance(reply, dict) and "no_change" in reply:
-        editor.apply_edits(edit_base, dest, [])
-        return report(harness_dir=dest, changed=False, stop=False, edit_kind="none",
-                      hypothesis=str(reply["no_change"])[:200],
-                      label="model: no change")
+    if not steps:
+        if errors:
+            return editor.fail(req, method="meta_harness", exc=errors[0], base=incumbent,
+                               state=carried(candidates, [parent_round]))
+        # The model's own sentence beats my summary of it: `no_change` is a diagnosis a
+        # reader can act on, and "N proposals came back empty" is not. (Measured by a test
+        # that looked for `nothing left to fix` and got the summary instead.)
+        hypothesis = (str(reported_tail.get("declined") or reported_tail.get("rejected") or "")
+                      or f"{candidates} proposal(s) came back with nothing usable this call")
+        return editor.report(
+            req, method="meta_harness", harness_dir=incumbent, changed=False, stop=False,
+            edit_kind="none",
+            hypothesis=hypothesis[:200],
+            method_reported={**carried(candidates, [parent_round]), **reported_tail},
+            acceptance_rule=_ACCEPTANCE_RULE,
+            extra={"selection_rule": "per-task frontier; base = overall best staged state",
+                   "frontier_best": frontier["_best"]},
+            label="Meta-Harness: no candidate produced")
 
-    changed, files, note = editor.apply_edits(edit_base, dest, reply.get("files"))
-    if not changed:
-        return report(harness_dir=dest, changed=False, stop=False, edit_kind="none",
-                      hypothesis=f"unusable proposal: {note}",
-                      reported={"rejected": note},
-                      label="unusable proposal")
-
-    hypothesis = editor.hypothesis_of(reply)[:200]
-    return report(harness_dir=dest, changed=True, files=files, hypothesis=hypothesis,
-                  edit_kind="meta_harness_rule",
-                  label=f"{', '.join(files)}: {hypothesis[:60]}")
+    return editor.report_many(
+        req, method="meta_harness", steps=steps,
+        acceptance_rule=_ACCEPTANCE_RULE,
+        stop=True,
+        note=f"Meta-Harness: {len(steps)} candidate(s) submitted in one call",
+        extra={"selection_rule": "per-task frontier; base = overall best staged state",
+               "frontier_best": frontier["_best"],
+               "children_this_call": len(steps)},
+    )
 
 
 if __name__ == "__main__":

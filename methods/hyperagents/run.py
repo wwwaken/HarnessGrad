@@ -271,59 +271,110 @@ def build_prompt(base: Path, req: dict, parent: dict, report: dict) -> str:
 
 
 def main() -> int:
+    """**A B-shaped submission: one call, `k` children from sampled parents.**
+
+    HyperAgents' rule is a population rule -- parent weights are a sigmoid centred on the
+    top-three mean, times `exp(-(children/8)^3)`, and both terms are *about siblings*. Our
+    port was one-candidate-per-round to fit mode A, so the population never existed and the
+    child-count term was dead code (`hyperagents/run.py` says as much in its own notes about
+    `select_next_parent` being the branch that actually used the statistics). One call now
+    draws `HG_HYPERAGENTS_CHILDREN` parents (default 3, from the same weight function) and
+    submits one child per parent; every child is measured, and the platform's budget caps how
+    many states the run pays for.
+    """
     req = editor.read_request()
     editor.require_api(req)
     base = Path(req["base_harness"])
     history = editor.load_history(base)
     round_index = int(req.get("round_index", 1))
+    children = max(1, int(os.environ.get("HG_HYPERAGENTS_CHILDREN", "3")))
+    remaining = int(req.get("epochs_remaining") or req.get("epochs_total") or children)
+    children = max(1, min(children, remaining))
 
-    parent, report = select_parent(history, round_index)
-    parent_dir = _state_dir(base, parent.get("round"))
-    if not parent_dir or not Path(parent_dir).is_dir():
+    steps: list[dict] = []
+    reports: list[dict] = []
+    errors: list[BaseException] = []
+    for child in range(children):
+        parent, report = select_parent(history, round_index + child)
+        report["child"] = child + 1
+        report["children_this_call"] = children
+        report["parent_round"] = parent.get("round")
+        parent_dir = _state_dir(base, parent.get("round"))
+        if not parent_dir or not Path(parent_dir).is_dir():
+            reports.append({**report, "why": "the selected state is not staged"})
+            continue
+
+        dest = editor.candidate_path(req, f"child{child + 1}")
+        try:
+            reply = editor.ask(build_prompt(Path(parent_dir), req, parent, report),
+                               system=HYPER_SYSTEM, base=base)
+        except SystemExit:
+            raise
+        except Exception as exc:                                       # noqa: BLE001
+            errors.append(exc)
+            reports.append({**report, "why": f"{type(exc).__name__}: {exc}"[:160]})
+            continue
+
+        edits = [] if "no_change" in reply else reply.get("files")
+        changed, files, note = editor.apply_edits(Path(parent_dir), dest, edits)
+        if "no_change" in reply:
+            hypothesis = str(reply["no_change"])[:200]
+        elif not changed:
+            hypothesis = f"unusable proposal: {note}"
+        else:
+            hypothesis = str(reply.get("hypothesis", ""))[:200]
+        # The pre-registration goes into the record whether or not the edit landed, so the
+        # next round can grade the prediction against what actually flipped.
+        if isinstance(reply.get("predicted_affected"), list):
+            report["predicted_affected"] = reply["predicted_affected"]
+        reports.append({**report, "changed": bool(changed), "why": hypothesis})
+        steps.append({
+            "harness_dir": dest, "changed": changed, "files": files,
+            "label": ((f"[HyperAgents parent r{parent.get('round')}] " + hypothesis[:50])
+                      if changed else
+                      f"HyperAgents: no edit (parent r{parent.get('round')})"),
+            "edit_kind": "hyperagents_rule", "hypothesis": hypothesis,
+            "method_reported": {"hyperagents": report,
+                                "hyper_parent": parent.get("round"),
+                                "hyper_parents": [r.get("parent_round") for r in reports],
+                                "child": child + 1},
+        })
+
+    measured = [step for step in steps if step.get("changed")]
+    parents = [r.get("parent_round") for r in reports]
+    carried = {"hyperagents": reports,
+               "hyper_parent": parents[0] if parents else None,
+               "hyper_parents": parents,
+               "children_this_call": children}
+    if not measured:
+        # A total outage is `fail` (the call did not run); a draw where the model declined
+        # is a report with `stop: false`, because one unlucky sample of parents is not a
+        # reason to give up the rest of the budget -- the population draws again.
+        if errors:
+            return editor.fail(req, method="hyperagents", exc=errors[0], base=base,
+                               state=carried)
+        reasons = []
+        for report in reports:
+            why = str(report.get("why") or "")
+            if why and why not in reasons:
+                reasons.append(why)
         return editor.report(
             req, method="hyperagents", harness_dir=base, changed=False,
-            hypothesis=f"the archive chose round {parent.get('round')} but its state "
-                       f"is not staged", edit_kind="hyperagents_rule",
-            method_reported={"hyperagents": report, "hyper_parent": parent.get("round")},
-            acceptance_rule=report.get("rule", "n/a"),
-            label="HyperAgents: selected state unavailable")
+            hypothesis=(f"{len(steps)} child(ren) drew no usable edit this call: "
+                        + " | ".join(reasons))[:200],
+            edit_kind="hyperagents_rule", method_reported=carried,
+            acceptance_rule=("HyperAgents' validity gate never looks at score; the "
+                             "platform's measurement decides the score"),
+            stop=False, label="HyperAgents: no child produced")
 
-    dest = editor.candidate_path(req)
-    try:
-        reply = editor.ask(build_prompt(Path(parent_dir), req, parent, report),
-                           system=HYPER_SYSTEM, base=base)
-    except SystemExit:
-        raise
-    except Exception as exc:                                   # noqa: BLE001
-        return editor.fail(req, method="hyperagents", exc=exc, base=base,
-                           state={"hyperagents": report,
-                                  "hyper_parent": parent.get("round")})
-
-    edits = [] if "no_change" in reply else reply.get("files")
-    changed, files, note = editor.apply_edits(Path(parent_dir), dest, edits)
-    if "no_change" in reply:
-        hypothesis = str(reply["no_change"])[:200]
-    elif not changed:
-        hypothesis = f"unusable proposal: {note}"
-    else:
-        hypothesis = str(reply.get("hypothesis", ""))[:200]
-
-    # The pre-registration goes into the record whether or not the edit landed, so
-    # the next round can grade the prediction against what actually flipped.
-    if isinstance(reply.get("predicted_affected"), list):
-        report["predicted_affected"] = reply["predicted_affected"]
-
-    return editor.report(
-        req, method="hyperagents", harness_dir=dest, changed=changed, files=files,
-             # 没有停止规则:由平台的 --rounds 封顶,不是由编辑器的不作为。
-             stop=False,
-        hypothesis=hypothesis, edit_kind="hyperagents_rule",
-        method_reported={"hyperagents": report,
-                         "hyper_parent": parent.get("round")},
+    return editor.report_many(
+        req, method="hyperagents", steps=measured,
         acceptance_rule=("HyperAgents' validity gate never looks at score; the "
                          "platform's measurement decides the score"),
-        label=(f"[HyperAgents parent r{parent.get('round')}] " + hypothesis[:50])
-              if changed else f"HyperAgents: no edit (parent r{parent.get('round')})")
+        stop=True,
+        note=f"HyperAgents: {len(measured)} child(ren) submitted in one call",
+        extra={"children_this_call": len(measured)},
+    )
 
 
 if __name__ == "__main__":

@@ -1053,8 +1053,28 @@ def report_many(req: dict, *, method: str, steps: list[dict],
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(trajectory, indent=1))
 
+    if not hypothesis:
+        # **The children's own words.** A batch has `k` hypotheses and the reply has one
+        # field, so the honest value is what they said -- deduplicated, because a batch that
+        # keeps proposing the same thing is saying one thing. A caller may still pass its own
+        # summary, but a summary of what the model said is worse than what it said: measured
+        # by a test that wanted `make it print more` and got "N candidates from the frontier
+        # base".
+        seen: list[str] = []
+        for entry in steps:
+            said = str(entry.get("hypothesis") or "").strip()
+            if said and said not in seen:
+                seen.append(said)
+        hypothesis = " | ".join(seen)[:400]
     changed_any = any(bool(e.get("changed", True)) for e in steps)
-    files = [f for e in steps for f in (e.get("files") or [])]
+    # Deduplicated, because it is a *set of paths that changed*: three children that each
+    # edited `agent.py` changed one file, and `["agent.py", "agent.py", "agent.py"]` reads
+    # as three. Order preserved so the caller can still report "the first one it touched".
+    files: list[str] = []
+    for entry in steps:
+        for name in (entry.get("files") or []):
+            if name not in files:
+                files.append(name)
     response = {"modified": changed_any, "changed": changed_any,
                 "files": files, "hypothesis": hypothesis, "steps": len(payloads),
                 "generation_tokens": tokens, "method_usage": spent_now,

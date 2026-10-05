@@ -386,7 +386,6 @@ def main() -> int:
         # calls it again only if the budget has room and this says otherwise. (The
         # nothing-usable case returned above with `stop: false`.)
         stop=True,
-        hypothesis=f"DGM: {len(steps)} children from sampled parents",
         note=f"DGM: {len(steps)} child(ren) submitted in one call",
         extra={"children_this_call": len(steps)},
     )
