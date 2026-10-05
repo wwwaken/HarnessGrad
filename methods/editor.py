@@ -754,6 +754,16 @@ def cli_improver_identity(base: Path | None) -> dict | None:
     Read from the staged `round.json`, which is the same resolution the curve point names --
     so a method cannot drive a different improver than the record says. `HG_IMPROVER` is the
     operator's override and wins, because "run *this* tool" is a deliberate act.
+
+    **Two shapes of evidence, because one of them was missing.** This asked only for
+    `kind == "cli"`, and `kind` was not among the fields the platform copied into
+    `round.json` (`harnessgrad/identity.py:IMPROVER_IDENTITY_FIELDS`), so the answer was
+    always `None` and every method silently used the chat endpoint instead of the CLI it had
+    resolved. The rule `cli_improver.applies` states, and has always stated, is the one that
+    survives a record written by an older platform: a CLI carries a `path` and no `base_url`,
+    while an endpoint resolution sets **both** to its base URL
+    (`tools/improver.py:resolve`). Reading either keeps the dispatch and the record in
+    agreement, and `kind` is checked first because it is the field that means it.
     """
     if os.environ.get("HG_IMPROVER"):
         return {"name": os.environ["HG_IMPROVER"], "kind": "cli", "path": ""}
@@ -764,7 +774,11 @@ def cli_improver_identity(base: Path | None) -> dict | None:
     except (OSError, ValueError):
         return None
     improver = (summary.get("identity") or {}).get("improver") or {}
-    return improver if improver.get("kind") == "cli" else None
+    if improver.get("kind") == "cli":
+        return improver
+    if improver.get("path") and not improver.get("base_url"):
+        return improver
+    return None
 
 
 def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:

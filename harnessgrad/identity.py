@@ -77,8 +77,20 @@ def _skill_sha() -> str | None:
 #: The fields of a resolved improver that belong on a curve point. `ok` and `reason` are
 #: bookkeeping for the process that resolved it and are dropped: a record should carry what
 #: was used, not the outcome of looking for it.
-IMPROVER_IDENTITY_FIELDS = ("name", "version", "sha256", "model", "requested", "modified",
-                            "path")
+#:
+#: **`kind` was missing, and its absence quietly disabled the whole CLI layer.** The method
+#: decides whether to drive a CLI improver or call an endpoint by reading the improver block
+#: out of the staged `round.json` (`methods/editor.py:cli_improver_identity`), and it asked
+#: for `kind == "cli"`. `resolve` sets `kind` -- the gate reads it -- but this filter dropped
+#: it, so the staged block never had one, the answer was always "not a CLI", and every method
+#: fell back to the raw chat endpoint. Measured (`v2-dgm`, 2026-10-05): the method process sat
+#: in `do_poll` on a socket to the model endpoint while `codex` was resolved, probed for tool
+#: calls, and never spawned; the run's candidate was a 9B whole-file rewrite, which is what a
+#: chat model asked to "propose one change" does. `improver.kind` is the difference between
+#: "an RSI rule driving codex" and "an RSI rule driving a bare model", and the record has to
+#: carry it for the method to know which it is.
+IMPROVER_IDENTITY_FIELDS = ("name", "kind", "version", "sha256", "model", "requested",
+                            "modified", "path")
 
 
 def _improver_identity(improver: dict | None) -> dict:

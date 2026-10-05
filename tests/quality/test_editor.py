@@ -674,3 +674,46 @@ def test_a_method_that_made_no_call_reports_a_real_zero(tmp_path, monkeypatch):
                   changed=False, hypothesis="no change", tokens=0)
     assert emitted[-1]["generation_tokens"] == 0
     assert emitted[-1]["method_usage"]["calls"] == 0
+
+
+def test_the_staged_improver_says_whether_it_is_a_cli():
+    """`identity.improver.kind` 必须出现在 `round.json` 里。
+
+    实测(`v2-dgm`,2026-10-05):`kind` 不在 `IMPROVER_IDENTITY_FIELDS` 里,于是方法从
+    `round.json` 读到的 improver 块永远没有这个键,`cli_improver_identity` 永远回答"不是
+    CLI",每个方法都退回到 chat endpoint —— codex 被解析了、被探测了、**从未被启动**。记录
+    里少一个字段,挡掉的是整个 CLI 层,而曲线上只看得出"这个方法改得很粗糙"。
+    """
+    from harnessgrad.identity import _improver_identity
+
+    got = _improver_identity({"name": "codex", "kind": "cli", "path": "/x/codex.js",
+                              "ok": True, "reason": ""})
+    assert got["kind"] == "cli", "kind 没进记录,方法就分不出 CLI 和 endpoint"
+    assert "ok" not in got and "reason" not in got, "bookkeeping 不该进记录"
+
+
+def test_a_cli_improver_is_dispatched_from_the_staged_record(tmp_path):
+    """按记录里的形状判断 CLI:有 `path`、没有 `base_url`。
+
+    这条是**旧记录**的兼容:已经写完的 `round.json` 不会有 `kind`。
+    """
+    import editor
+
+    root = _write_harness(tmp_path / "h")
+    (root / "_harnessgrad" / "round.json").write_text(json.dumps(
+        {"identity": {"improver": {"name": "codex", "path": "/x/codex.js"}}}))
+    assert editor.cli_improver_identity(root) is not None, "旧记录(没有 kind)也要认出来"
+
+
+def test_an_endpoint_improver_is_not_dispatched_as_a_cli(tmp_path):
+    """endpoint 的解析里 `path` 和 `base_url` **都有**(`tools/improver.py:resolve`)。
+
+    把它当 CLI 的后果不是"没效果",是拿一个 URL 去 exec。
+    """
+    import editor
+
+    root = _write_harness(tmp_path / "h")
+    (root / "_harnessgrad" / "round.json").write_text(json.dumps(
+        {"identity": {"improver": {"name": "deepseek", "path": "https://api/v1",
+                                   "base_url": "https://api/v1"}}}))
+    assert editor.cli_improver_identity(root) is None
