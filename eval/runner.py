@@ -378,7 +378,7 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
         if is_exec:
             # An allowlist, and container-side HOME/XDG/TMPDIR: forwarding the host
             # values would name directories that do not exist inside the image.
-            child_env = container_mod.container_env(task_mount)
+            child_env = container_mod.container_env(task_mount, deadline_s=timeout_s)
         else:
             child_env = harness_env()
             child_env.update({
@@ -632,7 +632,7 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                 argv = [image_python or sys.executable, str(repo / entry), "--task",
                         f"{task_mount}/task.json", "--workdir", task_mount]
 
-                child_env = container_mod.container_env(task_mount)
+                child_env = container_mod.container_env(task_mount, deadline_s=timeout_s)
                 child_env["HARNESSGRAD_STATE"] = str(state_dir)
                 # Prepended, not replacing: a harness that sets its own `PYTHONPATH` is not
                 # the platform's to overwrite.

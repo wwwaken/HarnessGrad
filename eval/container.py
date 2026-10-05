@@ -317,13 +317,22 @@ def env_home(task_mount: str) -> str:
     return f"{task_mount.rstrip('/')}/.harnessgrad-home"
 
 
-def container_env(task_mount: str) -> dict[str, str]:
+def container_env(task_mount: str, deadline_s: int | None = None) -> dict[str, str]:
     """Everything a harness sees in its environment inside the container.
 
     Built from an allowlist rather than forwarded, and with `PATH` deliberately absent:
     the container has its own, the host's names directories that do not exist inside,
     and forwarding it would let a harness pick up a host binary if the two ever
     overlapped.
+
+    **`HG_AGENT_DEADLINE_S` is the environment's own `agent_timeout_s`.** It is not a
+    hint: the platform kills the container at that second, and until this existed a
+    harness that spawns a subprocess had no way to know the number it was being measured
+    against. Measured (`codex-task-dgm`, 2026-10-05): an adapter that gave its own child a
+    900 s timeout raced the platform's 900 s kill -- the container died first and the
+    curve recorded `exit code -1 -- timeout after 900s`, a killed container instead of a
+    harness that decided to stop. The budget a harness is subject to is a fact about the
+    measurement, so it is stated where the harness can read it (INTERFACE.md §3.3).
     """
     env = {k: v for k, v in os.environ.items()
            if k.startswith(PASS_THROUGH_PREFIXES) or k in PASS_THROUGH_EXACT}
@@ -337,6 +346,8 @@ def container_env(task_mount: str) -> dict[str, str]:
         # where a check would then be reading them.
         "TMPDIR": f"{home}/tmp",
     })
+    if deadline_s:
+        env["HG_AGENT_DEADLINE_S"] = str(int(deadline_s))
     return env
 
 
