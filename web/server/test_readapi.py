@@ -19,7 +19,18 @@ import readapi  # noqa: E402
 
 
 def _runs_root() -> Path:
-    return ROOT / "runs"
+    """`runs/` is generated, and a fresh checkout has none.
+
+    These tests read **real recorded runs** rather than fixtures, because what they assert
+    is a property of the record on disk. A checkout with no runs is not a failing state, so
+    the module skips: a test that cannot run must say so, not report a red that means
+    "nobody has run an experiment here yet".
+    """
+    root = ROOT / "runs"
+    if not root.is_dir() or not any(p.is_dir() for p in root.iterdir()):
+        import pytest
+        pytest.skip("no runs/ in this checkout: nothing recorded to read")
+    return root
 
 
 def test_absence_and_null_are_different_for_test_rate():
