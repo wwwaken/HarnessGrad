@@ -1,9 +1,12 @@
 # HarnessGrad web
 
-The frontend for HarnessGrad, stage 5 of the refactor in `docs/refactor_plan.md`: a SPA over a
-read API that does not exist yet. It replaces the 2,467 lines of hand-written vanilla JS/CSS
+The frontend for HarnessGrad, stage 5 of the refactor in `docs/refactor_plan.md`: a SPA over the
+read API in `web/server/readapi.py`. It replaces the 2,467 lines of hand-written vanilla JS/CSS
 in `tools/ui/`, and it is built around one subject — **comparison and debugging**, not
 launching.
+
+The read API exists; the **write** API does not, and the Launch screen says so on the page
+rather than pretending. Everything the SPA reads is real recorded runs under `runs/`.
 
 A researcher's questions are *"did this edit help?"*, *"which tasks moved?"*, and *"why is this
 number what it is?"*. The layout answers those first: the Compare screen is a top-level

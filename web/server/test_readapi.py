@@ -107,3 +107,31 @@ def test_a_traversal_attempt_is_refused_before_any_path_is_built():
         assert not readapi.is_safe_component(bad), f"{bad!r} 被当成了安全组件"
     for good in ("ds-dgm", "full-a", "run.with.dots", "v1_2-3"):
         assert readapi.is_safe_component(good), f"{good!r} 被拒了"
+
+
+def test_the_built_spa_references_its_assets_from_the_root():
+    """**构建产物里的资源路径必须是绝对的,否则嵌套路由整页白屏。**
+
+    `vite.config.ts` 曾经写 `base: "./"`,理由是"这样 dist 挂到哪儿都能开"。它发出的是
+    `./assets/index-*.js`,而浏览器把相对 URL 解析在**当前路径**上而非 `/` 上。应用有嵌套
+    路由,所以在 `/runs/<id>` 上那个 URL 变成 `/runs/assets/...`,`serve.py` 用 SPA 回落返回
+    `index.html`(MIME `text/html`),严格的 MIME 检查于是同时拒绝样式表和模块脚本。
+    实测 2026-10-06:`/experiments` 和 `/compare` 正常渲染,`/runs/dsh-flash-base` 是**纯白页**。
+
+    断言的是那条判据而不是某个文件名:每一个 `src`/`href` 都要从根开始,所以任何一条路由
+    都能拿到同一个资源。`dist/` 是生成物,没有就跳过 —— 全新检出不该因此变红。
+    """
+    import re
+
+    import pytest
+    index = ROOT / "web" / "dist" / "index.html"
+    if not index.is_file():
+        pytest.skip("web/dist 尚未构建;先跑 `cd web && pnpm build`")
+    html = index.read_text(encoding="utf-8")
+    refs = re.findall(r'(?:src|href)="([^"]+)"', html)
+    assert any(r.startswith("/assets/") for r in refs), (
+        f"index.html 没有引用 /assets/ 下的任何东西,构建产物不完整: {refs}")
+    relative = [r for r in refs if not r.startswith(("/", "http://", "https://", "data:"))]
+    assert not relative, (
+        "这些资源是相对路径,它们会在 /runs/<id> 这类嵌套路由下解析错,"
+        f"整个页面会白屏: {relative}")

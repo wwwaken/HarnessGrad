@@ -2,11 +2,16 @@ import path from "node:path";
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
-// The SPA is served by the (future) read API under `/`, so asset paths stay relative.
-// `base: "./"` lets the built `dist/` be opened from any mount point, which is what the
-// `dsh web`-style host will want; the dev server is unaffected.
+// **Absolute, not relative.** `base: "./"` looks like it buys "openable from any mount
+// point", but it emits `./assets/index-*.js`, and the browser resolves that against the
+// *current path* rather than against `/`. The app has nested routes, so on `/runs/<id>` the
+// relative URL becomes `/runs/assets/...`, which `serve.py` answers with the SPA fallback --
+// `index.html`, `text/html` -- and strict MIME checking refuses both the stylesheet and the
+// module script. Measured 2026-10-06: `/experiments` and `/compare` rendered, and
+// `/runs/dsh-flash-base` was a **blank white page**. Every route the app can be linked to
+// must resolve its assets from the root, so the root is what the build names.
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [react()],
   resolve: {
     alias: {
