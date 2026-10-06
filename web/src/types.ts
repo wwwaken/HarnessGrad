@@ -523,8 +523,16 @@ export interface RunSummary {
   score_kind: string | null;
   /** The last point's `score` (also `certify().final_score`). */
   last_score: number | null;
-  /** The last point's `test_rate`; absent on every point before stage 0. */
-  last_test_rate: number | null;
+  /**
+   * The last point's `test_rate`.
+   *
+   * **The key is omitted, not nulled, when the last point carried no `test_rate`.** A point
+   * recorded before stage 0 has no such field at all, and a point whose checks report no
+   * per-test tally carries `null`; the API keeps those two apart the same way the record
+   * does, so this is optional rather than nullable. `presence.testRate` renders all three
+   * cases (absent, null, a real zero) differently.
+   */
+  last_test_rate?: number | null;
   /** `run_meta.wall_clock_s`. */
   wall_clock_s: number | null;
   /**
@@ -551,7 +559,13 @@ export interface RunSummary {
  */
 export interface RunBundle {
   run_id: string;
-  meta: RunMeta;
+  /**
+   * **`Partial`, because a run directory need not have a readable `run_meta.json`.** The API
+   * answers `{}` for one that does not (and sets `load_problems`), rather than 404: a
+   * directory that was interrupted before its first write is still a row an operator wants
+   * to see. `RunHeader` guards on `meta.dataset` and says so.
+   */
+  meta: Partial<RunMeta>;
   points: CurvePoint[];
   /** `round number -> task_id -> verdict`. Loaded from `verdicts/round-<n>/`. */
   verdicts: Record<string, Record<string, Verdict>>;

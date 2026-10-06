@@ -239,7 +239,14 @@ def run_summary(runs_root: Path, name: str) -> dict:
         # The last point's own score; `certify().final_score` is the same value
         # and is used when the curve could not be re-read here.
         "last_score": last.get("score") if points else certified.get("final_score"),
-        "last_test_rate": last.get("test_rate"),
+        # **Omitted, not null, when there is no tally to report.** The rest of this record
+        # keeps "absent", "null" and "zero" apart on purpose -- stage 0 exists because a
+        # missing field and a field that says "nothing was measured" were the same reading
+        # and a non-functional candidate was taken for a +0.100 gain. Always emitting the
+        # key collapses that here: a run recorded before 2026-10-05 (no `test_rate` family
+        # at all) and a run whose checks report no per-test tally would both arrive as
+        # `null`. The key is present exactly when the last point carried the field.
+        **({"last_test_rate": last["test_rate"]} if "test_rate" in last else {}),
         "wall_clock_s": meta.get("wall_clock_s"),
         "timestamp_utc": last.get("timestamp_utc") or _dir_mtime_iso(run_dir),
         "timestamp_source": "curve" if from_curve else "run_meta_mtime",

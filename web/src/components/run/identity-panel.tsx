@@ -20,7 +20,13 @@ export function RunIdentityPanel({
   meta,
   point,
 }: {
-  meta: RunMeta;
+  /**
+   * **`Partial`, because a run directory need not have a readable `run_meta.json`** -- the
+   * API answers `{}` and sets `load_problems` rather than 404. Every field below was
+   * already rendered through a guard or a `<Value>` that prints absent as an em dash; the
+   * narrow type was claiming a contract the API does not make.
+   */
+  meta: Partial<RunMeta>;
   point: CurvePoint | null;
 }) {
   const identity = point?.identity;
