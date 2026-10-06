@@ -311,10 +311,28 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             reply, traj, gen_s = _invoke_method(r)
             if reply is None:
                 continue
+            # **The declared rule is nested, and this loop looked at the top level.** The
+            # producer is `methods/editor.py:report`, which writes
+            # `trajectory["provenance"]["acceptance_rule"] = {"text", "source",
+            # "calibrated"}`; the consumer here read `trajectory["acceptance_rule"]`. So the
+            # key was never found, `run_meta.acceptance_rule` was written by nothing, and
+            # because the trajectory lives in a scratch directory the driver deletes at the
+            # end of the round, **the rule a method declared reached no durable record at
+            # all**. Measured 2026-10-06: `grep -l acceptance_rule runs/*/run_meta.json` is
+            # empty across 84 runs, including the ones whose method declared one.
+            #
+            # Both spellings are accepted rather than moving the writer: a trajectory from a
+            # method that put it at the top level is not wrong, and the record is more useful
+            # than the convention.
+            provenance = traj.get("provenance")
+            provenance = provenance if isinstance(provenance, dict) else {}
             for key in ("trajectory_shape", "curve_drawn", "nominated",
-                        "acceptance_rule", "selection_pool_size"):
+                        "selection_pool_size"):
                 if key in traj and key not in declared_shape:
                     declared_shape[key] = traj[key]
+            rule = traj.get("acceptance_rule") or provenance.get("acceptance_rule")
+            if rule and "acceptance_rule" not in declared_shape:
+                declared_shape["acceptance_rule"] = rule
             submitted = list(traj.get("steps") or [])
             if not submitted:
                 console.note(f"round {r}: the trajectory has no steps", level="error")

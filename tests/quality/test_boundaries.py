@@ -264,10 +264,21 @@ def test_r10_the_record_names_the_model_that_actually_ran():
     platform = _platform_text()
 
     assert "HG_AGENT_MODEL" in harness_src, "the harness reads HG_AGENT_MODEL"
-    assert 'os.environ.get("HG_AGENT_MODEL")' in platform, (
-        "the platform must still fall back to the variable the harness reads, or a "
-        "harness that declares nothing gets no model on its record"
+    # **The declaration, not the source text.** This grepped the platform's code for the
+    # literal `os.environ.get("HG_AGENT_MODEL")` -- right while that read was written out
+    # at its point of use, wrong the moment the configuration became a declaration
+    # (stage 2): the variable is a *field* now, and a test that greps for the old spelling
+    # fails on a refactor that preserved the behaviour exactly. What the property needs is
+    # that the platform still reads that name, and the declaration is where it says so.
+    from harnessgrad import config as platform_config
+    assert "HG_AGENT_MODEL" in platform_config.ENV_NAMES, (
+        "the platform must still read the variable the harness reads, or a harness that "
+        "declares nothing gets no model on its record"
     )
+    # And the declaration must still carry the fallback, not only the name: a field whose
+    # default is a constant would ignore the environment entirely.
+    assert any(f["variable"] == "HG_AGENT_MODEL"
+               for f in platform_config.describe()), platform_config.ENV_NAMES[:5]
     assert "identity_declared" in platform, (
         "the platform must prefer what the harness says actually ran: an agent CLI "
         "reads its model from its own config, so the environment can be ignored "

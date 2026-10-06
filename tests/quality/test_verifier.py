@@ -257,7 +257,9 @@ def test_a_check_report_is_summarised_into_the_verdict():
     triggers for libc-bin` —— 检查在跑测试之前先 `apt-get install`,把测试报告顶出了
     最后 600 字符。改进器因此只能猜。
     """
-    from eval.runner import _test_report_failures
+    # The verifier moved out of the runner (stage 4): the seam is the point,
+    # so the test imports it where it lives.
+    from eval.verifier import _test_report_failures
     report = {"results": {
         "summary": {"tests": 6, "passed": 5, "failed": 1, "skipped": 0},
         "tests": [
@@ -283,7 +285,9 @@ def test_a_check_report_is_summarised_into_the_verdict():
 
 def test_an_unreadable_check_report_cannot_take_the_verdict_down():
     """这是别人的格式,读不了只能少说一句,不能让整个 verdict 变成异常。"""
-    from eval.runner import _test_report_failures
+    # The verifier moved out of the runner (stage 4): the seam is the point,
+    # so the test imports it where it lives.
+    from eval.verifier import _test_report_failures
     for junk in (None, {}, {"results": None}, {"results": {"tests": "nope"}},
                  {"results": {"tests": [None, {"status": "failed"}]}}):
         failures, counts, numbers = _test_report_failures(junk)
@@ -299,7 +303,7 @@ def test_both_of_a_check_s_streams_reach_the_verdict():
     实测:`break-filter-js-from-html` 的 `uvx: command not found` 在 stderr,stdout 里
     是 apt 的进度,于是"检查没跑成"读起来像"harness 答错了"。
     """
-    from eval.runner import _check_output_detail
+    from eval.verifier import _check_output_detail
     detail = _check_output_detail("apt progress\n", "uvx: command not found\n")
     assert "stdout apt progress" in detail and "stderr uvx: command not found" in detail
     assert _check_output_detail("", "only stderr") == "stderr only stderr"
@@ -323,8 +327,11 @@ def test_a_configured_egress_proxy_reaches_the_check_and_only_the_check(monkeypa
     只给检查,不给 harness:harness 的模型调用走平台自己的路(host-local 时是 model
     gateway),给那条路加代理会把它弄坏。
     """
+    # `_check_env` moved to `eval.verifier` with the rest of the check-running layer
+    # (stage 4). Reloaded so a monkeypatched environment cannot be seen through a
+    # cached module-level proxy.
     import importlib
-    import eval.runner as runner
+    import eval.verifier as runner
     importlib.reload(runner)
     monkeypatch.delenv("HG_EGRESS_PROXY", raising=False)
     assert runner._check_env() == {}, "没配置就不能改变任何行为"

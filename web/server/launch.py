@@ -38,7 +38,11 @@ _FLAG_FOR = {
     "HG_IMPROVER": "--improver",
     "HG_IMPROVER_MODEL": "--improver-model",
     "HG_IMPROVER_EFFORT": "--improver-effort",
-    "HG_METHOD_TIMEOUT_S": "--method-timeout (mode B; this bounds one call)",
+    # NOT `--method-timeout`: that flag bounds the *method loop's* whole budget (86400 s
+    # by default), while this variable bounds one model call the method makes to its
+    # own endpoint (180 s). The two were conflated once already; see
+    # `harnessgrad/config/areas.py` for both declarations.
+    "HG_METHOD_TIMEOUT_S": "(no flag: one method model call, default 180 s)",
     "HG_RUN_ROOT": "--runs-root",
 }
 

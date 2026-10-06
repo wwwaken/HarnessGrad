@@ -378,7 +378,15 @@ def test_the_oracle_control_passes(tmp_path):
                             "from": str(TB_ROOT / tid / "solution")}]}
         result = run_one((ROOT / "base_harness" / "oracle"), task, sandbox=True,
                          setup=setup, verifier=verifier, env=resolved[tid],
-                         run_id="oracle-test", run_seed="s",
+                         # Per process, for the same reason as the leak test below: a
+                         # fixed id means an interrupted run leaves a network named
+                         # `hg-oracle-test-<task>` behind, and from then on this test fails
+                         # with `network ... already exists` -- red for a reason that has
+                         # nothing to do with the oracle. Measured 2026-10-06, on an
+                         # unmodified checkout: both this test and the leak test below were
+                         # failing that way, so nothing but a manual `docker network rm`
+                         # could make them green again.
+                         run_id=f"oracle-test-{os.getpid()}", run_seed="s",
                          recordings_root=tmp_path / "recordings")
     finally:
         os.environ.clear()
@@ -411,6 +419,18 @@ def test_a_container_state_run_leaves_nothing_behind(tmp_path):
     if not (TB_ROOT / task["task_id"] / "solution").is_dir():
         pytest.skip("no solution to run")
 
+    # **A unique run id, because a fixed one makes this test fail forever.** Measured
+    # 2026-10-06: a network named `hg-leak-test-cancel-async-tasks` survived an
+    # interrupted run, and from then on every execution of this test died with
+    # `ServiceUnavailable: network with name hg-leak-test-cancel-async-tasks already
+    # exists` -- a red test whose cause had nothing to do with the code under test.
+    #
+    # The same fixed id also made the snapshot assertion unusable next to a live run: it
+    # counted **every** `hg-snapshot` image on the daemon, including the ones a concurrent
+    # experiment was creating and removing, so this test could not pass while any
+    # experiment was in flight -- which is exactly when the platform is most in use.
+    # A per-process id makes both checks look only at this run's own namespace.
+    leak_run_id = f"leak-test-{os.getpid()}"
     before = set(container.docker(
         "images", "--format", "{{.Repository}}:{{.Tag}}").stdout.split())
     old = os.environ.copy()
@@ -422,7 +442,7 @@ def test_a_container_state_run_leaves_nothing_behind(tmp_path):
                 setup={"files": [{"path": ".oracle",
                                   "from": str(TB_ROOT / task["task_id"] / "solution")}]},
                 verifier=verifier, env=resolved[task["task_id"]],
-                run_id="leak-test", run_seed="s",
+                run_id=leak_run_id, run_seed="s",
                 recordings_root=tmp_path / "recordings")
     finally:
         os.environ.clear()
@@ -430,11 +450,18 @@ def test_a_container_state_run_leaves_nothing_behind(tmp_path):
 
     after = set(container.docker(
         "images", "--format", "{{.Repository}}:{{.Tag}}").stdout.split())
-    leaked = sorted(a for a in after - before if a.startswith("hg-snapshot"))
+    # Only this process's namespace: another run's snapshots are not this test's leak,
+    # and counting them made the assertion a statement about the machine rather than
+    # about the teardown.
+    leaked = sorted(a for a in after - before
+                    if a.startswith("hg-snapshot") and leak_run_id in a)
     assert leaked == [], f"a snapshot survived: {leaked}"
-    left = container.docker("ps", "-a", "--filter", "name=hg-leak-test",
+    left = container.docker("ps", "-a", "--filter", f"name={leak_run_id}",
                             "--format", "{{.Names}}").stdout.split()
     assert left == [], f"a container survived: {left}"
+    nets = container.docker("network", "ls", "--filter", f"name={leak_run_id}",
+                            "--format", "{{.Name}}").stdout.split()
+    assert nets == [], f"a network survived: {nets}"
 
 
 def test_the_image_interpreter_wins_when_it_has_one():
@@ -472,7 +499,9 @@ def test_a_directory_input_lands_at_the_destination_even_when_it_already_exists(
     `src/.` 两种情况下都对。平台这一侧一旦有人把 `contents=` 去掉,这条就红。
     """
     import eval.container as container_mod
-    from eval import runner as runner_mod
+    # `_copy_verifier_inputs` moved to `eval.verifier` with the rest of the
+    # check-running layer (stage 4).
+    from eval import verifier as runner_mod
 
     calls: list[tuple] = []
 

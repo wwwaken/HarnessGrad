@@ -23,6 +23,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -193,3 +194,61 @@ def test_a_real_run_records_the_platform_that_produced_it():
     assert len(platform.get("content_sha") or "") == 64, platform
     assert platform.get("git_sha"), platform
     assert isinstance(platform.get("dirty"), bool), platform
+
+
+def test_the_declared_acceptance_rule_reaches_the_run_record(tmp_path):
+    """**写在 `provenance` 里,读在顶层 —— 于是它哪儿都没到。**
+
+    `methods/editor.py:report` 把方法声明的规则写在
+    `trajectory["provenance"]["acceptance_rule"] = {"text", "source", "calibrated"}`,
+    而 `harnessgrad/loops/mode_a.py` 读的是 `trajectory["acceptance_rule"]`。所以那个键
+    从来没被找到过,`run_meta.acceptance_rule` **没有任何东西在写** —— 而且轨迹住在轮末
+    就被删掉的 scratch 目录里,所以方法声明的规则**没有到达任何持久记录**。
+
+    实测(2026-10-06):`grep -l acceptance_rule runs/*/run_meta.json` 在 84 个 run 上是空的,
+    包括那些方法确实声明了的。这条测试钉住两处都读。
+
+    用真的 driver 跑一个 stub 方法,因为要验的正是"生产者写的形状能被消费者读到" ——
+    直接调用 mode_a 的内部循环会把被测的那段代码排除在外。
+    """
+    method = tmp_path / "rule_stub.py"
+    method.write_text('''
+import json, os, shutil, sys
+from pathlib import Path
+req = json.loads(sys.stdin.read())
+base = Path(req["base_harness"]); ws = Path(req["workspace"])
+dest = ws / "cand"
+if dest.exists(): shutil.rmtree(dest)
+shutil.copytree(base, dest)
+(dest / "agent.py").write_text((dest / "agent.py").read_text() + "\\n# stub\\n")
+Path(req["trajectory_out"]).write_text(json.dumps({
+    "steps": [{"harness_dir": str(dest), "label": "stub", "edit_kind": "harness_source",
+               "claimed_cost": {"generation_tokens": 0},
+               "method_reported": {"score": None}}],
+    "trajectory_shape": "sequence", "nominated": 0,
+    # **这个形状就是 producer 的形状。** 规则嵌在 provenance 里,带着它的来源和
+    # 是否经过校准 —— 不是顶层的一个裸字符串。
+    "provenance": {"method": "rule_stub",
+                   "acceptance_rule": {"text": "accept if the score does not fall",
+                                       "source": "methods/rule_stub.py",
+                                       "calibrated": False}},
+}))
+sys.stdout.write(json.dumps({"changed": True, "stop": True,
+                             "generation_tokens": 0}))
+''', encoding="utf-8")
+    runs = tmp_path / "runs"
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+         "--rounds", "1", "--run-id", "rule-record", "--dataset", "demo",
+         "--sampling", "all", "--side", "train", "--no-sandbox",
+         "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+         "--method-entrypoint", f"{sys.executable} {method}"],
+        cwd=ROOT, capture_output=True, text=True, timeout=900,
+        env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    meta = json.loads((runs / "rule-record" / "run_meta.json").read_text())
+    assert meta.get("acceptance_rule"), (
+        "方法声明的验收规则没有到达 run 记录 —— 这正是它此前 84 个 run 里的处境")
+    rule = meta["acceptance_rule"]
+    text = rule.get("text") if isinstance(rule, dict) else rule
+    assert "does not fall" in str(text), rule
