@@ -1,25 +1,38 @@
 #!/usr/bin/env python3
-"""HarnessGrad 控制台:选配置、点一下、看它跑。
+"""HarnessGrad 的运维层:准备环境、起停 run、看进度、比较候选、管理模型服务。
 
-    python3 tools/serve_ui.py --port 8770        # http://127.0.0.1:8770
+    python3 tools/serve_ui.py --port 8770
 
-为什么是控制台而不是仪表盘
---------------------------
-第一版做成了只读的报表:曲线、成本、轨迹并排摆好。那适合已经有了数据之后复盘,
-不适合"让人相信这东西能跑"。演示的时候,一组预置配置加一个按钮,比十张已经画好
-的图有说服力 —— 前者是现场发生的,后者只能被相信。
+**名字是旧的,它已经不是 UI 了。** 这里原本是"HarnessGrad 控制台"——一个用标准库
+手写的单页应用(先是 2447 行的 `PAGE` 字符串,后来拆成 `tools/ui/` 三个文件)。
+2026-10-06 那套东西连同 `tests/quality/test_ui.py` 一起删掉了:stage 5 的 SPA
+(`web/`,Vite+React+TS,107 个 vitest 用例,自带只读 API `web/server/readapi.py`)
+已经取代它,而 `tools/ui/` 那 140 KB 自 `web/` 落地后就没有任何东西加载过。
 
-所以这个页面的形状照着 LLaMA-Factory 来:顶部切换页签,左边选配置,点"开始实验",
-下面出实时日志和结果。默认值全部预填,不读文档也能跑出东西。
+留下的是**运维层**,读 API 一样都没取代:
 
-三条刻意的约束
---------------
-* **只用标准库。** 没有 CDN、没有构建步骤、不需要联网。演示现场的 wifi 不可靠,
-  而一个需要 `npm install` 才能显示结果的页面,会在最需要它的时候失败。
+* `prepare_report` / `start_prepare` —— 跑之前把 docker 镜像导进来。平台在 run 进行中
+  拒绝拉镜像,所以这是跑新数据集的前提;
+* `start_job` / `job_status` / `stop_job` / `driver_pid` —— 从界面起停一个 run;
+* `model_service` —— 起停本地 vLLM;
+* `promote` / `version_graph` —— 把某个候选状态提升为当前 harness,以及版本图;
+* `step_diff` / `explain_diff`、`provider_catalog` / `read_settings` / `write_settings` /
+  `test_connection`、`model_presets` / `method_catalogue` / `improver_options` /
+  `scan_options` / `task_options`。
+
+SPA 的 Launch 页自己写着 "the write API does not exist yet",说的就是这些还没被搬过去。
+所以这个文件不能删;改名是另一件事,而删掉它等于删掉唯一能准备环境的入口。
+
+页面没了,`GET /` 与 `/ui/*` 返回 410 并指路到 SPA。
+
+下面三条原设计约束对留下来的运维代码仍然成立:
+
 * **选项从磁盘扫出来。** harness、数据集、方法都是列目录得到的,不是写死的列表。
-  加一个新 harness 不需要改这个文件。
-* **进度是日志,不是猜测。** 子进程的 stdout 原样读到页面上。与其解析出一个可能
+  加一个新 harness 不需要改这个文件 —— 加一个新数据集同理。
+* **进度是日志,不是猜测。** 子进程的 stdout 原样读到调用方。与其解析出一个可能
   不准的百分比,不如让人看见它真实在做什么。
+* **只用标准库**(`data.*`/`eval.*` 除外)。一个需要 `npm install` 才能工作的入口,
+  会在最需要它的时候失败 —— 页面交给 SPA,运维留在标准库里。
 """
 from __future__ import annotations
 
@@ -1535,41 +1548,22 @@ def experiments() -> list[dict]:
 
 # ------------------------------------------------------------------------ 页面 ---
 
-#: The console is three files on disk, not one Python string.
+#: **The console's own assets are gone, and this is what is left of serving them.**
 #:
-#: It used to be `PAGE = r"""<!doctype html>..."""` -- 2447 lines of HTML, CSS and
-#: JavaScript inside a raw string in this file (114 KB). Every UI change was an edit to a
-#: Python literal, so the failure modes were Python's, not the page's: a stray `"""`, an
-#: unbalanced quote, a `\\` that the raw string kept, and no way to run `node --check` on
-#: the JavaScript at all. Measured over one day: six UI breakages, nearly all of them
-#: *this* shape, and all of them found only by rendering the page.
+#: This file used to hold a `PAGE = r"""<!doctype html>..."""` literal (2447 lines, 114 KB),
+#: then three files under `tools/ui/` served from here. Both were replaced by the SPA in
+#: `web/` (stage 5 of `docs/refactor_plan.md`): Vite+React+TS, four screens, its own read
+#: API in `web/server/readapi.py`, 107 vitest cases and a `serve.py` that puts the built SPA
+#: and `/api` on one origin. Measured 2026-10-06: `tools/ui/` was 140 KB of
+#: HTML/CSS/JS that nothing had loaded since `web/` landed.
 #:
-#: As files they are what they are: `node --check tools/ui/app.js` works, an editor
-#: syntax-highlights them, and `tests/quality/test_ui.py` reads the same bytes the browser
-#: does instead of re-splitting a string. `tools/` is inside `PLATFORM`, so they are
-#: hashed exactly like the rest of the platform.
-UI_DIR = Path(__file__).resolve().parent / "ui"
-
-#: Extension -> content type. Explicit rather than `mimetypes.guess_type`, which consults
-#: the host's `/etc/mime.types`: on a machine where `.js` maps to something unexpected, a
-#: module script silently fails to execute.
-UI_TYPES = {".html": "text/html; charset=utf-8",
-            ".css": "text/css; charset=utf-8",
-            ".js": "text/javascript; charset=utf-8"}
-
-
-def ui_file(name: str) -> tuple[bytes, str] | None:
-    """Read one of the console's own assets. `None` for anything else.
-
-    `name` must be a bare filename: this serves three known files, it is not a static
-    server, and `..` in a path would otherwise read outside `tools/ui/`.
-    """
-    if "/" in name or "\\" in name or name.startswith("."):
-        return None
-    path = UI_DIR / name
-    if not path.is_file():
-        return None
-    return path.read_bytes(), UI_TYPES.get(path.suffix, "application/octet-stream")
+#: What is left here is **not a UI**. Everything above is the platform's operations layer --
+#: `prepare_report`/`start_prepare` (importing docker images *before* a run, because the
+#: platform refuses to pull during one), `start_job`/`job_status`/`stop_job`,
+#: `model_service`, `promote`, `version_graph`, `step_diff`, the provider catalogue -- and
+#: the read API does not replace any of it: its Launch screen says on the page that the
+#: write API does not exist yet. So the module stays and the name is now wrong; renaming it
+#: is a separate change, and deleting it would delete the only way to prepare an environment.
 
 
 # ----------------------------------------------------------------------- 服务 ---
@@ -1595,15 +1589,16 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         path, query = u.path, u.query
 
-        if path in ("/", "/index.html"):
-            asset = ui_file("index.html")
-            return (self._send(*asset) if asset
-                    else self._send(b"missing tools/ui/index.html", "text/plain", 500))
-        if path.startswith("/ui/"):
-            asset = ui_file(path[len("/ui/"):])
-            if asset is None:
-                return self._send(b"not found", "text/plain", 404)
-            return self._send(*asset)
+        if path in ("/", "/index.html") or path.startswith("/ui/"):
+            # The console that lived here was deleted; the SPA in `web/` replaced it. Saying
+            # so is better than a bare 404, because the failure a reader actually hits is
+            # "I started the old server and got a blank page", and the answer is a URL.
+            return self._send(
+                b"The console at tools/ui/ was removed. The SPA replaced it:\n"
+                b"  cd web && pnpm build\n"
+                b"  python3 web/server/serve.py --port 8791 --runs-root runs --web-dist web/dist\n"
+                b"  then open http://127.0.0.1:8791/\n",
+                "text/plain; charset=utf-8", 410)
         if path == "/api/settings":
             return self._json(read_settings())
         if path == "/api/providers":

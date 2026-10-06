@@ -1,8 +1,10 @@
 # HarnessGrad web
 
 The frontend for HarnessGrad, stage 5 of the refactor in `docs/refactor_plan.md`: a SPA over the
-read API in `web/server/readapi.py`. It replaces the 2,467 lines of hand-written vanilla JS/CSS
-in `tools/ui/`, and it is built around one subject — **comparison and debugging**, not
+read API in `web/server/readapi.py`. It **replaced** the 2,467 lines of hand-written vanilla
+JS/CSS that lived in `tools/ui/` — those three files, the `tools/screenshot_ui.py` that
+photographed them, and their 400 lines of DOM tests were deleted on 2026-10-06, so this is now
+the only frontend. It is built around one subject — **comparison and debugging**, not
 launching.
 
 The read API exists; the **write** API does not, and the Launch screen says so on the page

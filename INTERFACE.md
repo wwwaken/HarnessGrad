@@ -2246,7 +2246,7 @@ HarnessGrad/
 │   └── <dataset adapters>
 ├── eval/                   ← scoring, CI, resumption-safe caching
 ├── ckpt/                   ← git-backed harness state management
-├── tools/                  ← human-facing tooling (the console lives at tools/ui/)
+├── tools/                  ← human-facing tooling (the ops layer; the UI is the SPA in web/)
 ├── runs/                   ← artifacts (gitignored)
 └── tests/
     ├── quality/            ← R1/R2/R3
