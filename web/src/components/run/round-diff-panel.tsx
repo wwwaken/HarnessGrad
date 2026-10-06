@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useRoundDiff } from "@/hooks/queries";
+import { useT } from "@/i18n";
 import { shortSha } from "@/lib/format";
 import type { RoundDiff } from "@/types";
 
@@ -26,10 +27,13 @@ import type { RoundDiff } from "@/types";
  * it to `null` before the query can enter an error state.
  */
 export function RoundDiffPanel({ runId, round }: { runId: string; round: number | null }) {
+  const t = useT();
   const query = useRoundDiff(runId, round);
 
   if (round === null) {
-    return <EmptyState title="No round selected" description="Pick a round to see its candidate diff." />;
+    return (
+      <EmptyState title={t("run.diff.noRound")} description={t("run.diff.noRoundHint")} />
+    );
   }
   if (query.isLoading) {
     return <Skeleton className="h-[420px] w-full" />;
@@ -42,11 +46,9 @@ export function RoundDiffPanel({ runId, round }: { runId: string; round: number 
   if (!diff) {
     return (
       <EmptyState
-        title={`No saved diff for round ${round}`}
+        title={t("run.diff.none", { round })}
         description={
-          round === 0
-            ? "Round 0 is the unmodified base harness, so there is no candidate edit to show. Its `identity.harness_sha` is the baseline every later round is compared against."
-            : "The platform did not save a diff for this round. Older runs predate `records.py:_save_round_diff`; the diff is not recoverable from disk."
+          round === 0 ? t("run.diff.baseHint") : t("run.diff.noneHint")
         }
       />
     );
@@ -67,15 +69,15 @@ export function RoundDiffPanel({ runId, round }: { runId: string; round: number 
             <span className="tabular text-pass">+{diff.added}</span>
             <span className="tabular text-fail">−{diff.removed}</span>
             <span className="text-muted-foreground">
-              {diff.files.length} file{diff.files.length === 1 ? "" : "s"} changed
+              {t("run.diff.files", { n: diff.files.length })}
             </span>
             {diff.added === 0 && diff.removed === 0 ? (
-              <Badge variant="warn">no textual change — a score here is not evidence about the edit</Badge>
+              <Badge variant="warn">{t("run.diff.noTextualChange")}</Badge>
             ) : null}
           </>
         ) : (
           <Badge variant="warn">
-            the saved diff stat is unreadable — the patch is shown without a numstat
+            {t("run.diff.statUnreadable")}
           </Badge>
         )}
       </div>
@@ -87,9 +89,9 @@ export function RoundDiffPanel({ runId, round }: { runId: string; round: number 
           <Table>
             <TableHeader className="bg-muted/40">
               <TableRow className="hover:bg-transparent">
-                <TableHead>File</TableHead>
-                <TableHead className="w-16 text-right">Added</TableHead>
-                <TableHead className="w-20 text-right">Removed</TableHead>
+                <TableHead>{t("run.diff.colFile")}</TableHead>
+                <TableHead className="w-16 text-right">{t("run.diff.colAdded")}</TableHead>
+                <TableHead className="w-20 text-right">{t("run.diff.colRemoved")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

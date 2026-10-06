@@ -1,3 +1,4 @@
+import { translate } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import { buildCurveView, detectFlatScoreTaskChurn, pointProblems, toPointView } from "./curve";
 import { point } from "./test-support";
@@ -34,7 +35,12 @@ describe("buildCurveView", () => {
     // only one round carries a number, so there is no lift to report — not a lift of zero
     expect(view.testRateLift).toBeNull();
     expect(view.testRateCoverage.present).toBe(1);
-    expect(view.testRateCoverage.caveat).toContain("2026-10-05");
+    // The reason is a key now, so assert the key *and* that a reader is told the date —
+    // the sentence is the app's voice, the date is a fact about the platform's history.
+    expect(view.testRateCoverage.caveat?.key).toBe("run.chart.coverageSome");
+    expect(view.testRateCoverage.caveat?.params).toMatchObject({ series: "test_rate", present: 1, total: 3 });
+    expect(view.testRateCoverage.caveat?.extra).toBe("run.chart.coverageRecordedLate");
+    expect(translate("en", "run.chart.coverageRecordedLate")).toContain("2026-10-05");
   });
 
   it("reports full coverage with no caveat when every round carries both numbers", () => {

@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/common/section";
 import { Stat } from "@/components/common/stat";
 import { Value } from "@/components/common/presence-value";
 import { formatDuration, formatScore } from "@/lib/format";
+import { useT } from "@/i18n";
 import { badgeFor, type BadgeTone } from "@/logic/certify";
 import type { CurveView } from "@/logic/curve";
 import type { CertifyResult, RunBundle } from "@/types";
@@ -42,9 +43,14 @@ export function RunHeader({
    */
   certify: CertifyResult | null;
 }) {
+  const t = useT();
   const badge = badgeFor(certify);
   const last = view.points[view.points.length - 1] ?? null;
   const meta = bundle.meta;
+  // A record value, interpolated into a translated badge; `undefined` must not become the
+  // literal "undefined" just because it now travels through a template.
+  const improverName =
+    typeof meta.improver === "string" ? meta.improver : (meta.improver?.name ?? "");
 
   return (
     <div className="space-y-3">
@@ -52,7 +58,7 @@ export function RunHeader({
         title={
           <span className="flex items-center gap-2">
             <span className="font-mono text-base">{bundle.run_id}</span>
-            <CopyButton value={bundle.run_id} label="Copy run id" />
+            <CopyButton value={bundle.run_id} label={t("run.copyRunId")} />
           </span>
         }
         description={
@@ -62,13 +68,14 @@ export function RunHeader({
               <span className="font-mono">{meta.dataset}</span>
               {meta.method_entrypoint ? (
                 <>
-                  {" · method "}
+                  {" · "}
+                  {t("run.method")}{" "}
                   <span className="font-mono">{shortenPath(meta.method_entrypoint)}</span>
                 </>
               ) : null}
             </>
           ) : (
-            "run_meta.json is missing or unreadable"
+            t("run.metaMissing")
           )
         }
         meta={
@@ -76,11 +83,11 @@ export function RunHeader({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Badge variant={TONE_VARIANT[badge.tone]} className="cursor-help">
-                  {badge.label}
+                  {t(badge.labelKey)}
                 </Badge>
               </TooltipTrigger>
               <TooltipContent className="max-w-md space-y-1">
-                <p>{badge.explanation}</p>
+                <p>{t(badge.explanationKey)}</p>
                 {badge.problems.slice(0, 4).map((p) => (
                   <p key={p} className="text-2xs text-fail">
                     {p}
@@ -95,13 +102,11 @@ export function RunHeader({
               <Value value={meta.agent_model} fieldName="agent_model" />
             </Badge>
             {meta.improver ? (
-              <Badge variant="muted">
-                improver {typeof meta.improver === "string" ? meta.improver : meta.improver.name}
-              </Badge>
+              <Badge variant="muted">{t("run.improver", { name: improverName })}</Badge>
             ) : (
               <Badge variant="muted">
                 <ShieldQuestion className="h-3 w-3" />
-                no improver recorded
+                {t("run.noImprover")}
               </Badge>
             )}
           </>
@@ -110,7 +115,7 @@ export function RunHeader({
           <Button variant="outline" size="sm" asChild>
             <Link to={`/compare?left=${encodeURIComponent(bundle.run_id)}`}>
               <GitCompareArrows className="h-3.5 w-3.5" />
-              Compare
+              {t("nav.compare")}
             </Link>
           </Button>
         }
@@ -118,13 +123,17 @@ export function RunHeader({
 
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-6">
         <Stat
-          label="Last score"
+          label={t("run.stat.lastScore")}
           value={formatScore(last?.score ?? null)}
           tone={badge.level === "invalid" || badge.level === "tampered" ? "fail" : "neutral"}
           hint={
             last
-              ? `round ${last.round} · ${last.passedCount ?? "—"}/${last.scoredCount} tasks passing`
-              : "no points"
+              ? t("run.stat.lastScoreHint", {
+                  round: last.round,
+                  passed: last.passedCount ?? "—",
+                  scored: last.scoredCount,
+                })
+              : t("run.stat.noPoints")
           }
         />
         <Stat
@@ -139,25 +148,25 @@ export function RunHeader({
           tone="info"
           hint={
             last?.testRate === undefined
-              ? "absent — every point predates stage 0 (2026-10-05)"
+              ? t("run.stat.testRateAbsent")
               : last.testRate === null
-                ? "null — the checks reported no per-test tally"
-                : `mean over ${last.testRateNTasks ?? "?"} task(s) that reported a tally`
+                ? t("run.stat.testRateNull")
+                : t("run.stat.testRateMean", { n: last.testRateNTasks ?? "?" })
           }
         />
         <Stat
-          label="Rounds"
+          label={t("run.stat.rounds")}
           value={view.points.length}
           hint={view.points.length ? `0 – ${view.points[view.points.length - 1]?.round}` : "—"}
         />
         <Stat
-          label="Score lift"
+          label={t("run.stat.scoreLift")}
           value={view.scoreLift === null ? "—" : formatScore(view.scoreLift)}
           tone={view.scoreLift === null ? "neutral" : view.scoreLift > 0 ? "pass" : view.scoreLift < 0 ? "fail" : "neutral"}
-          hint="last − first, over the rounds that carry a number"
+          hint={t("run.stat.scoreLiftHint")}
         />
         <Stat
-          label="test_rate lift"
+          label={t("run.stat.testRateLift")}
           value={view.testRateLift === null ? "—" : formatScore(view.testRateLift)}
           tone={
             view.testRateLift === null
@@ -168,12 +177,12 @@ export function RunHeader({
                   ? "fail"
                   : "neutral"
           }
-          hint="the finer signal: it can move while score does not"
+          hint={t("run.stat.testRateLiftHint")}
         />
         <Stat
-          label="Wall clock"
+          label={t("run.stat.wallClock")}
           value={formatDuration(meta.wall_clock_s ?? null)}
-          hint={meta.jobs ? `${meta.jobs} job(s)` : undefined}
+          hint={meta.jobs ? t("run.stat.jobs", { n: meta.jobs }) : undefined}
         />
       </div>
     </div>

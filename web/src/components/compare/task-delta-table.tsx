@@ -6,6 +6,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { DeltaPill } from "@/components/common/stat";
 import { EmptyState } from "@/components/common/states";
 import { Value } from "@/components/common/presence-value";
+import { useT } from "@/i18n";
+import type { TranslationKey } from "@/i18n/en";
 import { firstLine, formatScore } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { RunComparison, TaskMove } from "@/logic/compare";
@@ -29,18 +31,19 @@ export function TaskDeltaTable({
   comparison: RunComparison;
   onlyMoved: boolean;
 }) {
+  const t = useT();
   const tasks = onlyMoved
-    ? comparison.tasks.filter((t) => t.move === "gained" || t.move === "lost" || t.move === "partial-moved" || t.move === "unmeasured")
+    ? comparison.tasks.filter((task) => task.move === "gained" || task.move === "lost" || task.move === "partial-moved" || task.move === "unmeasured")
     : comparison.tasks;
 
   if (!tasks.length) {
     return (
       <EmptyState
-        title={onlyMoved ? "No tasks moved" : "No per-task scoring on both sides"}
+        title={onlyMoved ? t("compare.noTasksMoved") : t("compare.noPerTaskScoring")}
         description={
           onlyMoved
-            ? "Every task present in both states has the same pass/fail outcome. Turn off “only moved” to see the full task set."
-            : "At least one side records no per_task map for the selected round — absence, not an empty task set."
+            ? t("compare.noTasksMovedHint")
+            : t("compare.noPerTaskScoringHint")
         }
       />
     );
@@ -51,12 +54,12 @@ export function TaskDeltaTable({
       <Table>
         <TableHeader className="bg-muted/40">
           <TableRow className="hover:bg-transparent">
-            <TableHead>Task</TableHead>
+            <TableHead>{t("compare.columnTask")}</TableHead>
             <TableHead className="w-16 text-right">{comparison.leftRunId}</TableHead>
             <TableHead className="w-16 text-right">{comparison.rightRunId}</TableHead>
-            <TableHead className="w-24">Move</TableHead>
-            <TableHead className="w-24 text-right">Δ test_rate</TableHead>
-            <TableHead>Why it changed (each side's verdict)</TableHead>
+            <TableHead className="w-24">{t("compare.columnMove")}</TableHead>
+            <TableHead className="w-24 text-right">{t("compare.columnTestRateDelta")}</TableHead>
+            <TableHead>{t("compare.columnWhy")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -67,12 +70,18 @@ export function TaskDeltaTable({
                   <Link
                     to={`/runs/${comparison.rightRunId}/tasks/${comparison.rightRound}/${task.taskId}`}
                     className="underline-offset-2 hover:underline"
-                    title="open this task's verdict and trace in the right-hand run"
+                    title={t("compare.openTask")}
                   >
                     {task.taskId}
                   </Link>
                 ) : (
-                  <span title={`only present in the ${task.membership === "left-only" ? "left" : "right"} run`}>
+                  <span
+                    title={
+                      task.membership === "left-only"
+                        ? t("compare.onlyInLeftRun")
+                        : t("compare.onlyInRightRun")
+                    }
+                  >
                     {task.taskId}
                   </span>
                 )}
@@ -89,8 +98,16 @@ export function TaskDeltaTable({
                       <span className="cursor-help text-muted-foreground/60">—</span>
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      {`left test_rate: ${task.leftTestRate === undefined ? "absent" : task.leftTestRate ?? "null"}, ` +
-                        `right test_rate: ${task.rightTestRate === undefined ? "absent" : task.rightTestRate ?? "null"}`}
+                      {t("compare.testRateTooltip", {
+                        left:
+                          task.leftTestRate === undefined
+                            ? t("record.absent")
+                            : (task.leftTestRate ?? t("compare.nullValue")),
+                        right:
+                          task.rightTestRate === undefined
+                            ? t("record.absent")
+                            : (task.rightTestRate ?? t("compare.nullValue")),
+                      })}
                     </TooltipContent>
                   </Tooltip>
                 ) : (
@@ -108,27 +125,27 @@ export function TaskDeltaTable({
         </TableBody>
       </Table>
       <div className="border-t border-border px-3 py-1.5 text-2xs text-muted-foreground">
-        Pass is `score ≥ 1`, fail is `score ≤ 0`; a value strictly between them is a partial and
-        only occurs with <span className="font-mono">--trials &gt; 1</span>. An em dash is an
-        absent or null value, never a zero.
+        {t("compare.thresholdNoteBefore")}
+        <span className="font-mono">--trials &gt; 1</span>
+        {t("compare.thresholdNoteAfter")}
       </div>
     </div>
   );
 }
 
 function ScoreCell({ value, membership }: { value: number | null; membership: boolean }) {
+  const t = useT();
   if (membership) {
     return (
       <TableCell className="text-right">
         <Tooltip>
           <TooltipTrigger asChild>
             <span className="cursor-help text-2xs text-muted-foreground">
-              not in this run
+              {t("compare.notInThisRun")}
             </span>
           </TooltipTrigger>
           <TooltipContent className="max-w-xs">
-            the task is absent from this run&apos;s sampling, which is a different fact from a
-            score of zero
+            {t("compare.notInThisRunHint")}
           </TooltipContent>
         </Tooltip>
       </TableCell>
@@ -153,34 +170,36 @@ function ScoreCell({ value, membership }: { value: number | null; membership: bo
   );
 }
 
-const MOVE_BADGE: Record<TaskMove, { label: string; className: string; icon: typeof Minus }> = {
-  gained: { label: "gained", className: "border-pass/40 bg-pass/12 text-pass", icon: ArrowUpRight },
-  lost: { label: "lost", className: "border-fail/40 bg-fail/12 text-fail", icon: ArrowDownRight },
-  "still-pass": { label: "still pass", className: "border-border text-muted-foreground", icon: Minus },
-  "still-fail": { label: "still fail", className: "border-border text-muted-foreground", icon: Minus },
-  "partial-moved": { label: "partial", className: "border-warn/40 bg-warn/12 text-warn", icon: Minus },
-  unchanged: { label: "unchanged", className: "border-border text-muted-foreground", icon: Minus },
-  unmeasured: { label: "unmeasured", className: "border-dashed border-border text-muted-foreground", icon: Minus },
+const MOVE_BADGE: Record<TaskMove, { label: TranslationKey; className: string; icon: typeof Minus }> = {
+  gained: { label: "compare.moveGained", className: "border-pass/40 bg-pass/12 text-pass", icon: ArrowUpRight },
+  lost: { label: "compare.moveLost", className: "border-fail/40 bg-fail/12 text-fail", icon: ArrowDownRight },
+  "still-pass": { label: "compare.moveStillPass", className: "border-border text-muted-foreground", icon: Minus },
+  "still-fail": { label: "compare.moveStillFail", className: "border-border text-muted-foreground", icon: Minus },
+  "partial-moved": { label: "compare.movePartial", className: "border-warn/40 bg-warn/12 text-warn", icon: Minus },
+  unchanged: { label: "compare.moveUnchanged", className: "border-border text-muted-foreground", icon: Minus },
+  unmeasured: { label: "compare.moveUnmeasured", className: "border-dashed border-border text-muted-foreground", icon: Minus },
 };
 
 function MoveBadge({ move }: { move: TaskMove }) {
+  const t = useT();
   const config = MOVE_BADGE[move];
   const Icon = config.icon;
   return (
     <Badge variant="outline" className={cn("gap-1", config.className)}>
       <Icon className="h-3 w-3" />
-      {config.label}
+      {t(config.label)}
     </Badge>
   );
 }
 
 function DetailLine({ side, detail }: { side: "L" | "R"; detail: string | null }) {
+  const t = useT();
   return (
     <div className="flex items-start gap-1.5">
       <span className="mt-px w-3 shrink-0 font-mono text-2xs text-muted-foreground">{side}</span>
       <span
         className="truncate text-2xs text-muted-foreground"
-        title={detail ?? "no verdict detail recorded for this side"}
+        title={detail ?? t("compare.noVerdictDetail")}
       >
         {detail ? firstLine(detail, 130) : <Value value={undefined} />}
       </span>

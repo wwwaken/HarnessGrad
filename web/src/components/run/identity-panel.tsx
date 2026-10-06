@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Field, Value } from "@/components/common/presence-value";
 import { formatDuration, formatTokens } from "@/lib/format";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { CurvePoint, RunMeta } from "@/types";
 
@@ -29,6 +30,7 @@ export function RunIdentityPanel({
   meta: Partial<RunMeta>;
   point: CurvePoint | null;
 }) {
+  const t = useT();
   const identity = point?.identity;
   const improver = identity?.improver;
   const harnessConfig = identity?.harness_config;
@@ -38,13 +40,13 @@ export function RunIdentityPanel({
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
-        <Field label="Run">{meta.run_id}</Field>
-        <Field label="Round">
+        <Field label={t("run.identity.run")}>{meta.run_id}</Field>
+        <Field label={t("run.identity.round")}>
           <Value value={point?.round} />
         </Field>
         <Field
-          label="Score kind"
-          hint="a training score is inflated by construction and must never be quoted"
+          label={t("run.identity.scoreKind")}
+          hint={t("run.identity.scoreKindHint")}
         >
           {point?.score_kind === "training" ? (
             <Badge variant="warn">training</Badge>
@@ -54,51 +56,51 @@ export function RunIdentityPanel({
             <Value value={undefined} />
           )}
         </Field>
-        <Field label="Side" hint="which half of the split this point measured">
+        <Field label={t("run.identity.side")} hint={t("run.identity.sideHint")}>
           <Value value={point?.side} />
         </Field>
-        <Field label="Harness (meta)">
+        <Field label={t("run.identity.harnessMeta")}>
           <span className="font-mono">{meta.harness}</span>
         </Field>
-        <Field label="Dataset">
+        <Field label={t("run.identity.dataset")}>
           <span className="font-mono">{meta.dataset}</span>
         </Field>
-        <Field label="Mode">
+        <Field label={t("run.identity.mode")}>
           <Value value={meta.mode} />
         </Field>
-        <Field label="Trials" hint="`--trials > 1` records n_trials and score_std">
+        <Field label={t("run.identity.trials")} hint={t("run.identity.trialsHint")}>
           <Value value={meta.trials ?? undefined} fieldName="n_trials" />
         </Field>
-        <Field label="Harness name / version">
+        <Field label={t("run.identity.harnessNameVersion")}>
           <span className="font-mono">
             {identity?.harness_name ?? "—"} {identity?.harness_version ?? ""}
           </span>
         </Field>
-        <Field label="Harness sha" hint="identity.harness_sha — which artifact this score belongs to">
+        <Field label={t("run.identity.harnessSha")} hint={t("run.identity.harnessShaHint")}>
           <span className="font-mono">{identity?.harness_sha ?? "—"}</span>
         </Field>
-        <Field label="Run mode">
+        <Field label={t("run.identity.runMode")}>
           <Value value={identity?.run_mode} />
         </Field>
-        <Field label="Framework version">
+        <Field label={t("run.identity.frameworkVersion")}>
           <Value value={identity?.framework_version} />
         </Field>
         <Field
-          label="Agent model"
-          hint="the model that solved the tasks; separate from the improver's model"
+          label={t("run.identity.agentModel")}
+          hint={t("run.identity.agentModelHint")}
         >
           <span className="font-mono">{identity?.agent_model ?? "—"}</span>
         </Field>
-        <Field label="Agent backend">
+        <Field label={t("run.identity.agentBackend")}>
           <Value value={identity?.agent_backend} />
         </Field>
-        <Field label="Agent model source" hint="`harness` or the platform's environment">
+        <Field label={t("run.identity.agentModelSource")} hint={t("run.identity.agentModelSourceHint")}>
           <Value value={identity?.agent_model_source} />
         </Field>
-        <Field label="Method">
+        <Field label={t("run.identity.method")}>
           <Value value={identity?.method} />
         </Field>
-        <Field label="Improver" hint="what the platform resolved, not what was asked for">
+        <Field label={t("run.identity.improver")} hint={t("run.identity.improverHint")}>
           {improver ? (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -108,11 +110,13 @@ export function RunIdentityPanel({
                 </span>
               </TooltipTrigger>
               <TooltipContent className="space-y-0.5">
-                <div>kind: {improver.kind ?? "—"}</div>
-                <div>version: {improver.version || "—"}</div>
-                <div>endpoint: {improver.base_url ?? "—"}</div>
+                <div>{t("run.identity.improverKind", { value: improver.kind ?? "—" })}</div>
+                <div>{t("run.identity.improverVersion", { value: improver.version || "—" })}</div>
+                <div>{t("run.identity.improverEndpoint", { value: improver.base_url ?? "—" })}</div>
                 <div>
-                  declaration modified: {improver.modified === undefined ? "—" : String(improver.modified)}
+                  {t("run.identity.improverModified", {
+                    value: improver.modified === undefined ? "—" : String(improver.modified),
+                  })}
                 </div>
               </TooltipContent>
             </Tooltip>
@@ -120,7 +124,7 @@ export function RunIdentityPanel({
             <Value value={improver === null ? null : undefined} />
           )}
         </Field>
-        <Field label="Skill sha">
+        <Field label={t("run.identity.skillSha")}>
           <span className="font-mono">{identity?.skill_sha?.slice(0, 12) ?? "—"}</span>
         </Field>
       </div>
@@ -130,7 +134,7 @@ export function RunIdentityPanel({
       <div className="grid gap-3 lg:grid-cols-3">
         <div className="space-y-2">
           <h3 className="text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Harness config
+            {t("run.identity.harnessConfig")}
           </h3>
           <div className="space-y-1">
             {harnessConfig && Object.keys(harnessConfig).length ? (
@@ -142,7 +146,7 @@ export function RunIdentityPanel({
               ))
             ) : (
               <p className="text-2xs text-muted-foreground">
-                no `identity.harness_config` on this point
+                {t("run.identity.noHarnessConfig")}
               </p>
             )}
           </div>
@@ -150,20 +154,20 @@ export function RunIdentityPanel({
 
         <div className="space-y-2">
           <h3 className="text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Environment
+            {t("run.identity.environment")}
           </h3>
           <div className="space-y-1 text-2xs">
-            <Row label="kind" value={point?.env?.kind} />
-            <Row label="placement" value={point?.env?.placement} />
-            <Row label="network" value={point?.env?.network} />
+            <Row label={t("run.identity.envKind")} value={point?.env?.kind} />
+            <Row label={t("run.identity.envPlacement")} value={point?.env?.placement} />
+            <Row label={t("run.identity.envNetwork")} value={point?.env?.network} />
             <Row
-              label="image digest"
+              label={t("run.identity.envImageDigest")}
               value={point?.env?.image_digest}
               mono
-              hint="per point, not per run: two points from different environments are different quantities"
+              hint={t("run.identity.envImageDigestHint")}
             />
             <Row
-              label="harness runtime"
+              label={t("run.identity.envHarnessRuntime")}
               value={
                 Array.isArray(runtime) && runtime.length
                   ? runtime
@@ -176,7 +180,7 @@ export function RunIdentityPanel({
               }
             />
             <Row
-              label="variants"
+              label={t("run.identity.envVariants")}
               value={
                 typeof point?.env?.variants_count === "number"
                   ? point.env.variants_count
@@ -184,7 +188,7 @@ export function RunIdentityPanel({
               }
             />
             <Row
-              label="seed"
+              label={t("run.identity.envSeed")}
               value={point?.env?.seed === null || point?.env?.seed === undefined ? undefined : String(point.env.seed)}
             />
           </div>
@@ -192,22 +196,21 @@ export function RunIdentityPanel({
 
         <div className="space-y-2">
           <h3 className="text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Cost — three budgets, never summed
+            {t("run.identity.cost")}
           </h3>
           <div className="space-y-1 text-2xs">
-            <Row label="harness tokens" value={formatTokens(point?.cost?.harness_tokens)} />
-            <Row label="harness model calls" value={point?.cost?.harness_model_calls} />
+            <Row label={t("run.identity.costHarnessTokens")} value={formatTokens(point?.cost?.harness_tokens)} />
+            <Row label={t("run.identity.costHarnessModelCalls")} value={point?.cost?.harness_model_calls} />
             <Row
-              label="method generation tokens"
+              label={t("run.identity.costMethodTokens")}
               value={formatTokens(point?.cost?.method_generation_tokens)}
             />
-            <Row label="env generation tokens" value={formatTokens(point?.cost?.env_generation_tokens)} />
-            <Row label="evaluation trials" value={point?.cost?.evaluation_trials} />
-            <Row label="wall clock" value={formatDuration(point?.cost?.wall_clock_s)} />
+            <Row label={t("run.identity.costEnvTokens")} value={formatTokens(point?.cost?.env_generation_tokens)} />
+            <Row label={t("run.identity.costEvalTrials")} value={point?.cost?.evaluation_trials} />
+            <Row label={t("run.identity.costWallClock")} value={formatDuration(point?.cost?.wall_clock_s)} />
           </div>
           <p className="text-2xs leading-snug text-muted-foreground">
-            They are not summed because one number cannot tell a thrifty harness from a lazy
-            method, and a simulated user spends tokens whether or not the harness is any good.
+            {t("run.identity.costNote")}
           </p>
         </div>
       </div>
@@ -215,32 +218,36 @@ export function RunIdentityPanel({
       <Separator />
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
-        <Field label="Sampling policy">
+        <Field label={t("run.identity.samplingPolicy")}>
           <Value value={point?.sampling?.policy} />
         </Field>
-        <Field label="Selected within">
+        <Field label={t("run.identity.selectedWithin")}>
           <Value value={point?.sampling?.selected_within} />
         </Field>
-        <Field label="Tasks in sampling">
+        <Field label={t("run.identity.tasksInSampling")}>
           <Value value={point?.sampling?.task_ids?.length} />
         </Field>
-        <Field label="Selection basis round">
+        <Field label={t("run.identity.selectionBasisRound")}>
           <Value value={point?.sampling?.selection_basis_round} />
         </Field>
-        <Field label="Platform content sha" hint="run_meta.platform.content_sha — required for certification">
+        <Field label={t("run.identity.platformContentSha")} hint={t("run.identity.platformContentShaHint")}>
           <span className="font-mono">{platform?.content_sha ?? "—"}</span>
         </Field>
-        <Field label="Platform git sha">
+        <Field label={t("run.identity.platformGitSha")}>
           <span className="font-mono">{platform?.git_sha?.slice(0, 12) ?? "—"}</span>
         </Field>
-        <Field label="Platform tree dirty">
+        <Field label={t("run.identity.platformTreeDirty")}>
           <Value value={platform?.dirty === undefined ? undefined : String(platform.dirty)} />
         </Field>
-        <Field label="Sandbox">
+        <Field label={t("run.identity.sandbox")}>
           {meta.sandbox ? (
             <span>
-              {meta.sandbox.active ? "active" : "inactive"}
-              {meta.sandbox.plan_version ? ` · plan v${meta.sandbox.plan_version}` : ""}
+              {meta.sandbox.active
+                ? t("run.identity.sandboxActive")
+                : t("run.identity.sandboxInactive")}
+              {meta.sandbox.plan_version
+                ? ` · ${t("run.identity.sandboxPlan", { version: meta.sandbox.plan_version })}`
+                : ""}
             </span>
           ) : (
             <Value value={undefined} />
@@ -252,9 +259,7 @@ export function RunIdentityPanel({
       ) : null}
       {(!platform?.content_sha) ? (
         <p className="text-2xs leading-snug text-warn">
-          This run records no `platform.content_sha`. It can still be `valid`, but its numbers
-          cannot be compared with a run made by different code — which is what `certified`
-          means.
+          {t("run.identity.noContentSha")}
         </p>
       ) : null}
     </div>

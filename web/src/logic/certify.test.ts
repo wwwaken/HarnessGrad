@@ -24,7 +24,7 @@ describe("badgeFor", () => {
     const badge = badgeFor(certify({ certified: true, platform_content_sha: "abc" }));
     expect(badge.level).toBe("certified");
     expect(badge.tone).toBe("pass");
-    expect(badge.explanation).toContain("content hash");
+    expect(badge.explanationKey).toBe("record.certify.certifiedWhy");
   });
 
   it("keeps valid-but-uncertified distinct, with the reason attached", () => {
@@ -72,12 +72,12 @@ describe("badgeFor", () => {
     const badge = badgeFor(certify({ points: 0, rounds: [], valid: false, final_score: null }));
     expect(badge.level).toBe("no-points");
     expect(badge.tone).toBe("muted");
-    expect(badge.explanation).toContain("nothing was measured");
+    expect(badge.explanationKey).toBe("record.certify.notMeasuredWhy");
   });
 
   it("returns an unknown badge when no validation result exists", () => {
     expect(badgeFor(null).level).toBe("no-points");
-    expect(badgeFor(undefined).label).toBe("unknown");
+    expect(badgeFor(undefined).labelKey).toBe("record.certify.unknown");
   });
 });
 

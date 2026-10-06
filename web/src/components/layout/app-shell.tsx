@@ -1,38 +1,37 @@
 import type { ReactNode } from "react";
+import type { TranslationKey } from "@/i18n/en";
 import { NavLink, Outlet } from "react-router-dom";
 import { FlaskConical, GitCompareArrows, Info, Rocket, Sigma } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LanguageToggle } from "@/components/layout/language-toggle";
+import { useT } from "@/i18n";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { availableRunIds } from "@/lib/api";
 import { useBackend } from "@/hooks/use-backend";
 import { cn } from "@/lib/utils";
 
+/**
+ * The destinations, named by translation key rather than by label: the key is a constant and
+ * the label is not, so a `NAV` that held strings would have to be rebuilt on every language
+ * change and could not be declared at module scope at all.
+ */
 const NAV = [
-  {
-    to: "/experiments",
-    label: "Experiments",
-    icon: FlaskConical,
-    hint: "Every run, and whether its numbers can be quoted",
-  },
-  {
-    to: "/compare",
-    label: "Compare",
-    icon: GitCompareArrows,
-    hint: "Two runs side by side: which tasks moved",
-  },
-  {
-    to: "/launch",
-    label: "Launch",
-    icon: Rocket,
-    hint: "Configure a run and read the argv it would produce",
-  },
-];
+  { to: "/experiments", label: "nav.experiments", icon: FlaskConical, hint: "nav.experimentsHint" },
+  { to: "/compare", label: "nav.compare", icon: GitCompareArrows, hint: "nav.compareHint" },
+  { to: "/launch", label: "nav.launch", icon: Rocket, hint: "nav.launchHint" },
+] as const satisfies readonly {
+  to: string;
+  label: TranslationKey;
+  icon: typeof FlaskConical;
+  hint: TranslationKey;
+}[];
 
 function NavItem({ to, label, icon: Icon, hint }: (typeof NAV)[number]) {
+  const t = useT();
   return (
     <NavLink
       to={to}
-      title={hint}
+      title={t(hint)}
       className={({ isActive }) =>
         cn(
           "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
@@ -43,7 +42,7 @@ function NavItem({ to, label, icon: Icon, hint }: (typeof NAV)[number]) {
       }
     >
       <Icon className="h-3.5 w-3.5" />
-      {label}
+      {t(label)}
     </NavLink>
   );
 }
@@ -58,6 +57,7 @@ function NavItem({ to, label, icon: Icon, hint }: (typeof NAV)[number]) {
  * the exact class of error the platform exists to prevent.
  */
 export function AppShell() {
+  const t = useT();
   const backend = useBackend();
   const live = backend.mode === "live";
   return (
@@ -70,7 +70,7 @@ export function AppShell() {
             </div>
             <div className="leading-tight">
               <div className="text-xs font-semibold tracking-tight">HarnessGrad</div>
-              <div className="text-2xs text-muted-foreground">harness self-improvement</div>
+              <div className="text-2xs text-muted-foreground">{t("app.tagline")}</div>
             </div>
           </div>
           <nav className="flex flex-col gap-0.5 px-2 pt-1">
@@ -80,7 +80,7 @@ export function AppShell() {
           </nav>
           <div className="mt-3 px-3">
             <div className="text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-              {live ? "Shortcuts" : "Fixture runs"}
+              {live ? t("nav.shortcuts") : t("nav.fixtureRuns")}
             </div>
             <div className="mt-1 space-y-0.5">
               {availableRunIds().map((id) => (
@@ -115,16 +115,19 @@ export function AppShell() {
                         : "text-foreground",
                   )}
                 >
-                  {backend.label}.
+                  {t(backend.labelKey)}.
                 </span>{" "}
                 {live
-                  ? `Serving ${backend.runs ?? "?"} run row(s) from the read API.`
-                  : "Reading the curated fixture subset; the read API is not in use."}
+                  ? t("nav.servingLive", { n: backend.runs ?? "?" })
+                  : t("nav.servingFixtures")}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-2xs text-muted-foreground">v0.1 scaffold</span>
-              <ThemeToggle />
+              <span className="text-2xs text-muted-foreground">{t("app.version")}</span>
+              <div className="flex items-center gap-1">
+                <LanguageToggle />
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </aside>
@@ -147,7 +150,7 @@ export function AppShell() {
                       )
                     }
                   >
-                    {label}
+                    {t(label)}
                   </NavLink>
                 ))}
               </nav>
@@ -162,11 +165,12 @@ export function AppShell() {
                         : "bg-muted text-foreground",
                   )}
                 >
-                  {backend.label}
+                  {t(backend.labelKey)}
                 </span>
-                <span className="truncate">{backend.note}</span>
+                <span className="truncate">{t(backend.noteKey, backend.noteParams)}</span>
               </div>
-              <div className="md:hidden">
+              <div className="flex items-center gap-1 md:hidden">
+                <LanguageToggle />
                 <ThemeToggle />
               </div>
             </div>

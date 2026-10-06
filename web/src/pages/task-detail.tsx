@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRun, useTaskPage } from "@/hooks/queries";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { formatScore } from "@/lib/format";
 
@@ -24,6 +25,7 @@ import { formatScore } from "@/lib/format";
  * nudged, or was clipped — all of which are events, not text.
  */
 export function TaskDetailPage() {
+  const t = useT();
   const { runId, round, taskId } = useParams<{ runId: string; round: string; taskId: string }>();
   const roundNumber = round !== undefined ? Number(round) : undefined;
   const page = useTaskPage(runId, roundNumber, taskId);
@@ -63,7 +65,7 @@ export function TaskDetailPage() {
         title={<span className="font-mono text-base">{taskId}</span>}
         description={
           <>
-            {runId} · round {roundNumber}
+            {runId} · {t("task.roundN", { n: roundNumber ?? 0 })}
             {point ? (
               <>
                 {" · "}
@@ -74,18 +76,23 @@ export function TaskDetailPage() {
         }
         meta={
           <>
-            <Badge variant="muted">score {formatScore(score)}</Badge>
+            <Badge variant="muted">{t("task.badgeScore", { value: formatScore(score) })}</Badge>
             <Badge variant="info">
-              test_rate {rate === undefined ? "absent" : rate === null ? "null" : formatScore(rate)}
+              {t("task.badgeTestRate", {
+                value:
+                  rate === undefined ? t("task.absent") : rate === null ? "null" : formatScore(rate),
+              })}
             </Badge>
-            {data.verdict?.kind ? <Badge variant="muted">verifier {data.verdict.kind}</Badge> : null}
+            {data.verdict?.kind ? (
+              <Badge variant="muted">{t("task.badgeVerifier", { kind: data.verdict.kind })}</Badge>
+            ) : null}
           </>
         }
         actions={
           <Button variant="outline" size="sm" asChild>
             <Link to={`/runs/${runId}`}>
               <ArrowLeft className="h-3.5 w-3.5" />
-              Back to run
+              {t("task.backToRun")}
             </Link>
           </Button>
         }
@@ -93,7 +100,9 @@ export function TaskDetailPage() {
 
       {taskIds.length ? (
         <div className="flex flex-wrap items-center gap-1">
-          <span className="mr-1 text-2xs text-muted-foreground">tasks in round {roundNumber}</span>
+          <span className="mr-1 text-2xs text-muted-foreground">
+            {t("task.tasksInRound", { n: roundNumber ?? 0 })}
+          </span>
           {taskIds.map((id) => (
             <Link
               key={id}
@@ -114,8 +123,8 @@ export function TaskDetailPage() {
       <div className="grid gap-4 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
         <div className="xl:sticky xl:top-14 xl:self-start">
           <Section
-            title="Verdict"
-            description="The verifier's own account: passed, score, the per-test tally, and the full detail string."
+            title={t("task.verdictSection")}
+            description={t("task.verdictSectionHint")}
           >
             <VerdictPanel verdict={data.verdict} problems={data.verdict_problems} />
           </Section>
@@ -123,14 +132,14 @@ export function TaskDetailPage() {
 
         <Tabs defaultValue="trace">
           <TabsList>
-            <TabsTrigger value="trace">Trace</TabsTrigger>
-            <TabsTrigger value="diff">Candidate diff</TabsTrigger>
-            <TabsTrigger value="raw">Raw events</TabsTrigger>
+            <TabsTrigger value="trace">{t("task.tabTrace")}</TabsTrigger>
+            <TabsTrigger value="diff">{t("task.tabDiff")}</TabsTrigger>
+            <TabsTrigger value="raw">{t("task.tabRaw")}</TabsTrigger>
           </TabsList>
           <TabsContent value="trace">
             <Section
-              title="Trace timeline"
-              description="Steps, model replies, commands and their output, nudges and submit attempts — the narrative the JSONL encodes."
+              title={t("task.traceSection")}
+              description={t("task.traceSectionHint")}
             >
               {data.trace_problems.length ? (
                 <div className="mb-2 space-y-1">
@@ -146,24 +155,24 @@ export function TaskDetailPage() {
           </TabsContent>
           <TabsContent value="diff">
             <Section
-              title={`Candidate diff · round ${roundNumber}`}
-              description="The edit that produced this round, as saved by the platform."
+              title={t("task.diffSection", { n: roundNumber ?? 0 })}
+              description={t("task.diffSectionHint")}
             >
               <CodeView
                 value={diff?.patch ?? ""}
                 language="diff"
                 height={480}
-                emptyLabel="No patch saved for this round"
+                emptyLabel={t("task.noPatchThisRound")}
               />
             </Section>
           </TabsContent>
           <TabsContent value="raw">
             <Section
-              title="Raw trace events"
-              description="The parsed JSONL, one object per line, in file order. Kept reachable so a reader can check the timeline against the record rather than trusting the rendering."
+              title={t("task.rawSection")}
+              description={t("task.rawSectionHint")}
             >
               <pre className="max-h-[560px] overflow-auto whitespace-pre-wrap break-all rounded-md border border-border bg-muted/30 px-2.5 py-2 font-mono text-2xs">
-                {data.trace.map((event) => JSON.stringify(event)).join("\n") || "(no events)"}
+                {data.trace.map((event) => JSON.stringify(event)).join("\n") || t("task.noEvents")}
               </pre>
             </Section>
           </TabsContent>

@@ -1,3 +1,5 @@
+import type { TranslationKey } from "@/i18n/en";
+
 import type { CertifyResult, RunSummary } from "@/types";
 
 /**
@@ -29,11 +31,15 @@ export type BadgeTone = "pass" | "info" | "warn" | "fail" | "muted";
 
 export interface CertifyBadge {
   level: CertifyLevel;
-  /** One word for the cell. */
-  label: string;
+  /**
+   * One word for the cell — as a **translation key**, so this module stays language-free.
+   * `problems` and `certificationNote` below stay as recorded: they are the platform's own
+   * sentences about this run, and a translated log is a log nobody can grep.
+   */
+  labelKey: TranslationKey;
   tone: BadgeTone;
-  /** One sentence: what this level means for quoting the number. */
-  explanation: string;
+  /** One sentence: what this level means for quoting the number. A key, for the same reason. */
+  explanationKey: TranslationKey;
   problems: string[];
   notes: string[];
   /** The note that explains why a `valid` run is not `certified`, when there is one. */
@@ -47,9 +53,9 @@ export function badgeFor(certify: CertifyResult | null | undefined): CertifyBadg
   if (!certify) {
     return {
       level: "no-points",
-      label: "unknown",
+      labelKey: "record.certify.unknown",
       tone: "muted",
-      explanation: "no validation result was returned for this run",
+      explanationKey: "record.certify.unknownWhy",
       problems: [],
       notes: [],
       certificationNote: null,
@@ -71,51 +77,44 @@ export function badgeFor(certify: CertifyResult | null | undefined): CertifyBadg
     return {
       ...base,
       level: "tampered",
-      label: "tampered",
+      labelKey: "record.certify.tampered",
       tone: "fail",
-      explanation:
-        "the platform's own files moved while this run was executing — the numbers were " +
-        "produced under different code than the record claims",
+      explanationKey: "record.certify.tamperedWhy",
     };
   }
   if (certify.points === 0) {
     return {
       ...base,
       level: "no-points",
-      label: "not measured",
+      labelKey: "record.certify.notMeasured",
       tone: "muted",
-      explanation: "the run directory holds no curve point: nothing was measured",
+      explanationKey: "record.certify.notMeasuredWhy",
     };
   }
   if (!certify.valid) {
     return {
       ...base,
       level: "invalid",
-      label: "invalid",
+      labelKey: "record.certify.invalid",
       tone: "fail",
-      explanation:
-        "at least one point cannot be read as a measurement — see the problems below",
+      explanationKey: "record.certify.invalidWhy",
     };
   }
   if (certify.certified) {
     return {
       ...base,
       level: "certified",
-      label: "certified",
+      labelKey: "record.certify.certified",
       tone: "pass",
-      explanation:
-        "readable, measured by the platform, and the record names the platform that " +
-        "produced it — comparable with any run made by the same content hash",
+      explanationKey: "record.certify.certifiedWhy",
     };
   }
   return {
     ...base,
     level: "valid",
-    label: "valid",
+    labelKey: "record.certify.valid",
     tone: "info",
-    explanation:
-      "readable and measured by the platform, but the record does not name the platform " +
-      "that produced it — its numbers cannot be compared with a run made by different code",
+    explanationKey: "record.certify.validWhy",
   };
 }
 

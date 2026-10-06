@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { ValidityFilter } from "@/logic/certify";
+import { useT } from "@/i18n";
+import type { TranslationKey } from "@/i18n/en";
 import type { RunSummary } from "@/types";
 
 export interface ExperimentsFilters {
@@ -28,13 +30,17 @@ export const DEFAULT_FILTERS: ExperimentsFilters = {
   agentModel: "all",
 };
 
-const VALIDITY_LABELS: Record<ValidityFilter, string> = {
-  all: "All runs",
-  quotable: "Quotable (valid or certified)",
-  certified: "Certified only",
-  valid: "Valid, not certified",
-  invalid: "Invalid or tampered",
-  "no-points": "Nothing measured",
+/**
+ * The validity choices, named by translation key rather than by label: the key is a constant
+ * and the label is not, so this map can stay at module scope and be read through `t` at render.
+ */
+const VALIDITY_LABELS: Record<ValidityFilter, TranslationKey> = {
+  all: "experiments.validityAll",
+  quotable: "experiments.validityQuotable",
+  certified: "experiments.validityCertified",
+  valid: "experiments.validityValid",
+  invalid: "experiments.validityInvalid",
+  "no-points": "experiments.validityNoPoints",
 };
 
 function unique(values: Array<string | null>): string[] {
@@ -56,6 +62,7 @@ export function ExperimentsToolbar({
   onChange: (next: ExperimentsFilters) => void;
   matched: number;
 }) {
+  const t = useT();
   const harnesses = unique(rows.map((r) => r.harness));
   const datasets = unique(rows.map((r) => r.dataset));
   const models = unique(rows.map((r) => r.agent_model));
@@ -69,20 +76,20 @@ export function ExperimentsToolbar({
   return (
     <div className="flex flex-wrap items-end gap-3">
       <div className="min-w-[220px] flex-1 space-y-1">
-        <Label htmlFor="run-search">Search</Label>
+        <Label htmlFor="run-search">{t("experiments.searchLabel")}</Label>
         <div className="relative">
           <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="run-search"
             value={filters.search}
             onChange={(e) => onChange({ ...filters, search: e.target.value })}
-            placeholder="run id, model, harness, dataset, improver"
+            placeholder={t("experiments.searchPlaceholder")}
             className="h-8 pl-7 text-xs"
           />
         </div>
       </div>
       <div className="w-[220px] space-y-1">
-        <Label>Validity</Label>
+        <Label>{t("experiments.validityLabel")}</Label>
         <Select
           value={filters.validity}
           onValueChange={(value) => onChange({ ...filters, validity: value as ValidityFilter })}
@@ -93,14 +100,14 @@ export function ExperimentsToolbar({
           <SelectContent>
             {(Object.keys(VALIDITY_LABELS) as ValidityFilter[]).map((key) => (
               <SelectItem key={key} value={key}>
-                {VALIDITY_LABELS[key]}
+                {t(VALIDITY_LABELS[key])}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
       <div className="w-[150px] space-y-1">
-        <Label>Harness</Label>
+        <Label>{t("experiments.harnessLabel")}</Label>
         <Select
           value={filters.harness}
           onValueChange={(value) => onChange({ ...filters, harness: value })}
@@ -109,7 +116,7 @@ export function ExperimentsToolbar({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All harnesses</SelectItem>
+            <SelectItem value="all">{t("experiments.allHarnesses")}</SelectItem>
             {harnesses.map((h) => (
               <SelectItem key={h} value={h}>
                 {h}
@@ -119,7 +126,7 @@ export function ExperimentsToolbar({
         </Select>
       </div>
       <div className="w-[170px] space-y-1">
-        <Label>Dataset</Label>
+        <Label>{t("experiments.datasetLabel")}</Label>
         <Select
           value={filters.dataset}
           onValueChange={(value) => onChange({ ...filters, dataset: value })}
@@ -128,7 +135,7 @@ export function ExperimentsToolbar({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All datasets</SelectItem>
+            <SelectItem value="all">{t("experiments.allDatasets")}</SelectItem>
             {datasets.map((d) => (
               <SelectItem key={d} value={d}>
                 {d}
@@ -138,7 +145,7 @@ export function ExperimentsToolbar({
         </Select>
       </div>
       <div className="w-[190px] space-y-1">
-        <Label>Agent model</Label>
+        <Label>{t("experiments.agentModelLabel")}</Label>
         <Select
           value={filters.agentModel}
           onValueChange={(value) => onChange({ ...filters, agentModel: value })}
@@ -147,7 +154,7 @@ export function ExperimentsToolbar({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All models</SelectItem>
+            <SelectItem value="all">{t("experiments.allModels")}</SelectItem>
             {models.map((m) => (
               <SelectItem key={m} value={m}>
                 {m}
@@ -158,12 +165,12 @@ export function ExperimentsToolbar({
       </div>
       <div className="flex items-center gap-2 pb-0.5">
         <span className="text-2xs text-muted-foreground">
-          {matched} match{matched === 1 ? "" : "es"}
+          {t(matched === 1 ? "experiments.matchOne" : "experiments.matchMany", { n: matched })}
         </span>
         {dirty ? (
           <Button variant="ghost" size="xs" onClick={() => onChange(DEFAULT_FILTERS)}>
             <X className="h-3 w-3" />
-            Reset
+            {t("experiments.reset")}
           </Button>
         ) : null}
       </div>

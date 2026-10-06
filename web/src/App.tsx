@@ -7,6 +7,7 @@ import { ComparePage } from "@/pages/compare";
 import { TaskDetailPage } from "@/pages/task-detail";
 import { LaunchPage } from "@/pages/launch";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/i18n";
 
 /**
  * The five screens. `/compare` is a top-level destination rather than a mode of the run
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
  * deeper would make the number the default view again.
  */
 export function App() {
+  const t = useT();
   return (
     <Routes>
       <Route element={<AppShell />}>
@@ -28,11 +30,11 @@ export function App() {
           element={
             <PageContainer>
               <EmptyState
-                title="No such screen"
-                description="The five screens are Experiments, Run detail, Compare, Task detail and Launch."
+                title={t("app.noSuchScreen")}
+                description={t("app.noSuchScreenHint")}
                 action={
                   <Button asChild size="sm" variant="outline">
-                    <Link to="/experiments">Back to Experiments</Link>
+                    <Link to="/experiments">{t("app.backToExperiments")}</Link>
                   </Button>
                 }
               />

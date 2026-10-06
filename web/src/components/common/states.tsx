@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { ApiError } from "@/lib/api";
+import { useT } from "@/i18n";
+import type { TranslationKey } from "@/i18n/en";
 
 /**
  * Empty, error and loading states.
@@ -53,18 +55,19 @@ export function ErrorState({
   onRetry?: () => void;
   className?: string;
 }) {
+  const t = useT();
   const api = error as Partial<ApiError> | undefined;
   const kind = api?.kind ?? "network";
-  const title =
-    kind === "not-found"
-      ? "Not found"
-      : kind === "bad-request"
-        ? "The request was refused"
-        : kind === "unavailable"
-          ? "The read API is not available"
-          : kind === "parse"
-            ? "The record could not be parsed"
-            : "Could not load the data";
+  // The *message* under this heading is the platform's and stays as recorded; the heading is
+  // the app's own voice and is translated. `common.*` is the mapping, and it is exhaustive
+  // by type so a new `ApiError["kind"]` cannot silently fall through to English.
+  const titleKey: Record<string, TranslationKey> = {
+    "not-found": "common.notFound",
+    "bad-request": "common.badRequest",
+    unavailable: "common.unavailable",
+    parse: "common.parse",
+  };
+  const title = t(titleKey[kind] ?? "common.loadFailed");
   return (
     <div
       className={cn(
@@ -89,7 +92,7 @@ export function ErrorState({
       {onRetry ? (
         <Button variant="outline" size="xs" onClick={onRetry}>
           <RefreshCw className="h-3 w-3" />
-          Retry
+          {t("common.retry")}
         </Button>
       ) : null}
     </div>

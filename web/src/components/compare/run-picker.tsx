@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useT } from "@/i18n";
 import type { RunSummary } from "@/types";
 
 /**
@@ -43,13 +44,14 @@ export function RunPicker({
   onSwap: () => void;
   roundsFor: (runId: string) => number[];
 }) {
+  const t = useT();
   return (
     <div className="flex flex-wrap items-end gap-3">
       <div className="min-w-[200px] flex-1 space-y-1">
-        <Label>Left run</Label>
+        <Label>{t("compare.leftRun")}</Label>
         <Select value={leftId} onValueChange={onLeft}>
           <SelectTrigger>
-            <SelectValue placeholder="pick a run" />
+            <SelectValue placeholder={t("compare.pickRun")} />
           </SelectTrigger>
           <SelectContent>
             {runs.map((run) => (
@@ -61,31 +63,31 @@ export function RunPicker({
         </Select>
       </div>
       <div className="w-[110px] space-y-1">
-        <Label>Round</Label>
+        <Label>{t("compare.round")}</Label>
         <Select
           value={leftRound === null ? "" : String(leftRound)}
           onValueChange={(v) => onLeftRound(Number(v))}
         >
           <SelectTrigger>
-            <SelectValue placeholder="last" />
+            <SelectValue placeholder={t("compare.lastRound")} />
           </SelectTrigger>
           <SelectContent>
             {roundsFor(leftId).map((round) => (
               <SelectItem key={round} value={String(round)}>
-                round {round}
+                {t("compare.roundOption", { round })}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-      <Button variant="ghost" size="icon" onClick={onSwap} title="Swap sides" className="mb-0.5">
+      <Button variant="ghost" size="icon" onClick={onSwap} title={t("compare.swapSides")} className="mb-0.5">
         <ArrowLeftRight className="h-4 w-4" />
       </Button>
       <div className="min-w-[200px] flex-1 space-y-1">
-        <Label>Right run</Label>
+        <Label>{t("compare.rightRun")}</Label>
         <Select value={rightId} onValueChange={onRight}>
           <SelectTrigger>
-            <SelectValue placeholder="pick a run" />
+            <SelectValue placeholder={t("compare.pickRun")} />
           </SelectTrigger>
           <SelectContent>
             {runs.map((run) => (
@@ -97,18 +99,18 @@ export function RunPicker({
         </Select>
       </div>
       <div className="w-[110px] space-y-1">
-        <Label>Round</Label>
+        <Label>{t("compare.round")}</Label>
         <Select
           value={rightRound === null ? "" : String(rightRound)}
           onValueChange={(v) => onRightRound(Number(v))}
         >
           <SelectTrigger>
-            <SelectValue placeholder="last" />
+            <SelectValue placeholder={t("compare.lastRound")} />
           </SelectTrigger>
           <SelectContent>
             {roundsFor(rightId).map((round) => (
               <SelectItem key={round} value={String(round)}>
-                round {round}
+                {t("compare.roundOption", { round })}
               </SelectItem>
             ))}
           </SelectContent>

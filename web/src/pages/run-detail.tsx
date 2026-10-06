@@ -11,6 +11,7 @@ import { RoundDiffPanel } from "@/components/run/round-diff-panel";
 import { RunHeader } from "@/components/run/run-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRun, useRuns } from "@/hooks/queries";
+import { useT } from "@/i18n";
 import { buildCurveView } from "@/logic/curve";
 import { badgeFor } from "@/logic/certify";
 
@@ -24,6 +25,7 @@ import { badgeFor } from "@/logic/certify";
  * one click from the curve point that says round 1 did something.
  */
 export function RunDetailPage() {
+  const t = useT();
   const { runId } = useParams<{ runId: string }>();
   const bundle = useRun(runId);
   const runs = useRuns();
@@ -71,8 +73,8 @@ export function RunDetailPage() {
 
       {bundle.data.load_problems.length ? (
         <Section
-          title="Problems reading this run"
-          description="The read API reported these while loading the run directory. A run that is being written right now can be caught mid-write; the response is still a page, not a 500."
+          title={t("run.problems")}
+          description={t("run.problemsHint")}
           className="border-warn/30"
         >
           <ul className="list-disc space-y-1 pl-4 text-2xs text-warn">
@@ -85,8 +87,8 @@ export function RunDetailPage() {
 
       {badge.problems.length ? (
         <Section
-          title="Why this run is not quotable"
-          description="Problems reported by certify() — a point that cannot be read as a measurement."
+          title={t("run.notQuotable")}
+          description={t("run.notQuotableHint")}
           className="border-fail/30"
         >
           <ul className="list-disc space-y-1 pl-4 text-2xs text-fail">
@@ -99,16 +101,16 @@ export function RunDetailPage() {
 
       {badge.certificationNote && badge.level === "valid" ? (
         <Section
-          title="Valid, but not certified"
-          description="Both are quotable; only certified runs can be compared with a run made by different code."
+          title={t("run.notCertified")}
+          description={t("run.notCertifiedHint")}
         >
           <p className="text-2xs text-muted-foreground">{badge.certificationNote}</p>
         </Section>
       ) : null}
 
       <Section
-        title="Curve"
-        description="score and test_rate are two different measurements of the same artifact. The score is the mean over the round's scored tasks; test_rate is the check's own test tally, averaged over the tasks whose check reported one."
+        title={t("run.curve")}
+        description={t("run.curveHint")}
       >
         <CurveChart
           view={view}
@@ -118,8 +120,8 @@ export function RunDetailPage() {
       </Section>
 
       <Section
-        title="Measured states"
-        description="One card per curve point. Click a card to drive the per-task table and the candidate diff below."
+        title={t("run.states")}
+        description={t("run.statesHint")}
       >
         <PointStrip
           points={view.points}
@@ -130,14 +132,22 @@ export function RunDetailPage() {
 
       <Tabs defaultValue="tasks" className="space-y-1">
         <TabsList>
-          <TabsTrigger value="tasks">Per-task {selectedRound !== null ? `· round ${selectedRound}` : ""}</TabsTrigger>
-          <TabsTrigger value="diff">Candidate diff {selectedRound !== null ? `· round ${selectedRound}` : ""}</TabsTrigger>
-          <TabsTrigger value="identity">Identity &amp; config</TabsTrigger>
+          <TabsTrigger value="tasks">
+            {selectedRound !== null
+              ? t("run.tab.tasksRound", { round: selectedRound })
+              : t("run.tab.tasks")}
+          </TabsTrigger>
+          <TabsTrigger value="diff">
+            {selectedRound !== null
+              ? t("run.tab.diffRound", { round: selectedRound })
+              : t("run.tab.diff")}
+          </TabsTrigger>
+          <TabsTrigger value="identity">{t("run.tab.identity")}</TabsTrigger>
         </TabsList>
         <TabsContent value="tasks">
           <Section
-            title={`Per-task scoring · round ${selectedRound ?? "—"}`}
-            description="Every task the round scored, with its verdict detail. A `test_rate` of 0.80 beside a score of 0.000 is a task where four of five checks passed and the all-or-nothing reward said nothing happened."
+            title={t("run.tasks.title", { round: selectedRound ?? "—" })}
+            description={t("run.tasks.description")}
           >
             <PerTaskTable
               runId={bundle.data.run_id}
@@ -149,8 +159,8 @@ export function RunDetailPage() {
         </TabsContent>
         <TabsContent value="diff">
           <Section
-            title={`Candidate diff · round ${selectedRound ?? "—"}`}
-            description="The git diff the platform saved beside this point, so the record still shows what changed after the workspace's dangling commits are collected."
+            title={t("run.diff.title", { round: selectedRound ?? "—" })}
+            description={t("run.diff.description")}
           >
             {selectedRound === null ? (
               <ChartSkeleton />
@@ -161,8 +171,8 @@ export function RunDetailPage() {
         </TabsContent>
         <TabsContent value="identity">
           <Section
-            title="Identity, environment and cost"
-            description="The fields that explain the score: which harness sha, which two models, which pinned image, and the three cost budgets — which are never summed."
+            title={t("run.identity.title")}
+            description={t("run.identity.description")}
           >
             <RunIdentityPanel meta={bundle.data.meta} point={point} />
           </Section>

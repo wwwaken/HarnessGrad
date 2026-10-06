@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRoundDiff } from "@/hooks/queries";
+import { useT } from "@/i18n";
 import { shortSha } from "@/lib/format";
 import type { RunBundle, RoundDiff } from "@/types";
 import type { RunComparison } from "@/logic/compare";
@@ -34,6 +35,7 @@ export function CandidateDiffs({
   leftBundle: RunBundle;
   rightBundle: RunBundle;
 }) {
+  const t = useT();
   const [mode, setMode] = useState<"side" | "compare">("side");
   const leftQuery = useRoundDiff(leftBundle.run_id, comparison.leftRound);
   const rightQuery = useRoundDiff(rightBundle.run_id, comparison.rightRound);
@@ -65,8 +67,8 @@ export function CandidateDiffs({
   if (!leftDiff && !rightDiff) {
     return (
       <EmptyState
-        title="Neither run saved a diff for its compared round"
-        description="Round 0 is the unmodified base harness and has no diff; older runs predate records.py:_save_round_diff, which persists the round's patch beside the point."
+        title={t("compare.noDiffBoth")}
+        description={t("compare.noDiffBothHint")}
       />
     );
   }
@@ -81,7 +83,7 @@ export function CandidateDiffs({
             onClick={() => setMode("side")}
           >
             <Columns2 className="h-3 w-3" />
-            Both patches
+            {t("compare.bothPatches")}
           </Button>
           <Button
             variant={mode === "compare" ? "secondary" : "ghost"}
@@ -89,30 +91,36 @@ export function CandidateDiffs({
             onClick={() => setMode("compare")}
           >
             <FileDiff className="h-3 w-3" />
-            Patch vs patch
+            {t("compare.patchVsPatch")}
           </Button>
         </div>
         <span className="text-2xs text-muted-foreground">
-          read from <span className="font-mono">GET /api/runs/&lt;id&gt;/rounds/&lt;n&gt;/diff</span>
+          {t("compare.readFrom")}{" "}
+          <span className="font-mono">GET /api/runs/&lt;id&gt;/rounds/&lt;n&gt;/diff</span>
         </span>
       </div>
 
       {mode === "side" ? (
         <div className="grid gap-3 xl:grid-cols-2">
           <Side
-            title={`${comparison.leftRunId} · round ${comparison.leftRound}`}
+            title={t("compare.sideLabel", {
+              run: comparison.leftRunId,
+              round: String(comparison.leftRound),
+            })}
             diff={leftDiff}
           />
           <Side
-            title={`${comparison.rightRunId} · round ${comparison.rightRound}`}
+            title={t("compare.sideLabel", {
+              run: comparison.rightRunId,
+              round: String(comparison.rightRound),
+            })}
             diff={rightDiff}
           />
         </div>
       ) : (
         <div className="space-y-2">
           <p className="text-2xs text-muted-foreground">
-            The left patch is the “original” and the right patch the “modified”. A hunk that
-            appears only on one side is a change only one method made.
+            {t("compare.patchVsPatchHint")}
           </p>
           <DiffView
             original={leftDiff?.patch ?? ""}
@@ -127,6 +135,7 @@ export function CandidateDiffs({
 }
 
 function Side({ title, diff }: { title: string; diff: RoundDiff | null }) {
+  const t = useT();
   const statKnown = diff !== null && typeof diff.added === "number" && typeof diff.removed === "number";
   return (
     <div className="space-y-1.5">
@@ -143,21 +152,21 @@ function Side({ title, diff }: { title: string; diff: RoundDiff | null }) {
                 <span className="tabular text-2xs text-fail">−{diff.removed}</span>
               </>
             ) : (
-              <Badge variant="warn">stat unreadable</Badge>
+              <Badge variant="warn">{t("compare.statUnreadable")}</Badge>
             )}
             <span className="text-2xs text-muted-foreground">
-              {diff.files.map((f) => f.path).join(", ") || "no textual change"}
+              {diff.files.map((f) => f.path).join(", ") || t("compare.noTextualChange")}
             </span>
           </>
         ) : (
-          <Badge variant="muted">no patch saved</Badge>
+          <Badge variant="muted">{t("compare.noPatchSaved")}</Badge>
         )}
       </div>
       <CodeView
         value={diff?.patch ?? ""}
         language="diff"
         height={520}
-        emptyLabel="No patch saved for this round"
+        emptyLabel={t("compare.noPatchForRound")}
       />
     </div>
   );

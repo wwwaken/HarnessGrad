@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { EmptyState } from "@/components/common/states";
+import { useT } from "@/i18n";
 import { formatDuration } from "@/lib/format";
 import { buildTimeline, traceSummary, type TimelineItem } from "@/logic/trace";
 import { cn } from "@/lib/utils";
@@ -33,14 +34,15 @@ import type { JsonValue, TraceEvent } from "@/types";
  * is shown as the harness's own decision to bound the output, with both counts.
  */
 export function TraceTimeline({ events }: { events: TraceEvent[] }) {
+  const t = useT();
   const timeline = buildTimeline(events);
   const summary = traceSummary(timeline);
 
   if (!events.length) {
     return (
       <EmptyState
-        title="No trace for this task"
-        description="The run directory has no round<N>_traces/<task>.jsonl for this task, or the trace is not part of the fixture subset. The read API must return it parsed, one event per line, in file order."
+        title={t("task.noTrace")}
+        description={t("task.noTraceHint")}
       />
     );
   }
@@ -48,25 +50,37 @@ export function TraceTimeline({ events }: { events: TraceEvent[] }) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-border bg-card px-3 py-2 text-2xs">
-        <span className="font-medium">{summary.steps} step(s)</span>
-        <span className="text-muted-foreground">{summary.commands} command(s)</span>
+        <span className="font-medium">{t("task.summarySteps", { n: summary.steps })}</span>
+        <span className="text-muted-foreground">
+          {t("task.summaryCommands", { n: summary.commands })}
+        </span>
         {summary.failedCommands ? (
-          <span className="text-fail">{summary.failedCommands} non-zero exit(s)</span>
-        ) : null}
-        {summary.nudges ? <span className="text-warn">{summary.nudges} nudge(s)</span> : null}
-        <span className="text-muted-foreground">model {formatDuration(summary.modelMs / 1000)}</span>
-        <span className="text-muted-foreground">exec {formatDuration(summary.commandMs / 1000)}</span>
-        {timeline.wallClockS !== null ? (
-          <span className="text-muted-foreground">
-            wall {formatDuration(timeline.wallClockS)}
+          <span className="text-fail">
+            {t("task.summaryFailedExits", { n: summary.failedCommands })}
           </span>
         ) : null}
-        <span className="ml-auto text-muted-foreground">{events.length} events</span>
+        {summary.nudges ? (
+          <span className="text-warn">{t("task.summaryNudges", { n: summary.nudges })}</span>
+        ) : null}
+        <span className="text-muted-foreground">
+          {t("task.summaryModel", { time: formatDuration(summary.modelMs / 1000) })}
+        </span>
+        <span className="text-muted-foreground">
+          {t("task.summaryExec", { time: formatDuration(summary.commandMs / 1000) })}
+        </span>
+        {timeline.wallClockS !== null ? (
+          <span className="text-muted-foreground">
+            {t("task.summaryWall", { time: formatDuration(timeline.wallClockS) })}
+          </span>
+        ) : null}
+        <span className="ml-auto text-muted-foreground">
+          {t("task.summaryEvents", { n: events.length })}
+        </span>
       </div>
 
       {timeline.harnessConfig ? (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-2xs text-muted-foreground">harness config</span>
+          <span className="text-2xs text-muted-foreground">{t("task.harnessConfig")}</span>
           {Object.entries(timeline.harnessConfig).map(([key, value]) => (
             <Badge key={key} variant="muted" className="font-mono">
               {key}={JSON.stringify(value)}
@@ -90,12 +104,18 @@ export function TraceTimeline({ events }: { events: TraceEvent[] }) {
             </span>
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2 text-2xs text-muted-foreground">
-                <span className="font-medium text-foreground">Step {step.step}</span>
-                {step.modelMs ? <span>model {formatDuration(step.modelMs / 1000)}</span> : null}
-                {step.commandMs ? <span>exec {formatDuration(step.commandMs / 1000)}</span> : null}
+                <span className="font-medium text-foreground">
+                  {t("task.stepLabel", { n: step.step })}
+                </span>
+                {step.modelMs ? (
+                  <span>{t("task.summaryModel", { time: formatDuration(step.modelMs / 1000) })}</span>
+                ) : null}
+                {step.commandMs ? (
+                  <span>{t("task.summaryExec", { time: formatDuration(step.commandMs / 1000) })}</span>
+                ) : null}
                 {step.exitCodes.some((code) => code !== 0) ? (
                   <span className="text-fail">
-                    exits {step.exitCodes.join(", ")}
+                    {t("task.exitsLabel", { codes: step.exitCodes.join(", ") })}
                   </span>
                 ) : null}
               </div>
@@ -111,8 +131,7 @@ export function TraceTimeline({ events }: { events: TraceEvent[] }) {
         <div className="space-y-1">
           <Separator />
           <p className="text-2xs text-muted-foreground">
-            {timeline.unpaced.length} event(s) this viewer does not have a place for. Shown
-            rather than dropped:
+            {t("task.unpacedEvents", { n: timeline.unpaced.length })}
           </p>
           <JsonBlock value={timeline.unpaced} />
         </div>
@@ -122,7 +141,7 @@ export function TraceTimeline({ events }: { events: TraceEvent[] }) {
         <div className="space-y-1">
           <Separator />
           <div className="text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-            token usage
+            {t("task.tokenUsage")}
           </div>
           <JsonBlock value={timeline.usage} />
         </div>
@@ -132,13 +151,14 @@ export function TraceTimeline({ events }: { events: TraceEvent[] }) {
 }
 
 function TimelineItemView({ item }: { item: TimelineItem }) {
+  const t = useT();
   switch (item.kind) {
     case "model":
       return (
         <div className="rounded-md border border-border bg-card">
           <ItemHeader
             icon={<User className="h-3 w-3" />}
-            label="model reply"
+            label={t("task.modelReply")}
             right={item.modelMs ? formatDuration(item.modelMs / 1000) : undefined}
           />
           <ExpandableText text={item.reply} className="font-mono text-2xs" collapsedLines={6} />
@@ -149,12 +169,12 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
         <div className="rounded-md border border-border bg-card">
           <ItemHeader
             icon={<Terminal className="h-3 w-3" />}
-            label="$ command"
+            label={t("task.commandLabel")}
             right={
               <span className="flex items-center gap-2">
                 {item.commandMs ? <span>{formatDuration(item.commandMs / 1000)}</span> : null}
                 <Badge variant={item.exit === 0 ? "pass" : item.exit === null ? "muted" : "fail"}>
-                  exit {item.exit ?? "?"}
+                  {t("task.exitBadge", { code: item.exit ?? "?" })}
                 </Badge>
               </span>
             }
@@ -166,7 +186,7 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
             <ExpandableText text={item.output} className="border-t border-border font-mono text-2xs" collapsedLines={10} />
           ) : (
             <div className="border-t border-border px-2 py-1 text-2xs text-muted-foreground">
-              no output recorded
+              {t("task.noOutput")}
             </div>
           )}
         </div>
@@ -176,9 +196,10 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
         <div className="flex items-center gap-2 rounded-md border border-warn/30 bg-warn/5 px-2 py-1 text-2xs">
           <Scissors className="h-3 w-3 text-warn" />
           <span>
-            the harness clipped this command&apos;s output: {describeCount(item.shown)} shown of{" "}
-            {describeCount(item.original)}. The model never saw the rest — which can be the
-            reason it looped.
+            {t("task.clipped", {
+              shown: describeCount(item.shown),
+              original: describeCount(item.original),
+            })}
           </span>
         </div>
       );
@@ -191,7 +212,7 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
             <Repeat className="mt-0.5 h-3 w-3 shrink-0 text-info" />
           )}
           <span>
-            <span className="font-medium">{item.nudge} nudge</span>{" "}
+            <span className="font-medium">{t("task.nudgeLabel", { kind: item.nudge })}</span>{" "}
             <span className="text-muted-foreground">{stringify(item.value)}</span>
           </span>
         </div>
@@ -218,10 +239,10 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
           <span>
             <span className="font-medium">
               {item.event === "submitted"
-                ? "submitted"
+                ? t("task.submitted")
                 : item.event === "rejected"
-                  ? "submit rejected"
-                  : "submitted with missing artifacts"}
+                  ? t("task.submitRejected")
+                  : t("task.submittedMissing")}
             </span>{" "}
             <span className="text-muted-foreground">{stringify(item.value)}</span>
           </span>
@@ -232,7 +253,7 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
         <div className="flex items-start gap-2 rounded-md border border-warn/30 bg-warn/5 px-2 py-1 text-2xs">
           <Copy className="mt-0.5 h-3 w-3 shrink-0 text-warn" />
           <span>
-            <span className="font-medium">duplicate keys</span>{" "}
+            <span className="font-medium">{t("task.duplicateKeys")}</span>{" "}
             <span className="text-muted-foreground">{stringify(item.keys)}</span>
           </span>
         </div>
@@ -242,7 +263,7 @@ function TimelineItemView({ item }: { item: TimelineItem }) {
         <div className="rounded-md border border-dashed border-border px-2 py-1">
           <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
             <ClipboardCopy className="h-3 w-3" />
-            unrecognised event
+            {t("task.unrecognisedEvent")}
           </div>
           <JsonBlock value={item.event} />
         </div>
@@ -280,6 +301,7 @@ function ExpandableText({
   className?: string;
   collapsedLines?: number;
 }) {
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
   const lines = text.split("\n");
   const long = lines.length > collapsedLines || text.length > 2000;
@@ -302,7 +324,9 @@ function ExpandableText({
           onClick={() => setExpanded((v) => !v)}
           className="border-t border-border px-2 py-0.5 text-2xs text-muted-foreground underline-offset-2 hover:underline"
         >
-          {expanded ? "collapse" : `show all ${lines.length} lines / ${text.length} chars`}
+          {expanded
+            ? t("task.collapse")
+            : t("task.showAll", { lines: lines.length, chars: text.length })}
         </button>
       ) : null}
     </div>

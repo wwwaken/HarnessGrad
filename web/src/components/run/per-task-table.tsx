@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { EmptyState } from "@/components/common/states";
 import { Value } from "@/components/common/presence-value";
 import { firstLine, formatScore } from "@/lib/format";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { CurvePoint, Verdict } from "@/types";
 
@@ -32,6 +33,7 @@ export function PerTaskTable({
   point: CurvePoint | null;
   verdicts: Record<string, Verdict>;
 }) {
+  const t = useT();
   const perTask = point?.per_task ?? {};
   const perTaskRate = point?.per_task_test_rate ?? {};
   const ids = [...new Set([...Object.keys(perTask), ...Object.keys(perTaskRate), ...Object.keys(verdicts)])].sort();
@@ -39,16 +41,16 @@ export function PerTaskTable({
   if (!point) {
     return (
       <EmptyState
-        title={`Round ${round} is not in this run's curve`}
-        description="The run's curve.jsonl has no point for this round, so there is no per-task scoring to show."
+        title={t("run.tasks.noRound", { round })}
+        description={t("run.tasks.noRoundHint")}
       />
     );
   }
   if (!ids.length) {
     return (
       <EmptyState
-        title="No per-task scoring recorded"
-        description="The point carries an empty `per_task` map. On a run that predates the field this is absence, not ten failures."
+        title={t("run.tasks.none")}
+        description={t("run.tasks.noneHint")}
       />
     );
   }
@@ -60,11 +62,11 @@ export function PerTaskTable({
       <Table>
         <TableHeader className="bg-muted/40">
           <TableRow className="hover:bg-transparent">
-            <TableHead>Task</TableHead>
-            <TableHead className="w-20">Score</TableHead>
+            <TableHead>{t("run.tasks.colTask")}</TableHead>
+            <TableHead className="w-20">{t("run.tasks.colScore")}</TableHead>
             <TableHead className="w-24">test_rate</TableHead>
-            <TableHead className="w-24">tests</TableHead>
-            <TableHead>Verdict detail</TableHead>
+            <TableHead className="w-24">{t("run.tasks.colTests")}</TableHead>
+            <TableHead>{t("run.tasks.colVerdict")}</TableHead>
             <TableHead className="w-10" />
           </TableRow>
         </TableHeader>
@@ -77,10 +79,10 @@ export function PerTaskTable({
             const harnessFailed = point.harness_failed?.[taskId];
             const measured = !invalid && !harnessFailed && typeof score === "number";
             const unmeasuredLabel = harnessFailed
-              ? "harness failed"
+              ? t("run.tasks.harnessFailed")
               : invalid
-                ? "not measured"
-                : "unmeasured";
+                ? t("run.tasks.notMeasured")
+                : t("run.tasks.unmeasured");
             return (
               <TableRow key={taskId} className="group">
                 <TableCell className="font-mono text-xs">
@@ -111,10 +113,10 @@ export function PerTaskTable({
                       </TooltipTrigger>
                       <TooltipContent className="max-w-md">
                         {harnessFailed
-                          ? `harness_failed: ${harnessFailed}`
+                          ? t("run.tasks.harnessFailedTooltip", { reason: harnessFailed })
                           : invalid
-                            ? `invalid: ${invalid}`
-                            : "the point records no score for this task — absence, not zero"}
+                            ? t("run.tasks.invalidTooltip", { reason: invalid })
+                            : t("run.tasks.absenceNote")}
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -136,15 +138,14 @@ export function PerTaskTable({
                         <span className="cursor-help">—</span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
-                        this check reported no machine-readable per-test tally; that is not the
-                        same as zero tests passing
+                        {t("run.tasks.noTally")}
                       </TooltipContent>
                     </Tooltip>
                   )}
                 </TableCell>
                 <TableCell className="max-w-[520px]">
                   <span className="block truncate text-2xs text-muted-foreground" title={verdict?.detail}>
-                    {verdict ? firstLine(verdict.detail, 160) : "no verdict file for this task"}
+                    {verdict ? firstLine(verdict.detail, 160) : t("run.tasks.noVerdict")}
                   </span>
                 </TableCell>
                 <TableCell>
@@ -153,7 +154,7 @@ export function PerTaskTable({
                       <TooltipTrigger asChild>
                         <CircleAlert className="h-3.5 w-3.5 text-muted-foreground/60" />
                       </TooltipTrigger>
-                      <TooltipContent>the verifier ran and the task did not pass</TooltipContent>
+                      <TooltipContent>{t("run.tasks.verifierFailed")}</TooltipContent>
                     </Tooltip>
                   ) : null}
                 </TableCell>
@@ -164,13 +165,14 @@ export function PerTaskTable({
       </Table>
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-3 py-1.5 text-2xs text-muted-foreground">
         <span>
-          {passed} of {point.n_scored} scored tasks passed this round (score is the mean over
-          the scored tasks).
+          {t("run.tasks.footer", { passed, scored: point.n_scored })}
         </span>
         {point.n_invalid || point.n_harness_failed ? (
           <span className="text-warn">
-            {point.n_invalid ?? 0} invalid · {point.n_harness_failed ?? 0} harness failures — a
-            refusal is a record, not a zero.
+            {t("run.tasks.footerProblems", {
+              invalid: point.n_invalid ?? 0,
+              failed: point.n_harness_failed ?? 0,
+            })}
           </span>
         ) : null}
       </div>
@@ -179,6 +181,7 @@ export function PerTaskTable({
 }
 
 function TestRateCell({ rate, present }: { rate: number | null | undefined; present: boolean }) {
+  const t = useT();
   if (!present) {
     return (
       <Tooltip>
@@ -188,8 +191,7 @@ function TestRateCell({ rate, present }: { rate: number | null | undefined; pres
           </span>
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
-          no `per_task_test_rate` for this task — the field was added 2026-10-05, or this check
-          reported no tally
+          {t("run.tasks.noTestRate")}
         </TooltipContent>
       </Tooltip>
     );

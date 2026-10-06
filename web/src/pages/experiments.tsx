@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useRuns } from "@/hooks/queries";
 import { badgeFor, matchesSearch, matchesValidity } from "@/logic/certify";
+import { useT } from "@/i18n";
 import { Info } from "lucide-react";
 
 /**
@@ -25,6 +26,7 @@ import { Info } from "lucide-react";
  * screen exists to prevent.
  */
 export function ExperimentsPage() {
+  const t = useT();
   const { data, isLoading, error, refetch } = useRuns();
   const [filters, setFilters] = useState<ExperimentsFilters>(DEFAULT_FILTERS);
 
@@ -53,8 +55,8 @@ export function ExperimentsPage() {
   return (
     <PageContainer>
       <PageHeader
-        title="Experiments"
-        description="Every run the platform has recorded, and the question a reader asks before quoting any number: is this run a measurement? `valid` means every point can be read and was measured by the platform; `certified` additionally means the record names the platform that produced it."
+        title={t("experiments.title")}
+        description={t("experiments.description")}
       />
 
       {isLoading ? (
@@ -81,18 +83,18 @@ export function ExperimentsPage() {
               <Info className="h-4 w-4" />
               <AlertDescription>
                 {filters.validity === "certified"
-                  ? "Certified runs name their platform content hash, so they are comparable with any other run made by the same code. The fixture set carries the certified runs from the platform's own validation pass."
-                  : "Quotable = valid or certified. A valid run is still a measurement; it simply cannot be compared with a run made by different code, because the record does not name the platform that produced it."}
+                  ? t("experiments.certifiedAlert")
+                  : t("experiments.quotableAlert")}
               </AlertDescription>
             </Alert>
           ) : null}
 
           <Section
-            title="Runs"
-            description="Sortable on every column. The status badge names the problems when a run is not quotable, and the reason when it is only valid."
+            title={t("experiments.sectionRuns")}
+            description={t("experiments.sectionRunsDescription")}
             actions={
               <Button variant="outline" size="xs" onClick={() => void refetch()}>
-                Reload
+                {t("experiments.reload")}
               </Button>
             }
           >

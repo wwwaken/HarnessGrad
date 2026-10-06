@@ -3,6 +3,8 @@ import { AlertTriangle, ArrowDownRight, ArrowUpRight, Minus } from "lucide-react
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Stat } from "@/components/common/stat";
+import { useT } from "@/i18n";
+import type { TranslationKey } from "@/i18n/en";
 import { formatDelta } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { RunComparison, TaskComparison, TaskMove } from "@/logic/compare";
@@ -23,24 +25,27 @@ import type { RunComparison, TaskComparison, TaskMove } from "@/logic/compare";
  * and `fix-git` started), and a UI that only drew the score would have hidden it.
  */
 export function FlipSummary({ comparison }: { comparison: RunComparison }) {
+  const t = useT();
   const { summary, left, right } = comparison;
   return (
     <div className="space-y-3">
       {summary.maskedByScore ? (
         <Alert variant="warn">
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Total score unchanged — the passing set is not</AlertTitle>
+          <AlertTitle>{t("compare.flatScoreTitle")}</AlertTitle>
           <AlertDescription>
-            Both states score {left?.score?.toFixed(3) ?? "—"}, but {summary.gained} task(s)
-            started passing and {summary.lost} stopped. Quoting the total would report no
-            change and lose both facts.
+            {t("compare.flatScoreBody", {
+              score: left?.score?.toFixed(3) ?? "—",
+              gained: summary.gained,
+              lost: summary.lost,
+            })}
           </AlertDescription>
         </Alert>
       ) : null}
 
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-6">
         <Stat
-          label="Score"
+          label={t("compare.scoreStat")}
           value={`${left?.score?.toFixed(3) ?? "—"} → ${right?.score?.toFixed(3) ?? "—"}`}
           tone={
             summary.scoreDelta === null
@@ -54,43 +59,43 @@ export function FlipSummary({ comparison }: { comparison: RunComparison }) {
           hint={`Δ ${formatDelta(summary.scoreDelta)}`}
         />
         <Stat
-          label="test_rate"
+          label={t("compare.testRate")}
           value={`${left?.testRate?.toFixed(3) ?? "—"} → ${right?.testRate?.toFixed(3) ?? "—"}`}
           tone="info"
           hint={
             summary.testRateDelta === null
-              ? "not measurable on both sides"
-              : `Δ ${formatDelta(summary.testRateDelta)} — the finer check tally`
+              ? t("compare.testRateUnmeasurable")
+              : t("compare.testRateHint", { delta: formatDelta(summary.testRateDelta) })
           }
         />
         <Stat
-          label="Gained"
+          label={t("compare.gained")}
           value={summary.gained}
           tone={summary.gained ? "pass" : "neutral"}
-          hint="fail → pass"
+          hint={t("compare.failToPass")}
         />
         <Stat
-          label="Lost"
+          label={t("compare.lost")}
           value={summary.lost}
           tone={summary.lost ? "fail" : "neutral"}
-          hint="pass → fail"
+          hint={t("compare.passToFail")}
         />
         <Stat
-          label="Still passing"
+          label={t("compare.stillPassing")}
           value={summary.stillPass}
-          hint="pass in both states"
+          hint={t("compare.passInBothStates")}
         />
         <Stat
-          label="Unmeasured"
+          label={t("compare.unmeasured")}
           value={summary.unmeasured}
           tone={summary.unmeasured ? "warn" : "neutral"}
-          hint="absent or unscored on one side — not a failure"
+          hint={t("compare.unmeasuredHint")}
         />
       </div>
 
       <div className="space-y-1.5">
         <div className="text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-          Movement by task
+          {t("compare.movementByTask")}
         </div>
         <div className="flex flex-wrap gap-1">
           {comparison.tasks.map((task) => (
@@ -98,10 +103,10 @@ export function FlipSummary({ comparison }: { comparison: RunComparison }) {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-3 pt-1 text-2xs text-muted-foreground">
-          <Legend tone="gain" icon={<ArrowUpRight className="h-3 w-3" />} label="gained (fail → pass)" />
-          <Legend tone="loss" icon={<ArrowDownRight className="h-3 w-3" />} label="lost (pass → fail)" />
-          <Legend tone="same" icon={<Minus className="h-3 w-3" />} label="unchanged" />
-          <Legend tone="unmeasured" icon={<Minus className="h-3 w-3" />} label="unmeasured" />
+          <Legend tone="gain" icon={<ArrowUpRight className="h-3 w-3" />} label={t("compare.legendGained")} />
+          <Legend tone="loss" icon={<ArrowDownRight className="h-3 w-3" />} label={t("compare.legendLost")} />
+          <Legend tone="same" icon={<Minus className="h-3 w-3" />} label={t("compare.legendUnchanged")} />
+          <Legend tone="unmeasured" icon={<Minus className="h-3 w-3" />} label={t("compare.legendUnmeasured")} />
         </div>
       </div>
     </div>
@@ -119,20 +124,21 @@ function Legend({ tone, icon, label }: { tone: string; icon: ReactNode; label: s
   );
 }
 
-const MOVE_STYLE: Record<TaskMove, { className: string; title: string }> = {
-  gained: { className: "border-pass/40 bg-pass/12 text-pass", title: "fail → pass" },
-  lost: { className: "border-fail/40 bg-fail/12 text-fail", title: "pass → fail" },
-  "still-pass": { className: "border-border bg-muted/60 text-foreground", title: "pass in both" },
-  "still-fail": { className: "border-border bg-transparent text-muted-foreground", title: "fail in both" },
-  "partial-moved": { className: "border-warn/40 bg-warn/12 text-warn", title: "partial score moved" },
-  unchanged: { className: "border-border bg-transparent text-muted-foreground", title: "unchanged" },
+const MOVE_STYLE: Record<TaskMove, { className: string; title: TranslationKey }> = {
+  gained: { className: "border-pass/40 bg-pass/12 text-pass", title: "compare.failToPass" },
+  lost: { className: "border-fail/40 bg-fail/12 text-fail", title: "compare.passToFail" },
+  "still-pass": { className: "border-border bg-muted/60 text-foreground", title: "compare.passInBoth" },
+  "still-fail": { className: "border-border bg-transparent text-muted-foreground", title: "compare.failInBoth" },
+  "partial-moved": { className: "border-warn/40 bg-warn/12 text-warn", title: "compare.partialMoved" },
+  unchanged: { className: "border-border bg-transparent text-muted-foreground", title: "compare.unchanged" },
   unmeasured: {
     className: "border-dashed border-border bg-transparent text-muted-foreground",
-    title: "unmeasured on one side",
+    title: "compare.unmeasuredOneSide",
   },
 };
 
 function MoveChip({ task }: { task: TaskComparison }) {
+  const t = useT();
   const style = MOVE_STYLE[task.move];
   return (
     <Tooltip>
@@ -149,12 +155,15 @@ function MoveChip({ task }: { task: TaskComparison }) {
         </span>
       </TooltipTrigger>
       <TooltipContent className="space-y-0.5">
-        <div>{style.title}</div>
+        <div>{t(style.title)}</div>
         <div className="tabular">
-          score {task.leftScore ?? "—"} → {task.rightScore ?? "—"}
+          {t("compare.tooltipScore", { left: task.leftScore ?? "—", right: task.rightScore ?? "—" })}
         </div>
         <div className="tabular">
-          test_rate {task.leftTestRate ?? "—"} → {task.rightTestRate ?? "—"}
+          {t("compare.tooltipTestRate", {
+            left: task.leftTestRate ?? "—",
+            right: task.rightTestRate ?? "—",
+          })}
         </div>
       </TooltipContent>
     </Tooltip>

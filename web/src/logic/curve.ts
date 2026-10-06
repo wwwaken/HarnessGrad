@@ -1,3 +1,4 @@
+import type { TranslationKey } from "@/i18n/en";
 import type { CurvePoint } from "@/types";
 import { presenceOf } from "./presence";
 
@@ -42,12 +43,24 @@ export interface CurvePointView {
 }
 
 /** How much of a series is actually measurable. A legend without this is a claim. */
+export interface SeriesCoverageCaveat {
+  key: TranslationKey;
+  params: Record<string, string | number>;
+  /** A record-shaped tail appended after an em dash, when the reason has a specific one. */
+  extra: TranslationKey | null;
+}
+
 export interface SeriesCoverage {
   /** Rounds with a numeric value. */
   present: number;
   total: number;
   /** `null` when every round carries a number. */
-  caveat: string | null;
+  /**
+   * Why the series is not complete — a key plus parameters, not a sentence. The date in
+   * `coverageRecordedLate` is a fact about the platform's history and is deliberately left in
+   * the string; the sentence around it is the app's own voice.
+   */
+  caveat: SeriesCoverageCaveat | null;
 }
 
 export interface CurveView {
@@ -79,8 +92,8 @@ export function buildCurveView(points: CurvePoint[]): CurveView {
       views.length,
       "test_rate",
       views.some((v) => v.testRate === undefined)
-        ? "recorded only after 2026-10-05 (stage 0); earlier points do not carry it"
-        : "some rounds' checks reported no per-test tally, which is not zero",
+        ? "run.chart.coverageRecordedLate"
+        : "run.chart.coverageNoTally",
     ),
     scoreLift: lift(scores),
     testRateLift: lift(rates),
@@ -157,14 +170,18 @@ function coverage(
   present: number,
   total: number,
   series: string,
-  caveat?: string,
+  extra?: TranslationKey,
 ): SeriesCoverage {
   if (present === total) return { present, total, caveat: null };
-  const base =
-    present === 0
-      ? `no round carries a numeric \`${series}\``
-      : `only ${present} of ${total} rounds carry a numeric \`${series}\``;
-  return { present, total, caveat: caveat ? `${base} — ${caveat}` : base };
+  return {
+    present,
+    total,
+    caveat: {
+      key: present === 0 ? "run.chart.coverageNone" : "run.chart.coverageSome",
+      params: { series, present, total },
+      extra: extra ?? null,
+    },
+  };
 }
 
 function lift(values: number[]): number | null {

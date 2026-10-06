@@ -1,3 +1,4 @@
+import { translate } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_LAUNCH_CONFIG,
@@ -88,7 +89,7 @@ describe("buildLaunchPlan", () => {
   it("never emits --mode, and warns when the form has one selected", () => {
     const plan = buildLaunchPlan(config({ mode: "B" }), OPTIONS);
     expect(plan.argv).not.toContain("--mode");
-    expect(plan.warnings.some((w) => w.includes("deprecated and ignored"))).toBe(true);
+    expect(plan.warnings.some((w) => w.key === "launch.warnModeDeprecated")).toBe(true);
   });
 
   it("spells out trials and jobs only when they differ from the default", () => {
@@ -97,12 +98,12 @@ describe("buildLaunchPlan", () => {
     expect(plan.argv).toContain("3");
     expect(plan.argv).toContain("--jobs");
     expect(plan.argv).toContain("4");
-    expect(plan.warnings.some((w) => w.includes("score_std"))).toBe(true);
+    expect(plan.warnings.some((w) => w.key === "launch.warnTrials" && w.params?.n === 3)).toBe(true);
   });
 
   it("warns about the training side, because those numbers must not be quoted", () => {
     const plan = buildLaunchPlan(config({ side: "train" }), OPTIONS);
-    expect(plan.warnings.some((w) => w.includes("never be quoted as a result"))).toBe(true);
+    expect(plan.warnings.some((w) => w.key === "launch.warnTrainSide")).toBe(true);
   });
 
   it("adds the eval wiring and the JSON body fields", () => {
@@ -127,7 +128,7 @@ describe("buildLaunchPlan", () => {
     const plan = buildLaunchPlan(config({ noSandbox: true }), OPTIONS);
     expect(plan.argv).toContain("--no-sandbox");
     expect(plan.request.sandbox).toBe(false);
-    expect(plan.warnings.some((w) => w.includes("not comparable"))).toBe(true);
+    expect(plan.warnings.some((w) => w.key === "launch.warnNoSandbox")).toBe(true);
   });
 
   it("passes tasks through as a comma-joined argv list and as a JSON array", () => {
@@ -147,36 +148,36 @@ describe("buildLaunchPlan", () => {
 
 describe("validateLaunch", () => {
   it("requires a run id and refuses a name that would be an unsafe path segment", () => {
-    expect(validateLaunch(config({ runId: "" }), OPTIONS).join(" ")).toContain("--run-id");
-    expect(validateLaunch(config({ runId: "../escape" }), OPTIONS).join(" ")).toContain(
+    expect(validateLaunch(config({ runId: "" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain("--run-id");
+    expect(validateLaunch(config({ runId: "../escape" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain(
       "letters, digits",
     );
     expect(validateLaunch(config({ runId: "ok-1.2_x" }), OPTIONS)).toEqual([]);
   });
 
   it("requires harness and dataset, and refuses values that are not on this machine", () => {
-    expect(validateLaunch(config({ harness: "" }), OPTIONS).join(" ")).toContain("--harness");
-    expect(validateLaunch(config({ dataset: "nope" }), OPTIONS).join(" ")).toContain(
+    expect(validateLaunch(config({ harness: "" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain("--harness");
+    expect(validateLaunch(config({ dataset: "nope" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain(
       "not one of the datasets",
     );
   });
 
   it("requires --from-run for an eval side and refuses it for a train side", () => {
-    expect(validateLaunch(config({ side: "eval" }), OPTIONS).join(" ")).toContain("--from-run");
-    expect(validateLaunch(config({ side: "train", fromRun: "x" }), OPTIONS).join(" ")).toContain(
+    expect(validateLaunch(config({ side: "eval" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain("--from-run");
+    expect(validateLaunch(config({ side: "train", fromRun: "x" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain(
       "applies only to `--side eval`",
     );
   });
 
   it("refuses non-positive rounds, trials and jobs", () => {
-    expect(validateLaunch(config({ rounds: 0 }), OPTIONS).join(" ")).toContain("--rounds");
-    expect(validateLaunch(config({ trials: 0 }), OPTIONS).join(" ")).toContain("--trials");
-    expect(validateLaunch(config({ jobs: -1 }), OPTIONS).join(" ")).toContain("--jobs");
+    expect(validateLaunch(config({ rounds: 0 }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain("--rounds");
+    expect(validateLaunch(config({ trials: 0 }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain("--trials");
+    expect(validateLaunch(config({ jobs: -1 }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" ")).toContain("--jobs");
   });
 
   it("refuses a non-integer from-round", () => {
     expect(
-      validateLaunch(config({ side: "eval", fromRun: "x", fromRound: "last" }), OPTIONS).join(" "),
+      validateLaunch(config({ side: "eval", fromRun: "x", fromRound: "last" }), OPTIONS).map((e) => translate("en", e.key, e.params)).join(" "),
     ).toContain("--from-round");
   });
 });

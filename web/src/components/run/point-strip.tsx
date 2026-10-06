@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Value } from "@/components/common/presence-value";
 import { formatPercent, formatScore, shortSha } from "@/lib/format";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { CurvePointView } from "@/logic/curve";
 
@@ -24,6 +25,7 @@ export function PointStrip({
   selectedRound: number | null;
   onSelect: (round: number) => void;
 }) {
+  const t = useT();
   return (
     <div className="flex gap-2 overflow-x-auto pb-1">
       {points.map((point) => {
@@ -40,18 +42,18 @@ export function PointStrip({
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-                Round {point.round}
+                {t("run.point.round", { round: point.round })}
               </span>
               <span className="flex items-center gap-1">
                 {point.isKept ? (
-                  <Badge variant="pass" title="the method kept this state">
-                    kept
+                  <Badge variant="pass" title={t("run.point.keptTitle")}>
+                    {t("run.point.kept")}
                   </Badge>
                 ) : null}
                 {point.problems.length ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="fail">{point.problems.length} problem(s)</Badge>
+                      <Badge variant="fail">{t("run.point.problems", { n: point.problems.length })}</Badge>
                     </TooltipTrigger>
                     <TooltipContent className="max-w-md">
                       <ul className="list-disc space-y-0.5 pl-4">
@@ -84,13 +86,13 @@ export function PointStrip({
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
-                <span>tasks passing</span>
+                <span>{t("run.point.tasksPassing")}</span>
                 <span className="tabular text-foreground">
                   {point.passedCount ?? "—"}/{point.scoredCount}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
-                <span>harness</span>
+                <span>{t("run.point.harness")}</span>
                 <span className="font-mono text-foreground">{shortSha(point.harnessSha)}</span>
               </div>
             </div>

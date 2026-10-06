@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/common/states";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { FieldDiff } from "@/logic/compare";
 
@@ -24,12 +25,13 @@ export function FieldDiffTable({
   rightLabel: string;
   onlyDifferent?: boolean;
 }) {
+  const t = useT();
   const rows = onlyDifferent ? fields.filter((f) => !f.same) : fields;
   if (!fields.length) {
     return (
       <EmptyState
-        title="No comparable fields"
-        description="Neither run's meta or selected point could be read, so there is nothing to diff field by field."
+        title={t("compare.noFields")}
+        description={t("compare.noFieldsHint")}
       />
     );
   }
@@ -38,7 +40,7 @@ export function FieldDiffTable({
       <Table>
         <TableHeader className="bg-muted/40">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="w-44">Field</TableHead>
+            <TableHead className="w-44">{t("compare.columnField")}</TableHead>
             <TableHead>{leftLabel}</TableHead>
             <TableHead>{rightLabel}</TableHead>
           </TableRow>
@@ -48,7 +50,7 @@ export function FieldDiffTable({
             rows.map((row) => (
               <TableRow key={row.path} className={cn(!row.same && "bg-warn/5")}>
                 <TableCell className="align-top">
-                  <div className="text-xs font-medium">{row.label}</div>
+                  <div className="text-xs font-medium">{t(row.labelKey)}</div>
                   <div className="font-mono text-2xs text-muted-foreground">{row.path}</div>
                 </TableCell>
                 <TableCell className="align-top">
@@ -62,7 +64,7 @@ export function FieldDiffTable({
           ) : (
             <TableRow>
               <TableCell colSpan={3} className="py-4 text-center text-xs text-muted-foreground">
-                every recorded field is identical between these two states
+                {t("compare.allFieldsIdentical")}
               </TableCell>
             </TableRow>
           )}
@@ -73,13 +75,14 @@ export function FieldDiffTable({
 }
 
 function FieldCell({ value, differs }: { value: string | null; differs: boolean }) {
+  const t = useT();
   if (value === null) {
     return (
       <span
         className="text-2xs italic text-muted-foreground/80"
-        title="absent — the recording code path did not set it"
+        title={t("compare.absentHint")}
       >
-        absent
+        {t("record.absent")}
       </span>
     );
   }

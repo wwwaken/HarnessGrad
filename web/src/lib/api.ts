@@ -1,4 +1,5 @@
 import { fixtureUrls } from "@/fixtures/urls";
+import type { TranslationKey } from "@/i18n/en";
 import type {
   LaunchOptions,
   RoundDiff,
@@ -87,10 +88,17 @@ export interface BackendState {
   baseUrl: string;
   /** Run directories the live API reported, or `null` when it has not answered. */
   runs: number | null;
-  /** Short label for the banner, e.g. `Fixtures` or `Live API`. */
-  label: string;
-  /** One truthful sentence about where the numbers come from. */
-  note: string;
+  /**
+   * Short label for the banner, e.g. `Fixtures` or `Live API` — as a **translation key**, so
+   * this module stays language-free. It is a state machine about where the numbers come from;
+   * how to say that is the shell's business, and a string here would be the one banner in the
+   * app a Chinese reader could not read.
+   */
+  labelKey: TranslationKey;
+  /** One truthful sentence about where the numbers come from. Same reasoning as `labelKey`. */
+  noteKey: TranslationKey;
+  /** Values for the `{name}` placeholders in `noteKey`. */
+  noteParams?: Record<string, string | number>;
 }
 
 //: `VITE_API_BASE` lets a build point at another host (e.g. `http://host:8791`). The SPA
@@ -116,11 +124,9 @@ function initialState(): BackendState {
     status: "checking",
     baseUrl: API_BASE,
     runs: null,
-    label: "Checking…",
-    note:
-      preference === "fixture"
-        ? "Fixtures are forced by VITE_API=fixture."
-        : `Checking for the read API at ${API_BASE || "this origin"}/api/health…`,
+    labelKey: "backend.checking",
+    noteKey: preference === "fixture" ? "backend.noteForced" : "backend.noteChecking",
+    noteParams: { base: API_BASE || "this origin" },
   };
 }
 
@@ -196,10 +202,8 @@ export function resolveBackend(): Promise<BackendState> {
         status: "ready",
         baseUrl: API_BASE,
         runs: null,
-        label: "Fixtures (forced)",
-        note:
-          "VITE_API=fixture: this build reads the curated fixture subset " +
-          "(runs/ds-dgm, runs/ds-rrsi) and never contacts the read API.",
+        labelKey: "backend.labelForced",
+        noteKey: "backend.noteForcedBuild",
       });
       return state;
     }
@@ -214,10 +218,9 @@ export function resolveBackend(): Promise<BackendState> {
         status: "ready",
         baseUrl: API_BASE,
         runs: health.runs,
-        label: "Live API",
-        note:
-          `Live read API at ${api}: ${health.runs ?? "?"} run row(s) read from runs/. ` +
-          "A run that is being written right now appears with points: 0, not hidden.",
+        labelKey: "backend.labelLive",
+        noteKey: "backend.noteLive",
+        noteParams: { api, n: health.runs ?? "?" },
       });
       return state;
     }
@@ -229,10 +232,9 @@ export function resolveBackend(): Promise<BackendState> {
         status: "unreachable",
         baseUrl: API_BASE,
         runs: null,
-        label: "Live API (unreachable)",
-        note:
-          `VITE_API=live, but the read API at ${api} did not answer ` +
-          `(${health.detail}). Requests will fail rather than silently fall back to fixtures.`,
+        labelKey: "backend.labelUnreachable",
+        noteKey: "backend.noteUnreachable",
+        noteParams: { api, detail: String(health.detail) },
       });
       return state;
     }
@@ -243,11 +245,9 @@ export function resolveBackend(): Promise<BackendState> {
       status: "ready",
       baseUrl: API_BASE,
       runs: null,
-      label: "Fixtures",
-      note:
-        `Fixtures only: the read API at ${api}/health did not answer (${health.detail}), so ` +
-        "this build falls back to a real subset of runs/ds-dgm and runs/ds-rrsi. Start it " +
-        "with `python3 web/server/serve.py --port 8791 --runs-root runs` for live data.",
+      labelKey: "backend.labelFixtures",
+      noteKey: "backend.noteFixtures",
+      noteParams: { api: `${api}/health`, detail: String(health.detail) },
     });
     return state;
   })();

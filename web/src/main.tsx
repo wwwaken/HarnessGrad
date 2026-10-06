@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { App } from "@/App";
+import { I18nProvider } from "@/i18n";
 import { resolveBackend } from "@/lib/api";
 import "@/index.css";
 
@@ -31,10 +32,12 @@ if (!root) throw new Error("#root is missing from index.html");
 createRoot(root).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-        <Toaster position="bottom-right" closeButton />
-      </BrowserRouter>
+      <I18nProvider>
+        <BrowserRouter>
+          <App />
+          <Toaster position="bottom-right" closeButton />
+        </BrowserRouter>
+      </I18nProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

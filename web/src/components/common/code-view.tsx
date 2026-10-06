@@ -1,6 +1,7 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
 import { FileCode2 } from "lucide-react";
 import { EmptyState, ErrorState } from "@/components/common/states";
+import { useT } from "@/i18n";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
@@ -50,12 +51,13 @@ function Shell({
   language?: string;
   children: ReactNode;
 }) {
+  const t = useT();
   if (empty) {
     return (
       <EmptyState
         icon={<FileCode2 className="h-5 w-5" />}
         title={empty}
-        description="A run directory only carries a diff for the rounds the platform saved one for (runs/<id>/diffs/round-<n>.patch)."
+        description={t("common.diffHint")}
       />
     );
   }
@@ -63,7 +65,7 @@ function Shell({
     <div className="overflow-hidden rounded-md border border-border">
       <div className="flex items-center justify-between border-b border-border bg-muted/40 px-2 py-1">
         <span className="font-mono text-2xs text-muted-foreground">{language ?? "diff"}</span>
-        <span className="text-2xs text-muted-foreground">read-only</span>
+        <span className="text-2xs text-muted-foreground">{t("common.readOnly")}</span>
       </div>
       {children}
     </div>
@@ -79,7 +81,8 @@ export function CodeView({
   height = 360,
   emptyLabel,
 }: CodeViewProps & { emptyLabel?: string }) {
-  const empty = !value ? (emptyLabel ?? "No patch recorded") : null;
+  const t = useT();
+  const empty = !value ? (emptyLabel ?? t("common.noPatch")) : null;
   return (
     <Shell empty={empty} language={language}>
       <ViewerBoundary fallback={FAILED}>
@@ -93,7 +96,8 @@ export function CodeView({
 
 /** A side-by-side diff of two texts (e.g. two runs' candidate patches). */
 export function DiffView({ original, modified, language = "diff", height = 360 }: CodeViewProps) {
-  const empty = !original && !modified ? "Neither side recorded a patch for this round" : null;
+  const t = useT();
+  const empty = !original && !modified ? t("common.noPatchBoth") : null;
   return (
     <Shell empty={empty} language={language}>
       <ViewerBoundary fallback={FAILED}>

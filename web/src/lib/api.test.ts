@@ -54,8 +54,8 @@ describe("backend mode selection", () => {
     expect(state.mode).toBe("live");
     expect(state.status).toBe("ready");
     expect(state.runs).toBe(96);
-    expect(state.label).toBe("Live API");
-    expect(state.note).toContain("runs/");
+    expect(state.labelKey).toBe("backend.labelLive");
+    expect(state.noteParams?.api).toContain("/api");
     expect(String(mock.mock.calls[0]?.[0])).toBe("/api/health");
   });
 
@@ -67,9 +67,9 @@ describe("backend mode selection", () => {
 
     expect(state.mode).toBe("fixture");
     expect(state.status).toBe("ready");
-    expect(state.label).toBe("Fixtures");
-    expect(state.note).toContain("ECONNREFUSED");
-    expect(state.note).toContain("falls back");
+    expect(state.labelKey).toBe("backend.labelFixtures");
+    expect(String(state.noteParams?.detail)).toContain("ECONNREFUSED");
+    expect(state.noteKey).toBe("backend.noteFixtures");
   });
 
   it("treats a 200 that is not {ok:true} as unreachable", async () => {
@@ -88,7 +88,7 @@ describe("backend mode selection", () => {
 
     expect(state.mode).toBe("fixture");
     expect(state.preference).toBe("fixture");
-    expect(state.label).toContain("forced");
+    expect(state.labelKey).toBe("backend.labelForced");
     expect(mock).not.toHaveBeenCalled();
   });
 
@@ -101,7 +101,7 @@ describe("backend mode selection", () => {
 
     expect(state.mode).toBe("live");
     expect(state.status).toBe("unreachable");
-    expect(state.note).toContain("VITE_API=live");
+    expect(state.noteKey).toBe("backend.noteUnreachable");
     expect(getBackendState().mode).toBe("live");
   });
 

@@ -1,4 +1,5 @@
 import type { CurvePoint, RunBundle, Verdict } from "@/types";
+import type { TranslationKey } from "@/i18n/en";
 import { toPointView, type CurvePointView } from "./curve";
 
 /**
@@ -45,7 +46,11 @@ export interface TaskComparison {
 }
 
 export interface FieldDiff {
-  label: string;
+  /**
+   * A translation key, not a label. Kept as a key so this module stays language-free and so
+   * `FieldDiffTable` cannot forget to translate — the prop's type is the reminder.
+   */
+  labelKey: TranslationKey;
   path: string;
   left: string | null;
   right: string | null;
@@ -269,54 +274,57 @@ export function diffFields(
   leftPoint: CurvePoint | null,
   rightPoint: CurvePoint | null,
 ): FieldDiff[] {
-  const rows: Array<[string, string, string | null, string | null]> = [
-    ["Run", "run_id", leftBundle.run_id, rightBundle.run_id],
-    ["Round", "round", num(leftPoint?.round), num(rightPoint?.round)],
-    ["Score", "score", num(leftPoint?.score), num(rightPoint?.score)],
+  // The label is a **translation key**, not a string: this module is pure and has no
+  // language, so it names the field and the component that renders it decides how to say it.
+  // A bare English string here would be the one place a reader saw an untranslated label.
+  const rows: Array<[TranslationKey, string, string | null, string | null]> = [
+    ["record.run", "run_id", leftBundle.run_id, rightBundle.run_id],
+    ["record.round", "round", num(leftPoint?.round), num(rightPoint?.round)],
+    ["record.score", "score", num(leftPoint?.score), num(rightPoint?.score)],
     [
-      "test_rate",
+      "record.testRate",
       "test_rate",
       numOrAbsent(leftPoint, "test_rate"),
       numOrAbsent(rightPoint, "test_rate"),
     ],
-    ["Score kind", "score_kind", str(leftPoint?.score_kind), str(rightPoint?.score_kind)],
-    ["Side", "side", str(leftPoint?.side), str(rightPoint?.side)],
+    ["record.scoreKind", "score_kind", str(leftPoint?.score_kind), str(rightPoint?.score_kind)],
+    ["record.side", "side", str(leftPoint?.side), str(rightPoint?.side)],
     [
-      "Harness sha",
+      "record.harnessSha",
       "identity.harness_sha",
       str(leftPoint?.identity?.harness_sha),
       str(rightPoint?.identity?.harness_sha),
     ],
     [
-      "Harness version",
+      "record.harnessVersion",
       "identity.harness_version",
       str(leftPoint?.identity?.harness_version),
       str(rightPoint?.identity?.harness_version),
     ],
     [
-      "Agent model",
+      "record.agentModel",
       "identity.agent_model",
       str(leftPoint?.identity?.agent_model),
       str(rightPoint?.identity?.agent_model),
     ],
     [
-      "Agent backend",
+      "record.agentBackend",
       "identity.agent_backend",
       str(leftPoint?.identity?.agent_backend),
       str(rightPoint?.identity?.agent_backend),
     ],
-    ["Improver", "identity.improver", improver(leftPoint), improver(rightPoint)],
-    ["Method", "identity.method", str(leftPoint?.identity?.method), str(rightPoint?.identity?.method)],
-    ["Edit kind", "edit_kind", str(leftPoint?.edit_kind), str(rightPoint?.edit_kind)],
-    ["Environment", "env.image_digest", str(leftPoint?.env?.image_digest), str(rightPoint?.env?.image_digest)],
-    ["Placement", "env.placement", str(leftPoint?.env?.placement), str(rightPoint?.env?.placement)],
-    ["Sampling", "sampling.policy", str(leftPoint?.sampling?.policy), str(rightPoint?.sampling?.policy)],
-    ["Tasks scored", "n_scored", num(leftPoint?.n_scored), num(rightPoint?.n_scored)],
-    ["Timestamp", "timestamp_utc", str(leftPoint?.timestamp_utc), str(rightPoint?.timestamp_utc)],
-    ["Platform sha", "run_meta.platform.content_sha", platformSha(leftBundle), platformSha(rightBundle)],
+    ["record.improver", "identity.improver", improver(leftPoint), improver(rightPoint)],
+    ["record.method", "identity.method", str(leftPoint?.identity?.method), str(rightPoint?.identity?.method)],
+    ["record.editKind", "edit_kind", str(leftPoint?.edit_kind), str(rightPoint?.edit_kind)],
+    ["record.environment", "env.image_digest", str(leftPoint?.env?.image_digest), str(rightPoint?.env?.image_digest)],
+    ["record.placement", "env.placement", str(leftPoint?.env?.placement), str(rightPoint?.env?.placement)],
+    ["record.sampling", "sampling.policy", str(leftPoint?.sampling?.policy), str(rightPoint?.sampling?.policy)],
+    ["record.tasksScored", "n_scored", num(leftPoint?.n_scored), num(rightPoint?.n_scored)],
+    ["record.timestamp", "timestamp_utc", str(leftPoint?.timestamp_utc), str(rightPoint?.timestamp_utc)],
+    ["record.platformSha", "run_meta.platform.content_sha", platformSha(leftBundle), platformSha(rightBundle)],
   ];
-  return rows.map(([label, path, l, r]) => ({
-    label,
+  return rows.map(([labelKey, path, l, r]) => ({
+    labelKey,
     path,
     left: l,
     right: r,

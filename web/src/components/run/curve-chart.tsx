@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { EmptyState } from "@/components/common/states";
 import { formatPercent, formatScore } from "@/lib/format";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { CurveView } from "@/logic/curve";
 
@@ -47,6 +48,7 @@ export function CurveChart({
   onSelectRound?: (round: number) => void;
   selectedRound?: number | null;
 }) {
+  const t = useT();
   const data = useMemo(
     () =>
       view.points.map((point) => ({
@@ -65,8 +67,8 @@ export function CurveChart({
   if (!data.length) {
     return (
       <EmptyState
-        title="No curve points"
-        description="This run directory has no readable curve.jsonl, so there is nothing to plot. certify() reports it as `not measured`, not as a score of zero."
+        title={t("run.chart.empty")}
+        description={t("run.chart.emptyHint")}
       />
     );
   }
@@ -124,7 +126,7 @@ export function CurveChart({
               yAxisId="score"
               type="monotone"
               dataKey="band"
-              name="score 95% interval"
+              name={t("run.chart.seriesBand")}
               stroke="none"
               fill="hsl(var(--chart-band))"
               fillOpacity={0.7}
@@ -134,7 +136,7 @@ export function CurveChart({
               yAxisId="score"
               type="monotone"
               dataKey="score"
-              name="score (mean over scored tasks)"
+              name={t("run.chart.seriesScore")}
               stroke="hsl(var(--chart-score))"
               strokeWidth={2}
               dot={{ r: 3, strokeWidth: 0, fill: "hsl(var(--chart-score))" }}
@@ -145,7 +147,7 @@ export function CurveChart({
               yAxisId="rate"
               type="monotone"
               dataKey="testRate"
-              name="test_rate (check's own tally)"
+              name={t("run.chart.seriesTestRate")}
               stroke="hsl(var(--chart-testrate))"
               strokeWidth={2}
               strokeDasharray="4 3"
@@ -160,7 +162,7 @@ export function CurveChart({
                 x={`R${view.keptRound}`}
                 stroke="hsl(var(--chart-axis))"
                 strokeDasharray="2 2"
-                label={{ value: "kept", position: "insideTopRight", fontSize: 10, fill: "hsl(var(--chart-axis))" }}
+                label={{ value: t("run.chart.kept"), position: "insideTopRight", fontSize: 10, fill: "hsl(var(--chart-axis))" }}
               />
             ) : null}
             {selectedRound !== undefined && selectedRound !== null ? (
@@ -180,28 +182,27 @@ export function CurveChart({
 }
 
 function CoverageNotes({ view }: { view: CurveView }) {
+  const t = useT();
   const notes = [view.scoreCoverage.caveat, view.testRateCoverage.caveat].filter(
-    (n): n is string => Boolean(n),
+    (n): n is NonNullable<typeof n> => Boolean(n),
   );
   if (!notes.length && !view.scoreFlatButTasksMoved) {
     return (
       <p className="text-2xs text-muted-foreground">
-        {view.points.length} points; both series measurable on every point.
+        {t("run.chart.coverageAll", { n: view.points.length })}
       </p>
     );
   }
   return (
     <div className="space-y-1">
       {notes.map((note) => (
-        <p key={note} className="text-2xs text-warn">
-          {note}
+        <p key={note.key + String(note.params.series)} className="text-2xs text-warn">
+          {t(note.key, note.params)}
+          {note.extra ? ` — ${t(note.extra)}` : ""}
         </p>
       ))}
       {view.scoreFlatButTasksMoved ? (
-        <p className="text-2xs font-medium text-warn">
-          The score does not move across these rounds, but the set of passing tasks does — open
-          Compare to see which ones.
-        </p>
+        <p className="text-2xs font-medium text-warn">{t("run.chart.flatScore")}</p>
       ) : null}
     </div>
   );
@@ -227,23 +228,24 @@ function CurveTooltip({
   active?: boolean;
   payload?: ReadonlyArray<TooltipDatum>;
 }) {
+  const t = useT();
   if (!active || !payload?.length) return null;
   const datum = payload[0]?.payload;
   if (!datum) return null;
   return (
     <div className="rounded-md border border-border bg-popover px-2.5 py-2 text-2xs shadow-md">
-      <div className="font-medium">Round {datum.roundNumber}</div>
+      <div className="font-medium">{t("run.chart.tooltipRound", { round: datum.roundNumber })}</div>
       <div className="mt-1 grid grid-cols-[auto_auto] gap-x-3 gap-y-0.5">
         <span className="text-muted-foreground">score</span>
         <span className="tabular text-right">{formatScore(datum.score)}</span>
-        <span className="text-muted-foreground">95% interval</span>
+        <span className="text-muted-foreground">{t("run.chart.tooltipInterval")}</span>
         <span className={cn("tabular text-right", !datum.band && "text-muted-foreground/60")}>
           {datum.band ? `${formatScore(datum.band[0])} … ${formatScore(datum.band[1])}` : "—"}
         </span>
         <span className="text-muted-foreground">test_rate</span>
         <span className={cn("tabular text-right", datum.testRate === null && "text-muted-foreground/60")}>
           {datum.testRate === null
-            ? "not recorded"
+            ? t("run.chart.tooltipNotRecorded")
             : `${formatScore(datum.testRate)} (${formatPercent(datum.testRate)})`}
         </span>
       </div>

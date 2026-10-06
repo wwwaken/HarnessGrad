@@ -1,6 +1,7 @@
 import { ShieldCheck, ShieldHalf, ShieldX, CircleSlash, CircleHelp } from "lucide-react";
 import { Stat } from "@/components/common/stat";
 import { quotableSummary, type ValidityFilter } from "@/logic/certify";
+import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { RunSummary } from "@/types";
 
@@ -21,45 +22,49 @@ export function ValiditySummary({
   activeFilter: ValidityFilter;
   onFilter: (filter: ValidityFilter) => void;
 }) {
+  const t = useT();
   const summary = quotableSummary(rows);
 
   const tiles = [
     {
-      label: "Runs",
+      label: t("experiments.tileRuns"),
       value: summary.total,
-      hint: "every run directory in the fixture index",
+      hint: t("experiments.tileRunsHint"),
       filter: "all" as ValidityFilter,
       icon: null,
       tone: "neutral" as const,
     },
     {
-      label: "Quotable",
+      label: t("experiments.tileQuotable"),
       value: summary.quotable,
-      hint: `valid or certified — ${summary.valid} valid, ${summary.certified} certified`,
+      hint: t("experiments.tileQuotableHint", {
+        valid: summary.valid,
+        certified: summary.certified,
+      }),
       filter: "quotable" as ValidityFilter,
       icon: ShieldCheck,
       tone: "info" as const,
     },
     {
-      label: "Certified",
+      label: t("experiments.tileCertified"),
       value: summary.certified,
-      hint: "the record names the platform that produced it",
+      hint: t("experiments.tileCertifiedHint"),
       filter: "certified" as ValidityFilter,
       icon: ShieldHalf,
       tone: "pass" as const,
     },
     {
-      label: "Invalid",
+      label: t("experiments.tileInvalid"),
       value: summary.invalid,
-      hint: "a point cannot be read as a measurement, or the platform was touched",
+      hint: t("experiments.tileInvalidHint"),
       filter: "invalid" as ValidityFilter,
       icon: ShieldX,
       tone: "fail" as const,
     },
     {
-      label: "Not measured",
+      label: t("experiments.tileNoPoints"),
       value: summary.noPoints,
-      hint: "no curve.jsonl: there is no number to be wrong about",
+      hint: t("experiments.tileNoPointsHint"),
       filter: "no-points" as ValidityFilter,
       icon: CircleSlash,
       tone: "neutral" as const,
@@ -73,14 +78,18 @@ export function ValiditySummary({
         const active = activeFilter === tile.filter;
         return (
           <button
-            key={tile.label}
+            key={tile.filter}
             type="button"
             onClick={() => onFilter(active ? "all" : tile.filter)}
             className={cn(
               "rounded-lg text-left transition-colors",
               active ? "ring-1 ring-ring" : "hover:bg-accent/40",
             )}
-            title={active ? "Clear this filter" : `Filter: ${tile.label}`}
+            title={
+              active
+                ? t("experiments.clearFilter")
+                : t("experiments.filterBy", { label: tile.label })
+            }
           >
             <Stat
               label={
