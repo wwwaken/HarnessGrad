@@ -351,6 +351,39 @@ def container_env(task_mount: str, deadline_s: int | None = None) -> dict[str, s
     return env
 
 
+#: The `container_env` entries whose value is a **directory a harness is invited to write
+#: into**. `PATH` and the model variables are deliberately absent: a name belongs here only
+#: when something is expected to put a file underneath it.
+SCRATCH_ENV_VARS = ("HOME", "XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME", "TMPDIR")
+
+
+def writable_env_dirs(task_mount: str) -> tuple[str, ...]:
+    """Every directory `container_env` names that a harness may write into.
+
+    **A variable that names a directory is not a directory.** `docker create --tmpfs
+    <home>` brings its own mount point and nothing below it, so `HOME` exists while
+    `HOME/tmp` -- the value this module hands out as `TMPDIR` -- does not. A harness is
+    entitled to believe the environment it was given: `mkdtemp(TMPDIR + "/scratch-XXXXXX")`
+    needs the *parent* to be there, and `ENOENT` when it is not is a failure caused by the
+    platform, not by the harness.
+
+    Measured 2026-10-06, on the `dsh_agent` harness: DSH's spill store died on exactly that
+    `mkdtemp` and took its whole plugin tree with it, reporting `dsh: plugin tree failed to
+    load: ... failed to apply loader entry spill-local` -- a message naming neither `TMPDIR`
+    nor this module, at the end of a four-layer hunt. Returning the list instead of doing
+    the `mkdir` here is deliberate: `mkdir_in` is a `docker exec`, so the container has to
+    be **running**, and the caller that owns the start/stop order is the only one that knows
+    when that is true.
+    """
+    env = container_env(task_mount)
+    seen: list[str] = []
+    for var in SCRATCH_ENV_VARS:
+        value = env.get(var)
+        if value and value not in seen:
+            seen.append(value)
+    return tuple(seen)
+
+
 def _mounts(task_dir: Path, task_mount: str, harness_root: Path | None,
             state_dirs: tuple[Path, ...], task_dir_writable: bool = True,
             readonly_paths: tuple[Path, ...] = ()) -> list[str]:

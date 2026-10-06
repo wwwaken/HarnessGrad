@@ -525,3 +525,77 @@ def test_a_directory_input_lands_at_the_destination_even_when_it_already_exists(
 
     assert calls[0] == ("ctr", str(directory), "/tests", {"contents": True}), calls
     assert calls[1] == ("ctr", str(single), "/app/one.txt", {"contents": False}), calls
+
+
+def test_every_scratch_directory_the_environment_names_exists():
+    """**The platform names five writable directories and `docker create` makes one of
+    them.**
+
+    `--tmpfs <home>` brings its own mount point and none of its children, so `HOME` exists
+    while `TMPDIR=<home>/tmp` -- a value this same module hands the harness -- does not. A
+    harness is entitled to believe the environment it was given: `mkdtemp(TMPDIR +
+    "/scratch-XXXXXX")` needs the *parent* to be there, and the `ENOENT` it gets instead is
+    a failure the platform caused.
+
+    Measured 2026-10-06 on the `dsh_agent` harness: DSH's spill store died on exactly that
+    `mkdtemp` and took the whole plugin tree with it, reporting `dsh: plugin tree failed to
+    load: ... failed to apply loader entry spill-local` -- naming neither `TMPDIR` nor the
+    platform, at the end of a four-layer hunt through a silent `catch {}`.
+
+    The first half runs everywhere and pins the *promise*; the second half needs a daemon
+    and pins that the promise is kept, and it also asserts the defect is real (the
+    directories are absent before the boot step) so that removing the step turns this red
+    rather than leaving a test that passes for the wrong reason.
+    """
+    if container.available() is None:
+        pytest.skip("no docker daemon")
+
+    task_mount = "/app"
+    env = container.container_env(task_mount)
+    dirs = container.writable_env_dirs(task_mount)
+    for var in container.SCRATCH_ENV_VARS:
+        assert env[var] in dirs, f"{var} names a directory a harness may write into"
+    # `TMPDIR` must not be `HOME`, or this whole test would pass on an implementation that
+    # simply pointed `TMPDIR` at the home directory -- putting a harness's scratch files
+    # in the middle of the state it keeps between runs.
+    assert env["TMPDIR"] != env["HOME"], "TMPDIR is a scratch directory, not HOME"
+
+    image = None
+    for candidate in ("alexgshaw/cancel-async-tasks:20251031",
+                      "alexgshaw/adaptive-rejection-sampler:20251031"):
+        try:
+            container.resolve_digest(candidate)
+        except container.ContainerUnavailable:
+            continue
+        image = candidate
+        break
+    if image is None:
+        pytest.skip("no local task image to build a container from")
+
+    run_id = f"scratch-test-{os.getpid()}"
+    name = f"hg-{run_id}"
+    container.remove_container(name)
+    container.create(name, image=image, network="none", run_id=run_id,
+                     tmpfs=(container.env_home(task_mount),))
+    try:
+        container.start(name)
+        # The defect, stated rather than assumed: `HOME` is a tmpfs, so it is there, and
+        # nothing below it is.
+        home = container.env_home(task_mount)
+        assert container.exec_in(name, ["test", "-d", home],
+                                 timeout_s=60).returncode == 0, "the tmpfs is its own mount point"
+        assert container.exec_in(name, ["test", "-d", env["TMPDIR"]],
+                                 timeout_s=60).returncode != 0, (
+            "if docker ever creates the tmpfs's children, this test's premise is gone")
+
+        # The platform's own boot step, called exactly as `container_state` calls it.
+        for path in container.writable_env_dirs(task_mount):
+            container.mkdir_in(name, path, "0755")
+
+        for path in container.writable_env_dirs(task_mount):
+            assert container.exec_in(name, ["test", "-d", path],
+                                     timeout_s=60).returncode == 0, (
+                f"{path} is named in the harness environment but was never created")
+    finally:
+        container.stop(name)
+        container.remove_container(name)

@@ -148,6 +148,16 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                     child_env["HG_AGENT_BASE_URL"] = gateway.base_url
 
                 container_mod.start(name)
+                # The environment names five scratch directories and `docker create`
+                # makes one of them: a `--tmpfs` brings its own mount point and no child
+                # of it, so `HOME` exists and `TMPDIR=<home>/tmp` does not. A harness that
+                # believes the environment it was given then starts against a path the
+                # platform invented -- see `container_mod.writable_env_dirs`. Created here
+                # rather than at create time because `mkdir_in` is a `docker exec`, and a
+                # container that has not been started cannot be exec'd (the first version
+                # of this file did it earlier and was told `is not running`).
+                for scratch in container_mod.writable_env_dirs(task_mount):
+                    container_mod.mkdir_in(name, scratch, "0755")
 
             # Step 3.
             exit_code, stderr = None, ""

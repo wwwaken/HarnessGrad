@@ -140,6 +140,70 @@ def _install_profile(home: Path) -> None:
     return made
 
 
+#: The question a failed DSH boot cannot answer from its own output.
+#:
+#: DSH resolves a loader entry's bare package name through **Node's internal ESM loader**,
+#: reached by the native addon `node-addon-require-builtin`
+#: (`vendor/loader/lib/index.js`, `ModuleLoader.fromInternal`). Every failure on that path is
+#: swallowed by a bare `catch {}`, and the fallback is a plain `import(name)` issued from
+#: `vendor/loader/lib/index.js` -- a file whose ancestors hold no `@deepseek-ai` packages, so
+#: the only error a user ever sees is `Cannot find package ... imported from
+#: .../vendor/loader/lib/index.js`, which names neither the addon nor the reason it failed.
+#: This probe asks the addon directly and reports what it said, plus whether the internal
+#: loader will import a plugin from the profile base DSH hands it.
+_LOADER_PROBE_JS = """
+import { createRequire } from "node:module";
+import os from "node:os";
+const loaderJs = process.env.HG_PROBE_LOADER, base = process.env.HG_PROBE_BASE;
+const out = { node: process.versions.node, exec: process.execPath, tmp: os.tmpdir(),
+              base, kind: null, has_import: null, addon: null, resolved: null };
+try {
+  const req = createRequire(loaderJs);
+  const m = req("node-addon-require-builtin");
+  out.addon_from_profile = (() => {
+    try { createRequire(base)("node-addon-require-builtin"); return true; }
+    catch (e) { return String(e && e.message || e).split("\\n")[0]; }
+  })();
+  const L = m.requireBuiltin("internal/modules/esm/loader");
+  const raw = L && L.getOrInitializeCascadedLoader && L.getOrInitializeCascadedLoader();
+  if (!raw) { out.addon = "getOrInitializeCascadedLoader returned nothing"; }
+  else {
+    out.kind = typeof raw.getOrCreateModuleJob === "function" ? "v2"
+             : typeof raw.getModuleJobForImport === "function" ? "v1" : "none";
+    out.has_import = typeof raw.import;
+    if (typeof raw.import === "function") {
+      try { await raw.import("@deepseek-ai/cordis-plugin-timer", base, {}); out.resolved = true; }
+      catch (e) { out.resolved = String(e && e.message || e).split("\\n")[0]; }
+    }
+  }
+} catch (e) { out.addon = String(e && e.message || e).split("\\n")[0]; }
+console.log(JSON.stringify(out));
+"""
+
+
+def _loader_probe(home: Path, env: dict) -> dict:
+    """Ask the container what DSH's own silent resolution path does there.
+
+    Never raises and never blocks the task: a probe that fails is itself the answer, and it
+    is recorded as text rather than dropped.
+    """
+    node = os.environ.get("HG_AGENT_NODE", DEFAULT_NODE)
+    dsh = os.environ.get("HG_AGENT_DSH", DEFAULT_DSH)
+    loader_js = str(Path(dsh).resolve().parents[3] / "vendor" / "loader" / "lib"
+                    / "index.js")
+    base = (home / ".dsh" / "profiles" / "headless").as_uri() + "/"
+    try:
+        probe_env = dict(env, HG_PROBE_LOADER=loader_js, HG_PROBE_BASE=base)
+        done = subprocess.run([node, "--input-type=module", "-e", _LOADER_PROBE_JS],
+                              env=probe_env, capture_output=True, text=True, timeout=60)
+        line = (done.stdout or "").strip().splitlines()
+        if not line:
+            return {"probe_error": (done.stderr or "no output").strip()[-400:]}
+        return json.loads(line[-1])
+    except Exception as exc:                                  # noqa: BLE001 - diagnostic
+        return {"probe_error": f"{type(exc).__name__}: {exc}"}
+
+
 def command(prompt_path: Path) -> list[str]:
     """The argv that answers one task.
 
@@ -191,9 +255,41 @@ def run(task: dict, workdir: Path) -> int:
     prompt_path.write_text(prompt, encoding="utf-8")
 
     env = {k: v for k, v in os.environ.items() if not k.startswith("HG_METHOD_")}
+    # **The one environment fact this harness has to add, and it is not optional.**
+    #
+    # DSH resolves loader-entry package names through Node's internal ESM loader, reached by
+    # the native addon `node-addon-require-builtin`. The addon first *copies its own binary*
+    # to `os.tmpdir()` and loads it from there (`node-addon-native-custom-loader`:
+    # `materializedNativeBinaryPath`). In a task container `TMPDIR` is the harness's own
+    # home, which the platform mounts as a **plain `--tmpfs`** -- and Docker's `--tmpfs`
+    # defaults to `rw,nosuid,nodev,noexec`. A `.node` file on a `noexec` filesystem cannot be
+    # `dlopen`ed, the addon gives up, and it reports `No usable native binding found for
+    # node-addon-require-builtin-linux-x64-gnu (auto)`. Every one of those failures is
+    # swallowed by a bare `catch {}` inside DSH, whose fallback is a plain `import(name)`
+    # issued from `vendor/loader/lib/index.js` -- a file with no `@deepseek-ai` packages
+    # anywhere above it. The whole tree then fails to compose, with the only visible error
+    # being `Cannot find package '@deepseek-ai/cordis-plugin-timer'`, which names neither the
+    # addon nor the tmpfs. Measured 2026-10-06: identical image and mounts pass on the host
+    # (`TMPDIR=/tmp`, exec) and fail in the container (`TMPDIR=<home>/tmp`, noexec); setting
+    # this one variable fixes it, because the addon then loads its binary from the read-only
+    # DSH checkout instead of a copy. Caching is a convenience for `pkg`-packaged runtimes,
+    # not a correctness requirement, so declining it costs one `dlopen` from a path that is
+    # already there.
+    env["NARB_DISABLE_NATIVE_CACHE"] = "1"
     env.setdefault("HOME", DEFAULT_HOME)
     home = Path(env["HOME"])
     home.mkdir(parents=True, exist_ok=True)
+    # **`TMPDIR` names a directory, not a promise that one exists.** The platform sets
+    # `TMPDIR=<home>/tmp` inside the container and mounts `<home>` as a tmpfs, but nothing
+    # ever creates `<home>/tmp`: a `--tmpfs` creates its own mount point and none of its
+    # children. DSH's spill store is the first thing to want that directory and it fails the
+    # whole boot when it is absent -- `ENOENT: no such file or directory, mkdtemp
+    # '<home>/tmp/dsh-spill-XXXXXX'`, raised from
+    # `packages/spill/spill-local/lib/index.js:privateRoot` and surfacing as `dsh: plugin
+    # tree failed to load: ... failed to apply loader entry spill-local`. A scratch directory
+    # the environment promises and does not provide is worth one `mkdir`, and this harness
+    # cannot run without it.
+    Path(env.get("TMPDIR") or "/tmp").mkdir(parents=True, exist_ok=True)
     farm_links = _install_profile(home)
     # DSH's own name for the key the platform gives the agent. Never logged, never written.
     if env.get("HG_AGENT_API_KEY") and not env.get("DEEPSEEK_API_KEY"):
@@ -222,9 +318,11 @@ def run(task: dict, workdir: Path) -> int:
         # "they were made somewhere this process cannot see".
         probe = (home / ".dsh" / "profiles" / "node_modules" / "@deepseek-ai"
                  / "cordis-plugin-timer")
-        record({"profile": {"home": str(home), "manifest": FARM_MANIFEST.is_file(),
-                            "links_created": farm_links,
-                            "probe_resolves": probe.exists()}})
+        profile_info = {"home": str(home), "manifest": FARM_MANIFEST.is_file(),
+                        "links_created": farm_links,
+                        "probe_resolves": probe.exists()}
+        profile_info.update(_loader_probe(home, env))
+        record({"profile": profile_info})
         proc = subprocess.Popen(command(prompt_path), cwd=workdir, env=env,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
