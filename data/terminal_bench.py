@@ -8,7 +8,7 @@ Where the task set lives
 A checkout of `harbor-framework/terminal-bench-2` (measured: 89 tasks, 83 MB, 117 MB for
 a sample image). It is deliberately outside the platform tree:
 
-    HG_TERMINAL_BENCH   default /mnt/20t/xubuqiang/Study/terminal-bench-2
+    HG_TERMINAL_BENCH   default /mnt/20t/xubuqiang/datasets/terminal-bench
 
 Each task is a directory with a uniform shape -- measured across all 89, with no
 exceptions: `instruction.md`, `task.toml`, `environment/` (a Dockerfile, often with
@@ -74,7 +74,14 @@ is stable across runs and reproducible from the record, and it is stated loudly 
 score on the eval side is a score on a third of the benchmark, not on the benchmark.
 `HG_TB_SPLIT=none` runs everything as eval and accepts the warning the driver prints.
 """
+
+
 from __future__ import annotations
+
+
+#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: deliberately not offered as a choice in the Launch form.
+KIND = "dataset"
 
 import hashlib
 import os
@@ -85,7 +92,7 @@ from pathlib import Path
 #: Where the checkout is. Outside the platform tree on purpose: it is dataset content,
 #: not platform code, and the platform hashes its own tree.
 ROOT = Path(os.environ.get("HG_TERMINAL_BENCH",
-                           "/mnt/20t/xubuqiang/Study/terminal-bench-2"))
+                           "/mnt/20t/xubuqiang/datasets/terminal-bench"))
 
 #: Tasks to leave out, by name, with the reason. **Empty**, and deliberately kept empty
 #: rather than deleted: a task that genuinely needs a multi-container environment should

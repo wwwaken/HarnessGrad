@@ -6,6 +6,13 @@ checking it*: creating a file, running code, fixing an error. A harness that sto
 after one model call cannot pass them; one that iterates can. That gap is what a
 method needs in order to have anything to accept or reject.
 """
+
+
+
+#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: deliberately not offered as a choice in the Launch form.
+KIND = "fixture"
+
 from pathlib import Path
 
 TASKS = [

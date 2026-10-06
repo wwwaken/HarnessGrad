@@ -30,7 +30,7 @@ from data import registry
 
 ROOT = Path(__file__).resolve().parents[2]
 TB_ROOT = Path(os.environ.get("HG_TERMINAL_BENCH",
-                              "/mnt/20t/xubuqiang/Study/terminal-bench-2"))
+                              "/mnt/20t/xubuqiang/datasets/terminal-bench"))
 
 
 def _require_tb() -> None:

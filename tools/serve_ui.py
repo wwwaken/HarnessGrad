@@ -239,9 +239,12 @@ def scan_options() -> dict:
                           if (d / m.get("entrypoint", "agent.py")).exists() else None})
 
     datasets = []
-    for f in sorted((ROOT / "data").glob("*.py")):
-        if f.stem in ("registry", "__init__"):
-            continue
+    # **Only declared datasets.** `data/` also holds the platform's own fixtures -- `demo`,
+    # `probe_set`, `broken_service` -- and globbing the directory offered all five in the
+    # same list, with no way to tell that three of them are scaffolding. The files stay
+    # (`demo` alone is used by 21 test modules); they are simply not choices. The
+    # declaration is `KIND` in the module; see `data/registry.py`.
+    for f in (ROOT / "data" / f"{n}.py" for n in registry.published()):
         try:
             sys.path.insert(0, str(ROOT))
             import importlib

@@ -82,7 +82,14 @@ Counts: 165 staged, 26 excluded, **139 returned** -- `train` 108 retail, `eval` 
 airline. A score on the eval side is a score on 31 of tau-bench's 50 airline test
 tasks, not on the retail set the method studied.
 """
+
+
 from __future__ import annotations
+
+
+#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: deliberately not offered as a choice in the Launch form.
+KIND = "dataset"
 
 import json
 import os

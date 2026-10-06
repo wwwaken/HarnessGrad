@@ -13,6 +13,47 @@ driver says so out loud rather than picking one.
 """
 from __future__ import annotations
 
+#: **What a module in `data/` is for.** A dataset declares `KIND = "dataset"`; anything that
+#: does not is a **fixture** -- the platform's own test material. The default is the quiet
+#: one on purpose: a new dataset that forgets to declare itself is hidden from the chooser
+#: rather than silently offered as something a reader can run, and the fix is one line.
+#:
+#: This mirrors what `methods/` already does with `method.json`'s `kind`, and for the same
+#: reason: measured 2026-10-06, the Launch form's dataset list offered `demo`, `probe_set`
+#: and `broken_service` beside `terminal_bench` and `tau_bench`, so a reader could not tell
+#: which of the five were datasets and which were the platform's own scaffolding. The files
+#: stay -- `demo` alone is referenced by 21 test modules -- they are simply not offered.
+KIND_DATASET = "dataset"
+KIND_FIXTURE = "fixture"
+
+
+def kind_of(name: str) -> str:
+    """`"dataset"` or `"fixture"`, from the module's own declaration."""
+    module = importlib.import_module(f"data.{name}")
+    kind = getattr(module, "KIND", KIND_FIXTURE)
+    return kind if kind in (KIND_DATASET, KIND_FIXTURE) else KIND_FIXTURE
+
+
+def published() -> tuple[str, ...]:
+    """Every dataset a reader is meant to choose from, in name order.
+
+    Programs that offer a choice -- the Launch form, the read API's option list -- read this
+    rather than globbing `data/`, so "which datasets exist" has one answer.
+    """
+    out = []
+    for path in sorted(Path(__file__).resolve().parent.glob("*.py")):
+        if path.stem in ("registry", "__init__"):
+            continue
+        try:
+            if kind_of(path.stem) == KIND_DATASET:
+                out.append(path.stem)
+        except Exception:                                     # noqa: BLE001
+            # A module that will not import is not a dataset a reader can pick, and
+            # `load()` reports its own errors when someone actually runs it.
+            continue
+    return tuple(out)
+
+
 import importlib
 import re
 from pathlib import Path

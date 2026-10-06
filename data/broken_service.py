@@ -16,7 +16,14 @@ harness scored nothing" about a run in which the harness never ran. Getting that
 is silent, produces a plausible number, and is exactly the class of claim this platform
 exists to stop.
 """
+
+
 from __future__ import annotations
+
+
+#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: deliberately not offered as a choice in the Launch form.
+KIND = "fixture"
 
 TASKS: list[dict] = [
     {"task_id": "b01", "goal": "This task can never be measured. See the module docstring."},

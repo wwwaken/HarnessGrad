@@ -9,7 +9,14 @@ file-reading ability and always answers with the same token. That is intended:
 a base harness with a visible gap is what makes the first curve a curve rather
 than a flat line. Scoring is exact-match and lives in `eval/`, never here.
 """
+
+
 from __future__ import annotations
+
+
+#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: deliberately not offered as a choice in the Launch form.
+KIND = "fixture"
 
 TASKS: list[dict] = [
     {"task_id": "t01", "goal": "Answer with the word alpha."},
