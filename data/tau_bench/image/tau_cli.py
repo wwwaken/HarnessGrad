@@ -9,6 +9,8 @@ also be run as `python3 /usr/local/bin/tau_cli.py` if the `tau` shim is missing.
     tau list                       print the tools and their argument schemas
     tau call <tool_name> '<json>'  invoke a tool against the database and print
                                    its observation (or `Error: ...`)
+    tau say '<text>'               tell the user something; recorded in the log
+    tau done                       declare the task finished; recorded in the log
     tau policy                     print the policy the task must be handled under
     tau show                       print the current database as JSON
 
@@ -19,15 +21,22 @@ tool raises, its exception is caught and printed as `Error: ...` -- exactly what
 `tau_bench.envs.base.Env.step` does -- and the database is still saved, because a
 tool may have mutated part of it before failing.
 
-Every call is appended to `/app/tau_calls.jsonl` as evidence of what was done.
-That file is the agent's own, so it is evidence and never the grade: the verifier
-compares database hashes, not action logs.
+There is no user process in this environment, so `tau say` is the whole channel to
+the user: it records an utterance and prints a short acknowledgement (the user
+never replies). `tau done` records that the agent has finished. Both are needed
+because the verifier reproduces tau-bench's own scoring rule, which fires only
+when the episode is done and also checks that the required things were said.
+
+Every `tau call`, `tau say` and `tau done` is appended to `/app/tau_calls.jsonl`
+as a record (`"kind": "call" | "say" | "done"`). That file is the agent's own, so
+it is evidence and never the grade by itself: the verifier compares database
+hashes, then reads the log for the `say`/`done` records.
 
 Where things live (override with the matching environment variable):
     /app/db.json          TAU_DB            the database; the task's mutable state
     /opt/tau/lib          TAU_LIB           `tau_bench` tool classes (read-only)
     /opt/tau/policy       TAU_POLICY_DIR    `<domain>.txt`, printed by `tau policy`
-    /app/tau_calls.jsonl  TAU_CALL_LOG      append-only log of `tau call`s
+    /app/tau_calls.jsonl  TAU_CALL_LOG      append-only log of calls, says and done
 """
 from __future__ import annotations
 
@@ -106,17 +115,39 @@ def tools_for(domain: str) -> dict:
     return {cls.get_info()["function"]["name"]: cls for cls in module.ALL_TOOLS}
 
 
-def _log_call(domain: str, name: str, arguments, observation: str) -> None:
-    """Append-only; a log that cannot be written must not fail the call."""
+def _log(record: dict) -> None:
+    """Append one JSON record; a log that cannot be written must not fail the command."""
     try:
         CALL_LOG.parent.mkdir(parents=True, exist_ok=True)
         with CALL_LOG.open("a") as handle:
-            handle.write(json.dumps({"domain": domain, "name": name,
-                                     "arguments": arguments,
-                                     "observation_chars": len(observation)},
-                                    ensure_ascii=False) + "\n")
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
     except OSError:
         pass
+
+
+def _log_call(domain: str, name: str, arguments, observation: str) -> None:
+    _log({"kind": "call", "domain": domain, "name": name, "arguments": arguments,
+          "observation_chars": len(observation)})
+
+
+def _domain_or_none() -> str | None:
+    """Best-effort domain for a log record: `say`/`done` must not need the database.
+
+    The verifier never reads a record's domain -- it is there for a human reading the
+    log -- so a missing or unreadable database must not stop the agent speaking.
+    """
+    explicit = os.environ.get("TAU_DOMAIN") or ""
+    if explicit in DOMAIN_TABLES:
+        return explicit
+    try:
+        data = json.loads(DB_PATH.read_text()) if DB_PATH.is_file() else {}
+    except (OSError, ValueError):
+        return None
+    keys = set(data) if isinstance(data, dict) else set()
+    for domain, tables in DOMAIN_TABLES.items():
+        if set(tables) <= keys:
+            return domain
+    return None
 
 
 def cmd_list(argv: list) -> int:
@@ -177,6 +208,35 @@ def cmd_call(argv: list) -> int:
     return 0
 
 
+def cmd_say(argv: list) -> int:
+    """Record an utterance to the user; there is no user here to answer it.
+
+    The record is `respond`-shaped (`name`/`arguments.content`), the same shape
+    tau-bench's `calculate_reward` looks at for a task's required `outputs`, so the
+    verifier can apply that rule verbatim. Nothing else happens: no database change,
+    no reply.
+    """
+    text = " ".join(argv).strip()
+    if not text:
+        _fail("usage: tau say '<text>'  (what to tell the user)")
+    _log({"kind": "say", "domain": _domain_or_none(), "name": "respond",
+          "arguments": {"content": text}})
+    print("Noted. There is no user to reply.")
+    return 0
+
+
+def cmd_done(argv: list) -> int:
+    """Declare the task finished.
+
+    tau-bench only computes a reward for an episode that is `done`; this record is
+    the agent's declaration, and the verifier requires it in the log.
+    """
+    _log({"kind": "done", "domain": _domain_or_none(), "name": "done",
+          "arguments": {}})
+    print("Noted. The task is marked done.")
+    return 0
+
+
 def _extract_domain(argv: list) -> list:
     """Pull a global `--domain X` / `--domain=X` out of `argv` into TAU_DOMAIN."""
     rest = []
@@ -212,6 +272,8 @@ USAGE = """tau -- act on the tau-bench database
 
   tau list                        list tools and their argument schemas
   tau call <tool_name> '<json>'   call a tool and print its observation
+  tau say '<text>'                tell the user something (no reply comes back)
+  tau done                        declare the task finished
   tau policy                      print the policy to follow
   tau show                        print the current database
 
@@ -227,7 +289,7 @@ def main(argv: list) -> int:
         return 0
     command, rest = argv[0], argv[1:]
     handlers = {"list": cmd_list, "call": cmd_call, "policy": cmd_policy,
-                "show": cmd_show}
+                "say": cmd_say, "done": cmd_done, "show": cmd_show}
     if command not in handlers:
         print(f"Error: unknown command {command!r}", file=sys.stderr)
         print(USAGE, file=sys.stderr)
