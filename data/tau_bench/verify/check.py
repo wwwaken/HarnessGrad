@@ -49,9 +49,9 @@ Failure modes are kept apart on purpose
   as unmeasured rather than as a zero the agent earned.
 
 Inputs (paths overridable with the matching flag or environment variable):
-    /verifier/gt.json         TAU_GT           ground truth for this task
-    /verifier/clean_db.json   TAU_CLEAN_DB     the clean database
-    /verifier/lib             TAU_LIB          tau-bench tools + hash functions
+    /tau-gt.json              TAU_GT           ground truth for this task
+    /tau-clean-db.json        TAU_CLEAN_DB     the clean database
+    /tau-lib                  TAU_LIB          tau-bench tools + hash functions
     /app/db.json              TAU_DB           the agent's database
     /app/tau_calls.jsonl      TAU_CALL_LOG     the agent's calls, says and done
     /verifier/reward.txt      TAU_REWARD       1 or 0
@@ -68,10 +68,14 @@ from collections import Counter
 from pathlib import Path
 
 VERIFIER_DIR = Path("/verifier")
+# The inputs are staged at the container root rather than under `/verifier`: the platform
+# copies them in before it creates the reward directory, so a nested destination has no
+# parent to be copied into. See `_verifier` in `data/tau_bench.py`.
+INPUT_DIR = Path("/")
 DEFAULTS = {
-    "gt": VERIFIER_DIR / "gt.json",
-    "clean_db": VERIFIER_DIR / "clean_db.json",
-    "lib": VERIFIER_DIR / "lib",
+    "gt": INPUT_DIR / "tau-gt.json",
+    "clean_db": INPUT_DIR / "tau-clean-db.json",
+    "lib": INPUT_DIR / "tau-lib",
     "db": Path(os.environ.get("TAU_WORKDIR", "/app")) / "db.json",
     "reward": VERIFIER_DIR / "reward.txt",
     "evidence": VERIFIER_DIR / "evidence.json",

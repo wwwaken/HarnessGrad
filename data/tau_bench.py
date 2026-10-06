@@ -104,6 +104,13 @@ PROVENANCE = ASSETS / "PROVENANCE.json"
 IMAGE = os.environ.get("HG_TAU_IMAGE", "harnessgrad/tau-bench:20261006")
 
 WORKDIR = "/app"
+
+#: Where the check's **inputs** are staged inside its container. Top level on purpose --
+#: see the note in `_verifier`. The outputs stay in the reward file's directory.
+GT_IN_CONTAINER = "/tau-gt.json"
+CLEAN_DB_IN_CONTAINER = "/tau-clean-db.json"
+CHECK_IN_CONTAINER = "/tau-check.py"
+LIB_IN_CONTAINER = "/tau-lib"
 REWARD_FILE = "/verifier/reward.txt"
 EVIDENCE_FILE = "/verifier/evidence.json"
 AGENT_TIMEOUT_S = 900
@@ -310,13 +317,22 @@ def _verifier(record: dict) -> dict:
     tid = record["task_id"]
     return {
         "kind": "command",
-        "argv": ["python3", "/verifier/check.py"],
+        "argv": ["python3", CHECK_IN_CONTAINER],
+        # **Top level, not `/verifier/...`, and that is not cosmetic.** The platform
+        # copies these in *before* it starts the check's container, and it creates the
+        # reward file's directory only *after* starting it (see `mkdir_in` in
+        # `eval/verifier.py`). `docker cp <file> <ctr>:/a/b/c` therefore fails with
+        # `Could not find the file /a/b` when the destination is nested and nothing has
+        # made the parent yet. A top-level destination has `/` as its parent, which always
+        # exists. Measured 2026-10-06: `/verifier/gt.json` failed the whole run with
+        # `ContainerUnavailable: could not copy ... Could not find the file /verifier`.
+        # The outputs stay under `/verifier` because by then the platform has created it.
         "inputs": [
-            {"dst": "/verifier/gt.json", "from": str(GT_DIR / f"{tid}.json")},
-            {"dst": "/verifier/clean_db.json",
+            {"dst": GT_IN_CONTAINER, "from": str(GT_DIR / f"{tid}.json")},
+            {"dst": CLEAN_DB_IN_CONTAINER,
              "from": str(_db_path(record["domain"]))},
-            {"dst": "/verifier/check.py", "from": str(CHECK_SCRIPT)},
-            {"dst": "/verifier/lib", "from": str(LIB_DIR)},
+            {"dst": CHECK_IN_CONTAINER, "from": str(CHECK_SCRIPT)},
+            {"dst": LIB_IN_CONTAINER, "from": str(LIB_DIR)},
         ],
         "reward_file": REWARD_FILE,
         "evidence_file": EVIDENCE_FILE,
