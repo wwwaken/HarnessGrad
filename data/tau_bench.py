@@ -369,3 +369,32 @@ SPLIT = {
     "train": [tid for domain in TRAIN_DOMAINS for tid in _ids_by_domain[domain]],
     "eval": [tid for domain in EVAL_DOMAINS for tid in _ids_by_domain[domain]],
 }
+
+
+def downloads() -> list[dict]:
+    """What a reader must fetch to rebuild this dataset's committed assets.
+
+    Tau-bench's ground truth is **committed** under `data/tau_bench/` -- the adapter
+    reads that, not the checkout -- so this dataset runs on a machine with nothing
+    fetched at all. The entry below describes the upstream source the committed bytes
+    were derived from, pinned to the commit recorded in `PROVENANCE.json`, and
+    `tools/build_tau_bench_gt.py` is what turns it back into `gt/`, `db/`, `policy/`
+    and `lib/`. `tools/datasets.py --write` renders it into `DOWNLOADS.md` from here,
+    so there is one list rather than a document that can drift from the loader.
+    """
+    try:
+        commit = json.loads(PROVENANCE.read_text()).get("checkout_commit") or "unknown"
+    except (OSError, ValueError):
+        commit = "unknown"
+    return [{
+        "kind": "http",
+        "name": "tau-bench checkout (regenerates the committed assets)",
+        "version": commit,
+        "url": f"https://github.com/sierra-research/tau-bench/archive/{commit}.tar.gz",
+        "size": "~67 MB unpacked",
+        "dst": "/mnt/20t/xubuqiang/datasets/tau-bench",
+        "extract_to": ".",
+        "note": "Only needed to REGENERATE `data/tau_bench/`: the adapter reads the "
+                "committed assets, which are already in git. Pinned to the commit in "
+                "PROVENANCE.json -- never a branch.",
+    }]

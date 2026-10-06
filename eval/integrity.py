@@ -85,6 +85,11 @@ NOT_PLATFORM = {
     "install.sh": "provisions a machine (`bubblewrap`, `git`, `python3`); it does not "
                   "decide what a number means",
     "README.md": "the front door for a human, not something a run reads",
+    "DOWNLOADS.md": "**generated** by `tools/datasets.py --write` from each loader's "
+                    "`downloads()`; it changes whenever a dataset is added and decides "
+                    "nothing a run reads (the loaders do). Hashing it would invalidate "
+                    "every past run's certification for a reason that cannot change a "
+                    "number -- the same argument as `web/`",
     "LICENSE": "the licence text; hashing it would change nothing about a measurement",
     ".env.example": "the template for `.env`; it holds placeholders, and `.env` itself "
                     "(which holds the credentials) is hashed",

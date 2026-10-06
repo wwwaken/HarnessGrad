@@ -1,0 +1,194 @@
+#!/usr/bin/env python3
+"""`alf` -- the command line the agent uses to act in an ALFWorld TextWorld episode.
+
+There is no chat and no interactive user. The agent is inside a text adventure, and the
+only way to act is to run a command:
+
+    python3 alf look            print the current observation and the admissible actions
+    python3 alf do "<action>"   apply one action and print what happened
+    python3 alf done            declare the episode over and stop acting
+    python3 alf help            print this text
+
+Why a CLI, and why a log
+------------------------
+The platform runs a task by starting a harness and then grading whatever it left
+behind. An interactive benchmark has no single artifact to grade -- the *episode* is
+the artifact -- so the task is turned into one: every action the agent takes goes
+through this command, and every action is appended to `alf_actions.jsonl`. The check
+then replays that log from the beginning in a fresh environment and reads the
+environment's own `won` flag. Nothing this program prints is trusted as a verdict; the
+log holds actions, and actions are re-executed rather than believed.
+
+Why the log is the state
+------------------------
+TextWorld environments cannot be pickled, and a fresh `alf` process starts with a fresh
+interpreter, so each invocation rebuilds the episode and replays the log up to the
+current action. That is O(n^2) in the number of steps, and it is deliberate: it is the
+only design in which the environment the agent sees and the environment the check
+replays are built by *exactly the same code path*, which is what makes "the same
+trajectory" a fact rather than a hope. With a 30-step budget the cost is a few tens of
+seconds for a whole episode.
+
+What the log looks like (one JSON object per line):
+    {"kind": "action", "step": 0, "action": "go to desk 2"}
+    {"kind": "done", "step": 4}
+
+Where things live (override with the matching flag):
+    <workdir>/game.tw-pddl        the game, put there by the platform's `SETUP`
+    <workdir>/alf_actions.jsonl   this program's append-only output
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+from pathlib import Path
+
+# `gym_env.py` is copied in beside this file by the dataset's `SETUP`. Import it from
+# this file's own directory rather than the current directory, so `alf` works no matter
+# where the harness invokes it from.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gym_env  # noqa: E402
+
+
+def _fail(message: str, code: int = 2) -> "int":
+    print(f"error: {message}", file=sys.stderr)
+    return code
+
+
+def _actions(records: list[dict]) -> list[str]:
+    """The actions in a log, in order. Anything that is not an action is skipped."""
+    return [str(r["action"]) for r in records
+            if r.get("kind") == "action" and isinstance(r.get("action"), str)]
+
+
+def _append(log: Path, record: dict) -> None:
+    """Append one JSON record. A log that cannot be written must fail loudly.
+
+    Unlike tau-bench's CLI -- where the log is evidence beside a database that is the
+    real state -- here the log *is* the state. A silently dropped append would make the
+    episode the agent saw and the episode the check replays diverge, so this raises
+    rather than swallowing the error.
+    """
+    log.parent.mkdir(parents=True, exist_ok=True)
+    with log.open("a") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def _print_state(state: dict, budget: int, steps: int, won: bool, done: bool) -> None:
+    print(state["observation"].strip())
+    print()
+    print("Admissible actions:")
+    for command in state["admissible"]:
+        print(f"  {command}")
+    print()
+    status = "SOLVED" if won else ("episode over" if done else "in progress")
+    print(f"[alf] step {steps}/{budget}; {status}")
+    if done and not won:
+        print("[alf] TextWorld ended the episode without the goal; the run continues to "
+              "count only if no earlier step satisfied it.")
+
+
+def cmd_look(args) -> int:
+    """Print the current observation. Not an action: it does not consume the budget."""
+    records = gym_env.action_log_records(args.log)
+    actions = _actions(records)
+    if not args.game.is_file():
+        return _fail(f"no game file at {args.game}")
+    state = gym_env.replay(str(args.game), actions, args.budget)
+    if not state["records"] and actions:
+        return _fail("the log names actions but none replayed")
+    if state["records"]:
+        last = state["records"][-1]
+        current = {"observation": last["observation"],
+                   "admissible": last["admissible"]}
+        done = last["done"]
+    else:
+        current = {"observation": state["initial_observation"],
+                   "admissible": state["initial_admissible"]}
+        done = False
+    _print_state(current, args.budget, len(actions), state["won"], done)
+    return 0
+
+
+def cmd_do(args) -> int:
+    """Apply one action, append it to the log, and print the result."""
+    if not args.action:
+        return _fail('usage: alf do "<action>"')
+    action = " ".join(args.action).strip()
+    if not action:
+        return _fail('usage: alf do "<action>"')
+    if not args.game.is_file():
+        return _fail(f"no game file at {args.game}")
+    records = gym_env.action_log_records(args.log)
+    actions = _actions(records)
+    if len(actions) >= args.budget:
+        print(f"error: the episode budget of {args.budget} actions is spent; the "
+              f"episode is over. Use `alf look` to see the final state.", file=sys.stderr)
+        return 2
+    state = gym_env.replay(str(args.game), actions + [action], args.budget)
+    if len(state["records"]) <= len(actions):
+        return _fail(f"the environment did not accept a step for {action!r}")
+    _append(args.log, {"kind": "action", "step": len(actions), "action": action})
+    last = state["records"][-1]
+    _print_state(last, args.budget, len(actions) + 1, state["won"], last["done"])
+    return 0
+
+
+def cmd_done(args) -> int:
+    """Mark the episode finished. Recorded; it is not an action and is not replayed."""
+    records = gym_env.action_log_records(args.log)
+    if not any(r.get("kind") == "done" for r in records):
+        _append(args.log, {"kind": "done", "step": len(_actions(records))})
+    print("Noted. The episode is marked done.")
+    return 0
+
+
+def _parse_global(argv: list) -> tuple[dict, list]:
+    """Pull the path/budget flags out wherever they appear; leave the subcommand."""
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--workdir", default=os.environ.get("ALFWORLD_WORKDIR", "."))
+    parser.add_argument("--game", default=None)
+    parser.add_argument("--log", default=None)
+    parser.add_argument("--budget", type=int, default=gym_env.STEP_BUDGET)
+    known, rest = parser.parse_known_args(argv)
+    workdir = Path(known.workdir)
+    known.game = Path(known.game) if known.game else workdir / gym_env.GAME_FILENAME
+    known.log = Path(known.log) if known.log else workdir / gym_env.LOG_FILENAME
+    return known, rest
+
+
+USAGE = """alf -- act in an ALFWorld text episode
+
+  python3 alf look            show the current observation and admissible actions
+  python3 alf do "<action>"   apply one action; it costs one of the {budget} steps
+  python3 alf done            declare the episode over
+
+Options (anywhere on the line): --workdir DIR --game FILE --log FILE --budget N
+The game is {game}; the action log is {log}.
+""".format(budget=gym_env.STEP_BUDGET, game=gym_env.GAME_FILENAME,
+           log=gym_env.LOG_FILENAME)
+
+
+def main(argv: list) -> int:
+    args, rest = _parse_global(list(argv))
+    if not rest or rest[0] in ("-h", "--help", "help"):
+        print(USAGE)
+        return 0
+    command, rest = rest[0], rest[1:]
+    if command == "look":
+        args.action = None
+        return cmd_look(args)
+    if command == "do":
+        args.action = rest
+        return cmd_do(args)
+    if command == "done":
+        return cmd_done(args)
+    print(f"error: unknown command {command!r}", file=sys.stderr)
+    print(USAGE, file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

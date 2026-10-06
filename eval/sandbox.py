@@ -174,7 +174,8 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
             state_dirs: tuple[Path, ...] = (),
             task_dir_writable: bool = True,
             runtime_paths: tuple[Path, ...] = (),
-            visible_paths: tuple[Path, ...] = ()) -> list[str]:
+            visible_paths: tuple[Path, ...] = (),
+            writable_paths: tuple[Path, ...] = ()) -> list[str]:
     """Wrap `argv` so it runs with the platform off its disk.
 
     Raises rather than degrading. A sandbox that quietly did not apply would make
@@ -303,6 +304,18 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
         # the final word about this path.
         plan += ["--ro-bind", str(task_dir), str(task_dir)]
 
+    # The check's own verdict directory, when it declares one. **After** the read-only
+    # re-assert of the task dir, so it is the last word about that subtree: a host check
+    # that must write a `reward_file` can write exactly there and nowhere else, and the
+    # harness's artifacts stay frozen. This exists so the reward-file contract does not
+    # require turning the verification sandbox off -- an unsandboxed check would be one
+    # whose import path (`sys.path[0]`) is the harness's workdir, which is a route from
+    # the harness into a process that can read the platform.
+    for path in writable_paths:
+        target = Path(path)
+        if target.exists():
+            plan += ["--bind", str(target), str(target)]
+
     # The writable hole: a tmpfs over the harness's own scratch directory, so a harness
     # can write caches, session state or intermediate files where it expects to find
     # them -- inside its tree -- while the code beside them stays untouchable.
@@ -366,6 +379,7 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
         task_dir_writable: bool = True,
         runtime_paths: tuple[Path, ...] = (),
         visible_paths: tuple[Path, ...] = (),
+        writable_paths: tuple[Path, ...] = (),
         input_text: str | None = None):
     """`subprocess.run` with the namespace in place. Same return type.
 
@@ -379,7 +393,8 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
                       state_dirs=state_dirs,
                       task_dir_writable=task_dir_writable,
                       runtime_paths=runtime_paths,
-                      visible_paths=visible_paths)
+                      visible_paths=visible_paths,
+                      writable_paths=writable_paths)
     return subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
                           timeout=timeout_s, cwd=cwd, env=env)
 

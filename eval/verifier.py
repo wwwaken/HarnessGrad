@@ -407,6 +407,11 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     kind = spec.get("kind", "answer")
     env_spec = env or {"kind": "files"}
     is_exec = env_spec.get("kind") == "exec"
+    #: A `files` check that declares a `reward_file`. The file channels used to be
+    #: reachable only from a container snapshot (`_verify_container_state`); this is the
+    #: host spelling of the same contract, added so a no-Docker dataset can keep its
+    #: evidence. See the block below the command run for what it does.
+    host_reward = bool(spec.get("reward_file")) and not is_exec
     task_mount = env_spec.get("workdir") or container_mod.DEFAULT_WORKDIR
     service_specs = list(service_specs or [])
 
@@ -429,6 +434,16 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
 
     argv = [str(a) for a in spec["argv"]]
     cwd = workdir / spec["cwd"] if spec.get("cwd") else workdir
+
+    # A host check that declares a `reward_file` is given its verdict directory back
+    # writable (`writable_paths` below), even though verification freezes the rest of the
+    # task tree. Created here rather than by the check because bwrap binds a path that
+    # must already exist, and because the platform -- not the subject -- decides where a
+    # verdict may be written.
+    reward_rel = str(spec["reward_file"]).lstrip("/") if host_reward else ""
+    reward_dir = (workdir / Path(reward_rel).parent) if host_reward else None
+    if reward_dir is not None:
+        reward_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         if is_exec:
@@ -456,12 +471,26 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
                     "verifier", service_specs,
                     running.recordings if running else {})))
         elif sandbox:
+            # A host check whose verdict is a file still runs sandboxed: `writable_paths`
+            # re-opens exactly its verdict directory on top of the read-only task tree,
+            # so the reward-file contract does not require switching the namespace off.
+            # (An unsandboxed check runs with the harness's workdir as `sys.path[0]`,
+            # which is a route from the subject into a process that can read the
+            # platform -- the failure this module exists to prevent.)
             work_root = Path(os.environ.get("HARNESSGRAD_WORK_ROOT")
                              or workdir.parent.parent)
+            # The namespace freezes the task tree and gives the check a private tmpfs at
+            # `/tmp`, so HOME/TMPDIR point **there** and not at the workdir. Measured on
+            # ALFWorld: a check whose toolchain writes `$HOME/.cache` against a read-only
+            # workdir dies with `[Errno 30] Read-only file system` before it can grade
+            # anything, and the failure would have been recorded as a harness failure.
+            check_env = _verifier_env(workdir)
+            check_env.update({"HOME": "/tmp", "TMPDIR": "/tmp"})
             proc = sandbox_mod.run(argv, platform=PLATFORM_ROOT, work_root=work_root,
-                                   task_dir=workdir, env=_verifier_env(workdir),
+                                   task_dir=workdir, env=check_env,
                                    timeout_s=timeout_s,
-                                   cwd=cwd, repo=workdir, task_dir_writable=False)
+                                   cwd=cwd, repo=workdir, task_dir_writable=False,
+                                   writable_paths=(reward_dir,) if reward_dir else ())
         else:
             proc = subprocess.run(argv, capture_output=True, text=True,
                                   timeout=timeout_s, cwd=cwd,
@@ -473,6 +502,63 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     except subprocess.TimeoutExpired:
         return {"kind": "command", "passed": False,
                 "detail": f"the verifier timed out after {timeout_s}s"}
+
+    # ---- a host (`files`) check's reward and evidence files ------------------
+    #
+    # The absolute paths in `reward_file`/`evidence_file` are the container contract.
+    # A `files` environment has no container, so the path is resolved against the task
+    # workdir -- which *is* that environment's root -- and the check's own `argv` is
+    # given the same location in the relative spelling its working directory
+    # understands. `workdir / "verifier/reward.txt"` is therefore where both sides meet.
+    #
+    # Before this, the host branch read only the exit code, so a dataset that could not
+    # use Docker had no way to keep the per-item evidence the contract asks for: the
+    # run record would carry a bare `exit 1` and nothing a method could learn from.
+    # **No existing dataset changes**: no dataset declared `reward_file` on a non-exec
+    # environment before ALFWorld (measured 2026-10-08).
+    if host_reward:
+        got = workdir / reward_rel
+        evidence_path = spec.get("evidence_file")
+        evidence = (None if not evidence_path
+                    else _read_json(workdir / str(evidence_path).lstrip("/")))
+
+        if not got.is_file():
+            # No reward file: the check did not reach a verdict. If it also left no
+            # evidence, the platform cannot say what happened; if it left evidence that
+            # says `measured: false`, the task was not measured rather than failed --
+            # the same distinction the container path draws, and the reason a bare 0 is
+            # not an acceptable output.
+            why = f"the check wrote no {spec['reward_file']} (looked for {got}), exit {code}"
+            verdict = {"kind": kind, "passed": False, "score": 0.0,
+                       "detail": " | ".join(p for p in
+                                            [why, _check_output_detail(out, proc.stderr)]
+                                            if p)[:VERDICT_DETAIL_LIMIT]}
+            if evidence is not None:
+                verdict["evidence"] = evidence
+                if evidence.get("measured") is False:
+                    verdict["unmeasured"] = str(
+                        evidence.get("error") or "the check could not measure the task")
+            return verdict
+
+        raw = got.read_text().strip()
+        try:
+            score = float(raw)
+        except ValueError:
+            return {"kind": kind, "passed": False, "score": 0.0,
+                    "detail": f"{spec['reward_file']} held {raw!r}, which is not a number"}
+
+        detail = [f"reward {score:g} from {spec['reward_file']} (exit {code})"]
+        if evidence is not None and evidence.get("why"):
+            detail.append(str(evidence["why"]))
+        detail.append(_check_output_detail(out, proc.stderr))
+        verdict = {"kind": kind, "passed": bool(score), "score": score,
+                   "detail": " | ".join(p for p in detail if p)[:VERDICT_DETAIL_LIMIT]}
+        if evidence is not None:
+            verdict["evidence"] = evidence
+        if evidence_path and evidence is None:
+            verdict["unmeasured"] = (f"the check wrote no {evidence_path}: its tests did "
+                                     f"not run, so this task was not measured")
+        return verdict
 
     pass_when = spec.get("pass_when", "exit0")
     passed = code == 0

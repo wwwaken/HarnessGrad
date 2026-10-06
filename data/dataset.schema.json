@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "about": [
+    "The machine-checkable half of the dataset contract (INTERFACE.md §2.5.9, §8.1).",
+    "It is read by tools/dataset_lint.py, which the quality suite runs, and by",
+    "tools/datasets.py, which renders DOWNLOADS.md from the same loaders.",
+    "",
+    "It deliberately holds only what can be decided without judgement: names, shapes,",
+    "coverage, path spelling, and the pinning of a download. Everything that needs a",
+    "human -- 'is this trap real?', 'does this goal leak the answer?' -- lives in",
+    "docs/dataset-onboarding-skill.md instead, because a rule that cannot be evaluated",
+    "by a program is a rule that trains people to ignore the check."
+  ],
+  "module": {
+    "kind_attribute": "KIND",
+    "kinds": ["dataset", "fixture"],
+    "required_callables": ["load", "downloads"],
+    "published_kind": "dataset"
+  },
+  "task": {
+    "required": ["task_id", "goal"],
+    "optional": ["inputs"],
+    "task_id": "non-empty unique string",
+    "goal": "non-empty string"
+  },
+  "split": {
+    "sides": ["train", "eval"],
+    "every_task_on_exactly_one_side": true,
+    "no_empty_side": true
+  },
+  "download": {
+    "kinds": ["http", "hf-file", "hf-dataset", "pip"],
+    "common_required": ["kind", "name", "version", "size", "note"],
+    "by_kind": {
+      "http": {"required": ["url", "dst"]},
+      "hf-file": {"required": ["repo", "file", "dst"]},
+      "hf-dataset": {"required": ["repo", "dst"]},
+      "pip": {"required": ["package"]}
+    },
+    "version_forbidden": ["", "main", "master", "head", "latest", "trunk", "dev", "nightly"],
+    "note_min_chars": 20
+  },
+  "verify": {
+    "kinds": ["answer", "command"],
+    "command_required": ["argv", "reward_file"],
+    "absolute_paths": ["reward_file", "evidence_file"],
+    "input_target_keys": ["path", "dst"],
+    "dst_must_be_top_level": true
+  },
+  "env": {
+    "kinds": ["files", "exec"],
+    "files_may_carry": ["kind"]
+  },
+  "paths": {
+    "data_root_attributes": ["DATASET_ROOT", "ROOT"],
+    "must_be_outside_platform": true,
+    "why": "Code (how to load and score) is in git; data is not. A dataset whose root is inside the platform tree has put bytes into git that the next reader will silently get a different copy of."
+  },
+  "platform_tree": "the directory containing this file's parent, i.e. the HarnessGrad checkout"
+}

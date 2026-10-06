@@ -276,3 +276,35 @@ else:
     _ids = [t["task_id"] for t in load()[0]]
     SPLIT = {"train": [t for t in _ids if not _is_eval(t)],
              "eval": [t for t in _ids if _is_eval(t)]}
+
+
+#: The checkout commit this adapter was validated against, measured with
+#: `git -C /mnt/20t/xubuqiang/datasets/terminal-bench rev-parse HEAD`
+#: (remote: `harbor-framework/terminal-bench-2`). Kept as a constant rather than read
+#: from `.git`, because the pin has to survive the checkout being copied without its
+#: history -- a provenance that disappears with a `cp` is not a pin.
+COMMIT = "2fd12b88aafdd04a52c298e3940bcb189f9766d6"
+
+
+def downloads() -> list[dict]:
+    """The checkout, plus the cost this adapter's docstring already measures.
+
+    The 89 task images are the run's real cost (~104 GB, pulled once by
+    `tools/import_env.py`, not by this dataset) and there is no download kind that
+    describes "89 tagged images"; they are named in the note rather than hidden, so a
+    reader who follows this list does not think a 3.8 MB tarball is the whole story.
+    """
+    return [{
+        "kind": "http",
+        "name": "terminal-bench-2 checkout",
+        "version": COMMIT,
+        "url": f"https://github.com/harbor-framework/terminal-bench-2/archive/"
+               f"{COMMIT}.tar.gz",
+        "size": "~83 MB unpacked",
+        "dst": str(ROOT),
+        "extract_to": ".",
+        "note": "The task instructions, Dockerfiles and checks. Pinned by commit sha. "
+                "The task IMAGES are separate and much larger -- measured ~104 GB, "
+                "pulled once by `tools/import_env.py`, three of them unfetchable on "
+                "this host -- and they are not represented here.",
+    }]
