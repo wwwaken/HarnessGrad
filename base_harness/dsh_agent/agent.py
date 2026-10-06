@@ -76,6 +76,10 @@ DEFAULT_DSH = "/mnt/20t/xubuqiang/deepseek-harness/apps/cli/lib/bin.js"
 #: unset entirely, and DSH resolves its home from it.
 DEFAULT_HOME = "/tmp/dsh-home"
 
+#: The model DSH answers with when the environment names none: the `model` of its shipped
+#: `agent-default-model` row (`packages/bundle/base/cordis.patch.yml`).
+DEFAULT_MODEL = "deepseek-flash"
+
 
 #: The plugin farm DSH's loader resolves its entries through, as **data**: one
 #: `relative/name<TAB>absolute target` per line, 277 lines, 42 KB.
@@ -204,7 +208,75 @@ def _loader_probe(home: Path, env: dict) -> dict:
         return {"probe_error": f"{type(exc).__name__}: {exc}"}
 
 
-def command(prompt_path: Path) -> list[str]:
+#: The patch that puts the platform's model in front of DSH.
+#:
+#: DSH ships one default model (`agent-default-model`: `deepseek-official` /
+#: `deepseek-flash`) and a live user document, `$DSH_HOME/settings.yaml`, that **overrides
+#: that row**. Left alone, DSH therefore answers every task with its own model no matter
+#: what `HG_AGENT_MODEL` says -- and a harness that ignores the platform's model cannot be
+#: placed on the model axis of any comparison at all.
+#:
+#: Two rows do it, and both are needed. `llm-pi-ai` gains a hand-declared route: the
+#: platform's endpoint, spoken over `openai-completions`, with the platform's model id in
+#: its catalog. `agent-default-model` then names that route. A route another adapter already
+#: owns cannot be registered twice, so the name `harnessgrad` is the adapter's own and
+#: collides with nothing DSH ships.
+#:
+#: The key is named by environment variable, never written here: `apiKeyEnv:
+#: DEEPSEEK_API_KEY` is a reference the credential seam resolves per request, and the
+#: adapter has already copied `HG_AGENT_API_KEY` into that variable. Measured 2026-10-06 on
+#: the host: with an isolated `DSH_HOME` this answers through `qwen3.5-9b-local`, and with
+#: the developer's own `settings.yaml` present the same patch is silently beaten by it --
+#: which is why the container, whose `HOME` starts empty, is the case that matters.
+_MODEL_PATCH = """\
+# Written by the harnessgrad `dsh_agent` adapter. Do not edit: it is rebuilt per task from
+# HG_AGENT_MODEL and HG_AGENT_BASE_URL so the recorded model is the model that ran.
+- id: llm-pi-ai
+  config:
+    providers:
+      harnessgrad:
+        displayName: HarnessGrad agent model
+        apiKeyEnv: DEEPSEEK_API_KEY
+        api: openai-completions
+        baseURL: {base_url}
+        models:
+          - id: {model}
+            name: {model}
+            contextWindow: {context_window}
+            maxTokens: {max_tokens}
+
+- id: agent-default-model
+  config:
+    provider: harnessgrad
+    model: {model}
+"""
+
+
+def _model_patch(env: dict, home: Path) -> "Path | None":
+    """Write the DSH patch that selects the platform's model, or `None` when there is none.
+
+    `None` is the honest answer for an environment that names no model: DSH then runs its
+    own default, and the trace says so rather than claiming a model nobody asked for.
+    """
+    model = env.get("HG_AGENT_MODEL")
+    base_url = env.get("HG_AGENT_BASE_URL")
+    if not model or not base_url:
+        return None
+    path = home / ".dsh" / "harnessgrad-model.patch.yml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    def quoted(value: str) -> str:
+        """A YAML scalar, single-quoted, so a model id with a colon cannot change meaning."""
+        return "'" + str(value).replace("'", "''") + "'"
+
+    path.write_text(_MODEL_PATCH.format(
+        base_url=quoted(base_url), model=quoted(model),
+        context_window=env.get("HG_AGENT_CONTEXT_WINDOW", "32768"),
+        max_tokens=env.get("HG_AGENT_MAX_TOKENS", "8192")), encoding="utf-8")
+    return path
+
+
+def command(prompt_path: Path, patch: "Path | None" = None) -> list[str]:
     """The argv that answers one task.
 
     The task text is passed as a single argument rather than on stdin: the headless app's
@@ -218,6 +290,8 @@ def command(prompt_path: Path) -> list[str]:
                 os.environ.get("HG_AGENT_DSH", DEFAULT_DSH)]
     if not argv:
         raise ValueError("HG_AGENT_DSH_COMMAND is empty")
+    if patch is not None:
+        argv = argv + ["--patch", str(patch)]
     return argv + ["--profile", "headless", prompt_path.read_text(encoding="utf-8")]
 
 
@@ -278,6 +352,17 @@ def run(task: dict, workdir: Path) -> int:
     env["NARB_DISABLE_NATIVE_CACHE"] = "1"
     env.setdefault("HOME", DEFAULT_HOME)
     home = Path(env["HOME"])
+    # **DSH's home, named rather than inferred.** `resolveDshHome` walks `$DSH_HOME` and
+    # otherwise falls back to `os.homedir()` (`packages/util/home-paths/src/index.ts`), and
+    # `$HOME` is not the only thing that answers that: an operator's own
+    # `~/.dsh/settings.yaml` carries an `agent-default-model` *saved selection* that wins over
+    # the `agent-default-model` config row at agent-creation time. Measured 2026-10-06 on this
+    # host: with the model patch applied and `HOME` pointed at a fresh directory, DSH still
+    # answered through `deepseek-official` -- the patch was composed correctly (`--dump-config`
+    # agreed) and then beaten by a settings document the harness never asked for. Naming the
+    # home makes DSH read the home this adapter built the farm in and nothing else, which is
+    # the only behaviour that survives being run next to somebody's desktop configuration.
+    env["DSH_HOME"] = str(home / ".dsh")
     home.mkdir(parents=True, exist_ok=True)
     # **`TMPDIR` names a directory, not a promise that one exists.** The platform sets
     # `TMPDIR=<home>/tmp` inside the container and mounts `<home>` as a tmpfs, but nothing
@@ -298,13 +383,20 @@ def run(task: dict, workdir: Path) -> int:
     # script: `node` is named by absolute path in `command`, so nothing here needs `PATH`.
 
     timeout = _deadline()
+    patch = _model_patch(env, home)
+    # `HG_AGENT_DSH_MODEL` used to be the whole story, and it was only ever a *label*: the
+    # record named a model (or the shipped default) while DSH answered with its own. Now the
+    # patch decides, so the record is taken from the patch.
+    model_ran = env.get("HG_AGENT_MODEL") or env.get("HG_AGENT_DSH_MODEL") or DEFAULT_MODEL
     with (workdir / "trace.jsonl").open("w", buffering=1) as trace:
         def record(value: dict) -> None:
             trace.write(json.dumps(value, ensure_ascii=False) + "\n")
 
         record({"harness_identity": {"harness": "dsh-agent",
                                      "agent_backend": "dsh-headless",
-                                     "agent_model": env.get("HG_AGENT_DSH_MODEL", "deepseek-flash")},
+                                     "agent_model": model_ran,
+                                     "agent_base_url": env.get("HG_AGENT_BASE_URL"),
+                                     "model_patch": str(patch) if patch else None},
                 "task_id": task.get("task_id")})
         # What the launcher did before it launched anything. A harness whose setup fails
         # silently fails in a way nobody can read afterwards: `-1` is "the manifest is not
@@ -323,7 +415,7 @@ def run(task: dict, workdir: Path) -> int:
                         "probe_resolves": probe.exists()}
         profile_info.update(_loader_probe(home, env))
         record({"profile": profile_info})
-        proc = subprocess.Popen(command(prompt_path), cwd=workdir, env=env,
+        proc = subprocess.Popen(command(prompt_path, patch), cwd=workdir, env=env,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
             out, err = proc.communicate(timeout=timeout)
