@@ -1,125 +1,78 @@
-"""AppWorld: the refusal, re-derived from the pinned bundle instead of asserted.
-
-The first version of this file ended with `assert 732 == 732` -- a tautology, and the only
-thing on disk that mentioned the number. This file replaces it with the measurement the
-refusal is actually about: decrypt the pinned bundle (the password and salt are upstream's
-public constants, transcribed in the adapter) and count the tasks, then read one task
-directory to show what *is* shipped (the state test, the initial world, the instruction) and
-what is not (a solution program).
-
-It also deliberately does **not** keep the old file's transcription of the task/scenario
-percentage average. That would be a transcription with no pinned source to compare against,
-which is a self-test wearing a citation -- and unlike `data/qa/evidence_scorers.py`, whose
-transcriptions prove that a metric *cannot* be computed, AppWorld's metric is present and
-runnable in the release. What is missing is the oracle, and the decryption test is the
-evidence for that claim.
-"""
+"""AppWorld release, released oracle, log replay, and control arms."""
 from __future__ import annotations
-
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
-
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-
 import data.appworld as dataset  # noqa: E402
 
 BUNDLE = dataset.DATASET_ROOT / "_src" / "data-0.1.0.bundle"
+CONTROL_TASK = "e85d92a_1"
 
 
-@pytest.fixture(scope="module")
-def archive():
-    if not BUNDLE.is_file():
-        pytest.skip("appworld: fetch the declared official bundle")
-    pytest.importorskip("cryptography", reason="the bundle is AES-encrypted")
-    return dataset.bundle_zip()
+def test_bundle_digest_and_release_count():
+    assert hashlib.sha256(BUNDLE.read_bytes()).hexdigest() == dataset.downloads()[0]["sha256"]
+    assert len(dataset.task_ids()) == dataset.TASKS_IN_RELEASE == 732
 
 
-def test_the_bundle_is_the_declared_one():
-    declared = dataset.downloads()[0]["sha256"]
-    assert hashlib.sha256(BUNDLE.read_bytes()).hexdigest() == declared
-
-
-def test_the_release_contains_732_tasks(archive):
-    """The number the refusal rests on, re-derived: one `ground_truth/evaluation.py` per task."""
-    ids = dataset.task_ids()
-    assert len(ids) == dataset.TASKS_IN_RELEASE == 732
-    assert len(set(ids)) == len(ids)
-    assert all(len(task_id.split("_")) == 2 for task_id in ids), ids[:3]
-    assert len(archive.namelist()) == 14696
-
-
-def test_the_release_declares_its_own_division(archive):
-    """`data/datasets/*.txt` is the release's own split table -- and it says 732, not 750.
-
-    This is what settles the count question the first version of the refusal got half wrong:
-    nothing is withheld from the bundle, each of the 732 tasks appears in exactly one split,
-    and the four files sum to the number of task directories.
-    """
+def test_declared_split_files_cover_every_task():
     splits = dataset.split_ids()
-    assert {name: len(ids) for name, ids in splits.items()} == dataset.SPLIT_SIZES
+    assert {key: len(value) for key, value in splits.items()} == dataset.SPLIT_SIZES
     union = set().union(*splits.values())
-    assert len(union) == sum(len(ids) for ids in splits.values()) == 732
+    assert len(union) == 732 == len(dataset.task_ids())
     assert union == set(dataset.task_ids())
-    for name, ids in splits.items():
-        assert len(set(ids)) == len(ids), name
+    assert set(dataset.SPLIT["train"]) == set(splits["train"] + splits["dev"])
+    assert set(dataset.SPLIT["eval"]) == set(splits["test_normal"] + splits["test_challenge"])
 
 
-def test_the_paper_count_is_an_earlier_build():
-    """The whole of "732 vs 750": the difference is in train and dev, and it is six scenarios.
-
-    The paper reports 250 scenarios x 3 tasks = 750 with splits 105/60/168/417
-    (arXiv 2407.18901v2). The release kept every test task and dropped 18 from train+dev --
-    105 -> 90 and 60 -> 57 is 15 + 3, which is six whole scenarios at three tasks each.
-    """
-    paper, release = dataset.PAPER_SPLITS, dataset.SPLIT_SIZES
-    assert paper["test_normal"] == release["test_normal"] == 168
-    assert paper["test_challenge"] == release["test_challenge"] == 417
-    assert paper["train"] - release["train"] == 15
-    assert paper["dev"] - release["dev"] == 3
-    assert sum(paper.values()) - sum(release.values()) == 18
-    assert (paper["train"] - release["train"]) + (paper["dev"] - release["dev"]) == 18
-    assert 18 % 3 == 0 and 18 // 3 == 6, "the delta is whole scenarios of three tasks"
-    doc = (ROOT / "data" / "appworld.py").read_text()
-    assert "2407.18901" in doc, "the paper's 750 needs its citation, not a recollection"
+def test_pool_contains_compact_metadata_and_db_digests():
+    rows = dataset._pool()
+    assert len(rows) == 732
+    assert all({"task_id", "split", "difficulty", "num_api_calls", "num_apps", "instruction", "dbs"} <= set(row) for row in rows)
+    assert len({row["dbs"] for row in rows}) > 1
 
 
-def test_a_task_ships_its_state_test_and_no_solution(archive):
-    """`ground_truth/evaluation.py` is the metric; the solution is only a line count."""
-    task = dataset.task_ids()[0]
-    prefix = f"data/tasks/{task}/"
-    members = [name[len(prefix):] for name in archive.namelist() if name.startswith(prefix)]
-    assert "specs.json" in members
-    assert "ground_truth/evaluation.py" in members
-    assert any(name.startswith("dbs/") and name.endswith(".jsonl") for name in members)
-    # No program anywhere in the task: the only .py is the state test itself.
-    programs = [name for name in members if name.endswith(".py")]
-    assert programs == ["ground_truth/evaluation.py"], programs
-
-    meta = json.loads(archive.read(prefix + "ground_truth/metadata.json"))
-    assert meta["num_solution_code_lines"] > 0, "a solution was generated and is not released"
-    spec = json.loads(archive.read(prefix + "specs.json"))
-    assert spec["instruction"].strip()
-
-    # And the state test is not self-contained: it needs the pinned package installed.
-    evaluation = archive.read(prefix + "ground_truth/evaluation.py").decode()
-    assert "from appworld.evaluator import TestTracker" in evaluation
-    assert "from appworld.apps" in evaluation
+def test_released_reference_coverage_is_computed():
+    assert dataset.ORACLE_SOURCE == "released"
+    assert "TestTracker" in dataset.ORACLE_VALIDATED_BY
+    assert dataset.ORACLE_COVERAGE.startswith("147 of 732")
+    assert "requester" in dataset.oracle_files({"task_id": CONTROL_TASK})["reference.py"]
+    with pytest.raises(ValueError, match="no released reference"):
+        dataset.oracle_files({"task_id": "92fe421_3"})
 
 
-def test_the_refusal_names_the_oracle_and_settles_the_pool():
-    """The reason is now about one thing: the oracle, which the platform has since decided to
-    author. The pool is *not* a ground for refusing -- the release states its own 732 across
-    four splits, so a run can say which one it scored -- and the reason must not say otherwise,
-    because that claim was wrong for a full round."""
-    reason = dataset.REFUSED
-    assert "no reference solution" in reason and "authored" in reason
-    assert "declares its own 732" in reason
-    assert str(dataset.TASKS_IN_RELEASE) in reason
-    assert "not comparable" not in reason
-    doc = (ROOT / "data" / "appworld.py").read_text()
-    assert "2407.18901" in doc, "the paper's 750 needs its citation, not a recollection"
+def test_check_separates_measured_zero_from_unmeasured(tmp_path):
+    check = ROOT / "data/appworld/verify/check.py"
+    missing = tmp_path / "missing.jsonl"
+    reward = tmp_path / "reward"
+    evidence = tmp_path / "evidence"
+    proc = subprocess.run([sys.executable, str(check), "--task-id", CONTROL_TASK, "--log", str(missing), "--reward-file", str(reward), "--evidence-file", str(evidence)], cwd=tmp_path)
+    assert proc.returncode == 3 and not reward.exists()
+    assert json.loads(evidence.read_text())["measured"] is False
+
+    empty = tmp_path / "empty.jsonl"
+    empty.write_text("")
+    appworld_env = dict(__import__("os").environ, APPWORLD_ROOT=str(dataset.UNPACKED))
+    proc = subprocess.run(["/mnt/20t/xubuqiang/venvs/appworld/bin/python", str(check), "--task-id", CONTROL_TASK, "--log", str(empty), "--reward-file", str(reward), "--evidence-file", str(evidence)], cwd=tmp_path, env=appworld_env)
+    assert proc.returncode == 0
+    assert reward.read_text().strip() == "0.0"
+    assert json.loads(evidence.read_text())["measured"] is True
+
+
+@pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
+def test_by_hand_control_arms(arm, expected):
+    proc = subprocess.run([sys.executable, "data/appworld/control.py", arm, "--task-id", CONTROL_TASK], cwd=ROOT, capture_output=True, text=True, timeout=300)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert f"reward  {expected}" in proc.stdout
+
+
+@pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
+def test_platform_control_arms(arm, expected):
+    proc = subprocess.run([sys.executable, "data/appworld/control.py", arm, "--task-id", CONTROL_TASK, "--platform", "--no-sandbox"], cwd=ROOT, capture_output=True, text=True, timeout=900)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert f"score    {expected}" in proc.stdout

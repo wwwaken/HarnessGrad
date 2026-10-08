@@ -26,7 +26,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-REFUSING = ["sotuqa", "fever", "hotpotqa", "api_bank", "tau2_bench", "nestful", "appworld"]
+REFUSING = ["sotuqa", "fever", "hotpotqa", "api_bank", "tau2_bench", "nestful"]
 
 
 @pytest.fixture(params=REFUSING)

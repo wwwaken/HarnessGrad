@@ -120,15 +120,15 @@ loads and scores it stays in git.
 
 ## `appworld`
 
-### AppWorld data bundle (http, v0.1.3.post1/data-0.1.0)
+### AppWorld encrypted data bundle (http, 0.1.0)
 
-- **Version (pinned):** `v0.1.3.post1/data-0.1.0`
+- **Version (pinned):** `0.1.0`
 - **Size:** 34280074 bytes
 - **URL:** https://s3.us-west-2.amazonaws.com/appworld.dev/data-0.1.0.bundle
 - **Destination:** `_src/data-0.1.0.bundle`
 - **sha256:** `fd9f9608c2ec71ed0ac25c3633a738b9129a318a129e31230425b9188e508250`
 
-> Official encrypted AppWorld bundle. Decryptable offline with the public PASSWORD/SALT in the pinned package (see this module): 14,696 members, 732 task directories across the release's own four splits (90/57/168/417), each with its state test and no solution program. `data-0.2.0.bundle` is a later build of the same 732 (plus a `_base_` template world). The evaluator additionally needs `appworld==0.1.3.post1` installed, which is why the bundle alone cannot make the dataset runnable. The bundle's README_BEFORE_SHARING.md requires that any public redistribution of it or its derivatives stay encrypted, which is one more reason the data is fetched here and never committed.
+> Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the prebuilt image contains the pinned appworld package, unpacked apps and task data.
 
 ## `bfcl_v3`
 

@@ -111,6 +111,7 @@ EXPECTED_INTERACTION = {
     "strategyqa": "single_shot",
     "tau_bench": "closed_loop",
     "terminal_bench": "closed_loop",
+    "appworld": "closed_loop",
     "triviaqa": "single_shot",
 }
 

@@ -411,7 +411,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     #: reachable only from a container snapshot (`_verify_container_state`); this is the
     #: host spelling of the same contract, added so a no-Docker dataset can keep its
     #: evidence. See the block below the command run for what it does.
-    host_reward = bool(spec.get("reward_file")) and not is_exec
+    host_reward = bool(spec.get("reward_file"))
     task_mount = env_spec.get("workdir") or container_mod.DEFAULT_WORKDIR
     service_specs = list(service_specs or [])
 
@@ -441,7 +441,10 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     # must already exist, and because the platform -- not the subject -- decides where a
     # verdict may be written.
     reward_rel = str(spec["reward_file"]).lstrip("/") if host_reward else ""
-    reward_dir = (workdir / Path(reward_rel).parent) if host_reward else None
+    exec_verdict_dir = (workdir / ".verifier") if (host_reward and is_exec) else None
+    if exec_verdict_dir is not None:
+        exec_verdict_dir.mkdir(parents=True, exist_ok=True)
+    reward_dir = (exec_verdict_dir if is_exec else workdir / Path(reward_rel).parent) if host_reward else None
     if reward_dir is not None:
         reward_dir.mkdir(parents=True, exist_ok=True)
 
@@ -458,6 +461,12 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             # mock API what it was sent has the same shape. `running` being None here
             # would be a caller bug -- a service task whose check silently could not
             # reach its service would fail the task for a reason nothing records.
+            verifier_mounts = list(services_mod.mounts_for(
+                    "verifier", service_specs,
+                    running.recordings if running else {}))
+            if exec_verdict_dir is not None:
+                verifier_mounts += ["--mount",
+                                    f"type=bind,src={exec_verdict_dir},dst={Path(spec['reward_file']).parent}"]
             proc = container_mod.run(
                 argv, image=env_spec["image"], task_dir=workdir,
                 task_mount=task_mount, cwd=container_mod.to_container(
@@ -467,9 +476,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
                 network=(running.network if running is not None
                          else env_spec.get("network", "none")),
                 task_dir_writable=False,
-                extra_mounts=tuple(services_mod.mounts_for(
-                    "verifier", service_specs,
-                    running.recordings if running else {})))
+                extra_mounts=tuple(verifier_mounts))
         elif sandbox:
             # A host check whose verdict is a file still runs sandboxed: `writable_paths`
             # re-opens exactly its verdict directory on top of the read-only task tree,
@@ -517,10 +524,14 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     # **No existing dataset changes**: no dataset declared `reward_file` on a non-exec
     # environment before ALFWorld (measured 2026-10-08).
     if host_reward:
-        got = workdir / reward_rel
+        got = ((exec_verdict_dir / Path(reward_rel).name)
+               if exec_verdict_dir is not None else workdir / reward_rel)
         evidence_path = spec.get("evidence_file")
-        evidence = (None if not evidence_path
-                    else _read_json(workdir / str(evidence_path).lstrip("/")))
+        evidence_file = ((exec_verdict_dir / Path(str(evidence_path)).name)
+                         if exec_verdict_dir is not None and evidence_path
+                         else (None if not evidence_path
+                               else workdir / str(evidence_path).lstrip("/")))
+        evidence = None if evidence_file is None else _read_json(evidence_file)
 
         if not got.is_file():
             # No reward file: the check did not reach a verdict. If it also left no
