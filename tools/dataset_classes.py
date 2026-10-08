@@ -68,6 +68,7 @@ CAPABILITY = {
     "tau_bench": "tool_dialogue",
     "terminal_bench": "terminal",
     "triviaqa": "information_seeking",
+    "gaia": "information_seeking",
     # Refused datasets still have a domain: the classification is about what the benchmark
     # measures, and a refusal is a statement about this platform's contract, not about it.
     "api_bank": "tool_calling",
@@ -112,6 +113,7 @@ EXPECTED_INTERACTION = {
     "tau_bench": "closed_loop",
     "terminal_bench": "closed_loop",
     "triviaqa": "single_shot",
+    "gaia": "closed_loop",
 }
 
 _ACT_PATTERN = re.compile(

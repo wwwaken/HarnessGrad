@@ -118,6 +118,14 @@ ROWS: dict[str, dict] = {
     },
     "bird_minidev": {"control": ["data/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
     "appworld": {"control": [], "metric_tests": ["test_appworld_official_scorer.py", "test_dataset_refusals.py"]},
+    "gaia": {
+        # `--platform` because this dataset is an `exec` env: the verifier's paths are
+        # container-absolute (`/check.py`, `/app/answer.txt`), so the by-hand arm has no
+        # meaningful form. The arm that proves gates 1 and 2 is `run_one` in a real container --
+        # 13 s per arm, and the arm that would catch an image or network mistake.
+        "control": ["data/gaia/control.py", "--platform"],
+        "metric_tests": ["test_gaia_official_scorer.py"],
+    },
     "livecodebench": {
         # `--task-id` because the oracle is **authored** and covers 7 of the 1,055 problems:
         # only a covered task can show gate 1, and `oracle_files()` raises for the rest. This

@@ -132,5 +132,11 @@ def test_the_filters_select_what_they_say():
     rows = json.loads(proc.stdout)
     assert rows and all(row["interaction"] == "closed_loop" and not row["refused"]
                         for row in rows)
+    # Pinned as an exact set on purpose: a dataset that changes the interaction axis, or a new
+    # one that lands on the wrong side of it, fails here. `gaia` joined it when the first
+    # networked dataset arrived -- an `exec` env with `network: "bridge"`, which the derivation
+    # reads as `closed_loop` because the env kind is `exec` (the same rule that puts
+    # `terminal_bench` and `tau_bench` here).
     assert {row["dataset"] for row in rows} == {
-        "agentdojo", "alfworld", "jericho", "scienceworld", "tau_bench", "terminal_bench"}
+        "agentdojo", "alfworld", "gaia", "jericho", "scienceworld", "tau_bench",
+        "terminal_bench"}
