@@ -33,7 +33,8 @@ sys.path.insert(0, str(ROOT))
 #: by globbing so that a new adapter has to be added here deliberately -- and so this file
 #: does not import a module whose data is absent in order to find that out.
 QA_DATASETS = ["gsm8k", "triviaqa", "strategyqa", "sportsunderstanding",
-               "physicsquestions", "bfcl_v3", "chessbench_puzzles", "musique"]
+               "physicsquestions", "bfcl_v3", "chessbench_puzzles", "musique",
+               "reasoning_gym", "twowikimultihopqa"]
 
 
 def _adapter(name: str):

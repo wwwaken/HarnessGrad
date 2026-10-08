@@ -322,6 +322,16 @@ loads and scores it stays in git.
 
 > Declared for consistency with the other QA datasets; this table is CSV, so the check reads it with `csv`, not pyarrow.
 
+## `reasoning_gym`
+
+### reasoning-gym (0.1.25) (pip, 0.1.25)
+
+- **Version (pinned):** `0.1.25`
+- **Size:** ~1 MB, with its own dependency tree
+- **Package:** `reasoning-gym==0.1.25`
+
+> The tasks are **generated**, so there is no dataset file to fetch: the pin is this package version plus the seed and the item count in `data/reasoning_gym/prepare.py`. Install it into the platform interpreter -- the check imports it inside the verification namespace. The pool itself is not a download either: `prepare.py` writes it from this version plus the seed, and `POOL_SHA256` in `data/reasoning_gym.py` pins the result, so the only declared dependency is this package. Trap 1: the extras (`reasoning-gym[scoring]`) pull an LLM-judge cascade; the 89 families used here are exactly the ones whose scorer is deterministic and offline in this version, measured rather than assumed (see `prepare.py`). Trap 2: installing it pins `click>=8.3`, while a `ray 2.52.1` in this interpreter wants `click!=8.3.*` -- a warning only, and nothing this platform imports uses either.
+
 ## `scienceworld`
 
 ### scienceworld (pip, 1.2.3)
@@ -476,3 +486,37 @@ loads and scores it stays in git.
 - **Package:** `pyarrow==23.0.0`
 
 > Reads the parquet files the pinned revision ships. The check runs inside the verification namespace and must not need the HuggingFace `datasets` package.
+
+## `twowikimultihopqa`
+
+### 2WikiMultihopQA dev, with answer_id (official December 2020 release) (hf-dataset, f4f0d7e4ae275d9281e90c46c93e66d6cdda3674)
+
+- **Version (pinned):** `f4f0d7e4ae275d9281e90c46c93e66d6cdda3674`
+- **Size:** 57,614,142 + 17,501,406 bytes
+- **Repo:** `kamelliao/2wikimultihopqa`
+- **Files:** `dev.json`, `id_aliases.json`
+- **Destination:** `.`
+- **sha256:** `{'dev.json': '79f77ae104088ea8e25b1a65dbece768d45771194663bc5660ec9a98070dadf5', 'id_aliases.json': 'f08ffcb6c2cefca9bdbe86b4248d6ad7a7743762d3f7264c14ff0bae85726fb6'}`
+
+> The id-enriched release the v1.1 evaluator needs: `answer_id` on 10,603 of 12,576 rows, and the official 203,297-entry alias table. The official host is a Dropbox link unreachable from the onboarding machine, so this third-party mirror is pinned by digest; identity against the official zip rests on a second independent mirror agreeing on every row (see WITNESS_FILE) and on every answer_id resolving. A parquet mirror is NOT a substitute: it has no answer_id, and without the alias channel Ans F1 drops (measured 68.18 -> 67.54 on 500 rows). No agent-visible field comes from here beyond the question and its ten paragraphs.
+
+### 2WikiMultihopQA validation, independent mirror (witness only) (hf-dataset, fe713bfbd1afbca1a65246741a75890405d56a3a)
+
+- **Version (pinned):** `fe713bfbd1afbca1a65246741a75890405d56a3a`
+- **Size:** 29,505,064 bytes (12,576 dev rows)
+- **Repo:** `framolfese/2WikiMultihopQA`
+- **Files:** `validation.parquet`
+- **Destination:** `.`
+- **sha256:** `{'validation.parquet': '408e2dbb28edc6c8b9ca3ba0c94d4fc7bf17ffb923766593a3a7f546ab4cba59'}`
+
+> Kept as the **witness**, not as the pool: no run reads it. Its 12,576 rows agree with dev.json on question, answer and supporting facts for every row, which is the only evidence available on this machine that dev.json is the official dev set. It carries no answer_id, which is why it cannot be the pool.
+
+### 2WikiMultihopQA official evaluation code (http, 209e761834d1ce055856fc11072c0a5aab47601d)
+
+- **Version (pinned):** `209e761834d1ce055856fc11072c0a5aab47601d`
+- **Size:** 389,466 bytes compressed source
+- **URL:** https://codeload.github.com/Alab-NII/2wikimultihop/tar.gz/209e761834d1ce055856fc11072c0a5aab47601d
+- **Destination:** `_src/2wikimultihop.tar.gz`
+- **sha256:** `01c0b699569cce142614d5d7a0e1f4864031aeaf035394af3084cc2c1d97dc3c`
+
+> Pins `2wikimultihop_evaluate_v1.1.py`, the file transcribed verbatim in this module, and `2wikimultihop_evaluate.py` v1.0 beside it. The tests read it from `_src` and compare bytes; no run imports it. Upstream prints a 16-key metrics dict and rounds to 2 decimals at the end, so the aggregate is order-sensitive and is asserted against this file rather than against a paraphrase.

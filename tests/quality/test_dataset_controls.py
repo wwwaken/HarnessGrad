@@ -106,6 +106,16 @@ ROWS: dict[str, dict] = {
         "control": ["data/qa/control.py", "--dataset", "triviaqa"],
         "metric_tests": ["test_triviaqa_official_scorer.py", "test_qa_dataset_contract.py"],
     },
+    "reasoning_gym": {
+        "control": ["data/qa/control.py", "--dataset", "reasoning_gym"],
+        "metric_tests": ["test_reasoning_gym_official_scorer.py",
+                         "test_qa_dataset_contract.py"],
+    },
+    "twowikimultihopqa": {
+        "control": ["data/qa/control.py", "--dataset", "twowikimultihopqa"],
+        "metric_tests": ["test_twowikimultihopqa_official_scorer.py",
+                         "test_qa_dataset_contract.py"],
+    },
     "tau_bench": {
         "control": [],
         "metric_tests": [],

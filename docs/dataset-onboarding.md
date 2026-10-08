@@ -50,8 +50,22 @@ gate 3 — the point is that the number you publish is the number they publish, 
 Where the metric *is* the upstream package's own function (Jericho's normalised score), the
 test pins the table and the game set instead, and says so.
 
-If a gate cannot be met because the contract cannot carry the official metric, that is
-**§5 (a refusal)**, not a reason to report a nearby number.
+Gate 3 has three admissible forms, and which one applies is decided by what the benchmark
+publishes, not by which is cheapest:
+
+* the metric **is a function in the upstream package** (Reasoning Gym's
+  `Dataset.score_answer`) — call it, pin the package version, and compare the call against the
+  library called independently in the test;
+* the metric is **a column of a table the benchmark publishes** (MuSiQue's `answer_f1`,
+  2WikiMultihopQA's `Ans F1`), while other columns of the same evaluator need evidence this
+  contract cannot carry — report that column **under its own name**, transcribe the columns
+  that cannot be carried, and have the evidence say which are missing;
+* **nothing this contract can compute appears in that table** (HotpotQA, whose leaderboard
+  number is `joint`) — that is **§5 (a refusal)**, not a reason to report a nearby number.
+
+The distinction is not cosmetic: a number that is near a published one and shares its name
+makes a curve point indistinguishable from a wrong metric, while a column reported under its
+own column name is the benchmark's number.
 
 `tests/quality/test_dataset_controls.py` enforces gates 1–3 over every published dataset: a
 dataset with no row there fails the suite, which is what stops the next one from being
@@ -156,9 +170,9 @@ where the author will read them. Read skill doc §16–§17 for the two datasets
 ### QA shape — "read a row, answer, compare"
 
 Use it when the task is a question with a checkable answer and the environment is just a
-place to write an answer. The shared scaffold is `data/qa/`; five datasets ride it
-(`gsm8k`, `triviaqa`, `strategyqa`, `sportsunderstanding`, `physicsquestions`, plus
-`bfcl_v3` with its own `records()`).
+place to write an answer. The shared scaffold is `data/qa/`; seven datasets ride it
+(`gsm8k`, `triviaqa`, `strategyqa`, `sportsunderstanding`, `physicsquestions`,
+`reasoning_gym`, `twowikimultihopqa`, plus `bfcl_v3` with its own `records()`).
 
 ```
 data/<name>.py     declares a base.QASpec(...): root, rows, question, gold, goal, score,
