@@ -1,6 +1,6 @@
 # Onboarding a dataset: the procedure
 
-**This page is the procedure. `docs/dataset-onboarding-skill.md` is the evidence.**
+**This page is the procedure. the internal onboarding log (kept outside this repository) is the evidence.**
 If the dataset is new to you, read `docs/dataset-first-day.md` first: it is the
 reconnaissance — three measurements that decide whether this dataset is runnable, refused, or
 runnable with a measured exclusion — and its whole point is that **no adapter is written until
@@ -76,7 +76,7 @@ onboarded without a way to show its grade is reachable.
 | the shared control for `command` datasets | `data/command_control.py` + `data/command_oracle_harness/` |
 | the download index (generated) | `DOWNLOADS.md` — written by `tools/datasets.py --write`; **never edit by hand** |
 | "which datasets exist" | `data/registry.py::published()` — a module appears iff `KIND == "dataset"` |
-| the judgement half | `docs/dataset-onboarding-skill.md` |
+| the judgement half | the internal onboarding log (kept outside this repository) |
 
 Anything that is not a dataset for a reader to run declares `KIND = "fixture"` (the
 default). That is why the platform's own scaffolding (`demo`, `probe_set`,
@@ -144,7 +144,7 @@ lint refuses a dataset that names none.
 
 `--kind files` is **deliberately not implemented yet**: that shape is the runtime tree below,
 and it should be written once against the family that will share it (the tool-sandbox batch,
-§3.1 of `docs/survey/README.md`) rather than guessed at from one example. Until then, copy
+§3.1 of the internal benchmark survey (kept outside this repository)) rather than guessed at from one example. Until then, copy
 `data/jericho/` by hand after reading skill doc §16–§17. The generator says this and refuses.
 
 ### QA shape — "read a row, answer, compare"
@@ -230,7 +230,7 @@ Copied from the skill doc §10 and paired with the command that proves each step
 10. **Record the noise and the task count** in this repository, where the next person
     comparing two runs will see it.
 
-Then **append what this dataset taught you to `docs/dataset-onboarding-skill.md`**, with the
+Then **append what this dataset taught you to the internal onboarding log (kept outside this repository)**, with the
 measurement that produced it, before starting the next one. Lessons written in a batch lose
 the measurement.
 

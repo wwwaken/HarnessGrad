@@ -1,7 +1,7 @@
 # A new dataset, the first day
 
 **This page is the reconnaissance. `docs/dataset-onboarding.md` is the procedure.
-`docs/dataset-onboarding-skill.md` is the evidence behind both.**
+the internal onboarding log (kept outside this repository) is the evidence behind both.**
 
 Precedence, as everywhere in this repository: the programs win over this page. If a claim
 here and `data/dataset.schema.json` / `tools/dataset_lint.py` disagree about something a
@@ -32,7 +32,7 @@ python3 -c "import csv,sys;print(sum(1 for _ in csv.DictReader(open(sys.argv[1])
 
 A task count that disagrees with the paper is a finding, not a nuisance. Do not resolve it by
 adopting whichever number is convenient; write down which one you measured and why the other
-is different. The survey under `docs/survey/` marks the numbers it could not verify against a
+is different. The internal benchmark survey (kept outside this repository) marks the numbers it could not verify against a
 primary source, and its correction notes name the ones it got wrong; the same directory states
 which of its pins were read only through a mirror.
 

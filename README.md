@@ -2,8 +2,9 @@
 
 **A platform for running and comparing harness self-improvement methods.**
 
-We do not propose an RSI method. We build the instrument that makes RSI methods
-comparable — and we are therefore not competing with the methods we measure.
+This repository does not propose an RSI method. It builds the instrument that makes
+RSI methods comparable — and it is therefore not competing with the methods it
+measures.
 
 ## The problem this exists for
 
@@ -198,8 +199,6 @@ running without it.
 ```
 install.sh            install + verify (bubblewrap, git, python3 >= 3.10)
 docs/writing_a_harness.md  how to contribute a harness (start here if that is you)
-docs/claims.md        the falsifiable claims this platform exists to test -- research, not
-                      engineering, and each one carries the condition that would refute it
 INTERFACE.md          the frozen contract -- read this first
 driver.py             the entrypoint: argparse, wiring, the order refusals happen in
 harnessgrad/           the platform's implementation, one responsibility per module
