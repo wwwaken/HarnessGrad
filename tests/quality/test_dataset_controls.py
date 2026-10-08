@@ -116,6 +116,7 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_twowikimultihopqa_official_scorer.py",
                          "test_qa_dataset_contract.py"],
     },
+    "bird_minidev": {"control": ["data/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
     "livecodebench": {
         "control": [],
         "metric_tests": ["test_livecodebench_official_scorer.py", "test_dataset_refusals.py"],

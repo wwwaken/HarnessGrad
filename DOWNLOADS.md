@@ -138,6 +138,18 @@ loads and scores it stays in git.
 
 > Declared for consistency with the other QA datasets; BFCL is JSONL, so the reader is `json`, not pyarrow.
 
+## `bird_minidev`
+
+### BIRD Mini-Dev ZIP (http, cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f)
+
+- **Version (pinned):** `cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f`
+- **Size:** 800943648 bytes
+- **URL:** https://bird-bench.oss-cn-beijing.aliyuncs.com/minidev.zip
+- **Destination:** `_src/minidev.zip`
+- **sha256:** `cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f`
+
+> Official 500-question Mini-Dev release with SQLite databases and gold SQL; EX is the published exact-set metric.
+
 ## `chessbench_puzzles`
 
 ### ChessBench puzzles.csv (http, 90ae0e6b121673fc3079aaeffa047580bb600c0a)
