@@ -69,7 +69,7 @@ onboarded without a way to show its grade is reachable.
 | dataset-private code | `data/<name>/{lib,cli,verify,control,oracle_harness}/` |
 | the machine-checkable contract | `data/dataset.schema.json` |
 | the checker | `tools/dataset_lint.py` |
-| the generator | `tools/new_dataset.py --kind qa\|command` — see §3 |
+| the generator | `tools/new_dataset.py --kind qa\|command\|files` — see §3 |
 | the check that runs over *every* published dataset | `tests/quality/test_dataset_lint.py` |
 | the check that every dataset declares a control and a metric test, and runs the controls | `tests/quality/test_dataset_controls.py` |
 | the classification: derived axes plus the one judged axis | `tools/dataset_classes.py` |
@@ -134,6 +134,8 @@ python3 tools/new_dataset.py --kind qa      <name> --source-url … --source-ver
                                                   --source-size … --source-note "the trap"
 python3 tools/new_dataset.py --kind command <name> --source-url … --source-version … \
                                                   --source-size … --source-note "the trap"
+python3 tools/new_dataset.py --kind files   <name> --source-url … --source-version … \
+                                                  --source-size … --source-note "the trap"
 ```
 
 It writes a scaffold that **already passes the five gates** — a small working dataset whose
@@ -142,10 +144,14 @@ data is on disk. You replace the table and the metric; you inherit the wiring. T
 flags are required, because step 3 of the order below is "write `downloads()` first" and the
 lint refuses a dataset that names none.
 
-`--kind files` is **deliberately not implemented yet**: that shape is the runtime tree below,
-and it should be written once against the family that will share it (the tool-sandbox batch,
-§3.1 of the internal benchmark survey (kept outside this repository)) rather than guessed at from one example. Until then, copy
-`data/jericho/` by hand after reading skill doc §16–§17. The generator says this and refuses.
+`--kind files` generates the same three files as `command`, and the control it emits is the
+same one: `data/command_control.py` turns out to be **kind-agnostic** — it needs `load()`,
+`SPLIT`, `SETUP`, `VERIFY` and `oracle_files(task)` and nothing else. What the `files` scaffold
+adds is the shape: a runtime tree built by `SETUP`, a check that inspects the state the agent
+left, and the three traps that shape has already paid for — the check cannot see the dataset
+root (everything it needs must travel in `VERIFY.inputs`), a runtime tree is often read-only,
+and the sandbox copies those inputs per task. They are written into the generated module,
+where the author will read them. Read skill doc §16–§17 for the two datasets that taught them.
 
 ### QA shape — "read a row, answer, compare"
 

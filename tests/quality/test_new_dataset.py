@@ -11,9 +11,12 @@ that the next full-suite run lints as a published dataset.
 """
 from __future__ import annotations
 
+import json
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -24,6 +27,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import dataset_lint  # noqa: E402
 import new_dataset  # noqa: E402
+from data import command_control  # noqa: E402
 from data import registry  # noqa: E402
 
 SOURCE = {
@@ -39,6 +43,8 @@ KINDS = {
            "control_args": ["--dataset", "scaffold_probe_qa"]},
     "command": {"module": "scaffold_probe_cmd", "control": ["data/scaffold_probe_cmd/control.py"],
                 "control_args": []},
+    "files": {"module": "scaffold_probe_files",
+              "control": ["data/scaffold_probe_files/control.py"], "control_args": []},
 }
 
 
@@ -46,30 +52,43 @@ def _artifacts(name: str) -> list[Path]:
     return [ROOT / "data" / f"{name}.py", ROOT / "data" / name]
 
 
+def _clean(name: str) -> None:
+    """Remove a scaffold's artefacts, and the cached module.
+
+    The cache matters: the lint imports the module, and a cached entry would shadow the
+    next generation of the same name.
+    """
+    for path in _artifacts(name):
+        if path.is_dir():
+            shutil.rmtree(path)
+        elif path.exists():
+            path.unlink()
+    sys.modules.pop(f"data.{name}", None)
+
+
 @pytest.fixture(params=sorted(KINDS))
 def scaffold(request):
     """Generate the scaffold, hand it to the test, then remove every artefact."""
     kind = request.param
     name = KINDS[kind]["module"]
-    for path in _artifacts(name):
-        if path.is_dir():
-            import shutil
-            shutil.rmtree(path)
-        elif path.exists():
-            path.unlink()
+    _clean(name)
     new_dataset.generate(name, kind, SOURCE)
     try:
         yield kind, name
     finally:
-        for path in _artifacts(name):
-            if path.is_dir():
-                import shutil
-                shutil.rmtree(path)
-            elif path.exists():
-                path.unlink()
-        # The module may have been imported by the lint; a cached entry would shadow the
-        # next generation of the same name.
-        sys.modules.pop(f"data.{name}", None)
+        _clean(name)
+
+
+@pytest.fixture
+def files_scaffold():
+    """The `files` scaffold on its own, for the tests about its shape rather than its kind."""
+    name = KINDS["files"]["module"]
+    _clean(name)
+    new_dataset.generate(name, "files", SOURCE)
+    try:
+        yield name
+    finally:
+        _clean(name)
 
 
 def _run(argv: list[str], *, timeout: int = 300) -> subprocess.CompletedProcess:
@@ -149,11 +168,61 @@ def test_the_generator_refuses_a_source_with_no_trap_recorded():
     assert not (ROOT / "data" / "scaffold_probe_bare.py").exists()
 
 
-def test_the_files_kind_says_why_it_is_not_generated_yet():
-    """A refused shape must refuse *loudly*, naming the decision and where to read."""
-    with pytest.raises(SystemExit) as excinfo:
-        new_dataset.generate("scaffold_probe_files", "files", SOURCE)
-    message = str(excinfo.value)
-    assert "deliberately not implemented" in message
-    assert "docs/survey/README.md" in message
-    assert not (ROOT / "data" / "scaffold_probe_files.py").exists()
+def test_the_files_check_separates_unmeasurable_from_failed(files_scaffold):
+    """The two outcomes a state check must never confuse.
+
+    This is the `files` kind's own contract, and it is the one a scaffold author copies:
+    a missing **interface** file is a measured `0` (the agent failed to act), while a missing
+    **platform** input -- the gold -- is not a grade at all. No reward file is written and
+    the evidence says `measured: false`, which `eval/verifier.py` reports as unmeasured
+    rather than as a zero the agent earned.
+    """
+    module = registry.importlib.import_module(f"data.{files_scaffold}")
+    task = module.TASKS[0]
+    workdir = Path(tempfile.mkdtemp(prefix="hg-files-probe-"))
+    try:
+        # The agent does nothing. That is a measured 0 -- and the state half must fail,
+        # or the toy is not testing the comparison at all.
+        assert command_control.run_local(module, task, oracle=False, workdir=workdir) == 0
+        reward = (workdir / "verifier" / "reward.txt").read_text().strip()
+        evidence = json.loads((workdir / "verifier" / "evidence.json").read_text())
+        assert reward == "0"
+        assert evidence["measured"] is True
+        assert evidence["state_matches"] is False, "a no-op must not match the reference state"
+
+        # Now take away the platform's own input and run the check exactly as the platform
+        # does -- it materializes its inputs first, so the removal has to come after that.
+        (workdir / "verifier" / "reward.txt").unlink()
+        (workdir / "gold.json").unlink()
+        verifier = module.VERIFY[task["task_id"]]
+        proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=workdir,
+                              capture_output=True, text=True)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        evidence = json.loads((workdir / "verifier" / "evidence.json").read_text())
+        assert evidence["measured"] is False
+        assert "cannot be measured" in evidence["why"]
+        assert not (workdir / "verifier" / "reward.txt").exists(), \
+            "an unmeasurable task must not leave a reward behind"
+    finally:
+        shutil.rmtree(workdir, ignore_errors=True)
+
+
+def test_the_files_oracle_changes_the_state_it_claims_to(files_scaffold):
+    """The oracle arm has to be a real solution, not a copy of the starting state.
+
+    Measured while writing this scaffold: the first toy used `ticket_id = i + 1` over an
+    initial state of three tickets, so most tasks asked to close a ticket that was not
+    there, the reference state equalled the initial one, and **the do-nothing arm passed the
+    state comparison** -- it still scored 0 only because the audit was missing. The tell was
+    in the evidence (`state_matches=True` on a no-op), which is why the evidence line exists.
+    """
+    module = registry.importlib.import_module(f"data.{files_scaffold}")
+    for record in module._RECORDS:
+        initial = record["state"]
+        gold = module._closed_state(record)
+        assert gold != initial, f"{record['task_id']}: closing the ticket changes nothing"
+        assert record["ticket_id"] in [t["id"] for t in initial["tickets"]], \
+            f"{record['task_id']}: the ticket is not in the initial state"
+        files = module.oracle_files({"task_id": record["task_id"], "goal": "", "inputs": []})
+        assert set(files) == {"state/tickets.json", "state/audit.log"}
+        assert json.loads(files["state/tickets.json"]) == gold
