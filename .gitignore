@@ -278,3 +278,17 @@ harnessgrad_work/
 
 # 服务 PID 文件:本地运行状态,不该进版本库
 .harnessgrad-state/
+
+# ---------------------------------------------------------------- local notes ---
+# Everything under `docs/` is a local working note unless it is named below. The five
+# pages a user of the platform needs are re-included explicitly.
+#
+# The default is *hidden* on purpose: a new note is private until someone decides to
+# publish it, and a public page cannot be hidden by accident. INTERFACE.md, at the
+# repository root, is the contract and is public.
+/docs/*
+!/docs/writing_a_harness.md
+!/docs/dataset-onboarding.md
+!/docs/dataset-first-day.md
+!/docs/egress.md
+!/docs/moving-docker-data-root.md

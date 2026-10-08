@@ -293,6 +293,19 @@ def main() -> int:
                          "eval run measures one state of a train run on the exam. They "
                          "are separate runs so that the exam's traces are not in the "
                          "train run at all -- an absence, not a withheld field.")
+    ap.add_argument("--split", default=None,
+                    help="which division of the dataset this run uses, when the caller "
+                         "does not want the one the dataset declares. `declared` (the "
+                         "default) uses the adapter's own SPLIT; `default` uses the "
+                         "platform's documented rule (a deterministic third, by hash of "
+                         "the task id); `official` uses the benchmark's own evaluation set "
+                         "as the adapter declares it, which is the comparable run -- the "
+                         "whole official set, with no study material in this pool. Anything "
+                         "else is a path to a JSON file {\"train\": [...], \"eval\": [...]}. "
+                         "The division is a property of the experiment protocol, not of the "
+                         "benchmark, so the run may supply it; whichever is used is recorded "
+                         "on the run as `split_source` and `split_sha`, and two points are "
+                         "comparable only when those agree.")
     ap.add_argument("--from-run", default=None,
                     help="--side eval: the train run whose harness state to measure")
     ap.add_argument("--from-round", type=int, default=None,
@@ -368,6 +381,56 @@ def main() -> int:
         return 2
 
     tasks_all, scorable, split = datasets.load_split(args.dataset)
+    # **Whose division this run uses.** The train/eval division is a property of the
+    # experiment protocol, not of the benchmark: the same dataset supports "study the
+    # official train split and report on the official test split" and "study a third of the
+    # pool and report on another third", and those are different claims. So the adapter's
+    # declaration is the *default* answer rather than the only one, and the run may name a
+    # different division. What it may not do is leave the choice unrecorded: `split_source`
+    # and `split_sha` go on the run, because two curve points are comparable only if they
+    # scored the same tasks -- the same rule §2.1 already applies to the sampling policy.
+    # `None` when nothing divided the pool: a dataset with no declaration and no `--split`
+    # runs on everything, and calling that source "declared" would name a declaration that
+    # does not exist. The warning below still fires, because that run cannot support a
+    # generalisation claim.
+    split_source = "declared" if split is not None else None
+    if args.split and args.split != "declared":
+        if args.split == "default":
+            # Both derived divisions go through the same guard as a supplied file: the
+            # platform's hash rule can put every task on one side of a small pool, and that
+            # is a message about the dataset, not a traceback out of the driver.
+            try:
+                split = datasets.validate_split(
+                    args.dataset, tasks_all, datasets.default_split(tasks_all),
+                    require_nonempty=(args.side,))
+            except ValueError as exc:
+                console.note(str(exc), level="error")
+                return 2
+            split_source = "default"
+        elif args.split == "official":
+            try:
+                split = datasets.validate_split(
+                    args.dataset, tasks_all, datasets.official_split(args.dataset, tasks_all),
+                    require_nonempty=(args.side,))
+            except ValueError as exc:
+                console.note(str(exc), level="error")
+                return 2
+            split_source = "official"
+        else:
+            path = Path(args.split)
+            if not path.is_file():
+                console.note(
+                    f"--split {args.split!r} is neither `declared`, `default`, `official`, "
+                    f"nor a readable file path", level="error")
+                return 2
+            try:
+                supplied = json.loads(path.read_text())
+                split = datasets.validate_split(args.dataset, tasks_all, supplied,
+                                                require_nonempty=(args.side,))
+            except (json.JSONDecodeError, ValueError) as exc:
+                console.note(f"--split {path}: {exc}", level="error")
+                return 2
+            split_source = f"file:{path.resolve()}"
     # The task's initial state, and the grade. Both are platform-side only: `TASKS`
     # is what the harness receives, `SETUP`/`VERIFY` never leave this process except
     # as the files SETUP produces (INTERFACE.md §2.4).
@@ -617,7 +680,9 @@ def main() -> int:
             f"dataset {args.dataset!r} declares no train/eval split: every task is "
             f"scored and the method is shown traces for all of them. The run is "
             f"still measured, but a score from it cannot support a claim about "
-            f"generalisation -- the method studied its own exam.",
+            f"generalisation -- the method studied its own exam. Pass `--split default` "
+            f"for the platform's documented division, `--split official` to score the "
+            f"benchmark's own evaluation set, or `--split <file.json>` to supply one.",
             level="warn")
 
     # The harness's workspace is deliberately NOT under the platform's own tree.
@@ -749,11 +814,15 @@ def main() -> int:
         # right granularity for a run: a reader should be able to tell what kind of
         # world this run measured in without reading the curve.
         env=_env_record(envs, []),
-        # The declared split, not the selected tasks: a reader of the run record
-        # needs to know what the dataset said the two sides were, before any
-        # sampling policy narrowed it.
+        # The resolved split, not the selected tasks: a reader of the run record
+        # needs to know what the two sides were, before any sampling policy narrowed
+        # it -- and, now that a run may supply its own division, *which* division this
+        # was. `split_sha` is the part a comparison actually needs: two points belong
+        # on one axis only when it matches.
         split=split,
         split_declared=split is not None,
+        split_source=split_source,
+        split_sha=datasets.split_sha(split) if split else None,
         agent_model=model["model"] or None,
         agent_backend=model["backend"],
         framework_version=FRAMEWORK_VERSION,
@@ -865,15 +934,24 @@ def main() -> int:
         "input", 0) + (base.get("env_usage") or {}).get("output", 0)
     cumulative["wall_clock_s"] += time.time() - t0
 
-    # The sampling policy chooses what the run is *scored* on, so it selects
-    # inside the eval side. It deliberately does not reach into the train side: a
-    # method handed a random 2 of its 40 diagnostics is a different, worse
-    # experiment than the one the policy was written to describe. The cost of a
-    # split is therefore all of train, every round -- which is the honest price
-    # of the method not being shown the exam.
-    # The run's own side. `tasks_all` was narrowed to it before round 0, so the policy
-    # selects within it and `within` can never reach across -- the cross-side leak this
-    # guards against is not a rule here, it is an absence of the other side.
+    # The sampling policy chooses what the run is *scored* on, within the run's own side.
+    # Two things about the cost, and the first one is a whole-side sweep:
+    #
+    # * **round 0 measured everything.** A policy needs scores to select on, and §2.1 fixes
+    #   the selection at H0, so the whole side is paid for exactly once, at round 0.
+    # * from round 1 the method is shown only the selected subset (`train_ids` below). To
+    #   fix a subset for the *whole* run -- including round 0, which is what a study of "how
+    #   many study tasks does a capability need" wants -- pass `--tasks` or a `--split` file;
+    #   `--sampling random_N` does not narrow round 0.
+    #
+    # The comment here used to claim the policy "does not reach into the train side" and that
+    # the cost was "all of train, every round". That described the eval-side-only version of
+    # this call; both sentences had been false since `within` became the run's own side, and
+    # the second one sent a reader looking for a cost that is not paid.
+    #
+    # `tasks_all` was narrowed to the side before round 0, so the policy selects within it and
+    # `within` can never reach across -- the cross-side leak this guards against is not a rule
+    # here, it is an absence of the other side.
     task_ids = select_task_set(base["per_task"], args.sampling,
                                within=(side_ids or None))
     if not task_ids:

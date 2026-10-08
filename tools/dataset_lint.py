@@ -55,6 +55,9 @@ class Result:
         self.name = name
         self.errors: list[str] = []
         self.unprovisioned: str | None = None
+        #: Set when the dataset declares `REFUSED`: a principled refusal of the official
+        #: metric, which is an outcome rather than a defect.
+        self.refused: str | None = None
 
     def error(self, message: str) -> None:
         self.errors.append(message)
@@ -65,7 +68,7 @@ class Result:
 
     def as_dict(self) -> dict:
         return {"dataset": self.name, "ok": self.ok, "errors": self.errors,
-                "unprovisioned": self.unprovisioned}
+                "unprovisioned": self.unprovisioned, "refused": self.refused}
 
 
 def load_schema(path: Path = SCHEMA_PATH) -> dict:
@@ -88,6 +91,27 @@ def _outside_platform(path: Path, root: Path) -> bool:
     return p != root.resolve() and root.resolve() not in p.parents
 
 
+#: Keys an entry may carry, by kind. Used to catch the one mistake a dict makes silently:
+#: a **duplicate key**, which Python keeps the last value of, so the entry that runs is not
+#: the entry that was read. Measured: a `--fetch` built `.../valid.jsonl/valid.jsonl` from
+#: an entry that set `dst` twice, and the 404 it produced named the far end of the URL
+#: rather than the dict.
+_ENTRY_KEYS = {
+    "kind", "name", "version", "size", "note", "url", "repo", "file", "files",
+    "sha256", "dst", "extract_to", "package",
+}
+
+
+def lint_entry_keys(entry: dict, where: str, result: Result) -> None:
+    """Duplicate detection needs the *source text*; `json`/Python have already collapsed
+    it. So this reads the module source for the `downloads()` return and looks for a key
+    appearing twice inside one brace group -- a heuristic, and it is reported as one."""
+    unknown = sorted(set(entry) - _ENTRY_KEYS)
+    if unknown:
+        result.error(f"{where} has unknown key(s) {unknown}; known keys are "
+                     f"{sorted(_ENTRY_KEYS)}")
+
+
 def lint_downloads(downloads, schema: dict, result: Result) -> None:
     spec = schema["download"]
     if not isinstance(downloads, list) or not downloads:
@@ -102,6 +126,7 @@ def lint_downloads(downloads, schema: dict, result: Result) -> None:
         if kind not in spec["kinds"]:
             result.error(f"{where} has kind {kind!r}; known kinds are {spec['kinds']}")
             continue
+        lint_entry_keys(entry, where, result)
         required = list(spec["common_required"]) + list(
             spec["by_kind"].get(kind, {}).get("required", []))
         missing = [key for key in required if not entry.get(key)]
@@ -256,6 +281,38 @@ def lint_dataset(name: str, schema: dict, *, require_data: bool = True) -> Resul
         result.error(f"will not import: {type(exc).__name__}: {exc}")
         return result
 
+    # **A refusal is a result, not a failure.** A dataset whose official metric the
+    # contract cannot carry -- FEVER's `strict` needs predicted evidence, HotpotQA's
+    # `joint_em` needs supporting facts, SOTU-QA's headline is an unpinned LLM judge --
+    # raises from `load()` with the reason. That is the honest outcome the skill asks for
+    # (`docs/dataset-onboarding-skill.md` §2: dropping a requirement is the dangerous
+    # direction), and a lint that called it a failure would push the next author toward
+    # reporting a nearby number instead. The refusal still has to be *declared*: the
+    # module sets `REFUSED` to the same sentence `load()` raises, and the lint requires it
+    # to be non-empty prose.
+    refused = getattr(module, "REFUSED", None)
+    if refused is not None:
+        if not isinstance(refused, str) or len(refused.strip()) < 40:
+            result.error(f"REFUSED is set but is not an explanation: {refused!r}")
+            return result
+        # Everything a program can still decide is still decided: `KIND`, the callables,
+        # the data root, and the download list. Only the dynamic half is inapplicable.
+        kind = getattr(module, schema["module"]["kind_attribute"], None)
+        if kind not in schema["module"]["kinds"]:
+            result.error(f"KIND must be one of {schema['module']['kinds']}, got {kind!r}")
+        for callable_name in schema["module"]["required_callables"]:
+            if not callable(getattr(module, callable_name, None)):
+                result.error(f"`{callable_name}()` is missing or not callable")
+        lint_paths(module, schema, result)
+        downloads = getattr(module, "downloads", None)
+        if callable(downloads):
+            try:
+                lint_downloads(downloads(), schema, result)
+            except Exception as exc:  # noqa: BLE001
+                result.error(f"downloads() raised {type(exc).__name__}: {exc}")
+        result.refused = refused
+        return result
+
     kind = getattr(module, schema["module"]["kind_attribute"], None)
     if kind not in schema["module"]["kinds"]:
         result.error(f"KIND must be one of {schema['module']['kinds']}, got {kind!r}")
@@ -350,6 +407,8 @@ def main(argv=None) -> int:
         for result in results:
             if result.unprovisioned:
                 print(f"SKIP {result.name}: not provisioned ({result.unprovisioned})")
+            elif result.refused:
+                print(f"REFUSED {result.name}: {result.refused}")
             elif result.ok:
                 print(f"ok   {result.name}")
             else:

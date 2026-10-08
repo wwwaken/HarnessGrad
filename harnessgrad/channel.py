@@ -22,6 +22,7 @@ import subprocess
 
 from ckpt.git_state import materialize
 from eval.trace import loop_facts as _loop_facts
+from eval.tracing import task_file
 
 from harnessgrad import PLATFORM_ROOT
 from harnessgrad.config import current as current_config
@@ -242,7 +243,7 @@ def _stage_task_context(work: Path, tasks, setups, verifiers, result,
                 "note": ("the task ships no SETUP files; its starting files are the "
                          "environment's, so read them through a trace or set them up as "
                          "the environment does")}
-        (dest / f"{tid}.json").write_text(
+        task_file(dest, f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
 
 def _trace_index(trace_text: str) -> dict:
@@ -312,8 +313,8 @@ def _write_trace_with_index(dest: Path, name: str, body: str) -> None:
     Nothing is removed -- the trace file is byte-for-byte what the harness wrote.
     """
     dest.mkdir(parents=True, exist_ok=True)
-    (dest / name).write_text(body)
-    (dest / f"{name[:-len('.jsonl')]}.index.json").write_text(
+    task_file(dest, name).write_text(body)
+    task_file(dest, f"{name[:-len('.jsonl')]}.index.json").write_text(
         json.dumps(_trace_index(body), indent=1))
 
 

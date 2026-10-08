@@ -207,6 +207,11 @@ where the model is the bottleneck rather than the harness, a harness this thin
 leaves evolution nothing to win. Two published results say the same thing from
 opposite ends — an evolution run starting from a single-tool harness scored
 *below* simply sampling the same model more times (67.4 vs 68.2), while gains on
-strong harnesses were largest for the weakest models (+44.0% vs +11.2%). **A base
+strong harnesses were largest for the weakest models (+44.0% vs +11.2%). The
+first pair is measured by **Rethinking the Evaluation of Harness Evolution for
+Agents** ([arXiv:2607.12227](https://arxiv.org/abs/2607.12227)) Table 1, whose
+own conclusion is sharper than the sentence above: on held-out tasks the same
+harness-evolution arm lands within noise of direct sampling. The second pair's
+source is still not named here, and that is a gap in this page. **A base
 harness should be thin enough that improving it is legitimate, and thick enough
 that there is something to improve.**

@@ -19,6 +19,26 @@ import shutil
 import sys
 from pathlib import Path
 
+
+def task_file(dest: Path, name: str) -> Path:
+    """`dest / name`, with the directories `name` implies created.
+
+    A task id **contains slashes by design** -- `data/qa/base.py`'s is
+    `<dataset>/<split>/<n>`, and the comment there says so out loud -- so every file named
+    after a task is a *nested* path. `dest.mkdir()` is not enough: it creates
+    `verdicts/round-0/` and leaves `verdicts/round-0/gsm8k/train/` missing.
+
+    Measured, and it is the whole reason this function exists: the first real run of a QA
+    dataset (`gsm8k`, ids `gsm8k/train/0`) died with
+    `FileNotFoundError: .../verdicts/round-0/gsm8k/train/0.json`, and the same task's
+    progress record was lost to a warning nobody read (`.../progress/round-0/gsm8k/train/
+    0.json`). Every writer of a task-named file goes through here, so the next id shape
+    with a slash in it does not have to find all five sites again.
+    """
+    path = dest / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
 def _last_identity(trace: str) -> dict | None:
     """The harness's own statement of what ran it, if it made one.
 
@@ -70,6 +90,29 @@ def _last_usage(trace: str) -> dict | None:
         if isinstance(record, dict) and isinstance(record.get("usage"), dict):
             found = record["usage"]
     return found
+def _clear_tree(target: Path) -> None:
+    """Remove a directory tree that may be **read-only**, so `copytree` can re-write it.
+
+    Measured, and it is a platform bug rather than a dataset's: `_materialize` runs twice
+    per task and its whole promise is that the second run **overwrites** what the first
+    wrote. `shutil.copytree(..., dirs_exist_ok=True)` cannot do that for a source whose
+    files are read-only -- Java runtimes are shipped with `r--r--r--` for legal files --
+    and it fails with `[Errno 13] Permission denied` on every one of them. The failure
+    looks like the dataset's, exactly like the ALFWorld namespace fork did
+    (`docs/dataset-onboarding-skill.md` §1); the fix belongs here because the next dataset
+    with a read-only input would hit it too.
+
+    `chmod` first (a directory that cannot be traversed cannot be emptied), then remove.
+    """
+    if not target.exists():
+        return
+    for root, dirs, _files in os.walk(target):
+        os.chmod(root, 0o755)
+        for name in dirs:
+            os.chmod(Path(root) / name, 0o755)
+    shutil.rmtree(target, ignore_errors=True)
+
+
 def _materialize(workdir: Path, entries, platform_root: Path,
                  base: Path | None = None) -> list[str]:
     """Write a dataset's files into `workdir`. Returns the relative paths written.
@@ -104,6 +147,7 @@ def _materialize(workdir: Path, entries, platform_root: Path,
             if not source.exists():
                 raise ValueError(f"setup source {source} does not exist")
             if source.is_dir():
+                _clear_tree(target)
                 shutil.copytree(source, target, dirs_exist_ok=True)
             else:
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -144,7 +188,7 @@ def _write_progress(progress_dir, round_no: int, tid: str,
         dest = Path(progress_dir) / "progress" / f"round-{round_no}"
         dest.mkdir(parents=True, exist_ok=True)
         if unmeasured is not None:
-            (dest / f"{tid}.json").write_text(json.dumps(
+            task_file(dest, f"{tid}.json").write_text(json.dumps(
                 {"task_id": tid, "round": round_no, "invalid": unmeasured},
                 indent=1, ensure_ascii=False), encoding="utf-8")
             return
@@ -159,7 +203,7 @@ def _write_progress(progress_dir, round_no: int, tid: str,
                     wall = json.loads(line)["wall_clock_s"].get("total")
                 except (ValueError, AttributeError):
                     pass
-        (dest / f"{tid}.json").write_text(json.dumps({
+        task_file(dest, f"{tid}.json").write_text(json.dumps({
             "task_id": tid, "round": round_no,
             "score": sum(scores) / len(scores) if scores else None,
             "trial_scores": scores, "n_trials": len(scores),
@@ -174,7 +218,8 @@ def _write_progress(progress_dir, round_no: int, tid: str,
         for index, result in enumerate(measured, start=1):
             body = result.get("trace")
             if body:
-                (traces / f"{tid}.trial{index}.jsonl").write_text(body, encoding="utf-8")
+                task_file(traces, f"{tid}.trial{index}.jsonl").write_text(
+                    body, encoding="utf-8")
     except (OSError, ValueError, TypeError) as exc:                      # noqa: BLE001
         print(f"warning: could not write the progress record for {tid}: {exc}",
               file=sys.stderr)

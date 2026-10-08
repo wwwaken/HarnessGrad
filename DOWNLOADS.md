@@ -10,6 +10,26 @@ loads and scores it stays in git.
 
 `python3 tools/datasets.py --check` reports which of these are present locally.
 
+## `agentdojo`
+
+### AgentDojo source + suites (http, 089ed468cf3ed0322acc66b0211f26d9d90dbf60)
+
+- **Version (pinned):** `089ed468cf3ed0322acc66b0211f26d9d90dbf60`
+- **Size:** ~200 KB compressed source
+- **URL:** https://codeload.github.com/ethz-spylab/agentdojo/tar.gz/089ed468cf3ed0322acc66b0211f26d9d90dbf60
+- **Destination:** `_src/agentdojo.tar.gz`
+- **sha256:** `d7e0ee021be27a69e7e66647979b5a5e0dd10030d38d04ce4102e18a76a228d8`
+
+> Package 0.1.35 and suite v1.2.2 are different version axes. Provision isolated runtime and tool-only runtime using data/agentdojo/prepare.py; never expose full task/ground_truth modules to the agent. Fixed-template attack only, 949 pairs.
+
+### AgentDojo isolated runtime (pip, 0.1.35)
+
+- **Version (pinned):** `0.1.35`
+- **Size:** ~200 MB with SDK dependencies
+- **Package:** `agentdojo==0.1.35`
+
+> Install only inside dataset runtime venv. Exact installed dependency versions are recorded in _src/runtime-requirements.lock; no model API calls are used by tools, gold audit or predicate evaluation.
+
 ## `alfworld`
 
 ### json_2.1.1_json.zip (http, 0.2.2)
@@ -68,6 +88,352 @@ loads and scores it stays in git.
 
 > The TextWorld engine that owns the `won` flag this dataset's reward is. `pip install textworld==1.7.0`. 1.7.0 removed Glulx support; ALFWorld's `.tw-pddl` games do not use it.
 
+## `api_bank`
+
+### DAMO-ConvAI (api-bank subtree) (http, 38a08acd60fecc3449f4afd9ba4df18bdc086dee4f4517566678dc74c03463f5)
+
+- **Version (pinned):** `38a08acd60fecc3449f4afd9ba4df18bdc086dee4f4517566678dc74c03463f5`
+- **Size:** 92 MB zip; the `api-bank/` subtree inside it is what matters
+- **URL:** https://codeload.github.com/AlibabaResearch/DAMO-ConvAI/zip/refs/heads/main
+- **Destination:** `_src/DAMO-ConvAI.zip`
+- **sha256:** `38a08acd60fecc3449f4afd9ba4df18bdc086dee4f4517566678dc74c03463f5`
+
+> Trap 1: the dataset is a **subtree of a multi-project repository**, not its own repo, and the repository has no tagged release for it -- so the pin is the archive digest (an invented commit sha would look like a pin and reproduce nothing). Trap 2: only 340 of the zip's files are needed; the assembled `api-bank-vendor.tar.gz` is the loader's input and the 92 MB zip is kept for provenance.
+
+### assembled API-Bank vendor tree (http, 79b21e0992707f98cada065aa8212ab62e662c69e6f3376f026f61abf35edb85)
+
+- **Version (pinned):** `79b21e0992707f98cada065aa8212ab62e662c69e6f3376f026f61abf35edb85`
+- **Size:** ~1.1 MB (340 files: 56 apis, 20 init_database JSONs, 264 sample JSONLs)
+- **URL:** local:assembled from the subtree above
+- **Destination:** `_src/api-bank-vendor.tar.gz`
+- **sha256:** `79b21e0992707f98cada065aa8212ab62e662c69e6f3376f026f61abf35edb85`
+
+> The minimal tree `lib/ab_env.py` loads. Assembled from the zip above; checked by digest so the assembly cannot drift silently.
+
+### googletrans (pip, 4.0.0)
+
+- **Version (pinned):** `4.0.0`
+- **Size:** ~50 KB
+- **Package:** `googletrans==4.0.0`
+
+> **Not needed to grade**, and deliberately not installed: it is the only absent package among the APIs the samples use, and it affects 4 samples (`Translate`). Installing it would put a network-touching package into the interpreter the whole suite runs on. Recorded so a reader knows the 4 are a dependency, not a bug.
+
+## `bfcl_v3`
+
+### gorilla BFCL-v3 data (tag v1.3) (http, v1.3)
+
+- **Version (pinned):** `v1.3`
+- **Size:** ~45 MB tarball; the three BFCL files read here are ~500 KB
+- **URL:** https://codeload.github.com/ShishirPatil/gorilla/tar.gz/refs/tags/v1.3
+- **Destination:** `_src/gorilla-v1.3.tar.gz`
+- **sha256:** `57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe`
+
+> Trap 1: the **HuggingFace** dataset's `BFCL_v3_simple.json` is answer-only at the current revision (`{id, ground_truth}`), and its `possible_answer/` copy is byte-identical to it -- the question files with `question`/`function` survive only under the moving `main` ref. The tag `v1.3` is authoritative and immutable, so the pin is the tag plus the download's sha256. Trap 2: BFCL files are **JSONL**, not JSON arrays (the dataset's own README says not to use `load_datasets`). Trap 3: `parameters.type` uses BFCL's vocabulary (`dict`, `float`, `tuple`, `any`), not JSON Schema's; `normalize_schema()` corrects it.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Declared for consistency with the other QA datasets; BFCL is JSONL, so the reader is `json`, not pyarrow.
+
+## `chessbench_puzzles`
+
+### ChessBench puzzles.csv (http, 90ae0e6b121673fc3079aaeffa047580bb600c0a)
+
+- **Version (pinned):** `90ae0e6b121673fc3079aaeffa047580bb600c0a`
+- **Size:** 4,705,735 bytes
+- **URL:** https://storage.googleapis.com/searchless_chess/data/puzzles.csv
+- **Destination:** `_src/puzzles.csv`
+- **sha256:** `099d54e681a07b9e82b4462aaf5436a6e833edc6f56b92ea7c2d2413f7efbe48`
+
+> Canonical ChessBench slice. Trap: the first Moves token is the opponent setup move; the scorer predicts only odd-indexed solver moves and accepts alternate immediate mates.
+
+### ChessBench official scorer source (http, 90ae0e6b121673fc3079aaeffa047580bb600c0a)
+
+- **Version (pinned):** `90ae0e6b121673fc3079aaeffa047580bb600c0a`
+- **Size:** ~2.2 MB compressed
+- **URL:** https://codeload.github.com/google-deepmind/searchless_chess/tar.gz/90ae0e6b121673fc3079aaeffa047580bb600c0a
+- **Destination:** `_src/searchless_chess.tar.gz`
+- **sha256:** `9cf0832b04024a9e0a6edb59f0dee62aeadee3b9b97799b9a7521b2221f7d39a`
+
+> Pins src/puzzles.py lines 74-94 for the verbatim scorer and drift check. Fetch this small source archive, not the terabyte-scale ChessBench training corpus.
+
+### python-chess (pip, 1.11.2)
+
+- **Version (pinned):** `1.11.2`
+- **Size:** ~148 KB wheel
+- **Package:** `chess==1.11.2`
+
+> Parses FEN, PGN and UCI moves. Pin this dependency because board legality and checkmate are part of the official metric, not optional parsing convenience.
+
+## `ds1000`
+
+### DS-1000 simplified test.jsonl (hf-dataset, 4416080ac5cb80bdf7576aefb8f9a0b4d5426a44)
+
+- **Version (pinned):** `4416080ac5cb80bdf7576aefb8f9a0b4d5426a44`
+- **Size:** 3,439,876 bytes (1000 rows)
+- **Repo:** `xlangai/DS-1000`
+- **Files:** `test.jsonl`
+- **Destination:** `_src`
+- **sha256:** `{'test.jsonl': '26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363'}`
+
+> Canonical HF simplified format. Trap: the tests live inside code_context and reference_code is gold. 926 of the 1000 rows are offered here; the 74 exclusions are measured and named in data/ds1000.py.
+
+### DS-1000 official source archive (http, b39aab71)
+
+- **Version (pinned):** `b39aab71`
+- **Size:** 787 KB measured archive
+- **URL:** https://codeload.github.com/xlang-ai/DS-1000/tar.gz/b39aab71
+- **Destination:** `_src/ds1000-repo.tar.gz`
+- **sha256:** `b14f1a2b0fb20ef55f0693019122f22c82b03ef6647faabf0e6e8ae1272a1dc0`
+
+> Pins test_ds1000.py and execution.py for verbatim transcription. The official runner deliberately leaves reliability_guard disabled because data-science libraries need filesystem operations; each candidate runs in its own process with a 120-second timeout.
+
+### seaborn example datasets (offline) (http, 71e2436a092d714350de0fc409ca8a8714e7e78f)
+
+- **Version (pinned):** `71e2436a092d714350de0fc409ca8a8714e7e78f`
+- **Size:** 5,076,306 bytes tarball; 4 CSVs (~72 KB) staged
+- **URL:** https://codeload.github.com/mwaskom/seaborn-data/tar.gz/71e2436a092d714350de0fc409ca8a8714e7e78f
+- **Destination:** `_src/seaborn-data.tar.gz`
+- **sha256:** `ac7ed3e81e634c8febecac42975456280b089bd5bcae3d54bc6be11d8cec1532`
+
+> 14 official Matplotlib rows call sns.load_dataset(...), which otherwise fetches from GitHub at evaluation time (raw.githubusercontent is blocked on this machine, so those rows failed with connection reset). The four CSVs seaborn needs are staged under seaborn-data/ and shipped in VERIFY.inputs; SEABORN_DATA points the official code at them. This is provisioning the same fixed data, not changing the metric.
+
+## `fever`
+
+### copenlu/fever_gold_evidence (hf-dataset, a6b8d891d393e97a4efac791afffb2d7de5e57c6)
+
+- **Version (pinned):** `a6b8d891d393e97a4efac791afffb2d7de5e57c6`
+- **Size:** ~110 MB (test 6.6 MB + valid 6.5 MB + train 97 MB)
+- **Repo:** `copenlu/fever_gold_evidence`
+- **Files:** `valid.jsonl`
+- **Destination:** `.`
+
+> Trap: FEVER's headline metric needs predicted evidence, so this adapter refuses to load -- staging the table is still useful because the refusal has to be demonstrable on real rows, and because the evidence groups are what a future answer contract would carry. The repository also ships `test.jsonl` and a 97 MB `train.jsonl`; the adapter reads `valid.jsonl` and declares only it, so `--check` does not report a missing 97 MB file as an error. `sha256` is left null because the HuggingFace JSONL export is regenerated by the Hub and the pinned revision is the guarantee; the lint requires a pinned version, not a checksum.
+
+## `gsm8k`
+
+### openai/gsm8k (main) (hf-dataset, 740312add88f781978c0658806c59bc2815b9866)
+
+- **Version (pinned):** `740312add88f781978c0658806c59bc2815b9866`
+- **Size:** ~2.7 MB (`main` config, both splits)
+- **Repo:** `openai/gsm8k`
+- **Files:** `main/test-00000-of-00001.parquet`, `main/train-00000-of-00001.parquet`
+- **Destination:** `.`
+- **sha256:** `{'main/test-00000-of-00001.parquet': 'ee7b8da9e381df27b9e3f7758a159ab2bdaa4dbaa910546cbbc47e0cb44e4f59', 'main/train-00000-of-00001.parquet': 'ea82612ea9582142387730c793eb67d3b12849002bc0b7fa6f8efafa7351419d'}`
+
+> GSM8K's own table, `main` config. Trap: the repository's `main` and `socratic` configs are different data (the socratic one rewrites each solution as a dialogue) and both are 2 splits under one name -- naming the config is part of naming the file. Scores are reported on the `test` split, so only that one is scored; `train` is loaded as the study side, which is what makes `--split declared` here GSM8K's own division rather than the platform's hash.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Reads the parquet files the pinned revision ships. The check runs inside the verification namespace and must not need the HuggingFace `datasets` package, which pulls `pandas`, `requests` and a cache layout; `pyarrow` is one import and no network.
+
+## `hotpotqa`
+
+### hotpot_qa (fullwiki) (hf-dataset, 1908d6afbbead072334abe2965f91bd2709910ab)
+
+- **Version (pinned):** `1908d6afbbead072334abe2965f91bd2709910ab`
+- **Size:** ~28 MB (fullwiki validation; the full repository is ~750 MB)
+- **Repo:** `hotpot_qa`
+- **Files:** `fullwiki/validation-00000-of-00001.parquet`
+- **Destination:** `.`
+- **sha256:** `{'fullwiki/validation-00000-of-00001.parquet': '78933c0a31a5f7b420d4effdf4cd4eed573b28c6a3da6179dcf7a02b39e51d03'}`
+
+> Trap 1: `hotpot_qa` has two configs and they are different benchmarks -- `distractor` ships ten candidate paragraphs per question, `fullwiki` ships the whole-Wikipedia setting. Trap 2: only the `fullwiki/validation` file is fetched; `fullwiki/train` alone is 330 MB and the `distractor` config another 360 MB, none of it scored. Trap 3: the `supporting_facts` column is the gold evidence a future answer contract would need -- it is here, the answer channel is what does not exist.
+
+## `jericho`
+
+### BYU-PCCL z-machine-games archive (jericho-game-suite) (http, 7c3b38d946009c591c3f8e88d87b6a0141f0f701f447b97477162dfc17ff9b2c)
+
+- **Version (pinned):** `7c3b38d946009c591c3f8e88d87b6a0141f0f701f447b97477162dfc17ff9b2c`
+- **Size:** 110 MB archive; the 8.5 MB `jericho-game-suite` is what is read
+- **URL:** https://codeload.github.com/BYU-PCCL/z-machine-games/zip/refs/heads/master
+- **Destination:** `_src/z-machine-games.zip`
+- **sha256:** `7c3b38d946009c591c3f8e88d87b6a0141f0f701f447b97477162dfc17ff9b2c`
+
+> Trap 1: the `jericho` wheel ships `libfrotz.so` and the **game table** (`jericho/game_info.py`: rom, seed, walkthrough) but **no ROMs**, so the games are a provisioning step; the docs' own instruction points here. Trap 2: the archive is 110 MB for 8.5 MB of usable games -- it also carries a second full ROM collection under `z-machine-games-master/z-machine-games-master/` that this dataset never reads. Trap 3: `sherbet.z5` is in `game_info` and **not** in the archive (verified by listing it), so 56 of the 57 official games are usable.
+
+### jericho (pip, 3.3.1)
+
+- **Version (pinned):** `3.3.1`
+- **Size:** ~3 MB (includes `libfrotz.so`)
+- **Package:** `jericho==3.3.1`
+
+> The Frotz environment: the Z-machine interpreter (`libfrotz.so`), the object tree, `get_valid_actions()`, and **`game_info.py`** -- the benchmark's own game table with each game's seed and walkthrough, which is where this dataset's task list and oracle come from. Installing it from source needs a C compiler; the wheel needs none.
+
+## `musique`
+
+### MuSiQue-Ans dev (third-party HF release) (hf-dataset, c8f4f8c9465fb69d31a8eae894c3fd509c4ca321)
+
+- **Version (pinned):** `c8f4f8c9465fb69d31a8eae894c3fd509c4ca321`
+- **Size:** 30,439,728 bytes (2417 dev rows)
+- **Repo:** `dgslibisey/MuSiQue`
+- **Files:** `musique_ans_v1.0_dev.jsonl`
+- **Destination:** `.`
+- **sha256:** `{'musique_ans_v1.0_dev.jsonl': '15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b'}`
+
+> Canonical HF timed out; pinned data and LFS digest verified via hf-mirror, not independently against HF. Preserve all paragraphs; strip answer, aliases, decomposition and supporting labels. Official answer_f1 is separate from support_f1.
+
+### MuSiQue official evaluation code (http, 922ac98f19a201998dbdae6d7f2887a5258dbdeb)
+
+- **Version (pinned):** `922ac98f19a201998dbdae6d7f2887a5258dbdeb`
+- **Size:** 1,281,842 bytes compressed source
+- **URL:** https://codeload.github.com/StonyBrookNLP/musique/tar.gz/922ac98f19a201998dbdae6d7f2887a5258dbdeb
+- **Destination:** `_src/musique.tar.gz`
+- **sha256:** `c1cc3d121e3f623f9925857559030d48c136142ee2c9cdb52214bb6134c02272`
+
+> Pinned evaluate_v1.0.py and metrics/answer.py. The evaluator uses each row's answer_aliases, not the repository-global .answer_aliases.json. Code archive never enters agent SETUP.
+
+## `nestful`
+
+### NESTFUL v2 official data, functions and scorer (http, fc2c4123e73500a56185a5fb354f05d1c8b4890c)
+
+- **Version (pinned):** `fc2c4123e73500a56185a5fb354f05d1c8b4890c`
+- **Size:** ~1.3 MB compressed; ~18 MB extracted executable function tree
+- **URL:** https://codeload.github.com/IBM/NESTFUL/tar.gz/fc2c4123e73500a56185a5fb354f05d1c8b4890c
+- **Destination:** `_src/nestful.tar.gz`
+- **sha256:** `ea8ad67cbd3680b4b85e3b60d219898fda9643240636ef8ac3b020c46fb95d1b`
+
+> Canonical commit verified via GitHub API and codeload. HF rows alone omit the 4349 Python tool files needed for Win Rate. Gold execution itself fails due to host/process-dependent state and basic_functions overrides; see data/nestful/audit.py. No gold/function tree is offered as agent SETUP.
+
+## `physicsquestions`
+
+### ReWOO tarball (physics_question.csv) (http, 9cd0283043ff4be0c9d614fda2789d143ca6ffd1)
+
+- **Version (pinned):** `9cd0283043ff4be0c9d614fda2789d143ca6ffd1`
+- **Size:** 18 KB of CSV (the whole tarball is ~6 MB)
+- **URL:** https://codeload.github.com/billxbf/ReWOO/tar.gz/9cd0283043ff4be0c9d614fda2789d143ca6ffd1
+- **Destination:** `rewoo.tar.gz`
+- **sha256:** `7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136`
+
+> Trap 1: only **53** rows, so its accuracy has a ±13-point confidence interval -- useful for mechanism attribution, not for ranking. Trap 2: the target is a **list** of acceptable spellings (`Can be one of ['7187 m', '7 km']`); comparing it as a string scores every answer 0, and comparing numerically with a tolerance is a different, more generous metric than BIG-bench's `exact_str_match`.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Declared for consistency with the other QA datasets; this table is CSV, so the check reads it with `csv`, not pyarrow.
+
+## `scienceworld`
+
+### scienceworld (pip, 1.2.3)
+
+- **Version (pinned):** `1.2.3`
+- **Size:** ~8 MB
+- **Package:** `scienceworld==1.2.3`
+
+> The environment **is** the package: `setup.py` declares `package_data={'scienceworld': [JAR_FILE, ...]}` and the wheel ships `scienceworld.jar` (7.5 MB), `tasks.json` (4.8 KB) and `object_type_ids.tsv`. There is therefore no separate data download. Trap: the package is Python *around a JVM*; it does not run without Java, which is why the JRE below is part of this dataset. Version 1.3.0 changes physics trajectories and gold paths (its README), so the pin is 1.2.3 and scores are not comparable across it.
+
+### Temurin JRE 17 (Adoptium) (http, 17.0.20.1+1)
+
+- **Version (pinned):** `17.0.20.1+1`
+- **Size:** ~47 MB compressed, 136 MB unpacked
+- **URL:** https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jre_x64_linux_hotspot_17.0.20.1_1.tar.gz
+- **Destination:** `_src/OpenJDK17U-jre_x64_linux_hotspot_17.0.20.1_1.tar.gz`
+- **sha256:** `0b2b640e3046b64c8ec504de0ab9d91bb5610182bda21fad454681ce54d45a62`
+
+> Trap: this machine has **no system `java` and no root**, so a runtime is a provisioning step, and the release URL *is* the version. **JDK 17, not the newest**: the JAR is built in 2025 and a newer JDK may refuse an older target in a way that does not name Java. Both sides need it -- the check replays in a fresh environment, so the agent's CLI and the check must resolve the same JVM; a JVM only one of them can find is a check that fails for a reason nothing records.
+
+## `sotuqa`
+
+### ReWOO tarball (SOTU_QA.csv) (http, 9cd0283043ff4be0c9d614fda2789d143ca6ffd1)
+
+- **Version (pinned):** `9cd0283043ff4be0c9d614fda2789d143ca6ffd1`
+- **Size:** 22 KB of CSV (the whole tarball is ~6 MB)
+- **URL:** https://codeload.github.com/billxbf/ReWOO/tar.gz/9cd0283043ff4be0c9d614fda2789d143ca6ffd1
+- **Destination:** `rewoo.tar.gz`
+- **sha256:** `7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136`
+
+> ReWOO's own curated dataset -- there is no other source, so this is the dataset's home repository and not a mirror. Trap: the gold is a whole sentence and the headline metric is an LLM judge, which is why this adapter refuses to load; see the module docstring.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Declared for consistency with the other QA datasets; this one is read from CSV and does not need it, but the same adapter shape does.
+
+## `sportsunderstanding`
+
+### ReWOO tarball (sports_understanding.csv) (http, 9cd0283043ff4be0c9d614fda2789d143ca6ffd1)
+
+- **Version (pinned):** `9cd0283043ff4be0c9d614fda2789d143ca6ffd1`
+- **Size:** 138 KB of CSV (the whole tarball is ~6 MB)
+- **URL:** https://codeload.github.com/billxbf/ReWOO/tar.gz/9cd0283043ff4be0c9d614fda2789d143ca6ffd1
+- **Destination:** `rewoo.tar.gz`
+- **sha256:** `7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136`
+
+> The table comes from ReWOO's vendored copy; the *scorer* is BIG-bench's `sports_understanding` task, whose `target_scores` is what ReWOO flattened into the `target` column. Trap: a substring rule counts an answer naming both labels for either gold, so this adapter refuses that case and the test pins the divergence.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Declared for consistency with the other QA datasets; this table is CSV, so the check reads it with `csv`, not pyarrow.
+
+## `spreadsheetbench`
+
+### SpreadsheetBench verified_400 (http, ab0b742b0fc95b946f212d80ac7771b5531272e4)
+
+- **Version (pinned):** `ab0b742b0fc95b946f212d80ac7771b5531272e4`
+- **Size:** ~15 MB (400 tasks x 2 workbooks + dataset.json)
+- **URL:** https://hf-mirror.com/datasets/KAKA22/SpreadsheetBench/resolve/ab0b742b0fc95b946f212d80ac7771b5531272e4/spreadsheetbench_verified_400.tar.gz
+- **Destination:** `_src/spreadsheetbench_verified_400.tar.gz`
+- **sha256:** `10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949`
+
+> Trap 1: this is a **tarball on the Hub**, not a git repository, so the pin is the revision sha plus this digest. Trap 2: the official evaluator reads **cached** formula values (`data_only=True`), so a workbook whose formulas were never evaluated has no values at all -- the check recalculates with LibreOffice, which is what the repository's own `open_spreadsheet.py` exists to do, and `soffice` must be installed for any formula-using task. Trap 3: the `verified_400` release ships **one** variant per task, while the paper's `soft`/`hard` numbers aggregate three; a score here is not that aggregate.
+
+### openpyxl (pip, 3.1.2)
+
+- **Version (pinned):** `3.1.2`
+- **Size:** ~250 KB
+- **Package:** `openpyxl==3.1.2`
+
+> The library the official scorer uses to read both workbooks, and the one the agent is expected to edit with. Both sides use the same version so a round-trip difference is not a scoring difference.
+
+## `strategyqa`
+
+### ReWOO tarball (strategy_qa.csv) (http, 9cd0283043ff4be0c9d614fda2789d143ca6ffd1)
+
+- **Version (pinned):** `9cd0283043ff4be0c9d614fda2789d143ca6ffd1`
+- **Size:** 200 KB of CSV (the whole tarball is ~6 MB)
+- **URL:** https://codeload.github.com/billxbf/ReWOO/tar.gz/9cd0283043ff4be0c9d614fda2789d143ca6ffd1
+- **Destination:** `rewoo.tar.gz`
+- **sha256:** `7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136`
+
+> Trap: `strategy_qa` has been removed from `google/BIG-bench` main (measured: the task directory is gone), so ReWOO's vendored copy is the reachable table -- and the one its published numbers came from. Pinned by the commit sha pinned in this file.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Declared for consistency with the other QA datasets; this table is CSV, so the check reads it with `csv`, not pyarrow.
+
+## `tau2_bench`
+
+### tau2-bench v0.1.0 (http, v0.1.0)
+
+- **Version (pinned):** `v0.1.0`
+- **Size:** ~56 MB tarball; `data/tau2/domains/` is what matters
+- **URL:** https://codeload.github.com/sierra-research/tau2-bench/tar.gz/refs/tags/v0.1.0
+- **Destination:** `_src/tau2-bench-v0.1.0.tar.gz`
+- **sha256:** `ddee4dc5655912c8a7c7306107714c1936c86a5c4884ff4c50f00d6c828c3377`
+
+> Trap 1 (**the whole reason for the pin**): the repository's HEAD is now **τ³-bench v1.0.1**, whose README says results below 1.0.1 are not comparable with results at or above it -- so a loader pinned to `main` would produce numbers that cannot be compared with the paper's, and the directory name would not say so. Trap 2: only at v0.1.0 is `tasks.json` **the base split** (airline 50 + retail 114 + telecom 114 = 278, the paper's number); later trees add `split_tasks.json` and the base has to be selected out of it, which changes *which* 278 tasks those are. Trap 3: telecom ships `db.toml` and a directory of policy markdown, not `db.json` and `policy.md`.
+
 ## `tau_bench`
 
 ### tau-bench checkout (regenerates the committed assets) (http, 59a200c6d575d595120f1cb70fea53cef0632f6b)
@@ -89,3 +455,24 @@ loads and scores it stays in git.
 - **Destination:** `/mnt/20t/xubuqiang/datasets/terminal-bench`
 
 > The task instructions, Dockerfiles and checks. Pinned by commit sha. The task IMAGES are separate and much larger -- measured ~104 GB, pulled once by `tools/import_env.py`, three of them unfetchable on this host -- and they are not represented here.
+
+## `triviaqa`
+
+### mandarjoshi/trivia_qa (rc.nocontext) (hf-dataset, 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f)
+
+- **Version (pinned):** `0f7faf33a3908546c6fd5b73a660e0f8ff173c2f`
+- **Size:** ~64 MB (rc.nocontext: 55 MB train + 7.3 MB validation + 1.2 MB test)
+- **Repo:** `mandarjoshi/trivia_qa`
+- **Files:** `rc.nocontext/validation-00000-of-00001.parquet`, `rc.nocontext/train-00000-of-00001.parquet`, `rc.nocontext/test-00000-of-00001.parquet`
+- **Destination:** `.`
+- **sha256:** `{'rc.nocontext/validation-00000-of-00001.parquet': '48a5005c0eb4f8a4ae5b9868644297fd5bf1e694aeb3dc9c8ab958cac0d5b201', 'rc.nocontext/train-00000-of-00001.parquet': '455223e4a3ba6977611914d96b1b812fe19a6cd4ea3aef4df381f093b297670c', 'rc.nocontext/test-00000-of-00001.parquet': '35718c1b37e786c823a5b1e810bf97cd085a1536396143a153b4cb30ba41e4c5'}`
+
+> Trap 1: the benchmark's `test` split has its gold withheld -- every `answer['value']` is `<unk>` and the alias list is empty -- so the scored split is `validation`, which is the choice ReWOO's own `run_eval.py` never makes (it leaves the loader's `split='test'`). Trap 2: only the `*.nocontext` configs are small; the full `rc` config is ~8 GB because it carries the retrieved Wikipedia pages, and `unfiltered` is larger still. The scored config has no documents by construction, so a score here measures knowledge, not retrieval. Trap 3: `train` is 138,384 rows and is ordered by question source, so this adapter loads a 2,000-row even-stride sample of it as the study side rather than a prefix -- see `STUDY_ROWS`.
+
+### pyarrow (pip, 23.0.0)
+
+- **Version (pinned):** `23.0.0`
+- **Size:** ~40 MB
+- **Package:** `pyarrow==23.0.0`
+
+> Reads the parquet files the pinned revision ships. The check runs inside the verification namespace and must not need the HuggingFace `datasets` package.

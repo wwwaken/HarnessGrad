@@ -48,18 +48,27 @@ def test_registry_reports_the_split_when_a_dataset_declares_one():
         f"有任务不在任何一边:{covered ^ {t['task_id'] for t in tasks}}"
 
 
-def test_a_dataset_without_a_split_is_reported_not_assumed():
+def test_a_dataset_without_a_split_is_reported_not_assumed(monkeypatch):
     """没有 split 的数据集:平台说清楚,而不是假装分过了。
 
     这是刻意的返回 `None` 而不是"全部当 train"或"全部当 eval":两种猜测都会让
     一次过拟合的实验看起来完全正常。
+
+    这一段以前只断言了 `demo` **有** split —— 那验证的是反面。真正的 `None` 路径要
+    把一个模块的声明拿掉才走得到,而平台上每个 fixture 都声明了 split(6 个数据集
+    没有,但它们 `load()` 就拒绝,走不到这里),所以端到端跑不出来,只能在单元层
+    把声明摘掉。
     """
+    import data.demo as demo
     import data.registry as registry
 
+    assert registry.load_split("demo")[2] is not None
+
+    monkeypatch.delattr(demo, "SPLIT")
     tasks, scorable, split = registry.load_split("demo")
-    assert split is not None          # demo 有
-    # 找一个没有 SPLIT 的模块来验证返回 None 的路径
-    assert hasattr(registry, "load_split"), "registry 必须提供 load_split"
+    assert split is None, "摘掉声明之后必须返回 None,而不是猜一个"
+    assert tasks, "拿掉 split 不影响任务本身还能被读到"
+    assert scorable is not None
 
 
 # --------------------------------------------------------------- 端到端 ---
@@ -83,6 +92,30 @@ def _run(tmp_path: Path, harness: str = "loop_plain", *, side: str = "train",
               (runs / run_id / "curve.jsonl").read_text().splitlines() if l.strip()]
     return {"points": points, "runs": runs, "stdout": proc.stdout,
             "stderr": proc.stderr}, work
+
+
+def test_every_run_records_which_division_it_used(tmp_path):
+    """`split_sha` 是"两点是否在同一根轴上"的判据。
+
+    "同一个数据集"不足以说明两次运行评了同一批任务 —— 一次实验的 exam 可以是另一次
+    实验的 study material。所以每次运行都记下用的是哪份划分,以及那份划分的 sha。
+    这条测试拿真正跑出来的 `run_meta.json` 验,而不是验一个字段名存在。
+    """
+    import data.registry as registry
+
+    declared, _ = _run(tmp_path, run_id="src-declared")
+    meta = json.loads((declared["runs"] / "src-declared" / "run_meta.json").read_text())
+    tasks, _, split = registry.load_split("demo")
+    assert meta["split_source"] == "declared"
+    assert meta["split_sha"] == registry.split_sha(split)
+
+    platform, _ = _run(tmp_path, run_id="src-default",
+                       extra=("--split", "default"))
+    meta2 = json.loads((platform["runs"] / "src-default" / "run_meta.json").read_text())
+    assert meta2["split_source"] == "default"
+    assert meta2["split_sha"] == registry.split_sha(registry.default_split(tasks))
+    # 同一个数据集、同样是 train 侧,但两份划分不是一根轴 —— 这正是要记 sha 的原因。
+    assert meta2["split_sha"] != meta["split_sha"]
 
 
 def test_a_run_covers_exactly_one_side_and_the_pair_comes_from_two_runs(tmp_path):

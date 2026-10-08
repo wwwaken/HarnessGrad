@@ -214,18 +214,59 @@ that the harness does not see them at all.
 (§2.3): a method that can read the check can fit itself to the check. Curve points
 record the verifier's *kind*, never its arguments.
 
-### 2.3 A dataset may declare which tasks are the method's to study
+### 2.3 Which tasks are the method's to study: the dataset's default, the run's choice
 
-A dataset module **may** declare:
+The platform does not own the train/eval division. It is a property of an **experiment**,
+not of a benchmark: the same 2,417 MuSiQue rows are one experiment's exam and another
+experiment's study material, and nothing about the rows decides which. So the division has
+a **default** that a dataset declares and a **run** that may replace it, and the run
+records which one it used.
+
+A dataset module **declares a default**:
 
 ```python
 SPLIT = {"train": [...task ids...], "eval": [...task ids...]}
+```
+
+and states, as a fact about the benchmark rather than about any run, which of its tasks
+belong to the benchmark's own evaluation set:
+
+```python
+OFFICIAL_EVAL = None        # nothing in this pool is study material -- every task in it
+                            # belongs to the benchmark's evaluation set
 ```
 
 | side | what the method is given | what its score is |
 | --- | --- | --- |
 | `train` | the **traces** (`traces/<task_id>.jsonl`) and the per-task scores | recorded as `train_score`; a diagnostic, never a result |
 | `eval` | the **aggregate** `score` and `score_ci95`, **but neither traces nor per-task scores** | `score` — the number on the curve |
+
+**Who decides the division, and what a run says about it.** `driver.py --split` picks one
+of four sources, and every run records the choice as `split_source`, plus a
+`split_sha` over the resolved task ids, in `run_meta.json`:
+
+| `--split` | the division it resolves to | `split_source` |
+| --- | --- | --- |
+| `declared` (default) | the dataset's `SPLIT`, when it declares one; when it does not, nothing divides the pool, the run covers every task and says so loudly | `declared`, or `null` because there was no declaration to name |
+| `default` | the platform's rule: a deterministic hash third of the pool, named rather than implied | `default` |
+| `official` | `OFFICIAL_EVAL`: the benchmark's own evaluation set, taken from the adapter | `official` |
+| `<file.json>` | a division the caller supplies, validated like any other | `file:<resolved path>` |
+
+**Two points belong on one axis only when `split_sha` agrees.** This is §2.1's rule applied
+to the second thing that fixes the task set: §2.1 pins *which tasks* are drawn (the sampling
+policy) and this pins *which side* each drawn task is on. A curve whose points were scored
+on different task sets is not one measurement, and before `split_sha` the only trace was
+the dataset's name, which cannot tell `--split official` from `--split declared` on the same
+dataset. The sha is order-insensitive and content-sensitive, so reordering a file does not
+fork a curve and moving one task does.
+
+**A run evaluates exactly one side (§2.6), so a run-time division is validated only on the
+side it evaluates.** `--side eval --split official` is the report run: the benchmark's whole
+evaluation set, with no study material in the pool at all. Requiring a filled `train` side
+there would make the most comparable run on the platform impossible to express. A
+*declaration*, by contrast, claims the benchmark has both a study side and an exam side, so
+an empty side in `SPLIT` is a bug in the adapter and is refused as one — absent is not
+`None`, and `None` is not an empty list.
 
 **The eval side is not withheld, it is absent** — and that replaced a mechanism rather
 than tightening one. What used to be written here described two withholdings: the eval

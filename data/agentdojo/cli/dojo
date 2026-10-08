@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+"""Agent-visible AgentDojo CLI: tools, call, and submit. No task/scorer/oracle imports."""
+from __future__ import annotations
+
+import argparse
+import importlib
+import json
+from pathlib import Path
+
+from agentdojo.functions_runtime import FunctionsRuntime, make_function
+
+CLASSES = {'workspace': 'WorkspaceEnvironment', 'travel': 'TravelEnvironment',
+           'banking': 'BankingEnvironment', 'slack': 'SlackEnvironment'}
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('command', choices=['tools', 'call', 'submit'])
+    ap.add_argument('value', nargs='?')
+    args = ap.parse_args()
+    initial = json.loads(Path('dojo.initial.json').read_text())
+    if args.command == 'tools':
+        print(json.dumps(initial['tools'], ensure_ascii=False))
+        return
+    action_file = Path('action.json')
+    actions = json.loads(action_file.read_text()) if action_file.exists() else {'calls': [], 'output': ''}
+    if args.command == 'submit':
+        actions['output'] = args.value or ''
+    else:
+        raw = json.loads(args.value)
+        module = importlib.import_module(f"agentdojo.default_suites.v1.{initial['suite']}.environment")
+        env_type = getattr(module, CLASSES[initial['suite']])
+        state = Path('dojo.state.json')
+        env = env_type.model_validate(json.loads(state.read_text()) if state.exists() else initial['environment'])
+        runtime = FunctionsRuntime([make_function(f) for f in module.TOOLS])
+        result, error = runtime.run_function(env, raw['function'], raw['args'])
+        # State is convenient for the subject, never consumed by the trusted checker.
+        state.write_text(json.dumps(env.model_dump(mode='json')))
+        actions['calls'].append({'function': raw['function'], 'args': raw['args']})
+        print(json.dumps({'result': result, 'error': error}, default=str, ensure_ascii=False))
+    action_file.write_text(json.dumps(actions, ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    main()

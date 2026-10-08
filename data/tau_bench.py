@@ -91,6 +91,16 @@ from __future__ import annotations
 #: deliberately not offered as a choice in the Launch form.
 KIND = "dataset"
 
+
+#: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+#: to it**. The pool is retail + airline, the two official domains. tau-bench has no train side to omit.
+#:
+#: `None` is the accurate value only because nothing in the pool is study material -- it does
+#: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+#: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+#: no study material in it. `--split declared` keeps this adapter's own division.
+OFFICIAL_EVAL = None
+
 import json
 import os
 import sys

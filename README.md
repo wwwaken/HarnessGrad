@@ -198,6 +198,8 @@ running without it.
 ```
 install.sh            install + verify (bubblewrap, git, python3 >= 3.10)
 docs/writing_a_harness.md  how to contribute a harness (start here if that is you)
+docs/claims.md        the falsifiable claims this platform exists to test -- research, not
+                      engineering, and each one carries the condition that would refute it
 INTERFACE.md          the frozen contract -- read this first
 driver.py             the entrypoint: argparse, wiring, the order refusals happen in
 harnessgrad/           the platform's implementation, one responsibility per module

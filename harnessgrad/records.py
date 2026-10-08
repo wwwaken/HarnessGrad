@@ -22,6 +22,7 @@ from eval.console import CONSOLE as console
 from eval.metrics import ci95
 from eval.metrics import mean
 from harnessgrad.environments import _env_record
+from eval.tracing import task_file
 from harnessgrad.methods import PlatformTampered
 
 def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
@@ -476,7 +477,7 @@ def _save_traces(run_dir: Path, round_no: int, traces: dict,
     dest = run_dir / f"round{round_no}_traces"
     dest.mkdir(parents=True, exist_ok=True)
     for tid, body in traces.items():
-        (dest / f"{tid}.jsonl").write_text(body)
+        task_file(dest, f"{tid}.jsonl").write_text(body)
 
     # **And one file per trial, when a task was measured more than once.** `<task>.jsonl`
     # above is the last trial only, which is what every reader had; with `--trials 3` that
@@ -486,7 +487,7 @@ def _save_traces(run_dir: Path, round_no: int, traces: dict,
     # there, so `trial1` is the first measurement in both a 1-trial and a 3-trial run.
     for tid, bodies in (trial_traces or {}).items():
         for index, body in enumerate(bodies, start=1):
-            (dest / f"{tid}.trial{index}.jsonl").write_text(body)
+            task_file(dest, f"{tid}.trial{index}.jsonl").write_text(body)
 
     # Which side each trace belongs to, so the directory is readable on its own. Named
     # with a leading dot because it sits beside files named after task ids and must not
@@ -571,7 +572,7 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
                                 # 4/5, 5/5, 3/5" are different claims about the artifact.
                                 **({"tests": t["tests"]} if isinstance((t or {}).get("tests"), dict)
                                    else {})} for t in trials_v]
-        (dest / f"{tid}.json").write_text(
+        task_file(dest, f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
 
         # One line per task on the terminal; the body goes to the panel collapsed. The

@@ -13,6 +13,12 @@ driver says so out loud rather than picking one.
 """
 from __future__ import annotations
 
+import hashlib
+import importlib
+import json
+import re
+from pathlib import Path
+
 #: **What a module in `data/` is for.** A dataset declares `KIND = "dataset"`; anything that
 #: does not is a **fixture** -- the platform's own test material. The default is the quiet
 #: one on purpose: a new dataset that forgets to declare itself is hidden from the chooser
@@ -54,10 +60,6 @@ def published() -> tuple[str, ...]:
     return tuple(out)
 
 
-import importlib
-import re
-from pathlib import Path
-
 _VALID = ("train", "eval")
 
 
@@ -74,17 +76,39 @@ def load_split(name: str) -> tuple[list[dict], dict[str, str], dict | None]:
     failure mode of a bad split is a run that completes and reports a number.
     Every task must land on exactly one side, and the sides must not overlap --
     an overlap means the method is scored on something it studied.
+
+    **A declaration is a claim about the benchmark, so both sides must be filled.** A
+    split the *run* supplies is a different thing and is validated by `validate_split`
+    with only the run's own side required; see that function for why.
     """
     tasks, scorable = load(name)
     module = importlib.import_module(f"data.{name}")
     split = getattr(module, "SPLIT", None)
     if split is None:
         return tasks, scorable, None
+    return tasks, scorable, validate_split(name, tasks, split)
 
+
+def validate_split(name: str, tasks: list[dict], split: dict,
+                   *, require_nonempty: tuple[str, ...] = _VALID) -> dict:
+    """Validate a mapping and return it normalized to both sides.
+
+    This runs on splits that did **not** come from the dataset's own declaration: one the
+    user supplied with `--split <file>`, or one this module derived from a dataset fact.
+    Those differ from a declaration in one way that matters:
+
+    * a **declaration** says "this benchmark has a study side and an exam side", so an
+      empty side is a bug in the dataset and `require_nonempty` is both sides;
+    * a **run** evaluates exactly one side (INTERFACE.md §2.6), and `--side eval --split
+      official` is the report run -- the benchmark's whole evaluation set, with no study
+      material in this pool at all. Requiring a filled `train` side there would make the
+      most comparable run on the platform impossible to express, so the caller names the
+      sides it needs filled.
+    """
     unknown = set(split) - set(_VALID)
     if unknown:
         raise ValueError(
-            f"dataset {name!r}: SPLIT has unknown side(s) {sorted(unknown)}; "
+            f"dataset {name!r}: split has unknown side(s) {sorted(unknown)}; "
             f"expected only {list(_VALID)}")
 
     ids = [t["task_id"] for t in tasks]
@@ -94,7 +118,7 @@ def load_split(name: str) -> tuple[list[dict], dict[str, str], dict | None]:
         missing = set(members) - known
         if missing:
             raise ValueError(
-                f"dataset {name!r}: SPLIT[{side!r}] names unknown task(s) "
+                f"dataset {name!r}: split[{side!r}] names unknown task(s) "
                 f"{sorted(missing)}")
 
     overlap = set(groups["train"]) & set(groups["eval"])
@@ -111,10 +135,83 @@ def load_split(name: str) -> tuple[list[dict], dict[str, str], dict | None]:
             f"side of the split; they would be silently neither trained on nor "
             f"scored")
 
-    empty = [side for side, members in groups.items() if not members]
+    empty = [side for side in require_nonempty if not groups[side]]
     if empty:
-        raise ValueError(f"dataset {name!r}: SPLIT has an empty side: {empty}")
-    return tasks, scorable, groups
+        raise ValueError(f"dataset {name!r}: split has an empty side: {empty}")
+    return groups
+
+
+def split_sha(split: dict) -> str:
+    """A digest of a resolved split, so two runs can be told apart by their task sets.
+
+    Recorded on every run. Two points on one axis are comparable only if they scored the
+    same tasks, and "the same dataset" does not say that once a run may supply its own
+    split -- the same rule §2.1 already applies to the sampling policy.
+    """
+    payload = json.dumps({side: sorted(split[side]) for side in _VALID},
+                         sort_keys=True).encode()
+    return hashlib.sha256(payload).hexdigest()
+
+
+def is_eval_id(task_id: str) -> bool:
+    """The platform's default rule for which side a task is on.
+
+    A deterministic third, by hash of the task id -- hashed rather than sliced off the
+    sorted list so that adding or removing a task does not reshuffle which side every
+    other task is on. A split that moves under the benchmark is a split whose past
+    scores cannot be compared with its future ones.
+    """
+    return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
+
+
+def default_split(tasks: list[dict]) -> dict:
+    """The platform's default division, named rather than implied.
+
+    Every adapter used to write this rule for itself, which made "the platform's default"
+    indistinguishable from "what this benchmark does". It is a protocol choice, so
+    `--split default` names it, a dataset's own declaration overrides it, and the run
+    records which of the two it used.
+    """
+    ids = [t["task_id"] for t in tasks]
+    return {"train": [i for i in ids if not is_eval_id(i)],
+            "eval": [i for i in ids if is_eval_id(i)]}
+
+
+#: The attribute a dataset uses to state the benchmark's own evaluation set.
+OFFICIAL_EVAL_ATTR = "OFFICIAL_EVAL"
+
+
+def official_split(name: str, tasks: list[dict]) -> dict:
+    """The benchmark's own evaluation set, taken from the dataset's declaration.
+
+    `OFFICIAL_EVAL` is a fact about the benchmark, not an opinion about this run: the task
+    ids in this pool that belong to the set the benchmark's published numbers are computed
+    on. `None` declares that **nothing in the pool is study material** -- every task in it
+    belongs to the benchmark's evaluation set. It deliberately does *not* claim the pool is
+    the whole of that set: `ds1000`'s pool is the official test split minus the rows
+    measured as unrunnable on this host, so its declaration is `None` and its pool is still
+    a subset. The one thing `None` must never mean is "the pool is also the training set",
+    which is why an adapter that loads study material cannot use it.
+
+    The attribute being **absent** is a different statement ("this dataset has not said")
+    and is refused rather than guessed, because a guessed evaluation set produces a number
+    that looks official and is not.
+    """
+    module = importlib.import_module(f"data.{name}")
+    if not hasattr(module, OFFICIAL_EVAL_ATTR):
+        raise ValueError(
+            f"dataset {name!r} does not declare {OFFICIAL_EVAL_ATTR}, so `--split official` "
+            f"has no meaning for it. Declare it in the adapter (the ids of the benchmark's "
+            f"own evaluation set, or None when the pool holds no study material) or use "
+            f"`--split declared` / `--split default`.")
+    declared = getattr(module, OFFICIAL_EVAL_ATTR)
+    ids = [t["task_id"] for t in tasks]
+    eval_ids = list(ids) if declared is None else list(declared)
+    # Hoisted, not inline: `i not in set(eval_ids)` inside the comprehension rebuilds the
+    # set once per task. Measured on TriviaQA's pool (19,944 ids, 17,944 of them eval):
+    # 9.75 s for this one call, which `QASpec.build()` pays at import.
+    eval_set = set(eval_ids)
+    return {"train": [i for i in ids if i not in eval_set], "eval": eval_ids}
 
 
 # --------------------------------------------------------------- environments ---
