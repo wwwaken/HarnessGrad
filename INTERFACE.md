@@ -260,6 +260,19 @@ the dataset's name, which cannot tell `--split official` from `--split declared`
 dataset. The sha is order-insensitive and content-sensitive, so reordering a file does not
 fork a curve and moving one task does.
 
+**And the oracle's provenance rides on the same record.** §2.5's oracle control submits the
+dataset's own reference artifact, and until the authored-reference contract that artifact was
+always the benchmark's released answer — a gold answer, ALFWorld's walkthrough, BIRD's gold
+SQL. A dataset may now submit one the **platform authored**, validated by the released tests
+and held out of the agent's view, and "the benchmark's reference scores 1 here" is a different
+claim about the check than "a reference we wrote scores 1 here". So every run records
+`oracle_source` (`released` | `authored`) and, for an authored one, `oracle_coverage` — how
+much of the pool the authored reference covers. The attribute is **required** of every
+runnable dataset by `tools/dataset_lint.py` and is never defaulted, for the same reason
+`OFFICIAL_EVAL` refuses silence: the dataset that needs the field is the one whose author has
+just written a reference by hand, and a default of `released` is exactly that blind spot.
+`null` in a run record means a refused dataset, which has no oracle at all.
+
 **A run evaluates exactly one side (§2.6), so a run-time division is validated only on the
 side it evaluates.** `--side eval --split official` is the report run: the benchmark's whole
 evaluation set, with no study material in the pool at all. Requiring a filled `train` side
@@ -1013,6 +1026,21 @@ measurement could not reach. In all three the check ran, read its reward, and to
 truth. What that means is narrow and worth stating in any write-up: **a score of 0 on a
 task whose oracle has not been shown to pass is uninterpretable**, and which tasks those
 are cannot be worked out by reading the dataset — it has to be measured.
+
+**A reference the platform wrote carries its own provenance.** Some benchmarks ship the tests
+and not the solution: LiveCodeBench's release carries public and private test cases but no
+reference completion, and AppWorld's task directories record `num_solution_code_lines` for a
+program that was never released. For those, the oracle's artifact is **authored** here, and
+accepted only because the *released tests* validate it — the tests are the gold and the
+reference is something that satisfies them. A dataset doing this must declare
+`ORACLE_SOURCE = "authored"` together with `ORACLE_VALIDATED_BY` (what validates it) and
+`ORACLE_COVERAGE` (how many tasks have one); the lint refuses an `authored` declaration that
+omits either, and the run records both (§2.3). The distinction is not bookkeeping: an authored
+reference covering three tasks proves the check is reachable on **three** tasks, and a curve
+that did not say so would read as if the whole pool had been shown reachable. Nothing here
+relaxes the rule above — a task whose oracle has not been shown to pass is still
+uninterpretable, whether the reference came from upstream or from us.
+
 
 ### 2.6 A run is about one side
 

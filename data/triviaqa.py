@@ -64,6 +64,10 @@ from data.qa import base
 
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/triviaqa")
 
 #: The pinned revision of `mandarjoshi/trivia_qa`. A commit sha: `main` is not a version.

@@ -60,6 +60,10 @@ from data import registry
 
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/bird_minidev")
 RELEASE = "2024-06-20/7BEB6DAB11E65F0FDE563E644A1EA319"
 DATA_SHA256 = "cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f"

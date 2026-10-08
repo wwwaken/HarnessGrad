@@ -381,6 +381,7 @@ def main() -> int:
         return 2
 
     tasks_all, scorable, split = datasets.load_split(args.dataset)
+    oracle_source, oracle_coverage = datasets.oracle_source(args.dataset)
     # **Whose division this run uses.** The train/eval division is a property of the
     # experiment protocol, not of the benchmark: the same dataset supports "study the
     # official train split and report on the official test split" and "study a third of the
@@ -823,6 +824,14 @@ def main() -> int:
         split_declared=split is not None,
         split_source=split_source,
         split_sha=datasets.split_sha(split) if split else None,
+        # **Where the oracle's reference artifact came from.** Gate 1 is the oracle
+        # control, and "the benchmark's own reference scores 1 here" and "a reference the
+        # platform wrote scores 1 here" are different claims about the check -- so the run
+        # records which, together with how much of the pool an authored reference covers.
+        # `None` is a refused dataset (no oracle at all); the lint refuses silence from a
+        # runnable one (`data/dataset.schema.json:module.oracle_about`).
+        oracle_source=oracle_source,
+        oracle_coverage=oracle_coverage,
         agent_model=model["model"] or None,
         agent_backend=model["backend"],
         framework_version=FRAMEWORK_VERSION,

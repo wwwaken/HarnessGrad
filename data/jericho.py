@@ -73,6 +73,10 @@ from pathlib import Path
 
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
 #: to it**. The pool is the 56 official games. The benchmark declares no division of its own.

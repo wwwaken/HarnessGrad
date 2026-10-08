@@ -54,6 +54,10 @@ from data.qa import base
 
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/gsm8k")
 
 #: The pinned revision of `openai/gsm8k`. A commit sha, not `main`: `main` is not a

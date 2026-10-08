@@ -107,8 +107,42 @@ def test_lint_rejects_a_deliberately_broken_copy(schema):
         "is not pinned",                          # version=main
         "is missing ['url', 'dst']",              # incomplete http entry
         "plain-language note",                    # note too short
+        "`ORACLE_SOURCE` must be one of",         # oracle provenance not declared
     ):
         assert fragment in joined, f"lint missed {fragment!r}:\n{joined}"
+
+
+def test_the_oracle_rule_refuses_silence_and_an_unvalidated_authorship(schema):
+    """The rule the authored-reference contract rests on, exercised on the rule itself.
+
+    `test_lint_accepts_every_published_dataset` is the integration half: it forces all 19
+    runnable adapters to declare `ORACLE_SOURCE`. This is the unit half, because the cases
+    that matter are the ones no shipped dataset has -- an author who wrote a reference by
+    hand and said nothing (silence defaults to nothing, deliberately), and one who said
+    `authored` without naming what validates it or how much it covers.
+    """
+    from types import SimpleNamespace
+
+    def lint(**attributes):
+        result = dataset_lint.Result("probe")
+        dataset_lint.lint_oracle(SimpleNamespace(**attributes), schema, result)
+        return result
+
+    silent = lint()
+    assert not silent.ok, "silence about the oracle passed the lint"
+    assert "ORACLE_SOURCE" in silent.errors[0]
+    assert "released" in silent.errors[0] and "authored" in silent.errors[0]
+
+    assert not lint(ORACLE_SOURCE="donated").ok
+    assert lint(ORACLE_SOURCE="released").ok
+
+    unvalidated = lint(ORACLE_SOURCE="authored",
+                       ORACLE_VALIDATED_BY="the released tests")
+    assert not unvalidated.ok and "ORACLE_COVERAGE" in unvalidated.errors[0]
+    uncovered = lint(ORACLE_SOURCE="authored", ORACLE_COVERAGE="3 of 1055 tasks")
+    assert not uncovered.ok and "ORACLE_VALIDATED_BY" in uncovered.errors[0]
+    assert lint(ORACLE_SOURCE="authored", ORACLE_VALIDATED_BY="the released tests",
+                ORACLE_COVERAGE="3 of 1055 tasks").ok
 
 
 def test_the_broken_copy_is_gone_and_the_real_datasets_still_pass(schema):

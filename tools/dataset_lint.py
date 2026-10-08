@@ -273,6 +273,41 @@ def lint_paths(module, schema: dict, result: Result) -> None:
                          f"data/dataset.schema.json:paths)")
 
 
+def lint_oracle(module, schema: dict, result: Result) -> None:
+    """Where the oracle control's reference artifact came from, declared rather than assumed.
+
+    Gate 1 is the oracle: the dataset's own reference artifact, submitted, expected to score
+    1. Until 2026-10-08 that artifact was always the benchmark's released answer -- a gold
+    answer, ALFWorld's walkthrough, BIRD's gold SQL -- so nothing had to say so. The owner
+    then authorised **platform-authored** references validated by the released tests, and
+    those are different claims about a curve: "the benchmark's own reference scores 1 here"
+    and "a reference we wrote scores 1 here" mean different things about the check, and a
+    reader of `run_meta.json` cannot tell them apart unless the dataset says which it is.
+
+    Silence is refused rather than defaulted, which is `OFFICIAL_EVAL`'s rule
+    (`data/registry.py::official_split` refuses silence for the same reason): a default of
+    `released` is exactly the blind spot this field exists to close, because the dataset that
+    needs the field is the one whose author has just written a reference by hand.
+    """
+    attribute = schema["module"]["oracle_attribute"]
+    source = getattr(module, attribute, None)
+    if source not in schema["module"]["oracle_sources"]:
+        result.error(
+            f"`{attribute}` must be one of {schema['module']['oracle_sources']}, got "
+            f"{source!r}: say whether the reference this dataset's oracle submits is the "
+            f"benchmark's own (`released`) or one the platform authored and the released "
+            f"tests validate (`authored`)")
+        return
+    if source != "authored":
+        return
+    for extra in schema["module"]["oracle_authored_requires"]:
+        if not getattr(module, extra, None):
+            result.error(
+                f"`{attribute} == 'authored'` requires `{extra}`: name what validates the "
+                f"authored reference, and how much of the pool has one, so that a run record "
+                f"cannot claim more reachability than the oracle control demonstrated")
+
+
 def lint_dataset(name: str, schema: dict, *, require_data: bool = True) -> Result:
     result = Result(name)
     try:
@@ -322,6 +357,7 @@ def lint_dataset(name: str, schema: dict, *, require_data: bool = True) -> Resul
             result.error(f"`{callable_name}()` is missing or not callable")
 
     lint_paths(module, schema, result)
+    lint_oracle(module, schema, result)
 
     downloads = getattr(module, "downloads", None)
     if callable(downloads):

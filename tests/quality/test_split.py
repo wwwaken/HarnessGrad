@@ -117,6 +117,13 @@ def test_every_run_records_which_division_it_used(tmp_path):
     # 同一个数据集、同样是 train 侧,但两份划分不是一根轴 —— 这正是要记 sha 的原因。
     assert meta2["split_sha"] != meta["split_sha"]
 
+    # 同一份记录也带着 oracle 的来源,理由一样:gate 1 是 oracle 控制臂,而
+    # "benchmark 自己的参考解得 1 分" 与 "我们自撰的参考解得 1 分" 是对检查可达性的两种
+    # 不同陈述,曲线本身说不出是哪一种。`ORACLE_COVERAGE` 只在自撰时才有值,所以这里读
+    # 到的是 `None`(写记录时 `None` 不落盘)。
+    assert meta["oracle_source"] == "released"
+    assert meta.get("oracle_coverage") is None
+
 
 def test_a_run_covers_exactly_one_side_and_the_pair_comes_from_two_runs(tmp_path):
     """**一次运行只测一侧**;train 与 eval 的配对由两次运行经 `harness_sha` 连接。

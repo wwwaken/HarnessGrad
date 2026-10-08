@@ -114,6 +114,10 @@ from pathlib import Path
 #: See `data/registry.py:KIND_DATASET`.
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
 #: to it**. The pool is the benchmark's own `test` fold (1,744 variations minus 78 over the step budget). The `train` and `dev` folds exist upstream and are not loaded here.

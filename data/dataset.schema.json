@@ -13,6 +13,13 @@
   ],
   "module": {
     "kind_attribute": "KIND",
+    "oracle_attribute": "ORACLE_SOURCE",
+    "oracle_sources": ["released", "authored"],
+    "oracle_authored_requires": ["ORACLE_VALIDATED_BY", "ORACLE_COVERAGE"],
+    "oracle_about": [
+      "Gate 1 is the oracle control: the dataset's own reference artifact, submitted, expected to score 1. Until 2026-10-08 that artifact was always the benchmark's released answer, so nothing had to say so; the owner then authorised platform-authored references validated by the released tests, and the two are different claims about a curve. Silence is refused rather than defaulted, the rule OFFICIAL_EVAL already follows.",
+      "`released`: the reference comes from the benchmark's own release (a gold answer, a walkthrough, a gold SQL). `authored`: the platform wrote it, `ORACLE_VALIDATED_BY` names what validates it, and `ORACLE_COVERAGE` says how much of the pool has one -- an authored oracle covering three tasks proves the check is reachable on three tasks, and a reader has to be able to see that."
+    ],
     "kinds": ["dataset", "fixture"],
     "required_callables": ["load", "downloads"],
     "published_kind": "dataset"

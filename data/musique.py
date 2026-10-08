@@ -25,6 +25,10 @@ from pathlib import Path
 from data.qa import base
 
 KIND = "dataset"
+
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/musique")
 DATA_FILE = "musique_ans_v1.0_dev.jsonl"
 REVISION = "c8f4f8c9465fb69d31a8eae894c3fd509c4ca321"

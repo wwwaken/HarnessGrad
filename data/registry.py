@@ -180,6 +180,30 @@ def default_split(tasks: list[dict]) -> dict:
 #: The attribute a dataset uses to state the benchmark's own evaluation set.
 OFFICIAL_EVAL_ATTR = "OFFICIAL_EVAL"
 
+#: The attribute a dataset uses to say where its oracle's reference artifact came from.
+ORACLE_SOURCE_ATTR = "ORACLE_SOURCE"
+
+
+def oracle_source(name: str) -> tuple[str | None, str | None]:
+    """`(ORACLE_SOURCE, ORACLE_COVERAGE)` for a dataset, as the run record needs them.
+
+    Gate 1 is the oracle control: the dataset's own reference artifact, submitted, expected
+    to score 1. That artifact used to be the benchmark's released answer by definition; since
+    the platform may also **author** one (validated by the released tests and held out of the
+    agent's view), a run has to record which kind it was, or two curves on one axis can mean
+    two different things about the check. This is the same argument `split_sha` makes for the
+    division, and the same rule about silence: `ORACLE_SOURCE` is **required** by
+    `tools/dataset_lint.py`, so `None` here means a refused dataset (which has no oracle) or
+    a fixture -- never a runnable dataset that declined to say.
+
+    `ORACLE_COVERAGE` matters only for an authored reference, and it is the honest half: an
+    authored oracle that exists for three tasks proves the check is reachable on three tasks,
+    and a reader who cannot see that would read the control as covering the whole pool.
+    """
+    module = importlib.import_module(f"data.{name}")
+    return (getattr(module, ORACLE_SOURCE_ATTR, None),
+            getattr(module, "ORACLE_COVERAGE", None))
+
 
 def official_split(name: str, tasks: list[dict]) -> dict:
     """The benchmark's own evaluation set, taken from the dataset's declaration.

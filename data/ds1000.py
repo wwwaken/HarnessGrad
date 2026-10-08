@@ -50,6 +50,10 @@ from data.qa.base import is_eval
 
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
 #: to it**. The pool is the official simplified test split **minus** the 74 rows measured as unrunnable on this host; every row that remains is an official evaluation row. The pool is therefore not the whole of the official set, and `None` says only that nothing in it is study material.
 #:

@@ -74,6 +74,10 @@ from data.qa import base
 
 KIND = "dataset"
 
+#: The oracle control submits the benchmark's own released reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+ORACLE_SOURCE = "released"
+
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/twowikimultihopqa")
 DATA_FILE = "dev.json"
 ALIAS_FILE = "id_aliases.json"

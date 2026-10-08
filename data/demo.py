@@ -17,6 +17,11 @@ from __future__ import annotations
 #: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
 #: deliberately not offered as a choice in the Launch form.
 KIND = "fixture"
+#: The demo fixture's oracle submits the fixture's own reference; see
+#: `data/dataset.schema.json` (`module.oracle_about`). Declared even though the lint
+#: only requires it of published datasets, because `driver.py` records it on every run
+#: and `tests/quality/test_split.py` reads the field off a real demo run.
+ORACLE_SOURCE = "released"
 
 TASKS: list[dict] = [
     {"task_id": "t01", "goal": "Answer with the word alpha."},
