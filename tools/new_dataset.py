@@ -95,6 +95,11 @@ import re
 from data.qa import base
 
 KIND = "fixture"          # <- flip to "dataset" when the data and scorer are real
+#: Where the oracle control's reference comes from. A scaffold's reference is part of
+#: the fixture itself, so it is `released`; `authored` means the platform wrote one and
+#: the released tests validate it, and then `ORACLE_VALIDATED_BY` and `ORACLE_COVERAGE`
+#: are required too (`data/dataset.schema.json`:module.oracle_about).
+ORACLE_SOURCE = "released"
 
 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/${name}")
 
@@ -259,6 +264,11 @@ import json
 from pathlib import Path
 
 KIND = "fixture"          # <- flip to "dataset" when the data and scorer are real
+#: Where the oracle control's reference comes from. A scaffold's reference is part of
+#: the fixture itself, so it is `released`; `authored` means the platform wrote one and
+#: the released tests validate it, and then `ORACLE_VALIDATED_BY` and `ORACLE_COVERAGE`
+#: are required too (`data/dataset.schema.json`:module.oracle_about).
+ORACLE_SOURCE = "released"
 
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/$name")
 
@@ -552,6 +562,11 @@ from pathlib import Path
 from data import registry
 
 KIND = "fixture"          # <- flip to "dataset" when the data and scorer are real
+#: Where the oracle control's reference comes from. A scaffold's reference is part of
+#: the fixture itself, so it is `released`; `authored` means the platform wrote one and
+#: the released tests validate it, and then `ORACLE_VALIDATED_BY` and `ORACLE_COVERAGE`
+#: are required too (`data/dataset.schema.json`:module.oracle_about).
+ORACLE_SOURCE = "released"
 
 #: The bytes live outside the platform tree and never in git (lint rule `lint_paths`).
 DATASET_ROOT = Path(os.environ.get("HG_${NAME}_DATA", "/mnt/20t/xubuqiang/datasets/$name"))

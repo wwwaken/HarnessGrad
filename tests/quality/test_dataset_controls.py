@@ -119,8 +119,13 @@ ROWS: dict[str, dict] = {
     "bird_minidev": {"control": ["data/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
     "appworld": {"control": [], "metric_tests": ["test_appworld_official_scorer.py", "test_dataset_refusals.py"]},
     "livecodebench": {
-        "control": [],
-        "metric_tests": ["test_livecodebench_official_scorer.py", "test_dataset_refusals.py"],
+        # `--task-id` because the oracle is **authored** and covers 7 of the 1,055 problems:
+        # only a covered task can show gate 1, and `oracle_files()` raises for the rest. This
+        # replaced a refusal row, and the first attempt left **both** in the dict literal --
+        # where a duplicate key is legal and the last one wins, so the tests read `control: []`
+        # and reported a dataset with no control that plainly had one.
+        "control": ["data/livecodebench/control.py", "--task-id", "livecodebench/800"],
+        "metric_tests": ["test_livecodebench_official_scorer.py"],
     },
     "tau_bench": {
         "control": [],
@@ -160,7 +165,7 @@ ROWS: dict[str, dict] = {
 
 #: Datasets whose control is the refusal itself, so the runnable-control test skips them and
 #: the refusal test below applies instead.
-REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful", "livecodebench", "appworld")
+REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful", "appworld")
 
 
 def _provisioned(name: str) -> bool:

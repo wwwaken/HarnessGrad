@@ -1,29 +1,29 @@
-"""LiveCodeBench: the refusal, and the two measurements that make it precise.
+"""LiveCodeBench: the pool, the pinned executor, the verdict, and the authored oracle.
 
-The first version of this file was decoration: it re-typed `estimate_pass_at_k` inside the
-test and asserted it against literals, so it proved that the *test* could compute pass@k --
-not that the adapter could, and not that either matched upstream. It also read an absolute
-path with no skip. This file does the two things the refusal actually rests on:
+This file replaces the refusal-era one, which (correctly, at the time) pinned a *refusal*. Now
+that the dataset is runnable, the things that can silently go wrong are different and each has a
+test:
 
-* **the transcription is upstream's bytes**, compared against `pass_k_utils.py` inside the
-  pinned source archive rather than against a copy of itself, and exercised by calling the
-  upstream function loaded from that archive;
-* **the tests are available**, which is the fact that separates "the release ships no
-  solution" from "the metric cannot be computed". The private cases decode offline with
-  stdlib `base64` + `zlib` + `pickle`, through a decode step that is a function in the
-  adapter, exercised here on a real row.
-
-Together they are the argument `REFUSED` makes: gate 1 has no oracle here, and it is *not*
-because the check is unreachable.
+* **the pool** -- the six shards are disjoint and their union is 1,055 (an earlier note called
+  them cumulative), the materialized pool has the digest the adapter pins, and every problem's
+  test file matches the digest recorded in its pool row;
+* **the executor** -- `testing_util.py` and `pass_k_utils.py` in the workdir are the archive's
+  own bytes, and the adapter's transcription of `pass_k_utils.py` is upstream's region verbatim;
+* **the verdict** -- a correct solution scores 1, a wrong one scores 0 *with the per-test tally
+  recorded* (the register's M4: a binary reward hides partial progress), a compile failure is a
+  measured zero rather than an unmeasurable task, and a broken environment writes no reward file;
+* **the authored oracle** -- every reference in `references/` passes its own problem's released
+  tests, through the real check, on the real task; a task without a reference refuses rather than
+  pretending; and `ORACLE_COVERAGE` counts what is actually there;
+* **the prompt** -- the agent gets the statement and the tests' *count*, never the tests.
 """
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
+import subprocess
 import sys
 import tarfile
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -34,106 +34,218 @@ sys.path.insert(0, str(ROOT))
 import data.livecodebench as dataset  # noqa: E402
 
 ADAPTER = ROOT / "data" / "livecodebench.py"
+CHECK = ROOT / "data" / "livecodebench" / "verify" / "check.py"
 ARCHIVE = dataset.DATASET_ROOT / "_src" / "upstream.tar.gz"
-SHARD = dataset.DATASET_ROOT / "_src" / "test6.jsonl"
-MEMBER = (f"LiveCodeBench-{dataset.UPSTREAM_COMMIT}"
-          "/lcb_runner/evaluation/pass_k_utils.py")
-
-#: The released row schema, pinned: a solution would have to appear as a key here, and the
-#: refusal is the claim that none does.
-ROW_FIELDS = {"question_id", "question_title", "question_content", "platform", "contest_id",
-              "contest_date", "difficulty", "starter_code", "public_test_cases",
-              "private_test_cases", "metadata"}
+ARCHIVE_ROOT = f"LiveCodeBench-{dataset.UPSTREAM_COMMIT}"
+#: The task the control registration uses: a covered one, pinned so the registration and this
+#: file cannot disagree about which task proves gate 1.
+CONTROL_TASK = "livecodebench/800"
 
 
-def _upstream_source() -> str:
+def test_the_pool_is_the_pinned_one():
+    pool = dataset.DATASET_ROOT / dataset.POOL
+    if not pool.is_file():
+        pytest.skip("livecodebench: run `python3 data/livecodebench/prepare.py`")
+    assert hashlib.sha256(pool.read_bytes()).hexdigest() == dataset.POOL_SHA256
+    header = json.loads(pool.open(encoding="utf-8").readline())
+    assert header["problems"] == dataset.PROBLEMS == 1055
+    assert header["shards"] == {"test.jsonl": 400, "test2.jsonl": 111, "test3.jsonl": 101,
+                                "test4.jsonl": 101, "test5.jsonl": 167, "test6.jsonl": 175}
+    assert sum(header["shards"].values()) == dataset.PROBLEMS, "the shards would overlap"
+    assert header["tests"]["public"] == 2762 and header["tests"]["private"] == 25492
+    assert len(dataset._raw()) == dataset.PROBLEMS
+    assert len({row["question_id"] for row in dataset._raw()}) == dataset.PROBLEMS
+
+
+def test_every_shard_is_the_declared_bytes():
+    """The pin the pool digest rests on. Costs ~15 s: it hashes 4.5 GB, once."""
+    for name, digest in dataset._FILES.items():
+        path = dataset.DATASET_ROOT / "_src" / name
+        if not path.is_file():
+            pytest.skip(f"livecodebench: fetch {name}")
+        sha = hashlib.sha256()
+        with path.open("rb") as handle:
+            for block in iter(lambda: handle.read(1 << 22), b""):
+                sha.update(block)
+        assert sha.hexdigest() == digest, name
+
+
+def test_every_problem_test_file_matches_its_pool_row():
+    """The pool's rows carry each test file's digest, so the 9.38 GB of tests is pinned by a
+    2 MB file. Checked on every row whose payload is small, plus the largest one."""
+    rows = dataset._raw()
+    small = [row for row in rows if row["tests_bytes"] < 200_000]
+    biggest = max(rows, key=lambda row: row["tests_bytes"])
+    assert biggest["question_id"] == "abc369_g" and biggest["tests_bytes"] > 100_000_000
+    for row in small[:200] + [biggest]:
+        path = dataset.DATASET_ROOT / dataset.TESTS_DIR / f"{row['question_id']}.json"
+        assert path.is_file(), row["question_id"]
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == row["tests_sha256"], row["question_id"]
+
+
+def test_the_pinned_files_in_the_workdir_are_the_archive_members():
+    """What travels as `VERIFY.inputs` is the archive's own bytes, not a transcription of them."""
     if not ARCHIVE.is_file():
-        pytest.skip("livecodebench: fetch the declared official source archive")
+        pytest.skip("livecodebench: fetch the declared source archive")
     with tarfile.open(ARCHIVE) as tar:
-        return tar.extractfile(MEMBER).read().decode()
-
-
-@pytest.fixture(scope="module")
-def upstream():
-    """Upstream's module, loaded from the pinned archive -- the second implementation the
-    differential tests compare against, so a transcription bug cannot pass by agreeing with
-    itself."""
-    source = _upstream_source()
-    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as handle:
-        handle.write(source)
-        path = handle.name
-    spec = importlib.util.spec_from_file_location("lcb_upstream_pass_k_utils", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-@pytest.fixture(scope="module")
-def first_row() -> dict:
-    if not SHARD.is_file():
-        pytest.skip("livecodebench: fetch the declared shards")
-    with SHARD.open(encoding="utf-8") as handle:
-        return json.loads(handle.readline())
-
-
-def test_the_pinned_archive_is_the_declared_one():
-    assert hashlib.sha256(ARCHIVE.read_bytes()).hexdigest() == dataset.SOURCE_SHA256
+        for relative in (dataset.EXECUTOR, dataset.PASS_K):
+            member = f"{ARCHIVE_ROOT}/lcb_runner/evaluation/{Path(relative).name}"
+            assert tar.extractfile(member).read() == (dataset.DATASET_ROOT / relative).read_bytes()
 
 
 def test_the_transcription_is_upstreams_bytes():
-    """Counted as a substring of the adapter, so an edit cannot hide -- including the one
-    this file's first version made, moving `import numpy` inside the two functions, which
-    no value-level comparison would have noticed."""
-    upstream_source = _upstream_source()
-    region = upstream_source[upstream_source.index("def estimate_pass_at_k("):
-                             upstream_source.index("def extract_instance_results(")]
-    assert ADAPTER.read_text().count(region) == 1
+    """`pass_k_utils.py` is pinned twice -- as the shipped file above and as this region -- and
+    a reader who opens the adapter instead of the workdir must not be misled."""
+    if not ARCHIVE.is_file():
+        pytest.skip("livecodebench: fetch the declared source archive")
+    with tarfile.open(ARCHIVE) as tar:
+        upstream = tar.extractfile(
+            f"{ARCHIVE_ROOT}/lcb_runner/evaluation/pass_k_utils.py").read().decode()
+    region = upstream[upstream.index("def estimate_pass_at_k("):
+                      upstream.index("def extract_instance_results(")].rstrip()
+    # `rstrip` because the adapter continues with a comment where upstream has two blank lines
+    # before `extract_instance_results`; the two functions' own bytes are what is asserted.
+    assert ADAPTER.read_text(encoding="utf-8").count(region) == 1
 
 
-@pytest.mark.parametrize("n,c,k", [(1, 1, 1), (2, 1, 1), (5, 0, 1), (5, 5, 1), (10, 3, 5),
-                                   (100, 1, 10), (1, 0, 1)])
-def test_pass_at_k_differential(n, c, k, upstream):
-    assert dataset.estimate_pass_at_k(n, [c], k)[0] == pytest.approx(
-        upstream.estimate_pass_at_k(n, [c], k)[0])
+def test_the_verifier_ships_the_tests_and_the_executor_for_its_own_task():
+    for task_id in (CONTROL_TASK, dataset.task_id(0)):
+        row = dataset._row_for({"task_id": task_id})
+        inputs = {entry["path"]: entry for entry in dataset.VERIFY[task_id]["inputs"]}
+        assert set(inputs) == {"verify/check.py", "tests.json", "testing_util.py",
+                               "pass_k_utils.py"}
+        assert inputs["tests.json"]["from"] == str(
+            dataset.DATASET_ROOT / dataset.TESTS_DIR / f"{row['question_id']}.json")
+        assert inputs["testing_util.py"]["from"] == str(dataset.DATASET_ROOT / dataset.EXECUTOR)
+        assert dataset.VERIFY[task_id]["argv"][:2] == ["python3", "verify/check.py"]
+        # The prompt carries the counts and never the tests.
+        tests = json.loads((dataset.DATASET_ROOT / dataset.TESTS_DIR
+                            / f"{row['question_id']}.json").read_text())
+        setup = json.dumps(dataset.SETUP[task_id])
+        assert tests["inputs"][0][:20] not in setup
+        assert tests["outputs"][0][:20] not in setup
+        metadata = json.loads(dataset.SETUP[task_id]["files"][0]["content"])
+        assert metadata["n_public_tests"] == row["n_public"]
+        assert metadata["n_private_tests"] == row["n_private"]
+        assert metadata["call_based"] == bool(row["starter_code"])
 
 
-def test_the_aggregate_is_upstreams(upstream):
-    """`compute_metrics_from_results` over a hand-built result table, both sides -- including
-    the `detail` map, which is where a re-implementation would silently differ, and the
-    `(total >= k).all()` filter, which drops a k that no task has enough samples for. The
-    first version of this test asked for `pass@5` on three generations and got a KeyError
-    from the *adapter* -- which is upstream's behaviour, and the differential is what made
-    that legible instead of looking like a bug."""
-    results = {"a": [[1, 1], [0, 0], [1, 0]], "b": [[1, 1], [1, 1], [1, 0]]}
-    ours = dataset.compute_metrics_from_results(results, k_list=[1, 3])
-    theirs = upstream.compute_metrics_from_results(results, k_list=[1, 3])
-    assert set(ours) == set(theirs) == {"pass@1", "pass@3", "detail"}
-    assert ours["pass@1"] == pytest.approx(theirs["pass@1"])
-    assert ours["pass@3"] == pytest.approx(theirs["pass@3"])
-    assert ours["detail"] == theirs["detail"]
-    # The default k_list is upstream's, and so is the filter that empties it:
-    for side in (dataset.compute_metrics_from_results(results),
-                 upstream.compute_metrics_from_results(results)):
-        assert set(side) == {"pass@1", "detail"}
+# ------------------------------------------------------------------- the authored oracle ---
 
 
-def test_the_private_tests_decode_offline_with_the_released_step(first_row):
-    """The decisive fact: `private_test_cases` is base64+zlib+pickle and stdlib decodes it.
+def test_every_authored_reference_passes_its_own_problems_released_tests():
+    """Gate 1, per covered task, through the real check.
 
-    A refusal that says "no oracle" is credible; one that says "unreproducible" would not
-    be, and this test is what keeps the two apart.
+    Each task is its own process because upstream's `reliability_guard` nulls `os.environ` and
+    friends on its first call -- `run_test` is once-per-process by construction, which is why
+    the check and upstream both run it in a child.
     """
-    raw = first_row["private_test_cases"]
-    with pytest.raises(ValueError):
-        json.loads(raw)          # the branch upstream wraps in `except`
-    cases = dataset.decode_private_test_cases(raw)
-    assert cases
-    assert all({"input", "output", "testtype"} <= set(case) for case in cases)
-    public = dataset.decode_private_test_cases(first_row["public_test_cases"])
-    assert public and all({"input", "output"} <= set(case) for case in public)
+    references = dataset.references()
+    assert references, "no authored references: gate 1 has nothing to submit"
+    for question_id in sorted(references):
+        task_id = dataset.task_id(
+            next(row["index"] for row in dataset._INDEXED if row["question_id"] == question_id))
+        proc = subprocess.run(
+            [sys.executable, "data/livecodebench/control.py", "--oracle", "--task-id", task_id],
+            cwd=ROOT, capture_output=True, text=True, timeout=600)
+        assert proc.returncode == 0, proc.stdout + proc.stderr
+        assert '"reward": 1.0' in proc.stdout, f"{question_id} ({task_id}): {proc.stdout[-400:]}"
 
 
-def test_the_released_rows_carry_no_reference_solution(first_row):
-    """Why the refusal is about the *oracle* and not about the metric."""
-    assert set(first_row) == ROW_FIELDS
-    assert not any("solution" in field or "reference" in field for field in ROW_FIELDS)
+def test_coverage_counts_the_references_that_exist():
+    references = dataset.references()
+    assert dataset.ORACLE_SOURCE == "authored"
+    assert dataset.ORACLE_COVERAGE.startswith(f"{len(references)} of {dataset.PROBLEMS}")
+    assert all(qid in dataset.ORACLE_COVERAGE for qid in references)
+    assert "released tests" in dataset.ORACLE_VALIDATED_BY
+
+
+def test_a_task_without_a_reference_refuses_rather_than_pretending():
+    """An `authored` oracle that returned empty files for the other 1,048 problems would let the
+    control report reachability where nothing has been shown."""
+    covered = set(dataset.references())
+    task = {"task_id": dataset.task_id(
+        next(row["index"] for row in dataset._INDEXED if row["question_id"] not in covered))}
+    with pytest.raises(ValueError) as excinfo:
+        dataset.oracle_files(task)
+    assert "no authored reference" in str(excinfo.value)
+    assert dataset.ORACLE_COVERAGE in str(excinfo.value)
+
+
+# -------------------------------------------------------------------- the check itself ---
+
+
+def _run_check(work: Path, tests: str, solution: str | None) -> tuple[int, str | None, dict]:
+    """The check, materialized the way the platform materializes it."""
+    (work / "verify").mkdir(parents=True, exist_ok=True)
+    (work / "verify" / "check.py").write_text(CHECK.read_text(encoding="utf-8"))
+    (work / "tests.json").write_text(tests, encoding="utf-8")
+    (work / "testing_util.py").write_text(
+        (dataset.DATASET_ROOT / dataset.EXECUTOR).read_text(encoding="utf-8"), encoding="utf-8")
+    (work / "pass_k_utils.py").write_text(
+        (dataset.DATASET_ROOT / dataset.PASS_K).read_text(encoding="utf-8"), encoding="utf-8")
+    if solution is not None:
+        (work / "solution.py").write_text(solution, encoding="utf-8")
+    proc = subprocess.run(
+        [sys.executable, "verify/check.py", "--tests", "tests.json", "--solution", "solution.py",
+         "--reward-file", "verifier/reward.txt", "--evidence-file", "verifier/evidence.json"],
+        cwd=work, capture_output=True, text=True, timeout=600)
+    reward_file = work / "verifier" / "reward.txt"
+    reward = reward_file.read_text().strip() if reward_file.is_file() else None
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+    return proc.returncode, reward, evidence
+
+
+def test_the_check_scores_a_wrong_solution_zero_with_the_tally_recorded(tmp_path):
+    """A solution that fails one test is a measured 0, and the evidence says how many passed --
+    the register's M4: a binary reward hides partial progress."""
+    tests = (dataset.DATASET_ROOT / dataset.TESTS_DIR / "abc370_a.json").read_text()
+    code, reward, evidence = _run_check(tmp_path, tests, "print('Yes')\n")
+    assert (code, reward) == (0, "0")
+    assert evidence["measured"] is True and evidence["metric"].startswith("pass@1")
+    assert evidence["tests"]["passed"] < evidence["tests"]["total"]
+    # The executor stops at the first failing test and returns a sentinel, so the verdict list
+    # is **shorter** than the test count -- `[True, -2]` for four tests, measured. It is still a
+    # correct zero because every truncation carries a non-positive sentinel.
+    assert 0 < len(evidence["per_test"]) <= evidence["tests"]["total"]
+    assert any(value is not True and value <= 0 for value in evidence["per_test"])
+
+
+def test_a_correct_solution_scores_one(tmp_path):
+    tests = (dataset.DATASET_ROOT / dataset.TESTS_DIR / "abc370_a.json").read_text()
+    code, reward, evidence = _run_check(tmp_path, tests, dataset.references()["abc370_a"])
+    assert (code, reward) == (0, "1")
+    assert evidence["tests"]["passed"] == evidence["tests"]["total"]
+    assert evidence["why"] == "all 4 released tests passed"
+
+
+def test_a_solution_that_does_not_compile_is_a_measured_zero(tmp_path):
+    """Upstream records this as `results = [-2]`; `np.all(gen > 0)` makes it a failure. It must
+    not be reported as an unmeasurable task -- that distinction is what `measured` is for."""
+    tests = (dataset.DATASET_ROOT / dataset.TESTS_DIR / "abc370_a.json").read_text()
+    code, reward, evidence = _run_check(tmp_path, tests, "def broken(:\n")
+    assert (code, reward) == (0, "0")
+    assert evidence["measured"] is True
+
+
+def test_a_missing_answer_is_a_measured_zero_and_a_missing_test_file_is_not(tmp_path):
+    tests = (dataset.DATASET_ROOT / dataset.TESTS_DIR / "abc370_a.json").read_text()
+    code, reward, evidence = _run_check(tmp_path, tests, None)
+    assert (code, reward, evidence["measured"]) == (0, "0", True)
+    assert "no answer" in evidence["why"]
+
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    code, reward, evidence = _run_check(empty, "", dataset.references()["abc370_a"])
+    assert code == 3 and reward is None
+    assert evidence["measured"] is False
+
+
+@pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
+def test_platform_control(arm, expected):
+    proc = subprocess.run([sys.executable, "data/livecodebench/control.py", arm,
+                           "--task-id", CONTROL_TASK, "--platform"],
+                          cwd=ROOT, capture_output=True, text=True, timeout=900)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert f"score    {expected}" in proc.stdout
+    assert "sandbox=True" in proc.stdout

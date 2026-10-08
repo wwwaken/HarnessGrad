@@ -128,7 +128,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/data-0.1.0.bundle`
 - **sha256:** `fd9f9608c2ec71ed0ac25c3633a738b9129a318a129e31230425b9188e508250`
 
-> Official encrypted AppWorld bundle. Decryptable offline with the public PASSWORD/SALT in the pinned package (see this module): 14,696 members, 732 task directories, each with its state test and no solution program, against a published suite of 750. The evaluator additionally needs `appworld==0.1.3.post1` installed, which is why the bundle alone cannot make the dataset runnable.
+> Official encrypted AppWorld bundle. Decryptable offline with the public PASSWORD/SALT in the pinned package (see this module): 14,696 members, 732 task directories across the release's own four splits (90/57/168/417), each with its state test and no solution program. `data-0.2.0.bundle` is a later build of the same 732 (plus a `_base_` template world). The evaluator additionally needs `appworld==0.1.3.post1` installed, which is why the bundle alone cannot make the dataset runnable. The bundle's README_BEFORE_SHARING.md requires that any public redistribution of it or its derivatives stay encrypted, which is one more reason the data is fetched here and never committed.
 
 ## `bfcl_v3`
 
@@ -306,64 +306,64 @@ loads and scores it stays in git.
 ### test.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
 - **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
-- **Size:** release_v6 cumulative JSONL shard
+- **Size:** release_v6 shard
 - **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test.jsonl
 - **Destination:** `_src/test.jsonl`
 - **sha256:** `2bd02b38beb48e8c46b5b9987095d999ff38cd8efc255ea5d58974317c48f63f`
 
-> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
+> One of the six **disjoint** release_v6 shards: 400+111+101+101+167+175 = 1,055 problems, 1,055 distinct ids, every digest verified against the files on disk at onboarding. `prepare.py` decodes them into pool.jsonl (2.0 MB of metadata) plus tests/<question_id>.json (9.38 GB decoded; largest single problem 199 MB), because the platform materializes VERIFY.inputs per task and the tests cannot live in the pool.
 
 ### test2.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
 - **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
-- **Size:** release_v6 cumulative JSONL shard
+- **Size:** release_v6 shard
 - **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test2.jsonl
 - **Destination:** `_src/test2.jsonl`
 - **sha256:** `095df7c5daf15f882c51a9deb84085cff1e073495a5dbcf95015a564d485f3a3`
 
-> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
+> One of the six **disjoint** release_v6 shards: 400+111+101+101+167+175 = 1,055 problems, 1,055 distinct ids, every digest verified against the files on disk at onboarding. `prepare.py` decodes them into pool.jsonl (2.0 MB of metadata) plus tests/<question_id>.json (9.38 GB decoded; largest single problem 199 MB), because the platform materializes VERIFY.inputs per task and the tests cannot live in the pool.
 
 ### test3.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
 - **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
-- **Size:** release_v6 cumulative JSONL shard
+- **Size:** release_v6 shard
 - **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test3.jsonl
 - **Destination:** `_src/test3.jsonl`
 - **sha256:** `28ed26cc83363ce3f1fe2d5fad9f8393077beb1907b167a31bd3b32f80801b79`
 
-> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
+> One of the six **disjoint** release_v6 shards: 400+111+101+101+167+175 = 1,055 problems, 1,055 distinct ids, every digest verified against the files on disk at onboarding. `prepare.py` decodes them into pool.jsonl (2.0 MB of metadata) plus tests/<question_id>.json (9.38 GB decoded; largest single problem 199 MB), because the platform materializes VERIFY.inputs per task and the tests cannot live in the pool.
 
 ### test4.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
 - **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
-- **Size:** release_v6 cumulative JSONL shard
+- **Size:** release_v6 shard
 - **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test4.jsonl
 - **Destination:** `_src/test4.jsonl`
 - **sha256:** `d711138ddaebfcf5f8ec6a4283ee677298c0f5c5d374a235af92aaf0584510da`
 
-> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
+> One of the six **disjoint** release_v6 shards: 400+111+101+101+167+175 = 1,055 problems, 1,055 distinct ids, every digest verified against the files on disk at onboarding. `prepare.py` decodes them into pool.jsonl (2.0 MB of metadata) plus tests/<question_id>.json (9.38 GB decoded; largest single problem 199 MB), because the platform materializes VERIFY.inputs per task and the tests cannot live in the pool.
 
 ### test5.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
 - **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
-- **Size:** release_v6 cumulative JSONL shard
+- **Size:** release_v6 shard
 - **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test5.jsonl
 - **Destination:** `_src/test5.jsonl`
 - **sha256:** `7f77571c2a6df0c2a72a3277650309f67e01e0008e18117e624633df53f81214`
 
-> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
+> One of the six **disjoint** release_v6 shards: 400+111+101+101+167+175 = 1,055 problems, 1,055 distinct ids, every digest verified against the files on disk at onboarding. `prepare.py` decodes them into pool.jsonl (2.0 MB of metadata) plus tests/<question_id>.json (9.38 GB decoded; largest single problem 199 MB), because the platform materializes VERIFY.inputs per task and the tests cannot live in the pool.
 
 ### test6.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
 - **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
-- **Size:** release_v6 cumulative JSONL shard
+- **Size:** release_v6 shard
 - **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test6.jsonl
 - **Destination:** `_src/test6.jsonl`
 - **sha256:** `bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5`
 
-> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
+> One of the six **disjoint** release_v6 shards: 400+111+101+101+167+175 = 1,055 problems, 1,055 distinct ids, every digest verified against the files on disk at onboarding. `prepare.py` decodes them into pool.jsonl (2.0 MB of metadata) plus tests/<question_id>.json (9.38 GB decoded; largest single problem 199 MB), because the platform materializes VERIFY.inputs per task and the tests cannot live in the pool.
 
-### LiveCodeBench scorer (http, 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24)
+### LiveCodeBench upstream source (http, 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24)
 
 - **Version (pinned):** `28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24`
 - **Size:** 3,361,935 bytes compressed source
@@ -371,7 +371,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/upstream.tar.gz`
 - **sha256:** `56c7c42aee979def86b69547ecd6d5a877a0e4940af8923bf4325ca0defecbaf`
 
-> Pinned upstream source: pass_k_utils.py (transcribed verbatim in this module), testing_util.py (run_test, the sandbox upstream warns it is not) and benchmarks/code_generation.py (the private-test decode step, also transcribed). It supplies the tests and pass@k but no reference solutions, which is exactly why gate 1 has no oracle here. Never enters an agent SETUP.
+> Pins `lcb_runner/evaluation/testing_util.py` (the executor, including the reliability_guard upstream warns is not a sandbox -- the platform's verification namespace is) and `pass_k_utils.py` (the aggregation). Both are copied into the verification namespace as VERIFY.inputs, so the metric runs upstream's bytes; `data/livecodebench.py` also transcribes pass_k_utils.py lines 4-53 verbatim. Never enters an agent SETUP.
 
 ## `musique`
 
