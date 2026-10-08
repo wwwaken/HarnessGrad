@@ -1,5 +1,17 @@
 {
-  "kind": "published",
-  "title": "SICA:置信下界选择(移植)",
-  "note": "移植的是 SICA 的选择规则,不是它的编辑:在最佳置信下界之上取最新的那次迭代,而不是追最高的一次均值。它读的是本平台的曲线点,所以可以和其他方法同轴比较。"
+ "kind": "published",
+ "title": "SICA:置信下界选择(移植)",
+ "note": "移植的是 SICA 的选择规则,不是它的编辑:在最佳置信下界之上取最新的那次迭代,而不是追最高的一次均值。它读的是本平台的曲线点,所以可以和其他方法同轴比较。",
+ "deviations": [
+  {
+   "what": "The loop around the rule is the platform's, not SICA's.",
+   "why": "SICA runs a full improvement step per iteration; here the rule decides only whether this round is worth spending on and which prior round is the fairest comparison.",
+   "direction": "neutral"
+  },
+  {
+   "what": "The port stops where SICA would spend.",
+   "why": "When nothing clears the bound it reports `changed: false` rather than spending a model call to stand still.",
+   "direction": "neutral"
+  }
+ ]
 }

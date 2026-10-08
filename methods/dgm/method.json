@@ -1,5 +1,22 @@
 {
-  "kind": "published",
-  "title": "DGM:归档里的父代采样",
-  "note": "移植的是 DGM 的归档规则:父代权重 = sigmoid(10*(分数-0.5)) / (1+子代数),让搜索从\"一个走运的祖先\"上散开。它的平行子代和 SWE-bench 的日志(含 gold patch)无法带过来,所以这里是一轮一个子代的 DGM,而且少了它最强的那个信号。"
+ "kind": "published",
+ "title": "DGM:归档里的父代采样",
+ "note": "移植的是 DGM 的归档规则:父代权重 = sigmoid(10*(分数-0.5)) / (1+子代数),让搜索从\"一个走运的祖先\"上散开。它的平行子代和 SWE-bench 的日志(含 gold patch)无法带过来,所以这里是一轮一个子代的 DGM,而且少了它最强的那个信号。",
+ "deviations": [
+  {
+   "what": "The diagnostic prompt carries no gold patch, no private test patch and no test log.",
+   "why": "The platform excludes them on purpose (INTERFACE.md 2.3, 2.4): a method that can read the verifier can fit the verifier.",
+   "direction": "weaker"
+  },
+  {
+   "what": "One candidate per round: no parallel children and no rejection.",
+   "why": "The `1/(1+children)` term would be inert on a straight chain, so parentage is round-tripped through `method_reported`.",
+   "direction": "neutral"
+  },
+  {
+   "what": "`noise_leeway` is a platform setting (`HG_DGM_NOISE_LEEWAY`).",
+   "why": "0.1 is an absolute accuracy on SWE-bench, where a round submits hundreds of instances; on a small task set it is many interval widths wide.",
+   "direction": "unknown"
+  }
+ ]
 }

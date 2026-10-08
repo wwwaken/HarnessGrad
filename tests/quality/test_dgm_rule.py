@@ -6,6 +6,10 @@
 
 现在一次调用就是算法本身:按同一分布抽样 k 个父代、每个产出一个子代、一批交上去。每个子代
 都被测量;预算由平台封顶(`--rounds` = 最多测几个状态)。
+
+上游:**Darwin Godel Machine**,arXiv 2505.22954(`jennyzzt/dgm`)。父代权重与保留门引自
+该仓库的归档实现(`archive.py` 的父代抽样与子代数惩罚);本文件钉的是那条公式的算术,
+不是“端口能跑”。
 """
 from __future__ import annotations
 

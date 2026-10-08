@@ -6,6 +6,10 @@
 that accesses the source code, scores, and execution traces of *all prior candidates*
 through a filesystem"。而我们的 `_harnessgrad/` channel 就是同一个东西,所以这条规则
 是我们设计的一次外部确认,同时它的**不可表达部分**也最清楚(mode A 没有 smoke 门、
+
+上游:**Meta-Harness**,arXiv 2603.28052(`stanford-iris-lab/meta-harness`)。frontier 规则引自它
+发布的搜索循环(`update_frontier` / `propose_claude` / `validate_agent_class` / `harbor_run`);
+本文件钉的是“每题最佳 + 总体最佳 + 同分不夺位”这三条,以及被省略的 smoke 门。
 12 个 state 的历史窗口、搜索集与报告集不分开)。
 
 这个文件测纯规则 + 一次带假模型的 main() 集成。
