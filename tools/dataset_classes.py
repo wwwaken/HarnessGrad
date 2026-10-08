@@ -58,6 +58,7 @@ CAPABILITY = {
     "musique": "information_seeking",
     "twowikimultihopqa": "information_seeking",
     "livecodebench": "code_generation",
+    "appworld": "tool_dialogue",
     "bird_minidev": "text_to_sql",
     "physicsquestions": "reasoning",
     "scienceworld": "science_simulation",

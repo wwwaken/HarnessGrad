@@ -117,6 +117,7 @@ ROWS: dict[str, dict] = {
                          "test_qa_dataset_contract.py"],
     },
     "bird_minidev": {"control": ["data/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
+    "appworld": {"control": [], "metric_tests": ["test_appworld_official_scorer.py", "test_dataset_refusals.py"]},
     "livecodebench": {
         "control": [],
         "metric_tests": ["test_livecodebench_official_scorer.py", "test_dataset_refusals.py"],
@@ -159,7 +160,7 @@ ROWS: dict[str, dict] = {
 
 #: Datasets whose control is the refusal itself, so the runnable-control test skips them and
 #: the refusal test below applies instead.
-REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful", "livecodebench")
+REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful", "livecodebench", "appworld")
 
 
 def _provisioned(name: str) -> bool:

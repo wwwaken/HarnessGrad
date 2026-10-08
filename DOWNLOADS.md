@@ -118,6 +118,18 @@ loads and scores it stays in git.
 
 > **Not needed to grade**, and deliberately not installed: it is the only absent package among the APIs the samples use, and it affects 4 samples (`Translate`). Installing it would put a network-touching package into the interpreter the whole suite runs on. Recorded so a reader knows the 4 are a dependency, not a bug.
 
+## `appworld`
+
+### AppWorld data bundle (http, v0.1.3.post1/data-0.1.0)
+
+- **Version (pinned):** `v0.1.3.post1/data-0.1.0`
+- **Size:** 34280074 bytes
+- **URL:** https://s3.us-west-2.amazonaws.com/appworld.dev/data-0.1.0.bundle
+- **Destination:** `_src/data-0.1.0.bundle`
+- **sha256:** `fd9f9608c2ec71ed0ac25c3633a738b9129a318a129e31230425b9188e508250`
+
+> Official encrypted AppWorld data bundle; measured 732 task specs, while the documented benchmark says 750, so the split must be resolved before scoring.
+
 ## `bfcl_v3`
 
 ### gorilla BFCL-v3 data (tag v1.3) (http, v1.3)
