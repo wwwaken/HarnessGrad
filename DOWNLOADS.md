@@ -128,7 +128,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/data-0.1.0.bundle`
 - **sha256:** `fd9f9608c2ec71ed0ac25c3633a738b9129a318a129e31230425b9188e508250`
 
-> Official encrypted AppWorld data bundle; measured 732 task specs, while the documented benchmark says 750, so the split must be resolved before scoring.
+> Official encrypted AppWorld bundle. Decryptable offline with the public PASSWORD/SALT in the pinned package (see this module): 14,696 members, 732 task directories, each with its state test and no solution program, against a published suite of 750. The evaluator additionally needs `appworld==0.1.3.post1` installed, which is why the bundle alone cannot make the dataset runnable.
 
 ## `bfcl_v3`
 
@@ -152,15 +152,25 @@ loads and scores it stays in git.
 
 ## `bird_minidev`
 
-### BIRD Mini-Dev ZIP (http, cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f)
+### BIRD Mini-Dev ZIP (http, 2024-06-20/7BEB6DAB11E65F0FDE563E644A1EA319)
 
-- **Version (pinned):** `cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f`
+- **Version (pinned):** `2024-06-20/7BEB6DAB11E65F0FDE563E644A1EA319`
 - **Size:** 800943648 bytes
 - **URL:** https://bird-bench.oss-cn-beijing.aliyuncs.com/minidev.zip
 - **Destination:** `_src/minidev.zip`
 - **sha256:** `cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f`
 
-> Official 500-question Mini-Dev release with SQLite databases and gold SQL; EX is the published exact-set metric.
+> Official Mini-Dev release: 500 questions, the gold SQL, and 11 SQLite databases (1.4 GB). Pinned by sha256 and by the object's ETag/Last-Modified, both re-derived by the test. The agent gets the question, the released evidence hint and the schema rendered from dev_tables.json -- never the database, which holds the answer rows, and never the gold SQL.
+
+### BIRD Mini-Dev official evaluation code (http, abd11b6db92a1c9f809b32f7564c7c71b34d67f0)
+
+- **Version (pinned):** `abd11b6db92a1c9f809b32f7564c7c71b34d67f0`
+- **Size:** 3479775 bytes compressed source
+- **URL:** https://codeload.github.com/bird-bench/mini_dev/tar.gz/abd11b6db92a1c9f809b32f7564c7c71b34d67f0
+- **Destination:** `_src/evaluation.tar.gz`
+- **sha256:** `e70bcf57ed7dcc1ab4a55e38a14fa12d8bf7ff0cc2e66db673e4d55b16f5050b`
+
+> Pins evaluation/evaluation_ex.py, whose `calculate_ex` is transcribed verbatim in data/bird_minidev/verify/check.py, plus evaluation_f1.py (Soft-F1) and evaluation_ves.py (R-VES) -- the benchmark's other two official columns, named in the evidence and not reported. The tests read this archive and compare bytes; no run imports it.
 
 ## `chessbench_puzzles`
 
@@ -301,7 +311,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/test.jsonl`
 - **sha256:** `2bd02b38beb48e8c46b5b9987095d999ff38cd8efc255ea5d58974317c48f63f`
 
-> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
 
 ### test2.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
@@ -311,7 +321,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/test2.jsonl`
 - **sha256:** `095df7c5daf15f882c51a9deb84085cff1e073495a5dbcf95015a564d485f3a3`
 
-> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
 
 ### test3.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
@@ -321,7 +331,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/test3.jsonl`
 - **sha256:** `28ed26cc83363ce3f1fe2d5fad9f8393077beb1907b167a31bd3b32f80801b79`
 
-> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
 
 ### test4.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
@@ -331,7 +341,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/test4.jsonl`
 - **sha256:** `d711138ddaebfcf5f8ec6a4283ee677298c0f5c5d374a235af92aaf0584510da`
 
-> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
 
 ### test5.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
@@ -341,7 +351,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/test5.jsonl`
 - **sha256:** `7f77571c2a6df0c2a72a3277650309f67e01e0008e18117e624633df53f81214`
 
-> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
 
 ### test6.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
 
@@ -351,16 +361,17 @@ loads and scores it stays in git.
 - **Destination:** `_src/test6.jsonl`
 - **sha256:** `bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5`
 
-> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+> Pinned release_v6 shard; all six cumulative shards are the official 1,055-task pool, and the union -- not any single shard's row count -- is what the six digests pin. Every digest was verified against the files on disk at onboarding.
 
 ### LiveCodeBench scorer (http, 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24)
 
 - **Version (pinned):** `28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24`
-- **Size:** pinned source archive
+- **Size:** 3,361,935 bytes compressed source
 - **URL:** https://codeload.github.com/LiveCodeBench/LiveCodeBench/tar.gz/28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
 - **Destination:** `_src/upstream.tar.gz`
+- **sha256:** `56c7c42aee979def86b69547ecd6d5a877a0e4940af8923bf4325ca0defecbaf`
 
-> Pinned upstream scorer and executor; it supplies tests and pass@k but no reference solutions for an oracle.
+> Pinned upstream source: pass_k_utils.py (transcribed verbatim in this module), testing_util.py (run_test, the sandbox upstream warns it is not) and benchmarks/code_generation.py (the private-test decode step, also transcribed). It supplies the tests and pass@k but no reference solutions, which is exactly why gate 1 has no oracle here. Never enters an agent SETUP.
 
 ## `musique`
 
