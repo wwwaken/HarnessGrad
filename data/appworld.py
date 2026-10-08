@@ -22,18 +22,25 @@ while both test splits are unchanged. A run over the release is therefore a run 
 release's own declared division -- `SPLIT_SOURCE == "declared"`, not a hash -- and the
 adapter names which of the four splits it scores.
 
-1. **What is missing is the oracle.** Each task directory holds `specs.json` (the instruction
-   and the supervisor), `dbs/*.jsonl` (the initial world state),
-   `ground_truth/{public_data.json, private_data.json, evaluation.py, answer.json}` and a
-   `metadata.json` that records `num_solution_code_lines` -- the *length* of a solution that
-   was generated and is **not** in the release. So the metric is present and runnable (the
-   official evaluator is `appworld.evaluator`, driven by each task's `evaluation.py`), while
-   gate 1's oracle would have to be an **authored** API-call program validated by that state
-   test. `data/qa/control.py --oracle` submits the dataset's own reference answer; AppWorld
-   has none to submit. On 2026-10-08 the platform owner authorised exactly that contract
-   change (authored, test-validated references, held out of the agent's view), so this refusal
-   is now a **work item**: the onboarding has to build the world, the evaluator invocation and
-   the authored reference, not re-decide the pool.
+1. **The release *does* ship reference programs -- for 147 of the 732 tasks, and this module
+   said otherwise for a round.** Measured from the pinned bundle: `ground_truth/solution.py`,
+   `ground_truth/compiled_solution.py` and `ground_truth/api_calls.json` exist for exactly
+   **train (90) + dev (57) = 147** tasks, and for **zero** of `test_normal` (168) +
+   `test_challenge` (417), which ship `ground_truth/evaluation.py` only. The earlier claim
+   ("its metadata records `num_solution_code_lines` for a program that was never released") was
+   generalised from a single task -- `92fe421_3`, which happens to sit in `test_challenge`. That
+   matters, because `api_calls.json` is a list of `{method, url, data}`: the benchmark's own
+   **replayable action log**, i.e. exactly the log-replay mechanism `appworld verify tasks` uses,
+   so the oracle for those 147 tasks is *released data* rather than anything we author.
+   `ORACLE_SOURCE` is therefore `released` with a declared `ORACLE_COVERAGE` of 147 of 732, and
+   `oracle_files()` raises for the other 585 -- which are scorable (their state tests are
+   present) but whose zeros the oracle control cannot vouch for. Nothing here needs the
+   authored-reference contract after all.
+2. **What is genuinely missing is the action surface**, which is why this is still a refusal:
+   the tasks are interactive (the agent calls app APIs and the world's state is graded), so the
+   dataset needs an `exec` environment, a way for the agent to act across many steps, and a check
+   that replays the log and runs the official evaluator. `tools/dataset_lint.py` refuses a
+   dataset whose tasks cannot run, and there is no half-onboarding that proves gates 1 and 2.
 
 The decryption is not an obstacle and is reproduced by the test rather than asserted:
 AES-256-CFB with `iv = ciphertext[:16]` and a PBKDF2-HMAC-SHA256 key, using the **public**
@@ -77,15 +84,15 @@ SPLIT_SIZES = {"train": 90, "dev": 57, "test_normal": 168, "test_challenge": 417
 PAPER_SPLITS = {"train": 105, "dev": 60, "test_normal": 168, "test_challenge": 417}
 
 REFUSED = (
-    "appworld: the pinned v0.1.3.post1/data-0.1.0 release carries each task's state test "
-    "(ground_truth/evaluation.py) but **no reference solution** -- its metadata records "
-    "num_solution_code_lines for a program that was never released -- and the answer contract "
-    "has no channel for a reference action program, so gate 1's oracle would have to be "
-    "authored and validated by the state test. The pool is not the obstacle: the release "
-    "declares its own 732 tasks across train/dev/test_normal/test_challenge (90/57/168/417, "
-    "all present), and the paper's 750 differs only in train and dev (105/60 -> 90/57, six "
-    "scenarios). This adapter refuses until the platform's authored-reference contract is "
-    "implemented, rather than shipping an oracle arm that has never run."
+    "appworld: the oracle is **released**, not missing -- train (90) + dev (57) = 147 of the 732 "
+    "tasks ship ground_truth/solution.py and a replayable ground_truth/api_calls.json, while the "
+    "585 test tasks ship state tests only, so the declaration is `released` with an "
+    "ORACLE_COVERAGE of 147 of 732. What this dataset cannot express yet is the **action "
+    "surface**: the answer contract grades a finished artifact (a file, a query, a patch), and "
+    "these tasks are graded on the state a world is left in after a sequence of app API calls, "
+    "which the platform expresses as an `exec` environment plus a `services` sidecar holding the "
+    "world and its log. Until that is built there is no oracle arm an author could run, and this "
+    "adapter refuses rather than shipping one that has never been shown to reach 1."
 )
 
 

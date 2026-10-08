@@ -111,15 +111,42 @@ def test_a_task_ships_its_state_test_and_no_solution(archive):
     assert "from appworld.apps" in evaluation
 
 
-def test_the_refusal_names_the_oracle_and_settles_the_pool():
-    """The reason is now about one thing: the oracle, which the platform has since decided to
-    author. The pool is *not* a ground for refusing -- the release states its own 732 across
-    four splits, so a run can say which one it scored -- and the reason must not say otherwise,
-    because that claim was wrong for a full round."""
+def test_the_released_oracle_covers_exactly_train_and_dev():
+    """The measurement the refusal now rests on, and the one it got wrong for a round.
+
+    `ground_truth/solution.py` and `ground_truth/api_calls.json` exist for **train + dev** (147
+    tasks) and for none of the 585 test tasks. The module previously claimed "no reference
+    solution ... a program that was never released", generalised from a single task
+    (`92fe421_3`, which is in `test_challenge`); this test derives the split from the bundle, so
+    the claim cannot drift back.
+    """
+    if not BUNDLE.is_file():
+        pytest.skip("appworld: fetch the declared official bundle")
+    pytest.importorskip("cryptography", reason="the bundle is AES-encrypted")
+    with dataset.bundle_zip() as archive:
+        names = archive.namelist()
+    solutions = {name.split("/")[2] for name in names
+                 if name.startswith("data/tasks/") and name.endswith("/ground_truth/solution.py")}
+    calls = {name.split("/")[2] for name in names
+             if name.startswith("data/tasks/") and name.endswith("/ground_truth/api_calls.json")}
+    splits = dataset.split_ids()
+    assert len(solutions) == len(calls) == 147
+    assert solutions == calls
+    assert solutions == set(splits["train"]) | set(splits["dev"])
+    for name in ("test_normal", "test_challenge"):
+        assert not (set(splits[name]) & solutions), name
+    assert len(set(splits["test_normal"]) | set(splits["test_challenge"])) == 585
+
+
+def test_the_refusal_names_the_action_surface_and_not_a_missing_oracle():
+    """A refusal has to name the thing that is actually absent. Here it is the *action surface*
+    -- an interactive world the platform expresses as an `exec` env plus a `services` sidecar --
+    and the reason must not repeat the claim that the release has no reference program, which
+    was false for 147 tasks."""
     reason = dataset.REFUSED
-    assert "no reference solution" in reason and "authored" in reason
-    assert "declares its own 732" in reason
-    assert str(dataset.TASKS_IN_RELEASE) in reason
+    assert "released" in reason and "147" in reason and "732" in reason
+    assert "action surface" in reason and "contract" in reason
+    assert "no reference solution" not in reason and "authored" not in reason
     assert "not comparable" not in reason
     doc = (ROOT / "data" / "appworld.py").read_text()
     assert "2407.18901" in doc, "the paper's 750 needs its citation, not a recollection"
