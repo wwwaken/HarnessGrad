@@ -53,6 +53,41 @@ def test_the_release_contains_732_tasks(archive):
     assert len(archive.namelist()) == 14696
 
 
+def test_the_release_declares_its_own_division(archive):
+    """`data/datasets/*.txt` is the release's own split table -- and it says 732, not 750.
+
+    This is what settles the count question the first version of the refusal got half wrong:
+    nothing is withheld from the bundle, each of the 732 tasks appears in exactly one split,
+    and the four files sum to the number of task directories.
+    """
+    splits = dataset.split_ids()
+    assert {name: len(ids) for name, ids in splits.items()} == dataset.SPLIT_SIZES
+    union = set().union(*splits.values())
+    assert len(union) == sum(len(ids) for ids in splits.values()) == 732
+    assert union == set(dataset.task_ids())
+    for name, ids in splits.items():
+        assert len(set(ids)) == len(ids), name
+
+
+def test_the_paper_count_is_an_earlier_build():
+    """The whole of "732 vs 750": the difference is in train and dev, and it is six scenarios.
+
+    The paper reports 250 scenarios x 3 tasks = 750 with splits 105/60/168/417
+    (arXiv 2407.18901v2). The release kept every test task and dropped 18 from train+dev --
+    105 -> 90 and 60 -> 57 is 15 + 3, which is six whole scenarios at three tasks each.
+    """
+    paper, release = dataset.PAPER_SPLITS, dataset.SPLIT_SIZES
+    assert paper["test_normal"] == release["test_normal"] == 168
+    assert paper["test_challenge"] == release["test_challenge"] == 417
+    assert paper["train"] - release["train"] == 15
+    assert paper["dev"] - release["dev"] == 3
+    assert sum(paper.values()) - sum(release.values()) == 18
+    assert (paper["train"] - release["train"]) + (paper["dev"] - release["dev"]) == 18
+    assert 18 % 3 == 0 and 18 // 3 == 6, "the delta is whole scenarios of three tasks"
+    doc = (ROOT / "data" / "appworld.py").read_text()
+    assert "2407.18901" in doc, "the paper's 750 needs its citation, not a recollection"
+
+
 def test_a_task_ships_its_state_test_and_no_solution(archive):
     """`ground_truth/evaluation.py` is the metric; the solution is only a line count."""
     task = dataset.task_ids()[0]
@@ -76,17 +111,15 @@ def test_a_task_ships_its_state_test_and_no_solution(archive):
     assert "from appworld.apps" in evaluation
 
 
-def test_the_refusal_names_the_oracle_and_the_pool():
-    """Both measurements are quoted in the reason, and the 750 comes with its source.
-
-    A refusal has to say what is missing (the oracle) *and* why a nearby number is not the
-    benchmark's (the pool is 732 of 750). The paper's claim is cited in the module docstring
-    rather than trusted, because the first version of this refusal quoted a task count from
-    documentation that nothing on disk could confirm.
-    """
+def test_the_refusal_names_the_oracle_and_settles_the_pool():
+    """The reason is now about one thing: the oracle, which the platform has since decided to
+    author. The pool is *not* a ground for refusing -- the release states its own 732 across
+    four splits, so a run can say which one it scored -- and the reason must not say otherwise,
+    because that claim was wrong for a full round."""
     reason = dataset.REFUSED
     assert "no reference solution" in reason and "authored" in reason
-    assert str(dataset.TASKS_IN_RELEASE) in reason and str(dataset.PUBLISHED_SUITE) in reason
-    module_doc = (ROOT / "data" / "appworld.py").read_text()
-    assert "2407.18901" in module_doc, "the 750 needs its citation, not a recollection"
-    assert dataset.PUBLISHED_SUITE - dataset.TASKS_IN_RELEASE == 18
+    assert "declares its own 732" in reason
+    assert str(dataset.TASKS_IN_RELEASE) in reason
+    assert "not comparable" not in reason
+    doc = (ROOT / "data" / "appworld.py").read_text()
+    assert "2407.18901" in doc, "the paper's 750 needs its citation, not a recollection"
