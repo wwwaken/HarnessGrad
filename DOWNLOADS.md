@@ -267,6 +267,77 @@ loads and scores it stays in git.
 
 > The Frotz environment: the Z-machine interpreter (`libfrotz.so`), the object tree, `get_valid_actions()`, and **`game_info.py`** -- the benchmark's own game table with each game's seed and walkthrough, which is where this dataset's task list and oracle come from. Installing it from source needs a C compiler; the wheel needs none.
 
+## `livecodebench`
+
+### test.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
+
+- **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
+- **Size:** release_v6 cumulative JSONL shard
+- **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test.jsonl
+- **Destination:** `_src/test.jsonl`
+- **sha256:** `2bd02b38beb48e8c46b5b9987095d999ff38cd8efc255ea5d58974317c48f63f`
+
+> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+
+### test2.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
+
+- **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
+- **Size:** release_v6 cumulative JSONL shard
+- **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test2.jsonl
+- **Destination:** `_src/test2.jsonl`
+- **sha256:** `095df7c5daf15f882c51a9deb84085cff1e073495a5dbcf95015a564d485f3a3`
+
+> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+
+### test3.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
+
+- **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
+- **Size:** release_v6 cumulative JSONL shard
+- **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test3.jsonl
+- **Destination:** `_src/test3.jsonl`
+- **sha256:** `28ed26cc83363ce3f1fe2d5fad9f8393077beb1907b167a31bd3b32f80801b79`
+
+> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+
+### test4.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
+
+- **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
+- **Size:** release_v6 cumulative JSONL shard
+- **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test4.jsonl
+- **Destination:** `_src/test4.jsonl`
+- **sha256:** `d711138ddaebfcf5f8ec6a4283ee677298c0f5c5d374a235af92aaf0584510da`
+
+> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+
+### test5.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
+
+- **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
+- **Size:** release_v6 cumulative JSONL shard
+- **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test5.jsonl
+- **Destination:** `_src/test5.jsonl`
+- **sha256:** `7f77571c2a6df0c2a72a3277650309f67e01e0008e18117e624633df53f81214`
+
+> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+
+### test6.jsonl (http, 0fe84c3912ea0c4d4a78037083943e8f0c4dd505)
+
+- **Version (pinned):** `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`
+- **Size:** release_v6 cumulative JSONL shard
+- **URL:** https://hf-mirror.com/datasets/livecodebench/code_generation_lite/resolve/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test6.jsonl
+- **Destination:** `_src/test6.jsonl`
+- **sha256:** `bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5`
+
+> Pinned release_v6 shard; all six cumulative shards are required for the official 1,055-task pool.
+
+### LiveCodeBench scorer (http, 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24)
+
+- **Version (pinned):** `28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24`
+- **Size:** pinned source archive
+- **URL:** https://codeload.github.com/LiveCodeBench/LiveCodeBench/tar.gz/28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+- **Destination:** `_src/upstream.tar.gz`
+
+> Pinned upstream scorer and executor; it supplies tests and pass@k but no reference solutions for an oracle.
+
 ## `musique`
 
 ### MuSiQue-Ans dev (third-party HF release) (hf-dataset, c8f4f8c9465fb69d31a8eae894c3fd509c4ca321)
