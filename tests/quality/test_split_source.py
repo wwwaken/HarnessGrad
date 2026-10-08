@@ -124,7 +124,9 @@ def test_every_runnable_dataset_answers_the_official_question():
     answered = [name for name in registry.published()
                 if hasattr(importlib.import_module(f"data.{name}"),
                            registry.OFFICIAL_EVAL_ATTR)]
-    assert len(answered) == len(registry.published()) - 6, sorted(
+    refused = [name for name in registry.published()
+               if getattr(importlib.import_module(f"data.{name}"), "REFUSED", None)]
+    assert len(answered) == len(registry.published()) - len(refused), sorted(
         set(registry.published()) - set(answered))
 
 
