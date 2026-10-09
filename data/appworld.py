@@ -43,9 +43,13 @@ ORACLE_VALIDATED_BY = (
 )
 IMAGE = os.environ.get(
     "HG_APPWORLD_IMAGE",
-    "harnessgrad/appworld@sha256:91cf774386e0c38f0f619693b56a8c3a577eb91407a455c9eed19cc07a95c153",
+    "harnessgrad/appworld-agent@sha256:d3a04ec8e295710347e978d8e58c663161d829e7dfa544da4d82d0d67abbd8eb",
 )
-SERVICE_IMAGE = os.environ.get("HG_APPWORLD_SERVICE_IMAGE", IMAGE)
+SERVICE_IMAGE = os.environ.get(
+    "HG_APPWORLD_SERVICE_IMAGE",
+    "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+)
+POOL_SHA256 = "970c39331bc350ce9d3ed91a75fd32b554c257fc48fc31633dfccdde74164e65"
 WORKDIR = "/app"
 PASSWORD = "WEquKLy##9M@qu"
 SALT = b"Nvx#rYcYQ2%btf"
@@ -142,6 +146,9 @@ def prepare() -> Path:
 def _pool() -> list[dict]:
     if not POOL.is_file():
         prepare()
+    actual = hashlib.sha256(POOL.read_bytes()).hexdigest()
+    if actual != POOL_SHA256:
+        raise ValueError(f"appworld: pool digest {actual} != pinned {POOL_SHA256}")
     return [json.loads(line) for line in POOL.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
@@ -218,6 +225,7 @@ VERIFY = {
         "inputs": [{"path": "verify/check.py", "from": str(ASSETS / "verify" / "check.py")}],
         "reward_file": "/verifier/reward.txt",
         "evidence_file": "/verifier/evidence.json",
+        "image": SERVICE_IMAGE,
         "timeout_s": 900,
     }
     for task_id in _ROWS
@@ -266,7 +274,7 @@ def downloads() -> list[dict]:
             "dst": "_src/data-0.1.0.bundle",
             "size": "34280074 bytes",
             "sha256": "fd9f9608c2ec71ed0ac25c3633a738b9129a318a129e31230425b9188e508250",
-            "note": "Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the prebuilt image contains the pinned appworld package, unpacked apps and task data.",
+            "note": "Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the trusted service image contains the pinned appworld package and task data.",
         }
     ]
 

@@ -50,10 +50,16 @@ def _local(task: dict, oracle: bool, workdir: Path) -> int:
            "--reward-file", str(workdir / "reward.txt"), "--evidence-file", str(workdir / "evidence.json")]
     checked = subprocess.run(cmd, cwd=workdir, text=True, capture_output=True)
     reward = (workdir / "reward.txt").read_text().strip() if (workdir / "reward.txt").is_file() else "missing"
-    print(f"task    {task['task_id']}\nmode    {'oracle' if oracle else 'do-nothing'}\nreward  {reward}")
-    print((workdir / "evidence.json").read_text() if (workdir / "evidence.json").is_file() else checked.stderr)
+    evidence = json.loads((workdir / "evidence.json").read_text()) if (workdir / "evidence.json").is_file() else {}
+    # Keep the shared control harness's integer reward spelling while retaining the
+    # verifier's measured float for the AppWorld-specific evidence check.
+    reward_display = f"{int(float(reward))}" if reward != "missing" else reward
+    print(f"task    {task['task_id']}\nmode    {'oracle' if oracle else 'do-nothing'}\n"
+          f"reward  {reward_display} (reward  {reward})")
+    print(json.dumps(evidence) if evidence else checked.stderr)
     expected = "1.0" if oracle else "0.0"
-    return 0 if checked.returncode == 0 and reward == expected else 1
+    measured = evidence.get("measured") is True and isinstance(evidence.get("num_tests"), int) and evidence["num_tests"] > 0
+    return 0 if checked.returncode == 0 and measured and reward == expected else 1
 
 
 def _platform(task: dict, oracle: bool, workdir: Path, sandbox: bool) -> int:
@@ -76,6 +82,13 @@ def _platform(task: dict, oracle: bool, workdir: Path, sandbox: bool) -> int:
     score = float(verdict.get("score", 1.0 if verdict.get("passed") else 0.0))
     print(f"task     {task['task_id']}\nmode     {'oracle' if oracle else 'do-nothing'} (platform run_one, sandbox={sandbox})\nscore    {score}\ndetail   {verdict.get('detail')}")
     print(f"verdict  {verdict}")
+    evidence = verdict.get("evidence")
+    measured = isinstance(evidence, dict) and evidence.get("measured") is True
+    tests = evidence.get("num_tests") if isinstance(evidence, dict) else None
+    if not measured or verdict.get("unmeasured") or not isinstance(tests, int) or tests <= 0:
+        print("control refused: verifier did not produce a measured official test result",
+              file=sys.stderr)
+        return 1
     return 0 if score == (1.0 if oracle else 0.0) else 1
 
 

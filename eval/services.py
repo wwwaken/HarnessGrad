@@ -116,7 +116,9 @@ def service_env(services: list[dict], *, task_id: str, run_seed: str) -> dict[st
     the service containers. An environment whose simulator can spend the agent's
     credential is an environment that can impersonate the agent.
     """
-    env: dict[str, str] = {}
+    # A service is scoped to one task.  Exposing this identifier lets an image bind its
+    # API to the current task without trusting the request body to choose a dataset row.
+    env: dict[str, str] = {"HG_ENV_TASK_ID": task_id}
     if any(svc.get("needs_seed") for svc in services):
         env["HG_ENV_SEED"] = task_seed(run_seed, task_id)
     if any(svc.get("needs_model") for svc in services):

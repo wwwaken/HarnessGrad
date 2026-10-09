@@ -4,6 +4,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import textwrap
 from pathlib import Path
 import pytest
 
@@ -46,6 +47,57 @@ def test_released_reference_coverage_is_computed():
         dataset.oracle_files({"task_id": "92fe421_3"})
 
 
+def test_released_coverage_is_derived_from_bundle_members():
+    with dataset.bundle_zip() as archive:
+        train_dev = set(dataset.split_ids()["train"] + dataset.split_ids()["dev"])
+        released = {
+            name.split("/", 3)[2]
+            for name in archive.namelist()
+            if name.startswith("data/tasks/") and name.endswith("/ground_truth/api_calls.json")
+        }
+    assert released == train_dev
+    assert len(released) == 147
+    assert not (released & set(dataset.split_ids()["test_normal"] + dataset.split_ids()["test_challenge"]))
+    assert dataset.POOL_SHA256 == __import__("hashlib").sha256(dataset.POOL.read_bytes()).hexdigest()
+
+
+def test_agent_image_has_no_gold_and_service_rejects_direct_grade_access(tmp_path):
+    """Exercise the image boundary and the service over HTTP, including hostile calls."""
+    agent = dataset.IMAGE
+    service = dataset.SERVICE_IMAGE
+    probe = tmp_path / "probe.py"
+    probe.write_text(textwrap.dedent("""
+        import json, threading, time, urllib.error, urllib.request
+        import uvicorn, appworld_service
+        server = uvicorn.Server(uvicorn.Config(appworld_service.app, host="127.0.0.1", port=8000, log_level="error"))
+        thread = threading.Thread(target=server.run, daemon=True); thread.start()
+        for _ in range(100):
+            try: urllib.request.urlopen("http://127.0.0.1:8000/", timeout=1); break
+            except Exception: time.sleep(.1)
+        def call(path, payload):
+            req = urllib.request.Request("http://127.0.0.1:8000" + path,
+                data=json.dumps(payload).encode(), headers={"content-type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=30) as response: return response.status
+            except urllib.error.HTTPError as error: return error.code
+        assert call("/initialize", {"task_id":"e85d92a_1", "load_ground_truth":True, "ground_truth_mode":"full"}) == 200
+        assert call("/evaluate", {"task_id":"e85d92a_1"}) == 404
+        assert call("/initialize", {"task_id":"92fe421_3"}) == 403
+        assert call("/execute", {"task_id":"92fe421_3", "code":"print(1)"}) == 403
+        server.should_exit = True; thread.join(timeout=10)
+    """), encoding="utf-8")
+    image_probe = subprocess.run(
+        ["docker", "run", "--rm", "--network", "none", "--entrypoint", "sh", agent,
+         "-c", "test -x /usr/local/bin/aw && ! find / -path '*/ground_truth/answer.json' -print -quit 2>/dev/null | grep -q ."],
+        capture_output=True, text=True, timeout=120)
+    assert image_probe.returncode == 0, image_probe.stdout + image_probe.stderr
+    service_probe = subprocess.run(
+        ["docker", "run", "--rm", "--network", "none", "-e", "HG_ENV_TASK_ID=e85d92a_1",
+         "-v", f"{probe}:/probe.py:ro", service, "python", "/probe.py"],
+        capture_output=True, text=True, timeout=180)
+    assert service_probe.returncode == 0, service_probe.stdout + service_probe.stderr
+
+
 def test_check_separates_measured_zero_from_unmeasured(tmp_path):
     check = ROOT / "data/appworld/verify/check.py"
     missing = tmp_path / "missing.jsonl"
@@ -69,6 +121,8 @@ def test_by_hand_control_arms(arm, expected):
     proc = subprocess.run([sys.executable, "data/appworld/control.py", arm, "--task-id", CONTROL_TASK], cwd=ROOT, capture_output=True, text=True, timeout=300)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert f"reward  {expected}" in proc.stdout
+    assert '"measured": true' in proc.stdout
+    assert '"num_tests": 2' in proc.stdout
 
 
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
@@ -76,3 +130,5 @@ def test_platform_control_arms(arm, expected):
     proc = subprocess.run([sys.executable, "data/appworld/control.py", arm, "--task-id", CONTROL_TASK, "--platform", "--no-sandbox"], cwd=ROOT, capture_output=True, text=True, timeout=900)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert f"score    {expected}" in proc.stdout
+    assert "measured': True" in proc.stdout
+    assert "'num_tests': 2" in proc.stdout

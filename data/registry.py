@@ -536,7 +536,8 @@ VERIFIER_KINDS = ("answer", "command")
 #: score into a file and exits 0 either way, so the exit code carries nothing
 #: (INTERFACE.md §2.5.9). Parsed as a number, so a fraction is a score.
 VERIFIER_FIELDS = ("kind", "argv", "cwd", "inputs", "pass_when", "stdout",
-                   "timeout_s", "expected", "env", "reward_file")
+                   "timeout_s", "expected", "env", "reward_file", "evidence_file",
+                   "image")
 
 #: Keys that must never appear in a task dict, because `run_one` writes the whole
 #: dict to `task.json` and hands it to the harness. Putting the grade or the initial
@@ -631,6 +632,16 @@ def _check_verifier(spec, tid: str, name: str) -> None:
                 f"dataset {name!r}: VERIFY[{tid!r}] declares both `reward_file` and "
                 f"`pass_when`; the reward comes from the file, so `pass_when` would be "
                 f"a second answer to the same question")
+        evidence = spec.get("evidence_file")
+        if evidence is not None:
+            if not isinstance(evidence, str) or not evidence.startswith("/"):
+                raise ValueError(
+                    f"dataset {name!r}: VERIFY[{tid!r}]['evidence_file'] must be an absolute "
+                    f"path inside the container, got {evidence!r}")
+            if reward and Path(evidence).parent != Path(reward).parent:
+                raise ValueError(
+                    f"dataset {name!r}: VERIFY[{tid!r}] reward_file and evidence_file "
+                    "must share a parent directory; separate output mounts are not supported")
         if spec.get("pass_when", "exit0") not in ("exit0", "exit0_stdout"):
             raise ValueError(
                 f"dataset {name!r}: VERIFY[{tid!r}] pass_when must be 'exit0' or "
