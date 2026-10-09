@@ -24,6 +24,7 @@ import eval.harness_runtime as harness_runtime
 import eval.modelgate as modelgate_mod
 import eval.progress as progress_mod
 import eval.services as services_mod
+import tools.web_gateway as web_gateway_mod
 from eval.services import label
 from ckpt.git_state import STATE_DIRNAME
 from eval.integrity import PLATFORM_ROOT
@@ -52,6 +53,7 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
     created = False
     network_name = None
     gateway = None
+    web_gateway = None
     answer = trace = ""
     #: The task this work belongs to, and the phases it reports. `None` outside a run
     #: (a unit test, a direct call), in which case every phase below is a no-op.
@@ -136,6 +138,15 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                 # the platform's to overwrite.
                 child_env.update(harness_runtime.env_for(overlay))
 
+                if env_spec.get("web"):
+                    web_gateway = web_gateway_mod.WebGateway(
+                        bind_host=services_mod.gateway_ip(network_name),
+                        record_path=((recordings_root or staging) / tid / "web" /
+                                     "requests.jsonl"),
+                        enable_search=bool(env_spec["web"].get("search")),
+                        enable_fetch=bool(env_spec["web"].get("fetch"))).start()
+                    child_env["HG_SVC_WEB_URL"] = web_gateway.url
+
                 # Step 3's precondition: the model has to be reachable from inside, and the
                 # wrong fix is giving the task the internet it did not ask for.
                 base = child_env.get("HG_AGENT_BASE_URL")
@@ -190,7 +201,8 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                 verdict = _verify_container_state(
                     snapshot, verifier, task_mount=task_mount, staging=staging,
                     timeout_s=verify_timeout_s, run_id=run_id or "run", task_id=tid,
-                    network=env_spec.get("network", "none"),
+                    network=(network_name if network_name is not None
+                             else env_spec.get("network", "none")),
                     limits=container_mod.limits_from(env_spec))
 
             return {"task_id": tid, "answer": answer, "trace": trace,
@@ -201,7 +213,11 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                     "model_gateway": ({"published": True,
                                        "target": f"{gateway.target[0]}:{gateway.target[1]}",
                                        **gateway.account()}
-                                      if gateway is not None else None)}
+                                      if gateway is not None else None),
+                    "web_gateway": ({"published": True, "url": web_gateway.url,
+                                     "search": web_gateway.search,
+                                     "fetch": web_gateway.fetch}
+                                    if web_gateway is not None else None)}
         finally:
             # Teardown is a phase like any other, and it is the one that used to be
             # invisible while it took minutes: removing one image per task plus the
@@ -210,6 +226,8 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
             with phases("teardown"):
                 if gateway is not None:
                     gateway.stop()
+                if web_gateway is not None:
+                    web_gateway.stop()
                 if snapshot is not None:
                     container_mod.remove_image(snapshot)
                 if created:

@@ -423,9 +423,11 @@ ENV = {"e01": {"kind": "exec", "image": "python:3.11-slim", "workdir": "/app",
 | `files` (default) | a directory | in the sandbox, beside it | in the sandbox, artifacts read-only | everything the platform did before `exec` existed |
 | `exec` | a container from `image` | **inside it** (§2.5.3) | in a **fresh container from the same image** (§2.5.3) | Terminal-Bench-shaped tasks, anything needing its own toolchain |
 | `exec` + `services` | a container, plus sidecars on an `--internal` network (§2.5.7) | inside it, with the services reachable by name and the internet not | in a fresh container, **services still up** | a mock API, a database, a browser, a simulated user |
+| `exec` + `web` | a container on an `--internal` network plus a host-side web gateway | `HG_SVC_WEB_URL` only when declared; the task has no general internet route | the gateway's JSONL recording in the run directory | recorded-provider web search and fetch |
 
 `workdir` is where the task's files are, *inside* the environment, and defaults to
-`/app`. `network` is `none` (default) or `bridge`. `placement` is `inside` (default) or
+`/app`. `network` is `none` (default), `services` for an internal service or web gateway, or
+`bridge` when the task explicitly needs the internet. `placement` is `inside` (default) or
 `beside`. All of them are recorded (§2.5.4).
 
 #### 2.5.3 The harness runs inside an `exec` environment
@@ -721,6 +723,12 @@ harness and the check**, so the services are reachable by name and the internet 
 reachable by name, `1.1.1.1` is unreachable and DNS fails; under `network: none` the service is
 unreachable.
 
+An exec task may declare `web: {"search": true, "fetch": true}`. The host starts the gateway on
+the task network and exports `HG_SVC_WEB_URL`; an undeclared task receives no such variable. The
+gateway records every search and fetch beside `curve.jsonl`, with timestamp, provider, status and
+bytes. Its `/health` request is infrastructure and is excluded. `run_meta.json` records the
+selected search and fetch providers and the SearXNG endpoint when applicable.
+
 Declaring `services` with `network: "none"` is **refused as a contradiction** rather than
 silently upgraded.
 
@@ -734,6 +742,7 @@ audiences**, and the split is the point:
 | prefix | who receives it | what it carries |
 | --- | --- | --- |
 | `HG_SVC_<NAME>_URL` | the **harness** | the address of a service it may call — `http://api:8080` |
+| `HG_SVC_WEB_URL` | the **harness** | the host-side web gateway, only when `web` is declared |
 | `HG_ENV_*` | the **services** only | the environment's own model, credential and seed |
 
 The harness receives no `HG_ENV_*` and the services receive no `HG_AGENT_*`. Two names rather than

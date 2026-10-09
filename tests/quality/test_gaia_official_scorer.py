@@ -176,10 +176,10 @@ def test_the_prompt_carries_neither_the_annotator_steps_nor_internal_paths():
 
 
 def test_the_environment_is_networked_and_says_so():
-    """The first dataset here whose tasks are *about* the web: a `files` env is offline by
-    design, so this one is `exec` + `bridge` and the run records `env.network`."""
+    """GAIA's web capability is explicit and runs on the internal task network."""
     env = dataset.ENV[dataset.task_id(0)]
-    assert env["kind"] == "exec" and env["network"] == "bridge"
+    assert env["kind"] == "exec" and env["network"] == "services"
+    assert env["web"] == {"search": True, "fetch": True}
     assert env["image"] == dataset.IMAGE and env["workdir"] == dataset.WORKDIR
     assert dataset.OFFICIAL_EVAL is None and dataset.SPLIT_SOURCE == "hash"
     assert dataset.ORACLE_SOURCE == "released"     # the released answer *is* the oracle

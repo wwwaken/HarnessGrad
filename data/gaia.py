@@ -44,11 +44,9 @@ hand-written "exact match" would get wrong. Reward is 1.0 or 0.0.
 
 The environment, and the one thing the oracle does not prove
 ------------------------------------------------------------
-`network: "bridge"` on an `exec` env. A `files` environment is offline by design (its sandbox
-uses a network namespace and refuses `services`), so a web-research dataset cannot be a `files`
-dataset -- this is the first place the platform's two env kinds differ for a *substantive*
-reason rather than a convenience. `env.network` is recorded per task, so a run says it was
-networked (INTERFACE §2.5.4).
+GAIA runs in an `exec` container on the internal `services` network and declares `web` access.
+The host gateway publishes selected search/fetch providers as `HG_SVC_WEB_URL`; the task has no
+general internet route. Provider names and the SearXNG endpoint are recorded with the run.
 
 The oracle here is the **released** gold answer, so `ORACLE_SOURCE = "released"` and gate 1 is
 reachable on all 165 tasks. That is worth stating precisely: submitting the gold text proves the
@@ -103,13 +101,13 @@ ENV_BASE: dict = {
     "image": IMAGE,
     "workdir": WORKDIR,
     "state": "container",
-    # The one substantive difference from every other dataset here: these tasks are *about*
-    # the live web, so the task is networked and the run says so (`env.network`).
-    "network": "bridge",
+    # Web access is explicit and published through the platform gateway.
+    "network": "services",
     "cpus": 2,
     "memory_mb": 4096,
     "placement": "inside",
     "services": [],
+    "web": {"search": True, "fetch": True},
     "agent_timeout_s": AGENT_TIMEOUT_S,
     "verify_timeout_s": VERIFY_TIMEOUT_S,
 }

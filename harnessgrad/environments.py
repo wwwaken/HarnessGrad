@@ -151,6 +151,15 @@ def _env_record(envs: dict, task_ids) -> dict:
         "model": env_model if services_needing_model(specs) else None,
         "seed": env_seed if services_needing_seed(specs) else None,
     }
+    web_specs = [spec.get("web") for spec in specs if spec.get("web")]
+    if web_specs:
+        from tools.web_gateway import selected_providers
+        search, fetch, endpoint = selected_providers()
+        record["web"] = {"search": bool(web_specs[0].get("search")),
+                          "fetch": bool(web_specs[0].get("fetch")),
+                          "search_provider": search, "fetch_provider": fetch}
+        if endpoint:
+            record["web"]["searxng_url"] = endpoint
     if len(specs) > 1:
         record["variants"] = specs
     return record

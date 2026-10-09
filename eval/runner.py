@@ -16,6 +16,7 @@ import eval.modelgate as modelgate_mod
 import eval.progress as progress_mod
 import eval.sandbox as sandbox_mod
 import eval.services as services_mod
+import tools.web_gateway as web_gateway_mod
 from ckpt.git_state import STATE_DIRNAME
 from eval.integrity import PLATFORM_ROOT, diff, snapshot
 # The three layers this module used to contain, now separate modules. `runner` decides
@@ -143,6 +144,7 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
             run_id=run_id, run_seed=run_seed, recordings_root=recordings_root,
             runtime_paths=runtime_paths)
     service_specs = list(env_spec.get("services") or [])
+    web_spec = env_spec.get("web") or {}
     running = None
     # The internal network, whoever created it: `services.start` when there are
     # services, the model gateway when there are not. Tracked separately from `running`
@@ -150,6 +152,7 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
     network_name: str | None = None
     owns_network = False
     model_gateway = None
+    web_gateway = None
     held = progress_mod.task_of()
     phases = progress_mod.phases_for(held)
     try:
@@ -181,6 +184,20 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
                 network_name = running.network
             except services_mod.ServiceUnavailable as exc:
                 return _invalid(task, exc, stage=exc.stage, service=exc.service)
+
+        if web_spec:
+            try:
+                if network_name is None:
+                    network_name = services_mod.create_network(run_id or "run", task["task_id"])
+                    owns_network = True
+                record_base = recordings_root or workdir.parent
+                web_gateway = web_gateway_mod.WebGateway(
+                    bind_host=services_mod.gateway_ip(network_name),
+                    record_path=record_base / task["task_id"] / "web" / "requests.jsonl",
+                    enable_search=bool(web_spec.get("search")),
+                    enable_fetch=bool(web_spec.get("fetch"))).start()
+            except Exception as exc:
+                return _invalid(task, exc, stage="start", service="web")
 
         manifest = json.loads((repo / "harness.json").read_text())
         entry = manifest["entrypoint"]
@@ -303,6 +320,8 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
         # credential and seed go to the service containers only (§2.5.7).
         if running is not None:
             child_env.update(services_mod.harness_env(service_specs))
+        if web_gateway is not None:
+            child_env["HG_SVC_WEB_URL"] = web_gateway.url
 
         # On a `services` environment the harness joins the task's internal network,
         # which is how "reachable by name, not on the internet" is delivered. Passing
@@ -394,6 +413,9 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
                                    "target": f"{model_gateway.target[0]}:{model_gateway.target[1]}",
                                    **model_gateway.account()}
                                   if model_gateway is not None else None),
+                "web_gateway": ({"published": True, "url": web_gateway.url,
+                                 "search": web_gateway.search, "fetch": web_gateway.fetch}
+                                if web_gateway is not None else None),
                 "identity": _last_identity(trace)}
     finally:
         # Step 8, and in a `finally` for the reason the table in §2.5.7 gives: a leaked
@@ -401,6 +423,8 @@ def run_one(repo: Path, task: dict, timeout_s: int = 300,
         # isolation that is not there. `stop()` never raises.
         if model_gateway is not None:
             model_gateway.stop()
+        if web_gateway is not None:
+            web_gateway.stop()
         if owns_network and network_name is not None:
             leaked_net = services_mod.remove_network(network_name)
             if leaked_net:
@@ -1147,4 +1171,3 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             "identity_declared": identity_declared,
             "identity_variants": identity_variants,
             "tokens": tokens}
-

@@ -39,6 +39,7 @@ import eval.container as container
 import eval.modelgate as modelgate
 import eval.sandbox as sandbox
 import eval.services as services_mod
+import tools.web_gateway as web_gateway_mod
 
 
 # ------------------------------------------------------------------- layers ---
@@ -796,6 +797,14 @@ def main() -> int:
         console.note("could not remove everything a previous run left behind:\n  "
                      + "\n  ".join(leftovers[:6]), level="warn")
 
+    web_declarations = [spec.get("web") for spec in envs.values() if spec.get("web")]
+    web_record = {}
+    if web_declarations:
+        web_search, web_fetch, web_endpoint = web_gateway_mod.selected_providers()
+        web_record = {"web_search_provider": web_search,
+                      "web_fetch_provider": web_fetch,
+                      "web_searxng_url": web_endpoint}
+
     _write_run_meta(
         run_dir, run_id=run_id, mode=mode, harness=args.harness,
         dataset=args.dataset, sampling_policy=args.sampling,
@@ -832,6 +841,7 @@ def main() -> int:
         # runnable one (`data/dataset.schema.json:module.oracle_about`).
         oracle_source=oracle_source,
         oracle_coverage=oracle_coverage,
+        **web_record,
         agent_model=model["model"] or None,
         agent_backend=model["backend"],
         framework_version=FRAMEWORK_VERSION,
