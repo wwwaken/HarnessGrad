@@ -16,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import math
 import statistics
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 
 # RRSI's role separation is intentional.  In particular, a proposer must not
@@ -177,6 +177,21 @@ class Candidate:
 
 
 @dataclass(frozen=True)
+class Proposal:
+    """An unevaluated artifact produced from the same incumbent parent.
+
+    The artifact is opaque to this module.  Keeping it separate from
+    :class:`Candidate` prevents a proposer-side self-reported score from
+    bypassing the critic/evaluator stages in the offline round simulator.
+    """
+
+    variant: str
+    artifact: Any = None
+    components: tuple[str, ...] = ()
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
 class CandidateDecision:
     variant: str
     admissible: bool
@@ -211,6 +226,44 @@ class SelectionResult:
             "floor": self.floor,
             "S_star": self.s_star,
             "decisions": [d.__dict__ for d in self.decisions],
+        }
+
+
+@dataclass(frozen=True)
+class SimulationResult:
+    """Recorded output of one candidate -> critic -> study-eval -> selection round."""
+
+    selection: SelectionResult
+    candidates: tuple[Candidate, ...]
+    critic_verdicts: tuple[dict[str, Any], ...]
+    evaluations: tuple[dict[str, Any], ...]
+    study_task_ids: tuple[str, ...]
+    trials: int
+
+    @property
+    def next_parent(self) -> str:
+        """The only parent identity a deployment layer may consume."""
+        return self.selection.parent_id
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "selection": self.selection.to_dict(),
+            "candidates": [
+                {
+                    "variant": c.variant,
+                    "score": c.score,
+                    "cost": c.cost,
+                    "gate_failure": c.gate_failure,
+                    "evaluated": c.evaluated,
+                    "metadata": c.metadata,
+                }
+                for c in self.candidates
+            ],
+            "critic_verdicts": list(self.critic_verdicts),
+            "evaluations": list(self.evaluations),
+            "study_task_ids": list(self.study_task_ids),
+            "trials": self.trials,
+            "next_parent": self.next_parent,
         }
 
 
@@ -296,3 +349,96 @@ def select_candidates(
     assert by_id[winner.variant].gate_failure is None
     return SelectionResult(winner.variant, False, winner.variant, decisions,
                            float(s_star) - float(delta), float(s_star))
+
+
+def simulate_round(
+    proposals: Sequence[Proposal],
+    *,
+    incumbent_id: str,
+    incumbent_score: float,
+    incumbent_cost: float | None,
+    s_star: float,
+    delta: float,
+    study_task_ids: Sequence[str],
+    trials: int,
+    critic: Callable[[Proposal], Mapping[str, Any]],
+    evaluate_many: Callable[[Sequence[Proposal], Sequence[str], int],
+                            Mapping[str, Mapping[str, Any]]],
+    incumbent_counts: Mapping[str, int] | None = None,
+    config: SelectionConfig = SelectionConfig(),
+) -> SimulationResult:
+    """Run the native round ordering with mocked external boundaries.
+
+    The callbacks model the two capabilities that the current platform does
+    not yet expose: a pre-evaluation role critic and a trusted study-only
+    ``evaluate_many``.  Critic-rejected proposals never reach the evaluator;
+    the evaluator receives only the supplied study IDs and the resulting
+    selection is the sole source of the next parent identity.
+    """
+    if trials < 1:
+        raise ValueError("trials must be positive")
+    ids = tuple(str(task_id) for task_id in study_task_ids)
+    if len(set(ids)) != len(ids):
+        raise ValueError("study_task_ids must be unique")
+    variants = [p.variant for p in proposals]
+    if len(set(variants)) != len(variants):
+        raise ValueError("candidate variants must be unique")
+
+    verdicts: list[dict[str, Any]] = []
+    live: list[Proposal] = []
+    candidates: list[Candidate] = []
+    for proposal in proposals:
+        verdict = dict(critic(proposal) or {})
+        verdict.setdefault("variant", proposal.variant)
+        verdicts.append(verdict)
+        if verdict.get("verdict") != "accept":
+            candidates.append(Candidate(
+                proposal.variant, components=proposal.components,
+                gate_failure="critic_reject", evaluated=False,
+                metadata={"critic": verdict},
+            ))
+            continue
+        live.append(proposal)
+
+    raw_evaluations = evaluate_many(live, ids, int(trials)) if live else {}
+    if raw_evaluations is None:
+        raw_evaluations = {}
+    evaluations: list[dict[str, Any]] = []
+    for proposal in live:
+        raw = dict(raw_evaluations.get(proposal.variant) or {})
+        raw.setdefault("candidate_id", proposal.variant)
+        evaluations.append(raw)
+        score = raw.get("score", raw.get("aggregate_score"))
+        cost = raw.get("cost", raw.get("token_cost"))
+        valid_score = isinstance(score, (int, float)) and not isinstance(score, bool)
+        candidates.append(Candidate(
+            proposal.variant,
+            score=float(score) if valid_score else None,
+            cost=float(cost) if isinstance(cost, (int, float)) and not isinstance(cost, bool) else None,
+            components=proposal.components,
+            evaluated=valid_score,
+            metadata={"evaluation": raw},
+        ))
+
+    # Keep proposal order in the result even though critic-gated candidates are
+    # never sent to evaluate_many.
+    by_variant = {candidate.variant: candidate for candidate in candidates}
+    ordered_candidates = tuple(by_variant[p.variant] for p in proposals)
+    selection = select_candidates(
+        ordered_candidates,
+        incumbent_id=incumbent_id,
+        incumbent_score=incumbent_score,
+        incumbent_cost=incumbent_cost,
+        s_star=s_star,
+        delta=delta,
+        incumbent_counts=incumbent_counts,
+        config=config,
+    )
+    return SimulationResult(
+        selection=selection,
+        candidates=ordered_candidates,
+        critic_verdicts=tuple(verdicts),
+        evaluations=tuple(evaluations),
+        study_task_ids=ids,
+        trials=int(trials),
+    )

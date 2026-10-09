@@ -12,9 +12,11 @@ sys.path.insert(0, str(ROOT / "methods"))
 
 from rrsi.fidelity import (  # noqa: E402
     Candidate,
+    Proposal,
     SelectionConfig,
     calibrate_delta,
     role_prompt,
+    simulate_round,
     select_candidates,
 )
 
@@ -79,3 +81,59 @@ def test_role_prompts_are_distinct_and_never_admit_heldout_context():
     assert "proposer" in prompts["proposer"]
     assert "pre-evaluation critic" in prompts["critic"]
     assert all("evolve score report" in p for p in prompts.values())
+
+
+def test_round_simulator_critic_filters_before_study_evaluate_and_selects_parent():
+    proposals = [Proposal("leak", artifact="bad"), Proposal("expensive", artifact="x"),
+                 Proposal("cheap", artifact="y")]
+    critic_calls = []
+    eval_calls = []
+
+    def critic(proposal):
+        critic_calls.append(proposal.variant)
+        return {"verdict": "reject" if proposal.variant == "leak" else "accept"}
+
+    def evaluate_many(live, task_ids, trials):
+        eval_calls.append(([p.variant for p in live], tuple(task_ids), trials))
+        return {
+            "expensive": {"aggregate_score": 0.99, "token_cost": 2000},
+            "cheap": {"aggregate_score": 0.93, "token_cost": 101},
+        }
+
+    result = simulate_round(
+        proposals, incumbent_id="incumbent", incumbent_score=0.80,
+        incumbent_cost=100, s_star=0.90, delta=0.02,
+        study_task_ids=["study-a", "study-b"], trials=2,
+        critic=critic, evaluate_many=evaluate_many,
+    )
+    assert critic_calls == ["leak", "expensive", "cheap"]
+    assert eval_calls == [(["expensive", "cheap"], ("study-a", "study-b"), 2)]
+    assert result.next_parent == "cheap"
+    assert result.selection.winner_id == "cheap"
+    assert result.candidates[0].gate_failure == "critic_reject"
+    assert result.candidates[1].evaluated is True
+    assert result.candidates[1].score == pytest.approx(0.99)
+    assert result.candidates[1].metadata["evaluation"]["token_cost"] == 2000
+    assert all("heldout" not in task_id for task_id in result.study_task_ids)
+
+
+def test_round_simulator_keeps_incumbent_when_every_candidate_is_rejected():
+    proposals = [Proposal("A"), Proposal("B")]
+    eval_calls = []
+
+    def evaluate_many(*args):
+        eval_calls.append(args)
+        return {}
+
+    result = simulate_round(
+        proposals, incumbent_id="H_t", incumbent_score=0.50,
+        incumbent_cost=100, s_star=0.50, delta=0.01,
+        study_task_ids=["s1"], trials=1,
+        critic=lambda proposal: {"verdict": "reject", "reasons": ["leak"]},
+        evaluate_many=evaluate_many,
+    )
+    assert eval_calls == []
+    assert result.selection.winner_id is None
+    assert result.selection.incumbent_retained is True
+    assert result.next_parent == "H_t"
+    assert all(not d.admissible for d in result.selection.decisions)

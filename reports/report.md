@@ -37,6 +37,9 @@ this work does not silently select an API model.
   stable highest-score selection over an `m`-candidate pool;
 * `parent_id == incumbent_id` and `winner_id is None` when every candidate is
   rejected or inadmissible.
+* `simulate_round`, an offline end-to-end harness, runs critic before
+  `evaluate_many`, passes only study IDs and accepted candidates to that callback,
+  and exposes only the selection result's `parent_id` as the next parent.
 
 The module has no task IDs, traces, evaluator, or held-out dataset handle.
 Callers must supply study-side measurements. This makes the held-out boundary
@@ -63,11 +66,14 @@ operation whose results are absent from all role prompts and decisions.
 
 ```text
 PYTHONPATH=methods pytest -q tests/quality/test_rrsi_fidelity.py tests/quality/test_rrsi.py
-20 passed in 0.45s
+22 passed in 0.45s
 ```
 
 The fixtures prove that a higher-scoring candidate can lose to a critic gate or
 cost rule, that all rejected candidates retain the incumbent, that calibration
 uses the expected square-root-two factor, that role prompts remain distinct,
 and that the existing mode-A port's train-side rule, pruning, critic, and
-trajectory behavior remain covered.
+trajectory behavior remain covered. The simulator fixtures additionally prove
+that critic-rejected candidates are never evaluated or selected, that a higher
+score can lose on cost, that all rejected candidates retain the incumbent, and
+that held-out task IDs are absent from the evaluator boundary.
