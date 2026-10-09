@@ -252,7 +252,7 @@ PLACEMENTS = ("inside", "beside")
 #: Fields an environment may carry. Unknown keys are refused rather than ignored: a
 #: mistyped `work_dir` that silently did nothing would leave a task running in the
 #: wrong place while the dataset said otherwise.
-ENV_FIELDS = ("kind", "image", "workdir", "network", "placement", "services",
+ENV_FIELDS = ("kind", "image", "workdir", "network", "placement", "services", "web",
               "state", "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s")
 
 #: Where a task's state lives (INTERFACE.md §2.5.9). `mount` is a host directory bound
@@ -349,6 +349,16 @@ def _check_env(spec, tid: str, name: str) -> None:
                 f"read as though it had asked for a container.")
         return
 
+    web = spec.get("web")
+    if web is not None:
+        if not isinstance(web, dict) or set(web) - {"search", "fetch"}:
+            raise ValueError(f"dataset {name!r}: ENV[{tid!r}]['web'] must be a dict with "
+                             "boolean search/fetch fields")
+        if not all(isinstance(web.get(k), bool) for k in ("search", "fetch")):
+            raise ValueError(f"dataset {name!r}: ENV[{tid!r}]['web'] needs boolean search/fetch fields")
+        if not any(web.get(k) for k in ("search", "fetch")):
+            raise ValueError(f"dataset {name!r}: ENV[{tid!r}]['web'] must enable search or fetch")
+
     image = spec.get("image")
     if not isinstance(image, str) or not image.strip():
         raise ValueError(
@@ -401,7 +411,12 @@ def _check_env(spec, tid: str, name: str) -> None:
             f"dataset {name!r}: ENV[{tid!r}] declares services but sets "
             f"network={network!r}. A service is reachable only on the task's internal "
             f"network, so this is a contradiction; write network='services'.")
-    if network == "services" and not services:
+    if web and network != "services":
+        raise ValueError(
+            f"dataset {name!r}: ENV[{tid!r}] declares web access but sets network={network!r}. "
+            "The host gateway is published only on the task's internal network; write "
+            "network='services'.")
+    if network == "services" and not services and not spec.get("web"):
         raise ValueError(
             f"dataset {name!r}: ENV[{tid!r}] sets network='services' but declares no "
             f"services. There is nothing to be reachable, and the network would only "
@@ -485,7 +500,7 @@ def _normalize_env(spec: dict) -> dict:
             "needs_seed": svc.get("needs_seed", False),
             "needs_model": svc.get("needs_model", False),
         })
-    return {"kind": "exec",
+    normalized = {"kind": "exec",
             "image": spec["image"],
             "workdir": spec.get("workdir", DEFAULT_WORKDIR),
             "network": spec.get("network", "none"),
@@ -493,6 +508,10 @@ def _normalize_env(spec: dict) -> dict:
             "services": services,
             "state": spec.get("state", "mount"),
             **{f: spec.get(f, d) for f, d in ENV_DEFAULTS.items()}}
+    if spec.get("web") is not None:
+        normalized["web"] = {"search": bool(spec["web"]["search"]),
+                              "fetch": bool(spec["web"]["fetch"])}
+    return normalized
 
 
 def load_envs(name: str) -> dict[str, dict]:

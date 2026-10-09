@@ -56,7 +56,14 @@
   },
   "env": {
     "kinds": ["files", "exec"],
-    "files_may_carry": ["kind"]
+    "files_may_carry": ["kind"],
+    "web": {
+      "type": "object",
+      "required": ["search", "fetch"],
+      "properties": {"search": {"type": "boolean"}, "fetch": {"type": "boolean"}},
+      "additionalProperties": false,
+      "description": "Host-published web access for an exec task; the harness receives HG_SVC_WEB_URL only when declared."
+    }
   },
   "paths": {
     "data_root_attributes": ["DATASET_ROOT", "ROOT"],
