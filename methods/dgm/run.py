@@ -67,6 +67,7 @@ only choose its parent and record what the archive rule would have retained.
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import random
 import sys
@@ -75,6 +76,21 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import editor                                                  # noqa: E402
 import protocol                                                # noqa: E402
+
+
+def _load_component(filename: str, module_name: str):
+    spec = importlib.util.spec_from_file_location(
+        module_name, Path(__file__).with_name(filename))
+    if spec is None or spec.loader is None:
+        raise ImportError(f"cannot load DGM component {filename}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+# Kept method-local: DGM's archive and staged schedule are not a shared algorithm.
+DGM_STAGED = _load_component("staged_eval.py", "harnessgrad_dgm_staged_eval")
 
 #: DGM's `--eval_noise` default (`DGM_outer.py:238`). Absolute, and calibrated on
 #: a benchmark whose rounds submit hundreds of instances -- see the docstring.
@@ -214,6 +230,12 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
         "best_round": best.get("round"),
         "chose_something_other_than_best": chosen.get("round") != best.get("round"),
         "seed": round_index * 7919,
+        "selection": {
+            "selected_parent": chosen.get("round"),
+            "selected_parent_role": "task_agent_state",
+            "deployment_status": "pending_trusted_runtime",
+            "deployed_node": None,
+        },
     }
     return chosen, report
 
@@ -298,6 +320,9 @@ def main() -> int:
         report["child"] = child + 1
         report["children_this_call"] = children
         report["parent_round"] = parent.get("round")
+        report["staged_eval"] = DGM_STAGED.DGMStagedScheduler().budget_plan(
+            [], f"r{parent.get('round')}"
+        )
 
         parent_dir = _state_dir(base, parent.get("round"))
         if not parent_dir or not Path(parent_dir).is_dir():
@@ -334,8 +359,40 @@ def main() -> int:
             "label": ((f"[DGM parent r{parent.get('round')}] " + hypothesis[:60])
                       if changed else f"DGM: no edit (parent r{parent.get('round')})"),
             "edit_kind": "dgm_rule", "hypothesis": hypothesis,
-            "method_reported": {"dgm": report, "dgm_parent": parent.get("round"),
-                                "target": target, "child": child + 1},
+            "method_reported": {
+                "dgm": report, "dgm_parent": parent.get("round"),
+                "target": target, "child": child + 1,
+                "artifact": {
+                    "artifact_id": f"dgm-r{round_index}-child{child + 1}",
+                    "parent_refs": [f"round-{parent.get('round')}"],
+                    "immutable": True, "patch_kind": "tree",
+                },
+                "role_refs": {
+                    "diagnosis_agent": {
+                        "role": "diagnosis", "model": "o1-2024-12-17",
+                        "status": "not_invoked_in_platform_port",
+                        "artifact_ref": f"diagnosis-r{round_index}-child{child + 1}",
+                    },
+                    "editor_agent": {
+                        "role": "task_and_harness_edit",
+                        "model": "claude-3-5-sonnet-20241022",
+                        "artifact_ref": f"dgm-r{round_index}-child{child + 1}",
+                    },
+                },
+                "selection": {
+                    "selected_parent": parent.get("round"),
+                    "selected_parent_ref": f"round-{parent.get('round')}",
+                },
+                "deployment": {
+                    "deployed_node": None,
+                    "status": "pending_trusted_runtime",
+                    "reason": "method can nominate a child; trusted runtime deploys it",
+                },
+                "fidelity_deviation": {
+                    "diagnostic_gold_input": "withheld_by_platform",
+                    "diagnostic_private_test_patch": "withheld_by_platform",
+                },
+            },
         })
 
     # **Only the children that produced an edit are submitted.** A step that changed
@@ -353,7 +410,13 @@ def main() -> int:
         parents = [r.get("parent_round") for r in reports]
         carried = {"dgm": reports, "dgm_parent": parents[0] if parents else None,
                    "dgm_parents": parents,
-                   "children_this_call": children}
+                   "children_this_call": children,
+                   "selection": {"selected_parent_refs": [f"round-{p}" for p in parents if p is not None]},
+                   "deployment": {"deployed_node": None, "status": "pending_trusted_runtime"},
+                   "role_refs": {"diagnosis_agent": {"model": "o1-2024-12-17",
+                                                        "status": "not_invoked_in_platform_port"},
+                                 "editor_agent": {"model": "claude-3-5-sonnet-20241022",
+                                                   "status": "platform_editor"}}}
         if errors:
             return editor.fail(req, method="dgm", exc=errors[0], base=base,
                                state=carried)

@@ -69,6 +69,7 @@ rather than pretending it did it.
 from __future__ import annotations
 
 import math
+import importlib.util
 import os
 import random
 import sys
@@ -77,6 +78,21 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import editor                                                  # noqa: E402
 import protocol                                                # noqa: E402
+
+
+def _load_component(filename: str, module_name: str):
+    spec = importlib.util.spec_from_file_location(
+        module_name, Path(__file__).with_name(filename))
+    if spec is None or spec.loader is None:
+        raise ImportError(f"cannot load HyperAgents component {filename}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+HYPER_STAGED = _load_component("staged_eval.py", "harnessgrad_hyperagents_staged_eval")
+HYPER_ARCHIVE = _load_component("archive.py", "harnessgrad_hyperagents_archive")
 
 #: The child penalty's scale and exponent (`gl_utils.py:570-584`).
 CHILD_SCALE, CHILD_POWER = 8.0, 3.0
@@ -87,6 +103,16 @@ STEEP = 10.0
 #: default (`gl_utils.py:511`) -- the program ships two different defaults, so the
 #: one we use is named here and recorded on every point.
 SETTING = os.environ.get("HG_HYPERAGENTS_SELECT", "score_child_prop")
+
+
+def _meta_model(req: dict) -> str:
+    domain = os.environ.get("HG_HYPERAGENTS_DOMAIN")
+    if not domain:
+        domain = req.get("domain")
+    if not domain and isinstance(req.get("domains"), list) and len(req["domains"]) == 1:
+        domain = req["domains"][0]
+    return ("claude-3-5-sonnet-20241022" if domain == "polyglot"
+            else "anthropic/claude-sonnet-4-5-20250929")
 
 HYPER_SYSTEM = """You are improving an agent harness, as one step of a self-referential
 search. The archive has chosen which previous state to build on.
@@ -172,7 +198,7 @@ def weights_for(candidates: list[dict], scores: dict, children: dict,
         r = point.get("round", 0)
         if kind == "best":
             out[r] = 1.0 if scores[r] == top else 0.0
-        elif kind == "uniform":
+        elif kind in {"uniform", "random"}:
             out[r] = 1.0
         elif kind == "score_prop":
             out[r] = _sigmoid(STEEP * (scores[r] - mid))
@@ -194,8 +220,9 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
     children = _children(history)
 
     table = {k: weights_for(candidates, scores, children, mid, k)
-             for k in ("score_child_prop", "score_prop", "uniform", "best")}
-    chosen_weights = table.get(SETTING, table["score_child_prop"])
+             for k in ("score_child_prop", "score_prop", "uniform", "random", "best")}
+    chosen_setting = "random" if SETTING == "random" else SETTING
+    chosen_weights = table.get(chosen_setting, table["score_child_prop"])
     total = sum(chosen_weights.values())
 
     # A degenerate weight vector (all zero, or a single candidate under `best`)
@@ -226,7 +253,7 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
 
     report = {
         "rule": "HyperAgents score_child_prop: sigmoid(10*(s-mid)) * exp(-(c/8)^3)",
-        "setting": SETTING,
+        "setting": chosen_setting,
         "mid_of_top3": round(mid, 4),
         "candidates": [p.get("round") for p in candidates],
         "child_counts": {str(k): v for k, v in sorted(children.items())},
@@ -240,6 +267,12 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
                 "49-57 computes them and then discards them in random.choice, which "
                 "is why that branch -- and only that branch -- is uniform",
         "seed": round_index * 104729,
+        "selection": {
+            "selected_parent": chosen.get("round"),
+            "selected_parent_role": "task_agent_state",
+            "deployment_status": "pending_trusted_runtime",
+            "deployed_node": None,
+        },
     }
     return chosen, report
 
@@ -294,6 +327,7 @@ def main() -> int:
         report["children_this_call"] = children
         report["parent_round"] = parent.get("round")
         parent_dir = _state_dir(base, parent.get("round"))
+        report["staged_eval"] = HYPER_STAGED.HyperStagedScheduler().record(None)
         if not parent_dir or not Path(parent_dir).is_dir():
             reports.append({**report, "why": "the selected state is not staged"})
             continue
@@ -321,6 +355,10 @@ def main() -> int:
         # next round can grade the prediction against what actually flipped.
         if isinstance(reply.get("predicted_affected"), list):
             report["predicted_affected"] = reply["predicted_affected"]
+        patch_roles = HYPER_ARCHIVE.patch_identities(
+            files, patch_id=f"generation-r{round_index}-child{child + 1}")
+        task_patch = patch_roles["task"]
+        meta_patch = patch_roles["meta"]
         reports.append({**report, "changed": bool(changed), "why": hypothesis})
         steps.append({
             "harness_dir": dest, "changed": changed, "files": files,
@@ -328,10 +366,40 @@ def main() -> int:
                       if changed else
                       f"HyperAgents: no edit (parent r{parent.get('round')})"),
             "edit_kind": "hyperagents_rule", "hypothesis": hypothesis,
-            "method_reported": {"hyperagents": report,
-                                "hyper_parent": parent.get("round"),
-                                "hyper_parents": [r.get("parent_round") for r in reports],
-                                "child": child + 1},
+            "method_reported": {
+                "hyperagents": report,
+                "hyper_parent": parent.get("round"),
+                "hyper_parents": [r.get("parent_round") for r in reports],
+                "child": child + 1,
+                "artifact": {
+                    "artifact_id": f"hyper-r{round_index}-child{child + 1}",
+                    "parent_refs": [f"round-{parent.get('round')}"],
+                    "immutable": True,
+                },
+                "role_refs": {
+                    "task_agent": {
+                        "role": "task_agent", "artifact_ref": f"task-r{round_index}-child{child + 1}",
+                    },
+                    "meta_agent": {
+                        "role": "meta_agent", "model": _meta_model(req),
+                        "artifact_ref": f"meta-r{round_index}-child{child + 1}",
+                    },
+                    "patch_identity": {
+                        "task": task_patch.as_dict() if task_patch else None,
+                        "meta": meta_patch.as_dict() if meta_patch else None,
+                        "rollback": {"task": None, "meta": None},
+                    },
+                },
+                "selection": {
+                    "selected_parent": parent.get("round"),
+                    "selected_parent_ref": f"round-{parent.get('round')}",
+                },
+                "deployment": {
+                    "deployed_node": None,
+                    "status": "pending_trusted_runtime",
+                    "reason": "method selection is separate from runtime deployment",
+                },
+            },
         })
 
     measured = [step for step in steps if step.get("changed")]
@@ -339,7 +407,10 @@ def main() -> int:
     carried = {"hyperagents": reports,
                "hyper_parent": parents[0] if parents else None,
                "hyper_parents": parents,
-               "children_this_call": children}
+               "children_this_call": children,
+               "selection": {"selected_parent_refs": [f"round-{p}" for p in parents if p is not None]},
+               "deployment": {"deployed_node": None, "status": "pending_trusted_runtime"},
+               "role_refs": {"task_agent": "task_agent.py", "meta_agent": "meta_agent.py"}}
     if not measured:
         # A total outage is `fail` (the call did not run); a draw where the model declined
         # is a report with `stop: false`, because one unlucky sample of parents is not a
