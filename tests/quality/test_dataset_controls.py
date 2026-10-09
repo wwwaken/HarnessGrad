@@ -117,7 +117,7 @@ ROWS: dict[str, dict] = {
                          "test_qa_dataset_contract.py"],
     },
     "bird_minidev": {"control": ["data/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
-    "appworld": {"control": [], "metric_tests": ["test_appworld_official_scorer.py", "test_dataset_refusals.py"]},
+    "appworld": {"control": ["data/appworld/control.py", "--task-id", "e85d92a_1"], "metric_tests": ["test_appworld_official_scorer.py"]},
     "gaia": {
         # `--platform` because this dataset is an `exec` env: the verifier's paths are
         # container-absolute (`/check.py`, `/app/answer.txt`), so the by-hand arm has no
@@ -173,7 +173,7 @@ ROWS: dict[str, dict] = {
 
 #: Datasets whose control is the refusal itself, so the runnable-control test skips them and
 #: the refusal test below applies instead.
-REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful", "appworld")
+REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful")
 
 
 def _provisioned(name: str) -> bool:

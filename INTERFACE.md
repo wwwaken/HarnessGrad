@@ -352,7 +352,7 @@ asserted here.
 | kind | fields | scores 1 when |
 | --- | --- | --- |
 | `answer` | `expected` | `<workdir>/answer.txt`, stripped and lowercased, equals `expected` |
-| `command` | `argv`, `cwd?`, `inputs?`, `pass_when?`, `stdout?`, `timeout_s?` | `pass_when` holds — `exit0` (default) or `exit0_stdout` with an exact `stdout` match |
+| `command` | `argv`, `cwd?`, `inputs?`, `pass_when?`, `stdout?`, `timeout_s?`, `reward_file?`, `evidence_file?`, `image?` | `pass_when` holds, or the check writes a numeric `reward_file`; `evidence_file` is copied into the verdict, and a pinned `image` can provide verifier-only dependencies |
 
 A `command` verifier runs **after** the harness exits, in its own sandbox
 invocation, with `--workdir` mounted read-only, the platform still hidden, and
@@ -1008,6 +1008,13 @@ VERIFY = {"kind": "command", "argv": ["bash", "/tests/test.sh"],
 The file is parsed as a number, so a fraction is a score and `1`/`0` is the common case. The
 platform creates the directory holding it, and that directory exists only after the harness
 has stopped.
+
+`evidence_file` is optional and must share the reward file's directory. A check may write a
+JSON object there, including `measured: false` when the environment could not be evaluated;
+the platform preserves that distinction from a measured zero. `image` is optional for an
+exec command verifier and names a pinned image used only for the fresh check container. It
+defaults to the task image, so a dataset may keep a small agent image separate from an image
+that contains its released evaluator and data.
 
 ##### A dataset's check can be unreachable, and only a control will say so
 

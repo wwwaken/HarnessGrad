@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,6 +23,98 @@ sys.path.insert(0, str(ROOT))
 
 import data.registry as registry                                  # noqa: E402
 from eval.runner import evaluate, run_one                          # noqa: E402
+
+
+def _exec_file_spec():
+    return {"kind": "command", "argv": ["false"],
+            "reward_file": "/verifier/reward.txt",
+            "evidence_file": "/verifier/evidence.json"}
+
+
+def test_exec_verdict_ignores_precreated_reward_and_evidence(tmp_path, monkeypatch):
+    from unittest.mock import patch
+    work = tmp_path / "task"
+    work.mkdir()
+    stale = work / ".verifier"
+    stale.mkdir()
+    (stale / "reward.txt").write_text("1.0\n")
+    (stale / "evidence.json").write_text('{"measured":true}')
+    with patch("eval.verifier.container_mod.run",
+               return_value=subprocess.CompletedProcess(["false"], 3, "", "failed")), \
+         patch("eval.verifier.container_mod.cp_out", return_value=False):
+        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+            work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
+            env={"kind": "exec", "image": "repo@sha256:" + "a" * 64, "workdir": "/app"})
+    assert verdict["score"] == 0.0 and verdict["passed"] is False
+    assert stale.exists() and (stale / "reward.txt").read_text() == "1.0\n"
+
+
+def test_exec_verdict_does_not_follow_subject_symlink(tmp_path):
+    from unittest.mock import patch
+    work = tmp_path / "task"
+    work.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "reward.txt").write_text("1.0\n")
+    (work / ".verifier").symlink_to(outside, target_is_directory=True)
+    with patch("eval.verifier.container_mod.run",
+               return_value=subprocess.CompletedProcess(["false"], 3, "", "failed")), \
+         patch("eval.verifier.container_mod.cp_out", return_value=False):
+        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+            work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
+            env={"kind": "exec", "image": "repo@sha256:" + "b" * 64, "workdir": "/app"})
+    assert verdict["score"] == 0.0
+    assert (outside / "reward.txt").read_text() == "1.0\n"
+
+
+def test_exec_verdict_missing_new_reward_is_zero(tmp_path):
+    from unittest.mock import patch
+    work = tmp_path / "task"
+    work.mkdir()
+    with patch("eval.verifier.container_mod.run",
+               return_value=subprocess.CompletedProcess(["false"], 3, "", "failed")), \
+         patch("eval.verifier.container_mod.cp_out", return_value=False):
+        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+            work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
+            env={"kind": "exec", "image": "repo@sha256:" + "c" * 64, "workdir": "/app"})
+    assert verdict["score"] == 0.0 and "wrote no" in verdict["detail"]
+
+
+def test_exec_verdict_timeout_is_not_a_forged_score(tmp_path):
+    from unittest.mock import patch
+    work = tmp_path / "task"
+    work.mkdir()
+    with patch("eval.verifier.container_mod.run", side_effect=subprocess.TimeoutExpired(["false"], 1)):
+        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+            work, _exec_file_spec(), "", sandbox=True, timeout_s=1,
+            env={"kind": "exec", "image": "repo@sha256:" + "d" * 64, "workdir": "/app"})
+    assert verdict["passed"] is False and "timed out" in verdict["detail"]
+
+
+def test_host_verdict_clears_precreated_files_and_rejects_symlink_parent(tmp_path):
+    from unittest.mock import patch
+    work = tmp_path / "task"
+    work.mkdir()
+    verifier = {"kind": "command", "argv": ["python3", "-c", "print('ok')"],
+                "reward_file": "/verifier/reward.txt",
+                "evidence_file": "/verifier/evidence.json"}
+    parent = work / "verifier"
+    parent.mkdir()
+    (parent / "reward.txt").write_text("1.0\n")
+    (parent / "evidence.json").write_text('{"measured": true}')
+    with patch("eval.verifier.subprocess.run",
+               return_value=subprocess.CompletedProcess(["python3"], 0, "", "")):
+        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+            work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
+    assert verdict["passed"] is False and verdict["score"] == 0.0
+
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    parent.rmdir()
+    parent.symlink_to(outside, target_is_directory=True)
+    verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+        work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
+    assert verdict["passed"] is False and "symlink" in verdict["detail"]
 
 
 def _harness(tmp_path: Path, body: str, *, exit_code: int = 0) -> Path:

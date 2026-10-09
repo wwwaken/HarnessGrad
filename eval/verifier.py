@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import tempfile
 from pathlib import Path
 
 import eval.container as container_mod
@@ -109,6 +110,26 @@ def _read_json(path: Path) -> dict | None:
     except (OSError, ValueError):
         return None
     return loaded if isinstance(loaded, dict) else None
+
+
+def _clear_verdict_file(path: Path) -> None:
+    """Remove a stale host verdict without following a subject-created symlink."""
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+
+
+def _verdict_parent_is_safe(path: Path, workdir: Path) -> bool:
+    """Ensure a host verdict path cannot escape through a pre-existing symlink."""
+    try:
+        relative = path.relative_to(workdir)
+    except ValueError:
+        return False
+    current = workdir
+    for part in relative.parts[:-1]:
+        current /= part
+        if current.is_symlink():
+            return False
+    return True
 
 def test_rate_of(verdict: dict | None) -> float | None:
     """How much of the check's own test suite the artifact satisfied, or `None`.
@@ -227,14 +248,26 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
     kind = spec.get("kind", "answer")
     name = label(f"hg-verify-{run_id}-{task_id}")
     created = False
+    verdict_dir: Path | None = None
     try:
+        reward_file = spec.get("reward_file")
+        if reward_file:
+            # The snapshot is harness-owned state.  Reward/evidence files must be
+            # created in a fresh directory owned by the platform, then mounted only
+            # for this check; otherwise a harness can pre-seed a passing verdict.
+            verdict_dir = staging / "verdict"
+            verdict_dir.mkdir(parents=True, exist_ok=True)
+        extra_mounts = ()
+        if verdict_dir is not None:
+            extra_mounts = ("--mount",
+                            f"type=bind,src={verdict_dir},dst={Path(reward_file).parent}")
         # The environment's network, not `none`. Measured: the real task set installs
         # its own test dependencies at verification time -- all 89 `test.sh` files
         # `apt-get install` or `pip install` before running anything -- so a check given
         # no network cannot run at all, and reports a reward of 0 that looks exactly like
         # a harness that failed the task. The oracle control is what found this.
         container_mod.create(name, image=snapshot, limits=limits or {},
-                            network=network, extra_mounts=(),
+                            network=network, extra_mounts=extra_mounts,
                             run_id=run_id or "", task_id=task_id or "")
         created = True
 
@@ -246,8 +279,9 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
         # `start` because `mkdir_in` is a `docker exec`, which needs a running
         # container. The ordering that matters is the one the contract states (after
         # the harness has stopped); this is only about which docker verb can do it.
-        reward_file = spec.get("reward_file")
         if reward_file:
+            # The destination is the fresh bind mount above.  It exists before the
+            # container starts, so no snapshot directory is reused.
             container_mod.mkdir_in(name, str(Path(reward_file).parent), "0755")
         argv = [str(a) for a in spec.get("argv") or []]
         if not argv:
@@ -396,6 +430,27 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
             running=None) -> dict:
+    """Run a verifier with platform-owned output storage for exec reward checks."""
+    spec = verifier or {"kind": "answer", "expected": None}
+    env_spec = env or {"kind": "files"}
+    if spec.get("kind") == "command" and spec.get("reward_file") \
+            and env_spec.get("kind") == "exec":
+        with tempfile.TemporaryDirectory(prefix="hg-verdict-",
+                                          dir=str(workdir.parent)) as verdict_dir:
+            return _verify_inner(workdir, verifier, answer, sandbox=sandbox,
+                                 timeout_s=timeout_s, env=env,
+                                 service_specs=service_specs, running=running,
+                                 verdict_dir=Path(verdict_dir))
+    return _verify_inner(workdir, verifier, answer, sandbox=sandbox,
+                         timeout_s=timeout_s, env=env,
+                         service_specs=service_specs, running=running)
+
+
+def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
+            *, sandbox: bool, timeout_s: int,
+            env: dict | None = None,
+            service_specs: list[dict] | None = None,
+            running=None, verdict_dir: Path | None = None) -> dict:
     """Decide whether the task was completed. Returns {kind, passed, detail}.
 
     `answer` is the legacy path and stays byte-for-byte what it was: stripped,
@@ -411,7 +466,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     #: reachable only from a container snapshot (`_verify_container_state`); this is the
     #: host spelling of the same contract, added so a no-Docker dataset can keep its
     #: evidence. See the block below the command run for what it does.
-    host_reward = bool(spec.get("reward_file")) and not is_exec
+    host_reward = bool(spec.get("reward_file"))
     task_mount = env_spec.get("workdir") or container_mod.DEFAULT_WORKDIR
     service_specs = list(service_specs or [])
 
@@ -441,7 +496,21 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     # must already exist, and because the platform -- not the subject -- decides where a
     # verdict may be written.
     reward_rel = str(spec["reward_file"]).lstrip("/") if host_reward else ""
-    reward_dir = (workdir / Path(reward_rel).parent) if host_reward else None
+    exec_verdict_dir = verdict_dir if (host_reward and is_exec) else None
+    reward_dir = (exec_verdict_dir if is_exec else workdir / Path(reward_rel).parent) if host_reward else None
+    host_reward_path = (workdir / reward_rel) if (host_reward and not is_exec) else None
+    host_evidence_path = None
+    if host_reward and not is_exec and spec.get("evidence_file"):
+        host_evidence_path = workdir / str(spec["evidence_file"]).lstrip("/")
+    if host_reward and not is_exec:
+        if (not _verdict_parent_is_safe(host_reward_path, workdir)
+                or (host_evidence_path is not None
+                    and not _verdict_parent_is_safe(host_evidence_path, workdir))):
+            return {"kind": kind, "passed": False, "score": 0.0,
+                    "detail": "verdict path uses a subject-controlled symlink"}
+        _clear_verdict_file(host_reward_path)
+        if host_evidence_path is not None:
+            _clear_verdict_file(host_evidence_path)
     if reward_dir is not None:
         reward_dir.mkdir(parents=True, exist_ok=True)
 
@@ -458,8 +527,14 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             # mock API what it was sent has the same shape. `running` being None here
             # would be a caller bug -- a service task whose check silently could not
             # reach its service would fail the task for a reason nothing records.
+            verifier_mounts = list(services_mod.mounts_for(
+                    "verifier", service_specs,
+                    running.recordings if running else {}))
+            if exec_verdict_dir is not None:
+                verifier_mounts += ["--mount",
+                                    f"type=bind,src={exec_verdict_dir},dst={Path(spec['reward_file']).parent}"]
             proc = container_mod.run(
-                argv, image=env_spec["image"], task_dir=workdir,
+                argv, image=spec.get("image") or env_spec["image"], task_dir=workdir,
                 task_mount=task_mount, cwd=container_mod.to_container(
                     cwd, workdir, task_mount),
                 env=_verifier_env_container(),
@@ -467,9 +542,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
                 network=(running.network if running is not None
                          else env_spec.get("network", "none")),
                 task_dir_writable=False,
-                extra_mounts=tuple(services_mod.mounts_for(
-                    "verifier", service_specs,
-                    running.recordings if running else {})))
+                extra_mounts=tuple(verifier_mounts))
         elif sandbox:
             # A host check whose verdict is a file still runs sandboxed: `writable_paths`
             # re-opens exactly its verdict directory on top of the read-only task tree,
@@ -517,12 +590,17 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     # **No existing dataset changes**: no dataset declared `reward_file` on a non-exec
     # environment before ALFWorld (measured 2026-10-08).
     if host_reward:
-        got = workdir / reward_rel
+        got = ((exec_verdict_dir / Path(reward_rel).name)
+               if exec_verdict_dir is not None else host_reward_path)
         evidence_path = spec.get("evidence_file")
-        evidence = (None if not evidence_path
-                    else _read_json(workdir / str(evidence_path).lstrip("/")))
+        evidence_file = ((exec_verdict_dir / Path(str(evidence_path)).name)
+                         if exec_verdict_dir is not None and evidence_path
+                         else (None if not evidence_path
+                               else host_evidence_path))
+        evidence = (None if evidence_file is None or evidence_file.is_symlink()
+                    else _read_json(evidence_file))
 
-        if not got.is_file():
+        if got is None or got.is_symlink() or not got.is_file():
             # No reward file: the check did not reach a verdict. If it also left no
             # evidence, the platform cannot say what happened; if it left evidence that
             # says `measured: false`, the task was not measured rather than failed --
