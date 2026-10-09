@@ -30,12 +30,12 @@
   {
    "what": "The old mode-A port has no native candidate pool.",
    "why": "The current protocol returns one candidate trajectory and the platform owns measurement; the fidelity core therefore exposes selection as a pure function and records the runtime capability request in report.md.",
-   "direction": "pending runtime capability"
+   "direction": "unknown"
   },
   {
    "what": "Native scaffold and evaluator are not silently replaced.",
    "why": "The port keeps model, scaffold, domain evaluator and split configurable; a result is a decision-rule alignment measurement until those axes match the source instance.",
-   "direction": "explicit limitation"
+   "direction": "weaker"
   }
  ]
 }
