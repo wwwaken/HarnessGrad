@@ -14,7 +14,12 @@ from rrsi.fidelity import (  # noqa: E402
     Candidate,
     Proposal,
     SelectionConfig,
+    ROLE_ACTION_PROTOCOLS,
+    SOURCE_ROLE_PROMPT_HASHES,
+    StudyTaskSet,
+    TrainContext,
     calibrate_delta,
+    relative_cost_change,
     role_prompt,
     simulate_round,
     select_candidates,
@@ -71,8 +76,16 @@ def test_calibration_uses_repeated_base_or_single_measurement_trial_spread():
         calibrate_delta(score_std=0.0, n_trials=1)
 
 
-def test_role_prompts_are_distinct_and_never_admit_heldout_context():
-    prompts = {role: role_prompt(role, "evolve score report")
+def test_cost_accounting_distinguishes_zero_from_missing_like_the_port_policy():
+    # Upstream replaces either missing token count with dC=0. The fidelity core
+    # deliberately marks that case inactive; a measured zero-token candidate is
+    # still real accounting and yields dC=-1 against a positive incumbent.
+    assert relative_cost_change(0, 100) == pytest.approx((-1.0, True))
+    assert relative_cost_change(None, 100) == pytest.approx((0.0, False))
+
+
+def test_role_prompts_are_distinct_and_require_declared_train_context():
+    prompts = {role: role_prompt(role, TrainContext("evolve score report", trusted_runtime=True))
                for role in ("digester", "analyst", "proposer", "critic")}
     assert len(set(prompts.values())) == 4
     assert all("held-out evidence is inaccessible" in p for p in prompts.values())
@@ -81,6 +94,11 @@ def test_role_prompts_are_distinct_and_never_admit_heldout_context():
     assert "proposer" in prompts["proposer"]
     assert "pre-evaluation critic" in prompts["critic"]
     assert all("evolve score report" in p for p in prompts.values())
+    assert set(SOURCE_ROLE_PROMPT_HASHES) == {"digester", "analyst", "proposer", "critic"}
+    assert all(len(item["sha256"]) == 64 for item in SOURCE_ROLE_PROMPT_HASHES.values())
+    assert ROLE_ACTION_PROTOCOLS["digester"][-1] == "return"
+    assert ROLE_ACTION_PROTOCOLS["analyst"] == ("digest_many", "report")
+    assert ROLE_ACTION_PROTOCOLS["critic"] == ("verdict",)
 
 
 def test_round_simulator_critic_filters_before_study_evaluate_and_selects_parent():
@@ -103,7 +121,7 @@ def test_round_simulator_critic_filters_before_study_evaluate_and_selects_parent
     result = simulate_round(
         proposals, incumbent_id="incumbent", incumbent_score=0.80,
         incumbent_cost=100, s_star=0.90, delta=0.02,
-        study_task_ids=["study-a", "study-b"], trials=2,
+        study_task_ids=StudyTaskSet(("study-a", "study-b"), trusted_runtime=True), trials=2,
         critic=critic, evaluate_many=evaluate_many,
     )
     assert critic_calls == ["leak", "expensive", "cheap"]
@@ -128,7 +146,7 @@ def test_round_simulator_keeps_incumbent_when_every_candidate_is_rejected():
     result = simulate_round(
         proposals, incumbent_id="H_t", incumbent_score=0.50,
         incumbent_cost=100, s_star=0.50, delta=0.01,
-        study_task_ids=["s1"], trials=1,
+        study_task_ids=StudyTaskSet(("s1",), trusted_runtime=True), trials=1,
         critic=lambda proposal: {"verdict": "reject", "reasons": ["leak"]},
         evaluate_many=evaluate_many,
     )
@@ -137,3 +155,71 @@ def test_round_simulator_keeps_incumbent_when_every_candidate_is_rejected():
     assert result.selection.incumbent_retained is True
     assert result.next_parent == "H_t"
     assert all(not d.admissible for d in result.selection.decisions)
+
+
+def test_numeric_domain_and_identity_validation_rejects_nonfinite_or_invalid_inputs():
+    with pytest.raises(ValueError, match="finite"):
+        Candidate("bad", score=float("inf"), cost=1)
+    with pytest.raises(ValueError, match="non-negative"):
+        Candidate("bad", score=0.5, cost=-1)
+    with pytest.raises(ValueError, match="unique"):
+        select_candidates([Candidate("A", score=.6, cost=1),
+                           Candidate("A", score=.7, cost=1)],
+                          incumbent_id="H0", incumbent_score=.5,
+                          incumbent_cost=1, s_star=.5, delta=.1)
+    with pytest.raises(ValueError, match="collides"):
+        select_candidates([Candidate("H0", score=.6, cost=1)],
+                          incumbent_id="H0", incumbent_score=.5,
+                          incumbent_cost=1, s_star=.5, delta=.1)
+
+
+def test_context_and_study_task_boundaries_are_typed():
+    with pytest.raises(TypeError):
+        role_prompt("analyst", "SECRET_EXAM score=1")
+    with pytest.raises(ValueError, match="trusted"):
+        TrainContext("evolve report")
+    with pytest.raises(ValueError, match="trusted"):
+        StudyTaskSet(("train",))
+    with pytest.raises(ValueError, match="evolve/train"):
+        TrainContext("SECRET_EXAM score=1", source="heldout", trusted_runtime=True)
+    with pytest.raises(TypeError):
+        simulate_round([], incumbent_id="H0", incumbent_score=.5,
+                       incumbent_cost=1, s_star=.5, delta=.1,
+                       study_task_ids=["train"], trials=1,
+                       critic=lambda _: {"verdict": "accept"},
+                       evaluate_many=lambda *_: {})
+
+
+def test_missing_or_unattested_measurement_cannot_be_promoted():
+    result = simulate_round(
+        [Proposal("A")], incumbent_id="H0", incumbent_score=.5,
+        incumbent_cost=100, s_star=.5, delta=.01,
+        study_task_ids=StudyTaskSet(("s1",), trusted_runtime=True), trials=2,
+        critic=lambda _: {"verdict": "accept"},
+        evaluate_many=lambda *_: {"A": {"score": .99, "cost": 1,
+                                          "measured": False}},
+    )
+    assert result.candidates[0].evaluated is False
+    assert result.selection.parent_id == "H0"
+    assert result.selection.winner_id is None
+
+
+def test_evaluation_identity_presence_and_gate_status_are_attested():
+    common = dict(
+        incumbent_id="H0", incumbent_score=.5, incumbent_cost=100,
+        s_star=.5, delta=.01, study_task_ids=StudyTaskSet(("s1",), trusted_runtime=True), trials=1,
+        critic=lambda _: {"verdict": "accept"},
+    )
+    with pytest.raises(ValueError, match="candidate_id mismatch"):
+        simulate_round([Proposal("A")], evaluate_many=lambda *_: {
+            "A": {"candidate_id": "B", "score": .99, "cost": 1}}, **common)
+    with pytest.raises(ValueError, match="unknown candidate IDs"):
+        simulate_round([Proposal("A")], evaluate_many=lambda *_: {
+            "A": {"score": .99, "cost": 1}, "B": {"score": .99, "cost": 1}},
+                       **common)
+    missing = simulate_round([Proposal("A")], evaluate_many=lambda *_: {}, **common)
+    assert missing.candidates[0].gate_failure == "evaluation_missing"
+    gated = simulate_round([Proposal("A")], evaluate_many=lambda *_: {
+        "A": {"score": .99, "cost": 1, "gate_failure": "smoke_fail"}}, **common)
+    assert gated.candidates[0].gate_failure == "smoke_fail"
+    assert gated.next_parent == "H0"

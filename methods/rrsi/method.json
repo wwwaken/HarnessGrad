@@ -12,24 +12,31 @@
      "annealed edit budget, stall/exploration reserve, novelty and pruning state",
      "pre-evaluation deterministic plus model critic with bounded repair",
      "noise floor, two-branch cost rule, and study-side score discipline",
-     "calibration from repeated base evaluations or multi-trial score spread",
-     "role-specific digester, analyst, proposer and critic prompt semantics",
      "m-candidate argmax over admissible candidates and incumbent retention when none qualify (offline pure module)"
    ],
    "adapted": [
      "HarnessGrad artifact/channel and configurable model, scaffold, domain evaluator and split",
-     "platform trial-spread calibration is an explicit provenance-labeled adapter"
+     "platform trial-spread calibration is an explicit provenance-labeled adapter",
+     "role prompts are compact adaptations of the upstream action contracts, not verbatim templates",
+     "missing token accounting is explicitly marked unavailable instead of using the upstream dC=0 substitution"
    ],
    "missing_until_runtime_support": [
      "native m-candidate artifacts from one incumbent followed by trusted study-only evaluate_many",
      "method-owned select/deploy result that can retain incumbent or deploy no candidate",
-     "native analyst/digester trace dispatch, git worktrees/frontier, and k trials inside the RRSI loop"
-   ]
+     "native analyst/digester trace dispatch, git worktrees/frontier, and k trials inside the RRSI loop",
+     "full upstream role prompt bodies and domain-specific role briefs"
+   ],
+   "source_role_prompt_hashes": {
+     "digester": {"path": "rrsi/digester.py:SYSTEM_TMPL", "sha256": "24c9ceb093eee4ed22eae971d65001f075781543de77b45cdeebd476907dd0b3"},
+     "analyst": {"path": "rrsi/analyst.py:SYSTEM_TMPL", "sha256": "11287c002c2d09d9b48cd6f22c290ae9073c33a0dabe01db12a5da76f12c5703"},
+     "proposer": {"path": "rrsi/propose.py:SYSTEM_TMPL", "sha256": "cb31c5acc8f70eb0454e9e35ed146aa96f458f8d309934846769b20890f1fe10"},
+     "critic": {"path": "rrsi/critic.py:SYSTEM_TMPL", "sha256": "8818c7e1d7b082190cc9abd72b368160d1818a3ee9587badda7709af515b94ed"}
+   }
  },
  "deviations": [
   {
    "what": "The old mode-A port has no native candidate pool.",
-   "why": "The current protocol returns one candidate trajectory and the platform owns measurement; the fidelity core therefore exposes selection as a pure function and records the runtime capability request in report.md.",
+   "why": "The current protocol returns one candidate trajectory and the platform owns measurement; the fidelity core therefore exposes selection as a pure function and records the runtime capability request in the task-local report.",
    "direction": "unknown"
   },
   {

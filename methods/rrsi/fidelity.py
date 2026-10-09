@@ -19,6 +19,92 @@ import statistics
 from typing import Any, Callable, Mapping, Sequence
 
 
+def _real(value: Any, name: str) -> float:
+    """Return a finite real number, rejecting bool and non-numeric values."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{name} must be a real number")
+    value = float(value)
+    if not math.isfinite(value):
+        raise ValueError(f"{name} must be finite")
+    return value
+
+
+def _score(value: Any, name: str) -> float:
+    value = _real(value, name)
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"{name} must be in [0, 1]")
+    return value
+
+
+def _cost(value: Any, name: str, *, allow_none: bool = True) -> float | None:
+    if value is None and allow_none:
+        return None
+    value = _real(value, name)
+    if value < 0.0:
+        raise ValueError(f"{name} must be non-negative")
+    return value
+
+
+def _count(value: Any, name: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ValueError(f"{name} must be a non-negative integer")
+    return value
+
+
+@dataclass(frozen=True)
+class TrainContext:
+    """Caller-owned evidence explicitly declared to be evolve/train data."""
+
+    text: str
+    source: str = "evolve/train"
+    trusted_runtime: bool = False
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.text, str):
+            raise ValueError("TrainContext.text must be a string")
+        if self.source != "evolve/train" or not self.trusted_runtime:
+            raise ValueError("TrainContext must be trusted evolve/train evidence")
+
+
+@dataclass(frozen=True)
+class StudyTaskSet:
+    """Runtime-attested task IDs allowed into study evaluation."""
+
+    ids: tuple[str, ...]
+    source: str = "evolve/train"
+    trusted_runtime: bool = False
+
+    def __post_init__(self) -> None:
+        if self.source != "evolve/train" or not self.trusted_runtime:
+            raise ValueError("StudyTaskSet must be trusted evolve/train data")
+        ids = tuple(self.ids)
+        if (not ids or any(not isinstance(x, str) or not x for x in ids)
+                or len(set(ids)) != len(ids)):
+            raise ValueError("StudyTaskSet.ids must be unique non-empty IDs")
+        object.__setattr__(self, "ids", ids)
+
+
+# Exact source prompt hashes at the pinned upstream commit. ROLE_PROMPTS below
+# are adapted compact templates, not verbatim copies.
+SOURCE_ROLE_PROMPT_HASHES: Mapping[str, Mapping[str, str]] = {
+    "digester": {"path": "rrsi/digester.py:SYSTEM_TMPL", "sha256": "24c9ceb093eee4ed22eae971d65001f075781543de77b45cdeebd476907dd0b3"},
+    "analyst": {"path": "rrsi/analyst.py:SYSTEM_TMPL", "sha256": "11287c002c2d09d9b48cd6f22c290ae9073c33a0dabe01db12a5da76f12c5703"},
+    "proposer": {"path": "rrsi/propose.py:SYSTEM_TMPL", "sha256": "cb31c5acc8f70eb0454e9e35ed146aa96f458f8d309934846769b20890f1fe10"},
+    "critic": {"path": "rrsi/critic.py:SYSTEM_TMPL", "sha256": "8818c7e1d7b082190cc9abd72b368160d1818a3ee9587badda7709af515b94ed"},
+}
+
+# Action names retained from the pinned templates. The prompt bodies below are
+# compact adaptations, but a future runtime must keep these role boundaries and
+# tool protocols instead of routing every role through a generic editor.
+ROLE_ACTION_PROTOCOLS: Mapping[str, tuple[str, ...]] = {
+    "digester": ("read_file", "glob", "grep", "bash", "return"),
+    "analyst": ("digest_many", "report"),
+    "proposer": ("list_files", "read_file", "list_traces", "read_trace",
+                 "edit_file", "write_file", "done"),
+    "critic": ("verdict",),
+}
+
+
 # RRSI's role separation is intentional.  In particular, a proposer must not
 # be substituted for an analyst/digester, and the critic is a pre-evaluation
 # reviewer rather than an editor.  Keep train/evolve evidence in all role
@@ -57,18 +143,21 @@ to this review.""",
 }
 
 
-def role_prompt(role: str, context: str = "") -> str:
+def role_prompt(role: str, context: TrainContext | None = None) -> str:
     """Render one RRSI role prompt with an optional train-side context.
 
     ``context`` is caller-supplied evidence (for example a digest report).  The
-    role preamble explicitly labels the only allowed source as evolve/train so
-    accidental inclusion of a held-out score is detectable in logs and tests.
+    The typed context is a caller-owned/trusted-runtime boundary. It labels the
+    provenance but cannot inspect arbitrary text and prove that it contains no
+    exam value; the runtime must construct it from study-side evidence.
     """
     try:
         preamble = ROLE_PROMPTS[role]
     except KeyError as exc:
         raise ValueError(f"unknown RRSI role: {role!r}") from exc
-    body = context.strip()
+    if context is not None and not isinstance(context, TrainContext):
+        raise TypeError("role_prompt requires typed TrainContext evidence")
+    body = context.text.strip() if context is not None else ""
     return (preamble + "\n\nSOURCE BOUNDARY: evolve/train evidence only; "
             "held-out evidence is inaccessible."
             + (f"\n\n{body}" if body else ""))
@@ -83,6 +172,12 @@ class SelectionConfig:
     w_s: float = 100.0
     w_c: float = 15.0
     w_n: float = 0.5
+
+    def __post_init__(self) -> None:
+        for name in ("beta0", "beta1", "w_s", "w_c", "w_n"):
+            value = _real(getattr(self, name), name)
+            if value < 0:
+                raise ValueError(f"{name} must be non-negative")
 
 
 @dataclass(frozen=True)
@@ -121,18 +216,21 @@ def calibrate_delta(
     factor.  A one-trial measurement has no calibration signal and is rejected
     explicitly rather than silently setting the band to zero.
     """
-    if not math.isfinite(float(z)) or z <= 0:
+    z = _real(z, "z")
+    if z <= 0:
         raise ValueError("z must be a positive finite number")
-    scores = [float(x) for x in (repeated_scores or [])]
-    if any(not math.isfinite(x) for x in scores):
-        raise ValueError("repeated_scores must be finite")
+    scores = [_score(x, "repeated score") for x in (repeated_scores or [])]
     if len(scores) >= 2:
         sd = statistics.stdev(scores) * math.sqrt(2.0)
         return Calibration(z * sd, float(z), "repeated_base_evaluations", sd, len(scores))
-    if score_std is not None and n_trials is not None and n_trials > 1:
-        sd = float(score_std)
-        if not math.isfinite(sd) or sd < 0:
+    if n_trials is not None:
+        n_trials = _count(n_trials, "n_trials")
+    sd = None
+    if score_std is not None:
+        sd = _real(score_std, "score_std")
+        if sd < 0:
             raise ValueError("score_std must be finite and non-negative")
+    if sd is not None and n_trials is not None and n_trials > 1:
         null_sd = sd * math.sqrt(2.0)
         return Calibration(z * null_sd, float(z), "platform_trial_spread", null_sd, int(n_trials))
     raise ValueError(
@@ -142,9 +240,13 @@ def calibrate_delta(
 
 def relative_cost_change(candidate_cost: float | None, incumbent_cost: float | None) -> tuple[float, bool]:
     """Return RRSI's relative ``Delta C`` and whether token accounting exists."""
-    if candidate_cost is None or incumbent_cost is None or incumbent_cost <= 0:
+    candidate_cost = _cost(candidate_cost, "candidate_cost")
+    incumbent_cost = _cost(incumbent_cost, "incumbent_cost")
+    # A measured zero candidate cost is valid. A zero incumbent has no defined
+    # relative denominator, so cost accounting is unavailable in that case.
+    if candidate_cost is None or incumbent_cost is None or incumbent_cost == 0:
         return 0.0, False
-    return (float(candidate_cost) - float(incumbent_cost)) / float(incumbent_cost), True
+    return (candidate_cost - incumbent_cost) / incumbent_cost, True
 
 
 def cost_rule(
@@ -152,6 +254,14 @@ def cost_rule(
     config: SelectionConfig = SelectionConfig(),
 ) -> tuple[bool, str]:
     """RRSI's two-branch cost rule (novelty appears only inside the band)."""
+    delta = _real(delta, "delta")
+    if delta < 0:
+        raise ValueError("delta must be non-negative")
+    delta_s = _real(delta_s, "delta_s")
+    delta_c = _real(delta_c, "delta_c")
+    _count(novelty, "novelty")
+    if not isinstance(config, SelectionConfig):
+        raise ValueError("config must be a SelectionConfig")
     if delta_s > delta:
         budget = config.beta0 + config.beta1 * delta_s
         return delta_c <= budget, "gain_above_band"
@@ -175,6 +285,15 @@ class Candidate:
     evaluated: bool = True
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.variant, str) or not self.variant:
+            raise ValueError("candidate variant must be a non-empty string")
+        if self.score is not None:
+            _score(self.score, f"candidate {self.variant} score")
+        _cost(self.cost, f"candidate {self.variant} cost")
+        if not isinstance(self.evaluated, bool):
+            raise ValueError("candidate evaluated must be boolean")
+
 
 @dataclass(frozen=True)
 class Proposal:
@@ -189,6 +308,10 @@ class Proposal:
     artifact: Any = None
     components: tuple[str, ...] = ()
     metadata: Mapping[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.variant, str) or not self.variant:
+            raise ValueError("proposal variant must be a non-empty string")
 
 
 @dataclass(frozen=True)
@@ -278,6 +401,14 @@ def judge_candidate(
     config: SelectionConfig = SelectionConfig(),
 ) -> CandidateDecision:
     """Judge one candidate, before pool argmax is applied."""
+    incumbent_score = _score(incumbent_score, "incumbent_score")
+    s_star = _score(s_star, "s_star")
+    delta = _real(delta, "delta")
+    if delta < 0:
+        raise ValueError("delta must be non-negative")
+    _cost(incumbent_cost, "incumbent_cost")
+    if not isinstance(config, SelectionConfig):
+        raise ValueError("config must be a SelectionConfig")
     if candidate.gate_failure:
         return CandidateDecision(candidate.variant, False,
                                  f"gate failure: {candidate.gate_failure}",
@@ -329,6 +460,20 @@ def select_candidates(
     is admissible, ``parent_id`` is exactly ``incumbent_id`` and no rejected
     candidate can become the next parent.
     """
+    candidates = tuple(candidates)
+    if not isinstance(incumbent_id, str) or not incumbent_id:
+        raise ValueError("incumbent_id must be a non-empty string")
+    _score(incumbent_score, "incumbent_score")
+    _score(s_star, "s_star")
+    delta = _real(delta, "delta")
+    if delta < 0:
+        raise ValueError("delta must be non-negative")
+    _cost(incumbent_cost, "incumbent_cost")
+    variants = [candidate.variant for candidate in candidates]
+    if len(set(variants)) != len(variants):
+        raise ValueError("candidate variant IDs must be unique")
+    if incumbent_id in variants:
+        raise ValueError("candidate variant ID collides with incumbent_id")
     decisions = tuple(
         judge_candidate(c, incumbent_score=incumbent_score,
                         incumbent_cost=incumbent_cost, s_star=s_star,
@@ -336,7 +481,6 @@ def select_candidates(
                         config=config)
         for c in candidates
     )
-    by_id = {c.variant: c for c in candidates}
     admissible = [
         (c, d) for c, d in zip(candidates, decisions) if d.admissible
     ]
@@ -344,9 +488,10 @@ def select_candidates(
         return SelectionResult(incumbent_id, True, None, decisions,
                                float(s_star) - float(delta), float(s_star))
     winner, _ = max(admissible, key=lambda pair: float(pair[1].score))
-    # Defensive assertion: the parent always comes from the admissible set;
-    # gate failures and rejected candidates are never promoted by score alone.
-    assert by_id[winner.variant].gate_failure is None
+    # Validate the invariant explicitly: a gate-failed candidate can never be
+    # promoted by score alone. This is an input error, not an assert-based guard.
+    if winner.gate_failure is not None:
+        raise ValueError("selection invariant violated: gated candidate selected")
     return SelectionResult(winner.variant, False, winner.variant, decisions,
                            float(s_star) - float(delta), float(s_star))
 
@@ -359,7 +504,7 @@ def simulate_round(
     incumbent_cost: float | None,
     s_star: float,
     delta: float,
-    study_task_ids: Sequence[str],
+    study_task_ids: StudyTaskSet,
     trials: int,
     critic: Callable[[Proposal], Mapping[str, Any]],
     evaluate_many: Callable[[Sequence[Proposal], Sequence[str], int],
@@ -375,14 +520,19 @@ def simulate_round(
     the evaluator receives only the supplied study IDs and the resulting
     selection is the sole source of the next parent identity.
     """
-    if trials < 1:
+    proposals = tuple(proposals)
+    if isinstance(trials, bool) or not isinstance(trials, int) or trials < 1:
         raise ValueError("trials must be positive")
-    ids = tuple(str(task_id) for task_id in study_task_ids)
-    if len(set(ids)) != len(ids):
-        raise ValueError("study_task_ids must be unique")
+    if not isinstance(study_task_ids, StudyTaskSet):
+        raise TypeError("simulate_round requires an attested StudyTaskSet")
+    if not isinstance(incumbent_id, str) or not incumbent_id:
+        raise ValueError("incumbent_id must be a non-empty string")
+    ids = study_task_ids.ids
     variants = [p.variant for p in proposals]
     if len(set(variants)) != len(variants):
         raise ValueError("candidate variants must be unique")
+    if incumbent_id in variants:
+        raise ValueError("candidate variant ID collides with incumbent_id")
 
     verdicts: list[dict[str, Any]] = []
     live: list[Proposal] = []
@@ -403,20 +553,54 @@ def simulate_round(
     raw_evaluations = evaluate_many(live, ids, int(trials)) if live else {}
     if raw_evaluations is None:
         raw_evaluations = {}
+    if not isinstance(raw_evaluations, Mapping):
+        raise ValueError("evaluate_many must return a mapping by candidate ID")
+    live_ids = {proposal.variant for proposal in live}
+    extra_ids = set(raw_evaluations) - live_ids
+    if extra_ids:
+        raise ValueError(f"evaluate_many returned unknown candidate IDs: {sorted(extra_ids)}")
     evaluations: list[dict[str, Any]] = []
     for proposal in live:
-        raw = dict(raw_evaluations.get(proposal.variant) or {})
+        if proposal.variant not in raw_evaluations:
+            raw = {"candidate_id": proposal.variant,
+                   "measured": False, "missing": True}
+        else:
+            item = raw_evaluations[proposal.variant]
+            if not isinstance(item, Mapping):
+                raise ValueError(f"evaluation for {proposal.variant} must be a mapping")
+            raw = dict(item)
         raw.setdefault("candidate_id", proposal.variant)
+        if raw["candidate_id"] != proposal.variant:
+            raise ValueError(f"evaluation candidate_id mismatch for {proposal.variant}")
         evaluations.append(raw)
         score = raw.get("score", raw.get("aggregate_score"))
         cost = raw.get("cost", raw.get("token_cost"))
+        score_key = "score" if "score" in raw else "aggregate_score"
+        cost_key = "cost" if "cost" in raw else "token_cost"
+        if score is not None:
+            _score(score, f"evaluation {proposal.variant} {score_key}")
+        if cost is not None:
+            _cost(cost, f"evaluation {proposal.variant} {cost_key}")
         valid_score = isinstance(score, (int, float)) and not isinstance(score, bool)
+        measured = raw.get("measured", True)
+        if not isinstance(measured, bool):
+            raise ValueError(f"evaluation measured flag for {proposal.variant} must be boolean")
+        gate_failure = raw.get("gate_failure")
+        if gate_failure is not None and not isinstance(gate_failure, str):
+            raise ValueError(f"evaluation gate_failure for {proposal.variant} must be text")
+        if raw.get("missing") is True:
+            measured = False
+            gate_failure = gate_failure or "evaluation_missing"
+        if not measured:
+            valid_score = False
+            gate_failure = gate_failure or "measurement_not_attested"
         candidates.append(Candidate(
             proposal.variant,
             score=float(score) if valid_score else None,
             cost=float(cost) if isinstance(cost, (int, float)) and not isinstance(cost, bool) else None,
             components=proposal.components,
-            evaluated=valid_score,
+            gate_failure=gate_failure,
+            evaluated=valid_score and measured,
             metadata={"evaluation": raw},
         ))
 
