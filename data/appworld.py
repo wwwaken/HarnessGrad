@@ -7,6 +7,10 @@ side, and scores the two test files on the eval side.  ``dev`` is included with 
 because the release calls both non-test files development material; this is stated here
 rather than silently dropping 57 released tasks.
 
+The paper-era build (Trivedi et al., ACL 2024, arXiv 2407.18901v2) reported
+105/60/168/417 tasks, totaling 750. The pinned release has 18 fewer train/dev
+tasks; both test split counts match the paper.
+
 AppWorld's environment server is a sidecar service.  The task container only gets the
 small ``aw`` client; the service owns the world and writes its API-call log through the
 platform recording mount.  A fresh verifier reads that log and replays every request in
@@ -36,6 +40,7 @@ UNPACKED = SRC_DIR / "unpacked"
 POOL = DATASET_ROOT / "pool.jsonl"
 TASKS_IN_RELEASE = 732
 SPLIT_SIZES = {"train": 90, "dev": 57, "test_normal": 168, "test_challenge": 417}
+PAPER_SPLITS = {"train": 105, "dev": 60, "test_normal": 168, "test_challenge": 417}
 SPLIT_SOURCE = "declared"
 ORACLE_SOURCE = "released"
 ORACLE_VALIDATED_BY = (
@@ -47,6 +52,10 @@ IMAGE = os.environ.get(
 )
 SERVICE_IMAGE = os.environ.get(
     "HG_APPWORLD_SERVICE_IMAGE",
+    "harnessgrad/appworld-service@sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4",
+)
+VERIFIER_IMAGE = os.environ.get(
+    "HG_APPWORLD_VERIFIER_IMAGE",
     "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
 )
 POOL_SHA256 = "970c39331bc350ce9d3ed91a75fd32b554c257fc48fc31633dfccdde74164e65"
@@ -225,7 +234,7 @@ VERIFY = {
         "inputs": [{"path": "verify/check.py", "from": str(ASSETS / "verify" / "check.py")}],
         "reward_file": "/verifier/reward.txt",
         "evidence_file": "/verifier/evidence.json",
-        "image": SERVICE_IMAGE,
+        "image": VERIFIER_IMAGE,
         "timeout_s": 900,
     }
     for task_id in _ROWS

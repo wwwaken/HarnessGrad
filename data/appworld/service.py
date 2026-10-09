@@ -35,13 +35,17 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/initialize")
-async def initialize(task_id: str = Body(...), experiment_name: str = Body("harness")) -> dict[str, Any]:
+async def initialize(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
     global world
+    task_id = payload.get("task_id")
     if task_id != TASK_ID:
         raise HTTPException(status_code=403, detail="task id is not this service's task")
     # Ground truth is never loaded in the agent-facing process.  The verifier creates a
     # separate AppWorld with the official evaluator after the recording is complete.
-    world = AppWorld(task_id=TASK_ID, experiment_name=experiment_name,
+    # The client cannot choose an output path.  AppWorld joins this value to its
+    # recording root, so accepting an absolute or traversal name would let action code
+    # redirect logs and state outside the platform recording mount.
+    world = AppWorld(task_id=TASK_ID, experiment_name="harness",
                      load_ground_truth=False, ground_truth_mode="minimal",
                      raise_on_failure=False)
     task = world.task

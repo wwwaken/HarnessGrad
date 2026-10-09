@@ -32,6 +32,19 @@ def test_declared_split_files_cover_every_task():
     assert set(dataset.SPLIT["eval"]) == set(splits["test_normal"] + splits["test_challenge"])
 
 
+def test_the_paper_count_is_an_earlier_build():
+    """Preserve the mainline fact correction about the release's own task count."""
+    paper, release = dataset.PAPER_SPLITS, dataset.SPLIT_SIZES
+    assert paper["test_normal"] == release["test_normal"] == 168
+    assert paper["test_challenge"] == release["test_challenge"] == 417
+    assert paper["train"] - release["train"] == 15
+    assert paper["dev"] - release["dev"] == 3
+    assert sum(paper.values()) - sum(release.values()) == 18
+    assert (paper["train"] - release["train"]) + (paper["dev"] - release["dev"]) == 18
+    assert 18 % 3 == 0 and 18 // 3 == 6
+    assert "2407.18901" in (ROOT / "data/appworld.py").read_text()
+
+
 def test_pool_contains_compact_metadata_and_db_digests():
     rows = dataset._pool()
     assert len(rows) == 732
@@ -56,6 +69,12 @@ def test_released_coverage_is_derived_from_bundle_members():
             for name in archive.namelist()
             if name.startswith("data/tasks/") and name.endswith("/ground_truth/api_calls.json")
         }
+        solutions = {
+            name.split("/", 3)[2]
+            for name in archive.namelist()
+            if name.startswith("data/tasks/") and name.endswith("/ground_truth/solution.py")
+        }
+    assert solutions == released
     assert released == train_dev
     assert len(released) == 147
     assert not (released & set(dataset.split_ids()["test_normal"] + dataset.split_ids()["test_challenge"]))
@@ -108,24 +127,39 @@ def test_agent_image_has_no_gold_and_service_rejects_direct_grade_access(tmp_pat
     service = dataset.SERVICE_IMAGE
     probe = tmp_path / "probe.py"
     probe.write_text(textwrap.dedent("""
-        import json, threading, time, urllib.error, urllib.request
-        import uvicorn, appworld_service
-        server = uvicorn.Server(uvicorn.Config(appworld_service.app, host="127.0.0.1", port=8000, log_level="error"))
-        thread = threading.Thread(target=server.run, daemon=True); thread.start()
+        import json, time, urllib.error, urllib.request
+        from pathlib import Path
         for _ in range(100):
-            try: urllib.request.urlopen("http://127.0.0.1:8000/", timeout=1); break
+            try:
+                urllib.request.urlopen("http://127.0.0.1:8000/", timeout=1)
+                break
             except Exception: time.sleep(.1)
+        else: raise AssertionError("service did not become healthy")
         def call(path, payload):
             req = urllib.request.Request("http://127.0.0.1:8000" + path,
                 data=json.dumps(payload).encode(), headers={"content-type": "application/json"})
             try:
-                with urllib.request.urlopen(req, timeout=30) as response: return response.status
-            except urllib.error.HTTPError as error: return error.code
-        assert call("/initialize", {"task_id":"e85d92a_1", "load_ground_truth":True, "ground_truth_mode":"full"}) == 200
-        assert call("/evaluate", {"task_id":"e85d92a_1"}) == 404
-        assert call("/initialize", {"task_id":"92fe421_3"}) == 403
-        assert call("/execute", {"task_id":"92fe421_3", "code":"print(1)"}) == 403
-        server.should_exit = True; thread.join(timeout=10)
+                with urllib.request.urlopen(req, timeout=30) as response:
+                    return response.status, response.read().decode()
+            except urllib.error.HTTPError as error: return error.code, error.read().decode()
+        status, body = call("/initialize", {"task_id":"e85d92a_1", "load_ground_truth":True,
+                                     "ground_truth_mode":"full",
+                                     "experiment_name":"../../escape"})
+        assert status == 200
+        assert json.loads(body)["output"]["supervisor"]["email"]
+        assert urllib.request.urlopen("http://127.0.0.1:8000/api_docs").status == 200
+        assert call("/evaluate", {"task_id":"e85d92a_1"})[0] == 404
+        assert call("/initialize", {"task_id":"92fe421_3"})[0] == 403
+        assert call("/execute", {"task_id":"92fe421_3", "code":"print(1)"})[0] == 403
+        def execute(code):
+            status, body = call("/execute", {"task_id":"e85d92a_1", "code":code})
+            assert status == 200
+            return json.loads(body)["output"]
+        for task in ("e85d92a_1", "92fe421_3"):
+            output = execute(f"from pathlib import Path; print(Path('/appworld/data/tasks/{task}/ground_truth/answer.json').read_text())")
+            assert "FileNotFoundError" in output, output
+        output = execute("print(apis.supervisor.show_active_task())")
+        assert "Velvet Echo" in output and "NOT_GIVEN" in output, output
     """), encoding="utf-8")
     image_probe = subprocess.run(
         ["docker", "run", "--rm", "--network", "none", "--entrypoint", "sh", agent,
@@ -133,8 +167,9 @@ def test_agent_image_has_no_gold_and_service_rejects_direct_grade_access(tmp_pat
         capture_output=True, text=True, timeout=120)
     assert image_probe.returncode == 0, image_probe.stdout + image_probe.stderr
     service_probe = subprocess.run(
-        ["docker", "run", "--rm", "--network", "none", "-e", "HG_ENV_TASK_ID=e85d92a_1",
-         "-v", f"{probe}:/probe.py:ro", service, "python", "/probe.py"],
+        ["docker", "run", "--rm", "--network", "none", "--user", f"{os.getuid()}:{os.getgid()}", "-e", "HG_ENV_TASK_ID=e85d92a_1",
+         "-v", f"{probe}:/probe.py:ro", service, "sh", "-c",
+         "appworld-server & server=$!; python /probe.py; rc=$?; kill $server 2>/dev/null || true; wait $server 2>/dev/null || true; exit $rc"],
         capture_output=True, text=True, timeout=180)
     assert service_probe.returncode == 0, service_probe.stdout + service_probe.stderr
 
