@@ -128,7 +128,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/data-0.1.0.bundle`
 - **sha256:** `fd9f9608c2ec71ed0ac25c3633a738b9129a318a129e31230425b9188e508250`
 
-> Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the prebuilt image contains the pinned appworld package, unpacked apps and task data.
+> Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the trusted service image contains the pinned appworld package and task data.
 
 ## `bfcl_v3`
 

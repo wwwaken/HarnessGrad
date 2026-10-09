@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import textwrap
@@ -59,6 +60,46 @@ def test_released_coverage_is_derived_from_bundle_members():
     assert len(released) == 147
     assert not (released & set(dataset.split_ids()["test_normal"] + dataset.split_ids()["test_challenge"]))
     assert dataset.POOL_SHA256 == __import__("hashlib").sha256(dataset.POOL.read_bytes()).hexdigest()
+
+
+def test_every_uncovered_task_rejects_a_reference():
+    uncovered = set(dataset.SPLIT["eval"])
+    assert len(uncovered) == 585
+    for task_id in uncovered:
+        with pytest.raises(ValueError, match="no released reference"):
+            dataset.oracle_files({"task_id": task_id})
+
+
+def test_every_released_reference_passes_its_official_evaluation(tmp_path):
+    """Run each released API-call oracle in its own process.
+
+    AppWorld keeps global database/app state, so a single interpreter cannot safely
+    evaluate two task ids.  One subprocess per covered task makes this a replay of the
+    release artifacts rather than a test of a shared process's leftovers.
+    """
+    python = "/mnt/20t/xubuqiang/venvs/appworld/bin/python"
+    probe = tmp_path / "probe.py"
+    for task_id in sorted(dataset._oracle_ids()):
+        reference = dataset.oracle_files({"task_id": task_id})["reference.py"]
+        probe.write_text(textwrap.dedent(f"""
+            import json, os
+            from appworld import AppWorld
+            os.environ["APPWORLD_ROOT"] = {str(dataset.UNPACKED)!r}
+            with AppWorld(task_id={task_id!r}, experiment_name="released-oracle",
+                          raise_on_failure=False) as world:
+                world.execute({reference!r})
+                tracker = world.evaluate()
+                print(json.dumps({{"success": bool(tracker.success),
+                                  "num_tests": tracker.num_tests,
+                                  "failures": tracker.failures}}))
+        """), encoding="utf-8")
+        proc = subprocess.run([python, str(probe)], cwd=tmp_path,
+                              env={**os.environ, "APPWORLD_ROOT": str(dataset.UNPACKED)},
+                              capture_output=True, text=True, timeout=180)
+        assert proc.returncode == 0, f"{task_id}: {proc.stdout[-500:]}\\n{proc.stderr[-500:]}"
+        report = json.loads(proc.stdout.strip().splitlines()[-1])
+        assert report["success"] is True and report["num_tests"] > 0, (
+            f"{task_id}: {report}")
 
 
 def test_agent_image_has_no_gold_and_service_rejects_direct_grade_access(tmp_path):

@@ -170,7 +170,7 @@ def oracle_files(task: dict) -> dict[str, str]:
             f"import json\ncalls = json.loads({calls!r})\n" +
             "for call in calls:\n" +
             "    method = call.get('method', 'get').lower()\n" +
-            "    requester_call = f\"requester.{method}({call['url']!r}, data={call.get('data') or {}!r})\"\n" +
+            "    requester_call = f\"requester.{method}({call['url']!r}, data={call.get('data') or {}!r}, client=requester.client)\"\n" +
             "    exec(requester_call)\n"}
 
 

@@ -50,7 +50,9 @@
   "verify": {
     "kinds": ["answer", "command"],
     "command_required": ["argv", "reward_file"],
+    "command_optional": ["cwd", "inputs", "pass_when", "stdout", "timeout_s", "evidence_file", "image"],
     "absolute_paths": ["reward_file", "evidence_file"],
+    "image": "optional pinned verifier image for an exec command; defaults to the task image",
     "input_target_keys": ["path", "dst"],
     "dst_must_be_top_level": true
   },

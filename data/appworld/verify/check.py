@@ -46,7 +46,10 @@ def main() -> int:
                 method = str(call.get("method", "get")).lower()
                 if method not in {"get", "post", "put", "patch", "delete"}:
                     unmeasured(f"unknown API method: {method}", args.evidence_file)
-                world.execute(f"requester.{method}({url!r}, data={call.get('data') or {}!r})")
+                world.execute(
+                    f"requester.{method}({url!r}, data={call.get('data') or {}!r}, "
+                    "client=requester.client)"
+                )
             tracker = world.evaluate()
     except SystemExit:
         raise
