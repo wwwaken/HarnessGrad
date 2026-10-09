@@ -7,7 +7,6 @@ the legacy trajectory.  Missing phase semantics are marked ``custom`` /
 """
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import subprocess
@@ -20,7 +19,7 @@ from .events import ArtifactKind, Evidence, EventRecorder, ImplementationMode, L
 
 @dataclass(frozen=True)
 class LegacyRun:
-    response: dict[str, Any]
+    response: Any
     stdout: str
     stderr: str
     returncode: int
@@ -28,10 +27,18 @@ class LegacyRun:
     events: tuple[dict[str, Any], ...]
 
 
-def _read_json(path: str | Path | None) -> Any | None:
-    if not path: return None
-    try: return json.loads(Path(path).read_text(encoding="utf-8"))
-    except (OSError, ValueError): return None
+def _read_json(path: str | Path | None) -> tuple[Any | None, str | None]:
+    if not path: return None, None
+    if not Path(path).exists(): return None, None
+    try: return json.loads(Path(path).read_text(encoding="utf-8")), None
+    except OSError as exc: return None, f"trajectory_io:{exc}"
+    except ValueError as exc: return None, f"trajectory_json:{exc}"
+
+
+def _text(value: str | bytes | None) -> str:
+    if value is None: return ""
+    if isinstance(value, bytes): return value.decode("utf-8", errors="replace")
+    return value
 
 
 class LegacyCompatibilityWrapper:
@@ -58,29 +65,60 @@ class LegacyCompatibilityWrapper:
             request_bytes, producer=Owner("recorder", "compatibility-wrapper"), visibility="public_record",
             content_kind="none")
         scope = Scope(run_id, session_id, str(req.get("iteration_id") or "iteration-0"), str(req.get("branch_id") or "main"))
-        response_art = None; stdout = stderr = ""; returncode = 1
+        response_art = None; stdout = stderr = ""; returncode = 1; execution_failure = None; output_error = None
         try:
             env = os.environ.copy(); env.update(self.env)
             proc = subprocess.run(self.entrypoint, input=json.dumps(req), text=True,
                                   capture_output=True, timeout=self.timeout, env=env,
                                   cwd=req.get("cwd") or None, check=False)
-            stdout, stderr, returncode = proc.stdout, proc.stderr, proc.returncode
+            stdout, stderr, returncode = _text(proc.stdout), _text(proc.stderr), proc.returncode
             try: response = json.loads(stdout) if stdout.strip() else {}
-            except ValueError: response = {"legacy_parse_error": True}
+            except ValueError as exc:
+                response = stdout
+                output_error = f"invalid_json:{exc}"
+                execution_failure = {"class": "subject_error", "subject_or_infrastructure": "subject",
+                                     "detail": output_error}
+            if not isinstance(response, dict) and execution_failure is None:
+                output_error = "legacy_response_must_be_object"
+                execution_failure = {"class": "subject_error", "subject_or_infrastructure": "subject",
+                                     "detail": output_error}
+            if returncode != 0:
+                execution_failure = {"class": "subject_error", "subject_or_infrastructure": "subject",
+                                     "detail": f"legacy exit {returncode}"}
         except subprocess.TimeoutExpired as exc:
-            stdout, stderr, returncode = exc.stdout or "", exc.stderr or "", 124
-            response = {"legacy_timeout": True}
+            stdout, stderr, returncode = _text(exc.stdout), _text(exc.stderr), 124
+            response = stdout
+            execution_failure = {"class": "subject_timeout", "subject_or_infrastructure": "subject",
+                                 "detail": "legacy method timed out"}
         trajectory_path = req.get("trajectory_out")
-        trajectory = _read_json(trajectory_path)
+        trajectory, trajectory_error = _read_json(trajectory_path)
+        if trajectory_error and execution_failure is None:
+            execution_failure = {"class": "subject_error", "subject_or_infrastructure": "subject", "detail": trajectory_error}
         response_bytes = json.dumps({"response": response, "stdout": stdout, "stderr": stderr,
                                      "returncode": returncode}, sort_keys=True, ensure_ascii=False).encode()
         response_art = artifact("legacy-response-data-" + run_id, ArtifactKind.LEGACY_RESPONSE, response_bytes,
             producer=Owner("recorder", "compatibility-wrapper"), visibility="public_record", parents=(legacy_art.artifact_id,), content_kind="none")
+        trajectory_art = None
+        if trajectory is not None:
+            trajectory_bytes = json.dumps(trajectory, sort_keys=True, ensure_ascii=False).encode()
+            trajectory_art = artifact("legacy-trajectory-" + run_id, ArtifactKind.LEGACY_RESPONSE,
+                trajectory_bytes, producer=Owner("recorder", "compatibility-wrapper"),
+                visibility="public_record", parents=(response_art.artifact_id,), content_kind="none")
+        output_artifacts = [response_art] + ([trajectory_art] if trajectory_art else [])
+        claims = {"legacy_changed": response.get("changed") if isinstance(response, dict) else None,
+                  "legacy_steps": response.get("steps") if isinstance(response, dict) else None,
+                  "response_type": type(response).__name__, "raw_stdout_sha256": sha256_bytes(stdout),
+                  "raw_stderr_sha256": sha256_bytes(stderr)}
+        if output_error: claims["output_error"] = output_error
+        if trajectory_error: claims["trajectory_error"] = trajectory_error
         recorder.record(scope=scope, stage=Stage(StageID.PROPOSE_CHANGES, "legacy-proposal", ImplementationMode.CUSTOM),
             payload={"payload_kind": "proposal", "candidate_ids": [], "artifact_kind": "none", "hypothesis": "legacy output is not a typed proposal"},
             owner=owner, producer=owner, implementation={"module": "legacy.compatibility", "compliance": "unverified", "fidelity": "unknown"},
-            evidence=Evidence.UNOBSERVED, input_artifacts=[legacy_art], output_artifacts=[response_art], artifacts=[legacy_art, response_art],
-            reason="legacy_entrypoint_boundary", claims={"legacy_changed": response.get("changed"), "legacy_steps": response.get("steps")})
+            lifecycle=Lifecycle.FAILED if execution_failure else Lifecycle.COMPLETED,
+            failure=execution_failure, evidence=Evidence.MEASURED if execution_failure else Evidence.UNOBSERVED,
+            input_artifacts=[legacy_art], output_artifacts=output_artifacts,
+            artifacts=[legacy_art, response_art] + ([trajectory_art] if trajectory_art else []),
+            reason="legacy_entrypoint_boundary", claims=claims)
         # An old response cannot establish selection or deployment.  Empty result
         # events make the missing semantic boundary explicit for downstream readers.
         for stage in (StageID.SELECT_CONTEXT, StageID.EXECUTE, StageID.ORGANIZE_FEEDBACK,

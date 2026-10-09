@@ -22,7 +22,7 @@
         "iteration_id":{"$ref":"#/$defs/id"}, "branch_id":{"$ref":"#/$defs/id"},
         "candidate_id":{"$ref":"#/$defs/id"}, "candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},
         "task_id":{"$ref":"#/$defs/id"}, "trial_id":{"$ref":"#/$defs/id"},
-        "parent_scope":{"$ref":"#/$defs/id"}, "stream_id":{"$ref":"#/$defs/id"}, "batch_id":{"$ref":"#/$defs/id"}, "deployment_epoch":{"$ref":"#/$defs/id"}
+        "parent_scope":{"$ref":"#/$defs/id"}, "stream_id":{"$ref":"#/$defs/id"}, "batch_id":{"$ref":"#/$defs/id"}, "deployment_epoch":{"$ref":"#/$defs/id"}, "scope_id":{"$ref":"#/$defs/id"}
       }
     },
     "principal": {
@@ -34,9 +34,10 @@
       "required":["artifact_id","kind","sha256","visibility","producer"],
       "properties":{
         "artifact_id":{"$ref":"#/$defs/id"},
-        "kind":{"type":"string","enum":["task_set","parent_state","experience","feedback","proposal","candidate","validation","study_score","heldout_score","selection","deployment","stop_decision","archive","trace","claim","legacy_response","post_run_analysis","checkpoint","tree_snapshot","prompt","skill","memory","policy","parameter_update"]},
+        "kind":{"type":"string","enum":["task_set","parent_state","experience","feedback","proposal","candidate","validation","study_score","heldout_score","selection","deployment","stop_decision","archive","trace","claim","legacy_response","post_run_analysis","checkpoint","tree_snapshot","prompt","skill","memory","policy","parameter_update","patch","full_file","full-file","file","tree","config"]},
         "sha256":{"$ref":"#/$defs/hash"},
         "uri":{"type":"string"},
+        "scope":{"type":"object","additionalProperties":false,"required":["run_id","session_id","iteration_id","branch_id"],"properties":{"run_id":{"$ref":"#/$defs/id"},"session_id":{"$ref":"#/$defs/id"},"iteration_id":{"$ref":"#/$defs/id"},"branch_id":{"$ref":"#/$defs/id"},"scope_id":{"$ref":"#/$defs/id"}}},
         "visibility":{"type":"string","enum":["method","framework","heldout_private","public_record"]},
         "producer":{"$ref":"#/$defs/principal"},
         "parents":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},
@@ -45,7 +46,7 @@
         "score_kind":{"type":"string","enum":["study","heldout"]},
         "split_visibility":{"type":"string","enum":["adaptation_visible","selection_only","report_only","heldout_private"]},
         "scorer_revision":{"type":"string"},
-        "content_kind":{"type":"string","enum":["patch","full_file","file","tree","config","prompt","skill","memory","policy","checkpoint","parameter_update","none"]}
+        "content_kind":{"type":"string","enum":["patch","full_file","full-file","file","tree","config","prompt","skill","memory","policy","checkpoint","parameter_update","none"]}
       }
     },
     "implementation": {
@@ -74,7 +75,7 @@
       "oneOf":[
         {"$ref":"#/$defs/context_payload"}, {"$ref":"#/$defs/execution_payload"},
         {"$ref":"#/$defs/feedback_payload"}, {"$ref":"#/$defs/proposal_payload"},
-        {"$ref":"#/$defs/validation_payload"}, {"$ref":"#/$defs/study_payload"},
+        {"$ref":"#/$defs/validation_payload"}, {"$ref":"#/$defs/study_payload"}, {"$ref":"#/$defs/heldout_payload"},
         {"$ref":"#/$defs/selection_payload"}, {"$ref":"#/$defs/deployment_payload"},
         {"$ref":"#/$defs/continuation_payload"}, {"$ref":"#/$defs/archive_payload"},
         {"$ref":"#/$defs/reconciliation_payload"}, {"$ref":"#/$defs/empty_payload"}
@@ -89,13 +90,14 @@
       "deployment_id":{}, "deployed_candidate_ids":{}, "status":{}, "from_snapshot":{}, "to_snapshot":{}, "rollback_ref":{},
       "action":{}, "next_scope":{}, "member_ids":{}, "retention_rule":{}, "reconciles_event_ids":{}, "reason":{}
     }},
-    "parent_ref": {"type":"object","additionalProperties":false,"required":["parent_id","role"],"properties":{"parent_id":{"$ref":"#/$defs/id"},"role":{"type":"string","enum":["root","base","donor","peer","crossover","evidence"]}}},
+    "parent_ref": {"oneOf":[{"type":"object","additionalProperties":false,"required":["role"],"properties":{"role":{"const":"root"}}},{"type":"object","additionalProperties":false,"required":["parent_id","role"],"properties":{"parent_id":{"$ref":"#/$defs/id"},"role":{"type":"string","enum":["base","donor","peer","crossover","evidence"]}}}]},
     "context_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","properties":{"payload_kind":{"const":"context_selection"},"task_set_sha":{"$ref":"#/$defs/hash"},"parent_refs":{"type":"array","items":{"$ref":"#/$defs/parent_ref"}},"selection_basis":{"type":"string"}}}]},
     "execution_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["execution_mode","new_execution"],"properties":{"payload_kind":{"const":"execution"},"execution_mode":{"type":"string","enum":["online","replay"]},"replay_kind":{"type":"string","enum":["stored_counterfactual","executed_smoke","executed_benchmark"]},"source_trace_ids":{"type":"array","items":{"$ref":"#/$defs/id"}},"new_execution":{"type":"boolean"},"training_scope":{"type":"string","minLength":1}}}]},
     "feedback_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","properties":{"payload_kind":{"const":"feedback"},"source_artifact_ids":{"type":"array","items":{"$ref":"#/$defs/id"}},"consumer_scope":{"$ref":"#/$defs/id"},"feedback_consumers":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},"consumer_role":{"type":"string"}}}]},
-    "proposal_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["candidate_ids"],"properties":{"payload_kind":{"const":"proposal"},"candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},"artifact_kind":{"type":"string","enum":["patch","full_file","tree","prompt","skill","memory","policy","checkpoint","parameter_update","none"]},"hypothesis":{"type":"string"}}}]},
+    "proposal_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["candidate_ids"],"properties":{"payload_kind":{"const":"proposal"},"candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},"artifact_kind":{"type":"string","enum":["patch","full_file","full-file","file","tree","config","prompt","skill","memory","policy","checkpoint","parameter_update","none"]},"hypothesis":{"type":"string"}}}]},
     "validation_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","properties":{"payload_kind":{"const":"validation"},"candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"}},"valid":{"type":"boolean"},"checks":{"type":"array","items":{"type":"string"}}}}]},
-    "study_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["score_kind"],"properties":{"payload_kind":{"const":"study_evaluation"},"score_kind":{"const":"study"},"candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"}},"scorer_revision":{"type":"string"},"evaluation_completeness":{"type":"string","enum":["partial","staged","full","heldout"]}}}]},
+    "study_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["score_kind"],"properties":{"payload_kind":{"const":"study_evaluation"},"score_kind":{"const":"study"},"candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"}},"scorer_revision":{"type":"string"},"evaluation_completeness":{"type":"string","enum":["partial","staged","full"]}}}]},
+    "heldout_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["score_kind","candidate_ids","scorer_revision","evaluation_completeness"],"properties":{"payload_kind":{"const":"heldout_evaluation"},"score_kind":{"const":"heldout"},"candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"}},"scorer_revision":{"type":"string"},"evaluation_completeness":{"const":"heldout"}}}]},
     "selection_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["selected_candidate_ids","basis","tentative"],"properties":{"payload_kind":{"const":"selection_result"},"selected_candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},"basis":{"type":"array","items":{"$ref":"#/$defs/id"}},"tentative":{"type":"boolean"},"later_eval_ref":{"$ref":"#/$defs/id"}}}]},
     "deployment_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["deployment_id","deployed_candidate_ids","status","from_snapshot","to_snapshot"],"properties":{"payload_kind":{"const":"deployment_fact"},"deployment_id":{"$ref":"#/$defs/id"},"deployed_candidate_ids":{"type":"array","items":{"$ref":"#/$defs/id"},"uniqueItems":true},"status":{"type":"string","enum":["deployed","none","rolled_back","failed"]},"from_snapshot":{"$ref":"#/$defs/hash"},"to_snapshot":{"$ref":"#/$defs/hash"},"rollback_ref":{"$ref":"#/$defs/id"}}}]},
     "continuation_payload": {"allOf":[{"$ref":"#/$defs/payload_base"},{"type":"object","required":["action"],"properties":{"payload_kind":{"const":"continuation"},"action":{"type":"string","enum":["stop","continue","repeat","branch","replay"]},"next_scope":{"$ref":"#/$defs/id"}}}]},
