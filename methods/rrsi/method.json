@@ -9,12 +9,12 @@
  },
  "fidelity_profile": {
    "preserved": [
-     "annealed edit budget, stall/exploration reserve, novelty and pruning state",
-     "pre-evaluation deterministic plus model critic with bounded repair",
-     "noise floor, two-branch cost rule, and study-side score discipline",
+     "noise floor, two-branch cost rule, structural novelty, and study-side score discipline",
      "m-candidate argmax over admissible candidates and incumbent retention when none qualify (offline pure module)"
    ],
    "adapted": [
+     "annealed budget, stall/exploration reserve, pruning state, and bounded critic repair are wired in the old one-candidate mode-A port only",
+     "pre-evaluation deterministic plus model critic is retained in the port, while native multi-candidate retry/deploy wiring is missing",
      "HarnessGrad artifact/channel and configurable model, scaffold, domain evaluator and split",
      "platform trial-spread calibration is an explicit provenance-labeled adapter",
      "role prompts are compact adaptations of the upstream action contracts, not verbatim templates",
