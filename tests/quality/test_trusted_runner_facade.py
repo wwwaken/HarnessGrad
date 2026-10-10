@@ -186,6 +186,8 @@ def test_selection_deployment_stale_cas_and_rollback(tmp_path):
     sel_id = selection["selection"]["selection_id"]
     deployed = f.select_deploy({"action": "deploy", "selection_id": sel_id, "expected_from_snapshot_sha": bsha, "idempotency_key": "dep"})
     assert deployed["deployment"]["status"] == "none"
+    assert deployed["deployment"]["deployed_candidate_ids"] == []
+    assert deployed["deployment"]["to_snapshot_sha"] == bsha
     with pytest.raises(TrustedRunnerError, match="stale_expected_snapshot"):
         f.select_deploy({"action": "deploy", "selection_id": sel_id, "expected_from_snapshot_sha": "sha256:" + "f" * 64, "idempotency_key": "dep-stale"})
     with pytest.raises(TrustedRunnerError, match="rollback_requires_validation"):

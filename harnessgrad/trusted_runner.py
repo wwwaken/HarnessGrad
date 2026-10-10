@@ -619,10 +619,11 @@ class TrustedRunnerFacade:
         status = requested_status or ("deployed" if selected else "none")
         if not selected and status in {"tentative", "deployed"}:
             status = "none"
-        if status == "failed":
+        if status in {"none", "failed"}:
             to_sha = self.current_snapshot_sha
+        applied = selected if status in {"deployed", "tentative"} else []
         deployment = {"deployment_id": deployment_id, "selection_id": selection["selection_id"], "status": status,
-                      "deployed_candidate_ids": selected, "from_snapshot_sha": self.current_snapshot_sha,
+                      "deployed_candidate_ids": applied, "from_snapshot_sha": self.current_snapshot_sha,
                       "to_snapshot_sha": to_sha, "deployment_artifact": {"artifact_id": deployment_id, "kind": "deployment",
                       "content_sha": _sha({"from": self.current_snapshot_sha, "to": to_sha}), "producer": {"role": "deployer", "id": "trusted-runner"}, "visibility": "deployment_record"}}
         self.deployments[deployment_id] = deployment
