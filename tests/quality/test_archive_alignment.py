@@ -56,6 +56,20 @@ def test_dgm_keep_better_is_against_initial_and_seed_is_reproducible():
     assert ra == rb and ra["with_replacement"]
 
 
+def test_dgm_archive_rejects_duplicate_unknown_lineage_and_nonfinite_scores():
+    import math
+    archive = dgm.DGMArchive().add(dgm.ArchiveNode("root", 0.5))
+    for node in (dgm.ArchiveNode("root", 0.5),
+                 dgm.ArchiveNode("orphan", 0.5, ("missing",)),
+                 dgm.ArchiveNode("nan", math.nan)):
+        try:
+            archive.add(node)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid archive node was accepted")
+
+
 def test_dgm_staged_schedule_escalates_and_consumes_budget_once():
     scheduler = dgm_stage.DGMStagedScheduler((dgm_stage.Stage("small", 2),
                                                dgm_stage.Stage("medium", 3),
@@ -66,6 +80,22 @@ def test_dgm_staged_schedule_escalates_and_consumes_budget_once():
     stage, consumed, record = scheduler.consume(prior, "n", 3)
     assert stage.name == "medium" and consumed == 3
     assert record["budget_after"] == 0
+
+
+def test_dgm_full_threshold_ignores_partial_high_score():
+    scheduler = dgm_stage.DGMStagedScheduler(
+        (dgm_stage.Stage("small", 1), dgm_stage.Stage("medium", 1),
+         dgm_stage.Stage("full", 1, True)), baseline_score=0.5)
+    partial = dgm_stage.Evaluation("n", "medium", 5, 5, 0.95,
+                                   required_full_population=100, full_population=50)
+    assert scheduler.next_stage([partial], "n") is None
+    complete_low = dgm_stage.Evaluation("n2", "medium", 100, 100, 0.5,
+                                        required_full_population=100, full_population=100)
+    strict = dgm_stage.DGMStagedScheduler(
+        (dgm_stage.Stage("small", 1), dgm_stage.Stage("medium", 1),
+         dgm_stage.Stage("full", 1, True)), baseline_score=0.8,
+        archive_scores=(0.8,))
+    assert strict.next_stage([complete_low], "n2") is None
 
 
 def test_hyperagents_selector_variants_and_parallel_seed():
@@ -97,3 +127,5 @@ def test_hyperagents_staged_fraction_is_recorded_without_score_discount():
     assert record["stage"] == "full"
     assert record["staged_fraction"] == 0.25
     assert record["score_rescaling"] == "none"
+    assert scheduler.next_stage(hyper_stage.HyperEvaluation("n", 0.25, False, 0.3)) == "staged_complete"
+    assert scheduler.next_stage(hyper_stage.HyperEvaluation("n", 0.25, False, 0.4)) == "full"

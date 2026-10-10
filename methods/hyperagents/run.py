@@ -142,7 +142,8 @@ def _score(point: dict) -> float:
     wrong reason for the right answer -- and on any point where `score` is the exam it
     would have read the exam.
     """
-    return protocol.studied_score(point) or 0.0
+    value = protocol.studied_score(point)
+    return float(value) if isinstance(value, (int, float)) and math.isfinite(value) else 0.0
 
 
 def _sigmoid(x: float) -> float:
@@ -177,10 +178,19 @@ def _valid(point: dict) -> bool:
     that is: the round was measured, and the method's own edit was accepted as a
     change (a round that changed nothing is not a distinct state to build on).
     """
-    if not point.get("measured_by_platform", True):
+    if point.get("measured_by_platform") is False:
         return False
     reported = point.get("method_reported") or {}
-    return not reported.get("rejected")
+    if reported.get("rejected") or reported.get("platform_safety_ineligible"):
+        return False
+    if point.get("valid_parent") is False or reported.get("valid_parent") is False:
+        return False
+    for key in ("task_reset", "meta_reset", "task_rollback", "meta_rollback"):
+        state = reported.get(key)
+        if isinstance(state, dict) and state.get("success") is False:
+            return False
+    value = protocol.studied_score(point)
+    return isinstance(value, (int, float)) and math.isfinite(value)
 
 
 def weights_for(candidates: list[dict], scores: dict, children: dict,
@@ -212,7 +222,13 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
     """Returns (chosen point, a report comparing all three settings."""
     candidates = [p for p in history if _valid(p)]
     if not candidates:
-        candidates = history[-1:] or [{}]
+        # Upstream falls back to the initial archive node, never the latest failed
+        # generation. Keep the fallback explicit so callers can report it.
+        candidates = [p for p in history if p.get("round") == 0 and _valid(p)]
+        if not candidates:
+            return {}, {"selector": SETTING, "candidates": [],
+                        "reason": "no eligible parent; initial fallback unavailable",
+                        "seed": round_index * 104729}
 
     scores = {p.get("round", 0): _score(p) for p in candidates}
     top3 = sorted(scores.values(), reverse=True)[:3]
@@ -267,6 +283,7 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
                 "49-57 computes them and then discards them in random.choice, which "
                 "is why that branch -- and only that branch -- is uniform",
         "seed": round_index * 104729,
+        "valid_parent_required": True,
         "selection": {
             "selected_parent": chosen.get("round"),
             "selected_parent_role": "task_agent_state",
@@ -323,11 +340,21 @@ def main() -> int:
     errors: list[BaseException] = []
     for child in range(children):
         parent, report = select_parent(history, round_index + child)
+        if not parent:
+            reports.append({**report, "child": child + 1,
+                            "children_this_call": children,
+                            "why": "no eligible parent; no edit submitted"})
+            continue
         report["child"] = child + 1
         report["children_this_call"] = children
         report["parent_round"] = parent.get("round")
         parent_dir = _state_dir(base, parent.get("round"))
-        report["staged_eval"] = HYPER_STAGED.HyperStagedScheduler().record(None)
+        staged_score = protocol.studied_score(parent)
+        staged_eval = HYPER_STAGED.HyperEvaluation(
+            node_id=f"r{parent.get('round')}", staged_fraction=1.0,
+            run_full_eval=bool(parent.get("run_full_eval")),
+            score=staged_score if isinstance(staged_score, (int, float)) else None)
+        report["staged_eval"] = HYPER_STAGED.HyperStagedScheduler().record(staged_eval)
         if not parent_dir or not Path(parent_dir).is_dir():
             reports.append({**report, "why": "the selected state is not staged"})
             continue
@@ -378,18 +405,28 @@ def main() -> int:
                 },
                 "role_refs": {
                     "task_agent": {
-                        "role": "task_agent", "artifact_ref": f"task-r{round_index}-child{child + 1}",
+                        "declared_upstream_role": "task_agent",
+                        "actual_execution": {"invoked": True,
+                                              "method_model": editor.spent().get("model")},
+                        "artifact_ref": f"task-r{round_index}-child{child + 1}",
                     },
                     "meta_agent": {
-                        "role": "meta_agent", "model": _meta_model(req),
+                        "declared_upstream_role": "meta_agent",
+                        "declared_upstream_model": _meta_model(req),
+                        "status": "not_invoked",
                         "artifact_ref": f"meta-r{round_index}-child{child + 1}",
                     },
                     "patch_identity": {
                         "task": task_patch.as_dict() if task_patch else None,
                         "meta": meta_patch.as_dict() if meta_patch else None,
-                        "rollback": {"task": None, "meta": None},
+                        "rollback": {
+                            "task": {"status": "not_invoked"},
+                            "meta": {"status": "not_invoked"},
+                        },
                     },
                 },
+                "valid_parent": True,
+                "evaluation_success": True,
                 "selection": {
                     "selected_parent": parent.get("round"),
                     "selected_parent_ref": f"round-{parent.get('round')}",
@@ -410,7 +447,10 @@ def main() -> int:
                "children_this_call": children,
                "selection": {"selected_parent_refs": [f"round-{p}" for p in parents if p is not None]},
                "deployment": {"deployed_node": None, "status": "pending_trusted_runtime"},
-               "role_refs": {"task_agent": "task_agent.py", "meta_agent": "meta_agent.py"}}
+               "role_refs": {"task_agent": {"declared_upstream_role": "task_agent",
+                                              "actual_method_model": editor.spent().get("model")},
+                             "meta_agent": {"declared_upstream_role": "meta_agent",
+                                              "status": "not_invoked"}}}
     if not measured:
         # A total outage is `fail` (the call did not run); a draw where the model declined
         # is a report with `stop: false`, because one unlucky sample of parents is not a
@@ -436,9 +476,11 @@ def main() -> int:
         req, method="hyperagents", steps=measured,
         acceptance_rule=("HyperAgents' validity gate never looks at score; the "
                          "platform's measurement decides the score"),
-        stop=True,
+        stop=(not errors and len(measured) == children),
         note=f"HyperAgents: {len(measured)} child(ren) submitted in one call",
-        extra={"children_this_call": len(measured)},
+        extra={"children_this_call": len(measured),
+               "children_requested": children,
+               "partial_batch": bool(errors or len(measured) < children)},
     )
 
 

@@ -88,15 +88,29 @@ class DGMArchive:
     nodes: tuple[ArchiveNode, ...] = ()
     retention: str = "keep_all"
     noise_leeway: float = 0.1
+    root_id: str | None = None
 
     def __post_init__(self) -> None:
         if self.retention not in {"keep_all", "keep_better"}:
             raise ValueError("retention must be keep_all or keep_better")
+        ids = [node.node_id for node in self.nodes]
+        if len(ids) != len(set(ids)):
+            raise ValueError("archive contains duplicate node IDs")
+        known = set(ids)
+        for node in self.nodes:
+            if node.score is not None and not math.isfinite(float(node.score)):
+                raise ValueError("archive score must be finite")
+            if any(parent not in known for parent in node.parent_refs):
+                raise ValueError(f"node {node.node_id!r} has an unknown parent")
+        if self.root_id is not None and self.root_id not in known:
+            raise ValueError("archive root_id is not present")
 
     @property
     def initial_score(self) -> float | None:
+        if self.root_id is None:
+            return None
         for node in self.nodes:
-            if isinstance(node.score, (int, float)):
+            if node.node_id == self.root_id and isinstance(node.score, (int, float)):
                 return float(node.score)
         return None
 
@@ -108,10 +122,20 @@ class DGMArchive:
         """
         if not node.compiled:
             return self
+        known = {n.node_id for n in self.nodes}
+        if node.node_id in known:
+            raise ValueError(f"duplicate node ID {node.node_id!r}")
+        if node.score is not None and not math.isfinite(float(node.score)):
+            raise ValueError("archive score must be finite")
+        if any(parent not in known for parent in node.parent_refs):
+            raise ValueError(f"node {node.node_id!r} has an unknown parent")
         if self.retention == "keep_better" and self.initial_score is not None:
             if node.score is None or node.score < self.initial_score - self.noise_leeway:
                 return self
-        return DGMArchive(self.nodes + (node,), self.retention, self.noise_leeway)
+        root_id = self.root_id
+        if root_id is None and not self.nodes and not node.parent_refs:
+            root_id = node.node_id
+        return DGMArchive(self.nodes + (node,), self.retention, self.noise_leeway, root_id)
 
     def retained(self) -> tuple[ArchiveNode, ...]:
         return self.nodes

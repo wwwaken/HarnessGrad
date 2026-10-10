@@ -21,13 +21,20 @@ class HyperStagedScheduler:
     def next_stage(self, evaluation: HyperEvaluation | None) -> str:
         if evaluation is None:
             return "staged"
-        return "full" if not evaluation.run_full_eval else "complete"
+        if evaluation.run_full_eval:
+            return "complete"
+        if evaluation.score is None:
+            return "staged_complete"
+        return "full" if evaluation.score >= self.full_threshold else "staged_complete"
 
     def record(self, evaluation: HyperEvaluation | None) -> dict:
         return {
             "stage": self.next_stage(evaluation),
             "staged_fraction": evaluation.staged_fraction if evaluation else None,
             "run_full_eval": bool(evaluation and evaluation.run_full_eval),
+            "threshold": self.full_threshold,
+            "escalation_eligible": bool(evaluation and evaluation.score is not None
+                                          and evaluation.score >= self.full_threshold),
             "score_rescaling": "none",
             "score_provenance": "raw_domain_score",
         }
