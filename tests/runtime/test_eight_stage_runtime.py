@@ -74,6 +74,15 @@ def test_dream_replay_is_not_new_execution():
     else: raise AssertionError("replay claimed new execution")
 
 
+def test_executed_replay_kinds_are_distinct_from_stored_counterfactual():
+    for replay_kind in ("executed_smoke", "executed_benchmark"):
+        events = [boot(), ev("replay-" + replay_kind, "execute", {"payload_kind": "execution",
+            "execution_mode": "replay", "replay_kind": replay_kind,
+            "source_trace_ids": ["trace-1"], "new_execution": True},
+            inputs=[art("trace-1", "trace")], outputs=[art("trace-out-" + replay_kind, "experience")])]
+        assert validate_events(events)
+
+
 def test_full_file_sica_artifact_kind_and_root_lineage():
     candidate = art("candidate-1", "candidate", root=True, content_kind="full_file")
     events = [boot(), ev("proposal-1", "propose_changes", {"payload_kind": "proposal", "candidate_ids": ["candidate-1"],
@@ -303,6 +312,49 @@ def test_validator_structural_gate_survives_missing_jsonschema(monkeypatch):
     try: runtime_validator.validate_events([malformed])
     except ProtocolError as exc: assert "missing_scope" in str(exc)
     else: raise AssertionError("structural gate failed open without jsonschema")
+
+
+def test_stdlib_structural_gate_rejects_schema_type_bypasses(monkeypatch):
+    import harnessgrad.runtime.validator as runtime_validator
+    monkeypatch.setattr(runtime_validator, "Draft202012Validator", None)
+
+    bad_budget = boot()
+    bad_budget["bootstrap"]["budget"]["limit"] = True
+    try: runtime_validator.validate_events([bad_budget])
+    except ProtocolError as exc: assert "budget_limit" in str(exc)
+    else: raise AssertionError("boolean budget limit accepted")
+
+    for value in (float("nan"), float("inf"), float("-inf")):
+        bad = boot(); bad["bootstrap"]["budget"]["limit"] = value
+        try: runtime_validator.validate_events([bad])
+        except ProtocolError as exc: assert "budget_limit" in str(exc)
+        else: raise AssertionError("non-finite budget limit accepted")
+
+    bad_delegate = boot()
+    bad_delegate["bootstrap"]["delegates"] = [{"delegate_id": "delegate-1", "capabilities": [], "timeout_ms": 10},
+                                                {"delegate_id": "delegate-1", "capabilities": [], "timeout_ms": 10}]
+    try: runtime_validator.validate_events([bad_delegate])
+    except ProtocolError as exc: assert "delegate" in str(exc)
+    else: raise AssertionError("duplicate delegate accepted")
+
+    malformed = ev("stdlib-types-1", "execute", {"payload_kind": "execution", "execution_mode": "online",
+        "new_execution": "false"})
+    try: runtime_validator.validate_events([boot(), malformed])
+    except ProtocolError as exc: assert "new_execution" in str(exc)
+    else: raise AssertionError("string boolean accepted")
+
+    for key in ("candidate_ids", "source_trace_ids", "reconciles_event_ids"):
+        payload = {"payload_kind": "execution", "execution_mode": "online", "new_execution": True}
+        if key == "candidate_ids":
+            payload = {"payload_kind": "proposal", "candidate_ids": "candidate-1", "artifact_kind": "none", "hypothesis": "bad"}
+            bad = ev("stdlib-array-" + key, "propose_changes", payload)
+        else:
+            payload[key] = "not-an-array"
+            payload["execution_mode"] = "online"; payload["new_execution"] = True
+            bad = ev("stdlib-array-" + key, "execute", payload)
+        try: runtime_validator.validate_events([boot(), bad])
+        except ProtocolError as exc: assert key in str(exc) or "payload" in str(exc)
+        else: raise AssertionError(f"scalar {key} accepted")
 
 
 def test_compat_wrapper_invalid_json_nonzero_timeout_and_trajectory_errors(tmp_path):

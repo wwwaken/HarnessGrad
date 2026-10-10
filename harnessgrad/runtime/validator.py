@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any, Iterable
@@ -11,7 +12,7 @@ try:
 except ImportError:  # pragma: no cover - production installs jsonschema
     Draft202012Validator = None
 
-SCHEMA = Path(__file__).resolve().parents[2] / "schemas" / "eight_stage_protocol.schema.json"
+SCHEMA = Path(__file__).with_name("eight_stage_protocol.schema.json")
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$")
 HASH_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 STAGES = {"select_context", "execute", "organize_feedback", "propose_changes", "build_validate",
@@ -60,6 +61,26 @@ def _hash(value: Any, label: str) -> None:
         raise ProtocolError(f"invalid_{label}_hash")
 
 
+def _finite_number(value: Any, label: str) -> None:
+    # bool is an int subclass, but JSON Schema's number type excludes it.
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ProtocolError(f"invalid_{label}")
+
+
+def _bool(value: Any, label: str) -> None:
+    if not isinstance(value, bool):
+        raise ProtocolError(f"invalid_{label}")
+
+
+def _id_array(value: Any, label: str, *, unique: bool = False) -> None:
+    if not isinstance(value, list):
+        raise ProtocolError(f"invalid_{label}")
+    for item in value:
+        _id(item, label[:-1] if label.endswith("s") else label)
+    if unique and len(set(value)) != len(value):
+        raise ProtocolError(f"duplicate_{label}")
+
+
 def _principal(value: Any, label: str) -> None:
     if not isinstance(value, dict) or set(value) - {"role", "id", "version"}:
         raise ProtocolError(f"invalid_{label}")
@@ -88,14 +109,50 @@ def _structural_validate(event: Any) -> None:
             if key not in boot: raise ProtocolError(f"missing_bootstrap_{key}")
         if not isinstance(boot["stage_modes"], dict) or not isinstance(boot["task_plan"], dict):
             raise ProtocolError("invalid_bootstrap_shape")
+        if not isinstance(boot["profile_opt_in"], str) or not boot["profile_opt_in"]:
+            raise ProtocolError("invalid_profile_opt_in")
+        for stage_id, mode in boot["stage_modes"].items():
+            if stage_id not in STAGES or mode not in {"default", "custom", "delegated", "skip"}:
+                raise ProtocolError("invalid_stage_modes")
         _hash(boot["task_plan"].get("task_set_sha"), "task_set")
+        if set(boot["task_plan"]) - {"task_set_sha", "split_visibility"}:
+            raise ProtocolError("invalid_task_plan")
+        if "split_visibility" in boot["task_plan"] and boot["task_plan"]["split_visibility"] not in {
+            "adaptation_visible", "selection_only", "report_only", "heldout_private"}:
+            raise ProtocolError("invalid_split_visibility")
         if boot["evidence_mode"] not in {"trusted_events", "replay_only", "declared_traces"}:
             raise ProtocolError("invalid_evidence_mode")
         budget = boot["budget"]
-        if not isinstance(budget, dict) or budget.get("unit") not in {"tokens", "usd", "wall_clock", "api_calls", "generations", "training_steps"}:
+        if (not isinstance(budget, dict) or set(budget) - {"unit", "limit"}
+                or budget.get("unit") not in {"tokens", "usd", "wall_clock", "api_calls", "generations", "training_steps"}):
             raise ProtocolError("invalid_budget")
-        if not isinstance(budget.get("limit"), (int, float)) or budget["limit"] <= 0:
+        try:
+            _finite_number(budget.get("limit"), "budget_limit")
+        except ProtocolError:
             raise ProtocolError("invalid_budget_limit")
+        if budget["limit"] <= 0:
+            raise ProtocolError("invalid_budget_limit")
+        delegates = boot.get("delegates", [])
+        if not isinstance(delegates, list):
+            raise ProtocolError("invalid_delegates")
+        seen_delegates: set[str] = set()
+        for delegate in delegates:
+            if (not isinstance(delegate, dict)
+                    or set(delegate) - {"delegate_id", "capabilities", "timeout_ms"}
+                    or set({"delegate_id", "capabilities", "timeout_ms"}) - set(delegate)):
+                raise ProtocolError("invalid_delegate")
+            _id(delegate["delegate_id"], "delegate")
+            if delegate["delegate_id"] in seen_delegates:
+                raise ProtocolError("duplicate_delegate")
+            seen_delegates.add(delegate["delegate_id"])
+            if (not isinstance(delegate["capabilities"], list)
+                    or any(not isinstance(cap, str) for cap in delegate["capabilities"])):
+                raise ProtocolError("invalid_delegate_capabilities")
+            if len(set(delegate["capabilities"])) != len(delegate["capabilities"]):
+                raise ProtocolError("invalid_delegate_capabilities")
+            if (isinstance(delegate["timeout_ms"], bool) or not isinstance(delegate["timeout_ms"], int)
+                    or delegate["timeout_ms"] < 1):
+                raise ProtocolError("invalid_delegate_timeout")
         return
     if event["event_kind"] not in {"stage_started", "stage_completed", "stage_failed", "artifact_published", "reconciliation"}:
         raise ProtocolError("invalid_event_kind")
@@ -116,15 +173,14 @@ def _structural_validate(event: Any) -> None:
     for key in ("candidate_id", "task_id", "trial_id", "parent_scope", "stream_id", "batch_id", "deployment_epoch", "scope_id"):
         if key in scope: _id(scope[key], f"scope_{key}")
     if "candidate_ids" in scope:
-        if not isinstance(scope["candidate_ids"], list): raise ProtocolError("invalid_scope_candidate_ids")
-        for value in scope["candidate_ids"]: _id(value, "scope_candidate")
+        _id_array(scope["candidate_ids"], "scope_candidate_ids", unique=True)
     stage = event["stage"]
     if not isinstance(stage, dict) or set(stage) - {"id", "invocation_id", "mode", "repeat_index"}:
         raise ProtocolError("invalid_stage")
     if stage.get("id") not in STAGES or stage.get("mode") not in {"default", "custom", "delegated", "skip"}:
         raise ProtocolError("invalid_stage")
     _id(stage.get("invocation_id"), "invocation")
-    if "repeat_index" in stage and (not isinstance(stage["repeat_index"], int) or stage["repeat_index"] < 0):
+    if "repeat_index" in stage and (isinstance(stage["repeat_index"], bool) or not isinstance(stage["repeat_index"], int) or stage["repeat_index"] < 0):
         raise ProtocolError("invalid_repeat_index")
     if event["lifecycle"] not in {"running", "completed", "failed"} or event["evidence"] not in {"measured", "unobserved"}:
         raise ProtocolError("invalid_lifecycle_or_evidence")
@@ -142,11 +198,22 @@ def _structural_validate(event: Any) -> None:
     if "delegate_id" in impl: _id(impl["delegate_id"], "delegate")
     if "request_artifact_id" in impl: _id(impl["request_artifact_id"], "request_artifact")
     if "response_artifact_id" in impl: _id(impl["response_artifact_id"], "response_artifact")
+    if "capabilities" in impl:
+        if (not isinstance(impl["capabilities"], list)
+                or any(not isinstance(cap, str) for cap in impl["capabilities"])):
+            raise ProtocolError("invalid_implementation_capabilities")
+        if len(set(impl["capabilities"])) != len(impl["capabilities"]):
+            raise ProtocolError("invalid_implementation_capabilities")
+    if "timeout_ms" in impl and (isinstance(impl["timeout_ms"], bool)
+                                  or not isinstance(impl["timeout_ms"], int) or impl["timeout_ms"] < 1):
+        raise ProtocolError("invalid_implementation_timeout")
+    if "independent_measurement_refs" in impl:
+        _id_array(impl["independent_measurement_refs"], "independent_measurement_refs", unique=True)
     for key in ("artifacts", "input_artifacts", "output_artifacts"):
         if not isinstance(event[key], list): raise ProtocolError(f"{key}_must_be_array")
     if event["result_kind"] not in {"artifact", "empty", "not_observed"}: raise ProtocolError("invalid_result_kind")
     _id(event["attempt_id"], "attempt"); _id(event["idempotency_key"], "idempotency")
-    if not isinstance(event["attempt"], int) or event["attempt"] < 1: raise ProtocolError("invalid_attempt")
+    if isinstance(event["attempt"], bool) or not isinstance(event["attempt"], int) or event["attempt"] < 1: raise ProtocolError("invalid_attempt")
     if not isinstance(event["started_at"], str) or not isinstance(event["finished_at"], str): raise ProtocolError("invalid_timestamp")
     if event.get("failure") is not None:
         failure = event["failure"]
@@ -173,6 +240,33 @@ def _structural_validate(event: Any) -> None:
     }
     for key in required_payload[payload["payload_kind"]]:
         if key not in payload: raise ProtocolError(f"missing_payload_{key}")
+    array_payload_keys = {
+        "parent_refs", "source_trace_ids", "source_artifact_ids", "feedback_consumers",
+        "candidate_ids", "selected_candidate_ids", "basis", "deployed_candidate_ids",
+        "member_ids", "reconciles_event_ids",
+    }
+    unique_payload_keys = {"source_trace_ids", "source_artifact_ids", "feedback_consumers",
+                           "candidate_ids", "selected_candidate_ids", "basis", "deployed_candidate_ids",
+                           "member_ids", "reconciles_event_ids"}
+    for key in array_payload_keys & set(payload):
+        if not isinstance(payload[key], list):
+            raise ProtocolError(f"invalid_payload_{key}")
+        if key in unique_payload_keys and any(not isinstance(item, str) for item in payload[key]):
+            raise ProtocolError(f"invalid_payload_{key}")
+        if key in unique_payload_keys and len(set(payload[key])) != len(payload[key]):
+            raise ProtocolError(f"duplicate_payload_{key}")
+    for key in ("source_trace_ids", "source_artifact_ids", "candidate_ids", "selected_candidate_ids",
+                "basis", "deployed_candidate_ids", "member_ids", "reconciles_event_ids"):
+        if key in payload:
+            for value in payload[key]:
+                _id(value, f"payload_{key[:-4] if key.endswith('_ids') else key}")
+    if "new_execution" in payload: _bool(payload["new_execution"], "payload_new_execution")
+    if "tentative" in payload: _bool(payload["tentative"], "payload_tentative")
+    if "valid" in payload: _bool(payload["valid"], "payload_valid")
+    for key in ("selection_basis", "hypothesis", "scorer_revision", "consumer_scope", "consumer_role",
+                "training_scope", "retention_rule", "reason", "action", "next_scope"):
+        if key in payload and not isinstance(payload[key], str):
+            raise ProtocolError(f"invalid_payload_{key}")
     if payload["payload_kind"] in {"context_selection"} : _hash(payload["task_set_sha"], "task_set")
     if payload["payload_kind"] == "execution" and payload["execution_mode"] not in {"online", "replay"}: raise ProtocolError("invalid_execution_mode")
     if payload["payload_kind"] in {"study_evaluation", "heldout_evaluation"} and payload["score_kind"] not in {"study", "heldout"}: raise ProtocolError("invalid_score_kind")
@@ -184,6 +278,12 @@ def _structural_validate(event: Any) -> None:
         raise ProtocolError("invalid_replay_kind")
     if payload["payload_kind"] == "proposal" and payload["artifact_kind"] not in {"patch", "full_file", "full-file", "file", "tree", "config", "prompt", "skill", "memory", "policy", "checkpoint", "parameter_update", "none"}:
         raise ProtocolError("invalid_proposal_artifact_kind")
+    if payload["payload_kind"] == "validation":
+        if not isinstance(payload["checks"], list) or any(not isinstance(check, str) for check in payload["checks"]):
+            raise ProtocolError("invalid_payload_checks")
+    if payload["payload_kind"] in {"study_evaluation", "heldout_evaluation"}:
+        if not isinstance(payload["scorer_revision"], str):
+            raise ProtocolError("invalid_payload_scorer_revision")
     if payload["payload_kind"] in {"feedback", "selection_result", "study_evaluation", "heldout_evaluation"}:
         for key in ("source_artifact_ids", "basis", "candidate_ids", "selected_candidate_ids"):
             if key in payload:
@@ -238,22 +338,40 @@ def _structural_artifact(a: Any) -> None:
         raise ProtocolError("invalid_artifact_visibility")
     kinds = {"task_set", "parent_state", "experience", "feedback", "proposal", "candidate", "validation", "study_score", "heldout_score", "selection", "deployment", "stop_decision", "archive", "trace", "claim", "legacy_response", "post_run_analysis", "checkpoint", "tree_snapshot", "prompt", "skill", "memory", "policy", "parameter_update", "patch", "full_file", "full-file", "file", "tree", "config"}
     if a["kind"] not in kinds: raise ProtocolError("invalid_artifact_kind")
+    if "uri" in a and not isinstance(a["uri"], str): raise ProtocolError("invalid_artifact_uri")
+    if "content_kind" in a and a["content_kind"] not in {"patch", "full_file", "full-file", "file", "tree", "config", "prompt", "skill", "memory", "policy", "checkpoint", "parameter_update", "none"}:
+        raise ProtocolError("invalid_artifact_content_kind")
+    if "score_kind" in a and a["score_kind"] not in {"study", "heldout"}: raise ProtocolError("invalid_artifact_score_kind")
+    if "split_visibility" in a and a["split_visibility"] not in {"adaptation_visible", "selection_only", "report_only", "heldout_private"}:
+        raise ProtocolError("invalid_artifact_split_visibility")
+    if "scorer_revision" in a and not isinstance(a["scorer_revision"], str): raise ProtocolError("invalid_artifact_scorer_revision")
     for key in ("parents",):
         if key in a:
-            if not isinstance(a[key], list) or len(set(a[key])) != len(a[key]): raise ProtocolError("invalid_artifact_parents")
-            for value in a[key]: _id(value, "artifact_parent")
+            if not isinstance(a[key], list): raise ProtocolError("invalid_artifact_parents")
+            seen: set[str] = set()
+            for value in a[key]:
+                _id(value, "artifact_parent")
+                if value in seen: raise ProtocolError("invalid_artifact_parents")
+                seen.add(value)
     if "lineage" in a:
         if not isinstance(a["lineage"], list): raise ProtocolError("invalid_artifact_lineage")
         for edge in a["lineage"]:
             if not isinstance(edge, dict) or not isinstance(edge.get("role"), str): raise ProtocolError("invalid_artifact_lineage")
+            if set(edge) - {"parent_id", "role"} or edge["role"] not in {"root", "base", "donor", "peer", "crossover", "evidence"}:
+                raise ProtocolError("invalid_artifact_lineage")
             if edge["role"] != "root": _id(edge.get("parent_id"), "lineage_parent")
+            elif set(edge) != {"role"}: raise ProtocolError("invalid_artifact_lineage")
     if "root" in a and not isinstance(a["root"], bool): raise ProtocolError("invalid_artifact_root")
     if "scope" in a:
         scope = a["scope"]
         if not isinstance(scope, dict): raise ProtocolError("invalid_artifact_scope")
+        if set(scope) - {"run_id", "session_id", "iteration_id", "branch_id", "candidate_id", "candidate_ids", "task_id", "trial_id", "parent_scope", "stream_id", "batch_id", "deployment_epoch", "scope_id"}:
+            raise ProtocolError("invalid_artifact_scope")
         for key in ("run_id", "session_id", "iteration_id", "branch_id"):
             _id(scope.get(key), f"artifact_scope_{key}")
-        if "scope_id" in scope: _id(scope["scope_id"], "artifact_scope_id")
+        for key in ("candidate_id", "task_id", "trial_id", "parent_scope", "stream_id", "batch_id", "deployment_epoch", "scope_id"):
+            if key in scope: _id(scope[key], f"artifact_scope_{key}")
+        if "candidate_ids" in scope: _id_array(scope["candidate_ids"], "artifact_scope_candidate_ids", unique=True)
 
 
 def _ancestors(aid: str, arts: dict[str, dict[str, Any]], seen: set[str] | None = None) -> set[str]:
