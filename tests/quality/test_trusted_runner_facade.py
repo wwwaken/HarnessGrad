@@ -174,6 +174,35 @@ def test_final_report_is_private_and_cannot_be_selection_basis(tmp_path):
     assert report["final_report_results"][0]["report_artifact"]["visibility"] == "final_report_private"
 
 
+@pytest.mark.parametrize("status", ["none", "failed"])
+def test_selected_but_not_deployed_preserves_restart_state(tmp_path, status):
+    runner = FakeRunner({("inc", "t1", 0): 0.1, ("inc", "t2", 0): 0.1,
+                         ("challenger", "t1", 0): 0.9, ("challenger", "t2", 0): 0.9})
+    f, base, bsha = make_facade(tmp_path, runner=runner)
+    p = parent(bsha)
+    f.build_validate(build_request(f, bsha, [proposal("inc", "print('inc')\n", bsha),
+                                            proposal("challenger", "print('better')\n", bsha)], [p]))
+    cap = study_cap(f)
+    evaluations = f.evaluate_candidates({"candidate_ids": ["inc", "challenger"], "task_set": cap,
+                                         "k": 1, "completeness": "full", "evaluation_scope": "study",
+                                         "idempotency_key": "both"})
+    selected = f.select_deploy({"action": "select", "incumbent_id": "inc",
+                                "candidate_ids": ["challenger"],
+                                "evaluation_ids": [e["evaluation_id"] for e in evaluations["results"]],
+                                "idempotency_key": "select-better"})["selection"]
+    assert selected["selected_candidate_ids"] == ["challenger"]
+    request = {"action": "deploy", "selection_id": selected["selection_id"],
+               "deployment_status": status, "expected_from_snapshot_sha": bsha,
+               "idempotency_key": "inactive"}
+    result = f.select_deploy(request)
+    assert result["deployment"]["deployed_candidate_ids"] == []
+    assert result["deployment"]["to_snapshot_sha"] == bsha
+    assert f.current_snapshot_sha == bsha
+    reloaded = TrustedRunnerFacade(tmp_path / "run", parent_snapshots={bsha: base}, runner=runner)
+    assert reloaded.current_snapshot_sha == bsha
+    assert reloaded.select_deploy(request) == result
+
+
 def test_selection_deployment_stale_cas_and_rollback(tmp_path):
     f, _, bsha = make_facade(tmp_path, runner=FakeRunner())
     p = parent(bsha)
