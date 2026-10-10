@@ -462,7 +462,10 @@ class TrustedRunnerFacade:
             if not cap or cap.get("visibility") != "final_exam" or cap.get("adaptation_visible") is not False:
                 raise TrustedRunnerError("final_report_capability_required")
             selection_id = request.get("selection_id")
-            if selection_id not in self.selections or request.get("finalization_seal") != self.selections[selection_id].get("finalization_seal"):
+            selection = self.selections.get(selection_id)
+            supplied_seal = request.get("finalization_seal")
+            if (selection is None or not isinstance(supplied_seal, str)
+                    or not supplied_seal or supplied_seal != selection.get("finalization_seal")):
                 raise TrustedRunnerError("finalization_seal_required")
             return self._evaluate(request, cap, final=True)
         if scope not in {"study", "validation"}:

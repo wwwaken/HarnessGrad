@@ -153,6 +153,13 @@ def test_final_report_is_private_and_cannot_be_selection_basis(tmp_path):
                                    "completeness": "full", "evaluation_scope": "study", "idempotency_key": "study"})
     sel = f.select_deploy({"action": "select", "incumbent_id": "missing", "candidate_ids": ["c"],
                            "evaluation_ids": [study["results"][0]["evaluation_id"]], "idempotency_key": "select"})
+    f.issue_capability("cap-exam", {"task_set_id": "exam", "task_set_sha": sha({"tasks": ["x"]}),
+                                   "visibility": "final_exam", "adaptation_visible": False,
+                                   "capability_id": "cap-exam", "scorer_revision": "exam-v1", "task_ids": ["x"]})
+    with pytest.raises(TrustedRunnerError, match="finalization_seal_required"):
+        f.evaluate_candidates({"candidate_ids": ["c"], "evaluation_scope": "final_report_only",
+                               "final_report_capability_id": "cap-exam", "selection_id": sel["selection"]["selection_id"],
+                               "k": 1, "completeness": "full", "idempotency_key": "exam-before-deploy"})
     # The seal follows a deploy/none fact; selection itself cannot open the exam.
     f.select_deploy({"action": "deploy", "selection_id": sel["selection"]["selection_id"],
                      "expected_from_snapshot_sha": bsha, "idempotency_key": "deploy"})
