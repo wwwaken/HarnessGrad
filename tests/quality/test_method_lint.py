@@ -129,6 +129,25 @@ def test_a_method_with_its_own_model_client_is_an_error(tmp_path):
     assert any("model client" in error for error in result.errors), result.errors
 
 
+def test_model_names_in_metadata_strings_are_not_client_construction(tmp_path):
+    result = method_lint.lint_one(_probe(
+        tmp_path, meta=_minimal("reference"),
+        run='MODEL = "anthropic/claude-sonnet-4-5"\n'))
+    assert not [e for e in result.errors if "model client" in e], result.errors
+
+
+@pytest.mark.parametrize("run", [
+    "import anthropic\nclient = anthropic.Anthropic()\n",
+    "from anthropic import Anthropic as Client\nclient = Client()\n",
+    "import requests as http\nhttp.post('https://api.example')\n",
+    "import litellm as llm\nllm.completion(model='x')\n",
+    "client.chat.completions.create(model='x')\n",
+])
+def test_actual_model_client_construction_or_api_calls_are_errors(tmp_path, run):
+    result = method_lint.lint_one(_probe(tmp_path, meta=_minimal("reference"), run=run))
+    assert any("model client" in error for error in result.errors), result.errors
+
+
 def test_a_port_that_never_reaches_the_editor_is_an_error(tmp_path):
     meta = _minimal("published",
                     deviations=[{"what": "w", "why": "y", "direction": "weaker"}])

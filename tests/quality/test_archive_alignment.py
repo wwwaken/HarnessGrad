@@ -85,17 +85,56 @@ def test_dgm_staged_schedule_escalates_and_consumes_budget_once():
 def test_dgm_full_threshold_ignores_partial_high_score():
     scheduler = dgm_stage.DGMStagedScheduler(
         (dgm_stage.Stage("small", 1), dgm_stage.Stage("medium", 1),
-         dgm_stage.Stage("full", 1, True)), baseline_score=0.5)
+         dgm_stage.Stage("full", 1, True)), baseline_score=0.5,
+        archive_full_results=(dgm_stage.ArchiveFullResult("partial", 0.95, 50, 100),))
     partial = dgm_stage.Evaluation("n", "medium", 5, 5, 0.95,
                                    required_full_population=100, full_population=50)
-    assert scheduler.next_stage([partial], "n") is None
+    # Candidate coverage is not the historical archive eligibility gate.
+    assert scheduler.next_stage([partial], "n").name == "full"
     complete_low = dgm_stage.Evaluation("n2", "medium", 100, 100, 0.5,
                                         required_full_population=100, full_population=100)
     strict = dgm_stage.DGMStagedScheduler(
         (dgm_stage.Stage("small", 1), dgm_stage.Stage("medium", 1),
          dgm_stage.Stage("full", 1, True)), baseline_score=0.8,
-        archive_scores=(0.8,))
+        archive_full_results=(dgm_stage.ArchiveFullResult("prior", 0.8, 100, 100),))
     assert strict.next_stage([complete_low], "n2") is None
+
+
+def test_dgm_medium_candidate_uses_only_full_enough_history_and_inclusive_boundary():
+    stages = (dgm_stage.Stage("small", 1), dgm_stage.Stage("medium", 1),
+              dgm_stage.Stage("full", 1, True))
+    history = (
+        dgm_stage.ArchiveFullResult("eligible-1", 0.8, 90, 100),
+        dgm_stage.ArchiveFullResult("eligible-2", 0.7, 100, 100),
+        dgm_stage.ArchiveFullResult("partial-high", 1.0, 89, 100),
+    )
+    scheduler = dgm_stage.DGMStagedScheduler(
+        stages, baseline_score=0.2, archive_full_results=history)
+    # The candidate has only 50/100 submissions, but the historical threshold is 0.7.
+    candidate = dgm_stage.Evaluation("child", "medium", 50, 30, 0.7,
+                                     required_full_population=100, full_population=50)
+    below = dgm_stage.Evaluation("child-low", "medium", 50, 30, 0.699)
+    assert scheduler.full_eval_threshold(baseline=0.2, archive_results=history) == 0.7
+    assert scheduler.next_stage([candidate], "child").name == "full"
+    assert scheduler.next_stage([below], "child-low") is None
+
+
+def test_dgm_stage_inputs_reject_invalid_score_and_cost_domains():
+    import math
+    for constructor in (
+            lambda: dgm_stage.Stage("bad", -1),
+            lambda: dgm_stage.MediumCandidate("n", 1, 1, math.nan),
+            lambda: dgm_stage.MediumCandidate("n", 1, 1, 1.1),
+            lambda: dgm_stage.ArchiveFullResult("n", 0.5, 101, 100),
+            lambda: dgm_stage.ArchiveFullResult("n", -0.1, 100, 100),
+            lambda: dgm_stage.DGMStagedScheduler(baseline_score=math.inf),
+            lambda: dgm_stage.DGMStagedScheduler(full_coverage_fraction=0.0)):
+        try:
+            constructor()
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid staged-evaluation input was accepted")
 
 
 def test_hyperagents_selector_variants_and_parallel_seed():
