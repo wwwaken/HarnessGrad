@@ -56,22 +56,19 @@ does not rescale staged values.
 
 Final reports require a private `final_exam` capability, a selection, a deployment
 fact, and the selection's `finalization_seal` returned by `finalize(selection_id)`.
-Finalization is the only trusted transition that writes that seal. The deployment
-state required by `finalize` must already exist, and an `action="deploy"` request
-must reference a selection carrying a non-empty seal; deploy never recomputes or
-seals a selection. Reports are returned only as `final_report_private` artifacts
-and are excluded from selection and deployment records.
+They are returned only as `final_report_private` artifacts and are excluded from
+selection and deployment records.
 
 ## Selection, deployment, rollback
 
 `select_deploy({"action": "select", ...})` records a deterministic selection from
 stored eligible study/validation evaluations. It ignores method-reported scores and
-deployment claims. `action="deploy"` reads an already finalized selection, checks
+deployment claims. `action="deploy"` reads that selection, checks
 `expected_from_snapshot_sha` against the current platform snapshot, and creates a
-platform deployment fact with immutable before/after hashes. An unsealed selection
-is rejected. A failed or tentative status can be requested for local state-machine
-tests. `action="rollback"` requires the deployment ID and validation/runtime-health
-evidence; final-report evidence is rejected.
+platform deployment fact with immutable before/after hashes. A failed or tentative
+status can be requested for local state-machine tests. `action="rollback"` requires
+the deployment ID and validation/runtime-health evidence; final-report evidence is
+rejected.
 
 Every operation uses `(operation, idempotency_key)`. A retry with identical canonical
 JSON returns the stored byte-equivalent response. Reusing the key with changed bytes
