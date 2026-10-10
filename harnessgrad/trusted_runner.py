@@ -603,6 +603,8 @@ class TrustedRunnerFacade:
     def _deploy(self, request: dict[str, Any]) -> dict[str, Any]:
         selection = self.selections.get(request.get("selection_id"))
         if selection is None: raise TrustedRunnerError("unknown_selection")
+        if not isinstance(selection.get("finalization_seal"), str) or not selection["finalization_seal"]:
+            raise TrustedRunnerError("selection_not_sealed")
         expected = request.get("expected_from_snapshot_sha")
         if expected != self.current_snapshot_sha: raise TrustedRunnerError("stale_expected_snapshot")
         selected = selection["selected_candidate_ids"]
