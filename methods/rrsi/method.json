@@ -1,16 +1,47 @@
 {
  "kind": "published",
- "title": "RRSI:噪声带内的逐轮决策(移植)",
- "note": "移植的是 RRSI 的逐轮决策规则:噪声带下界 S' >= S* - delta、按增益分两支的成本规则(w_s dS - w_c dC + w_n nu,novelty 只在带内平票)、退火编辑预算 b_t、停滞后为未试组件保留探索槽、以及评估前的泄漏 critic;mode A 只有一个候选且无条件接受,所以 argmax 与「不可接受就停在 H_t」无法表达,记录里只做重裁决,不用来否决。",
+ "title": "RRSI: 噪声带内的逐轮决策（port）",
+ "note": "旧入口保持为 HarnessGrad mode-A port：它移植逐轮规则，但平台只交付一个候选且无条件推进，因此仅重裁决、不执行原始 pool selection。独立的 methods/rrsi/fidelity.py 提供离线可测的 m-candidate selection、角色 prompt、校准和 reject-to-incumbent 语义；它不是 native reproduction，直到 study-only evaluate_many 与 method-owned deployment 接口、原始 scaffold/domain/model 对齐。",
+ "source": {
+   "repository": "/mnt/20t/xubuqiang/Study/RRSI",
+   "commit": "e4d1a7a0388e02b388bc40eb0a125fcfc7123f8d",
+   "scope": "native algorithm source audit; local checkout may contain unrelated uncommitted probes"
+ },
+ "fidelity_profile": {
+   "preserved": [
+     "noise floor, two-branch cost rule, structural novelty, and study-side score discipline",
+     "m-candidate argmax over admissible candidates and incumbent retention when none qualify (offline pure module)"
+   ],
+   "adapted": [
+     "annealed budget, stall/exploration reserve, pruning state, and bounded critic repair are wired in the old one-candidate mode-A port only",
+     "pre-evaluation deterministic plus model critic is retained in the port, while native multi-candidate retry/deploy wiring is missing",
+     "HarnessGrad artifact/channel and configurable model, scaffold, domain evaluator and split",
+     "platform trial-spread calibration is an explicit provenance-labeled adapter",
+     "role prompts are compact adaptations of the upstream action contracts, not verbatim templates",
+     "missing token accounting is explicitly marked unavailable instead of using the upstream dC=0 substitution"
+   ],
+   "missing_until_runtime_support": [
+     "native m-candidate artifacts from one incumbent followed by trusted study-only evaluate_many",
+     "method-owned select/deploy result that can retain incumbent or deploy no candidate",
+     "native analyst/digester trace dispatch, git worktrees/frontier, and k trials inside the RRSI loop",
+     "full upstream role prompt bodies and domain-specific role briefs"
+   ],
+   "source_role_prompt_hashes": {
+     "digester": {"path": "rrsi/digester.py:SYSTEM_TMPL", "sha256": "24c9ceb093eee4ed22eae971d65001f075781543de77b45cdeebd476907dd0b3"},
+     "analyst": {"path": "rrsi/analyst.py:SYSTEM_TMPL", "sha256": "11287c002c2d09d9b48cd6f22c290ae9073c33a0dabe01db12a5da76f12c5703"},
+     "proposer": {"path": "rrsi/propose.py:SYSTEM_TMPL", "sha256": "cb31c5acc8f70eb0454e9e35ed146aa96f458f8d309934846769b20890f1fe10"},
+     "critic": {"path": "rrsi/critic.py:SYSTEM_TMPL", "sha256": "8818c7e1d7b082190cc9abd72b368160d1818a3ee9587badda7709af515b94ed"}
+   }
+ },
  "deviations": [
   {
-   "what": "The acceptance floor `delta` is ours, not theirs.",
-   "why": "The platform records one score per task per round and no per-trial rewards, so `delta` cannot be re-estimated from the record. The port reads `HG_RRSI_DELTA` or a fallback and records which it used.",
+   "what": "The old mode-A port has no native candidate pool.",
+   "why": "The current protocol returns one candidate trajectory and the platform owns measurement; the fidelity core therefore exposes selection as a pure function and records the runtime capability request in the task-local report.",
    "direction": "unknown"
   },
   {
-   "what": "The replay simulator is absent.",
-   "why": "`max_{v in T} s_v` needs a recorded discovery tree; one score per round reduces it to a best-of on a fixed task set.",
+   "what": "Native scaffold and evaluator are not silently replaced.",
+   "why": "The port keeps model, scaffold, domain evaluator and split configurable; a result is a decision-rule alignment measurement until those axes match the source instance.",
    "direction": "weaker"
   }
  ]

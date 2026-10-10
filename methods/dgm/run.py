@@ -67,6 +67,8 @@ only choose its parent and record what the archive rule would have retained.
 from __future__ import annotations
 
 import json
+import importlib.util
+import math
 import os
 import random
 import sys
@@ -75,6 +77,21 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import editor                                                  # noqa: E402
 import protocol                                                # noqa: E402
+
+
+def _load_component(filename: str, module_name: str):
+    spec = importlib.util.spec_from_file_location(
+        module_name, Path(__file__).with_name(filename))
+    if spec is None or spec.loader is None:
+        raise ImportError(f"cannot load DGM component {filename}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+# Kept method-local: DGM's archive and staged schedule are not a shared algorithm.
+DGM_STAGED = _load_component("staged_eval.py", "harnessgrad_dgm_staged_eval")
 
 #: DGM's `--eval_noise` default (`DGM_outer.py:238`). Absolute, and calibrated on
 #: a benchmark whose rounds submit hundreds of instances -- see the docstring.
@@ -116,7 +133,50 @@ def _score(point: dict) -> float:
     which gave the right number for the wrong reason and would read the exam on any
     point where `score` is the exam.
     """
-    return protocol.studied_score(point) or 0.0
+    value = protocol.studied_score(point)
+    return float(value) if isinstance(value, (int, float)) and math.isfinite(value) else 0.0
+
+
+def _studied_score(point: dict) -> float | None:
+    """Return only the score visible to the method, rejecting NaN/inf."""
+    value = protocol.studied_score(point)
+    return (float(value) if isinstance(value, (int, float)) and math.isfinite(value)
+            else None)
+
+
+def _lineage(point: dict) -> tuple:
+    reported = point.get("method_reported") or {}
+    refs = reported.get("dgm_parents")
+    if refs is None:
+        ref = reported.get("dgm_parent")
+        refs = [] if ref is None else [ref]
+    return tuple(refs) if isinstance(refs, list) else (refs,)
+
+
+def _validated_history(history: list[dict]) -> tuple[list[dict], list[str]]:
+    """Filter malformed history before it can affect archive weights.
+
+    The source archive is keyed by unique commits.  A duplicate round, a future
+    parent reference, or a non-finite studied score is rejected as an invalid
+    archive record rather than collapsing a weight dictionary or sampling NaN.
+    """
+    valid, reasons, seen = [], [], set()
+    for point in history:
+        rid = point.get("round")
+        if rid in seen:
+            reasons.append(f"duplicate node id {rid!r}")
+            continue
+        score = _studied_score(point)
+        if score is None:
+            reasons.append(f"node {rid!r} has no finite studied score")
+            continue
+        refs = _lineage(point)
+        if any(ref not in seen for ref in refs):
+            reasons.append(f"node {rid!r} has an inconsistent parent reference")
+            continue
+        seen.add(rid)
+        valid.append(point)
+    return valid, reasons
 
 
 def _sigmoid(x: float) -> float:
@@ -130,7 +190,12 @@ def _sigmoid(x: float) -> float:
 
 
 def _initial_score(history: list[dict]) -> float:
-    return _score(history[0]) if history else 0.0
+    for point in history:
+        refs = _lineage(point)
+        if point.get("is_root") is True or point.get("role") == "root" or (
+                point.get("round") == 0 and not refs):
+            return _studied_score(point)
+    return None
 
 
 def _archive(history: list[dict]) -> list[dict]:
@@ -142,11 +207,30 @@ def _archive(history: list[dict]) -> list[dict]:
     (`DGM_outer.py:178-185`), so an underperforming child inside the leeway stays
     in the pool forever.
     """
-    usable = [p for p in history if isinstance(p.get("score"), (int, float))]
+    usable, _ = _validated_history(history)
     if RETAIN == "keep_all":
         return usable
-    floor = _initial_score(history) - NOISE_LEEWAY
-    return [p for p in usable if _score(p) >= floor]
+    initial = _initial_score(usable)
+    if initial is None:
+        return usable
+    floor = initial - NOISE_LEEWAY
+    return [p for p in usable if _studied_score(p) is not None and _score(p) >= floor]
+
+
+def _eligible_archive(history: list[dict]) -> tuple[list[dict], list[str]]:
+    archive = _archive(history)
+    eligible, reasons = [], []
+    for point in archive:
+        reported = point.get("method_reported") or {}
+        if point.get("measured_by_platform") is False:
+            reasons.append(f"round {point.get('round')} is not platform-measured")
+        elif reported.get("rejected") or reported.get("platform_safety_ineligible"):
+            reasons.append(f"round {point.get('round')} is platform-safety-ineligible")
+        elif reported.get("compiled") is False:
+            reasons.append(f"round {point.get('round')} did not compile")
+        else:
+            eligible.append(point)
+    return eligible, reasons
 
 
 def _child_counts(history: list[dict]) -> dict[int, int]:
@@ -176,9 +260,10 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
     turn a diversification rule into a greedy one, which is the difference the
     child-count term exists to make.
     """
-    archive = _archive(history)
+    archive, safety_exclusions = _eligible_archive(history)
     if not archive:
-        return (history[-1] if history else {}), {"archive": [], "rule": "empty"}
+        return {}, {"archive": [], "rule": "empty", "reason": "no eligible parent",
+                    "platform_safety_exclusions": safety_exclusions}
 
     children = _child_counts(history)
     weights = {}
@@ -214,6 +299,13 @@ def select_parent(history: list[dict], round_index: int) -> tuple[dict, dict]:
         "best_round": best.get("round"),
         "chose_something_other_than_best": chosen.get("round") != best.get("round"),
         "seed": round_index * 7919,
+        "platform_safety_exclusions": safety_exclusions,
+        "selection": {
+            "selected_parent": chosen.get("round"),
+            "selected_parent_role": "task_agent_state",
+            "deployment_status": "pending_trusted_runtime",
+            "deployed_node": None,
+        },
     }
     return chosen, report
 
@@ -292,12 +384,20 @@ def main() -> int:
     errors: list[BaseException] = []
     for child in range(children):
         parent, report = select_parent(history, round_index + child)
+        if not parent:
+            reports.append({**report, "child": child + 1,
+                            "children_this_call": children,
+                            "why": "no eligible parent; no edit submitted"})
+            continue
         target, target_kind = choose_target(parent)
         report["target"] = target
         report["target_kind"] = target_kind
         report["child"] = child + 1
         report["children_this_call"] = children
         report["parent_round"] = parent.get("round")
+        report["staged_eval"] = DGM_STAGED.DGMStagedScheduler().budget_plan(
+            [], f"r{parent.get('round')}"
+        )
 
         parent_dir = _state_dir(base, parent.get("round"))
         if not parent_dir or not Path(parent_dir).is_dir():
@@ -334,8 +434,47 @@ def main() -> int:
             "label": ((f"[DGM parent r{parent.get('round')}] " + hypothesis[:60])
                       if changed else f"DGM: no edit (parent r{parent.get('round')})"),
             "edit_kind": "dgm_rule", "hypothesis": hypothesis,
-            "method_reported": {"dgm": report, "dgm_parent": parent.get("round"),
-                                "target": target, "child": child + 1},
+            "method_reported": {
+                "dgm": report, "dgm_parent": parent.get("round"),
+                "target": target, "child": child + 1,
+                "artifact": {
+                    "artifact_id": f"dgm-r{round_index}-child{child + 1}",
+                    "parent_refs": [f"round-{parent.get('round')}"],
+                    "immutable": True, "patch_kind": "tree",
+                },
+                "role_refs": {
+                    "diagnosis_agent": {
+                        "declared_upstream_role": "diagnosis",
+                        "declared_upstream_model": "o1-2024-12-17",
+                        "status": "not_invoked",
+                        "artifact_ref": f"diagnosis-r{round_index}-child{child + 1}",
+                    },
+                    "editor_agent": {
+                        "declared_upstream_role": "task_and_harness_edit",
+                        "declared_upstream_model": "claude-3-5-sonnet-20241022",
+                        "actual_execution": {
+                            "invoked": True,
+                            "method_model": editor.spent().get("model"),
+                        },
+                        "artifact_ref": f"dgm-r{round_index}-child{child + 1}",
+                    },
+                },
+                "selection": {
+                    "selected_parent": parent.get("round"),
+                    "selected_parent_ref": f"round-{parent.get('round')}",
+                },
+                "deployment": {
+                    "deployed_node": None,
+                    "status": "pending_trusted_runtime",
+                    "reason": "method can nominate a child; trusted runtime deploys it",
+                },
+                "fidelity_deviation": {
+                    "diagnostic_gold_input": "withheld_by_platform",
+                    "diagnostic_private_test_patch": "withheld_by_platform",
+                },
+                "valid_parent": True,
+                "evaluation_success": True,
+            },
         })
 
     # **Only the children that produced an edit are submitted.** A step that changed
@@ -353,7 +492,14 @@ def main() -> int:
         parents = [r.get("parent_round") for r in reports]
         carried = {"dgm": reports, "dgm_parent": parents[0] if parents else None,
                    "dgm_parents": parents,
-                   "children_this_call": children}
+                   "children_this_call": children,
+                   "selection": {"selected_parent_refs": [f"round-{p}" for p in parents if p is not None]},
+                   "deployment": {"deployed_node": None, "status": "pending_trusted_runtime"},
+                   "role_refs": {"diagnosis_agent": {"declared_upstream_model": "o1-2024-12-17",
+                                                        "status": "not_invoked"},
+                                 "editor_agent": {"declared_upstream_model": "claude-3-5-sonnet-20241022",
+                                                   "status": "platform_editor",
+                                                   "actual_method_model": editor.spent().get("model")}}}
         if errors:
             return editor.fail(req, method="dgm", exc=errors[0], base=base,
                                state=carried)
@@ -379,9 +525,11 @@ def main() -> int:
         # A batch is the method's own schedule, so it says what it had to say: the platform
         # calls it again only if the budget has room and this says otherwise. (The
         # nothing-usable case returned above with `stop: false`.)
-        stop=True,
+        stop=(not errors and len(measured) == children),
         note=f"DGM: {len(steps)} child(ren) submitted in one call",
-        extra={"children_this_call": len(steps)},
+        extra={"children_this_call": len(steps),
+               "children_requested": children,
+               "partial_batch": bool(errors or len(measured) < children)},
     )
 
 

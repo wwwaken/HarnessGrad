@@ -5,9 +5,9 @@ harness 的文件交给方法,`history` 里只有分数 —— 于是这些规�
 八个方法跑起来一模一样却各自声称是自己。`_harnessgrad/states/` 就是为了让这件事
 真的可表达而加的,这里钉住它确实被用上了。
 
-另外钉住一条对别人方法的可核对断言:HyperAgents 的 `score_prop` 在归一化之后恰好是
-均匀分布,因为每个候选的权重就是它自己的 sigmoid,单调变换会被约掉。只有子代惩罚
-那一项让它不是均匀的。
+另外钉住一条对别人方法的可核对断言:HyperAgents 的 `score_prop` 按 sigmoid 权重
+采样，归一化后仍然按分数排序，并不均匀。真正均匀的是
+`select_next_parent.py` 直接丢弃权重后调用 `random.choice` 的分支。
 """
 from __future__ import annotations
 
@@ -161,6 +161,28 @@ def test_dgm_keep_all_is_the_default_the_adapter_got_wrong():
     assert len(dgm._archive(history)) == 2, "keep_all 不该挡掉任何有分数的轮次"
 
 
+def test_dgm_never_uses_exam_score_for_parent_selection():
+    dgm = _load("dgm")
+    history = [
+        {"round": 0, "score_kind": "training", "score": 0.2, "measured_by_platform": True},
+        {"round": 1, "score_kind": "exam", "score": 1.0, "train_score": 0.0,
+         "measured_by_platform": True},
+    ]
+    assert [p["round"] for p in dgm._archive(history)] == [0, 1]
+    _, report = dgm.select_parent(history, round_index=2)
+    assert report["weights"]["1"] == pytest.approx(dgm._sigmoid(-5.0), abs=1e-6)
+
+
+def test_dgm_no_eligible_parent_is_explicit():
+    dgm = _load("dgm")
+    chosen, report = dgm.select_parent([
+        {"round": 4, "score_kind": "exam", "score": 1.0,
+         "train_score": None, "measured_by_platform": True,
+         "method_reported": {"rejected": True}},
+    ], round_index=1)
+    assert chosen == {} and report["reason"] == "no eligible parent"
+
+
 # -------------------------------------------------------- HyperAgents ---
 
 def test_hyperagents_score_prop_is_not_uniform(monkeypatch):
@@ -231,6 +253,24 @@ def test_hyperagents_validity_gate_ignores_score():
     assert hyper._valid(_point(1, 0.99, rejected=True)) is False
     assert hyper._valid({"round": 2, "score": 1.0,
                          "measured_by_platform": False}) is False
+    assert hyper._valid({"round": 3, "score_kind": "training", "score": None,
+                         "measured_by_platform": True}) is False
+    assert hyper._valid({"round": 4, "score_kind": "training", "score": 0.5,
+                         "measured_by_platform": True, "valid_parent": False}) is False
+    assert hyper._valid({"round": 5, "score_kind": "training", "score": 0.5,
+                         "measured_by_platform": True,
+                         "method_reported": {"meta_rollback": {"success": False}}}) is False
+
+
+def test_hyperagents_no_parent_does_not_fallback_to_latest_failed_state():
+    hyper = _load("hyperagents")
+    chosen, report = hyper.select_parent([
+        {"round": 0, "score_kind": "training", "score": None,
+         "measured_by_platform": True},
+        {"round": 1, "score_kind": "training", "score": 0.9,
+         "measured_by_platform": True, "valid_parent": False},
+    ], round_index=1)
+    assert chosen == {} and not report["candidates"]
 
 
 # ------------------------------------------- 真的用了旧状态,不是当前这个 ---

@@ -149,7 +149,7 @@ def test_the_validity_gate_never_reads_the_score():
     scored zero and was not rejected is a legitimate parent.
     """
     assert HA._valid(_point(0, 0.0)) is True
-    assert HA._valid(_point(0, None)) is True, "a measured round with no score still ran"
+    assert HA._valid(_point(0, None)) is False, "scoreless runs are not scored parents"
     assert HA._valid(_point(0, 0.9, measured=False)) is False
     assert HA._valid(_point(0, 0.9, rejected=True)) is False
 

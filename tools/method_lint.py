@@ -25,6 +25,7 @@ Exit code 0 when every method passes, 1 when any does not.
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import re
 import sys
@@ -47,8 +48,6 @@ DIRECTIONS = ("weaker", "stronger", "neutral", "unknown")
 #: A method that starts its own model client has left the platform's contract: the improver is
 #: resolved once (`tools/improver.py`) and every port calls `methods/editor.py`, which is what
 #: makes two ports comparable at all. Measured: 0 of the 11 declared methods does this.
-CLIENT_RE = re.compile(r"OpenAI\(|anthropic|chat\.completions|litellm|requests\.post")
-
 #: A rule test has to name the rule it implements, or it is a test of whatever the port
 #: happens to do today. An arXiv id, a DOI, a `<file>.py:<line>` from the original repository,
 #: or a section marker all qualify.
@@ -77,6 +76,82 @@ class Result:
 def _py_text(path: Path) -> str:
     return "\n".join(p.read_text(encoding="utf-8", errors="replace")
                      for p in sorted(path.glob("*.py")))
+
+
+def _call_name(node: ast.AST) -> tuple[str, ...]:
+    """Return a dotted call target, omitting the receiver of a method call."""
+    parts: list[str] = []
+    while isinstance(node, ast.Attribute):
+        parts.append(node.attr)
+        node = node.value
+    if isinstance(node, ast.Name):
+        parts.append(node.id)
+    return tuple(reversed(parts))
+
+
+def _starts_private_model_client(path: Path) -> bool:
+    """Detect client construction/API calls without matching model names in strings."""
+    for source in sorted(path.glob("*.py")):
+        try:
+            tree = ast.parse(source.read_text(encoding="utf-8", errors="replace"),
+                             filename=str(source))
+        except SyntaxError:
+            continue  # Other tooling reports syntax errors; avoid a false client finding.
+
+        openai_names = {"OpenAI"}
+        openai_modules = {"openai"}
+        anthropic_names = {"Anthropic"}
+        anthropic_modules = {"anthropic"}
+        requests_names = {"requests"}
+        requests_functions = set()
+        litellm_names = {"litellm"}
+        litellm_functions = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                for alias in node.names:
+                    if node.module == "openai" and alias.name == "OpenAI":
+                        openai_names.add(alias.asname or alias.name)
+                    if node.module == "requests" and alias.name == "post":
+                        requests_functions.add(alias.asname or alias.name)
+                    if node.module == "litellm" and alias.name in {"completion", "acompletion"}:
+                        litellm_functions.add(alias.asname or alias.name)
+                    if node.module == "anthropic" and alias.name in {"Anthropic", "Client"}:
+                        anthropic_names.add(alias.asname or alias.name)
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    root = alias.name.split(".", 1)[0]
+                    if root == "requests":
+                        requests_names.add(alias.asname or root)
+                    if root == "openai":
+                        openai_modules.add(alias.asname or root)
+                    if root == "litellm":
+                        litellm_names.add(alias.asname or root)
+                    if root == "anthropic":
+                        anthropic_modules.add(alias.asname or root)
+
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            target = _call_name(node.func)
+            if len(target) == 1 and target[0] in openai_names | anthropic_names:
+                return True
+            if len(target) == 2 and target[0] in openai_modules and target[1] == "OpenAI":
+                return True
+            if len(target) == 2 and target[0] in anthropic_names and target[1] in {"Anthropic", "Client"}:
+                return True
+            if len(target) == 2 and target[0] in anthropic_modules and target[1] in {"Anthropic", "Client"}:
+                return True
+            if len(target) == 2 and target[0] in requests_names and target[1] == "post":
+                return True
+            if len(target) == 1 and target[0] in requests_functions:
+                return True
+            if len(target) == 2 and target[0] in litellm_names and target[1] in {"completion", "acompletion"}:
+                return True
+            if len(target) == 1 and target[0] in litellm_functions:
+                return True
+            if target[-3:] == ("chat", "completions", "create") or target[-2:] == ("messages", "create"):
+                return True
+    return False
 
 
 def lint_one(path: Path) -> Result:
@@ -129,7 +204,7 @@ def lint_one(path: Path) -> Result:
                          "Declare it, even if the answer is 'neutral'")
 
     text = _py_text(path)
-    if CLIENT_RE.search(text):
+    if _starts_private_model_client(path):
         result.error("the method starts its own model client; the improver is resolved by the "
                      "run and reached through methods/editor.py")
     if kind not in ("reference", "control") and "editor" not in text:
