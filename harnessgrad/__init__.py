@@ -36,3 +36,6 @@ PLATFORM_ROOT = Path(__file__).resolve().parents[1]
 #: The method contract's version. The platform declares it; a harness has nothing to do with
 #: methods any more, so asking a harness for it would be asking the wrong artifact.
 PLATFORM_API_VERSION = "0.1.0"
+from .trusted_runner import IdempotencyConflict, TrustedRunnerError, TrustedRunnerFacade
+
+__all__ = ["TrustedRunnerFacade", "TrustedRunnerError", "IdempotencyConflict"]
