@@ -72,7 +72,7 @@ def test_openai_sdk_usage_object_is_reconciled(tmp_path: Path):
     assert dispatcher.snapshot()["spent"]["total_tokens"] == 3
 
 
-
+def test_unknown_usage_blocks_following_token_calls_and_no_connection_release(tmp_path: Path):
     dispatcher = BudgetDispatcher(PROFILE, tmp_path / "ledger.json")
     with pytest.raises(ProviderExecutionUnknown):
         dispatcher.dispatch(lambda: (_ for _ in ()).throw(ConnectionError("offline")),

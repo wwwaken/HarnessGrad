@@ -649,7 +649,10 @@ class BudgetDispatcher:
                         normalized["output_tokens"] = _integer(value, key)
                     elif key == "total_tokens":
                         normalized[key] = _integer(value, key)
-                    elif key not in {"cached_tokens", "cache_read_tokens", "reasoning_tokens"}:
+                    elif key not in {
+                        "cached_tokens", "cache_read_tokens", "reasoning_tokens",
+                        "completion_tokens_details", "prompt_tokens_details",
+                    }:
                         raise UsageValidationError(f"unsupported usage field: {key}")
             except UsageValidationError as exc:
                 if request_id not in state["unknown_requests"]:
