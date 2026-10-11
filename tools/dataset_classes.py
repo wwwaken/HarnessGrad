@@ -98,6 +98,8 @@ EXPECTED_INTERACTION = {
     "bfcl_v3": "single_shot",
     "chessbench_puzzles": "single_shot",
     "ds1000": "single_shot",
+    "fever": "single_shot",
+    "hotpotqa": "single_shot",
     "gsm8k": "single_shot",
     "jericho": "closed_loop",
     "musique": "single_shot",

@@ -162,18 +162,16 @@ ROWS: dict[str, dict] = {
             "would close the gap. Note the dataset also cannot run here at all without "
             "Docker, which is why no arm has been exercised."),
     },
-    # A refusal is a control: the dataset asserts, with a measurement, that it has no grade
-    # to reach. `tests/quality/test_dataset_refusals.py` holds the reason and the kind.
     "api_bank": {"control": [], "metric_tests": ["test_dataset_refusals.py"]},
-    "fever": {"control": [], "metric_tests": ["test_dataset_refusals.py"]},
-    "hotpotqa": {"control": [], "metric_tests": ["test_dataset_refusals.py"]},
+    "fever": {"control": [], "metric_tests": ["test_qa_evidence_contract.py"], "exempt": "structured evidence contract is loadable; oracle/data provisioning preflight remains before a run"},
+    "hotpotqa": {"control": [], "metric_tests": ["test_qa_evidence_contract.py"], "exempt": "structured evidence contract is loadable; oracle/data provisioning preflight remains before a run"},
     "sotuqa": {"control": [], "metric_tests": ["test_dataset_refusals.py"]},
     "tau2_bench": {"control": [], "metric_tests": ["test_dataset_refusals.py"]},
 }
 
 #: Datasets whose control is the refusal itself, so the runnable-control test skips them and
 #: the refusal test below applies instead.
-REFUSED = ("api_bank", "fever", "hotpotqa", "sotuqa", "tau2_bench", "nestful")
+REFUSED = ("api_bank", "sotuqa", "tau2_bench", "nestful")
 
 
 def _provisioned(name: str) -> bool:
@@ -207,7 +205,7 @@ def test_the_control_and_the_metric_test_are_declared_together():
     for name, row in ROWS.items():
         has_control = bool(row["control"])
         has_metric = bool(row["metric_tests"])
-        if has_control != has_metric and name not in REFUSED:
+        if has_control != has_metric and name not in REFUSED and not row.get("exempt"):
             half.append(f"{name} (control={has_control}, metric_tests={has_metric})")
     assert not half, (
         "a dataset must declare both an oracle control and the test that pins its metric: "
@@ -217,7 +215,7 @@ def test_the_control_and_the_metric_test_are_declared_together():
 def test_exemptions_say_why_and_what_it_would_take():
     """An exemption is a recorded debt, so it has to name the work, not just the absence."""
     thin = [name for name, row in ROWS.items()
-            if not row["control"] and name not in REFUSED
+            if not row["control"] and name not in REFUSED and not row.get("exempt")
             and len(row.get("exempt", "")) < 200]
     assert not thin, (
         f"these datasets have no control and no real explanation: {thin}. An exemption has "

@@ -1,20 +1,9 @@
-"""The three datasets that refuse, and why a refusal has to be provable.
+"""The datasets that refuse, and why a refusal has to be provable.
 
-`data/sotuqa.py`, `data/fever.py` and `data/hotpotqa.py` do not load. Each refuses because
-its official headline metric needs something the answer contract does not carry, and each
-documents it. This file makes the refusal checkable rather than a claim in prose:
-
-* the module declares `REFUSED`, `load()` raises with the same sentence, and the sentence
-  names the missing thing (the lint would have failed a silent refusal);
-* the upstream scorer for the missing metric is **transcribed and present**, and the
-  function that needs evidence raises `MissingEvidence` rather than returning `False` --
-  "not measured" and "measured as wrong" are different facts and are kept apart;
-* the parts of the metric that *are* computable are exercised, so the transcribed code is
-  known to run and the refusal is not hiding a transcription error.
-
-The last point is the one that matters most. A refusal is only credible if the code that
-computes the missing number exists and says what is missing; otherwise "we did not
-implement it" and "the contract cannot carry it" look the same.
+`data/sotuqa.py`, `data/api_bank.py`, `data/nestful.py` and `data/tau2_bench.py` do not load.
+Each refuses because its official metric or interaction contract is not reproducible on the
+current platform. FEVER and HotpotQA now have a structured evidence answer contract and are
+no longer refusal cases.
 """
 from __future__ import annotations
 
