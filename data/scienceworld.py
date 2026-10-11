@@ -44,24 +44,9 @@ Only the *identity* of the tasks is needed at run time: the gold action sequence
 regenerated from the environment's own API, which is what makes the oracle control test the
 **environment** rather than a stored answer.
 
-**78 of the 1,744 are excluded**, all of them paths longer than the 400-move budget (the
-longest is 796). `test_fold.json` keeps them with their lengths, and `test_fold()` re-applies
-the filter from that data on every load -- so the exclusion is a recomputed consequence of
-the budget rather than a slice somebody made once, and lowering the budget cannot silently
-start scoring a correct oracle 0. The reason for 400 rather than 900 is the platform's 300 s
-verification timeout: a 796-move episode is minutes of JVM stepping, and a check that times
-out is recorded as *unmeasured*, which is worse than a task that is not offered. 1,666 tasks
-remain, spanning all 29 task types.
+The adapter keeps the complete `test` fold because the shared move budget is now 1,000 and the longest recorded path is 796. `test_fold.json` still carries every path length, and `test_fold()` re-applies the budget filter on every load. The current budget therefore excludes no recorded test path.
 
-One discrepancy worth recording, because it is visible in the numbers: the package
-enumerates **30** task names and the archive has gold paths for **29**. The task without a
-gold path (`identify-life-stages-2`, 10 variations) is not in the archive at all, so it is
-not in the test fold and this adapter does not return it. A task type with no gold cannot
-be part of a set an oracle is expected to solve.
-
-So the counts, stated once: the package can generate **7,207** variations across 30 task
-types; the benchmark's archive marks **1,744** of them `test`; **78** of those exceed the
-400-move budget; this dataset is the remaining **1,666**.
+One discrepancy remains visible in the numbers: the package enumerates **30** task names and the archive has gold paths for **29**. The task without a gold path (`identify-life-stages-2`, 10 variations) is not in the test fold and this adapter does not return it.
 
 The variation indices in the archive are the package's own (verified: the API's
 `load(task, variationIdx, ...)` on a test-fold index reproduces that fold's path
@@ -86,14 +71,10 @@ Two decisions a reader should know about
   The paper also reports an "easy" preset (`teleportAction`, `openDoors`,
   `selfWateringFlowerPots`, `noElectricalAction`), which is a *different* task set with a
   different score; mixing the two in one curve is the error this note exists to prevent.
-* **A 300-move budget.** The environment's constructor default is 100 and the example
-  agent passes 100, but **16.7% of the archive's gold paths are longer than 100** and the
-  longest is 798: with a 100-move budget a correct oracle would score 0 on one task in six,
-  which would look like an unreachable check rather than a truncated budget. 300 covers
-  **every one of the 1,744 test paths** (the longest is 175) with room to spare, and the
-  episode stops when the goal is met or the budget is spent either way, so a larger number
-  costs nothing on an episode that finishes early. `STEP_BUDGET` is declared once in
-  `lib/scw_env.py` and imported by the CLI, the check and the control, so the three cannot
+* **A 1,000-move budget.** The environment's constructor default is 100, but the adapter
+  uses 1,000 so every recorded test reference path fits without a false zero or truncation.
+  The episode stops when the goal is met or the budget is spent. `STEP_BUDGET` is declared
+  once in `lib/scw_env.py` and imported by the CLI, check and control, so the three cannot
   drift apart.
 
 The leak boundary
@@ -120,7 +101,8 @@ ORACLE_SOURCE = "released"
 
 
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
-#: to it**. The pool is the benchmark's own `test` fold (1,744 variations minus 78 over the step budget). The `train` and `dev` folds exist upstream and are not loaded here.
+#: to it**. The pool is the benchmark's own test fold: all 1,744 recorded paths fit the
+#: adapter-owned 1,000-move budget. The train and dev folds exist upstream and are not loaded here.
 #:
 #: `None` is the accurate value only because nothing in the pool is study material -- it does
 #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
@@ -343,7 +325,7 @@ def _verifier(record: dict) -> dict:
         ],
         "reward_file": REWARD_FILE,
         "evidence_file": EVIDENCE_FILE,
-        "timeout_s": 300,
+        "timeout_s": 900,
     }
 
 

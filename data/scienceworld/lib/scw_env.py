@@ -39,20 +39,11 @@ from pathlib import Path
 #: control. The JVM reports `done` when the goal is met **or** when this many moves are
 #: spent, which is the stopping condition the official example loops on.
 #:
-#: **400**, and the number is a trade-off that is stated rather than hidden. Measured over
-#: the repository's `goldpaths-all.zip`: 16.7% of its 6,907 gold paths exceed the
-#: environment's own default of 100, and the longest is 798. At 100 a correct oracle scores
-#: 0 on one task in six, which reads as an unreachable check rather than a truncated budget.
-#:
-#: The test fold this dataset uses has 1,744 paths: median 32 moves, p90 132, p95 317, and
-#: **78 paths longer than 400** (the longest 796). Those 78 are excluded from the task set
-#: (`data/scienceworld/test_fold.json` carries every path's length and `test_fold()`
-#: re-applies the filter from it on every load), because a 796-move episode pushes against
-#: the platform's 300 s verification timeout and would turn a slow check into an
-#: `unmeasured` task. That is 4.5% of the fold, excluded for a reason that is written down:
-#: the exclusion is by the benchmark's own `gold_moves`, and the filter is recomputed rather
-#: than remembered.
-STEP_BUDGET = 400
+#: **1000**, an adapter-owned ceiling above the longest recorded test reference path (796 moves).
+#: This keeps every 1,744 archived test path available instead of turning a correct long
+#: oracle into a false zero. The verifier timeout is raised alongside it so the larger move
+#: budget cannot be silently truncated by the wall-clock boundary.
+STEP_BUDGET = 1000
 
 #: The action log the CLI appends to and the check replays. Same shape as ALFWorld's: one
 #: JSON object per line, `{"kind": "action", "step": n, "action": "..."}`.

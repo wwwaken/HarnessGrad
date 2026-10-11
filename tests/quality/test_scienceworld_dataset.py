@@ -92,7 +92,7 @@ def live(scienceworld):
 
 def test_the_task_set_is_the_official_test_fold(scienceworld):
     records = scienceworld._ensure()
-    assert len(records) == 1666
+    assert len(records) == 1744
     assert len({r["task_id"] for r in records}) == len(records)
     assert {r["task_name"] for r in records} == set(
         r["task_name"] for r in records), "one task type per record"
@@ -120,8 +120,7 @@ def test_no_gold_path_exceeds_the_step_budget(scienceworld):
     longest = max(r["gold_moves"] for r in records)
     assert longest <= scienceworld.STEP_BUDGET, (longest, scienceworld.STEP_BUDGET)
     excluded = scienceworld.fold_excluded()
-    assert excluded, "the transcription should record the paths it excluded"
-    assert all(e["gold_moves"] > scienceworld.STEP_BUDGET for e in excluded)
+    assert not excluded, "the 1000-move budget should cover every recorded test path"
 
 
 def test_the_test_fold_file_is_the_archive():
