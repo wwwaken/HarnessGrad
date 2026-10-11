@@ -581,12 +581,32 @@ class BudgetDispatcher:
 
     @staticmethod
     def _extract_usage(response: Any) -> tuple[Any, Mapping[str, Any] | None]:
-        if isinstance(response, tuple) and len(response) == 2 and isinstance(response[1], Mapping):
-            return response[0], response[1]
+        if isinstance(response, tuple) and len(response) == 2:
+            usage = response[1]
+            if isinstance(usage, Mapping):
+                return response[0], usage
+            dump = getattr(usage, "model_dump", None)
+            if callable(dump):
+                value = dump()
+                if isinstance(value, Mapping):
+                    return response[0], value
         if isinstance(response, Mapping) and isinstance(response.get("usage"), Mapping):
             return response, response["usage"]
         usage = getattr(response, "usage", None)
-        return response, usage if isinstance(usage, Mapping) else None
+        if isinstance(usage, Mapping):
+            return response, usage
+        dump = getattr(usage, "model_dump", None)
+        if callable(dump):
+            value = dump()
+            if isinstance(value, Mapping):
+                return response, value
+        if hasattr(usage, "prompt_tokens") and hasattr(usage, "completion_tokens"):
+            return response, {
+                "prompt_tokens": usage.prompt_tokens,
+                "completion_tokens": usage.completion_tokens,
+                "total_tokens": getattr(usage, "total_tokens", None),
+            }
+        return response, None
 
     def reconcile(self, request_id: str, usage: Mapping[str, Any] | None,
                   *, provider_did_not_execute: bool = False) -> None:

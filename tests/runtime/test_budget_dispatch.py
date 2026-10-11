@@ -53,7 +53,26 @@ def test_reserves_before_factory_and_forces_bounded_request(tmp_path: Path):
     assert dispatcher.snapshot()["spent"]["total_tokens"] == 5
 
 
-def test_unknown_usage_blocks_following_token_calls_and_no_connection_release(tmp_path: Path):
+def test_openai_sdk_usage_object_is_reconciled(tmp_path: Path):
+    dispatcher = BudgetDispatcher(PROFILE, tmp_path / "ledger.json")
+
+    class Usage:
+        prompt_tokens = 2
+        completion_tokens = 1
+        total_tokens = 3
+
+    class Response:
+        usage = Usage()
+
+        def __init__(self):
+            self.choices = []
+
+    result = dispatcher.dispatch_with_result(lambda: lambda payload, **kwargs: Response(), {}, "worker", 2, 2)
+    assert result.usage == {"prompt_tokens": 2, "output_tokens": 1, "total_tokens": 3}
+    assert dispatcher.snapshot()["spent"]["total_tokens"] == 3
+
+
+
     dispatcher = BudgetDispatcher(PROFILE, tmp_path / "ledger.json")
     with pytest.raises(ProviderExecutionUnknown):
         dispatcher.dispatch(lambda: (_ for _ in ()).throw(ConnectionError("offline")),
