@@ -54,6 +54,11 @@ import tools.web_gateway as web_gateway_mod
 # visible in the import line rather than flattened through the entrypoint.
 from harnessgrad import FRAMEWORK_VERSION
 from harnessgrad import config as platform_config
+from harnessgrad.budget_integration import (
+    BudgetBinding,
+    BudgetConfigurationError,
+    bind_budget,
+)
 from harnessgrad.environments import (
     _check_env_kinds, _env_record, _narrow_to_run, _report_harness_failed,
     _report_invalid, _required_env_kinds, _resolve_envs, _warn_missing_overlay)
@@ -281,6 +286,12 @@ def main() -> int:
                          "'python /path/to/rrsi_wrap.py'. Defaults to "
                          "harness.json's improve_entrypoint.")
     ap.add_argument("--run-id", default=None)
+    ap.add_argument("--budget-profile", default=None,
+                    help="JSON trusted-dispatch profile; required for approved Task25 runs")
+    ap.add_argument("--budget-ledger", default=None,
+                    help="path to the process-shared trusted-dispatch ledger")
+    ap.add_argument("--budget-arm", default="agent",
+                    help="identity of this run arm in the trusted-dispatch ledger")
     ap.add_argument("--tasks", default=None,
                     help="a comma-separated subset of task ids to run, instead of the "
                          "whole side. Refused if any id is not in the dataset: silently "
@@ -333,6 +344,10 @@ def main() -> int:
                          "environment variables, after `.env` is folded in) as JSON "
                          "and exit 0 without running anything")
     args = ap.parse_args()
+
+    if (args.run_id or "").startswith("task25-") and not args.budget_profile:
+        print("refusing approved Task25 run without --budget-profile", file=sys.stderr)
+        return 2
 
     if args.show_config:
         # The effective configuration, not the declared one: `.env` is folded in first,
@@ -492,6 +507,30 @@ def main() -> int:
         f"{args.harness}-{args.dataset}-{args.sampling}-m{mode}")
     run_dir = Path(args.runs_root) / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
+
+    # The trusted dispatcher is opt-in for ordinary runs.  An approved Task25
+    # run is the one deliberate exception: its profile is part of the approval
+    # contract and the run must refuse to start without a configured ledger.
+    budget_profile_source = args.budget_profile
+    budget_arm = args.budget_arm or "agent"
+    budget_ledger = args.budget_ledger or str(run_dir / "budget_ledger.json")
+    budget_binding: BudgetBinding | None = None
+    if budget_profile_source:
+        try:
+            budget_binding = bind_budget(
+                budget_profile_source, budget_ledger, run_id=run_id, arm_id=budget_arm)
+        except BudgetConfigurationError as exc:
+            print(f"refusing budget profile run: {exc}", file=sys.stderr)
+            return 2
+        # These counters describe orchestration units.  Provider calls and token
+        # usage are populated only by the trusted gateway itself.
+        budget_binding.record("rounds", args.rounds)
+        budget_binding.record("trials", args.trials)
+        budget_binding.record("jobs", args.jobs)
+        args.budget_profile = str(budget_profile_source)
+        args.budget_ledger = str(budget_binding.ledger_path)
+        args.budget_arm = budget_binding.arm_id
+        args.budget_profile_hash = budget_binding.profile_hash
 
     # From here on the run narrates itself through the console, which writes the
     # human text and `events.jsonl` together.
@@ -819,6 +858,7 @@ def main() -> int:
         config=platform_config.dump(
             run=platform_config.run_config(
                 args, run_id, seed=os.environ.get("HARNESSGRAD_SEED"), mode=mode)),
+        budget=budget_binding.metadata() if budget_binding is not None else None,
         # The run-level view of §2.5.4, beside the per-point one. With no task ids this
         # falls back to every distinct environment the dataset declares, which is the
         # right granularity for a run: a reader should be able to tell what kind of
@@ -901,11 +941,14 @@ def main() -> int:
         sandbox=sandbox_line, split=split, argv=sys.argv, side=args.side)
 
     if args.side == "eval":
-        return _run_eval_side(
+        result = _run_eval_side(
             work=work, man=man, run_id=run_id, run_dir=run_dir, tasks=tasks_all,
             scorable=scorable, setups=setups, verifiers=verifiers, envs=envs,
             side_ids=side_ids, split=split, args=args, eval_from=eval_from,
             improver=improver)
+        if budget_binding is not None:
+            _write_run_meta(run_dir, budget=budget_binding.metadata())
+        return result
 
     cache: dict = {}
     # `env_generation_tokens` is its own axis rather than part of `generation_tokens`:
@@ -1065,6 +1108,9 @@ def main() -> int:
                         base, tasks, task_ids, scorable, sampling, cache,
                         cumulative, train_ids, split, setups, verifiers,
                         verifier_kinds, envs, improver=improver)
+
+    if budget_binding is not None:
+        _write_run_meta(run_dir, budget=budget_binding.metadata())
 
     _write_curve(curve_path, curve)
     console.results(curve, split=split)
