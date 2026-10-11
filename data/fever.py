@@ -1,41 +1,15 @@
-r"""FEVER as a dataset -- refused, because its headline metric needs evidence we cannot ask for.
+r"""FEVER adapter using the official strict evidence metric.
 
-    python3 tools/datasets.py --fetch --dataset fever   # stages the table
-    python3 data/qa/control.py --dataset fever          # says why there is no control
-    python3 tools/dataset_lint.py --dataset fever       # REFUSED, not FAIL
-
-Where the data is
------------------
-`copenlu/fever_gold_evidence` (a Hub mirror of the FEVER gold-evidence release):
-`valid.jsonl` (6.5 MB), `test.jsonl` (6.6 MB), `train.jsonl` (97 MB). Each row is a
-`claim` plus a three-way `label` (`SUPPORTS` / `REFUTES` / `NOT ENOUGH INFO`) and the
-gold `evidence` groups.
-
-Why this dataset refuses to load
---------------------------------
-FEVER's **official headline metric is `strict_score`** (`sheffieldnlp/fever-scorer`,
-`src/fever/scorer.py`): a claim counts only when the label is right **and** a whole gold
-evidence group appears among the model's first five predicted `(page, line)` pairs. The
-platform's answer contract carries the final answer and nothing else -- `answer.txt`, one
-string -- so `predicted_evidence` does not exist, and neither does the metric.
-
-The functions are transcribed in `data/qa/evidence_scorers.py`, and
-`fever_is_strictly_correct` raises `MissingEvidence` rather than returning `False`: a
-`False` would enter a table as "the system got it wrong", which is a different claim from
-"nobody measured it".
-
-`is_correct_label` alone -- the plain label accuracy -- **is** computable, and it is what
-several papers quote. It is not what FEVER's leaderboard reports, and it is not the same
-rule for every row: `NOT ENOUGH INFO` items are evidence-exempt upstream, so a label-only
-number silently scores the three classes under different rules. Reporting it under the
-dataset's name without saying so is the error `docs/dataset-onboarding-skill.md` §1 and §2
-describe. This adapter therefore refuses, and names the interface change that would make
-it reachable: the answer contract would have to carry evidence, the same conclusion the
-first adaptation of this work reached independently.
+The adapter reads the pinned `copenlu/fever_gold_evidence` validation split and keeps
+that provenance explicit; it does not claim test gold access. `prediction.json` carries
+the answer label and optional `(page, line)` pairs. The scorer checks the first five pairs,
+and preserves the upstream evidence exemption for NOT ENOUGH INFO. A legacy answer.txt
+prediction still scores, with absent required evidence measured as incorrect.
 """
 from __future__ import annotations
 
 from data.qa import base
+from data.qa.evidence_scorers import MissingEvidence, fever_is_strictly_correct
 
 KIND = "dataset"
 
@@ -46,16 +20,27 @@ TEST = "test.jsonl"
 TRAIN = "train.jsonl"
 LABELS = ("SUPPORTS", "REFUTES", "NOT ENOUGH INFO")
 
-REFUSED = (
-    "fever: the benchmark's headline metric is the FEVER score (`strict_score`), which "
-    "requires the model's `predicted_evidence` -- up to five `(page, line)` pairs -- and "
-    "the answer contract carries only a final answer. Plain label accuracy is computable "
-    "but is a different metric, and it is not even the same rule on every row: "
-    "`NOT ENOUGH INFO` items are evidence-exempt upstream. This contract has no evidence "
-    "field, so the official number cannot be produced; the scorer is transcribed in "
-    "`data/qa/evidence_scorers.py` and raises `MissingEvidence`. Refusing rather than "
-    "reporting label accuracy under the benchmark's name."
-)
+EVIDENCE_AWARE = True
+ORACLE_SOURCE = "released"
+
+
+def score_prediction(prediction: dict, gold: dict) -> dict:
+    answer = prediction["answer"]
+    predicted_evidence = prediction.get("predicted_evidence")
+    try:
+        correct = fever_is_strictly_correct(
+            gold["answer"], answer, gold.get("evidence"), predicted_evidence)
+    except MissingEvidence:
+        correct = False
+    return {"reward": float(correct), "correct": correct,
+            "official": {"metric": "FEVER strict_score", "max_evidence": 5},
+            "why": "strict label and evidence match" if correct else
+                  "label or required evidence did not match"}
+
+
+def score(prediction: str, gold: dict) -> dict:
+    # Legacy answer.txt remains scoreable; omitted evidence is an incorrect prediction.
+    return score_prediction({"answer": prediction}, gold)
 
 
 def _rows() -> list[dict]:
@@ -68,11 +53,17 @@ def _rows() -> list[dict]:
 _SPEC = base.QASpec(
     name="fever",
     root=DATASET_ROOT,
-    rows=lambda: {"test": _rows()},
+    rows=lambda: {"validation": _rows()},
     question=lambda row: str(row["claim"]),
     gold=lambda row: {"answer": str(row["label"]), "evidence": row.get("evidence")},
-    goal=lambda question, gold: question,
-    score=lambda prediction, gold: (_ for _ in ()).throw(NotImplementedError(REFUSED)),
+    goal=lambda question, gold: (
+        f"Claim: {question}\n\nReturn the FEVER label in `answer.txt` or with `qa submit`, "
+        "and include evidence in prediction.json "
+        "using `qa submit-json @file`. Schema: {\"schema_version\":1,\"answer\":"
+        "\"SUPPORTS|REFUTES|NOT ENOUGH INFO\",\"predicted_evidence\":[[page,line]]}. "
+        "Evidence is optional in the artifact; non-NEI claims without it score incorrect. "
+        "NEI is evidence-exempt. FEVER scores only the first five evidence pairs."),
+    score=score,
     downloads=lambda: [
         {
             "kind": "hf-dataset",
@@ -98,11 +89,16 @@ _SPEC = base.QASpec(
                     "version, not a checksum.",
         },
     ],
-    split="test",
-    source="copenlu/fever_gold_evidence@a6b8d891d393e97a4efac791afffb2d7de5e57c6",
+    split="validation",
+    source="copenlu/fever_gold_evidence@a6b8d891d393e97a4efac791afffb2d7de5e57c6 (validation split)",
 )
 
 _BUILT = _SPEC.build()
+DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+ENV = _BUILT["ENV"]
+SPLIT = _BUILT["SPLIT"]
+OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
+SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
 
 
 def __getattr__(name: str):
@@ -110,7 +106,7 @@ def __getattr__(name: str):
 
 
 def load() -> tuple[list[dict], dict[str, str]]:
-    raise ValueError(REFUSED)
+    return _SPEC.load()
 
 
 def downloads() -> list[dict]:

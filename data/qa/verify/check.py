@@ -76,6 +76,7 @@ def parse_args(argv):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--answer", default="answer.txt")
+    parser.add_argument("--prediction", default="prediction.json")
     parser.add_argument("--gold", default="gold.json")
     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
@@ -125,6 +126,7 @@ def main(argv) -> int:
     args.reward_file = Path(args.reward_file)
     args.evidence_file = Path(args.evidence_file)
     answer_path = Path(args.answer)
+    prediction_path = Path(args.prediction)
     gold_path = Path(args.gold)
 
     evidence: dict = {
@@ -157,6 +159,21 @@ def main(argv) -> int:
                     answer=answer[:2000],
                     gold=gold)
 
+    structured = None
+    if prediction_path.is_file():
+        try:
+            from data.qa.prediction import validate_prediction
+            structured, prediction_error = validate_prediction(
+                json.loads(prediction_path.read_text(encoding="utf-8")))
+        except (OSError, ValueError) as exc:
+            return unmeasured(args, evidence,
+                              f"prediction file {prediction_path} is malformed: {exc}")
+        if prediction_error:
+            return unmeasured(args, evidence,
+                              f"prediction file {prediction_path} is invalid: "
+                              f"{prediction_error}")
+        evidence.update(prediction_file=str(prediction_path), prediction=structured)
+
     if not DATASET_NAME_RE.match(args.dataset):
         return unmeasured(args, evidence,
                           f"{args.dataset!r} is not a dataset name; this check imports "
@@ -181,9 +198,15 @@ def main(argv) -> int:
         return unmeasured(args, evidence, f"could not import {module_name}: "
                                           f"{type(exc).__name__}: {exc}")
 
-    prediction = unwrap(answer).strip()
+    prediction = (str(structured["answer"]) if structured is not None
+                  else unwrap(answer).strip())
     try:
-        result = scorer(prediction, gold)
+        evidence_scorer = getattr(adapter, "score_prediction", None)
+        result = (evidence_scorer(structured, gold)
+                  if structured is not None
+                  and getattr(adapter, "EVIDENCE_AWARE", False)
+                  and callable(evidence_scorer)
+                  else scorer(prediction, gold))
     except Exception as exc:  # noqa: BLE001 - a scorer that refuses is not a zero
         evidence["traceback"] = traceback.format_exc()[-2000:]
         return unmeasured(args, evidence,
@@ -201,7 +224,8 @@ def main(argv) -> int:
                           f"{module_name}.score() returned a non-numeric reward "
                           f"{result['reward']!r}")
 
-    evidence.update(measured=True, reward=reward, prediction=prediction[:2000],
+    evidence.update(measured=True, reward=reward,
+                    prediction=(structured if structured is not None else prediction[:2000]),
                     correct=bool(result.get("correct", reward >= 1.0)),
                     why=str(result.get("why") or ""),
                     official=result.get("official"))

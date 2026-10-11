@@ -1,44 +1,15 @@
-r"""HotpotQA as a dataset -- refused, because its leaderboard metric needs supporting facts.
+r"""HotpotQA fullwiki validation adapter using the official joint metric.
 
-    python3 tools/datasets.py --fetch --dataset hotpotqa   # stages the table
-    python3 data/qa/control.py --dataset hotpotqa          # says why there is no control
-    python3 tools/dataset_lint.py --dataset hotpotqa       # REFUSED, not FAIL
-
-Where the data is
------------------
-`hotpot_qa`, config **`fullwiki`**, split **`validation`** (7,405 questions, 28 MB). The
-config matters: `distractor` ships ten candidate paragraphs with each question and
-`fullwiki` ships the whole-Wikipedia setting, and the two are different benchmarks with
-different numbers. ReWOO used `fullwiki`, and so does this adapter.
-
-Why this dataset refuses to load
---------------------------------
-HotpotQA's **leaderboard metric is `joint`** (`hotpotqa/hotpot/hotpot_evaluate_v1.py`):
-
-    joint_em    = em * sp_em
-    joint_prec  = prec * sp_prec
-    joint_recall = recall * sp_recall
-
-`sp_*` are supporting-fact scores: `update_sp` compares the set of `(title, sentence
-index)` pairs the system claims to have used with the gold set, and `em = 1.0 if fp + fn
-== 0` -- **exact set equality**. The answer contract carries only `answer.txt`, so there
-are no supporting facts, and `joint` does not exist. `data/qa/evidence_scorers.py`
-transcribes the upstream functions and `hotpot_update_sp` raises `MissingEvidence`.
-
-Answer-only EM/F1 **are** computable, and papers quote them. They are a different metric --
-by a lot, which is the point: `docs/dataset-onboarding-skill.md` records that a table
-showing one and claiming the other cannot be told apart from the numbers. So this adapter
-refuses and names the interface change: the answer contract would have to carry evidence,
-the same conclusion the first adaptation reached independently.
-
-One thing worth knowing if this is ever revisited: unlike FEVER, **this dataset's own rows
-carry `supporting_facts`** (the gold pairs, per question). That makes a future
-contract-with-evidence version straightforward to build and easy to verify -- the gold is
-here, it is the *answer channel* that does not exist.
+`prediction.json` carries the answer and optional `(title, sentence_index)` pairs.
+Answer EM/F1 and supporting-fact scores feed the official joint EM/F1; support facts use
+exact set semantics. Missing evidence remains a valid prediction and produces joint zero.
+The adapter reads only the pinned validation split, not test gold.
 """
 from __future__ import annotations
 
 from data.qa import base
+from data.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_score,
+                                      SpScore, hotpot_joint, hotpot_update_sp, MissingEvidence)
 
 KIND = "dataset"
 
@@ -48,16 +19,40 @@ CONFIG = "fullwiki"
 VALIDATION = f"{CONFIG}/validation-00000-of-00001.parquet"
 TEST = f"{CONFIG}/test-00000-of-00001.parquet"
 
-REFUSED = (
-    "hotpotqa: the benchmark's leaderboard metric is `joint` "
-    "(`joint_em = em * sp_em`), and the supporting-fact half needs the `(title, sentence "
-    "index)` pairs the system claims to have used, compared as an **exact set**. The "
-    "answer contract carries only a final answer, so `joint` cannot be computed; "
-    "answer-only EM/F1 are a different, much higher metric and are not what the "
-    "leaderboard reports. The scorer is transcribed in `data/qa/evidence_scorers.py` and "
-    "raises `MissingEvidence`. Refusing rather than reporting answer-only EM under the "
-    "benchmark's name."
-)
+
+def _gold(row: dict) -> dict:
+    facts = row.get("supporting_facts")
+    if isinstance(facts, dict):
+        titles = facts.get("title") or []
+        indices = facts.get("sent_id") or []
+        if len(titles) != len(indices):
+            raise ValueError("hotpotqa: supporting_facts title/sent_id lengths differ")
+        facts = [[title, index] for title, index in zip(titles, indices)]
+    return {"answer": str(row["answer"]), "supporting_facts": facts}
+
+EVIDENCE_AWARE = True
+ORACLE_SOURCE = "released"
+
+
+def score_prediction(prediction: dict, gold: dict) -> dict:
+    answer = prediction["answer"]
+    em = hotpot_exact_match(answer, gold["answer"])
+    f1, precision, recall = hotpot_f1_score(answer, gold["answer"])
+    try:
+        sp = hotpot_update_sp(prediction.get("predicted_evidence"),
+                              gold.get("supporting_facts"))
+    except MissingEvidence:
+        sp = SpScore(em=0.0, f1=0.0, prec=0.0, recall=0.0)
+    joint_em, joint_f1 = hotpot_joint(em, precision, recall, sp)
+    return {"reward": joint_em, "correct": bool(joint_em == 1.0),
+            "official": {"metric": "HotpotQA joint", "em": em, "f1": f1,
+                          "sp_em": sp.em, "sp_f1": sp.f1,
+                          "joint_em": joint_em, "joint_f1": joint_f1},
+            "why": f"joint_em={joint_em:g}, joint_f1={joint_f1:g}"}
+
+
+def score(prediction: str, gold: dict) -> dict:
+    return score_prediction({"answer": prediction}, gold)
 
 
 def _rows() -> list[dict]:
@@ -72,10 +67,14 @@ _SPEC = base.QASpec(
     root=DATASET_ROOT,
     rows=lambda: {"validation": _rows()},
     question=lambda row: str(row["question"]),
-    gold=lambda row: {"answer": str(row["answer"]),
-                      "supporting_facts": row.get("supporting_facts")},
-    goal=lambda question, gold: question,
-    score=lambda prediction, gold: (_ for _ in ()).throw(NotImplementedError(REFUSED)),
+    gold=_gold,
+    goal=lambda question, gold: (
+        f"Question: {question}\n\nWrite the answer to `answer.txt` with `qa submit`, or "
+        "write `prediction.json` with `qa submit-json @file`: "
+        "{\"schema_version\":1,\"answer\":\"...\",\"predicted_evidence\":["
+        "[title,sentence_index]]}. Supporting facts use exact set semantics and are "
+        "required for a nonzero joint score."),
+    score=score,
     downloads=lambda: [
         {
             "kind": "hf-dataset",
@@ -103,6 +102,11 @@ _SPEC = base.QASpec(
 )
 
 _BUILT = _SPEC.build()
+DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+ENV = _BUILT["ENV"]
+SPLIT = _BUILT["SPLIT"]
+OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
+SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
 
 
 def __getattr__(name: str):
@@ -110,7 +114,7 @@ def __getattr__(name: str):
 
 
 def load() -> tuple[list[dict], dict[str, str]]:
-    raise ValueError(REFUSED)
+    return _SPEC.load()
 
 
 def downloads() -> list[dict]:
