@@ -284,6 +284,12 @@ class RunConfig:
     runs_root: str = "runs"
     work_root: str = "../harnessgrad_work"
     method_entrypoint: str | None = None
+    # Optional trusted dispatcher binding.  These are argv-derived facts and
+    # therefore belong beside the run identity, not in the environment snapshot.
+    budget_profile: str | None = None
+    budget_ledger: str | None = None
+    budget_arm: str = "agent"
+    budget_profile_hash: str | None = None
 
 
 @dataclass(frozen=True)

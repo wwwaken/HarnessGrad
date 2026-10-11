@@ -21,7 +21,14 @@ integer prompt and completion fields and cannot exceed its reservation; violatio
 persisted and remain fail-closed.  Payloads and callback results are never written to the
 ledger, so secrets do not enter accounting records.
 
+The driver integration in `harnessgrad.budget_integration` binds a profile, ledger path, run
+identity and arm identity before a provider factory can run.  It records the immutable
+profile hash and keeps calls, attempts, retries, prompt/output tokens, candidates, rounds,
+trials and jobs as separate counters.  With no profile the gateway follows the legacy path.
+Approved `task25-*` runs refuse to start without a profile and a trusted ledger.
+
 The module metadata declares `supported_scope=trusted_dispatch_only` and
-`arbitrary_harness_network_enforcement=false`.  Production driver and network mediation are
-**PENDING**; an offline smoke may use this interface only after parent review.  Subject
-traces and generic budget counters are not an authority for this ledger.
+`arbitrary_harness_network_enforcement=false`.  The gateway does not mediate arbitrary
+subject processes: harnesses or methods that construct a provider outside this boundary
+remain outside enforcement until network mediation exists.  Subject traces and generic
+budget counters are not an authority for the dispatcher ledger.
