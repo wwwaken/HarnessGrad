@@ -79,6 +79,21 @@ def _gold_text(record: dict) -> str:
                      f"answer: {sorted(gold)}")
 
 
+def _oracle_prediction(module, record: dict) -> dict | None:
+    if not getattr(module, "EVIDENCE_AWARE", False):
+        return None
+    gold = record["gold"]
+    evidence = gold.get("evidence")
+    if module.__name__.endswith("fever"):
+        if evidence and evidence[0] and isinstance(evidence[0][0], str):
+            evidence = [[item[0], int(item[1])] for item in evidence]
+        else:
+            evidence = [[item[2], item[3]] for group in (evidence or []) for item in group]
+    return {"schema_version": 1, "answer": _gold_text(record),
+            "predicted_evidence": evidence if module.__name__.endswith("fever")
+            else gold.get("supporting_facts")}
+
+
 def materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
     """Put the task where `SETUP` would, plus the gold when this is the oracle arm."""
     workdir.mkdir(parents=True, exist_ok=True)
@@ -93,7 +108,12 @@ def materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
     if oracle:
         oracle_dir = workdir / ".oracle"
         oracle_dir.mkdir(parents=True, exist_ok=True)
-        (oracle_dir / "answer.txt").write_text(_gold_text(record) + "\n")
+        structured = _oracle_prediction(module, record)
+        if structured is not None:
+            (oracle_dir / "prediction.json").write_text(
+                json.dumps(structured, ensure_ascii=False) + "\n")
+        else:
+            (oracle_dir / "answer.txt").write_text(_gold_text(record) + "\n")
 
 
 def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
@@ -139,9 +159,13 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
 def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
     materialize(module, record, workdir, oracle=oracle)
     if oracle:
+        structured = _oracle_prediction(module, record)
+        if structured is not None:
+            cli_args = ["submit-json", "@.oracle/prediction.json"]
+        else:
+            cli_args = ["submit", (workdir / ".oracle" / "answer.txt").read_text(encoding="utf-8")]
         submitted = subprocess.run(
-            [sys.executable, f"{base.CLI_REL}/{base.CLI_FILE}", "submit",
-             (workdir / ".oracle" / "answer.txt").read_text(encoding="utf-8")],
+            [sys.executable, f"{base.CLI_REL}/{base.CLI_FILE}", *cli_args],
             cwd=workdir, capture_output=True, text=True)
         if submitted.returncode != 0:
             print(f"the CLI refused the reference answer: {submitted.stderr}",
@@ -169,8 +193,13 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     task = next(t for t in module.load()[0] if t["task_id"] == tid)
     setup = {"files": list(module.SETUP[tid]["files"])}
     if oracle:
-        setup["files"].append({"path": ".oracle/answer.txt",
-                               "content": _gold_text(record) + "\n"})
+        structured = _oracle_prediction(module, record)
+        if structured is not None:
+            setup["files"].append({"path": ".oracle/prediction.json",
+                                   "content": json.dumps(structured, ensure_ascii=False) + "\n"})
+        else:
+            setup["files"].append({"path": ".oracle/answer.txt",
+                                   "content": _gold_text(record) + "\n"})
     work_root = workdir / "work"
     harness = work_root / "oracle_harness"
     shutil.copytree(base.Path(__file__).resolve().parent / "oracle_harness", harness,

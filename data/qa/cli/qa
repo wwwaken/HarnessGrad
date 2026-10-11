@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""`qa` -- the one command a harness needs to answer a plain-text QA task.
+"""`qa` -- the shared command for plain-text and structured QA predictions.
 
     python3 qa submit "Paris"        write the answer to answer.txt
     python3 qa submit @answer.md     write the contents of a file as the answer
     python3 qa submit < answer.md    same, from stdin
+    python3 qa submit-json @prediction.json  validate a structured prediction
     python3 qa show                  print what has been submitted
     python3 qa help                  this text
 
@@ -31,17 +32,50 @@ platform already collects it for every harness that writes one.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from prediction import validate_prediction  # noqa: E402
+
 #: Overridable for the same reason every other path in this repository is: a reader
 #: debugging a workdir should be able to point it somewhere else without editing code.
 ANSWER_ENV = "HG_QA_ANSWER"
+PREDICTION_ENV = "HG_QA_PREDICTION"
 
 
 def answer_path() -> Path:
     return Path(os.environ.get(ANSWER_ENV) or "answer.txt")
+
+
+def prediction_path() -> Path:
+    return Path(os.environ.get(PREDICTION_ENV) or "prediction.json")
+
+
+def cmd_submit_json(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(prog="qa submit-json", add_help=True)
+    parser.add_argument("source", help="JSON file using @file syntax")
+    args = parser.parse_args(argv)
+    if not args.source.startswith("@") or len(args.source) == 1:
+        print("error: submit-json requires @file", file=sys.stderr)
+        return 2
+    source = Path(args.source[1:])
+    try:
+        value = json.loads(source.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        print(f"error: invalid prediction JSON: {exc}", file=sys.stderr)
+        return 2
+    _, error = validate_prediction(value)
+    if error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    path = prediction_path()
+    path.write_text(json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n",
+                    encoding="utf-8")
+    print(f"submitted structured prediction to {path}")
+    return 0
 
 
 def cmd_submit(argv: list[str]) -> int:
@@ -90,6 +124,7 @@ USAGE = """qa -- answer a plain-text task
   python3 qa submit "Paris"      write the answer to {answer}
   python3 qa submit @notes.md    write a file's contents as the answer
   python3 qa submit < notes.md   read the answer from stdin
+  python3 qa submit-json @prediction.json  answer plus optional evidence
   python3 qa show                print what has been submitted
 
 The answer file is what is graded: nothing printed here is read. An empty answer is
@@ -104,6 +139,8 @@ def main(argv: list[str]) -> int:
     command, rest = argv[0], argv[1:]
     if command == "submit":
         return cmd_submit(rest)
+    if command == "submit-json":
+        return cmd_submit_json(rest)
     if command == "show":
         return cmd_show(rest)
     print(f"error: unknown command {command!r}", file=sys.stderr)

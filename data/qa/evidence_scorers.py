@@ -1,14 +1,11 @@
-r"""The official scorers whose headline metric this contract cannot carry.
+r"""Transcribed official evidence metrics used by FEVER and HotpotQA adapters.
 
-Both FEVER and HotpotQA publish a metric that needs a field the answer contract does not
-have, so both datasets refuse to load (`data/fever.py`, `data/hotpotqa.py`). This module
-holds the upstream functions **verbatim** anyway, for one reason: a refusal is only
-credible if the code that computes the missing number is present and says what is missing.
-`MissingEvidence` is raised by the two functions that need evidence -- it is a distinct
-outcome from a score of 0, and the tests pin that distinction.
+The optional `prediction.json` contract carries those evidence fields. Missing evidence
+is represented by `MissingEvidence`; each adapter maps that valid-but-incomplete
+prediction to an official measured zero. Malformed artifact structure is rejected by
+`data/qa/prediction.py` and is unmeasured by the verifier.
 
-Nothing here is a scorer for a runnable dataset. `data/registry.py` never imports
-it; the tests do.
+The adapters import this standard-library-only module into their isolated verifier.
 """
 from __future__ import annotations
 
@@ -98,11 +95,8 @@ def hotpot_update_sp(sp_prediction: Sequence[Sequence[Any]] | None,
     """
     if not sp_prediction:
         raise MissingEvidence(
-            "HotpotQA's supporting-fact scores need the model to output the "
-            "(title, sentence index) pairs it used, and the answer contract carries only "
-            "the final answer. Its leaderboard reports **joint** "
-            "(`joint_em = em * sp_em`), so an answer-only number is a different metric; "
-            "reporting it under the benchmark's name is the error this refusal avoids.")
+            "HotpotQA supporting-fact evidence is absent; the contract treats this "
+            "as an incorrect prediction when scoring, rather than an invalid artifact.")
     cur = set(map(tuple, sp_prediction))
     gold = set(map(tuple, sp_gold or []))
     tp = sum(1 for e in cur if e in gold)
@@ -155,16 +149,19 @@ def fever_is_strictly_correct(label: str, predicted_label: str,
     """
     if str(label).upper() != "NOT ENOUGH INFO" and not predicted_evidence:
         raise MissingEvidence(
-            "FEVER's headline metric is `strict_score`, which needs the model to output "
-            "`predicted_evidence` ((page, line) pairs, judged on the first 5). The answer "
-            "contract carries only the final label. FEVER's not-enough-info items are "
-            "evidence-exempt, so a label-only number would be a different rule for "
-            "different rows -- not a lower-fidelity version of the same one.")
+            "FEVER predicted_evidence is absent; the contract treats this as an "
+            "incorrect prediction when scoring, rather than an invalid artifact.")
     correct = fever_is_correct_label(label, predicted_label)
     if str(label).upper() != "NOT ENOUGH INFO" and correct:
-        head = [list(e) for e in (predicted_evidence or [])[:max_evidence]]
-        for group in evidence or []:
-            actual = [[e[2], e[3]] for e in group]
+        head = [[e[0], e[1]] for e in (predicted_evidence or [])[:max_evidence]]
+        groups = evidence or []
+        if groups and groups[0] and isinstance(groups[0][0], str):
+            # The pinned Hub mirror flattens the upstream group id: each available
+            # sentence is retained as an independently sufficient evidence group.
+            groups = [[item] for item in groups]
+        for group in groups:
+            actual = [[e[0], int(e[1])] if len(e) == 3 else [e[2], e[3]]
+                      for e in group]
             if all(sentence in head for sentence in actual):
                 return True
         return False

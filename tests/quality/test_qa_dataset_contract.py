@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT))
 #: does not import a module whose data is absent in order to find that out.
 QA_DATASETS = ["gsm8k", "triviaqa", "strategyqa", "sportsunderstanding",
                "physicsquestions", "bfcl_v3", "chessbench_puzzles", "musique",
-               "reasoning_gym", "twowikimultihopqa"]
+               "reasoning_gym", "twowikimultihopqa", "fever", "hotpotqa"]
 
 
 def _adapter(name: str):
@@ -64,8 +64,26 @@ def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
             shutil.copy2(entry["from"], target)
     if oracle:
         answer = str(record["gold"].get("value") or record["gold"].get("answer") or "")
-        subprocess.run([sys.executable, "qa/bin/qa", "submit", answer], cwd=workdir,
-                       check=True, capture_output=True, text=True)
+        if getattr(module, "EVIDENCE_AWARE", False):
+            gold = record["gold"]
+            evidence = gold.get("evidence")
+            if module.__name__ == "data.fever":
+                if evidence and evidence[0] and isinstance(evidence[0][0], str):
+                    evidence = [[item[0], int(item[1])] for item in evidence]
+                else:
+                    evidence = [[item[2], item[3]] for group in (evidence or [])
+                                for item in group]
+            else:
+                evidence = gold.get("supporting_facts")
+            (workdir / "oracle.json").write_text(json.dumps({
+                "schema_version": 1, "answer": answer,
+                "predicted_evidence": evidence,
+            }))
+            subprocess.run([sys.executable, "qa/bin/qa", "submit-json", "@oracle.json"],
+                           cwd=workdir, check=True, capture_output=True, text=True)
+        else:
+            subprocess.run([sys.executable, "qa/bin/qa", "submit", answer], cwd=workdir,
+                           check=True, capture_output=True, text=True)
 
 
 def _run_check(module, record: dict, workdir: Path, *,

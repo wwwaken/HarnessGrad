@@ -31,13 +31,14 @@ def main() -> int:
     args = parser.parse_args()
     work = pathlib.Path(args.workdir).resolve()
 
+    structured_oracle = work / ".oracle" / "prediction.json"
     oracle = work / ".oracle" / "answer.txt"
-    if not oracle.is_file():
-        print(f"qa-oracle: no reference answer at {oracle}; this control only runs "
-              f"when the dataset staged one", file=sys.stderr)
+    structured = structured_oracle.is_file()
+    if not structured and not oracle.is_file():
+        print(f"qa-oracle: no reference answer under {work / '.oracle'}; this control only "
+              f"runs when the dataset staged one", file=sys.stderr)
         return 0
 
-    answer = oracle.read_text(encoding="utf-8")
     # The CLI's location is the dataset's `SETUP` decision, so it is looked up rather
     # than assumed: this harness runs for every QA dataset and must not encode one
     # layout. `qa/bin/qa` is `data/qa/base.py::CLI_REL`, and the search here is what
@@ -47,7 +48,10 @@ def main() -> int:
     if cli is None:
         print(f"qa-oracle: no `qa` CLI under {work}", file=sys.stderr)
         return 1
-    proc = subprocess.run([sys.executable, str(cli), "submit", answer],
+    proc = subprocess.run([sys.executable, str(cli),
+                           "submit-json" if structured else "submit",
+                           "@.oracle/prediction.json" if structured else
+                           oracle.read_text(encoding="utf-8")],
                           cwd=work, capture_output=True, text=True)
     if proc.returncode != 0:
         print(f"qa-oracle: `qa submit` exited {proc.returncode}: "
@@ -61,8 +65,7 @@ def main() -> int:
         "harness_identity": {"agent_model": "oracle", "harness": "qa-oracle 1"},
         "usage": {"input_tokens": 0, "output_tokens": 0, "calls": 0},
     }) + "\n")
-    print(f"qa-oracle: submitted {len(answer.strip())} character(s) from the dataset's "
-          f"reference answer")
+    print("qa-oracle: submitted the dataset's reference prediction")
     return 0
 
 

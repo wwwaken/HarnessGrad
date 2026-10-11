@@ -70,9 +70,9 @@ def normalize_missing(value):
 #: The repository root: `data/qa/base.py` -> `data/qa` -> `data` -> root.
 ROOT = Path(__file__).resolve().parents[2]
 
-#: The file the agent writes and the check reads. Fixed, because it is also the
-#: platform's convention for a non-command harness.
+#: The legacy answer file the agent writes and the check reads.
 ANSWER_FILE = "answer.txt"
+PREDICTION_FILE = "prediction.json"
 CLI_FILE = "qa"
 
 #: The container contract's locations. On a `files` environment `eval/verifier.py`
@@ -309,6 +309,8 @@ class QASpec:
     def setup(self, record: dict) -> dict:
         return {"files": [
             {"path": f"{CLI_REL}/{CLI_FILE}", "from": str(CLI_DIR / "qa")},
+            {"path": "qa/prediction.py", "from": str(QA_DIR / "prediction.py")},
+            {"path": "qa/prediction.schema.json", "from": str(QA_DIR / "prediction.schema.json")},
             *self.extra_setup,
         ]}
 
@@ -335,6 +337,7 @@ class QASpec:
                 "python3", f"{CHECK_DIR}/{CHECK_NAME}",
                 "--dataset", self.name,
                 "--answer", ANSWER_FILE,
+                "--prediction", PREDICTION_FILE,
                 "--gold", GOLD_FILE,
                 "--reward-file", REWARD_REL,
                 "--evidence-file", EVIDENCE_REL,
@@ -361,6 +364,10 @@ class QASpec:
                 {"path": f"{DATASET_PACKAGE}/qa/__init__.py", "from": str(QA_DIR / "__init__.py")},
                 {"path": f"{DATASET_PACKAGE}/qa/read.py", "from": str(QA_DIR / "read.py")},
                 {"path": f"{DATASET_PACKAGE}/qa/base.py", "from": str(QA_DIR / "base.py")},
+                {"path": f"{DATASET_PACKAGE}/qa/evidence_scorers.py",
+                 "from": str(QA_DIR / "evidence_scorers.py")},
+                {"path": f"{DATASET_PACKAGE}/qa/prediction.py",
+                 "from": str(QA_DIR / "prediction.py")},
                 # The dataset's own adapter, under its real module name.
                 {"path": f"{DATASET_PACKAGE}/{self.name}.py",
                  "from": str(ROOT / DATASET_PACKAGE / f"{self.name}.py")},
@@ -490,6 +497,6 @@ def split_env_override(name: str) -> str | None:
     return os.environ.get(f"HG_{name.upper()}_SPLIT")
 
 
-__all__ = ["QASpec", "module_getattr", "ANSWER_FILE", "CLI_FILE", "GOLD_FILE",
+__all__ = ["QASpec", "module_getattr", "ANSWER_FILE", "PREDICTION_FILE", "CLI_FILE", "GOLD_FILE",
            "REWARD_FILE", "EVIDENCE_FILE", "REWARD_REL", "EVIDENCE_REL",
            "is_eval", "split_env_override", "ROOT", "Path"]
