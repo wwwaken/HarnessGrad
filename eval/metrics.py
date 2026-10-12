@@ -53,6 +53,8 @@ def select_task_set(scores: dict[str, float], policy: str,
     the scored set -- quietly undoing the split at exactly the moment it matters.
     """
     ids = sorted(scores) if within is None else sorted(within)
+    if policy == "all":
+        return ids
     if policy == "pilot_10pct":
         return pilot_task_set(ids)
     if policy.startswith("below_"):
