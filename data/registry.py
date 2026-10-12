@@ -264,7 +264,7 @@ STATES = ("mount", "container")
 #: spans 1-4 cpus, 2-8 GB and 600-12000 s (measured), and a platform that ran those on
 #: one default would report a harness failing a task it was never given time to attempt.
 ENV_DEFAULTS = {"cpus": 2, "memory_mb": 4096,
-                "agent_timeout_s": 300, "verify_timeout_s": 300}
+                "agent_timeout_s": 3600, "verify_timeout_s": 3600}
 
 #: A service's fields (INTERFACE.md §2.5.7). Every one has a consequence in
 #: `eval/services.py`; none is decoration.

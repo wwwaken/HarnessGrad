@@ -73,7 +73,7 @@ def test_the_resource_defaults_are_filled_in():
     env = registry._normalize_env({"kind": "exec", "image": "x"})
     assert env["state"] == "mount"
     assert (env["cpus"], env["memory_mb"]) == (2, 4096)
-    assert (env["agent_timeout_s"], env["verify_timeout_s"]) == (300, 300)
+    assert (env["agent_timeout_s"], env["verify_timeout_s"]) == (3600, 3600)
 
 
 def test_reward_file_and_pass_when_together_are_refused():

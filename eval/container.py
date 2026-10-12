@@ -469,7 +469,7 @@ def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
 def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
         harness_root: Path | None = None, state_dirs: tuple[Path, ...] = (),
         cwd: str | None = None, env: dict[str, str] | None = None,
-        timeout_s: int = 300, network: str = "none",
+        timeout_s: int = 3600, network: str = "none",
         read_only: bool = True, task_dir_writable: bool = True,
         extra_mounts: tuple[str, ...] = (),
         readonly_paths: tuple[Path, ...] = (),
@@ -739,7 +739,7 @@ def start(name: str) -> None:
 
 
 def exec_in(name: str, argv: list[str], *, cwd: str | None = None,
-            env: dict[str, str] | None = None, timeout_s: int = 300,
+            env: dict[str, str] | None = None, timeout_s: int = 3600,
             ) -> subprocess.CompletedProcess:
     """Run a command inside a running container. `subprocess.run` shape."""
     cmd = ["exec"]

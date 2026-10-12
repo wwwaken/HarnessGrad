@@ -90,10 +90,10 @@ def _improver_credentials() -> set[str]:
 
 
 
-def run_one(repo: Path, task: dict, timeout_s: int = 300,
+def run_one(repo: Path, task: dict, timeout_s: int = 3600,
             sandbox: bool = True, setup: dict | None = None,
             verifier: dict | None = None,
-            verify_timeout_s: int = 300,
+            verify_timeout_s: int = 3600,
             env: dict | None = None,
             run_id: str = "", run_seed: str = "",
             recordings_root: Path | None = None) -> dict:

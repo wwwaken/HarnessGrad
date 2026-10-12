@@ -374,7 +374,7 @@ class QASpec:
             ],
             "reward_file": REWARD_FILE,
             "evidence_file": EVIDENCE_FILE,
-            "timeout_s": 300,
+            "timeout_s": 3600,
         }
 
     def provision_status(self) -> dict:
