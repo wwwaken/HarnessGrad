@@ -128,8 +128,18 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Finding: full-pool import was unsafe for selected-only execution; a pinned train manifest and single-task sanitized controller fixed the boundary. Actor sees no ground truth, services use network none, images are pinned and pull=never.
 - Evidence: `/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/deliverables/appworld-offline-v2-report.md`; receipt SHA-256 `f62b8a830c31a889bfe44346c4084055f867b292ce49fb775b7beed19d0900fb`; frozen commit `d600378`
 - Platform change: selected-only manifest custody, fresh actor/verifier state, owned labels, and cleanup receipts are reusable adapter controls
-- Remaining gates: real-model smoke and production launch record on a frozen checkout before 9×3 H0
+- Remaining gates: real-model smoke and production launch record on a frozen checkout before 9x3 H0
 - Commit: `d600378 adapter: scope AppWorld to pinned train manifest`
+
+### AppWorld real-model smoke blocker
+
+- Status: `incomplete`, infrastructure/protocol failure
+- Scope: fresh one-task smoke on `07b42fd_1`, one trial, jobs=1, GPU1/8002, bounded generation 2048
+- Finding: actor phase ended in 0.2s without creating the required API-call log. Verifier returned no measurement; this is not a model score zero.
+- Evidence: `/mnt/20t/xubuqiang/Study/appworld-smoke-final/runs/appworld-smoke-final-20261117-v3/events.jsonl`; `no API-call log: /recordings/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl`
+- Platform change: AppWorld actor initialization and API-call logging need a real-model smoke contract; offline oracle/noop controls do not prove actor protocol readiness
+- Remaining gates: repair actor initialization/logging, rerun one fresh smoke, then launch 9x3 only after actor/scorer/cleanup/bounded-generation evidence passes
+- Commit: scoped adapter `d600378`; smoke incomplete
 
 ## Jericho — isolated no-model controls
 
