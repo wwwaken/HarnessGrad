@@ -1,7 +1,7 @@
 # Onboarding a dataset: the procedure
 
-**This page is the procedure. the internal onboarding log (kept outside this repository) is the evidence.**
-If the dataset is new to you, read `docs/dataset-first-day.md` first: it is the
+**This page is the procedure. `docs/adapter-integration-journal.md` is the in-repository onboarding log and evidence index.**
+Every adapter entry must also update `docs/platform-improvement-log.md` when it teaches the shared platform a reusable capability.
 reconnaissance — three measurements that decide whether this dataset is runnable, refused, or
 runnable with a measured exclusion — and its whole point is that **no adapter is written until
 the gold has been run through the official scorer**.
