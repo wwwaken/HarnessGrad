@@ -60,6 +60,9 @@ from pathlib import Path
 #: environment setup eats. The loop still stops the moment the model answers -- the cap
 #: is a ceiling, not a quota.
 MAX_STEPS = int(os.environ.get("HG_AGENT_MAX_STEPS", "32"))
+MAX_OUTPUT_TOKENS = int(os.environ.get("HG_AGENT_MAX_OUTPUT_TOKENS", "2048"))
+if MAX_OUTPUT_TOKENS < 1:
+    raise ValueError("HG_AGENT_MAX_OUTPUT_TOKENS must be positive")
 
 #: 模型说"我做完了"之后,允许它再被退回几次。
 #:
@@ -230,6 +233,7 @@ def _call_openai(messages: list[dict]) -> str:
         try:
             resp = client.chat.completions.create(
                 model=model, messages=messages, temperature=0.0,
+                max_tokens=MAX_OUTPUT_TOKENS,
             )
             _record_usage(getattr(resp, "usage", None))
             return resp.choices[0].message.content or ""
@@ -482,7 +486,8 @@ def run(task: dict, workdir: Path) -> str:
             "max_steps": MAX_STEPS, "submit_retries": SUBMIT_RETRIES,
             "parse_retries": PARSE_RETRIES, "finish_nudge_steps": FINISH_NUDGE_STEPS,
             "repeat_nudge_limit": REPEAT_NUDGE_LIMIT, "output_limit": OUTPUT_LIMIT,
-            "context_chars": CONTEXT_CHAR_BUDGET}}
+            "context_chars": CONTEXT_CHAR_BUDGET,
+            "max_output_tokens": MAX_OUTPUT_TOKENS}}
         for key, value in (("agent_model", os.environ.get("HG_AGENT_MODEL")),
                            ("agent_backend", _backend())):
             if value:

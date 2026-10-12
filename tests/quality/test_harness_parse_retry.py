@@ -292,7 +292,8 @@ def _rejecting_provider(limit: int, *, always: bool = False):
     state = {"calls": 0, "rejected": 0, "sizes": []}
 
     class Completions:
-        def create(self, model, messages, temperature):
+        def create(self, model, messages, temperature, max_tokens):
+            assert isinstance(max_tokens, int) and max_tokens > 0
             state["calls"] += 1
             size = sum(len(m.get("content") or "") for m in messages)
             state["sizes"].append(size)

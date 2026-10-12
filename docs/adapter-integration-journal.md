@@ -101,6 +101,16 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: real local controls after shared runtime repair; no fallback simulator or hidden web access
 - Commit: inert artifacts only
 
+### GAIA V2 real-model pilot attempt
+
+- Status: `incomplete`, infrastructure-stopped
+- Scope: 17-task validation-only pilot, 3 trials, `jobs=1`, GPU1/8002, frozen source `92f6b10`
+- Finding: the first smoke exposed UTF-8 subprocess decoding; after the isolated fix, smoke reached the model and verifier normally. The pilot then stopped on `gaia/49` after an API timeout; partial trials are evidence of a stopped run, not a complete curve.
+- Evidence: `/mnt/20t/xubuqiang/Study/gaia-h0-launch-v2/runs/gaia-validation-pilot-h0-20261117-v2`; sealed receipt `/mnt/20t/xubuqiang/Study/gaia-h0-launch-v2-evidence/GAIA_H0_V2_RECEIPT.json` reports 9 completed trial traces, 45 calls, 47,511 input and 3,219 output tokens. Event envelopes contain 10 done events, including `gaia/53`; this count differs from the persisted trace/usage receipt and must not be silently reconciled as full coverage. Timed-out request usage is unknown.
+- Platform change: subprocess output decoding must tolerate arbitrary bytes; a per-request output cap is needed because steps/context limits do not bound one generation. Preserve measured scorer zero separately from actor failure.
+- Remaining gates: enforce a bounded model output/token policy before another GAIA pilot; reconcile event versus persisted trial coverage; do not resume this run ID
+- Commit: isolated harness fix `92f6b10`; pilot is incomplete and sealed
+
 ## AgentDojo / BFCL / SpreadsheetBench / ChessBench
 
 - Status: preflight-required or blocked, no H0
