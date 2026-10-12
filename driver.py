@@ -1020,8 +1020,11 @@ def main() -> int:
     # `tasks_all` was narrowed to the side before round 0, so the policy selects within it and
     # `within` can never reach across -- the cross-side leak this guards against is not a rule
     # here, it is an absence of the other side.
-    task_ids = select_task_set(base["per_task"], args.sampling,
-                               within=(side_ids or None))
+    if args.sampling == "pilot_10pct":
+        task_ids = list(side_ids)
+    else:
+        task_ids = select_task_set(base["per_task"], args.sampling,
+                                   within=(side_ids or None))
     if not task_ids:
         console.note(f"sampling policy {args.sampling!r} selected no tasks on H0",
                      level="error")
