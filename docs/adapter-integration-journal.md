@@ -111,6 +111,16 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: enforce a bounded model output/token policy before another GAIA pilot; reconcile event versus persisted trial coverage; do not resume this run ID
 - Commit: isolated harness fix `92f6b10`; pilot is incomplete and sealed
 
+### GAIA V3 real-model pilot attempt
+
+- Status: `incomplete`, infrastructure-stopped
+- Scope: same 17-task validation-only pilot, 3 trials, `jobs=1`, GPU1/8002, source `cde983ff` with output cap `2048`
+- Finding: 11 trials completed normally; `gaia/49` third trial reached agent completion at 228.6s, then its snapshot container exited 137 before verification. No aggregate score is valid.
+- Evidence: `/mnt/20t/xubuqiang/Study/gaia-h0-launch-v3/runs/gaia-validation-pilot-h0-20261117-v3/events.jsonl`; `gaia/16`, `gaia/32`, `gaia/45` completed 3/3; `gaia/49` completed 2/3; owned interrupted resource was removed
+- Platform change: snapshot/container exit codes must become explicit infrastructure outcomes; a task reaching agent completion does not imply a scorable attempt
+- Remaining gates: determine why snapshot exits 137 and add resource/snapshot admission before any retry; never resume this run ID
+- Commit: source `cde983ff`; pilot incomplete
+
 ## AgentDojo / BFCL / SpreadsheetBench / ChessBench
 
 - Status: preflight-required or blocked, no H0
