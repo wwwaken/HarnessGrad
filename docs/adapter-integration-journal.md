@@ -121,25 +121,52 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: determine why snapshot exits 137 and add resource/snapshot admission before any retry; never resume this run ID
 - Commit: source `cde983ff`; pilot incomplete
 
-## AgentDojo / BFCL / SpreadsheetBench / ChessBench
+## AppWorld — scoped train controls
 
-- Status: preflight-required or blocked, no H0
-- Scope: exact inert manifests only
-- Finding: AgentDojo splits must preserve user groups; BFCL irrelevance tasks may reward empty output; Spreadsheet golden files and recalculation need trusted boundaries; Chess move legality and gold privacy need proof
-- Evidence: `/tmp/codex/85/report.md`; `/tmp/codex/67/report.md`; `/tmp/codex/63/report.md`
-- Platform change: dataset-specific semantics belong in scorer contracts, while isolation, evidence and reset belong in shared platform controls
-- Remaining gates: real controls and production-path tests
+- Status: `controls_passed`, H0 not launched
+- Scope: 90 declared train/reference-covered tasks; deterministic pilot selects 9; 18 no-model controls cover 9 oracle and 9 noop arms
+- Finding: full-pool import was unsafe for selected-only execution; a pinned train manifest and single-task sanitized controller fixed the boundary. Actor sees no ground truth, services use network none, images are pinned and pull=never.
+- Evidence: `/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/deliverables/appworld-offline-v2-report.md`; receipt SHA-256 `f62b8a830c31a889bfe44346c4084055f867b292ce49fb775b7beed19d0900fb`; frozen commit `d600378`
+- Platform change: selected-only manifest custody, fresh actor/verifier state, owned labels, and cleanup receipts are reusable adapter controls
+- Remaining gates: real-model smoke and production launch record on a frozen checkout before 9×3 H0
+- Commit: `d600378 adapter: scope AppWorld to pinned train manifest`
+
+## Jericho — isolated no-model controls
+
+- Status: `controls_passed`, model H0 blocked
+- Scope: 2 declared study games (`905`, `acorncourt`), 2 local/platform paths, oracle/noop, two repeats: 16 controls
+- Finding: all 16 controls passed deterministically, but installed Jericho runtime exposes walkthrough/reference fields to a future agent; native `VERIFY.timeout_s=300` is ignored unless caller passes the timeout explicitly; native files sandbox keeps egress.
+- Evidence: `/tmp/codex/93/receipts.json`; safe bundle `/tmp/codex/93/control_receipts.zip`; manifest SHA-256 `39d02a274998b14311c2a3fcb85b52e8770ae8350b9f4376446f580122409f04`
+- Platform change: future interactive-game runs need separate agent/trusted runtimes, explicit phase timeout wiring, fresh action logs and no-egress admission
+- Remaining gates: hide reference-bearing package data and bind explicit timeout/network policies
+- Commit: inert controls only
+
+## BFCL v3 — scorer/privacy controls
+
+- Status: `blocked`, no real controls
+- Scope: 2 inert reference anchors (`simple/29`, `irrelevance/236`), 8 planned control arms
+- Finding: importing the adapter reads mixed train/eval files; irrelevance correctly treats empty output as success, so generic noop=0 is invalid
+- Evidence: `/tmp/codex/89/manifest.inert.json`; 32 synthetic/privacy tests; scoped lazy-import patch hash `ed45acc026a036be46b2ab48d7dbe79504f68b2d7c135e942dde71b109e9bc56`
+- Remaining gates: train-only source binding, category-aware controls, raw evidence redaction, finite reward/unmeasured classifier
+- Commit: inert patch only
+
+## Terminal-Bench — admission controls
+
+- Status: `blocked`, no benchmark execution
+- Scope: inherited six-task inert pilot, jobs=1; 51/52 train images cached for full imposed pool
+- Finding: 184 offline artifact checks and 12 pilot tests passed, but scorer dependencies require network, disk growth is unreserved, cleanup errors can be swallowed, and full pool has one missing image
+- Evidence: `/tmp/codex/94/report.md`; manifest SHA-256 `b37c51ec1efb70aa34045f62e0b8a69fb94b56c3c649d8e800fc99de378842db`; root headroom observed about 50.35 GiB
+- Remaining gates: dependency closure/network policy, disk reservation, fail-closed cleanup, trusted verifier runtime
 - Commit: inert artifacts only
 
-## Terminal-Bench — image, network and disk admission
+## AgentDojo — selected-only split controls
 
-- Status: preflight-required, no H0
-- Scope: 52 imposed train tasks; 51 cached images; one missing image
-- Finding: per-task TOML timeouts and image dependencies must survive into admission; Docker root headroom is a benchmark gate, not an afterthought
-- Evidence: `/tmp/codex/88/report.md`; `/tmp/codex/80/schedule.md`; Docker cleanup record
-- Platform change: shared resource admission, disk reservation, snapshot cleanup and scorer network policy
-- Remaining gates: missing image, test dependency/network policy, disk reserve and trusted snapshot verifier
-- Commit: inert artifacts only
+- Status: `blocked`, no real controls
+- Scope: inherited train candidate IDs; user-group split preserved; no mixed pool content used
+- Finding: current import loads full cases before task filtering; selected task ID does not protect heldout reads
+- Evidence: `/tmp/codex/91/evidence/split-manifest.json`; 8 scoped tests passed
+- Remaining gates: safe selected-only loader and train-group attestation
+- Commit: scoped patch only, not integrated
 
 ## Process rule
 
