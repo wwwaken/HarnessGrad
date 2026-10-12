@@ -33,6 +33,7 @@ from tools.improver import resolve as resolve_improver
 from ckpt.git_state import commit_state, manifest, stage_workspace
 from eval.console import CONSOLE as console
 from eval.metrics import select_task_set
+from eval import metrics
 from eval.integrity import PLATFORM_ROOT, workspace_is_outside_platform
 from eval.runner import evaluate
 import eval.container as container
@@ -241,8 +242,8 @@ def main() -> int:
         epilog=_config_help())
     ap.add_argument("--harness", default="loop")
     ap.add_argument("--dataset", default="demo")
-    ap.add_argument("--sampling", default="all",
-                    help="all | below_X | above_X | random_N  (chosen on H0)")
+    ap.add_argument("--sampling", default="pilot_10pct",
+                    help="pilot_10pct (deterministic ceil(10%%), capped at 50) | all | below_X | above_X | random_N")
     ap.add_argument("--rounds", type=int, default=3)
     #: How many times each (harness, task) pair is measured. One is one sample, and one
     #: sample cannot tell an edit's effect from the noise: measured here, the same
@@ -478,6 +479,11 @@ def main() -> int:
                   file=sys.stderr)
             return 2
         side_ids = [t for t in side_ids if t in set(asked)]
+
+    # Early pilot selection happens before setup, image admission and H0 execution.
+    # Other policies retain their historical score-based behavior.
+    if args.sampling == "pilot_10pct":
+        side_ids = metrics.pilot_task_set(side_ids)
 
     tasks_all = [t for t in tasks_all if t["task_id"] in set(side_ids)]
     if not tasks_all:

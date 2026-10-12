@@ -1,7 +1,24 @@
 """Scoring. Framework-owned: a Trainer never sees this module (INTERFACE.md §0)."""
 from __future__ import annotations
 
+import hashlib
 import math
+
+
+def pilot_task_set(task_ids: list[str], *, fraction: float = 0.10,
+                   cap: int = 50) -> list[str]:
+    """Select a stable capped pilot before any task execution.
+
+    The rank uses task IDs only, so selection does not depend on scores, model output,
+    filesystem order, or heldout content. The cap limits expensive early validation.
+    """
+    if not 0 < fraction <= 1:
+        raise ValueError("fraction must be in (0, 1]")
+    if cap < 1:
+        raise ValueError("cap must be positive")
+    ids = sorted(set(task_ids))
+    count = min(cap, max(1, math.ceil(len(ids) * fraction))) if ids else 0
+    return sorted(ids, key=lambda tid: (hashlib.sha256(tid.encode()).hexdigest(), tid))[:count]
 
 
 def mean(xs: list[float]) -> float:
@@ -36,8 +53,8 @@ def select_task_set(scores: dict[str, float], policy: str,
     the scored set -- quietly undoing the split at exactly the moment it matters.
     """
     ids = sorted(scores) if within is None else sorted(within)
-    if policy == "all":
-        return ids
+    if policy == "pilot_10pct":
+        return pilot_task_set(ids)
     if policy.startswith("below_"):
         cut = float(policy.removeprefix("below_"))
         return [t for t in ids if scores[t] < cut]

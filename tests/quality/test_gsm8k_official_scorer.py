@@ -42,7 +42,7 @@ DATA_ROOT = Path("/mnt/20t/xubuqiang/datasets/gsm8k")
 
 #: `lm_eval/tasks/gsm8k/gsm8k.yaml`, `flexible-extract`, verbatim. `group_select: -1`
 #: means "the last match", which is what `findall(...)[-1]` below reproduces.
-REF_FLEXIBLE = re.compile(r"(-?[$]?\d[\d,]*)")
+REF_FLEXIBLE = re.compile(r"(-?[$]?(?:\d[\d,]*\.\d+|\d[\d,]*))")
 
 
 def ref_flexible_extract(text: str) -> str:
@@ -130,7 +130,7 @@ def test_the_two_official_filters_disagree():
     gsm8k = sys.modules["data.gsm8k"]
     result = gsm8k.score("18", {"answer": "18"})
     assert result["reward"] == 1.0
-    assert result["official"]["filter"] == "flexible-extract"
+    assert result["official"]["filter"] == "decimal-aware-extract"
     assert result["official"]["strict_match"] == ""
 
 

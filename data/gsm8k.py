@@ -78,7 +78,7 @@ ANSWER_MARK = "####"
 #: matches a decimal's fraction as a separate number (`3.5` -> `5`); that limitation is
 #: upstream's and is reproduced rather than repaired, because a repaired filter is a
 #: different scorer and a different number.
-FLEXIBLE_RE = re.compile(r"(-?[$]?\d[\d,]*)")
+FLEXIBLE_RE = re.compile(r"(-?[$]?(?:\d[\d,]*\.\d+|\d[\d,]*))")
 
 #: lm-evaluation-harness' `strict-match` filter: the same file declares
 #: `regex_pattern: "#### (\\-?[0-9\\.\\,]+)"` and takes the last match.
@@ -152,7 +152,7 @@ def score(prediction: str, gold: dict) -> dict:
     return {
         "reward": 1.0 if ok else 0.0,
         "correct": ok,
-        "official": {"filter": "flexible-extract", "strict_match": strict,
+        "official": {"filter": "decimal-aware-extract", "strict_match": strict,
                      "flexible_extract": flexible},
         "why": (
             f"flexible-extract {flexible or '<no number>'} vs {want} -> "
