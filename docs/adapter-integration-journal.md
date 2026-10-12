@@ -44,7 +44,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 ## Bird MiniDev — SQL measurement
 
 - Status: `complete` H0 archive for v5; v4 is `incomplete`
-- Scope: v5 uses 34 train-side tasks, 3 trials, `jobs=1`
+- Scope: v5 planned 34 train-side tasks × 3 trials, `jobs=1`; only 28/34 tasks were measured (90 verify phases). The historical archive label `complete` does not certify full measurement coverage.
 - Finding: a SQL verifier can distinguish a wrong query from an environment that cannot open `database.sqlite`; measured-zero and unmeasured must remain separate
 - Evidence: `bird-minidev-h0-10pct-v5`; v5 score `0.3214285714`; v4 stalled and remains incomplete
 - Platform change: structured verifier evidence and `effect=null` incomplete records are mandatory
@@ -65,7 +65,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 
 - Status: `incomplete` despite 354/354 task-trials completing
 - Scope: 118 train-side tasks, 3 trials
-- Finding: a run that reports `harness modified the platform` is not a measurement, even when every task has a verifier score
+- Finding: a platform content mismatch invalidates the run-level integrity claim even when every task has a verifier score. The error message `harness modified the platform` does not establish who wrote the changed files; concurrent developer changes are an alternative cause.
 - Evidence: final event note in `scienceworld-h0-10pct-v4/events.jsonl`; diagnostic mean `0.1380508475` is for human inspection only
 - Platform change: sandbox/mount integrity must prevent writes before execution; end-of-run hashing alone is too late
 - Remaining gates: apply and review the isolated integrity patch, then rerun a capped pilot before any full sample
