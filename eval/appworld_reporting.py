@@ -67,7 +67,8 @@ def receipts_from_verdicts(verdicts: list[dict], *, trials: int = 1) -> list[dic
                              # Historical runner receipts compact surviving trials.
                              # If any are missing, their original positions are unknown.
                              "trial_aligned": len(saved_trials) == trials,
-                             "invalid": bool(entry.get("invalid") or verdict.get("unmeasured"))})
+                             "invalid": bool(entry.get("invalid") or verdict.get("invalid")),
+                             "unmeasured": bool(entry.get("unmeasured") or verdict.get("unmeasured"))})
     return receipts
 
 
@@ -77,6 +78,8 @@ def build_report(manifest: list[dict], receipts: list[dict], *, trials: int = 1)
     ``manifest`` must name the selected tasks and their declared release splits.
     ``receipts`` are task/trial cells with trusted ``evidence`` dictionaries.
     Duplicate, unselected, out-of-range or contradictory receipts are refused.
+    Absent evidence or an explicit unmeasured result stays ``unmeasured``;
+    explicit failures or malformed measurement evidence are ``invalid``.
     """
     if type(trials) is not int or trials < 1:
         raise ValueError("trials must be a positive integer")
@@ -102,8 +105,16 @@ def build_report(manifest: list[dict], receipts: list[dict], *, trials: int = 1)
                     and evidence.get("measured") is True
                     and evidence.get("metric") == TGC_METRIC
                     and type(evidence.get("success")) is bool)
+        if measured:
+            status = "measured"
+        elif receipt.get("invalid"):
+            status = "invalid"
+        elif receipt.get("unmeasured") or not evidence or evidence.get("measured") is False:
+            status = "unmeasured"
+        else:
+            status = "invalid"
         cells[tid, trial] = {"trial": trial,
-                             "status": "measured" if measured else "invalid",
+                             "status": status,
                              "trial_aligned": receipt.get("trial_aligned", True) is True,
                              "success": evidence["success"] if measured else None}
 
@@ -143,12 +154,15 @@ def build_report(manifest: list[dict], receipts: list[dict], *, trials: int = 1)
         measured_scenarios = [c["success"] for c in scenario_cells if c["status"] == "measured"]
         invalid = sum(c["status"] == "invalid" for c in task_cells)
         missing = sum(c["status"] == "missing" for c in task_cells)
+        unmeasured = sum(c["status"] == "unmeasured" for c in task_cells)
         return {"TGC": _fraction(measured), "SGC": _fraction(measured_scenarios),
                 "coverage": {"selected_tasks": len(tasks), "trials": trials,
                              "expected_task_trials": len(task_cells),
                              "measured_task_trials": len(measured),
                              "invalid_task_trials": invalid, "missing_task_trials": missing,
-                             "unmeasured_task_trials": invalid + missing,
+                             "recorded_unmeasured_task_trials": unmeasured,
+                             # Retain the aggregate non-measured coverage counter.
+                             "unmeasured_task_trials": invalid + missing + unmeasured,
                              "selected_scenarios": len(scenarios),
                              "expected_scenario_trials": len(scenario_cells),
                              "measured_scenario_trials": len(measured_scenarios),
@@ -161,7 +175,7 @@ def build_report(manifest: list[dict], receipts: list[dict], *, trials: int = 1)
             scenarios = {sid: s for sid, s in per_scenario.items() if s["source_split"] == split}
             by_split[split] = {"label": label, **summary(tasks, scenarios)}
     manifest_sha = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()
-    return {"dataset": "appworld", "schema_version": 1,
+    return {"dataset": "appworld", "schema_version": 2,
             "metrics": {"TGC": {"identity": TGC_METRIC, "scale": "fraction",
                                 "definition": "mean of measured TestTracker.success task/trial cells"},
                         "SGC": {"identity": SGC_METRIC, "scale": "fraction",

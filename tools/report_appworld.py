@@ -22,10 +22,14 @@ from eval.appworld_reporting import build_report, make_manifest, receipts_from_v
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", required=True, type=Path)
-    parser.add_argument("--verdicts", required=True, type=Path)
-    parser.add_argument("--trials", type=int, default=1)
-    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--manifest", required=True, type=Path,
+                        help="Selected public task_id/source_split JSON manifest.")
+    parser.add_argument("--verdicts", required=True, type=Path,
+                        help="Saved verdicts/round-N directory; progress scores and events lack TGC evidence.")
+    parser.add_argument("--trials", type=int, default=1,
+                        help="Planned trial count (default: 1); compacted histories cannot establish SGC.")
+    parser.add_argument("--out", required=True, type=Path,
+                        help="Fresh report JSON path; existing files are never overwritten.")
     args = parser.parse_args()
     if not args.verdicts.is_dir():
         raise ValueError(f"verdict directory does not exist: {args.verdicts}")

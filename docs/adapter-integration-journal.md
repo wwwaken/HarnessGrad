@@ -342,6 +342,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Interruption audit: termination authority is undetermined; receipts show no timeout/failure/cleanup/snapshot closure, and the path was native bwrap/files rather than Docker snapshot. Preserve the original receipt hashes and launch a fresh `chess-pilot-h0-20261013-recovery-01` only under a persistent host supervisor after source/H0/split identity checks. Audit: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/chess/interruption-audit.md`, SHA-256 `db357459d4160a5058b022ef5483227f8e01629e24cdf528017db5e7d418de4f`
 
 
+### AppWorld reporting review — Codex 169
+
+- Scope: isolated `/tmp/hg-codex-169`; code review and fabricated receipt/events only. No real AppWorld task payload/run receipt, smoke/H0, model or runtime execution.
+- Finding: saved verdicts preserve scorer evidence for TGC and guarded same-trial SGC; current progress drops it and task events lack explicit trial IDs/evidence. Source Test-N/Test-C labels remain declared manifest facts. This metric report cannot certify diagnostic provenance, endpoint, budgets, cleanup or snapshots.
+- Change: report schema 2 separates measured/invalid/present-unmeasured/missing cells, preserves task/per-trial nonmeasurement flags, adds `recorded_unmeasured_task_trials` while retaining aggregate nonmeasurement coverage, and explains input/trial/output limits in CLI help.
+- Evidence: `appworld-reporting-codex169-report.md`; unique integration tests use current writers and guarded reporting CLI with fabricated inputs exclusively. Live receipt/event measurement integration remains unsupported; no writer or runner format changed.
+- Validation: focused reporting/integration suite **30 passed in 0.96s**; diff whitespace check passed. Owned test scratch was removed after validation.
+- Commit: accompanying focused AppWorld reporting status/help/tests commit; parent review and merge pending.
+
 ## Process rule
 
 Before launching any new adapter, add or update its entry here and add the corresponding platform capability to `docs/platform-improvement-log.md`. The launch review must cite the entry, the exact manifest hash and the runtime gate receipt.

@@ -60,7 +60,8 @@ def test_partial_selection_and_unmeasured_are_never_scenario_zeroes():
     assert report["TGC"] == 1.0 and report["SGC"] is None
     assert all(s["SGC"] is None for s in report["per_scenario"].values())
     assert report["per_scenario"]["partial"]["trials"][0]["status"] == "incomplete_selection"
-    assert report["coverage"]["invalid_task_trials"] == 1
+    assert report["coverage"]["invalid_task_trials"] == 0
+    assert report["coverage"]["recorded_unmeasured_task_trials"] == 1
     assert report["coverage"]["missing_task_trials"] == 1
     assert report["coverage"]["unmeasured_task_trials"] == 2
     assert report["coverage"]["unmeasured_scenario_trials"] == 3
@@ -116,7 +117,8 @@ def test_duplicates_and_fractional_generic_scores_cannot_fabricate_tgc():
     generic = [{"task_id": "fabricated_1", "score": 0.5, "passed": True}]
     report = build_report(make_manifest(rows()), receipts_from_verdicts(generic))
     assert report["TGC"] is None and report["SGC"] is None
-    assert report["coverage"]["invalid_task_trials"] == 1
+    assert report["coverage"]["invalid_task_trials"] == 0
+    assert report["coverage"]["recorded_unmeasured_task_trials"] == 1
     r["evidence"]["success"] = 0.5
     assert build_report(make_manifest(rows()), [r])["TGC"] is None
     r["evidence"].update(success=True, metric="other.metric")
