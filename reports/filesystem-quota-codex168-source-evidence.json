@@ -1,0 +1,136 @@
+{
+  "schema": "harnessgrad.filesystem-quota-source-audit.v1",
+  "audit_id": "filesystem-quota-codex168",
+  "inspected_base_commit": "10e983fc5fcb006c5afdbce1ef851dad71e953f2",
+  "worktree": "/tmp/hg-codex-168",
+  "scope": "source_and_existing_synthetic_contract_tests_only",
+  "requested_modes": {
+    "bwrap_files": "no_complete_connected_backend_in_source",
+    "docker_exec": "no_complete_connected_backend_in_source",
+    "workspaces": "no_complete_connected_backend_in_source"
+  },
+  "limited_configuration": "bounded_tmpfs_in_separate_inert_control_and_artifact_helpers",
+  "host_kernel_mount_and_quota_state": "not_inspected",
+  "live_enforcement": "unverified",
+  "production_authorized": false,
+  "detector_added": false,
+  "sources": [
+    {
+      "path": "eval/sandbox.py",
+      "sha256": "b027213258621bbb348d4a483373b657a42a98fdbee24d5075f49c344ce0d64f",
+      "symbols": {
+        "command": 173
+      }
+    },
+    {
+      "path": "eval/separated_stdio.py",
+      "sha256": "a04ccdcb5f3949f85c5fe16fcde95fc5cbb5040a75608c91b1450830f3fd37d0",
+      "symbols": {
+        "namespace_command": 78
+      }
+    },
+    {
+      "path": "eval/runner.py",
+      "sha256": "cb6cb6caa5da5f715016f73339095dfb8d04330df0634f0def860a238abcc596",
+      "symbols": {
+        "run_one": 95
+      }
+    },
+    {
+      "path": "eval/container.py",
+      "sha256": "25361bd575dc28029a0e3270a362c17a91e590c00007b8e32f15ebe72a324a61",
+      "symbols": {
+        "snapshot_admission": 116,
+        "_mounts": 493,
+        "command": 531,
+        "create": 758
+      }
+    },
+    {
+      "path": "eval/container_state.py",
+      "sha256": "ec879b7350ef55b119bccf2d8a352f758457740e2b580c6c9f90188630fba6e7",
+      "symbols": {
+        "_run_one_container_state": 35
+      }
+    },
+    {
+      "path": "driver.py",
+      "sha256": "771bcb1361846e9cd308b29fbfa28f51f8ca3174437f932fe32ef3bdebb3fd98",
+      "symbols": {
+        "main": 240
+      }
+    },
+    {
+      "path": "ckpt/git_state.py",
+      "sha256": "7a171f6fc63672b5b17b0dbd6a62360032523ca52a6c8b4cc091ff0645e529e1",
+      "symbols": {
+        "stage_workspace": 108,
+        "materialize": 173
+      }
+    },
+    {
+      "path": "harnessgrad/methods.py",
+      "sha256": "97d72a85914e767b0d5887ff7a4c76d6a65ce3d95ce1b20d1cdca08ea0bd70e8",
+      "symbols": {
+        "_method_sandbox_plan": 57
+      }
+    },
+    {
+      "path": "harnessgrad/loops/mode_a.py",
+      "sha256": "8b2e5fa5b330fbfb6eefe2581897cc6eb2d5e699e7025b7f7ccabed902394be0",
+      "symbols": {
+        "_run_mode_a": 89
+      }
+    },
+    {
+      "path": "eval/pilot_admission.py",
+      "sha256": "1bcdb66299fc1db88541e8a517138ae29cb166809deaa1cb6ca665bfc657770a",
+      "symbols": {
+        "filesystem_capacity": 169,
+        "ReservationLedger": 200,
+        "_runtime_envelope": 365,
+        "control_command": 415
+      }
+    },
+    {
+      "path": "eval/artifact_admission.py",
+      "sha256": "05237ae2fcc6d644879d9d1a8956fb702b49f798adb4ae87226877eaf5ecd008",
+      "symbols": {
+        "runtime_tmpfs": 319,
+        "require_artifact_runtime": 326
+      }
+    },
+    {
+      "path": "eval/runner_admission.py",
+      "sha256": "f9d9dee76e1e1a94366d1f486c122a100bb42755b4ec9d4a86c48b4941c1f663",
+      "symbols": {
+        "admit_runtime": 118
+      }
+    },
+    {
+      "path": "docs/moving-docker-data-root.md",
+      "sha256": "b1960a4cb32768c9908e2eb4724a7f3e804e231311af7dddb0fb505cc8084cea",
+      "symbols": {}
+    },
+    {
+      "path": "tests/quality/conftest.py",
+      "sha256": "276da643ad9bc8e6b4fde136f1560082fc6afd82e4d6cd7c92c45f532aabce31",
+      "symbols": {}
+    },
+    {
+      "path": "tests/quality/test_runner_admission.py",
+      "sha256": "9a9f9ad5d1e4a5f00c617851e75581fd03a790a15d81df17119604234e216a65",
+      "symbols": {}
+    },
+    {
+      "path": "tests/quality/test_terminal_artifact_admission.py",
+      "sha256": "5dbbb0b846c676752df026dd897f00f0dfb77bdc801d9c85a3998cb9c48d6a5c",
+      "symbols": {}
+    }
+  ],
+  "validation": {
+    "passed": 252,
+    "result_path": "filesystem-quota-codex168-test-result.txt",
+    "result_sha256": "f2e92fba69ca4df9208f5a11d8c689357b04b2e03cac93cfb2fb1204171606c5"
+  }
+}

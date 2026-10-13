@@ -349,7 +349,16 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Change: report schema 2 separates measured/invalid/present-unmeasured/missing cells, preserves task/per-trial nonmeasurement flags, adds `recorded_unmeasured_task_trials` while retaining aggregate nonmeasurement coverage, and explains input/trial/output limits in CLI help.
 - Evidence: `appworld-reporting-codex169-report.md`; unique integration tests use current writers and guarded reporting CLI with fabricated inputs exclusively. Live receipt/event measurement integration remains unsupported; no writer or runner format changed.
 - Validation: focused reporting/integration suite **30 passed in 0.96s**; diff whitespace check passed. Owned test scratch was removed after validation.
-- Commit: accompanying focused AppWorld reporting status/help/tests commit; parent review and merge pending.
+- Commit: merged follow-up `a80f68f`; parent validation 45 passed
+
+## Filesystem quota backend audit — Codex 168
+
+- Status: `documented_blocker`; no production quota authorization.
+- Scope: source only in `/tmp/hg-codex-168`, base `10e983fc5fcb006c5afdbce1ef851dad71e953f2`; no mounts, quota operations, Docker queries, dataset/model/H0 or benchmark execution.
+- Finding: bwrap/files writable binds and bare tmpfs, Docker exec writable roots/scratch, and host/method workspaces lack a complete paired byte/inode enforcement backend. Inert-control bounded tmpfs is a separate capability; `statvfs`, disk usage, reservations and snapshot preflight cannot close the gap.
+- Evidence: [backend audit and exact OS/backend requirements](filesystem-quota-backends.md), [task report](../filesystem-quota-codex168-report.md), [source hashes](../filesystem-quota-codex168-source-evidence.json), [synthetic results](../filesystem-quota-codex168-test-result.txt).
+- Validation: 252 existing synthetic runner/artifact tests passed; temporary files stayed in the worktree and were removed. Runtime source and tests are unchanged.
+- Remaining work: OS project-quota provisioning or bounded scratch allocation, actual daemon/snapshotter support for paired hard limits, complete trusted observers, admission before staging/writes, snapshot/export bounds and verified cleanup. No capability detector was added without an implemented backend.
 
 ## Process rule
 

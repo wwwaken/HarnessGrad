@@ -57,6 +57,12 @@ These checks do not install a filesystem quota. A backend lacking reliable byte
 and inode enforcement must keep the adapter blocked. Do not fill a disk or create
 large numbers of files as an admission probe; these tests use fabricated facts.
 
+The [Codex 168 source audit](filesystem-quota-backends.md) found no complete quota
+backend connected to native bwrap/files, Docker exec or workspaces. Bounded tmpfs
+in the separate inert control/helper paths does not close those gaps. The audit
+lists the OS provisioning, allocator, effective-limit observer and runner wiring
+required; it makes no live host capability claim.
+
 ## Bounded snapshots
 
 `admit_snapshot` requires positive `max_bytes`, `max_inodes`, `reserve_bytes`,

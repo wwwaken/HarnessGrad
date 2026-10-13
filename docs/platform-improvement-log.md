@@ -103,6 +103,14 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Status: `isolated`; no production runner wiring or filesystem quota installation; no Docker/model/H0/heldout execution.
 - Commit: accompanying `platform: add offline runner quota and cleanup admission contracts` commit.
 
+### C-009 — Filesystem quota backend source audit — Codex 168
+
+- Trigger: distinguish enforceable byte/inode quotas from capacity observations and supplied admission facts.
+- Finding: no complete backend is connected to bwrap/files, Docker exec or harness/method workspaces. Bounded tmpfs exists only in separate control/helper paths; no live kernel enforcement was inspected.
+- Contract: [backend audit](filesystem-quota-backends.md) specifies XFS/ext4 project hard quotas, bounded tmpfs, driver/snapshotter integration, pre-staging allocation, trusted read-only effective-limit observations, fail-closed runner wiring and verified scope cleanup.
+- Validation: 252 existing synthetic runner/artifact contract tests passed, with real subprocess/network execution denied; [report](../filesystem-quota-codex168-report.md), [source hashes](../filesystem-quota-codex168-source-evidence.json) and [output](../filesystem-quota-codex168-test-result.txt).
+- Status: `documented_blocker`; documentation only, no detector or runtime source change; no mounts, quota operations, Docker daemon queries, model/H0 or benchmark. Production quota enforcement remains unsupported.
+
 ## Commit discipline
 
 Use small commits with a capability-oriented subject, for example:
