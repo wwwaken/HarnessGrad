@@ -162,6 +162,17 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: make the task-facing harness reliably issue an AppWorld API action without method-specific tuning, rerun one measured smoke with a nonempty API log, then launch 9x3 only after review
 - Commit: `a9e78d8 fix: make AppWorld service and runner diagnostics explicit`
 
+### AppWorld runtime tool protocol repair
+
+- Status: `protocol_repaired`, H0 not launched
+- Scope: public `SETUP.runtime_prompt` on train task `07b42fd_1`; unchanged generic `base_harness/loop`; one live smoke on GPU1/8002
+- Finding: the prompt now teaches the adapter-declared `./aw init/action` contract, persistent `apis` namespace, documentation discovery, and action persistence without embedding a task answer or verifier data. The model made 4 authoritative calls: 3 documentation reads and `GET /spotify/artists`.
+- Evidence: `/tmp/codex/104/receipt/appworld-actor-protocol/receipt.json`; bundle SHA-256 `2ca5b8d1bf4508a93934c5b4005b509d35f49d3cbe73dfcc7ffe35978a8b1100`; patch SHA-256 `955d892d023062f46a3b8535e5b808d2ae4a2b46a3e1f773b2daeb8c81b18803`
+- Verification: 63 focused tests passed; service initialized and returned 200 for all four execute requests; actor had no recording mount; cleanup had no owned containers/networks; measured verifier score remained 0.0 because the model did not submit a completed answer and later produced parse failures
+- Platform change: adapter-scoped public runtime prompt contract, validated and delivered through files, exec mount, and container-state paths; no base harness branch or task-specific answer logic
+- Remaining gates: improve generic action-loop robustness for long API results and shell quoting, then rerun one task to a completed measured answer; do not launch 9x3 from this unsolved smoke
+- Commit: `87c6fc9 fix: provide adapter runtime tool instructions`
+
 ## Jericho — isolated no-model controls
 
 - Status: `controls_passed`, model H0 blocked
