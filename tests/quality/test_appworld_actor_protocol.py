@@ -72,6 +72,8 @@ def test_appworld_contract_is_task_independent_and_shell_quotes_opaque_ids():
     assert "apis.api_docs.show_app_descriptions()" in prompt_a
     assert "show_api_descriptions" in prompt_a and "show_api_doc" in prompt_a
     assert "/recordings/" not in prompt_a
+    assert "multiple API calls" in prompt_a
+    assert "one API call per action" not in prompt_a
 
 
 @pytest.mark.parametrize("environment", ["files", "exec-mount", "exec-container"])
@@ -241,3 +243,25 @@ def test_cli_help_explains_remote_namespace_without_initializing_world(args, syn
     assert result.returncode == 0
     assert "apis" in result.stdout and "service" in result.stdout
     assert synthetic_service[1] == []
+
+
+def test_one_action_forwards_multiple_api_calls_and_control_flow(
+        tmp_path, synthetic_service):
+    cli = ROOT / "data/appworld/cli/aw"
+    code = ('for value in ["first", "second"]:\n'
+            '    if value:\n'
+            '        print(apis.synthetic.set_value(value=value))\n'
+            'saved = value\n')
+    first = subprocess.run([sys.executable, str(cli), "action", "--task", "synthetic",
+                            "--code", code], cwd=tmp_path,
+                           capture_output=True, text=True, timeout=10)
+    second = subprocess.run([sys.executable, str(cli), "action", "--task", "synthetic",
+                             "--code", 'print(apis.synthetic.set_value(value=saved + "-next"))'],
+                            cwd=tmp_path, capture_output=True, text=True, timeout=10)
+    assert first.returncode == second.returncode == 0
+    calls, transport, state = synthetic_service
+    assert calls == ["synthetic.set_value"] * 3
+    assert [path for path, _ in transport] == ["/initialize", "/execute", "/execute"]
+    assert transport[1][1]["code"] == code
+    assert "first" in first.stdout and "second" in first.stdout
+    assert state["value"] == "second-next"

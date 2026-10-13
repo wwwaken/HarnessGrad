@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small one-action-per-invocation client for the AppWorld service."""
+"""Execute one Python snippet per invocation in the AppWorld service."""
 from __future__ import annotations
 import argparse
 import json
@@ -34,9 +34,10 @@ def main() -> int:
     init = commands.add_parser("init", help="Initialize the world and show task metadata (resets state).")
     init.add_argument("--task", required=True)
     action = commands.add_parser(
-        "action", help="Execute one Python API action in the service.",
+        "action", help="Execute a Python snippet (possibly multiple API calls) in the service.",
         description="Execute Python in the persistent service interpreter; apis is "
-                    "already defined. Print API responses to inspect results.")
+                    "already defined. A snippet may contain multiple API calls, "
+                    "assignments, loops and conditionals. Print API responses to inspect results.")
     action.add_argument("--task", required=True)
     action.add_argument("--code", required=True,
                         help="Python, e.g. 'print(apis.api_docs.show_app_descriptions())'")

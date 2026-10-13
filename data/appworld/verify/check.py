@@ -9,29 +9,32 @@ import tempfile
 import sys
 
 
-def unmeasured(message: str, evidence_file: str) -> "NoReturn":
+def unmeasured(message: str, evidence_file: str, metadata: dict) -> "NoReturn":
     print(message, file=sys.stderr)
     print(message)
     target = Path(evidence_file)
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(json.dumps({"measured": False, "error": message}), encoding="utf-8")
+    target.write_text(json.dumps({**metadata, "measured": False, "error": message}), encoding="utf-8")
     raise SystemExit(3)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--task-id", required=True)
+    parser.add_argument("--source-split", choices=("train", "dev", "test_normal", "test_challenge"))
     parser.add_argument("--log", required=True)
     parser.add_argument("--reward-file", default="verifier/reward.txt")
     parser.add_argument("--evidence-file", default="verifier/evidence.json")
     args = parser.parse_args()
+    metadata = {"task_id": args.task_id, "source_split": args.source_split,
+                "metric": "appworld.task_goal_completion", "metric_name": "TGC"}
     log = Path(args.log)
     if not log.is_file():
-        unmeasured(f"no API-call log: {log}", args.evidence_file)
+        unmeasured(f"no API-call log: {log}", args.evidence_file, metadata)
     try:
         calls = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines() if line.strip()]
     except (OSError, json.JSONDecodeError) as exc:
-        unmeasured(f"unreadable API-call log: {exc}", args.evidence_file)
+        unmeasured(f"unreadable API-call log: {exc}", args.evidence_file, metadata)
     try:
         if Path("/appworld/data").is_dir():
             runtime_root = Path(tempfile.mkdtemp(prefix="appworld-verify-"))
@@ -45,7 +48,7 @@ def main() -> int:
                 url = str(call["url"]).split("?", 1)[0]
                 method = str(call.get("method", "get")).lower()
                 if method not in {"get", "post", "put", "patch", "delete"}:
-                    unmeasured(f"unknown API method: {method}", args.evidence_file)
+                    unmeasured(f"unknown API method: {method}", args.evidence_file, metadata)
                 world.execute(
                     f"requester.{method}({url!r}, data={call.get('data') or {}!r}, "
                     "client=requester.client)"
@@ -54,8 +57,9 @@ def main() -> int:
     except SystemExit:
         raise
     except Exception as exc:  # an environment/import/data failure is not a task failure
-        unmeasured(f"environment failure: {type(exc).__name__}: {exc}", args.evidence_file)
+        unmeasured(f"environment failure: {type(exc).__name__}: {exc}", args.evidence_file, metadata)
     evidence = {
+        **metadata,
         "measured": True,
         "success": bool(tracker.success),
         "num_tests": tracker.num_tests,

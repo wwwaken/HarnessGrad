@@ -528,7 +528,9 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
     scores = res.get("per_task") or {}
     dest = run_dir / "verdicts" / f"round-{round_no}"
     dest.mkdir(parents=True, exist_ok=True)
-    for tid in sorted(scores):
+    # Keep selected invalid tasks too, with score=None; absence must not erase why
+    # a task was unmeasured when these files are consumed by a later report.
+    for tid in sorted(set(scores) | (set(task_ids) & set(res.get("invalid") or {}))):
         v = dict(verdicts.get(tid) or {})
         entry = {
             "task_id": tid,
@@ -548,10 +550,12 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
         # 0.0, and the curve said the edit changed nothing.
         if isinstance(v.get("tests"), dict):
             entry["tests"] = v["tests"]
+        if isinstance(v.get("evidence"), dict):
+            entry["evidence"] = v["evidence"]
         harness_out = (res.get("harness_output") or {}).get(tid)
         if harness_out:
             entry["harness"] = harness_out
-        if not v and tid in (res.get("invalid") or {}):
+        if tid in (res.get("invalid") or {}):
             entry["invalid"] = res["invalid"][tid]
         # **Every trial's reason, not only the last one's.** `entry` above describes the
         # last trial (`res["verdicts"][tid]`), while `entry["score"]` is the mean over
@@ -571,6 +575,9 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
                                 # score is here: "2 of 3 trials passed" and "the tests went
                                 # 4/5, 5/5, 3/5" are different claims about the artifact.
                                 **({"tests": t["tests"]} if isinstance((t or {}).get("tests"), dict)
+                                   else {}),
+                                **({"evidence": t["evidence"]}
+                                   if isinstance((t or {}).get("evidence"), dict)
                                    else {})} for t in trials_v]
         task_file(dest, f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")

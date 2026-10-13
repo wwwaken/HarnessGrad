@@ -33,6 +33,8 @@ import shutil
 import zipfile
 from pathlib import Path
 
+from eval.appworld_reporting import make_manifest
+
 KIND = "dataset"
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/appworld")
 SRC_DIR = DATASET_ROOT / "_src"
@@ -215,8 +217,10 @@ resets the world, so keep using action after initialization.
 
 Execute Python in the service: `{action} '<python>'`
 The service interpreter already defines `apis`. Variables and API state persist
-between action calls. Use one API call per action and print its response so you
-can inspect the result. Local files and imports do not provide AppWorld APIs.
+between action calls. Each action executes a whole Python snippet, which may
+include multiple API calls, assignments, loops and conditionals. Print the
+responses you need to inspect; one action is not one API call. Local files and
+imports do not provide AppWorld APIs.
 
 Start discovery with this executable API action: `{discovery}`
 Then discover the relevant app's methods with
@@ -245,6 +249,16 @@ def load():
     return tasks, {task["task_id"]: "AppWorld TestTracker.success" for task in tasks}
 
 
+def reporting_manifest(task_ids: list[str]) -> list[dict]:
+    """Trusted, selected-only reporting metadata derived from public IDs/splits.
+
+    Never add this manifest to actor tasks or SETUP. No instruction, database,
+    difficulty, solution, evaluator or gold-derived metadata is exported.
+    """
+    return make_manifest([{"task_id": tid, "split": _ROWS[tid]["split"]}
+                          for tid in task_ids])
+
+
 ASSETS = Path(__file__).parent / "appworld"
 SETUP = {
     task_id: _setup(task_id)
@@ -258,6 +272,8 @@ VERIFY = {
             "verify/check.py",
             "--task-id",
             task_id,
+            "--source-split",
+            _ROWS[task_id]["split"],
             "--log",
             f"/recordings/appworld/experiments/outputs/harness/tasks/{task_id}/logs/api_calls.jsonl",
             "--reward-file",
@@ -337,5 +353,5 @@ __all__ = [
     "KIND", "DATASET_ROOT", "TASKS_IN_RELEASE", "SPLIT_SIZES", "SPLIT_SOURCE",
     "OFFICIAL_EVAL", "ORACLE_SOURCE", "ORACLE_VALIDATED_BY", "ORACLE_COVERAGE",
     "bundle_zip", "task_ids", "split_ids", "prepare", "load", "downloads",
-    "provision_status", "oracle_files", "SETUP", "VERIFY", "ENV", "DEFAULT_ENV", "SPLIT",
+    "provision_status", "oracle_files", "reporting_manifest", "SETUP", "VERIFY", "ENV", "DEFAULT_ENV", "SPLIT",
 ]
