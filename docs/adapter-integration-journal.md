@@ -103,13 +103,13 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 
 ### BFCL selected-only/privacy patch
 
-- Status: `blocked`, no real controls
-- Scope: selected `simple/29` and `irrelevance/236` anchors; no release payload opened
-- Finding: lazy selected loader removes import-time mixed-pool reads; irrelevance empty/NONE semantics are preserved; trusted gold evidence is redacted
-- Evidence: `/tmp/codex/98/bfcl-selected-only-receipt.md`; 2 synthetic tests passed, 11 release-dependent tests skipped
-- Platform change: selected loader, category-aware noop expectation and BFCL-specific evidence redaction
-- Remaining gates: local BFCL v1.3 release is unprovisioned, so selected reference identity and real oracle/noop controls remain unproven
-- Commit: isolated patch only
+- Status: `patch_integrated`, real controls blocked by unprovisioned release
+- Scope: selected `simple/<index>` and `irrelevance/<index>` category loaders; no import-time mixed-pool read
+- Finding: selected loader removes import-time mixed-pool reads; irrelevance empty/NONE semantics remain reward=1; trusted expected functions are redacted; generic noop expectation is category-aware
+- Evidence: `/tmp/codex/98/bfcl-selected-only-receipt.md`; isolated 2 synthetic tests passed/11 release-dependent skipped; main compatibility run `147 passed, 23 skipped`
+- Platform change: `load_selected`, `setup_for`, `verify_for`, category-aware controls and BFCL-specific evidence redaction
+- Remaining gates: local BFCL v1.3 release is unprovisioned, so selected reference identity and real oracle/noop controls remain unproven; no H0
+- Commit: `c08c8a1 fix: make BFCL controls selected-only and redact gold`
 
 ## AppWorld / GAIA / tau-bench — local state boundaries
 
