@@ -503,3 +503,13 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Remaining gate: authenticated metadata-only release/selected-group custody and protected artifact/dependency/runtime identities, plus independently reviewed selected-only non-scoring admission and fresh identity-bound runtime/lifecycle evidence. Codex 180 privacy closure does not supply either part.
 - Validation: static pin reconciliation, scoped Git/hash recomputation, JSON consistency and diff whitespace review; no execution tests or production measurement.
 - Integration: local documentation/metadata outputs only; parent review and main integration remain separate.
+=======
+
+## Filesystem quota operator/backend checklist — Codex 191 — 2026-10-14
+
+- Status: `documented_blocker`; documentation/schema only. Host provisioning, backend observers/allocators, runner integration and live enforcement remain external/runtime work; no production authorization.
+- Scope: only `/tmp/hg-codex-191`, base `a58b4b181193a2e2b201c6353722725ad77b597c`; repository guidance, quota documentation and admission source contracts. No mounts/quota operations, live host configuration inspection, Docker/model/H0 execution or task-payload reads.
+- Change: [operator/backend checklist](filesystem-quota-backends.md) assigns owners and gates for XFS/ext4 hard block+inode limits, paired tmpfs bounds, pre-staging workspace allocation, actual Docker driver/snapshotter storage, bounded snapshot/export and verified cleanup/quarantine. All implementation checkboxes remain open. Historical Codex 168 source findings and 252-test claim are preserved as historical evidence.
+- Evidence contract: [Draft 2020-12 JSON Schema](filesystem-quota-evidence.schema.json) specifies closed, metadata-only run/source/policy/observer-bound records for provisioning, project/tmpfs scopes, writer inventories, Docker storage, snapshots and cleanup. Required trust/freshness/arithmetic/ownership checks and projection limits are documented separately; no semantic validator or runtime integration is implemented. Current runtime admission still refuses writable actor roots.
+- Validation: installed `jsonschema.Draft202012Validator.check_schema` plus `FormatChecker` under `python -B`: **32 synthetic in-memory shapes/lexical controls accepted, 262 malformed shapes/lexical controls rejected**. All seven document links and 169 local schema references resolve; historical audit table and validation text match the base; no checkbox is checked. `git diff --check` passes. These are schema/document checks, not live observations or OS enforcement tests; no observation receipts were created.
+- Commit: accompanying docs-only commit; parent review/integration and external provisioning remain separate.
