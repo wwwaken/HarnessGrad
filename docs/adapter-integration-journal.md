@@ -122,7 +122,8 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Evidence: `/mnt/20t/xubuqiang/Study/lcb_candidate_evidence/launch.json`; candidate path isolated checkout; production endpoint calls during synthetic validation were zero
 - Platform change: agent-only Unix relay with max 4 calls and max 512 requested tokens; candidate/scorer/verdict separation
 - Remaining gates: mixed-pool row/index binding remains unverified; scorer path differs from official wrapped-function execution; no H0
-- Commit: isolated candidate changes only
+- Commit: `e2f9613 fix: harden LCB740 identity and relay admission`
+- Verification: 79 focused tests passed; production endpoint/model requests=0; synthetic approved-row fixtures never became real evidence
 
 ### BFCL selected-only/privacy patch
 
