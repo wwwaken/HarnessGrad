@@ -96,11 +96,18 @@ def test_mixed_outcomes_average_only_measured_zeros_and_scores():
     assert summary["coverage"]["unmeasured_tasks"] == 1
 
 
-@pytest.mark.parametrize("score", [float("nan"), float("inf"), -0.1, 1.1, True, None])
-def test_bad_measured_scores_are_refused(score):
+@pytest.mark.parametrize("score", [float("nan"), float("inf"), True, None])
+def test_nonfinite_or_non_numeric_measured_scores_are_refused(score):
     with pytest.raises(ValueError):
         policy.measurement_summary(["t"], [dict(task_id="t", trial=1, status="measured",
                                               score=score, reason=None)])
+
+
+def test_metric_scale_is_not_assumed_to_be_unit_interval():
+    summary = policy.measurement_summary(
+        ["scaled"], [dict(task_id="scaled", trial=1, status="measured",
+                          score=65.6, reason=None)])
+    assert summary["score"] == 65.6
 
 
 @pytest.mark.parametrize("change", [dict(task_id="outside"), dict(trial=2),

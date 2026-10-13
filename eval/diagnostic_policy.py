@@ -117,8 +117,9 @@ def measurement_summary(selected: list[str], outcomes: list[dict]) -> dict:
         _require("score" in row and "reason" in row, "outcome requires explicit score and reason")
         if status == "measured":
             score = row["score"]
-            _require(type(score) in (int, float) and math.isfinite(score) and 0 <= score <= 1
-                     and row["reason"] is None, "measured outcome needs a finite score in [0,1]")
+            _require(type(score) in (int, float) and math.isfinite(score)
+                     and row["reason"] is None,
+                     "measured outcome needs a finite score; metric-specific range is scorer-owned")
         else:
             _require(row["score"] is None and _text(row["reason"]),
                      "invalid/unmeasured outcomes require score=null and a reason")
