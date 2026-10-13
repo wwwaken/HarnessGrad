@@ -30,6 +30,40 @@ from eval.tracing import _last_identity, _last_usage, _materialize, _write_progr
 from eval.verifier import _verify, test_rate_of
 
 
+def _refuse_unobserved_policies(task: dict, env: dict | None,
+                               verifier: dict | None) -> dict | None:
+    """Refuse policy-bearing tasks until a trusted backend observer is wired in.
+
+    The offline runner_admission checks cannot discover enforcement. Launch flags,
+    adapter observations and cached verdicts are not a substitute for that observer.
+    This hook only refuses; it deliberately has no caller-supplied evidence override.
+    """
+    env_spec = env or {}
+    fields = {"env." + key for key in (
+        "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s", "network",
+        "resources", "filesystems", "resource_policy", "network_policy", "artifact_policy",
+    ) if key in env_spec}
+    # Even direct callers that omit normalized fields request these default bounds
+    # by choosing exec. The registry normally fills them before reaching the runner.
+    if env_spec.get("kind") == "exec":
+        fields.add("env.exec_defaults")
+    if env_spec.get("state") == "container":
+        fields.add("env.state=container")
+    for key in ("timeout_s", "artifact_policy"):
+        if key in (verifier or {}):
+            fields.add("verifier." + key)
+    if not fields:
+        return None
+    result = _invalid(task, "backend_observation_unavailable", stage="admission", service=None)
+    result["invalid"]["receipt"] = {
+        "schema": "harnessgrad.runner-policy-refusal.v1", "stage": "admission",
+        "status": "blocked", "reason": "backend_observation_unavailable",
+        "measured": False, "production_authorized": False, "observation": "unknown",
+        "policy_fields": sorted(fields),
+    }
+    return result
+
+
 def harness_env() -> dict:
     """The environment a harness runs in: the agent's model, and not the method's.
 
@@ -114,6 +148,9 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
     Native tasks can declare network='none'; live model backends are refused for
     those tasks before launch. See `eval/sandbox.py`.
     """
+    refusal = _refuse_unobserved_policies(task, env, verifier)
+    if refusal is not None:
+        return refusal
     # Resolve before the subprocess switches cwd: a relative repo path would
     # otherwise be interpreted against the sandbox directory and the harness
     # would silently fail to launch, scoring zero for the wrong reason.
@@ -851,6 +888,13 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     # of number this platform exists to refuse.
     def _measure(task_index: int, task: dict) -> dict:
         tid = task["task_id"]
+        # Cache entries carry scores, not fresh backend enforcement observations.
+        refusal = _refuse_unobserved_policies(task, (envs or {}).get(tid),
+                                              (verifiers or {}).get(tid))
+        if refusal is not None:
+            _write_progress(progress_dir, round_no, tid, [], refusal["invalid"],
+                            diagnostic=refusal)
+            return {"task_id": tid, "invalid": refusal["invalid"]}
         # The trial count is part of the key: a cached single measurement is not a
         # cached mean of three, and reusing one for the other would quietly answer a
         # different question than the run asked.
