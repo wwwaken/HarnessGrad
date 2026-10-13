@@ -582,7 +582,8 @@ def main() -> int:
         # Keep the pre-execution plan even if evaluation is interrupted or refused.
         diagnostic_policy.write_receipt(
             run_dir / ("diagnostic_receipt.json" if res is not None else "staged_plan.json"), receipt)
-        return receipt["coverage"]["measured_tasks"] == len(side_ids)
+        return (receipt["lifecycle"] is not None and receipt["lifecycle"]["publication_ready"]
+                and receipt["coverage"]["measured_tasks"] == len(side_ids))
 
     save_policy_receipt()
 
@@ -1069,7 +1070,8 @@ def main() -> int:
     _report_invalid(base, args.dataset)
     _report_harness_failed(base, args.dataset)
     if not complete_measurement:
-        console.note("refusing staged curve: invalid/unmeasured outcomes are preserved in the receipt",
+        console.note("refusing staged curve: lifecycle publication gate or measurement incomplete; "
+                     "invalid/unmeasured outcomes are preserved in the receipt",
                      level="error")
         return 2
     if not base["per_task"]:

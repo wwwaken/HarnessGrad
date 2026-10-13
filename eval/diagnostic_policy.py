@@ -14,8 +14,9 @@ import re
 from pathlib import Path
 
 from eval.metrics import diagnostic_task_set, pilot_task_set
+from eval import lifecycle_receipt
 
-SCHEMA = "harnessgrad.diagnostic-receipt.v1"
+SCHEMA = "harnessgrad.diagnostic-receipt.v2"
 HASH_NAMES = ("source", "split", "manifest", "model", "harness")
 ENDPOINTS = ("http://127.0.0.1:8001/v1", "http://127.0.0.1:8002/v1")
 
@@ -135,8 +136,33 @@ def measurement_summary(selected: list[str], outcomes: list[dict]) -> dict:
                             for unit in ("tasks", "trials")}}}
 
 
+def scope_digest(*, stage: str, eligible_sha256: str, selected: list[str], context: dict) -> str:
+    """Bind selection, provenance, metric, endpoint and limits before execution."""
+    return receipt_digest(dict(stage=stage, eligible_task_ids_sha256=eligible_sha256,
+                               selected_task_ids=selected, context=context))
+
+
+def _scope_binding(receipt: dict) -> dict:
+    return dict(run_id=receipt["run_id"], manifest_sha256=receipt["context"]["hashes"]["manifest"],
+                scope_sha256=scope_digest(stage=receipt["stage"],
+                                         eligible_sha256=receipt["eligible_task_ids_sha256"],
+                                         selected=receipt["selected_task_ids"], context=receipt["context"]))
+
+
+def _require_publication(receipt: dict, summary: dict) -> None:
+    _require(receipt["context"]["gates"]["status"] == "passed" and all(
+        receipt[k]["status"] == "passed" for k in ("cleanup", "snapshot")),
+        "gates, cleanup and snapshot must pass before measured score publication")
+    lifecycle_receipt.require_publication(
+        receipt.get("lifecycle"), **_scope_binding(receipt),
+        outcomes_sha256=receipt_digest(summary["outcomes"]),
+        cleanup_sha256=receipt["cleanup"]["receipt_sha256"],
+        snapshot_sha256=receipt["snapshot"]["receipt_sha256"])
+
+
 def build_receipt(*, run_id: str, stage: str, eligible: list[str], selected: list[str],
-                  context: dict, outcomes: list[dict], cleanup: dict, snapshot: dict) -> dict:
+                  context: dict, outcomes: list[dict], cleanup: dict, snapshot: dict,
+                  lifecycle: dict | None = None) -> dict:
     """Create a receipt from observed evidence, including incomplete runs."""
     _require(_text(run_id), "run_id is required")
     _require(selected == staged_task_set(eligible, stage),
@@ -146,10 +172,29 @@ def build_receipt(*, run_id: str, stage: str, eligible: list[str], selected: lis
     validate_lifecycle(snapshot, "snapshot")
     summary = measurement_summary(selected, outcomes)
     summary["coverage"]["eligible_tasks"] = len(set(eligible))
-    return dict(schema=SCHEMA, run_id=run_id, stage=stage, trials=1, jobs=1,
-                eligible_task_ids_sha256=eligible_digest(eligible),
-                selected_task_ids=list(selected), context=copy.deepcopy(context),
-                cleanup=copy.deepcopy(cleanup), snapshot=copy.deepcopy(snapshot), **summary)
+    if lifecycle is not None:
+        lifecycle_receipt.validate_lifecycle_receipt(lifecycle)
+    receipt = dict(schema=SCHEMA, run_id=run_id, stage=stage, trials=1, jobs=1,
+                   eligible_task_ids_sha256=eligible_digest(eligible),
+                   selected_task_ids=list(selected), context=copy.deepcopy(context),
+                   cleanup=copy.deepcopy(cleanup), snapshot=copy.deepcopy(snapshot),
+                   lifecycle=copy.deepcopy(lifecycle), **summary)
+    if lifecycle is not None:
+        lifecycle_receipt.require_scope(lifecycle, **_scope_binding(receipt))
+    if summary["coverage"]["measured_trials"]:
+        if (lifecycle is None or not lifecycle["publication_ready"]
+                or context["gates"]["status"] != "passed"
+                or cleanup["status"] != "passed" or snapshot["status"] != "passed"):
+            # Scores are provisional until lifecycle completion. Persist uncertainty,
+            # never a measured zero, including individual task/trial score fields.
+            withheld = [dict(row, status="unmeasured", score=None,
+                             reason="score withheld: cleanup and snapshot lifecycle publication gate pending")
+                        if row["status"] == "measured" else row for row in summary["outcomes"]]
+            receipt.update(measurement_summary(selected, withheld))
+            receipt["coverage"]["eligible_tasks"] = len(set(eligible))
+        else:
+            _require_publication(receipt, summary)
+    return receipt
 
 
 def validate_receipt(receipt: dict) -> None:
@@ -160,7 +205,12 @@ def validate_receipt(receipt: dict) -> None:
     validate_context(receipt.get("context"))
     for name in ("cleanup", "snapshot"):
         validate_lifecycle(receipt.get(name), name)
+    _require("lifecycle" in receipt, "receipt requires explicit lifecycle or null")
+    if receipt["lifecycle"] is not None:
+        lifecycle_receipt.validate_lifecycle_receipt(receipt["lifecycle"])
     summary = measurement_summary(receipt.get("selected_task_ids"), receipt.get("outcomes"))
+    if receipt["lifecycle"] is not None:
+        lifecycle_receipt.require_scope(receipt["lifecycle"], **_scope_binding(receipt))
     _require(summary["outcomes"] == receipt["outcomes"], "receipt must include every selected outcome")
     coverage = receipt.get("coverage")
     _require(isinstance(coverage, dict), "receipt coverage must be an object")
@@ -173,6 +223,8 @@ def validate_receipt(receipt: dict) -> None:
     _require("score" in receipt and receipt["score"] == summary["score"]
              and (receipt.get("score") is None or type(receipt["score"]) in (int, float)),
              "receipt score differs from measured outcomes")
+    if summary["coverage"]["measured_trials"]:
+        _require_publication(receipt, summary)
 
 
 def evaluation_outcomes(result: dict, selected: list[str]) -> list[dict]:

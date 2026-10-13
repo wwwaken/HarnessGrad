@@ -2,7 +2,7 @@
   "type": "object",
   "properties": {
     "schema": {
-      "const": "harnessgrad.diagnostic-receipt.v1"
+      "const": "harnessgrad.diagnostic-receipt.v2"
     },
     "run_id": {
       "type": "string",
@@ -314,6 +314,63 @@
     "eligible_task_ids_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "lifecycle": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "schema": {
+          "const": "harnessgrad.lifecycle-receipt.v1"
+        },
+        "binding": {
+          "type": "object"
+        },
+        "scope_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "state": {
+          "enum": [
+            "scope",
+            "admit",
+            "execute",
+            "quiesce",
+            "score",
+            "seal",
+            "cleanup"
+          ]
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "events": {
+          "type": "array",
+          "maxItems": 6
+        },
+        "publication_ready": {
+          "type": "boolean"
+        },
+        "production_authorized": {
+          "const": false
+        }
+      },
+      "required": [
+        "schema",
+        "binding",
+        "scope_sha256",
+        "state",
+        "status",
+        "events",
+        "publication_ready",
+        "production_authorized"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -329,12 +386,13 @@
     "coverage",
     "outcomes",
     "score",
-    "eligible_task_ids_sha256"
+    "eligible_task_ids_sha256",
+    "lifecycle"
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harnessgrad.diagnostic-receipt.v1",
+  "$id": "harnessgrad.diagnostic-receipt.v2",
   "title": "HarnessGrad staged diagnostic/pilot receipt",
-  "description": "Shape validation only. eval.diagnostic_policy.validate_receipt checks coverage/score invariants; require_review checks measured expansion evidence. Unknown evidence never authorizes expansion.",
+  "description": "Shape validation plus fail-closed publication fields. eval.diagnostic_policy.validate_receipt replays lifecycle and binds coverage, scope, outcomes and attestation digests. Hashes do not authenticate observation origin; unknown evidence never authorizes expansion.",
   "$defs": {
     "lifecycle": {
       "type": "object",
@@ -364,5 +422,88 @@
         "detail"
       ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "score": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "properties": {
+              "outcomes": {
+                "contains": {
+                  "properties": {
+                    "status": {
+                      "const": "measured"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "lifecycle": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "cleanup"
+              },
+              "status": {
+                "const": "passed"
+              },
+              "publication_ready": {
+                "const": true
+              }
+            }
+          },
+          "cleanup": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              },
+              "receipt_sha256": {
+                "type": "string"
+              }
+            }
+          },
+          "snapshot": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              },
+              "receipt_sha256": {
+                "type": "string"
+              }
+            }
+          },
+          "context": {
+            "properties": {
+              "gates": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  },
+                  "receipt_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

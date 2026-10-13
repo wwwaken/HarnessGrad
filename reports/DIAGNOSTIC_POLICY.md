@@ -62,17 +62,27 @@ validation, exclusive receipt creation, and fresh run-directory reservation.
 It uses only the Python standard library and performs no model/runtime calls.
 
 `eval/diagnostic_receipt.schema.json` declares
-`harnessgrad.diagnostic-receipt.v1`. Each selected task has an explicit trial-1
+`harnessgrad.diagnostic-receipt.v2`. Each selected task has an explicit trial-1
 outcome (`measured`, `invalid`, or `unmeasured`). Coverage records eligible and
 selected tasks, expected trials, and measured/invalid/unmeasured task and trial
 counts. `score` is the mean of measured outcomes, or null when none exist; a
 partial mean is never a complete diagnostic authorization. The Python validator
 checks coverage and score relationships beyond the JSON schema's shape checks.
 
+Version 2 adds an explicit `lifecycle` checkpoint (or null). Measured outcomes
+require the shared `scope → admit → execute → quiesce → score → seal → cleanup`
+sequence to pass, including completed snapshot/export and exact cleanup absence
+evidence. Pending/failed lifecycle evidence withholds both aggregate and task
+scores as unmeasured/null; existing invalid outcomes remain invalid.
+
 The schema and Python validator allow unknown provenance/lifecycle evidence to
 preserve incomplete receipts. `require_review` rejects unknown evidence for
 expansion. `write_receipt` uses exclusive creation, so trusted orchestration must
 write later attested evidence under a new filename and review its exact hash.
+Historical v1 files are preserved and are not accepted as v2 expansion evidence.
+The driver supplies no trusted lifecycle observations and therefore cannot publish
+a staged measured curve. No synthetic observer is installed in production.
+See [the lifecycle review](lifecycle-codex177-report.md) for the contract and limits.
 
 ## Validation
 

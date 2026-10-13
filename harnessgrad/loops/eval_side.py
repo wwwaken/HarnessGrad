@@ -130,7 +130,8 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
     _report_invalid(res, args.dataset)
     _report_harness_failed(res, args.dataset)
     if not complete_measurement:
-        console.note("refusing staged curve: invalid/unmeasured outcomes are preserved in the receipt",
+        console.note("refusing staged curve: lifecycle publication gate or measurement incomplete; "
+                     "invalid/unmeasured outcomes are preserved in the receipt",
                      level="error")
         return 2
 

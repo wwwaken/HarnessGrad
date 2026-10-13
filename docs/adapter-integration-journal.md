@@ -4,6 +4,17 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Shared lifecycle publication gate — 2026-10-14 — Codex 177
+
+- Status: `preflight`; shared offline contract implemented, trusted backend observations pending
+- Scope: isolated `/tmp/hg-codex-177`, base `e7acaa1`; code/schema and authored synthetic tests only; no dataset, model/H0, Docker or GPU execution
+- Finding: staged receipts and curves could expose measured scores while cleanup/snapshot attestations were unknown; snapshot preflight and best-effort removal cannot prove lifecycle completion
+- Evidence: [lifecycle review](../lifecycle-codex177-report.md), `eval/lifecycle_receipt.py`, `tests/quality/test_lifecycle_receipt_codex177.py`, `lifecycle-codex177-test-result.txt`
+- Platform change: immutable `scope/admit/execute/quiesce/score/seal/cleanup` checkpoints, shared admission replay, snapshot-worker/completion evidence, failure-only cleanup path, scoped sealed-outcome publication gate, diagnostic v2 and staged curve refusal with unknown evidence
+- Remaining gates: independent observer and quota enforcement, snapshot capacity reservation, scorer/artifact linkage and closure, complete cleanup/lease backend, legacy non-staged publication integration; synthetic passes confer no production authorization
+- Validation: exact four-suite offline command in the review; **439 passed**, no failures/skips; `git diff --check` passed; production modules do not import synthetic lifecycle fixtures
+- Commit: this commit, `fix: gate staged score publication on shared lifecycle receipts`; existing receipts preserved; no main merge
+
 ## Entry format
 
 ```markdown

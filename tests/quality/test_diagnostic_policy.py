@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from eval import diagnostic_policy as policy
+from lifecycle_fixtures_codex177 import completed_lifecycle, summaries
 
 ROOT = Path(__file__).resolve().parents[2]
 ELIGIBLE = [f"task-{i}" for i in range(492)]
@@ -30,12 +31,15 @@ def context():
 
 def receipt(context, status="measured", score=0.0):
     selected = policy.staged_task_set(ELIGIBLE, "diagnostic")
+    outcomes = [dict(task_id=selected[0], trial=1, status=status,
+                     score=score if status == "measured" else None,
+                     reason=None if status == "measured" else "scorer unavailable")]
+    lifecycle = (completed_lifecycle(context, ELIGIBLE, selected, outcomes)
+                 if context["hashes"]["manifest"] is not None else None)
+    cleanup, snapshot = summaries(lifecycle) if lifecycle else (attestation(), attestation())
     return policy.build_receipt(
         run_id="unit-diagnostic", stage="diagnostic", eligible=ELIGIBLE, selected=selected,
-        context=context, cleanup=attestation(), snapshot=attestation(),
-        outcomes=[dict(task_id=selected[0], trial=1, status=status,
-                       score=score if status == "measured" else None,
-                       reason=None if status == "measured" else "scorer unavailable")])
+        context=context, cleanup=cleanup, snapshot=snapshot, outcomes=outcomes, lifecycle=lifecycle)
 
 
 def reviewed(row):
@@ -183,7 +187,7 @@ def test_stale_or_changed_receipt_and_pool_are_refused(context):
     with pytest.raises(ValueError, match="eligible pool"):
         policy.require_review(bundle, context=context, eligible=changed_pool)
     bundle["receipt"]["context"]["comparability_notes"].append("changed after review")
-    with pytest.raises(ValueError, match="separate approved review"):
+    with pytest.raises(ValueError, match="scope/binding changed"):
         policy.require_review(bundle, context=context, eligible=ELIGIBLE)
 
 
@@ -329,11 +333,13 @@ def test_driver_preserves_plan_on_interruption_and_refuses_resume(monkeypatch, p
     assert plan_path.read_bytes() == original
 
 
-def test_eval_side_records_failure_before_refusing_curve(monkeypatch, tmp_path, context):
+@pytest.mark.parametrize("failure", [True, False])
+def test_eval_side_records_failure_or_pending_lifecycle_before_refusing_curve(
+        monkeypatch, tmp_path, context, failure):
     from harnessgrad.loops import eval_side
     selected = policy.staged_task_set(ELIGIBLE, "diagnostic")
     result = dict(trials=1, per_task={selected[0]: 0.0},
-                  invalid={selected[0]: dict(stage="check", detail="scorer failed")})
+                  invalid=({selected[0]: dict(stage="check", detail="scorer failed")} if failure else {}))
     monkeypatch.setattr(eval_side, "evaluate", lambda *a, **k: result)
     monkeypatch.setattr(eval_side, "commit_state", lambda *a, **k: "unit-commit")
     monkeypatch.setattr(eval_side, "_require_untampered", lambda *a: None)
@@ -348,7 +354,7 @@ def test_eval_side_records_failure_before_refusing_curve(monkeypatch, tmp_path, 
                                   outcomes=policy.evaluation_outcomes(observed, selected),
                                   cleanup=attestation("unknown"), snapshot=attestation("unknown"))
         policy.write_receipt(tmp_path / "diagnostic_receipt.json", row)
-        return False
+        return row["coverage"]["measured_trials"] == len(selected)
     code = eval_side._run_eval_side(
         work=tmp_path, man={}, run_id="unit-eval", run_dir=tmp_path,
         tasks=[dict(task_id=selected[0])], scorable={}, setups={}, verifiers={}, envs={},
@@ -357,4 +363,5 @@ def test_eval_side_records_failure_before_refusing_curve(monkeypatch, tmp_path, 
         eval_from=None, after_evaluation=persist)
     assert code == 2
     row = json.loads((tmp_path / "diagnostic_receipt.json").read_text())
-    assert row["score"] is None and row["coverage"]["invalid_trials"] == 1
+    assert row["score"] is None
+    assert row["coverage"]["invalid_trials" if failure else "unmeasured_trials"] == 1
