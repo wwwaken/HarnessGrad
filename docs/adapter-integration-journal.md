@@ -287,6 +287,8 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Validation: `python3 -m pytest -q tests/quality/test_chessbench_puzzles_strict_replay.py tests/quality/test_chessbench_puzzles_official_scorer.py::test_synthetic_upstream_diagnostic_matches_verbatim tests/quality/test_chessbench_puzzles_official_scorer.py::test_alternate_mate_and_nonmate_against_official_function --basetemp=/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/108/worktree/.chessbench-test-tmp` → **42 passed in 0.49s**. `git diff --cached --check` passed before the implementation commit. Owned temporary test files were removed after validation.
 - Commit: `d8d44a6 fix: enforce ChessBench puzzle replay legality and define stepwise contract`
 - Validation: platform train-side control `chessbench_puzzles/test/0` oracle=1.0/noop=0.0; strict replay passed 42 focused tests
+- Pilot interruption: run `chess-pilot-h0-20261013` is incomplete; 19 task-trials completed, 0 failed envelopes, then events stopped during `chessbench_puzzles/test/1270` trial 2 at agent elapsed 70s. Model services remained healthy and no final task verdict/aggregate curve exists. Preserve this run; do not resume or overwrite its run ID until an independent termination audit identifies the cause
+
 
 ## Process rule
 
