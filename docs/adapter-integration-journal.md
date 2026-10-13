@@ -250,7 +250,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Status: `admission_hardened`, benchmark execution blocked
 - Scope: inherited six cached train images, jobs=1; synthetic local runtime controls only
 - Finding: admission now rejects empty device observations, negative reservations, unsafe mount flags, runtime-envelope mismatches before start, image-ID mismatches, and ambiguous cleanup absence; leases quarantine on uncertainty and retain capacity
-- Evidence: `/tmp/codex/111/report.md`; isolated review tests 47 passed/6 expected failures; merged implementation commit `b3e5409`
+- Evidence: `/tmp/codex/112/report.md`; final offline review tests `199 passed`, no real Docker/model/H0/heldout access; merged implementation commit `b3e5409`
 - Platform change: manifest-bound resource ledger, exact image pin checks, fixed no-network/no-pull runtime, fail-closed cleanup and trusted artifact mount
 - Remaining gates: each scorer still lacks verified offline dependency closure/trusted runtime/state export; benchmark disk/inode quotas are not enforced; no official benchmark execution
 - Commit: `b3e5409 fix: harden cached pilot admission boundaries`
