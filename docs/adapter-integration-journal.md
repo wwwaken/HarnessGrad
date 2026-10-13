@@ -296,7 +296,17 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: train-only source binding, category-aware controls, raw evidence redaction, finite reward/unmeasured classifier
 - Commit: inert patch only
 
-## Terminal-Bench — cached pilot admission controls
+## Shared runner refusal gate — Codex 163
+
+- Status: `fail_closed_refusal_added`; backend enforcement remains blocked.
+- Scope: runner-mediated tasks declaring exec/container, network, CPU/memory/deadline, resource/filesystem, or artifact policies; unknown backend observations refuse before dispatch/cache reuse.
+- Change: `eval.runner._refuse_unobserved_policies` returns invalid/unmeasured admission receipts with no score and prevents these declared-policy tasks from reaching a passing verdict without a trusted backend observer. No adapter/caller-provided observation can override the refusal.
+- Validation: synthetic early-refusal, cache-preservation and undeclared legacy-files compatibility tests; combined parent suite **263 passed** across runner admission, error paths and trials/unmeasured behavior.
+- Limits: undeclared legacy tasks and direct backend/verifier entrypoints remain outside the hook; driver image preflight can occur earlier; no resource/network/quota/cleanup observer is wired, so declared-policy exec/container tasks intentionally remain blocked. This is a refusal boundary, not production admission or a pilot authorization.
+- Evidence: `SHARED_ADMISSION_WIRING.md`, `tests/quality/test_shared_admission_wiring_codex163.py`
+- Commit: `39883d8 refuse tasks without enforced runtime observations`
+
+
 
 - Status: `admission_hardened`, benchmark execution blocked
 - Scope: inherited six cached train images, jobs=1; synthetic local runtime controls only
