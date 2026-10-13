@@ -61,7 +61,13 @@ def adapter(name: str):
 
 
 def pick(module, task_id: str | None) -> dict:
-    """The task to run, defaulting to the first task on the eval side."""
+    """Pick one task; targeted adapters require an explicit ID before any reads."""
+    targeted = getattr(module, 'control_task', None)
+    if callable(targeted):
+        if task_id is None:
+            raise SystemExit(f'{module.__name__}: targeted controls require --task-id; '
+                             'no implicit eval selection')
+        return targeted(task_id)
     tasks, _ = module.load()
     if not tasks:
         raise SystemExit(f"{module.__name__}: load() returned no tasks")
