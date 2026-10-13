@@ -106,6 +106,18 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: apply and review the isolated integrity patch, then rerun a capped pilot before any full sample
 - Commit: patch candidate in `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/81/patch.diff`; not merged
 
+## ScienceWorld — prevention source review — 2026-10-14 — Codex 186
+
+- Status: `preflight`; code-solvable `prevent-platform-writes` review closed, current registry status `runtime`
+- Scope: isolated `/tmp/hg-codex-186`, base `d21d79d` after `34a472a`; source review, inert synthetic fixtures and registry/journal updates only
+- Finding: prevention already exists in `eval/sandbox.py`, the default native `eval/runner.py` launch and `harnessgrad/methods.py` call path. Protected platform paths are hidden before execution; required candidate/method inputs are restored read-only; an unavailable sandbox refuses the call. Explicit unsandboxed execution provides detection only. `34a472a` corrects writer attribution without weakening fatal mismatch detection; it adds no prevention implementation.
+- Evidence: [unique review](../scienceworld-platform-writes-codex186-report.md), `tests/quality/test_scienceworld_platform_writes_codex186.py`, `tests/quality/test_scienceworld_integrity_codex181.py`, `tests/quality/test_dataset_blockers.py`
+- Platform change: current machine-registry work status changes from `code-solvable` to `runtime`; no production source change. The external Codex 81 candidate remains an unverified historical citation and was not opened or applied.
+- Remaining gates: trusted live enforcement, immutable platform provenance and every shared registry gate remain unresolved. Synthetic command construction cannot attest effective mounts or runtime lifecycle, and authorizes no model/H0 execution. Any future authorized run follows the staged AGENTS.md policy with a fresh ID.
+- History: the V4 entry above, run `scienceworld-h0-10pct-v4`, 354/354 reported task-trials, diagnostic-only mean and pinned historical registry record remain unchanged; status `incomplete`, `effect=null`, writer unknown.
+- Validation: **64 passed**, no failures/skips; registry valid (28 datasets, 8 shared blockers, 11 historical records, production unauthorized); exact offline command in the unique review. No real dataset/JVM/backend/model/H0/GPU execution or production source edits.
+- Commit: accompanying `docs: close ScienceWorld prevention code review, retain runtime gate` commit; exact hash reported on delivery
+
 ## HotpotQA — structured evidence and time budget
 
 - Status: `incomplete`, user-stopped

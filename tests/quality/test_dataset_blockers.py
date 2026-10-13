@@ -162,6 +162,26 @@ def test_agentdojo_metadata_closure_keeps_the_production_route_blocked(document)
     assert "agentdojo-metadata-privacy-codex180-report.md" in evidence
 
 
+def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document):
+    target = row(document, "scienceworld")
+    blocker = next(item for item in target["blockers"]
+                   if item["id"] == "prevent-platform-writes")
+    assert blocker["status"] == "runtime"
+    assert blocker["family"] == "platform-integrity"
+    evidence = {item["path"] for item in blocker["evidence"]}
+    assert "tests/quality/test_scienceworld_platform_writes_codex186.py" in evidence
+    assert "tests/quality/test_scienceworld_integrity_codex181.py" in evidence
+    assert "scienceworld-platform-writes-codex186-report.md" in evidence
+    assert "runtime-observations" in target["shared_blockers"]
+    assert document["review"]["production_authorized"] is False
+    baseline = checker.read_json(checker.HISTORY)
+    assert target["historical_runs"] == [
+        item["record"] for item in baseline["records"] if item["dataset"] == "scienceworld"
+    ]
+    assert target["historical_runs"][0]["status"] == "incomplete"
+    assert target["historical_runs"][0]["effect"] is None
+
+
 @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
 def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
     target = row(document, "chessbench_puzzles")

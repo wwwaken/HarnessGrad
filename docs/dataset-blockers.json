@@ -1004,16 +1004,46 @@
         {
           "id": "prevent-platform-writes",
           "family": "platform-integrity",
-          "status": "code-solvable",
-          "observed": "V4 remains incomplete despite 354/354 scored task-trials; platform mismatch writer attribution is unresolved.",
+          "status": "runtime",
+          "observed": "Code-solvable prevention review is closed: existing native sandbox call sites hide protected platform paths and restore required source read-only before execution; synthetic mount/refusal contracts pass. Commit 34a472a preserves fatal mismatch detection with unknown writer attribution. Trusted live enforcement remains unverified; V4 remains incomplete with effect=null.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
-              "locator": "## ScienceWorld — platform integrity"
+              "locator": "## ScienceWorld — prevention source review — 2026-10-14 — Codex 186"
+            },
+            {
+              "kind": "repository",
+              "path": "eval/sandbox.py",
+              "locator": "def command("
+            },
+            {
+              "kind": "repository",
+              "path": "eval/runner.py",
+              "locator": "return sandbox_mod.run(argv, platform=PLATFORM_ROOT,"
+            },
+            {
+              "kind": "repository",
+              "path": "harnessgrad/methods.py",
+              "locator": "def _method_sandbox_plan("
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_scienceworld_platform_writes_codex186.py",
+              "locator": "def test_native_plan_hides_platform_and_freezes_source("
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_scienceworld_integrity_codex181.py",
+              "locator": "def test_mismatches_stop_without_writer_or_tracking_claim("
+            },
+            {
+              "kind": "repository",
+              "path": "scienceworld-platform-writes-codex186-report.md",
+              "locator": "Code-solvable prevention review is closed"
             }
           ],
-          "next_action": "Review the isolated integrity-prevention patch and synthetic mount boundaries; do not use the diagnostic mean as an archive effect."
+          "next_action": "Independently establish trusted effective mount enforcement and immutable platform provenance for the intended runtime; retain all shared admission gates. Synthetic closure does not authorize production/H0 or an unsandboxed route. Preserve V4 and its diagnostic-only mean; any future authorized diagnostic requires a fresh run ID and the staged AGENTS.md policy."
         }
       ],
       "historical_runs": [
