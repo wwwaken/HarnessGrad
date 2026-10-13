@@ -216,9 +216,41 @@ def test_the_function_coverage_floor_matches_what_is_declared():
                    if counts[f] < dataset_classes.MIN_MEMBERS_PER_FUNCTION)
     assert below == sorted(dataset_classes.UNCOVERED_FUNCTIONS), (below, counts)
     assert set(dataset_classes.UNCOVERED_FUNCTIONS) <= set(dataset_classes.FUNCTIONS)
-    # Measured when this was written: 22 context, 16 tools, 11 control, 5 reflection, 5
-    # verification, 5 recovery, 3 memory, 1 safety, 0 cost, 0 delegation, 0 reliability.
+    # Measured when this was written: 22 context, 16 tools, 11 control, 10 verification,
+    # 5 recovery, 3 memory, 1 safety, 0 cost, 0 delegation, 0 reliability.
     assert counts["tools"] > counts["memory"], "the scaffolds we reuse over-sample their own"
+
+
+def test_a_function_inside_one_demand_is_refused():
+    """The rule that removed `reflection`.
+
+    `reflection` held exactly the reasoning datasets, so it carried nothing the demand axis did
+    not already have -- the same two-names-for-one-fact defect as `tool_calling` beside
+    `tool_dialogue`. A covered function has to cross at least two demands.
+    """
+    rows = _rows()
+    for function in dataset_classes.FUNCTIONS:
+        if function in dataset_classes.UNCOVERED_FUNCTIONS:
+            continue  # below the floor and declared; exempt
+        demands = {row["demand"] for row in rows if function in row["exercises"]}
+        assert len(demands) >= 2, f"{function} sits inside {demands}"
+
+    original = dict(dataset_classes.EXERCISES)
+    try:
+        # Strip `verification` from everything outside the artifact demand, so it is left
+        # holding one demand only -- the state `reflection` was in.
+        for name in list(dataset_classes.EXERCISES):
+            demand = dataset_classes.CAPABILITY[name][0]
+            if "verification" in dataset_classes.EXERCISES[name] and demand != "artifact":
+                dataset_classes.EXERCISES[name] = tuple(
+                    f for f in dataset_classes.EXERCISES[name] if f != "verification")
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "verification" in str(excinfo.value)
+    finally:
+        dataset_classes.EXERCISES.clear()
+        dataset_classes.EXERCISES.update(original)
+    assert dataset_classes.classify_all()  # restored
 
 
 def test_an_undeclared_function_gap_is_refused():

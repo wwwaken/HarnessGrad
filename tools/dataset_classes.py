@@ -128,26 +128,31 @@ UNCOVERED_DEMANDS: dict[str, tuple[str, ...]] = {
 #: rewarded -- the code, SQL and spreadsheet datasets. A harness that runs the tests it can see
 #: and fixes what fails scores higher there, and does nothing extra on a QA row.
 #:
-#: `verification` and `reflection` are held apart because the corpus holds them apart:
-#: `2601.01743` names both "self-reflection and verification", lists "critics" as a component,
-#: and `2503.16416` lists Self-Reflection as one of four agent capabilities while
-#: `2605.23950`'s four-function harness covers the checking side as "verification". The
-#: distinction is the object: verification checks an artifact against a check, reflection
-#: re-examines the harness's own reasoning. `reflection` is assigned to the reasoning datasets,
-#: where self-consistency and critique-and-revise move the score without any external check.
+#: `verification` covers both objects the corpus names: checking an artifact against a check
+#: (`2605.23950`'s "verification", `2601.01743`'s "critics") and re-examining the harness's own
+#: reasoning (`2503.16416`'s Self-Reflection). It is one function here rather than two because a
+#: separate `reflection` failed the test this axis applies to every entry: assigned to exactly
+#: the reasoning datasets, it covered one demand and carried nothing the demand axis did not
+#: already have. Every other function crosses at least two demands, and `_check_functions`
+#: refuses one that does not. It is the same defect as `tool_calling` beside `tool_dialogue` one
+#: level down -- two names for one fact -- and the remedy is the same: one name, with a
+#: definition that says what it spans.
 #:
-#: One reading of this axis is measured and one is not, and they must not be confused. Every
-#: entry is a claim of *sensitivity* -- change this component and the score can move -- not a
-#: claim that the dataset *isolates* the component. No dataset in this registry isolates any of
-#: them. That is why `2503.16416` can call self-reflection "a critical gap" while five datasets
-#: here are sensitive to it: a task reflection helps on is not a measurement of reflection.
+#: Two properties of this axis must not be confused with each other, or with the demand axis.
+#: Every entry is a claim of *sensitivity* -- change this component and the score can move --
+#: and not a claim that the dataset *isolates* the component. No dataset here isolates any of
+#: them, which is why `2503.16416` can call self-reflection "a critical gap" while ten datasets
+#: are sensitive to it: a task that checking helps on is not a measurement of checking. And an
+#: entry is *harness-relative*: whether changing a component moves the score depends on whether
+#: the harness under test has that component at all, so one dataset can carry a different set
+#: for a different harness family. The demand axis has neither property, because it is a
+#: property of the dataset alone.
 FUNCTIONS = (
     "context",
     "tools",
     "control",
     "memory",
     "verification",
-    "reflection",
     "recovery",
     "delegation",
     "reliability",
@@ -161,19 +166,19 @@ EXERCISES: dict[str, tuple[str, ...]] = {
     "bfcl_v3": ("tools",),
     "chessbench_puzzles": ("context", "control"),
     "ds1000": ("tools", "verification"),
-    "gsm8k": ("context", "reflection"),
-    "reasoning_gym": ("context", "reflection"),
+    "gsm8k": ("context", "verification"),
+    "reasoning_gym": ("context", "verification"),
     "jericho": ("context", "tools", "control", "memory"),
     "musique": ("context",),
     "twowikimultihopqa": ("context",),
     "livecodebench": ("tools", "verification"),
     "appworld": ("context", "tools", "control", "recovery"),
     "bird_minidev": ("context", "tools", "verification"),
-    "physicsquestions": ("context", "reflection"),
+    "physicsquestions": ("context", "verification"),
     "scienceworld": ("context", "tools", "control", "memory", "recovery"),
-    "sportsunderstanding": ("context", "reflection"),
+    "sportsunderstanding": ("context", "verification"),
     "spreadsheetbench": ("context", "tools", "control", "verification"),
-    "strategyqa": ("context", "reflection"),
+    "strategyqa": ("context", "verification"),
     "tau_bench": ("context", "tools", "control", "memory", "recovery"),
     "terminal_bench": ("context", "tools", "control", "recovery", "verification"),
     "triviaqa": ("context",),
@@ -478,6 +483,16 @@ def _check_judged_axis(rows: list[dict]) -> None:
             f"these demands are declared uncovered but now hold datasets: {stale}. Delete "
             f"them from UNCOVERED_DEMANDS in the same change that onboards the adapter; a "
             f"recorded gap outliving its cause becomes a wrong claim.")
+
+    # A function that lives inside one demand is that demand under another name.
+    narrow = sorted(f for f in FUNCTIONS if f not in UNCOVERED_FUNCTIONS
+                    and len({r["demand"] for r in rows if f in r["exercises"]}) < 2)
+    if narrow:
+        raise SystemExit(
+            f"these functions sit inside a single demand: {narrow}. A function covering one "
+            f"demand carries nothing the demand axis does not already have, which is why "
+            f"`reflection` was folded into `verification`: it held exactly the reasoning "
+            f"datasets. Broaden the assignment, or fold the function into one it crosses.")
 
     # And a covered demand has to be a category rather than a private name for one dataset.
     thin = {d: n for d, n in counts.items() if n and n < MIN_MEMBERS_PER_DEMAND}
