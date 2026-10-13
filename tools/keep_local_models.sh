@@ -14,7 +14,8 @@ is_healthy() {
 }
 
 start_one() {
-  local gpu="$1" model="$2" port="$3" name="$4" log="$STATE/${port}.log"
+  local gpu="$1" model="$2" port="$3" name="$4"
+  local log="$STATE/${port}.log"
   if is_healthy "$port"; then
     return 0
   fi
