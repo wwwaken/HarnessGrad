@@ -34,6 +34,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -109,7 +110,8 @@ FINISH_NUDGE_STEPS = int(os.environ.get("HG_AGENT_FINISH_NUDGE_STEPS", "4"))
 #: 同一条命令连续重复时提醒几次(每条跑道限量,免得把上下文塞满)。
 REPEAT_NUDGE_LIMIT = int(os.environ.get("HG_AGENT_REPEAT_NUDGE_LIMIT", "2"))
 
-#: 单条命令的输出进入消息历史时的字符上限(头部一半 + 尾部一半,中间写明丢了多少)。
+#: 单条命令的输出进入消息历史时的字符上限。先压紧 JSON,再保留完整记录预览;
+#: 纯文本留头尾。完整输出留在工作目录,模型可按需读取。
 #:
 #: 实测(2026-10-04,本地 9B,5 道题):**3 道题死于
 #: `This model's maximum context length is 32768 tokens ... your prompt contains at least
@@ -133,6 +135,7 @@ Reply with EXACTLY one of:
 
 Rules:
 - One action per reply. No prose outside the JSON.
+- Keep commands concise. Use a loop or a script instead of enumerating many calls.
 - To inspect files use shell commands (ls, cat, grep, ...).
 - Give the final answer only when you are confident.
 """
@@ -314,63 +317,56 @@ def _first_key_wins(pairs):
     return action
 
 
+def _json_block_end(text: str, start: int) -> int:
+    """Skip a malformed JSON block without treating its strings as actions."""
+    depth = 0
+    quoted = escaped = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if quoted:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                quoted = False
+        elif ch == '"':
+            quoted = True
+        elif ch in "{[":
+            depth += 1
+        elif ch in "}]":
+            depth -= 1
+            if depth == 0:
+                return i + 1
+    return len(text)
+
+
 def _parse(reply: str) -> dict:
-    """The **first JSON object** in a reply, ignoring anything after it.
+    """First complete action, across prose/fences and preceding structured data.
 
-    Tolerant extraction is not a nicety here; this function decides whether a task runs
-    at all, and one of its failure modes cost two whole runs.
-
-    The first version tried `json.loads(reply)`, then fell back to slicing from the first
-    `{` to the **last** `}`. Both fail on the same reply shape, and that shape is what the
-    measured model actually emits: asked for one action, it sometimes answers with two or
-    three JSON objects, one per line --
-
-        {"tool": "bash", "command": "cat /app/filter.py"}}
-        {"answer": ""}
-
-    (note the stray brace as well). `json.loads` reports `Extra data: line 1 column 50`,
-    and the `rfind` fallback slices `{...}}{...}`, which is not JSON either. The harness
-    treats an unparseable reply as a harness failure and **breaks the loop**, so the task
-    ends at step 0 with an empty answer and scores 0.
-
-    Measured on `loop-terminal_bench-41133`, round 0: four of five tasks died this way
-    after a single model call (`calls: 1`, `parse_error: Extra data`), and every round
-    after it was the same because the round starts from a harness that cannot do anything.
-    The old run `loop-terminal_bench-26452c` produced single-object replies and got 8
-    calls per task -- same code, same prompt -- so this is a property of the model's
-    output that the parser has to absorb, not something the parser caused.
-
-    `raw_decode` from the first `{` is the whole fix: it returns the first complete
-    object and says where it stopped, so trailing objects, stray braces and prose around
-    the JSON all stop mattering. `base_harness/loop_rrsi_parse/` already shipped exactly
-    this ; it is the same code, because a parser that differs between two base harnesses
-    is a difference between two candidates that the platform made rather than the method.
+    Consume whole JSON blocks, so nested data and quoted example actions cannot
+    become commands. Never close a truncated command or execute its prefix.
     """
-    reply = reply.strip()
-    if reply.startswith("```"):
-        reply = reply.split("```")[1]
-        reply = reply[4:] if reply.startswith("json") else reply
-    # `object_pairs_hook`, so duplicated keys are visible at all -- see
-    # `_first_key_wins` for the trajectory that made this necessary.
     decoder = json.JSONDecoder(object_pairs_hook=_first_key_wins)
-    for i, ch in enumerate(reply):
-        if ch != "{":
+    i = 0
+    while i < len(reply):
+        if reply[i] not in "{[":
+            i += 1
             continue
         try:
-            obj, _ = decoder.raw_decode(reply[i:])
+            obj, end = decoder.raw_decode(reply, i)
         except json.JSONDecodeError:
+            i = _json_block_end(reply, i)
             continue
-        # **An object with no action in it is not this reply's action.** Without this
-        # check the scan returned *any* well-formed object, including one nested inside
-        # a command that was itself cut off mid-string. The loop then ran an empty
-        # command and reported success, which is the same silent no-op as the duplicate
-        # key above -- measured on the same trajectory, where the write attempts that
-        # were truncated mid-heredoc also produced `"command": ""`. Continuing instead
-        # means a reply with no usable action becomes a parse error, so the model is
-        # told and may reformat.
-        if isinstance(obj, dict) and (obj.get("command") or "answer" in obj):
+        i = end
+        if not isinstance(obj, dict) or obj.get("tool", "bash") != "bash":
+            continue
+        cmd = obj.get("command", "")
+        if isinstance(cmd, str) and cmd.strip():
             return obj
-    raise ValueError("no JSON object found in reply")
+        if cmd == "" and "answer" in obj:
+            return obj
+    raise ValueError("no complete JSON action found in reply")
 
 
 #: goal 里形如 `/app/move.txt`、`/app/learned_dag.csv` 的路径。这是**通用**的:
@@ -405,14 +401,85 @@ def _missing_deliverables(task: dict, workdir: Path) -> list[str]:
     return missing
 
 
+def _clip_text(out: str, limit: int) -> str:
+    if len(out) <= limit:
+        return out
+    marker = f"\n... [text clipped; original {len(out)} characters] ...\n"
+    room = max(0, limit - len(marker))
+    head = (room + 1) // 2
+    tail = room // 2
+    return (out[:head] + marker + (out[-tail:] if tail else ""))[:limit]
+
+
+def _json_preview(value: list | dict, limit: int) -> str | None:
+    """A bounded, valid JSON preview containing whole first/last entries."""
+    mapping = isinstance(value, dict)
+    items = list(value.items()) if mapping else value
+    head, tail = [], []
+
+    def render():
+        return json.dumps({"_harness_preview": {
+            "total_items": len(items), "omitted_items": len(items) - len(head) - len(tail)},
+            "head": dict(head) if mapping else head,
+            "tail": dict(tail) if mapping else tail}, ensure_ascii=False, separators=(",", ":"))
+
+    shown = render()
+    if len(shown) > limit:
+        return None
+    front, back = 0, len(items) - 1
+    while front <= back:
+        added = False
+        head.append(items[front])
+        candidate = render()
+        if len(candidate) <= limit:
+            shown = candidate
+            front += 1
+            added = True
+        else:
+            head.pop()
+        if front <= back:
+            tail.insert(0, items[back])
+            candidate = render()
+            if len(candidate) <= limit:
+                shown = candidate
+                back -= 1
+                added = True
+            else:
+                tail.pop(0)
+        if not added:
+            break
+    return shown
+
+
 def _clip_output(out: str) -> str:
-    """一条命令的输出,超过 `OUTPUT_LIMIT` 就留住头尾,中间写明丢了多少。"""
+    """Compact leading JSON losslessly before bounding; retain whole list items.
+
+    Non-JSON suffixes (including shell errors) remain visible. The caller saves
+    the original separately whenever this view differs from the output.
+    """
     if len(out) <= OUTPUT_LIMIT:
         return out
-    half = OUTPUT_LIMIT // 2
-    return (out[:half]
-            + f"\n... [{len(out) - OUTPUT_LIMIT} characters omitted] ...\n"
-            + out[-half:])
+    stripped = out.lstrip()
+    try:
+        obj, end = json.JSONDecoder().raw_decode(stripped)
+    except (ValueError, RecursionError):
+        return _clip_text(out, OUTPUT_LIMIT)
+    if not isinstance(obj, (dict, list)):
+        return _clip_text(out, OUTPUT_LIMIT)
+    suffix = stripped[end:]
+    compact = json.dumps(obj, ensure_ascii=False, separators=(",", ":")) + suffix
+    if len(compact) <= OUTPUT_LIMIT:
+        return compact
+    preview = _json_preview(obj, OUTPUT_LIMIT - len(suffix))
+    if preview is not None:
+        return preview + suffix
+    return _clip_text(compact, OUTPUT_LIMIT)
+
+
+def _shell_runtime() -> tuple[str, str]:
+    """Choose once before any task action; never retry side effects in another shell."""
+    bash = shutil.which("bash")
+    return (bash, "Bash") if bash else ("/bin/sh", "POSIX sh")
 
 
 def _trim_history(messages: list[dict], budget: int | None = None) -> int:
@@ -451,8 +518,12 @@ def run(task: dict, workdir: Path) -> str:
     and hands to the Trainer (INTERFACE.md §4.1).
     """
     trace_path = workdir / "trace.jsonl"
+    shell, dialect = _shell_runtime()
     messages = [
-        {"role": "system", "content": SYSTEM},
+        {"role": "system", "content": SYSTEM + (
+            f"\nShell runtime: {shell} -c ({dialect}). Each command starts a new shell.\n"
+            + ("Bash arrays and PIPESTATUS are supported.\n" if dialect == "Bash" else
+               "Use POSIX syntax; Bash arrays, PIPESTATUS and [[ ]] are unavailable.\n"))},
         {"role": "user", "content": json.dumps(task)},
     ]
 
@@ -461,6 +532,7 @@ def run(task: dict, workdir: Path) -> str:
     parse_retries = 0
     repeats = 0
     last_cmd = ""
+    output_dir = None
     # **行缓冲,不是默认的 8KB 块缓冲。** 实测(2026-10-04,本地模型跑 `bn-fit-modify`):
     # harness 已经跑了 8 分钟、正在装 pandas,而 `/app/trace.jsonl` 是 0 字节、打开的 fd
     # `pos: 0` —— 一行都还没落盘。代价有三条:
@@ -487,6 +559,7 @@ def run(task: dict, workdir: Path) -> str:
             "parse_retries": PARSE_RETRIES, "finish_nudge_steps": FINISH_NUDGE_STEPS,
             "repeat_nudge_limit": REPEAT_NUDGE_LIMIT, "output_limit": OUTPUT_LIMIT,
             "context_chars": CONTEXT_CHAR_BUDGET,
+            "shell": shell, "shell_dialect": dialect,
             "max_output_tokens": MAX_OUTPUT_TOKENS}}
         for key, value in (("agent_model", os.environ.get("HG_AGENT_MODEL")),
                            ("agent_backend", _backend())):
@@ -504,6 +577,9 @@ def run(task: dict, workdir: Path) -> str:
         model_s = command_s = 0.0
         trims_before = USAGE["context_trims"]
         for step in range(MAX_STEPS):
+            dropped = _trim_history(messages)
+            if dropped:
+                trace.write(json.dumps({"step": step, "history_dropped": dropped}) + "\n")
             t0 = time.time()
             reply = _complete(messages)
             took = time.time() - t0
@@ -531,12 +607,24 @@ def run(task: dict, workdir: Path) -> str:
                 if parse_retries >= PARSE_RETRIES:
                     break
                 parse_retries += 1
+                # Keep the full failed reply in the trace, not as an example for
+                # the next completion to copy. In particular, token-cut commands
+                # should be shortened by the model, never completed by the parser.
+                messages[-1]["content"] = "[Unparseable reply omitted; see trace.jsonl.]"
                 messages.append({"role": "user", "content": (
                     f"Your reply could not be read as an action: {exc}\n"
+                    "Nothing was executed. It may have been cut off by the output token limit.\n"
+                    "Send one short command; use a loop/script instead of enumerating calls.\n"
+                    f"You have {MAX_STEPS - step - 1} step(s) left.\n"
                     "Reply with EXACTLY ONE JSON object and nothing else, one of:\n"
                     '  {"tool": "bash", "command": "<shell command>"}\n'
                     '  {"answer": "<your final answer>"}')})
                 continue
+
+            parse_retries = 0
+            # Prose or echoed data before a recovered action is not part of the
+            # executed command. Store only the parsed action in model history.
+            messages[-1]["content"] = json.dumps(action)
 
             # **修过的地方要留痕。** 重复键的回复被解析成"第一个值放前面"之后,模型看到的
             # 命令和它写的不完全一样(它写了两遍,harness 取了第一遍)。一次被静默改写的
@@ -567,19 +655,31 @@ def run(task: dict, workdir: Path) -> str:
                 break
             t0 = time.time()
             proc = subprocess.run(
-                cmd, shell=True, cwd=workdir, capture_output=True, text=True
+                [shell, "-c", cmd], cwd=workdir, capture_output=True, text=True
             )
             took = time.time() - t0
             command_s += took
             out = proc.stdout + proc.stderr
             trace.write(json.dumps({"step": step, "command": cmd,
                                     "exit": proc.returncode,
+                                    "shell": shell,
                                     "command_ms": int(took * 1000), "output": out}) + "\n")
             shown = _clip_output(out)
+            output_note = ""
             if shown != out:
+                if output_dir is None:
+                    import tempfile
+                    output_dir = Path(tempfile.mkdtemp(prefix=".hg-output-", dir=workdir))
+                saved = output_dir / f"step-{step}.txt"
+                saved.write_text(out)
+                relative = saved.relative_to(workdir)
+                output_note = (f"\nFull output: {relative} (use shell tools to inspect/filter it).\n"
+                               "The view below may omit records; omitted does not mean absent.\n")
                 trace.write(json.dumps({"step": step, "output_clipped": len(out),
-                                        "shown": len(shown)}) + "\n")
-            messages.append({"role": "user", "content": f"exit={proc.returncode}\n{shown}"})
+                                        "shown": len(shown), "output_file": str(relative),
+                                        "output_view": shown}) + "\n")
+            messages.append({"role": "user", "content":
+                             f"exit={proc.returncode}{output_note}\n{shown}"})
 
             # **两条提醒,都放在命令跑完之后**,因为它们改变的是"下一步做什么"。
             #
@@ -588,10 +688,10 @@ def run(task: dict, workdir: Path) -> str:
             if cmd and cmd == last_cmd and repeats < REPEAT_NUDGE_LIMIT:
                 repeats += 1
                 trace.write(json.dumps({"step": step, "repeat_nudge": cmd[:120]}) + "\n")
-                messages.append({"role": "user", "content": (
+                messages[-1]["content"] += "\n" + (
                     "That is the same command as the previous step and its output has not "
                     "changed. Do something different, or finish now with "
-                    '{"answer": "<your final answer>"} if the work is already done.')})
+                    '{"answer": "<your final answer>"} if the work is already done.')
             last_cmd = cmd
 
             left = MAX_STEPS - (step + 1)
@@ -599,14 +699,10 @@ def run(task: dict, workdir: Path) -> str:
             # 只会把最近几轮的命令输出挤远。
             if left and (left == FINISH_NUDGE_STEPS or left == 1):
                 trace.write(json.dumps({"step": step, "finish_nudge": left}) + "\n")
-                messages.append({"role": "user", "content": (
+                messages[-1]["content"] += "\n" + (
                     f"You have {left} step(s) left. Stop exploring. Create every file the "
                     "task asks for now, then reply with exactly one JSON object: "
-                    '{"answer": "<your final answer>"}')})
-
-            dropped = _trim_history(messages)
-            if dropped:
-                trace.write(json.dumps({"step": step, "history_dropped": dropped}) + "\n")
+                    '{"answer": "<your final answer>"}')
 
         # Where the wall clock went. Separate from `usage` (which counts tokens):
         # a reader asking "was this killed for being slow, and slow at what" gets one
