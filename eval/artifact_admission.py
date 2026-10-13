@@ -21,8 +21,35 @@ from eval.pilot_admission import AdmissionError, LOG_CONFIG
 SCORER_ENV = ["PATH=/control-scorer", "HOME=/tmp", "TMPDIR=/tmp"]
 
 
+class EvidenceUnavailable(AdmissionError):
+    """An incomplete observation or unavailable bytes leave admission unknown."""
+
+
 def _digest(value) -> bool:
     return isinstance(value, str) and bool(re.fullmatch(r"[a-f0-9]{64}", value))
+
+
+def _load_sealed_object(raw: bytes, expected_sha256: str, *, label: str) -> dict:
+    """Authenticate exact bytes and reject ambiguous JSON for both declarations."""
+    if (not isinstance(raw, bytes) or not _digest(expected_sha256)
+            or hashlib.sha256(raw).hexdigest() != expected_sha256):
+        raise AdmissionError(f"{label} seal mismatch")
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise AdmissionError(f"duplicate {label} JSON key")
+            result[key] = value
+        return result
+
+    try:
+        value = json.loads(raw.decode("utf-8"), object_pairs_hook=unique_object)
+    except (ValueError, RecursionError) as exc:
+        raise AdmissionError(f"malformed {label} JSON") from exc
+    if not isinstance(value, dict):
+        raise AdmissionError(f"invalid {label} object")
+    return value
 
 
 def _positive(value) -> bool:
@@ -105,10 +132,8 @@ def validate_scorer_spec(scorer: dict) -> None:
 
 def load_contract(raw: bytes, expected_sha256: str) -> dict:
     """Accept only a caller-pinned declaration; no truth-valued attestation fields."""
-    if not _digest(expected_sha256) or hashlib.sha256(raw).hexdigest() != expected_sha256:
-        raise AdmissionError("artifact contract seal mismatch")
+    contract = _load_sealed_object(raw, expected_sha256, label="artifact contract")
     try:
-        contract = json.loads(raw)
         if (set(contract) != {"schema", "task_id", "source_sha256", "runtime_image_id",
                               "scorer", "export", "quota"}
                 or contract["schema"] != "harnessgrad.artifact-scorer.v1"
@@ -172,6 +197,8 @@ def _regular(root: Path, relative: str, *, data_only: bool = False):
 def _inventory(root: Path) -> set[str]:
     """Used only on platform-owned closure/export trees, never scan actor state."""
     _root(root)
+    if not root.exists():
+        raise EvidenceUnavailable("platform projection root unavailable")
     if not root.is_dir():
         raise AdmissionError("platform projection root must be a directory")
     found = set()
@@ -212,7 +239,7 @@ def verify_scorer_files(root: Path, scorer: dict) -> dict:
                 if stream.read(1) or digest.hexdigest() != row["sha256"]:
                     raise AdmissionError("scorer file seal mismatch")
     except OSError as exc:
-        raise AdmissionError("local scorer closure unavailable") from exc
+        raise EvidenceUnavailable("local scorer closure unavailable") from exc
     return dict(files=len(rows), bytes=sum(row["bytes"] for row in rows),
                 scope="local_declared_closure_integrity")
 
@@ -287,10 +314,10 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
             try:
                 shutil.rmtree(destination)
             except OSError as cleanup:
-                raise AdmissionError("failed state export cleanup; partial projection retained") from cleanup
+                raise EvidenceUnavailable("failed state export cleanup; partial projection retained") from cleanup
         if isinstance(exc, AdmissionError):
             raise
-        raise AdmissionError("state export unavailable; existing destination is never reused") from exc
+        raise EvidenceUnavailable("state export unavailable; existing destination is never reused") from exc
 
 
 def verify_state_export(root: Path, receipt: dict, raw: bytes, expected_sha256: str,
@@ -334,12 +361,16 @@ def verify_state_export(root: Path, receipt: dict, raw: bytes, expected_sha256: 
         if receipt["bytes"] != total or receipt["inodes"] != _inodes(names):
             raise AdmissionError("state export accounting mismatch")
     except (KeyError, TypeError, ValueError, AttributeError, OSError) as exc:
-        raise AdmissionError("state export evidence unavailable") from exc
+        raise EvidenceUnavailable("state export evidence unavailable") from exc
 
 
 def runtime_tmpfs(raw: bytes, expected_sha256: str) -> dict[str, str]:
     """Build hard tmpfs limit options for an adapter to apply and inspect."""
     contract = load_contract(raw, expected_sha256)
+    return _tmpfs_options(contract)
+
+
+def _tmpfs_options(contract: dict) -> dict[str, str]:
     return {path: f"rw,nosuid,nodev,noexec,size={limits['bytes']},nr_inodes={limits['inodes']},mode=1777"
             for path, limits in contract["quota"].items()}
 
@@ -354,8 +385,15 @@ def require_artifact_runtime(info: dict, raw: bytes, expected_sha256: str,
     ownership, CPU/memory/PID limits and cleanup separately. This is not a launch gate.
     """
     contract = load_contract(raw, expected_sha256)
-    verify_scorer_closure(closure_root, raw, expected_sha256)
+    verify_scorer_files(closure_root, contract["scorer"])
     verify_state_export(artifact_root, export_receipt, raw, expected_sha256, run_id=run_id)
+    return _verify_artifact_runtime(info, contract, expected_sha256,
+                                    artifact_root=artifact_root, closure_root=closure_root)
+
+
+def _verify_artifact_runtime(info: dict, contract: dict, expected_sha256: str,
+                             *, artifact_root: Path, closure_root: Path) -> dict:
+    """Shared observation check; callers must first authenticate and verify both trees."""
     try:
         host, config = info["HostConfig"], info["Config"]
         if (info["Image"] != contract["runtime_image_id"]
@@ -373,7 +411,7 @@ def require_artifact_runtime(info: dict, raw: bytes, expected_sha256: str,
                 or host["LogConfig"] != LOG_CONFIG
                 or set(info.get("NetworkSettings", {}).get("Networks", {})) - {"none"}):
             raise AdmissionError("trusted artifact runtime boundary mismatch")
-        expected = runtime_tmpfs(raw, expected_sha256)
+        expected = _tmpfs_options(contract)
         if set(host["Tmpfs"]) != set(expected):
             raise AdmissionError("writable runtime surface differs from quota contract")
         for path, options in expected.items():
@@ -397,7 +435,7 @@ def require_artifact_runtime(info: dict, raw: bytes, expected_sha256: str,
                 or any(m["RW"] is not False for m in mounts)):
             raise AdmissionError("artifact-only read-only mounts required")
     except (KeyError, TypeError, ValueError, AttributeError, OSError) as exc:
-        raise AdmissionError("incomplete artifact runtime observation") from exc
+        raise EvidenceUnavailable("incomplete artifact runtime observation") from exc
     return dict(schema="harnessgrad.artifact-runtime-receipt.v1", contract_sha256=expected_sha256,
                 task_id=contract["task_id"], runtime_image_id=contract["runtime_image_id"],
                 tmpfs=expected, scope="inspected_runtime_contract")

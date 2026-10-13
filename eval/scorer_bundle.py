@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 
 from eval.artifact_admission import (
-    _digest, load_contract, validate_scorer_spec, verify_scorer_files,
+    _digest, _load_sealed_object, load_contract, validate_scorer_spec, verify_scorer_files,
 )
 from eval.pilot_admission import AdmissionError
 
@@ -47,24 +47,9 @@ def seal_bundle(manifest: dict) -> tuple[bytes, str]:
     return raw, hashlib.sha256(raw).hexdigest()
 
 
-def _unique_object(pairs: list[tuple]) -> dict:
-    result = {}
-    for key, value in pairs:
-        if key in result:
-            raise AdmissionError("duplicate scorer bundle JSON key")
-        result[key] = value
-    return result
-
-
 def load_bundle(raw: bytes, expected_sha256: str) -> dict:
     """Authenticate exact manifest bytes against a separately supplied SHA-256."""
-    if (not isinstance(raw, bytes) or not _digest(expected_sha256)
-            or hashlib.sha256(raw).hexdigest() != expected_sha256):
-        raise AdmissionError("scorer bundle manifest seal mismatch")
-    try:
-        manifest = json.loads(raw.decode("utf-8"), object_pairs_hook=_unique_object)
-    except (ValueError, RecursionError) as exc:
-        raise AdmissionError("malformed scorer bundle JSON") from exc
+    manifest = _load_sealed_object(raw, expected_sha256, label="scorer bundle manifest")
     _validate(manifest)
     return manifest
 
