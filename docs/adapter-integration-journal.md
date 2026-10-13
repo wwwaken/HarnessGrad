@@ -503,7 +503,6 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Remaining gate: authenticated metadata-only release/selected-group custody and protected artifact/dependency/runtime identities, plus independently reviewed selected-only non-scoring admission and fresh identity-bound runtime/lifecycle evidence. Codex 180 privacy closure does not supply either part.
 - Validation: static pin reconciliation, scoped Git/hash recomputation, JSON consistency and diff whitespace review; no execution tests or production measurement.
 - Integration: local documentation/metadata outputs only; parent review and main integration remain separate.
-=======
 
 ## Filesystem quota operator/backend checklist — Codex 191 — 2026-10-14
 
