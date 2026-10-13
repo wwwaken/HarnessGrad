@@ -232,12 +232,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 
 ## AgentDojo — selected-only split controls
 
-- Status: `blocked`, no real controls
-- Scope: inherited train candidate IDs; user-group split preserved; no mixed pool content used
-- Finding: current import loads full cases before task filtering; selected task ID does not protect heldout reads
-- Evidence: `/tmp/codex/91/evidence/split-manifest.json`; 8 scoped tests passed
-- Remaining gates: safe selected-only loader and train-group attestation
-- Commit: scoped patch only, not integrated
+- Status: `controls_passed`, production H0 not launched
+- Scope: pinned runtime registry 949 pairs; 615 train / 334 eval across 97 user groups; selected 4 complete train groups, 35 pairs, 70 oracle/noop arms
+- Finding: targeted `control_task(task_id)` now reads only `prepared/<id>/case.json`; `ENV`, `SETUP`, `VERIFY` use fixed metadata maps without importing the mixed prompt catalog. Explicit task IDs are required before any targeted control read. User-group split remains suite/user based with zero cross-side overlap.
+- Evidence: `/tmp/codex/97/evidence/summary.json`; 70 measured controls, 35 oracle=1, 35 noop=0, attacker_success=0; no mixed catalog/heldout payload opened
+- Verification: 20 focused/official/bridge tests passed on main
+- Platform change: selected-only adapter control hook and explicit-ID enforcement
+- Remaining gates: full mixed-catalog-to-registry alignment is intentionally unattested because `cases.json` remains unopened; no model H0 or platform run_one claim
+- Commit: `80bc61f fix: make AgentDojo controls selected-only`
 
 ## Process rule
 
