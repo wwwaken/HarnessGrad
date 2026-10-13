@@ -183,9 +183,20 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
             with phases("snapshot"):
                 # Step 4. Stopping the whole container is what makes "nothing the harness
                 # started is still running" structural rather than best-effort, and a
-                # stopped container is still committable.
-                container_mod.stop(name)
-                snapshot = container_mod.commit(name, snapshot_tag)
+                # stopped container is still committable. Admission and commit failures are
+                # platform failures, never harness scores.
+                try:
+                    container_mod.stop(name)
+                    snapshot = container_mod.commit(name, snapshot_tag)
+                except container_mod.SnapshotUnavailable as exc:
+                    return {"task_id": tid,
+                            "invalid": {"stage": "snapshot", "service": "docker",
+                                        "detail": str(exc)},
+                            "answer": "", "trace": trace, "exit_code": exit_code,
+                            "stderr": stderr, "env_usage": {}, "identity": _last_identity(trace),
+                            "harness_runtime": harness_runtime.record(
+                                overlay, platform_interpreter=(image_python_here is None)),
+                            "model_gateway": None, "web_gateway": None}
 
                 # What the harness produced, read back out of the snapshot. `cp_out` is a
                 # best-effort read: a harness that wrote no trace is a fact to record.

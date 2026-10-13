@@ -66,6 +66,86 @@ class ContainerUnavailable(RuntimeError):
     """Docker is not usable, or the image cannot be pinned to a content address."""
 
 
+class SnapshotUnavailable(ContainerUnavailable):
+    """The container could not be stopped or admitted/committed as a snapshot."""
+
+
+# A snapshot is a Docker image layer. Bound both the writable layer and the space Docker
+# can consume while committing it; otherwise a large GAIA attachment or JVM cache can turn
+# commit into a host OOM/disk failure and the task is incorrectly reported as a harness score.
+SNAPSHOT_MAX_BYTES = 16 << 30
+SNAPSHOT_RESERVE_BYTES = 1 << 30
+
+
+def _snapshot_limit(key: str, default: int) -> int:
+    try:
+        return max(1, int(os.environ.get(key, default)))
+    except (TypeError, ValueError):
+        return default
+
+
+def _snapshot_failure(stage: str, proc: subprocess.CompletedProcess | None = None,
+                      exc: BaseException | None = None) -> SnapshotUnavailable:
+    text = " ".join(filter(None, [
+        str(exc) if exc else "",
+        (proc.stderr if proc else "") if proc else "",
+        (proc.stdout if proc else "") if proc else "",
+    ])).strip()
+    lowered = text.lower()
+    if ((proc is not None and proc.returncode == 137)
+            or "out of memory" in lowered or "cannot allocate memory" in lowered
+            or "oom" in lowered):
+        kind = "oom"
+    elif any(marker in lowered for marker in
+             ("no space left", "disk quota", "quota exceeded", "insufficient space")):
+        kind = "disk"
+    elif any(marker in lowered for marker in
+             ("resource temporarily unavailable", "too many processes", "pids limit")):
+        kind = "resource"
+    else:
+        kind = "docker"
+    code = f" exit={proc.returncode}" if proc is not None else ""
+    return SnapshotUnavailable(f"snapshot {stage} failed kind={kind}{code}: {text[-1200:]}")
+
+
+def snapshot_admission(name: str) -> dict[str, int | str]:
+    """Check bounded writable size and Docker-root headroom before ``docker commit``.
+
+    This is deliberately a refusal, not a best-effort warning: a commit killed by the
+    daemon can leave an incomplete image and used to surface as an unexplained exit 137.
+    """
+    proc = docker("inspect", "--size", "-f", "{{.SizeRw}}", name, timeout=60)
+    if proc.returncode != 0:
+        raise _snapshot_failure("admission inspect", proc)
+    try:
+        writable = int(proc.stdout.strip())
+    except ValueError:
+        raise SnapshotUnavailable(
+            f"snapshot admission failed kind=docker: invalid writable size {proc.stdout!r}")
+    maximum = _snapshot_limit("HG_SNAPSHOT_MAX_BYTES", SNAPSHOT_MAX_BYTES)
+    if writable > maximum:
+        raise SnapshotUnavailable(
+            f"snapshot admission rejected kind=disk writable_bytes={writable} "
+            f"max_bytes={maximum}")
+
+    info = docker("info", "--format", "{{.DockerRootDir}}", timeout=60)
+    if info.returncode != 0:
+        raise _snapshot_failure("admission docker-info", info)
+    root = Path(info.stdout.strip() or "/var/lib/docker")
+    try:
+        free = shutil.disk_usage(root).free
+    except OSError as exc:
+        raise _snapshot_failure("admission disk-usage", exc=exc) from exc
+    reserve = _snapshot_limit("HG_SNAPSHOT_RESERVE_BYTES", SNAPSHOT_RESERVE_BYTES)
+    required = writable + reserve
+    if free < required:
+        raise SnapshotUnavailable(
+            f"snapshot admission rejected kind=disk docker_root={root} free_bytes={free} "
+            f"required_bytes={required} writable_bytes={writable}")
+    return {"writable_bytes": writable, "free_bytes": free, "required_bytes": required,
+            "docker_root": str(root)}
+
+
 # --------------------------------------------------------------- the client ---
 
 #: How much of a streamed command's output is kept. `docker exec` on a long task can
@@ -759,9 +839,11 @@ def stop(name: str) -> None:
     is taken from a filesystem on which nothing can still be writing.
     """
     try:
-        docker("stop", "--time", "5", name, timeout=60)
-    except (subprocess.TimeoutExpired, OSError):
-        pass
+        proc = docker("stop", "--time", "5", name, timeout=60)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        raise _snapshot_failure("stop", exc=exc) from exc
+    if proc.returncode != 0:
+        raise _snapshot_failure("stop", proc)
 
 
 def commit(name: str, tag: str) -> str:
@@ -771,13 +853,18 @@ def commit(name: str, tag: str) -> str:
     writable copy of it, so a check that writes into what it is grading cannot alter the
     thing it graded (INTERFACE.md §2.5.9).
     """
-    proc = docker("commit", name, tag, timeout=1800)
+    snapshot_admission(name)
+    try:
+        proc = docker("commit", name, tag, timeout=1800)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        raise _snapshot_failure("commit", exc=exc) from exc
     if proc.returncode != 0:
-        raise ContainerUnavailable(
-            f"could not snapshot {name}: {proc.stderr.strip()[:300]}")
+        raise _snapshot_failure("commit", proc)
     image_id = proc.stdout.strip()
     if not looks_pinned(image_id):
-        raise ContainerUnavailable(f"`docker commit` reported {image_id!r}, not a digest")
+        raise SnapshotUnavailable(
+            f"snapshot commit failed kind=docker: `docker commit` reported {image_id!r}, "
+            "not a digest")
     return image_id
 
 

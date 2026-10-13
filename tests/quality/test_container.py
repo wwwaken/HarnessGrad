@@ -533,3 +533,43 @@ def test_no_sandbox_does_not_disable_the_container(tmp_path):
         f"the header reads as if there were no boundary at all: {header[:800]}")
     # And the run is still a real one: the container-based task scored.
     assert _curve(tmp_path)[-1]["score"] == 1.0
+
+
+# ------------------------------------------------------ snapshot failure controls ---
+
+
+def test_snapshot_admission_rejects_writable_layer_before_commit(monkeypatch):
+    calls = []
+
+    def fake_docker(*args, **kwargs):
+        calls.append(args)
+        if args[:2] == ("inspect", "--size"):
+            return subprocess.CompletedProcess(args, 0, "17179869185\n", "")
+        raise AssertionError(args)
+
+    monkeypatch.setattr(container, "docker", fake_docker)
+    with pytest.raises(container.SnapshotUnavailable, match="kind=disk"):
+        container.snapshot_admission("ctr")
+    assert calls == [("inspect", "--size", "-f", "{{.SizeRw}}", "ctr")]
+
+
+def test_commit_exit_137_is_classified_as_oom(monkeypatch):
+    monkeypatch.setattr(container, "snapshot_admission", lambda name: {})
+    monkeypatch.setattr(
+        container, "docker",
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args, 137, "", "write /var/lib/docker: killed"))
+    with pytest.raises(container.SnapshotUnavailable, match="kind=oom.*exit=137"):
+        container.commit("ctr", "hg-snapshot:test")
+
+
+def test_commit_disk_and_resource_errors_are_classified(monkeypatch):
+    monkeypatch.setattr(container, "snapshot_admission", lambda name: {})
+    for detail, kind in (("no space left on device", "disk"),
+                         ("resource temporarily unavailable", "resource")):
+        monkeypatch.setattr(
+            container, "docker",
+            lambda *args, _detail=detail, **kwargs: subprocess.CompletedProcess(
+                args, 1, "", _detail))
+        with pytest.raises(container.SnapshotUnavailable, match=f"kind={kind}"):
+            container.commit("ctr", "hg-snapshot:test")
