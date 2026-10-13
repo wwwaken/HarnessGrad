@@ -153,6 +153,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: local BFCL v1.3 release is unprovisioned, so selected reference identity and real oracle/noop controls remain unproven; no H0
 - Commit: `c08c8a1 fix: make BFCL controls selected-only and redact gold`
 
+### BFCL selected-index and failure-path privacy follow-up
+
+- Status: source/privacy regression closure; production release gate remains unverified.
+- Scope: `data/bfcl_v3.py`, shared QA controller/verifier, and `tests/quality/test_bfcl_selected.py`; fabricated JSONL/index fixtures and synthetic read guards only.
+- Finding: category filtering still read every question and answer row; empty selection fell back to all categories; controls reloaded selected records and the platform path could load the full pool; scorer explanations and pre-import/unmeasured diagnostics could expose trusted gold.
+- Change: canonical nonempty selection validation precedes metadata/payload access; trusted `selected-index.v1.json` metadata binds tag/tarball digest, question identity, and exact question/answer byte spans with SHA-256. Selected loading uses unbuffered seeks/reads with no scan, index-build, full-pool, or cache fallback. Controls reuse one record; BFCL verifier specs request early redaction, including the full-pool map and legacy BFCL argv; exceptions, tracebacks, invalid scorer results, and expected-name explanations omit private reference data.
+- Validation: focused BFCL/Chess synthetic regressions plus MuSiQue shared-verifier compatibility and malformed structured-QA checks. Commands and final counts are recorded in the follow-up commit body. Platform dispatch is intercepted; supplied setup and the real materialized verifier execute only fabricated records.
+- Remaining gates: no release download/provisioning, real release/index custody or source identity validation, heldout access, model requests, or H0 occurred. A missing/invalid selected index rejects execution before payload access; synthetic passes do not authorize production controls or H0. The name-only metric remains explicitly distinct from the official full-call BFCL metric.
+
 ## AppWorld / GAIA / tau-bench — local state boundaries
 
 - Status: preflight-required, no H0

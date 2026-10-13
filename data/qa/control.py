@@ -207,8 +207,12 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
 
     tid = record["task_id"]
     if callable(getattr(module, "control_task", None)):
-        tasks, _ = module.load_selected([tid])
-        task = next(t for t in tasks if t["task_id"] == tid)
+        task_builder = getattr(module, "task_for", None)
+        if callable(task_builder):
+            task = task_builder(record)
+        else:
+            tasks, _ = module.load_selected([tid])
+            task = next(t for t in tasks if t["task_id"] == tid)
         setup_spec = module.setup_for(record)
         verifier = module.verify_for(record)
         env = module.DEFAULT_ENV

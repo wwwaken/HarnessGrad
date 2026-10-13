@@ -109,6 +109,16 @@ def unmeasured(args, evidence: dict, why: str) -> int:
     return 3
 
 
+def error_detail(args, exc: Exception) -> str:
+    """Exception messages and traceback source lines can contain trusted labels."""
+    return type(exc).__name__ if args.redact_gold else f"{type(exc).__name__}: {exc}"
+
+
+def record_traceback(args, evidence: dict) -> None:
+    if not args.redact_gold:
+        evidence["traceback"] = traceback.format_exc()[-2000:]
+
+
 #: A quoted answer is unwrapped before scoring. Measured on the first smoke run of
 #: `sportsunderstanding`: the oracle's own submission came back as `'plausible'` in one
 #: trial because a shell snippet quoted it, and an official scorer that does a substring
@@ -126,6 +136,9 @@ def unwrap(answer: str) -> str:
 
 def main(argv) -> int:
     args = parse_args(argv)
+    # Known private adapters must redact before gold parsing, prediction validation,
+    # or scorer import. Adapter flags are too late for those failure paths.
+    args.redact_gold = args.redact_gold or args.dataset in {"chessbench_puzzles", "bfcl_v3"}
     args.reward_file = Path(args.reward_file)
     args.evidence_file = Path(args.evidence_file)
     answer_path = Path(args.answer)
@@ -138,6 +151,8 @@ def main(argv) -> int:
         "gold_file": str(gold_path),
         "reward_file": str(args.reward_file),
     }
+    if args.redact_gold:
+        evidence["gold"] = {"redacted": True}
 
     if not gold_path.is_file():
         # The check's own trusted input is missing. On a real run the platform writes
@@ -150,20 +165,22 @@ def main(argv) -> int:
     try:
         gold = json.loads(gold_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
-        return unmeasured(args, evidence, f"gold file {gold_path} is unreadable: {exc}")
+        return unmeasured(args, evidence,
+                          f"gold file {gold_path} is unreadable: {error_detail(args, exc)}")
     if not isinstance(gold, dict):
         return unmeasured(args, evidence,
                           f"gold file {gold_path} holds {type(gold).__name__}, not an "
                           f"object")
 
-    answer = answer_path.read_text(encoding="utf-8") if answer_path.is_file() else ""
-    # Chess privacy must apply even if prediction validation or scorer import fails,
-    # before the adapter's REDACT_EVIDENCE flag can be inspected.
-    redact_gold = args.redact_gold or args.dataset == "chessbench_puzzles"
+    try:
+        answer = answer_path.read_text(encoding="utf-8") if answer_path.is_file() else ""
+    except (OSError, ValueError) as exc:
+        return unmeasured(args, evidence,
+                          f"answer file {answer_path} is unreadable: {error_detail(args, exc)}")
     evidence.update(answer_present=answer_path.is_file(),
                     answer_chars=len(answer),
                     answer=answer[:2000],
-                    gold={"redacted": True} if redact_gold else gold)
+                    gold={"redacted": True} if args.redact_gold else gold)
 
     structured = None
     if prediction_path.is_file():
@@ -173,7 +190,11 @@ def main(argv) -> int:
                 json.loads(prediction_path.read_text(encoding="utf-8")))
         except (OSError, ValueError) as exc:
             return unmeasured(args, evidence,
-                              f"prediction file {prediction_path} is malformed: {exc}")
+                              f"prediction file {prediction_path} is malformed: {error_detail(args, exc)}")
+        except Exception as exc:  # noqa: BLE001 - unavailable validation is unmeasured
+            record_traceback(args, evidence)
+            return unmeasured(args, evidence,
+                              f"could not validate prediction: {error_detail(args, exc)}")
         if prediction_error:
             return unmeasured(args, evidence,
                               f"prediction file {prediction_path} is invalid: "
@@ -194,19 +215,20 @@ def main(argv) -> int:
         # already validated to `data.<name>` above, and the rule this file must not break
         # is about *reaching an arbitrary module*, not about which builtin does it.
         adapter = __import__(module_name, fromlist=["score"])
-        if getattr(adapter, "REDACT_EVIDENCE", False) and not redact_gold:
+        if getattr(adapter, "REDACT_EVIDENCE", False) and not args.redact_gold:
             evidence["gold"] = {"subset": gold.get("subset"),
                                   "category": gold.get("subset"),
                                   "redacted": True}
+            args.redact_gold = True
         scorer = getattr(adapter, "score", None)
         if not callable(scorer):
             return unmeasured(args, evidence,
                               f"{module_name} has no callable `score(prediction, gold)`; "
                               f"the adapter was materialized without its scoring half")
     except Exception as exc:  # noqa: BLE001 - materializing the scorer is the platform's job
-        evidence["traceback"] = traceback.format_exc()[-2000:]
+        record_traceback(args, evidence)
         return unmeasured(args, evidence, f"could not import {module_name}: "
-                                          f"{type(exc).__name__}: {exc}")
+                                          f"{error_detail(args, exc)}")
 
     prediction = (str(structured["answer"]) if structured is not None
                   else unwrap(answer).strip())
@@ -219,21 +241,22 @@ def main(argv) -> int:
                   and callable(evidence_scorer)
                   else scorer(prediction, gold, **score_options))
     except Exception as exc:  # noqa: BLE001 - a scorer that refuses is not a zero
-        evidence["traceback"] = traceback.format_exc()[-2000:]
+        record_traceback(args, evidence)
         return unmeasured(args, evidence,
                           f"the official scorer refused to score this item: "
-                          f"{type(exc).__name__}: {exc}")
+                          f"{error_detail(args, exc)}")
 
     if not isinstance(result, dict) or "reward" not in result:
         return unmeasured(args, evidence,
-                          f"{module_name}.score() returned {result!r}; it must "
+                          f"{module_name}.score() returned "
+                          f"{'an invalid result' if args.redact_gold else repr(result)}; it must "
                           f"return a dict with a numeric `reward`")
     try:
         reward = float(result["reward"])
     except (TypeError, ValueError):
         return unmeasured(args, evidence,
                           f"{module_name}.score() returned a non-numeric reward "
-                          f"{result['reward']!r}")
+                          f"{'<redacted>' if args.redact_gold else repr(result['reward'])}")
 
     evidence.update(measured=True, reward=reward,
                     prediction=(structured if structured is not None else prediction[:2000]),

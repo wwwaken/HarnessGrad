@@ -57,6 +57,7 @@ check (`data/qa/verify/check.py`) reads the file and calls this module's `score(
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -98,6 +99,9 @@ SIMPLE_ANSWERS = f"{DATA_PREFIX}/possible_answer/BFCL_v3_simple.json"
 SUBSETS = {"simple": SIMPLE, "irrelevance": IRRELEVANCE}
 N_SIMPLE = 400
 N_IRRELEVANCE = 240
+SELECTED_INDEX = "selected-index.v1.json"
+DEFAULT_ENV = {"kind": "files"}
+_TASK_ID_RE = re.compile(r"(simple|irrelevance)/(0|[1-9][0-9]*)")
 
 #: BFCL's type vocabulary -> JSON Schema's. Only the entries that are actually wrong are here;
 #: everything else is passed through unchanged.
@@ -117,7 +121,7 @@ def _read_jsonl(path: Path) -> list[dict]:
 
 def _rows(subsets: set[str] | None = None) -> dict[str, list[dict]]:
     """Read only the requested BFCL categories and their needed answer rows."""
-    wanted = set(subsets or SUBSETS)
+    wanted = set(SUBSETS) if subsets is None else set(subsets)
     unknown = wanted - set(SUBSETS)
     if unknown:
         raise ValueError(f"bfcl-v3: unknown subset(s): {sorted(unknown)}")
@@ -223,10 +227,7 @@ def score(prediction: str, gold: dict) -> dict:
             "no_tool_needed": not want,
             "evidence_redacted": True,
         },
-        "why": (
-            f"named {got or 'nothing'} vs expected {want or 'nothing'}"
-            + ("; this request needs no tool" if not want else "")
-        ),
+        "why": "function-name set matches" if hit else "function-name set differs",
     }
 
 
@@ -320,79 +321,144 @@ def _downloads() -> list[dict]:
 # ---------------------------------------------------------------- records ---
 
 
+def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
+    """Validate selection and metadata before reading any question or answer bytes.
+
+    The trusted release index contains no questions or gold: schema_version=1,
+    repo_tag, tarball_sha256, and tasks keyed by canonical task ID. Each task has
+    question_id and a question byte span (offset, length, sha256); simple tasks
+    also have an answer span. Paths are fixed here, never supplied by the index.
+    No scan/build fallback is permitted. Index custody and release provisioning
+    are separate gates; selected row hashes do not verify the complete release.
+    """
+    if task_ids is None:
+        raise ValueError("bfcl-v3: selection must not be empty")
+    ids = list(dict.fromkeys(task_ids))
+    if not ids:
+        raise ValueError("bfcl-v3: selection must not be empty")
+    selections = {}
+    for task_id in ids:
+        match = _TASK_ID_RE.fullmatch(task_id) if isinstance(task_id, str) else None
+        if match is None:
+            raise ValueError(f"bfcl-v3: invalid task id {task_id!r}")
+        subset, raw_index = match.groups()
+        index = int(raw_index)
+        if index >= (N_SIMPLE if subset == "simple" else N_IRRELEVANCE):
+            raise ValueError(f"bfcl-v3: invalid task id {task_id!r}")
+        selections[task_id] = (subset, index)
+
+    index_path = DATASET_ROOT / SELECTED_INDEX
+    try:
+        manifest = json.loads(index_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ValueError("bfcl-v3: trusted selected index is unavailable or unreadable") from exc
+    if (not isinstance(manifest, dict) or type(manifest.get("schema_version")) is not int
+            or manifest["schema_version"] != 1
+            or manifest.get("repo_tag") != REPO_TAG
+            or manifest.get("tarball_sha256") != TARBALL_SHA256
+            or not isinstance(manifest.get("tasks"), dict)):
+        raise ValueError("bfcl-v3: selected index has invalid release binding")
+
+    entries = {}
+    for task_id, (subset, _) in selections.items():
+        entry = manifest["tasks"].get(task_id)
+        if (not isinstance(entry, dict) or not isinstance(entry.get("question_id"), str)
+                or not entry["question_id"]):
+            raise ValueError(f"bfcl-v3: selected index is missing identity for {task_id}")
+        for kind in ("question", "answer") if subset == "simple" else ("question",):
+            span = entry.get(kind)
+            if (not isinstance(span, dict)
+                    or type(span.get("offset")) is not int or span["offset"] < 0
+                    or type(span.get("length")) is not int or span["length"] <= 0
+                    or not isinstance(span.get("sha256"), str)
+                    or re.fullmatch(r"[0-9a-f]{64}", span["sha256"]) is None):
+                raise ValueError(f"bfcl-v3: invalid selected {kind} span for {task_id}")
+        entries[task_id] = entry
+
+    def read_span(path: Path, span: dict, question_id: str) -> dict:
+        with path.open("rb", buffering=0) as handle:
+            handle.seek(span["offset"])
+            payload = handle.read(span["length"])
+        if (len(payload) != span["length"]
+                or hashlib.sha256(payload).hexdigest() != span["sha256"]):
+            raise ValueError("bfcl-v3: selected row digest mismatch")
+        row = json.loads(payload)
+        if not isinstance(row, dict) or row.get("id") != question_id:
+            raise ValueError("bfcl-v3: selected row identity mismatch")
+        return row
+
+    records = []
+    for task_id, (subset, index) in selections.items():
+        entry = entries[task_id]
+        row = read_span(DATASET_ROOT / SUBSETS[subset], entry["question"], entry["question_id"])
+        truth = None
+        if subset == "simple":
+            answer = read_span(DATASET_ROOT / SIMPLE_ANSWERS, entry["answer"], entry["question_id"])
+            truth = answer.get("ground_truth")
+        records.append(_record_from_row(subset, index, row, truth))
+    return records
+
+
 def _records(task_ids: list[str] | set[str] | None = None) -> list[dict]:
     """Build records for exactly the selected task identities.
 
     A selected control must not read the other category: task IDs encode the category and file
     index, so the loader can select rows without first materializing the mixed pool.
     """
-    selected: dict[str, set[int]] | None = None
     if task_ids is not None:
-        selected = {"simple": set(), "irrelevance": set()}
-        for task_id in task_ids:
-            try:
-                subset, raw_index = str(task_id).split("/", 1)
-                index = int(raw_index)
-            except (ValueError, TypeError):
-                raise ValueError(f"bfcl-v3: invalid task id {task_id!r}") from None
-            if subset not in selected or index < 0:
-                raise ValueError(f"bfcl-v3: invalid task id {task_id!r}")
-            selected[subset].add(index)
-    subsets = set(SUBSETS) if selected is None else {k for k, values in selected.items() if values}
-    tables = _rows(subsets)
+        return _selected_records(task_ids)
+    tables = _rows()
     answers = tables.get("_answers", {})
     records = []
     for subset, key in (("simple", "simple"), ("irrelevance", "irrelevance")):
-        if subset not in subsets:
-            continue
         rows = tables[key]
         expected = N_SIMPLE if subset == "simple" else N_IRRELEVANCE
-        if selected is None and len(rows) != expected:
+        if len(rows) != expected:
             raise ValueError(f"bfcl-v3: {subset} has {len(rows)} rows, expected {expected}")
-        indexes = range(len(rows)) if selected is None else sorted(selected[subset])
-        for index in indexes:
-            if index >= len(rows):
-                raise ValueError(f"bfcl-v3: selected task {subset}/{index} is unavailable")
-            row = rows[index]
-            # `question` is a list of **turn groups**, and each group is a list of messages:
-            # measured, `question[0][0] == {"role": "user", "content": ...}`. A single-turn
-            # subset has one group; the flattening below is what makes a future multi-turn
-            # subset load without a second code path.
-            request = ""
-            for group in (row.get("question") or []):
-                turns = group if isinstance(group, list) else [group]
-                for turn in turns:
-                    if isinstance(turn, dict) and str(turn.get("role")) == "user":
-                        content = str(turn.get("content") or "").strip()
-                        if content:
-                            request = content
-                            break
-                if request:
-                    break
-            if not request:
-                raise ValueError(
-                    f"bfcl-v3: {row.get('id')} has no user message (shape: "
-                    f"{type(row.get('question')).__name__} of "
-                    f"{type((row.get('question') or [None])[0]).__name__})")
-            functions = list(row.get("function") or [])
-            names = [str(f.get("name")) for f in functions]
-            gold = (gold_names(answers.get(str(row["id"]))) if subset == "simple" else [])
-            if subset == "simple" and not gold:
-                raise ValueError(f"bfcl-v3: no gold for {row.get('id')}")
-            # The gold is bare-named while the schema may be namespaced (measured on
-            # `simple_363`); the check compares bare names, so both sides are normalised here.
-            gold = [bare_name(n) for n in gold]
-            records.append({
-                "task_id": f"{subset}/{index}",
-                "subset": subset,
-                "question_id": str(row["id"]),
-                "user_request": request,
-                "functions_json": _render_functions(functions),
-                "function_names": names,
-                "gold": {"answer": "\n".join(gold) if gold else "NONE",
-                         "functions": gold, "subset": subset},
-            })
+        for index, row in enumerate(rows):
+            records.append(_record_from_row(subset, index, row, answers.get(str(row["id"]))))
     return records
+
+
+def _record_from_row(subset: str, index: int, row: dict, ground_truth) -> dict:
+    # `question` is a list of **turn groups**, and each group is a list of messages:
+    # measured, `question[0][0] == {"role": "user", "content": ...}`. A single-turn
+    # subset has one group; the flattening below is what makes a future multi-turn
+    # subset load without a second code path.
+    request = ""
+    for group in (row.get("question") or []):
+        turns = group if isinstance(group, list) else [group]
+        for turn in turns:
+            if isinstance(turn, dict) and str(turn.get("role")) == "user":
+                content = str(turn.get("content") or "").strip()
+                if content:
+                    request = content
+                    break
+        if request:
+            break
+    if not request:
+        raise ValueError(
+            f"bfcl-v3: {row.get('id')} has no user message (shape: "
+            f"{type(row.get('question')).__name__} of "
+            f"{type((row.get('question') or [None])[0]).__name__})")
+    functions = list(row.get("function") or [])
+    names = [str(f.get("name")) for f in functions]
+    gold = gold_names(ground_truth) if subset == "simple" else []
+    if subset == "simple" and not gold:
+        raise ValueError(f"bfcl-v3: no gold for {row.get('id')}")
+    # The gold is bare-named while the schema may be namespaced (measured on
+    # `simple_363`); the check compares bare names, so both sides are normalised here.
+    gold = [bare_name(n) for n in gold]
+    return {
+        "task_id": f"{subset}/{index}",
+        "subset": subset,
+        "question_id": str(row["id"]),
+        "user_request": request,
+        "functions_json": _render_functions(functions),
+        "function_names": names,
+        "gold": {"answer": "\n".join(gold) if gold else "NONE",
+                 "functions": gold, "subset": subset},
+    }
 
 
 class _BFCLSpec(base.QASpec):
@@ -450,11 +516,18 @@ def _ensure(task_ids: list[str] | set[str] | None = None) -> list[dict]:
 
 def load_selected(task_ids: list[str] | set[str]) -> tuple[list[dict], dict[str, str]]:
     """Load only the explicitly selected BFCL task identities."""
-    records = _ensure(task_ids)
-    if not records:
-        raise ValueError("bfcl-v3: no selected records")
-    return ([{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in records],
+    records = _selected_records(task_ids)
+    return ([task_for(r) for r in records],
             {r["task_id"]: r["gold"]["answer"] for r in records})
+
+
+def control_task(task_id: str | None) -> dict:
+    return _selected_records(["simple/0" if task_id is None else task_id])[0]
+
+
+def task_for(record: dict) -> dict:
+    """Render an already loaded selected record without a second payload read."""
+    return {"task_id": record["task_id"], "goal": _goal(record), "inputs": []}
 
 
 def setup_for(record: dict) -> dict:
@@ -462,7 +535,9 @@ def setup_for(record: dict) -> dict:
 
 
 def verify_for(record: dict) -> dict:
-    return _SPEC.verifier(record)
+    verifier = _SPEC.verifier(record)
+    verifier["argv"].append("--redact-gold")
+    return verifier
 
 
 def load() -> tuple[list[dict], dict[str, str]]:
@@ -484,7 +559,7 @@ def __getattr__(name: str):
     if name == "SETUP":
         return {r["task_id"]: _SPEC.setup(r) for r in _ensure()}
     if name == "VERIFY":
-        return {r["task_id"]: _SPEC.verifier(r) for r in _ensure()}
+        return {r["task_id"]: verify_for(r) for r in _ensure()}
     if name == "ENV":
         return {r["task_id"]: {"kind": "files"} for r in _ensure()}
     if name == "SPLIT":
@@ -514,4 +589,5 @@ def provision_status() -> dict:
 
 
 __all__ = ["KIND", "DATASET_ROOT", "load", "downloads", "provision_status", "score",
-           "normalize_schema", "gold_names", "parse_prediction", "bare_name"]
+           "normalize_schema", "gold_names", "parse_prediction", "bare_name",
+           "load_selected", "control_task", "task_for", "setup_for", "verify_for", "DEFAULT_ENV"]
