@@ -56,26 +56,16 @@ def _root(path: Path) -> None:
         raise AdmissionError("projection/source path contains a symlink")
 
 
-def load_contract(raw: bytes, expected_sha256: str) -> dict:
-    """Accept only a caller-pinned declaration; no truth-valued attestation fields."""
-    if not _digest(expected_sha256) or hashlib.sha256(raw).hexdigest() != expected_sha256:
-        raise AdmissionError("artifact contract seal mismatch")
+def validate_scorer_spec(scorer: dict) -> None:
+    """Validate the shared sealed command and declared dependency graph."""
     try:
-        contract = json.loads(raw)
-        if (set(contract) != {"schema", "task_id", "source_sha256", "runtime_image_id",
-                              "scorer", "export", "quota"}
-                or contract["schema"] != "harnessgrad.artifact-scorer.v1"
-                or not isinstance(contract["task_id"], str)
-                or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", contract["task_id"])
-                or not _digest(contract["source_sha256"])
-                or not re.fullmatch(r"sha256:[a-f0-9]{64}", contract["runtime_image_id"])):
-            raise AdmissionError("invalid artifact contract identity")
-        scorer = contract["scorer"]
-        if set(scorer) != {"entrypoint", "argv", "files"} or not scorer["files"]:
+        if (not isinstance(scorer, dict) or set(scorer) != {"entrypoint", "argv", "files"}
+                or not isinstance(scorer["files"], list) or not scorer["files"]):
             raise AdmissionError("explicit scorer closure required")
         roles = set()
         for row in scorer["files"]:
-            if (set(row) != {"path", "sha256", "bytes", "role", "requires"}
+            if (not isinstance(row, dict)
+                    or set(row) != {"path", "sha256", "bytes", "role", "requires"}
                     or not _digest(row["sha256"])
                     or type(row["bytes"]) is not int or row["bytes"] < 0
                     or row["role"] not in ("scorer", "runtime", "dependency")
@@ -86,7 +76,8 @@ def load_contract(raw: bytes, expected_sha256: str) -> dict:
             roles.add(row["role"])
         _paths(scorer["files"])
         nodes = {row["path"]: row for row in scorer["files"]}
-        if (scorer["entrypoint"] not in nodes
+        if (not isinstance(scorer["entrypoint"], str)
+                or scorer["entrypoint"] not in nodes
                 or nodes[scorer["entrypoint"]]["role"] != "scorer"
                 or not {"scorer", "runtime"} <= roles
                 or any(set(row["requires"]) - nodes.keys() for row in nodes.values())):
@@ -108,6 +99,25 @@ def load_contract(raw: bytes, expected_sha256: str) -> dict:
                 or nodes[argv[0][len(prefix):]]["role"] != "runtime"
                 or argv[1] != prefix + scorer["entrypoint"]):
             raise AdmissionError("scorer command must use the sealed runtime and entrypoint")
+    except (ValueError, TypeError, KeyError, AttributeError) as exc:
+        raise AdmissionError("malformed scorer declaration") from exc
+
+
+def load_contract(raw: bytes, expected_sha256: str) -> dict:
+    """Accept only a caller-pinned declaration; no truth-valued attestation fields."""
+    if not _digest(expected_sha256) or hashlib.sha256(raw).hexdigest() != expected_sha256:
+        raise AdmissionError("artifact contract seal mismatch")
+    try:
+        contract = json.loads(raw)
+        if (set(contract) != {"schema", "task_id", "source_sha256", "runtime_image_id",
+                              "scorer", "export", "quota"}
+                or contract["schema"] != "harnessgrad.artifact-scorer.v1"
+                or not isinstance(contract["task_id"], str)
+                or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", contract["task_id"])
+                or not _digest(contract["source_sha256"])
+                or not re.fullmatch(r"sha256:[a-f0-9]{64}", contract["runtime_image_id"])):
+            raise AdmissionError("invalid artifact contract identity")
+        validate_scorer_spec(contract["scorer"])
         export = contract["export"]
         if (set(export) != {"files", "max_bytes", "max_inodes"}
                 or not export["files"] or not _positive(export["max_bytes"])
@@ -174,14 +184,14 @@ def _inventory(root: Path) -> set[str]:
     return found
 
 
-def verify_scorer_closure(root: Path, raw: bytes, expected_sha256: str) -> dict:
-    """Verify exact local bundle bytes and declared transitive dependencies offline.
+def verify_scorer_files(root: Path, scorer: dict) -> dict:
+    """Check exact declared local bytes; do not infer imports or execute anything.
 
-    Completeness against the official scorer and the pinned image's ABI still needs
-    an independent runtime receipt; hashes cannot prove missing dependencies absent.
+    The caller must authenticate the declaration and keep the tree platform-owned
+    and quiesced through use. This check does not establish runtime closure.
     """
-    contract = load_contract(raw, expected_sha256)
-    rows = contract["scorer"]["files"]
+    validate_scorer_spec(scorer)
+    rows = scorer["files"]
     names = {row["path"] for row in rows}
     expected = names | {str(p) for name in names for p in PurePosixPath(name).parents if str(p) != "."}
     try:
@@ -203,10 +213,21 @@ def verify_scorer_closure(root: Path, raw: bytes, expected_sha256: str) -> dict:
                     raise AdmissionError("scorer file seal mismatch")
     except OSError as exc:
         raise AdmissionError("local scorer closure unavailable") from exc
+    return dict(files=len(rows), bytes=sum(row["bytes"] for row in rows),
+                scope="local_declared_closure_integrity")
+
+
+def verify_scorer_closure(root: Path, raw: bytes, expected_sha256: str) -> dict:
+    """Verify a task-bound bundle using the same core as reusable scorer manifests.
+
+    Official-source completeness and the pinned image's ABI still need independent
+    runtime evidence; hashes cannot prove missing dependencies absent.
+    """
+    contract = load_contract(raw, expected_sha256)
+    counts = verify_scorer_files(root, contract["scorer"])
     return dict(schema="harnessgrad.scorer-closure-receipt.v1", task_id=contract["task_id"],
                 contract_sha256=expected_sha256, source_sha256=contract["source_sha256"],
-                runtime_image_id=contract["runtime_image_id"], files=len(rows),
-                bytes=sum(row["bytes"] for row in rows), scope="local_declared_closure_integrity")
+                runtime_image_id=contract["runtime_image_id"], **counts)
 
 
 def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: str,
