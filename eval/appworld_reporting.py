@@ -47,8 +47,9 @@ def receipts_from_verdicts(verdicts: list[dict], *, trials: int = 1) -> list[dic
     Scores/means and generic ``passed`` flags cannot substitute for TGC evidence.
     Older verdicts without evidence remain unmeasured for this report.
     Explicit one-based ``trial`` identities on verdicts or evidence are retained.
-    Complete anonymous histories retain their ordered positions. Otherwise anonymous
-    cells occupy unused report slots for TGC coverage only, marked unaligned for SGC.
+    Legacy complete anonymous histories retain their ordered positions unless marked
+    unaligned. The saved-verdict writer now marks all anonymous trials unaligned;
+    their report slots provide TGC coverage only, never original identities for SGC.
     No file access, execution or mutation of the supplied dictionaries occurs here.
     """
     if type(trials) is not int or trials < 1:

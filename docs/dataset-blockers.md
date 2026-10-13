@@ -32,6 +32,13 @@ detection review is closed by the synthetic controls documented in
 production route. No production `run_one` or H0 readiness follows from these
 tests, and no adversarial execution is delegated by this index.
 
+AppWorld's `trusted-trial-evidence-writer` code blocker is closed for saved
+verdicts by the synthetic writer/report tests documented in
+[the Codex 183 report](../appworld-trusted-trial-writer-codex183-report.md).
+Scorer facts and explicit original trial identities survive persistence;
+anonymous or compacted cells stay unaligned. Progress/events remain insufficient
+measurement inputs. The successful-task and shared production gates remain open.
+
 Repository evidence locators are validated against local source text. Absolute
 external paths are citations from the journal and are never opened by the
 checker. Historical scores and receipt outcomes remain reported claims; this

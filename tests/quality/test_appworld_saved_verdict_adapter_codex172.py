@@ -177,7 +177,7 @@ def test_writer_cli_retains_nonmeasurement_flags(tmp_path, flags, status, keep_h
 
 @pytest.mark.parametrize("success,generic_score", [(None, 1.0), (False, 1.0), (True, 0.0)])
 def test_writer_cli_never_uses_generic_score_or_passed_for_success(tmp_path, success, generic_score):
-    histories = {r["task_id"]: [verdict(r["task_id"], success) for _ in (1, 2)]
+    histories = {r["task_id"]: [verdict(r["task_id"], success, trial=t) for t in (1, 2)]
                  for r in manifest()}
     for vs in histories.values():
         for v in vs:

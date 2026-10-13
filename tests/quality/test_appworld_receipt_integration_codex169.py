@@ -118,7 +118,7 @@ def test_saved_receipts_measure_tgc_source_splits_and_same_trial_sgc(tmp_path):
         r["task_id"]: [verdict(r["task_id"],
                               r["scenario_id"] == "challenge" or r["variant"] == 3
                               or r["variant"] == trial,
-                              r["source_split"])
+                              r["source_split"], trial=trial)
                        for trial in (1, 2)]
         for r in selected
     }

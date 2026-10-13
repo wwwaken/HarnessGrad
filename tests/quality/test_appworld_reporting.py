@@ -235,8 +235,9 @@ def test_saved_evidence_supports_reusable_cli_without_dataset_access(tmp_path):
     manifest = make_manifest(rows())
     trial_verdicts = {row["task_id"]: [
         {"kind": "command", "passed": success, "score": float(success),
-         "evidence": receipt(row["task_id"], success)["evidence"]}
-        for success in (True, row["variant"] != 3)] for row in manifest}
+         "trial": trial, "evidence": receipt(row["task_id"], success)["evidence"]}
+        for trial, success in enumerate((True, row["variant"] != 3), start=1)]
+        for row in manifest}
     result = {"per_task": {tid: sum(t["score"] for t in ts) / 2 for tid, ts in trial_verdicts.items()},
               "verdicts": {tid: ts[-1] for tid, ts in trial_verdicts.items()},
               "trial_verdicts": trial_verdicts}

@@ -503,6 +503,26 @@ def _save_traces(run_dir: Path, round_no: int, traces: dict,
     (dest / ".sides.json").write_text(json.dumps(
         {**sides, "task_ids": task_ids, "round": round_no}, indent=1))
 
+def _saved_verdict(verdict: dict) -> dict:
+    """Copy scorer facts and supplied original trial identity, without inference.
+
+    Anonymous survivors may have been compacted upstream. Mark them unaligned
+    even when their count happens to equal a later report's requested coverage.
+    Preserve malformed evidence too, so a reader can refuse it instead of treating
+    it as absent. Generic score/passed fields never supply measurement evidence.
+    """
+    entry = {key: verdict.get(key) for key in ("kind", "passed", "detail")}
+    entry.update({key: verdict[key] for key in ("trial", "invalid", "unmeasured", "evidence")
+                  if key in verdict})
+    evidence = verdict.get("evidence")
+    has_identity = "trial" in verdict or (isinstance(evidence, dict) and "trial" in evidence)
+    entry["trial_aligned"] = has_identity and verdict.get("trial_aligned", True) is True
+    # Preserve the scorer's own tally alongside its metric evidence.
+    if isinstance(verdict.get("tests"), dict):
+        entry["tests"] = verdict["tests"]
+    return entry
+
+
 def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
                    task_ids) -> None:
     """Persist, per task, **why** the score is what it is.
@@ -523,42 +543,34 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
         return
     verdicts = res.get("verdicts") or {}
     scores = res.get("per_task") or {}
+    histories = res.get("trial_verdicts") or {}
+    invalid = res.get("invalid") or {}
+    unmeasured = res.get("unmeasured") or {}
     dest = run_dir / "verdicts" / f"round-{round_no}"
     dest.mkdir(parents=True, exist_ok=True)
-    # Keep selected invalid tasks too, with score=None; absence must not erase why
-    # a task was unmeasured when these files are consumed by a later report.
-    for tid in sorted(set(scores) | (set(task_ids) & set(res.get("invalid") or {}))):
-        v = dict(verdicts.get(tid) or {})
-        trials_v = (res.get("trial_verdicts") or {}).get(tid)
+    # Scorer evidence and nonmeasurement receipts do not require generic scores.
+    # Only selected records are persisted; a wholly absent task remains missing.
+    recorded = set(scores) | set(verdicts) | set(histories) | set(invalid) | set(unmeasured)
+    for tid in sorted(set(task_ids) & recorded):
+        trials_v = histories.get(tid)
+        v = dict(verdicts.get(tid) or (trials_v[-1] if trials_v else {}) or {})
         entry = {
             "task_id": tid,
             "round": round_no,
             "score": scores.get(tid),
-            "kind": v.get("kind"),
-            "passed": v.get("passed"),
-            "detail": v.get("detail"),
-            # With a history, the last verdict's flags belong only to its trial.
-            # Otherwise preserve the single verdict's reporting metadata here.
-            **{key: v[key] for key in ("trial", "trial_aligned", "invalid", "unmeasured")
-               if key in v and not trials_v},
+            **_saved_verdict(v),
         }
-        # **The check's own tally, which was being thrown away.** `_test_report_failures`
-        # has parsed `{"passed": 4, "failed": 1}` out of the CTRF report since 2026-10-04
-        # (`eval/runner.py`), the runner set `verdict["tests"]`, and this function -- the
-        # only thing that writes a verdict to disk -- copied six named fields and dropped
-        # it. So the number a reader needs to tell "the artifact got worse" from "nothing
-        # happened" lived in a prose `detail` string and nowhere else. Measured: a harness
-        # edit took `large-scale-text-editing` from 4 of 5 tests to 3 of 5; both scored
-        # 0.0, and the curve said the edit changed nothing.
-        if isinstance(v.get("tests"), dict):
-            entry["tests"] = v["tests"]
-        if isinstance(v.get("evidence"), dict):
-            entry["evidence"] = v["evidence"]
+        # With a history, the last verdict's identity/flags belong only to its cell.
+        if trials_v is not None:
+            for key in ("trial", "trial_aligned", "invalid", "unmeasured"):
+                entry.pop(key, None)
         harness_out = (res.get("harness_output") or {}).get(tid)
         if harness_out:
             entry["harness"] = harness_out
-        if tid in (res.get("invalid") or {}):
-            entry["invalid"] = res["invalid"][tid]
+        if tid in invalid:
+            entry["invalid"] = invalid[tid]
+        if tid in unmeasured:
+            entry["unmeasured"] = unmeasured[tid]
         # **Every trial's reason, not only the last one's.** `entry` above describes the
         # last trial (`res["verdicts"][tid]`), while `entry["score"]` is the mean over
         # all of them -- so a task that passed 2 of 3 used to be written as
@@ -566,25 +578,12 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
         # Measured on `B2-noop` (2026-10-04): `cobol-modernization` was 0.667, the saved
         # verdict said `passed`, and the question the number raises -- which trial
         # failed, and why -- had no answer anywhere on disk.
-        if trials_v:
-            entry["trial_scores"] = [float((t or {}).get(
-                "score", 1.0 if (t or {}).get("passed") else 0.0)) for t in trials_v]
-            entry["trials"] = [{"passed": (t or {}).get("passed"),
-                                "kind": (t or {}).get("kind"),
-                                "detail": (t or {}).get("detail"),
-                                # Preserve supplied trial identities; never invent
-                                # an original index for compacted survivors.
-                                **{key: t[key] for key in
-                                   ("trial", "trial_aligned", "invalid", "unmeasured")
-                                   if key in (t or {})},
-                                # The per-trial tally too, for the same reason the per-trial
-                                # score is here: "2 of 3 trials passed" and "the tests went
-                                # 4/5, 5/5, 3/5" are different claims about the artifact.
-                                **({"tests": t["tests"]} if isinstance((t or {}).get("tests"), dict)
-                                   else {}),
-                                **({"evidence": t["evidence"]}
-                                   if isinstance((t or {}).get("evidence"), dict)
-                                   else {})} for t in trials_v]
+        if trials_v is not None:
+            # Retain supplied diagnostic scores; absent/None scores stay unknown.
+            # Neither generic passed flags nor metric success invent a score here.
+            entry["trial_scores"] = [float(t["score"]) if (t or {}).get("score") is not None
+                                     else None for t in trials_v]
+            entry["trials"] = [_saved_verdict(t or {}) for t in trials_v]
         task_file(dest, f"{tid}.json").write_text(
             json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
 

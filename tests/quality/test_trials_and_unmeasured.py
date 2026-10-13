@@ -144,9 +144,9 @@ def test_a_named_trial_that_failed_is_readable_on_disk(tmp_path):
            "trial_traces": {"t1": ["FIRST", "SECOND (failed)", "THIRD"]},
            "verdicts": {"t1": {"kind": "command", "passed": True, "detail": "third passed"}},
            "trial_verdicts": {"t1": [
-               {"kind": "command", "passed": True, "detail": "first passed"},
-               {"kind": "command", "passed": False, "detail": "second FAILED here"},
-               {"kind": "command", "passed": True, "detail": "third passed"}]}}
+               {"kind": "command", "passed": True, "score": 1.0, "detail": "first passed"},
+               {"kind": "command", "passed": False, "score": 0.0, "detail": "second FAILED here"},
+               {"kind": "command", "passed": True, "score": 1.0, "detail": "third passed"}]}}
     _save_traces(tmp_path, 0, res["traces"], ["t1"], trial_traces=res["trial_traces"])
     _save_verdicts(tmp_path, 0, res, ["t1"])
 
