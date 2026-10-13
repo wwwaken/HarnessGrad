@@ -90,6 +90,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Platform change: structured QA evidence transport and redacted verifier gold support
 - Validation: combined MuSiQue/2Wiki/Chess suites passed `209 tests`; platform train-side controls: MuSiQue `musique/dev/0` oracle=1.0/noop=0.0; 2Wiki `twowikimultihopqa/dev/3` oracle=1.0/noop=0.0
 - Control sweep: Codex 113 measured 18/18 selected controls across the frozen 50-ID manifests: 3 oracle=1.0 and 3 noop=0.0 for each adapter, jobs=1, no model/H0, cleanup complete. Evidence: `/tmp/codex/113/worktree/runs/no-model-controls-20261013/report.md`
+- Pilot result: run `musique-pilot-h0-20261013` completed 50 selected train tasks × 3 trials, jobs=1, 150/150 measured trials, 0 invalid, score `0.12751114`, one task passed, wall-clock `1884.4s`; receipt `/mnt/20t/xubuqiang/Study/musique-pilot-20261013/runs/musique-pilot-h0-20261013/curve.jsonl`
 - Remaining gates: released-data controls and model/H0 validation remain separate; platform joint reward is not an official single leaderboard column
 - Commit: `4d41a4c fix: restore MuSiQue and 2Wiki evaluation fidelity`
 ## 2WikiMultihopQA — 2026-10-13 evaluation fidelity
