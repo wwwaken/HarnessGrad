@@ -28,6 +28,7 @@ import hashlib
 import io
 import json
 import os
+import shlex
 import shutil
 import zipfile
 from pathlib import Path
@@ -197,14 +198,46 @@ OFFICIAL_EVAL = [row["task_id"] for row in _ROWS.values() if row["split"] in {"t
 
 
 def _goal(row: dict) -> str:
-    return (
-        f"{row['instruction']}\n\n"
-        f"Use the AppWorld action service: first run `./aw init --task {row['task_id']}`. "
-        f"Perform one API action per `./aw action --task {row['task_id']} --code '<python>'` call. "
-        "The service owns state and writes the authoritative API-call log under "
-            f"/recordings/appworld/experiments/outputs/harness/tasks/{row['task_id']}/logs/api_calls.jsonl; "
-        "the verifier replays that log."
-    )
+    return row["instruction"]
+
+
+def _runtime_prompt(task_id: str) -> str:
+    task_arg = shlex.quote(task_id)
+    action = f"./aw action --task {task_arg} --code"
+    discovery = action + " 'print(apis.api_docs.show_app_descriptions())'"
+    return f"""AppWorld provides a shell CLI in the working directory: ./aw.
+Use your harness's shell/command tool to run these commands; Python snippets
+belong in --code, not in the local shell or a local Python process.
+
+Initialize once: `./aw init --task {task_arg}`
+This returns the task, supervisor identity and current datetime. Reinitializing
+resets the world, so keep using action after initialization.
+
+Execute Python in the service: `{action} '<python>'`
+The service interpreter already defines `apis`. Variables and API state persist
+between action calls. Use one API call per action and print its response so you
+can inspect the result. Local files and imports do not provide AppWorld APIs.
+
+Start discovery with this executable API action: `{discovery}`
+Then discover the relevant app's methods with
+`apis.api_docs.show_api_descriptions(app_name="<discovered app>")` and inspect
+parameters with `apis.api_docs.show_api_doc(app_name="<discovered app>",
+api_name="<discovered API>")`, each inside a printed --code action.
+Call the documented methods as `apis.<app>.<api>(...)`. Discover supervisor
+APIs for account credentials when needed; use returned values and documented
+parameters rather than guessing method names, passwords or IDs.
+
+Perform the requested changes through these API actions, inspect their results,
+then give your final answer through your harness. A local script, plain text
+answer or print-only snippet does not change the world. The service records API
+calls automatically; its recording is not an actor file to create or edit.
+CLI syntax help: `./aw --help` and `./aw action --help`.
+"""
+
+
+def _setup(task_id: str) -> dict:
+    return {"files": [{"path": "aw", "from": str(ASSETS / "cli" / "aw")}],
+            "runtime_prompt": _runtime_prompt(task_id)}
 
 
 def load():
@@ -214,7 +247,7 @@ def load():
 
 ASSETS = Path(__file__).parent / "appworld"
 SETUP = {
-    task_id: {"files": [{"path": "aw", "from": str(ASSETS / "cli" / "aw")}]}
+    task_id: _setup(task_id)
     for task_id in _ROWS
 }
 VERIFY = {

@@ -602,6 +602,11 @@ def _check_no_secrets(task: dict, name: str) -> None:
 def _check_setup(spec, tid: str, name: str) -> None:
     if not isinstance(spec, dict):
         raise ValueError(f"dataset {name!r}: SETUP[{tid!r}] must be a dict")
+    if "runtime_prompt" in spec and (
+            not isinstance(spec["runtime_prompt"], str)
+            or not spec["runtime_prompt"].strip()):
+        raise ValueError(
+            f"dataset {name!r}: SETUP[{tid!r}]['runtime_prompt'] must be a nonempty string")
     files = spec.get("files") or []
     if not isinstance(files, list):
         raise ValueError(f"dataset {name!r}: SETUP[{tid!r}]['files'] must be a list")

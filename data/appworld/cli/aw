@@ -23,13 +23,23 @@ def post(path: str, payload: dict) -> object:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Run init once, then action. Python runs in the persistent service "
+               "interpreter with apis already defined. Discover APIs with "
+               "print(apis.api_docs.show_app_descriptions()), then "
+               "show_api_descriptions(app_name=...) and "
+               "show_api_doc(app_name=..., api_name=...) on apis.api_docs.")
     commands = parser.add_subparsers(dest="command", required=True)
-    init = commands.add_parser("init")
+    init = commands.add_parser("init", help="Initialize the world and show task metadata (resets state).")
     init.add_argument("--task", required=True)
-    action = commands.add_parser("action")
+    action = commands.add_parser(
+        "action", help="Execute one Python API action in the service.",
+        description="Execute Python in the persistent service interpreter; apis is "
+                    "already defined. Print API responses to inspect results.")
     action.add_argument("--task", required=True)
-    action.add_argument("--code", required=True)
+    action.add_argument("--code", required=True,
+                        help="Python, e.g. 'print(apis.api_docs.show_app_descriptions())'")
     args = parser.parse_args()
     if args.command == "init":
         output = post("/initialize", {"task_id": args.task, "experiment_name": "harness"})

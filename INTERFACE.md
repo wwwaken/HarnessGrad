@@ -362,7 +362,21 @@ that no longer exists.
 
 #### Setup kinds
 
-`setup` is a list of `files`:
+`SETUP[task_id]` may declare `files` and an optional public `runtime_prompt`:
+
+```python
+{"files": [...], "runtime_prompt": "Use ./client init, then ./client action ..."}
+```
+
+`runtime_prompt` must be a nonempty string. The runner appends it to the actor's
+`goal` under `Runtime tool instructions:` on both mount and container-state paths.
+It describes the adapter's tools, discovery and invocation syntax for any harness
+that reads `goal`; it does not select a method, alter the harness's reply format,
+or contain reference answers or verifier internals. The source task is unchanged,
+and no other setup metadata is copied into `task.json`. Without this field, the
+actor receives the original task.
+
+`files` entries describe the initial filesystem:
 
 ```python
 {"path": "relative/path", "content": "literal text"}     # inline

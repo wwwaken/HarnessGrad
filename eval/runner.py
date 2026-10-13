@@ -24,6 +24,7 @@ from eval.integrity import PLATFORM_ROOT, diff, snapshot
 # `verifier` decides what a task's score is, and `container_state` is the long path for
 # a task whose state is the container's own filesystem.
 from eval.container_state import _run_one_container_state
+from eval.task_contract import runtime_task
 from eval.tracing import _last_identity, _last_usage, _materialize, _write_progress
 from eval.verifier import _verify, test_rate_of
 
@@ -164,7 +165,7 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
                 _materialize(workdir, setup.get("files"), PLATFORM_ROOT)
 
             task_file = workdir / "task.json"
-            task_file.write_text(json.dumps(task))
+            task_file.write_text(json.dumps(runtime_task(task, setup)))
 
         # Services come up before the harness and are health-checked before it starts
         # (INTERFACE.md §2.5.7, steps 1-3). A harness that starts against a service

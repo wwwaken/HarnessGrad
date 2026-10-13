@@ -28,6 +28,7 @@ import tools.web_gateway as web_gateway_mod
 from eval.services import label
 from ckpt.git_state import STATE_DIRNAME
 from eval.integrity import PLATFORM_ROOT
+from eval.task_contract import runtime_task
 from eval.tracing import _last_identity, _materialize
 from eval.verifier import _verify_container_state
 
@@ -120,7 +121,7 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                 manifest = json.loads((repo / "harness.json").read_text())
                 entry = manifest["entrypoint"]
                 task_file = staging / "task.json"
-                task_file.write_text(json.dumps(task))
+                task_file.write_text(json.dumps(runtime_task(task, setup)))
                 container_mod.cp_in(name, task_file, f"{task_mount}/task.json")
                 # No `mkdir` for the scratch or the home directory: they are `--tmpfs`
                 # mounts, and docker creates their mount points at **create** time. The

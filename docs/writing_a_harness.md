@@ -91,6 +91,11 @@ The platform calls:
 **`goal` is the contract; `inputs` is a convenience.** A harness that handles
 `goal` alone is valid. A harness may ignore `inputs` entirely.
 
+An adapter may declare public tool instructions in `SETUP.runtime_prompt`. The
+runner appends them to the actor's `goal`, so the same discovery and invocation
+contract reaches any harness without an adapter-specific tool parser. The harness
+still controls its own model reply format and tool dispatch.
+
 ### 3.2 What you produce
 
 Write the answer to `<workdir>/answer.txt`. The platform compares its stripped
