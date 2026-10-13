@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
+import re
 
 import chess
 
@@ -40,6 +41,7 @@ CSV_SHA256 = "099d54e681a07b9e82b4462aaf5436a6e833edc6f56b92ea7c2d2413f7efbe48"
 STRICT_METRIC = "ChessBench strict legal puzzle replay v1"
 UPSTREAM_METRIC = "ChessBench upstream puzzle replay (unchecked push)"
 STEPWISE_CONTRACT = "chessbench_puzzles.stepwise.v1"
+_TASK_ID_RE = re.compile(r"chessbench_puzzles/test/(0|[1-9][0-9]*)")
 
 
 def _read_rows() -> list[dict]:
@@ -59,18 +61,57 @@ def _presented_fen(row: dict) -> str:
     return board.fen()
 
 
+def _row(row: dict) -> dict:
+    return {
+        "puzzle_id": row["PuzzleId"],
+        "rating": int(row["Rating"]),
+        "fen": row["FEN"],
+        "presented_fen": _presented_fen(row),
+        "moves": row["Moves"].split(),
+    }
+
+
 def _rows() -> dict[str, list[dict]]:
-    out = []
-    for row in _read_rows():
-        moves = row["Moves"].split()
-        out.append({
-            "puzzle_id": row["PuzzleId"],
-            "rating": int(row["Rating"]),
-            "fen": row["FEN"],
-            "presented_fen": _presented_fen(row),
-            "moves": moves,
-        })
-    return {"test": out}
+    return {"test": [_row(row) for row in _read_rows()]}
+
+
+def _selected_records(task_ids: list[str]) -> list[dict]:
+    """Read through the last selected CSV index; decode only selected puzzles.
+
+    Validate the entire selection before opening the CSV. Keep this separate from
+    QASpec's full-pool cache so a targeted control cannot change later pool loading.
+    """
+    ids = list(dict.fromkeys(task_ids))
+    if not ids:
+        raise ValueError("ChessBench selection must not be empty")
+    indices = {}
+    for task_id in ids:
+        match = _TASK_ID_RE.fullmatch(task_id)
+        if match is None or int(match[1]) >= 10000:
+            raise ValueError(f"unknown ChessBench task id {task_id!r}")
+        indices[int(match[1])] = task_id
+    remaining = set(indices)
+    records = {}
+    with CSV_PATH.open(newline="", encoding="utf-8") as handle:
+        for index, raw in enumerate(csv.DictReader(handle)):
+            if index not in remaining:
+                continue
+            row = _row(raw)
+            task_id = indices[index]
+            records[task_id] = {
+                "task_id": task_id,
+                "index": index,
+                "split": "test",
+                "row": row,
+                "question": _question(row),
+                "gold": _gold(row),
+            }
+            remaining.remove(index)
+            if not remaining:
+                break
+    if remaining:
+        raise ValueError(f"ChessBench CSV is missing selected indices {sorted(remaining)}")
+    return [records[task_id] for task_id in ids]
 
 
 def _question(row: dict) -> str:
@@ -372,5 +413,31 @@ def load() -> tuple[list[dict], dict[str, str]]:
     return _SPEC.load()
 
 
-__all__ = ["KIND", "DATASET_ROOT", "REVISION", "load", "downloads", "score", "SPLIT", "ENV",
+def load_selected(task_ids: list[str]) -> tuple[list[dict], dict[str, str]]:
+    """Load exactly the requested tasks without constructing pool metadata."""
+    records = _selected_records(task_ids)
+    return ([{"task_id": record["task_id"],
+              "goal": _goal(record["question"], record["gold"]), "inputs": []}
+             for record in records],
+            {record["task_id"]: record["gold"]["answer"] for record in records})
+
+
+def control_task(task_id: str | None) -> dict:
+    """Get one trusted control record; the default eval id needs no pool read."""
+    if task_id is None:
+        task_id = next(f"chessbench_puzzles/test/{index}" for index in range(10000)
+                       if base.is_eval(f"chessbench_puzzles/test/{index}"))
+    return _selected_records([task_id])[0]
+
+
+def setup_for(record: dict) -> dict:
+    return _SPEC.setup(record)
+
+
+def verify_for(record: dict) -> dict:
+    return _SPEC.verifier(record)
+
+
+__all__ = ["KIND", "DATASET_ROOT", "REVISION", "load", "load_selected", "control_task",
+           "setup_for", "verify_for", "downloads", "score", "SPLIT", "ENV",
            "score_strict", "score_upstream", "StepwisePuzzle", "STEPWISE_CONTRACT"]

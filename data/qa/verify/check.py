@@ -157,10 +157,13 @@ def main(argv) -> int:
                           f"object")
 
     answer = answer_path.read_text(encoding="utf-8") if answer_path.is_file() else ""
+    # Chess privacy must apply even if prediction validation or scorer import fails,
+    # before the adapter's REDACT_EVIDENCE flag can be inspected.
+    redact_gold = args.redact_gold or args.dataset == "chessbench_puzzles"
     evidence.update(answer_present=answer_path.is_file(),
                     answer_chars=len(answer),
                     answer=answer[:2000],
-                    gold={"redacted": True} if args.redact_gold else gold)
+                    gold={"redacted": True} if redact_gold else gold)
 
     structured = None
     if prediction_path.is_file():
@@ -191,7 +194,7 @@ def main(argv) -> int:
         # already validated to `data.<name>` above, and the rule this file must not break
         # is about *reaching an arbitrary module*, not about which builtin does it.
         adapter = __import__(module_name, fromlist=["score"])
-        if getattr(adapter, "REDACT_EVIDENCE", False) and not args.redact_gold:
+        if getattr(adapter, "REDACT_EVIDENCE", False) and not redact_gold:
             evidence["gold"] = {"subset": gold.get("subset"),
                                   "category": gold.get("subset"),
                                   "redacted": True}

@@ -47,6 +47,9 @@ def _adapter(name: str):
 
 
 def _record(module, task_id: str | None) -> dict:
+    selected_control = getattr(module, "control_task", None)
+    if callable(selected_control):
+        return selected_control(task_id)
     selected_id = task_id
     if selected_id is None:
         # BFCL identities are stable category/index pairs; choose a single simple item without
@@ -203,8 +206,18 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     from eval.runner import run_one
 
     tid = record["task_id"]
-    task = next(t for t in module.load()[0] if t["task_id"] == tid)
-    setup = {"files": list(module.SETUP[tid]["files"])}
+    if callable(getattr(module, "control_task", None)):
+        tasks, _ = module.load_selected([tid])
+        task = next(t for t in tasks if t["task_id"] == tid)
+        setup_spec = module.setup_for(record)
+        verifier = module.verify_for(record)
+        env = module.DEFAULT_ENV
+    else:
+        task = next(t for t in module.load()[0] if t["task_id"] == tid)
+        setup_spec = module.SETUP[tid]
+        verifier = module.VERIFY[tid]
+        env = module.ENV[tid]
+    setup = {"files": list(setup_spec["files"])}
     if oracle:
         structured = _oracle_prediction(module, record)
         if structured is not None:
@@ -222,8 +235,8 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
         repo=harness,
         task=task,
         setup=setup,
-        verifier=module.VERIFY[tid],
-        env=module.ENV[tid],
+        verifier=verifier,
+        env=env,
         sandbox=sandbox,
         run_id=f"{module.__name__.split('.')[-1]}-control",
         run_seed="0",
