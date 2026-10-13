@@ -146,7 +146,7 @@
           "id": "production-route-admission",
           "family": "trusted-verifier-runtime",
           "status": "runtime",
-          "observed": "The code-solvable selected ENV/SETUP/VERIFY metadata privacy/detection review is closed by synthetic regressions. Production admission remains blocked: no fresh selected-only, non-scoring run_one receipt exists, and historical selected controls are not fresh route evidence.",
+          "observed": "Pinned AgentDojo source/runtime/prepared paths are present by external metadata-only inspection, but no trusted selected-group manifest/custody or fresh production verifier/cleanup receipt binds them to a production run_one route. Historical selected controls are not fresh route evidence.",
           "evidence": [
             {
               "kind": "repository",
@@ -157,6 +157,11 @@
               "kind": "repository",
               "path": "agentdojo-metadata-privacy-codex180-report.md",
               "locator": "Metadata review closure and production boundary"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/datasets/agentdojo",
+              "locator": "metadata-only path inventory: _src, runtime, agent_runtime, prepared"
             }
           ],
           "next_action": "Keep production run_one and H0 blocked. Independently review the selected-only, non-scoring production admission contract and its missing runtime evidence; metadata privacy tests do not authorize execution."
