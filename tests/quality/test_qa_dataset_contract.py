@@ -191,7 +191,11 @@ def test_the_check_re_materializes_the_gold(qa, tmp_path):
                                                     "value": "a deliberate wrong answer"}))
     reward, evidence = _run_check(qa, record, tmp_path)
     assert reward == 0.0, evidence
-    assert evidence["gold"] == record["gold"]
+    if getattr(qa, "REDACT_EVIDENCE", False):
+        assert evidence["gold"]["redacted"] is True
+        assert "answer" not in evidence["gold"] and "moves" not in evidence["gold"]
+    else:
+        assert evidence["gold"] == record["gold"]
 
 
 def test_the_check_reports_unmeasured_when_its_gold_is_absent(qa, tmp_path):

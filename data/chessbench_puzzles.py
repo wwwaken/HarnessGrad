@@ -3,18 +3,18 @@
 Source: `google-deepmind/searchless_chess`, ChessBench paper (NeurIPS 2024,
 arXiv:2402.04494), `puzzles.csv`.
 
-The agent sees the position *after* the first move in `Moves`, because the first move is
-the opponent's setup move. It submits the remaining solver moves as space-separated UCI
-moves. The checker replays the fixed opponent moves and applies the official scorer's
-rule: an exact expected move passes, and a different move also passes when it immediately
-checkmates (Lichess accepts every mate-in-one).
+Official puzzle accuracy uses interactive stepwise play: after each solver move the
+trusted evaluator applies the reference opponent response and presents the updated board.
+`StepwisePuzzle` implements that public board / single-UCI-answer contract without exposing
+the reference line. It belongs in a trusted controller, never in the actor's filesystem.
 
-This is an offline scripted-policy evaluation of the puzzle slice, not a replication of
-ChessBench's neural-engine evaluation or its Elo results. The submitted sequence supplies
-moves on successive calls to the official engine interface; fixed opponent continuations
-stay private. As upstream does, the checker ignores unused trailing moves and terminates
-immediately on a differing mate-in-one. An interactive engine can condition each move on
-a newly observed board; this static interface cannot, and results must name this variant.
+The existing QA task still accepts a space-separated sequence. Its reward is explicitly
+the offline strict replay variant, not interactive official accuracy or Elo. Every applied
+move is checked for legality, including setup and reference opponent moves. Any legal
+immediate mate succeeds and ends play; unused trailing answers are ignored. The pinned
+upstream replay, including its unchecked Board.push behavior, is retained separately as a
+diagnostic in `official.upstream`; it does not determine reward. Importing this module
+does not read the puzzle CSV.
 """
 from __future__ import annotations
 
@@ -22,7 +22,6 @@ import csv
 from pathlib import Path
 
 import chess
-import chess.pgn
 
 from data.qa import base
 
@@ -31,11 +30,16 @@ KIND = "dataset"
 #: The oracle control submits the benchmark's own released reference; see
 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
 ORACLE_SOURCE = "released"
+# The shared verifier otherwise includes the complete private reference in evidence.
+REDACT_EVIDENCE = True
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/chessbench_puzzles")
 CSV_PATH = DATASET_ROOT / "_src" / "puzzles.csv"
 CSV_MEMBER = "puzzles.csv"
 REVISION = "90ae0e6b121673fc3079aaeffa047580bb600c0a"
 CSV_SHA256 = "099d54e681a07b9e82b4462aaf5436a6e833edc6f56b92ea7c2d2413f7efbe48"
+STRICT_METRIC = "ChessBench strict legal puzzle replay v1"
+UPSTREAM_METRIC = "ChessBench upstream puzzle replay (unchecked push)"
+STEPWISE_CONTRACT = "chessbench_puzzles.stepwise.v1"
 
 
 def _read_rows() -> list[dict]:
@@ -71,11 +75,13 @@ def _rows() -> dict[str, list[dict]]:
 
 def _question(row: dict) -> str:
     return (
-        "Solve this ChessBench tactical puzzle. The opponent's setup move has already "
+        "Solve this ChessBench tactical puzzle using the offline strict sequence variant "
+        "(not interactive official puzzle accuracy). The opponent's setup move has already "
         "been applied.\n\n"
         f"Position (FEN): {row['presented_fen']}\n\n"
         "Submit the solver's moves as space-separated UCI moves, for example "
-        "`e2e4 g8f6`. Do not include the opponent's setup move."
+        "`e2e4 g1f3`. Do not include opponent moves. Every applied move must be legal; "
+        "a legal immediate checkmate ends the puzzle. Unused trailing tokens are ignored."
     )
 
 
@@ -93,8 +99,9 @@ def _goal(question: str, gold: dict) -> str:
         f"{question}\n\n"
         "Write the UCI move sequence alone to `answer.txt`; the qa submit command is "
         "`python3 qa/bin/qa submit \"<moves>\"`. "
-        "The first move in the released solution is the opponent's move and must not be "
-        "submitted."
+        "Only solver moves belong in the answer. This batch interface supplies no "
+        "intermediate observations; stepwise evaluation requires the trusted "
+        "`chessbench_puzzles.stepwise.v1` controller contract."
     )
 
 
@@ -134,28 +141,143 @@ def _official_replay(board: chess.Board, moves: list[str], predicted: list[str])
     return True
 
 
-def score(prediction: str, gold: dict) -> dict:
-    tokens = prediction.strip().split()
-    moves = list(gold["moves"])
-    board = chess.Board(gold["fen"])
-    if not moves:
-        return {"reward": 0.0, "correct": False, "official": {"metric": "invalid empty Moves"},
-                "why": "released puzzle has no Moves"}
+def score_upstream(prediction: str, gold: dict) -> dict:
+    """Diagnostic only: preserve the pinned upstream loop's unchecked-push semantics."""
     try:
-        hit = _official_replay(board, moves, tokens)
+        moves = list(gold["moves"])
+        hit = bool(moves) and _official_replay(
+            chess.Board(gold["fen"]), moves, prediction.strip().split())
     except (ValueError, AssertionError):
         hit = False
     return {
+        "metric": UPSTREAM_METRIC,
         "reward": 1.0 if hit else 0.0,
         "correct": hit,
+        "protocol": "offline sequence; not interactive official accuracy",
+    }
+
+
+class StepwisePuzzle:
+    """Trusted session; only `public_task()` results may cross into the actor.
+
+    Construct with verifier-owned gold. Present `public_task()`; receive exactly
+    {"uci": "e2e4"}; call `submit()` and present its result before asking again.
+    Responses reveal the resulting board, turn number and verdict, never the expected
+    solver move, future opponent response, line length, original FEN or reference line.
+    A runner must isolate this object and gold from the actor, and retain submissions
+    itself; an actor-authored transcript is not evidence of interactive evaluation.
+    """
+
+    def __init__(self, gold: dict):
+        self._board = None
+        self._moves = list(gold["moves"])
+        self._index = 1
+        self._solver_turn = 0
+        self._status = "awaiting_move"
+        self._verdict = "awaiting_move"
+        try:
+            self._board = chess.Board(gold["fen"])
+        except ValueError:
+            self._finish("invalid_reference")
+            return
+        if not self._board.is_valid() or len(self._moves) < 2:
+            self._finish("invalid_reference")
+            return
+        move = self._legal_move(self._moves[0], reference=True)
+        if move is not None:
+            self._board.push(move)
+            if self._board.is_game_over():
+                self._finish("invalid_reference")
+
+    def _finish(self, verdict: str) -> None:
+        self._verdict = verdict
+        self._status = "solved" if verdict in {
+            "reference_complete", "checkmate", "alternate_mate_in_one"} else "failed"
+
+    def _legal_move(self, uci: str, *, reference: bool = False):
+        try:
+            move = chess.Move.from_uci(uci)
+        except (ValueError, TypeError):
+            self._finish("invalid_reference" if reference else "invalid_move")
+            return None
+        # Board.push() is deliberately unchecked in python-chess, even for null moves.
+        if move not in self._board.legal_moves:
+            self._finish("invalid_reference" if reference else "illegal_move")
+            return None
+        return move
+
+    def public_task(self) -> dict:
+        return {
+            "contract": STEPWISE_CONTRACT,
+            "fen": self._board.fen() if self._board is not None else None,
+            "solver_turn": self._solver_turn,
+            "status": self._status,
+            "verdict": self._verdict,
+        }
+
+    def submit(self, answer: dict) -> dict:
+        if self._status != "awaiting_move":
+            raise ValueError("puzzle session is already terminal")
+        if (not isinstance(answer, dict) or set(answer) != {"uci"}
+                or not isinstance(answer["uci"], str)):
+            self._finish("invalid_answer")
+            return self.public_task()
+        move = self._legal_move(answer["uci"])
+        if move is None:
+            return self.public_task()
+        expected = self._moves[self._index]
+        self._board.push(move)
+        self._solver_turn += 1
+        if self._board.is_checkmate():
+            self._finish("checkmate" if answer["uci"] == expected
+                         else "alternate_mate_in_one")
+        elif answer["uci"] != expected:
+            self._finish("wrong_move")
+        else:
+            self._index += 1
+            if self._index < len(self._moves):
+                reply = self._legal_move(self._moves[self._index], reference=True)
+                if reply is None:
+                    return self.public_task()
+                self._board.push(reply)
+                self._index += 1
+            if self._index == len(self._moves):
+                self._finish("reference_complete")
+            elif self._board.is_game_over():
+                self._finish("invalid_reference")
+        return self.public_task()
+
+    def result(self) -> dict:
+        hit = self._status == "solved"
+        return {"metric": STRICT_METRIC, "reward": float(hit), "correct": hit,
+                "verdict": self._verdict, "solver_moves_played": self._solver_turn}
+
+
+def score_strict(prediction: str, gold: dict) -> dict:
+    """Replay requested solver tokens through the same legal stepwise state machine."""
+    session = StepwisePuzzle(gold)
+    for token in prediction.strip().split():
+        if session.public_task()["status"] != "awaiting_move":
+            break
+        session.submit({"uci": token})
+    if session.public_task()["status"] == "awaiting_move":
+        session._finish("missing_move")
+    return session.result()
+
+
+def score(prediction: str, gold: dict) -> dict:
+    strict = score_strict(prediction, gold)
+    upstream = score_upstream(prediction, gold)
+    return {
+        **strict,
         "official": {
-            "metric": "ChessBench official puzzle replay",
+            "metric": STRICT_METRIC,
+            "protocol": "offline strict sequence; not interactive official accuracy",
             "puzzle_id": gold["puzzle_id"],
-            "solver_moves": len(moves[1::2]),
-            "prediction_moves": len(tokens),
-            "alternate_mate_in_one": True,
+            "strict": strict,
+            "upstream": upstream,
         },
-        "why": "official move replay accepted" if hit else "official move replay failed",
+        "why": f"strict legal replay: {strict['verdict']}",
     }
 
 
@@ -188,7 +310,7 @@ def downloads() -> list[dict]:
             "version": "1.11.2",
             "package": "chess",
             "size": "~148 KB wheel",
-            "note": "Parses FEN, PGN and UCI moves. Pin this dependency because board legality and checkmate are part of the official metric, not optional parsing convenience.",
+            "note": "Parses FEN and UCI moves. Pin this dependency because strict replay checks legal_moves before push; upstream push itself does not enforce legality.",
         },
     ]
 
@@ -217,28 +339,32 @@ _SPEC = base.QASpec(
     source="google-deepmind/searchless_chess@" + REVISION + " data/puzzles.csv",
 )
 
-_BUILT = _SPEC.build()
-DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
-ENV = _BUILT["ENV"]
-SPLIT = _BUILT["SPLIT"]
+# QASpec.build() reads the whole CSV. Defer it until pool metadata is explicitly needed.
+_BUILT = None
+DEFAULT_ENV = {"kind": "files"}
 
 #: The benchmark's own evaluation set, within this adapter's pool. The pool is the whole released `puzzles.csv` (10,000), which is the
 #: benchmark's puzzle slice.
 #:
-#: Read from `QASpec.division()` -- the one place that decides what this pool's
-#: division is -- and `None` because the benchmark released no study split for this
+#: `None`, matching `QASpec.division()`, because the benchmark released no study split for this
 #: table: the pool **is** the scored split, so every task in it belongs to the
 #: evaluation set, and that claims nothing about whether the pool is the whole of it.
-#: `--split official --side eval` scores the whole pool, which is the comparable run;
+#: `--split official --side eval` selects the whole pool; it does not make this batch
+#: interface equivalent to interactive official accuracy.
 #: `--split declared` keeps the platform's hash third (`SPLIT_SOURCE == "hash"`).
-OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
+OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study
 #: split, so the platform imposes one. See `data/qa/base.py::division`.
-SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
+SPLIT_SOURCE = "hash"
 
 
 def __getattr__(name: str):
+    global _BUILT
+    if name in {"ENV", "SPLIT"}:
+        if _BUILT is None:
+            _BUILT = _SPEC.build()
+        return _BUILT[name]
     return base.module_getattr(_SPEC, name)
 
 
@@ -246,4 +372,5 @@ def load() -> tuple[list[dict], dict[str, str]]:
     return _SPEC.load()
 
 
-__all__ = ["KIND", "DATASET_ROOT", "REVISION", "load", "downloads", "score", "SPLIT", "ENV"]
+__all__ = ["KIND", "DATASET_ROOT", "REVISION", "load", "downloads", "score", "SPLIT", "ENV",
+           "score_strict", "score_upstream", "StepwisePuzzle", "STEPWISE_CONTRACT"]

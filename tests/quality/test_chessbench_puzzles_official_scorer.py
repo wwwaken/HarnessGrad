@@ -65,6 +65,22 @@ def reference(fen, moves, predictions):
         return False
 
 
+@pytest.mark.parametrize("fen,moves,predictions", [
+    (chess.STARTING_FEN, ["e2e4", "e7e5", "g1f3", "b8c6"], ["e7e5", "b8c6"]),
+    (chess.STARTING_FEN, ["e2e4", "e7e5", "g1f3", "b8c6"], ["e7e5"]),
+    (chess.STARTING_FEN, ["e2e4", "e7e5"], ["b8c6"]),
+    (chess.STARTING_FEN, ["e2e4", "e7e5"], ["0000"]),
+    (chess.STARTING_FEN, ["e2e4", "e7e4"], ["e7e4"]),
+    ("7k/5K2/6Q1/8/p7/8/8/8 b - - 0 1", ["a4a3", "g6g7"], ["g6g8"]),
+    ("7k/5K2/6Q1/8/p7/8/8/8 b - - 0 1",
+     ["a4a3", "g6g7", "h8h7", "g7h7"], ["g6g7"]),
+])
+def test_synthetic_upstream_diagnostic_matches_verbatim(fen, moves, predictions):
+    gold = {"fen": fen, "moves": moves, "puzzle_id": "synthetic"}
+    result = dataset.score(" ".join(predictions), gold)
+    assert result["official"]["upstream"]["correct"] == reference(fen, moves, predictions)
+
+
 def test_verbatim_upstream_function_has_not_drifted():
     assert SOURCE.is_file(), "fetch the declared pinned scorer source archive"
     upstream = "\n".join(SOURCE.read_text().splitlines()[73:94]) + "\n"
@@ -112,14 +128,15 @@ def test_differential_predictions(case):
             board.push_uci(gold["moves"][0])
             predicted = [next(m.uci() for m in board.legal_moves if m.uci() != predicted[0])]
         expected = reference(gold["fen"], gold["moves"], predicted)
-        assert (dataset.score(" ".join(predicted), gold)["reward"] == 1.0) == expected
+        result = dataset.score(" ".join(predicted), gold)
+        assert result["official"]["upstream"]["correct"] == expected
 
 
 def test_alternate_mate_and_nonmate_against_official_function():
-    # Released puzzle 07zsM: after a2b3, both Qd7 and Rd7 are mate-in-one.
-    fen = "2rkr3/3n2Q1/p3p1P1/4PB2/3R1P2/q1p1P3/b1R4P/3K4 b - - 3 32"
+    # Entirely synthetic: KQ vs K with a pawn setup has multiple immediate mates.
+    fen = "7k/5K2/6Q1/8/p7/8/8/8 b - - 0 1"
     board = chess.Board(fen)
-    setup = chess.Move.from_uci("a2b3")
+    setup = chess.Move.from_uci("a4a3")
     board.push(setup)
     mates, nonmates = [], []
     for move in board.legal_moves:
