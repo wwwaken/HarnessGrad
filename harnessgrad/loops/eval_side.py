@@ -99,7 +99,8 @@ def _eval_from_record(runs_root: Path, run_id: str, round_no: int) -> dict:
 
 def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: list[dict],
                    scorable: dict, setups, verifiers, envs, side_ids, split, args,
-                   eval_from: dict | None, improver: dict | None = None) -> int:
+                   eval_from: dict | None, improver: dict | None = None,
+                   after_evaluation=None) -> int:
     """Measure one harness state on the exam side. INTERFACE.md §2.6.
 
     No method, no rounds, one point: an eval run does not evolve anything, so there is
@@ -124,9 +125,14 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
                    setups=setups, verifiers=verifiers, envs=envs, run_id=run_id,
                    run_seed=os.environ["HARNESSGRAD_SEED"],
                    recordings_root=run_dir / "recordings", round_no=0)
+    complete_measurement = after_evaluation(res) if after_evaluation is not None else True
     _require_untampered(res)
     _report_invalid(res, args.dataset)
     _report_harness_failed(res, args.dataset)
+    if not complete_measurement:
+        console.note("refusing staged curve: invalid/unmeasured outcomes are preserved in the receipt",
+                     level="error")
+        return 2
 
     scored = _scored(res, side_ids)
     if not scored:

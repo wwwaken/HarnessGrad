@@ -6,7 +6,7 @@ import math
 
 
 def pilot_task_set(task_ids: list[str], *, fraction: float = 0.10,
-                   cap: int = 50) -> list[str]:
+                   cap: int = 30) -> list[str]:
     """Select a stable capped pilot before any task execution.
 
     The rank uses task IDs only, so selection does not depend on scores, model output,
@@ -14,11 +14,16 @@ def pilot_task_set(task_ids: list[str], *, fraction: float = 0.10,
     """
     if not 0 < fraction <= 1:
         raise ValueError("fraction must be in (0, 1]")
-    if cap < 1:
-        raise ValueError("cap must be positive")
+    if type(cap) is not int or cap < 1:
+        raise ValueError("cap must be a positive integer")
     ids = sorted(set(task_ids))
     count = min(cap, max(1, math.ceil(len(ids) * fraction))) if ids else 0
     return sorted(ids, key=lambda tid: (hashlib.sha256(tid.encode()).hexdigest(), tid))[:count]
+
+
+def diagnostic_task_set(task_ids: list[str]) -> list[str]:
+    """One deterministic task, selected before execution or any score lookup."""
+    return pilot_task_set(task_ids, cap=1)
 
 
 def mean(xs: list[float]) -> float:
@@ -57,6 +62,8 @@ def select_task_set(scores: dict[str, float], policy: str,
         return ids
     if policy == "pilot_10pct":
         return pilot_task_set(ids)
+    if policy == "diagnostic":
+        return diagnostic_task_set(ids)
     if policy.startswith("below_"):
         cut = float(policy.removeprefix("below_"))
         return [t for t in ids if scores[t] < cut]
@@ -85,4 +92,3 @@ def split_of(task_ids: list[str], split: dict | None) -> dict:
     train = set(split.get("train", []))
     return {"eval": [t for t in ids if t not in train],
             "train": [t for t in ids if t in train]}
-

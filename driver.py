@@ -34,6 +34,7 @@ from ckpt.git_state import commit_state, manifest, stage_workspace
 from eval.console import CONSOLE as console
 from eval.metrics import select_task_set
 from eval import metrics
+from eval import diagnostic_policy
 from eval.integrity import PLATFORM_ROOT, workspace_is_outside_platform
 from eval.runner import evaluate
 import eval.container as container
@@ -242,9 +243,15 @@ def main() -> int:
         epilog=_config_help())
     ap.add_argument("--harness", default="loop")
     ap.add_argument("--dataset", default="demo")
-    ap.add_argument("--sampling", default="pilot_10pct",
-                    help="pilot_10pct (deterministic ceil(10%%), capped at 50) | all | below_X | above_X | random_N")
-    ap.add_argument("--rounds", type=int, default=3)
+    ap.add_argument("--sampling", default="diagnostic",
+                    help="diagnostic (one task, default) | pilot_10pct (temporary rerun: "
+                         "ceil(10%%), capped at 30; reviewed diagnostic required) | "
+                         "all | below_X | above_X | random_N")
+    ap.add_argument("--policy-evidence", default=None,
+                    help="staged policy JSON: context with passing dataset gates; "
+                         "pilot_10pct also requires receipt and separate hash-bound review")
+    ap.add_argument("--rounds", type=int, default=None,
+                    help="improvement rounds (default 0 for staged runs, 3 otherwise)")
     #: How many times each (harness, task) pair is measured. One is one sample, and one
     #: sample cannot tell an edit's effect from the noise: measured here, the same
     #: unmodified harness scored 0.333 in one run and 0.000 in the next because the agent
@@ -358,6 +365,30 @@ def main() -> int:
         print(json.dumps(platform_config.dump(), indent=2))
         return 0
 
+    staged = args.sampling in ("diagnostic", "pilot_10pct")
+    if args.rounds is None:
+        args.rounds = 0 if staged else 3
+    policy_evidence = None
+    if staged:
+        try:
+            diagnostic_policy.staged_task_set([], args.sampling, trials=args.trials,
+                                               jobs=args.jobs, rounds=args.rounds)
+            if not args.policy_evidence:
+                raise ValueError("staged runs require --policy-evidence with passing dataset gates")
+            policy_evidence = json.loads(Path(args.policy_evidence).read_text())
+            if not isinstance(policy_evidence, dict):
+                raise ValueError("policy evidence must be an object")
+            context = policy_evidence.get("context")
+            diagnostic_policy.validate_context(context)
+            if (context["dataset"] != args.dataset or context["side"] != args.side
+                    or context["gates"]["status"] != "passed"):
+                raise ValueError("passing dataset gates must bind this dataset and side")
+        except (OSError, ValueError) as exc:
+            print(f"refusing staged policy: {exc}", file=sys.stderr)
+            return 2
+        # A diagnostic/pilot measures one state; it cannot invoke an improver.
+        args.improver = "none"
+
     runs_root = Path(args.runs_root)
     eval_from = None
     if args.side == "eval":
@@ -380,6 +411,11 @@ def main() -> int:
     env_file = Path(__file__).parent / ".env"
     load_env(env_file)
     model = describe_model()
+    if staged and (not model["live"] or policy_evidence["context"]["endpoint"]
+                   != platform_config.current().agent.base_url):
+        print("refusing staged policy: bind evidence to the live local agent endpoint",
+              file=sys.stderr)
+        return 2
     # The project's model rule, enforced at the door next to the credential check: the
     # harness's model is a run-level choice and the same rule covers it. `improvers.json`
     # holds the list and the reason (`tools/improver.py:forbidden_reason`).
@@ -480,9 +516,19 @@ def main() -> int:
             return 2
         side_ids = [t for t in side_ids if t in set(asked)]
 
-    # Early pilot selection happens before setup, image admission and H0 execution.
+    # Early staged selection happens before setup, image admission and H0 execution.
     # Other policies retain their historical score-based behavior.
+    eligible_ids = list(side_ids)
+    if args.sampling == "diagnostic":
+        side_ids = metrics.diagnostic_task_set(side_ids)
     if args.sampling == "pilot_10pct":
+        try:
+            diagnostic_policy.require_review(policy_evidence,
+                                             context=policy_evidence["context"],
+                                             eligible=eligible_ids, run_id=args.run_id)
+        except ValueError as exc:
+            print(f"refusing staged policy: {exc}", file=sys.stderr)
+            return 2
         side_ids = metrics.pilot_task_set(side_ids)
 
     tasks_all = [t for t in tasks_all if t["task_id"] in set(side_ids)]
@@ -510,9 +556,35 @@ def main() -> int:
     mode = "unified" if args.mode in ("A", "B") else args.mode
 
     run_id = args.run_id or (
-        f"{args.harness}-{args.dataset}-{args.sampling}-m{mode}")
+        f"{args.harness}-{args.dataset}-{args.sampling}-m{mode}"
+        + (f"-{secrets.token_hex(8)}" if staged else ""))
     run_dir = Path(args.runs_root) / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        if staged:
+            run_dir = diagnostic_policy.reserve_run_directory(Path(args.runs_root), run_id)
+        else:
+            run_dir.mkdir(parents=True, exist_ok=True)
+    except (FileExistsError, ValueError) as exc:
+        print(f"refusing staged policy: cannot reserve fresh run ID {run_id!r}: {exc}",
+              file=sys.stderr)
+        return 2
+
+    def save_policy_receipt(res: dict | None = None) -> bool:
+        if not staged:
+            return True
+        unknown = {"status": "unknown", "receipt_sha256": None,
+                   "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest"}
+        receipt = diagnostic_policy.build_receipt(
+            run_id=run_id, stage=args.sampling, eligible=eligible_ids, selected=side_ids,
+            context=policy_evidence["context"],
+            outcomes=(diagnostic_policy.evaluation_outcomes(res, side_ids) if res is not None else []),
+            cleanup=unknown, snapshot=unknown)
+        # Keep the pre-execution plan even if evaluation is interrupted or refused.
+        diagnostic_policy.write_receipt(
+            run_dir / ("diagnostic_receipt.json" if res is not None else "staged_plan.json"), receipt)
+        return receipt["coverage"]["measured_tasks"] == len(side_ids)
+
+    save_policy_receipt()
 
     # The trusted dispatcher is opt-in for ordinary runs.  An approved Task25
     # run is the one deliberate exception: its profile is part of the approval
@@ -853,6 +925,14 @@ def main() -> int:
     _write_run_meta(
         run_dir, run_id=run_id, mode=mode, harness=args.harness,
         dataset=args.dataset, sampling_policy=args.sampling,
+        diagnostic_policy=({"receipt_schema": diagnostic_policy.SCHEMA,
+                            "eligible_tasks": len(set(eligible_ids)),
+                            "eligible_task_ids_sha256": diagnostic_policy.eligible_digest(eligible_ids),
+                            "selected_tasks": len(side_ids),
+                            "selected_task_ids": list(side_ids),
+                            "expected_trials": len(side_ids), "trials": 1, "jobs": 1,
+                            "evidence_sha256": diagnostic_policy.receipt_digest(policy_evidence),
+                            "context": policy_evidence["context"]} if staged else None),
         workspace=str(work), work_root=str(work.parent.parent),
         platform_root=str(PLATFORM_ROOT),
         sandbox=sandbox_state,
@@ -951,7 +1031,7 @@ def main() -> int:
             work=work, man=man, run_id=run_id, run_dir=run_dir, tasks=tasks_all,
             scorable=scorable, setups=setups, verifiers=verifiers, envs=envs,
             side_ids=side_ids, split=split, args=args, eval_from=eval_from,
-            improver=improver)
+            improver=improver, after_evaluation=save_policy_receipt)
         if budget_binding is not None:
             _write_run_meta(run_dir, budget=budget_binding.metadata())
         return result
@@ -964,7 +1044,7 @@ def main() -> int:
     cumulative = {"evaluation_trials": 0, "generation_tokens": 0,
                   "env_generation_tokens": 0, "wall_clock_s": 0.0}
 
-    # ---- round 0: score H0 on everything, then fix the task set from it ----
+    # Staged runs already fixed their task set; score-based policies select after H0.
     # Committed **before** the measurement, so the measurement can be cached under the
     # content it actually measured.
     #
@@ -984,9 +1064,14 @@ def main() -> int:
                     sandbox=args.sandbox, setups=setups, verifiers=verifiers,
                     envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
                     recordings_root=run_dir / "recordings")
+    complete_measurement = save_policy_receipt(base)
     _require_untampered(base)
     _report_invalid(base, args.dataset)
     _report_harness_failed(base, args.dataset)
+    if not complete_measurement:
+        console.note("refusing staged curve: invalid/unmeasured outcomes are preserved in the receipt",
+                     level="error")
+        return 2
     if not base["per_task"]:
         # Nothing was measurable, so there is no curve to draw. Refused rather than
         # recorded as a point: `mean([])` is 0.0, and a zero here would say "the
@@ -1005,7 +1090,8 @@ def main() -> int:
     # The sampling policy chooses what the run is *scored* on, within the run's own side.
     # Two things about the cost, and the first one is a whole-side sweep:
     #
-    # * **round 0 measured everything.** A policy needs scores to select on, and §2.1 fixes
+    # * Score-based policies measure the whole eligible side at round 0. They need scores
+    #   to select on, and §2.1 fixes
     #   the selection at H0, so the whole side is paid for exactly once, at round 0.
     # * from round 1 the method is shown only the selected subset (`train_ids` below). To
     #   fix a subset for the *whole* run -- including round 0, which is what a study of "how
@@ -1020,7 +1106,7 @@ def main() -> int:
     # `tasks_all` was narrowed to the side before round 0, so the policy selects within it and
     # `within` can never reach across -- the cross-side leak this guards against is not a rule
     # here, it is an absence of the other side.
-    if args.sampling == "pilot_10pct":
+    if args.sampling in ("diagnostic", "pilot_10pct"):
         task_ids = list(side_ids)
     else:
         task_ids = select_task_set(base["per_task"], args.sampling,
