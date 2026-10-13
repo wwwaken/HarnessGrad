@@ -97,7 +97,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 
 - Status: `scorer_repaired`, synthetic validation complete; no model/H0
 - Scope: this adapter's public output contract, trusted gold transport and official v1.1 scoring; fabricated fixtures only, no released dev/train/test, heldout payload, alias-table or mirror reads
-- Control sweep: Codex 113 measured 18/18 selected controls across frozen 50-ID manifests: 3 oracle=1.0 and 3 noop=0.0 for each repaired adapter, jobs=1, no model/H0, cleanup complete. Evidence: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/113/worktree/runs/no-model-controls-20261013/report.md`; native sandbox placement conflict and 2Wiki legacy empty-noop branch are documented
+- Pilot recovery: the original 50-task pilot had two malformed structured-output invalids. Generic transport repair commit `1f41891` passed 129 focused tests; rerunning `twowikimultihopqa/dev/1589` and `/2501` ×3 produced `invalid=0`, task scores `0.8` and `0.0`. Combined full 50-task score is `0.50383334`; receipt `/mnt/20t/xubuqiang/Study/twowiki-invalid-recovery-20261013/runs/twowiki-invalid-recovery-h0-20261013/curve.jsonl`
 - Public contract: JSON in `answer.txt`, submitted directly or with `python3 qa/bin/qa submit @submission.json`: `{"schema_version":1,"answer":"...","supporting_facts":[["Title",0]],"evidence":[["subject","relation","object"]]}`. Context sentences display zero-based indices. Each channel can be omitted; omitted metrics and Joint are zero. Explicit empty sets retain upstream semantics. Plain text and `score_answer_only` remain explicitly labeled `legacy_answer_only`, with Ans F1 reward and no Sup/Evi/Joint claim. This adapter uses the existing text-file transport; shared `submit-json` remains the pair-only schema.
 - Evidence: `data/twowikimultihopqa.py`; `tests/quality/test_twowikimultihopqa_structured.py`; updated legacy assertion in `tests/quality/test_twowikimultihopqa_official_scorer.py`
 - Platform change: adapter-scoped `score_prediction`, validation and `evaluate_predictions`; trusted inline support/triples plus relevant subject/object aliases, with alias products expanded per scored row. Inputs remain immutable. Aggregate percentages sum in gold order, divide by the entire gold pool including missing predictions, then round once to two decimals. No shared scaffold or other adapter changed.
@@ -106,7 +106,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates/blockers: no implementation blocker. Fetching the pinned upstream source from GitHub failed with curl exit 35 (connection reset); differential tests therefore execute the existing verbatim file evaluator, whose unchanged region is pinned to pre-patch SHA-256 `e18ccdf4b87d16c30e03a62b1dc9d0906c0b0130ae5eace17885d2a9ea1b13c9`. A fresh independent source-file comparison and released-data controls were not performed; real-data/model/H0 validation is outside this task.
 - Commit: this entry is carried by `fix: restore 2WikiMultihopQA structured evaluation fidelity`; exact hash reported with the delivery
 
-## LiveCodeBench — authored references
+## Public Qwen3.5-9B baseline comparison — 2026-10-13
+
+- Status: `comparison_archived`, no new benchmark run
+- Evidence: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/qwen-baseline/report.md`; sources and local receipt summary beside it
+- Public result recovered: Qwen's reviewed Qwen3.5-9B card reports LiveCodeBench v6 `65.6`; the reviewed card has no MuSiQue, 2WikiMultihopQA, GAIA or AppWorld row
+- Local results: MuSiQue capped train pilot `0.12751114` over 50 tasks ×3 measured trials; 2Wiki original curve `0.5081597292` has 48 scored tasks and mixed legacy Answer F1/structured Joint F1; GAIA has no aggregate curve; AppWorld has repeated single-task measured zeros; LCB is smoke-only and row/scorer incomparable
+- Interpretation: no direct public-versus-local ranking is valid. Local QA/AppWorld caps, prompts, splits and scorer policies differ from public benchmark recipes; Qwen card values are publisher-reported and not independent reproductions
+- Commit: evidence archive only
+
 
 - Status: preflight-required, no H0
 - Scope: 1055 pool tasks; 3 train-side authored references and 4 eval-side references
