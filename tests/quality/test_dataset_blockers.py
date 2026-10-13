@@ -224,6 +224,28 @@ def test_new_historical_record_cannot_reuse_an_existing_run_id(document):
         checker.validate(document)
 
 
+def test_chess_future_launch_guidance_requires_new_ids_and_preserves_history(document):
+    target = row(document, "chessbench_puzzles")
+    assert "recovery-id-conflict" not in {blocker["id"] for blocker in target["blockers"]}
+    assert "interruption-closure" in {blocker["id"] for blocker in target["blockers"]}
+    baseline = checker.read_json(checker.HISTORY)
+    assert target["historical_runs"] == [
+        item["record"] for item in baseline["records"]
+        if item["dataset"] == "chessbench_puzzles"
+    ]
+    journal = (ROOT / "docs/adapter-integration-journal.md").read_text(encoding="utf-8")
+    audit = next(line for line in journal.splitlines()
+                 if line.startswith("- Interruption audit: termination authority is undetermined"))
+    guidance = (ROOT / "docs/dataset-blockers.md").read_text(encoding="utf-8")
+    for text in (audit, " ".join(guidance.split())):
+        assert "Every future attempt must use a genuinely new unique run ID" in text
+        assert "never resume or overwrite any used run ID" in text
+        for history in target["historical_runs"]:
+            assert history["status"] == "incomplete" and history["effect"] is None
+            assert f'`{history["run_id"]}`' in text
+            assert f'launch a fresh `{history["run_id"]}`' not in journal
+
+
 @pytest.mark.parametrize("raw", ['{"datasets": [], "datasets": []}', '{"score": NaN}'])
 def test_noncanonical_json_is_rejected(tmp_path, raw):
     path = tmp_path / "registry.json"

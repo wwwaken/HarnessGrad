@@ -471,20 +471,6 @@
             }
           ],
           "next_action": "Review the existing audit and receipt identities without resuming or overwriting either run ID."
-        },
-        {
-          "id": "recovery-id-conflict",
-          "family": "documentation-conflict",
-          "status": "code-solvable",
-          "observed": "The audit sentence recommends a fresh launch using an already incomplete recovery ID, conflicting with adjacent preservation instructions and AGENTS.md.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "launch a fresh `chess-pilot-h0-20261013-recovery-01`"
-            }
-          ],
-          "next_action": "Correct future-launch guidance to require a genuinely new ID while preserving both original records."
         }
       ],
       "historical_runs": [

@@ -50,12 +50,18 @@ byte-equivalent in content; new historical records may be appended. Changing
 the baseline pin is an explicit historical migration requiring review, not a
 routine blocker-status update.
 
-The review also flags two documentation conflicts: historical 50-task pilot
-guidance in the platform log, and a chess audit sentence recommending an already
-used recovery ID. Preserve those historical observations. Current planning
-follows `AGENTS.md`: a one-task/one-trial diagnostic after all gates, separate
-receipt review, then at most `min(30, ceil(10% * eligible))` tasks with one trial
-and one job for temporary reruns. A registry entry closes none of those gates.
+The review originally flagged two documentation conflicts: historical 50-task
+pilot guidance in the platform log, and a chess audit sentence recommending an
+already used recovery ID. The Chess future-launch guidance is now corrected,
+so `recovery-id-conflict` is removed from the current blocker list. Every future
+attempt must use a genuinely new unique run ID; never resume or overwrite any
+used run ID, including `chess-pilot-h0-20261013` and
+`chess-pilot-h0-20261013-recovery-01`. Both historical IDs, receipts and incomplete
+statuses remain unchanged; termination and runtime gates remain unresolved.
+Current planning follows `AGENTS.md`: a one-task/one-trial diagnostic after all
+gates, separate receipt review, then at most `min(30, ceil(10% * eligible))` tasks
+with one trial and one job for temporary reruns. A registry entry closes none of
+those gates.
 
 Validate without importing adapters or loading a task pool:
 
