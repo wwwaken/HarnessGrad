@@ -193,6 +193,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: a successful measured actor task remains required before 9x3; do not convert this measured zero into a full pilot
 - Commit: runtime evidence only
 
+### AppWorld thirty-two-step smoke
+
+- Status: `measured_smoke`, H0 not launched
+- Scope: declared split `147 train / 585 eval`, selected train task `07b42fd_1`, one trial, jobs=1, GPU1/8002, `max_steps=32`, `max_output_tokens=2048`
+- Finding: actor completed normally in 57s and produced 26 authoritative API calls; verifier returned measured score `0.0`. The runtime remained healthy with no infrastructure invalidation, but the model still did not complete the task. Increasing the step ceiling did not close the task gate.
+- Evidence: `/mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117/events.jsonl`; progress record reports `complete=true`, `n_trials=1`, `trial_scores=[0.0]`; API log is 2638 bytes with 26 calls
+- Decision: do not keep increasing the budget or tune the method to this task. AppWorld has stable platform/scorer protocol but no successful measured task smoke, so 9x3 remains unauthorized
+- Commit: runtime evidence only
+
 ## Jericho — isolated no-model controls
 
 - Status: `controls_passed`, model H0 blocked
