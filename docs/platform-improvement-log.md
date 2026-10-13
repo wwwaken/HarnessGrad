@@ -56,8 +56,8 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 
 - Trigger: ScienceWorld v4 completed 354/354 but emitted `harness modified the platform`.
 - Contract: prevent writes before execution through platform hiding/read-only mounts; detect and invalidate any remaining change; keep `base_harness` as subject code, not platform code.
-- Validation: 52 isolated tests passed in `/tmp/codex/81`; patch apply checks passed; no production rollout yet.
-- Candidate: `/tmp/codex/81/patch.diff`.
+- Validation: 52 isolated tests passed in `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/81`; patch apply checks passed; no production rollout yet.
+- Candidate: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/81/patch.diff`.
 - Status: `isolated`.
 
 ### C-004 — Measurement validity
@@ -65,7 +65,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Trigger: Hotpot timeouts, Bird database failures, missing verifier evidence and scorer/runtime failures.
 - Contract: separate `valid score`, `unmeasured`, `invalid`, `timeout` and `cleanup failure`; only a trusted verifier can produce a numeric zero.
 - Validation: runtime prototype and adversarial review; known production gaps remain in host/exec/snapshot paths.
-- Candidate: `/tmp/codex/75/patch.diff` plus `/tmp/codex/71/prototype.patch`.
+- Candidate: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/75/patch.diff` plus `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/71/prototype.patch`.
 - Status: `isolated`.
 
 ### C-005 — Endpoint/GPU allocation
@@ -73,7 +73,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Trigger: both long-running drivers were bound to GPU0/8001 while GPU1/8002 sat unused.
 - Contract: registry identity includes endpoint URL, GPU UUID, host, run and role; bindings are sticky; new runs use least-loaded/round-robin allocation; health and usage remain evidence-based.
 - Validation: 78 allocator tests and 36 observability tests passed; no live migration performed.
-- Candidates: `/tmp/codex/72/endpoint_registry.patch`, `/tmp/codex/78/observability.schema.json`.
+- Candidates: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/72/endpoint_registry.patch`, `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/78/observability.schema.json`.
 - Status: `isolated`.
 
 ### C-006 — Budget and endpoint recovery
@@ -81,7 +81,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Trigger: repeated reconcile could release one reservation twice; endpoint IDs did not correlate with budget attempts.
 - Contract: terminal reconciliation is idempotent for matching evidence; conflicting evidence is rejected; unknown execution preserves reservations; request/attempt IDs persist across restart.
 - Validation: 105 offline tests passed.
-- Candidate: `/tmp/codex/83/patch.diff`.
+- Candidate: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/83/patch.diff`.
 - Status: `isolated`.
 
 ### C-007 — Shared runtime lifecycle
@@ -89,7 +89,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Trigger: AppWorld, GAIA, tau-bench, Jericho and Terminal-Bench each exposed similar reset, service, network, scorer and cleanup risks.
 - Contract: one platform lifecycle and seven controls, with adapter data limited to declarations and fixtures.
 - Validation: 18 document checks, 42 synthetic shared-control tests; real runtime gates remain open.
-- Reference: `/tmp/codex/74/launch-gate-checklist.md`, `/tmp/codex/80/schedule.md`.
+- Reference: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/74/launch-gate-checklist.md`, `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/80/schedule.md`.
 - Status: `planned`.
 
 ## Commit discipline

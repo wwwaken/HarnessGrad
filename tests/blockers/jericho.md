@@ -1,7 +1,7 @@
 # Jericho validation limits
 
 The production sandbox requires a harness work root outside the platform tree.
-The authorized filesystem scope is only `/tmp/codex/109/worktree`, so a production
+The authorized filesystem scope is only `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/109`, so a production
 Jericho platform control cannot be staged in this session. The blocker test pins
 the refusal; the sandbox must not be weakened to make the control run here.
 
