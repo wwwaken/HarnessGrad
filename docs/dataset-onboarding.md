@@ -87,7 +87,7 @@ onboarded without a way to show its grade is reachable.
 | the generator | `tools/new_dataset.py --kind qa\|command\|files` — see §3 |
 | the check that runs over *every* published dataset | `tests/quality/test_dataset_lint.py` |
 | the check that every dataset declares a control and a metric test, and runs the controls | `tests/quality/test_dataset_controls.py` |
-| the classification: derived axes plus the one judged axis | `tools/dataset_classes.py` |
+| the classification: derived axes plus the one judged axis, as a `(demand, surface)` pair | `tools/dataset_classes.py` |
 | the shared control for `command` datasets | `data/command_control.py` + `data/command_oracle_harness/` |
 | the download index (generated) | `DOWNLOADS.md` — written by `tools/datasets.py --write`; **never edit by hand** |
 | "which datasets exist" | `data/registry.py::published()` — a module appears iff `KIND == "dataset"` |

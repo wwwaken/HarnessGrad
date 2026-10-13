@@ -1,18 +1,20 @@
-"""The dataset classification must stay total, and its two sides must agree.
+"""The dataset classification must stay total, closed, and coarse enough to classify.
 
 `tools/dataset_classes.py` splits the classification into three kinds of axis on purpose:
 
 * **derived** from the adapter and the shipped CLI (environment, verifier, interaction,
   counts) -- so it cannot go stale while nobody is looking;
-* **judged**, and only the capability domain is judged: it is declared once in `CAPABILITY`,
-  and the tool refuses a published dataset without one;
+* **judged**, and only the capability axis is judged: it is declared once in `CAPABILITY` as
+  one `(demand, surface)` pair per dataset, and the tool refuses a published dataset without
+  one;
 * **measured** elsewhere (cost, difficulty, headroom), never in that file.
 
-The interaction axis is the one that earns its keep: it is the difference between a dataset a
-scaffold can iterate inside and one it can only answer once. It is derived *and* declared, and
-these tests hold the two sides together. That is not ceremony -- the first version derived it
-from a single verb (`do`) and silently called `agentdojo` a single-shot dataset, because
-`dojo` spells its action verb `call`.
+Two properties are held here because the file states them and a test is what makes a stated
+property a checked one. The derived interaction axis must agree with the declared one -- that
+is not ceremony, the first version derived it from a single verb (`do`) and silently called
+`agentdojo` a single-shot dataset because `dojo` spells its action verb `call`. And the judged
+axis must not degenerate: the flat vocabulary this replaced ended with thirteen buckets, seven
+of them holding one dataset each, and nothing objected because nothing was checking.
 """
 from __future__ import annotations
 
@@ -44,15 +46,100 @@ def test_every_published_dataset_is_classified_exactly_once():
 
 def test_the_capability_vocabulary_is_closed_and_total():
     rows = _rows()
-    vocabulary = set(dataset_classes.CAPABILITY.values())
-    for row in rows:
-        assert row["domain"] in vocabulary, row
     declared = set(dataset_classes.CAPABILITY)
     assert declared == set(registry.published()), (
         "CAPABILITY must name exactly the published datasets; the tool raises otherwise, so "
         "this assertion documents the property rather than reimplementing it")
+    for row in rows:
+        assert row["demand"] in dataset_classes.DEMANDS, row
+        assert row["surface"], row
     # A vocabulary with one member per dataset would classify nothing.
-    assert len(vocabulary) < len(rows)
+    demands = {row["demand"] for row in rows}
+    surfaces = {row["surface"] for row in rows}
+    assert len(demands) < len(rows)
+    assert len(surfaces) < len(rows)
+
+
+def test_no_demand_is_a_private_name_for_one_dataset():
+    """The failure this taxonomy exists to fix.
+
+    The flat list had `code_generation`, `text_to_sql`, `spreadsheet` and `terminal` as four
+    top-level peers of `reasoning`, so `len(demands) == 13` with seven of them holding a
+    single dataset described a list of names rather than a taxonomy. Checked through the
+    declared minimum rather than a hard-coded 4, so adding a genuine category is a decision
+    about that constant and not an edit to a test.
+    """
+    rows = _rows()
+    for demand in dataset_classes.DEMANDS:
+        members = [row["dataset"] for row in rows if row["demand"] == demand]
+        assert len(members) >= dataset_classes.MIN_MEMBERS_PER_DEMAND, (
+            f"demand {demand!r} holds {members}; a one-dataset demand is a name, not a "
+            f"category")
+    assert dataset_classes.MIN_MEMBERS_PER_DEMAND >= 2
+
+
+def test_a_surface_belongs_to_exactly_one_demand():
+    """Levels that overlap are not levels."""
+    owners: dict[str, set[str]] = {}
+    for demand, surface in dataset_classes.CAPABILITY.values():
+        owners.setdefault(surface, set()).add(demand)
+    shared = {s: d for s, d in owners.items() if len(d) > 1}
+    assert not shared, f"these surfaces sit under several demands: {shared}"
+
+
+def test_a_thin_demand_is_refused_not_classified():
+    """The anti-degeneracy rule has to be able to fire, or it is a comment."""
+    original = dict(dataset_classes.CAPABILITY)
+    try:
+        # Move every member of `environment` except one into `reasoning`, leaving
+        # `environment` thin: the refusal must name it.
+        for name, (demand, surface) in original.items():
+            if demand == "environment" and name != "alfworld":
+                dataset_classes.CAPABILITY[name] = ("reasoning", surface)
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "environment" in str(excinfo.value)
+    finally:
+        dataset_classes.CAPABILITY.clear()
+        dataset_classes.CAPABILITY.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_an_unknown_demand_is_refused_not_classified():
+    original = dict(dataset_classes.CAPABILITY)
+    try:
+        dataset_classes.CAPABILITY["gsm8k"] = ("vibes", "reasoning")
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "gsm8k" in str(excinfo.value)
+    finally:
+        dataset_classes.CAPABILITY.clear()
+        dataset_classes.CAPABILITY.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_a_surface_under_two_demands_is_refused():
+    original = dict(dataset_classes.CAPABILITY)
+    try:
+        dataset_classes.CAPABILITY["gsm8k"] = ("artifact", "reasoning")
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "reasoning" in str(excinfo.value)
+    finally:
+        dataset_classes.CAPABILITY.clear()
+        dataset_classes.CAPABILITY.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_adversarial_is_a_condition_and_not_a_demand():
+    """AgentDojo's demand and surface are ordinary; only its threat model is not."""
+    rows = {row["dataset"]: row for row in _rows()}
+    adversarial = {name for name, row in rows.items() if row["adversarial"]}
+    assert adversarial == set(dataset_classes.ADVERSARIAL)
+    assert "agentdojo" in adversarial
+    for name in adversarial:
+        assert rows[name]["demand"] in dataset_classes.DEMANDS, rows[name]
+        assert rows[name]["surface"] in {s for _, s in dataset_classes.CAPABILITY.values()}
 
 
 def test_the_derived_interaction_agrees_with_the_declared_one():
@@ -122,7 +209,11 @@ def test_the_json_view_is_machine_readable():
     assert proc.returncode == 0, proc.stderr[-400:]
     rows = json.loads(proc.stdout)
     assert len(rows) == len(registry.published())
-    assert all({"dataset", "domain", "interaction", "tasks"} <= set(row) for row in rows)
+    assert all({"dataset", "demand", "surface", "adversarial", "interaction", "tasks"} <= set(row)
+               for row in rows)
+    # One name per datum: the flat vocabulary's `domain` was `surface` plus half of
+    # `interaction`, and carrying both spellings is how the two drifted apart.
+    assert all("domain" not in row for row in rows)
 
 
 def test_the_filters_select_what_they_say():
@@ -136,3 +227,35 @@ def test_the_filters_select_what_they_say():
     assert {row["dataset"] for row in rows} == {
         "agentdojo", "alfworld", "appworld", "gaia", "jericho", "scienceworld",
         "tau_bench", "terminal_bench"}
+
+
+def test_the_demand_surface_and_adversarial_filters_select_what_they_say():
+    def run(*flags):
+        proc = subprocess.run([sys.executable, "tools/dataset_classes.py", "--json", *flags],
+                              cwd=ROOT, capture_output=True, text=True, timeout=300)
+        assert proc.returncode == 0, proc.stderr[-400:]
+        return json.loads(proc.stdout)
+
+    demands = run()
+    for demand in dataset_classes.DEMANDS:
+        filtered = run("--demand", demand)
+        assert filtered and all(row["demand"] == demand for row in filtered)
+        assert {row["dataset"] for row in filtered} == {
+            row["dataset"] for row in demands if row["demand"] == demand}
+
+    for surface in sorted({row["surface"] for row in demands}):
+        filtered = run("--surface", surface)
+        assert filtered and all(row["surface"] == surface for row in filtered)
+
+    adversarial = run("--adversarial")
+    assert {row["dataset"] for row in adversarial} == set(dataset_classes.ADVERSARIAL)
+
+
+def test_the_table_view_prints_both_levels(capsys):
+    """The table is the human view, so it has to show the hierarchy rather than the pair."""
+    dataset_classes.main([])
+    out = capsys.readouterr().out
+    for demand in dataset_classes.DEMANDS:
+        assert demand in out
+    assert "adversarial" in out
+    assert out.count("information_seeking") >= 2  # a row and its demand's surface summary
