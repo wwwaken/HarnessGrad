@@ -30,6 +30,11 @@ it. So the axes split into three kinds, and only the middle one is a judgement:
    four surfaces of two demands -- and `tool_calling` beside `tool_dialogue`, which restated
    an axis the derivation below already owns.
 
+   The vocabulary also names demands the registry does not cover yet, and it says so: an
+   uncovered demand is declared in `UNCOVERED_DEMANDS` with the surfaces it is expected to
+   need. Declaring it is not covering it, and the two are kept apart on purpose, because a
+   demand that is silently absent reads exactly like a demand that is absent for no reason.
+
 3. **Measured** -- cost, difficulty and headroom. Only a run knows these; they live in the
    curve points and in `tools/task_difficulty.py`'s per-dataset JSON, never in this file.
 
@@ -60,7 +65,34 @@ from data import registry  # noqa: E402
 #: claim can be stated over it: the Harness either carries external evidence across steps or
 #: it does not, and that is a property of the artefact under improvement rather than of a
 #: benchmark's subject matter.
-DEMANDS = ("evidence", "reasoning", "tool_use", "artifact", "environment")
+DEMANDS = ("evidence", "reasoning", "tool_use", "artifact", "environment", "memory")
+
+#: Demands the vocabulary names but the registry does not cover yet, with the surfaces each is
+#: expected to need. A key here means "no adapter", and the check below holds both directions:
+#: a demand with no adapter must be declared here, and a demand declared here must have no
+#: adapter. The pair is what makes the gap self-clearing -- the first `memory` adapter to land
+#: breaks the second direction and the entry has to be deleted in the same change.
+#:
+#: `memory` asks the Harness to maintain a representation of information that arrives over
+#: time and changes. That is not `evidence`, which asks it to select from a static set: no
+#: question in HotpotQA is invalidated by a later observation, while every screened memory
+#: candidate turns on knowledge update, temporal reasoning, preference drift, conflict
+#: resolution, or selective forgetting. It is not a condition like `ADVERSARIAL` either,
+#: because an adversary adds stress to an unchanged capability while memory changes what the
+#: Harness has to provide: a Harness with no store cannot attempt these tasks at all, and can
+#: still attempt every evidence task ever onboarded.
+#:
+#: The two surfaces are `authored_store`, where the Harness builds and maintains the store
+#: itself, and `supplied_history`, where the interaction history is provided and the demand is
+#: to retain it. Five candidates were screened against the platform's hard constraints in
+#: `docs/survey/notes/harnessgrad_memory_domain_report.md` and none is onboarded as of this
+#: revision: LoCoMo-MC10, PersonaMem v1, LaMP, MemoryAgentBench (deterministic sub-tasks), and
+#: LongMemEval's retrieval-recall variant. LongMemEval's QA headline, HaluMem, StructMemEval
+#: and LaMP-QA stay refused: their headline is an LLM judge, or in HaluMem's case a product of
+#: two judge scores.
+UNCOVERED_DEMANDS: dict[str, tuple[str, ...]] = {
+    "memory": ("authored_store", "supplied_history"),
+}
 
 #: Level 2 of the judged axis: the surface the demand is exercised on. Kept because a SQL task
 #: and a spreadsheet task stress different tools even though both deliver an artefact, but a
@@ -298,12 +330,32 @@ def _check_judged_axis(rows: list[dict]) -> None:
             f"these surfaces appear under more than one demand: {shared}. A surface is a leaf, "
             f"so either merge the demands or split the surface.")
 
-    # And a demand has to be a category rather than a private name for one dataset.
+    # A declared gap has to stay a gap, and an undeclared gap has to be declared.
+    stray = sorted(set(UNCOVERED_DEMANDS) - set(DEMANDS))
+    if stray:
+        raise SystemExit(f"UNCOVERED_DEMANDS names demands outside DEMANDS: {stray}.")
+    for demand, surfaces in UNCOVERED_DEMANDS.items():
+        if not surfaces:
+            raise SystemExit(
+                f"UNCOVERED_DEMANDS[{demand!r}] declares no planned surface. A gap with no "
+                f"recorded shape is the thing this file exists to prevent.")
     counts = {d: sum(1 for r in rows if r["demand"] == d) for d in DEMANDS}
-    unused = [d for d in DEMANDS if counts[d] == 0]
-    if unused:
-        raise SystemExit(f"these demands have no datasets: {unused}. Drop them from DEMANDS.")
-    thin = {d: n for d, n in counts.items() if n < MIN_MEMBERS_PER_DEMAND}
+    silent = sorted(d for d in DEMANDS if not counts[d] and d not in UNCOVERED_DEMANDS)
+    if silent:
+        raise SystemExit(
+            f"these demands hold no datasets and are not declared uncovered: {silent}. A "
+            f"demand the vocabulary names but nothing covers has to say so, or coverage "
+            f"reads as complete when it is not. Add it to UNCOVERED_DEMANDS with the surfaces "
+            f"it is expected to need, or drop it from DEMANDS.")
+    stale = sorted(d for d in UNCOVERED_DEMANDS if counts[d])
+    if stale:
+        raise SystemExit(
+            f"these demands are declared uncovered but now hold datasets: {stale}. Delete "
+            f"them from UNCOVERED_DEMANDS in the same change that onboards the adapter; a "
+            f"recorded gap outliving its cause becomes a wrong claim.")
+
+    # And a covered demand has to be a category rather than a private name for one dataset.
+    thin = {d: n for d, n in counts.items() if n and n < MIN_MEMBERS_PER_DEMAND}
     if thin:
         raise SystemExit(
             f"these demands hold fewer than {MIN_MEMBERS_PER_DEMAND} datasets: {thin}. The "
@@ -348,6 +400,9 @@ def _table(rows: list[dict]) -> str:
         surfaces.sort(key=lambda item: (-item[0], item[1]))
         out.append(f"  {demand:12s} {len(names):2d}  "
                    f"[{', '.join(f'{s} {n}' for n, s in surfaces)}]")
+    for demand, surfaces in UNCOVERED_DEMANDS.items():
+        out.append(f"  {demand:12s} {0:2d}  [planned: {', '.join(surfaces)}]"
+                   f"   (declared, no adapter yet)")
     adversarial = [r["dataset"] for r in rows if r["adversarial"]]
     out.append(f"  {'adversarial':12s} {len(adversarial):2d}  {', '.join(adversarial) or '-'}"
                f"   (* in the table above; a condition, not a demand)")

@@ -71,11 +71,66 @@ def test_no_demand_is_a_private_name_for_one_dataset():
     """
     rows = _rows()
     for demand in dataset_classes.DEMANDS:
+        if demand in dataset_classes.UNCOVERED_DEMANDS:
+            continue  # a declared gap is a different state, checked below
         members = [row["dataset"] for row in rows if row["demand"] == demand]
         assert len(members) >= dataset_classes.MIN_MEMBERS_PER_DEMAND, (
             f"demand {demand!r} holds {members}; a one-dataset demand is a name, not a "
             f"category")
     assert dataset_classes.MIN_MEMBERS_PER_DEMAND >= 2
+
+
+def test_an_uncovered_demand_is_declared_and_holds_no_adapters():
+    """Declaring a demand is not covering it, and the difference is kept visible."""
+    rows = _rows()
+    uncovered = set(dataset_classes.UNCOVERED_DEMANDS)
+    assert uncovered <= set(dataset_classes.DEMANDS), uncovered
+    for demand in uncovered:
+        assert not [row for row in rows if row["demand"] == demand], (
+            f"{demand!r} is declared uncovered but holds adapters")
+        assert dataset_classes.UNCOVERED_DEMANDS[demand], (
+            f"{demand!r} is a gap with no recorded shape")
+
+
+def test_a_silent_gap_is_refused():
+    """Dropping the declaration must be loud, not a quiet claim of full coverage."""
+    original = dict(dataset_classes.UNCOVERED_DEMANDS)
+    try:
+        dataset_classes.UNCOVERED_DEMANDS.clear()
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "memory" in str(excinfo.value)
+    finally:
+        dataset_classes.UNCOVERED_DEMANDS.clear()
+        dataset_classes.UNCOVERED_DEMANDS.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_a_stale_coverage_declaration_is_refused():
+    """The other direction: a demand that gains an adapter must lose its gap entry."""
+    original = dict(dataset_classes.UNCOVERED_DEMANDS)
+    try:
+        dataset_classes.UNCOVERED_DEMANDS["reasoning"] = ("reasoning",)
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "reasoning" in str(excinfo.value)
+    finally:
+        dataset_classes.UNCOVERED_DEMANDS.clear()
+        dataset_classes.UNCOVERED_DEMANDS.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_a_gap_with_no_recorded_shape_is_refused():
+    original = dict(dataset_classes.UNCOVERED_DEMANDS)
+    try:
+        dataset_classes.UNCOVERED_DEMANDS["memory"] = ()
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "memory" in str(excinfo.value)
+    finally:
+        dataset_classes.UNCOVERED_DEMANDS.clear()
+        dataset_classes.UNCOVERED_DEMANDS.update(original)
+    assert dataset_classes.classify_all()  # restored
 
 
 def test_a_surface_belongs_to_exactly_one_demand():
@@ -239,6 +294,9 @@ def test_the_demand_surface_and_adversarial_filters_select_what_they_say():
     demands = run()
     for demand in dataset_classes.DEMANDS:
         filtered = run("--demand", demand)
+        if demand in dataset_classes.UNCOVERED_DEMANDS:
+            assert filtered == [], f"{demand!r} is declared uncovered yet filtered non-empty"
+            continue
         assert filtered and all(row["demand"] == demand for row in filtered)
         assert {row["dataset"] for row in filtered} == {
             row["dataset"] for row in demands if row["demand"] == demand}
@@ -256,6 +314,10 @@ def test_the_table_view_prints_both_levels(capsys):
     dataset_classes.main([])
     out = capsys.readouterr().out
     for demand in dataset_classes.DEMANDS:
-        assert demand in out
+        assert demand in out, demand
     assert "adversarial" in out
     assert out.count("information_seeking") >= 2  # a row and its demand's surface summary
+    for demand, surfaces in dataset_classes.UNCOVERED_DEMANDS.items():
+        assert "no adapter yet" in out
+        for surface in surfaces:
+            assert surface in out, f"{demand} plans {surface} but the table hides it"
