@@ -303,3 +303,12 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 ## Process rule
 
 Before launching any new adapter, add or update its entry here and add the corresponding platform capability to `docs/platform-improvement-log.md`. The launch review must cite the entry, the exact manifest hash and the runtime gate receipt.
+
+
+### GAIA frozen source / snapshot compatibility — Codex 151
+
+- Scope: isolated `/tmp/hg-codex-151`, base `8fcdcb80b90f43ab1c76c1f572c5cf70a6504e11`; source/control inspection and synthetic offline regressions only. No dataset/heldout/model/H0 run artifact reads or runtime execution.
+- Change: added complete Git-tree/runtime compatibility review with explicit refusal to authorize lifecycle or reuse receipts; repaired snapshot admission handling for negative sizes, missing/relative Docker roots and observation exceptions.
+- Validation: 91 focused offline tests passed (88 new, three existing mocked snapshot regressions); runner failures preserve invalid/no-score semantics and attempt owned teardown.
+- Evidence: `GAIA_GATE.md` documents observed base metadata, compatibility inputs and remaining measured closure. No local GAIA lifecycle receipt was available; no lifecycle evidence was created.
+- Gate: production lifecycle remains BLOCKED pending selected-only provenance, coherent frozen-source controls, trusted verifier/dependencies, artifact export, quota enforcement and verified owned cleanup. Current stdout/exit codes and best-effort removal are insufficient.

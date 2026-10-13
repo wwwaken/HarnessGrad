@@ -114,7 +114,10 @@ def snapshot_admission(name: str) -> dict[str, int | str]:
     This is deliberately a refusal, not a best-effort warning: a commit killed by the
     daemon can leave an incomplete image and used to surface as an unexplained exit 137.
     """
-    proc = docker("inspect", "--size", "-f", "{{.SizeRw}}", name, timeout=60)
+    try:
+        proc = docker("inspect", "--size", "-f", "{{.SizeRw}}", name, timeout=60)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        raise _snapshot_failure("admission inspect", exc=exc) from exc
     if proc.returncode != 0:
         raise _snapshot_failure("admission inspect", proc)
     try:
@@ -122,16 +125,26 @@ def snapshot_admission(name: str) -> dict[str, int | str]:
     except ValueError:
         raise SnapshotUnavailable(
             f"snapshot admission failed kind=docker: invalid writable size {proc.stdout!r}")
+    if writable < 0:
+        raise SnapshotUnavailable(
+            f"snapshot admission failed kind=docker: negative writable size {writable}")
     maximum = _snapshot_limit("HG_SNAPSHOT_MAX_BYTES", SNAPSHOT_MAX_BYTES)
     if writable > maximum:
         raise SnapshotUnavailable(
             f"snapshot admission rejected kind=disk writable_bytes={writable} "
             f"max_bytes={maximum}")
 
-    info = docker("info", "--format", "{{.DockerRootDir}}", timeout=60)
+    try:
+        info = docker("info", "--format", "{{.DockerRootDir}}", timeout=60)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        raise _snapshot_failure("admission docker-info", exc=exc) from exc
     if info.returncode != 0:
         raise _snapshot_failure("admission docker-info", info)
-    root = Path(info.stdout.strip() or "/var/lib/docker")
+    root_text = info.stdout.strip()
+    if not root_text or not Path(root_text).is_absolute():
+        raise SnapshotUnavailable(
+            "snapshot admission failed kind=docker: missing or relative Docker root")
+    root = Path(root_text)
     try:
         free = shutil.disk_usage(root).free
     except OSError as exc:
