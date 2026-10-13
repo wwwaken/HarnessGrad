@@ -21,6 +21,18 @@ An adapter is not complete when it loads. It is complete when its scorer, runtim
 
 Do not record a partial score as a complete result. Use `incomplete` when execution stopped, timed out before measurement, or crossed a platform-integrity boundary. Keep diagnostic numbers separate from archive effects.
 
+## TriviaQA — offline scorer provenance — 2026-10-14
+
+- Status: `blocked` upstream acquisition; docs/tests repair complete, no model/H0
+- Scope: fabricated scorer inputs and inert integrity-test bytes only; no released train/validation/test or heldout reads, no network requests
+- Finding: the inherited “official” reference was a second local transcription, with no independent scorer commit or source bytes. The Hub dataset revision does not pin the GitHub evaluator; adapter “verbatim” claims remain unverified.
+- Evidence: `tests/fixtures/triviaqa_upstream/README.md`; `tests/quality/test_triviaqa_official_scorer.py`; `DOWNLOADS.md` TriviaQA provenance notice; fresh `triviaqa-scorer-provenance-codex157-report.md`
+- Platform change: test-only acquisition contract requiring original source/license bytes, a separate immutable commit, reviewed origin/linkage attestation, and SHA-256/Git blob pins. Removed the local reference and real-row/test-split reads; the mandatory source gate fails rather than skipping or falling back.
+- Comparison limits: `rc.nocontext` supplies no documents; validation differs from test evaluation; current reward is alias-max EM only; row-position identity drops question/document grouping. Full upstream grouping, denominator and missing-prediction rules remain unverified. No upstream code or F1 was invented or added.
+- Validation: after `mkdir -p .scratch/triviaqa-provenance`, `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py --basetemp=.scratch/triviaqa-provenance/pytest` — exit 1, **28 passed / 1 failed**, solely the absent-fixture provenance gate; no skips/errors. Adding `-k 'not test_em_components_match_pinned_upstream_fixture'` and using `--basetemp=.scratch/triviaqa-provenance/pytest-local` — exit 0, **28 passed / 1 deselected**, not upstream certification. `git diff --check` passed.
+- Remaining gates: independently acquire and review the original fixture/license/commit linkage, resolve any measured EM drift, then separately verify full evaluator grouping and comparison identity. No production H0 authorization follows from these synthetic checks.
+- Commit: carried by `test: fail closed on unacquired TriviaQA scorer provenance`; exact hash reported with delivery
+
 ## GSM8K — scorer contract
 
 - Status: `complete` history; scorer correction pending new-run validation

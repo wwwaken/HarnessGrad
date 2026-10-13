@@ -606,6 +606,20 @@ loads and scores it stays in git.
 
 ## `triviaqa`
 
+### Upstream evaluator source (not acquired; offline provenance blocked)
+
+The Hub revision below pins the dataset export, not the GitHub scorer. No verified
+commit or digest for `evaluation/triviaqa_evaluation.py` is available in this
+checkout. The acquisition contract is
+[`tests/fixtures/triviaqa_upstream/README.md`](tests/fixtures/triviaqa_upstream/README.md):
+independently acquired original source/license bytes, a separate immutable scorer
+commit and reviewed acquisition receipt, and per-file SHA-256/Git blob pins.
+Tests perform no network fetch and fail closed until the fixture exists. A second
+local transcription does not close this gate. The adapter currently measures
+EM-only on `rc.nocontext`/`validation` with row-position task IDs; full evaluator
+grouping/denominator equivalence remains unverified. No F1 source was acquired or
+F1 metric added.
+
 ### mandarjoshi/trivia_qa (rc.nocontext) (hf-dataset, 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f)
 
 - **Version (pinned):** `0f7faf33a3908546c6fd5b73a660e0f8ff173c2f`
