@@ -361,6 +361,47 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Validation: focused reporting/integration suite **30 passed in 0.96s**; diff whitespace check passed. Owned test scratch was removed after validation.
 - Commit: merged follow-up `a80f68f`; parent validation 45 passed
 
+## AppWorld reporting receipt integration audit — Codex 169
+
+- Status: saved-verdict reporting supported; progress/events not sufficient for measured TGC/SGC
+- Scope: fabricated Console/Reporter/progress/verdict events and guarded report CLI only; no real AppWorld payload, run receipt, smoke, H0, model or service execution
+- Finding: current `verdicts/round-N/<task>.json` retains scorer evidence and can produce measured TGC and same-trial SGC with Test-N/Test-C manifest labels. Progress records keep only generic scores/trial means; events lack scorer evidence and explicit trial IDs. They cannot reconstruct TGC or same-trial SGC.
+- Evidence: `appworld-reporting-codex169-report.md`, `tests/quality/test_appworld_receipt_integration_codex169.py`
+- Validation: fabricated writer/CLI integration tests passed; parent combined suite 45 passed. No runner writer format was changed.
+- Remaining gate: persist minimal trusted scorer evidence plus original trial IDs at the trusted writer; establish manifest/run/model/source/lifecycle identity before diagnostic use. Never infer TestTracker success from generic score or event `passed`.
+
+## AgentDojo selected production route reassessment — Codex 164
+
+- Status: `blocked`; no production diagnostic/H0
+- Scope: selected-control metadata interfaces only; mixed catalog, prompts, gold/actions, heldout, runtime and external archive were not opened or executed
+- Finding: `control_task` selection still routes through command-control and platform QA verifiers; neither offers a verifier-free, non-scoring selected admission receipt. Existing 70 selected oracle/noop controls are historical claims, not a fresh production `run_one` proof.
+- Evidence: `agentdojo-reassessment-codex164-report.md`; metadata privacy regression `tests/quality/test_agentdojo_metadata_privacy.py`
+- Validation: 3 metadata privacy tests passed. This proves the tested metadata path avoids guarded reads; it does not prove case materialization, trusted attack verifier, runtime, cleanup or measurement.
+- Remaining gate: define and independently review a selected-only, non-scoring production admission interface, or provision a coherent trusted attack-evaluation runtime and run approved oracle/noop controls; then run the staged one-task diagnostic. Do not bypass attack scoring with a synthetic verifier.
+
+## GAIA lifecycle wiring audit — Codex 165
+
+- Status: `blocked`; compatibility library is not a lifecycle receipt or runner authorization
+- Scope: source/runtime wiring analysis and synthetic tests only; no Docker, model/H0, heldout, or production lifecycle run
+- Finding: `eval.gaia_snapshot_attestation` compares supplied frozen source/runtime identities but does not collect/verify historical receipts or enforce a coherent source lock through runner execution. Fresh cleanup/absence, trusted verifier, dependency closure, artifact export and quota/backend observations remain missing.
+- Evidence: `GAIA_LIFECYCLE_WIRING.md`
+- Required before diagnostic: metadata-only selected manifest, coherent source lock before adapter import, fresh verifier/dependency/image identity, bounded snapshot and artifact export, observed backend limits/network, and verified owned cleanup, all bound in an immutable lifecycle receipt.
+
+## BFCL official call scorer review — Codex 166
+
+- Status: selected-read/privacy hardening complete; official Simple AST metric and index custody blocked
+- Finding: current metric compares function-name multisets and drops argument/reference-value alternatives. The selected index and per-row hashes are not externally authenticated; hashes do not establish release identity or confidentiality.
+- Evidence: `bfcl-ast-contract-codex166-report.md`; bounded span hardening in `data/bfcl_v3.py`; `tests/quality/test_bfcl_selected.py`
+- Validation: 73 selected-span/privacy tests passed. No official release payload, AST scorer, model/H0 or heldout was read/run.
+- Remaining gate: obtain pinned code-only official evaluator source and trusted archive/index custodian approval. Then preserve complete selected call/reference info, implement the source-derived AST contract, keep name metric diagnostic-only, and run fresh release-bound controls.
+
+## TriviaQA adapter impact review — Codex 167
+
+- Status: production scorer unchanged; upstream source provenance blocked
+- Finding: provenance commits changed tests/docs only; adapter blob and scorer behavior are unchanged. Regular suite reports 28 passed / 1 skipped; explicit `tools/check_triviaqa_provenance.py` exits 2 until acquired source exists.
+- Evidence: `TRIVIAQA_ADAPTER_IMPACT.md`; `tests/fixtures/triviaqa_upstream/README.md`
+- Remaining gate: independently acquire and review original evaluator bytes/license/commit linkage. This does not certify grouping, F1 or official full evaluator behavior.
+
 ## Filesystem quota backend audit — Codex 168
 
 - Status: `documented_blocker`; no production quota authorization.
