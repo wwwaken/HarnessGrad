@@ -245,14 +245,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: train-only source binding, category-aware controls, raw evidence redaction, finite reward/unmeasured classifier
 - Commit: inert patch only
 
-## Terminal-Bench — admission controls
+## Terminal-Bench — cached pilot admission controls
 
-- Status: `blocked`, no benchmark execution
-- Scope: inherited six-task inert pilot, jobs=1; 51/52 train images cached for full imposed pool
-- Finding: 184 offline artifact checks and 12 pilot tests passed, but scorer dependencies require network, disk growth is unreserved, cleanup errors can be swallowed, and full pool has one missing image
-- Evidence: `/tmp/codex/94/report.md`; manifest SHA-256 `b37c51ec1efb70aa34045f62e0b8a69fb94b56c3c649d8e800fc99de378842db`; root headroom observed about 50.35 GiB
-- Remaining gates: dependency closure/network policy, disk reservation, fail-closed cleanup, trusted verifier runtime
-- Commit: inert artifacts only
+- Status: `admission_hardened`, benchmark execution blocked
+- Scope: inherited six cached train images, jobs=1; synthetic local runtime controls only
+- Finding: admission now rejects empty device observations, negative reservations, unsafe mount flags, runtime-envelope mismatches before start, image-ID mismatches, and ambiguous cleanup absence; leases quarantine on uncertainty and retain capacity
+- Evidence: `/tmp/codex/111/report.md`; isolated review tests 47 passed/6 expected failures; merged implementation commit `b3e5409`
+- Platform change: manifest-bound resource ledger, exact image pin checks, fixed no-network/no-pull runtime, fail-closed cleanup and trusted artifact mount
+- Remaining gates: each scorer still lacks verified offline dependency closure/trusted runtime/state export; benchmark disk/inode quotas are not enforced; no official benchmark execution
+- Commit: `b3e5409 fix: harden cached pilot admission boundaries`
 
 ## AgentDojo — selected-only split controls
 
