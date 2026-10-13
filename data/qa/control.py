@@ -47,17 +47,25 @@ def _adapter(name: str):
 
 
 def _record(module, task_id: str | None) -> dict:
+    selected_id = task_id
+    if selected_id is None:
+        # BFCL identities are stable category/index pairs; choose a single simple item without
+        # asking its adapter to construct the mixed train/eval split.
+        selected_id = "simple/0" if callable(getattr(module, "load_selected", None)) else module.SPLIT["eval"][0]
+    selected_loader = getattr(module, "load_selected", None)
+    if callable(selected_loader):
+        selected_loader([selected_id])
     records = module._RECORDS
+    if not records:
+        records = getattr(module, "_records", lambda _ids: [])([selected_id])
     if not records:
         raise SystemExit(f"no {module.__name__} tasks; provision the data first "
                          f"(python3 tools/datasets.py --fetch --dataset "
                          f"{module.__name__.split('.')[-1]})")
-    if task_id is None:
-        task_id = module.SPLIT["eval"][0]
     for record in records:
-        if record["task_id"] == task_id:
+        if record["task_id"] == selected_id:
             return record
-    raise SystemExit(f"unknown task id {task_id!r}")
+    raise SystemExit(f"unknown task id {selected_id!r}")
 
 
 def _gold_text(record: dict) -> str:
@@ -97,7 +105,9 @@ def _oracle_prediction(module, record: dict) -> dict | None:
 def materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
     """Put the task where `SETUP` would, plus the gold when this is the oracle arm."""
     workdir.mkdir(parents=True, exist_ok=True)
-    for entry in (module.SETUP.get(record["task_id"]) or {}).get("files", []):
+    setup_map = (module.setup_for(record) if callable(getattr(module, "setup_for", None))
+                 else module.SETUP.get(record["task_id"]) or {})
+    for entry in setup_map.get("files", []):
         target = workdir / entry["path"]
         target.parent.mkdir(parents=True, exist_ok=True)
         if "content" in entry:
@@ -123,7 +133,8 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     `eval/verifier.py::_verify` re-materializes them after the harness stops. That is
     what makes the grade independent of anything the agent did to `<workdir>/gold.json`.
     """
-    verifier = module.VERIFY[record["task_id"]]
+    verifier = (module.verify_for(record) if callable(getattr(module, "verify_for", None))
+                else module.VERIFY[record["task_id"]])
     for entry in verifier.get("inputs") or []:
         target = workdir / entry["path"]
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -176,7 +187,7 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
     print(f"mode    {'oracle' if oracle else 'do-nothing'}")
     print(f"reward  {reward:g}")
     print(detail)
-    expected = 1.0 if oracle else 0.0
+    expected = 1.0 if oracle else (1.0 if not record["gold"].get("functions") else 0.0)
     if reward != expected:
         print(f"CONTROL FAILED: expected reward {expected:g}, got {reward:g}",
               file=sys.stderr)
@@ -224,7 +235,7 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     print(f"detail   {verdict.get('detail')}")
     if verdict.get("evidence"):
         print(f"evidence {json.dumps(verdict['evidence'].get('why'), ensure_ascii=False)}")
-    expected = 1.0 if oracle else 0.0
+    expected = 1.0 if oracle else (1.0 if not record["gold"].get("functions") else 0.0)
     if float(verdict.get("score") or 0.0) != expected:
         print(f"CONTROL FAILED: expected score {expected:g}, got {verdict.get('score')}",
               file=sys.stderr)

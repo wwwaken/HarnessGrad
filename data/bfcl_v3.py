@@ -68,6 +68,8 @@ KIND = "dataset"
 #: The oracle control submits the benchmark's own released reference; see
 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
 ORACLE_SOURCE = "released"
+# The shared verifier uses this marker to avoid echoing trusted BFCL gold in evidence.
+REDACT_EVIDENCE = True
 
 
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
@@ -113,15 +115,22 @@ def _read_jsonl(path: Path) -> list[dict]:
     return rows
 
 
-def _rows() -> dict[str, list[dict]]:
-    """`(questions, answers)` per subset, read from the extracted tarball."""
-    answers = {r["id"]: r["ground_truth"]
-               for r in _read_jsonl(DATASET_ROOT / SIMPLE_ANSWERS)}
-    return {
-        "simple": _read_jsonl(DATASET_ROOT / SIMPLE),
-        "irrelevance": _read_jsonl(DATASET_ROOT / IRRELEVANCE),
-        "_answers": answers,
-    }
+def _rows(subsets: set[str] | None = None) -> dict[str, list[dict]]:
+    """Read only the requested BFCL categories and their needed answer rows."""
+    wanted = set(subsets or SUBSETS)
+    unknown = wanted - set(SUBSETS)
+    if unknown:
+        raise ValueError(f"bfcl-v3: unknown subset(s): {sorted(unknown)}")
+    tables: dict[str, list[dict]] = {}
+    if "simple" in wanted:
+        tables["simple"] = _read_jsonl(DATASET_ROOT / SIMPLE)
+        tables["_answers"] = {
+            r["id"]: r["ground_truth"]
+            for r in _read_jsonl(DATASET_ROOT / SIMPLE_ANSWERS)
+        }
+    if "irrelevance" in wanted:
+        tables["irrelevance"] = _read_jsonl(DATASET_ROOT / IRRELEVANCE)
+    return tables
 
 
 def normalize_schema(parameters: dict) -> dict:
@@ -208,9 +217,11 @@ def score(prediction: str, gold: dict) -> dict:
                                 "acceptable values, which no scorer can enumerate. Only the "
                                 "names are decidable from the data."),
             "subset": gold.get("subset"),
-            "expected_functions": want,
+            "category": gold.get("subset"),
+            "expected_functions": "<redacted>",
             "predicted_functions": got,
             "no_tool_needed": not want,
+            "evidence_redacted": True,
         },
         "why": (
             f"named {got or 'nothing'} vs expected {want or 'nothing'}"
@@ -309,21 +320,40 @@ def _downloads() -> list[dict]:
 # ---------------------------------------------------------------- records ---
 
 
-def _records() -> list[dict]:
-    """One record per question across both subsets, in file order within each subset.
+def _records(task_ids: list[str] | set[str] | None = None) -> list[dict]:
+    """Build records for exactly the selected task identities.
 
-    The tool set travels **with the question**: BFCL gives each question its own functions, so
-    a global toolbox would let a harness call a function the question never offered.
+    A selected control must not read the other category: task IDs encode the category and file
+    index, so the loader can select rows without first materializing the mixed pool.
     """
-    tables = _rows()
-    answers = tables["_answers"]
+    selected: dict[str, set[int]] | None = None
+    if task_ids is not None:
+        selected = {"simple": set(), "irrelevance": set()}
+        for task_id in task_ids:
+            try:
+                subset, raw_index = str(task_id).split("/", 1)
+                index = int(raw_index)
+            except (ValueError, TypeError):
+                raise ValueError(f"bfcl-v3: invalid task id {task_id!r}") from None
+            if subset not in selected or index < 0:
+                raise ValueError(f"bfcl-v3: invalid task id {task_id!r}")
+            selected[subset].add(index)
+    subsets = set(SUBSETS) if selected is None else {k for k, values in selected.items() if values}
+    tables = _rows(subsets)
+    answers = tables.get("_answers", {})
     records = []
     for subset, key in (("simple", "simple"), ("irrelevance", "irrelevance")):
+        if subset not in subsets:
+            continue
         rows = tables[key]
         expected = N_SIMPLE if subset == "simple" else N_IRRELEVANCE
-        if len(rows) != expected:
+        if selected is None and len(rows) != expected:
             raise ValueError(f"bfcl-v3: {subset} has {len(rows)} rows, expected {expected}")
-        for index, row in enumerate(rows):
+        indexes = range(len(rows)) if selected is None else sorted(selected[subset])
+        for index in indexes:
+            if index >= len(rows):
+                raise ValueError(f"bfcl-v3: selected task {subset}/{index} is unavailable")
+            row = rows[index]
             # `question` is a list of **turn groups**, and each group is a list of messages:
             # measured, `question[0][0] == {"role": "user", "content": ...}`. A single-turn
             # subset has one group; the flattening below is what makes a future multi-turn
@@ -398,17 +428,16 @@ _SPEC = _BFCLSpec(
     source="ShishirPatil/gorilla@v1.3 berkeley-function-call-leaderboard/bfcl_eval/data",
 )
 
+# Records are deliberately populated only by an explicit full-pool request. Importing the scorer
+# must remain cheap and must not read mixed train/eval data.
 _RECORDS: list[dict] = []
 _LOAD_ERROR: str | None = None
-try:
-    _RECORDS = _SPEC.records()
-except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
-    _RECORDS = []
-    _LOAD_ERROR = f"{type(_exc).__name__}: {_exc}"
 
 
-def _ensure() -> list[dict]:
+def _ensure(task_ids: list[str] | set[str] | None = None) -> list[dict]:
     global _RECORDS, _LOAD_ERROR
+    if task_ids is not None:
+        return _records(task_ids)
     if _RECORDS:
         return _RECORDS
     try:
@@ -417,6 +446,23 @@ def _ensure() -> list[dict]:
         _LOAD_ERROR = f"{type(exc).__name__}: {exc}"
         raise
     return _RECORDS
+
+
+def load_selected(task_ids: list[str] | set[str]) -> tuple[list[dict], dict[str, str]]:
+    """Load only the explicitly selected BFCL task identities."""
+    records = _ensure(task_ids)
+    if not records:
+        raise ValueError("bfcl-v3: no selected records")
+    return ([{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in records],
+            {r["task_id"]: r["gold"]["answer"] for r in records})
+
+
+def setup_for(record: dict) -> dict:
+    return _SPEC.setup(record)
+
+
+def verify_for(record: dict) -> dict:
+    return _SPEC.verifier(record)
 
 
 def load() -> tuple[list[dict], dict[str, str]]:

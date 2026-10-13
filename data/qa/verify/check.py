@@ -188,6 +188,10 @@ def main(argv) -> int:
         # already validated to `data.<name>` above, and the rule this file must not break
         # is about *reaching an arbitrary module*, not about which builtin does it.
         adapter = __import__(module_name, fromlist=["score"])
+        if getattr(adapter, "REDACT_EVIDENCE", False):
+            evidence["gold"] = {"subset": gold.get("subset"),
+                                  "category": gold.get("subset"),
+                                  "redacted": True}
         scorer = getattr(adapter, "score", None)
         if not callable(scorer):
             return unmeasured(args, evidence,
