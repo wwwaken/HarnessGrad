@@ -433,8 +433,8 @@
         {
           "id": "trusted-stepwise-transport",
           "family": "official-scorer-execution",
-          "status": "code-solvable",
-          "observed": "Strict replay was synthetically repaired; current offline QA transport cannot attest successive actor observations.",
+          "status": "runtime",
+          "observed": "A pure public-observation transport contract now exists and is covered by fabricated tests, but it is not wired into the shared runner or an interactive official scorer; successive real observations and actor isolation remain unverified.",
           "evidence": [
             {
               "kind": "repository",
@@ -442,7 +442,7 @@
               "locator": "## ChessBench Puzzles — strict replay"
             }
           ],
-          "next_action": "Review a trusted public-observation transport against fabricated boards before making interactive accuracy claims."
+          "next_action": "Integrate the public transport with a trusted shared runner and fresh lifecycle receipts, or retain offline-only status; never claim interactive official accuracy from fabricated transport tests."
         },
         {
           "id": "interruption-closure",
