@@ -327,14 +327,12 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
     }
 
 def _require_untampered(res: dict | None) -> None:
-    """Stop the run if the harness wrote into the platform.
+    """Stop on a protected-file mismatch, without attributing the write.
 
-    A harness is arbitrary code the platform did not write, and it runs with the
-    platform on disk. Appending to `eval/runner.py` is the cheapest way to raise a
-    score, and the result would be a curve that looks like progress. The check
-    costs one pair of hashes per evaluation; the failure is fatal on purpose,
-    because a run containing one such evaluation is not a measurement with a
-    defect, it is not a measurement.
+    The snapshots establish changed paths, not the writer or whether an added
+    file is tracked source. Concurrent user edits and untracked task artifacts
+    can also change a snapshot. Keep the failure fatal: attribution uncertainty
+    does not establish that the evaluation used an unchanged platform.
     """
     changes = (res or {}).get("tampered") or {}
     touched = changes.get("added", []) + changes.get("removed", []) \
@@ -343,13 +341,12 @@ def _require_untampered(res: dict | None) -> None:
         return
     shown = ", ".join(sorted(set(touched))[:8])
     console.note(
-        "the harness modified the platform",
+        "protected files changed during evaluation; writer unknown",
         level="error",
-        human=f"\nFAILING RUN: the harness modified the platform: {shown}\n"
-              f"  The harness runs with the platform on disk and is arbitrary code.\n"
-              f"  Every number this run produced is therefore not a measurement.\n"
-              f"  Restore the named files from your backup or a clean checkout, then\n"
-              f"  re-run. `git status --short` shows what moved.")
+        human=f"\nFAILING RUN: protected files changed during evaluation: {shown}\n"
+              f"  Content snapshots do not identify the writer or source tracking.\n"
+              f"  Run integrity is unverified; inspect the changed paths and their\n"
+              f"  provenance before a new run. `git status --short` shows local changes.")
     raise PlatformTampered(changes)
 
 _PLATFORM_RECORD: dict | None = None

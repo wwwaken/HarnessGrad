@@ -222,9 +222,8 @@ def _call_method(work: Path, argv: list[str], request: dict, timeout_s: int,
 
     Detection, not prevention: a method runs as an ordinary subprocess with the
     platform on disk, and nothing here stops it from appending to `eval/runner.py`.
-    What this does is make that loud. A run whose method changed the referee is
-    not a measurement, and the failure mode without this check is a curve that
-    looks fine -- the method scored itself and the platform reported the number.
+    What this does is refuse a content mismatch. The snapshots do not identify
+    its writer: concurrent user edits and untracked artifacts can also cause it.
     """
     before = snapshot(PLATFORM_ROOT)
     reply = _call_entrypoint(work, argv, request, timeout_s=timeout_s,
@@ -234,10 +233,10 @@ def _call_method(work: Path, argv: list[str], request: dict, timeout_s: int,
     touched = changes["added"] + changes["removed"] + changes["modified"]
     if touched:
         shown = ", ".join(sorted(set(touched))[:8])
-        print(f"\nFAILING RUN: the method modified the platform: {shown}\n"
-              f"  A method that edits the scorer is not being measured. Restore\n"
-              f"  the named files from your backup or a clean checkout, then\n"
-              f"  re-run.", file=sys.stderr)
+        print(f"\nFAILING RUN: protected files changed during method call: {shown}\n"
+              f"  Content snapshots do not identify the writer or source tracking.\n"
+              f"  Run integrity is unverified; inspect the changed paths and their\n"
+              f"  provenance before a new run.", file=sys.stderr)
         raise PlatformTampered(changes)
     return reply
 
@@ -258,4 +257,4 @@ def _touched_paths(work: Path, before: str, after: str) -> list[str]:
     return sorted(p for p in out.splitlines() if p.strip())
 
 class PlatformTampered(RuntimeError):
-    """A run tried to score itself. The run stops; the exception names the files."""
+    """Protected-file mismatch; legacy name, unknown writer, run must stop."""
