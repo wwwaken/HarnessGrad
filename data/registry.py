@@ -253,7 +253,7 @@ PLACEMENTS = ("inside", "beside")
 #: mistyped `work_dir` that silently did nothing would leave a task running in the
 #: wrong place while the dataset said otherwise.
 ENV_FIELDS = ("kind", "image", "workdir", "network", "placement", "services", "web",
-              "state", "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s")
+              "state", "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s", "agent_runtime")
 
 #: Where a task's state lives (INTERFACE.md §2.5.9). `mount` is a host directory bound
 #: at `workdir`; `container` is the container's own filesystem, snapshotted after the
@@ -340,14 +340,26 @@ def _check_env(spec, tid: str, name: str) -> None:
             f"and the failure would look like the harness's. Not supported yet.")
 
     if kind == "files":
-        extra = set(spec) - {"kind"}
+        extra = set(spec) - {"kind", "network", "agent_timeout_s", "verify_timeout_s", "agent_runtime"}
         if extra:
             raise ValueError(
                 f"dataset {name!r}: ENV[{tid!r}] is kind 'files' but carries "
                 f"{sorted(extra)}, which only an 'exec' environment uses. A field "
                 f"that does nothing is worse than a missing one: the dataset would "
                 f"read as though it had asked for a container.")
+        if "network" in spec and spec["network"] != "none":
+            raise ValueError("files network policy must be 'none' or omitted")
+        if "agent_runtime" in spec:
+            runtime = spec["agent_runtime"]
+            if not isinstance(runtime, dict) or set(runtime) != {"package_dir", "files"} \
+                    or not isinstance(runtime["package_dir"], str) \
+                    or not Path(runtime["package_dir"]).is_absolute() \
+                    or not isinstance(runtime["files"], list) or not runtime["files"]:
+                raise ValueError("files agent_runtime needs an absolute package_dir and nonempty files")
         return
+
+    if "agent_runtime" in spec:
+        raise ValueError("agent_runtime package projections require a files environment")
 
     web = spec.get("web")
     if web is not None:
@@ -507,7 +519,8 @@ def _check_service(svc, tid: str, name: str) -> None:
 def _normalize_env(spec: dict) -> dict:
     """The canonical form, so two spellings of one environment compare equal."""
     if spec.get("kind", "files") == "files":
-        return {"kind": "files"}
+        return {"kind": "files", **{key: spec[key] for key in
+                ("network", "agent_timeout_s", "verify_timeout_s", "agent_runtime") if key in spec}}
     services = []
     for svc in spec.get("services") or []:
         services.append({

@@ -51,8 +51,9 @@ its siblings, so `harnessgrad_work/` reappears while `HarnessGrad/` stays gone.
 
 What this does not do
 ---------------------
-The subject still has unrestricted network access, and it still holds the agent's
-API key, because a harness that cannot reach a model cannot be measured. It can
+By default the subject has unrestricted network access and holds the agent's
+API key. Native tasks that declare network='none' get a private network namespace.
+A subject on the default network can
 therefore exfiltrate that key to anywhere it likes. A namespace cannot fix this;
 only egress filtering or a scoped key can, and neither is implemented. This is a
 recorded gap, not an oversight -- see INTERFACE.md §4.8.
@@ -74,7 +75,7 @@ from harnessgrad.config import current as current_config
 #: A curve made under plan 1 and one made under plan 2 are measurements of a
 #: harness in two different worlds, so `run_meta.json` records this number and
 #: `tools/plot_curve.py` refuses to put them on the same axis without saying so.
-PLAN_VERSION = 1
+PLAN_VERSION = 2
 
 #: Runtime trees a subject may need, bound read-only at their host paths. Kept as
 #: a short explicit list rather than "the whole host": the point of the namespace
@@ -175,7 +176,9 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
             task_dir_writable: bool = True,
             runtime_paths: tuple[Path, ...] = (),
             visible_paths: tuple[Path, ...] = (),
-            writable_paths: tuple[Path, ...] = ()) -> list[str]:
+            writable_paths: tuple[Path, ...] = (),
+            network: str | None = None,
+            package_overlays: tuple[tuple[Path, Path], ...] = ()) -> list[str]:
     """Wrap `argv` so it runs with the platform off its disk.
 
     Raises rather than degrading. A sandbox that quietly did not apply would make
@@ -190,6 +193,10 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
 
     plan: list[str] = ["--die-with-parent", "--unshare-pid", "--proc", "/proc",
                        "--dev", "/dev"]
+    if network not in (None, "none"):
+        raise ValueError(f"unsupported native sandbox network policy: {network!r}")
+    if network == "none":
+        plan += ["--unshare-net"]
 
     for path in RUNTIME:
         if Path(path).exists():
@@ -337,6 +344,18 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
                 f"hand from an older commit will not have it.")
         plan += ["--tmpfs", str(state)]
 
+    # Last mounts win: runtime_paths or a parent bind must never uncover the
+    # installed reference-bearing package after its public projection is mounted.
+    for source, target in package_overlays:
+        source, target = Path(source).resolve(), Path(target).resolve()
+        if not source.is_dir() or not target.is_dir():
+            raise SandboxUnavailable("agent package overlay is missing")
+        for writable in (task_dir, *writable_paths, *state_dirs):
+            writable = Path(writable).resolve()
+            if source == writable or writable in source.parents:
+                raise SandboxUnavailable("agent package projection is in writable storage")
+        plan += ["--ro-bind", str(source), str(target)]
+
     #: Variables the platform itself sets to a filesystem path. Only these are
     #: checked against the hidden tree, and the list is explicit because guessing
     #: is what went wrong twice: `HG_AGENT_MODEL=deepseek-flash` is not a path, but
@@ -380,7 +399,9 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
         runtime_paths: tuple[Path, ...] = (),
         visible_paths: tuple[Path, ...] = (),
         writable_paths: tuple[Path, ...] = (),
-        input_text: str | None = None):
+        input_text: str | None = None,
+        network: str | None = None,
+        package_overlays: tuple[tuple[Path, Path], ...] = ()):
     """`subprocess.run` with the namespace in place. Same return type.
 
     `input_text` exists because a *method* is driven over stdin (it reads one JSON
@@ -394,7 +415,8 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
                       task_dir_writable=task_dir_writable,
                       runtime_paths=runtime_paths,
                       visible_paths=visible_paths,
-                      writable_paths=writable_paths)
+                      writable_paths=writable_paths,
+                      network=network, package_overlays=package_overlays)
     return subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
                           timeout=timeout_s, cwd=cwd, env=env)
 

@@ -25,6 +25,7 @@ from eval.integrity import PLATFORM_ROOT, diff, snapshot
 # a task whose state is the container's own filesystem.
 from eval.container_state import _run_one_container_state
 from eval.task_contract import runtime_task
+from eval.runtime_policy import admit_native_network, phase_timeout, stage_agent_runtime
 from eval.tracing import _last_identity, _last_usage, _materialize, _write_progress
 from eval.verifier import _verify, test_rate_of
 
@@ -91,10 +92,10 @@ def _improver_credentials() -> set[str]:
 
 
 
-def run_one(repo: Path, task: dict, timeout_s: int = 3600,
+def run_one(repo: Path, task: dict, timeout_s: int | None = None,
             sandbox: bool = True, setup: dict | None = None,
             verifier: dict | None = None,
-            verify_timeout_s: int = 3600,
+            verify_timeout_s: int | None = None,
             env: dict | None = None,
             run_id: str = "", run_seed: str = "",
             recordings_root: Path | None = None) -> dict:
@@ -110,14 +111,13 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
     keep the same spelling they would have had unsandboxed -- a translated path is
     a place where a harness's own record stops matching the filesystem it ran on.
 
-    It does **not** restrict the network or take away the agent's API key: a harness
-    that cannot reach a model cannot be measured. See `eval/sandbox.py`.
+    Native tasks can declare network='none'; live model backends are refused for
+    those tasks before launch. See `eval/sandbox.py`.
     """
     # Resolve before the subprocess switches cwd: a relative repo path would
     # otherwise be interpreted against the sandbox directory and the harness
     # would silently fail to launch, scoring zero for the wrong reason.
     repo = Path(repo).resolve()
-    workdir = Path(tempfile.mkdtemp(prefix="hg-task-"))
     # The environment is a property of the task (INTERFACE.md §2.5). `files` is the
     # absence of a declaration, not a separate code path invented for old datasets.
     env_spec = env or {"kind": "files"}
@@ -131,11 +131,19 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
     # Declared per environment: the real task set spans 600-12000 s, and the module
     # default of 300 would report a harness failing a task it was never given time to
     # attempt (INTERFACE.md §2.5.9).
-    timeout_s = int(env_spec.get("agent_timeout_s") or timeout_s)
-    verify_timeout_s = int(env_spec.get("verify_timeout_s") or verify_timeout_s)
+    timeout_s = phase_timeout(timeout_s, env_spec.get("agent_timeout_s"))
+    verify_timeout_s = phase_timeout(verify_timeout_s, env_spec.get("verify_timeout_s"),
+                                    (verifier or {}).get("timeout_s"))
+    agent_runtime = env_spec.get("agent_runtime")
+    if agent_runtime and is_exec:
+        raise ValueError("agent_runtime package projections require a files environment")
+    if not is_exec and not sandbox and (agent_runtime or env_spec.get("network") == "none"):
+        raise ValueError("declared native runtime/network isolation requires sandbox=True")
     # Read before the dispatch: both state kinds need it, and it used to be computed
     # further down in the `mount` path only.
     _manifest = json.loads((repo / "harness.json").read_text())
+    if not is_exec:
+        admit_native_network(env_spec, _manifest, os.environ.get("HG_AGENT_BACKEND", "mock"))
     runtime_paths = tuple(Path(p).expanduser()
                           for p in (_manifest.get("runtime_paths") or []))
     if is_exec and env_spec.get("state") == "container":
@@ -156,7 +164,13 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
     web_gateway = None
     held = progress_mod.task_of()
     phases = progress_mod.phases_for(held)
+    runtime_dir = None
+    package_overlays = ()
+    workdir = Path(tempfile.mkdtemp(prefix="hg-task-"))
     try:
+        if agent_runtime:
+            runtime_dir = Path(tempfile.mkdtemp(prefix="hg-agent-runtime-"))
+            package_overlays = (stage_agent_runtime(agent_runtime, runtime_dir),)
         # The task's initial state, before the harness sees anything. It used to be an
         # empty directory, which is why the old contract could only express "answer a
         # question": a dataset had nowhere to put the thing the task is *about*.
@@ -292,6 +306,7 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
                 # about, where a verifier would then be reading them.
                 "TMPDIR": str(home / "tmp"),
             })
+        child_env["HG_AGENT_DEADLINE_S"] = str(timeout_s)
         child_env["HARNESSGRAD_STATE"] = str(state_dir)
         if overlay:
             child_env.update(harness_runtime.env_for(overlay))
@@ -369,7 +384,9 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
                                    work_root=work_root, task_dir=workdir,
                                    env=child_env, timeout_s=timeout_s, cwd=workdir,
                                    repo=repo, state_dirs=(state_dir,),
-                                   runtime_paths=runtime_paths)
+                                   runtime_paths=runtime_paths,
+                                   network=env_spec.get("network"),
+                                   package_overlays=package_overlays)
 
         try:
             with phases("agent"):
@@ -406,6 +423,12 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
                 "verdict": verdict, "env_usage": env_usage,
                 "harness_runtime": harness_runtime.record(
                     overlay, platform_interpreter=(image_python is None)),
+                "runtime_boundary": {
+                    "agent_timeout_s": timeout_s,
+                    "verifier_timeout_s": verify_timeout_s,
+                    "agent_network": env_spec.get("network", "inherited") if not is_exec else network,
+                    "agent_package_projected": bool(package_overlays),
+                    "verifier_package": "trusted"},
                 # `account()` and not just "published": the connection counts are what
                 # turn a harness-side `Connection error` into a named cause. Read while
                 # the gateway is still up -- `finally` stops it right after this returns.
@@ -438,6 +461,8 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
                 print(f"warning: could not fully tear down services for "
                       f"{task['task_id']}: {leaked}", file=sys.stderr)
         shutil.rmtree(workdir, ignore_errors=True)
+        if runtime_dir is not None:
+            shutil.rmtree(runtime_dir, ignore_errors=True)
 
 
 

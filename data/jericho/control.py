@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """The Jericho controls: does the check actually reach 1, and actually reach 0?
 
-    python3 data/jericho/control.py --oracle
-    python3 data/jericho/control.py --noop
-    python3 data/jericho/control.py --oracle --platform
-    python3 data/jericho/control.py --noop   --platform
+    python3 data/jericho/control.py --oracle --task-id GAME
+    python3 data/jericho/control.py --noop --task-id GAME
+    python3 data/jericho/control.py --oracle --platform --task-id GAME
+    python3 data/jericho/control.py --noop --platform --task-id GAME
 
 A dataset whose oracle scores 0 has an unreachable check, and every harness score on it is
 meaningless. A dataset whose do-nothing control scores 1 has a check that cannot fail. Both
@@ -12,9 +12,8 @@ failures are quiet -- a plausible number lands in the right place -- so both are
 are asserted.
 
 The oracle is Jericho's own: `FrotzEnv.get_walkthrough()` at the game's official seed, which is
-the reference solution the benchmark's `game_info.py` ships. By default the control picks the
-**shortest walkthrough on the eval side** of the split, because the control's runtime is a cost
-the whole suite pays; `--task-id` runs any game for a reader who wants a specific one.
+the reference solution the benchmark's `game_info.py` ships. Controls require an explicit
+`--task-id` so that a run never implicitly selects an evaluation game.
 
 A note on what "reward 1" means here. The reward is `score / get_max_score()`, so 1 means the
 game was finished. Measured over this suite, the walkthroughs reach the maximum for most games
@@ -45,14 +44,12 @@ import jer_env  # noqa: E402
 
 
 def _record(task_id: str | None) -> dict:
+    if task_id is None:
+        raise SystemExit("--task-id is required; controls must explicitly select approved games")
     records = jericho._RECORDS
     if not records:
         raise SystemExit("no Jericho games; provision them with "
                          "`python3 tools/datasets.py --fetch --dataset jericho`")
-    if task_id is None:
-        eval_ids = set(jericho.SPLIT["eval"])
-        task_id = min((r for r in records if r["task_id"] in eval_ids),
-                      key=lambda r: len(r["walkthrough"]))["task_id"]
     for record in records:
         if record["task_id"] == task_id:
             return record
@@ -74,49 +71,57 @@ def _copy_entry(entry: dict, workdir: Path) -> None:
 def materialize(record: dict, workdir: Path) -> None:
     """Put the task where `SETUP` would: the game identity, the ROM, the CLI, its library."""
     workdir.mkdir(parents=True, exist_ok=True)
+    # --keep preserves the directory, not an earlier episode or a log symlink.
+    (workdir / jericho.LOG_FILE).unlink(missing_ok=True)
     for entry in jericho.SETUP[record["task_id"]]["files"]:
         _copy_entry(entry, workdir)
-    # The ROM is a `from` reference into the dataset root, which is not in the workdir; the
-    # platform's SETUP does not ship it (only `VERIFY.inputs` does), so the control copies it
-    # the way a real run would after verification materializes it.
-    shutil.copy2(record["path"], workdir / record["rom"])
 
 
-def drive(workdir: Path, actions: list[str]) -> int:
+def drive(workdir: Path, actions: list[str], *, timeout_s: float = 300) -> int:
     """Act through the CLI exactly as an agent would. Returns how many commands ran."""
-    ran = 0
-    for action in actions:
-        proc = subprocess.run([sys.executable, "jer", "do", action], cwd=workdir,
-                              capture_output=True, text=True)
-        if proc.returncode != 0:
-            raise SystemExit(f"the CLI refused {action!r}: {proc.stderr[-400:]}")
-        ran += 1
-    subprocess.run([sys.executable, "jer", "done"], cwd=workdir, capture_output=True,
-                   text=True)
-    return ran
+    from eval.runtime_policy import phase_timeout, stage_agent_runtime
+    from eval import sandbox
+
+    workdir = workdir.resolve()
+    control_root = workdir / ".control"
+    control_root.mkdir(exist_ok=True)
+    child_env = {"PATH": f"{Path(sys.executable).parent}:/usr/bin:/bin", "HOME": "/tmp",
+                 "TMPDIR": "/tmp", "LANG": "C.UTF-8", "PYTHONNOUSERSITE": "1",
+                 "PYTHONDONTWRITEBYTECODE": "1"}
+    deadline = time.monotonic() + phase_timeout(timeout_s)
+    with tempfile.TemporaryDirectory(prefix="jericho-agent-runtime-") as runtime:
+        package = stage_agent_runtime(jericho._env()["agent_runtime"], Path(runtime))
+        for args in [*[['do', action] for action in actions], ['done']]:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise subprocess.TimeoutExpired("Jericho agent phase", timeout_s)
+            proc = sandbox.run([sys.executable, "jer", *args], cwd=workdir,
+                               platform=ROOT, work_root=control_root, repo=control_root,
+                               task_dir=workdir, env=child_env, timeout_s=remaining,
+                               network="none", package_overlays=(package,))
+            if proc.returncode != 0:
+                raise RuntimeError(f"Jericho CLI exited {proc.returncode}: {proc.stderr[-400:]}")
+    return len(actions)
 
 
 def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     """Run the check the way the platform's verifier does, re-materializing its inputs."""
+    from eval.verifier import _verify
     verifier = module.VERIFY[record["task_id"]]
-    for entry in verifier.get("inputs") or []:
-        _copy_entry(entry, workdir)
-    argv = [sys.executable, *verifier["argv"][1:]]
-    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)
-    reward_path = workdir / module.REWARD_REL
-    reward = float(reward_path.read_text().strip()) if reward_path.is_file() else -1.0
-    evidence_path = workdir / module.EVIDENCE_REL
-    evidence = (json.loads(evidence_path.read_text())
-                if evidence_path.is_file() else {})
+    verdict = _verify(workdir.resolve(), verifier, "", sandbox=True,
+                      timeout_s=module.VERIFY_TIMEOUT_S, env=module.DEFAULT_ENV)
+    evidence = verdict.get("evidence") or {}
+    reward = (float(verdict["score"]) if verdict.get("score") is not None
+              and evidence.get("measured") is True and not verdict.get("unmeasured") else -1.0)
     detail = {
-        "returncode": proc.returncode,
+        "passed": verdict.get("passed"),
         "reward": reward,
         "score": evidence.get("score"),
         "max_score": evidence.get("max_score"),
         "moves": evidence.get("moves"),
         "measured": evidence.get("measured"),
         "why": evidence.get("why") or evidence.get("error"),
-        "stderr": proc.stderr[-400:],
+        "detail": verdict.get("detail"),
     }
     return reward, json.dumps(detail, indent=1, sort_keys=True)
 
@@ -124,7 +129,7 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
 def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
     materialize(record, workdir)
     if oracle:
-        drive(workdir, record["walkthrough"])
+        drive(workdir, record["walkthrough"], timeout_s=module.AGENT_TIMEOUT_S)
     reward, detail = run_check(module, record, workdir)
     print(f"task    {record['task_id']}  ({len(record['walkthrough'])} reference commands)")
     print(f"mode    {'oracle' if oracle else 'do-nothing'}")
@@ -144,7 +149,7 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     from eval.runner import run_one
 
     tid = record["task_id"]
-    task = next(t for t in module.load()[0] if t["task_id"] == tid)
+    task = {"task_id": tid, "goal": module._goal(record), "inputs": []}
     setup = {"files": list(module.SETUP[tid]["files"])}
     if oracle:
         setup["files"].append({"path": ".oracle/actions.json",
@@ -153,18 +158,20 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     harness = work_root / "oracle_harness"
     shutil.copytree(Path(__file__).resolve().parent / "oracle_harness", harness,
                     dirs_exist_ok=True)
+    old_work_root = os.environ.get("HARNESSGRAD_WORK_ROOT")
     os.environ["HARNESSGRAD_WORK_ROOT"] = str(work_root)
     started = time.time()
-    result = run_one(
-        repo=harness,
-        task=task,
-        setup=setup,
-        verifier=module.VERIFY[tid],
-        env=module.ENV[tid],
-        sandbox=sandbox,
-        run_id="jericho-control",
-        run_seed="0",
-    )
+    try:
+        result = run_one(
+            repo=harness, task=task, setup=setup, verifier=module.VERIFY[tid],
+            env=module.ENV[tid], sandbox=sandbox,
+            timeout_s=module.AGENT_TIMEOUT_S, verify_timeout_s=module.VERIFY_TIMEOUT_S,
+            run_id="jericho-control", run_seed="0")
+    finally:
+        if old_work_root is None:
+            os.environ.pop("HARNESSGRAD_WORK_ROOT", None)
+        else:
+            os.environ["HARNESSGRAD_WORK_ROOT"] = old_work_root
     verdict = result.get("verdict") or {}
     print(f"task     {tid}")
     print(f"mode     {'oracle' if oracle else 'do-nothing'} (platform run_one, "
@@ -175,7 +182,9 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     if verdict.get("evidence"):
         print(f"evidence {json.dumps(verdict['evidence'].get('why'), ensure_ascii=False)}")
     expected = 1.0 if oracle else 0.0
-    if float(verdict.get("score") or 0.0) != expected:
+    if result.get("exit_code") != 0 or verdict.get("score") is None \
+            or not (verdict.get("evidence") or {}).get("measured") \
+            or float(verdict["score"]) != expected:
         print(f"CONTROL FAILED: expected score {expected:g}, got {verdict.get('score')}",
               file=sys.stderr)
         return 1
@@ -190,7 +199,7 @@ def main(argv) -> int:
     mode.add_argument("--noop", action="store_true", help="do nothing; expect 0")
     parser.add_argument("--platform", action="store_true")
     parser.add_argument("--no-sandbox", action="store_true")
-    parser.add_argument("--task-id", default=None)
+    parser.add_argument("--task-id", required=True)
     parser.add_argument("--workdir", default=None)
     parser.add_argument("--keep", action="store_true")
     args = parser.parse_args(argv)

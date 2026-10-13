@@ -26,6 +26,7 @@ import eval.services as services_mod
 from eval.services import label
 from eval.integrity import PLATFORM_ROOT
 from eval.tracing import _materialize
+from eval.runtime_policy import phase_timeout
 
 def _verifier_env(workdir: Path) -> dict:
     """A minimal environment for the check.
@@ -246,6 +247,7 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
     """
     spec = verifier or {"kind": "answer", "expected": None}
     kind = spec.get("kind", "answer")
+    timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"))
     name = label(f"hg-verify-{run_id}-{task_id}")
     created = False
     verdict_dir: Path | None = None
@@ -433,6 +435,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
     """Run a verifier with platform-owned output storage for exec reward checks."""
     spec = verifier or {"kind": "answer", "expected": None}
     env_spec = env or {"kind": "files"}
+    timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"), env_spec.get("verify_timeout_s"))
     if spec.get("kind") == "command" and spec.get("reward_file") \
             and env_spec.get("kind") == "exec":
         with tempfile.TemporaryDirectory(prefix="hg-verdict-",

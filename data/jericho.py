@@ -224,12 +224,13 @@ def _setup(record: dict) -> dict:
     `VERIFY.inputs`, and that is now what this does.
 
     The ROM is not a secret -- it is the game, and the agent cannot play without it. The
-    *answer* is the walkthrough, which lives in the installed package's `game_info.py` and is
-    never written into the workdir.
+    *answer* is the walkthrough. The agent sees a stripped package projection;
+    the installed reference-bearing package is reserved for trusted verification.
     """
     import json
 
     return {"files": [
+        {"path": LOG_FILE, "content": ""},
         {"path": GAME_FILE,
          "content": json.dumps({"task_id": record["task_id"], "rom": record["rom"],
                                 "seed": record["seed"]})},
@@ -269,7 +270,7 @@ def _verifier(record: dict) -> dict:
         ],
         "reward_file": REWARD_FILE,
         "evidence_file": EVIDENCE_FILE,
-        "timeout_s": 300,
+        "timeout_s": VERIFY_TIMEOUT_S,
     }
 
 
@@ -315,16 +316,24 @@ CLI_DIR = ASSETS / "cli"
 LIB_DIR = ASSETS / "lib"
 VERIFY_DIR = ASSETS / "verify"
 
-#: One environment for every task: the host. `files` cannot carry resource or timeout fields
-#: (`data/registry.py::_check_env` refuses them), so the platform's defaults apply.
-DEFAULT_ENV: dict = {"kind": "files"}
+AGENT_TIMEOUT_S = 300
+VERIFY_TIMEOUT_S = 300
+DEFAULT_ENV: dict = {"kind": "files", "network": "none",
+                     "agent_timeout_s": AGENT_TIMEOUT_S,
+                     "verify_timeout_s": VERIFY_TIMEOUT_S}
+_LOAD_ERROR: str | None = None
 
-try:
-    _RECORDS: list[dict] = _official_games()
-    _LOAD_ERROR: str | None = None
-except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
-    _RECORDS = []
-    _LOAD_ERROR = f"{type(_exc).__name__}: {_exc}"
+
+def _env() -> dict:
+    import importlib.util
+
+    spec = importlib.util.find_spec("jericho")
+    if spec is None or not spec.origin:
+        raise ValueError("jericho runtime is not installed")
+    runtime_spec = importlib.util.spec_from_file_location("_jericho_public_runtime", ASSETS / "runtime.py")
+    runtime = importlib.util.module_from_spec(runtime_spec)
+    runtime_spec.loader.exec_module(runtime)
+    return {**DEFAULT_ENV, "agent_runtime": runtime.agent_runtime(str(Path(spec.origin).parent))}
 
 
 def provision_status() -> dict:
@@ -339,21 +348,22 @@ def provision_status() -> dict:
         "roms": len(roms),
         "archive": str(archive) if archive.is_file() else None,
         "missing_official_roms": missing_games() if roms else [],
-        "tasks": len(_RECORDS),
+        "tasks": len(__getattr__("_RECORDS")),
     }
 
 
 def load() -> tuple[list[dict], dict[str, str]]:
     """`(tasks, scorable)`. Every task is graded by its `VERIFY` entry."""
+    records = __getattr__("_RECORDS")
     if _LOAD_ERROR is not None:
         raise ValueError(
             f"jericho: cannot read the game suite ({_LOAD_ERROR}). Provision it with "
             f"`python3 tools/datasets.py --fetch --dataset jericho` and install "
             f"`jericho==3.3.1`.")
-    if not _RECORDS:
+    if not records:
         raise ValueError(f"jericho: no games under {games_dir()}")
-    tasks = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in _RECORDS]
-    return tasks, {r["task_id"]: "" for r in _RECORDS}
+    tasks = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in records]
+    return tasks, {r["task_id"]: "" for r in records}
 
 
 def _is_eval(task_id: str) -> bool:
@@ -367,7 +377,7 @@ def _is_eval(task_id: str) -> bool:
 
 
 def _map(builder) -> dict:
-    return {r["task_id"]: builder(r) for r in _RECORDS}
+    return {r["task_id"]: builder(r) for r in __getattr__("_RECORDS")}
 
 
 def __getattr__(name: str):
@@ -376,16 +386,26 @@ def __getattr__(name: str):
     Not at import: `data/registry.py::published` imports this module to decide what the
     chooser offers, and the maps carry one entry per game with a ROM path and a JSON blob.
     """
+    if name == "_RECORDS":
+        if "_RECORDS" not in globals():
+            try:
+                globals()["_RECORDS"] = _official_games()
+            except Exception as exc:  # reported by load(), as with eager provisioning
+                globals()["_RECORDS"] = []
+                globals()["_LOAD_ERROR"] = f"{type(exc).__name__}: {exc}"
+        return globals()["_RECORDS"]
     if name == "ENV":
-        return {r["task_id"]: {"kind": "files"} for r in _RECORDS}
+        env = _env()
+        return {r["task_id"]: dict(env) for r in __getattr__("_RECORDS")}
     if name == "SETUP":
         return _map(_setup)
     if name == "VERIFY":
         return _map(_verifier)
     if name == "SPLIT":
+        records = __getattr__("_RECORDS")
         if (os.environ.get("HG_JERICHO_SPLIT") or "hash").lower() == "none":
-            return {"train": [], "eval": [r["task_id"] for r in _RECORDS]}
-        ids = [r["task_id"] for r in _RECORDS]
+            return {"train": [], "eval": [r["task_id"] for r in records]}
+        ids = [r["task_id"] for r in records]
         return {"train": [t for t in ids if not _is_eval(t)],
                 "eval": [t for t in ids if _is_eval(t)]}
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -58,7 +58,7 @@
   },
   "env": {
     "kinds": ["files", "exec"],
-    "files_may_carry": ["kind"],
+    "files_may_carry": ["kind", "network", "agent_timeout_s", "verify_timeout_s", "agent_runtime"],
     "web": {
       "type": "object",
       "required": ["search", "fetch"],
