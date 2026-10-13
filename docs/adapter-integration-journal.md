@@ -88,7 +88,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Finding: prior reward measured Answer F1 only. Default structured scoring now reports Answer F1, Answer EM, Support F1/EM and a labeled platform joint policy; missing support yields zero support, and trusted evidence is verifier-only
 - Evidence: `data/musique.py`; `docs/musique-output-contract.md`; public pinned evaluator fixtures; combined scorer validation
 - Platform change: structured QA evidence transport and redacted verifier gold support
-- Validation: combined MuSiQue/2Wiki/Chess suites passed `209 tests`
+- Validation: combined MuSiQue/2Wiki/Chess suites passed `209 tests`; platform train-side controls: MuSiQue `musique/dev/0` oracle=1.0/noop=0.0; 2Wiki `twowikimultihopqa/dev/3` oracle=1.0/noop=0.0
 - Remaining gates: released-data controls and model/H0 validation remain separate; platform joint reward is not an official single leaderboard column
 - Commit: `4d41a4c fix: restore MuSiQue and 2Wiki evaluation fidelity`
 
@@ -274,6 +274,7 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: no blocker to this patch. A trusted runner transport must deliver successive public observations before actor decisions to claim interactive official puzzle accuracy; the current QA runner remains explicitly offline. Release-pool replay, source-archive drift checks and real controls are intentionally unvalidated under the no-heldout/no-model scope, rather than inferred from synthetic success.
 - Validation: `python3 -m pytest -q tests/quality/test_chessbench_puzzles_strict_replay.py tests/quality/test_chessbench_puzzles_official_scorer.py::test_synthetic_upstream_diagnostic_matches_verbatim tests/quality/test_chessbench_puzzles_official_scorer.py::test_alternate_mate_and_nonmate_against_official_function --basetemp=/tmp/codex/108/worktree/.chessbench-test-tmp` → **42 passed in 0.49s**. `git diff --cached --check` passed before the implementation commit. Owned temporary test files were removed after validation.
 - Commit: `d8d44a6 fix: enforce ChessBench puzzle replay legality and define stepwise contract`
+- Validation: platform train-side control `chessbench_puzzles/test/0` oracle=1.0/noop=0.0; strict replay passed 42 focused tests
 
 ## Process rule
 
