@@ -1,55 +1,111 @@
-# LiveCodeBench /740 remaining-gate review
+# Terminal cached pilot admission hardening
 
-Status: focused admission/relay repairs implemented; row attestation and official scorer verification remain blocked. No H0, model invocation, full benchmark, or main-checkout edits were performed. Work is confined to `/tmp/codex/110/worktree` at detached HEAD, based on `ba7a4f3`.
+The six reported admission findings are repaired in the focused library, with
+**199 passing offline tests**. Benchmark admission remains **BLOCKED** by scorer,
+dependency, export, and quota gates. No benchmark-readiness claim is made.
 
-## Evidence and exact blockers
+## Scope and source
 
-The existing public statement identifies AtCoder `abc360_a`, but explicitly calls its `livecodebench/740` row mapping unverified. Its persisted excerpt SHA-256 matches the prior launch receipt: `072b9614bc27ae5fb47d3a7fc90de200c15208722a145d6291985967cb50c14f`. This binds the excerpt bytes, not raw HTML or a dataset row.
+All writes and validation were confined to `/tmp/codex/112/worktree`, starting
+detached at `5890b987991f07ac1cc2e950672d94855de41204`. No main branch or main
+checkout was edited. No images were pulled or built; no real Docker commands,
+benchmark/model/H0/heldout reads, model calls, or benchmark trials were performed.
 
-The provided evidence is preserved unchanged in:
+The requested `/tmp/codex/111/report.md` was absent. The report was located at
+`/tmp/codex/111/worktree/report.md` and read as the finding source. Both draft
+entrypoints were absent from this fresh worktree. The prior
+`eval/pilot_admission.py`, `tools/cached_pilot_admission.py`, and review tests
+under `/tmp/codex/111/worktree` were inspected read-only. No prior manifest,
+benchmark payload, model configuration, or runtime receipt was opened.
 
-- `docs/evidence/lcb740/prior-launch.json`, SHA-256 `b2402fc26b4ea0c675c7880ffd72e5272793df084ee9471aebcb06022ed8e168`.
-- `docs/evidence/lcb740/prior-selection.inert.json`, SHA-256 `538b3258b90f212c8319e76df08c0e9a445c42f3b72823f203a1971bba504741`.
+This delivery adds `eval/pilot_admission.py` and
+`tests/quality/test_cached_pilot_admission.py`, plus this report and
+`focused-test-result.txt`. It adapts the admission draft into a self-contained
+library without importing generic container code or dataset adapters. The runtime
+CLI, production runner, generic container helpers, scorer, and manifest are not
+introduced or modified. The two findings originally exercised through generic
+container helpers are repaired at this library's local-image and owned-cleanup
+boundary; this does not claim changes to generic helpers outside this scope.
 
-Both are historical records, not trusted row attestations. The selection says `FILENAME_INFERRED_NOT_POOL_ATTESTED`, `pool_hash_freshly_verified: false`, and `runnable_task_count: 0`. The launch receipt says `launch_executed: false`; the journal's later smoke assertion has no accompanying measured verdict in the allowed local evidence.
+## Six repairs
 
-| Gate | Result and exact missing evidence |
+| Finding | Repair and offline evidence |
 | --- | --- |
-| Public statement identity | Excerpt hash verified against the existing receipt; public URL identifies `abc360_a`. |
-| Row/index/release/pool/train attestation | **Blocked:** no independently approved, metadata-only custodian record binds row 740 to `abc360_a` in the pinned pool and original split. A filename, candidate-written record, or self-computed checksum cannot supply that trust. |
-| Public-only train export | Only the standalone public statement is present. A provenance-attested train export bound to the trusted row is missing; hash agreement alone does not close this gate. |
-| Independent reference review/public verification | No independent review attestation or approved public-test artifact/result is supplied. This task did not execute authored references or create correctness evidence. |
-| Relay/request budget | Focused offline tests cover fixed routing, validation, attempted-call/output reservations, concurrent caps, failure accounting, and quiescence. This is per-relay-instance enforcement, not restart persistence or a kernel-security attestation. |
-| Official scorer equivalence/verification | **Blocked:** no official executor verification receipt is supplied. The standalone scorer uses a fresh interpreter per case; the prior receipt explicitly disclaims upstream wrapped-function equivalence and lists resource-limit differences. Passing relay tests does not establish official pass@1. |
-| Model/H0/full benchmark | Not run; outside this task. |
+| Empty device observations admit a lease | Require a nonempty observation mapping with valid device identities and byte/inode quantities before locking or writing. Rejection creates no ledger. |
+| Negative reservations accepted | Validate all declared reservation and host/device quantities as nonnegative integers, excluding booleans, fractions, nonfinite numbers, and missing values. Validate allocations before persistence and on reload/update. Invalid acquisition/update leaves existing ledger bytes unchanged. |
+| Mounts allow network override | Preserve the draft mount-pair interface, admitting only an optional read-only bind to `/control-input` with a normalized absolute source. Reject unrelated flags, extra options, unsafe destinations, and malformed pairs before ownership intent or create. Commands retain `--pull=never` and `--network none`. |
+| Runtime envelope not checked before start | Inspect and verify exact ID/name/image/owner/task, created-and-stopped state, network, read-only root, memory/swap/CPU/PID bounds, capabilities, privilege/security settings, tmpfs size/inodes/options, bounded logging, and expected artifact mounts before start. Mismatches retain ownership and quarantine the lease, with zero start calls. |
+| Bare image ID mismatch accepted | `LocalDocker.require_local_image` compares bare pins to inspected `.Id` automatically, checks ID syntax, enforces any explicit expected ID and repository digest, and reinspects every request. Inspect timeout/OS/parser failures become admission refusals. |
+| Cleanup accepts unrelated daemon absence | Accept only a complete canonical not-found response naming the exact queried object, with failure code 1 and empty object output. Cleanup checks recorded ID/name and owner/task labels before removing the exact ID, then proves that ID absent and the owner namespace empty. Daemon errors, unrelated/mixed absence text, changed identities, removal failures, and unrecorded owned objects retain/quarantine capacity. |
 
-The required row record must use schema `harnessgrad.trusted-public-index-row.v1`, with exactly the declared fields plus a nonempty custodian: task `livecodebench/740`, integer row `740`, question `abc360_a`, side `train`, release `0fe84c3912ea0c4d4a78037083943e8f0c4dd505`, pool SHA-256 `bbf2bf826856156656568f568e4026f7702f90b5da22a880b733b755a69f4256`, original split SHA-256 `af97cfb379d5af4ae2437e6fda50d4a15199f0d001b0dda64625304a85c9f187`, the statement hash above, `source_scope: metadata_only`, and `binding: POOL_ROW_ATTESTED`. Its approval digest must arrive through independent operator/custodian custody. No such artifact was fabricated here.
+## Atomicity and ownership
 
-Current real admission returns `row_attested: false`, `pool_freshly_verified_here: false`, and blocker: **“No independently approved index record binds row 740 to abc360_a in the pinned pool.”** Its canonical identity SHA-256 is `652c5411d65fd4f8424353478b37eaf7427328f5668a097e35aeb2ecf8b0ce5e`.
+The cooperative ledger uses `flock`, validated records, temporary-file fsync,
+atomic replacement, and parent-directory fsync. Tests cover concurrent capacity
+claims, device-alias deduplication, disk/inode floors, host reservations, corrupt
+records, rejected updates, and active/crash/quarantined leases retaining capacity
+across reopening. Quarantined leases cannot be reset to active; released records
+are immutable.
 
-## Focused repairs
+Ownership intent is persisted before create; start intent is persisted before
+start. Injected persistence failures prevent the next daemon mutation. A
+create-time timeout retains a name-only intent that can reconcile an exact
+matching owner. Runtime mismatches and start timeouts persist quarantine. Failed
+file fsync or pre-replacement writes leave no partial ledger; failed quarantine
+or release replacement retains the old allocation. Temporary write files are
+removed. Verified cleanup releases capacity and repeated cleanup is idempotent.
 
-`tools/lcb740_identity.py` now rejects duplicate JSON keys and excessive parser nesting. Previously a conflicting earlier row field could be silently overwritten before admission. Exact field/type checks, independent digest input, and the unverified default remain enforced.
+Cleanup never sweeps unknown objects: it removes only recorded objects whose
+identity and labels match. An unknown object in the owner namespace quarantines
+the lease; an unrelated object's presence is untouched. Successful cleanup is
+also tested using canonical absence of the exact removed ID.
 
-`tools/launch_lcb740_candidate.py` constructs identity through admission for both CLI and callable entrypoints. Previously the callable accepted a caller-supplied identity dictionary and checked only its statement hash, allowing a fabricated attestation claim into the receipt. It now accepts the original metadata bytes and independent approval digest instead.
+This remains workspace-local cooperative accounting, not a host-wide reservation
+service or filesystem quota. The offline suite validates refusal and accounting
+logic using fabricated daemon responses; it does not attest a real daemon or
+filesystem enforcement.
 
-`eval/unix_model_relay.py` rejects duplicate request/provider-response keys, excessive parser nesting, and non-object provider responses. It bounds temperature before floating-point conversion, so an oversized integer returns HTTP 400 instead of crashing the handler. Requests reserve calls and requested output tokens atomically before forwarding; failed/unknown attempts retain reservations, and provider overruns block later calls.
+## Focused validation
 
-The supplied standalone sources, statement, and evidence are included with the repair for reproducibility. The production adapter, driver, imposed split, official scorer wrapper, and authored references were not edited.
-
-## Validation
-
-Focused tests use real AF_UNIX HTTP requests and an in-memory fake provider. TCP connection creation is forbidden by the fixture; no production endpoint is probed. Launcher tests reject invalid/caller-fabricated attestation before relay access. Approved row records are explicitly synthetic fixtures and are never persisted as real evidence.
-
-```sh
+```bash
 env PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
-  tests/quality/test_lcb740_identity.py \
-  tests/quality/test_unix_model_relay.py \
-  --basetemp=.scratch/lcb740/pytest -p no:cacheprovider
+  tests/quality/test_cached_pilot_admission.py \
+  --basetemp=/tmp/codex/112/worktree/.admission-tests -p no:cacheprovider
 ```
 
-Final result: **79 passed in 25.01s**. `git diff --check` passed. Coverage includes statement tampering; missing approval; wrong row/question/release/pool/split/side and extra fields; duplicate keys; malformed input; fixed route/model; credential/header stripping; socket permissions; request size/framing; exact 4-call, 512-token-per-call, 2048-requested-output-token ceilings; concurrent call/token caps; retained failure reservations; unknown usage; provider overruns; and shutdown waiting for pending forwards.
+Final result: **199 passed in 5.06s**, exit code 0, no skips or expected failures.
+The result is saved in `focused-test-result.txt`. `git diff --cached --check`
+passed before commit. The autouse fixture rejects real subprocess execution and
+socket creation. Test manifests, reports, artifacts, and Docker responses are
+synthetic; temporary files stay beneath the local basetemp and are removed after
+validation. No broad test collection or integration tests ran.
 
-Input tokens are unmeasured; the relay limits request bytes to 32768. Requested output reservations and reported completion tokens are separate, and unknown usage remains explicitly counted. These checks do not certify total prompt-plus-output cost, agent/verifier namespace behavior, or full scorer equivalence. The release-dependent official test suite was not collected because its adapter imports the mixed pool.
+The first run found a misplaced test fragment (166 passed, 1 failed); it was
+corrected before the passing runs. Additional ownership, start-timeout, and
+malformed-inspection cases passed in the final run.
 
-Review scope note: an initial broad repository text search matched unrelated checked-in data; no matched payload was used as task evidence. Subsequent inspection and all focused validation used only the selected public statement, supplied receipts, and implementation/test sources. No LiveCodeBench mixed pool, released case file, external evidence path, or heldout payload was opened by the focused validation.
+## Remaining scorer and dependency blockers
+
+The source review reports the following unresolved gates for each inherited task:
+`git-multibranch`, `mailman`, `cobol-modernization`, `git-leak-recovery`,
+`build-pmars`, and `financial-document-processor`:
+
+- The scorer shell fetches dependencies while scorer network policy is `none`;
+  a pinned, verified offline dependency/package/artifact closure is missing.
+- Trusted scorer shell/interpreter/dependencies/grading implementation have not
+  been verified independently of actor snapshots.
+- An artifact-only state export contract supplying the trusted official scorer's
+  required inputs has not been verified.
+
+Those are 18 task-specific gates. Writable benchmark disk/inode quotas remain
+unavailable, and official scorer execution remains outside the admitted synthetic
+scope, giving two further unconditional blockers. The library retains those
+blockers even when the three per-task declaration booleans are set true. Missing
+or invalid scorer reports remain unmeasured, with no reward inferred from a
+process exit code. Cached images and successful admission-unit tests do not
+establish scorer readiness. These dependency claims are inherited from the source
+review, not newly verified against external artifacts here.
+
+The fresh worktree also lacks the pilot manifest and runtime CLI. This delivery
+intentionally provides only the focused admission library and offline regression
+suite; it does not activate a pilot or authorize benchmark execution.
