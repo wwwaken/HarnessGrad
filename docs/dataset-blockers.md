@@ -39,6 +39,18 @@ Scorer facts and explicit original trial identities survive persistence;
 anonymous or compacted cells stay unaligned. Progress/events remain insufficient
 measurement inputs. The successful-task and shared production gates remain open.
 
+BFCL's `simple-ast-contract` is `external` while its pinned official evaluator
+source remains unacquired. The [code-only acquisition contract](../tests/fixtures/bfcl_ast_source/README.md)
+requires independent archive/tag/commit linkage, original-file custody, an exact
+approved receipt pin and a complete declared source projection. Its test-only
+ gate fails closed on missing acquisition. Synthetic integrity tests establish
+neither official AST semantics nor release/index custody; function-name scoring
+remains diagnostic-only and the separate production gates remain open.
+
+ScienceWorld's platform-integrity prevention review is closed at source/test level,
+but trusted effective mount enforcement and shared runtime gates remain blocked;
+the historical V4 record remains incomplete with `effect=null`.
+
 Repository evidence locators are validated against local source text. Absolute
 external paths are citations from the journal and are never opened by the
 checker. Historical scores and receipt outcomes remain reported claims; this

@@ -182,6 +182,18 @@ def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document)
     assert target["historical_runs"][0]["effect"] is None
 
 
+def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(document):
+    blockers = {item["id"]: item for item in row(document, "bfcl_v3")["blockers"]}
+    assert blockers["release-index-custody"]["status"] == "external"
+    ast_contract = blockers["simple-ast-contract"]
+    assert ast_contract["status"] == "external"
+    assert ast_contract["family"] == "official-scorer-execution"
+    assert "tests/fixtures/bfcl_ast_source/README.md" in {
+        item["path"] for item in ast_contract["evidence"]}
+    assert document["review"]["production_authorized"] is False
+
+
+
 @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
 def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
     target = row(document, "chessbench_puzzles")

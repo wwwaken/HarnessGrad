@@ -156,6 +156,30 @@ def test_missing_index_never_falls_back_to_payload(monkeypatch, tmp_path):
         dataset.load_selected(["simple/0"])
 
 
+@pytest.mark.parametrize("prediction,reward", [
+    ("synthetic.compute", 1.0), ("compute", 1.0), ("compute(x=3)", 0.0),
+    ("compute\ncompute", 0.0), ("NONE", 0.0),
+])
+def test_function_name_metric_remains_an_explicit_nonofficial_diagnostic(prediction, reward):
+    result = dataset.score(prediction, {"functions": ["synthetic.compute"], "subset": "simple"})
+    assert result["reward"] == reward
+    assert "not the official BFCL score" in result["official"]["metric"]
+    assert result["official"]["expected_functions"] == "<redacted>"
+    assert result["official"]["evidence_redacted"] is True
+
+
+def test_current_record_conversion_discards_reference_alternatives_without_release_reads():
+    row = {"id": "fabricated-simple", "question": [[{"role": "user", "content": "fabricated"}]],
+           "function": [{"name": "synthetic.compute", "parameters": {
+               "type": "dict", "properties": {"x": {"type": "integer"}}}}]}
+    first = dataset._record_from_row("simple", 0, row, [{"compute": {"x": [3]}}])
+    second = dataset._record_from_row("simple", 0, row, [{"compute": {"x": [99]}}])
+    assert first["gold"] == second["gold"] == {
+        "answer": "compute", "functions": ["compute"], "subset": "simple"}
+    # This exposes the integration gap; it is not an assertion about official AST rules.
+    assert dataset.score("compute", first["gold"])["reward"] == 1.0
+
+
 def test_full_pool_verifier_map_also_requests_early_redaction(monkeypatch, synthetic_index):
     _, reads = synthetic_index
     record = dataset.control_task("simple/2")

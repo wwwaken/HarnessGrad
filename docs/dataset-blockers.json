@@ -321,16 +321,21 @@
         {
           "id": "simple-ast-contract",
           "family": "official-scorer-execution",
-          "status": "code-solvable",
-          "observed": "Current function-name multiset scoring drops arguments/reference alternatives and remains diagnostic-only.",
+          "status": "external",
+          "observed": "Current function-name multiset scoring drops arguments/reference alternatives and remains diagnostic-only. Official parser/checker/dispatch symbols and semantics require independently acquired, archive-bound code-only source; the synthetic acquisition contract does not close that dependency.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "Current scorer remains function-name multiset diagnostic"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/bfcl_ast_source/README.md",
+              "locator": "external source/provenance blocker remains open"
             }
           ],
-          "next_action": "After independent source acquisition, review the source-derived metric contract using fabricated calls; retain diagnostic labeling meanwhile."
+          "next_action": "Obtain independently approved v1.3 archive/tag/commit and original-file custody evidence, a code-only parser/checker/dispatch/helper/license projection and a separate exact receipt pin. Pass the explicit source gate, then derive the full-call contract from original symbols using fabricated differential calls; preserve the name diagnostic and selected/privacy boundaries. No production H0."
         }
       ],
       "historical_runs": []
