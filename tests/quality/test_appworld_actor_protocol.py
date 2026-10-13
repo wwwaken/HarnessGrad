@@ -121,12 +121,17 @@ def test_all_runtime_paths_deliver_prompt_to_goal_only_harness(tmp_path, monkeyp
            {"kind": "exec", "image": "synthetic-image", "state":
             "container" if environment == "exec-container" else "mount"})
     result = runner.run_one(repo, task, setup=setup, env=env, sandbox=False)
-    assert result["exit_code"] == 0
-    expected = runtime_task(task, setup)
     if environment == "files":
+        assert result["exit_code"] == 0
+        expected = runtime_task(task, setup)
         assert result["answer"] == expected["goal"]
     else:
-        assert received == [expected]
+        assert result["exit_code"] is None
+        assert result["invalid"]["stage"] == "admission"
+        assert result["invalid"]["detail"] == "backend_observation_unavailable"
+    expected = runtime_task(task, setup)
+    if environment != "files":
+        assert received == []
     assert task == {"task_id": "synthetic", "goal": "Original goal"}
     assert "SECRET" not in json.dumps(expected)
 
