@@ -226,15 +226,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Decision: do not keep increasing the budget or tune the method to this task. AppWorld has stable platform/scorer protocol but no successful measured task smoke, so 9x3 remains unauthorized
 - Commit: runtime evidence only
 
-## Jericho — isolated no-model controls
+## Jericho — runtime boundary repair
 
-- Status: `controls_passed`, model H0 blocked
-- Scope: 2 declared study games (`905`, `acorncourt`), 2 local/platform paths, oracle/noop, two repeats: 16 controls
-- Finding: all 16 controls passed deterministically, but installed Jericho runtime exposes walkthrough/reference fields to a future agent; native `VERIFY.timeout_s=300` is ignored unless caller passes the timeout explicitly; native files sandbox keeps egress.
-- Evidence: `/tmp/codex/93/receipts.json`; safe bundle `/tmp/codex/93/control_receipts.zip`; manifest SHA-256 `39d02a274998b14311c2a3fcb85b52e8770ae8350b9f4376446f580122409f04`
-- Platform change: future interactive-game runs need separate agent/trusted runtimes, explicit phase timeout wiring, fresh action logs and no-egress admission
-- Remaining gates: hide reference-bearing package data and bind explicit timeout/network policies
-- Commit: inert controls only
+- Status: `controls_passed`, model H0 still blocked
+- Scope: two selected train study games (`905`, `acorncourt`), local/platform oracle/noop controls remain 16/16; no heldout or model execution
+- Finding: the prior runtime exposed reference-bearing `game_info.py` walkthroughs, ignored declared timeout limits, reused action logs, and did not enforce native network isolation. The repaired path projects only public Jericho code/native library, strips reference bindings/walkthroughs/docs/bytecode, uses explicit 300s agent/verifier bounds, fresh logs, and refuses live agents under `network=none` before staging
+- Evidence: `/tmp/codex/109/worktree/report.md`; merged commit `28eebef`; 59 focused boundary/admission tests passed, 7 unrelated production/data cases deselected
+- Platform change: allowlisted agent runtime projection, runtime policy admission, explicit phase timeout minimum, no-egress sandbox and fresh log reset
+- Remaining gates: production ROM controls must run from a work root outside the platform checkout; interactive model H0 remains blocked until that path is independently exercised
+- Commit: `28eebef Repair Jericho agent runtime isolation and phase boundaries`
 
 ## BFCL v3 — scorer/privacy controls
 
