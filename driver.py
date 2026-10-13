@@ -824,8 +824,19 @@ def main() -> int:
         return 2
 
     if work.exists():
+        if staged:
+            print(f"refusing staged policy: workspace {work} already exists; "
+                  "preserve incomplete evidence and use a fresh run ID", file=sys.stderr)
+            return 2
         shutil.rmtree(work)
-    work.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        # Reserve the staged workspace identity too, including incomplete parent
+        # directories. Exclusive creation also prevents two runs sharing it.
+        work.parent.mkdir(parents=True, exist_ok=not staged)
+    except FileExistsError:
+        print(f"refusing staged policy: workspace directory {work.parent} already exists; "
+              "preserve incomplete evidence and use a fresh run ID", file=sys.stderr)
+        return 2
     curve_path = run_dir / "curve.jsonl"
 
     # The sandbox is verified before the first paid call, not once per task. A
@@ -910,7 +921,9 @@ def main() -> int:
     # leaves its per-task networks (and any service container) behind, and the next run
     # under the same id then dies of the *previous* crash: `docker network create ...
     # already exists`. Reusing an id means "start clean", so say it once here.
-    leftovers = services_mod.reap(run_id)
+    # Staged IDs never resume. A fresh receipt directory does not establish
+    # ownership of leftover backend objects with the same ID under another root.
+    leftovers = services_mod.reap(run_id) if not staged else []
     if leftovers:
         console.note("could not remove everything a previous run left behind:\n  "
                      + "\n  ".join(leftovers[:6]), level="warn")

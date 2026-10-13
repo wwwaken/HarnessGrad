@@ -245,6 +245,15 @@ def evaluation_outcomes(result: dict, selected: list[str]) -> list[dict]:
             status, score, reason = "invalid", None, "harness did not run or reported a runtime failure"
         elif tid in (result.get("cached_tasks") or []):
             status, score, reason = "unmeasured", None, "cached result; no fresh diagnostic trial"
+        elif tid in (result.get("harness_output") or {}) and (
+                type(result["harness_output"][tid].get("exit_code")) is not int
+                or result["harness_output"][tid]["exit_code"] != 0):
+            # run_one records timeouts as exit -1. A trace with usage can keep
+            # harness_failed empty, and the general runner can retain an artifact
+            # score after a crash. Neither proves completed staged execution.
+            exit_code = result["harness_output"][tid].get("exit_code")
+            status = "invalid" if type(exit_code) is int else "unmeasured"
+            score, reason = None, f"staged execution did not complete with integer exit 0: {exit_code!r}"
         elif tid in (result.get("per_task") or {}):
             status, score, reason = "measured", result["per_task"][tid], None
         else:

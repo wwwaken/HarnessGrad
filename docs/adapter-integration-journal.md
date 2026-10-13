@@ -4,6 +4,18 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Staged diagnostic receipt audit — 2026-10-14 — Codex 193
+
+- Status: `preflight`; narrow correctness fixes verified, publication remains blocked by missing trusted observations.
+- Scope: isolated `/tmp/hg-codex-193`, base `a58b4b181193a2e2b201c6353722725ad77b597c`; source and authored synthetic tests only; no model/H0, heldout reads, Docker/backend queries or GPU runs.
+- Finding: explicit timeout/nonzero exits could appear measured in staged adaptation; fresh receipt directories could still delete old workspace evidence and reap stale resources; schema allowed passing summaries with null hashes that Python refused.
+- Platform change: staged adapter checks explicit exit results; staged workspace identities reserve exclusively and refuse old evidence; fresh staged runs skip legacy reaping; schema requires hashes for all passing summaries.
+- Evidence: [exact audit and retained gaps](../staged-receipt-audit-codex193-report.md), `tests/quality/test_staged_receipt_audit_codex193.py`, [captured test result](../staged-receipt-audit-codex193-test-result.txt).
+- Failure persistence: plans survive post-write preparation failures and evaluation exceptions; returned outcomes produce a separate final receipt; exceptions do not guarantee a final failure receipt. Exclusive writes are not crash-atomic/fsynced.
+- Remaining gates: driver has no lifecycle producer; backend admission/quiescence/snapshot/cleanup observations, provenance verification, selected-only/scorer closure, provisional progress publication integration and global ownership/concurrency remain unresolved.
+- Validation: **479 passed**, no failures/skips, six focused synthetic suites; exact command in the report; `git diff --check` passed. Synthetic lifecycle success is not production authorization.
+- Commit: carried by this worktree's scoped receipt-correctness change; no main merge.
+
 ## Shared lifecycle publication gate — 2026-10-14 — Codex 177
 
 - Status: `preflight`; shared offline contract implemented, trusted backend observations pending

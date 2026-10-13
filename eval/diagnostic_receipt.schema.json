@@ -420,6 +420,27 @@
         "status",
         "receipt_sha256",
         "detail"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "receipt_sha256": {
+                "type": "string"
+              }
+            }
+          }
+        }
       ]
     }
   },
