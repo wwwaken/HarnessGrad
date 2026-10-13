@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "audit": "AgentDojo metadata-only provenance reconciliation — Codex 190",
+  "date": "2026-10-14",
+  "worktree": "/tmp/hg-codex-190",
+  "base_commit": "a58b4b181193a2e2b201c6353722725ad77b597c",
+  "base_tree": "4efc675ea0af224fe8cc97d8e5c9999ef741ab0e",
+  "agentdojo_source_tree": "11d857328859f708e1571459db84fdf4f612e3b1",
+  "canonicalization": "UTF-8 JSON; sorted keys; separators comma/colon; ensure_ascii=true; no trailing newline. Hashes cover only their named value.",
+  "source_metadata_identity": {
+    "git_object_format": "sha1",
+    "objects": [
+      {
+        "path": "data/__init__.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "59479a8d3d2921fda395eb5d96827327d95e3e04"
+      },
+      {
+        "path": "data/agentdojo.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "f785ce56068dc41704280b723f0fec32731906bc"
+      },
+      {
+        "path": "data/agentdojo/bridge.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "a799362206504bfaa04453cf69de8d4fb47c42e5"
+      },
+      {
+        "path": "data/agentdojo/cli/dojo",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "484cd25cbdb3f15f0582b2dfb1d60a2d0a157da3"
+      },
+      {
+        "path": "data/agentdojo/control.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "6dfe59c77ec31afb984d867f3632e8926805b1d0"
+      },
+      {
+        "path": "data/agentdojo/prepare.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "4e2d66af6132216a6ed8220d02bccee7d87eb13c"
+      },
+      {
+        "path": "data/agentdojo/verify/check.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "d863beb5f2ab1956eb532991a881aa46d6e8a566"
+      },
+      {
+        "path": "data/qa/__init__.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "data/qa/base.py",
+        "mode": "100644",
+        "kind": "blob",
+        "object_id": "1cb0b5e5866b2b171414c93d5aa594f699427d83"
+      }
+    ],
+    "scope": "Explicit adapter and immediate QA import source metadata; not a transitive dependency/runtime/harness lock."
+  },
+  "source_metadata_identity_sha256": "22e41ba774105c46b26a5bba95db7c4a4bf89406937a65a0947bb0e02842583d",
+  "declared_pins": {
+    "upstream_source_commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+    "suite_version_declared": "v1.2.2",
+    "package_requirement_declared": "agentdojo==0.1.35",
+    "archive_relative_path_declared": "_src/agentdojo.tar.gz",
+    "archive_sha256_expected": "d7e0ee021be27a69e7e66647979b5a5e0dd10030d38d04ce4102e18a76a228d8",
+    "task_count_declared": 949,
+    "archive_bytes_measured": false,
+    "upstream_release_relationship_authenticated": false
+  },
+  "declared_pins_sha256": "2044b245b59942d557f0b90eedae301b28661a26f442236be80d9a4344fc074a",
+  "logical_path_inventory": {
+    "dataset_root_declared": "/mnt/20t/xubuqiang/datasets/agentdojo",
+    "index_domain_declared": "0..948; not verified release membership",
+    "external_presence_claim": "registry names _src, runtime, agent_runtime, prepared; inherited, not reobserved",
+    "external_paths_inspected": false,
+    "paths": [
+      {
+        "relative_path": "_src/agentdojo.tar.gz",
+        "role": "source archive",
+        "basis": "downloads declaration"
+      },
+      {
+        "relative_path": "_src/cases.json",
+        "role": "mixed catalog",
+        "basis": "adapter source path declaration"
+      },
+      {
+        "relative_path": "_src/runtime-requirements.lock",
+        "role": "dependency lock",
+        "basis": "DOWNLOADS.md note only"
+      },
+      {
+        "relative_path": "runtime",
+        "role": "trusted runtime input",
+        "basis": "VERIFY source metadata"
+      },
+      {
+        "relative_path": "agent_runtime",
+        "role": "agent runtime input",
+        "basis": "SETUP source metadata"
+      },
+      {
+        "relative_path": "prepared/{index}/initial.json",
+        "role": "setup state",
+        "basis": "SETUP source metadata"
+      },
+      {
+        "relative_path": "prepared/{index}/case.json",
+        "role": "selected case/verifier input",
+        "basis": "adapter source path declaration"
+      },
+      {
+        "relative_path": "prepared/{index}/oracle.json",
+        "role": "reference action",
+        "basis": "adapter source path declaration"
+      },
+      {
+        "relative_path": "runtime/bin/python",
+        "role": "provisioning presence sentinel",
+        "basis": "provision_status source declaration"
+      },
+      {
+        "relative_path": "agent_runtime/bin/python",
+        "role": "provisioning presence sentinel",
+        "basis": "provision_status source declaration"
+      },
+      {
+        "relative_path": "prepared/948/initial.json",
+        "role": "provisioning presence sentinel",
+        "basis": "provision_status source declaration"
+      }
+    ]
+  },
+  "logical_path_inventory_sha256": "47c50c900af09b6d2f0745ce47687b7fe2150c3159757a80aec4ea42625938b1",
+  "reviewed_local_file_sha256": {
+    "data/agentdojo.py": "0cc0b62386178ce8f4cb0589289d7a3001de60d1b217dfb8f3129951363a77b5",
+    "DOWNLOADS.md": "bd18a7f2a69c2b143ebbe5b7573a281565bfdc4c9bc3db2da5701c49a09eb43b",
+    "docs/dataset-blockers.json": "0d05220738bd6738650aca55324983d6f93a5b39d6895a43898767a7faacbade"
+  },
+  "taxonomy": {
+    "demand": "tool_use",
+    "surface": "tool_dialogue",
+    "exercises": [
+      "context",
+      "tools",
+      "control",
+      "safety"
+    ]
+  },
+  "production_authorized": false,
+  "missing_custodian_bindings": [
+    "authenticated upstream commit/archive/package/suite relationship",
+    "exact release row/group membership and prepared mapping",
+    "authenticated declared and official split identity and selected complete-group manifest",
+    "actual source archive, mixed catalog and selected prepared artifact digests",
+    "installed dependency lock and trusted/agent runtime content identities",
+    "independent runtime isolation, trusted verification and lifecycle evidence"
+  ],
+  "limits": [
+    "No external dataset or receipt paths inspected.",
+    "No cases, prompts, prepared payloads, gold/action, heldout or runtime binary bytes read.",
+    "No adapter import, preparation, provision_status, model/H0, scorer, runtime or network invocation.",
+    "Git identities for unreviewed source files obtained from tree metadata only.",
+    "No full split, selected membership, installed runtime, model, harness closure or production measurement hash computed."
+  ]
+}

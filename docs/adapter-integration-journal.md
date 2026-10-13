@@ -481,3 +481,13 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Validation: **109 passed** (63 metadata controls plus 46 registry regressions). `tools/check_dataset_blockers.py` reports valid, 28 datasets, 8 shared blockers, 11 historical records and `production_authorized=false`.
 - Remaining boundary: no production `run_one` or H0 readiness claim, case materialization proof, trusted verifier/runtime receipt, cleanup observation or benchmark measurement. Historical controls remain unverified claims; no route was repaired or executed.
 - Commit: focused tests/docs/report on the isolated worktree; parent review and integration remain separate.
+
+## AgentDojo metadata-only provenance reconciliation — Codex 190 — 2026-10-14
+
+- Status: `production-route-admission` remains blocked; no production authorization or registry/code change.
+- Scope: isolated `/tmp/hg-codex-190`, base `a58b4b181193a2e2b201c6353722725ad77b597c`; checkout declarations and Git/source metadata only. No external dataset/receipt inspection, cases/prompts/prepared payloads/gold/actions/heldout/runtime binary reads, adapter import, runtime/scorer/network/model/H0, or main edits.
+- Finding: inherited `_src/runtime/agent_runtime/prepared` presence claims agree with declared path roles but authenticate no release or selected rows. Adapter and generated `DOWNLOADS.md` agree on commit `089ed468cf3ed0322acc66b0211f26d9d90dbf60` and expected archive SHA-256; package `0.1.35` and suite `v1.2.2` are separate axes. No independent exact-release/selected-group/runtime manifest is available in the checkout.
+- Evidence: [unique report](../agentdojo-provenance-codex190-report.md), [scoped metadata/hash record](../agentdojo-provenance-codex190-metadata.json). Git identities and local declaration hashes are freshly computed; external presence, split counts and historical controls remain inherited, unverified claims.
+- Remaining gate: authenticated metadata-only release/selected-group custody and protected artifact/dependency/runtime identities, plus independently reviewed selected-only non-scoring admission and fresh identity-bound runtime/lifecycle evidence. Codex 180 privacy closure does not supply either part.
+- Validation: static pin reconciliation, scoped Git/hash recomputation, JSON consistency and diff whitespace review; no execution tests or production measurement.
+- Integration: local documentation/metadata outputs only; parent review and main integration remain separate.
