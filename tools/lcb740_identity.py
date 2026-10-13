@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 
 TASK_ID, ROW_INDEX, QUESTION_ID = "livecodebench/740", 740, "abc360_a"
 REVISION = "0fe84c3912ea0c4d4a78037083943e8f0c4dd505"
@@ -15,6 +16,8 @@ SPLIT_SHA256 = "af97cfb379d5af4ae2437e6fda50d4a15199f0d001b0dda64625304a85c9f187
 STATEMENT_SHA256 = "072b9614bc27ae5fb47d3a7fc90de200c15208722a145d6291985967cb50c14f"
 PUBLIC_URL = "https://atcoder.jp/contests/abc360/tasks/abc360_a?lang=en"
 INDEX_SCHEMA = "harnessgrad.trusted-public-index-row.v1"
+MAX_INDEX_BYTES = 4096
+MAX_CUSTODIAN_CHARS = 256
 
 
 def _unique_object(pairs):
@@ -26,8 +29,17 @@ def _unique_object(pairs):
     return record
 
 
+def _reject_constant(value):
+    raise ValueError("non-finite index record value")
+
+
 def identity(statement: bytes, metadata: bytes | None = None,
              approved_metadata_sha256: str | None = None) -> dict:
+    """Validate a record against a digest supplied through trusted external custody.
+
+    This function cannot establish who approved a digest. The caller must obtain
+    it independently of the record; computing a self-hash is not an approval.
+    """
     if hashlib.sha256(statement).hexdigest() != STATEMENT_SHA256:
         raise ValueError("public statement hash mismatch")
     result = {"task_id": TASK_ID, "row_index": ROW_INDEX, "question_id": QUESTION_ID,
@@ -40,11 +52,19 @@ def identity(statement: bytes, metadata: bytes | None = None,
     if (metadata is None) != (approved_metadata_sha256 is None):
         raise ValueError("both metadata record and independently approved digest are required")
     if metadata is not None:
+        if type(metadata) is not bytes or not 0 < len(metadata) <= MAX_INDEX_BYTES:
+            raise ValueError("index record must be 1..4096 bytes")
+        if (type(approved_metadata_sha256) is not str
+                or re.fullmatch(r"[0-9a-f]{64}", approved_metadata_sha256) is None):
+            raise ValueError("approved index digest must be lowercase SHA-256 hex")
         digest = hashlib.sha256(metadata).hexdigest()
         if digest != approved_metadata_sha256:
             raise ValueError("index record approval hash mismatch")
         try:
-            record = json.loads(metadata, object_pairs_hook=_unique_object)
+            record = json.loads(metadata.decode("utf-8"), object_pairs_hook=_unique_object,
+                                parse_constant=_reject_constant)
+        except UnicodeDecodeError as exc:
+            raise ValueError("index record must be UTF-8 JSON") from exc
         except RecursionError as exc:
             raise ValueError("index record nesting exceeds parser limit") from exc
         required = {"schema": INDEX_SCHEMA, "task_id": TASK_ID, "row_index": ROW_INDEX,
@@ -57,8 +77,10 @@ def identity(statement: bytes, metadata: bytes | None = None,
         for key, value in required.items():
             if type(record[key]) is not type(value) or record[key] != value:
                 raise ValueError(f"index record mismatch: {key}")
-        if not isinstance(record["custodian"], str) or not record["custodian"].strip():
-            raise ValueError("index record custodian required")
+        custodian = record["custodian"]
+        if (type(custodian) is not str or not 0 < len(custodian) <= MAX_CUSTODIAN_CHARS
+                or custodian != custodian.strip() or not custodian.isprintable()):
+            raise ValueError("index record custodian must be 1..256 printable, trimmed characters")
         # Recompute side using original ID; do not reindex a covered subset.
         if hashlib.sha256(TASK_ID.encode()).digest()[0] % 3 == 0:
             raise ValueError("selected ID is not imposed train")

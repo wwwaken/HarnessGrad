@@ -135,6 +135,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Commit: `e2f9613 fix: harden LCB740 identity and relay admission`
 - Verification: 79 focused tests passed; production endpoint/model requests=0; synthetic approved-row fixtures never became real evidence
 
+### LiveCodeBench `/740` trusted metadata validation — 2026-10-14
+
+- Status: `validator_hardened`, external row attestation still blocked; no H0
+- Evidence: `LCB_GATE.md`; existing public statement and preserved prior inert selection/launch metadata
+- Platform change: bounded UTF-8 metadata-only record, canonical independently supplied approval digest, strict JSON constants and custodian validation; pinned row/pool/split checks retained
+- Verification: 80 focused identity tests passed; `git diff --check` passed; no network, mixed-pool/heldout payload reads, model calls or H0
+- Remaining blocker: no externally custodied, independently approved record binding pinned pool row 740 to `abc360_a`; self-hashes and synthetic fixtures do not establish custody
+
 ### BFCL selected-only/privacy patch
 
 - Status: `patch_integrated`, real controls blocked by unprovisioned release
