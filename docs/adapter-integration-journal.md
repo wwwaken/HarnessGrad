@@ -183,6 +183,16 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: get one generic loop smoke to complete a real task-facing state change and measured answer; no method/task-specific hardcoding; no 9x3 yet
 - Commit: `df8beec fix: harden generic loop shell output and parse recovery`
 
+### AppWorld sixteen-step smoke
+
+- Status: `measured_smoke`, H0 not launched
+- Scope: declared AppWorld split `147 train / 585 eval`, selected train task `07b42fd_1`, one trial, jobs=1, GPU1/8002, `max_steps=16`, `max_output_tokens=2048`
+- Finding: actor completed normally in 41s and produced 15 authoritative API calls; verifier returned `measured=true`, score `0.0`. The earlier smoke split file covered only a partial manifest and was rejected before execution; this smoke used the complete declared split.
+- Evidence: `/mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117/events.jsonl`; progress record reports `complete=true`, `n_trials=1`, `trial_scores=[0.0]`; API log is 1507 bytes with 15 calls
+- Platform change: complete split admission is now verified separately from selected task execution; no payload or heldout task content was needed to build the split metadata
+- Remaining gates: a successful measured actor task remains required before 9x3; do not convert this measured zero into a full pilot
+- Commit: runtime evidence only
+
 ## Jericho — isolated no-model controls
 
 - Status: `controls_passed`, model H0 blocked
