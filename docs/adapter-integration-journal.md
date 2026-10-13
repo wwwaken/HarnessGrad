@@ -282,6 +282,15 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: each scorer still lacks verified offline dependency closure/trusted runtime/state export; benchmark disk/inode quotas are not enforced; no official benchmark execution
 - Commit: `b3e5409 fix: harden cached pilot admission boundaries`
 
+### Shared runner admission follow-up — Codex 158
+
+- Status: `isolated_contract`, filesystem enforcement remains a runtime blocker.
+- Finding: reservations and snapshot free-space preflight cannot prove byte/inode quota enforcement. Unbounded or incomplete snapshot/resource/cleanup facts must stay unmeasured.
+- Platform change: reusable `eval.runner_admission` runtime/network/filesystem/snapshot/cleanup contracts with fresh binding checks, bounded receipts and fail-closed cleanup release; byte-only legacy snapshot admission explicitly reports that no quota is enforced.
+- Evidence: `runner-admission-codex-158-report.md`; synthetic observations only, subprocess/socket execution denied in new tests, existing persistent lease regressions retained.
+- Remaining gates: real byte/inode enforcement and trusted complete observers, bounded snapshot worker/daemon resources and growth, atomic receipt-to-lease integration, official scorer/offline closure and artifact-only export. Passing synthetic receipts authorize no H0.
+- Commit: accompanying `platform: add offline runner quota and cleanup admission contracts` commit.
+
 ## AgentDojo — selected-only split controls
 
 - Status: `controls_passed`, production H0 not launched

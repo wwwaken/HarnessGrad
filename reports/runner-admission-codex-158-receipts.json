@@ -1,0 +1,133 @@
+{
+  "synthetic": true,
+  "execution": "none",
+  "fabricated_binding": true,
+  "receipts": {
+    "runtime": {
+      "schema": "harnessgrad.runner-admission.v1",
+      "stage": "runtime",
+      "status": "passed",
+      "measured": false,
+      "production_authorized": false,
+      "binding": {
+        "adapter_id": "synthetic-adapter",
+        "run_id": "synthetic-run-158",
+        "trial_id": "synthetic-trial-1",
+        "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "policy_sha256": "696a691daad3b75827bb3777b964b67b21fc931a0f549bef6a5971f3bb142eea",
+      "observation_sha256": "8b940c972005468466ab37ae88702804a589e0943e76a082c553297dc492b0d6",
+      "evidence": {
+        "resources": {
+          "cpu_millis": 1000,
+          "memory_bytes": 268435456,
+          "swap_bytes": 0,
+          "pids": 64,
+          "timeout_ms": 30000
+        },
+        "network": "none",
+        "read_only_root": true,
+        "filesystems": {
+          "/work": {
+            "bytes": 4096,
+            "inodes": 16,
+            "backend": "tmpfs",
+            "scope_id": "synthetic-mount-1",
+            "evidence_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        }
+      }
+    },
+    "snapshot": {
+      "schema": "harnessgrad.runner-admission.v1",
+      "stage": "snapshot",
+      "status": "passed",
+      "measured": false,
+      "production_authorized": false,
+      "binding": {
+        "adapter_id": "synthetic-adapter",
+        "run_id": "synthetic-run-158",
+        "trial_id": "synthetic-trial-1",
+        "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "policy_sha256": "809247d8a9c5c37845fd48d5f7f536c14f14ba868ea6b028679f1ddf7d9ab6e6",
+      "observation_sha256": "df5b49ca0afad3035da87e909202f3db78573e23450b2ac3def2074986733fbd",
+      "evidence": {
+        "writable_bytes": 4096,
+        "writable_inodes": 16,
+        "free_bytes": 5120,
+        "free_inodes": 20,
+        "running": false,
+        "exit_code": 0,
+        "oom_killed": false,
+        "timeout_ms": 30000,
+        "device_id": "synthetic-device-1",
+        "limits": {
+          "max_bytes": 4096,
+          "max_inodes": 16,
+          "reserve_bytes": 1024,
+          "reserve_inodes": 4,
+          "timeout_ms": 30000
+        },
+        "required_bytes": 5120,
+        "required_inodes": 20
+      }
+    },
+    "cleanup": {
+      "schema": "harnessgrad.runner-admission.v1",
+      "stage": "cleanup",
+      "status": "passed",
+      "measured": false,
+      "production_authorized": false,
+      "lease_action": "release",
+      "binding": {
+        "adapter_id": "synthetic-adapter",
+        "run_id": "synthetic-run-158",
+        "trial_id": "synthetic-trial-1",
+        "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "policy_sha256": "d9d96fe2d6a6359a7ff0d41d3b69eec55bf4c40d26daa5e62b2ede54a8d3346c",
+      "observation_sha256": "a8e0f191830204c1599727d06298ef70ad85af756baccff92ad83e77ab35cb87",
+      "evidence": {
+        "owned_count": 5,
+        "checked_kinds": [
+          "container",
+          "network",
+          "snapshot",
+          "volume",
+          "workspace"
+        ],
+        "timeout_ms": 30000
+      }
+    },
+    "quota_refusal": {
+      "schema": "harnessgrad.runner-admission.v1",
+      "stage": "runtime",
+      "status": "blocked",
+      "measured": false,
+      "production_authorized": false,
+      "binding": {
+        "adapter_id": "synthetic-adapter",
+        "run_id": "synthetic-run-158",
+        "trial_id": "synthetic-trial-1",
+        "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reason": "filesystem_enforcement_unproven"
+    },
+    "cleanup_quarantine": {
+      "schema": "harnessgrad.runner-admission.v1",
+      "stage": "cleanup",
+      "status": "blocked",
+      "measured": false,
+      "production_authorized": false,
+      "lease_action": "quarantine",
+      "binding": {
+        "adapter_id": "synthetic-adapter",
+        "run_id": "synthetic-run-158",
+        "trial_id": "synthetic-trial-1",
+        "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reason": "owned_absence_unproven"
+    }
+  }
+}

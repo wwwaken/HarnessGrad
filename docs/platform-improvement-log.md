@@ -32,6 +32,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 | GPU utilization evidence window | GPU1 idle question | isolated design | Use fresh multi-sample windows, request counters and attribution; one zero sample is unknown |
 | Shared runtime lifecycle | AppWorld/GAIA/tau/Jericho/Terminal | planning | `SCOPE_CHECK -> ADMIT -> RESTORE -> READY -> EXECUTE -> QUIESCE -> SCORE -> SEAL -> CLEANUP` |
 | Resource and disk admission | Terminal-Bench/Docker root | planning | Reserve CPU, RAM, process, disk, inodes and evidence space before launch |
+| Runner enforcement and cleanup receipt contracts | Terminal-Bench quota gap / GAIA snapshot failure | isolated | Require actual byte/inode limits, phase resource bounds and exact owned absence; synthetic passing receipts grant no H0 authorization |
 | Public/reference coverage boundary | LiveCodeBench/AppWorld/GAIA | planning | Authored references are coverage facts, not official gold; public-only train policy stays explicit |
 
 ## Detailed records
@@ -91,6 +92,16 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Validation: 18 document checks, 42 synthetic shared-control tests; real runtime gates remain open.
 - Reference: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/74/launch-gate-checklist.md`, `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/80/schedule.md`.
 - Status: `planned`.
+
+### C-008 — Offline runner enforcement and bounded receipts
+
+- Trigger: the cached-pilot reservation ledger does not enforce writable disk/inode quotas; GAIA snapshot failure exposed missing snapshot/resource closure.
+- Contract: `eval.runner_admission` checks trusted observations against frozen runtime, no-network, byte/inode, snapshot and cleanup policies. Receipts bind adapter/run/trial/manifest, retain policy/observation hashes and stay at most 16 KiB. Cleanup uncertainty requests quarantine and capacity retention.
+- Known-fault repair: byte-only Docker snapshot preflight now refuses malformed/nonpositive limits, negative sizes, unknown roots and query failures; receipts expose maxima, reserves, deadlines and `quota_enforced=false`.
+- Validation: fabricated facts and fake Docker only; focused command and results in `runner-admission-codex-158-report.md`.
+- Reuse: [runner admission contract](runner-admission-contract.md); backend observer/enforcement, atomic lease integration, snapshot worker limits and complete owned cleanup still require independent verification.
+- Status: `isolated`; no production runner wiring or filesystem quota installation; no Docker/model/H0/heldout execution.
+- Commit: accompanying `platform: add offline runner quota and cleanup admission contracts` commit.
 
 ## Commit discipline
 
