@@ -16,15 +16,21 @@ is_healthy() {
 start_one() {
   local gpu="$1" model="$2" port="$3" name="$4"
   local log="$STATE/${port}.log"
+  local marker="$STATE/${port}.launcher.pid"
   if is_healthy "$port"; then
+    rm -f "$marker"
     return 0
   fi
+  if [ -s "$marker" ] && kill -0 "$(cat "$marker")" 2>/dev/null; then
+    return 0
+  fi
+  rm -f "$marker"
   # The serve script performs its own readiness wait and uses the pinned vLLM environment.
   # Run it detached so a slow model load does not block supervision of the other GPU.
   CUDA_VISIBLE_DEVICES="$gpu" HARNESSGRAD_VLLM_LOG="$log" \
     nohup "$SERVE" --model "$model" --port "$port" --tp 1 \
       --max-len 16384 --name "$name" >>"$log" 2>&1 < /dev/null &
-  echo "$!" > "$STATE/${port}.launcher.pid"
+  echo "$!" > "$marker"
 }
 
 while :; do
