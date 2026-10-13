@@ -336,7 +336,6 @@ def run_one(repo: Path, task: dict, timeout_s: int = 3600,
         # The platform's interpreter is mounted only when it is going to be used, so an
         # image that brings its own does not also get the host's Python on its disk.
         runtime = ((tuple(runtime_paths)
-                    + harness_runtime.extra_paths(overlay)
                     + (() if image_python else container_mod.interpreter_paths()))
                    if is_exec else ())
 
@@ -920,7 +919,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             # Not cached, and deliberately: the cache key names the harness, and the reason
             # this task failed was not the harness, so caching it would carry a dataset bug
             # into every later round and hide the round where it was introduced.
-            _write_progress(progress_dir, round_no, tid, [], unmeasured)
+            _write_progress(progress_dir, round_no, tid, [], unmeasured,
+                            diagnostic=result)
             return {"task_id": tid, "invalid": unmeasured}
         _write_progress(progress_dir, round_no, tid, measured, None)
         return {"task_id": tid, "measured": measured}

@@ -212,6 +212,16 @@ class RunningServices:
         """
         problems: list[str] = []
         for name, cid in self.containers.items():
+            # --rm destroys the service's only startup/action diagnostics. Keep them
+            # beside its recording before removal, including on failed health checks.
+            record = self.recordings.get(name)
+            if record is not None:
+                try:
+                    logs = container_mod.docker("logs", "--tail", "200", cid, timeout=10)
+                    (record / "service.log").write_text(
+                        logs.stdout + logs.stderr, encoding="utf-8")
+                except (subprocess.TimeoutExpired, OSError):
+                    pass  # Evidence collection must never prevent teardown.
             try:
                 proc = container_mod.docker("rm", "--force", cid, timeout=60)
             except (subprocess.TimeoutExpired, OSError) as exc:
@@ -388,7 +398,9 @@ def start(services: list[dict], *, recordings_root: Path, run_id: str,
                 cmd += ["-e", f"{key}={value}"]
             # No docker socket, and no host tree: a service is infrastructure the
             # harness must not be able to read or kill its way out of (§2.5.8).
-            cmd += [svc["image"]]
+            if "entrypoint" in svc:
+                cmd += ["--entrypoint", svc["entrypoint"]]
+            cmd += [svc["image"], *svc.get("command", [])]
             started = container_mod.docker(*cmd, timeout=180)
             if started.returncode != 0:
                 raise ServiceUnavailable(

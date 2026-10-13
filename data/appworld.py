@@ -252,6 +252,7 @@ DEFAULT_ENV = {
         {
             "name": "appworld",
             "image": SERVICE_IMAGE,
+            "command": ["/usr/local/bin/appworld-server"],
             "port": 8000,
             "health": {
                 "argv": [

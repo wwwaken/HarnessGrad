@@ -269,7 +269,7 @@ ENV_DEFAULTS = {"cpus": 2, "memory_mb": 4096,
 #: A service's fields (INTERFACE.md §2.5.7). Every one has a consequence in
 #: `eval/services.py`; none is decoration.
 SERVICE_FIELDS = ("name", "image", "port", "health", "record", "needs_seed",
-                  "needs_model")
+                  "needs_model", "command", "entrypoint")
 
 #: A service name becomes a hostname on the task's internal network *and* a path
 #: component under `/recordings`, so it is restricted to a DNS label. Refused rather
@@ -449,6 +449,24 @@ def _check_service(svc, tid: str, name: str) -> None:
             f"is a container and never a host process (§2.5.8), so that a harness "
             f"cannot read or kill the thing grading its interaction.")
 
+    # Docker exec form: command replaces CMD, entrypoint replaces ENTRYPOINT.
+    # Omission preserves the image defaults; shell strings are never split or run.
+    if "command" in svc:
+        command = svc["command"]
+        if not isinstance(command, list) or not command or not all(
+                isinstance(arg, str) and "\x00" not in arg for arg in command) \
+                or not command[0].strip():
+            raise ValueError(
+                f"{where}: service {svc_name!r} `command` must be a non-empty "
+                "list of NUL-free strings with a non-empty first argument")
+    if "entrypoint" in svc:
+        entrypoint = svc["entrypoint"]
+        if not isinstance(entrypoint, str) or not entrypoint.strip() \
+                or "\x00" in entrypoint:
+            raise ValueError(
+                f"{where}: service {svc_name!r} `entrypoint` must be a non-empty "
+                "NUL-free executable string")
+
     port = svc.get("port")
     if not isinstance(port, int) or isinstance(port, bool) or not 1 <= port <= 65535:
         raise ValueError(
@@ -499,6 +517,8 @@ def _normalize_env(spec: dict) -> dict:
             "record": svc.get("record", False),
             "needs_seed": svc.get("needs_seed", False),
             "needs_model": svc.get("needs_model", False),
+            **({"command": list(svc["command"])} if "command" in svc else {}),
+            **({"entrypoint": svc["entrypoint"]} if "entrypoint" in svc else {}),
         })
     normalized = {"kind": "exec",
             "image": spec["image"],

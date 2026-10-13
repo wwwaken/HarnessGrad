@@ -620,8 +620,14 @@ ENV = {"e05": {
 ```
 
 `name` addresses the service and files its recording; `port` is what it listens on; `health`
-is a `command`-shaped check run **inside the service container**; `record`, `needs_seed` and
-`needs_model` are declarations, and each one has a consequence below. Every service image is
+is a `command`-shaped check run **inside the service container**. Optional service
+`command` is a non-empty argv list replacing the image's Docker CMD; optional
+`entrypoint` is a non-empty executable string replacing its Docker ENTRYPOINT.
+These use Docker exec semantics, without shell parsing. Omitted fields preserve the
+image defaults; an entrypoint override alone follows Docker's rule of clearing CMD.
+Launch overrides are carried through normalization and recorded in `env.services`.
+`record`, `needs_seed` and `needs_model` are declarations, and each one has a consequence
+below. Every service image is
 pinned to a digest by the same rule as the task image (§2.5.4) and for the same reason.
 
 ##### Lifecycle, and the order is part of it

@@ -128,7 +128,9 @@ def _env_record(envs: dict, task_ids) -> dict:
     # measurements of one thing -- the same argument as `image_digest`, applied one
     # level down. `[]` rather than an absent key, so "no services" is a fact.
     services = sorted(
-        ({"name": svc["name"], "image_digest": svc.get("image_digest")}
+        ({"name": svc["name"], "image_digest": svc.get("image_digest"),
+          **({"command": list(svc["command"])} if "command" in svc else {}),
+          **({"entrypoint": svc["entrypoint"]} if "entrypoint" in svc else {})}
          for svc in (first.get("services") or [])),
         key=lambda s: s["name"])
     # Read from the platform's own environment, the same way `HARNESSGRAD_WORK_ROOT`

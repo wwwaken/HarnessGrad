@@ -24,7 +24,7 @@ def post(path: str, payload: dict) -> object:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    commands = parser.add_subparsers(dest="command", choices=["init", "action"], required=True)
+    commands = parser.add_subparsers(dest="command", required=True)
     init = commands.add_parser("init")
     init.add_argument("--task", required=True)
     action = commands.add_parser("action")

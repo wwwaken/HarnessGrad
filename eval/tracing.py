@@ -157,7 +157,8 @@ def _materialize(workdir: Path, entries, platform_root: Path,
         written.append(rel)
     return written
 def _write_progress(progress_dir, round_no: int, tid: str,
-                    measured: list[dict], unmeasured: dict | None) -> None:
+                    measured: list[dict], unmeasured: dict | None,
+                    *, diagnostic: dict | None = None) -> None:
     """Write one task's result the moment it exists, not at the end of the round.
 
     **Measured, twice, and the second time cost two hours.** A round's results were
@@ -188,8 +189,22 @@ def _write_progress(progress_dir, round_no: int, tid: str,
         dest = Path(progress_dir) / "progress" / f"round-{round_no}"
         dest.mkdir(parents=True, exist_ok=True)
         if unmeasured is not None:
+            record = {"task_id": tid, "round": round_no, "invalid": unmeasured}
+            if diagnostic is not None:
+                record["harness_output"] = {
+                    "exit_code": diagnostic.get("exit_code"),
+                    "stderr": (diagnostic.get("stderr") or "")[-8000:],
+                    "harness_runtime": diagnostic.get("harness_runtime"),
+                    "model_gateway": diagnostic.get("model_gateway"),
+                }
+                body = diagnostic.get("trace")
+                if body:
+                    traces = dest / "traces"
+                    traces.mkdir(exist_ok=True)
+                    task_file(traces, f"{tid}.invalid.jsonl").write_text(
+                        body, encoding="utf-8")
             task_file(dest, f"{tid}.json").write_text(json.dumps(
-                {"task_id": tid, "round": round_no, "invalid": unmeasured},
+                record,
                 indent=1, ensure_ascii=False), encoding="utf-8")
             return
         scores = [float((r.get("verdict") or {}).get(
