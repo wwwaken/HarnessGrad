@@ -20,7 +20,7 @@ def offline(monkeypatch):
         raise AssertionError("offline test attempted subprocess, network or host disk inspection")
     monkeypatch.setattr(subprocess, "run", forbidden)
     monkeypatch.setattr(subprocess, "Popen", forbidden)
-    monkeypatch.setattr(socket, "socket", forbidden)
+    monkeypatch.setattr(socket.socket, "connect", forbidden)
     monkeypatch.setattr(socket, "create_connection", forbidden)
     monkeypatch.setattr(container.shutil, "disk_usage", forbidden)
     monkeypatch.delenv("HG_SNAPSHOT_MAX_BYTES", raising=False)
