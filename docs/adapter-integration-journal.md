@@ -173,6 +173,16 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: improve generic action-loop robustness for long API results and shell quoting, then rerun one task to a completed measured answer; do not launch 9x3 from this unsolved smoke
 - Commit: `87c6fc9 fix: provide adapter runtime tool instructions`
 
+### AppWorld generic loop robustness repair
+
+- Status: `protocol_partially_verified`, H0 not launched
+- Scope: unchanged generic loop actor, one train task `07b42fd_1`, GPU1/8002, 8 steps, 2048 output tokens, jobs=1
+- Finding: the actor now selects an explicit shell and tells the model whether Bash or POSIX syntax is available; structured JSON/list output is compacted with complete-record previews and exact full output saved separately; parser retries discard failed long replies from active context and request short actions. The smoke completed all 8 commands with no shell or parse error and recorded 7 API calls, but remained in API documentation discovery and made no state-changing call or final submission.
+- Evidence: `/tmp/codex/105/receipt/loop-robustness/smoke-receipt.json`; tests `20 new robustness + 62 existing focused = 82 passed`; patch isolated commit `77c573fa91f57ee6f1fe54c2497436baecddff99`
+- Platform change: generic shell dialect identity, lossless structured-output preview, persisted exact output, robust block parser and bounded parse-retry context
+- Remaining gates: get one generic loop smoke to complete a real task-facing state change and measured answer; no method/task-specific hardcoding; no 9x3 yet
+- Commit: `df8beec fix: harden generic loop shell output and parse recovery`
+
 ## Jericho — isolated no-model controls
 
 - Status: `controls_passed`, model H0 blocked
