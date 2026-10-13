@@ -1,0 +1,1400 @@
+{
+  "schema_version": 1,
+  "review": {
+    "date": "2026-10-14",
+    "scope": "repository-source-and-journal-only",
+    "production_authorized": false,
+    "notes": [
+      "Task capability is demand x surface; exercises is the separate harness-sensitivity axis, not isolated component measurement.",
+      "Status labels classify the work needed, not benchmark readiness: code-solvable, external, runtime or measurement.",
+      "Published coverage conservatively includes all literal KIND=dataset declarations, even refused or unprovisioned adapters; no adapter imports or task-payload reads.",
+      "Repository evidence anchors source observations. External paths and historical scores are unverified journal citations and were not opened or executed.",
+      "Shared blocker references are cumulative requirements, not a claim that every runtime mode needs a container snapshot.",
+      "Missing dataset-specific journal evidence is an explicit measurement/review gap, never a passing status.",
+      "Unknown historical run IDs remain null; historical date strings and coverage discrepancies are preserved as written.",
+      "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization."
+    ]
+  },
+  "shared_blockers": [
+    {
+      "id": "runtime-observations",
+      "family": "trusted-verifier-runtime",
+      "status": "runtime",
+      "observed": "The runner refusal hook blocks declared-policy paths; trusted effective backend observations are still absent.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "SHARED_ADMISSION_WIRING.md",
+          "locator": "These APIs validate supplied dictionaries"
+        }
+      ],
+      "next_action": "Review backend observation integration against the existing refusal contract; keep unsupported modes blocked."
+    },
+    {
+      "id": "paired-filesystem-quotas",
+      "family": "filesystem-quota",
+      "status": "runtime",
+      "observed": "Complete hard byte/inode enforcement is missing for native binds, container roots and host workspaces.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "docs/filesystem-quota-backends.md",
+          "locator": "quota"
+        }
+      ],
+      "next_action": "Review the documented OS/backend provisioning requirements and independently establish enforcement before changing admission."
+    },
+    {
+      "id": "scorer-offline-closure",
+      "family": "scorer-dependency-network",
+      "status": "code-solvable",
+      "observed": "The local scorer bundle validator is not wired into production and does not attest transitive runtime/network closure.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "scorer-closure-codex170-report.md",
+          "locator": "Generic production scoring"
+        }
+      ],
+      "next_action": "Review generic integration of local closure checks and a dedicated offline scorer boundary using synthetic fixtures."
+    },
+    {
+      "id": "pristine-verifier",
+      "family": "trusted-verifier-runtime",
+      "status": "runtime",
+      "observed": "Image/input rematerialization does not establish a fresh independently identified trusted scoring runtime.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "scorer-closure-codex170-report.md",
+          "locator": "Trusted verifier isolation"
+        }
+      ],
+      "next_action": "Review pristine verifier identity and isolation requirements independently of actor-produced state."
+    },
+    {
+      "id": "artifact-only-state-export",
+      "family": "artifact-only-export",
+      "status": "code-solvable",
+      "observed": "Artifact admission helpers have no production integration; complete actor trees or snapshots still reach verification.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "SHARED_ADMISSION_WIRING.md",
+          "locator": "Container-state"
+        }
+      ],
+      "next_action": "Review allowlisted data-only export integration and bounded synthetic export controls."
+    },
+    {
+      "id": "official-scorer-identity",
+      "family": "official-scorer-execution",
+      "status": "measurement",
+      "observed": "Source call sites do not prove fresh official evaluator execution or release/runtime identity.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "scorer-closure-codex170-report.md",
+          "locator": "Official scorer invocation"
+        }
+      ],
+      "next_action": "Document the metric identity and required independent source/runtime evidence for each adapter; retain unmeasured status."
+    },
+    {
+      "id": "snapshot-owned-cleanup",
+      "family": "snapshot-cleanup",
+      "status": "runtime",
+      "observed": "Capacity preflight and best-effort removal do not prove bounded snapshots, exact owned absence or atomic lease closure.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "runner-admission-codex-158-report.md",
+          "locator": "snapshot"
+        }
+      ],
+      "next_action": "Review snapshot/cleanup observation and quarantine integration; preserve uncertainty as unmeasured."
+    },
+    {
+      "id": "pilot-guidance-conflict",
+      "family": "documentation-conflict",
+      "status": "code-solvable",
+      "observed": "The platform log retains historical 50-task sizing; current AGENTS.md requires a one-task diagnostic before a separately reviewed 30-task/one-trial cap.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "docs/platform-improvement-log.md",
+          "locator": "min(50, ceil(10%"
+        }
+      ],
+      "next_action": "Align current planning documentation with AGENTS.md while preserving the historical protocol descriptions."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset": "agentdojo",
+      "demand": "tool_use",
+      "surface": "tool_dialogue",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "safety"
+      ],
+      "shared_blockers": [],
+      "blockers": [
+        {
+          "id": "selected-metadata-review",
+          "family": "selected-only-privacy",
+          "status": "code-solvable",
+          "observed": "The latest journal reassessment reports blocked production admission; historical selected controls are not fresh route evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## AgentDojo selected production route reassessment — Codex 164"
+            }
+          ],
+          "next_action": "Keep execution blocked; review metadata-only privacy documentation and defensive detection coverage without adversarial execution."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "alfworld",
+      "demand": "environment",
+      "surface": "embodied_text",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "recovery"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "current-runtime-review",
+          "family": "measurement-coverage",
+          "status": "measurement",
+          "observed": "The journal reports a complete historical 9-task/3-trial archive; no fresh current-runtime receipt was inspected.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## ALFWorld — embodied runtime"
+            }
+          ],
+          "next_action": "Retain the completed historical generation; review its identity separately from current runtime readiness."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "api_bank",
+      "demand": "tool_use",
+      "surface": "tool_calling",
+      "exercises": [
+        "tools"
+      ],
+      "shared_blockers": [],
+      "blockers": [
+        {
+          "id": "retain-contract-refusal",
+          "family": "contract-refusal",
+          "status": "external",
+          "observed": "Recorded API results rely on missing dialogue state; the oracle cannot reproduce the released metric.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/api_bank.py",
+              "locator": "REFUSED ="
+            }
+          ],
+          "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "appworld",
+      "demand": "tool_use",
+      "surface": "tool_dialogue",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "recovery"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "successful-task-evidence",
+          "family": "actor-protocol",
+          "status": "measurement",
+          "observed": "Later 16/32-step smokes are measured zeros with healthy runtime; they do not close the journal successful-task gate.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "### AppWorld thirty-two-step smoke"
+            }
+          ],
+          "next_action": "Retain the measured-zero receipts and unresolved gate; review task-facing protocol evidence without tuning to the selected task or increasing its budget."
+        },
+        {
+          "id": "trusted-trial-evidence-writer",
+          "family": "measurement-coverage",
+          "status": "code-solvable",
+          "observed": "Saved verdicts retain TGC/SGC evidence; progress/events lack sufficient scorer evidence and original trial IDs.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## AppWorld reporting receipt integration audit — Codex 169"
+            }
+          ],
+          "next_action": "Review minimal trusted writer evidence and trial identity persistence with fabricated writer/reporting inputs."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "appworld-initial-infrastructure-smoke",
+          "run_id": null,
+          "status": "incomplete",
+          "effect": null,
+          "observation": "Original actor launch failed with Docker exit 125. Later repaired smokes measured zero; they do not replace this incomplete attempt. Original failed run ID is not specified.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "### AppWorld real-model smoke blocker"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/101/deliverables/receipt.md",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "bfcl_v3",
+      "demand": "tool_use",
+      "surface": "tool_calling",
+      "exercises": [
+        "tools"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "release-index-custody",
+          "family": "source-provenance",
+          "status": "external",
+          "observed": "Synthetic selected-span checks passed, but index hashes are unauthenticated and official release identity is unproven.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## BFCL official call scorer review — Codex 166"
+            }
+          ],
+          "next_action": "Obtain independently reviewed code-only evaluator provenance and custodian approval of metadata-only release/index bindings."
+        },
+        {
+          "id": "simple-ast-contract",
+          "family": "official-scorer-execution",
+          "status": "code-solvable",
+          "observed": "Current function-name multiset scoring drops arguments/reference alternatives and remains diagnostic-only.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "Current scorer remains function-name multiset diagnostic"
+            }
+          ],
+          "next_action": "After independent source acquisition, review the source-derived metric contract using fabricated calls; retain diagnostic labeling meanwhile."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "bird_minidev",
+      "demand": "artifact",
+      "surface": "text_to_sql",
+      "exercises": [
+        "context",
+        "tools",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "sql-coverage-reconciliation",
+          "family": "measurement-coverage",
+          "status": "measurement",
+          "observed": "V5 is historically labeled complete, but only 28/34 tasks were measured; v4 remains incomplete.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## Bird MiniDev — SQL measurement"
+            }
+          ],
+          "next_action": "Reconcile task/trial coverage and SQL engine/schema errors from metadata before comparison; retain both historical labels and limits."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "bird-v4-incomplete",
+          "run_id": null,
+          "status": "incomplete",
+          "effect": null,
+          "observation": "V4 stalled and remains incomplete; no later V5 record supersedes it. The journal names the v4 generation but does not provide its exact run ID.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "v4 stalled and remains incomplete"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/qa-h0-archive-v4/index.json",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        },
+        {
+          "record_id": "bird-v5-partial-coverage",
+          "run_id": "bird-minidev-h0-10pct-v5",
+          "status": "partial-measurement",
+          "effect": null,
+          "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "only 28/34 tasks were measured (90 verify phases)"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/qa-h0-archive-v4/index.json",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "chessbench_puzzles",
+      "demand": "reasoning",
+      "surface": "planning_and_search",
+      "exercises": [
+        "context",
+        "control"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "trusted-stepwise-transport",
+          "family": "official-scorer-execution",
+          "status": "code-solvable",
+          "observed": "Strict replay was synthetically repaired; current offline QA transport cannot attest successive actor observations.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## ChessBench Puzzles — strict replay"
+            }
+          ],
+          "next_action": "Review a trusted public-observation transport against fabricated boards before making interactive accuracy claims."
+        },
+        {
+          "id": "interruption-closure",
+          "family": "termination-audit",
+          "status": "runtime",
+          "observed": "Both interrupted pilots lack terminal verdict/cleanup closure; termination authority remains undetermined.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Interruption audit: termination authority is undetermined"
+            }
+          ],
+          "next_action": "Review the existing audit and receipt identities without resuming or overwriting either run ID."
+        },
+        {
+          "id": "recovery-id-conflict",
+          "family": "documentation-conflict",
+          "status": "code-solvable",
+          "observed": "The audit sentence recommends a fresh launch using an already incomplete recovery ID, conflicting with adjacent preservation instructions and AGENTS.md.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "launch a fresh `chess-pilot-h0-20261013-recovery-01`"
+            }
+          ],
+          "next_action": "Correct future-launch guidance to require a genuinely new ID while preserving both original records."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "chess-original-incomplete",
+          "run_id": "chess-pilot-h0-20261013",
+          "status": "incomplete",
+          "effect": null,
+          "observation": "19 task-trials completed, 0 failed envelopes; events stopped during test/1270 trial 2 with no final verdict or aggregate curve.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Pilot interruption: run `chess-pilot-h0-20261013`"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/chess/interruption-audit.md",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        },
+        {
+          "record_id": "chess-recovery-incomplete",
+          "run_id": "chess-pilot-h0-20261013-recovery-01",
+          "status": "incomplete",
+          "effect": null,
+          "observation": "149/150 task-trials completed, 0 failed envelopes; final test/9967 trial stopped after more than 620s with no terminal verdict/curve. Termination/cleanup closure unproven.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Recovery result: `chess-pilot-h0-20261013-recovery-01`"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/chess/interruption-audit.md",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "ds1000",
+      "demand": "artifact",
+      "surface": "code_generation",
+      "exercises": [
+        "tools",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "host-slice-archive-review",
+          "family": "measurement-coverage",
+          "status": "measurement",
+          "observed": "The 61-task pilot covers a 926/1000 host slice; final archive and timeout classification are pending review.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## DS1000 — host slice and timeout evidence"
+            }
+          ],
+          "next_action": "Review selected-ID/trial/timeout metadata and pool coverage before accepting any archive effect."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "ds1000-v4-pending-review",
+          "run_id": "ds1000-h0-10pct-v4",
+          "status": "pending-review",
+          "effect": null,
+          "observation": "Reported score 0.2076502732 over a 61-task/3-trial pilot on the 926/1000 host slice; sample/trial/timeout audit and archive append remain pending.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## DS1000 — host slice and timeout evidence"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/61/report.md",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "fever",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "dataset-journal-gap",
+          "family": "journal-coverage",
+          "status": "measurement",
+          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/fever.py",
+              "locator": "KIND = \"dataset\""
+            }
+          ],
+          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "gaia",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context",
+        "tools",
+        "control"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "frozen-lifecycle-receipt",
+          "family": "snapshot-cleanup",
+          "status": "runtime",
+          "observed": "Compatibility checks do not establish coherent source lock, snapshot bounds, trusted verification or fresh cleanup; V2/V3 remain incomplete.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## GAIA lifecycle wiring audit — Codex 165"
+            }
+          ],
+          "next_action": "Review the metadata-only source/runtime/lifecycle identity requirements and preserve both interrupted run IDs; no aggregate score is valid."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "gaia-v2-incomplete",
+          "run_id": "gaia-validation-pilot-h0-20261117-v2",
+          "status": "incomplete",
+          "effect": null,
+          "observation": "17 tasks x3 planned; sealed receipt reports 9 persisted trials, events contain 10 done events. API-timeout usage unknown; coverage discrepancy unresolved.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "### GAIA V2 real-model pilot attempt"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/gaia-h0-launch-v2-evidence/GAIA_H0_V2_RECEIPT.json",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        },
+        {
+          "record_id": "gaia-v3-incomplete",
+          "run_id": "gaia-validation-pilot-h0-20261117-v3",
+          "status": "incomplete",
+          "effect": null,
+          "observation": "11 trials completed normally; gaia/49 third trial reached agent completion but snapshot exited 137 before verification. No aggregate score is valid.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "### GAIA V3 real-model pilot attempt"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/gaia-h0-launch-v3/runs/gaia-validation-pilot-h0-20261117-v3/events.jsonl",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "gsm8k",
+      "demand": "reasoning",
+      "surface": "reasoning",
+      "exercises": [
+        "context",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "scorer-protocol-comparability",
+          "family": "metric-comparability",
+          "status": "measurement",
+          "observed": "Decimal-aware scorer provenance was repaired synthetically; old integer-scorer history and trial-mean/test@N remain distinct.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## GSM8K — scorer provenance repair — 2026-10-14"
+            }
+          ],
+          "next_action": "Document matching scorer/protocol identities for future comparisons and preserve old receipts unchanged."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "hotpotqa",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "schema-timeout-measurement",
+          "family": "measurement-coverage",
+          "status": "measurement",
+          "observed": "User-stopped v4 measured only 94/1476 task-trials; timeout and malformed evidence are distinct from ordinary wrong answers.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## HotpotQA — structured evidence and time budget"
+            }
+          ],
+          "next_action": "Review repaired schema and timeout classification against synthetic evidence, keeping the historical full-size protocol incomplete."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "hotpot-v4-incomplete",
+          "run_id": null,
+          "status": "incomplete",
+          "effect": null,
+          "observation": "User stopped the oversized 492-task/3-trial run at 94/1476 task-trials; the journal provides no exact run ID, so none is invented.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## HotpotQA — structured evidence and time budget"
+            },
+            {
+              "kind": "external-reference",
+              "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/qa-h0-incomplete-index.json",
+              "locator": "Journal citation only; external receipt not opened during this review."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "jericho",
+      "demand": "environment",
+      "surface": "interactive_fiction",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "memory"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "independent-runtime-proof",
+          "family": "trusted-verifier-runtime",
+          "status": "runtime",
+          "observed": "Public runtime projection and phase bounds were repaired; independently exercised production work-root evidence remains missing.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## Jericho — runtime boundary repair"
+            }
+          ],
+          "next_action": "Review selected metadata and an independent runtime-boundary receipt from a work root outside the platform checkout."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "livecodebench",
+      "demand": "artifact",
+      "surface": "code_generation",
+      "exercises": [
+        "tools",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "row-attestation",
+          "family": "source-provenance",
+          "status": "external",
+          "observed": "Row 740 to abc360_a binding lacks an independently approved externally custodied record; self-hashes do not establish custody.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "### LiveCodeBench `/740` trusted metadata validation"
+            }
+          ],
+          "next_action": "Obtain independent metadata-only row/pool/split attestation and compare its identity with the preserved inert selection."
+        },
+        {
+          "id": "smoke-scorer-comparability",
+          "family": "metric-comparability",
+          "status": "measurement",
+          "observed": "The smoke used an external-process scorer variant and is incomparable with official wrapped-function execution.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "### LiveCodeBench `/740` executable smoke"
+            }
+          ],
+          "next_action": "Record the scorer/path difference and review code-only official execution requirements before any benchmark claim."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "musique",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "joint-policy-comparability",
+          "family": "metric-comparability",
+          "status": "measurement",
+          "observed": "The journal reports 150/150 measured pilot trials, but platform joint reward is not an official single leaderboard column.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## MuSiQue — answer/support evaluation fidelity"
+            }
+          ],
+          "next_action": "Review metric/split/source/lifecycle metadata before comparison; keep the journal claim separate from newly verified evidence."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "nestful",
+      "demand": "tool_use",
+      "surface": "tool_calling",
+      "exercises": [
+        "tools"
+      ],
+      "shared_blockers": [],
+      "blockers": [
+        {
+          "id": "retain-contract-refusal",
+          "family": "contract-refusal",
+          "status": "external",
+          "observed": "Official execution Win Rate is nondeterministic/unreproducible as released; slot/sequence metrics cannot replace it.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/nestful.py",
+              "locator": "REFUSED ="
+            }
+          ],
+          "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "physicsquestions",
+      "demand": "reasoning",
+      "surface": "reasoning",
+      "exercises": [
+        "context",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "dataset-journal-gap",
+          "family": "journal-coverage",
+          "status": "measurement",
+          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/physicsquestions.py",
+              "locator": "KIND = \"dataset\""
+            }
+          ],
+          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "reasoning_gym",
+      "demand": "reasoning",
+      "surface": "reasoning",
+      "exercises": [
+        "context",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "dataset-journal-gap",
+          "family": "journal-coverage",
+          "status": "measurement",
+          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/reasoning_gym.py",
+              "locator": "KIND = \"dataset\""
+            }
+          ],
+          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "scienceworld",
+      "demand": "environment",
+      "surface": "science_simulation",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "memory",
+        "recovery"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "prevent-platform-writes",
+          "family": "platform-integrity",
+          "status": "code-solvable",
+          "observed": "V4 remains incomplete despite 354/354 scored task-trials; platform mismatch writer attribution is unresolved.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## ScienceWorld — platform integrity"
+            }
+          ],
+          "next_action": "Review the isolated integrity-prevention patch and synthetic mount boundaries; do not use the diagnostic mean as an archive effect."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "scienceworld-v4-incomplete",
+          "run_id": "scienceworld-h0-10pct-v4",
+          "status": "incomplete",
+          "effect": null,
+          "observation": "354/354 task-trials completed, but platform-integrity mismatch invalidates run-level completeness; diagnostic mean 0.1380508475 is not an archive effect.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## ScienceWorld — platform integrity"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "sotuqa",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [],
+      "blockers": [
+        {
+          "id": "retain-contract-refusal",
+          "family": "contract-refusal",
+          "status": "external",
+          "observed": "The headline unpinned LLM-judge metric is unavailable under the platform contract; EM/F1 are not a substitute.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/sotuqa.py",
+              "locator": "REFUSAL ="
+            }
+          ],
+          "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "sportsunderstanding",
+      "demand": "reasoning",
+      "surface": "reasoning",
+      "exercises": [
+        "context",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "dataset-journal-gap",
+          "family": "journal-coverage",
+          "status": "measurement",
+          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/sportsunderstanding.py",
+              "locator": "KIND = \"dataset\""
+            }
+          ],
+          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "spreadsheetbench",
+      "demand": "artifact",
+      "surface": "spreadsheet",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "dataset-journal-gap",
+          "family": "journal-coverage",
+          "status": "measurement",
+          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/spreadsheetbench.py",
+              "locator": "KIND = \"dataset\""
+            }
+          ],
+          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "strategyqa",
+      "demand": "reasoning",
+      "surface": "reasoning",
+      "exercises": [
+        "context",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "dataset-journal-gap",
+          "family": "journal-coverage",
+          "status": "measurement",
+          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/strategyqa.py",
+              "locator": "KIND = \"dataset\""
+            }
+          ],
+          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "tau2_bench",
+      "demand": "tool_use",
+      "surface": "tool_dialogue",
+      "exercises": [
+        "tools",
+        "control"
+      ],
+      "shared_blockers": [],
+      "blockers": [
+        {
+          "id": "retain-contract-refusal",
+          "family": "contract-refusal",
+          "status": "external",
+          "observed": "Independent user simulation and judge-dependent assertions are unavailable; required user actions cannot be supplied by the actor.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "data/tau2_bench.py",
+              "locator": "REFUSED ="
+            }
+          ],
+          "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "tau_bench",
+      "demand": "tool_use",
+      "surface": "tool_dialogue",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "memory",
+        "recovery"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "local-state-lifecycle",
+          "family": "snapshot-cleanup",
+          "status": "runtime",
+          "observed": "Returned local pool loadability does not attest service reset, database state or evaluator secrecy.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## AppWorld / GAIA / tau-bench — local state boundaries"
+            }
+          ],
+          "next_action": "Review selected-only state and lifecycle contracts using source metadata; require independent runtime evidence before readiness claims."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "terminal_bench",
+      "demand": "environment",
+      "surface": "terminal",
+      "exercises": [
+        "context",
+        "tools",
+        "control",
+        "recovery",
+        "verification"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "cached-runtime-admission",
+          "family": "trusted-verifier-runtime",
+          "status": "runtime",
+          "observed": "The journal reports hardened synthetic admission for six cached train images, with offline closure, export and quotas still missing.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Scope: inherited six cached train images"
+            }
+          ],
+          "next_action": "Review manifest/image/resource/cleanup identity requirements and shared unresolved backend gates; cached images are not execution evidence."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "triviaqa",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "upstream-evaluator-acquisition",
+          "family": "source-provenance",
+          "status": "external",
+          "observed": "Original upstream evaluator bytes, license and commit linkage remain unacquired; production scorer is unchanged.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## TriviaQA adapter impact review — Codex 167"
+            }
+          ],
+          "next_action": "Acquire and independently review original code-only evaluator provenance; keep full grouping/F1 behavior unverified."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
+      "dataset": "twowikimultihopqa",
+      "demand": "evidence",
+      "surface": "information_seeking",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [
+        "runtime-observations",
+        "paired-filesystem-quotas",
+        "scorer-offline-closure",
+        "pristine-verifier",
+        "artifact-only-state-export",
+        "official-scorer-identity",
+        "snapshot-owned-cleanup",
+        "pilot-guidance-conflict"
+      ],
+      "blockers": [
+        {
+          "id": "independent-evaluator-source",
+          "family": "source-provenance",
+          "status": "external",
+          "observed": "Independent upstream fetch failed; synthetic comparison used an existing pinned verbatim region rather than fresh acquired bytes.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Remaining gates/blockers: no implementation blocker."
+            }
+          ],
+          "next_action": "Acquire and independently review code-only evaluator bytes and linkage; retain original mixed-metric and recovered receipts separately."
+        },
+        {
+          "id": "recovery-comparability",
+          "family": "metric-comparability",
+          "status": "measurement",
+          "observed": "The original pilot mixed legacy Answer F1 and structured Joint F1 and had two invalids; the journal reports a separate recovery.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Pilot recovery: the original 50-task pilot"
+            }
+          ],
+          "next_action": "Review the original and recovery metric/coverage metadata separately; do not rewrite the original pilot as fully measured."
+        }
+      ],
+      "historical_runs": [
+        {
+          "record_id": "twowiki-original-invalid-pilot",
+          "run_id": null,
+          "status": "partial-measurement",
+          "effect": null,
+          "observation": "Original 50-task pilot had 48 scored tasks, two malformed-output invalids and mixed legacy Answer F1/structured Joint F1. Reported original curve 0.5081597292 is not full comparable coverage. Exact original run ID not specified.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "- Local results: MuSiQue capped train pilot"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

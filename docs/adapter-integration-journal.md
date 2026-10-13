@@ -423,3 +423,16 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Validation: 91 focused offline tests passed (88 new, three existing mocked snapshot regressions); runner failures preserve invalid/no-score semantics and attempt owned teardown.
 - Evidence: `GAIA_GATE.md` documents observed base metadata, compatibility inputs and remaining measured closure. No local GAIA lifecycle receipt was available; no lifecycle evidence was created.
 - Gate: production lifecycle remains BLOCKED pending selected-only provenance, coherent frozen-source controls, trusted verifier/dependencies, artifact export, quota enforcement and verified owned cleanup. Current stdout/exit codes and best-effort removal are insufficient.
+
+## Dataset blocker registry — Codex 178 — 2026-10-14
+
+- Status: `isolated`, source/journal index validated; no execution authorization
+- Scope: `/tmp/hg-codex-178`, reviewed base `e7acaa1126c4c63c8ddc338bd9a7f4988f43ffdf`; repository taxonomy, adapter declarations, journal and tracked source-audit documents only. No adapter imports, external receipt/task-payload reads, model/H0, heldout, network, Docker, or main edits.
+- Finding: all 28 publishable declarations need coverage, including refused/unprovisioned adapters. Current blocker work and historical run outcomes are independent. Missing dataset-specific journal entries are evidence gaps, not passing gates.
+- Evidence: [machine-readable registry](dataset-blockers.json), [format and review limits](dataset-blockers.md), `tools/check_dataset_blockers.py`, `tests/quality/test_dataset_blockers.py`, pinned `tests/fixtures/dataset_blockers/history-codex178.json`.
+- Platform change: AST-only coverage validation against existing `CAPABILITY` and `EXERCISES`; eight reusable shared blockers plus dataset-specific families/statuses/evidence/actions. Task `demand x surface` remains separate from harness `exercises`.
+- Historical preservation: 11 incomplete/partial/pending-review observations are independently pinned and must remain unchanged; effects remain null. Unknown exact run IDs remain null. External receipts/scores are journal citations, not newly verified facts. Both chess and GAIA interruptions remain separate records.
+- Documentation conflicts: the platform log's historical 50-task sizing and the chess audit's already-used recovery-ID advice are explicitly indexed. Current planning follows AGENTS.md; no old receipt or historical paragraph was rewritten.
+- Validation: `PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py` reports valid, 28 datasets, 8 shared blockers, 11 historical records, production_authorized=false. `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=.scratch/blocker-registry-codex178/pytest-final tests/quality/test_dataset_blockers.py` — **45 passed**. Tests deny adapter imports, external file reads, sockets and subprocess execution.
+- Remaining gates: this registry records unresolved requirements; it authenticates no external receipt and closes no runtime/scorer/measurement gate. Parent review/merge remains separate.
+- Commit: accompanying focused docs/code/tests commit; exact hash reported with delivery.

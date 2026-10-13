@@ -2,6 +2,11 @@
 
 This index tracks reusable platform capabilities learned while onboarding datasets. Dataset entries belong in `docs/adapter-integration-journal.md`; this file records the capability that future adapters should reuse.
 
+The source-only [dataset blocker registry](dataset-blockers.md) indexes current
+work separately from historical outcomes. Historical pilot sizes below are
+records of earlier protocols; current planning follows AGENTS.md's one-task
+diagnostic and separately reviewed 30-task/one-trial temporary-rerun cap.
+
 ## How to use this log
 
 Every platform improvement must record:
@@ -110,6 +115,15 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Contract: [backend audit](filesystem-quota-backends.md) specifies XFS/ext4 project hard quotas, bounded tmpfs, driver/snapshotter integration, pre-staging allocation, trusted read-only effective-limit observations, fail-closed runner wiring and verified scope cleanup.
 - Validation: 252 existing synthetic runner/artifact contract tests passed, with real subprocess/network execution denied; [report](../filesystem-quota-codex168-report.md), [source hashes](../filesystem-quota-codex168-source-evidence.json) and [output](../filesystem-quota-codex168-test-result.txt).
 - Status: `documented_blocker`; documentation only, no detector or runtime source change; no mounts, quota operations, Docker daemon queries, model/H0 or benchmark. Production quota enforcement remains unsupported.
+
+### C-010 — Source-only blocker registry and historical preservation — Codex 178
+
+- Trigger: blocker evidence is spread across the adapter journal and source audits, while later repairs can obscure incomplete historical runs.
+- Contract: [registry](dataset-blockers.json) keeps `demand x surface` separate from `exercises`, expands shared blocker references, and records explicit work status/evidence/action for every publishable declaration. A separately pinned baseline preserves 11 historical incomplete/partial/pending-review records with null effects.
+- Datasets: all 28 declared datasets, including refused adapters and explicit gaps for datasets without specific journal entries.
+- Validation: `tools/check_dataset_blockers.py` passes; **45** focused source-only tests cover totality, axis separation, evidence locators, historical deletion/reclassification/rescoring, duplicate run IDs and forbidden adapter/external/runtime access.
+- Status: `isolated`; docs/index validation only. No production gate or execution authorization follows; external receipts remain unverified journal citations.
+- Commit: accompanying focused blocker-registry docs/code/tests commit; parent review/merge pending.
 
 ## Commit discipline
 
