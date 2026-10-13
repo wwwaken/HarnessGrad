@@ -197,6 +197,83 @@ def test_adversarial_is_a_condition_and_not_a_demand():
         assert rows[name]["surface"] in {s for _, s in dataset_classes.CAPABILITY.values()}
 
 
+def test_every_dataset_names_at_least_one_harness_function():
+    """A dataset that stresses nothing cannot support a harness-design claim."""
+    rows = _rows()
+    for row in rows:
+        assert row["exercises"], row
+        for function in row["exercises"]:
+            assert function in dataset_classes.FUNCTIONS, (row["dataset"], function)
+
+
+def test_the_function_coverage_floor_matches_what_is_declared():
+    """Same two-way rule as the demands: below the floor is declared, and a declaration means
+    still below the floor."""
+    rows = _rows()
+    counts = {f: sum(1 for r in rows if f in r["exercises"])
+              for f in dataset_classes.FUNCTIONS}
+    below = sorted(f for f in dataset_classes.FUNCTIONS
+                   if counts[f] < dataset_classes.MIN_MEMBERS_PER_FUNCTION)
+    assert below == sorted(dataset_classes.UNCOVERED_FUNCTIONS), (below, counts)
+    assert set(dataset_classes.UNCOVERED_FUNCTIONS) <= set(dataset_classes.FUNCTIONS)
+    # Measured when this was written: 22 context, 16 tools, 11 control, 5 reflection, 5
+    # verification, 5 recovery, 3 memory, 1 safety, 0 cost, 0 delegation, 0 reliability.
+    assert counts["tools"] > counts["memory"], "the scaffolds we reuse over-sample their own"
+
+
+def test_an_undeclared_function_gap_is_refused():
+    original = dict(dataset_classes.UNCOVERED_FUNCTIONS)
+    try:
+        dataset_classes.UNCOVERED_FUNCTIONS.pop("delegation")
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "delegation" in str(excinfo.value)
+    finally:
+        dataset_classes.UNCOVERED_FUNCTIONS.clear()
+        dataset_classes.UNCOVERED_FUNCTIONS.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_a_stale_function_gap_is_refused():
+    """Listing a covered function as a gap is a coverage claim that is now false."""
+    original = dict(dataset_classes.UNCOVERED_FUNCTIONS)
+    try:
+        dataset_classes.UNCOVERED_FUNCTIONS["tools"] = "no longer true"
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "tools" in str(excinfo.value)
+    finally:
+        dataset_classes.UNCOVERED_FUNCTIONS.clear()
+        dataset_classes.UNCOVERED_FUNCTIONS.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_a_function_outside_the_vocabulary_is_refused():
+    original = dict(dataset_classes.EXERCISES)
+    try:
+        dataset_classes.EXERCISES["gsm8k"] = ("context", "vibes")
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "gsm8k" in str(excinfo.value)
+    finally:
+        dataset_classes.EXERCISES.clear()
+        dataset_classes.EXERCISES.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
+def test_a_dataset_that_names_no_function_is_refused():
+    original = dict(dataset_classes.EXERCISES)
+    try:
+        dataset_classes.EXERCISES["gsm8k"] = ()
+        with pytest.raises(SystemExit) as excinfo:
+            dataset_classes.classify_all()
+        assert "gsm8k" in str(excinfo.value)
+    finally:
+        dataset_classes.EXERCISES.clear()
+        dataset_classes.EXERCISES.update(original)
+    assert dataset_classes.classify_all()  # restored
+
+
 def test_the_derived_interaction_agrees_with_the_declared_one():
     rows = _rows()
     for row in rows:
@@ -264,8 +341,8 @@ def test_the_json_view_is_machine_readable():
     assert proc.returncode == 0, proc.stderr[-400:]
     rows = json.loads(proc.stdout)
     assert len(rows) == len(registry.published())
-    assert all({"dataset", "demand", "surface", "adversarial", "interaction", "tasks"} <= set(row)
-               for row in rows)
+    assert all({"dataset", "demand", "surface", "adversarial", "exercises",
+                "interaction", "tasks"} <= set(row) for row in rows)
     # One name per datum: the flat vocabulary's `domain` was `surface` plus half of
     # `interaction`, and carrying both spellings is how the two drifted apart.
     assert all("domain" not in row for row in rows)
@@ -307,6 +384,11 @@ def test_the_demand_surface_and_adversarial_filters_select_what_they_say():
 
     adversarial = run("--adversarial")
     assert {row["dataset"] for row in adversarial} == set(dataset_classes.ADVERSARIAL)
+
+    for function in dataset_classes.FUNCTIONS:
+        filtered = run("--function", function)
+        assert {row["dataset"] for row in filtered} == {
+            row["dataset"] for row in demands if function in row["exercises"]}, function
 
 
 def test_the_table_view_prints_both_levels(capsys):

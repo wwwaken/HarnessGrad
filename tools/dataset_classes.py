@@ -38,11 +38,30 @@ it. So the axes split into three kinds, and only the middle one is a judgement:
 3. **Measured** -- cost, difficulty and headroom. Only a run knows these; they live in the
    curve points and in `tools/task_difficulty.py`'s per-dataset JSON, never in this file.
 
+The judged axis also carries a third level that answers a different question from the first
+two. `demand` and `surface` say what a *task* asks for; `exercises` says which *harness
+component* a dataset makes score-relevant, as a set, because a task can stress several at
+once. It exists because onboarding was ordered by scaffold cost (`docs/survey/README.md`), and
+scaffold cost is orthogonal to functional coverage: the two reusable scaffolds over-sample the
+functions they exercise and nothing ever checked the rest. Measured against the harness
+functions the experiment program names, that left `delegation`, `reliability` and `cost` with
+no dataset at all, and `safety` with one.
+
+The function vocabulary is not invented here. It is the union of the decompositions the
+survey corpus already reports -- `2507.21504`'s Agent Capabilities, `2601.01743`'s agent
+components, the Springer meta-taxonomy's W-pillar, `2601.05111`'s method dimensions and
+`2503.09648`'s TrustAgent -- reconciled with the functions this repository's own pages name:
+`docs/writing_a_harness.md` ("tools, prompts, control flow, memory, number of model calls")
+and `report/09_experiments.tex` ("context builders, tool policies, retry rules, memory
+structures, and stopping conditions"). Where a name appears only in the literature it is
+still listed, because the point is coverage rather than vocabulary agreement.
+
 Usage:
 
     python3 tools/dataset_classes.py                # the table
     python3 tools/dataset_classes.py --json         # the same, for another program
     python3 tools/dataset_classes.py --demand reasoning
+    python3 tools/dataset_classes.py --function verification
     python3 tools/dataset_classes.py --surface terminal
     python3 tools/dataset_classes.py --adversarial
     python3 tools/dataset_classes.py --interaction closed_loop
@@ -92,6 +111,111 @@ DEMANDS = ("evidence", "reasoning", "tool_use", "artifact", "environment", "memo
 #: two judge scores.
 UNCOVERED_DEMANDS: dict[str, tuple[str, ...]] = {
     "memory": ("authored_store", "supplied_history"),
+}
+
+#: The harness functions a dataset can make score-relevant: if you changed that component in a
+#: harness, could this dataset's score move? A set per dataset rather than one value, because a
+#: task that needs multi-step tool use stresses the tool interface and the control loop at once.
+#:
+#: `context` is assigned only where the assembly is a real decision (many candidate documents,
+#: a growing trajectory, a large structured state) rather than to every dataset that has a
+#: prompt, or the column would say nothing. `memory` here is *within-task* retention, which is
+#: a different thing from the `memory` demand above: jericho, scienceworld and tau_bench all
+#: require holding state across a horizon, and none of them grades a store the harness authored
+#: and carried across sessions. That distinction is the reason both vocabularies exist.
+#:
+#: `verification` is assigned where testing the harness's own output before submitting is
+#: rewarded -- the code, SQL and spreadsheet datasets. A harness that runs the tests it can see
+#: and fixes what fails scores higher there, and does nothing extra on a QA row.
+#:
+#: `verification` and `reflection` are held apart because the corpus holds them apart:
+#: `2601.01743` names both "self-reflection and verification", lists "critics" as a component,
+#: and `2503.16416` lists Self-Reflection as one of four agent capabilities while
+#: `2605.23950`'s four-function harness covers the checking side as "verification". The
+#: distinction is the object: verification checks an artifact against a check, reflection
+#: re-examines the harness's own reasoning. `reflection` is assigned to the reasoning datasets,
+#: where self-consistency and critique-and-revise move the score without any external check.
+#:
+#: One reading of this axis is measured and one is not, and they must not be confused. Every
+#: entry is a claim of *sensitivity* -- change this component and the score can move -- not a
+#: claim that the dataset *isolates* the component. No dataset in this registry isolates any of
+#: them. That is why `2503.16416` can call self-reflection "a critical gap" while five datasets
+#: here are sensitive to it: a task reflection helps on is not a measurement of reflection.
+FUNCTIONS = (
+    "context",
+    "tools",
+    "control",
+    "memory",
+    "verification",
+    "reflection",
+    "recovery",
+    "delegation",
+    "reliability",
+    "cost",
+    "safety",
+)
+
+EXERCISES: dict[str, tuple[str, ...]] = {
+    "alfworld": ("context", "tools", "control", "recovery"),
+    "agentdojo": ("context", "tools", "control", "safety"),
+    "bfcl_v3": ("tools",),
+    "chessbench_puzzles": ("context", "control"),
+    "ds1000": ("tools", "verification"),
+    "gsm8k": ("context", "reflection"),
+    "reasoning_gym": ("context", "reflection"),
+    "jericho": ("context", "tools", "control", "memory"),
+    "musique": ("context",),
+    "twowikimultihopqa": ("context",),
+    "livecodebench": ("tools", "verification"),
+    "appworld": ("context", "tools", "control", "recovery"),
+    "bird_minidev": ("context", "tools", "verification"),
+    "physicsquestions": ("context", "reflection"),
+    "scienceworld": ("context", "tools", "control", "memory", "recovery"),
+    "sportsunderstanding": ("context", "reflection"),
+    "spreadsheetbench": ("context", "tools", "control", "verification"),
+    "strategyqa": ("context", "reflection"),
+    "tau_bench": ("context", "tools", "control", "memory", "recovery"),
+    "terminal_bench": ("context", "tools", "control", "recovery", "verification"),
+    "triviaqa": ("context",),
+    "gaia": ("context", "tools", "control"),
+    # Refused datasets carry the functions their task shape would stress, for the same reason
+    # they carry a demand: the judgement is about the benchmark, not about our contract.
+    "api_bank": ("tools",),
+    "fever": ("context",),
+    "hotpotqa": ("context",),
+    "nestful": ("tools",),
+    "sotuqa": ("context",),
+    "tau2_bench": ("tools", "control"),
+}
+
+#: How few datasets make a harness function covered rather than merely touched.
+MIN_MEMBERS_PER_FUNCTION = 2
+
+#: Functions below that floor, with the reason and the shape of the gap. Same two-way rule as
+#: `UNCOVERED_DEMANDS`: a function under the floor must appear here, and a function here must be
+#: under the floor, so closing a gap deletes the entry in the same change.
+#:
+#: The three at zero are not oversights and are not equally cheap to fix. `delegation` and
+#: `reliability` are *closable* -- a sub-agent benchmark and a pass^k protocol are both
+#: hostable on this platform. `cost` is only partly closable: the platform measures cost on
+#: every run, so what is missing is a task that is *budget-bounded*, where spending less changes
+#: the score rather than the ledger. `safety` has one adapter and deserves the note that
+#: agentdojo carries the condition as a flag, not as a surface.
+#:
+#: Deliberately absent from `FUNCTIONS`: perception. Computer-use and GUI benchmarks need a
+#: browser or a VM (`docs/survey/README.md` excludes both), and the platform has no multimodal
+#: harness or image-bearing action space, so a `perception` function here would be a permanent
+#: red entry for an infrastructure decision rather than a dataset gap.
+UNCOVERED_FUNCTIONS: dict[str, str] = {
+    "delegation": "no adapter requires the harness to split work across sub-agents or route "
+                  "between models; tau2_bench needs an independent user simulator, which the "
+                  "platform supplies rather than the harness",
+    "reliability": "no adapter is built so that consistency across trials is what is scored; "
+                   "the platform takes repeated trials, but no task is constructed for pass^k",
+    "cost": "every run is costed, but no task is budget-bounded, so spending less changes the "
+            "ledger rather than the score",
+    "safety": "one adapter (agentdojo), and it carries the adversary as a condition flag on an "
+              "ordinary tool-dialogue task rather than as a surface of its own",
 }
 
 #: Level 2 of the judged axis: the surface the demand is exercised on. Kept because a SQL task
@@ -253,6 +377,7 @@ def classify(name: str) -> dict:
         "demand": demand,
         "surface": surface,
         "adversarial": name in ADVERSARIAL,
+        "exercises": list(EXERCISES.get(name, ())),
         "refused": bool(refused),
         "env_kinds": sorted({v.get("kind") for v in module.ENV.values()}) if getattr(module, "ENV", None) else [],
         # A refusal declares no tasks on purpose, so the contract axes are inapplicable.
@@ -363,9 +488,45 @@ def _check_judged_axis(rows: list[dict]) -> None:
             f"benchmark either belongs to an existing demand or the demand is wrong.")
 
 
+def _check_functions(rows: list[dict]) -> None:
+    """Every dataset names the harness functions it stresses, and every function is covered.
+
+    The rule this replaces was silence. Onboarding was ordered by scaffold cost, and nothing
+    ever asked whether the resulting set could tell one harness component from another; the
+    measured answer was that three of ten could not be told apart at all.
+    """
+    unknown = [(r["dataset"], f) for r in rows for f in r["exercises"] if f not in FUNCTIONS]
+    if unknown:
+        raise SystemExit(
+            f"these datasets exercise functions outside the vocabulary: {unknown}. Add the "
+            f"function to FUNCTIONS in {Path(__file__).name}, or fix the dataset's entry.")
+    silent = [r["dataset"] for r in rows if not r["exercises"]]
+    if silent:
+        raise SystemExit(
+            f"these published datasets name no harness function: {silent}. A dataset that "
+            f"stresses nothing in particular cannot support a harness-design claim; if that is "
+            f"really true of it, say so by naming the one it stresses least badly.")
+    stray = sorted(set(UNCOVERED_FUNCTIONS) - set(FUNCTIONS))
+    if stray:
+        raise SystemExit(f"UNCOVERED_FUNCTIONS names functions outside FUNCTIONS: {stray}.")
+
+    counts = {f: sum(1 for r in rows if f in r["exercises"]) for f in FUNCTIONS}
+    thin = sorted(f for f in FUNCTIONS if counts[f] < MIN_MEMBERS_PER_FUNCTION)
+    declared = sorted(UNCOVERED_FUNCTIONS)
+    if thin != declared:
+        undeclared = [f for f in thin if f not in UNCOVERED_FUNCTIONS]
+        stale = [f for f in declared if f not in thin]
+        raise SystemExit(
+            f"the function coverage floor is out of step with what is declared. Under the "
+            f"floor and undeclared: {undeclared}. Declared but now at or above the floor: "
+            f"{stale}. Below the floor means {MIN_MEMBERS_PER_FUNCTION} datasets; entries are "
+            f"deleted in the same change that closes the gap.")
+
+
 def classify_all() -> list[dict]:
     rows = [classify(name) for name in registry.published()]
     _check_judged_axis(rows)
+    _check_functions(rows)
     return rows
 
 
@@ -403,6 +564,12 @@ def _table(rows: list[dict]) -> str:
     for demand, surfaces in UNCOVERED_DEMANDS.items():
         out.append(f"  {demand:12s} {0:2d}  [planned: {', '.join(surfaces)}]"
                    f"   (declared, no adapter yet)")
+    out += ["", "harness functions (which component a dataset makes score-relevant):"]
+    fcounts = {f: sum(1 for r in rows if f in r["exercises"]) for f in FUNCTIONS}
+    for f in sorted(FUNCTIONS, key=lambda f: (-fcounts[f], f)):
+        names = [r["dataset"] for r in rows if f in r["exercises"]]
+        note = "  <-- declared gap" if f in UNCOVERED_FUNCTIONS else ""
+        out.append(f"  {f:13s} {fcounts[f]:2d}  {', '.join(names) if names else '-'}{note}")
     adversarial = [r["dataset"] for r in rows if r["adversarial"]]
     out.append(f"  {'adversarial':12s} {len(adversarial):2d}  {', '.join(adversarial) or '-'}"
                f"   (* in the table above; a condition, not a demand)")
@@ -413,6 +580,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--demand", choices=DEMANDS, help="only this demand")
+    parser.add_argument("--function", choices=FUNCTIONS,
+                        help="only datasets that stress this harness function")
     parser.add_argument("--surface", help="only this surface")
     parser.add_argument("--adversarial", action="store_true",
                         help="only datasets carrying an injected adversary")
@@ -426,6 +595,8 @@ def main(argv=None) -> int:
         rows = [r for r in rows if r["demand"] == args.demand]
     if args.surface:
         rows = [r for r in rows if r["surface"] == args.surface]
+    if args.function:
+        rows = [r for r in rows if args.function in r["exercises"]]
     if args.adversarial:
         rows = [r for r in rows if r["adversarial"]]
     if args.interaction:
