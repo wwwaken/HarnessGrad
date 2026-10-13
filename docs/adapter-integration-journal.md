@@ -81,7 +81,17 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: do not rerun the old full-size protocol; use the capped pilot default and a repaired scorer boundary
 - Commit: incomplete record only
 
-## 2WikiMultihopQA — 2026-10-13 evaluation fidelity
+## MuSiQue — answer/support evaluation fidelity — 2026-10-13
+
+- Status: `scorer_repaired`, synthetic validation complete; no model/H0
+- Scope: MuSiQue-Ans dev adapter; structured answer plus public support citations; explicit legacy answer-only mode retained
+- Finding: prior reward measured Answer F1 only. Default structured scoring now reports Answer F1, Answer EM, Support F1/EM and a labeled platform joint policy; missing support yields zero support, and trusted evidence is verifier-only
+- Evidence: `data/musique.py`; `docs/musique-output-contract.md`; public pinned evaluator fixtures; combined scorer validation
+- Platform change: structured QA evidence transport and redacted verifier gold support
+- Validation: combined MuSiQue/2Wiki/Chess suites passed `209 tests`
+- Remaining gates: released-data controls and model/H0 validation remain separate; platform joint reward is not an official single leaderboard column
+- Commit: `4d41a4c fix: restore MuSiQue and 2Wiki evaluation fidelity`
+
 
 - Status: `scorer_repaired`, synthetic validation complete; no model/H0
 - Scope: this adapter's public output contract, trusted gold transport and official v1.1 scoring; fabricated fixtures only, no released dev/train/test, heldout payload, alias-table or mirror reads
