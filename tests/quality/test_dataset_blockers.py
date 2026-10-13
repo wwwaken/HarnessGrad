@@ -19,9 +19,10 @@ import check_dataset_blockers as checker  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
-def source_only(monkeypatch):
+def source_only(monkeypatch, tmp_path):
     original_import = builtins.__import__
     original_open = io.open
+    allowed_tmp = tmp_path.resolve()
 
     def guarded_import(name, *args, **kwargs):
         assert name != "data" and not name.startswith("data."), "adapter imports forbidden"
@@ -29,7 +30,9 @@ def source_only(monkeypatch):
 
     def guarded_open(path, *args, **kwargs):
         if isinstance(path, (str, bytes, Path)):
-            assert Path(path).resolve().is_relative_to(ROOT), "external file reads forbidden"
+            resolved = Path(path).resolve()
+            assert (resolved.is_relative_to(ROOT) or resolved.is_relative_to(allowed_tmp)), \
+                "external file reads forbidden"
         return original_open(path, *args, **kwargs)
 
     def denied(*args, **kwargs):
