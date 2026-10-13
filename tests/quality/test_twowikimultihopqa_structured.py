@@ -4,6 +4,7 @@ from __future__ import annotations
 from copy import deepcopy
 import hashlib
 import importlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -282,8 +283,10 @@ def test_public_context_indices_and_trusted_gold_boundary():
 
 @pytest.mark.parametrize("submission,expected", [("full", 1.0), ("partial", 0.0),
                                                  ("legacy", 1.0), ("noop", 0.0),
-                                                 ("malformed", None), ("bad-type", None)])
-def test_public_cli_to_materialized_verifier(submission, expected, tmp_path):
+                                                 ("malformed", None), ("bad-type", None),
+                                                 ("bad-key", None), ("bad-version", None),
+                                                 ("loop-object", 1.0), ("loop-truncated", 1.0)])
+def test_public_cli_to_materialized_verifier(submission, expected, tmp_path, monkeypatch):
     r = row()
     gold = dataset._gold(r)
     record = {"task_id": "twowikimultihopqa/dev/0", "gold": gold}
@@ -295,18 +298,42 @@ def test_public_cli_to_materialized_verifier(submission, expected, tmp_path):
             Path(entry["from"]).read_bytes())
     if submission != "noop":
         pred = prediction(answer=r["answer"])
-        if submission == "full":
+        if submission in ("full", "loop-object", "loop-truncated"):
             pred.update(supporting_facts=r["supporting_facts"], evidence=r["evidences"])
         content = r["answer"] if submission == "legacy" else json.dumps(pred)
         if submission == "malformed":
             content = "{broken JSON"
         elif submission == "bad-type":
             content = json.dumps(prediction(answer="x", evidence=[["S", "R", 1]]))
+        elif submission == "bad-key":
+            content = json.dumps({**pred, "gold": "untrusted fake reference"})
+        elif submission == "bad-version":
+            content = json.dumps({"answer": r["answer"]})
+        elif submission in ("loop-object", "loop-truncated"):
+            loop_spec = importlib.util.spec_from_file_location(
+                "materialized_submission_loop", ROOT / "base_harness/loop/agent.py")
+            loop = importlib.util.module_from_spec(loop_spec)
+            loop_spec.loader.exec_module(loop)
+            replies = [json.dumps({"answer": pred})]
+            if submission == "loop-truncated":
+                replies.insert(0, json.dumps({"answer": json.dumps(pred)[:-1]}))
+            replies = iter(replies)
+            monkeypatch.setattr(loop, "MAX_STEPS", 2)
+            monkeypatch.setattr(loop, "_complete", lambda _: next(replies))
+            content = loop.run({"goal": "Submit a synthetic prediction."}, tmp_path)
+            assert json.loads((tmp_path / "answer.txt").read_text()) == pred
         (tmp_path / "submission.json").write_text(content)
         submitted = subprocess.run(
             [sys.executable, "qa/bin/qa", "submit", "@submission.json"],
             cwd=tmp_path, capture_output=True, text=True)
-        assert submitted.returncode == 0, submitted.stderr
+        if submission == "malformed":
+            assert submitted.returncode == 2, submitted.stderr
+            assert not (tmp_path / "answer.txt").exists()
+            # Direct writes can bypass the CLI. The verifier must still refuse
+            # malformed JSON as unmeasured rather than inventing a scorer zero.
+            (tmp_path / "answer.txt").write_text(content)
+        else:
+            assert submitted.returncode == 0, submitted.stderr
     # Suppress the shared scaffold's import-time pool construction in the child too.
     # The check and scorer run from their actual, unedited VERIFY copies.
     bootstrap = (
@@ -315,17 +342,20 @@ def test_public_cli_to_materialized_verifier(submission, expected, tmp_path):
         "sys.argv=sys.argv[1:]; runpy.run_path(sys.argv[0],run_name='__main__')"
     )
     checked = subprocess.run(
-        [sys.executable, "-c", bootstrap, *spec.verifier(record)["argv"][1:]],
+        [sys.executable, "-c", bootstrap, *spec.verifier(record)["argv"][1:], "--redact-gold"],
         cwd=tmp_path, capture_output=True, text=True)
     if expected is None:
         assert checked.returncode == 3, checked.stderr
         assert not (tmp_path / "verifier/reward.txt").exists()
         evidence = json.loads((tmp_path / "verifier/evidence.json").read_text())
         assert evidence["measured"] is False
+        assert evidence["gold"] == {"redacted": True}
         return
     assert checked.returncode == (0 if expected == 1.0 else 1), checked.stderr
     assert float((tmp_path / "verifier/reward.txt").read_text()) == expected
     evidence = json.loads((tmp_path / "verifier/evidence.json").read_text())
     assert evidence["measured"] is True
+    assert evidence["gold"] == {"redacted": True}
     assert evidence["official"]["mode"] == (
-        "structured" if submission in ("full", "partial") else "legacy_answer_only")
+        "structured" if submission in ("full", "partial", "loop-object", "loop-truncated")
+        else "legacy_answer_only")

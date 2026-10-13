@@ -133,6 +133,9 @@ Reply with EXACTLY one of:
   {"tool": "bash", "command": "<shell command>"}
   {"answer": "<your final answer>"}
 
+For a structured final answer, "answer" may be a JSON object containing the task's
+prediction fields.
+
 Rules:
 - One action per reply. No prose outside the JSON.
 - Keep commands concise. Use a loop or a script instead of enumerating many calls.
@@ -365,8 +368,30 @@ def _parse(reply: str) -> dict:
         if isinstance(cmd, str) and cmd.strip():
             return obj
         if cmd == "" and "answer" in obj:
+            # An outer action can be valid JSON while its answer contains broken
+            # inner JSON. Reject it here so the ordinary parse retry can recover.
+            _answer_text(obj["answer"])
             return obj
     raise ValueError("no complete JSON action found in reply")
+
+
+def _answer_text(value: object) -> str:
+    """Transport a final answer without inventing or dropping prediction fields.
+
+    Schema validation belongs to the task's verifier. This only checks transport:
+    objects must stay JSON (str(dict) produces Python syntax), and JSON-looking
+    strings must be complete. Never close truncated JSON or reinterpret literals.
+    """
+    if isinstance(value, dict):
+        return json.dumps(value, ensure_ascii=False, allow_nan=False)
+    if not isinstance(value, str):
+        raise ValueError("final answer must be a string or a JSON object")
+    if value.lstrip().startswith("{"):
+        try:
+            json.loads(value)
+        except ValueError as exc:
+            raise ValueError(f"final answer contains malformed JSON: {exc}") from exc
+    return value
 
 
 #: goal 里形如 `/app/move.txt`、`/app/learned_dag.csv` 的路径。这是**通用**的:
@@ -618,7 +643,9 @@ def run(task: dict, workdir: Path) -> str:
                     f"You have {MAX_STEPS - step - 1} step(s) left.\n"
                     "Reply with EXACTLY ONE JSON object and nothing else, one of:\n"
                     '  {"tool": "bash", "command": "<shell command>"}\n'
-                    '  {"answer": "<your final answer>"}')})
+                    '  {"answer": "<your final answer>"}\n'
+                    'For structured predictions, put the complete JSON object in "answer"; '
+                    'preserve the task\'s prediction schema.')})
                 continue
 
             parse_retries = 0
@@ -651,7 +678,7 @@ def run(task: dict, workdir: Path) -> str:
                     continue
                 trace.write(json.dumps({"step": step, "submitted": True,
                                         "missing": missing}) + "\n")
-                answer = str(action["answer"])
+                answer = _answer_text(action["answer"])
                 break
             t0 = time.time()
             proc = subprocess.run(

@@ -24,6 +24,10 @@ indistinguishable from no answer at all, and the two cases are *not* the same th
 one is an agent that decided the answer was empty, the other is an agent that never
 spoke. Refusing to write keeps the file's existence meaningful.
 
+JSON object submissions must be syntactically complete before they are written.
+`submit` leaves schema validation to the dataset's verifier; `submit-json` validates
+the shared prediction schema. Neither command repairs or fills prediction fields.
+
 Where the answer goes
 ---------------------
 `<cwd>/answer.txt`. Not a dataset-specific name: the check reads the same file, and the
@@ -99,6 +103,16 @@ def cmd_submit(argv: list[str]) -> int:
         print("error: refusing to submit an empty answer -- a blank answer.txt cannot "
               "be told apart from no answer at all", file=sys.stderr)
         return 2
+
+    # `submit` is also the transport for adapter-specific JSON contracts. Check
+    # syntax without imposing submit-json's shared evidence schema or reading gold.
+    if text.lstrip().startswith("{"):
+        try:
+            json.loads(text)
+        except ValueError as exc:
+            print(f"error: invalid submission JSON: {exc}; submit a complete JSON object",
+                  file=sys.stderr)
+            return 2
 
     path = answer_path()
     path.write_text(text if text.endswith("\n") else text + "\n", encoding="utf-8")
