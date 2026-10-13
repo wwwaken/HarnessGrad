@@ -447,3 +447,15 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Validation: `PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py` reports valid, 28 datasets, 8 shared blockers, 11 historical records, production_authorized=false. `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=.scratch/blocker-registry-codex178/pytest-final tests/quality/test_dataset_blockers.py` — **45 passed**. Tests deny adapter imports, external file reads, sockets and subprocess execution.
 - Remaining gates: this registry records unresolved requirements; it authenticates no external receipt and closes no runtime/scorer/measurement gate. Parent review/merge remains separate.
 - Commit: accompanying focused docs/code/tests commit; exact hash reported with delivery.
+
+## AgentDojo selected metadata privacy closure — Codex 180 — 2026-10-14
+
+- Status: code-solvable selected `ENV`/`SETUP`/`VERIFY` metadata privacy/detection review closed; separate production-route admission remains `blocked`.
+- Scope: isolated `/tmp/hg-codex-180`, base `e8dd6f62aff3acdc10e92bb8e1cff84075cec3b7`; adapter Python source and synthetic metadata controls only. No adapter/data edits, catalog or `cases.json` reads, prompt/gold/action payload reads, runtime/verifier execution, attacks, model/H0, network or main edits.
+- Finding: fixed synthetic metadata keys and selected setup/input path identities require no catalog/task/reference hooks; invalid selections raise `KeyError` with no fallback. Fresh module-body execution uses an inert QA dependency stub under I/O/import guards; it does not validate real dependency imports or production admission.
+- Detection: all 13 guarded file/JSON/catalog/task/reference seams are deliberately probed for each of the three metadata maps and stop before underlying reads. Valid/rejected selected lookups record zero guarded attempts; verifier `argv` stays opaque.
+- Evidence: [unique focused report](../agentdojo-metadata-privacy-codex180-report.md), `tests/quality/test_agentdojo_metadata_privacy.py`, and the source-only registry boundary regression in `tests/quality/test_dataset_blockers.py`.
+- Registry: retired the completed `selected-metadata-review` action from the active list because the schema has no closed status. The separate `production-route-admission` runtime blocker retains Codex 164's production-route evidence and adds this limited metadata closure; global production authorization remains false.
+- Validation: **109 passed** (63 metadata controls plus 46 registry regressions). `tools/check_dataset_blockers.py` reports valid, 28 datasets, 8 shared blockers, 11 historical records and `production_authorized=false`.
+- Remaining boundary: no production `run_one` or H0 readiness claim, case materialization proof, trusted verifier/runtime receipt, cleanup observation or benchmark measurement. Historical controls remain unverified claims; no route was repaired or executed.
+- Commit: focused tests/docs/report on the isolated worktree; parent review and integration remain separate.

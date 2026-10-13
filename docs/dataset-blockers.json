@@ -143,18 +143,23 @@
       "shared_blockers": [],
       "blockers": [
         {
-          "id": "selected-metadata-review",
-          "family": "selected-only-privacy",
-          "status": "code-solvable",
-          "observed": "The latest journal reassessment reports blocked production admission; historical selected controls are not fresh route evidence.",
+          "id": "production-route-admission",
+          "family": "trusted-verifier-runtime",
+          "status": "runtime",
+          "observed": "The code-solvable selected ENV/SETUP/VERIFY metadata privacy/detection review is closed by synthetic regressions. Production admission remains blocked: no fresh selected-only, non-scoring run_one receipt exists, and historical selected controls are not fresh route evidence.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## AgentDojo selected production route reassessment — Codex 164"
+            },
+            {
+              "kind": "repository",
+              "path": "agentdojo-metadata-privacy-codex180-report.md",
+              "locator": "Metadata review closure and production boundary"
             }
           ],
-          "next_action": "Keep execution blocked; review metadata-only privacy documentation and defensive detection coverage without adversarial execution."
+          "next_action": "Keep production run_one and H0 blocked. Independently review the selected-only, non-scoring production admission contract and its missing runtime evidence; metadata privacy tests do not authorize execution."
         }
       ],
       "historical_runs": []

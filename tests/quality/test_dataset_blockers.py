@@ -150,6 +150,18 @@ def test_within_task_memory_exercise_does_not_create_a_memory_demand(document):
     assert not any(entry["demand"] == "memory" for entry in document["datasets"])
 
 
+def test_agentdojo_metadata_closure_keeps_the_production_route_blocked(document):
+    blockers = {item["id"]: item for item in row(document, "agentdojo")["blockers"]}
+    assert "selected-metadata-review" not in blockers
+    production = blockers["production-route-admission"]
+    assert production["status"] == "runtime"
+    assert production["family"] == "trusted-verifier-runtime"
+    assert document["review"]["production_authorized"] is False
+    evidence = {item["path"] for item in production["evidence"]}
+    assert "docs/adapter-integration-journal.md" in evidence
+    assert "agentdojo-metadata-privacy-codex180-report.md" in evidence
+
+
 @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
 def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
     target = row(document, "chessbench_puzzles")

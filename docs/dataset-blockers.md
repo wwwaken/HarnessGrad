@@ -25,8 +25,12 @@ verification, artifact export, paired filesystem quotas, official scoring,
 snapshot/cleanup, measurement and adapter-specific contracts. Refused datasets
 remain represented with their refusal evidence. Adapters without a specific
 journal entry have an explicit `journal-coverage` gap, rather than an inferred
-passing status. AgentDojo's next action is restricted to metadata/privacy and
-defensive detection review; no adversarial execution is delegated by this index.
+passing status. AgentDojo's code-solvable selected metadata/privacy and defensive
+detection review is closed by the synthetic controls documented in
+[the Codex 180 report](../agentdojo-metadata-privacy-codex180-report.md). The active
+`production-route-admission` runtime blocker preserves the separate unresolved
+production route. No production `run_one` or H0 readiness follows from these
+tests, and no adversarial execution is delegated by this index.
 
 Repository evidence locators are validated against local source text. Absolute
 external paths are citations from the journal and are never opened by the
