@@ -89,13 +89,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Evidence: `data/musique.py`; `docs/musique-output-contract.md`; public pinned evaluator fixtures; combined scorer validation
 - Platform change: structured QA evidence transport and redacted verifier gold support
 - Validation: combined MuSiQue/2Wiki/Chess suites passed `209 tests`; platform train-side controls: MuSiQue `musique/dev/0` oracle=1.0/noop=0.0; 2Wiki `twowikimultihopqa/dev/3` oracle=1.0/noop=0.0
+- Control sweep: Codex 113 measured 18/18 selected controls across the frozen 50-ID manifests: 3 oracle=1.0 and 3 noop=0.0 for each adapter, jobs=1, no model/H0, cleanup complete. Evidence: `/tmp/codex/113/worktree/runs/no-model-controls-20261013/report.md`
 - Remaining gates: released-data controls and model/H0 validation remain separate; platform joint reward is not an official single leaderboard column
 - Commit: `4d41a4c fix: restore MuSiQue and 2Wiki evaluation fidelity`
-
+## 2WikiMultihopQA — 2026-10-13 evaluation fidelity
 
 - Status: `scorer_repaired`, synthetic validation complete; no model/H0
 - Scope: this adapter's public output contract, trusted gold transport and official v1.1 scoring; fabricated fixtures only, no released dev/train/test, heldout payload, alias-table or mirror reads
-- Finding: the inherited adapter rewarded answers alone despite the official answer, supporting-sentence, evidence-triple and Joint metrics. Structured submissions now report all 16 metrics and earn Joint F1, with Joint EM correctness. Joint precision/recall multiply the three component values before the harmonic mean; multiplying component F1s is different.
+- Control sweep: Codex 113 measured 18/18 selected controls across frozen 50-ID manifests: 3 oracle=1.0 and 3 noop=0.0 for each repaired adapter, jobs=1, no model/H0, cleanup complete. Evidence: `/tmp/codex/113/worktree/runs/no-model-controls-20261013/report.md`; native sandbox placement conflict and 2Wiki legacy empty-noop branch are documented
 - Public contract: JSON in `answer.txt`, submitted directly or with `python3 qa/bin/qa submit @submission.json`: `{"schema_version":1,"answer":"...","supporting_facts":[["Title",0]],"evidence":[["subject","relation","object"]]}`. Context sentences display zero-based indices. Each channel can be omitted; omitted metrics and Joint are zero. Explicit empty sets retain upstream semantics. Plain text and `score_answer_only` remain explicitly labeled `legacy_answer_only`, with Ans F1 reward and no Sup/Evi/Joint claim. This adapter uses the existing text-file transport; shared `submit-json` remains the pair-only schema.
 - Evidence: `data/twowikimultihopqa.py`; `tests/quality/test_twowikimultihopqa_structured.py`; updated legacy assertion in `tests/quality/test_twowikimultihopqa_official_scorer.py`
 - Platform change: adapter-scoped `score_prediction`, validation and `evaluate_predictions`; trusted inline support/triples plus relevant subject/object aliases, with alias products expanded per scored row. Inputs remain immutable. Aggregate percentages sum in gold order, divide by the entire gold pool including missing predictions, then round once to two decimals. No shared scaffold or other adapter changed.
