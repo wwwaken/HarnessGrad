@@ -153,13 +153,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 
 ### AppWorld real-model smoke blocker
 
-- Status: `incomplete`, infrastructure/protocol failure
+- Status: `incomplete`, infrastructure repaired; actor protocol still blocked
 - Scope: fresh one-task smoke on `07b42fd_1`, one trial, jobs=1, GPU1/8002, bounded generation 2048
-- Finding: actor phase ended in 0.2s without creating the required API-call log. Verifier returned no measurement; this is not a model score zero.
-- Evidence: `/mnt/20t/xubuqiang/Study/appworld-smoke-final/runs/appworld-smoke-final-20261117-v3/events.jsonl`; `no API-call log: /recordings/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl`
-- Platform change: AppWorld actor initialization and API-call logging need a real-model smoke contract; offline oracle/noop controls do not prove actor protocol readiness
-- Remaining gates: repair actor initialization/logging, rerun one fresh smoke, then launch 9x3 only after actor/scorer/cleanup/bounded-generation evidence passes
-- Commit: scoped adapter `d600378`; smoke incomplete
+- Finding: the original actor never started because the runner mounted the dependency overlay twice and Docker rejected the launch with exit 125. A second client bug passed unsupported argparse `choices`; the service image also now has an explicit `/usr/local/bin/appworld-server` command. After repair, the actor ran 8 model calls, service initialize returned 200, three execute requests returned 200, and the API-call log existed. The model still made zero AppWorld API calls, so the measured smoke score was 0.0 across 5 checks; this is actor/task protocol behavior, not a missing-log infrastructure failure.
+- Evidence: `/tmp/codex/101/deliverables/receipt.md`; `/tmp/codex/101/evidence/real-smoke/result.json`; `/mnt/20t/xubuqiang/Study/appworld-smoke-final-v4/runs/appworld-smoke-final-20261117-v4/events.jsonl`; fixed patch commit `a9e78d8`
+- Platform change: explicit service command/entrypoint contract, duplicate overlay prevention, AppWorld CLI dispatch fix, service log preservation and invalid diagnostic trace retention
+- Verification: 107 focused tests passed; a broader registry/scorer command exceeded the 120s command cap and was terminated, so it is not counted as passed
+- Remaining gates: make the task-facing harness reliably issue an AppWorld API action without method-specific tuning, rerun one measured smoke with a nonempty API log, then launch 9x3 only after review
+- Commit: `a9e78d8 fix: make AppWorld service and runner diagnostics explicit`
 
 ## Jericho — isolated no-model controls
 
