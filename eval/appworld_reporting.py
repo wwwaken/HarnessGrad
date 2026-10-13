@@ -42,12 +42,17 @@ def make_manifest(rows: list[dict]) -> list[dict]:
 
 
 def receipts_from_verdicts(verdicts: list[dict], *, trials: int = 1) -> list[dict]:
-    """Read saved round verdicts and retain available scorer evidence.
+    """Pure adapter from saved round verdict dictionaries to report receipts.
 
     Scores/means and generic ``passed`` flags cannot substitute for TGC evidence.
     Older verdicts without evidence remain unmeasured for this report.
-    Compacted partial histories have unknown trial positions and cannot yield SGC.
+    Explicit one-based ``trial`` identities on verdicts or evidence are retained.
+    Complete anonymous histories retain their ordered positions. Otherwise anonymous
+    cells occupy unused report slots for TGC coverage only, marked unaligned for SGC.
+    No file access, execution or mutation of the supplied dictionaries occurs here.
     """
+    if type(trials) is not int or trials < 1:
+        raise ValueError("trials must be a positive integer")
     receipts = []
     seen = set()
     for entry in verdicts:
@@ -60,13 +65,38 @@ def receipts_from_verdicts(verdicts: list[dict], *, trials: int = 1) -> list[dic
             saved_trials = [entry]
         if not isinstance(saved_trials, list) or not saved_trials:
             raise ValueError(f"invalid saved trials: {tid}")
-        for trial, verdict in enumerate(saved_trials, 1):
-            evidence = verdict.get("evidence") or {}
+        if len(saved_trials) > trials:
+            raise ValueError(f"saved trials exceed requested coverage: {tid}")
+        identities, used = [], set()
+        for verdict in saved_trials:
+            if not isinstance(verdict, dict):
+                raise ValueError(f"invalid saved trial verdict: {tid}")
+            evidence = verdict.get("evidence")
+            if evidence is None:
+                evidence = {}
+            if not isinstance(evidence, dict):
+                raise ValueError(f"invalid saved evidence: {tid}")
+            declared = [source["trial"] for source in (verdict, evidence) if "trial" in source]
+            for trial in declared:
+                if type(trial) is not int or not 1 <= trial <= trials:
+                    raise ValueError(f"trial outside requested coverage: {trial!r}")
+            if len(declared) == 2 and declared[0] != declared[1]:
+                raise ValueError(f"evidence trial mismatch: {tid}")
+            identity = declared[0] if declared else None
+            if identity is not None:
+                if identity in used:
+                    raise ValueError(f"duplicate task/trial receipt: {tid}, {identity}")
+                used.add(identity)
+            identities.append(identity)
+        ordered = len(saved_trials) == trials and not used
+        slots = iter(trial for trial in range(1, trials + 1) if trial not in used)
+        for identity, verdict in zip(identities, saved_trials):
+            trial = identity if identity is not None else next(slots)
             receipts.append({"task_id": tid, "trial": trial,
-                             "evidence": evidence,
-                             # Historical runner receipts compact surviving trials.
-                             # If any are missing, their original positions are unknown.
-                             "trial_aligned": len(saved_trials) == trials,
+                             "evidence": dict(verdict.get("evidence") or {}),
+                             "trial_aligned": (identity is not None or ordered)
+                             and entry.get("trial_aligned", True) is True
+                             and verdict.get("trial_aligned", True) is True,
                              "invalid": bool(entry.get("invalid") or verdict.get("invalid")),
                              "unmeasured": bool(entry.get("unmeasured") or verdict.get("unmeasured"))})
     return receipts
@@ -101,6 +131,9 @@ def build_report(manifest: list[dict], receipts: list[dict], *, trials: int = 1)
             raise ValueError(f"evidence task ID mismatch: {tid}")
         if evidence.get("source_split") not in (None, metadata[tid]["source_split"]):
             raise ValueError(f"evidence source split mismatch: {tid}")
+        if "trial" in evidence and (type(evidence["trial"]) is not int
+                                    or evidence["trial"] != trial):
+            raise ValueError(f"evidence trial mismatch: {tid}, {trial}")
         measured = (not receipt.get("invalid") and not receipt.get("unmeasured")
                     and evidence.get("measured") is True
                     and evidence.get("metric") == TGC_METRIC

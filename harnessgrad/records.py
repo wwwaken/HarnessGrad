@@ -532,6 +532,7 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
     # a task was unmeasured when these files are consumed by a later report.
     for tid in sorted(set(scores) | (set(task_ids) & set(res.get("invalid") or {}))):
         v = dict(verdicts.get(tid) or {})
+        trials_v = (res.get("trial_verdicts") or {}).get(tid)
         entry = {
             "task_id": tid,
             "round": round_no,
@@ -539,6 +540,10 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
             "kind": v.get("kind"),
             "passed": v.get("passed"),
             "detail": v.get("detail"),
+            # With a history, the last verdict's flags belong only to its trial.
+            # Otherwise preserve the single verdict's reporting metadata here.
+            **{key: v[key] for key in ("trial", "trial_aligned", "invalid", "unmeasured")
+               if key in v and not trials_v},
         }
         # **The check's own tally, which was being thrown away.** `_test_report_failures`
         # has parsed `{"passed": 4, "failed": 1}` out of the CTRF report since 2026-10-04
@@ -564,13 +569,17 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
         # Measured on `B2-noop` (2026-10-04): `cobol-modernization` was 0.667, the saved
         # verdict said `passed`, and the question the number raises -- which trial
         # failed, and why -- had no answer anywhere on disk.
-        trials_v = (res.get("trial_verdicts") or {}).get(tid)
-        if trials_v and len(trials_v) > 1:
+        if trials_v:
             entry["trial_scores"] = [float((t or {}).get(
                 "score", 1.0 if (t or {}).get("passed") else 0.0)) for t in trials_v]
             entry["trials"] = [{"passed": (t or {}).get("passed"),
                                 "kind": (t or {}).get("kind"),
                                 "detail": (t or {}).get("detail"),
+                                # Preserve supplied trial identities; never invent
+                                # an original index for compacted survivors.
+                                **{key: t[key] for key in
+                                   ("trial", "trial_aligned", "invalid", "unmeasured")
+                                   if key in (t or {})},
                                 # The per-trial tally too, for the same reason the per-trial
                                 # score is here: "2 of 3 trials passed" and "the tests went
                                 # 4/5, 5/5, 3/5" are different claims about the artifact.
