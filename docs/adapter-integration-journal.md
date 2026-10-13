@@ -31,6 +31,18 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: rerun any GSM8K comparison under the new scorer identity before comparing it with old curves
 - Commit: `d10b387 platform: cap early pilots and parse GSM8K decimals`
 
+## GSM8K — scorer provenance repair — 2026-10-14
+
+- Status: `preflight`; source/test provenance repaired, production validation remains pending
+- Scope: source, synthetic scorer/verifier tests and documentation only; no model, H0, released-split reads or archive changes
+- Finding: the decimal correction changed both the adapter and the purported original reference. Historical upstream attribution lacked a revision; stale docstrings also claimed upstream float equality, while the adapter uses an exclusive `1e-6` tolerance.
+- Evidence: immutable `tests/fixtures/gsm8k_original/integer_extractor.json`, pinned to repository commit `f7ab62143108e120914b5ead34ed339d0c785ee9` with fixture SHA-256 `45c73aeb817878b5ba65709f45766f21eb7899182df4eba9a8101e9169d8276b`; `tests/quality/test_gsm8k_official_scorer.py`; `tests/quality/test_gsm8k_dataset.py`
+- Platform change: preserved `decimal-aware-extract` behavior and compatibility fields; restored an independent integer-only reference with honest provenance, corrected scorer labels/docstrings and stale evidence assertion, and made focused checks independent of provisioned benchmark data
+- Metric protocol: [provenance documentation](gsm8k-scorer-provenance.md) distinguishes the implemented trial-mean from verifier-selected test@N. test@N remains unimplemented; old receipts retain their recorded identities.
+- Remaining gates: any production comparison still requires a separate approved diagnostic and matching scorer/protocol provenance. Synthetic test success does not authorize H0.
+- Validation: `python -m pytest -q tests/quality/test_gsm8k_official_scorer.py tests/quality/test_gsm8k_dataset.py --basetemp=/tmp/hg-codex-156/.pytest_cache/gsm8k-tmp` — 58 passed; fixtures and subprocess table-reader stubs prevent released-split reads
+- Commit: this commit, `fix: repair GSM8K scorer provenance`
+
 ## ALFWorld — embodied runtime
 
 - Status: `complete` H0 archive

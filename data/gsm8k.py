@@ -1,4 +1,4 @@
-r"""GSM8K as a dataset: grade-school math word problems, graded by numeric equality.
+r"""GSM8K as a dataset: grade-school math problems, graded by decimal-aware comparison.
 
     python3 tools/datasets.py --fetch --dataset gsm8k
     python3 data/qa/control.py --dataset gsm8k --oracle
@@ -13,29 +13,37 @@ adapter scores and what the paper's numbers are computed on, and **train** (7,47
 is loaded as well, as the study side. GSM8K publishes the division, so the platform uses
 it instead of imposing one -- see "The split" below.
 
-The metric, and the one genuinely hard thing about it
-----------------------------------------------------
-There is no `gsm8k` scorer in the dataset's own repository -- the reference
-implementation is the evaluation table in lm-evaluation-harness, and its GSM8K config
-declares **two** extraction filters with two different numbers:
+Scorer identity and provenance
+-----------------------------
+This adapter uses **decimal-aware-extract**: the last signed integer or decimal,
+with commas and currency signs removed, compared using an absolute tolerance of
+`1e-6` (exclusive). This is an adapter metric, distinct from upstream exact match.
+The inherited integer-only reference is pinned to its actual repository commit in
+`tests/fixtures/gsm8k_original/`. Its historical upstream attribution is unverified;
+the fixture preserves the original contract, not a claim of upstream equivalence:
 
 | filter | rule | regex (verbatim) |
 | --- | --- | --- |
-| `strict-match` | the answer must contain `#### <number>` | `#### (\-?[0-9\.\,]+)` |
-| `flexible-extract` | the last number anywhere in the answer | `(-?[$]?\\d[\\d,]*)` |
+| adapter strict-marker extraction | the last `#### <number>` | `#### (\-?[0-9\.\,]+)` |
+| original integer-only reference | the last integer anywhere in the answer | `(-?[$]?\d[\d,]*)` |
 
-They disagree on real transcripts -- an answer of `18` is 1 under flexible and 0 under
-strict -- so the number is not comparable unless the filter is named. This adapter
-scores with **flexible-extract** (the headline in the harness's own config table) and
-records the strict verdict beside it in the evidence, so a reader can see both. The
-comparison is numeric after the same `,`/`$` stripping the harness does, not string
-equality: `18.0` and `18` are the same answer, and the harness compares floats.
+The integer-only flexible extractor reads `18.0` as `0` and `3.5` as `5`; this
+adapter preserves each decimal as one number. It retains strict-match extraction
+alongside the scored extraction in evidence. The legacy evidence key `official`
+and function name `official_flexible` remain for compatibility; neither certifies
+equivalence to an upstream scorer. Upstream exact match compares normalized strings,
+whereas this adapter accepts `18.0` for a gold answer of `18`.
+
+Repeated trials are averaged per task, then across measured tasks. This trial-mean
+is not GSM8K's verifier-selected test@N protocol; test@N is not implemented here.
+See `docs/gsm8k-scorer-provenance.md` for the comparison and coverage requirements.
 
 Which bytes are graded
 ----------------------
 `answer.txt`, written by the harness (or by `python3 qa submit`). The reasoning is not
-graded, not read and not required: a harness that emits only `18` scores the same as one
-that emits a full derivation ending in `18`, which is what "flexible-extract" means.
+graded separately or required: a harness that emits only `18` scores the same as one
+that emits a full derivation ending in `18`. Extraction scans the entire answer and
+uses its last number.
 
 The split
 ---------
@@ -72,16 +80,12 @@ TRAIN = "main/train-00000-of-00001.parquet"
 #: The gold answer lives after this marker in the `answer` field.
 ANSWER_MARK = "####"
 
-#: lm-evaluation-harness' `flexible-extract` filter, character for character:
-#: `lm_eval/tasks/gsm8k/gsm8k.yaml` declares
-#: `regex_pattern: "(-?[$]?\\d[\\d,]*)"` and takes the **last** match. The pattern
-#: matches a decimal's fraction as a separate number (`3.5` -> `5`); that limitation is
-#: upstream's and is reproduced rather than repaired, because a repaired filter is a
-#: different scorer and a different number.
+#: Adapter decimal-aware-extract: keep the last signed integer or decimal intact.
+#: This differs from the immutable original integer-only flexible-extract fixture.
 FLEXIBLE_RE = re.compile(r"(-?[$]?(?:\d[\d,]*\.\d+|\d[\d,]*))")
 
-#: lm-evaluation-harness' `strict-match` filter: the same file declares
-#: `regex_pattern: "#### (\\-?[0-9\\.\\,]+)"` and takes the last match.
+#: Adapter strict-marker extraction uses the last match. The pattern also appears
+#: upstream; matching the pattern alone does not establish full scorer equivalence.
 STRICT_RE = re.compile(r"#### (\-?[0-9\.\,]+)")
 
 
@@ -110,11 +114,11 @@ def _gold(row: dict) -> dict:
 
 
 def official_flexible(text: str) -> str:
-    """The last `(-?[$]?\\d[\\d,]*)` match, `,`/`$` stripped; `""` when there is none.
+    """Adapter decimal extraction, with a legacy name retained for callers.
 
-    The `re.findall` + `[-1]` is lm-evaluation-harness' `RegexFilter` behaviour
-    (`group_select: -1`). Meaningless for an empty match, which is reported as a *format*
-    failure rather than as a wrong number -- see `score()`.
+    Return the last signed integer or decimal, with `,`/`$` stripped, or `""` if
+    no number is found. Missing and incorrect answers both receive measured zero;
+    the extracted value in evidence distinguishes them.
     """
     found = FLEXIBLE_RE.findall(text)
     if not found:
@@ -123,7 +127,7 @@ def official_flexible(text: str) -> str:
 
 
 def official_strict(text: str) -> str:
-    r"""The last `#### (\-?[0-9\.\,]+)` match, or `""` when the marker is absent."""
+    r"""Adapter's last `#### (\-?[0-9\.\,]+)` match; legacy function name."""
     found = STRICT_RE.findall(text)
     if not found:
         return ""
@@ -131,11 +135,10 @@ def official_strict(text: str) -> str:
 
 
 def numeric_equal(got: str, want: str) -> bool:
-    """The harness's own comparison: `float(got) == float(want)`.
+    """Adapter comparison: absolute float difference strictly below `1e-6`.
 
-    A string that does not parse is **not** an exception here -- a scorer may not take
-    the whole run down because an answer was prose. It is reported as a format failure by
-    the caller, which is a different fact from "the number was wrong".
+    Unparseable values return False. This tolerance comparison is distinct from
+    upstream normalized string exact match and from exact float equality.
     """
     try:
         return abs(float(got) - float(want)) < 1e-6
@@ -155,7 +158,7 @@ def score(prediction: str, gold: dict) -> dict:
         "official": {"filter": "decimal-aware-extract", "strict_match": strict,
                      "flexible_extract": flexible},
         "why": (
-            f"flexible-extract {flexible or '<no number>'} vs {want} -> "
+            f"decimal-aware-extract {flexible or '<no number>'} vs {want} -> "
             f"{'match' if ok else 'no match'}"
             + (f"; strict-match {strict or '<no #### marker>'} "
                f"({'match' if numeric_equal(strict, want) else 'no match'})"
@@ -186,9 +189,9 @@ def _goal(question: str, gold: dict) -> str:
         "## How it is scored\n"
         "\n"
         "- The last number in your answer is compared numerically with the reference\n"
-        "  answer (lm-evaluation-harness' `flexible-extract` filter for GSM8K).\n"
+        "  answer (the adapter's `decimal-aware-extract` metric).\n"
         "- `18`, `18.0` and `The answer is 18` all score 1 if the reference is 18.\n"
-        "- Nothing else you print is read.\n"
+        "- Only the last number is scored; your working is not graded separately.\n"
     )
 
 
@@ -269,8 +272,9 @@ SPLIT = _BUILT["SPLIT"]
 #: * `--split declared` (the default) and `--split official` are **the same division here**,
 #:   and that is the point of the whole mechanism: GSM8K states its own two sides, so the
 #:   platform does not impose one. `--side train` studies all 7,473 official training
-#:   questions; `--side eval` reports on all 1,319 official test questions, which is the
-#:   only comparison a GSM8K number from this platform can be put beside a published one.
+#:   questions; `--side eval` reports on all 1,319 official test questions. Matching this
+#:   division is necessary for a published comparison; scorer and sampling/selection
+#:   protocol identities must also match.
 #: * `--split default` is a *different* division of the same 8,792 tasks -- the platform's
 #:   hash third, blind to the split labels. It is legitimate for an experiment that wants a
 #:   held-out third of everything, and it is not a GSM8K number; `split_sha` is what keeps

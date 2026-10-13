@@ -1,178 +1,155 @@
-"""GSM8K's official scorer, copied in, and a differential test against our check.
+"""GSM8K scorer provenance and adapter regressions using synthetic answers.
 
-The rule this file exists to enforce
-------------------------------------
-GSM8K has no scorer in its own repository: the number everybody reports is
-lm-evaluation-harness' `exact_match` applied through one of two regex filters declared
-in `lm_eval/tasks/gsm8k/gsm8k.yaml`. So "our reward is the official metric" is a claim
-about **that file**, and this file makes the claim checkable:
-
-    filter              pattern
-    flexible-extract    (-?[$]?\\d[\\d,]*)
-    strict-match        #### (\\-?[0-9\\.\\,]+)
-
-Both are transcribed below character for character, together with the harness's
-comparison (`float(prediction) == float(reference)` after `,` and `$` are stripped), and
-`data/gsm8k.py` is checked against them on real rows and on the edge cases where the two
-filters disagree. The transcription is deliberately **not** an import of
-`lm_eval`: importing their package and calling our function "the same" would prove only
-that we can call their code.
-
-The one property worth stating out loud
----------------------------------------
-The two filters give **different numbers on the same transcript**. That is why
-`data/gsm8k.py` scores with `flexible-extract` and records the strict verdict beside it
-instead of picking whichever looked better. `test_the_two_official_filters_disagree`
-pins the disagreement so nobody "simplifies" the two into one.
+The historical filename is retained for test discovery. The pinned integer-only
+fixture preserves the inherited repository reference, whose upstream attribution
+was unverified. The adapter uses a separate decimal-aware-extract identity and an
+exclusive 1e-6 numeric tolerance. Agreement on integers does not prove upstream
+scorer equivalence; explicit decimal cases pin the intended difference.
 """
 from __future__ import annotations
 
+import hashlib
+import json
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT))
-
-DATA_ROOT = Path("/mnt/20t/xubuqiang/datasets/gsm8k")
-
-# --------------------------------------------------------------- the reference ---
-
-#: `lm_eval/tasks/gsm8k/gsm8k.yaml`, `flexible-extract`, verbatim. `group_select: -1`
-#: means "the last match", which is what `findall(...)[-1]` below reproduces.
-REF_FLEXIBLE = re.compile(r"(-?[$]?(?:\d[\d,]*\.\d+|\d[\d,]*))")
+ORIGINAL_FIXTURE = ROOT / "tests/fixtures/gsm8k_original/integer_extractor.json"
+ORIGINAL_SHA256 = "45c73aeb817878b5ba65709f45766f21eb7899182df4eba9a8101e9169d8276b"
+ORIGINAL = json.loads(ORIGINAL_FIXTURE.read_text())
+REF_FLEXIBLE = re.compile(ORIGINAL["regex_pattern"])
 
 
 def ref_flexible_extract(text: str) -> str:
-    """The filter, verbatim: last match, then the harness's `,`/`$` stripping."""
+    """Apply the immutable original integer-only reference, independently of data.gsm8k."""
     matches = REF_FLEXIBLE.findall(text)
     if not matches:
         return ""
-    return matches[-1].replace(",", "").replace("$", "")
-
-
-#: `lm_eval/tasks/gsm8k/gsm8k.yaml`, `strict-match`, verbatim.
-REF_STRICT = re.compile(r"#### (\-?[0-9\.\,]+)")
-
-
-def ref_strict_match(text: str) -> str:
-    matches = REF_STRICT.findall(text)
-    if not matches:
-        return ""
-    return matches[-1].replace(",", "")
-
-
-def ref_exact_match(prediction: str, reference: str) -> bool:
-    """`lm_eval.api.metrics`' comparison for a numeric answer: float equality.
-
-    The harness documents this as "we compare the extracted number to the reference
-    number, not the strings", and the failure of `float()` (a non-numeric extraction) is
-    a non-match rather than an exception.
-    """
-    try:
-        return float(prediction) == float(reference)
-    except (TypeError, ValueError):
-        return False
-
-
-# ------------------------------------------------------------------- the cases ---
-
-CASES = [
-    ("18", "18"),
-    ("18.0", "18"),
-    ("The answer is 18", "18"),
-    ("$1,250", "1250"),
-    ("-3", "-3"),
-    ("#### 42", "42"),
-    ("#### 7,000", "7000"),
-    ("3.5", "3.5"),
-    ("no number here", "18"),
-    ("", "18"),
-]
+    extracted = matches[-1]
+    for character in ORIGINAL["strip_characters"]:
+        extracted = extracted.replace(character, "")
+    return extracted
 
 
 @pytest.fixture(scope="module")
-def gsm8k():
-    import data.gsm8k as module
-    return module
+def gsm8k(synthetic_gsm8k):
+    return synthetic_gsm8k
 
 
-def test_flexible_extract_matches_the_official_filter(gsm8k):
-    for text, _ in CASES:
-        assert gsm8k.official_flexible(text) == ref_flexible_extract(text), text
+def test_original_integer_only_fixture_is_immutable():
+    assert hashlib.sha256(ORIGINAL_FIXTURE.read_bytes()).hexdigest() == ORIGINAL_SHA256
+    assert ORIGINAL["source_commit"] == "f7ab62143108e120914b5ead34ed339d0c785ee9"
+    assert ORIGINAL["source_sha256"] == \
+        "feb85c6646873e13e6a84feab4322b186e45e07c400151518d00f9e0e3765dcc"
+    assert REF_FLEXIBLE.pattern == r"(-?[$]?\d[\d,]*)"
+    assert ORIGINAL["match_selection"] == "last"
+    assert ORIGINAL["strip_characters"] == [",", "$"]
+    assert ORIGINAL["upstream_equivalence"] == "unverified historical attribution"
 
 
-def test_strict_extract_matches_the_official_filter(gsm8k):
-    for text, _ in CASES:
-        assert gsm8k.official_strict(text) == ref_strict_match(text), text
+@pytest.mark.parametrize("text,extracted", [
+    ("18", "18"),
+    ("The answer is 18", "18"),
+    ("$1,250", "1250"),
+    ("-$1,250", "-1250"),
+    ("-3", "-3"),
+    ("#### 42", "42"),
+    ("#### 7,000", "7000"),
+    ("First 8, then 19, finally -3", "-3"),
+    ("no number here", ""),
+    ("", ""),
+])
+def test_adapter_and_original_agree_on_integer_extraction(gsm8k, text, extracted):
+    assert ref_flexible_extract(text) == extracted
+    assert gsm8k.official_flexible(text) == extracted
 
 
-def test_the_comparison_is_the_official_one(gsm8k):
-    for text, reference in CASES:
-        assert gsm8k.numeric_equal(gsm8k.official_flexible(text), reference) == \
-            ref_exact_match(ref_flexible_extract(text), reference), (text, reference)
+@pytest.mark.parametrize("text,original,decimal", [
+    ("18.0", "0", "18.0"),
+    ("3.5", "5", "3.5"),
+    ("-3.25", "25", "-3.25"),
+    ("$1,250.75", "75", "1250.75"),
+    ("-$1,250.75", "75", "-1250.75"),
+    ("Worked with 18, then concluded -3.25", "25", "-3.25"),
+    ("#### 3.5", "5", "3.5"),
+])
+def test_decimal_adapter_intentionally_differs_from_original(gsm8k, text, original, decimal):
+    assert ref_flexible_extract(text) == original
+    assert gsm8k.official_flexible(text) == decimal
+    result = gsm8k.score(text, {"answer": decimal})
+    assert result["reward"] == 1.0
+    assert result["official"]["filter"] == "decimal-aware-extract"
+    assert result["official"]["flexible_extract"] == decimal
+    assert "decimal-aware-extract" in result["why"]
+    assert gsm8k.numeric_equal(original, decimal) is False
 
 
-def test_the_two_official_filters_disagree():
-    """The reason the filter has to be named when the number is quoted.
+@pytest.mark.parametrize("prediction,reference,expected", [
+    ("18.0", "18", True),
+    ("18.0000005", "18", True),
+    ("18.000002", "18", False),
+    ("0.0000009", "0", True),
+    ("0.000001", "0", False),
+    ("-0.000001", "0", False),
+    ("", "18", False),
+    ("unparseable", "18", False),
+    ("nan", "18", False),
+    ("inf", "18", False),
+])
+def test_adapter_comparison_preserves_exclusive_numeric_tolerance(
+        gsm8k, prediction, reference, expected):
+    assert gsm8k.numeric_equal(prediction, reference) is expected
 
-    `18` with no `####` marker is a hit under flexible-extract and a miss under
-    strict-match. Both are lm-evaluation-harness' own GSM8K filters, so both numbers are
-    "the official score" -- of different questions.
-    """
-    assert ref_flexible_extract("18") == "18"
-    assert ref_strict_match("18") == ""
-    assert ref_exact_match(ref_flexible_extract("18"), "18") is True
-    assert ref_exact_match(ref_strict_match("18"), "18") is False
 
-    gsm8k = sys.modules["data.gsm8k"]
+def test_adapter_comparison_is_distinct_from_string_and_float_exact_match(gsm8k):
+    assert "18.0" != "18"
+    assert gsm8k.numeric_equal("18.0", "18") is True
+    assert float("18.0000005") != float("18")
+    assert gsm8k.numeric_equal("18.0000005", "18") is True
+
+
+@pytest.mark.parametrize("text,extracted", [
+    ("18", ""),
+    ("#### 42", "42"),
+    ("#### 7,000", "7000"),
+    ("#### -3.25", "-3.25"),
+    ("#### 18.0", "18.0"),
+    ("#### 2 then #### 3.5", "3.5"),
+])
+def test_adapter_strict_marker_extraction_uses_last_match(gsm8k, text, extracted):
+    assert gsm8k.official_strict(text) == extracted
+
+
+def test_bare_answer_and_strict_marker_differ_and_metric_is_named(gsm8k):
     result = gsm8k.score("18", {"answer": "18"})
     assert result["reward"] == 1.0
     assert result["official"]["filter"] == "decimal-aware-extract"
     assert result["official"]["strict_match"] == ""
+    assert gsm8k.official_strict("#### 18") == "18"
 
 
-def test_a_wrong_number_is_classified_as_wrong_not_as_unparseable(gsm8k):
-    """A parse failure and a wrong number are different facts and are reported apart."""
+def test_wrong_number_and_missing_number_are_measured_zeros(gsm8k):
     wrong = gsm8k.score("19", {"answer": "18"})
     assert wrong["reward"] == 0.0 and wrong["official"]["flexible_extract"] == "19"
-    unparseable = gsm8k.score("I could not solve it", {"answer": "18"})
-    assert unparseable["reward"] == 0.0
-    assert unparseable["official"]["flexible_extract"] == ""
+    missing = gsm8k.score("I could not solve it", {"answer": "18"})
+    assert missing["reward"] == 0.0 and missing["official"]["flexible_extract"] == ""
 
 
-def test_the_gold_field_is_read_the_way_the_dataset_writes_it(gsm8k):
-    """`#### <n>` at the end of the solution; the marker is the dataset's, not ours."""
-    sample = "She sells 9 eggs.\nShe makes 9 * 2 = $<<9*2=18>>18 every day.\n#### 18"
-    assert gsm8k._gold({"answer": sample})["answer"] == "18"
+@pytest.mark.parametrize("answer", ["18", "3.5", "-3.25", "7000"])
+def test_scorer_round_trip_on_synthetic_solution_fields(gsm8k, answer):
+    row = {"answer": f"Synthetic working.\n#### {answer}"}
+    gold = gsm8k._gold(row)
+    assert gold["answer"] == answer
+    assert gsm8k.score(answer, gold)["reward"] == 1.0
+    assert gsm8k.official_strict(gold["verbatim"]) == answer
+    assert gsm8k.score("999999", gold)["reward"] == 0.0
 
 
-def test_the_scorer_agrees_with_the_official_reduction_on_real_rows(gsm8k):
-    """The differential test, over real rows and over a deliberate near-miss.
-
-    Skipped when the data is not provisioned: this is a comparison against the table,
-    and a machine without the table cannot make the claim either way.
-    """
-    path = DATA_ROOT / gsm8k.TEST
-    if not path.is_file():
-        pytest.skip(f"no GSM8K data at {path}")
-    from data.qa.read import parquet_rows
-    rows = parquet_rows(path)
-    checked = 0
-    for row in rows[:50]:
-        gold = gsm8k._gold(row)
-        # The extracted gold (the number after `####`) is what a correct agent submits.
-        prediction = gold["answer"]
-        official = ref_exact_match(ref_flexible_extract(prediction), gold["answer"])
-        mine = gsm8k.score(prediction, gold)
-        assert bool(mine["reward"]) == official, row["question"][:60]
-        # The dataset's own `answer` field ends in `#### <n>`, so strict-match reads the
-        # same number off it -- the two filters agree on the gold, and disagree on a bare
-        # model answer. That is the asymmetry `test_the_two_official_filters_disagree`
-        # pins, and it is why the scored filter is named.
-        strict_on_the_field = ref_strict_match(gold["verbatim"])
-        assert ref_exact_match(strict_on_the_field, gold["answer"]), gold["verbatim"]
-        checked += 1
-    assert checked == 50
+def test_goal_names_the_adapter_metric_and_accepts_equivalent_decimal_forms(gsm8k):
+    goal = gsm8k._goal("Synthetic question", {"answer": "18"})
+    assert "decimal-aware-extract" in goal
+    assert "flexible-extract" not in goal
+    assert "18.0" in goal
+    assert gsm8k.score("18.0", {"answer": "18"})["reward"] == 1.0

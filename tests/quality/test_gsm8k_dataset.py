@@ -7,9 +7,8 @@ program can decide. The one with the most weight is
 proves that by editing `<workdir>/gold.json` to the answer the agent did *not* give and
 asserting the grade does not move.
 
-`test_the_check_cannot_read_the_platform_tree` is the other half of the same idea, from
-the other side: everything the check imports is in `VERIFY.inputs`, so it needs nothing
-from the platform checkout -- which the verification namespace hides anyway.
+All rows are synthetic, including the rows labelled `test`. Verifier subprocesses
+use an empty table reader so grading cannot read any installed benchmark split.
 """
 from __future__ import annotations
 
@@ -26,12 +25,8 @@ sys.path.insert(0, str(ROOT))
 
 
 @pytest.fixture(scope="module")
-def gsm8k():
-    import data.gsm8k as module
-    if not module._RECORDS:
-        pytest.skip(f"no GSM8K data under {module.DATASET_ROOT}; run "
-                    f"`python3 tools/datasets.py --fetch --dataset gsm8k`")
-    return module
+def gsm8k(synthetic_gsm8k):
+    return synthetic_gsm8k
 
 
 def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
@@ -77,7 +72,15 @@ def _run_check(module, record: dict, workdir: Path, *,
                 target.write_text(entry["content"])
             else:
                 shutil.copy2(entry["from"], target)
-    proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=workdir,
+    # The copied production scorer imports its adapter, whose build normally reads
+    # both tables. Simulate an unprovisioned verifier without accessing either split.
+    bootstrap = (
+        "import runpy, sys; from data.qa import base; "
+        "base.parquet_rows = lambda path: []; "
+        "check_path = sys.argv.pop(1); "
+        "runpy.run_path(check_path, run_name='__main__')"
+    )
+    proc = subprocess.run([sys.executable, "-c", bootstrap, *verifier["argv"][1:]], cwd=workdir,
                           capture_output=True, text=True)
     reward_path = workdir / "verifier" / "reward.txt"
     reward = float(reward_path.read_text().strip()) if reward_path.is_file() else -1.0
@@ -91,18 +94,12 @@ def record(gsm8k):
     return gsm8k._RECORDS[0]
 
 
-def test_load_returns_the_benchmark_task_list(gsm8k):
-    """Both released splits, and the division GSM8K itself publishes.
-
-    The assertion is on the **division** and not only on the total: the pool grew from the
-    1,319 scored questions to both splits, and "8,792 tasks" alone would also be true of a
-    pool that had shuffled `train` rows into the exam. `7,473 / 1,319` is the number that
-    says the two sides are the benchmark's own.
-    """
+def test_load_preserves_the_declared_split_labels_on_synthetic_rows(gsm8k):
+    """Three synthetic test rows and five train rows retain their declared sides."""
     tasks, scorable = gsm8k.load()
-    assert len(tasks) == 8792, "`main` config: 7,473 train + 1,319 test"
-    assert len(gsm8k.SPLIT["train"]) == 7473
-    assert len(gsm8k.SPLIT["eval"]) == 1319
+    assert len(tasks) == 8
+    assert set(gsm8k.SPLIT["train"]) == {f"gsm8k/train/{i}" for i in range(5)}
+    assert set(gsm8k.SPLIT["eval"]) == {f"gsm8k/test/{i}" for i in range(3)}
     assert gsm8k.SPLIT_SOURCE == "declared", "GSM8K publishes both sides"
     assert all(t["task_id"] and t["goal"] for t in tasks)
     assert set(scorable) == {t["task_id"] for t in tasks}
@@ -120,15 +117,15 @@ def test_the_declared_division_is_not_the_platform_hash_division(gsm8k):
     """The two rules must be distinguishable, or `split_sha` on a run means nothing.
 
     `--split declared` is GSM8K's own division; `--split default` is the platform's hash
-    third of the same 8,792 tasks. Both are legitimate, they are not the same experiment,
-    and this is the dataset where the difference is visible.
+    third of the same pool. Synthetic rows exercise the distinction without reading
+    the released benchmark.
     """
     import data.registry as registry
 
     tasks = gsm8k.load()[0]
     default = registry.default_split(tasks)
     assert registry.split_sha(default) != registry.split_sha(gsm8k.SPLIT)
-    assert len(default["train"]) != len(gsm8k.SPLIT["train"])
+    assert default != gsm8k.SPLIT
 
 
 def test_the_split_covers_every_task_exactly_once(gsm8k):
@@ -189,7 +186,17 @@ def test_the_check_grades_the_reference_answer_as_one(gsm8k, record, tmp_path):
     reward, evidence = _run_check(gsm8k, record, tmp_path)
     assert reward == 1.0, evidence
     assert evidence["measured"] is True
-    assert evidence["official"]["filter"] == "flexible-extract"
+    assert evidence["official"]["filter"] == "decimal-aware-extract"
+
+
+def test_the_check_preserves_decimal_extraction_and_metric_identity(gsm8k, tmp_path):
+    record = next(r for r in gsm8k._RECORDS if r["gold"]["answer"] == "3.5")
+    _materialize(gsm8k, record, tmp_path, oracle=True)
+    reward, evidence = _run_check(gsm8k, record, tmp_path)
+    assert reward == 1.0, evidence
+    assert evidence["measured"] is True
+    assert evidence["official"]["filter"] == "decimal-aware-extract"
+    assert evidence["official"]["flexible_extract"] == "3.5"
 
 
 def test_the_check_grades_no_answer_as_zero(gsm8k, record, tmp_path):
