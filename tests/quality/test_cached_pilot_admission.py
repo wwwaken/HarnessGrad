@@ -194,7 +194,7 @@ def test_cached_images_do_not_attest_scorer_dependencies(manifest):
         for field in ("dependency_closure_verified", "trusted_runtime_verified",
                       "state_export_contract_verified"):
             task["scorer"][field] = True
-    assert admission.benchmark_blockers(manifest) == blockers[-2:]
+    assert admission.benchmark_blockers(manifest) == blockers
 
 
 class FakeDocker:

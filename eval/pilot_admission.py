@@ -154,11 +154,12 @@ def benchmark_blockers(manifest: dict) -> list[str]:
     """Do not upgrade policy declarations or cached images into scorer evidence."""
     blockers = []
     for task in manifest["tasks"]:
-        scorer = task["scorer"]
         for field in ("dependency_closure_verified", "trusted_runtime_verified",
                       "state_export_contract_verified"):
-            if scorer.get(field) is not True:
-                blockers.append(f"{task['task_id']}: {field}")
+            # The production adapter supplies no pinned artifact contract or official
+            # runtime receipt. Neither manifest booleans nor local synthetic receipts
+            # can close these task-specific evidence gaps.
+            blockers.append(f"{task['task_id']}: {field}")
     # There is intentionally no boolean override for these implementation gaps.
     blockers += ["writable benchmark disk/inode quotas unavailable in this control boundary",
                  "official scorer execution is outside the admitted synthetic scope"]
