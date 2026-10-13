@@ -91,6 +91,26 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: train metadata attestation, public-only export, independent review and official test verification
 - Commit: inert artifacts only
 
+### LiveCodeBench `/740` executable smoke
+
+- Status: `smoke_passed`, H0 not authorized
+- Scope: public `abc360_a` statement, one local-model smoke, external-process scorer variant
+- Finding: 7/7 synthetic relay/privacy gates passed; local model smoke measured reward 1.0 with 6/6 tests and one request. The candidate agent stayed network-none and verifier stayed network-none.
+- Evidence: `/mnt/20t/xubuqiang/Study/lcb_candidate_evidence/launch.json`; candidate path isolated checkout; production endpoint calls during synthetic validation were zero
+- Platform change: agent-only Unix relay with max 4 calls and max 512 requested tokens; candidate/scorer/verdict separation
+- Remaining gates: mixed-pool row/index binding remains unverified; scorer path differs from official wrapped-function execution; no H0
+- Commit: isolated candidate changes only
+
+### BFCL selected-only/privacy patch
+
+- Status: `blocked`, no real controls
+- Scope: selected `simple/29` and `irrelevance/236` anchors; no release payload opened
+- Finding: lazy selected loader removes import-time mixed-pool reads; irrelevance empty/NONE semantics are preserved; trusted gold evidence is redacted
+- Evidence: `/tmp/codex/98/bfcl-selected-only-receipt.md`; 2 synthetic tests passed, 11 release-dependent tests skipped
+- Platform change: selected loader, category-aware noop expectation and BFCL-specific evidence redaction
+- Remaining gates: local BFCL v1.3 release is unprovisioned, so selected reference identity and real oracle/noop controls remain unproven
+- Commit: isolated patch only
+
 ## AppWorld / GAIA / tau-bench — local state boundaries
 
 - Status: preflight-required, no H0
