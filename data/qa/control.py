@@ -187,7 +187,9 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
     print(f"mode    {'oracle' if oracle else 'do-nothing'}")
     print(f"reward  {reward:g}")
     print(detail)
-    expected = 1.0 if oracle else (1.0 if not record["gold"].get("functions") else 0.0)
+    expected = 1.0 if oracle else (
+        1.0 if module.__name__ == "data.bfcl_v3" and not record["gold"].get("functions")
+        else 0.0)
     if reward != expected:
         print(f"CONTROL FAILED: expected reward {expected:g}, got {reward:g}",
               file=sys.stderr)
@@ -235,7 +237,9 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     print(f"detail   {verdict.get('detail')}")
     if verdict.get("evidence"):
         print(f"evidence {json.dumps(verdict['evidence'].get('why'), ensure_ascii=False)}")
-    expected = 1.0 if oracle else (1.0 if not record["gold"].get("functions") else 0.0)
+    expected = 1.0 if oracle else (
+        1.0 if module.__name__ == "data.bfcl_v3" and not record["gold"].get("functions")
+        else 0.0)
     if float(verdict.get("score") or 0.0) != expected:
         print(f"CONTROL FAILED: expected score {expected:g}, got {verdict.get('score')}",
               file=sys.stderr)

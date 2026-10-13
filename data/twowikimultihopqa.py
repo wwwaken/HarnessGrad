@@ -1,32 +1,40 @@
-r"""2WikiMultihopQA dev, supplied-context multi-hop QA: the official **Ans EM/F1**.
+r"""2WikiMultihopQA dev, supplied-context multi-hop QA: official v1.1 metrics.
 
 Ho et al., COLING 2020, https://arxiv.org/abs/2011.01060. The official evaluator
 `2wikimultihop_evaluate_v1.1.py` (`Alab-NII/2wikimultihop`@`209e7618`) is transcribed
-**verbatim** below -- all 250 lines of it, including the three quarters this platform does
-not report. `data/musique.py` has the shape for the rest.
+**verbatim** below. The platform wrapper reports all four metric groups for structured
+submissions and retains a labeled legacy answer-only path.
 
     python3 tools/datasets.py --fetch --dataset twowikimultihopqa
     python3 data/qa/control.py --dataset twowikimultihopqa --oracle --platform
     python3 tools/dataset_lint.py --dataset twowikimultihopqa
 
-Which number is the reward, and which three are missing
--------------------------------------------------------
+Public output contract and reward
+---------------------------------
 The evaluator reports four groups: `em/f1/prec/recall` (answers), `sp_*` (sentence-level
 supporting facts), `evi_*` (evidence triples), `joint_*`. The leaderboard prints them as
 **separate columns** (Ans EM, Ans F1, Sup EM, Sup F1, Evi EM, Evi F1, Joint EM, Joint F1),
-so `Ans F1` is a column of the official metric in its own right -- the same reading
-`data/musique.py` makes of MuSiQue's separate `answer_f1`, and the reason this adapter is
-not the refusal `data/hotpotqa.py` is: HotpotQA's leaderboard number is `joint`, and this
-one's is not. Reward is per-question Ans F1; `correct` is Ans EM.
+with per-question values as fractions (normally 0–1; upstream quirks are preserved).
+Write this JSON object to `answer.txt`, directly
+or with `python3 qa/bin/qa submit @submission.json`::
 
-`Sup`, `Evi` and `Joint` are transcribed, runnable, and **not reported**: each needs an
-evidence channel (`supporting_facts`, `evidences`) that the answer contract does not carry,
-and `joint` is the product of all three. This repository's rule for that situation is
-`data/qa/evidence_scorers.py`'s -- "a refusal is only credible if the code that computes
-the missing number is present and says what is missing" -- and it applies here in the other
-direction: the dataset loads, and the columns it does not report are named rather than
-silently dropped. A run of this adapter is comparable to published Ans F1, and to nothing
-else.
+    {"schema_version": 1, "answer": "short answer",
+     "supporting_facts": [["Context title", 0]],
+     "evidence": [["subject", "relation", "object"]]}
+
+Sentence indices are zero-based and displayed in the context. Each prediction channel
+may be omitted: its metrics are then zero and Joint is zero. Explicit empty lists are
+scored by upstream's empty-set rules. Structured reward is Joint F1; `correct` is Joint
+EM. Joint precision and recall multiply their answer/support/evidence counterparts;
+Joint F1 is their harmonic mean, not the product of the three component F1s.
+
+`score_prediction` accepts the same object; `evaluate_predictions` takes an id-to-object
+map and trusted gold rows, returning all 16 official percentage metrics, rounded once to
+two decimals after summing in gold order. Missing predictions remain in the denominator.
+Plain text `answer.txt` and `score_answer_only` retain **legacy answer-only** Ans F1 reward
+and Ans EM correctness. Their verdict explicitly omits Sup/Evi/Joint and must not be
+compared with a full structured run. The shared `qa submit-json` pair-only schema is not
+this adapter's triple contract; use `qa submit @submission.json`.
 
 Two traps, both measured here
 -----------------------------
@@ -68,6 +76,7 @@ import json
 import re
 import string
 from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 
 from data.qa import base
@@ -380,7 +389,7 @@ def _one_question(prediction: str, golds) -> dict:
     return metrics
 
 
-def score(prediction: str, gold: dict) -> dict:
+def score_answer_only(prediction: str, gold: dict) -> dict:
     """Ans F1, the official answer column, over `{answer} | aliases`.
 
     A gold with no `answer` is reported rather than scored: it did not come from this
@@ -389,19 +398,119 @@ def score(prediction: str, gold: dict) -> dict:
     """
     if not gold.get("answer"):
         return {"reward": 0.0, "correct": False,
-                "official": {"metric": None},
+                "official": {"metric": None, "mode": "legacy_answer_only", "scale": "fraction"},
                 "why": "gold has no answer: not a row of this pool"}
     metrics = _one_question(prediction, {gold["answer"], *gold.get("aliases", [])})
     return {
         "reward": float(metrics["f1"]),
         "correct": bool(metrics["em"]),
-        "official": {"metric": "2WikiMultihopQA Ans F1 (official v1.1 evaluator)",
+        "official": {"metric": "2WikiMultihopQA Ans F1 (legacy answer-only, v1.1)",
+                     "mode": "legacy_answer_only", "scale": "fraction",
                      "em": metrics["em"], "f1": metrics["f1"],
                      "prec": metrics["prec"], "recall": metrics["recall"],
                      "id": gold.get("id"), "type": gold.get("type")},
-        "why": (f"Ans F1={metrics['f1']:g}, Ans EM={metrics['em']:g}; Sup/Evi/Joint are "
-                "computed by this module and not reported (no evidence channel)"),
+        "why": (f"legacy answer-only: Ans F1={metrics['f1']:g}, Ans EM={metrics['em']:g}; "
+                "Sup/Evi/Joint are not reported in this mode"),
     }
+
+
+METRIC_KEYS = tuple(prefix + metric for prefix in ("", "sp_", "evi_", "joint_")
+                    for metric in ("em", "f1", "prec", "recall"))
+PREDICTION_KEYS = {"schema_version", "answer", "supporting_facts", "evidence"}
+
+
+def validate_prediction(prediction: dict) -> None:
+    """Validate the adapter's public JSON contract, including partial predictions.
+
+    Omitted channels are different from submitted empty values. Unknown fields and
+    malformed channels are contract errors rather than invented scorer zeroes.
+    """
+    if not isinstance(prediction, dict) or set(prediction) - PREDICTION_KEYS:
+        raise ValueError("2Wiki prediction must be an object with only public prediction fields")
+    if type(prediction.get("schema_version")) is not int or prediction["schema_version"] != 1:
+        raise ValueError("2Wiki prediction requires schema_version=1")
+    if "answer" in prediction and not isinstance(prediction["answer"], str):
+        raise ValueError("answer must be a string")
+    for channel, length in (("supporting_facts", 2), ("evidence", 3)):
+        if channel not in prediction:
+            continue
+        if not isinstance(prediction[channel], list):
+            raise ValueError(f"{channel} must be a list")
+        for item in prediction[channel]:
+            if not isinstance(item, list) or len(item) != length:
+                raise ValueError(f"{channel} entries must be lists of length {length}")
+            if channel == "supporting_facts":
+                valid = (isinstance(item[0], str) and type(item[1]) is int and item[1] >= 0)
+            else:
+                valid = all(isinstance(part, str) for part in item)
+            if not valid:
+                raise ValueError(f"invalid {channel} entry")
+
+
+def _prediction_metrics(prediction: dict, gold: dict) -> dict:
+    validate_prediction(prediction)
+    if not isinstance(gold.get("answer"), str):
+        raise ValueError("gold has no answer")
+    if "supporting_facts" not in gold or "evidences" not in gold:
+        raise ValueError("structured scoring requires support and evidence gold")
+    metrics = dict.fromkeys(METRIC_KEYS, 0.0)
+    if "answer" in prediction:
+        em, prec, recall = update_answer(
+            metrics, prediction["answer"], {gold["answer"], *gold.get("aliases", [])})
+    if "supporting_facts" in prediction:
+        sp_em, sp_prec, sp_recall = update_sp(
+            metrics, prediction["supporting_facts"], gold["supporting_facts"])
+    if "evidence" in prediction:
+        variants = _evidence_variants(gold)
+        # Upstream normalizes evidence in place; variants are fresh and predictions
+        # must be copied so a verifier does not mutate its inputs.
+        evi_em, evi_prec, evi_recall = update_evi(
+            metrics, deepcopy(prediction["evidence"]), variants)
+    if all(channel in prediction for channel in ("answer", "supporting_facts", "evidence")):
+        joint_prec = prec * sp_prec * evi_prec
+        joint_recall = recall * sp_recall * evi_recall
+        metrics.update(
+            joint_em=float(em * sp_em * evi_em), joint_prec=joint_prec,
+            joint_recall=joint_recall,
+            joint_f1=(2 * joint_prec * joint_recall / (joint_prec + joint_recall)
+                      if joint_prec + joint_recall > 0 else 0.0))
+    return metrics
+
+
+def score_prediction(prediction: dict, gold: dict) -> dict:
+    """All official v1.1 metrics; Joint F1 reward and Joint EM correctness."""
+    metrics = _prediction_metrics(prediction, gold)
+    return {"reward": float(metrics["joint_f1"]), "correct": bool(metrics["joint_em"]),
+            "official": {"metric": "2WikiMultihopQA Joint F1 (official v1.1 evaluator)",
+                         "mode": "structured", "scale": "fraction", **metrics,
+                         "id": gold.get("id"), "type": gold.get("type")},
+            "why": f"Joint F1={metrics['joint_f1']:g}, Joint EM={metrics['joint_em']:g}"}
+
+
+def score(prediction: str | dict, gold: dict) -> dict:
+    """Platform entry point: JSON in answer.txt, or labeled legacy answer text."""
+    if isinstance(prediction, dict):
+        return score_prediction(prediction, gold)
+    if prediction.lstrip().startswith("{"):
+        return score_prediction(json.loads(prediction), gold)
+    return score_answer_only(prediction, gold)
+
+
+def evaluate_predictions(predictions: dict[str, dict], golds: list[dict]) -> dict:
+    """Official percentage aggregate over every gold, in gold order.
+
+    Extra prediction ids are ignored. Missing rows/channels contribute zero without
+    shrinking the denominator. Golds are the trusted inline records produced by _gold.
+    """
+    if not golds:
+        raise ValueError("cannot evaluate an empty gold pool")
+    totals = dict.fromkeys(METRIC_KEYS, 0.0)
+    for gold in golds:
+        metrics = _prediction_metrics(
+            predictions.get(gold["id"], {"schema_version": 1}), gold)
+        for key in totals:
+            totals[key] += metrics[key]
+    return {key: round(value / len(golds) * 100, 2) for key, value in totals.items()}
 
 
 _ALIASES: dict[str, list[str]] | None = None
@@ -446,24 +555,73 @@ def _question(row: dict) -> str:
     `entity_ids` and `type` are annotations, and a prompt that carried them would grade
     the agent's reading of a label rather than of the paragraphs.
     """
-    context = "\n\n".join(f"{title}\n{' '.join(sentences)}"
-                           for title, sentences in row["context"])
+    context = "\n\n".join(
+        f"{title}\n" + "\n".join(f"[{index}] {sentence}"
+                                for index, sentence in enumerate(sentences))
+        for title, sentences in row["context"])
     return f"Question: {row['question']}\n\nContext paragraphs:\n{context}"
 
 
 def _gold(row: dict) -> dict:
+    aliases = _aliases()
+    evidence_ids = row["evidences_id"]
+    if evidence_ids and len(evidence_ids) != len(row["evidences"]):
+        raise ValueError("evidences_id and evidences lengths differ")
+    evidence_aliases = {}
+    for (_, relation, _), (subject_id, relation_id, object_id) in zip(
+            row["evidences"], evidence_ids):
+        if relation_id != relation:
+            raise ValueError("evidence relation does not match evidences_id")
+        for entity_id in (subject_id, object_id):
+            if entity_id in aliases:
+                evidence_aliases[entity_id] = aliases[entity_id]
     return {"answer": row["answer"],
-            "aliases": _aliases().get(row.get("answer_id"), []),
+            "aliases": aliases.get(row.get("answer_id"), []),
+            "supporting_facts": deepcopy(row["supporting_facts"]),
+            "evidences": deepcopy(row["evidences"]),
+            "evidences_id": deepcopy(evidence_ids), "evidence_aliases": evidence_aliases,
             "id": row["_id"], "type": row["type"]}
 
 
+def _evidence_variants(gold: dict) -> list:
+    """Upstream's subject/object alias product, from trusted inline aliases only.
+
+    Expand at scoring time rather than storing every product for the whole task pool.
+    The verifier never loads the global alias table or any dataset payload.
+    """
+    evidence_ids = gold.get("evidences_id", [])
+    aliases = gold.get("evidence_aliases", {})
+    if evidence_ids and len(evidence_ids) != len(gold["evidences"]):
+        raise ValueError("evidences_id and evidences lengths differ")
+    variants = []
+    for index, (subject, relation, obj) in enumerate(gold["evidences"]):
+        subjects, objects = {subject}, {obj}
+        if evidence_ids:
+            subject_id, relation_id, object_id = evidence_ids[index]
+            if relation_id != relation:
+                raise ValueError("evidence relation does not match evidences_id")
+            subjects.update(aliases.get(subject_id, []))
+            objects.update(aliases.get(object_id, []))
+        variants.append([[sub, relation, ob] for sub, ob in
+                         itertools.product(sorted(subjects), sorted(objects))])
+    return variants
+
+
 def _goal(question: str, gold: dict) -> str:
-    return (question + "\n\nAnswer with the short answer only. Reward is the official "
-            "2WikiMultihopQA **Ans F1** over the gold answer and its Wikidata aliases; the "
-            "official evaluator's Sup, Evi and Joint columns need evidence this interface "
-            "does not carry and are not reported.\n\n"
-            "Write `answer.txt`, or use the qa submit command:\n"
-            '    python3 qa/bin/qa submit "<answer>"\n')
+    return (question + "\n\nSubmit a JSON object in `answer.txt` with this public schema:\n"
+            '{"schema_version":1,"answer":"short answer",'
+            '"supporting_facts":[["Context title",0]],'
+            '"evidence":[["subject","relation","object"]]}\n'
+            "Supporting facts identify context titles and the displayed zero-based sentence "
+            "indices. Evidence triples express the relations supporting your answer. "
+            "Reward is official v1.1 Joint F1; all answer, support, evidence and joint "
+            "EM/F1/precision/recall metrics are reported. Joint precision and recall "
+            "multiply the three component values, then Joint F1 takes their harmonic mean. "
+            "Omitted channels score zero and make Joint zero; empty lists are submitted "
+            "empty sets.\n\nWrite `answer.txt` directly, or save `submission.json` and run:\n"
+            "    python3 qa/bin/qa submit @submission.json\n"
+            "Plain text in `answer.txt` selects legacy answer-only Ans F1 scoring, "
+            "which reports no Sup/Evi/Joint metrics.\n")
 
 
 def _downloads() -> list[dict]:

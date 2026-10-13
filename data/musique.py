@@ -1,9 +1,9 @@
-"""MuSiQue-Ans v1.0 dev: supplied-context multi-hop QA, official answer F1.
+"""MuSiQue-Ans v1.0 dev: supplied-context answer and support evaluation.
 
 Trivedi et al., TACL 2022, https://arxiv.org/abs/2108.00573. Official
-`evaluate_v1.0.py` reports answer_f1, answer_em and support_f1 separately. Reward is
-unrounded per-question answer_f1; its mean (rounded to 3 decimals by upstream) is the
-answer_f1 column, never the support or sufficiency column.
+`evaluate_v1.0.py` reports answer_f1, answer_em and support_f1 separately. The default
+reward is answer_f1 * support_f1, an explicitly platform-defined joint policy, not an
+official MuSiQue metric. Only `legacy_answer_only` preserves the old answer-only reward.
 
 All released context paragraphs are given in original order. Answers, aliases,
 question_decomposition and is_supporting flags stay out of agent-visible data.
@@ -25,6 +25,10 @@ from pathlib import Path
 from data.qa import base
 
 KIND = "dataset"
+EVIDENCE_AWARE = True
+REDACT_EVIDENCE = True
+DEFAULT_MODE = "answer_support"
+LEGACY_MODE = "legacy_answer_only"
 
 #: The oracle control submits the benchmark's own released reference; see
 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
@@ -63,14 +67,94 @@ def compute_f1(a_gold, a_pred):
     return (2 * precision * recall) / (precision + recall)
 
 
-def score(prediction: str, gold: dict) -> dict:
+def _check_mode(mode: str) -> None:
+    if mode not in (DEFAULT_MODE, LEGACY_MODE):
+        raise ValueError("MuSiQue mode must be answer_support or legacy_answer_only")
+
+
+def compute_support(predicted_indices: list[int], gold_indices: list[int]) -> dict:
+    """Pinned metrics/support.py::SupportMetric, including the both-empty case."""
+    predicted, expected = set(predicted_indices), set(gold_indices)
+    tp = len(predicted & expected)
+    fp, fn = len(predicted - expected), len(expected - predicted)
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    if not predicted and not expected:
+        f1 = 1.0
+    return {"f1": f1, "em": int(fp + fn == 0)}
+
+
+def _score(answer: str, evidence: list | None, gold: dict, mode: str) -> dict:
+    _check_mode(mode)
     answers = [gold["answer"], *gold["aliases"]]
-    reward = max(compute_f1(prediction, answer) for answer in answers)
-    em = max(compute_exact(prediction, answer) for answer in answers)
-    return {"reward": float(reward), "correct": bool(em),
-            "official": {"metric": "MuSiQue-Ans answer_f1", "answer_f1": reward,
-                         "answer_em": em, "id": gold["id"]},
-            "why": f"answer_f1={reward:g}, answer_em={em}; independent answer metric"}
+    f1 = max(compute_f1(reference, answer) for reference in answers)
+    em = max(compute_exact(reference, answer) for reference in answers)
+    official = {"metric": "MuSiQue-Ans", "answer_f1": f1, "answer_em": em,
+                "id": gold["id"], "mode": mode,
+                "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals"}
+    if mode == LEGACY_MODE:
+        official.update(metric="MuSiQue-Ans legacy answer-only (support unmeasured)",
+                        support_f1=None, reward_policy="legacy answer_f1 only")
+        return {"reward": float(f1), "correct": bool(em), "official": official,
+                "why": f"legacy_answer_only: answer_f1={f1:g}, answer_em={em}; support unmeasured"}
+    if "supporting_facts" not in gold or not isinstance(gold["supporting_facts"], list):
+        raise ValueError("MuSiQue trusted gold is missing supporting_facts")
+    # Titles describe public citations; upstream support scoring uses paragraph idx only.
+    support = compute_support([pair[1] for pair in (evidence or [])],
+                              [pair[1] for pair in gold["supporting_facts"]])
+    joint_f1, joint_em = f1 * support["f1"], em * support["em"]
+    official.update(support_f1=support["f1"], support_em=support["em"],
+                    joint_f1=joint_f1, joint_em=joint_em,
+                    reward_policy="platform answer_f1 * support_f1 (not an official metric)",
+                    joint_em_policy="platform answer_em * support_em (not an official metric)")
+    return {"reward": float(joint_f1), "correct": bool(joint_em), "official": official,
+            "why": f"answer_f1={f1:g}, support_f1={support['f1']:g}, answer_em={em}; "
+                   f"platform joint_f1={joint_f1:g}"}
+
+
+def score_prediction(prediction: dict, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:
+    from data.qa.prediction import validate_prediction
+
+    value, error = validate_prediction(prediction)
+    if error:
+        raise ValueError(error)
+    return _score(value["answer"], value.get("predicted_evidence"), gold, mode)
+
+
+def score(prediction: str, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:
+    """Text is answer-only input, hence zero support under the default policy."""
+    return _score(prediction, None, gold, mode)
+
+
+def aggregate(results: list[dict]) -> dict:
+    """Match upstream ordered accumulation/rounding for the three official columns.
+
+    The platform reward is the unrounded mean of per-item rewards, never the product
+    of corpus means. Mixing legacy and default results is refused.
+    """
+    if not results:
+        raise ValueError("cannot aggregate an empty MuSiQue result list")
+    modes = {result["official"]["mode"] for result in results}
+    if len(modes) != 1:
+        raise ValueError("cannot mix MuSiQue scoring modes")
+    mode = modes.pop()
+    _check_mode(mode)
+    output = {"mode": mode, "count": len(results),
+              "reward_policy": results[0]["official"]["reward_policy"],
+              "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals"}
+    fields = ["answer_f1", "answer_em"]
+    if mode == DEFAULT_MODE:
+        fields += ["support_f1", "joint_f1", "joint_em"]
+    else:
+        output["support_f1"] = None
+    for field in [*fields, "reward"]:
+        total = 0.0
+        for result in results:
+            total += result["reward"] if field == "reward" else result["official"][field]
+        mean = total / len(results)
+        output[field] = round(mean, 3) if field in ("answer_f1", "answer_em", "support_f1") else mean
+    return output
 
 
 def _rows():
@@ -90,15 +174,29 @@ def _question(row):
 
 
 def _gold(row):
-    return {"answer": row["answer"], "aliases": list(row["answer_aliases"]), "id": row["id"]}
+    return {"answer": row["answer"], "aliases": list(row["answer_aliases"]), "id": row["id"],
+            "supporting_facts": [[p["title"], p["idx"]] for p in row["paragraphs"]
+                                 if p["is_supporting"]]}
 
 
-def _goal(question, gold):
-    return (question + "\n\nAnswer with the short answer only. All provided paragraphs may be "
-            "used; their order is unchanged. Reward is official answer F1 over the canonical "
-            "answer and aliases; supporting-fact and sufficiency scores are not reported.\n\n"
-            "Write `answer.txt`, or use the qa submit command:\n"
-            '    python3 qa/bin/qa submit "<answer>"\n')
+def _goal(question, gold, *, mode=DEFAULT_MODE):
+    _check_mode(mode)
+    if mode == LEGACY_MODE:
+        return (question + "\n\nLEGACY ANSWER-ONLY MODE: reward is answer F1; support is "
+                "unmeasured. Write `answer.txt` or use the qa submit command:\n"
+                '    python3 qa/bin/qa submit "<answer>"\n')
+    return (question + "\n\nSubmit a short answer and the supporting paragraph indices in "
+            '`prediction.json`: {"schema_version":1,"answer":"<answer>",'
+            '"predicted_evidence":[["<title>",0]]}. Each pair cites a public title and '
+            "the [idx] printed above, not its list position or a sentence number. Titles "
+            "are descriptive; only indices are scored. Duplicates count once; extra indices "
+            "reduce support precision. Missing/null/empty evidence is an empty prediction. "
+            "Answer F1, Support F1 and Answer EM are reported separately. Reward is their "
+            "platform joint policy: answer_f1 * support_f1 (not an official metric). "
+            "All provided paragraphs may be used; their order is unchanged.\n\n"
+            "Read `qa/output-contract.md`; submit using:\n"
+            "    python3 qa/bin/qa submit-json @prediction.json\n"
+            "`answer.txt` / qa submit without evidence gets zero support in this mode.\n")
 
 
 def _downloads():
@@ -107,7 +205,7 @@ def _downloads():
          "repo": "dgslibisey/MuSiQue", "version": REVISION,
          "size": "30,439,728 bytes (2417 dev rows)", "files": [DATA_FILE], "dst": ".",
          "sha256": {DATA_FILE: DATA_SHA256},
-         "note": "Canonical HF timed out; pinned data and LFS digest verified via hf-mirror, not independently against HF. Preserve all paragraphs; strip answer, aliases, decomposition and supporting labels. Official answer_f1 is separate from support_f1."},
+         "note": "Canonical HF timed out; pinned data and LFS digest verified via hf-mirror, not independently against HF. Preserve all paragraphs; strip answer, aliases, decomposition and supporting labels from public inputs. Report official answer_f1, answer_em and support_f1 separately; joint reward is platform-defined."},
         {"kind": "http", "name": "MuSiQue official evaluation code", "version": OFFICIAL_COMMIT,
          "url": f"https://codeload.github.com/StonyBrookNLP/musique/tar.gz/{OFFICIAL_COMMIT}",
          "size": "1,281,842 bytes compressed source",
@@ -116,14 +214,24 @@ def _downloads():
     ]
 
 
-_SPEC = base.QASpec(name="musique", root=DATASET_ROOT, rows=_rows,
-                   question=_question, gold=_gold, goal=_goal, score=score,
+class _MuSiQueSpec(base.QASpec):
+    mode = DEFAULT_MODE
+
+    def verifier(self, record):
+        spec = super().verifier(record)
+        spec["argv"] += ["--score-mode", self.mode, "--redact-gold"]
+        return spec
+
+
+_SPEC = _MuSiQueSpec(name="musique", root=DATASET_ROOT, rows=_rows,
+                   question=_question, gold=_gold,
+                   goal=lambda question, gold: _goal(question, gold, mode=_SPEC.mode), score=score,
                    downloads=_downloads, split="dev",
+                   extra_setup=[{"path": "qa/output-contract.md",
+                                 "from": str(base.ROOT / "docs/musique-output-contract.md")}],
                    source=f"MuSiQue-Ans v1.0 dev, dgslibisey/MuSiQue@{REVISION}")
-_BUILT = _SPEC.build()
-DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
-ENV = _BUILT["ENV"]
-SPLIT = _BUILT["SPLIT"]
+# Do not open a mixed study/eval payload merely to import a scoring function.
+DEFAULT_ENV = {"kind": "files"}
 
 #: The benchmark's own evaluation set, within this adapter's pool. The pool is MuSiQue-Ans `dev`, the answerable split the benchmark reports on.
 #: `train` exists at the same pinned revision and is not loaded, so this pool holds no study
@@ -135,19 +243,31 @@ SPLIT = _BUILT["SPLIT"]
 #: evaluation set, and that claims nothing about whether the pool is the whole of it.
 #: `--split official --side eval` scores the whole pool, which is the comparable run;
 #: `--split declared` keeps the platform's hash third (`SPLIT_SOURCE == "hash"`).
-OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
+OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study
 #: split, so the platform imposes one. See `data/qa/base.py::division`.
-SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
+SPLIT_SOURCE = "hash"
 
 
 def __getattr__(name):
+    if name in ("ENV", "SPLIT"):
+        return _SPEC.build()[name]
     return base.module_getattr(_SPEC, name)
 
 
-def load():
+def load(*, mode=DEFAULT_MODE):
+    _check_mode(mode)
+    _SPEC.mode = mode
     return _SPEC.load()
+
+
+def verify_for(record: dict, *, mode: str = DEFAULT_MODE) -> dict:
+    """Build a selected verifier from trusted configuration, without reading the pool."""
+    _check_mode(mode)
+    spec = base.QASpec.verifier(_SPEC, record)
+    spec["argv"] += ["--score-mode", mode, "--redact-gold"]
+    return spec
 
 
 def downloads():

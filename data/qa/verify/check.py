@@ -78,6 +78,9 @@ def parse_args(argv):
     parser.add_argument("--answer", default="answer.txt")
     parser.add_argument("--prediction", default="prediction.json")
     parser.add_argument("--gold", default="gold.json")
+    parser.add_argument("--score-mode", help="trusted adapter scoring policy")
+    parser.add_argument("--redact-gold", action="store_true",
+                        help="omit trusted gold from all verifier evidence paths")
     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
     return parser.parse_args(argv)
@@ -157,7 +160,7 @@ def main(argv) -> int:
     evidence.update(answer_present=answer_path.is_file(),
                     answer_chars=len(answer),
                     answer=answer[:2000],
-                    gold=gold)
+                    gold={"redacted": True} if args.redact_gold else gold)
 
     structured = None
     if prediction_path.is_file():
@@ -188,7 +191,7 @@ def main(argv) -> int:
         # already validated to `data.<name>` above, and the rule this file must not break
         # is about *reaching an arbitrary module*, not about which builtin does it.
         adapter = __import__(module_name, fromlist=["score"])
-        if getattr(adapter, "REDACT_EVIDENCE", False):
+        if getattr(adapter, "REDACT_EVIDENCE", False) and not args.redact_gold:
             evidence["gold"] = {"subset": gold.get("subset"),
                                   "category": gold.get("subset"),
                                   "redacted": True}
@@ -206,11 +209,12 @@ def main(argv) -> int:
                   else unwrap(answer).strip())
     try:
         evidence_scorer = getattr(adapter, "score_prediction", None)
-        result = (evidence_scorer(structured, gold)
+        score_options = {"mode": args.score_mode} if args.score_mode is not None else {}
+        result = (evidence_scorer(structured, gold, **score_options)
                   if structured is not None
                   and getattr(adapter, "EVIDENCE_AWARE", False)
                   and callable(evidence_scorer)
-                  else scorer(prediction, gold))
+                  else scorer(prediction, gold, **score_options))
     except Exception as exc:  # noqa: BLE001 - a scorer that refuses is not a zero
         evidence["traceback"] = traceback.format_exc()[-2000:]
         return unmeasured(args, evidence,

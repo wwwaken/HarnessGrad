@@ -115,19 +115,13 @@ def test_the_transcription_is_byte_identical_to_upstream():
     assert ADAPTER.read_text().count(region) == 1
 
 
-def test_the_columns_this_adapter_does_not_report_are_present_and_runnable():
-    """Sup, Evi and Joint are computed by code that is here, not by code that is absent.
-
-    `data/qa/evidence_scorers.py` states the rule for a dataset that *refuses*: the missing
-    number's code must be present and say what is missing. This dataset does not refuse, so
-    the rule lands differently -- the columns are transcribed, importable and simply not
-    what the reward is -- and `why` has to name them, or a reader of the evidence file
-    would take Ans F1 for the only number the evaluator has.
-    """
+def test_legacy_answer_only_is_labeled_and_does_not_claim_joint():
+    """Plain text retains Ans F1; full structured coverage is tested on synthetic rows."""
     for name in ("update_sp", "update_evi", "normalize_evi", "eval"):
         assert callable(getattr(dataset, name)), name
-    verdict = dataset.score("anything", dataset._gold(dataset._rows()["dev"][0]))
-    assert "support" not in verdict["official"] and "joint" not in verdict["official"]
+    verdict = dataset.score("anything", {"answer": "fabricated answer", "aliases": []})
+    assert verdict["official"]["mode"] == "legacy_answer_only"
+    assert "sp_f1" not in verdict["official"] and "joint_f1" not in verdict["official"]
     assert "Sup/Evi/Joint" in verdict["why"]
 
 
@@ -236,7 +230,8 @@ def test_the_question_carries_the_ten_paragraphs_and_no_annotation(rows):
     assert len(row["context"]) == 10
     for title, sentences in row["context"]:
         assert title in question
-        assert " ".join(sentences) in question
+        for index, sentence in enumerate(sentences):
+            assert f"[{index}] {sentence}" in question
     for annotation in ("supporting_facts", "evidences", "answer_id", "entity_ids", '"type"'):
         assert annotation not in question
     for pair in row["supporting_facts"]:

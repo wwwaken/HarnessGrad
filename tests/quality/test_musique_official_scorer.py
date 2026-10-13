@@ -1,153 +1,341 @@
-"""Verbatim MuSiQue answer functions + source drift + differential tests.
-
-StonyBrookNLP/musique@922ac98f19a201998dbdae6d7f2887a5258dbdeb,
-metrics/answer.py:12-63. evaluate_v1.0.py:43-46 chooses answer + answer_aliases;
-83-85 outputs answer_f1 and support_f1 independently. No composite is claimed here.
-"""
+"""MuSiQue differential and verifier tests: fabricated train data only, no model."""
 from __future__ import annotations
 
-import collections
-import inspect
+import hashlib
+import importlib.util
 import json
-import re
-import string
+import os
+import shutil
 import subprocess
 import sys
+import types
 from pathlib import Path
 
 import pytest
 
 import data.musique as dataset
+from data.qa import base
 
-SOURCE_ROOT = (dataset.DATASET_ROOT / "_src" / f"musique-{dataset.OFFICIAL_COMMIT}")
-SOURCE = SOURCE_ROOT / "metrics" / "answer.py"
-
-
-def normalize_answer(s):
-    """Lower text and remove punctuation, articles and extra whitespace."""
-
-    def remove_articles(text):
-        regex = re.compile(r"\b(a|an|the)\b", re.UNICODE)
-        return re.sub(regex, " ", text)
-
-    def white_space_fix(text):
-        return " ".join(text.split())
-
-    def remove_punc(text):
-        exclude = set(string.punctuation)
-        return "".join(ch for ch in text if ch not in exclude)
-
-    def lower(text):
-        return text.lower()
-
-    return white_space_fix(remove_articles(remove_punc(lower(s))))
+ROOT = Path(__file__).resolve().parents[2]
+FIXTURES = ROOT / "tests/fixtures/musique_official"
+HASHES = {
+    "answer.py": "10368f619b4d5ef5d83748c05a96c0afd332a14ab5c010740c98d58dfaefe974",
+    "support.py": "ac16c0daf458a6a4d6db97682c2340fe5b5936a947bf32c04dc3bf16406077c6",
+    "metric.py": "c858d1bfda2f0b005065e87a402cd2f82154eb7eed5916845ae130759cc3a299",
+}
 
 
-def get_tokens(s):
-    if not s:
-        return []
-    return normalize_answer(s).split()
+@pytest.fixture(autouse=True)
+def forbid_released_payloads(monkeypatch):
+    def forbidden():
+        pytest.fail("synthetic tests must not load released MuSiQue payloads")
+
+    monkeypatch.setattr(dataset._SPEC, "_rows", forbidden)
+    monkeypatch.setattr(dataset, "_rows", forbidden)
 
 
-def compute_exact(a_gold, a_pred):
-    return int(normalize_answer(a_gold) == normalize_answer(a_pred))
+@pytest.fixture
+def upstream(monkeypatch):
+    # Load the real pinned classes with their real imports, restoring sys.modules
+    # afterward so the fixture does not affect any other scorer's tests.
+    package = types.ModuleType("metrics")
+    package.__path__ = [str(FIXTURES / "metrics")]
+    monkeypatch.setitem(sys.modules, "metrics", package)
+    modules = {}
+    for filename, digest in HASHES.items():
+        path = FIXTURES / "metrics" / filename
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+        name = f"metrics.{path.stem}"
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        monkeypatch.setitem(sys.modules, name, module)
+        spec.loader.exec_module(module)
+        modules[path.stem] = module
+    return modules
 
 
-def compute_f1(a_gold, a_pred):
-    gold_toks = get_tokens(a_gold)
-    pred_toks = get_tokens(a_pred)
-    common = collections.Counter(gold_toks) & collections.Counter(pred_toks)
-    num_same = sum(common.values())
-    if len(gold_toks) == 0 or len(pred_toks) == 0:
-        # If either is no-answer, then F1 is 1 if they agree, 0 otherwise
-        return int(gold_toks == pred_toks)
-    if num_same == 0:
-        return 0
-    precision = 1.0 * num_same / len(pred_toks)
-    recall = 1.0 * num_same / len(gold_toks)
-    f1 = (2 * precision * recall) / (precision + recall)
-    return f1
+@pytest.fixture
+def train_record():
+    # Deliberately noncontiguous/reordered idx, duplicate title, and annotations
+    # unrelated to the text. These are invented, never read from the benchmark.
+    row = {
+        "id": "fabricated-train-0", "question": "Which invented color pair?",
+        "answerable": True, "answer": "SYNTHETIC_GOLD red blue",
+        "answer_aliases": ["ALIAS_SECRET azure crimson"],
+        "question_decomposition": [{"answer": "DECOMPOSITION_SECRET"}],
+        "paragraphs": [
+            {"idx": 7, "title": "Shared title", "paragraph_text": "Invented first context.",
+             "is_supporting": True},
+            {"idx": 2, "title": "Distractor", "paragraph_text": "Invented second context.",
+             "is_supporting": False},
+            {"idx": 11, "title": "Shared title", "paragraph_text": "Invented third context.",
+             "is_supporting": True},
+        ],
+    }
+    return {"task_id": "musique/train/0", "split": "train", "index": 0,
+            "row": row, "question": dataset._question(row), "gold": dataset._gold(row)}
 
 
-def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
-    scores_for_ground_truths = []
-    for ground_truth in ground_truths:
-        score = metric_fn(prediction, ground_truth)
-        scores_for_ground_truths.append(score)
-    return max(scores_for_ground_truths)
+def prediction(answer, indices):
+    return {"schema_version": 1, "answer": answer,
+            "predicted_evidence": [["Descriptive title", index] for index in indices]}
 
 
-def test_verbatim_functions_have_not_drifted():
-    assert SOURCE.is_file(), "fetch the declared official source archive"
-    upstream = SOURCE.read_text().splitlines()
-    for function, start, end in [(normalize_answer, 12, 29), (get_tokens, 32, 35),
-                                 (compute_exact, 38, 39), (compute_f1, 42, 55),
-                                 (metric_max_over_ground_truths, 58, 63)]:
-        actual = inspect.getsource(function)
-        # The test copy carries this module's required `self-contained` globals; compare
-        # the function body itself, not its enclosing test module docstring/imports.
-        assert actual == "\n".join(upstream[start-1:end]) + "\n"
+@pytest.mark.parametrize("answer", [
+    "SYNTHETIC_GOLD red blue", "ALIAS_SECRET azure crimson", "red", "a blue, red",
+    "wrong", "red red", "The City", "MÜNCHEN", "don't", "a",
+])
+@pytest.mark.parametrize("indices", [[], [7], [11, 7], [7, 7, 11], [2],
+                                         [7, 11, 2], [7, 999], [0, 1]])
+def test_official_components_differential(upstream, train_record, answer, indices):
+    gold = train_record["gold"]
+    answer_metric = upstream["answer"].AnswerMetric()
+    support_metric = upstream["support"].SupportMetric()
+    answer_metric(answer, [gold["answer"], *gold["aliases"]])
+    support_metric(indices, [7, 11])
+    answer_em, answer_f1 = answer_metric.get_metric()
+    support_em, support_f1 = support_metric.get_metric()
+    result = dataset.score_prediction(prediction(answer, indices), gold)
+    official = result["official"]
+    assert official["answer_f1"] == answer_f1
+    assert official["answer_em"] == answer_em
+    assert official["support_f1"] == support_f1
+    assert official["support_em"] == support_em
+    assert result["reward"] == answer_f1 * support_f1
+    assert result["correct"] == bool(answer_em * support_em)
+    assert "not an official metric" in official["reward_policy"]
 
 
-@pytest.mark.parametrize("prediction,answer", [
-    ("The City", "city"), ("a blue, bird", "blue bird"), ("red green", "red"),
-    ("completely wrong", "right"), ("", ""), ("a", ""), ("foo foo", "foo"),
-    ("United States", "United States of America"), ("don't", "dont"),
-    ("MÜNCHEN", "münchen"), ("abc-def", "abcdef")])
-def test_answer_functions_differential(prediction, answer):
-    assert dataset.compute_f1(answer, prediction) == compute_f1(answer, prediction)
-    assert dataset.compute_exact(answer, prediction) == compute_exact(answer, prediction)
+@pytest.mark.parametrize("answer,gold", [("", ""), ("", "a"), ("foo foo", "foo"),
+                                          ("abc-def", "abcdef"), ("", "right")])
+def test_answer_empty_and_normalization_differential(upstream, answer, gold):
+    assert dataset.compute_f1(gold, answer) == upstream["answer"].compute_f1(gold, answer)
+    assert dataset.compute_exact(gold, answer) == upstream["answer"].compute_exact(gold, answer)
 
 
-def test_partial_reward_and_alias_max():
-    gold = {"answer": "canonical name", "aliases": ["short name"], "id": "x"}
-    assert dataset.score("short name", gold)["reward"] == 1.0
-    assert dataset.score("short", gold)["reward"] == pytest.approx(2/3)
-    assert "support_f1" not in dataset.score("short name", gold)["official"]
+def test_empty_support_corner_case(upstream):
+    metric = upstream["support"].SupportMetric()
+    metric([], [])
+    assert metric.get_metric() == (1.0, 1.0)
+    assert dataset.compute_support([], []) == {"f1": 1.0, "em": 1}
 
 
-def test_upstream_aggregate_uses_ordered_float_accumulation():
-    # evaluate_v1.0.py's AnswerMetric loops `self._total_f1 += f1` and rounds only at
-    # get_metric(). Python's `sum(list)` uses a different summation path in 3.12; preserve
-    # the upstream accumulator because this is a published 3-decimal metric.
-    rows = dataset._rows()["dev"][:100]
-    total = 0.0
-    for row in rows:
-        gold = dataset._gold(row)
-        total += dataset.score(row["answer"].split()[0], gold)["reward"]
-    assert round(total / len(rows), 3) == 0.649
+@pytest.mark.parametrize("evidence", [None, []])
+def test_missing_evidence_is_zero_and_never_legacy(train_record, evidence):
+    gold = train_record["gold"]
+    structured = {"schema_version": 1, "answer": gold["answer"],
+                  "predicted_evidence": evidence}
+    for result in [dataset.score_prediction(structured, gold),
+                   dataset.score_prediction({"schema_version": 1, "answer": gold["answer"]}, gold),
+                   dataset.score(gold["answer"], gold)]:
+        assert result["reward"] == 0.0
+        assert result["official"]["answer_f1"] == 1.0
+        assert result["official"]["support_f1"] == 0.0
+        assert result["official"]["mode"] == "answer_support"
 
 
-def test_all_released_gold_and_aliases_match_official_metric():
-    rows = dataset._rows()["dev"]
-    assert len(rows) == 2417
-    for row in rows:
-        gold = dataset._gold(row)
-        assert dataset.score(row["answer"], gold)["reward"] == 1.0
-        assert dataset.score("", gold)["reward"] == 0.0
-        # Check alias and partial-overlap predictions, not just the trivial oracle.
-        for prediction in [*row["answer_aliases"], row["answer"].split()[0]]:
-            expected = metric_max_over_ground_truths(compute_f1, prediction,
-                                                     [row["answer"], *row["answer_aliases"]])
-            assert dataset.score(prediction, gold)["reward"] == expected
+def test_explicit_legacy_preserves_old_scores(train_record):
+    gold = train_record["gold"]
+    for answer, expected in [(gold["aliases"][0], 1.0), ("red", 0.5), ("", 0.0)]:
+        result = dataset.score(answer, gold, mode="legacy_answer_only")
+        assert result["reward"] == expected
+        assert result["official"]["support_f1"] is None
+        assert "legacy" in result["official"]["metric"]
+        assert "joint_f1" not in result["official"]
+    with pytest.raises(ValueError, match="mode"):
+        dataset.score("red", gold, mode="answer_only")
+    for key in ("mode", "gold", "predicted_support_idxs"):
+        with pytest.raises(ValueError, match="unsupported"):
+            dataset.score_prediction({**prediction("red", [7]), key: "legacy_answer_only"}, gold)
 
 
-def test_context_retains_all_paragraphs_but_not_annotation_fields():
-    raw = dataset._rows()["dev"][0]
-    question = dataset._question(raw)
-    for paragraph in raw["paragraphs"]:
-        assert paragraph["title"] in question
-        assert paragraph["paragraph_text"] in question
-    assert "is_supporting" not in question
-    assert "question_decomposition" not in question
-    setup = json.dumps(dataset.SETUP[dataset._RECORDS[0]["task_id"]])
-    assert raw["answer"] not in setup
+def test_missing_trusted_support_is_unmeasured_not_legacy(train_record):
+    gold = {key: value for key, value in train_record["gold"].items() if key != "supporting_facts"}
+    with pytest.raises(ValueError, match="trusted gold"):
+        dataset.score(gold["answer"], gold)
+    assert dataset.score(gold["answer"], gold, mode="legacy_answer_only")["reward"] == 1.0
 
 
-@pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
-def test_platform_control(arm, expected):
-    proc = subprocess.run([sys.executable, "data/qa/control.py", "--dataset", "musique",
-                           arm, "--platform"], capture_output=True, text=True, timeout=120)
+def test_macro_aggregate_matches_upstream_and_mean_of_products(upstream, train_record):
+    gold = train_record["gold"]
+    answer_metric, support_metric = upstream["answer"].AnswerMetric(), upstream["support"].SupportMetric()
+    results = []
+    # Anti-correlated components distinguish mean(products) from product(means).
+    for answer, indices in [(gold["answer"], []), ("wrong", [7, 11]), ("red", [7])]:
+        answer_metric(answer, [gold["answer"], *gold["aliases"]])
+        support_metric(indices, [7, 11])
+        results.append(dataset.score_prediction(prediction(answer, indices), gold))
+    summary = dataset.aggregate(results)
+    answer_em, answer_f1 = answer_metric.get_metric()
+    _, support_f1 = support_metric.get_metric()
+    assert summary["answer_f1"] == round(answer_f1, 3)
+    assert summary["answer_em"] == round(answer_em, 3)
+    assert summary["support_f1"] == round(support_f1, 3)
+    assert summary["reward"] == pytest.approx(1 / 9)
+    assert summary["reward"] != pytest.approx(answer_f1 * support_f1)
+    legacy = dataset.score("red", gold, mode="legacy_answer_only")
+    assert dataset.aggregate([legacy])["support_f1"] is None
+    with pytest.raises(ValueError, match="mix"):
+        dataset.aggregate([*results, legacy])
+    with pytest.raises(ValueError, match="empty"):
+        dataset.aggregate([])
+
+
+def test_public_context_goal_and_setup_do_not_leak_gold(train_record):
+    context, gold = train_record["question"], train_record["gold"]
+    goal = dataset._goal(context, gold)
+    changed_gold = {"anything": "ANOTHER_SECRET"}
+    assert goal == dataset._goal(context, changed_gold)
+    assert context.index("[7]") < context.index("[2]") < context.index("[11]")
+    setup = dataset._SPEC.setup(train_record)
+    public = json.dumps({"goal": goal, "setup": setup})
+    for secret in [gold["answer"], *gold["aliases"], "DECOMPOSITION_SECRET",
+                   "is_supporting", "question_decomposition", "supporting_facts"]:
+        assert secret not in public
+    assert "predicted_evidence" in goal
+    assert "platform" in goal
+    assert "LEGACY ANSWER-ONLY" in dataset._goal(context, gold, mode="legacy_answer_only")
+    inputs = dataset.verify_for(train_record)["inputs"]
+    trusted = next(entry["content"] for entry in inputs if entry["path"] == "gold.json")
+    assert json.loads(trusted)["supporting_facts"] == [["Shared title", 7], ["Shared title", 11]]
+
+
+def test_load_mode_goals_and_verifier_stay_aligned_on_synthetic_records(monkeypatch, train_record):
+    records = [{**train_record, "task_id": f"musique/train/{index}", "index": index}
+               for index in range(12)]
+    monkeypatch.setattr(dataset._SPEC, "_records", records)
+    monkeypatch.setattr(dataset._SPEC, "mode", dataset.DEFAULT_MODE)
+    for mode in (dataset.LEGACY_MODE, dataset.DEFAULT_MODE):
+        tasks, scorable = dataset.load(mode=mode)
+        assert len(tasks) == len(scorable) == 12
+        assert set(dataset.SPLIT["train"]) | set(dataset.SPLIT["eval"]) == set(scorable)
+        assert dataset.SPLIT["train"] and dataset.SPLIT["eval"]
+        assert set(dataset.ENV) == set(scorable)
+        for task in tasks:
+            assert ("LEGACY ANSWER-ONLY" in task["goal"]) == (mode == dataset.LEGACY_MODE)
+            verifier = dataset.VERIFY[task["task_id"]]
+            assert verifier["argv"][verifier["argv"].index("--score-mode") + 1] == mode
+            assert "--redact-gold" in verifier["argv"]
+    with pytest.raises(ValueError, match="mode"):
+        dataset.load(mode="unknown")
+    from data.qa.control import _oracle_prediction
+    assert _oracle_prediction(dataset, train_record) == {
+        "schema_version": 1, "answer": train_record["gold"]["answer"],
+        "predicted_evidence": [["Shared title", 7], ["Shared title", 11]],
+    }
+
+
+def materialize(entries, work):
+    for entry in entries:
+        target = work / entry["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if "content" in entry:
+            target.write_text(entry["content"], encoding="utf-8")
+        else:
+            shutil.copyfile(entry["from"], target)
+
+
+@pytest.mark.parametrize("case,exit_code,reward", [
+    ("full", 0, 1.0), ("partial", 1, 2 / 3), ("missing", 1, 0.0),
+    ("text", 1, 0.0), ("noop", 1, 0.0), ("legacy", 0, 1.0),
+    ("malformed", 3, None), ("bad_pair", 3, None), ("bad_gold", 3, None),
+    ("unknown_mode", 3, None),
+])
+def test_isolated_submission_and_verifier(train_record, tmp_path, case, exit_code, reward):
+    work = tmp_path / "synthetic-train"
+    work.mkdir()
+    materialize(dataset._SPEC.setup(train_record)["files"], work)
+    assert not (work / "gold.json").exists()
+    assert not (work / "data").exists()
+    if case in ("full", "partial", "missing"):
+        indices = [7, 11] if case == "full" else [7] if case == "partial" else []
+        artifact = prediction(train_record["gold"]["answer"], indices)
+        (work / "submission.json").write_text(json.dumps(artifact))
+        proc = subprocess.run([sys.executable, "qa/bin/qa", "submit-json", "@submission.json"],
+                              cwd=work, capture_output=True, text=True)
+        assert proc.returncode == 0, proc.stderr
+        # A stale text answer must not override the structured submission.
+        (work / "answer.txt").write_text("wrong")
+    elif case != "noop":
+        (work / "answer.txt").write_text(train_record["gold"]["answer"])
+    if case == "malformed":
+        (work / "prediction.json").write_text("{")
+    elif case == "bad_pair":
+        (work / "prediction.json").write_text(json.dumps(prediction("red", [True])))
+    verifier = dataset.verify_for(train_record, mode="legacy_answer_only" if case == "legacy"
+                                  else "answer_support")
+    # An actor-edited gold copy must be replaced by trusted VERIFY inputs.
+    (work / "gold.json").write_text('{"answer":"wrong"}')
+    materialize(verifier["inputs"], work)
+    if case == "bad_gold":
+        (work / "gold.json").write_text(json.dumps({"answer": "SYNTHETIC_GOLD red blue",
+                                                    "aliases": [], "id": "broken"}))
+    if case == "unknown_mode":
+        verifier["argv"][verifier["argv"].index("--score-mode") + 1] = "unknown"
+    proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=work,
+                          env={**os.environ, "PYTHONPATH": str(work)}, capture_output=True,
+                          text=True, timeout=15)
+    assert proc.returncode == exit_code, proc.stdout + proc.stderr
+    evidence = json.loads((work / base.EVIDENCE_REL).read_text())
+    assert evidence["gold"] == {"redacted": True}
+    assert "aliases" not in json.dumps(evidence)
+    assert "supporting_facts" not in evidence["gold"]
+    if reward is None:
+        assert not (work / base.REWARD_REL).exists()
+        assert evidence["measured"] is False
+    else:
+        assert float((work / base.REWARD_REL).read_text()) == pytest.approx(reward, abs=1e-6)
+        assert evidence["measured"] is True
+        assert evidence["official"]["support_f1"] == (None if case == "legacy" else reward)
+
+
+def test_import_and_scorer_never_open_dataset_pool(tmp_path):
+    # A fresh process guards the root before import, including QASpec.build().
+    code = '''
+import pathlib
+original_open = pathlib.Path.open
+def guarded_open(path, *args, **kwargs):
+    if "/datasets/" in str(path):
+        raise AssertionError("released payload access is forbidden")
+    return original_open(path, *args, **kwargs)
+pathlib.Path.open = guarded_open
+import data.musique as dataset
+assert dataset._SPEC._records == []
+assert dataset._SPEC.load_error is None
+gold = {"id":"synthetic-train", "answer":"red", "aliases":[],
+        "supporting_facts":[["Title",7]]}
+assert dataset.score_prediction({"schema_version":1,"answer":"red",
+    "predicted_evidence":[["Title",7]]}, gold)["reward"] == 1.0
+assert dataset._SPEC._records == []
+'''
+    proc = subprocess.run([sys.executable, "-c", code], cwd=tmp_path,
+                          env={**os.environ, "PYTHONPATH": str(ROOT)},
+                          capture_output=True, text=True, timeout=15)
     assert proc.returncode == 0, proc.stdout + proc.stderr
-    assert f"score    {expected}" in proc.stdout
-    assert "sandbox=True" in proc.stdout
+
+
+@pytest.mark.parametrize("redact_marker", [False, True])
+def test_shared_verifier_without_new_flags_retains_existing_semantics(
+        train_record, tmp_path, redact_marker):
+    # A fabricated adapter verifies compatibility without importing any other
+    # released adapter or reading its table.
+    verifier = base.QASpec.verifier(dataset._SPEC, train_record)
+    materialize(verifier["inputs"], tmp_path)
+    inert_adapter = (
+        f"REDACT_EVIDENCE = {redact_marker!r}\n"
+        "def score(answer, gold):\n"
+        "    return {'reward': float(answer == gold['answer']), 'official': {'metric':'inert'}}\n"
+    )
+    (tmp_path / "data/inert_qa.py").write_text(inert_adapter)
+    (tmp_path / "answer.txt").write_text(train_record["gold"]["answer"])
+    verifier["argv"][verifier["argv"].index("--dataset") + 1] = "inert_qa"
+    assert "--score-mode" not in verifier["argv"]
+    assert "--redact-gold" not in verifier["argv"]
+    proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=tmp_path,
+                          env={**os.environ, "PYTHONPATH": str(tmp_path)},
+                          capture_output=True, text=True, timeout=15)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    evidence = json.loads((tmp_path / base.EVIDENCE_REL).read_text())
+    assert evidence["reward"] == 1.0
+    assert evidence["gold"] == ({"subset": None, "category": None, "redacted": True}
+                                 if redact_marker else train_record["gold"])

@@ -81,6 +81,19 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: do not rerun the old full-size protocol; use the capped pilot default and a repaired scorer boundary
 - Commit: incomplete record only
 
+## 2WikiMultihopQA — 2026-10-13 evaluation fidelity
+
+- Status: `scorer_repaired`, synthetic validation complete; no model/H0
+- Scope: this adapter's public output contract, trusted gold transport and official v1.1 scoring; fabricated fixtures only, no released dev/train/test, heldout payload, alias-table or mirror reads
+- Finding: the inherited adapter rewarded answers alone despite the official answer, supporting-sentence, evidence-triple and Joint metrics. Structured submissions now report all 16 metrics and earn Joint F1, with Joint EM correctness. Joint precision/recall multiply the three component values before the harmonic mean; multiplying component F1s is different.
+- Public contract: JSON in `answer.txt`, submitted directly or with `python3 qa/bin/qa submit @submission.json`: `{"schema_version":1,"answer":"...","supporting_facts":[["Title",0]],"evidence":[["subject","relation","object"]]}`. Context sentences display zero-based indices. Each channel can be omitted; omitted metrics and Joint are zero. Explicit empty sets retain upstream semantics. Plain text and `score_answer_only` remain explicitly labeled `legacy_answer_only`, with Ans F1 reward and no Sup/Evi/Joint claim. This adapter uses the existing text-file transport; shared `submit-json` remains the pair-only schema.
+- Evidence: `data/twowikimultihopqa.py`; `tests/quality/test_twowikimultihopqa_structured.py`; updated legacy assertion in `tests/quality/test_twowikimultihopqa_official_scorer.py`
+- Platform change: adapter-scoped `score_prediction`, validation and `evaluate_predictions`; trusted inline support/triples plus relevant subject/object aliases, with alias products expanded per scored row. Inputs remain immutable. Aggregate percentages sum in gold order, divide by the entire gold pool including missing predictions, then round once to two decimals. No shared scaffold or other adapter changed.
+- Differential coverage: Counter-based duplicate answer tokens; support deduplication/title casing and sentence indices; triple order, punctuation/whitespace normalization, aliases/demonyms and duplicate triples; independently maximized answer precision/recall; multiplicative Joint precision/recall; each missing channel, absent prediction rows and ignored extra ids; explicit empty sets; malformed contracts; trusted-gold privacy; CLI-to-materialized-verifier full/partial/legacy/noop/error controls. Preserve upstream's pre-normalization support deduplication and evidence-alias recall-above-100% quirks without clipping.
+- Validation: `python3 -m pytest -q tests/quality/test_twowikimultihopqa_structured.py tests/quality/test_twowikimultihopqa_official_scorer.py::test_legacy_answer_only_is_labeled_and_does_not_claim_joint --basetemp=.scratch/twowiki/pytest` — 40 passed. Synthetic tests suppress shared QASpec pool construction before both parent and verifier-child imports, so no provisioned payload is accessed. `git diff --check` passed.
+- Remaining gates/blockers: no implementation blocker. Fetching the pinned upstream source from GitHub failed with curl exit 35 (connection reset); differential tests therefore execute the existing verbatim file evaluator, whose unchanged region is pinned to pre-patch SHA-256 `e18ccdf4b87d16c30e03a62b1dc9d0906c0b0130ae5eace17885d2a9ea1b13c9`. A fresh independent source-file comparison and released-data controls were not performed; real-data/model/H0 validation is outside this task.
+- Commit: this entry is carried by `fix: restore 2WikiMultihopQA structured evaluation fidelity`; exact hash reported with the delivery
+
 ## LiveCodeBench — authored references
 
 - Status: preflight-required, no H0
