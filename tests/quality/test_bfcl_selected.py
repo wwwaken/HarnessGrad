@@ -90,6 +90,13 @@ def synthetic_index(monkeypatch, tmp_path):
         def __exit__(self, *args):
             self.handle.close()
 
+        def fileno(self):
+            return self.handle.fileno()
+
+        @property
+        def closed(self):
+            return self.handle.closed
+
         def seek(self, offset):
             assert offset in {span["offset"] for span in spans[self.path]}
             return self.handle.seek(offset)
@@ -171,6 +178,135 @@ def test_all_selected_metadata_validated_before_payload_read(synthetic_index, fa
     with pytest.raises(ValueError):
         dataset.load_selected(["simple/0", "simple/2"])
     assert reads == []
+
+
+@pytest.mark.parametrize("field,value", [
+    ("length", dataset.MAX_SELECTED_ROW_BYTES + 1),
+    ("offset", dataset._MAX_SELECTED_POSITION + 1),
+    ("offset", dataset._MAX_SELECTED_POSITION),
+    ("offset", True),
+    ("length", True),
+])
+def test_selected_span_limits_reject_before_source_open(monkeypatch, synthetic_index, field, value):
+    manifest, reads = synthetic_index
+    manifest["tasks"]["simple/2"]["answer"][field] = value
+    (dataset.DATASET_ROOT / dataset.SELECTED_INDEX).write_text(json.dumps(manifest))
+    original_open = Path.open
+
+    def metadata_only(path, *args, **kwargs):
+        assert path == dataset.DATASET_ROOT / dataset.SELECTED_INDEX
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    with pytest.raises(ValueError, match="invalid selected answer span"):
+        dataset.load_selected(["simple/0", "simple/2"])
+    assert reads == []
+
+
+@pytest.mark.parametrize("kind", ["question", "answer"])
+@pytest.mark.parametrize("field", ["offset", "length"])
+def test_later_selected_span_eof_bounds_reject_before_any_read(synthetic_index, kind, field):
+    manifest, reads = synthetic_index
+    relative = dataset.SIMPLE if kind == "question" else dataset.SIMPLE_ANSWERS
+    size = (dataset.DATASET_ROOT / relative).stat().st_size
+    manifest["tasks"]["simple/2"][kind][field] = size + 1
+    (dataset.DATASET_ROOT / dataset.SELECTED_INDEX).write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="selected span exceeds source bounds"):
+        dataset.load_selected(["simple/0", "simple/2"])
+    assert reads == []
+
+
+def test_selected_span_can_end_exactly_at_eof(synthetic_index):
+    manifest, reads = synthetic_index
+    span = manifest["tasks"]["irrelevance/1"]["question"]
+    os.truncate(dataset.DATASET_ROOT / dataset.IRRELEVANCE, span["offset"] + span["length"])
+    tasks, _ = dataset.load_selected(["irrelevance/1"])
+    assert tasks[0]["task_id"] == "irrelevance/1"
+    assert len(reads) == 1
+
+
+@pytest.fixture
+def opened_sources(monkeypatch, synthetic_index):
+    original_open = Path.open
+    opened = []
+
+    def tracked_open(path, *args, **kwargs):
+        handle = original_open(path, *args, **kwargs)
+        if args == ("rb",):
+            opened.append((path, handle))
+        return handle
+
+    monkeypatch.setattr(Path, "open", tracked_open)
+    return opened
+
+
+def test_each_selected_source_descriptor_is_reused_and_closed(opened_sources):
+    dataset.load_selected(["simple/0", "irrelevance/1", "simple/2"])
+    assert [path for path, _ in opened_sources] == [
+        dataset.DATASET_ROOT / dataset.SIMPLE,
+        dataset.DATASET_ROOT / dataset.SIMPLE_ANSWERS,
+        dataset.DATASET_ROOT / dataset.IRRELEVANCE,
+    ]
+    assert all(handle.closed for _, handle in opened_sources)
+
+
+def test_selected_bounds_use_descriptor_stat(monkeypatch, opened_sources):
+    def forbidden(*args, **kwargs):
+        pytest.fail("selected bounds used a path stat instead of the opened descriptor")
+
+    monkeypatch.setattr(Path, "stat", forbidden)
+    dataset.load_selected(["simple/0", "simple/2"])
+    assert len(opened_sources) == 2
+
+
+def test_nonregular_selected_source_rejects_before_reads(
+    monkeypatch, synthetic_index, opened_sources,
+):
+    _, reads = synthetic_index
+    monkeypatch.setattr(os, "fstat", lambda fd: SimpleNamespace(st_mode=0))
+    with pytest.raises(ValueError, match="selected source must be a regular file"):
+        dataset.load_selected(["simple/0"])
+    assert reads == []
+    assert len(opened_sources) == 1
+    assert opened_sources[0][1].closed
+
+
+@pytest.mark.parametrize("failure", ["bounds", "digest"])
+def test_selected_failure_closes_all_opened_sources(synthetic_index, opened_sources, failure):
+    manifest, _ = synthetic_index
+    span = manifest["tasks"]["simple/2"]["answer"]
+    if failure == "bounds":
+        span["offset"] = (dataset.DATASET_ROOT / dataset.SIMPLE_ANSWERS).stat().st_size
+    else:
+        span["sha256"] = "0" * 64
+    (dataset.DATASET_ROOT / dataset.SELECTED_INDEX).write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="source bounds|digest mismatch"):
+        dataset.load_selected(["simple/0", "simple/2"])
+    assert len(opened_sources) == 2
+    assert all(handle.closed for _, handle in opened_sources)
+
+
+@pytest.mark.parametrize("field", ["st_size", "st_mtime_ns", "st_ctime_ns"])
+def test_selected_source_stat_change_rejects_records(
+    monkeypatch, synthetic_index, opened_sources, field,
+):
+    original_fstat = os.fstat
+    observed = set()
+
+    def changed_fstat(fd):
+        info = original_fstat(fd)
+        if fd in observed:
+            fields = {name: getattr(info, name) for name in (
+                "st_dev", "st_ino", "st_mode", "st_size", "st_mtime_ns", "st_ctime_ns")}
+            fields[field] += 1
+            return SimpleNamespace(**fields)
+        observed.add(fd)
+        return info
+
+    monkeypatch.setattr(os, "fstat", changed_fstat)
+    with pytest.raises(ValueError, match="selected source changed during loading"):
+        dataset.load_selected(["simple/0", "simple/2"])
+    assert all(handle.closed for _, handle in opened_sources)
 
 
 def test_selected_spans_preserve_order_and_cache(monkeypatch, synthetic_index):

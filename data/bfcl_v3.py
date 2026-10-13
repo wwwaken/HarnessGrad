@@ -59,7 +59,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import stat
+import sys
+from contextlib import ExitStack
 from pathlib import Path
 
 from data.qa import base
@@ -100,6 +104,9 @@ SUBSETS = {"simple": SIMPLE, "irrelevance": IRRELEVANCE}
 N_SIMPLE = 400
 N_IRRELEVANCE = 240
 SELECTED_INDEX = "selected-index.v1.json"
+# Local read limits, not measured release maxima or custody evidence.
+MAX_SELECTED_ROW_BYTES = 1 << 20
+_MAX_SELECTED_POSITION = min(sys.maxsize, (1 << 63) - 1)
 DEFAULT_ENV = {"kind": "files"}
 _TASK_ID_RE = re.compile(r"(simple|irrelevance)/(0|[1-9][0-9]*)")
 
@@ -324,12 +331,14 @@ def _downloads() -> list[dict]:
 def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
     """Validate selection and metadata before reading any question or answer bytes.
 
-    The trusted release index contains no questions or gold: schema_version=1,
-    repo_tag, tarball_sha256, and tasks keyed by canonical task ID. Each task has
-    question_id and a question byte span (offset, length, sha256); simple tasks
+    The release index requires schema_version=1, repo_tag, tarball_sha256, and
+    tasks keyed by canonical task ID. Each task has question_id and a question
+    byte span (offset, length, sha256); simple tasks
     also have an answer span. Paths are fixed here, never supplied by the index.
-    No scan/build fallback is permitted. Index custody and release provisioning
-    are separate gates; selected row hashes do not verify the complete release.
+    No scan/build fallback is permitted. This JSON is NOT authenticated: its
+    release fields and row hashes are caller-authorable assertions, not approval.
+    External index custody, release provisioning, and immutable source storage
+    remain separate production gates. Digest checks do not secure confidentiality.
     """
     if task_ids is None:
         raise ValueError("bfcl-v3: selection must not be empty")
@@ -351,7 +360,7 @@ def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
     try:
         manifest = json.loads(index_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
-        raise ValueError("bfcl-v3: trusted selected index is unavailable or unreadable") from exc
+        raise ValueError("bfcl-v3: selected index is unavailable or unreadable") from exc
     if (not isinstance(manifest, dict) or type(manifest.get("schema_version")) is not int
             or manifest["schema_version"] != 1
             or manifest.get("repo_tag") != REPO_TAG
@@ -370,15 +379,20 @@ def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
             if (not isinstance(span, dict)
                     or type(span.get("offset")) is not int or span["offset"] < 0
                     or type(span.get("length")) is not int or span["length"] <= 0
+                    or span["length"] > MAX_SELECTED_ROW_BYTES
+                    or span["offset"] > _MAX_SELECTED_POSITION - span["length"]
                     or not isinstance(span.get("sha256"), str)
                     or re.fullmatch(r"[0-9a-f]{64}", span["sha256"]) is None):
                 raise ValueError(f"bfcl-v3: invalid selected {kind} span for {task_id}")
         entries[task_id] = entry
 
-    def read_span(path: Path, span: dict, question_id: str) -> dict:
-        with path.open("rb", buffering=0) as handle:
-            handle.seek(span["offset"])
-            payload = handle.read(span["length"])
+    def fingerprint(info):
+        return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+                info.st_mtime_ns, info.st_ctime_ns)
+
+    def read_span(handle, span: dict, question_id: str) -> dict:
+        handle.seek(span["offset"])
+        payload = handle.read(span["length"])
         if (len(payload) != span["length"]
                 or hashlib.sha256(payload).hexdigest() != span["sha256"]):
             raise ValueError("bfcl-v3: selected row digest mismatch")
@@ -387,16 +401,42 @@ def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
             raise ValueError("bfcl-v3: selected row identity mismatch")
         return row
 
-    records = []
-    for task_id, (subset, index) in selections.items():
-        entry = entries[task_id]
-        row = read_span(DATASET_ROOT / SUBSETS[subset], entry["question"], entry["question_id"])
-        truth = None
-        if subset == "simple":
-            answer = read_span(DATASET_ROOT / SIMPLE_ANSWERS, entry["answer"], entry["question_id"])
-            truth = answer.get("ground_truth")
-        records.append(_record_from_row(subset, index, row, truth))
-    return records
+    # Open each required source once. Bounds and reads use the same descriptor;
+    # checking Path.stat() then reopening would race with path replacement.
+    with ExitStack() as stack:
+        sources = {}
+        for task_id, (subset, _) in selections.items():
+            paths = {"question": SUBSETS[subset]}
+            if subset == "simple":
+                paths["answer"] = SIMPLE_ANSWERS
+            for kind, relative in paths.items():
+                if relative not in sources:
+                    handle = stack.enter_context((DATASET_ROOT / relative).open("rb", buffering=0))
+                    info = os.fstat(handle.fileno())
+                    if not stat.S_ISREG(info.st_mode):
+                        raise ValueError("bfcl-v3: selected source must be a regular file")
+                    sources[relative] = (handle, info)
+                _, info = sources[relative]
+                span = entries[task_id][kind]
+                # Subtraction keeps both the file-position and EOF checks bounded.
+                if span["length"] > info.st_size or span["offset"] > info.st_size - span["length"]:
+                    raise ValueError("bfcl-v3: selected span exceeds source bounds")
+
+        # Preflight every selected span before reading any question or answer byte.
+        records = []
+        for task_id, (subset, index) in selections.items():
+            entry = entries[task_id]
+            row = read_span(sources[SUBSETS[subset]][0], entry["question"], entry["question_id"])
+            truth = None
+            if subset == "simple":
+                answer = read_span(sources[SIMPLE_ANSWERS][0], entry["answer"], entry["question_id"])
+                truth = answer.get("ground_truth")
+            records.append(_record_from_row(subset, index, row, truth))
+        for handle, before in sources.values():
+            if fingerprint(os.fstat(handle.fileno())) != fingerprint(before):
+                raise ValueError("bfcl-v3: selected source changed during loading")
+        # Stat comparisons detect ordinary writes, not an authenticated snapshot.
+        return records
 
 
 def _records(task_ids: list[str] | set[str] | None = None) -> list[dict]:
