@@ -256,7 +256,10 @@ def test_snapshot_admission_exact_headroom_boundary_and_no_mutation(monkeypatch)
     calls = admission_stub(monkeypatch, writable="20", free=25)
     result = container.snapshot_admission("synthetic-container")
     assert result == {"writable_bytes": 20, "free_bytes": 25, "required_bytes": 25,
-                      "docker_root": "/synthetic/docker"}
+                      "docker_root": "/synthetic/docker", "max_bytes": 20,
+                      "reserve_bytes": 5, "inspect_timeout_s": 60,
+                      "commit_timeout_s": 1800, "preflight_only": True,
+                      "quota_enforced": False}
     assert [call[0] for call in calls] == ["inspect", "info"]
 
 
