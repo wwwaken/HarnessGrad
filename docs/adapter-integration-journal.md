@@ -1662,3 +1662,12 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Resource state: this run legitimately exercised the local endpoint on GPU1, so the endpoint
   was genuinely used for an authorised diagnostic rather than left idle; no utilisation figure is
   claimed beyond what the run receipts record, and GPU0 remained idle.
+
+## ALFWorld — selected noop runtime identity — 2026-10-15 - w-alf
+
+- Closed dataset-owned `current-runtime-identity`: fresh `w-alf-noop-20261014T202206Z-13b61fc3` ran the existing `alfworld-oracle 1` control in noop mode; actor exit `0`, raw replay reward `0.0`, scorer evidence `measured=true`, recorded route `actor-workdir` / declared `unknown`. No oracle-success or method claim.
+- Receipts: `reports/w-alf-receipts.md` ("## CLOSED: alfworld / current-runtime-identity"); originals `/tmp/hg-alf/runs/w-alf-noop-20261014T202206Z-13b61fc3`; committed review copies `reports/w-alf-evidence/execution/`; scorer bytes and bindings `reports/w-alf-evidence/artifact-bindings.json`, `evidence.json`, `reward.txt`.
+- Observed limits: `reports/w-alf-evidence/runtime-attempt/run-one-result.json` and `executed-commands.json` record actor/verifier deadlines `3600/300` seconds; scorer budget `30`; jobs/trials `1/1`, rounds `0`. Launcher rlimits/cgroup observations are in `resource-observations.json`; per-task CPU/RAM caps and engine peak usage are not established.
+- Cleanup: `reports/w-alf-evidence/cleanup-observations.json` records task/preflight directories removed and sampled launcher PIDs absent; run, work and evidence retained. Formal cleanup/snapshot remain `unknown`; no receipt was upgraded.
+- Publication: diagnostic `score=null`, invalid trials `0`, unmeasured trials `1`, reason `policy_enforcement_not_observed`; both shared gates remain open, no expansion or production authorization. Completed `alfworld-h0-10pct-v4` and historical archives were not rerun, resumed or overwritten; comparisons still need original receipts.
+- One initial observer import failure occurred before run/work creation and is preserved separately. No production code or admission rule changed. Validation: `reports/w-alf-validation.txt`.

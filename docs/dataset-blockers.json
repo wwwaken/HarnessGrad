@@ -117,32 +117,7 @@
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
-      "blockers": [
-        {
-          "id": "current-runtime-identity",
-          "family": "trusted-verifier-runtime",
-          "status": "runtime",
-          "observed": "Historical identity source review is closed: retain alfworld-h0-10pct-v4 as journal-complete, 9 platform train-side tasks x3, jobs=1 (27 planned task-trials). Raw trial/provenance receipts are not in the repository, so measured coverage is not independently recertified. The 134-task valid_unseen pool uses a platform hash split; 30 actions and documented resource defaults are limits, not current runtime results. No current selected control/runtime receipt is established.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "## ALFWorld — embodied runtime"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/measurement-coverage-hg-b3-review.md",
-              "locator": "## ALFWorld: historical identity review closed; current runtime remains open"
-            },
-            {
-              "kind": "repository",
-              "path": "data/datasets/alfworld/verify/check.py",
-              "locator": "could not build or replay the environment"
-            }
-          ],
-          "next_action": "Establish current selected oracle/noop, scorer/runtime identity, effective limits and cleanup evidence independently of the completed historical generation and all shared gates. Historical comparison requires original trial/provenance receipts. Do not rerun or overwrite the completed generation."
-        }
-      ],
+      "blockers": [],
       "historical_runs": []
     },
     {

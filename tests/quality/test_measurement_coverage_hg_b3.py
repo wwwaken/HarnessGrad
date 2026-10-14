@@ -149,7 +149,7 @@ def test_ds1000_timeout_result_needs_classification_beyond_measured_flag(monkeyp
 
 
 @pytest.mark.parametrize("dataset, active_id, status, retired", [
-    ("alfworld", "current-runtime-identity", "runtime", "current-runtime-review"),
+    ("alfworld", None, None, "current-runtime-identity"),
     ("bird_minidev", "sql-coverage-reconciliation", "measurement", None),
     ("ds1000", "host-slice-archive-review", "measurement", None),
     ("hotpotqa", "historical-comparison-receipts", "measurement", "timeout-aggregation-admission"),
@@ -159,11 +159,38 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
     baseline = json.loads((ROOT / "tests/fixtures/dataset_blockers/history-codex178.json").read_text())
     target = next(row for row in document["datasets"] if row["dataset"] == dataset)
     blockers = {item["id"]: item for item in target["blockers"]}
-    assert blockers[active_id]["status"] == status
+    if active_id is not None:
+        assert blockers[active_id]["status"] == status
     if retired:
         assert retired not in blockers
-    assert "reports/measurement-coverage-hg-b3-review.md" in {
-        item["path"] for item in blockers[active_id]["evidence"]}
+    if active_id is not None:
+        assert "reports/measurement-coverage-hg-b3-review.md" in {
+            item["path"] for item in blockers[active_id]["evidence"]}
+    else:
+        # w-alf established current selected noop/scorer/limits/cleanup identity.
+        # Raw scorer zero is distinct from deliberately withheld publication.
+        assert dataset == "alfworld" and blockers == {}
+        assert "current-runtime-review" not in blockers
+        report = (ROOT / "reports/w-alf-receipts.md").read_text()
+        assert "## CLOSED: alfworld / current-runtime-identity" in report
+        evidence = ROOT / "reports/w-alf-evidence"
+        receipt = json.loads((evidence / "execution/diagnostic_receipt.json").read_text())
+        raw = json.loads((evidence / "runtime-attempt/run-one-result.json").read_text())
+        assert receipt["score"] is None
+        assert receipt["coverage"]["invalid_trials"] == 0
+        assert receipt["coverage"]["unmeasured_trials"] == 1
+        assert receipt["enforcement"]["production_authorized"] is False
+        assert raw["verdict"]["scorer_isolation_class"] == "actor-workdir"
+        assert raw["verdict"]["evidence"]["measured"] is True
+        assert raw["verdict"]["score"] == 0.0
+        assert raw["runtime_boundary"]["agent_timeout_s"] == 3600
+        assert raw["runtime_boundary"]["verifier_timeout_s"] == 300
+        bindings = json.loads((evidence / "artifact-bindings.json").read_text())
+        assert bindings["oracle_actions_present"] is False
+        assert bindings["walkthrough_present"] is False
+        assert all(row["equal"] for row in bindings["materialized_inputs"].values())
+        cleanup = json.loads((evidence / "cleanup-observations.json").read_text())
+        assert not any(row["exists_after"] for row in cleanup["temporary_directories"])
     assert target["historical_runs"] == [
         item["record"] for item in baseline["records"] if item["dataset"] == dataset]
     if dataset == "hotpotqa":

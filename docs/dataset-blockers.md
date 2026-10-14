@@ -108,7 +108,10 @@ The registry never authorizes production execution.
 
 The [hg-b3 four-dataset coverage review](../reports/measurement-coverage-hg-b3-review.md)
 preserves ALFWorld's journal-complete generation and closes its historical identity
-review, leaving `current-runtime-identity` open. Bird's 28/34 measured-task claim
+review. The subsequent [w-alf receipts](../reports/w-alf-receipts.md) close
+`current-runtime-identity` with a fresh selected noop control, executed scorer/limit
+identity and bounded cleanup observations; diagnostic score publication remains
+withheld and both shared gates remain open. Bird's 28/34 measured-task claim
 and 90 verify phases do not reconcile its planned 102 trials; its
 `sql-coverage-reconciliation` gate remains open for original metadata. DS1000's
 926/1000 host pool is distinct from 61 selected tasks and 183 planned trials;

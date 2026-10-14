@@ -1,0 +1,29 @@
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+Exit code: 0
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_measurement_coverage_hg_b3.py tests/quality/test_unobserved_diagnostic_c2.py tests/quality/test_alfworld_official_scorer.py::test_the_reduction_takes_the_maximum_not_the_last_value tests/quality/test_alfworld_official_scorer.py::test_the_copied_lines_are_still_verbatim_upstream --basetemp=/tmp/harnessgrad-pytest-w-alf-focused
+........................................................................ [ 80%]
+..................                                                       [100%]
+90 passed in 4.52s
+
+Exit code: 0
+
+The focused run uses an external pytest basetemp. The two selected ALFWorld scorer tests verify arithmetic/upstream-source identity; no extra real-game control or historical generation was executed by validation.
+
+Read-only artifact integrity audit: reports/w-alf-evidence/final-integrity-audit.json
+{
+  "only_alfworld_owned_blocker_changed": true,
+  "shared_and_history_unchanged": true,
+  "archive_sha256_matches": true,
+  "archive_member_files_checked": 70,
+  "archived_files_match_originals": true,
+  "run_review_copies_match": true
+}
+
+Retained staged harness matches both pre-execution source hashes:
+reports/w-alf-evidence/staged-harness-integrity.json (equal=true for each file).
+
+$ git diff --cached --check
+Exit code: 0

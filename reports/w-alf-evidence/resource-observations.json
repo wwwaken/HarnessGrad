@@ -1,0 +1,78 @@
+{
+  "processes": [
+    {
+      "pid": 219098,
+      "sampled_at_ns": 1792009330604111272,
+      "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              unlimited            bytes     \nMax core file size        0                    unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             1028970              1028970              processes \nMax open files            1048576              1048576              files     \nMax locked memory         33750654976          33750654976          bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       1028970              1028970              signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+      "cgroup": "0::/user.slice/user-1026.slice/session-30486.scope\n",
+      "status": "Name:\tbwrap\nUmask:\t0002\nState:\tR (running)\nTgid:\t219098\nNgid:\t0\nPid:\t219098\nPPid:\t218998\nTracerPid:\t0\nUid:\t1026\t1026\t1026\t1026\nGid:\t1026\t1026\t1026\t1026\nFDSize:\t64\nGroups:\t1026 1034 \nNStgid:\t219098\nNSpid:\t219098\nNSpgid:\t218969\nNSsid:\t218969\nKthread:\t0\nVmPeak:\t     476 kB\nVmSize:\t     476 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     120 kB\nVmRSS:\t     120 kB\nRssAnon:\t      40 kB\nRssFile:\t      80 kB\nRssShmem:\t       0 kB\nVmData:\t      24 kB\nVmStk:\t     144 kB\nVmExe:\t      36 kB\nVmLib:\t     176 kB\nVmPTE:\t      36 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/1028970\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000005\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\tffff,ffffffff,ffffffff,ffffffff,ffffffff\nCpus_allowed_list:\t0-143\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003\nMems_allowed_list:\t0-1\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+      "command_after_bwrap": [
+        "python",
+        "/tmp/w-alf-noop-20261014T202206Z-13b61fc3-work/w-alf-noop-20261014T202206Z-13b61fc3/workspace/agent.py",
+        "--task",
+        "/tmp/hg-task-vzm02hjt/task.json",
+        "--workdir",
+        "/tmp/hg-task-vzm02hjt"
+      ],
+      "scope_note": "Immediate Popen child sample (bwrap), not a later engine PID or peak usage."
+    },
+    {
+      "pid": 219109,
+      "sampled_at_ns": 1792009330743566202,
+      "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              unlimited            bytes     \nMax core file size        0                    unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             1028970              1028970              processes \nMax open files            1048576              1048576              files     \nMax locked memory         33750654976          33750654976          bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       1028970              1028970              signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+      "cgroup": "0::/user.slice/user-1026.slice/session-30486.scope\n",
+      "status": "Name:\tbwrap\nUmask:\t0002\nState:\tR (running)\nTgid:\t219109\nNgid:\t0\nPid:\t219109\nPPid:\t218998\nTracerPid:\t0\nUid:\t1026\t1026\t1026\t1026\nGid:\t1026\t1026\t1026\t1026\nFDSize:\t64\nGroups:\t1026 1034 \nNStgid:\t219109\nNSpid:\t219109\nNSpgid:\t218969\nNSsid:\t218969\nKthread:\t0\nVmPeak:\t     736 kB\nVmSize:\t     736 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     368 kB\nVmRSS:\t     368 kB\nRssAnon:\t      44 kB\nRssFile:\t     324 kB\nRssShmem:\t       0 kB\nVmData:\t      32 kB\nVmStk:\t     132 kB\nVmExe:\t      36 kB\nVmLib:\t     280 kB\nVmPTE:\t      36 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/1028970\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000005\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\tffff,ffffffff,ffffffff,ffffffff,ffffffff\nCpus_allowed_list:\t0-143\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003\nMems_allowed_list:\t0-1\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+      "command_after_bwrap": [
+        "python3",
+        "check.py",
+        "--workdir",
+        ".",
+        "--game",
+        "game.tw-pddl",
+        "--log",
+        "alf_actions.jsonl",
+        "--reward-file",
+        "verifier/reward.txt",
+        "--evidence-file",
+        "verifier/evidence.json",
+        "--budget",
+        "30"
+      ],
+      "scope_note": "Immediate Popen child sample (bwrap), not a later engine PID or peak usage."
+    }
+  ],
+  "cgroup_ancestor_files_sampled_after_execution": {
+    "/sys/fs/cgroup/user.slice/user-1026.slice/session-30486.scope/cpu.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/user.slice/user-1026.slice/session-30486.scope/cpu.max'"
+    },
+    "/sys/fs/cgroup/user.slice/user-1026.slice/session-30486.scope/memory.max": "max\n",
+    "/sys/fs/cgroup/user.slice/user-1026.slice/session-30486.scope/pids.max": "max\n",
+    "/sys/fs/cgroup/user.slice/user-1026.slice/session-30486.scope/cpuset.cpus.effective": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/user.slice/user-1026.slice/session-30486.scope/cpuset.cpus.effective'"
+    },
+    "/sys/fs/cgroup/user.slice/user-1026.slice/cpu.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/user.slice/user-1026.slice/cpu.max'"
+    },
+    "/sys/fs/cgroup/user.slice/user-1026.slice/memory.max": "max\n",
+    "/sys/fs/cgroup/user.slice/user-1026.slice/pids.max": "679120\n",
+    "/sys/fs/cgroup/user.slice/user-1026.slice/cpuset.cpus.effective": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/user.slice/user-1026.slice/cpuset.cpus.effective'"
+    },
+    "/sys/fs/cgroup/user.slice/cpu.max": "max 100000\n",
+    "/sys/fs/cgroup/user.slice/memory.max": "max\n",
+    "/sys/fs/cgroup/user.slice/pids.max": "max\n",
+    "/sys/fs/cgroup/user.slice/cpuset.cpus.effective": "0-143\n",
+    "/sys/fs/cgroup/cpu.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/cpu.max'"
+    },
+    "/sys/fs/cgroup/memory.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/memory.max'"
+    },
+    "/sys/fs/cgroup/pids.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/pids.max'"
+    },
+    "/sys/fs/cgroup/cpuset.cpus.effective": "0-143\n"
+  },
+  "observed_at_ns": 1792009464233603952,
+  "caveat": "No engine-PID/peak-utilization sample; later cgroup reads cannot prove unchanged configuration during execution. No per-task CPU/memory cap proven."
+}
