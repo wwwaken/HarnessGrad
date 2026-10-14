@@ -75,10 +75,18 @@ def test_legacy_adapters_are_explicitly_unmaintained():
 
 def test_no_production_module_imports_legacy_adapters():
     violations = []
+    # Skip the archive and the tests themselves, plus every *generated* tree. The
+    # platform root of a working checkout also holds `runs/` -- historical run states
+    # that are untracked, not ours to lint, and not always parseable (a recorded
+    # agent.py is a snapshot of model output, not a module that has to compile).
+    # Walking them made this test crash on a real checkout while passing in a clean
+    # worktree, which is the worst version of a false signal.
+    generated = {"runs", "current_harness", "web", "reports", "__pycache__"}
     for path in ROOT.rglob("*.py"):
         relative = path.relative_to(ROOT)
-        if relative.parts[0] in {"legacy", "tests"} or any(
-                part.startswith(".") for part in relative.parts):
+        if relative.parts[0] in {"legacy", "tests"} | generated or any(
+                part.startswith(".") or part == "__pycache__"
+                for part in relative.parts):
             continue
         for node in ast.walk(ast.parse(path.read_text(), filename=str(relative))):
             if isinstance(node, ast.Import):
