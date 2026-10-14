@@ -2433,3 +2433,53 @@ whitespace warnings remain recorded rather than altering acquired source bytes.
   relay and the local endpoint but produced no measurement; w-offscorer ran official scorers
   offline on controlled inputs only. Both GPUs were idle at the end of the round and no
   utilisation figure is claimed. Historical runs, frozen receipts and archives were untouched.
+
+## ChessBench diagnostic control terminal exchange - 2026-10-15 - w-chess3
+
+In registered `/tmp/hg-chess3` (`wg-chess3`), confirmed the falsy-zero gate is in
+`reports/w-chess2-evidence/actor-command-line-19.sh:25`, the AGENT'S OWN GENERATED
+SCRIPT. Platform code initializes/exports/increments `solver_turn` and dispatches
+on public `status`; it does not gate on counter truthiness. Corrected the blocker's
+`observed` first and preserved that corrected object plus passing checker output at
+`reports/w-chess3-evidence/corrected-blocker-before-run.json` and
+`correction-checker.txt`. No platform behavior, gate or relay allowance changed.
+
+Added `reports/w-chess3-control/actor.py` and `harness.json`, explicitly a diagnostic
+control rather than a candidate method. It retains one connection, uses current
+public FEN to choose the lexicographically first legal UCI move, submits at turn
+zero when `status=awaiting_move`, and reads/stops on `solved`/`failed`. No model,
+engine, search, private reference access or puzzle-specific tuning is used.
+Fabricated sandbox tests cover a multi-turn success and a terminal loss using the
+unchanged actor; the single released-task diagnostic is separate.
+
+One fresh authorized `--sampling diagnostic --rounds 0 --trials 1 --jobs 1` run:
+`w-chess3-stepwise-20261014T222208Z-728e7478`, original receipt directory
+`/tmp/hg-w-chess3-receipts/w-chess3-stepwise-20261014T222208Z-728e7478`, work root
+`/tmp/w-chess3-stepwise-20261014T222208Z-728e7478-work`. `execution/identity.json`
+and `execution/launch/selection.json` under `reports/w-chess3-evidence/` record
+eligible_tasks=6615, selected task `chessbench_puzzles/test/1287`, protocol
+`chessbench_puzzles.stepwise.v1`, diagnostic_control=true, model_used=false and
+endpoint=null. No strict-replay evaluation or mixed-protocol comparison occurred.
+
+`execution/task-result.json` records exit_code=0, submissions=1, transport
+status=terminal and outer status=complete, measured=true, wrong_move, reward=0.0,
+correct=false, score=0.0 and scorer_isolation_class=in-process. The actor trace
+records receiving failed/wrong_move after submitting legal `a6a5` at solver_turn=0,
+then clean completion. Controller cleanup records server_closed=true,
+thread_joined=true, socket_removed=true; `execution/cleanup-observation.json`
+observes the task file, socket and socket directory absent after return and the
+external workspace retained. This is a measured control loss, not model accuracy.
+
+The unchanged policy still records score=null, invalid_trials=0,
+unmeasured_trials=1, reason=policy_enforcement_not_observed in
+`execution/diagnostic_receipt.json`. Formal cleanup/snapshot status=unknown,
+lifecycle=null, comparable=false and production_authorized=false remain. Raw
+controller execution does not authorize publication or expansion. Only
+`trusted-stepwise-transport` is removed from the active registry because its
+terminal-exchange next_action is now met; the corrected attribution and receipt
+boundary survive in an appended review note. `interruption-closure`, historical
+records, old evidence/archives and every shared gate are untouched; `runs/` is not
+touched. Original/copy/archive digests, source/split/manifest/harness binding,
+effective limits and exact command are in `reports/w-chess3-receipts.md`.
+Validation: `reports/w-chess3-validation.txt`; scope/integrity audit:
+`reports/w-chess3-evidence/report-audit.json`.

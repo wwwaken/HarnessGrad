@@ -1,0 +1,24 @@
+{
+  "run_id": "w-chess3-stepwise-20261014T222208Z-728e7478",
+  "selected_task_ids": [
+    "chessbench_puzzles/test/1287"
+  ],
+  "task_sha256": "4ad872dd86b728d125a01de2680b5ea217dcd0ed5a09b0787b456a93dafdfa00",
+  "source_sha256": "4301d1b2aa402d42cd325b406b7a642a6ace6daa54d872955932718e860093b0",
+  "harness_files_sha256": "1c970f47687941b7678a28d67fb31ea1171d006073c5d705b5c79de9e3e3e012",
+  "platform_commit": "99a29904996a38eb66783f70c231809a574203ea",
+  "protocol": "chessbench_puzzles.stepwise.v1",
+  "endpoint": null,
+  "model": null,
+  "diagnostic_control": true,
+  "candidate_method": false,
+  "move_rule": "lexicographically first legal UCI",
+  "env": {
+    "kind": "files"
+  },
+  "timeout_s": 300,
+  "rounds": 0,
+  "trials": 1,
+  "jobs": 1,
+  "work_root": "/tmp/w-chess3-stepwise-20261014T222208Z-728e7478-work"
+}

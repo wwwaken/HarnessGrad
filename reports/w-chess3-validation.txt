@@ -1,0 +1,69 @@
+cwd=/tmp/hg-chess3
+
+$ python3 -m pytest -q tests/quality/test_chess3_diagnostic_actor.py --basetemp=/tmp/harnessgrad-pytest-w-chess3-actor
+..                                                                       [100%]
+2 passed in 0.50s
+
+# After attribution correction, before closure:
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_chess3_diagnostic_actor.py tests/quality/test_stepwise_transport.py tests/quality/test_chessbench_stepwise_runner.py tests/quality/test_chessbench_puzzles_strict_replay.py tests/quality/test_chessbench_selected_control.py tests/quality/test_diagnostic_policy.py tests/quality/test_unobserved_diagnostic_c2.py --basetemp=/tmp/harnessgrad-pytest-w-chess3-focused
+........................................................................ [ 28%]
+........................................................................ [ 56%]
+........................................................................ [ 84%]
+.......................................                                  [100%]
+255 passed in 18.77s
+
+$ python3 reports/w-chess3-evidence/audit.py
+{
+  "registry": {
+    "datasets": 28,
+    "shared_blockers": 2,
+    "historical_records": 11
+  },
+  "correction_verified": true,
+  "registry_scope": "remove target only plus append correction/closure review note",
+  "interruption_and_history_unchanged": true,
+  "shared_gates_unchanged": true,
+  "journal_append_only": true,
+  "protected_sources_unchanged": true,
+  "original_copy_archive_files_checked": 21,
+  "all_copy_archive_hashes_match": true,
+  "actor_matches_preexecution_source": true,
+  "source_manifest_binding_matches": true,
+  "reported_raw_json_matches": true,
+  "terminal_delivered_and_received": true,
+  "actor_exit_code": 0,
+  "submissions": 1,
+  "relay_cleanup": {
+    "server_closed": true,
+    "thread_joined": true,
+    "socket_removed": true
+  },
+  "controller_score": 0.0,
+  "policy_score": null,
+  "policy_coverage": {
+    "eligible_tasks": 6615,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "model_used": false,
+  "endpoint": null,
+  "external_run_and_work_root": true,
+  "runs_unchanged": true,
+  "runs_exists": false,
+  "blocker_closed": true
+}
+
+$ git diff --cached --check
+exit_code=0

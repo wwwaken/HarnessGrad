@@ -1,0 +1,6 @@
+{"event": "control", "diagnostic_control": true, "candidate_method": false, "move_rule": "lexicographically first legal UCI", "model_used": false, "endpoint": null, "socket": "/tmp/hg-stepwise-cal7u6ed/stepwise.sock", "task_path": "/tmp/hg-task-wjla_ob4/task.json", "python_chess_version": "1.11.2", "socket_timeout_s": 300, "max_message_bytes": 4096}
+{"event": "observation", "observation": {"contract": "chessbench_puzzles.stepwise.v1", "fen": "5rk1/1R3p1p/p5p1/5n2/PPQ1p3/4P3/3q1PPP/2R3K1 b - - 2 29", "solver_turn": 0, "status": "awaiting_move", "verdict": "awaiting_move"}}
+{"event": "submission", "solver_turn": 0, "answer": {"uci": "a6a5"}}
+{"event": "observation", "observation": {"contract": "chessbench_puzzles.stepwise.v1", "fen": "5rk1/1R3p1p/6p1/p4n2/PPQ1p3/4P3/3q1PPP/2R3K1 w - - 0 30", "solver_turn": 1, "status": "failed", "verdict": "wrong_move"}}
+{"event": "terminal_received", "status": "failed", "verdict": "wrong_move"}
+{"event": "completed", "terminal_received": true, "channel_closed": true}

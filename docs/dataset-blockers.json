@@ -15,7 +15,8 @@
       "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization.",
       "Operator decision 2026-10-15: snapshot and cleanup admission are best-effort with uncertainty retained; incomplete observations alone do not block, known failures and integrity mismatches still refuse. See docs/enforcement-proof-decision.md.",
       "Source review 2026-10-15 - w-shared: pristine-verifier review action closed by the opt-in pinned offline runtime identity, stopped-instance inspection and two-projection recheck mechanism; see docs/w-shared-verifier-review.md. This is not live dataset evidence or production authorization. runtime-observations remains open: unknown-only aggregation is allowed; both code-solvable shared blockers remain unchanged.",
-      "Source/test review 2026-10-15 - w-obs, corrected by w-fix: runtime-observations source-review action closed; stepwise ChessBench records the trusted platform in-process controller class, and all-unknown aggregates/progress/curves retain complete evidence with scorer_isolation_class=unknown and scorer_isolation_comparable=false; unknown comparison and mixed-class aggregation/comparison still refuse. See docs/w-fix-unknown-isolation-records.md and reports/w-fix-validation.txt; docs/w-obs-runtime-review.md and reports/w-obs-validation.txt describe the original change. Unsupported policy-bearing paths remain blocked; both code-solvable shared blockers, dataset-local requirements and historical receipts remain unchanged. No live dataset evidence or production authorization."
+      "Source/test review 2026-10-15 - w-obs, corrected by w-fix: runtime-observations source-review action closed; stepwise ChessBench records the trusted platform in-process controller class, and all-unknown aggregates/progress/curves retain complete evidence with scorer_isolation_class=unknown and scorer_isolation_comparable=false; unknown comparison and mixed-class aggregation/comparison still refuse. See docs/w-fix-unknown-isolation-records.md and reports/w-fix-validation.txt; docs/w-obs-runtime-review.md and reports/w-obs-validation.txt describe the original change. Unsupported policy-bearing paths remain blocked; both code-solvable shared blockers, dataset-local requirements and historical receipts remain unchanged. No live dataset evidence or production authorization.",
+      "w-chess3: Corrected trusted-stepwise-transport observed before execution: the solver_turn=0 falsy gate was in the AGENT'S OWN GENERATED SCRIPT (reports/w-chess2-evidence/actor-command-line-19.sh:25), not platform code. Closed only this transport blocker after w-chess3-stepwise-20261014T222208Z-728e7478 delivered a failed/wrong_move terminal exchange with exit_code=0, submissions=1 and successful relay cleanup. Raw controller score=0.0, scorer_isolation_class=in-process; staged score=null, invalid_trials=0, unmeasured_trials=1, reason=policy_enforcement_not_observed. Diagnostic control only, no model or protocol comparison. Correction and full closure evidence: reports/w-chess3-receipts.md and reports/w-chess3-evidence/corrected-blocker-before-run.json. interruption-closure and all historical/shared gates are unchanged."
     ]
   },
   "shared_blockers": [
@@ -400,55 +401,6 @@
         "artifact-only-state-export"
       ],
       "blockers": [
-        {
-          "id": "trusted-stepwise-transport",
-          "family": "official-scorer-execution",
-          "status": "runtime",
-          "observed": "The trusted stepwise relay is wired and a fresh authorized released-task attempt now has live execution evidence: chessbench_puzzles/test/1287 received its initial board under chessbench_puzzles.stepwise.v1, but the actor disconnected without a move. The controller receipt records status=incomplete, measured=false, reason=answer_receive_failed, submissions=0, scorer_isolation_class=in-process and successful relay cleanup; the staged receipt has score=null, invalid_trials=0 and unmeasured_trials=1. No delivered terminal exchange or model-driven interactive puzzle measurement exists. The offline strict-replay protocol remains the only measured path; no mixed-protocol comparison or curve point was produced. Follow-up w-chess2 diagnosed the original short-lived actor process as case (b), correct single-connection relay behavior, and selected the unmodified codex_agent harness for a fresh authorized local-model diagnostic. That actor retained a socket process but mistook solver_turn=0 for false, skipped its first submission and attempted rejected reconnects; the CLI timed out. Run w-chess2-stepwise-20261014T220158Z-ca40c19f records exit_code=1, outer reason=actor_exit_before_clean_completion, transport reason=answer_receive_failed, submissions=0, measured=false, in-process isolation and successful relay cleanup; staged coverage is 0 invalid / 1 unmeasured. Still missing: a real solver submission and delivered terminal exchange with clean actor completion. No production or actor code was patched and no score was assigned.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "## ChessBench Puzzles — strict replay"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/preserved-lifecycle-review-b8.md",
-              "locator": "## chessbench_puzzles / trusted-stepwise-transport"
-            },
-            {
-              "kind": "repository",
-              "path": "docs/chessbench-puzzles-evaluation.md",
-              "locator": "## Opt-in runner wiring"
-            },
-            {
-              "kind": "repository",
-              "path": "data/datasets/chessbench_puzzles.py",
-              "locator": "class StepwisePuzzle:"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/chessbench-stepwise-c1-report.md",
-              "locator": "# ChessBench live stepwise runner wiring (c1)"
-            },
-            {
-              "kind": "repository",
-              "path": "eval/run/runner.py",
-              "locator": "from eval.run import chess_stepwise"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/w-chess-receipts.md",
-              "locator": "## Released-task stepwise diagnostic — incomplete"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/w-chess2-receipts.md",
-              "locator": "## Released-task stepwise diagnostic — unmeasured"
-            }
-          ],
-          "next_action": "Run one authorized gated interactive chessbench task through the live stepwise relay and record its receipt, so the stepwise protocol has execution evidence rather than only wiring. Keep the offline-only claim until then: a wired transport is not a measurement. Reject any point that mixes the stepwise and strict-replay protocols in one comparison."
-        },
         {
           "id": "interruption-closure",
           "family": "termination-audit",

@@ -1,0 +1,6 @@
+{
+  "task_id": "chessbench_puzzles/test/1287",
+  "goal": "Solve this ChessBench tactical puzzle using the offline strict sequence variant (not interactive official puzzle accuracy). The opponent's setup move has already been applied.\n\nPosition (FEN): 5rk1/1R3p1p/p5p1/5n2/PPQ1p3/4P3/3q1PPP/2R3K1 b - - 2 29\n\nSubmit the solver's moves as space-separated UCI moves, for example `e2e4 g1f3`. Do not include opponent moves. Every applied move must be legal; a legal immediate checkmate ends the puzzle. Unused trailing tokens are ignored.\n\nWrite the UCI move sequence alone to `answer.txt`; the qa submit command is `python3 qa/bin/qa submit \"<moves>\"`. Only solver moves belong in the answer. This batch interface supplies no intermediate observations; stepwise evaluation requires the trusted `chessbench_puzzles.stepwise.v1` controller contract.",
+  "inputs": [],
+  "interaction": "chessbench_puzzles.stepwise.v1"
+}
