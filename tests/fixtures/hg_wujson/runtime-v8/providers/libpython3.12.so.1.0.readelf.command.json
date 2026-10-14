@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "readelf",
+    "-h",
+    "-l",
+    "-d",
+    "-V",
+    "--dyn-syms",
+    "-W",
+    "/usr/local/lib/libpython3.12.so.1.0"
+  ],
+  "returncode": 0
+}

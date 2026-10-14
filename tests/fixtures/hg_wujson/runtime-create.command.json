@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wujson-20261014T210317Z",
+    "--pull=never",
+    "--platform=linux/amd64",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=512m",
+    "--memory-swap=512m",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--tmpfs=/tmp:rw,nosuid,nodev,size=128m",
+    "--mount",
+    "type=bind,src=/tmp/hg-ujson/tests/fixtures/hg_wujson/runtime,dst=/receipts",
+    "--entrypoint=/bin/sh",
+    "sha256:1788d4516656989144d7b18dce09d56dd2dc3c0c99213e58735348d33c405687",
+    "/opt/hg-wujson/closure.sh"
+  ],
+  "cwd": "/tmp/hg-ujson",
+  "started_at_utc": "2026-10-14T21:03:17.012351+00:00",
+  "finished_at_utc": "2026-10-14T21:03:17.038289+00:00",
+  "returncode": 1
+}

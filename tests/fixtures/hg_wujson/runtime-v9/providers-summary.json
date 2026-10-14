@@ -1,0 +1,322 @@
+{
+  "files": {
+    "/tmp/fresh-ujson/lib/python3.12/site-packages/ujson.cpython-312-x86_64-linux-gnu.so": {
+      "sha256": "deb036e60d4b61104bad389783094ebb09a35dbdecd21aeea572968762c3be5c",
+      "bytes": 105936,
+      "needed": [
+        "libstdc++.so.6",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib/x86_64-linux-gnu/libpthread.so.0",
+        "/lib/x86_64-linux-gnu/libstdc++.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 1,
+      "dpkg_owner": ""
+    },
+    "/usr/local/bin/python3.12": {
+      "sha256": "837a48d7afd08447fb43e28b282026fadb59368620072e57e01f66d12977e5ce",
+      "bytes": 18304,
+      "needed": [
+        "libpython3.12.so.1.0",
+        "libc.so.6"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2",
+        "/usr/local/bin/../lib/libpython3.12.so.1.0"
+      ],
+      "dpkg_query_returncode": 1,
+      "dpkg_owner": ""
+    },
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+      "sha256": "6b4a45352fd0c540a9c7c718f35ce8c8e46a4e482f9d3885a910c32d1a0e1421",
+      "bytes": 1926232,
+      "needed": [
+        "ld-linux-x86-64.so.2"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 0,
+      "dpkg_owner": "libc6:amd64: /lib/x86_64-linux-gnu/libc.so.6"
+    },
+    "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+      "sha256": "2bd1552c47799ef67e701e81d4383061fd76059868e446e63560f0dd0d5ec14e",
+      "bytes": 125312,
+      "needed": [
+        "libc.so.6"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 0,
+      "dpkg_owner": "libgcc-s1:amd64: /lib/x86_64-linux-gnu/libgcc_s.so.1"
+    },
+    "/usr/lib/x86_64-linux-gnu/libm.so.6": {
+      "sha256": "7f2ca87f652f56b094462474b076749e90e689d0ecb9cb63c7679820b271b4e7",
+      "bytes": 911904,
+      "needed": [
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 0,
+      "dpkg_owner": "libc6:amd64: /lib/x86_64-linux-gnu/libm.so.6"
+    },
+    "/usr/lib/x86_64-linux-gnu/libpthread.so.0": {
+      "sha256": "b93a680da8a05b939b235c1533572e7a2f6d3d8808bf70209997edc64ea5fedc",
+      "bytes": 14480,
+      "needed": [
+        "libc.so.6"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 0,
+      "dpkg_owner": "libc6:amd64: /lib/x86_64-linux-gnu/libpthread.so.0"
+    },
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30": {
+      "sha256": "e7848e32af4932840ba775169041759a2a8dd5a008af360e5c55bce506eebcf4",
+      "bytes": 2190440,
+      "needed": [
+        "libm.so.6",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libgcc_s.so.1"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 0,
+      "dpkg_owner": "libstdc++6:amd64: /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30"
+    },
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": {
+      "sha256": "02bcda52c1a5dfc236f94d9e5255b4a0e26347d8a372a5223b650e31f291ce3c",
+      "bytes": 215000,
+      "needed": [],
+      "resolved_recursive_ldd_paths": [],
+      "dpkg_query_returncode": 0,
+      "dpkg_owner": "libc6:amd64: /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+    },
+    "/usr/local/lib/libpython3.12.so.1.0": {
+      "sha256": "4fcaa74a5a5c1170cb44972003b13abecade13c4cc7060dd41c9e5f5bf16e21c",
+      "bytes": 28695448,
+      "needed": [
+        "libm.so.6",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "resolved_recursive_ldd_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "dpkg_query_returncode": 1,
+      "dpkg_owner": ""
+    },
+    "[vdso]": {
+      "sha256": "d18eed0add042baaacb1881305db5a2c1146bc9cb9d801e1ebd98a4c27680607",
+      "bytes": 8192,
+      "mapping": "7ffe922d5000-7ffe922d7000 r-xp 00000000 00:00 0                          [vdso]",
+      "kind": "kernel-provided mapped ELF",
+      "kernel": [
+        "Linux",
+        "24f94ff259cd",
+        "6.8.0-136-generic",
+        "#136~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul  3 16:29:11 UTC ",
+        "x86_64"
+      ]
+    }
+  },
+  "undefined_symbols_checked": 703,
+  "strong_resolution_failures": 0,
+  "optional_weak_unresolved": [
+    {
+      "consumer": "/tmp/fresh-ujson/lib/python3.12/site-packages/ujson.cpython-312-x86_64-linux-gnu.so",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/tmp/fresh-ujson/lib/python3.12/site-packages/ujson.cpython-312-x86_64-linux-gnu.so",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/tmp/fresh-ujson/lib/python3.12/site-packages/ujson.cpython-312-x86_64-linux-gnu.so",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    },
+    {
+      "consumer": "/usr/local/bin/python3.12",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/usr/local/bin/python3.12",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/usr/local/bin/python3.12",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_addUserCommitAction",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_addUserCommitAction"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_memcpyRtWn",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_memcpyRtWn"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_RU1",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_RU1"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ZGTtdlPv",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ZGTtdlPv"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_RU8",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_RU8"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ITM_memcpyRnWt",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_memcpyRnWt"
+    },
+    {
+      "consumer": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "symbol": "_ZGTtnam",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ZGTtnam"
+    },
+    {
+      "consumer": "/usr/local/lib/libpython3.12.so.1.0",
+      "symbol": "__gmon_start__",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: __gmon_start__"
+    },
+    {
+      "consumer": "/usr/local/lib/libpython3.12.so.1.0",
+      "symbol": "_ITM_deregisterTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_deregisterTMCloneTable"
+    },
+    {
+      "consumer": "/usr/local/lib/libpython3.12.so.1.0",
+      "symbol": "_ITM_registerTMCloneTable",
+      "binding": "WEAK",
+      "error": "/tmp/fresh-ujson/bin/python: undefined symbol: _ITM_registerTMCloneTable"
+    }
+  ],
+  "note": "dlsym/dlvsym verifies available providers; LD_DEBUG records actual import bindings",
+  "passed": true
+}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "env",
+    "HTTPS_PROXY=http://172.17.0.1:17890",
+    "HTTP_PROXY=http://172.17.0.1:17890",
+    "docker",
+    "buildx",
+    "imagetools",
+    "inspect",
+    "--raw",
+    "python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b"
+  ],
+  "cwd": "/tmp/hg-ujson",
+  "started_at_utc": "2026-10-14T21:04:00.332676+00:00",
+  "finished_at_utc": "2026-10-14T21:04:02.315678+00:00",
+  "returncode": 0
+}

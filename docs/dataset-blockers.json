@@ -1369,7 +1369,7 @@
           "id": "ujson-native-offline-closure",
           "family": "scorer-dependency-network",
           "status": "external",
-          "observed": "Tasks 197/226 already establish original evaluator source, exact PyPI cp312 Linux x86_64 ujson==5.10.0 wheel/RECORD and fresh offline package installation without native import. B6 acquired immutable ujson commit 59875e089937c8b05c2f4b474530e3a9ec706a56, reconstructed root/vendored double-conversion trees, default bundled-build code and original V8 BSD terms, and carries both complete license files separately. Source/default-build observations do not attest wheel build inputs. No supported immutable image, resolved recursive loader providers or network-denied image-bound native import/synthetic execution receipt has been established.",
+          "observed": "Tasks 197/226 establish evaluator source and exact PyPI cp312 ujson==5.10.0 wheel/RECORD; B6 establishes immutable source/default-build observations and complete supplemental notices. W-ujson recomputed wheel SHA-256 f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1 and built a notice-carrying distribution hg-wujson-closure@sha256:1f5686c525d48af356933060335d6876455bf371229e8e66c3a4a7fca5014e45 from pinned CPython 3.12.15/Linux amd64/glibc base python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b. A fresh Docker network=none run passed offline installation, exact installed-member/notice checks, native import/eager binding, recursive ELF/symbol-provider resolution and both unchanged evaluators on fabricated input. Raw receipts include loader/glibc/package identities and the observed host-kernel vDSO bytes; the image does not pin the kernel. Authenticated linkage from the original published wheel to its actual source/build inputs and bundled/external double-conversion selection remains unestablished. The official PyPI provenance query returned 404/no provenance available; source/default-build observations and runtime success do not attest the original wheel build.",
           "evidence": [
             {
               "kind": "repository",
@@ -1400,9 +1400,19 @@
               "kind": "repository",
               "path": "reports/b6-dataset-blocker-review.md",
               "locator": "## 2Wiki: ujson-native-offline-closure"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-ujson-receipts.md",
+              "locator": "## Remaining source/build custody requirement"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/hg_wujson/provenance.json",
+              "locator": "\"runtime_checks_passed\": true"
             }
           ],
-          "next_action": "Carry the acquired supplemental notices into the actual deployment distribution; bind the task-226 wheel SHA-256 f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1 to a supported immutable CPython 3.12/Linux x86_64/glibc image, source/build custody and resolved recursive loader/symbol providers. Obtain fresh network-denied install/native import/synthetic evaluator receipts for that image. Keep external until runtime closure passes; package-only install and source-license acquisition do not authorize H0."
+          "next_action": "Obtain authenticated original wheel-to-source/build-input custody for task-226 SHA-256 f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1, including the actual double-conversion source and bundled/external build selection. Preserve the w-ujson immutable image/wheel/notice bindings and network-denied install/import/recursive-provider/synthetic evaluator receipts; repeat runtime checks for any changed distribution. Keep external until the remaining original-build custody clause is met. Synthetic controls do not authorize H0."
         },
         {
           "id": "hub-data-provenance",

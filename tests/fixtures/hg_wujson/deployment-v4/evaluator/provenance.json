@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "task": "codex197",
+  "repository": "https://github.com/Alab-NII/2wikimultihop",
+  "commit": "209e761834d1ce055856fc11072c0a5aab47601d",
+  "root_tree": "545a956af257f0c79c68c39a358086de7cbf243b",
+  "primary_evaluator": "2wikimultihop_evaluate_v1.1.py",
+  "original_evaluator": "2wikimultihop_evaluate.py",
+  "license": {
+    "spdx": "Apache-2.0",
+    "path": "LICENSE",
+    "notice_path": null,
+    "notice_observation": "No NOTICE file in the pinned root tree; original HotpotQA attribution retained in both evaluator headers."
+  },
+  "acquisition": {
+    "method": "github_git_blob_api",
+    "acquired_at_utc": "2026-10-14T02:07:07.844529+00:00",
+    "reviewed_by": "Codex task 197; parent review pending",
+    "commit_api": "https://api.github.com/repos/Alab-NII/2wikimultihop/git/commits/209e761834d1ce055856fc11072c0a5aab47601d",
+    "tree_api": "https://api.github.com/repos/Alab-NII/2wikimultihop/git/trees/545a956af257f0c79c68c39a358086de7cbf243b",
+    "blob_api_template": "https://api.github.com/repos/Alab-NII/2wikimultihop/git/blobs/{git_blob_sha1}",
+    "linkage": "HTTPS GitHub commit metadata binds root tree; reconstructed Git tree SHA-1 binds pinned evaluator/license/requirements blobs; original decoded blob bytes match Git blob SHA-1 and SHA-256.",
+    "trust_boundary": "Commit is unsigned. GitHub HTTPS metadata is the origin attestation; matching local hashes alone cannot independently authenticate it.",
+    "failed_attempt": "Commit-specific raw.githubusercontent.com fetch reset its TLS connection; no raw payload saved. Successful acquisition used GitHub Git blob API."
+  },
+  "files": {
+    "2wikimultihop_evaluate.py": {
+      "bytes": 6396,
+      "sha256": "854b03c487608286d6381379eb32e46d9b845493527d1fe1951d0bf4ec923a40",
+      "git_blob_sha1": "6f78d40b2f956979ca66c135c61bc38825bbcbc1"
+    },
+    "2wikimultihop_evaluate_v1.1.py": {
+      "bytes": 8575,
+      "sha256": "7c09ee2ec98c7ecb57df79eb68dba22eb381ab58d50e730dfcefafb4dda31458",
+      "git_blob_sha1": "ad64fe949c403fa61e35c87cd6403f890706cd34"
+    },
+    "LICENSE": {
+      "bytes": 11337,
+      "sha256": "b8c1d7752e71597a45121774b6be93df38a81e1b748be15c063c0759f11e00ea",
+      "git_blob_sha1": "342ce459a34de236d05b2be3f01e5f08f6c712e8"
+    },
+    "requirements.txt": {
+      "bytes": 37,
+      "sha256": "16b0bfa1bcdd38c02a0897294846d54f272273e3c7c1201ff73c6a34da4f63bf",
+      "git_blob_sha1": "26396d59d3ae7f6a1bc68da81aff399abca52cba"
+    },
+    "git-tree.json": {
+      "bytes": 2460,
+      "sha256": "98a1aa3e453f5ba6b177140381eab7c5d8a2ac6f2c2587aa00952cb625003ebf"
+    },
+    "git-commit.json": {
+      "bytes": 1149,
+      "sha256": "122564355d667bec2675336633819a8c4df95262cb388332258072d2687add8b"
+    }
+  },
+  "scope": {
+    "included": "Two evaluator files, license, requirements manifest, commit/tree metadata. No README, prediction examples, baseline code or full archive acquired.",
+    "task_answer_heldout_payloads_accessed": false,
+    "model_h0_executed": false,
+    "production_scorer_modified": false
+  },
+  "dependencies": {
+    "stdlib_v1_0": [
+      "sys",
+      "re",
+      "string",
+      "collections",
+      "pickle"
+    ],
+    "stdlib_v1_1": [
+      "sys",
+      "re",
+      "string",
+      "itertools",
+      "collections",
+      "pickle",
+      "os"
+    ],
+    "external_runtime": {
+      "ujson": {
+        "version": "5.10.0",
+        "runtime_requires_dist": [],
+        "module_path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ujson.cpython-312-x86_64-linux-gnu.so",
+        "module_sha256": "41ef15691cb490d5c38cde5f7e588d9d348cb92008888a0dcb2770ae84ea87db",
+        "license": "BSD-3-Clause",
+        "installed_license_files": [
+          {
+            "installed_path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ujson-5.10.0.dist-info/LICENSE.txt",
+            "sha256": "36866344f0a486541bd9800f1a407a056c0c214a82c658f059694daf3dc394d2",
+            "bytes": 5975
+          }
+        ],
+        "native_needed": {
+          "method": "readelf -d on installed extension",
+          "libraries": [
+            "libstdc++.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6"
+          ],
+          "loader_resolution_attested": false
+        }
+      }
+    },
+    "upstream_manifest": "requirements.txt",
+    "upstream_pins_ujson": false,
+    "unneeded_baseline_packages": [
+      "spacy",
+      "tqdm",
+      "torch==1.1.0",
+      "joblib"
+    ],
+    "test_environment": {
+      "python": "3.12.4",
+      "implementation": "CPython",
+      "platform": "linux",
+      "machine": "x86_64",
+      "pytest": "7.4.4"
+    },
+    "release_artifact_metadata": {
+      "source": "https://pypi.org/pypi/ujson/5.10.0/json",
+      "requires_python": ">=3.8",
+      "requires_dist": null,
+      "artifacts": [
+        {
+          "filename": "ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "url": "https://files.pythonhosted.org/packages/04/81/668707e5f2177791869b624be4c06fb2473bf97ee33296b18d1cf3092af7/ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "digests": {
+            "blake2b_256": "0481668707e5f2177791869b624be4c06fb2473bf97ee33296b18d1cf3092af7",
+            "md5": "9e598a56712942ace4c6b23d32ad020a",
+            "sha256": "f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1"
+          },
+          "size": 53686,
+          "packagetype": "bdist_wheel"
+        },
+        {
+          "filename": "ujson-5.10.0.tar.gz",
+          "url": "https://files.pythonhosted.org/packages/f0/00/3110fd566786bfa542adb7932d62035e0c0ef662a8ff6544b6643b3d6fd7/ujson-5.10.0.tar.gz",
+          "digests": {
+            "blake2b_256": "f0003110fd566786bfa542adb7932d62035e0c0ef662a8ff6544b6643b3d6fd7",
+            "md5": "7e61ead11ccf121cf4b1c121ec444e49",
+            "sha256": "b3cd8f3c5d8c7738257f1018880444f7b7d9b66232c64649f562d7ba86ad4bc1"
+          },
+          "size": 7154885,
+          "packagetype": "sdist"
+        }
+      ],
+      "payloads_fetched": false
+    },
+    "closure_status": "Evaluator import closure inspected; pinned installed runtime exercised. Clean-environment offline artifact closure remains open: release artifacts were not downloaded and the installed extension is not attested to a published wheel."
+  }
+}

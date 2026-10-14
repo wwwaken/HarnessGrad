@@ -1,0 +1,70 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.02kB done
+#1 WARN: FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value "linux/amd64" (line 1)
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/3] FROM docker.io/library/python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b
+#5 resolve docker.io/library/python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b 0.0s done
+#5 CACHED
+
+#4 [internal] load build context
+#4 transferring context: 152.31kB done
+#4 DONE 0.1s
+
+#6 [2/3] COPY . /opt/hg-wujson/
+#6 DONE 0.1s
+
+#7 [3/3] RUN --network=none set -eu;     cd /opt/hg-wujson;     sha256sum -c INPUTS.sha256;     python -I -B -m venv /opt/ujson-runtime;     PIP_CONFIG_FILE=/dev/null /opt/ujson-runtime/bin/python -I -B -m pip       --isolated --disable-pip-version-check --no-cache-dir install       --no-index --find-links=/opt/hg-wujson --require-hashes --only-binary=:all:       --no-deps --no-compile --report=/opt/hg-wujson/build-install-report.json       -r /opt/hg-wujson/requirements.txt;     mkdir -p /usr/local/share/licenses/hg-wujson;     cp /opt/hg-wujson/notices/ujson-LICENSE.txt /usr/local/share/licenses/hg-wujson/;     cp /opt/hg-wujson/notices/double-conversion-LICENSE /usr/local/share/licenses/hg-wujson/
+#7 0.136 CUSTODY.md: OK
+#7 0.136 Dockerfile: OK
+#7 0.136 closure.sh: OK
+#7 0.136 custody/double-conversion-LICENSE: OK
+#7 0.136 custody/setup.py: OK
+#7 0.136 custody/source-commit.json: OK
+#7 0.136 custody/source-tree.json: OK
+#7 0.136 custody/wheel-acquisition.json: OK
+#7 0.136 custody/wheel-historical-provenance.json: OK
+#7 0.136 evaluator/2wikimultihop_evaluate.py: OK
+#7 0.136 evaluator/2wikimultihop_evaluate_v1.1.py: OK
+#7 0.136 evaluator/LICENSE: OK
+#7 0.136 evaluator/provenance.json: OK
+#7 0.136 native.py: OK
+#7 0.136 network.py: OK
+#7 0.137 notices/README.md: OK
+#7 0.137 notices/double-conversion-LICENSE: OK
+#7 0.137 notices/ujson-LICENSE.txt: OK
+#7 0.137 providers.py: OK
+#7 0.137 requirements.txt: OK
+#7 0.137 synthetic.py: OK
+#7 0.137 ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl: OK
+#7 3.817 Looking in links: /opt/hg-wujson
+#7 3.829 Processing ./ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from -r /opt/hg-wujson/requirements.txt (line 1))
+#7 3.835 Installing collected packages: ujson
+#7 3.862 Successfully installed ujson-5.10.0
+#7 DONE 4.0s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 2.4s done
+#8 exporting manifest sha256:194095655d08f6d097517e8978e61fd58c82739ab8ba27fe0cb8119bf28fc1a3 0.0s done
+#8 exporting config sha256:48e3ccd7ed8ccff8a086528f5107a46f84bce0972467992145fbab3bc083cdb8 0.1s done
+#8 naming to docker.io/library/hg-wujson-closure:20261014T210557Z
+#8 naming to docker.io/library/hg-wujson-closure:20261014T210557Z done
+#8 unpacking to docker.io/library/hg-wujson-closure:20261014T210557Z
+#8 unpacking to docker.io/library/hg-wujson-closure:20261014T210557Z 0.5s done
+#8 DONE 3.0s
+
+ [33m1 warning found (use docker --debug to expand):
+[0m - FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value "linux/amd64" (line 1)

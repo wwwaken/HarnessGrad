@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "docker",
+    "build",
+    "--platform=linux/amd64",
+    "--pull=false",
+    "--network=none",
+    "--no-cache",
+    "--provenance=false",
+    "--progress=plain",
+    "--iidfile",
+    "/tmp/hg-ujson/tests/fixtures/hg_wujson/deployment-v4.iid",
+    "-t",
+    "hg-wujson-closure:20261014T210827Z",
+    "/tmp/hg-ujson/tests/fixtures/hg_wujson/deployment-v4"
+  ],
+  "cwd": "/tmp/hg-ujson",
+  "started_at_utc": "2026-10-14T21:08:27.340022+00:00",
+  "finished_at_utc": "2026-10-14T21:08:35.016573+00:00",
+  "returncode": 0
+}

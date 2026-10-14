@@ -1,0 +1,55 @@
+[
+    {
+        "Id": "sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b",
+        "RepoTags": [
+            "python:3.12-bookworm"
+        ],
+        "RepoDigests": [
+            "python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-06T04:41:52.651831267Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.12.15",
+                "PYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a"
+            ],
+            "Cmd": [
+                "python3"
+            ]
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 382732541,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:6439a9e3affca36e4cc323dd241724b62721af4a3f4aa590ced4ae11f8083a4b",
+                "sha256:7345f80a66167d9ae4a3c28d9280aabd743986ec04e5d862d67a5b8e5d886e78",
+                "sha256:1049cbfdfb0acf4035a0996bbbf3e5bfc20fcfef65c3d50f09b16c0607afbb38",
+                "sha256:060a1e8ce9048ff68647726be1cfe515884725d6e527f2fd2382a039f5c0a111",
+                "sha256:726e909e358716a704ee104e532e4663a05b1a5f7de8d5ba6dd15aa8d7bbc998",
+                "sha256:5075b38cb7719c47fdcf7aa7ab21ef1f95cd69d267143997288959e37279580f",
+                "sha256:e24848edef9f8144b7857808f4c06cd3a33643e5b9f0ff15b79d1b3dd9845f30"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-14T20:59:38.92231406Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b",
+            "size": 6511
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/library/python"
+                }
+            ]
+        }
+    }
+]

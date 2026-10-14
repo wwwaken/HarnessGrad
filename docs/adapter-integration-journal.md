@@ -1932,3 +1932,44 @@ diagnostic authorization. Synthetic controls do not authorize H0.
 No benchmark task, model, GPU, endpoint, container or paid service ran. Historical
 runs, receipts, archives and `runs/` are untouched. Changes are committed only in
 the registered `/tmp/hg-spread2` worktree for parent review; no main merge is claimed.
+
+
+## 2Wiki ujson image-bound offline receipts — 2026-10-15 - w-ujson
+
+Built and retained the new deployment distribution `hg-wujson-closure@sha256:1f5686c525d48af356933060335d6876455bf371229e8e66c3a4a7fca5014e45`
+from pinned base `python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b` (Linux amd64, CPython 3.12.15,
+glibc 2.36). Recomputed the task-226 wheel bytes to
+`f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1`; both complete acquired ujson and double-conversion
+notices are copied into the actual image and verified by in-image readback.
+Source/default-build observations and the original evaluator/license are also carried.
+
+Fresh `--network=none` execution in `tests/fixtures/hg_wujson/runtime-v9/`
+passed hash-locked offline installation, exact installed-member comparisons,
+native import/JSON round trip, eager loader bindings, recursive ELF/symbol
+provider checks and both unchanged upstream evaluators on a fabricated row.
+The raw collector checks 703 undefined dynamic symbols (661 strong; no strong
+resolution failures), explicitly retaining 28 optional unresolved weak imports.
+Loader/package identities, TLS providers, actual kernel vDSO bytes and kernel
+version are preserved; the container image does not pin the host kernel.
+The synthetic percent metrics are controls, not benchmark measurements.
+
+**Blocker remains external:** authenticated linkage of the original published
+wheel to its actual source/build inputs and bundled/external double-conversion
+selection is still missing. The official PyPI provenance endpoint returned
+404/no provenance available for this wheel. The new image build and successful
+runtime cannot retroactively attest that original build. Registry observed and
+next_action now distinguish this remaining custody clause from the completed
+image/runtime/notice work; other gates and historical records are unchanged.
+
+Raw receipt/context inventory and SHA-256 manifest:
+`tests/fixtures/hg_wujson/`; full commands, outputs and scope:
+`reports/w-ujson-receipts.md`. Every failed launch/collector attempt was retained
+under a separate name; the successful pair is deployment-v6/runtime-v9.
+Created containers were inspected and removed; final owned-name query is empty.
+New distributions remain locally available for parent review. No benchmark,
+model, GPU or endpoint call; production scorer, historical runs, receipts,
+archives and platform images are unchanged.
+
+Validation in `reports/w-ujson-validation.txt`: blocker checker valid
+(28 datasets, 2 shared blockers, 11 historical records; production_authorized=false),
+117 focused receipt/package/source/registry tests passed in 3.01s.

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "ps",
+    "-a",
+    "--filter",
+    "name=^/hg-wujson-20261014T210753Z$",
+    "--format",
+    "{{json .}}"
+  ],
+  "cwd": "/tmp/hg-ujson",
+  "started_at_utc": "2026-10-14T21:07:57.754906+00:00",
+  "finished_at_utc": "2026-10-14T21:07:57.776323+00:00",
+  "returncode": 0
+}

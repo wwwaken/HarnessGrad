@@ -1,0 +1,66 @@
+[
+    {
+        "Id": "sha256:194095655d08f6d097517e8978e61fd58c82739ab8ba27fe0cb8119bf28fc1a3",
+        "RepoTags": [
+            "hg-wujson-closure:20261014T210557Z"
+        ],
+        "RepoDigests": [
+            "hg-wujson-closure@sha256:194095655d08f6d097517e8978e61fd58c82739ab8ba27fe0cb8119bf28fc1a3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-15T05:06:02.314322305+08:00",
+        "Config": {
+            "Env": [
+                "PATH=/opt/ujson-runtime/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.12.15",
+                "PYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a"
+            ],
+            "Cmd": [
+                "python",
+                "-I",
+                "-B",
+                "-c",
+                "import ujson; print(ujson.__version__, ujson.__file__)"
+            ],
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 388538667,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:6439a9e3affca36e4cc323dd241724b62721af4a3f4aa590ced4ae11f8083a4b",
+                "sha256:7345f80a66167d9ae4a3c28d9280aabd743986ec04e5d862d67a5b8e5d886e78",
+                "sha256:1049cbfdfb0acf4035a0996bbbf3e5bfc20fcfef65c3d50f09b16c0607afbb38",
+                "sha256:060a1e8ce9048ff68647726be1cfe515884725d6e527f2fd2382a039f5c0a111",
+                "sha256:726e909e358716a704ee104e532e4663a05b1a5f7de8d5ba6dd15aa8d7bbc998",
+                "sha256:5075b38cb7719c47fdcf7aa7ab21ef1f95cd69d267143997288959e37279580f",
+                "sha256:e24848edef9f8144b7857808f4c06cd3a33643e5b9f0ff15b79d1b3dd9845f30",
+                "sha256:cd20628c1644fbacfce38547bf6c06203a169ece71d8ce1929a8db1c07ba2c68",
+                "sha256:e7ecdf8683792b97e54f9797649c667a96dd81349020154215d365d03d256662"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-14T21:06:04.7918876Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:194095655d08f6d097517e8978e61fd58c82739ab8ba27fe0cb8119bf28fc1a3",
+            "size": 2087,
+            "annotations": {
+                "config.digest": "sha256:48e3ccd7ed8ccff8a086528f5107a46f84bce0972467992145fbab3bc083cdb8"
+            }
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "tu40k0fimooqklld9gvequ811",
+                    "CreatedAt": "2026-10-15T05:06:05.303712735+08:00"
+                }
+            ]
+        }
+    }
+]
