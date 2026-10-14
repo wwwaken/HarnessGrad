@@ -32,6 +32,17 @@ detection review is closed by the synthetic controls documented in
 production route. No production `run_one` or H0 readiness follows from these
 tests, and no adversarial execution is delegated by this index.
 
+Sports Understanding, SpreadsheetBench and StrategyQA now have
+[cited source-only reviews](dataset-source-reviews-b2.md) and dataset-specific
+journal entries. Their original `dataset-journal-gap` records remain in the
+index as `measurement` follow-ups: the missing-review work is closed, while
+source custody, scorer/runtime verification, coverage and shared admission
+requirements remain open. The SpreadsheetBench review distinguishes the
+`8c323e6` submission repair from production evidence and records unresolved
+failure classification. Fever, Physics Questions and Reasoning Gym have explicit
+pending-review journal pointers for the coverage regression; their substantive
+reviews remain open. Review-pointer coverage is not gate closure.
+
 AppWorld's `trusted-trial-evidence-writer` code blocker is closed for saved
 verdicts by the synthetic writer/report tests documented in
 [the Codex 183 report](../reports/appworld-trusted-trial-writer-codex183-report.md).

@@ -1136,15 +1136,25 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "observed": "Source-only journal gap closed: cited review identifies the local binary word-label/dual-label-rejection rule attributed to BIG-bench multiple_choice_grade, pinned ReWOO CSV and imposed hash split, and declared QA runtime. Independent scorer equivalence, installed/selected-only provenance, comparability and measured coverage remain unestablished; all shared gates remain open. This retained record tracks measurement follow-up, not readiness.",
           "evidence": [
             {
               "kind": "repository",
               "path": "data/datasets/sportsunderstanding.py",
               "locator": "KIND = \"dataset\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/dataset-source-reviews-b2.md",
+              "locator": "## sportsunderstanding source-only review"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## sportsunderstanding source-only review — 2026-10-15 — b2"
             }
           ],
-          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+          "next_action": "Independently authenticate upstream scorer/metric equivalence and installed source/split/selected manifest custody; establish offline runtime and every shared admission gate before any separately authorized diagnostic. Preserve the documented local metric divergence and report invalid/unmeasured coverage explicitly."
         }
       ],
       "historical_runs": []
@@ -1173,15 +1183,30 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "observed": "Source-only journal gap closed: cited review identifies single-variant named-cell comparison, the pinned verified_400 Hub mirror, hash/all-eval options and declared openpyxl/LibreOffice runtime. Repair 8c323e6 establishes submission-helper provisioning and error-output visibility, with inherited local-control evidence only. Unparseable ranges and workbook-load failures can become measured zero in current source. Independent provenance, scorer/runtime identity, comparability, classification and coverage remain open with all shared gates; this record is retained for follow-up.",
           "evidence": [
             {
               "kind": "repository",
               "path": "data/datasets/spreadsheetbench.py",
               "locator": "KIND = \"dataset\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/dataset-source-reviews-b2.md",
+              "locator": "## spreadsheetbench source-only review"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## spreadsheetbench source-only review — 2026-10-15 — b2"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_spreadsheetbench_control_submit.py",
+              "locator": "def test_materialized_oracle_submits_and_scores_one"
             }
           ],
-          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+          "next_action": "Resolve comparator-failure versus measured-zero classification and establish gradable eligibility; independently authenticate installed/mirror and scorer custody, formula/LibreOffice offline runtime and all shared gates before a separately authorized diagnostic. Keep one-variant scores distinct from paper soft/hard aggregates and do not promote the repaired local control to production evidence."
         }
       ],
       "historical_runs": []
@@ -1208,15 +1233,25 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "observed": "Source-only journal gap closed: cited review identifies local normalized whole-string ReWOO EM, the pinned strategy_qa CSV/test pool, imposed hash split and declared QA runtime; F1 and judge accuracy are excluded. Independent scorer/original-benchmark comparability, installed/selected-only and split custody, offline runtime and measured coverage remain unestablished with every shared gate open. The original blocker remains as the measurement follow-up record, not a passing status.",
           "evidence": [
             {
               "kind": "repository",
               "path": "data/datasets/strategyqa.py",
               "locator": "KIND = \"dataset\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/dataset-source-reviews-b2.md",
+              "locator": "## strategyqa source-only review"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## strategyqa source-only review — 2026-10-15 — b2"
             }
           ],
-          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+          "next_action": "Independently authenticate ReWOO evaluator identity, original-benchmark metric/split comparability and installed/selected manifest provenance; establish offline runtime and all shared admission gates before any separately authorized diagnostic. Retain EM identity and explicit invalid/unmeasured task/trial coverage."
         }
       ],
       "historical_runs": []

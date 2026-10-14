@@ -63,6 +63,62 @@ def test_source_inventory_and_taxonomy_cover_every_publishable_dataset(document)
     assert {"api_bank", "nestful", "sotuqa", "tau2_bench"} <= set(checker.published_declarations())
 
 
+def test_every_journal_coverage_dataset_points_to_a_checked_in_review(document):
+    """Every `journal-coverage` closure must point at a review that states its disposition.
+
+    Deliberately convention-free about *how* the review is filed. Two reviews landed in
+    parallel and named things differently -- one file per dataset with `Closed:`/`Next:`,
+    one file with per-dataset sections using `CLOSED:`/`OPEN:` -- and a guard that demanded
+    one worker's heading text would have reported the other worker's real work as missing,
+    which is how a guard gets weakened later. What is actually required is that the review
+    exists, is checked in, is about *this* dataset, and says both what it closed and what it
+    left open. Those four things are checked; the wording is not.
+    """
+    CLOSED = ("CLOSED:", "Closed:", "Closed at source-review level:")
+    OPEN = ("OPEN:", "Next:", "Still open")
+    covered = set()
+    for entry in document["datasets"]:
+        for blocker in entry["blockers"]:
+            if blocker["family"] != "journal-coverage":
+                continue
+            name = entry["dataset"]
+            reviews = []
+            for evidence in blocker["evidence"]:
+                if evidence["kind"] != "repository":
+                    continue
+                relative = Path(evidence["path"])
+                if not (relative.parts and relative.parts[0] == "docs"
+                        and relative.suffix == ".md"):
+                    continue
+                assert not relative.is_absolute() and ".." not in relative.parts
+                path = ROOT / relative
+                assert path.resolve().is_relative_to(ROOT.resolve())
+                assert path.is_file(), f"{name}: missing checked-in review {relative}"
+                source = path.read_text(encoding="utf-8")
+                headings = [line for line in source.splitlines()
+                            if line.lstrip().startswith("#")]
+                # Dataset names and prose titles differ in word breaks (`physicsquestions`
+                # against "Physics Questions"), so compare on a normalised form rather than
+                # requiring one spelling.
+                def _norm(text):
+                    return "".join(ch for ch in text.lower() if ch.isalnum())
+                assert any(_norm(name) in _norm(h) for h in headings), \
+                    f"{name}: {relative} has no heading naming this dataset"
+                assert any(m in source for m in CLOSED), \
+                    f"{name}: {relative} does not say what it closed"
+                assert any(m in source for m in OPEN), \
+                    f"{name}: {relative} does not say what it left open"
+                reviews.append(path)
+                break
+            assert reviews, f"{name}: registry must point at its checked-in source review"
+            covered.add(name)
+    assert covered, "journal-coverage guard must not silently become vacuous"
+    expected = {e["dataset"] for e in document["datasets"]
+                for b in e["blockers"] if b["family"] == "journal-coverage"}
+    assert covered == expected, \
+        f"guard did not reach every journal-coverage dataset: {sorted(expected - covered)}"
+
+
 def test_new_declared_dataset_fails_coverage_even_when_its_import_would_fail(document, tmp_path):
     (tmp_path / "data" / "datasets").mkdir(parents=True)
     for name in checker.published_declarations():

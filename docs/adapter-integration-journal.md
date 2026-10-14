@@ -947,3 +947,51 @@ datasets, eight shared blockers, 11 preserved historical records and
 (`python3 -m pytest -q -rx tests/quality/test_dataset_journal_coverage.py tests/quality/test_dataset_blockers.py`)
 report **55 passed, 3 xfailed**; the three expected failures are exactly the
 out-of-scope omissions named above. No whole-suite or dataset-runtime tests ran.
+## sportsunderstanding source-only review — 2026-10-15 — b2
+
+The [cited source review](dataset-source-reviews-b2.md#sportsunderstanding-source-only-review)
+records the local binary label matcher and its BIG-bench attribution, pinned
+ReWOO CSV origin, imposed hash split and QA runtime contract
+(`data/datasets/sportsunderstanding.py:63-95,147-191`;
+`data/scaffolds/qa/base.py:290-312,314-386`). CLOSED: missing source-only journal
+review. OPEN: independent scorer equivalence, installed/selected-only provenance,
+metric comparability and measured coverage, plus every existing shared gate
+(`docs/dataset-blockers.json:18-140`; `AGENTS.md:61-81`). No dataset, scorer,
+control, model or network execution; no production/H0 authorization.
+
+## spreadsheetbench source-only review — 2026-10-15 — b2
+
+The [cited source review](dataset-source-reviews-b2.md#spreadsheetbench-source-only-review)
+records the single-variant named-cell comparison, pinned verified_400 mirror,
+hash/all-eval split options and Python/openpyxl/LibreOffice requirements
+(`data/datasets/spreadsheetbench.py:20-48,74-87,278-287,352-372`). CLOSED: missing
+source-only journal review and clarification of `8c323e6`'s submission repair;
+its inherited local-control results remain history (`docs/adapter-integration-journal.md:77-83`).
+OPEN: source/scorer/runtime custody, comparability, coverage and failure
+classification, including the parse-failure return becoming measured zero
+(`data/datasets/spreadsheetbench/verify/check.py:174-188,369-387`), and every
+existing shared gate (`docs/dataset-blockers.json:18-140`; `AGENTS.md:61-81`).
+No dataset, scorer, control, model or network execution; no production/H0 authorization.
+
+## strategyqa source-only review — 2026-10-15 — b2
+
+The [cited source review](dataset-source-reviews-b2.md#strategyqa-source-only-review)
+records ReWOO normalized whole-string EM, pinned CSV origin, imposed hash split
+and the QA runtime contract (`data/datasets/strategyqa.py:66-101,157-199`;
+`data/scaffolds/qa/base.py:290-312,314-386`). CLOSED: missing source-only journal
+review. OPEN: independent scorer/original-benchmark comparability,
+installed/selected-only and split provenance, measured coverage and every
+existing shared gate (`docs/dataset-blockers.json:18-140`; `AGENTS.md:61-81`).
+No dataset, scorer, control, model or network execution; no production/H0 authorization.
+
+## b2 source-review validation — 2026-10-15
+
+Only `python3 tools/check_dataset_blockers.py` and
+`python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-b2-journal`
+were run for validation: the checker returned `valid: true`, 28 datasets,
+8 shared blockers, 11 historical records and `production_authorized: false`;
+the focused file passed **53 tests**, including the new review-pointer guard.
+No adapter/scorer/control, dataset payload, model, network or whole-suite execution.
+The original blocker IDs/families/statuses, shared requirements and historical
+records are preserved; only the three requested missing substantive reviews
+close. The three coverage-only entries above remain explicitly pending.
