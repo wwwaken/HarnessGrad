@@ -18,7 +18,14 @@ from eval import lifecycle_receipt
 
 SCHEMA = "harnessgrad.diagnostic-receipt.v2"
 HASH_NAMES = ("source", "split", "manifest", "model", "harness")
-ENDPOINTS = ("http://127.0.0.1:8001/v1", "http://127.0.0.1:8002/v1")
+#: The local endpoints a staged receipt may bind. **One entry, deliberately.** This
+#: listing is what a receipt's `endpoint` is checked against, so an entry here is a
+#: claim that the endpoint exists: leaving `8001` in after its server was retired on
+#: 2026-10-14 would let a receipt attest to a binding nothing could serve. `8002` is
+#: the one that was kept because `eval/unix_model_relay.py` routes the agent's model
+#: there, so it is the endpoint a containerised harness actually reaches. Adding a
+#: second server again means adding it back here at the same time.
+ENDPOINTS = ("http://127.0.0.1:8002/v1",)
 
 
 def _require(condition: bool, message: str) -> None:

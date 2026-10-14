@@ -7,6 +7,30 @@
 3. Keep up to 10 independent Codex tasks active when work can be parallelized. Every task must have a unique output filename; never trust inherited `reports/report.md` without checking the diff and commit.
 4. Avoid idle rounds: combine waits with concrete receipt inspection, diff review, test execution, journal work or launch preparation. Do not spend a round only polling unchanged status.
 
+## Working copies
+
+There is exactly **one writer**: the main checkout `/mnt/20t/xubuqiang/Study/HarnessGrad`. Every
+other copy of this repository on this machine is read-only or disposable.
+
+- Codex agents work in registered `git worktree` checkouts under `/tmp/hg-*` and commit there;
+  the parent merges. Nothing else writes to `main`.
+- **Never create a full clone of this repository inside `Study/`.** Two were made on 2026-11-17
+  (`HarnessGrad-appworld-controls-20261117`, `HarnessGrad-gaia-controls-20261117`). Both are now
+  stranded on pre-rewrite commits that do not exist in `main`'s object store, and both still
+  carry the old layout (`web/dist`, root-level report files). Their `origin` remotes -- which
+  pointed at the main checkout, fetch **and push** -- have been removed, because a single
+  `git push --force` from either would have restored the old history over `main`.
+- They are kept, not deleted, and not reset: they hold run receipts and evidence
+  (`gaia-evidence/`, `gaia-evidence-all17/`, `GAIA_FINAL_LAUNCH_RECEIPT.json`, the appworld
+  `deliverables/` and `runtime/`) that exist nowhere else, and rule 5 of the staged pilot policy
+  says old and incomplete receipts are preserved. Treat them as frozen evidence: read them, never
+  fetch, merge, push or "update" them.
+- 10 of 20 local branches also still point at pre-rewrite commits. They are refs, not working
+  copies, so they are not a writing hazard, but they keep the old history reachable; decide
+  explicitly before deleting any, since they are the only record of that codex work.
+- If a copy is ever needed for an isolated run, make it a `git worktree` (registered, so
+  `git worktree list` shows it) rather than a clone, and remove it when the run is done.
+
 ## Test execution
 
 Pytest `--basetemp` must be **OUTSIDE the platform tree**, for example
@@ -16,9 +40,15 @@ Omitting the option preserves pytest's normal default.
 
 ## GPU execution
 
-- GPU0: endpoint `http://127.0.0.1:8001/v1`.
-- GPU1: endpoint `http://127.0.0.1:8002/v1`.
-- Keep both GPUs productively occupied with necessary no-model controls, diagnostics or valid pilots; never create duplicate, fake or scientifically unjustified work for utilization.
+- **One local endpoint: `http://127.0.0.1:8002/v1`** (model `qwen3.5-9b-local`). GPU0 and the
+  `8001` server were released on 2026-10-14 to give a card back; do not start a second one.
+- `eval/unix_model_relay.py` hard-codes the agent model route to `127.0.0.1:8002`, so `8002` is
+  the endpoint a containerised harness actually reaches. That, not preference, is why this is
+  the one that was kept -- the other would have needed a production change.
+- Keep the endpoint productively occupied with necessary no-model controls, diagnostics or valid
+  pilots; never create duplicate, fake or scientifically unjustified work for utilization. If
+  there is no approved diagnostic or pilot, an idle loaded server is the correct state: record
+  that rather than inventing work.
 - Bind each run to one endpoint and one fresh run ID. Keep total H0 concurrency `<=3`, `jobs=1`.
 
 ## Staged pilot policy
