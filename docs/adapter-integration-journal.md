@@ -495,6 +495,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Validation: **165 passed** across source-contract, selected/privacy and registry regressions; unpinned source gate exits **2**, `measured=false`, `production_authorized=false`. Rechecked all seven retained size/SHA-256/Git blob identities (126,311 bytes) and local document links.
 - Scope: `/tmp/hg-codex-208` only; no benchmark files, archives, external dataset roots, network fetch, package install, upstream evaluator execution or model/GPU run. Candidate bytes, provenance, adapter, scorer and registry are unchanged.
 
+## BFCL packet/provenance review — Codex 217 — 2026-10-14
+
+- Status: docs/test correction only; full-call source/runtime and independent archive/index custody remain blocked. No production authorization or approval pin.
+- Findings: the Task 208 packet omitted exact receipt/index field names and reader bounds; metadata response bodies are not retained with the Task 195 candidate, so recorded upstream observations cannot be independently reverified offline from this handoff. Clarified those limits and the source gate's commit-shape/declared-edge scope.
+- Evidence: [unique review report](../bfcl-packet-review-codex217-report.md), [corrected operator packet](bfcl-codex208-operator-packet.md), and a source-contract regression confirming the retained candidate's blocked flags and refusal before projected-source access even with its integrity digest.
+- Validation: **87 passed** across source-contract and registry tests only; unpinned source gate exited **2** with `measured=false`, `production_authorized=false`. Source-only registry validation passed with 28 datasets, 8 shared blockers and 11 historical records.
+- Scope: `/tmp/hg-codex-217` only; no dataset payload/answers/heldout/archive/external dataset-root access, network, upstream execution, installation or model/GPU work. Candidate, production code, registry and earlier receipts are unchanged.
+
 ## TriviaQA adapter impact review — Codex 167
 
 - Status: production scorer unchanged; upstream source provenance blocked

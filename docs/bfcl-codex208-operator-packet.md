@@ -16,6 +16,13 @@ requested here. Preserve the candidate and all earlier receipts unchanged.
   **Archive digest and member bindings are unverified.** The observed lightweight
   tag and V3 release prose do not establish historical archive custody.
 
+These upstream identities and release statements are retained Task 195
+observations. The candidate records metadata response digests, but the response
+bodies are not retained with it; this packet cannot independently reverify those
+observations offline from this handoff. Local source/Git blob agreement checks
+integrity against the candidate's declarations, not independent ref, archive or
+member custody.
+
 Deliver reviewed original code/license/specification bytes to
 `tests/fixtures/bfcl_ast_source/files/<repository-relative-path>` and the approved
 metadata receipt to `tests/fixtures/bfcl_ast_source/provenance.json`. These are
@@ -63,6 +70,17 @@ three source-derived parser/checker/dispatch entrypoints. Receipt limits are
 1 MiB, 256 files and 16 MiB total projected bytes. Follow the linked exact schema;
 do not add runtime/index records to it or rename the candidate schema.
 
+The approved receipt's exact top-level fields are `schema`, `repository`,
+`repo_tag`, `archive_sha256`, `commit`, `review`, `entrypoints`, `files`.
+`review` has exactly `reviewed_by`, `tag_commit_binding`,
+`archive_member_binding`, `code_only_closure`, `entrypoint_contract`, each a
+nonempty reviewer/evidence identity string. `entrypoints` has exactly
+`parser`, `checker`, `dispatch`; each has exactly `path`, `symbol` and names a
+declared source file. Independent review must bind `commit` to the observed pin
+above: the gate checks only nonzero 40-character lowercase hexadecimal shape,
+not equality to that pin. It checks declared dependency edges, not discovery of
+the actual complete import/call graph or symbol definitions.
+
 An independent reviewer supplies the SHA-256 of the **exact approved receipt
 bytes through a separate trusted channel**, with reviewer and custody evidence
 identity recorded outside the receipt/projection. The caller authenticates that
@@ -92,8 +110,15 @@ or package installation in this documentation task.
 The custodian must independently approve the exact bytes, size and SHA-256 of
 `selected-index.v1.json`, binding them to the release above and authenticated
 immutable source storage. Metadata must attest `schema_version=1`, `repo_tag`,
-`tarball_sha256`, and each selected canonical task ID's `question_id`, question
-span and (for Simple) answer span: `offset`, `length`, `sha256`. Bind IDs/spans to
+`tarball_sha256`, and a `tasks` object keyed by selected canonical task ID.
+IDs are `simple/<index>` (0–399) or `irrelevance/<index>` (0–239), with decimal
+indices and no leading zeros except the single digit `0`.
+Each entry has a nonempty string `question_id`, a `question` span and (for Simple)
+an `answer` span; each span has `offset`, `length`, `sha256`. Offsets and lengths
+are integers excluding booleans: offset >= 0, 0 < length <= 1 MiB, and
+offset + length <= min(sys.maxsize, 2**63 - 1), as well as within the fixed
+source file's size. Digests are 64 lowercase hexadecimal characters. These
+are local reader limits, not measured release maxima. Bind IDs/spans to
 original member identities, row identities and the declared split/selection
 manifest. The adapter fixes payload paths via `SIMPLE`, `IRRELEVANCE` and
 `SIMPLE_ANSWERS` in [data/bfcl_v3.py](../data/bfcl_v3.py); the index cannot choose

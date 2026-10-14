@@ -218,6 +218,26 @@ def test_absent_acquisition_is_a_refusal_not_a_skip(tmp_path):
         check_source(tmp_path, "a" * 64)
 
 
+def test_retained_candidate_is_blocked_even_with_its_integrity_digest(monkeypatch):
+    directory = FIXTURE / "candidate-codex195"
+    raw = (directory / "provenance.json").read_bytes()
+    doc = json.loads(raw)
+    assert doc["schema"] == "harnessgrad.bfcl-ast-source-candidate.v1"
+    assert doc["status"] == "blocked"
+    assert all(doc[key] is False for key in
+               ("custodian_approved", "measured", "production_authorized"))
+    assert all(doc["archive"][key] is False for key in
+               ("downloaded", "digest_verified", "member_binding_verified"))
+    assert all(doc["closure"][key] is False for key in
+               ("checker_body_reviewed", "complete_in_repository_import_closure",
+                "complete_official_metric_semantics_verified", "third_party_runtime_locked"))
+    forbid_source_reads(monkeypatch)
+    monkeypatch.setattr(Path, "iterdir", lambda *_: pytest.fail("candidate inventoried source"))
+    # Computed only for this refusal regression; this is not an approval pin.
+    with pytest.raises(SourceContractError):
+        check_source(directory, hashlib.sha256(raw).hexdigest())
+
+
 def test_contract_pin_matches_adapter_declarations_without_importing_or_loading_data():
     tree = ast.parse((ROOT / "data/bfcl_v3.py").read_text())
     declarations = {node.targets[0].id: ast.literal_eval(node.value)
