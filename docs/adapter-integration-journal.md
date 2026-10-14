@@ -2483,3 +2483,39 @@ touched. Original/copy/archive digests, source/split/manifest/harness binding,
 effective limits and exact command are in `reports/w-chess3-receipts.md`.
 Validation: `reports/w-chess3-validation.txt`; scope/integrity audit:
 `reports/w-chess3-evidence/report-audit.json`.
+## Parent review and merge — w-chess3 — 2026-10-15
+
+- Merged `f056cd3` (w-chess3). Result `57abe47`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`. 74 passed on the registry plus the new
+  diagnostic-actor test and the stepwise runner test.
+- **`chessbench_puzzles / trusted-stepwise-transport` is closed.** A fresh authorised live stepwise
+  diagnostic delivered a **terminal exchange with clean actor completion**: the controller receipt
+  records protocol `chessbench_puzzles.stepwise.v1`, `status=terminal`, `submissions=1`, actor
+  `exit_code=0`, and the trusted controller recorded a genuine puzzle measurement (score `0.0`,
+  isolation `in-process`). That is precisely the evidence the blocker's next_action demanded, and
+  it is the first time this protocol has produced a measurement rather than only wiring or an
+  aborted attempt. `interruption-closure` is untouched and still open on its own separate grounds.
+- **The falsy-zero bug was in the agent, and the record now says so.** w-chess3 confirmed the
+  `if data.get('solver_turn'):` gating lives in the agent's own generated script, corrected the
+  blocker's `observed` *before* running anything (retaining the corrected text and its checker
+  output as fixtures), and changed no platform code, gate, refusal or relay limit. The round-38
+  journal note that flagged `solver_turn=0` as "the concrete next target" is now resolved in the
+  direction that matters: the platform was never at fault.
+- **The distinction that keeps this closure honest.** The controller measured a real loss; the
+  *staged policy* receipt still withholds publication with `score=null`, 0 invalid / 1 unmeasured
+  and reason `policy_enforcement_not_observed`, and cleanup is recorded as `status: unknown`
+  ("not attested by this observer"). So the transport-execution requirement is met while
+  comparability, model accuracy, curve points, pilot expansion and production authorisation are
+  all still explicitly withheld. A reader must not read this closure as a benchmark result.
+- The reference actor is a clearly-labelled diagnostic control: lexicographically first legal UCI
+  move from the current public FEN via python-chess legality only - no model, no engine, no
+  search, no gold access, no puzzle-specific choice - and it keeps one connection open, sending on
+  `status=awaiting_move` including turn zero. Synthetic tests cover turn-zero submission, single
+  retained connection, legal moves, terminal reception and clean completion, separately from the
+  single released-task run.
+- Still in flight at the end of this round and NOT merged: `w-verify`, the adversarial
+  re-derivation of merged quantitative claims (the nine-dataset scorer divergences, the image
+  custody counts and the Terminal-Bench CTRF numbers). Nothing about its result is claimed here.
+- Resource state: the diagnostic used no model - the actor is deterministic and the run is a
+  no-model control - so both GPUs stayed idle and no utilisation is claimed. Historical runs,
+  frozen receipts and archives were untouched, and no existing run id was resumed.
