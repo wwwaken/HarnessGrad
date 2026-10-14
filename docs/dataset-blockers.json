@@ -1291,7 +1291,7 @@
           "id": "cached-runtime-admission",
           "family": "trusted-verifier-runtime",
           "status": "runtime",
-          "observed": "Observed 2026-10-15 - w-tbrun3: one real locally cached openssl-selfsigned-cert task executed with HG_TB_SPLIT=none, loop, rounds=0, trials=1, jobs=1 and the local qwen3.5-9b-local endpoint. The runtime created a pinned snapshot and ran bash /tests/test.sh in a fresh verifier container. Its reward file contained 0, but the required /logs/verifier/ctrf.json was absent; the driver classified the trial invalid (invalid_trials=1, measured_trials=0, score=null). This is not a measured failure. Image/resource/snapshot and after-run owned-object absence observations are preserved; the driver manifest hash and connected runtime/snapshot/cleanup receipt bindings remain absent or unknown. No cached artifact, raw zero, or empty namespace listing is counted as a valid score or admission attestation. The earlier source review remains historical evidence.",
+          "observed": "Observed 2026-10-15 - w-tbrun4: real cached openssl-selfsigned-cert executed with loop, HG_TB_SPLIT=none, rounds=0, trials=1, jobs=1, local qwen3.5-9b-local and HG_EGRESS_PROXY=http://172.17.0.1:17890. Host endpoint completion and both proxy curl probes succeeded. The snapshot verifier wrote reward 0 but no required /logs/verifier/ctrf.json; diagnostic_receipt.json records invalid_trials=1, measured_trials=0, unmeasured_trials=0, score=null. A pre-execution manifest is now hash-bound, with genuine image/resource/snapshot/cleanup observer receipts preserved. A concrete runtime defect blocks the configured proxy: eval/containers/container_state.py:216-217 passes the unconditionally created internal task network to the verifier instead of the declared bridge. A separate no-model control on an internal network reproduced Network is unreachable for both dependency hosts. The bridge control reached PyPI but returned HTTP 403 for the Astral installer via urllib; switching networks alone is not established sufficient. Actual invalid verifier stdout/stderr was not retained, so that exact task bootstrap error remains unknown. No measured zero or successful admission is inferred.",
           "evidence": [
             {
               "kind": "repository",
@@ -1312,9 +1312,14 @@
               "kind": "repository",
               "path": "reports/w-tbrun3-receipts.md",
               "locator": "OPEN: no valid verifier score."
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-tbrun4-receipts.md",
+              "locator": "OPEN: no valid verifier score; required `/logs/verifier/ctrf.json` is absent."
             }
           ],
-          "next_action": "Diagnose the official verifier failure to emit /logs/verifier/ctrf.json and preserve its stdout/stderr on the invalid path; the retained w-tbrun3 artifacts establish the missing report but not its underlying cause. A separately authorized fresh diagnostic must produce a valid verifier report and score with manifest/image/resource/cleanup bindings before this dataset-specific blocker closes. Preserve this invalid run and all earlier receipts. Keep the shared scorer-offline-closure and artifact-only-state-export gates attached; no pilot expansion or production authorization follows from this attempt."
+          "next_action": "Repair the verifier network selection defect at eval/containers/container_state.py:216-217 in a separately authorized code change, preserving the actor model network and the declared verifier network contract. Confirm the canonical proxy and Astral installer from the actual verifier network/client, retain failing scorer streams, then use a fresh authorized one-task diagnostic to obtain CTRF and a valid score with the existing manifest-bound observation receipts. Preserve this invalid run and all earlier attempts. Snapshot/cleanup uncertainty alone remains accepted per docs/enforcement-proof-decision.md. Shared scorer-offline-closure and artifact-only-state-export remain open; no pilot expansion or production authorization is granted."
         }
       ],
       "historical_runs": []

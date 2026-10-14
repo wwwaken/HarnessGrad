@@ -1,0 +1,14 @@
+{
+  "model": "qwen3.5-9b-local",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Reply with OK."
+    }
+  ],
+  "max_tokens": 16,
+  "temperature": 0,
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}

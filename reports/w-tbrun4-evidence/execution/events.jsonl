@@ -1,0 +1,36 @@
+{"seq": 1, "kind": "note", "level": "info", "message": "improver none  ← the method carries its own; nothing recorded"}
+{"seq": 2, "kind": "note", "level": "info", "message": "container boundary holds (docker 29.2.1): image sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12: docker_socket=no, harness_readable=yes, harness_writable=no, platform_visible=no, rootfs_writable=no, sibling_visible=no, state_writable=yes, task_writable=yes, tmp_writable=yes, uid=1026"}
+{"seq": 3, "kind": "note", "level": "warn", "message": "dataset 'terminal_bench' declares no train/eval split: every task is scored and the method is shown traces for all of them. The run is still measured, but a score from it cannot support a claim about generalisation -- the method studied its own exam. Pass `--split default` for the platform's documented division, `--split official` to score the benchmark's own evaluation set, or `--split <file.json>` to supply one."}
+{"seq": 4, "kind": "header", "run_id": "w-tbrun4-terminal-bench-20261014T195342Z-82530223", "harness": "loop", "version": "0.2.0", "mode": "unified", "dataset": "terminal_bench", "n_tasks": 1, "model": "qwen3.5-9b-local", "backend": "openai", "live": true, "sandbox": "exec — sha256:4c948a4e630af2435ae", "split": null, "argv": ["driver.py", "--harness", "loop", "--dataset", "terminal_bench", "--sampling", "diagnostic", "--policy-evidence", "/tmp/hg-tbrun4/runs/w-tbrun4-terminal-bench-20261014T195342Z-82530223-launch-evidence/policy-input.json", "--authorize-unobserved-diagnostic", "Operator explicitly requests one real cached openssl-selfsigned-cert diagnostic with HG_TB_SPLIT=none and the documented verifier egress proxy to obtain CTRF and a raw verifier score; runtime observations remain incomplete, with no comparable score publication, pilot expansion or production authorization.", "--rounds", "0", "--trials", "1", "--jobs", "1", "--side", "train", "--improver", "none", "--run-id", "w-tbrun4-terminal-bench-20261014T195342Z-82530223", "--runs-root", "/tmp/hg-tbrun4/runs", "--work-root", "/tmp/w-tbrun4-terminal-bench-20261014T195342Z-82530223-work"], "side": "train", "phase_labels": {"setup": "准备题目文件", "create": "创建容器", "prepare": "拷入 SETUP", "agent": "harness 做题", "snapshot": "停机+快照", "verify": "题目检查判分", "collect": "取回产物", "teardown": "清理容器"}}
+{"seq": 5, "kind": "task", "task": "openssl-selfsigned-cert", "status": "start", "round": 0, "index": 1, "total": 1}
+{"seq": 6, "kind": "phase", "phase": "create", "status": "start", "round": 0, "task": "openssl-selfsigned-cert", "budget_s": 120}
+{"seq": 7, "kind": "phase", "phase": "create", "status": "done", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 0.7, "budget_s": 120, "detail": ""}
+{"seq": 8, "kind": "phase", "phase": "prepare", "status": "start", "round": 0, "task": "openssl-selfsigned-cert", "budget_s": 120}
+{"seq": 9, "kind": "phase", "phase": "prepare", "status": "done", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 1.1, "budget_s": 120, "detail": ""}
+{"seq": 10, "kind": "phase", "phase": "agent", "status": "start", "round": 0, "task": "openssl-selfsigned-cert", "budget_s": null}
+{"seq": 11, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 10.0, "budget_s": null}
+{"seq": 12, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 20.0, "budget_s": null}
+{"seq": 13, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 30.0, "budget_s": null}
+{"seq": 14, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 40.0, "budget_s": null}
+{"seq": 15, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 50.0, "budget_s": null}
+{"seq": 16, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 60.0, "budget_s": null}
+{"seq": 17, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 70.0, "budget_s": null}
+{"seq": 18, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 80.0, "budget_s": null}
+{"seq": 19, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 90.0, "budget_s": null}
+{"seq": 20, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 100.0, "budget_s": null}
+{"seq": 21, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 110.0, "budget_s": null}
+{"seq": 22, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 120.0, "budget_s": null}
+{"seq": 23, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 130.0, "budget_s": null}
+{"seq": 24, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 140.0, "budget_s": null}
+{"seq": 25, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 150.0, "budget_s": null}
+{"seq": 26, "kind": "beat", "phase": "agent", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 160.0, "budget_s": null}
+{"seq": 27, "kind": "phase", "phase": "agent", "status": "done", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 162.7, "budget_s": null, "detail": ""}
+{"seq": 28, "kind": "phase", "phase": "snapshot", "status": "start", "round": 0, "task": "openssl-selfsigned-cert", "budget_s": 180}
+{"seq": 29, "kind": "phase", "phase": "snapshot", "status": "done", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 7.2, "budget_s": 180, "detail": ""}
+{"seq": 30, "kind": "phase", "phase": "verify", "status": "start", "round": 0, "task": "openssl-selfsigned-cert", "budget_s": 900}
+{"seq": 31, "kind": "phase", "phase": "verify", "status": "done", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 1.3, "budget_s": 900, "detail": ""}
+{"seq": 32, "kind": "phase", "phase": "teardown", "status": "start", "round": 0, "task": "openssl-selfsigned-cert", "budget_s": 120}
+{"seq": 33, "kind": "phase", "phase": "teardown", "status": "done", "round": 0, "task": "openssl-selfsigned-cert", "elapsed_s": 0.6, "budget_s": 120, "detail": ""}
+{"seq": 34, "kind": "task", "task": "openssl-selfsigned-cert", "status": "failed", "round": 0, "index": 1, "total": 1, "elapsed_s": 173.8, "score": null, "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"}
+{"seq": 35, "kind": "note", "level": "warn", "message": "openssl-selfsigned-cert: invalid for dataset 'terminal_bench' at stage 'check' -- the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"}
+{"seq": 36, "kind": "note", "level": "error", "message": "refusing staged curve: lifecycle publication gate or measurement incomplete; invalid/unmeasured outcomes are preserved in the receipt"}

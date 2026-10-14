@@ -1,0 +1,129 @@
+{
+ "task_id": "openssl-selfsigned-cert",
+ "round": 0,
+ "invalid": {
+  "stage": "check",
+  "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+ },
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tbrun4-terminal-bench-20261014T195342Z-82530223",
+  "task_id": "openssl-selfsigned-cert",
+  "operator_authorization": "Operator explicitly requests one real cached openssl-selfsigned-cert diagnostic with HG_TB_SPLIT=none and the documented verifier egress proxy to obtain CTRF and a raw verifier score; runtime observations remain incomplete, with no comparable score publication, pilot expansion or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "harness_output": {
+  "exit_code": 0,
+  "stderr": "",
+  "harness_runtime": {
+   "source": "overlay",
+   "python": "3.13",
+   "install": "requirements.txt",
+   "install_sha256": "8be10848dc9737d2dcfd24a34f5034ddeb02e918b078ce09a3c2d090fbc44ed8",
+   "path": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+   "built_from_image": "alexgshaw/break-filter-js-from-html:20251031",
+   "packages": {
+    "annotated_types-0.8.0": {
+     "top_level": [
+      "annotated_types"
+     ],
+     "version": "0.8.0"
+    },
+    "anyio-4.15.1": {
+     "top_level": [
+      "anyio"
+     ],
+     "version": "4.15.1"
+    },
+    "h11-0.16.0": {
+     "top_level": [
+      "h11"
+     ],
+     "version": "0.16.0"
+    },
+    "httpcore2-2.13.1": {
+     "top_level": [
+      "httpcore2"
+     ],
+     "version": "2.13.1"
+    },
+    "httpx2-2.13.1": {
+     "top_level": [
+      "httpx2"
+     ],
+     "version": "2.13.1"
+    },
+    "idna-3.20": {
+     "top_level": [
+      "idna"
+     ],
+     "version": "3.20"
+    },
+    "jiter-0.17.0": {
+     "top_level": [
+      "jiter"
+     ],
+     "version": "0.17.0"
+    },
+    "openai-3.22.1": {
+     "top_level": [
+      "openai"
+     ],
+     "version": "3.22.1"
+    },
+    "pydantic-2.13.5": {
+     "top_level": [
+      "pydantic"
+     ],
+     "version": "2.13.5"
+    },
+    "pydantic_core-2.46.5": {
+     "top_level": [
+      "pydantic_core"
+     ],
+     "version": "2.46.5"
+    },
+    "sniffio-1.3.1": {
+     "top_level": [
+      "sniffio"
+     ],
+     "version": "1.3.1"
+    },
+    "truststore-0.10.4": {
+     "top_level": [
+      "truststore"
+     ],
+     "version": "0.10.4"
+    },
+    "typing_extensions-4.16.0": {
+     "top_level": [
+      "typing_extensions"
+     ],
+     "version": "4.16.0"
+    },
+    "typing_inspection-0.4.4": {
+     "top_level": [
+      "typing_inspection"
+     ],
+     "version": "0.4.4"
+    }
+   }
+  },
+  "model_gateway": {
+   "published": true,
+   "target": "127.0.0.1:8002",
+   "connections": 32,
+   "upstream_connect_failed": 0,
+   "upstream_connect_error": null,
+   "upstream_closed_first": 32,
+   "client_closed_first": 0,
+   "bytes_to_upstream": 708355,
+   "bytes_to_client": 68268,
+   "read_errors": []
+  }
+ }
+}

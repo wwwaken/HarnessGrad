@@ -1,0 +1,19 @@
+{
+  "task_ids": [
+    "openssl-selfsigned-cert"
+  ],
+  "split": null,
+  "environment": {
+    "kind": "exec",
+    "image": "alexgshaw/openssl-selfsigned-cert:20251031",
+    "workdir": "/app",
+    "state": "container",
+    "network": "bridge",
+    "cpus": 1,
+    "memory_mb": 2048,
+    "placement": "inside",
+    "services": [],
+    "agent_timeout_s": 900,
+    "verify_timeout_s": 900
+  }
+}

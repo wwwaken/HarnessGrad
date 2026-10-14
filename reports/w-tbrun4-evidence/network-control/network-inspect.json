@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "inspect",
+    "hg-w-tbrun4-egress-control-20261014T195910Z-ec4ee67b"
+  ],
+  "command": "docker network inspect hg-w-tbrun4-egress-control-20261014T195910Z-ec4ee67b",
+  "returncode": 0,
+  "stdout": "[\n    {\n        \"Name\": \"hg-w-tbrun4-egress-control-20261014T195910Z-ec4ee67b\",\n        \"Id\": \"3c6913083f632f25eb1885a279547542af74afe63ed342857c19140945ed7fbc\",\n        \"Created\": \"2026-10-15T03:59:10.032276966+08:00\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": false,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"172.19.0.0/16\",\n                    \"Gateway\": \"172.19.0.1\"\n                }\n            ]\n        },\n        \"Internal\": true,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {},\n        \"Labels\": {\n            \"harnessgrad.run\": \"w-tbrun4-egress-control-20261014T195910Z-ec4ee67b\"\n        },\n        \"Containers\": {},\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.19.0.0/16\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 65533\n                    }\n                }\n            }\n        }\n    }\n]\n",
+  "stderr": ""
+}

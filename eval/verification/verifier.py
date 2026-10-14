@@ -86,8 +86,9 @@ VERDICT_DETAIL_LIMIT = 6000
 #:
 #: Measured on this host: `astral.sh` is unreachable directly (403 in a container, TLS
 #: handshake timeout from the shell) while `pypi.org` is fine; with
-#: `HG_EGRESS_PROXY=http://172.17.0.1:7890` the task's own `test.sh` runs to completion and
-#: writes its `ctrf.json`. Unset, nothing about a run changes.
+#: `HG_EGRESS_PROXY=http://172.17.0.1:17890` (see `docs/egress.md`) the task's own
+#: `test.sh` runs to completion and writes its `ctrf.json`. Unset, nothing about a run
+#: changes.
 EGRESS_PROXY_ENV = "HG_EGRESS_PROXY"
 
 def _check_env() -> dict[str, str]:
