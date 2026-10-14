@@ -24,7 +24,7 @@ import pytest
 
 import eval.containers.container as container
 from ckpt.git_state import STATE_DIRNAME
-from data import registry
+from data.scaffolds import registry
 from eval.run.integrity import PLATFORM_ROOT
 from policy_assertions import assert_driver_policy_refusal
 

@@ -1,7 +1,7 @@
 r"""tau2-bench -- **refused**: it is a two-party benchmark and this platform has no user simulator.
 
     python3 tools/datasets.py --fetch --dataset tau2_bench
-    python3 data/qa/control.py --dataset tau2_bench          # says why there is no control
+    python3 data/scaffolds/qa/control.py --dataset tau2_bench          # says why there is no control
     python3 tools/dataset_lint.py --dataset tau2_bench       # REFUSED, not FAIL
 
 The pin is the point

@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from data.qa.base import is_eval
+from data.scaffolds.qa.base import is_eval
 
 KIND = 'dataset'
 

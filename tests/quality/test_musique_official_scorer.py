@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 import data.musique as dataset
-from data.qa import base
+from data.scaffolds.qa import base
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "tests/fixtures/musique_official"
@@ -218,7 +218,7 @@ def test_load_mode_goals_and_verifier_stay_aligned_on_synthetic_records(monkeypa
             assert "--redact-gold" in verifier["argv"]
     with pytest.raises(ValueError, match="mode"):
         dataset.load(mode="unknown")
-    from data.qa.control import _oracle_prediction
+    from data.scaffolds.qa.control import _oracle_prediction
     assert _oracle_prediction(dataset, train_record) == {
         "schema_version": 1, "answer": train_record["gold"]["answer"],
         "predicted_evidence": [["Shared title", 7], ["Shared title", 11]],

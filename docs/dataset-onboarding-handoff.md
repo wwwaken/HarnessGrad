@@ -129,7 +129,7 @@ Gates 1 and 2 must pass **twice**: by hand, and through the platform by adding `
 
 | # | gate | how |
 | --- | --- | --- |
-| 1 | oracle control scores 1 | `python3 data/<name>/control.py --oracle` or `data/qa/control.py --dataset <name> --oracle` |
+| 1 | oracle control scores 1 | `python3 data/<name>/control.py --oracle` or `data/scaffolds/qa/control.py --dataset <name> --oracle` |
 | 2 | do-nothing control scores 0 | same, `--noop` |
 | 3 | the official scorer is transcribed verbatim + a differential test | `tests/quality/test_<name>_official_scorer.py` |
 | 4 | `KIND = "dataset"` and the lint passes | `python3 tools/dataset_lint.py --dataset <name>` → rc 0 |

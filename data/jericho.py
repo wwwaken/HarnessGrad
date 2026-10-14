@@ -125,7 +125,7 @@ def games_dir() -> Path:
 def _official_games() -> list[dict]:
     """The benchmark's own game table, filtered to the ROMs that are actually present.
 
-    `jericho.game_info` is imported **lazily**: `data/registry.py::published` imports every
+    `jericho.game_info` is imported **lazily**: `data/scaffolds/registry.py::published` imports every
     adapter to decide what the chooser offers, and an import that pulls in `jericho` (a
     ctypes-wrapped C library) at that point is a second thing that can fail on a machine that
     has not installed it.
@@ -383,7 +383,7 @@ def _map(builder) -> dict:
 def __getattr__(name: str):
     """`ENV`/`SETUP`/`VERIFY`/`SPLIT`, built on first use.
 
-    Not at import: `data/registry.py::published` imports this module to decide what the
+    Not at import: `data/scaffolds/registry.py::published` imports this module to decide what the
     chooser offers, and the maps carry one entry per game with a ROM path and a JSON blob.
     """
     if name == "_RECORDS":

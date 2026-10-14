@@ -14,7 +14,7 @@ than a flat line. Scoring is exact-match and lives in `eval/`, never here.
 from __future__ import annotations
 
 
-#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: See `data/scaffolds/registry.py:KIND_DATASET`. A fixture is platform test material and is
 #: deliberately not offered as a choice in the Launch form.
 KIND = "fixture"
 #: The demo fixture's oracle submits the fixture's own reference; see
@@ -41,7 +41,7 @@ SCORABLE: dict[str, str] = {
 
 #: The first four are the method's to study; the last four are the exam. A
 #: dataset that declares no split is not silently split for it -- see
-#: `data/registry.py`.
+#: `data/scaffolds/registry.py`.
 SPLIT = {
     "train": ["t01", "t02", "t03", "t04"],
     "eval": ["t05", "t06", "t07", "t08"],

@@ -205,7 +205,7 @@ def _ended(usage: dict, answers: int, parse_errors: int, commands: int,
 def task_file(dest: Path, name: str) -> Path:
     """`dest / name`, with the directories `name` implies created.
 
-    A task id **contains slashes by design** -- `data/qa/base.py`'s is
+    A task id **contains slashes by design** -- `data/scaffolds/qa/base.py`'s is
     `<dataset>/<split>/<n>`, and the comment there says so out loud -- so every file named
     after a task is a *nested* path. `dest.mkdir()` is not enough: it creates
     `verdicts/round-0/` and leaves `verdicts/round-0/gsm8k/train/` missing.

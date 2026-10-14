@@ -6,7 +6,7 @@ Ho et al., COLING 2020, https://arxiv.org/abs/2011.01060. The official evaluator
 submissions and retains a labeled legacy answer-only path.
 
     python3 tools/datasets.py --fetch --dataset twowikimultihopqa
-    python3 data/qa/control.py --dataset twowikimultihopqa --oracle --platform
+    python3 data/scaffolds/qa/control.py --dataset twowikimultihopqa --oracle --platform
     python3 tools/dataset_lint.py --dataset twowikimultihopqa
 
 Public output contract and reward
@@ -79,7 +79,7 @@ from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 
@@ -504,7 +504,7 @@ def evaluate_predictions(predictions: dict[str, dict], golds: list[dict]) -> dic
     """
     if not golds:
         raise ValueError("cannot evaluate an empty gold pool")
-    from data.aggregation import aggregation_denominator
+    from data.scaffolds.aggregation import aggregation_denominator
 
     denominator = aggregation_denominator("twowikimultihopqa", "corpus_metrics",
                                           gold_rows=len(golds))
@@ -674,7 +674,7 @@ SPLIT = _BUILT["SPLIT"]
 OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
 
 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study split
-#: this adapter loads, so the platform imposes one. See `data/qa/base.py::division`.
+#: this adapter loads, so the platform imposes one. See `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
 
 

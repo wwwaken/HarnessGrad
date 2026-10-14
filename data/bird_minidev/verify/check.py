@@ -14,7 +14,7 @@ upstream catches everything in one `try`, so a **gold** query that fails -- a br
 database, a missing table -- is scored as a wrong answer. This platform treats that as
 unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
 otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
-`data/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+`data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
 in that class: the task ran and the agent did not answer, which is a measured zero.
 
 The reward is per-question EX. The benchmark's other two official columns -- Soft-F1

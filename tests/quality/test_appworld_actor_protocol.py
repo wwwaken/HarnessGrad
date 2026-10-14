@@ -18,7 +18,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from data import registry
+from data.scaffolds import registry
 from eval.containers import container_state
 from eval.run import runner
 from eval.run.task_contract import runtime_task

@@ -77,7 +77,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from data import registry  # noqa: E402
+from data.scaffolds import registry  # noqa: E402
 
 #: Level 1 of the judged axis: the demand the task places on the Harness. Closed, and printed
 #: in this order. A demand names something the Harness must provide, which is why a transfer
@@ -355,7 +355,7 @@ def _cli_scripts(module, task_id: str) -> list[Path]:
     """The agent-facing programs a dataset ships.
 
     The rule is the layout convention this repository actually follows, not a file extension
-    and not the executable bit -- measured: `data/qa/cli/qa` is mode 0600 while
+    and not the executable bit -- measured: `data/scaffolds/qa/cli/qa` is mode 0600 while
     `data/alfworld/cli/alf` is 0711, so the bit cannot decide, and `dojo.py` carries a `.py`
     extension while `alf` does not, so neither can a suffix. Every agent-facing program here
     lives under a `cli/` directory or is materialized under a `bin/` directory.

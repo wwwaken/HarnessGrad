@@ -56,7 +56,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from ckpt.git_state import commit_state, stage_workspace          # noqa: E402
-from data import registry                                          # noqa: E402
+from data.scaffolds import registry                                          # noqa: E402
 from driver import load_env                                        # noqa: E402
 from eval.observe.console import CONSOLE as console                         # noqa: E402
 from eval.run.runner import evaluate                                    # noqa: E402

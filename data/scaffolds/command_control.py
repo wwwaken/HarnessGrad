@@ -181,7 +181,7 @@ def run_platform(module, task: dict, *, oracle: bool, workdir: Path,
     setup = {"files": list(module.SETUP[tid]["files"])}
     if oracle:
         # The harness copies these into place and names them -- see
-        # `data/command_oracle_harness/`. They arrive under `.oracle/` so the check's
+        # `data/scaffolds/command_oracle_harness/`. They arrive under `.oracle/` so the check's
         # workdir never contains the answer while the agent is running.
         for rel, content in oracle_files(module, task).items():
             setup["files"].append({"path": f".oracle/{rel}", "content": content})

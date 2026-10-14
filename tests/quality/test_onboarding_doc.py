@@ -154,7 +154,7 @@ def test_the_generic_control_commands_use_real_flags():
     """The page's `data/<name>/control.py --oracle …` lines carry a placeholder, so the
     flags are checked against the two control entry points that exist."""
     text = _page()
-    for script in ("data/qa/control.py", "data/jericho/control.py"):
+    for script in ("data/scaffolds/qa/control.py", "data/jericho/control.py"):
         source = (ROOT / script).read_text(encoding="utf-8")
         for flag in ("--oracle", "--noop", "--platform"):
             assert f'"{flag}"' in source, f"{script} does not define {flag}"

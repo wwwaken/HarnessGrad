@@ -78,6 +78,7 @@ checks that canonical production modules never import the compatibility paths.
   Additional config submodule dependencies need separate review.
 - Production Python modules anywhere under `data/`, `eval/`, and `harnessgrad/`
   cannot import `legacy` or any of its submodules. The initial audit found none.
+- Adapters may import `data.scaffolds.*` and their own private assets; imports of other adapters or other `data.*` modules are forbidden. The guard covers both Stage C's top-level adapters and Stage D's `data.datasets.*`.
 - `data/` cannot import `eval/`, except for the eleven existing edges explicitly
   recorded below. Support/control scripts are scanned too.
 
@@ -102,12 +103,12 @@ and exact imported module in `EXCEPTIONS`, with a reason:
 | `data/alfworld/control.py` | `eval.run.runner` | Platform control validates adapter wiring through `run_one` |
 | `data/appworld/control.py` | `eval.run.runner` | Platform control invokes the AppWorld verifier through `run_one` |
 | `data/appworld.py` | `eval.policy.appworld_reporting` | Adapter and reporting share `make_manifest`; extraction needs a separate refactor |
-| `data/command_control.py` | `eval.run.runner` | Shared command control runs platform verification |
+| `data/scaffolds/command_control.py` | `eval.run.runner` | Shared command control runs platform verification |
 | `data/jericho/control.py` | `eval.policy.runtime_policy` | Local control stages runtime and applies platform timeout |
 | `data/jericho/control.py` | `eval.containers.sandbox` | Local control executes the game CLI in the platform sandbox |
 | `data/jericho/control.py` | `eval.verification.verifier` | Local control interprets measured evidence through the platform verifier |
 | `data/jericho/control.py` | `eval.run.runner` | Platform control invokes the Jericho verifier through `run_one` |
-| `data/qa/control.py` | `eval.run.runner` | Shared QA control validates adapter wiring through `run_one` |
+| `data/scaffolds/qa/control.py` | `eval.run.runner` | Shared QA control validates adapter wiring through `run_one` |
 | `data/scienceworld/control.py` | `eval.run.runner` | Platform control invokes the ScienceWorld verifier through `run_one` |
 | `data/spreadsheetbench/control.py` | `eval.run.runner` | Platform control invokes the spreadsheet verifier through `run_one` |
 

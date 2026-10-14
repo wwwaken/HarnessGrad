@@ -27,8 +27,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import dataset_lint  # noqa: E402
 import new_dataset  # noqa: E402
-from data import command_control  # noqa: E402
-from data import registry  # noqa: E402
+from data.scaffolds import command_control  # noqa: E402
+from data.scaffolds import registry  # noqa: E402
 
 SOURCE = {
     "url": "https://example.invalid/scaffold-probe.tar.gz",
@@ -39,7 +39,7 @@ SOURCE = {
 }
 
 KINDS = {
-    "qa": {"module": "scaffold_probe_qa", "control": ["data/qa/control.py"],
+    "qa": {"module": "scaffold_probe_qa", "control": ["data/scaffolds/qa/control.py"],
            "control_args": ["--dataset", "scaffold_probe_qa"]},
     "command": {"module": "scaffold_probe_cmd", "control": ["data/scaffold_probe_cmd/control.py"],
                 "control_args": []},

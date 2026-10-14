@@ -1,7 +1,7 @@
 r"""API-Bank -- **refused**: its official metric is not reproducible from the released data.
 
     python3 tools/datasets.py --fetch --dataset api_bank     # stages the vendored tree
-    python3 data/qa/control.py --dataset api_bank            # says why there is no control
+    python3 data/scaffolds/qa/control.py --dataset api_bank            # says why there is no control
     python3 tools/dataset_lint.py --dataset api_bank         # REFUSED, not FAIL
 
 What it is, and why this file exists

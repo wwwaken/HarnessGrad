@@ -1,6 +1,6 @@
 """The contract every plain-text QA dataset shares, tested once and for all of them.
 
-`data/qa/base.py` is used by eight adapters, so its invariants would otherwise be copied
+`data/scaffolds/qa/base.py` is used by eight adapters, so its invariants would otherwise be copied
 eight times -- and a copy is a fork waiting to happen. This file parametrises over every
 provisioned QA dataset and asserts the things the scaffold promises:
 
@@ -162,7 +162,7 @@ def test_the_gold_is_inside_the_package_that_travels(qa):
     paths = {entry["path"] for entry in qa.VERIFY[task_id]["inputs"]}
     assert "gold.json" in paths
     assert "data/__init__.py" in paths
-    assert "data/qa/base.py" in paths
+    assert "data/scaffolds/qa/base.py" in paths
     assert f"data/{qa.__name__.split('.')[-1]}.py" in paths
 
 

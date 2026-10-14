@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from data import registry
+from data.scaffolds import registry
 from eval.containers import container
 from eval.service import services
 from harnessgrad.environments import _env_record, _resolve_envs

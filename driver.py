@@ -26,7 +26,7 @@ import sys
 import time
 from pathlib import Path
 
-import data.registry as datasets
+import data.scaffolds.registry as datasets
 from tools.improver import forbidden_reason
 from tools.improver import load_config as load_improvers
 from tools.improver import resolve as resolve_improver

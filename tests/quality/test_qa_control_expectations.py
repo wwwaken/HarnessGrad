@@ -11,8 +11,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import bfcl_v3, registry  # noqa: E402
-from data.qa import control  # noqa: E402
+from data import bfcl_v3
+from data.scaffolds import registry  # noqa: E402
+from data.scaffolds.qa import control  # noqa: E402
 
 
 @pytest.mark.parametrize("path", ["local", "platform"])

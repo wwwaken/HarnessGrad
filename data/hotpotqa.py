@@ -7,8 +7,8 @@ The adapter reads only the pinned validation split, not test gold.
 """
 from __future__ import annotations
 
-from data.qa import base
-from data.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_score,
+from data.scaffolds.qa import base
+from data.scaffolds.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_score,
                                       SpScore, hotpot_joint, hotpot_update_sp, MissingEvidence)
 
 KIND = "dataset"

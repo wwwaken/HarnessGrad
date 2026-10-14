@@ -13,7 +13,7 @@ import chess
 import pytest
 
 import data.chessbench_puzzles as dataset
-from data.qa import control
+from data.scaffolds.qa import control
 
 
 @pytest.fixture(autouse=True)

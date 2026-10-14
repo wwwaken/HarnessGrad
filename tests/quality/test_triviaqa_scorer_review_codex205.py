@@ -51,7 +51,7 @@ def test_match_after_alias_200_survives_gold_materialization(triviaqa, kind):
 @pytest.mark.parametrize("prediction", ["Invented Blue Town", "wrong"])
 def test_verifier_records_new_adapter_identity_and_pinned_reference(
         triviaqa, monkeypatch, tmp_path, prediction):
-    from data.qa.verify import check
+    from data.scaffolds.qa.verify import check
 
     read_upstream_fixture()
     receipt = json.loads((FIXTURE / "provenance.json").read_text())

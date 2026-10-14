@@ -22,7 +22,7 @@ import re
 import string
 from pathlib import Path
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 EVIDENCE_AWARE = True
@@ -114,7 +114,7 @@ def _score(answer: str, evidence: list | None, gold: dict, mode: str) -> dict:
 
 
 def score_prediction(prediction: dict, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:
-    from data.qa.prediction import validate_prediction
+    from data.scaffolds.qa.prediction import validate_prediction
 
     value, error = validate_prediction(prediction)
     if error:
@@ -137,7 +137,7 @@ def aggregate(results: list[dict]) -> dict:
     """
     if not results:
         raise ValueError("cannot aggregate an empty MuSiQue result list")
-    from data.aggregation import aggregation_denominator
+    from data.scaffolds.aggregation import aggregation_denominator
 
     denominator = aggregation_denominator("musique", "corpus_metrics",
                                           provided_results=len(results))
@@ -252,7 +252,7 @@ DEFAULT_ENV = {"kind": "files"}
 OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study
-#: split, so the platform imposes one. See `data/qa/base.py::division`.
+#: split, so the platform imposes one. See `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = "hash"
 
 

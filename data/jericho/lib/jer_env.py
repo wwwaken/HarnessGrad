@@ -32,7 +32,7 @@ def make_env(rom: Path, *, seed: int):
     """A `FrotzEnv` for `rom`, reset at `seed`.
 
     Imported inside the function so `data/jericho.py` stays importable on a machine without
-    the package (`data/registry.py::published` imports every adapter to decide what the
+    the package (`data/scaffolds/registry.py::published` imports every adapter to decide what the
     chooser offers).
     """
     from jericho import FrotzEnv

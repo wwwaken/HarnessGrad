@@ -8,8 +8,8 @@ prediction still scores, with absent required evidence measured as incorrect.
 """
 from __future__ import annotations
 
-from data.qa import base
-from data.qa.evidence_scorers import MissingEvidence, fever_is_strictly_correct
+from data.scaffolds.qa import base
+from data.scaffolds.qa.evidence_scorers import MissingEvidence, fever_is_strictly_correct
 
 KIND = "dataset"
 

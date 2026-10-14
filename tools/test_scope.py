@@ -67,7 +67,7 @@ EXTRA = {
 def published(registry_module=None) -> list[str]:
     """The dataset names to scope against.
 
-    `data.registry.published()` imports the adapters. This module is used by the
+    `data.scaffolds.registry.published()` imports the adapters. This module is used by the
     test runner, which must be able to print a plan without loading datasets, so a
     caller may pass a pre-computed list instead.
     """
@@ -75,7 +75,7 @@ def published(registry_module=None) -> list[str]:
         return sorted(registry_module.published())
     import sys
     sys.path.insert(0, str(ROOT))
-    from data import registry
+    from data.scaffolds import registry
     return sorted(registry.published())
 
 

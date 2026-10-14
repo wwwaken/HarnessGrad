@@ -129,7 +129,7 @@ def no_network(monkeypatch):
 def triviaqa(monkeypatch):
     # Suppress import-time pool construction BEFORE loading a private module instance.
     # Neither provisioned payloads nor globally cached data.triviaqa state enter tests.
-    from data.qa import base
+    from data.scaffolds.qa import base
 
     def forbidden(*args, **kwargs):
         pytest.fail("released TriviaQA payload reads are forbidden in synthetic tests")

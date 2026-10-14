@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 from types import SimpleNamespace
 import pytest
-from data import agentdojo, command_control
+from data import agentdojo
+from data.scaffolds import command_control
 
 def test_explicit_control_uses_only_its_prepared_case(tmp_path, monkeypatch):
     case = tmp_path / 'prepared/7/case.json'; case.parent.mkdir(parents=True)

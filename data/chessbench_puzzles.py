@@ -24,7 +24,7 @@ import re
 
 import chess
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 
@@ -396,7 +396,7 @@ DEFAULT_ENV = {"kind": "files"}
 OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study
-#: split, so the platform imposes one. See `data/qa/base.py::division`.
+#: split, so the platform imposes one. See `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = "hash"
 
 

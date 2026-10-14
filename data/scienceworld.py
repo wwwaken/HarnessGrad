@@ -92,7 +92,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-#: See `data/registry.py:KIND_DATASET`.
+#: See `data/scaffolds/registry.py:KIND_DATASET`.
 KIND = "dataset"
 
 #: The oracle control submits the benchmark's own released reference; see
@@ -392,7 +392,7 @@ def provision_status() -> dict:
     }
 
 
-#: Enumerated on first use, never at import: `data/registry.py::published` imports every
+#: Enumerated on first use, never at import: `data/scaffolds/registry.py::published` imports every
 #: adapter, and the enumeration needs a JVM. `_LOAD_ERROR` carries the reason into `load()`,
 #: so a machine without the runtime can still see the dataset in the chooser and read why
 #: it will not run.
@@ -448,7 +448,7 @@ def _is_eval(task_id: str) -> bool:
 
 #: One environment for every task: the host, because the hard constraint of this exercise
 #: is that nothing here needs Docker. `files` cannot carry resource or timeout fields
-#: (`data/registry.py::_check_env` refuses them), so the platform's defaults apply.
+#: (`data/scaffolds/registry.py::_check_env` refuses them), so the platform's defaults apply.
 DEFAULT_ENV: dict = {"kind": "files"}
 
 

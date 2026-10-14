@@ -31,9 +31,9 @@ def cli(tmp_path):
     # Use the actual public SETUP layout, without any adapter or trusted inputs.
     target = tmp_path / "qa/bin/qa"
     target.parent.mkdir(parents=True)
-    target.write_bytes((ROOT / "data/qa/cli/qa").read_bytes())
+    target.write_bytes((ROOT / "data/scaffolds/qa/cli/qa").read_bytes())
     (tmp_path / "qa/prediction.py").write_bytes(
-        (ROOT / "data/qa/prediction.py").read_bytes())
+        (ROOT / "data/scaffolds/qa/prediction.py").read_bytes())
     return target
 
 

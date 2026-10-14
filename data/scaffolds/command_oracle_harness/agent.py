@@ -3,7 +3,7 @@
 
 Every `command` dataset's reference solution is a **file** (or a small set of them): a golden
 workbook, a correct program, a label. The dataset names those files by declaring
-`oracle_files(task)`, `data/command_control.py` stages them at `.oracle/`, and this control
+`oracle_files(task)`, `data/scaffolds/command_control.py` stages them at `.oracle/`, and this control
 copies them into the workdir exactly as a correct agent would have left them.
 
 It is deliberately dumber than a harness. It reads nothing from the task, decides nothing, and

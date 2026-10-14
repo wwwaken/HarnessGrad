@@ -21,23 +21,23 @@ wiring, which is the part that is easy to get subtly wrong and impossible to not
 That is the whole argument for generating rather than copying: sixteen datasets produced
 this repository, and every one of them re-derived the same wiring by hand.
 
-**Kinds.** `qa` uses the shared scaffold in `data/qa/` (its CLI, its check, its control and
+**Kinds.** `qa` uses the shared scaffold in `data/scaffolds/qa/` (its CLI, its check, its control and
 its oracle harness): the author writes only the adapter. `command` is for a dataset whose
 agent leaves an *artefact* that a program judges -- it generates `verify/check.py`, a
-ten-line `control.py` over `data/command_control.py`, and nothing else.
+ten-line `control.py` over `data/scaffolds/command_control.py`, and nothing else.
 
 **`files` is the third kind, written once the family that shares it arrived.** A `files`
 dataset ships a **runtime tree** the agent acts inside: `SETUP[task]` materializes it, the
 harness acts there, and `VERIFY[task]` inspects the state it left. It generates the same
 three files as `command` -- module, `verify/check.py`, a thin `control.py` -- because the
-control machinery in `data/command_control.py` turns out to be **kind-agnostic**: it only
+control machinery in `data/scaffolds/command_control.py` turns out to be **kind-agnostic**: it only
 needs `load()`, `SPLIT`, `SETUP`, `VERIFY` and `oracle_files(task)`. What the scaffold adds
 for this shape is the runtime tree, a state-based check, and the three traps that shape has
 already paid for (they are written into the generated module, where the author will read
 them).
 
 The generated module declares `KIND = "fixture"`, so a scaffold never appears in
-`data.registry.published()` and never reaches the chooser. Flip it to `"dataset"` when the
+`data.scaffolds.registry.published()` and never reaches the chooser. Flip it to `"dataset"` when the
 real data and the official scorer are in.
 """
 from __future__ import annotations
@@ -58,7 +58,7 @@ NAME_RE = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 KINDS = ("qa", "command", "files")
 
 #: How many toy rows the scaffold carries. Chosen at generation time to be at least this
-#: many, then grown until `data/qa/base.is_eval` puts tasks on **both** sides of the split:
+#: many, then grown until `data/scaffolds/qa/base.is_eval` puts tasks on **both** sides of the split:
 #: the split is hashed from the task id, which contains the dataset name, so the number of
 #: rows a given name needs is not knowable without computing it. A scaffold that fails
 #: `load()` because every task landed on one side would be a scaffold that does not work.
@@ -92,7 +92,7 @@ from __future__ import annotations
 
 import re
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "fixture"          # <- flip to "dataset" when the data and scorer are real
 #: Where the oracle control's reference comes from. A scaffold's reference is part of
@@ -219,7 +219,7 @@ __all__ = ["KIND", "DATASET_ROOT", "ROWS", "load", "downloads", "score",
 
 def _toy_rows(name: str) -> list[dict]:
     """A toy table sized so the hashed split has tasks on both sides for *this* name."""
-    from data.qa.base import is_eval
+    from data.scaffolds.qa.base import is_eval
 
     count = TOY_ROWS_MIN
     while True:
@@ -243,7 +243,7 @@ What is generated:
 
     data/$name.py                this adapter: SETUP, VERIFY, ENV, SPLIT, oracle_files()
     data/$name/verify/check.py   the check: reads the artefact, writes the reward
-    data/$name/control.py        a shim over data/command_control.py
+    data/$name/control.py        a shim over data/scaffolds/command_control.py
 
 Next steps:
 
@@ -349,9 +349,9 @@ SPLIT = {"train": [t["task_id"] for t in TASKS[: max(1, len(TASKS) // 3)]],
 def oracle_files(task: dict) -> dict[str, str]:
     """What a correct agent would leave in the workdir, as {relative path: content}.
 
-    This is the dataset's reference solution as data, and `data/command_control.py` uses it
+    This is the dataset's reference solution as data, and `data/scaffolds/command_control.py` uses it
     for both arms: by hand it writes these files into the workdir, and through the platform
-    it stages them at `.oracle/` for `data/command_oracle_harness/` to copy into place.
+    it stages them at `.oracle/` for `data/scaffolds/command_oracle_harness/` to copy into place.
     """
     return {"answer.txt": _GOLD[task["task_id"]] + "\\n"}
 
@@ -428,7 +428,7 @@ COMMAND_CONTROL_TEMPLATE = Template('''#!/usr/bin/env python3
     python3 data/$name/control.py --oracle --platform
     python3 data/$name/control.py --noop   --platform
 
-The algorithm lives in `data/command_control.py`; what is dataset-specific is
+The algorithm lives in `data/scaffolds/command_control.py`; what is dataset-specific is
 `oracle_files(task)` in `data/$name.py`, which is the reference solution as data.
 """
 from __future__ import annotations
@@ -439,7 +439,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import command_control  # noqa: E402
+from data.scaffolds import command_control  # noqa: E402
 
 
 if __name__ == "__main__":
@@ -559,7 +559,7 @@ import json
 import os
 from pathlib import Path
 
-from data import registry
+from data.scaffolds import registry
 
 KIND = "fixture"          # <- flip to "dataset" when the data and scorer are real
 #: Where the oracle control's reference comes from. A scaffold's reference is part of
@@ -573,7 +573,7 @@ DATASET_ROOT = Path(os.environ.get("HG_${NAME}_DATA", "/mnt/20t/xubuqiang/datase
 
 #: The scaffold\'s toy tasks, so the five gates can be run before a byte is downloaded.
 #: The id says `task`, not `eval`: which side a task is on is decided by the hash
-#: (`data.registry.default_split`), and an id that claims a side it is not on is a lie a
+#: (`data.scaffolds.registry.default_split`), and an id that claims a side it is not on is a lie a
 #: reader would believe.
 _TOY = $tasks
 
@@ -654,7 +654,7 @@ def oracle_files(task: dict) -> dict:
     """The reference solution, as data: `{relative path: content}`.
 
     `task` is a **task** (`{{task_id, goal, inputs}}`), not a record, because this is what
-    `data/command_control.py::solve` hands over -- so it looks the record up by id. It must
+    `data/scaffolds/command_control.py::solve` hands over -- so it looks the record up by id. It must
     be non-empty text content: a filesystem mutation that is not a file cannot be expressed
     here, and a dataset whose oracle is one needs its own control.
     """
@@ -676,7 +676,7 @@ TASKS = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in _REC
 SPLIT = registry.default_split(TASKS)
 
 #: The benchmark\'s own evaluation set. `None` when nothing in the pool is study material;
-#: see `data/registry.py::official_split` for what that does and does not claim.
+#: see `data/scaffolds/registry.py::official_split` for what that does and does not claim.
 OFFICIAL_EVAL = None
 
 DEFAULT_ENV: dict = {"kind": "files"}
@@ -713,7 +713,7 @@ FILES_CONTROL_TEMPLATE = Template('''#!/usr/bin/env python3
     python3 data/$name/control.py --oracle --platform
     python3 data/$name/control.py --noop   --platform
 
-`data/command_control.py` carries the algorithm, and it is kind-agnostic: what is
+`data/scaffolds/command_control.py` carries the algorithm, and it is kind-agnostic: what is
 dataset-specific is `oracle_files(task)` in `data/$name.py` -- the reference solution as
 data. Gate 1 (oracle -> 1) and gate 2 (do nothing -> 0) are the same two commands for every
 `command`/`files` dataset, which is the point of generating this file rather than writing it.
@@ -726,7 +726,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import command_control  # noqa: E402
+from data.scaffolds import command_control  # noqa: E402
 
 
 if __name__ == "__main__":
@@ -851,7 +851,7 @@ def _kind_refusal(kind: str) -> str:
     the usual reason to read it is having guessed a fourth."""
     return (
         f"unknown --kind {kind!r}. The kinds are:\n"
-        "  qa      a question with a checkable answer, on the shared scaffold in data/qa/\n"
+        "  qa      a question with a checkable answer, on the shared scaffold in data/scaffolds/qa/\n"
         "  command the agent leaves an artefact a program judges\n"
         "  files   a runtime tree the agent acts inside; the check inspects the state\n"
         "Read docs/dataset-onboarding.md section 3 before choosing: the kind decides what\n"
@@ -886,8 +886,8 @@ def main(argv: list[str] | None = None) -> int:
     print("the scaffold already passes the five gates; prove it:")
     if args.kind == "qa":
         print(f"  python3 tools/dataset_lint.py --dataset {args.name}")
-        print(f"  python3 data/qa/control.py --dataset {args.name} --oracle")
-        print(f"  python3 data/qa/control.py --dataset {args.name} --noop")
+        print(f"  python3 data/scaffolds/qa/control.py --dataset {args.name} --oracle")
+        print(f"  python3 data/scaffolds/qa/control.py --dataset {args.name} --noop")
     else:
         print(f"  python3 tools/dataset_lint.py --dataset {args.name}")
         print(f"  python3 data/{args.name}/control.py --oracle")

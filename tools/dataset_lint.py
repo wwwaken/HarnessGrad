@@ -14,7 +14,7 @@ What it checks (see the schema for the exact spelling)
 ------------------------------------------------------
     KIND declared and one of the known kinds
     load() callable and returning tasks with `task_id` + `goal`
-    ENV/SETUP/VERIFY cover every task id (delegated to data/registry.py, so there is
+    ENV/SETUP/VERIFY cover every task id (delegated to data/scaffolds/registry.py, so there is
         one answer to "is this environment/verifier valid", not two)
     VERIFY.inputs `dst` values are TOP LEVEL absolute paths
     a `command` verifier declares `reward_file`, and it is absolute
@@ -39,7 +39,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "data" / "dataset.schema.json"
 
 sys.path.insert(0, str(ROOT))
-import data.registry as registry  # noqa: E402
+import data.scaffolds.registry as registry  # noqa: E402
 
 
 class Result:
@@ -285,7 +285,7 @@ def lint_oracle(module, schema: dict, result: Result) -> None:
     reader of `run_meta.json` cannot tell them apart unless the dataset says which it is.
 
     Silence is refused rather than defaulted, which is `OFFICIAL_EVAL`'s rule
-    (`data/registry.py::official_split` refuses silence for the same reason): a default of
+    (`data/scaffolds/registry.py::official_split` refuses silence for the same reason): a default of
     `released` is exactly the blind spot this field exists to close, because the dataset that
     needs the field is the one whose author has just written a reference by hand.
     """

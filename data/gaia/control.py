@@ -6,7 +6,7 @@
     python3 data/gaia/control.py --oracle --platform
     python3 data/gaia/control.py --noop   --platform
 
-`data/command_control.py` carries the algorithm, and it is kind-agnostic: what is
+`data/scaffolds/command_control.py` carries the algorithm, and it is kind-agnostic: what is
 dataset-specific is `oracle_files(task)` in `data/gaia.py` -- and here that is the benchmark's
 **released answer**, so gate 1 is cheap and proves only that the check is reachable.
 
@@ -25,7 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import command_control  # noqa: E402
+from data.scaffolds import command_control  # noqa: E402
 
 
 if __name__ == "__main__":

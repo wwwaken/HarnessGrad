@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
-import data.registry as registry  # noqa: E402
+import data.scaffolds.registry as registry  # noqa: E402
 import dataset_lint  # noqa: E402
 
 

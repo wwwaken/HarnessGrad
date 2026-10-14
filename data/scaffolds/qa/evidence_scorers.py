@@ -3,7 +3,7 @@ r"""Transcribed official evidence metrics used by FEVER and HotpotQA adapters.
 The optional `prediction.json` contract carries those evidence fields. Missing evidence
 is represented by `MissingEvidence`; each adapter maps that valid-but-incomplete
 prediction to an official measured zero. Malformed artifact structure is rejected by
-`data/qa/prediction.py` and is unmeasured by the verifier.
+`data/scaffolds/qa/prediction.py` and is unmeasured by the verifier.
 
 The adapters import this standard-library-only module into their isolated verifier.
 """

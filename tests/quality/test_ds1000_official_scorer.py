@@ -73,7 +73,7 @@ def _run_check_directly(index: int, tmp_path: Path) -> tuple[float, dict]:
     re-materialised `VERIFY.inputs`, then the reference solution -- and running the same check
     program the platform runs.
     """
-    from data import command_control
+    from data.scaffolds import command_control
 
     work = tmp_path / "work"
     work.mkdir(parents=True, exist_ok=True)

@@ -3,7 +3,7 @@
 Why a shared reader and not `datasets.load_dataset`
 ---------------------------------------------------
 The platform must be able to import a dataset adapter on a machine that has **not**
-provisioned its data (`data/registry.py::published` imports every module to decide what
+provisioned its data (`data/scaffolds/registry.py::published` imports every module to decide what
 the chooser offers), so an adapter may not touch its data at import time. It must also
 be able to *grade* a task without the HuggingFace `datasets` package, because the check
 runs inside the verification namespace where a heavy import is a timeout. `pyarrow`

@@ -26,7 +26,7 @@ from pathlib import Path
 import pytest
 
 import eval.containers.container as container
-from data import registry
+from data.scaffolds import registry
 from policy_assertions import EXEC_POLICY_FIELDS, assert_policy_refusal
 
 ROOT = Path(__file__).resolve().parents[2]

@@ -49,19 +49,19 @@ def metadata_boundary(monkeypatch, adapter_code):
 
     module = ModuleType("agentdojo_metadata_synthetic_codex180")
     module.__file__ = str(path)
-    dependency = ModuleType("data.qa.base")
+    dependency = ModuleType("data.scaffolds.qa.base")
     dependency.is_eval = denied("split classification")
     original_import = builtins.__import__
 
     def metadata_import(name, *args, **kwargs):
-        if name not in {"__future__", "json", "pathlib", "data.qa.base"}:
+        if name not in {"__future__", "json", "pathlib", "data.scaffolds.qa.base"}:
             denied("non-metadata import")()
         return original_import(name, *args, **kwargs)
 
     # No real QA dependency, provisioned pool, runtime or verifier is imported.
     # Restore the guards before pytest renders results or tears fixtures down.
     with monkeypatch.context() as guard:
-        guard.setitem(sys.modules, "data.qa.base", dependency)
+        guard.setitem(sys.modules, "data.scaffolds.qa.base", dependency)
         for owner, label in ((builtins, "builtins"), (io, "io"), (os, "os")):
             guard.setattr(owner, "open", denied(f"{label}.open"))
         for method in ("open", "read_text", "read_bytes"):

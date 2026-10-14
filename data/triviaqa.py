@@ -1,8 +1,8 @@
 r"""TriviaQA as a dataset: open-domain trivia questions graded against an alias set.
 
     python3 tools/datasets.py --fetch --dataset triviaqa
-    python3 data/qa/control.py --dataset triviaqa --oracle
-    python3 data/qa/control.py --dataset triviaqa --oracle --platform
+    python3 data/scaffolds/qa/control.py --dataset triviaqa --oracle
+    python3 data/scaffolds/qa/control.py --dataset triviaqa --oracle --platform
     driver.py --dataset triviaqa ...
 
 Where the tasks come from
@@ -64,7 +64,7 @@ from __future__ import annotations
 import re
 import string
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 
@@ -158,7 +158,7 @@ def metric_max_over_ground_truths(metric_fn, prediction: str,
 
 
 def score(prediction: str, gold: dict) -> dict:
-    """The dataset's grade. Called by the shared check (`data/qa/verify/check.py`)."""
+    """The dataset's grade. Called by the shared check (`data/scaffolds/qa/verify/check.py`)."""
     accepted = list(gold.get("accepted") or [])
     hit = metric_max_over_ground_truths(exact_match_score, prediction or "", accepted) == 1.0
     return {
@@ -204,7 +204,7 @@ COLUMNS = ("question", "answer")
 #: round anybody runs.
 #:
 #: 2,000 is a declared sample, not a truncation of convenience: the rule is in
-#: `_rows()`/`data/qa/read.py::parquet_rows(sample=…)` (every `total//2000`-th row in file
+#: `_rows()`/`data/scaffolds/qa/read.py::parquet_rows(sample=…)` (every `total//2000`-th row in file
 #: order), it is deterministic, and the file it samples is pinned by sha256 in
 #: `DOWNLOADS.md`.
 STUDY_ROWS = 2000
@@ -379,7 +379,7 @@ SPLIT = _BUILT["SPLIT"]
 OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
 
 #: Which rule produced `SPLIT`: `"declared"` here -- the benchmark publishes both sides.
-#: See `data/qa/base.py::division`.
+#: See `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
 
 
@@ -387,7 +387,7 @@ def __getattr__(name: str):
     """`SETUP`, `VERIFY`, `_RECORDS`, `_LOAD_ERROR`, built on first use.
 
     Measured: building them at import cost **18 s** for this dataset's 17,944 tasks, and
-    every control run paid it again. See `data/qa/base.py::module_getattr`.
+    every control run paid it again. See `data/scaffolds/qa/base.py::module_getattr`.
     """
     return base.module_getattr(_SPEC, name)
 

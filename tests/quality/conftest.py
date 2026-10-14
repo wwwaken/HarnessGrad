@@ -18,7 +18,7 @@ def synthetic_gsm8k():
     not released questions or benchmark measurements.
     """
     sys.path.insert(0, str(ROOT))
-    from data.qa import base
+    from data.scaffolds.qa import base
 
     answers = {
         "test": ("18", "3.5", "-3.25"),

@@ -32,7 +32,7 @@ import pytest
 
 import eval.containers.container as container
 import eval.service.services as services
-from data import registry
+from data.scaffolds import registry
 from eval.run.runner import evaluate, run_one
 from harnessgrad.environments import _env_record, _resolve_envs
 from harnessgrad.records import _cost_of

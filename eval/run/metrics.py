@@ -38,7 +38,7 @@ def mean(xs: list[float], *, dataset: str | None = None) -> float:
     """
     if dataset is None:
         return sum(xs) / len(xs) if xs else 0.0
-    from data.aggregation import aggregation_denominator
+    from data.scaffolds.aggregation import aggregation_denominator
 
     denominator = aggregation_denominator(dataset, "run_reward", measured_tasks=len(xs))
     return sum(xs) / denominator if denominator else 0.0

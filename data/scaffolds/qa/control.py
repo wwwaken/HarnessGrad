@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """The controls every plain-text QA dataset shares: is the check reachable, and can it fail?
 
-    python3 data/qa/control.py --dataset gsm8k --oracle
-    python3 data/qa/control.py --dataset gsm8k --noop
-    python3 data/qa/control.py --dataset gsm8k --oracle --platform
-    python3 data/qa/control.py --dataset gsm8k --noop   --platform
+    python3 data/scaffolds/qa/control.py --dataset gsm8k --oracle
+    python3 data/scaffolds/qa/control.py --dataset gsm8k --noop
+    python3 data/scaffolds/qa/control.py --dataset gsm8k --oracle --platform
+    python3 data/scaffolds/qa/control.py --dataset gsm8k --noop   --platform
 
 A dataset whose oracle scores 0 has an unreachable check, and every harness score on it
 is meaningless. A dataset whose do-nothing control scores 1 has a check that cannot
@@ -15,7 +15,7 @@ Why one control for eight datasets
 ----------------------------------
 They all grade the same artifact: the bytes of `answer.txt`, interpreted by an official
 scorer. So the reference solution is always one string, and the shared oracle harness
-(`data/qa/oracle_harness/`) can submit it without knowing which dataset it is running.
+(`data/scaffolds/qa/oracle_harness/`) can submit it without knowing which dataset it is running.
 What differs per dataset is *where the gold lives*, and that is read here from the
 adapter's own records -- the same field the check is handed -- so a control that passes
 because both sides are wrong is not possible.
@@ -39,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
-import data.qa.base as base  # noqa: E402
+import data.scaffolds.qa.base as base  # noqa: E402
 
 
 def _adapter(name: str):

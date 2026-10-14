@@ -134,7 +134,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q 
 ```
 
 Coverage uses an AST read of module-level literal `KIND = "dataset"` declarations,
-not `data.registry.published()`, whose imports can read mixed pools or hide
+not `data.scaffolds.registry.published()`, whose imports can read mixed pools or hide
 unprovisioned modules. This is a conservative source inventory of everything
 the chooser may publish. New datasets, missing taxonomy/exercise assignments,
 flat categories, unknown statuses, stale evidence and history changes fail

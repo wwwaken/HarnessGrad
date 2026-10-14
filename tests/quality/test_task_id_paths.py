@@ -1,6 +1,6 @@
 """A task id with a slash in it is a **nested path**, and every record writer must know that.
 
-`data/qa/base.py` states the convention: `task_id` is `<dataset>/<split>/<n>`, "a slash is
+`data/scaffolds/qa/base.py` states the convention: `task_id` is `<dataset>/<split>/<n>`, "a slash is
 fine in a platform task id (it is a JSON value and a path component under the run
 directory)". The second half of that sentence was not true. `dest.mkdir(parents=True)` for
 `verdicts/round-0/` leaves `verdicts/round-0/gsm8k/train/` missing, so `<dest>/<tid>.json`

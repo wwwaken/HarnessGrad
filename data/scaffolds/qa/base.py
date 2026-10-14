@@ -16,14 +16,14 @@ The answer contract, and why it is a file
 -----------------------------------------
 `answer.txt` is the platform's own convention (`eval/run/runner.py` reads it, every base
 harness writes it), so a QA task needs no new channel: the goal says to write it, the
-harness writes it, and the check reads it. `data/qa/cli/qa` exists so a harness that
+harness writes it, and the check reads it. `data/scaffolds/qa/cli/qa` exists so a harness that
 only knows how to run shell commands can still answer, and so the format the scorer
 expects is reachable from inside the task.
 
 The gold travels as `VERIFY.inputs` content, never to the agent
 ---------------------------------------------------------------
 A task dict is written to `task.json` and handed to the harness, and
-`data/registry.py::FORBIDDEN_IN_TASKS` refuses `expected` **in a task** for exactly
+`data/scaffolds/registry.py::FORBIDDEN_IN_TASKS` refuses `expected` **in a task** for exactly
 this reason. The gold therefore lives in the verifier spec: the platform
 re-materializes `VERIFY.inputs` immediately before the check runs, so the file the
 check reads is the platform's copy and not anything the agent could have edited. That
@@ -47,10 +47,10 @@ import re
 from pathlib import Path
 from typing import Callable, Sequence
 
-#: Re-exported so an adapter imports one module (`data.qa.base`) for the scaffold and the
+#: Re-exported so an adapter imports one module (`data.scaffolds.qa.base`) for the scaffold and the
 #: reader both. `read` itself stays a separate module because the *check* imports it
 #: without the scaffold: a check has no use for `QASpec`.
-from data.qa.read import (  # noqa: F401
+from data.scaffolds.qa.read import (  # noqa: F401
     SOURCE_INDEX,
     is_missing,
     jsonl_rows,
@@ -63,7 +63,7 @@ def normalize_missing(value):
 
     Re-exported so an adapter that needs to clean a nested field can do it where it knows
     the shape; the reader deliberately does not recurse, for the measured reason in
-    `data/qa/read.py::_clean`.
+    `data/scaffolds/qa/read.py::_clean`.
     """
     return None if is_missing(value) else value
 
@@ -112,7 +112,7 @@ CLI_REL = "qa/bin"
 #: and "the check runs a different copy of the scorer" is the exact ambiguity §1 of the
 #: skill warns about. What the check may not do is import a name that arrived in `argv`
 #: -- `tests/quality/test_boundaries.py::R1` caught that -- so it validates the dataset
-#: name and imports `data.<name>` literally, the same spelling `data/registry.py` uses.
+#: name and imports `data.<name>` literally, the same spelling `data/scaffolds/registry.py` uses.
 DATASET_PACKAGE = "data"
 
 #: `task_id` is `<dataset>/<split>/<n>`; a slash is fine in a platform task id (it is a
@@ -135,7 +135,7 @@ class QASpec:
     """One QA dataset's decisions. Everything else is `Scaffold`'s.
 
     `rows` is a callable, not a list, because a dataset adapter is imported on machines
-    where its data was never provisioned (`data/registry.py::published`) and must not
+    where its data was never provisioned (`data/scaffolds/registry.py::published`) and must not
     read a byte at import time.
 
     The shared QA controls read the adapter module's optional `NOOP_EXPECTED`
@@ -241,7 +241,7 @@ class QASpec:
             for index, row in enumerate(rows):
                 # A sampled list is shorter than the file it came from, so the task id is
                 # the row's **file** position when the reader reports one
-                # (`data/qa/read.py::SOURCE_INDEX`). Numbering by position instead would
+                # (`data/scaffolds/qa/read.py::SOURCE_INDEX`). Numbering by position instead would
                 # let `train/7` keep its id and change its question the moment the sample
                 # rule changed -- same id, same `split_sha`, different task.
                 source_index = row.get(SOURCE_INDEX, index) if isinstance(row, dict) else index
@@ -329,7 +329,7 @@ class QASpec:
 
         **Everything the check imports travels with it.** That is not tidiness: the
         verification namespace puts a tmpfs over the platform tree (`eval/containers/sandbox.py`
-        hides the work root's ancestors), so a check that imported `data.qa.verify.check`
+        hides the work root's ancestors), so a check that imported `data.scaffolds.qa.verify.check`
         from the platform would fail to find it -- or, worse, would find whatever the
         subject left at that path. So the check, the parquet reader and the dataset's own
         scorer are copied into `qa/` in the workdir and imported from there. The
@@ -353,25 +353,27 @@ class QASpec:
                 {"path": f"{CHECK_DIR}/{CHECK_NAME}",
                  "from": str(VERIFY_DIR / CHECK_NAME)},
                 # The scaffold, materialized under the same package names the platform
-                # uses (`data.qa`), so the adapter's own `from data.qa import base` is
+                # uses (`data.scaffolds.qa`), so the adapter's own `from data.scaffolds.qa import base` is
                 # the same line in both contexts. A shim that made the import *different*
                 # in the check would be one more thing that can disagree; this is the
                 # same module, copied.
                 {"path": f"{CHECK_DIR}/read.py", "from": str(QA_DIR / "read.py")},
                 # The scaffold, materialized under the package names the platform uses,
-                # so the adapter's own `from data.qa import base` is the same line in
+                # so the adapter's own `from data.scaffolds.qa import base` is the same line in
                 # both contexts. `data/__init__.py` is what makes `data` an ordinary
                 # package: without it `data` is a namespace package, and a copy of it in
                 # the workdir would *merge* with the platform's rather than shadow it --
                 # so the import would resolve into the tree the sandbox hides.
                 {"path": f"{DATASET_PACKAGE}/__init__.py",
                  "from": str(ROOT / DATASET_PACKAGE / "__init__.py")},
-                {"path": f"{DATASET_PACKAGE}/qa/__init__.py", "from": str(QA_DIR / "__init__.py")},
-                {"path": f"{DATASET_PACKAGE}/qa/read.py", "from": str(QA_DIR / "read.py")},
-                {"path": f"{DATASET_PACKAGE}/qa/base.py", "from": str(QA_DIR / "base.py")},
-                {"path": f"{DATASET_PACKAGE}/qa/evidence_scorers.py",
+                {"path": f"{DATASET_PACKAGE}/scaffolds/__init__.py",
+                 "from": str(ROOT / "data/scaffolds/__init__.py")},
+                {"path": f"{DATASET_PACKAGE}/scaffolds/qa/__init__.py", "from": str(QA_DIR / "__init__.py")},
+                {"path": f"{DATASET_PACKAGE}/scaffolds/qa/read.py", "from": str(QA_DIR / "read.py")},
+                {"path": f"{DATASET_PACKAGE}/scaffolds/qa/base.py", "from": str(QA_DIR / "base.py")},
+                {"path": f"{DATASET_PACKAGE}/scaffolds/qa/evidence_scorers.py",
                  "from": str(QA_DIR / "evidence_scorers.py")},
-                {"path": f"{DATASET_PACKAGE}/qa/prediction.py",
+                {"path": f"{DATASET_PACKAGE}/scaffolds/qa/prediction.py",
                  "from": str(QA_DIR / "prediction.py")},
                 # The dataset's own adapter, under its real module name.
                 {"path": f"{DATASET_PACKAGE}/{self.name}.py",
@@ -424,7 +426,7 @@ class QASpec:
         that adds `DATASET_ROOT` by accident would put the lint's path rule on a
         variable nobody declared.
 
-        **A missing data root is not an import failure.** `data/registry.py::published`
+        **A missing data root is not an import failure.** `data/scaffolds/registry.py::published`
         imports every module in `data/` to decide what the Launch form offers, and
         `tools/dataset_lint.py` imports one to lint it -- both must work on a machine
         where `--fetch` has not run. So a table that cannot be read is recorded in
@@ -443,7 +445,7 @@ class QASpec:
             # The benchmark's own evaluation set, in the one place this scaffold can know
             # it: the scored split's ids when the benchmark publishes a study split too
             # (`gsm8k`), and `None` when the pool *is* the scored split (`triviaqa` and the
-            # rest). Never absent -- `data/registry.py::official_split` refuses silence.
+            # rest). Never absent -- `data/scaffolds/registry.py::official_split` refuses silence.
             "OFFICIAL_EVAL": division["official_eval"],
             #: Which rule produced `SPLIT`: `"declared"` (the benchmark said so) or
             #: `"hash"` (the platform imposed it). Read by `load()`'s emptiness guard and

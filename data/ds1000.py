@@ -45,8 +45,8 @@ import json
 import re
 from pathlib import Path
 
-from data import command_control
-from data.qa.base import is_eval
+from data.scaffolds import command_control
+from data.scaffolds.qa.base import is_eval
 
 KIND = "dataset"
 

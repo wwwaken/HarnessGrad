@@ -77,7 +77,7 @@ def test_the_refusal_does_not_claim_the_metric_is_absent(refused):
 
 
 def test_fever_label_accuracy_is_the_official_comparison():
-    from data.qa.evidence_scorers import fever_is_correct_label
+    from data.scaffolds.qa.evidence_scorers import fever_is_correct_label
     assert fever_is_correct_label("SUPPORTS", "supports") is True
     assert fever_is_correct_label("REFUTES", "SUPPORTS") is False
     # Upstream is `.upper()` and nothing else: a trailing period is a miss. Pinned because
@@ -86,7 +86,7 @@ def test_fever_label_accuracy_is_the_official_comparison():
 
 
 def test_fever_strict_needs_evidence_and_not_enough_info_is_exempt():
-    from data.qa.evidence_scorers import (MissingEvidence,
+    from data.scaffolds.qa.evidence_scorers import (MissingEvidence,
                                           fever_is_strictly_correct)
     evidence = [[[None, None, "Page", 0], [None, None, "Page", 1]]]
     # NEI is evidence-exempt upstream: the branch returns on the label alone.
@@ -102,7 +102,7 @@ def test_fever_strict_needs_evidence_and_not_enough_info_is_exempt():
 
 
 def test_hotpot_supporting_facts_require_an_exact_set():
-    from data.qa.evidence_scorers import MissingEvidence, hotpot_update_sp
+    from data.scaffolds.qa.evidence_scorers import MissingEvidence, hotpot_update_sp
     gold = [["Arthur's Magazine", 0], ["2014–15 season", 1]]
     with pytest.raises(MissingEvidence):
         hotpot_update_sp(None, gold)
@@ -114,7 +114,7 @@ def test_hotpot_supporting_facts_require_an_exact_set():
 
 
 def test_hotpot_joint_is_the_product_the_leaderboard_reports():
-    from data.qa.evidence_scorers import hotpot_joint, hotpot_update_sp
+    from data.scaffolds.qa.evidence_scorers import hotpot_joint, hotpot_update_sp
     gold = [["A", 0]]
     sp = hotpot_update_sp(gold, gold)
     joint_em, joint_f1 = hotpot_joint(1.0, 1.0, 1.0, sp)
@@ -127,7 +127,7 @@ def test_hotpot_joint_is_the_product_the_leaderboard_reports():
 
 def test_hotpot_answer_only_metrics_are_computable_and_distinct():
     """The half that *would* work, exercised so the transcription is known to run."""
-    from data.qa.evidence_scorers import hotpot_exact_match, hotpot_f1_score
+    from data.scaffolds.qa.evidence_scorers import hotpot_exact_match, hotpot_f1_score
     assert hotpot_exact_match("Arthur's Magazine", "Arthur's Magazine") == 1.0
     assert hotpot_exact_match("the magazine", "a magazine") == 1.0
     f1, precision, recall = hotpot_f1_score("yes", "yes")

@@ -44,7 +44,7 @@ unreachable check from a weak harness, and these are what separate them.
 Gates 1 and 2 must pass **twice**: by hand, and through the platform
 (`… --oracle --platform`, which drives `SETUP → harness → VERIFY` via
 `eval.run.runner.run_one`). The QA family's control is shared —
-`python3 data/qa/control.py --dataset <name> --oracle` — not a per-dataset script. Gate 3
+`python3 data/scaffolds/qa/control.py --dataset <name> --oracle` — not a per-dataset script. Gate 3
 means *transcribe their function*, quote its upstream line numbers, and add a drift test that
 fails when the upstream lines move. Importing their package and calling it "the same" is not
 gate 3 — the point is that the number you publish is the number they publish, provably.
@@ -91,9 +91,9 @@ onboarded without a way to show its grade is reachable.
 | current blocker families, work status, evidence and next actions; preserved historical incompletes | `docs/dataset-blockers.json`; validate with `python3 tools/check_dataset_blockers.py` without importing adapters |
 | the declared coverage gap (a demand the vocabulary names with no adapter yet) | `tools/dataset_classes.py::UNCOVERED_DEMANDS` — `memory` today, with its two planned surfaces and the five screened candidates |
 | which Harness function a dataset makes score-relevant, and which functions no dataset covers | `tools/dataset_classes.py::EXERCISES` / `FUNCTIONS` / `UNCOVERED_FUNCTIONS`; the reasoning is in `docs/harness-functional-coverage.md` |
-| the shared control for `command` datasets | `data/command_control.py` + `data/command_oracle_harness/` |
+| the shared control for `command` datasets | `data/scaffolds/command_control.py` + `data/scaffolds/command_oracle_harness/` |
 | the download index (generated) | `DOWNLOADS.md` — written by `tools/datasets.py --write`; **never edit by hand** |
-| "which datasets exist" | `data/registry.py::published()` — a module appears iff `KIND == "dataset"` |
+| "which datasets exist" | `data/scaffolds/registry.py::published()` — a module appears iff `KIND == "dataset"` |
 | the judgement half | the internal onboarding log (kept outside this repository) |
 
 Anything that is not a dataset for a reader to run declares `KIND = "fixture"` (the
@@ -163,7 +163,7 @@ flags are required, because step 3 of the order below is "write `downloads()` fi
 lint refuses a dataset that names none.
 
 `--kind files` generates the same three files as `command`, and the control it emits is the
-same one: `data/command_control.py` turns out to be **kind-agnostic** — it needs `load()`,
+same one: `data/scaffolds/command_control.py` turns out to be **kind-agnostic** — it needs `load()`,
 `SPLIT`, `SETUP`, `VERIFY` and `oracle_files(task)` and nothing else. What the `files` scaffold
 adds is the shape: a runtime tree built by `SETUP`, a check that inspects the state the agent
 left, and the three traps that shape has already paid for — the check cannot see the dataset
@@ -174,7 +174,7 @@ where the author will read them. Read skill doc §16–§17 for the two datasets
 ### QA shape — "read a row, answer, compare"
 
 Use it when the task is a question with a checkable answer and the environment is just a
-place to write an answer. The shared scaffold is `data/qa/`; seven datasets ride it
+place to write an answer. The shared scaffold is `data/scaffolds/qa/`; seven datasets ride it
 (`gsm8k`, `triviaqa`, `strategyqa`, `sportsunderstanding`, `physicsquestions`,
 `reasoning_gym`, `twowikimultihopqa`, plus `bfcl_v3` with its own `records()`).
 
@@ -182,9 +182,9 @@ place to write an answer. The shared scaffold is `data/qa/`; seven datasets ride
 data/<name>.py     declares a base.QASpec(...): root, rows, question, gold, goal, score,
                    downloads, split, source — and `study=("train",)` when the benchmark
                    publishes a study split too — then _SPEC.build() and thin wrappers.
-data/qa/bin/qa     the agent's command (submit / show)
-data/qa/lib/verify/check.py   the check, shared by every QA dataset
-data/qa/control.py --dataset <name> --oracle|--noop [--platform]
+data/scaffolds/qa/bin/qa     the agent's command (submit / show)
+data/scaffolds/qa/lib/verify/check.py   the check, shared by every QA dataset
+data/scaffolds/qa/control.py --dataset <name> --oracle|--noop [--platform]
 ```
 
 `_SPEC.build()` is also what decides the division: with no `study` split the platform's
@@ -197,12 +197,12 @@ tags each kept row with its position in the file so the task id does not move wh
 sample size does.
 
 The adapter is materialised *by itself* inside the verification namespace, together with
-`data/__init__.py`, `data/qa/{__init__,read,base}.py`. Two consequences:
+`data/__init__.py`, `data/scaffolds/qa/{__init__,read,base}.py`. Two consequences:
 
-* an adapter that imports another dataset's module (e.g. a shared `data.qa.rewoo`) fails
+* an adapter that imports another dataset's module (e.g. a shared `data.scaffolds.qa.rewoo`) fails
   inside the namespace — declare shared constants inline, three lines are cheaper than a
   fourth file in every `VERIFY.inputs`;
-* `data/qa/verify/check.py` may not import a name that arrived in `argv` — validate the
+* `data/scaffolds/qa/verify/check.py` may not import a name that arrived in `argv` — validate the
   dataset name against `^[a-z][a-z0-9_]{0,63}$` and import the adapter with
   `__import__(module, fromlist=["score"])`.
 
@@ -222,7 +222,7 @@ data/<name>/oracle_harness/{agent.py,harness.json}   the scripted oracle as a re
 
 Three measured traps:
 
-* **`files` environments may carry only `kind`.** `data/registry.py::_check_env` refuses
+* **`files` environments may carry only `kind`.** `data/scaffolds/registry.py::_check_env` refuses
   `agent_timeout_s` and friends — the platform defaults apply, so a task that needs longer
   must be sized down or dropped, and the drop must be recorded.
 * **A directory in `VERIFY.inputs` must be re-materialisable.** The platform clears the
@@ -298,7 +298,7 @@ python3 -m pytest tests/quality -q                   # the suite stays green
 ```
 
 plus: the official scorer is transcribed with a differential test, the dataset appears in
-`data.registry.published()`, no data byte is in git, and the lesson is appended to the
+`data.scaffolds.registry.published()`, no data byte is in git, and the lesson is appended to the
 skill doc.
 
 `tests/quality/test_dataset_controls.py` enforces the shape of this section over every

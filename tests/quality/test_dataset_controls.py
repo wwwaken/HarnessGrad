@@ -11,7 +11,7 @@ oracle arm run at all.
 `tests/quality/test_<name>_official_scorer.py` and `data/<name>/control.py` -- is wrong in
 both directions here, and measurably so. `test_bigbench_official_scorers.py` pins three
 datasets; `test_qa_dataset_contract.py` is parametrised over six; the shared QA control is
-`data/qa/control.py --dataset <name>` rather than a per-dataset script; and a refusal has no
+`data/scaffolds/qa/control.py --dataset <name>` rather than a per-dataset script; and a refusal has no
 control by design. A glob would report false gaps for the datasets that are covered *better*
 than the convention, and the repair for a false gap is to loosen the check. So each dataset
 declares its own row, the coverage assertion makes the table total, and adding a dataset
@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
-from data import registry  # noqa: E402
+from data.scaffolds import registry  # noqa: E402
 
 QUALITY = ROOT / "tests" / "quality"
 
@@ -53,19 +53,19 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_alfworld_official_scorer.py", "test_alfworld_dataset.py"],
     },
     "bfcl_v3": {
-        "control": ["data/qa/control.py", "--dataset", "bfcl_v3"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "bfcl_v3"],
         "metric_tests": ["test_bfcl_v3_dataset.py", "test_qa_dataset_contract.py"],
     },
     "chessbench_puzzles": {
-        "control": ["data/qa/control.py", "--dataset", "chessbench_puzzles"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "chessbench_puzzles"],
         "metric_tests": ["test_chessbench_puzzles_official_scorer.py", "test_qa_dataset_contract.py"],
     },
     "musique": {
-        "control": ["data/qa/control.py", "--dataset", "musique"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "musique"],
         "metric_tests": ["test_musique_official_scorer.py", "test_qa_dataset_contract.py"],
     },
     "gsm8k": {
-        "control": ["data/qa/control.py", "--dataset", "gsm8k"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "gsm8k"],
         "metric_tests": ["test_gsm8k_official_scorer.py", "test_gsm8k_dataset.py"],
     },
     "ds1000": {
@@ -86,7 +86,7 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_jericho_dataset.py"],
     },
     "physicsquestions": {
-        "control": ["data/qa/control.py", "--dataset", "physicsquestions"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "physicsquestions"],
         "metric_tests": ["test_bigbench_official_scorers.py", "test_qa_dataset_contract.py"],
     },
     "scienceworld": {
@@ -98,24 +98,24 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_spreadsheetbench_official_scorer.py"],
     },
     "sportsunderstanding": {
-        "control": ["data/qa/control.py", "--dataset", "sportsunderstanding"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "sportsunderstanding"],
         "metric_tests": ["test_bigbench_official_scorers.py", "test_qa_dataset_contract.py"],
     },
     "strategyqa": {
-        "control": ["data/qa/control.py", "--dataset", "strategyqa"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "strategyqa"],
         "metric_tests": ["test_bigbench_official_scorers.py", "test_qa_dataset_contract.py"],
     },
     "triviaqa": {
-        "control": ["data/qa/control.py", "--dataset", "triviaqa"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "triviaqa"],
         "metric_tests": ["test_triviaqa_official_scorer.py", "test_qa_dataset_contract.py"],
     },
     "reasoning_gym": {
-        "control": ["data/qa/control.py", "--dataset", "reasoning_gym"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "reasoning_gym"],
         "metric_tests": ["test_reasoning_gym_official_scorer.py",
                          "test_qa_dataset_contract.py"],
     },
     "twowikimultihopqa": {
-        "control": ["data/qa/control.py", "--dataset", "twowikimultihopqa"],
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "twowikimultihopqa"],
         "metric_tests": ["test_twowikimultihopqa_official_scorer.py",
                          "test_qa_dataset_contract.py"],
     },

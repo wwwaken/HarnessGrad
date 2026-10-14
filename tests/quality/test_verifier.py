@@ -21,7 +21,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.registry as registry                                  # noqa: E402
+import data.scaffolds.registry as registry                                  # noqa: E402
 from eval.run.runner import evaluate, run_one                          # noqa: E402
 
 

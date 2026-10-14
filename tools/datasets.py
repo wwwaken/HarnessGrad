@@ -68,7 +68,7 @@ SCHEMA_PATH = ROOT / "data" / "dataset.schema.json"
 DEFAULT_HF_ENDPOINT = os.environ.get("HG_HF_ENDPOINT", "https://hf-mirror.com")
 
 sys.path.insert(0, str(ROOT))
-import data.registry as registry  # noqa: E402
+import data.scaffolds.registry as registry  # noqa: E402
 
 
 def _schema() -> dict:

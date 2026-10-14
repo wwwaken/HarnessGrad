@@ -155,7 +155,7 @@ def test_alternate_mate_and_nonmate_against_official_function():
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
 def test_platform_control(arm, expected):
     proc = subprocess.run(
-        [sys.executable, "data/qa/control.py", "--dataset", "chessbench_puzzles",
+        [sys.executable, "data/scaffolds/qa/control.py", "--dataset", "chessbench_puzzles",
          arm, "--platform"], cwd=Path(__file__).resolve().parents[2],
         capture_output=True, text=True, timeout=120,
     )

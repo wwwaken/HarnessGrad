@@ -9,7 +9,7 @@ method needs in order to have anything to accept or reject.
 
 
 
-#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: See `data/scaffolds/registry.py:KIND_DATASET`. A fixture is platform test material and is
 #: deliberately not offered as a choice in the Launch form.
 KIND = "fixture"
 

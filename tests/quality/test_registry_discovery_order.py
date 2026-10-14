@@ -16,7 +16,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import registry  # noqa: E402
+from data.scaffolds import registry  # noqa: E402
 from tools import dataset_lint, datasets  # noqa: E402
 
 

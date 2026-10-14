@@ -14,7 +14,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data.registry import _check_env, _normalize_env
+from data.scaffolds.registry import _check_env, _normalize_env
 from eval.containers import sandbox
 from policy_assertions import assert_policy_refusal
 from eval.run.runner import run_one

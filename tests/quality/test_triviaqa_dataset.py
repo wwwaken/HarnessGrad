@@ -24,7 +24,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.registry as registry  # noqa: E402
+import data.scaffolds.registry as registry  # noqa: E402
 
 
 @pytest.fixture(scope="module")
@@ -38,7 +38,7 @@ def triviaqa():
 @pytest.fixture(scope="module")
 def train_question_ids(triviaqa) -> list[str]:
     """Every `question_id` of the train file, one string column, read independently."""
-    from data.qa.read import parquet_rows
+    from data.scaffolds.qa.read import parquet_rows
 
     path = triviaqa.DATASET_ROOT / triviaqa.SPLIT_FILES["train"]
     return [row["question_id"] for row in parquet_rows(path, columns=("question_id",))]
@@ -72,7 +72,7 @@ def test_the_study_ids_are_positions_in_the_train_file(triviaqa, train_question_
     got = {int(t.rsplit("/", 1)[1]): t for t in triviaqa.SPLIT["train"]}
     assert got == {i: f"triviaqa/train/{i}" for i in want}, "ids are file positions"
 
-    from data.qa.read import parquet_rows
+    from data.scaffolds.qa.read import parquet_rows
 
     path = triviaqa.DATASET_ROOT / triviaqa.SPLIT_FILES["train"]
     questions = {row["question"].strip() for row in

@@ -36,3 +36,47 @@ command oracle harness exists. `git diff --check` passes.
 The first attempt exposed a wrapper root-depth error (fixed) and a missing
 pytest basetemp parent (created). A successful intermediate run reported
 `92 passed in 51.73s`; the final run above includes the optimized guard.
+
+## Stage C
+
+Rewired all live adapter/platform/tool/test imports and current documentation to
+`data.scaffolds.*`, including generator templates and QA verifier materialization.
+Deleted every Stage A shim/link and old scaffold path. Added an import guard that
+rejects cross-adapter and non-scaffold shared data imports, including relative
+imports under the forthcoming `data.datasets.*` namespace. Recorded eval edges
+and architecture/import-direction docs follow the canonical files.
+
+Stage B had introduced `data/aggregation.py`, imported by MuSiQue and 2Wiki.
+To satisfy the requested scaffold-only shared boundary, that helper also moved
+to `data/scaffolds/aggregation.py` in C. Its policy JSON remains at the original
+path and its content/aggregation rules are unchanged. This is an import/path
+change, not a repeat of Stage B's semantic changes.
+
+Command:
+
+```sh
+python3 -m pytest -q -p no:cacheprovider --basetemp=/mnt/20t/xubuqiang/.hg-pytest/ds/c tests/quality/test_import_direction.py tests/quality/test_dataset_lint.py tests/quality/test_dataset_blockers.py tests/quality/test_new_dataset.py tests/quality/test_adapters.py tests/quality/test_dataset_classes.py
+```
+
+Exact output:
+
+```text
+........................................................................ [ 53%]
+........................sssssssss..............................          [100%]
+126 passed, 9 skipped in 187.35s (0:03:07)
+```
+
+`git diff --check` passes. Remaining old scaffold import spellings in live
+Python source are deliberate negative examples in the import-direction guard.
+
+The supported `legacy/adapters/harnessgrad_domain` bridge also had two registry
+imports; those were rewired before closing C. Focused follow-up:
+
+```sh
+python3 -m pytest -q -p no:cacheprovider --basetemp=/mnt/20t/xubuqiang/.hg-pytest/ds/c-legacy tests/quality/test_adapters.py
+```
+
+```text
+...sssssssss                                                             [100%]
+3 passed, 9 skipped in 0.74s
+```

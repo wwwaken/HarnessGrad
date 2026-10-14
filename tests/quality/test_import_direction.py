@@ -128,7 +128,29 @@ def _source_imports(root: Path) -> list[ImportEdge]:
     return edges
 
 
+# Stage C still has top-level adapters; Stage D removes this transitional branch.
+# Fixtures have a different contract and remain importable at data.<name>.
+_FIXTURE_MODULES = {"__init__", "demo", "probe_set", "broken_service",
+                    "verify_demo", "verify_exec", "verify_service"}
+_LEGACY_ADAPTERS = {p.stem for p in (ROOT / "data").glob("*.py")
+                    if p.stem not in _FIXTURE_MODULES}
+
+
+def _adapter_namespace(module: str) -> str | None:
+    parts = module.split(".")
+    if len(parts) >= 3 and parts[:2] == ["data", "datasets"]:
+        return ".".join(parts[:3])
+    if len(parts) >= 2 and parts[0] == "data" and parts[1] in _LEGACY_ADAPTERS:
+        return ".".join(parts[:2])
+    return None
+
+
 def _rule(edge: ImportEdge) -> str | None:
+    adapter = _adapter_namespace(edge.source)
+    if (adapter and _within(edge.target, "data")
+            and not _within(edge.target, "data.scaffolds")
+            and not _within(edge.target, adapter)):
+        return "adapter-data"
     if (any(_within(edge.source, name) for name in
             ("harnessgrad.config", "harnessgrad.runtime"))
             and edge.target.split(".")[0] in {"eval", "data", "tools", "driver"}):
@@ -187,9 +209,8 @@ class ImportDirectionTests(unittest.TestCase):
                     targets = node.targets if isinstance(node, ast.Assign) else [node.target]
                     if any(isinstance(t, ast.Name) and t.id == "KIND" for t in targets):
                         self.assertNotEqual(ast.literal_eval(node.value), "dataset", str(path))
-        # The only temporary shared directory is Stage A's documented QA shim.
         # pinchbench is unclassified inventory, deliberately not called adapter assets.
-        infrastructure = {"scaffolds", "datasets", "qa", "__pycache__", "pinchbench"}
+        infrastructure = {"scaffolds", "datasets", "__pycache__", "pinchbench"}
         edges = _source_imports(ROOT)
         for directory in (ROOT / "data").iterdir():
             if not directory.is_dir() or directory.name in infrastructure:
@@ -207,7 +228,7 @@ class ImportDirectionTests(unittest.TestCase):
                     if edge.target.startswith("data."):
                         target = edge.target.split(".")[1]
                         if (ROOT / "data" / f"{target}.py").is_file():
-                            self.assertIn(target, {directory.name, "registry", "command_control"},
+                            self.assertIn(target, {directory.name},
                                           f"another adapter's assets: {edge}")
 
     def test_current_source_layering(self):
@@ -219,11 +240,11 @@ class ImportDirectionTests(unittest.TestCase):
     def test_forbidden_import_forms(self):
         cases = [
             ("harnessgrad/config/areas.py", "import eval.run.runner as runner"),
-            ("harnessgrad/config/__init__.py", "from data import registry"),
+            ("harnessgrad/config/__init__.py", "from data.scaffolds import registry"),
             ("harnessgrad/config/loader.py", "from tools.validate_run import main"),
             ("harnessgrad/config/loader.py", "from driver import main"),
             ("harnessgrad/runtime/events.py", "import eval"),
-            ("harnessgrad/runtime/events.py", "import data.registry"),
+            ("harnessgrad/runtime/events.py", "import data.scaffolds.registry"),
             ("harnessgrad/runtime/events.py", "import tools.validate_run"),
             ("harnessgrad/runtime/events.py", "import driver as cli"),
             ("data/new_adapter.py", "def load():\n    from eval import runner"),
@@ -237,7 +258,7 @@ class ImportDirectionTests(unittest.TestCase):
             # A directory/file exception cannot admit a different eval module.
             ("data/scaffolds/qa/control.py", "from eval.service.services import start"),
         ]
-        modules = {"eval.run.runner", "data.registry", "harnessgrad.config",
+        modules = {"eval.run.runner", "data.scaffolds.registry", "harnessgrad.config",
                    "harnessgrad.config.loader"}
         for file, text in cases:
             with self.subTest(file=file, text=text):
@@ -245,6 +266,22 @@ class ImportDirectionTests(unittest.TestCase):
                 self.assertEqual(len(errors), 1, errors)
                 self.assertIn(file + ":", errors[0])
                 self.assertIn(" ".join(text.splitlines()[-1].split()), errors[0])
+
+    def test_adapter_data_dependencies_stay_private_or_use_scaffolds(self):
+        modules = {"data.datasets.alpha", "data.datasets.beta", "data.demo",
+                   "data.scaffolds.registry", "data.datasets.alpha.runtime"}
+        for statement in ("import data.datasets.beta", "from data.datasets import beta",
+                          "from .. import beta", "import data.demo",
+                          "import data.registry", "import data.qa.base"):
+            with self.subTest(statement=statement):
+                edges = _imports("data/datasets/alpha/control.py", statement, modules)
+                self.assertTrue(_policy_errors(edges, {}, {}))
+        for statement in ("from data.scaffolds import registry",
+                          "from data.scaffolds.qa import base",
+                          "from . import runtime", "import json"):
+            with self.subTest(statement=statement):
+                edges = _imports("data/datasets/alpha/__init__.py", statement, modules)
+                self.assertEqual(_policy_errors(edges, {}, {}), [])
 
     def test_relative_imports_and_module_attributes(self):
         cases = [

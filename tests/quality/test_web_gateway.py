@@ -24,7 +24,7 @@ from tools.web_gateway import ProviderError, WebGateway, parse_fetched, parse_se
 import eval.containers.container as container  # noqa: E402
 import eval.service.services as services  # noqa: E402
 from eval.run.runner import run_one  # noqa: E402
-from data import registry  # noqa: E402
+from data.scaffolds import registry  # noqa: E402
 from policy_assertions import assert_policy_refusal
 
 DEMO_IMAGE = os.environ.get("HG_EXEC_DEMO_IMAGE", "docker.m.daocloud.io/library/python:3.11-slim")

@@ -17,7 +17,7 @@ from pathlib import Path
 import os
 
 from eval.observe.console import CONSOLE as console
-import data.registry as datasets
+import data.scaffolds.registry as datasets
 import eval.containers.container as container
 import eval.containers.harness_runtime as harness_runtime
 from harnessgrad.config import current as current_config

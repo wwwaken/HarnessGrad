@@ -1,7 +1,7 @@
 r"""Sports Understanding as a dataset: is this sports sentence plausible?
 
     python3 tools/datasets.py --fetch --dataset sportsunderstanding
-    python3 data/qa/control.py --dataset sportsunderstanding --oracle
+    python3 data/scaffolds/qa/control.py --dataset sportsunderstanding --oracle
     driver.py --dataset sportsunderstanding ...
 
 Where the tasks come from
@@ -38,7 +38,7 @@ from __future__ import annotations
 import csv
 import re
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 
@@ -142,7 +142,7 @@ def _goal(question: str, gold: dict) -> str:
 #: each adapter rather than imported from a shared module: the *check* materializes the
 #: adapter and the QA scaffold only, so an adapter that imported another QA module would
 #: fail inside the verification namespace (measured: `ImportError: cannot import name
-#: 'rewoo'` from the materialized `data.qa`). Three constant lines are cheaper than a
+#: 'rewoo'` from the materialized `data.scaffolds.qa`). Three constant lines are cheaper than a
 #: fourth file in every `VERIFY.inputs`.
 REWOO_COMMIT = "9cd0283043ff4be0c9d614fda2789d143ca6ffd1"
 REWOO_TARBALL = "https://codeload.github.com/billxbf/ReWOO/tar.gz/9cd0283043ff4be0c9d614fda2789d143ca6ffd1"
@@ -208,7 +208,7 @@ SPLIT = _BUILT["SPLIT"]
 OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
 
 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study split,
-#: so the platform imposes one. See `data/qa/base.py::division`.
+#: so the platform imposes one. See `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
 
 

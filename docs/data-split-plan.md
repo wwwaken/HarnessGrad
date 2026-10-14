@@ -1,5 +1,13 @@
 # Splitting `data/`: scaffolds versus datasets
 
+Implementation status: Stages A and C are complete in the isolated split worktree.
+Shared code is now under `data/scaffolds/`; Stage A's old import/script shims
+were removed in C. Adapters still live at `data/<name>.py` until D. The inventory
+and original paths below describe the pre-split baseline unless stated otherwise.
+Stage B's aggregation helper also lives in `data/scaffolds/aggregation.py`, so
+adapters use the same scaffold boundary; its declarations remain at
+`data/aggregation_policies.json` with unchanged semantics.
+
 `data/` holds two different things under one namespace, and the namespace does not
 say which is which:
 
@@ -74,6 +82,7 @@ data/
   scaffolds/           # shared, reviewed as platform code
     __init__.py
     registry.py
+    aggregation.py     # Stage B helper, moved with the Stage C edges
     command_control.py
     command_oracle_harness/
     qa/

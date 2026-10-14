@@ -8,7 +8,7 @@ Why a pool file exists at all
 The six released shards are **4,485,994,821 bytes** and reading plus decoding them takes
 **70 seconds** (measured, one pass, this machine): `private_test_cases` is
 `pickle.loads(zlib.decompress(base64.b64decode(...)))`, so every row is decompressed to be
-read. An adapter that did that at import would make `data/registry.py::published()` -- which
+read. An adapter that did that at import would make `data/scaffolds/registry.py::published()` -- which
 imports every module in `data/` to decide what the Launch form offers -- unusable, and this
 repository has already paid for that lesson once (Reasoning Gym: 15.6 s to render its pool).
 So the pool is materialized here, once, and the adapter reads a JSONL.

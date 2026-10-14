@@ -1,8 +1,8 @@
 r"""Reasoning Gym as a dataset: procedurally generated reasoning tasks, scored by the library.
 
     python3 data/reasoning_gym/prepare.py          # materialize the pool (once)
-    python3 data/qa/control.py --dataset reasoning_gym --oracle
-    python3 data/qa/control.py --dataset reasoning_gym --oracle --platform
+    python3 data/scaffolds/qa/control.py --dataset reasoning_gym --oracle
+    python3 data/scaffolds/qa/control.py --dataset reasoning_gym --oracle --platform
     driver.py --dataset reasoning_gym ...
 
 Where the tasks come from
@@ -45,13 +45,13 @@ Two consequences worth knowing:
 The split
 ---------
 The library publishes no train/test division, so the platform imposes one
-(`data/registry.py::default_split`, INTERFACE.md §2.3): a deterministic hash third of the
+(`data/scaffolds/registry.py::default_split`, INTERFACE.md §2.3): a deterministic hash third of the
 1,780 tasks is the exam. `--split official` is the whole pool, because nothing here is study
 material from the benchmark's point of view.
 """
 from __future__ import annotations
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 

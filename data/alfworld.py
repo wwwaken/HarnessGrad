@@ -94,7 +94,7 @@ granularity is `1/n`.
 
 from __future__ import annotations
 
-#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: See `data/scaffolds/registry.py:KIND_DATASET`. A fixture is platform test material and is
 #: deliberately not offered as a choice in the Launch form.
 KIND = "dataset"
 
@@ -203,7 +203,7 @@ def _collect() -> list[dict]:
     The filter is `AlfredTWEnv.collect_game_files`, reproduced rather than called:
     calling it would drag in `textworld` and crawl the whole data tree at import time,
     and the adapter must be importable on a machine that has not provisioned the data
-    (see `published()` in `data/registry.py`: a module that will not import is hidden
+    (see `published()` in `data/scaffolds/registry.py`: a module that will not import is hidden
     from the chooser). The rules, in the same order upstream applies them:
 
       * a trial directory must hold `traj_data.json` and `game.tw-pddl`;
@@ -526,7 +526,7 @@ def _is_eval(task_id: str) -> bool:
 
 #: One environment for every task: the host, because the hard constraint of this
 #: exercise is that nothing here needs Docker. `files` cannot carry resource or timeout
-#: fields (`data/registry.py::_check_env` refuses them), so the platform's defaults
+#: fields (`data/scaffolds/registry.py::_check_env` refuses them), so the platform's defaults
 #: apply: 2 cpus, 4 GB, 300 s for the harness and 300 s for the check. The CLI's
 #: replay-from-scratch design keeps a 30-step episode inside that.
 DEFAULT_ENV: dict = {"kind": "files"}

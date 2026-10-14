@@ -9,7 +9,7 @@ the official metric" is checkable rather than asserted:
 | `sportsunderstanding` | BIG-bench `sports_understanding` `multiple_choice_grade` | the correct label is named |
 | `physicsquestions` | BIG-bench `physics_questions` `exact_str_match` | exact match against the target **list** |
 
-The tables come from ReWOO's tarball (`data/qa/rewoo.py` pins it for all four datasets
+The tables come from ReWOO's tarball (`data/scaffolds/qa/rewoo.py` pins it for all four datasets
 that read it); `strategy_qa` no longer exists on BIG-bench main, so ReWOO's vendored copy
 is both the reachable table and the one whose published numbers came from it.
 

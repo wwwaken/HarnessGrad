@@ -14,8 +14,8 @@ from types import SimpleNamespace
 import pytest
 
 from data import bfcl_v3 as dataset
-from data.qa import control
-from data.qa.verify import check
+from data.scaffolds.qa import control
+from data.scaffolds.qa.verify import check
 
 ROOT = Path(__file__).resolve().parents[2]
 PRIVATE_NAME = "fabricated_private_reference"
@@ -495,7 +495,7 @@ def test_unmeasured_paths_redact_gold_and_private_diagnostics(monkeypatch, tmp_p
     original_import = builtins.__import__
 
     def synthetic_import(name, *args, **kwargs):
-        if name == "data.qa.prediction" and failure == "validator_import":
+        if name == "data.scaffolds.qa.prediction" and failure == "validator_import":
             raise ImportError(PRIVATE_NAME)
         if name == "data.bfcl_v3":
             if failure == "import":

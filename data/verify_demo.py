@@ -18,7 +18,7 @@ Two things here are the whole point, and both are easy to get wrong:
 
 1. **`SETUP` is what the harness receives; `VERIFY` is what it must not.** The task
    dict (`TASKS`) is written to `task.json` and handed to the harness verbatim, so
-   nothing secret may live there. `data/registry.py` enforces that.
+   nothing secret may live there. `data/scaffolds/registry.py` enforces that.
 2. **`v01`'s verifier re-writes its own test file.** The harness is free to edit
    anything in its working directory, tests included — so a grade that reads the
    harness's copy of the test is not a grade. Re-materialising `inputs` at

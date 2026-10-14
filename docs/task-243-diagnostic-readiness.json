@@ -1418,8 +1418,8 @@
     },
     {
       "evidence": [
-        "data/qa/base.py:317",
-        "data/qa/base.py:377",
+        "data/scaffolds/qa/base.py:317",
+        "data/scaffolds/qa/base.py:377",
         "eval/runner.py:33",
         "eval/runner.py:151",
         "eval/runner.py:892"
@@ -1431,7 +1431,7 @@
       "evidence": [
         "driver.py:491",
         "driver.py:519",
-        "data/qa/base.py:210",
+        "data/scaffolds/qa/base.py:210",
         "data/gsm8k.py:112"
       ],
       "finding": "Loading/record construction precedes narrowing; current selected-only source/scorer custody and control evidence are not established.",
@@ -1466,7 +1466,7 @@
     "data/musique.py": "ddab1022e1280ec58b665d5b22d7420d7fd6aeac1237c5a58dbba9c8c7125105",
     "data/nestful.py": "2eef3d680688d7cc93b36706db28655e2e017a3ae67340b9d64bdda2494e657d",
     "data/physicsquestions.py": "8592bf0dfc1552557192f3bed39caa196187c251d671d8fac1ece75efeb69b0c",
-    "data/qa/base.py": "1e0bc1389ede31e42425b0a9fa7844b8c41fa20dc9480f370ec50e227220e76c",
+    "data/scaffolds/qa/base.py": "1e0bc1389ede31e42425b0a9fa7844b8c41fa20dc9480f370ec50e227220e76c",
     "data/reasoning_gym.py": "66317489989e72dbbe300bcb1021c3bbe37a0a4160738b4ad61571b05aef228d",
     "data/scienceworld.py": "dfed96cf39e4a87acd55a473af0198b36c5617317e03cf105e4e9a72cc022556",
     "data/sotuqa.py": "9190ef2d5ab566f3de1852a6d5d1b2ecb3523855d1b5481cc46dcbf319eb64d1",

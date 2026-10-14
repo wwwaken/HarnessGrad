@@ -53,7 +53,7 @@ RUNS = ROOT / "runs"
 DATA = ROOT / "data"
 
 sys.path.insert(0, str(ROOT))
-import data.registry as registry   # noqa: E402
+import data.scaffolds.registry as registry   # noqa: E402
 
 #: Models whose measurements are **not evidence**, so they never enter a number by default.
 #: `deepseek-v4-pro` was withdrawn and must not be used; `runs/strong-model-1` still carries
@@ -217,7 +217,7 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     by_dataset = states_for(Path(args.runs_root))
-    # **Published datasets only, by default.** `data/registry.py` decides what that means and
+    # **Published datasets only, by default.** `data/scaffolds/registry.py` decides what that means and
     # the Launch form reads the same answer, so there is one list rather than two.
     published = set(registry.published())
     if args.dataset:

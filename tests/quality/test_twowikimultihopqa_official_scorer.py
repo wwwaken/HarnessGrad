@@ -273,7 +273,7 @@ def test_the_witness_mirror_agrees_with_the_pool_on_every_row(rows):
 
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
 def test_platform_control(arm, expected):
-    proc = subprocess.run([sys.executable, "data/qa/control.py", "--dataset",
+    proc = subprocess.run([sys.executable, "data/scaffolds/qa/control.py", "--dataset",
                            "twowikimultihopqa", arm, "--platform"],
                           capture_output=True, text=True, timeout=300)
     assert proc.returncode == 0, proc.stdout + proc.stderr

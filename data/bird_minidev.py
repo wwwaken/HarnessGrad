@@ -56,7 +56,7 @@ import io
 import json
 from pathlib import Path
 
-from data import registry
+from data.scaffolds import registry
 
 KIND = "dataset"
 
@@ -111,7 +111,7 @@ def _ensure() -> list[dict]:
     """The table, or an error that says how to provision it.
 
     Read at import **inside a guard**, the pattern `data/spreadsheetbench.py` uses, because
-    `data/registry.py::published()` imports every module in `data/` to decide what the
+    `data/scaffolds/registry.py::published()` imports every module in `data/` to decide what the
     Launch form offers and that has to work on a machine where `--fetch` has not run. The
     first version read the table unguarded, so an unprovisioned machine silently dropped
     this dataset from `published()` -- 27 datasets became 26 with no error anywhere.
@@ -287,7 +287,7 @@ def __getattr__(name: str):
 
     Each holds one entry per task and each entry renders a schema, so building them at
     import would tax every module that only asks which datasets exist. This mirrors
-    `data/qa/base.py::module_getattr`; the control and the lint ask for them by name.
+    `data/scaffolds/qa/base.py::module_getattr`; the control and the lint ask for them by name.
     """
     global _TASKS_CACHE
     if name == "SETUP":
@@ -316,7 +316,7 @@ SPLIT = registry.default_split([{"task_id": task_id} for task_id in _ids()])
 OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` -- the benchmark published no study split, so the
-#: platform imposes one. See `data/qa/base.py::division` for the QA half of this rule.
+#: platform imposes one. See `data/scaffolds/qa/base.py::division` for the QA half of this rule.
 SPLIT_SOURCE = "hash"
 
 

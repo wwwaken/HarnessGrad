@@ -12,7 +12,7 @@ a control that agrees with the check because both are wrong is the failure mode 
 control exists to detect. The gold is staged by the dataset (from the same field the
 check loads), so a disagreement shows up as a failed control.
 
-It is reached only through `data/qa/<name>/control.py --platform`. It is never offered
+It is reached only through `data/scaffolds/qa/<name>/control.py --platform`. It is never offered
 as a harness a method can evolve.
 """
 from __future__ import annotations
@@ -41,7 +41,7 @@ def main() -> int:
 
     # The CLI's location is the dataset's `SETUP` decision, so it is looked up rather
     # than assumed: this harness runs for every QA dataset and must not encode one
-    # layout. `qa/bin/qa` is `data/qa/base.py::CLI_REL`, and the search here is what
+    # layout. `qa/bin/qa` is `data/scaffolds/qa/base.py::CLI_REL`, and the search here is what
     # keeps that a fact about the current tree instead of a second declaration.
     candidates = [work / "qa" / "bin" / "qa", work / "qa"]
     cli = next((c for c in candidates if c.is_file()), None)

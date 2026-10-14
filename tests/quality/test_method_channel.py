@@ -153,7 +153,7 @@ def test_the_engine_stages_the_channel_every_round():
 # ------------------------------- 通道:一道题自己的那一页(题面/金标/理由) ---
 
 def _stage(tmp_path, dataset="terminal_bench", task_ids=("build-pmars",)):
-    import data.registry as datasets
+    import data.scaffolds.registry as datasets
     tasks, setups, verifiers = datasets.load_tasks(dataset)
     verdicts = {t: {"kind": "command", "passed": False, "score": 0.0,
                     "detail": "reward 0 from /logs/verifier/reward.txt (exit 0)"}
@@ -207,7 +207,7 @@ def test_only_the_runs_own_tasks_are_staged(tmp_path):
 
 def test_an_inline_input_is_staged_too(tmp_path):
     """`verify_demo` 那种内联 `{"path","content"}` 也要解析,不然只支持一半数据集。"""
-    import data.registry as datasets
+    import data.scaffolds.registry as datasets
     tasks, setups, verifiers = datasets.load_tasks("verify_demo")
     _stage_task_context(tmp_path, tasks, setups, verifiers,
                                {"per_task": {"v01": 0.0}, "verdicts": {}}, ["v01"])

@@ -74,7 +74,7 @@ requirement, and are kept: `say` + `done` still make them discriminate. The othe
 carry none, so after the done gate an agent that calls `tau done` immediately is a
 full-credit solution and the task measures nothing about the database work. They are
 listed in `EXCLUDED_TASKS` and `load()` never returns them. They cannot merely be
-left off `SPLIT`: `data/registry.py` requires every returned task to be on exactly
+left off `SPLIT`: `data/scaffolds/registry.py` requires every returned task to be on exactly
 one side, so an excluded task has to be absent from `load()` entirely. Their
 ground-truth files stay in `gt/` -- only the adapter stops returning them.
 
@@ -87,7 +87,7 @@ tasks, not on the retail set the method studied.
 from __future__ import annotations
 
 
-#: See `data/registry.py:KIND_DATASET`. A fixture is platform test material and is
+#: See `data/scaffolds/registry.py:KIND_DATASET`. A fixture is platform test material and is
 #: deliberately not offered as a choice in the Launch form.
 KIND = "dataset"
 
@@ -152,7 +152,7 @@ TERMINATE_TOOLS = ("transfer_to_human_agents",)
 #: no `outputs` requirement. Such a task cannot discriminate: the database hash
 #: already matches before the agent does anything, the done gate is satisfied by an
 #: immediate `tau done`, and there is no output to say. They are removed from what
-#: `load()` returns -- not merely from `SPLIT`, because `data/registry.py` requires
+#: `load()` returns -- not merely from `SPLIT`, because `data/scaffolds/registry.py` requires
 #: every returned task to be on exactly one side -- while their ground-truth files
 #: stay in `gt/` for audit. 7 retail, 19 airline.
 #:

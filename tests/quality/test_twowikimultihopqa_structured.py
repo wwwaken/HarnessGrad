@@ -15,7 +15,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from data.qa import base  # noqa: E402
+from data.scaffolds.qa import base  # noqa: E402
 
 # QASpec.build normally constructs the provisioned pool even during import. Block that
 # loader before importing, rather than assuming release files are absent on this host.
@@ -337,7 +337,7 @@ def test_public_cli_to_materialized_verifier(submission, expected, tmp_path, mon
     # Suppress the shared scaffold's import-time pool construction in the child too.
     # The check and scorer run from their actual, unedited VERIFY copies.
     bootstrap = (
-        "import runpy,sys; from data.qa import base; "
+        "import runpy,sys; from data.scaffolds.qa import base; "
         "base.QASpec.records=lambda self: []; "
         "sys.argv=sys.argv[1:]; runpy.run_path(sys.argv[0],run_name='__main__')"
     )

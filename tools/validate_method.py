@@ -65,7 +65,7 @@ def build_request(harness: Path, work: Path, traj: Path) -> dict:
     """平台会发的那种请求。字段与 `methods/protocol.py` 的说明一致。"""
     tasks = []
     try:
-        import data.registry as registry
+        import data.scaffolds.registry as registry
         tasks, _ = registry.load("demo")
         tasks = [t["task_id"] for t in tasks[:2]]
     except Exception:                                       # noqa: BLE001

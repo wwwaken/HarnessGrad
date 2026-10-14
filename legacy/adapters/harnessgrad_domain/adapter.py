@@ -104,7 +104,7 @@ class HarnessGradDomain(Domain):
         copy of the task list is a second thing to keep in sync, and the failure mode
         is two experiments that claim to be comparable.
         """
-        import data.registry as registry
+        import data.scaffolds.registry as registry
         return registry.load(self.dataset)
 
     def _by_id(self) -> dict[str, dict]:
@@ -114,7 +114,7 @@ class HarnessGradDomain(Domain):
 
     def _split(self) -> dict | None:
         """The dataset's declared train/eval split, or None if it declares none."""
-        import data.registry as registry
+        import data.scaffolds.registry as registry
         _, _, split = registry.load_split(self.dataset)
         return split
 

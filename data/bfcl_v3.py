@@ -1,7 +1,7 @@
 r"""BFCL-v3 as a dataset: tool selection, graded on the **function name**.
 
     python3 tools/datasets.py --fetch --dataset bfcl-v3
-    python3 data/qa/control.py --dataset bfcl_v3 --oracle
+    python3 data/scaffolds/qa/control.py --dataset bfcl_v3 --oracle
     driver.py --dataset bfcl_v3 ...
 
 Where the tasks come from
@@ -53,7 +53,7 @@ Schema a model is asked to read should be a JSON Schema.
 How the agent answers
 ---------------------
 One function name per line in `answer.txt`, or `NONE` when no tool is needed. The shared QA
-check (`data/qa/verify/check.py`) reads the file and calls this module's `score()`.
+check (`data/scaffolds/qa/verify/check.py`) reads the file and calls this module's `score()`.
 """
 from __future__ import annotations
 
@@ -66,7 +66,7 @@ import sys
 from contextlib import ExitStack
 from pathlib import Path
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 

@@ -1,4 +1,4 @@
-"""`data/qa/read.py::parquet_rows`: the projection, and the systematic sample.
+"""`data/scaffolds/qa/read.py::parquet_rows`: the projection, and the systematic sample.
 
 The sample exists because three facts met on TriviaQA's `train` split: the file is ordered
 by question source, it is 138,384 rows, and `to_pylist()` over all of it costs ~850 MB of
@@ -24,7 +24,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data.qa.read import SOURCE_INDEX, parquet_rows  # noqa: E402
+from data.scaffolds.qa.read import SOURCE_INDEX, parquet_rows  # noqa: E402
 
 
 @pytest.fixture(scope="module")

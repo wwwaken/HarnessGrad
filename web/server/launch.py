@@ -196,7 +196,7 @@ def declares_load(path: Path) -> bool:
     Parsed with ``ast`` rather than imported: importing every dataset would
     execute it (and could need a container or a model endpoint) just to list a
     name.  The zero-argument test is what separates a dataset from
-    ``data/registry.py``, whose ``load(name)`` is the loader the driver calls:
+    ``data/scaffolds/registry.py``, whose ``load(name)`` is the loader the driver calls:
     it is infrastructure, not a task set.
     """
     try:

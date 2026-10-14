@@ -60,7 +60,7 @@ import json
 import os
 from pathlib import Path
 
-from data import registry
+from data.scaffolds import registry
 
 KIND = "dataset"
 #: The gold answers are the benchmark's own released answers; the platform authored nothing.
@@ -222,7 +222,7 @@ def _verify(row: dict) -> dict:
 OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` -- no study split was loaded, so the platform imposes
-#: one. See `data/qa/base.py::division`.
+#: one. See `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = "hash"
 
 _BUILT: dict[str, object] = {}
@@ -234,7 +234,7 @@ def __getattr__(name: str):
     **Not at import**, for two reasons that have both already cost this repository a bug. The
     mechanical one: `prepare.py` imports this module before the pool exists, so an import-time
     read made the materializer unable to run (measured: `FileNotFoundError` on
-    `pool.jsonl` from `data/gaia/prepare.py`). The policy one: `data/registry.py::published()`
+    `pool.jsonl` from `data/gaia/prepare.py`). The policy one: `data/scaffolds/registry.py::published()`
     imports every module in `data/` to decide what the Launch form offers, and that has to work
     on a machine where no dataset has been provisioned (`data/spreadsheetbench.py` and
     `data/bird_minidev.py` carry the same guard).

@@ -254,7 +254,7 @@ def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path, monkeypatch):
     actually hashes -- and rewriting the real `eval/run/runner.py` is what raced
     every concurrent test that imports or walks `eval/`.
     """
-    import data.registry as registry
+    import data.scaffolds.registry as registry
     from eval.run.runner import evaluate
 
     platform = tmp_path / "platform"

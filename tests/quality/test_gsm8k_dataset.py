@@ -75,7 +75,7 @@ def _run_check(module, record: dict, workdir: Path, *,
     # The copied production scorer imports its adapter, whose build normally reads
     # both tables. Simulate an unprovisioned verifier without accessing either split.
     bootstrap = (
-        "import runpy, sys; from data.qa import base; "
+        "import runpy, sys; from data.scaffolds.qa import base; "
         "base.parquet_rows = lambda path: []; "
         "check_path = sys.argv.pop(1); "
         "runpy.run_path(check_path, run_name='__main__')"
@@ -120,7 +120,7 @@ def test_the_declared_division_is_not_the_platform_hash_division(gsm8k):
     third of the same pool. Synthetic rows exercise the distinction without reading
     the released benchmark.
     """
-    import data.registry as registry
+    import data.scaffolds.registry as registry
 
     tasks = gsm8k.load()[0]
     default = registry.default_split(tasks)

@@ -1,8 +1,8 @@
 r"""GSM8K as a dataset: grade-school math problems, graded by decimal-aware comparison.
 
     python3 tools/datasets.py --fetch --dataset gsm8k
-    python3 data/qa/control.py --dataset gsm8k --oracle
-    python3 data/qa/control.py --dataset gsm8k --oracle --platform
+    python3 data/scaffolds/qa/control.py --dataset gsm8k --oracle
+    python3 data/scaffolds/qa/control.py --dataset gsm8k --oracle --platform
     driver.py --dataset gsm8k ...
 
 Where the tasks come from
@@ -58,7 +58,7 @@ from __future__ import annotations
 
 import re
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 
@@ -147,7 +147,7 @@ def numeric_equal(got: str, want: str) -> bool:
 
 
 def score(prediction: str, gold: dict) -> dict:
-    """The dataset's grade. Called by the shared check (`data/qa/verify/check.py`)."""
+    """The dataset's grade. Called by the shared check (`data/scaffolds/qa/verify/check.py`)."""
     want = str(gold.get("answer", "")).strip()
     flexible = official_flexible(prediction or "")
     strict = official_strict(prediction or "")
@@ -281,14 +281,14 @@ SPLIT = _BUILT["SPLIT"]
 #:   the two apart on a curve.
 OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
 
-#: Which rule produced `SPLIT`: `"declared"` here -- see `data/qa/base.py::division`.
+#: Which rule produced `SPLIT`: `"declared"` here -- see `data/scaffolds/qa/base.py::division`.
 SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
 
 
 def __getattr__(name: str):
     """`SETUP`, `VERIFY`, `_RECORDS`, `_LOAD_ERROR`, built on first use.
 
-    See `data/qa/base.py::module_getattr`: the two per-task maps are lazy so importing
+    See `data/scaffolds/qa/base.py::module_getattr`: the two per-task maps are lazy so importing
     the adapter does not render every goal, and `_RECORDS` is the same cached list
     `load()` returns from.
     """

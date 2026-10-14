@@ -164,7 +164,7 @@ Every `env_derived` entry is `{flag, env_var, value|null, set, secret, note}`.
 
 * harnesses ← directories under `base_harness/` holding a `harness.json`;
 * datasets ← `data/*.py` modules declaring a top-level, zero-argument `load()`
-  (`data/registry.py` declares `load(name)` and is the loader, so it is not a
+  (`data/scaffolds/registry.py` declares `load(name)` and is the loader, so it is not a
   dataset);
 * improvers / `default_improver` ← `improvers/improvers.json`;
 * flags and the environment-variable notes ← `python3 -B driver.py --help`;

@@ -30,7 +30,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
 import dataset_classes  # noqa: E402
-from data import registry  # noqa: E402
+from data.scaffolds import registry  # noqa: E402
 
 
 def _rows() -> list[dict]:

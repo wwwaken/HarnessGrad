@@ -83,7 +83,7 @@ def _python_versions_from_dataset(name: str, *, limit: int = 0) -> dict[str, lis
     recorded only to be reported -- a reader wants to know how many tasks a version
     covers before paying for it.
     """
-    import data.registry as datasets
+    import data.scaffolds.registry as datasets
 
     envs = datasets.load_envs(name)
     images: dict[str, list[str]] = {}

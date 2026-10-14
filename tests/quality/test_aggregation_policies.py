@@ -13,8 +13,8 @@ from unittest.mock import patch
 
 import pytest
 
-from data import aggregation
-from data.qa import base
+from data.scaffolds import aggregation
+from data.scaffolds.qa import base
 from eval.metrics import mean
 
 ROOT = Path(__file__).resolve().parents[2]

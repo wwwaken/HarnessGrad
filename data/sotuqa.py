@@ -1,7 +1,7 @@
 r"""SOTU-QA as a dataset -- and the one whose official metric this contract cannot carry.
 
     python3 tools/datasets.py --fetch --dataset sotuqa
-    python3 data/qa/control.py --dataset sotuqa --oracle
+    python3 data/scaffolds/qa/control.py --dataset sotuqa --oracle
     driver.py --dataset sotuqa ...
 
 **Status: refused, with the reason written down.** `load()` raises. The three sentences
@@ -12,7 +12,7 @@ Where the data comes from
 -------------------------
 ReWOO's own curated set, 74 rows, `data/SOTU/SOTU_QA.csv` in
 `github.com/billxbf/ReWOO` at commit `9cd0283...` (the same tarball
-`data/qa/rewoo.py` declares for three BIG-bench tasks). Each row is a question about the
+`data/scaffolds/qa/rewoo.py` declares for three BIG-bench tasks). Each row is a question about the
 2023 State of the Union address plus a gold answer that is **a whole sentence**:
 
     Q: Based on State of the Union Address 2023: Is Speaker of the House
@@ -52,7 +52,7 @@ from __future__ import annotations
 
 import csv
 
-from data.qa import base
+from data.scaffolds.qa import base
 
 KIND = "dataset"
 

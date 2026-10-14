@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The check every plain-text QA dataset in this repository shares.
 
-    python3 -m data.qa.verify.check --dataset gsm8k --module data.gsm8k \
+    python3 -m data.scaffolds.qa.verify.check --dataset gsm8k --module data.gsm8k \
         --answer answer.txt --gold gold.json \
         --reward-file verifier/reward.txt --evidence-file verifier/evidence.json
 
@@ -185,7 +185,7 @@ def main(argv) -> int:
     structured = None
     if prediction_path.is_file():
         try:
-            from data.qa.prediction import validate_prediction
+            from data.scaffolds.qa.prediction import validate_prediction
             structured, prediction_error = validate_prediction(
                 json.loads(prediction_path.read_text(encoding="utf-8")))
         except (OSError, ValueError) as exc:

@@ -58,7 +58,7 @@ socket.socket.connect_ex = forbidden
 socket.create_connection = forbidden
 workdir = pathlib.Path.cwd()
 sys.path.insert(0, str(workdir))
-from data.qa import base
+from data.scaffolds.qa import base
 assert pathlib.Path(base.__file__).resolve().is_relative_to(workdir)
 base.parquet_rows = forbidden
 base.QASpec.records = lambda self: []

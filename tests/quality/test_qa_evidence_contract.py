@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def test_prediction_schema_is_closed_and_pair_typed():
-    from data.qa.prediction import validate_prediction
+    from data.scaffolds.qa.prediction import validate_prediction
 
     good = {"schema_version": 1, "answer": "SUPPORTS",
             "predicted_evidence": [["Page", 0]]}
@@ -28,7 +28,7 @@ def test_prediction_schema_is_closed_and_pair_typed():
 @pytest.mark.parametrize("evidence", [[], [["A", 0], ["B", 1], ["C", 2],
                                            ["D", 3], ["E", 4], ["F", 5]]])
 def test_cli_validates_structured_prediction_and_stores_only_it(tmp_path, evidence):
-    cli = ROOT / "data/qa/cli/qa"
+    cli = ROOT / "data/scaffolds/qa/cli/qa"
     (tmp_path / "input.json").write_text(json.dumps({
         "schema_version": 1, "answer": "SUPPORTS", "predicted_evidence": evidence,
     }))
@@ -40,7 +40,7 @@ def test_cli_validates_structured_prediction_and_stores_only_it(tmp_path, eviden
 
 
 def test_prediction_artifacts_are_scoped_to_each_task_workdir(tmp_path):
-    cli = ROOT / "data/qa/cli/qa"
+    cli = ROOT / "data/scaffolds/qa/cli/qa"
     first, second = tmp_path / "task-a", tmp_path / "task-b"
     first.mkdir()
     second.mkdir()
@@ -55,7 +55,7 @@ def test_prediction_artifacts_are_scoped_to_each_task_workdir(tmp_path):
 
 
 def test_cli_rejects_gold_and_malformed_json(tmp_path):
-    cli = ROOT / "data/qa/cli/qa"
+    cli = ROOT / "data/scaffolds/qa/cli/qa"
     (tmp_path / "input.json").write_text('{"schema_version":1,"answer":"x","gold":1}')
     bad_schema = subprocess.run([sys.executable, str(cli), "submit-json", "@input.json"],
                                 cwd=tmp_path, capture_output=True, text=True)
@@ -68,15 +68,15 @@ def test_cli_rejects_gold_and_malformed_json(tmp_path):
 
 
 def test_verifier_marks_malformed_structured_json_unmeasured(tmp_path):
-    from data.qa import base
+    from data.scaffolds.qa import base
 
     # Materialize the isolated QA check package. Parsing happens before importing the
     # adapter, so the check can reject bad JSON without any dataset data being present.
     check_dir = tmp_path / "qa/lib/verify"
     check_dir.mkdir(parents=True)
-    (check_dir / "check.py").write_bytes((ROOT / "data/qa/verify/check.py").read_bytes())
-    (tmp_path / "data/qa").mkdir(parents=True)
-    (tmp_path / "data/qa/prediction.py").write_bytes((ROOT / "data/qa/prediction.py").read_bytes())
+    (check_dir / "check.py").write_bytes((ROOT / "data/scaffolds/qa/verify/check.py").read_bytes())
+    (tmp_path / "data/scaffolds/qa").mkdir(parents=True)
+    (tmp_path / "data/scaffolds/qa/prediction.py").write_bytes((ROOT / "data/scaffolds/qa/prediction.py").read_bytes())
     (tmp_path / "gold.json").write_text('{"answer":"x"}')
     (tmp_path / "prediction.json").write_text("{")
     env = dict(os.environ, PYTHONPATH=str(tmp_path))
@@ -132,7 +132,7 @@ def test_evidence_is_in_verifier_gold_only_and_adapters_are_loadable():
 
 
 def test_oracle_prediction_has_gold_evidence_only_in_control_path():
-    from data.qa.control import _oracle_prediction
+    from data.scaffolds.qa.control import _oracle_prediction
     import data.fever as fever
     record = {"gold": {"answer": "SUPPORTS",
                        "evidence": [[[None, None, "P", 0]]]}}

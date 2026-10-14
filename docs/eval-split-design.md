@@ -180,7 +180,7 @@ train = eligible - eval - valid          # and whole groups only
 * **Valid 50–150** — valid only selects checkpoints and does not need a tenth of the
   corpus. What it does not take, train keeps.
 
-Note that the current mechanism is not 10%: `data/qa/base.py::is_eval` takes a
+Note that the current mechanism is not 10%: `data/scaffolds/qa/base.py::is_eval` takes a
 deterministic **third** (`sha256(id)[0] % 3 == 0`). Moving to this rule cuts eval by
 3.3x and raises MuSiQue's floor from 2.9 pp to 5.2 pp, in exchange for 23 pp more
 train for the `N`-sweep. That is a deliberate trade of resolution for train range,

@@ -56,7 +56,7 @@ from urllib.parse import urlparse
 # `import os` in `tools/import_env.py`, and a `registry` that was never imported and
 # whose failure a bare `except Exception` swallowed). The order is load-bearing.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import data.registry as registry   # noqa: E402
+import data.scaffolds.registry as registry   # noqa: E402
 import eval.containers.container as container   # noqa: E402
 import eval.containers.harness_runtime as harness_runtime   # noqa: E402
 
@@ -243,7 +243,7 @@ def scan_options() -> dict:
     # `probe_set`, `broken_service` -- and globbing the directory offered all five in the
     # same list, with no way to tell that three of them are scaffolding. The files stay
     # (`demo` alone is used by 21 test modules); they are simply not choices. The
-    # declaration is `KIND` in the module; see `data/registry.py`.
+    # declaration is `KIND` in the module; see `data/scaffolds/registry.py`.
     for f in (ROOT / "data" / f"{n}.py" for n in registry.published()):
         try:
             sys.path.insert(0, str(ROOT))

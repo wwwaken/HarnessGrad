@@ -1,6 +1,6 @@
 """Whose train/eval division a run uses, and why it has to be recorded.
 
-`data/registry.py` distinguishes two things that used to be one:
+`data/scaffolds/registry.py` distinguishes two things that used to be one:
 
 * a **declaration** (`SPLIT` in the adapter) is a claim about the benchmark -- "this dataset
   has a study side and an exam side" -- so both sides must be filled;
@@ -25,7 +25,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.registry as registry  # noqa: E402
+import data.scaffolds.registry as registry  # noqa: E402
 
 
 def _tasks() -> list[dict]:

@@ -35,7 +35,7 @@ from harnessgrad.environments import (_narrow_to_run,                # noqa: E40
 
 def test_registry_reports_the_split_when_a_dataset_declares_one():
     """数据集可以声明 split;读取它不该要求 driver 参与。"""
-    import data.registry as registry
+    import data.scaffolds.registry as registry
 
     tasks, scorable, split = registry.load_split("demo")
     assert tasks and scorable
@@ -60,7 +60,7 @@ def test_a_dataset_without_a_split_is_reported_not_assumed(monkeypatch):
     把声明摘掉。
     """
     import data.demo as demo
-    import data.registry as registry
+    import data.scaffolds.registry as registry
 
     assert registry.load_split("demo")[2] is not None
 
@@ -101,7 +101,7 @@ def test_every_run_records_which_division_it_used(tmp_path):
     实验的 study material。所以每次运行都记下用的是哪份划分,以及那份划分的 sha。
     这条测试拿真正跑出来的 `run_meta.json` 验,而不是验一个字段名存在。
     """
-    import data.registry as registry
+    import data.scaffolds.registry as registry
 
     declared, _ = _run(tmp_path, run_id="src-declared")
     meta = json.loads((declared["runs"] / "src-declared" / "run_meta.json").read_text())
@@ -203,7 +203,7 @@ def test_the_method_only_sees_the_train_traces(tmp_path):
     assert trace_dir.is_dir(), f"方法应该拿到 traces 目录:{trace_dir}"
 
     seen = {p.stem for p in trace_dir.glob("*.jsonl")}
-    import data.registry as registry
+    import data.scaffolds.registry as registry
     _, _, split = registry.load_split("demo")
 
     assert seen == set(split["train"]), (
@@ -275,7 +275,7 @@ def test_the_rrsi_domain_reads_the_platforms_split_instead_of_assuming_none():
     """
     import importlib.util
 
-    import data.registry as registry
+    import data.scaffolds.registry as registry
     # 适配器平时是被 RRSI 加载的,`rrsi` 由加载方放进 sys.path。单独 import 它就得
     # 自己补上这一步 —— 否则测的就不是适配器的行为,而是测试环境的缺件。
     #
@@ -341,7 +341,7 @@ def test_every_past_rounds_train_traces_are_staged(tmp_path):
     (work / "agent.py").write_text("print('v1')\n")
     shas.append(commit_state(work, "round 1"))
 
-    import data.registry as registry
+    import data.scaffolds.registry as registry
     _, _, split = registry.load_split("demo")
     history = [{"round": 0, "score": 0.0, "train_score": 0.0,
                 "identity": {"harness_sha": shas[0], "harness_name": "p",

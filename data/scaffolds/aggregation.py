@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-POLICIES = Path(__file__).with_name("aggregation_policies.json")
+POLICIES = Path(__file__).resolve().parents[1] / "aggregation_policies.json"
 
 
 def aggregation_policy(dataset: str, scope: str) -> dict[str, str]:

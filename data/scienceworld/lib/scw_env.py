@@ -116,7 +116,7 @@ def make_env(workdir: Path, *, step_budget: int = STEP_BUDGET):
     """A `ScienceWorldEnv` with the JVM pointed at the workdir's copy.
 
     The import is inside the function on purpose: `data/scienceworld.py` is imported by
-    `data/registry.py::published` on machines that have not provisioned anything, and a
+    `data/scaffolds/registry.py::published` on machines that have not provisioned anything, and a
     module-level `import scienceworld` there would be a second thing that can fail.
     """
     home = java_home(workdir)

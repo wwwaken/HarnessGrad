@@ -6,7 +6,7 @@
     python3 data/livecodebench/control.py --oracle --platform
     python3 data/livecodebench/control.py --noop   --platform
 
-`data/command_control.py` carries the algorithm, and it is kind-agnostic: what is
+`data/scaffolds/command_control.py` carries the algorithm, and it is kind-agnostic: what is
 dataset-specific is `oracle_files(task)` in `data/livecodebench.py` -- and here that is an
 **authored** reference, which is why `--task-id` matters. Only the problems that have one can
 show gate 1, and `oracle_files` raises for the rest rather than returning something empty; the
@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import command_control  # noqa: E402
+from data.scaffolds import command_control  # noqa: E402
 
 
 if __name__ == "__main__":

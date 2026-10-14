@@ -223,7 +223,7 @@ def dataset_images(name: str) -> list[tuple[str, str]]:
     and looping. The enumeration already existed -- the dataset loader answers it -- it
     was just not reachable from the tool that does the pulling.
     """
-    import data.registry as datasets
+    import data.scaffolds.registry as datasets
 
     envs = datasets.load_envs(name)
     out: dict[str, str] = {}

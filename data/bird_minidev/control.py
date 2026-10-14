@@ -6,7 +6,7 @@
     python3 data/bird_minidev/control.py --oracle --platform
     python3 data/bird_minidev/control.py --noop   --platform
 
-`data/command_control.py` carries the algorithm, and it is kind-agnostic: what is
+`data/scaffolds/command_control.py` carries the algorithm, and it is kind-agnostic: what is
 dataset-specific is `oracle_files(task)` in `data/bird_minidev.py` -- the reference solution as
 data. Gate 1 (oracle -> 1) and gate 2 (do nothing -> 0) are the same two commands for every
 `command`/`files` dataset, which is the point of generating this file rather than writing it.
@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import command_control  # noqa: E402
+from data.scaffolds import command_control  # noqa: E402
 
 
 if __name__ == "__main__":

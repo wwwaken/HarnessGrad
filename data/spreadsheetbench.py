@@ -213,9 +213,9 @@ def _setup(record: dict) -> dict:
     return {"files": [
         {"path": INIT_WORKBOOK, "from": str(record["init_path"])},
         {"path": "qa/bin/qa", "from": str(Path(__file__).resolve().parent
-                                            / "qa" / "cli" / "qa")},
+                                            / "scaffolds" / "qa" / "cli" / "qa")},
         {"path": "qa/prediction.py", "from": str(Path(__file__).resolve().parent
-                                                   / "qa" / "prediction.py")},
+                                                   / "scaffolds" / "qa" / "prediction.py")},
     ]}
 
 

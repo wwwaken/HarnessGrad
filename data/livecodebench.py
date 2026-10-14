@@ -64,7 +64,7 @@ from pathlib import Path
 
 import numpy as np
 
-from data import registry
+from data.scaffolds import registry
 
 KIND = "dataset"
 #: The reference solutions are **ours** and the released tests validate them; see the module
@@ -294,7 +294,7 @@ SPLIT = registry.default_split([{"task_id": task_id(row["index"])} for row in _I
 OFFICIAL_EVAL = None
 
 #: Which rule produced `SPLIT`: `"hash"` -- the release has no study split, so the platform
-#: imposes one. See `data/qa/base.py::division` for the QA half of this rule.
+#: imposes one. See `data/scaffolds/qa/base.py::division` for the QA half of this rule.
 SPLIT_SOURCE = "hash"
 
 SETUP = {task_id(row["index"]): _setup(row) for row in _INDEXED}
