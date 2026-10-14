@@ -34,12 +34,22 @@
       "id": "paired-filesystem-quotas",
       "family": "filesystem-quota",
       "status": "runtime",
-      "observed": "Complete hard byte/inode enforcement is missing for native binds, container roots and host workspaces.",
+      "observed": "No complete connected hard byte/inode enforcement backend is established for native binds, container roots or host workspaces. The source-only reviews did not inspect host state; current host quota capability and enforcement remain unknown.",
       "evidence": [
         {
           "kind": "repository",
           "path": "docs/filesystem-quota-backends.md",
           "locator": "quota"
+        },
+        {
+          "kind": "repository",
+          "path": "filesystem-quota-codex168-report.md",
+          "locator": "No claim is made about the host's currently installed quotas"
+        },
+        {
+          "kind": "repository",
+          "path": "docs/task-233-quota-readback-authentication.md",
+          "locator": "No host inspection, provisioning,"
         }
       ],
       "next_action": "Review the documented OS/backend provisioning requirements and independently establish enforcement before changing admission."
@@ -146,7 +156,7 @@
           "id": "production-route-admission",
           "family": "trusted-verifier-runtime",
           "status": "runtime",
-          "observed": "Pinned AgentDojo source/runtime/prepared paths are present by external metadata-only inspection, but no trusted selected-group manifest/custody or fresh production verifier/cleanup receipt binds them to a production run_one route. Historical selected controls are not fresh route evidence.",
+          "observed": "The journal's _src/runtime/agent_runtime/prepared presence inventory is an inherited external metadata claim, not authenticated release or installed-runtime custody. Codex 190 performed no fresh external inspection; no trusted selected-group manifest/custody or fresh production verifier/cleanup receipt binds those paths to a production run_one route. Historical selected controls are not fresh route evidence.",
           "evidence": [
             {
               "kind": "repository",
@@ -157,6 +167,11 @@
               "kind": "repository",
               "path": "agentdojo-metadata-privacy-codex180-report.md",
               "locator": "Metadata review closure and production boundary"
+            },
+            {
+              "kind": "repository",
+              "path": "agentdojo-provenance-codex190-report.md",
+              "locator": "inherited external metadata claim"
             },
             {
               "kind": "external-reference",

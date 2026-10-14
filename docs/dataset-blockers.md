@@ -39,12 +39,17 @@ Scorer facts and explicit original trial identities survive persistence;
 anonymous or compacted cells stay unaligned. Progress/events remain insufficient
 measurement inputs. The successful-task and shared production gates remain open.
 
-BFCL's `simple-ast-contract` is `external` while its pinned official evaluator
-source remains unacquired. The [code-only acquisition contract](../tests/fixtures/bfcl_ast_source/README.md)
+BFCL's `simple-ast-contract` remains `external` after partial pinned official
+source acquisition in [Codex 195](../bfcl-source-provenance-codex195-report.md)
+and the [Codex 227 checker retry](../bfcl-blob-retry-codex227-report.md).
+`ast_checker.py` and `type_mappings.py` are acquired with Git blob checks;
+direct model-config and Java/JS converter helpers, complete dependency/runtime
+closure, archive binding and independent custodian approval remain missing.
+The [code-only acquisition contract](../tests/fixtures/bfcl_ast_source/README.md)
 requires independent archive/tag/commit linkage, original-file custody, an exact
 approved receipt pin and a complete declared source projection. Its test-only
- gate fails closed on missing acquisition. Synthetic integrity tests establish
-neither official AST semantics nor release/index custody; function-name scoring
+gate fails closed on missing approved acquisition. Synthetic integrity tests
+establish neither official AST semantics nor release/index custody; function-name scoring
 remains diagnostic-only and the separate production gates remain open.
 
 ScienceWorld's platform-integrity prevention review is closed at source/test level,
@@ -56,9 +61,13 @@ Codex 197 code-only fixture and the [Codex 206 review](task-206-twowiki-provenan
 The active `independent-evaluator-source` blocker is retired; the schema has no
 closed status. Both original evaluator versions, Apache-2.0 license and
 commit/tree/blob linkage pass 38 offline provenance/synthetic tests with real
-installed `ujson==5.10.0`. Fresh wheel/installation-origin and native-runtime
-closure remain `external` under `ujson-native-offline-closure`; metadata hashes
-and an installed extension do not establish deployable dependency custody.
+installed `ujson==5.10.0`. [Codex 226](task-226-ujson-wheel-report.md) acquired
+the exact cp312 Linux x86_64 wheel from official PyPI metadata, checked its
+RECORD and verified a fresh offline package installation without loading the
+extension. Bundled-component notices, supported-image identity, loader/transitive
+native closure and fresh image-bound native import/synthetic execution remain
+`external` under `ujson-native-offline-closure`. Package installation alone does
+not establish deployable native-runtime closure.
 `hub-data-provenance` remains `external`, `recovery-comparability` remains
 `measurement`, and all eight shared gates remain active. Source acquisition
 does not authenticate Hub/data/alias provenance, repair mixed historical metrics
