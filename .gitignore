@@ -301,3 +301,9 @@ harnessgrad_work/
 # pytest basetemp and Codex/review scratch trees: test output, never source.
 .scratch/
 .overleaf-mcp/
+
+# Build output and dataset bytes do not belong in git. Both are reproducible:
+# `cd web && pnpm build` rebuilds the SPA, and `tools/datasets.py --fetch --dataset tau_bench`
+# plus tools/build_tau_bench_gt.py regenerates the tau-bench databases.
+web/dist/
+data/tau_bench/db/
