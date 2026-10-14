@@ -67,6 +67,19 @@ ScienceWorld's platform-integrity prevention review is closed at source/test lev
 but trusted effective mount enforcement and shared runtime gates remain blocked;
 the historical V4 record remains incomplete with `effect=null`.
 
+GSM8K's `scorer-protocol-comparability` and MuSiQue's
+`joint-policy-comparability` documentation actions are closed by the
+[B4 scorer/protocol review](../reports/b4-gsm8k-musique-metric-comparability.md).
+Their original metric-comparability IDs are retired. GSM8K's decimal-aware numeric
+scorer and trial-mean protocol remain separate from historical integer extraction,
+upstream string EM and verifier-selected test@N. MuSiQue's platform joint reward,
+legacy Answer F1 and official component columns remain separate; explicit run and
+corpus denominator declarations do not authenticate historical pilots.
+`matched-scorer-protocol-receipts` and `matched-joint-policy-receipts` now record
+the independent measurement-coverage review still needed before an actual
+comparison. All shared gates, journal claims and historical receipts are preserved;
+this closure establishes no matched measured pair or production authorization.
+
 2WikiMultihopQA's independent evaluator source gate is closed by the merged
 Codex 197 code-only fixture and the [Codex 206 review](task-206-twowiki-provenance-review.md).
 The active `independent-evaluator-source` blocker is retired; the schema has no

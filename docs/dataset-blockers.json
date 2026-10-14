@@ -729,18 +729,23 @@
       ],
       "blockers": [
         {
-          "id": "scorer-protocol-comparability",
-          "family": "metric-comparability",
+          "id": "matched-scorer-protocol-receipts",
+          "family": "measurement-coverage",
           "status": "measurement",
-          "observed": "Decimal-aware scorer provenance was repaired synthetically; old integer-scorer history and trial-mean/test@N remain distinct.",
+          "observed": "Scorer/protocol identity documentation is closed: decimal-aware last-number extraction with exclusive 1e-6 numeric tolerance and task macro means of trial means is distinct from historical integer extraction, upstream string EM and verifier-selected test@N. No independently reviewed matching measured receipt pair is established by the source/synthetic evidence.",
           "evidence": [
+            {
+              "kind": "repository",
+              "path": "reports/b4-gsm8k-musique-metric-comparability.md",
+              "locator": "## GSM8K: scorer-protocol-comparability"
+            },
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## GSM8K — scorer provenance repair — 2026-10-14"
             }
           ],
-          "next_action": "Document matching scorer/protocol identities for future comparisons and preserve old receipts unchanged."
+          "next_action": "Before a future comparison, independently review receipts matching the documented scorer/parser/aggregation identities, data/config/split and selected manifest, trial protocol, model/harness provenance, endpoint, budgets, coverage and lifecycle/cleanup. Preserve old receipts unchanged; any new run remains subject to all shared gates and current staged policy."
         }
       ],
       "historical_runs": []
@@ -913,18 +918,23 @@
       ],
       "blockers": [
         {
-          "id": "joint-policy-comparability",
-          "family": "metric-comparability",
+          "id": "matched-joint-policy-receipts",
+          "family": "measurement-coverage",
           "status": "measurement",
-          "observed": "The journal reports 150/150 measured pilot trials, but platform joint reward is not an official single leaderboard column.",
+          "observed": "Joint-policy identity documentation is closed: default answer_support rewards per-item Answer F1 times Support F1; declared run means divide by measured tasks, while the separate corpus helper divides by provided results. Explicit aggregation preserves synthetic numbers, not historical receipt identity. The journal-reported 150/150 pilot and score 0.12751114 remain unverified receipt claims, distinct from legacy Answer F1 and official component columns.",
           "evidence": [
+            {
+              "kind": "repository",
+              "path": "reports/b4-gsm8k-musique-metric-comparability.md",
+              "locator": "## MuSiQue: joint-policy-comparability"
+            },
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## MuSiQue — answer/support evaluation fidelity"
             }
           ],
-          "next_action": "Review metric/split/source/lifecycle metadata before comparison; keep the journal claim separate from newly verified evidence."
+          "next_action": "Before a future comparison, independently review matching joint-policy receipts with mode, scorer/parser/aggregation hashes, source/data custody, dev partition/selected manifest, trials, model/harness/endpoint, budgets, measured/invalid/unmeasured coverage and lifecycle/cleanup. Official-column comparisons require complete aligned IDs and retained per-trial components; preserve the historical pilot unchanged and keep all shared gates active."
         }
       ],
       "historical_runs": []
