@@ -2942,3 +2942,28 @@ review and merge.
 - Focused default/override tests demonstrate fails-before (2 failed, 4 passed), passes-after (6 passed), including default propagation to `DEFAULT_ENV` and retained tag/empty overrides. Blocker checker stayed valid after each edit; raw output: `reports/w-pin-validation.txt`.
 - Read-only Terminal-Bench recheck: 89 movable manifest tags, 86 locally present with RepoDigests, three absent (`mteb-leaderboard`, `pytorch-model-recovery`, `reshard-c4-data`). A reviewed manifest update or source-bound digest mapping could pin the 86, but a complete locally verified set requires acquiring and verifying the missing three; no manifests were edited or images pulled.
 - S3 remains PARTIAL; both shared blockers remain OPEN. Dynamic imports/providers, native host dependencies, post-bootstrap `uvx` ABI, actor-snapshot integrity and offline resolver payloads are unestablished by this change. No benchmark task, model, GPU, endpoint call or container start; no scoring/gate/registry changes and no frozen receipt or `runs/` modifications.
+## Parent review and merge — w-pin — 2026-10-15
+
+- Merged `8b5c545` (w-pin). Result `e2e0c48`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=False`. 94 passed on the registry plus the GAIA
+  scorer and dataset-classes test files.
+- **The two movable-tag image references the assessment named are now digest-pinned.** The GAIA
+  and Tau-bench adapter defaults change from `harnessgrad/gaia:20261008` and
+  `harnessgrad/tau-bench:20261006` to their `@sha256:` references, and the environment overrides
+  (`HG_GAIA_IMAGE`, `HG_TAU_IMAGE`) still win, so an operator keeps the escape hatch. The digests
+  were recomputed from local OCI bytes rather than copied from a report, and the parent verified
+  independently that **both pinned references resolve locally** with `docker image inspect`.
+  Focused tests went from 2 failed before to 6 passed after.
+- What this does not do, and the worker said so rather than implying otherwise: Terminal-Bench's
+  **89 per-task references are still movable tags and 3 of those images are still absent**;
+  AppWorld's three pins were already correct and are untouched. So **S3 remains PARTIAL** and both
+  shared blockers stay open. Pinning two references is a real improvement in custody and is not a
+  closure of the clause that asked for "complete transitive image/ABI dependencies" - the clause
+  also wants complete dynamic imports/providers, native host dependencies, post-bootstrap `uvx`
+  ABI, actor-snapshot integrity and offline resolver payloads.
+- Still in flight at the end of this round and NOT merged: `w-offscorer2`, which extends
+  official-scorer execution evidence to datasets in the coverage gap S4 names. Nothing about its
+  result is claimed here.
+- Resource state: local `docker image inspect` and tests only - no benchmark task, model, GPU,
+  endpoint or container start. Both GPUs stayed idle and no utilisation is claimed. Historical
+  runs, frozen receipts and archives were untouched.
