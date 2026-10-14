@@ -1836,3 +1836,41 @@ passed. Exact commands and focused source-only registry tests are recorded in
 - Resource state: neither worker ran a benchmark task, model, GPU, endpoint or container - both
   were source/bytes inspections, so GPU0 and GPU1 stayed idle and no utilisation is claimed.
   Historical runs, frozen receipts and archives were left untouched.
+## Parent review — w-spread reverted, w-ujson pending — 2026-10-15
+
+- **`w-spread` was merged and then reverted; it is NOT on `main`.** The merge `87b4254` is
+  followed by `4b7b1d0 Revert "fix: keep SpreadsheetBench comparator failures unmeasured"`, so
+  history is preserved and nothing was rewritten. `main` is healthy: checker valid, 65 focused
+  tests pass.
+- Why. w-spread's change is real work and its own tests did show 14 failed / 18 passed before
+  becoming 32 passed after: comparator, workbook-load and LibreOffice failures now raise and
+  become explicit unmeasured evidence instead of being indistinguishable from a completed
+  mismatch, and the report states that an absent artifact and a genuine value/sheet mismatch
+  remain measured zero. But it also changed a released task's classification.
+  `test_spreadsheetbench_official_scorer.py::test_the_initial_workbook_does_not_score_one`
+  failed after the merge and **passed in a pristine control worktree at pre-merge `bd9a6a7`**,
+  so it was a genuine regression rather than a worktree artifact. The cause is task `283-32`,
+  whose released `answer_position` is `Sheet3'!A:G`: the official `parse_cell_range` cannot read
+  a bare column with no row, and w-spread turned that into an **unmeasured** task, where the
+  pinned test expects the initial workbook not to score 1.
+- Why the revert rather than updating the pinned test. Upstream's own caller turns that parse
+  failure into a `0`, so making it locally `unmeasured` makes the local result for a *released*
+  task differ from the official evaluator - which is precisely the comparability property this
+  blocker's family exists to protect. Deciding whether "not gradable" should beat "matches the
+  official scorer" is a real design decision about coverage and comparability, and it is not one
+  to settle by editing a pinned assertion while finishing a round. The right next step is a
+  focused reconciliation of that single released task, with the official behaviour and the
+  coverage consequence both stated, and then either the classification or the pinned test
+  changed deliberately and visibly.
+- Third instance of the same worker-side gap, worth recording as a standing rule: w-spread
+  reported its own focused set green without running
+  `test_spreadsheetbench_official_scorer.py`, the file most obviously affected by a change to
+  the spreadsheetbench verify path. The parent rule therefore stands and is reinforced - after
+  any change to a scoring or classification path, the parent runs the *owning* dataset's test
+  file, not only the registry and the new tests.
+- `w-ujson` (the `twowikimultihopqa / ujson-native-offline-closure` binding to an immutable
+  CPython 3.12 image with network-denied import/symbol/evaluator receipts) was still running at
+  the end of this round and is not merged. Nothing about it is claimed here.
+- Resource state: w-spread ran only local synthetic tests; no benchmark task, model, GPU,
+  endpoint or container was used, so both GPUs stayed idle and no utilisation is claimed.
+  Historical runs, frozen receipts and archives were left untouched.
