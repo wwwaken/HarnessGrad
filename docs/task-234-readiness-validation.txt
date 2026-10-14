@@ -1,0 +1,39 @@
+Task 234 — metadata/source validation receipt
+Reviewed HEAD: 61e7f82245c76e7c833740216940d1fcaf3b76be
+
+Registry checker (exit 0):
+{"valid": true, "datasets": 28, "shared_blockers": 8, "historical_records": 11, "production_authorized": false}
+
+Guarded registry command (exit 0):
+env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp/hg-codex-234/.scratch/task234-readiness python3 -B -m pytest -q -p no:cacheprovider --basetemp=.scratch/task234-readiness/pytest tests/quality/test_dataset_blockers.py
+....................................................                     [100%]
+52 passed in 2.65s
+
+Source/metadata assertions (standard library, AST and read-only Git):
+PASS reviewed HEAD is current HEAD
+PASS 28 exact unique dataset rows
+PASS original registry taxonomy/blockers/actions/evidence/history copied exactly
+PASS 24 blocked, 4 excluded, zero ready
+PASS 23 exact shared-reference sets; specialized AgentDojo stays separate
+PASS 8 original shared requirements and explicit phase mappings
+PASS triviaqa obsolete acquisition blocker retired
+PASS twowikimultihopqa obsolete acquisition blocker retired
+PASS current TriviaQA v2 scorer identity retained
+PASS 11 historical records preserve null effects
+PASS unknown run counts and no fabricated execution authorization
+PASS host quota and GPU availability remain unobserved
+PASS first diagnostic has no prior diagnostic prerequisite
+PASS separate expansion review, 30-cap and one-trial policy retained
+PASS all 71 input SHA-256 pins match both current source and reviewed HEAD blobs
+PASS current driver still omits lifecycle and supplies unknown cleanup/snapshot
+PASS standalone scorer preflight is not a driver/runner caller
+PASS report has all 28 unique rows and every dataset-specific active blocker ID
+PASS all report local links resolve (validation receipt created by this check)
+PASS local overview has no remote active assets
+PASS captured guarded registry suite passed
+PASS git diff --cached --check; staged scope contains only the three task-234 audit files.
+
+Local overview: answer-me-with-html renderer, task-local AM_HOME, AM_NO_UPDATE_CHECK=1, --no-open; 5 panels, 0 prose warnings.
+PASS task-owned .scratch/task234-readiness removed and verified absent after preserving test results.
+Overview and draft retained under ignored docs/_build/task234/; no runtime cleanup claim.
+No dataset payload/heldout, model/H0, endpoint, GPU, official scorer, host inspection or backend mutation performed.
