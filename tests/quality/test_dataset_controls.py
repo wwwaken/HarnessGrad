@@ -183,7 +183,18 @@ REFUSED = ("api_bank", "sotuqa", "tau2_bench", "nestful")
 #: The refusal is the correct outcome, not a failure, so these are asserted as refusals
 #: rather than skipped. Skipping would hide the guarantee; demanding `reward 1`/`0`
 #: would demand a number that claims enforcement nobody verified.
-POLICY_REFUSED = ("gaia", "jericho", "spreadsheetbench")
+#:
+#: **Only `gaia` belongs here, and the reason is the control's form, not the dataset's
+#: blockers.** This tuple is about a control that runs through `--platform` and is
+#: therefore stopped by the fail-closed runner hook; `gaia` is the only declared control
+#: that does (`data/gaia/control.py --platform`). `jericho` and `spreadsheetbench` were
+#: listed here while their by-hand controls were broken -- one could not start the game
+#: for want of a writable temp directory, the other could not submit for want of a
+#: module in its `SETUP`. Both were repaired, and their by-hand arms now genuinely
+#: measure `1` and `0`, so expecting a refusal from them would now be expecting the
+#: platform to hide a working measurement. Their platform-side refusal is a separate
+#: property and is pinned by the admission-wiring tests, not here.
+POLICY_REFUSED = ("gaia",)
 
 
 def _provisioned(name: str) -> bool:

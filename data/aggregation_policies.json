@@ -29,5 +29,8 @@
   "tau_bench": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "terminal_bench": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "triviaqa": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
-  "twowikimultihopqa": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}, "corpus_metrics": {"aggregation": "ordered_macro_mean", "denominator": "gold_rows"}}
+  "twowikimultihopqa": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}, "corpus_metrics": {"aggregation": "ordered_macro_mean", "denominator": "gold_rows"}},
+  "verify_demo": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
+  "verify_exec": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
+  "verify_service": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}}
 }

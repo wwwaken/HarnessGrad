@@ -242,7 +242,12 @@ def test_jobs_reaches_the_run_through_the_driver(tmp_path, isolated_platform):
         shutil.copytree(ROOT / name, platform / name, symlinks=True,
                         ignore=shutil.ignore_patterns("__pycache__"))
     (platform / "data").mkdir()
-    for name in ("__init__.py", "registry.py", "demo.py"):
+    # `aggregation.py` and its manifest are part of the runtime now: the driver reads
+    # the dataset's declared aggregation policy when it turns per-task rewards into the
+    # curve point, and it fails closed for an undeclared dataset. Staging `demo.py`
+    # without them made the staged platform incomplete rather than minimal.
+    for name in ("__init__.py", "registry.py", "demo.py",
+                 "aggregation.py", "aggregation_policies.json"):
         shutil.copy2(ROOT / "data" / name, platform / "data" / name)
     shutil.copytree(ROOT / "base_harness" / "loop_plain",
                     platform / "base_harness" / "loop_plain", symlinks=True,

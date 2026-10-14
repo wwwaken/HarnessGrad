@@ -20,7 +20,8 @@ from eval.metrics import mean
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = ROOT / "tests/fixtures/aggregation_s9_before.json"
 SOURCE_EXCLUDED = {"agentdojo"}
-FIXTURES = {"demo", "probe_set", "broken_service"}
+FIXTURES = {"demo", "probe_set", "broken_service",
+            "verify_demo", "verify_exec", "verify_service"}
 
 
 def _published_sources(directory):
