@@ -7,6 +7,11 @@ The job: the registry has 28 adapters, and the demand x harness-function matrix 
 no adapter behind them. Close them. While doing so, internalize whatever the work teaches the
 shared platform, because that is a rule here and not an optional courtesy.
 
+**Assignment (owner's decision, 2026-10-14): P1 and P2 only.** Those are the `memory` family and
+the `safety` family, in §6. P3 (transfer peers) is not assigned yet, and P0 is deferred — the
+owner is organizing the platform first. See §6 for what P0 is and why deferring it does not block
+this work.
+
 ---
 
 ## 1. Two axes, and the one distinction that is easy to get wrong
@@ -161,6 +166,34 @@ Once the gates pass, touch all of these or the tooling will fail somewhere later
 ---
 
 ## 6. What to fill
+
+Priorities, so you know what is in scope:
+
+| | what | in scope now | why |
+| --- | --- | --- | --- |
+| **P0** | **Not a dataset task.** Re-baseline the existing adapters on an actor model with headroom, and enlarge eval sides to >=100 tasks. | **deferred by the owner** | See below. Do not start it. |
+| **P1** | `memory` family: LoCoMo-MC10, LongMemEval retrieval-recall, MemoryAgentBench | **yes** | opens a demand with zero coverage, and is the instrument for R5 |
+| **P2** | `safety` family: InjecAgent, TensorTrust | **yes** | takes safety from 1 adapter to 3, and gives a transfer pair |
+| **P3** | transfer peers for the four cheap singleton surfaces | not assigned | unlocks R4 and R11 |
+| **P4** | `pass@k` aggregation and a budget sweep | not assigned | needs no dataset |
+
+### What P0 is, and why deferring it is safe for P1 and P2
+
+P0 is not a purchase. It is two configuration decisions, both with a measured reason:
+
+1. **Actor model.** 188 of the 220 runs on this machine used `qwen3.5-9b-local`, whose median score
+   is **0.0000** with **53.7%** of runs scoring exactly zero. The same harness scores 0.4729 with
+   `deepseek-flash` on the same tasks. R3 in `docs/claims.md` says headroom is a property of the
+   harness, the benchmark and the model together, and that **without headroom sample efficiency is
+   undefined** — so on the current model the paper's headline curves cannot be measured at all.
+2. **Eval-set size.** M2 measured a floor of 1.30 tasks of spread on a twenty-task eval set, and
+   the staircase needs roughly 100 eval tasks to be visible. Current pilots score 50.
+
+Neither one changes an adapter, so **neither one blocks P1 or P2**. The onboarding gates are gate 1
+and gate 2 — oracle scores 1, noop scores 0 — and those are model-free controls: the control sweeps
+in the journal ran with `jobs=1, no model/H0`. You can onboard and verify a `memory` or `safety`
+adapter completely without a model run. What P0 would add later is whether those adapters have any
+headroom to measure, which is a separate question from whether they are correctly onboarded.
 
 | gap | state | candidates already screened |
 | --- | --- | --- |
