@@ -137,6 +137,11 @@ class QASpec:
     `rows` is a callable, not a list, because a dataset adapter is imported on machines
     where its data was never provisioned (`data/registry.py::published`) and must not
     read a byte at import time.
+
+    The shared QA controls read the adapter module's optional `NOOP_EXPECTED`
+    declaration: a float, or a callable taking the record dict and returning a float.
+    It sets the expected do-nothing reward in both local and platform controls and
+    defaults to 0.0 when absent. The oracle arm always expects 1.0.
     """
 
     def __init__(

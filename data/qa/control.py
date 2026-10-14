@@ -105,6 +105,12 @@ def _oracle_prediction(module, record: dict) -> dict | None:
             else gold.get("supporting_facts")}
 
 
+def _noop_expected(module, record: dict) -> float:
+    """Resolve the adapter's declared do-nothing reward (default 0.0)."""
+    expected = getattr(module, "NOOP_EXPECTED", 0.0)
+    return float(expected(record) if callable(expected) else expected)
+
+
 def materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
     """Put the task where `SETUP` would, plus the gold when this is the oracle arm."""
     workdir.mkdir(parents=True, exist_ok=True)
@@ -190,9 +196,7 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
     print(f"mode    {'oracle' if oracle else 'do-nothing'}")
     print(f"reward  {reward:g}")
     print(detail)
-    expected = 1.0 if oracle else (
-        1.0 if module.__name__ == "data.bfcl_v3" and not record["gold"].get("functions")
-        else 0.0)
+    expected = 1.0 if oracle else _noop_expected(module, record)
     if reward != expected:
         print(f"CONTROL FAILED: expected reward {expected:g}, got {reward:g}",
               file=sys.stderr)
@@ -254,9 +258,7 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     print(f"detail   {verdict.get('detail')}")
     if verdict.get("evidence"):
         print(f"evidence {json.dumps(verdict['evidence'].get('why'), ensure_ascii=False)}")
-    expected = 1.0 if oracle else (
-        1.0 if module.__name__ == "data.bfcl_v3" and not record["gold"].get("functions")
-        else 0.0)
+    expected = 1.0 if oracle else _noop_expected(module, record)
     score = verdict.get("score")
     if score is None:
         # No score is not a zero. The platform refused the task, the scorer failed, or

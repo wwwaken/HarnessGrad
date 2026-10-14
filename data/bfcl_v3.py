@@ -77,6 +77,11 @@ ORACLE_SOURCE = "released"
 REDACT_EVIDENCE = True
 
 
+def NOOP_EXPECTED(record: dict) -> float:
+    """Submitting nothing is correct exactly when no function is expected."""
+    return 1.0 if not record["gold"].get("functions") else 0.0
+
+
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
 #: to it**. The pool is the `simple` and `irrelevance` categories, both official BFCL evaluation categories. The categories this platform does not host are absent from the pool as well.
 #:
@@ -633,6 +638,6 @@ def provision_status() -> dict:
     }
 
 
-__all__ = ["KIND", "DATASET_ROOT", "load", "downloads", "provision_status", "score",
+__all__ = ["KIND", "DATASET_ROOT", "NOOP_EXPECTED", "load", "downloads", "provision_status", "score",
            "normalize_schema", "gold_names", "parse_prediction", "bare_name",
            "load_selected", "control_task", "task_for", "setup_for", "verify_for", "DEFAULT_ENV"]
