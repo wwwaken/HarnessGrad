@@ -1,0 +1,35 @@
+{
+  "kind": "authored synthetic scorer controls; no released questions or model output",
+  "gsm8k": [
+    {"id": "g01", "prediction": "#### 18", "gold_answer": "#### 18"},
+    {"id": "g02", "prediction": "18", "gold_answer": "#### 18"},
+    {"id": "g03", "prediction": "The answer is 18", "gold_answer": "#### 18"},
+    {"id": "g04", "prediction": "#### 18.0", "gold_answer": "#### 18"},
+    {"id": "g05", "prediction": "#### 1,250", "gold_answer": "#### 1250"},
+    {"id": "g06", "prediction": "#### 018", "gold_answer": "#### 18"},
+    {"id": "g07", "prediction": "#### 18\n#### 7", "gold_answer": "#### 18"},
+    {"id": "g08", "prediction": "#### 7\n#### 18", "gold_answer": "#### 18"},
+    {"id": "g09", "prediction": "#### 18\nAdditional number: 99", "gold_answer": "#### 18"},
+    {"id": "g10", "prediction": "#### 18.0000005", "gold_answer": "#### 18"},
+    {"id": "g11", "prediction": "#### 18.000002", "gold_answer": "#### 18"},
+    {"id": "g12", "prediction": "No numerical answer", "gold_answer": "#### 18"},
+    {"id": "g13", "prediction": "#### -3.25", "gold_answer": "#### -3.25"},
+    {"id": "g14", "prediction": "#### 17", "gold_answer": "#### 18"},
+    {"id": "g15", "prediction": "#### 1e3", "gold_answer": "#### 1"},
+    {"id": "g16", "prediction": "#### $18", "gold_answer": "#### 18"}
+  ],
+  "strategyqa": [
+    {"id": "s01", "panel": "valid_official_boolean", "prediction": true, "gold_answer": true},
+    {"id": "s02", "panel": "valid_official_boolean", "prediction": false, "gold_answer": false},
+    {"id": "s03", "panel": "valid_official_boolean", "prediction": true, "gold_answer": false},
+    {"id": "s04", "panel": "valid_official_boolean", "prediction": false, "gold_answer": true},
+    {"id": "s05", "panel": "adapter_text_official_out_of_contract", "prediction": "Yes", "gold_answer": true},
+    {"id": "s06", "panel": "adapter_text_official_out_of_contract", "prediction": "No", "gold_answer": false},
+    {"id": "s07", "panel": "adapter_text_official_out_of_contract", "prediction": "YES!", "gold_answer": true},
+    {"id": "s08", "panel": "adapter_text_official_out_of_contract", "prediction": "  no\n", "gold_answer": false},
+    {"id": "s09", "panel": "adapter_text_official_out_of_contract", "prediction": "a yes", "gold_answer": true},
+    {"id": "s10", "panel": "adapter_text_official_out_of_contract", "prediction": "Yes, because this is true", "gold_answer": true},
+    {"id": "s11", "panel": "adapter_text_official_out_of_contract", "prediction": "No", "gold_answer": true},
+    {"id": "s12", "panel": "adapter_text_official_out_of_contract", "prediction": "", "gold_answer": false}
+  ]
+}

@@ -1,0 +1,644 @@
+{
+  "kind": "synthetic controlled scorer inputs; no benchmark task execution",
+  "cases": [
+    {
+      "id": "exact",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "exact",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "normalized-answer",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "normalized-answer",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "The RED, blue.",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "answer-alias",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "answer-alias",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [
+          "scarlet"
+        ],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "scarlet",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "partial-answer",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "partial-answer",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "wrong-answer",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "wrong-answer",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "green",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "partial-support",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "partial-support",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "empty-support",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "empty-support",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "duplicate-support",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "duplicate-support",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "normalized-support-title",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "normalized-support-title",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            " The SYNTHETIC Title.",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "missing-support",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "missing-support",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "evidence": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "missing-evidence",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "missing-evidence",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "id": "wrong-evidence",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "wrong-evidence",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [],
+        "evidence_aliases": {}
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Other Subject",
+            "relation",
+            "Synthetic Object"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "evidence-entity-alias",
+      "scope": "ordinary-synthetic",
+      "gold": {
+        "id": "evidence-entity-alias",
+        "type": "synthetic",
+        "answer": "red blue",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidences": [
+          [
+            "Synthetic Entity",
+            "relation",
+            "Synthetic Object"
+          ]
+        ],
+        "evidences_id": [
+          [
+            "Q_subject",
+            "relation",
+            "Q_object"
+          ]
+        ],
+        "evidence_aliases": {
+          "Q_subject": [
+            "Entity Alias"
+          ],
+          "Q_object": [
+            "Object Alias"
+          ]
+        }
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "red blue",
+        "supporting_facts": [
+          [
+            "Synthetic Title",
+            0
+          ],
+          [
+            "Other Title",
+            1
+          ]
+        ],
+        "evidence": [
+          [
+            "Entity Alias",
+            "relation",
+            "Object Alias"
+          ]
+        ]
+      }
+    }
+  ]
+}

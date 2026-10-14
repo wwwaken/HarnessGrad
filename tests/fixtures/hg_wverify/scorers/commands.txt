@@ -1,0 +1,2 @@
+timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python3 tests/fixtures/hg_wverify/scorers/offline_exec.py tests/fixtures/hg_wverify/scorers/check.py > tests/fixtures/hg_wverify/scorers/stdout.txt 2> tests/fixtures/hg_wverify/scorers/stderr.txt
+cat tests/fixtures/hg_wverify/scorers/stdout.txt

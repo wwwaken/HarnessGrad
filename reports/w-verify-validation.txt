@@ -1,0 +1,15 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+registry_before_sha256=600366784b54215632ca3a71fa5e0991baa9a85b1d27676fc13040c848a84799
+registry_after_sha256=600366784b54215632ca3a71fa5e0991baa9a85b1d27676fc13040c848a84799
+registry_unchanged=true
+journal_append_only=true
+allowed_diff_scope=true
+frozen_evidence_adapters_and_runtime_unchanged=true
+primary_scorer_source_pins_match=true
+additional_official_source_copy_pins_match=true
+parent_reviewed_scorer_replays=true
+released_dataset_records_loaded=0
+fixture_manifest_files=681
+fixture_manifest_complete=true
+PASS: registry valid and unchanged; frozen artifacts unchanged; journal append-only; packet hashes valid

@@ -1,0 +1,579 @@
+{
+  "gsm8k": [
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g0",
+      "prediction": "#### 42"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g1",
+      "prediction": "42"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g2",
+      "prediction": "#### 42.0"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g3",
+      "prediction": "#### 0042"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g4",
+      "prediction": "#### 42\n#### 9"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g5",
+      "prediction": "#### 9\n#### 42"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g6",
+      "prediction": "#### 42.0000004"
+    },
+    {
+      "gold_answer": "#### -6.75",
+      "id": "own-g7",
+      "prediction": "#### -6.75"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g8",
+      "prediction": "no answer"
+    },
+    {
+      "gold_answer": "#### 42",
+      "id": "own-g9",
+      "prediction": "#### 43"
+    }
+  ],
+  "physicsquestions": [
+    {
+      "id": "own-p0",
+      "local_gold": {
+        "accepted": [
+          "9 m/s",
+          "9 metres per second"
+        ]
+      },
+      "local_prediction": "9 m/s",
+      "official_sample": {
+        "generative_response": "9 m/s",
+        "target": [
+          "9 m/s",
+          "9 metres per second"
+        ]
+      }
+    },
+    {
+      "id": "own-p1",
+      "local_gold": {
+        "accepted": [
+          "9 m/s"
+        ]
+      },
+      "local_prediction": " 9 m/s ",
+      "official_sample": {
+        "generative_response": " 9 m/s ",
+        "target": [
+          "9 m/s"
+        ]
+      }
+    },
+    {
+      "id": "own-p2",
+      "local_gold": {
+        "accepted": [
+          "9 m/s."
+        ]
+      },
+      "local_prediction": "9 m/s",
+      "official_sample": {
+        "generative_response": "9 m/s",
+        "target": [
+          "9 m/s."
+        ]
+      }
+    },
+    {
+      "id": "own-p3",
+      "local_gold": {
+        "accepted": [
+          "9 m/s."
+        ]
+      },
+      "local_prediction": "9 m/s.",
+      "official_sample": {
+        "generative_response": "9 m/s.",
+        "target": [
+          "9 m/s."
+        ]
+      }
+    },
+    {
+      "id": "own-p4",
+      "local_gold": {
+        "accepted": [
+          " 9 m/s "
+        ]
+      },
+      "local_prediction": "9 m/s",
+      "official_sample": {
+        "generative_response": "9 m/s",
+        "target": [
+          " 9 m/s "
+        ]
+      }
+    },
+    {
+      "id": "own-p5",
+      "local_gold": {
+        "accepted": [
+          "9 m/s"
+        ]
+      },
+      "local_prediction": "9 M/S",
+      "official_sample": {
+        "generative_response": "9 M/S",
+        "target": [
+          "9 m/s"
+        ]
+      }
+    },
+    {
+      "id": "own-p6",
+      "local_gold": {
+        "accepted": [
+          "9 m/s"
+        ]
+      },
+      "local_prediction": "9 m/s.",
+      "official_sample": {
+        "generative_response": "9 m/s.",
+        "target": [
+          "9 m/s"
+        ]
+      }
+    },
+    {
+      "id": "own-p7",
+      "local_gold": {
+        "accepted": [
+          ""
+        ]
+      },
+      "local_prediction": "",
+      "official_sample": {
+        "generative_response": "",
+        "target": [
+          ""
+        ]
+      }
+    }
+  ],
+  "twowikimultihopqa": [
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w0",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w0",
+      "prediction": {
+        "answer": "silver river",
+        "evidence": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "exact"
+    },
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w1",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w1",
+      "prediction": {
+        "answer": "The SILVER, river!",
+        "evidence": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "normalization"
+    },
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w2",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w2",
+      "prediction": {
+        "answer": "silver",
+        "evidence": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "partial"
+    },
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w3",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w3",
+      "prediction": {
+        "answer": "bronze",
+        "evidence": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "wrong"
+    },
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w4",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w4",
+      "prediction": {
+        "answer": "silver river",
+        "evidence": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": []
+      },
+      "purpose": "empty-support"
+    },
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w5",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w5",
+      "prediction": {
+        "answer": "silver river",
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "missing-evidence"
+    },
+    {
+      "gold": {
+        "aliases": [
+          "Argent Stream"
+        ],
+        "answer": "silver river",
+        "evidence_aliases": {},
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [],
+        "id": "own-w6",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w6",
+      "prediction": {
+        "answer": "Argent Stream",
+        "evidence": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "alias"
+    },
+    {
+      "gold": {
+        "aliases": [],
+        "answer": "silver river",
+        "evidence_aliases": {
+          "Qown1": [
+            "O"
+          ],
+          "Qown2": [
+            "V"
+          ]
+        },
+        "evidences": [
+          [
+            "Orin",
+            "located in",
+            "Vale"
+          ]
+        ],
+        "evidences_id": [
+          [
+            "Qown1",
+            "located in",
+            "Qown2"
+          ]
+        ],
+        "id": "own-w7",
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ],
+        "type": "synthetic"
+      },
+      "id": "own-w7",
+      "prediction": {
+        "answer": "silver river",
+        "evidence": [
+          [
+            "O",
+            "located in",
+            "V"
+          ]
+        ],
+        "schema_version": 1,
+        "supporting_facts": [
+          [
+            "East bank",
+            0
+          ],
+          [
+            "West bank",
+            2
+          ]
+        ]
+      },
+      "purpose": "entity-alias"
+    }
+  ]
+}
