@@ -19,11 +19,77 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from eval.integrity import (PLATFORM, diff, snapshot,  # noqa: E402
                             workspace_is_outside_platform)
+
+#: The shared platform directories this file may read but must never write.
+#: They are the tree `eval/integrity.py` hashes around every run, and the tree
+#: every other test in the suite walks -- so a test that edits one of them for
+#: even an instant can crash a concurrent process with a `FileNotFoundError`
+#: for a file it briefly created or removed.
+_GUARDED = ("driver.py", "harnessgrad", "eval", "data", "tools", "methods",
+            "tests", "docs", "improvers", "base_harness")
+
+
+def _platform_stat() -> dict[str, tuple[int, int]]:
+    """`path -> (size, mtime_ns)` for every file under the guarded top level.
+
+    `stat()` only, deliberately: this runs around *every* test in the file, and
+    hashing the whole tree each time would cost more than the tests it guards.
+    Size plus modification time catches the class of change that matters -- a
+    write, a create, a delete or a truncate -- and a same-length rewrite still
+    moves the mtime.
+    """
+    out: dict[str, tuple[int, int]] = {}
+    for name in _GUARDED:
+        target = ROOT / name
+        if target.is_file():
+            st = target.stat()
+            out[name] = (st.st_size, st.st_mtime_ns)
+        elif target.is_dir():
+            for path in target.rglob("*"):
+                # Byte-compiled output is a by-product of *reading* the tree,
+                # written by every process that imports the platform.
+                if not path.is_file() or "__pycache__" in path.parts \
+                        or path.name.endswith(".pyc"):
+                    continue
+                st = path.stat()
+                out[str(path.relative_to(ROOT))] = (st.st_size, st.st_mtime_ns)
+    return out
+
+
+@pytest.fixture(autouse=True)
+def _the_shared_checkout_is_never_edited():
+    """Fail loudly if a test writes anywhere under the real platform root.
+
+    This is what keeps the tamper tests below honest. They protect a real
+    property -- "the platform notices a changed file" -- and they prove it on a
+    synthetic tree under `tmp_path`, because editing the real checkout to prove
+    the same thing is exactly what raced every concurrent test that walks the
+    tree. A test that does it again fails here, naming the offending paths.
+    """
+    before = _platform_stat()
+    yield
+    after = _platform_stat()
+    added = sorted(set(after) - set(before))
+    removed = sorted(set(before) - set(after))
+    changed = sorted(k for k in set(before) & set(after) if before[k] != after[k])
+    report = []
+    if added:
+        report.append(f"added: {added}")
+    if removed:
+        report.append(f"removed: {removed}")
+    if changed:
+        report.append(f"resized or retouched: {changed}")
+    assert not report, (
+        f"this test edited the shared checkout at {ROOT}; the platform is hashed "
+        "around every run and another test process may be walking these paths. "
+        "Mutate a synthetic platform under `tmp_path` instead -- " + "; ".join(report))
 
 
 def test_snapshot_covers_the_referee_not_the_candidate():
@@ -42,35 +108,48 @@ def test_snapshot_covers_the_referee_not_the_candidate():
         "base_harness/ is a candidate, not a referee"
 
 
-def test_a_modified_platform_file_is_reported_by_name():
-    """The point of the check: it says which file, so the run can be fixed."""
-    target = ROOT / "tools" / "plot_curve.py"
-    original = target.read_bytes()
-    before = snapshot(ROOT)
-    try:
-        target.write_bytes(original + b"\n# tampered\n")
-        changes = diff(before, snapshot(ROOT))
-        assert changes["modified"] == ["tools/plot_curve.py"], changes
-        assert not changes["added"] and not changes["removed"], changes
-    finally:
-        target.write_bytes(original)
-    assert diff(before, snapshot(ROOT))["modified"] == [], "revert must be clean"
+def test_a_modified_platform_file_is_reported_by_name(tmp_path):
+    """The point of the check: it says which file, so the run can be fixed.
+
+    The mutation is against a synthetic platform under `tmp_path` on purpose.
+    The property under test is "a content change is named", which does not need
+    the real checkout to be edited -- and editing `tools/` raced every
+    concurrent test that walked `tools/` at that instant.
+    """
+    (tmp_path / "tools").mkdir()
+    target = tmp_path / "tools" / "plot_curve.py"
+    original = b"# a platform tool\n"
+    target.write_bytes(original)
+    before = snapshot(tmp_path)
+    # The fixture must be shaped like a platform, or the diff below is vacuous.
+    assert "tools/plot_curve.py" in before, before
+    target.write_bytes(original + b"\n# tampered\n")
+    changes = diff(before, snapshot(tmp_path))
+    assert changes["modified"] == ["tools/plot_curve.py"], changes
+    assert not changes["added"] and not changes["removed"], changes
+    target.write_bytes(original)
+    assert diff(before, snapshot(tmp_path))["modified"] == [], "revert must be clean"
 
 
-def test_an_added_or_removed_platform_file_is_also_a_violation():
-    """Deleting the scorer is as effective as rewriting it."""
-    victim = ROOT / "tools" / "_integrity_probe.py"
-    try:
-        before = snapshot(ROOT)
-        victim.write_text("# nothing\n")
-        assert "tools/_integrity_probe.py" in diff(before, snapshot(ROOT))["added"]
+def test_an_added_or_removed_platform_file_is_also_a_violation(tmp_path):
+    """Deleting the scorer is as effective as rewriting it.
 
-        # Removal is measured against a snapshot taken while the file existed.
-        with_file = snapshot(ROOT)
-        victim.unlink()
-        assert "tools/_integrity_probe.py" in diff(with_file, snapshot(ROOT))["removed"]
-    finally:
-        victim.unlink(missing_ok=True)
+    Synthetic platform again: the property is "a file appeared/disappeared and
+    is named", and proving it by creating and deleting a file in the real
+    `tools/` is what made a concurrent walk of `tools/` crash.
+    """
+    (tmp_path / "tools").mkdir()
+    (tmp_path / "tools" / "plot_curve.py").write_text("# a platform tool\n")
+    victim = tmp_path / "tools" / "probe.py"
+    before = snapshot(tmp_path)
+    assert "tools/plot_curve.py" in before, before
+    victim.write_text("# nothing\n")
+    assert "tools/probe.py" in diff(before, snapshot(tmp_path))["added"]
+
+    # Removal is measured against a snapshot taken while the file existed.
+    with_file = snapshot(tmp_path)
+    victim.unlink()
+    assert "tools/probe.py" in diff(with_file, snapshot(tmp_path))["removed"]
 
 
 def test_workspace_inside_the_platform_is_refused():
@@ -103,15 +182,27 @@ def test_the_driver_refuses_a_workspace_inside_the_platform():
         "the refusal must happen before anything is staged"
 
 
-def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path):
+def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path, monkeypatch):
     """Rule 2, exercised through the real runner.
 
     The harness here is the worst case the platform can be handed: one whose
     entrypoint appends to `eval/runner.py` -- the file that decides what its own
     answer is worth. `evaluate()` must name it.
+
+    `PLATFORM_ROOT` points at a synthetic platform under `tmp_path` rather than
+    the checkout. `evaluate()` is in `eval/runner.py`, which imports that global
+    into its own namespace, so patching it there changes the root the check
+    actually hashes -- and rewriting the real `eval/runner.py` is what raced
+    every concurrent test that imports or walks `eval/`.
     """
     import data.registry as registry
     from eval.runner import evaluate
+
+    platform = tmp_path / "platform"
+    (platform / "eval").mkdir(parents=True)
+    victim = platform / "eval" / "runner.py"
+    victim.write_text("# the synthetic runner\n")
+    monkeypatch.setattr("eval.runner.PLATFORM_ROOT", platform)
 
     tasks_all, scorable = registry.load("demo")
     tasks = tasks_all[:1]
@@ -120,7 +211,6 @@ def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path):
     harness.mkdir()
     (harness / "harness.json").write_text(json.dumps(
         {"name": "evil", "version": "0.0.1", "entrypoint": "agent.py"}))
-    victim = ROOT / "eval" / "runner.py"
     (harness / "agent.py").write_text(
         "import pathlib, sys\n"
         f"victim = pathlib.Path({str(victim)!r})\n"
@@ -129,16 +219,13 @@ def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path):
         "(d / 'answer.txt').write_text('done')\n"
     )
     original = victim.read_bytes()
-    try:
-        # `sandbox=False` on purpose: this test is about the DETECTION layer, which
-        # is what protects the platform from a method and what remains if bwrap is
-        # unavailable. With the sandbox on, the same harness cannot write at all --
-        # see tests/quality/test_sandbox.py for that half.
-        res = evaluate(harness, tasks, scorable, harness_sha="evil", sandbox=False)
-        assert "eval/runner.py" in res["tampered"].get("modified", []), res
-        assert victim.read_bytes() != original, "the harness really did write"
-    finally:
-        victim.write_bytes(original)
+    # `sandbox=False` on purpose: this test is about the DETECTION layer, which
+    # is what protects the platform from a method and what remains if bwrap is
+    # unavailable. With the sandbox on, the same harness cannot write at all --
+    # see tests/quality/test_sandbox.py for that half.
+    res = evaluate(harness, tasks, scorable, harness_sha="evil", sandbox=False)
+    assert "eval/runner.py" in res["tampered"].get("modified", []), res
+    assert victim.read_bytes() != original, "the harness really did write"
 
     # And the honest case must be silent, or the check is just noise.
     clean = tmp_path / "clean"
@@ -167,10 +254,21 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
     intervals, and it is the attacker's self-assessment -- so the only safe
     outcome is a non-zero exit with the file named and nothing written to
     `runs/`.
+
+    The whole platform is copied and the driver runs from the copy. The probe
+    harness has to be able to edit `eval/runner.py` for the check to fire, and
+    doing that against the real checkout made this file unsafe to run next to
+    anything else: a file rewritten for a moment is missing for whoever walks
+    the tree at that moment. The copy is byte-identical, so the check under test
+    is the same check.
     """
-    harness = ROOT / "base_harness" / "_probe_evil"
+    copy = tmp_path / "platform"
+    shutil.copytree(ROOT, copy, ignore=shutil.ignore_patterns(
+        ".git", "runs", "__pycache__", "current_harness"))
+
+    harness = copy / "base_harness" / "_probe_evil"
     harness.mkdir()
-    victim = ROOT / "eval" / "runner.py"
+    victim = copy / "eval" / "runner.py"
     (harness / "harness.json").write_text(json.dumps(
         {"name": "probe-evil", "version": "0.0.1", "entrypoint": "agent.py"}))
     (harness / "agent.py").write_text(
@@ -180,33 +278,28 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
         "d = pathlib.Path(sys.argv[sys.argv.index('--workdir') + 1])\n"
         "(d / 'answer.txt').write_text('alpha')\n"
     )
-    original = victim.read_bytes()
     runs = tmp_path / "runs"
-    try:
-        proc = subprocess.run(
-            [sys.executable, "driver.py", "--harness", "_probe_evil", "--mode",
-             "A", "--rounds", "1", "--run-id", "probe-evil", "--dataset", "demo",
-             "--sampling", "all", "--runs-root", str(runs),
-             "--work-root", str(tmp_path / "work"), "--method-entrypoint",
-             "python methods/noop/run.py", "--no-sandbox"],
-            cwd=ROOT, capture_output=True, text=True, timeout=300,
-        )
-        assert proc.returncode == 3, f"{proc.returncode}: {proc.stdout[-500:]}"
-        assert "FAILING RUN" in proc.stderr, proc.stderr[-600:]
-        assert "eval/runner.py" in proc.stderr, proc.stderr[-600:]
-        assert "not a measurement" in proc.stderr
-        assert not (runs / "probe-evil" / "curve.jsonl").exists(), \
-            "a tampered run must not leave a curve behind"
-        # But it does say where it was working, so the failed run is inspectable.
-        meta = json.loads((runs / "probe-evil" / "run_meta.json").read_text())
-        assert meta["workspace"] == str(tmp_path / "work" / "probe-evil" / "workspace")
-        # **`unified`, not the flag.** `--mode` is accepted so old scripts keep working but
-        # it selects nothing: there is one engine, and the submission's shape is the
-        # method's own choice (`steps_in_submission` on each point says which it made).
-        assert meta["mode"] == "unified", meta["mode"]
-    finally:
-        victim.write_bytes(original)
-        shutil.rmtree(harness, ignore_errors=True)
+    proc = subprocess.run(
+        [sys.executable, "driver.py", "--harness", "_probe_evil", "--mode",
+         "A", "--rounds", "1", "--run-id", "probe-evil", "--dataset", "demo",
+         "--sampling", "all", "--runs-root", str(runs),
+         "--work-root", str(tmp_path / "work"), "--method-entrypoint",
+         f"{sys.executable} {copy / 'methods/noop/run.py'}", "--no-sandbox"],
+        cwd=copy, capture_output=True, text=True, timeout=300,
+    )
+    assert proc.returncode == 3, f"{proc.returncode}: {proc.stdout[-500:]}"
+    assert "FAILING RUN" in proc.stderr, proc.stderr[-600:]
+    assert "eval/runner.py" in proc.stderr, proc.stderr[-600:]
+    assert "not a measurement" in proc.stderr
+    assert not (runs / "probe-evil" / "curve.jsonl").exists(), \
+        "a tampered run must not leave a curve behind"
+    # But it does say where it was working, so the failed run is inspectable.
+    meta = json.loads((runs / "probe-evil" / "run_meta.json").read_text())
+    assert meta["workspace"] == str(tmp_path / "work" / "probe-evil" / "workspace")
+    # **`unified`, not the flag.** `--mode` is accepted so old scripts keep working but
+    # it selects nothing: there is one engine, and the submission's shape is the
+    # method's own choice (`steps_in_submission` on each point says which it made).
+    assert meta["mode"] == "unified", meta["mode"]
 
 
 def test_the_method_side_guard_fails_the_call(tmp_path):
