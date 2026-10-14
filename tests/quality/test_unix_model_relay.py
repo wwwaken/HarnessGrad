@@ -64,6 +64,10 @@ def start_relay(monkeypatch, tmp_path_factory):
         raise AssertionError("TCP/model access forbidden in offline relay tests")
 
     monkeypatch.setattr(socket, "create_connection", forbid_tcp)
+    # The budget tests start at most eight clients and synchronize only after
+    # connecting. Reserve enough pending slots even if accept is descheduled;
+    # the default backlog of five can strand clients outside that barrier.
+    monkeypatch.setattr(relay_mod._Server, "request_queue_size", 8)
     with contextlib.ExitStack() as stack:
         def start(provider=None, **limits):
             provider = provider if provider is not None else Provider()
@@ -85,11 +89,17 @@ def request(relay, changes=None, *, raw=None, route=relay_mod.ROUTE, headers=Non
     conn = http.client.HTTPConnection("unix.invalid", timeout=5)
     conn.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     conn.sock.settimeout(5)
-    conn.sock.connect(str(relay.path))
     try:
+        conn.sock.connect(str(relay.path))
         if before_send is not None:
             before_send()
-        conn.request("POST", route, body=body, headers=headers or {})
+        try:
+            conn.request("POST", route, body=body, headers=headers or {})
+        except BrokenPipeError:
+            # Header-only rejection may close before HTTPConnection's separate
+            # body send. Read and assert the actual response; a missing or
+            # malformed response must still fail below.
+            pass
         response = conn.getresponse()
         return response.status, json.loads(response.read())
     finally:
@@ -143,6 +153,27 @@ def test_invalid_requests_never_reserve_or_forward(start_relay, change):
 def test_route_framing_and_size_rejected_before_forward(start_relay, raw, route, headers, status):
     relay, provider = start_relay()
     assert request(relay, raw=raw, route=route, headers=headers)[0] == status
+    assert provider.requests == [] and relay.receipt()["calls"] == 0
+
+
+def test_early_rejection_is_read_after_the_server_closes(start_relay, monkeypatch):
+    closed = threading.Event()
+    shutdown = relay_mod._Server.shutdown_request
+    send = http.client.HTTPConnection.send
+
+    def observed_shutdown(server, connection):
+        shutdown(server, connection)
+        closed.set()
+
+    def delayed_body(connection, data):
+        if data == b"{}":
+            assert closed.wait(timeout=5)
+        return send(connection, data)
+
+    monkeypatch.setattr(relay_mod._Server, "shutdown_request", observed_shutdown)
+    monkeypatch.setattr(http.client.HTTPConnection, "send", delayed_body)
+    relay, provider = start_relay()
+    assert request(relay, raw=b"{}", route="/caller-route") == (403, {"error": "route"})
     assert provider.requests == [] and relay.receipt()["calls"] == 0
 
 
@@ -210,6 +241,32 @@ def test_parallel_requests_cannot_overspend(start_relay, limits, successes, reas
     assert receipt["calls"] == successes
     assert receipt["reserved_output_tokens"] == successes * 2
     assert set(receipt["rejections"]) == {reason}
+
+
+def test_parallel_clients_do_not_depend_on_accept_loop_scheduling(start_relay, monkeypatch):
+    release = threading.Event()
+    accept = relay_mod._Server.get_request
+
+    def gated_accept(server):
+        assert release.wait(timeout=5)
+        return accept(server)
+
+    monkeypatch.setattr(relay_mod._Server, "get_request", gated_accept)
+    relay, provider = start_relay(max_calls=2)
+    barrier = threading.Barrier(8, action=release.set)
+
+    def send(_):
+        return request(relay, before_send=lambda: barrier.wait(timeout=5))[0]
+
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            statuses = list(pool.map(send, range(8)))
+    finally:
+        release.set()
+    assert statuses.count(200) == 2 and statuses.count(429) == 6
+    assert len(provider.requests) == 2
+    assert relay.receipt()["calls"] == 2
+    assert relay.receipt()["reserved_output_tokens"] == 4
 
 
 @pytest.mark.parametrize("provider", [
