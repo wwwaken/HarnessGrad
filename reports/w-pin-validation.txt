@@ -1,0 +1,61 @@
+w-pin validation
+Source baseline: 9dab533093d4b71eaddd93c676ff9cd35d61ad43
+Tests execute adapter declarations only; no Docker/benchmark/model calls.
+
+FAILS BEFORE: original tagged defaults
+$ python3 -m pytest -q tests/quality/test_adapter_image_pins.py --basetemp=/tmp/harnessgrad-pytest-w-pin
+exit_code=1
+stdout:
+FF....                                                                   [100%]
+=================================== FAILURES ===================================
+____________ test_adapter_image_default_is_digest_pinned[adapter0] _____________
+
+adapter = ('HG_GAIA_IMAGE', <function adapter.<locals>.fresh_import at 0x70f64a2f7240>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70f64ae97b30>
+
+    def test_adapter_image_default_is_digest_pinned(adapter, monkeypatch):
+        environment_key, fresh_import = adapter
+        monkeypatch.delenv(environment_key, raising=False)
+        module = fresh_import()
+>       assert "@sha256:" in module.IMAGE
+E       AssertionError: assert '@sha256:' in 'harnessgrad/gaia:20261008'
+E        +  where 'harnessgrad/gaia:20261008' = <module 'image_pin_test_gaia' from '/tmp/hg-pin/data/datasets/gaia.py'>.IMAGE
+
+tests/quality/test_adapter_image_pins.py:35: AssertionError
+____________ test_adapter_image_default_is_digest_pinned[adapter1] _____________
+
+adapter = ('HG_TAU_IMAGE', <function adapter.<locals>.fresh_import at 0x70f64a1a0f40>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70f64a2c2930>
+
+    def test_adapter_image_default_is_digest_pinned(adapter, monkeypatch):
+        environment_key, fresh_import = adapter
+        monkeypatch.delenv(environment_key, raising=False)
+        module = fresh_import()
+>       assert "@sha256:" in module.IMAGE
+E       AssertionError: assert '@sha256:' in 'harnessgrad/tau-bench:20261006'
+E        +  where 'harnessgrad/tau-bench:20261006' = <module 'image_pin_test_tau_bench' from '/tmp/hg-pin/data/datasets/tau_bench.py'>.IMAGE
+
+tests/quality/test_adapter_image_pins.py:35: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_adapter_image_pins.py::test_adapter_image_default_is_digest_pinned[adapter0]
+FAILED tests/quality/test_adapter_image_pins.py::test_adapter_image_default_is_digest_pinned[adapter1]
+2 failed, 4 passed in 0.08s
+stderr: ''
+
+PASSES AFTER: digest defaults
+$ python3 -m pytest -q tests/quality/test_adapter_image_pins.py --basetemp=/tmp/harnessgrad-pytest-w-pin
+exit_code=0
+stdout:
+......                                                                   [100%]
+6 passed in 0.06s
+stderr: ''
+
+BLOCKER CHECKER: after code, test, report and journal edits
+$ python3 tools/check_dataset_blockers.py
+exit_code=0
+stdout:
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+stderr: ''
+
+Local Docker resolution: 4 before + 4 after inspections; all exit_code=0, empty stderr.
+Exact raw output and OCI root preimages: reports/w-pin-image-digests.md

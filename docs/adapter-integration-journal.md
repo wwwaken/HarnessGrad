@@ -2933,3 +2933,12 @@ review and merge.
 - Resource state: local container control runs for the pristine path only - no model, GPU or
   endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
   receipts and archives were untouched; no existing run id was resumed.
+
+
+## 2026-10-15 GAIA/Tau default digest pins (23:30 UTC capture) - w-pin
+
+- Changed only the GAIA/Tau `IMAGE` defaults from movable tags to `harnessgrad/gaia@sha256:9cc27f813e596542d3f3447de10fc1166b27d66e282f271b2e057ee8ca0e0e13` and `harnessgrad/tau-bench@sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23`. `HG_GAIA_IMAGE` / `HG_TAU_IMAGE` overrides still win; AppWorld and Terminal-Bench declarations are untouched.
+- Independently derived both pins from fresh local Docker RepoDigests and SHA-256 of actual OCI index bytes streamed by read-only `docker image save` (856 bytes each; child manifests also rehashed). Real `docker image inspect` resolves both tags and both pins before and after the edits with unchanged IDs. Full raw output and preimages: `reports/w-pin-image-digests.md`.
+- Focused default/override tests demonstrate fails-before (2 failed, 4 passed), passes-after (6 passed), including default propagation to `DEFAULT_ENV` and retained tag/empty overrides. Blocker checker stayed valid after each edit; raw output: `reports/w-pin-validation.txt`.
+- Read-only Terminal-Bench recheck: 89 movable manifest tags, 86 locally present with RepoDigests, three absent (`mteb-leaderboard`, `pytorch-model-recovery`, `reshard-c4-data`). A reviewed manifest update or source-bound digest mapping could pin the 86, but a complete locally verified set requires acquiring and verifying the missing three; no manifests were edited or images pulled.
+- S3 remains PARTIAL; both shared blockers remain OPEN. Dynamic imports/providers, native host dependencies, post-bootstrap `uvx` ABI, actor-snapshot integrity and offline resolver payloads are unestablished by this change. No benchmark task, model, GPU, endpoint call or container start; no scoring/gate/registry changes and no frozen receipt or `runs/` modifications.

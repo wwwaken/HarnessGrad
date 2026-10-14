@@ -122,7 +122,7 @@ PROVENANCE = ASSETS / "PROVENANCE.json"
 
 #: The image. Built once from `data/datasets/tau_bench/Dockerfile`; the platform does not
 #: build or pull during a run (INTERFACE.md §2.5.5), so this must already be local.
-IMAGE = os.environ.get("HG_TAU_IMAGE", "harnessgrad/tau-bench:20261006")
+IMAGE = os.environ.get("HG_TAU_IMAGE", "harnessgrad/tau-bench@sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23")
 
 WORKDIR = "/app"
 

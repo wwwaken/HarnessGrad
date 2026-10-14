@@ -91,7 +91,7 @@ PACKAGE = Path(__file__).resolve().parent / "gaia"
 CHECK = PACKAGE / "verify" / "check.py"
 CLI = PACKAGE / "cli" / "ask"
 #: Built once from `data/datasets/gaia/Dockerfile`; the platform will not build it during a run.
-IMAGE = os.environ.get("HG_GAIA_IMAGE", "harnessgrad/gaia:20261008")
+IMAGE = os.environ.get("HG_GAIA_IMAGE", "harnessgrad/gaia@sha256:9cc27f813e596542d3f3447de10fc1166b27d66e282f271b2e057ee8ca0e0e13")
 WORKDIR = "/app"
 AGENT_TIMEOUT_S = 1800
 VERIFY_TIMEOUT_S = 600
