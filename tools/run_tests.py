@@ -57,26 +57,27 @@ COSTS = ROOT / "tools" / "test_costs.json"
 sys.path.insert(0, str(ROOT / "tools"))
 import test_scope  # noqa: E402  (sibling helper; no third-party dependency)
 
-#: Files that bind a fixed port, start a shared server, or reach a process-wide
-#: service registry. Each was identified from the source (fixed-port literals and
-#: server entry points), then confirmed by the observation that they fail under
-#: concurrent execution and pass when run alone. They run at concurrency 1.
+#: Files that bind a fixed host port, start a shared server, share a container or
+#: network name, write into the checkout, or mutate a process-wide registry. Each
+#: entry was re-derived from the source against the signal vocabulary in
+#: `docs/test-lanes.md` (section "The signals"), and each entry that could not be
+#: settled from the source alone was measured under concurrency against a serial
+#: run. Files whose reason had disappeared were removed on that evidence -- see
+#: `docs/test-lanes.md` section "Measurements" for the runs themselves.
+#: They run at concurrency 1 while the parallel lane runs beside them.
+#: `tests/quality/test_test_lanes.py` fails if an entry here exists without
+#: tripping one of those signals, so an entry whose reason has gone is caught
+#: rather than kept out of habit.
 EXCLUSIVE = (
     "test_services.py",
     "test_service_commands.py",
     "test_web_gateway.py",
-    "test_provider_failure.py",
-    "test_unix_model_relay.py",
-    "test_improver.py",
-    "test_cached_pilot_admission.py",
     "test_appworld_official_scorer.py",
-    "test_appworld_actor_protocol.py",
-    "test_appworld_service_diagnosis.py",
-    "test_jericho_runtime_boundaries.py",
-    "test_jericho_runtime_admission.py",
     "test_container.py",
     "test_container_state.py",
-    "test_parallel_tasks.py",
+    "test_harness_runtime.py",
+    "test_dataset_lint.py",
+    "test_cli_harness.py",
 )
 
 #: Costly files skipped by --fast. These are not broken; they are simply the ones

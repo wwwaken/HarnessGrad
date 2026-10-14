@@ -296,6 +296,10 @@ harnessgrad_work/
 !/docs/import-direction.md
 !/docs/test-suite.md
 !/docs/data-split-plan.md
+# The lane assignment is not a note: `tools/run_tests.py` points at it as the reason
+# its EXCLUSIVE tuple looks the way it does, and `tests/quality/test_test_lanes.py`
+# fails without it.
+!/docs/test-lanes.md
 
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
