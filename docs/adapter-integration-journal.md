@@ -56,7 +56,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Remaining gates: independently acquire and review the original fixture/license/commit linkage, resolve any measured EM drift, then separately verify full evaluator grouping and comparison identity. No production H0 authorization follows from these synthetic checks.
 - Commit: carried by `test: fail closed on unacquired TriviaQA scorer provenance`; exact hash reported with delivery
 
-## GSM8K — scorer contract
+## TriviaQA — upstream evaluator acquired, adapter correction pending new identity — 2026-10-14
+
+- Status: `source provenance acquired`; current adapter correction is isolated and historical runs remain unchanged
+- Finding: public GitHub commit `ca43b5820b107f3970cf4b7d67f7db7a98117b79` supplies the original evaluator, helpers, Apache-2.0 license and Git-object evidence. The acquired differential found a real normalization mismatch: upstream replaces punctuation and underscores with spaces, while the old adapter removed and joined them.
+- Platform change: `data/triviaqa.py` now follows the pinned upstream normalization for new runs; the scorer identity must change. Existing curves remain under their original identity and are not rewritten.
+- Validation: synthetic upstream differential and provenance tests are rerun after the correction; no TriviaQA payload or heldout rows were read.
+- Remaining gates: independent parent review of source equivalence, Hub dataset revision-to-scorer mapping, grouping/denominator semantics and fresh diagnostic authorization. This correction alone does not authorize a pilot.
+
 
 - Status: `complete` history; scorer correction pending new-run validation
 - Scope: published `train`/`test` split; old H0 records use the scorer identity recorded at their run time

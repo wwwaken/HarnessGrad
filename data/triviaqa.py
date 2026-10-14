@@ -101,13 +101,17 @@ def normalize_answer(s: str) -> str:
         return " ".join(text.split())
 
     def remove_punc(text: str) -> str:
-        exclude = set(string.punctuation)
-        return "".join(ch for ch in text if ch not in exclude)
+        exclude = set(string.punctuation + "‘’´`")
+        return "".join(" " if ch in exclude else ch for ch in text)
 
     def lower(text: str) -> str:
         return text.lower()
 
-    return white_space_fix(remove_articles(remove_punc(lower(str(s)))))
+    def replace_underscore(text: str) -> str:
+        return text.replace("_", " ")
+
+    return white_space_fix(remove_articles(
+        remove_punc(lower(replace_underscore(str(s)))))).strip()
 
 
 def get_ground_truths(answer: dict) -> list[str]:

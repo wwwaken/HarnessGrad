@@ -170,8 +170,8 @@ def test_em_components_match_pinned_upstream_fixture(triviaqa):
 
 @pytest.mark.parametrize("text,expected", [
     ("the Fictional Azure City!", "fictional azure city"),
-    ("  spaced   out  ", "spaced out"), ("A-Team", "ateam"),
-    ("The_A-Team", "theateam"), ("an Apple", "apple"), ("", ""),
+    ("  spaced   out  ", "spaced out"), ("A-Team", "team"),
+    ("The_A-Team", "team"), ("an Apple", "apple"), ("", ""),
 ])
 def test_local_normalization_regression(triviaqa, text, expected):
     """These values describe the current adapter, not unacquired upstream code."""
