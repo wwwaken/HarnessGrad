@@ -5,6 +5,13 @@ cleanup observations. It performs no execution or discovery. The supplied facts
 must come from a trusted backend observer, independently of actor output and adapter
 declarations. A passing synthetic contract is not a production H0 authorization.
 
+This is the strict admission contract used by gated runtime paths. The
+[quota deployment enhancement](filesystem-quota-backends.md#scope-optional-formal-deployment-enhancement)
+is optional for ordinary local execution: project quotas and a dedicated volume
+are not general installation prerequisites. Calls to this API still require all
+facts below; this clarification adds no relaxed admission mode. A local run without
+verified enforcement cannot claim this contract's byte/inode guarantees.
+
 ## API and receipts
 
 All three functions take `(binding, policy, observed)` and return a JSON-compatible

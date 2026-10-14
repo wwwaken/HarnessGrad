@@ -1,5 +1,12 @@
 # Terminal admission: operator and backend handoff — Task 211
 
+Scope: this packet covers Terminal admission under the
+[optional strict formal-deployment profile](filesystem-quota-backends.md#scope-optional-formal-deployment-enhancement).
+Project quotas and dedicated volumes are not prerequisites for ordinary local
+execution. The requirements below apply to claiming the profile's enforced bounds
+and admitting its gated diagnostics; this clarification changes no runtime gate
+or evidence requirement.
+
 **Disposition: BLOCKED / documented requirements.** Host provisioning, paired
 quota enforcement, trusted observations, Terminal scorer closure/export and
 production lifecycle integration remain open. This packet supplies no runtime
@@ -46,12 +53,15 @@ evidence afterward. Return immutable metadata, externally stored digests, owner 
 review identities, unresolved items and comparability notes together. No gate is
 closed by this packet, by a capacity ledger or by a synthetic control.
 
-## Required quota filesystem and writable inventory
+## Quota filesystem and writable inventory for the strict profile
 
-Use independently owned **XFS or ext4 project-quota storage with both block and
-inode hard-limit enforcement** for disk-backed writers. Dedicated tmpfs scopes
-need both effective byte and inode limits. A filesystem name, large free capacity,
-shared user quota, relocated data root or storage-size option alone is insufficient.
+For this profile's disk-backed writers, use independently owned **XFS or ext4
+project-quota storage with both block and inode hard-limit enforcement**. Dedicated
+tmpfs scopes need both effective byte and inode limits. A filesystem name, large
+free capacity, shared user quota, relocated data root or storage-size option alone
+is insufficient.
+XFS and ext4 are alternatives. A dedicated volume is optional; existing storage
+needs the same verified backend support and evidence to qualify for this profile.
 
 | Storage | Operator prerequisite | Backend acceptance evidence |
 | --- | --- | --- |

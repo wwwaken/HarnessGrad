@@ -130,6 +130,12 @@ itself inside it. If that fails it says why and refuses to call the machine read
 rather than letting a run fall back to `--no-sandbox` and produce numbers that mean
 something other than what they say.
 
+Project quotas and a dedicated storage volume are not prerequisites for ordinary
+local execution. The [quota/backend checklist](docs/filesystem-quota-backends.md)
+describes an optional enhancement for formal deployments that need verified
+per-run byte/inode bounds. Local runs without that evidence cannot claim those
+guarantees; existing gated diagnostic/pilot requirements still apply.
+
 ## If your harness has dependencies
 
 A harness that needs a package its task image does not have must say so in `harness.json`:

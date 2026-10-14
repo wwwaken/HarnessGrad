@@ -3,6 +3,13 @@
 **Docs only; all actions below remain pending.** No host inspection or changes,
 model/H0 calls, or runtime validation were performed for this checklist.
 
+This checklist applies when an operator chooses the
+[optional formal-deployment quota enhancement](filesystem-quota-backends.md#scope-optional-formal-deployment-enhancement).
+Ordinary local execution requires neither project quotas nor a dedicated volume.
+The checks below are requirements for claiming the strict profile's enforced
+byte/inode bounds; they do not add an installation step for every user. Existing
+gated diagnostics/pilots still need their required evidence and review.
+
 Review basis: the [quota source audit](../filesystem-quota-codex168-report.md)
 at `10e983fc5fcb006c5afdbce1ef851dad71e953f2` found no complete connected
 byte-and-inode backend; it did **not** inspect host quota capabilities. The
@@ -51,7 +58,9 @@ cannot replace fresh trial enforcement observations.
   filesystem recreation, **stop** until explicit destructive-operation approval,
   independently verified target identity, confirmed absence of live mounts/users,
   and a tested restore plan exist. Never format live root or daemon storage;
-  prefer dedicated empty storage. No destructive commands are supplied here.
+  prefer dedicated empty storage if that approved plan calls for new storage.
+  A dedicated volume is an optional provisioning choice. No destructive commands
+  are supplied here.
 - [ ] Plan independently owned paired byte/inode scopes under an already bounded
   allocator parent, durable ownership intents/leases, positive frozen limits and
   protected failure-evidence capacity before staging. Include daemon, temporary

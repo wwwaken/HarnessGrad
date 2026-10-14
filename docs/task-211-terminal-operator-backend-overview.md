@@ -1,13 +1,15 @@
 ---
 title: Terminal operator and backend packet
-subtitle: Task 211 · documented blocker · no runtime authorization
+subtitle: Task 211 · optional strict deployment profile · no runtime authorization
 lang: en
 template: sheet
 theme: paper
 cols: 2
 ---
 
-Terminal admission remains blocked. This packet defines the evidence each owner must return for diagnostic review.
+Ordinary local execution requires neither project quotas nor a dedicated volume. This packet covers the optional strict deployment profile.
+
+Terminal admission under that profile remains blocked. This packet defines the evidence each owner must return for diagnostic review.
 
 ## A Current evidence
 
@@ -22,7 +24,7 @@ Terminal admission remains blocked. This packet defines the evidence each owner 
 
 | Owner | Required return |
 | --- | --- |
-| Host operator | Supported XFS/ext4 project quotas with block and inode enforcement. |
+| Host operator | For the disk-backed design, supported XFS or ext4 project quotas with block and inode enforcement. |
 | Backend implementer | Bounded scopes before staging; actual snapshotter limits and growth bounds. |
 | Scorer custodian | Official offline closure, pristine runtime and bounded artifact export. |
 | Observer and lifecycle owners | Fresh protected records, complete writer inventory and verified cleanup. |
@@ -30,7 +32,9 @@ Terminal admission remains blocked. This packet defines the evidence each owner 
 
 ## C Storage decision
 
-Current runtime admission requires a read-only root. Every writable mount needs independent byte and inode hard limits.
+The strict runtime admission contract requires a read-only root. Every writable mount needs independent byte and inode hard limits.
+
+A dedicated volume is optional. Existing storage must meet the same evidence requirements to qualify for this profile.
 
 Writable containerd layers require snapshotter support and a reviewed admission extension. Unknown support stays blocked.
 

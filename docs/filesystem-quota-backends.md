@@ -1,9 +1,30 @@
 # Filesystem quota operator and backend implementation checklist
 
+## Scope: optional formal-deployment enhancement
+
+Project quotas and dedicated storage volumes are **not prerequisites for ordinary
+local execution**. Local runs can use existing filesystems, subject to the chosen
+workload's dependencies and execution requirements. This checklist describes an
+optional enhancement for formal deployments that need independently enforced
+per-run byte/inode bounds and auditable lifecycle evidence.
+
+Within that strict deployment profile, the acceptance requirements below remain
+mandatory before claiming those guarantees. XFS and ext4 project quotas are
+alternative disk-backed designs; bounded tmpfs covers applicable memory-backed
+surfaces. A dedicated volume is an optional provisioning choice, not a universal
+requirement or proof of per-run enforcement. Existing storage can qualify only
+with verified support, allocation, observations and runner integration.
+A per-run scope need not be a separate volume or physical device.
+
+Ordinary local execution does not establish these stronger guarantees. Record
+unverified limits and cleanup/snapshot evidence as unknown, and state the limits
+on comparability. This scope clarification changes no admission API or existing
+gated diagnostic/pilot requirements and closes no runtime blocker.
+
 ## Status, ownership and completion boundary
 
-**Status: documented blocker. This change completes documentation only.** Host
-provisioning, quota allocation, effective-kernel observers, Docker storage bounds,
+**Status: documented blocker for the strict deployment profile; documentation only.**
+Host provisioning, quota allocation, effective-kernel observers, Docker storage bounds,
 production runner integration and verified cleanup remain external/runtime work.
 No checklist item below is marked complete by this document or its schema.
 
@@ -42,8 +63,9 @@ part of this documentation change.
 
 ## Operator and implementation checklist
 
-Each unchecked item is an acceptance requirement for later work. Stop at a missing
-prerequisite; persist blocked/unknown evidence and retain ownership. Host changes
+Each unchecked item is an acceptance requirement for the applicable design within
+the strict deployment profile. Stop at a missing prerequisite for that profile;
+persist blocked/unknown evidence and retain ownership. Host changes
 need their own authorized provisioning procedure; no administration commands are
 prescribed or executed here.
 

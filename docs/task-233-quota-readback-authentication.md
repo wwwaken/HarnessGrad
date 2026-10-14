@@ -8,6 +8,12 @@ performed or produced. Authentication objects below are proposed contracts,
 not implemented schemas or accepted APIs. Existing schemas and runtime code
 remain unchanged.
 
+Scope: this proposal supports the
+[optional formal-deployment quota enhancement](filesystem-quota-backends.md#scope-optional-formal-deployment-enhancement).
+Ordinary local execution requires neither project quotas nor a dedicated volume.
+The authentication and allocation requirements below apply when claiming the
+strict profile's guarantees; all existing gated admission requirements remain.
+
 Authenticate an administrator's readback with an enrolled, host-scoped observer
 signature over exact metadata and its collection context. Admission additionally
 requires fresh independent observations joining the real allocation to its durable
