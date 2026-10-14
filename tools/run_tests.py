@@ -128,10 +128,18 @@ def free_gb(path: Path) -> float:
         return float("nan")
 
 
-def discover(pattern: str) -> list[Path]:
+def discover(patterns: list[str]) -> list[Path]:
+    """Every test file matching ANY of `patterns`, by substring of its path.
+
+    A list rather than one string because a reviewer checking a change usually has
+    several files in mind, and running them one invocation at a time meant paying
+    the per-run collection cost once per file and re-deriving the lane split each
+    time. An empty list means "no filter".
+    """
     found = sorted((ROOT / "tests").rglob("test_*.py"))
-    if pattern:
-        found = [p for p in found if pattern in str(p.relative_to(ROOT))]
+    if patterns:
+        found = [p for p in found
+                 if any(pattern in str(p.relative_to(ROOT)) for pattern in patterns)]
     # A `conftest.py` is collected by pytest, not run as a test module; and the
     # shared fixture helpers are imported, not executed.
     return [p for p in found if not p.name.startswith("conftest")]
@@ -176,7 +184,11 @@ def main() -> int:
                     help="concurrent files in the parallel lane (default: min(cpus, 32))")
     ap.add_argument("--fast", action="store_true",
                     help="skip the measured-slow files (a convenience, not full coverage)")
-    ap.add_argument("--file", default="", help="only files whose path contains this")
+    ap.add_argument("--file", action="append", default=[], metavar="SUBSTRING",
+                    help="only files whose path contains this substring. Repeatable; "
+                         "a file matching any of them is included. `--file a --file b` "
+                         "runs both in one pass, which is the point: they still land in "
+                         "their own lanes.")
     ap.add_argument("--dataset", action="append", default=[],
                     help="run only the tests for this dataset, plus the core platform "
                          "tests. Repeatable. Use --list to see the selection.")

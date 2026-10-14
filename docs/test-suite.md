@@ -40,7 +40,12 @@ python3 tools/run_tests.py                      # whole suite, parallel
 python3 tools/run_tests.py --jobs 8             # fewer workers
 python3 tools/run_tests.py --fast               # skip the measured-slow files
 python3 tools/run_tests.py --file test_scorer   # files whose path contains this
+python3 tools/run_tests.py --file test_scorer --file test_verifier   # both, one pass
 ```
+
+`--file` is repeatable and a file matching **any** of the substrings is included. Passing
+several in one invocation is not just brevity: each file still lands in its own lane, and
+the lane split is derived once for the whole set instead of once per file.
 
 The runner starts one pytest process per file across two lanes:
 
