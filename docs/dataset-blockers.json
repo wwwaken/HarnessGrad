@@ -399,7 +399,7 @@
           "id": "trusted-stepwise-transport",
           "family": "official-scorer-execution",
           "status": "runtime",
-          "observed": "The trusted stepwise relay is wired and a fresh authorized released-task attempt now has live execution evidence: chessbench_puzzles/test/1287 received its initial board under chessbench_puzzles.stepwise.v1, but the actor disconnected without a move. The controller receipt records status=incomplete, measured=false, reason=answer_receive_failed, submissions=0, scorer_isolation_class=in-process and successful relay cleanup; the staged receipt has score=null, invalid_trials=0 and unmeasured_trials=1. No delivered terminal exchange or model-driven interactive puzzle measurement exists. The offline strict-replay protocol remains the only measured path; no mixed-protocol comparison or curve point was produced.",
+          "observed": "The trusted stepwise relay is wired and a fresh authorized released-task attempt now has live execution evidence: chessbench_puzzles/test/1287 received its initial board under chessbench_puzzles.stepwise.v1, but the actor disconnected without a move. The controller receipt records status=incomplete, measured=false, reason=answer_receive_failed, submissions=0, scorer_isolation_class=in-process and successful relay cleanup; the staged receipt has score=null, invalid_trials=0 and unmeasured_trials=1. No delivered terminal exchange or model-driven interactive puzzle measurement exists. The offline strict-replay protocol remains the only measured path; no mixed-protocol comparison or curve point was produced. Follow-up w-chess2 diagnosed the original short-lived actor process as case (b), correct single-connection relay behavior, and selected the unmodified codex_agent harness for a fresh authorized local-model diagnostic. That actor retained a socket process but mistook solver_turn=0 for false, skipped its first submission and attempted rejected reconnects; the CLI timed out. Run w-chess2-stepwise-20261014T220158Z-ca40c19f records exit_code=1, outer reason=actor_exit_before_clean_completion, transport reason=answer_receive_failed, submissions=0, measured=false, in-process isolation and successful relay cleanup; staged coverage is 0 invalid / 1 unmeasured. Still missing: a real solver submission and delivered terminal exchange with clean actor completion. No production or actor code was patched and no score was assigned.",
           "evidence": [
             {
               "kind": "repository",
@@ -435,6 +435,11 @@
               "kind": "repository",
               "path": "reports/w-chess-receipts.md",
               "locator": "## Released-task stepwise diagnostic — incomplete"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-chess2-receipts.md",
+              "locator": "## Released-task stepwise diagnostic — unmeasured"
             }
           ],
           "next_action": "Run one authorized gated interactive chessbench task through the live stepwise relay and record its receipt, so the stepwise protocol has execution evidence rather than only wiring. Keep the offline-only claim until then: a wired transport is not a measurement. Reject any point that mixes the stepwise and strict-replay protocols in one comparison."

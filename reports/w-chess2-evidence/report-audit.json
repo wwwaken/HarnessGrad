@@ -1,0 +1,26 @@
+{
+  "run_id": "w-chess2-stepwise-20261014T220158Z-ca40c19f",
+  "original_copy_archive_files_checked": 19,
+  "original_copy_archive_match": true,
+  "trace_extractions_match": true,
+  "manifest_binding_matches": true,
+  "unrelated_registry_entries_unchanged": true,
+  "journal_append_only": true,
+  "production_diff_paths": [],
+  "protocol": "chessbench_puzzles.stepwise.v1",
+  "scorer_isolation_class": "in-process",
+  "measured": false,
+  "raw_unmeasured_reason": "actor_exit_before_clean_completion",
+  "transport_reason": "answer_receive_failed",
+  "coverage": {
+    "eligible_tasks": 6615,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  }
+}

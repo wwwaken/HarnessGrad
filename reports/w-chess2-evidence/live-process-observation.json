@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-10-14T22:04:56.603465+00:00",
+  "launcher_pids": [
+    398560
+  ],
+  "processes": [
+    {
+      "pid": 398560,
+      "ppid": 398559,
+      "start_time_ticks": 653825556,
+      "executable_argv0": "python3"
+    },
+    {
+      "pid": 398607,
+      "ppid": 398560,
+      "start_time_ticks": 653825656,
+      "executable_argv0": "/usr/bin/bwrap"
+    },
+    {
+      "pid": 398608,
+      "ppid": 398607,
+      "start_time_ticks": 653825656,
+      "executable_argv0": "/usr/bin/bwrap"
+    },
+    {
+      "pid": 398610,
+      "ppid": 398608,
+      "start_time_ticks": 653825658,
+      "executable_argv0": "python"
+    },
+    {
+      "pid": 398611,
+      "ppid": 398610,
+      "start_time_ticks": 653825663,
+      "executable_argv0": "/home/xubuqiang/.nvm/versions/node/v22.16.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/bin/codex"
+    },
+    {
+      "pid": 399346,
+      "ppid": 398611,
+      "start_time_ticks": 653827935,
+      "executable_argv0": "/bin/bash"
+    },
+    {
+      "pid": 399347,
+      "ppid": 399346,
+      "start_time_ticks": 653827936,
+      "executable_argv0": "python3"
+    }
+  ],
+  "note": "Sampled PID/parent/start-time and argv[0] identities only; full arguments omitted because they are not needed for cleanup attribution."
+}

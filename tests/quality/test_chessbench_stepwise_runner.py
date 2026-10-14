@@ -376,6 +376,29 @@ def test_reconnect_cannot_reset_session_allowance(tmp_path):
     assert_clean(receipt)
 
 
+def test_disconnect_after_initial_board_cannot_reconnect_or_score(case):
+    # A short-lived shell client consumes the connection even without an answer.
+    # Retrying from a new process must not reopen or reset the trusted session.
+    result = execute(case, '''
+s, f = connect()
+initial = json.loads(f.readline())
+assert initial['status'] == 'awaiting_move' and initial['solver_turn'] == 0
+f.close()
+s.close()
+s, f = connect()
+assert f.readline() == b''
+''')
+    assert result["exit_code"] == 0, result["stderr"]
+    receipt = assert_incomplete(result)
+    assert receipt["connections"] == 1
+    assert receipt["rejected_connections"] == 1
+    assert receipt["rejections"] == ["connection_budget"]
+    transport = receipt["transport"]
+    assert transport["reason"] == "answer_receive_failed"
+    assert transport["submissions"] == 0
+    assert [event["kind"] for event in transport["events"]] == ["observation"]
+
+
 def test_trickled_partial_frame_cannot_extend_absolute_socket_deadline(tmp_path):
     relay = StepwiseRelay(tmp_path, dataset.StepwisePuzzle({
         "fen": chess.STARTING_FEN, "moves": ["e2e4", "e7e5"]}),

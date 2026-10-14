@@ -1,0 +1,41 @@
+{
+  "observed_at": "2026-10-14T22:01:42.393978+00:00",
+  "endpoint": {
+    "url": "http://127.0.0.1:8002/v1/models",
+    "status": 200,
+    "models": {
+      "object": "list",
+      "data": [
+        {
+          "id": "qwen3.5-9b-local",
+          "object": "model",
+          "created": 1792015302,
+          "owned_by": "vllm",
+          "root": "/mnt/20t/qzs/PLMs/Qwen3.5-9B",
+          "parent": null,
+          "max_model_len": 16384,
+          "permission": [
+            {
+              "id": "modelperm-aca4bc50b305eba4",
+              "object": "model_permission",
+              "created": 1792015302,
+              "allow_create_engine": false,
+              "allow_sampling": true,
+              "allow_logprobs": true,
+              "allow_search_indices": false,
+              "allow_view": true,
+              "allow_fine_tuning": false,
+              "organization": "*",
+              "group": null,
+              "is_blocking": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "actor_command": "/home/xubuqiang/.nvm/versions/node/v22.16.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/bin/codex",
+  "actor_sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+  "actor_version": "codex-cli 0.161.0",
+  "platform_commit": "fdfdbce57706b13710286ae0592eab3a14999738"
+}
