@@ -1336,15 +1336,25 @@
           "id": "upstream-evaluator-acquisition",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Original upstream evaluator bytes, license and commit linkage remain unacquired; production scorer is unchanged.",
+          "observed": "Original TriviaQA evaluator, helpers, Apache-2.0 license and immutable GitHub commit ca43b5820b107f3970cf4b7d67f7db7a98117b79 are pinned in a code-only fixture. The local adapter had a real normalization mismatch and was corrected; Hub revision-to-scorer mapping, grouping equivalence and fresh diagnostic evidence remain open.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
-              "locator": "## TriviaQA adapter impact review — Codex 167"
+              "locator": "## TriviaQA — upstream evaluator acquired, adapter correction pending new identity — 2026-10-14"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/triviaqa_upstream/provenance.json",
+              "locator": "ca43b5820b107f3970cf4b7d67f7db7a98117b79"
+            },
+            {
+              "kind": "repository",
+              "path": "triviaqa-source-acquisition-codex196-report.md",
+              "locator": "Original source acquired; adapter equivalence remains blocked"
             }
           ],
-          "next_action": "Acquire and independently review original code-only evaluator provenance; keep full grouping/F1 behavior unverified."
+          "next_action": "Review the pinned upstream differential and Hub revision-to-scorer mapping; preserve the new scorer identity and run a fresh staged diagnostic only after shared runtime and cleanup gates pass."
         }
       ],
       "historical_runs": []
