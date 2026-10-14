@@ -1,0 +1,1025 @@
+[
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so",
+    "returncode": 0,
+    "sha256": "35d421e1c6f50e1063e93b02a8ee99079069b45f13cdc2ecf11085b2b3970828",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd7a9f1000)\n\tlibjvm.so => not found\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x000070cddbe80000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000070cddbd99000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000070cddbd94000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000070cddba00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000070cddbfb0000)\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt_headless.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt_headless.so",
+    "returncode": 0,
+    "sha256": "26eef0fa30d725309c467cf2ef9e04b153916599ac31bde265ca65848c455251",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc445aa000)\n\tlibawt.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so (0x00007912b90f8000)\n\tlibjvm.so => not found\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007912b90b8000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007912b8fd1000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007912b8fca000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007912b8c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007912b91f3000)\n\tlibjvm.so => not found\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt_xawt.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt_xawt.so",
+    "returncode": 0,
+    "sha256": "9f0e792a1a07e9cf9c77568dc0424592e93eaf486d2cf27ef033d6a54e0fe9f4",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd50ff3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000728b4fcf6000)\n\tlibawt.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so (0x0000728b4fc08000)\n\tlibXext.so.6 => /lib/x86_64-linux-gnu/libXext.so.6 (0x0000728b4fbf3000)\n\tlibX11.so.6 => /lib/x86_64-linux-gnu/libX11.so.6 (0x0000728b4fab3000)\n\tlibXrender.so.1 => /lib/x86_64-linux-gnu/libXrender.so.1 (0x0000728b4faa6000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000728b4fa9f000)\n\tlibXtst.so.6 => /lib/x86_64-linux-gnu/libXtst.so.6 (0x0000728b4fa97000)\n\tlibXi.so.6 => /lib/x86_64-linux-gnu/libXi.so.6 (0x0000728b4fa83000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x0000728b4fa59000)\n\tlibjvm.so => not found\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000728b4fa54000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000728b4f800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000728b4fe74000)\n\tlibjvm.so => not found\n\tlibxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x0000728b4f7d6000)\n\tlibjvm.so => not found\n\tlibXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x0000728b4fa4c000)\n\tlibXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x0000728b4fa42000)\n\tlibbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x0000728b4fa2a000)\n\tlibmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x0000728b4f7c9000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libdt_socket.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libdt_socket.so",
+    "returncode": 0,
+    "sha256": "2fcb851110d30c4320f65fb8c61ef3b6dcdb0602a3f87037053db0ea6f73b886",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffea59fb000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000782296d43000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000782296a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000782296d69000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libextnet.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libextnet.so",
+    "returncode": 0,
+    "sha256": "8c754a4b4ffe7f8988a9d4e739d1b8c69d03116973ef3d3b54ed93057194ed50",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffff2b3c000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x000075888f9ac000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075888f600000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000075888f98f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075888f9dd000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libfontmanager.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libfontmanager.so",
+    "returncode": 0,
+    "sha256": "cd38181a8beacfaa585b32783647be8b22eaadff62d9430df488033f20a46368",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff778dd000)\n\tlibfreetype.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libfreetype.so (0x000075e25f1be000)\n\tlibawt.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so (0x000075e25f0d0000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x000075e25f0a6000)\n\tlibjvm.so => not found\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000075e25efa7000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075e25ec00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075e25f41f000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000075e25efa2000)\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libfreetype.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libfreetype.so",
+    "returncode": 0,
+    "sha256": "fd0bf64d6b745ca1503f4ac010df38f1fc097b2689da400d535c0b642e8e8944",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe1bdf0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e31fd000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e31fd37b000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libinstrument.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libinstrument.so",
+    "returncode": 0,
+    "sha256": "7df777bb429f66a071036a24fb595f3d39df43cec1d305c1e5ce26f4ab4d21ee",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc3e7e4000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x0000706ed3670000)\n\tlibjvm.so => not found\n\tlibjli.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjli.so (0x0000706ed363e000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000706ed3639000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000706ed3400000)\n\tlibjvm.so => not found\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000706ed3632000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000706ed36a9000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libj2gss.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libj2gss.so",
+    "returncode": 0,
+    "sha256": "49c3162900dafae50baffb45956627e4e00de8eda45c9e866814e03787f3865e",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc69141000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007c97476b4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c9747400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c97476dd000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libj2pcsc.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libj2pcsc.so",
+    "returncode": 0,
+    "sha256": "7adfc3298b264babd5e11d9ad65f4713d2b353440c0335c193aadd27114728c3",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe21499000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007198985e1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000719898200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000719898604000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libj2pkcs11.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libj2pkcs11.so",
+    "returncode": 0,
+    "sha256": "7b7b0b9a586e5092ae4c2a9a885ae1597c96cbc6ec06c2eac3cf263461455348",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffddf6b000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007a122c2f8000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a122c000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a122c32c000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjaas.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjaas.so",
+    "returncode": 0,
+    "sha256": "6437c4e9c98ceb1f22fd01cce8b2a25b6a1a71e418c61152700716cd0e49e79e",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe45bbc000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a4152000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a41522b6000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so",
+    "returncode": 0,
+    "sha256": "180b9143f1b0889e492f21aecbcc4917c2fe168498d5f2589ad6b9403ef26026",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff45728000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fac3dc28000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fac3d800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fac3dc6f000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjavajpeg.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjavajpeg.so",
+    "returncode": 0,
+    "sha256": "9c2ee6b50e3d2a8d7be175b244fbca6b897f167d9e5467dd1ff7d338f3e68124",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe30758000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007a4f4eb5b000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a4f4e800000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007a4f4eb3e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a4f4ebbf000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjawt.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjawt.so",
+    "returncode": 0,
+    "sha256": "9f7954bf6d394512a94d3dad548aea888ba11a2fbf9ebd077af91c5d47416367",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc23287000)\n\tlibawt.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so (0x0000747860f2d000)\n\tlibawt_xawt.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt_xawt.so (0x0000747860eae000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x0000747860e84000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000747860c00000)\n\tlibjvm.so => not found\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000747860b19000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000747860e67000)\n\tlibXext.so.6 => /lib/x86_64-linux-gnu/libXext.so.6 (0x0000747860e52000)\n\tlibX11.so.6 => /lib/x86_64-linux-gnu/libX11.so.6 (0x00007478609d9000)\n\tlibXrender.so.1 => /lib/x86_64-linux-gnu/libXrender.so.1 (0x0000747860e43000)\n\tlibXtst.so.6 => /lib/x86_64-linux-gnu/libXtst.so.6 (0x0000747860e3b000)\n\tlibXi.so.6 => /lib/x86_64-linux-gnu/libXi.so.6 (0x00007478609c5000)\n\tlibjvm.so => not found\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000747860e36000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000747861022000)\n\tlibjvm.so => not found\n\tlibxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x000074786099b000)\n\tlibXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x0000747860e2e000)\n\tlibXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x0000747860993000)\n\tlibbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x000074786097b000)\n\tlibmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x000074786096e000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjdwp.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjdwp.so",
+    "returncode": 0,
+    "sha256": "a58dc6f6c44bd61f8ba4b03ccbed819c940eeb1b3ea8f9f50b47c43c82d3e78b",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe56bcb000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007cca8c916000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007cca8c8fb000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007cca8c600000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007cca8c984000)\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjimage.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjimage.so",
+    "returncode": 0,
+    "sha256": "c1e5b1fe649e244e5f45ad4ab379b51fc0d17b2654dd0897fd2fc00266dd8c4c",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff96590000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000074b45f9f3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000074b45f90c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074b45f600000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000074b45fa30000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjli.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjli.so",
+    "returncode": 0,
+    "sha256": "4fd016cb1b0b12fa46a943a7b366e3dab8f9925d070abd1d140eed7c35a83d7f",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff81373000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007890bc512000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007890bc50d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007890bc200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007890bc54b000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjsig.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjsig.so",
+    "returncode": 0,
+    "sha256": "0784255cf2d38c70dddf2e154bb265d87ce46dfb8d4778e881fe762f4d30e137",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffea06ca000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f9e6d77e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f9e6d400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f9e6d7a2000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjsound.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjsound.so",
+    "returncode": 0,
+    "sha256": "8155a41550ee6485a97fc4bb5dbfb6ff3e3949fc2dc8acce3650cf30ca3c3b47",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe293a6000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x0000703949b1e000)\n\tlibjvm.so => not found\n\tlibasound.so.2 => /lib/x86_64-linux-gnu/libasound.so.2 (0x0000703949a05000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000703949600000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007039499fe000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000703949917000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000703949b5c000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjsvml.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjsvml.so",
+    "returncode": 0,
+    "sha256": "01fee134b17b9fc4a09324abb53a9d79436582fd3669d495126711ddeea1777d",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc95f79000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c0265c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c0265f84000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/liblcms.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/liblcms.so",
+    "returncode": 0,
+    "sha256": "809524e3f8fef6268387a8d2d43b733bd43da7dccba6261b785fffa3ce9cd725",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe863e0000)\n\tlibawt.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libawt.so (0x00007915a65c3000)\n\tlibjvm.so => not found\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007915a6583000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007915a649c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007915a6200000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007915a6495000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007915a673d000)\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmanagement.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmanagement.so",
+    "returncode": 0,
+    "sha256": "d726e6d23331060d20435e24f56d248abc320f62999aa90b4782e90bcba35c32",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc244d6000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007ecf659e6000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ecf65600000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007ecf659c9000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ecf65a19000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmanagement_agent.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmanagement_agent.so",
+    "returncode": 0,
+    "sha256": "f41ddc321a6be2860eeec89fbcef17e420f255a12bf0f1fc007437b174687ffe",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffb0fd0000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x000074f2abcaa000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074f2aba00000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000074f2abc8d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000074f2abcdb000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmanagement_ext.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmanagement_ext.so",
+    "returncode": 0,
+    "sha256": "39c7484bc7394302c26996e69bb872311e1cdd00f281143354919ac2efe674a3",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd3ff9f000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007e47cd105000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e47cce00000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007e47cd0e8000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e47cd13a000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmlib_image.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libmlib_image.so",
+    "returncode": 0,
+    "sha256": "bce5314783219db1baedab1d29d7a70755cd33062f91a1a90125beb87697d0c7",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc215f0000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x0000793979ef1000)\n\tlibjvm.so => not found\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000793979df4000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000793979def000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000793979a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000793979fb0000)\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnet.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnet.so",
+    "returncode": 0,
+    "sha256": "422dc4462ab8b1423a789e62a3721350bb99e850578ac3ff6628d589115decef",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc2e3c1000)\n\tlibjvm.so => not found\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007a8c51c5b000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007a8c51c56000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007a8c51c51000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a8c51a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a8c51cb5000)\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnio.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnio.so",
+    "returncode": 0,
+    "sha256": "b7790f0dbae6bf8d70a516f895c692eddadcd4b5b579361a54644008b882b2f3",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe7f948000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x000077db10b80000)\n\tlibnet.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnet.so (0x000077db10b68000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000077db10b4d000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000077db10b48000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077db10800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077db10bc3000)\n\tlibjvm.so => not found\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libprefs.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libprefs.so",
+    "returncode": 0,
+    "sha256": "1b87f8f8ac15842077f309a1ebd4c72461b02afffe17cc20a3f8d6791e96071f",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe6aff7000)\n\tlibjvm.so => not found\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x0000756000cd1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000756000a00000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000756000cca000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000756000d18000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/librmi.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/librmi.so",
+    "returncode": 0,
+    "sha256": "373ce66fa4d95382cfdd7f8ad671bb7110da72b5f81706e5c6960b530d35c70c",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffc3be4000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000752956000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000752956375000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libsctp.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libsctp.so",
+    "returncode": 0,
+    "sha256": "e9e8a115f972cdb5452c2303c579cb7a8db84dbad9283db1ebde28d27ff3479a",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff405ac000)\n\tlibnio.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnio.so (0x000079f5539ce000)\n\tlibnet.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libnet.so (0x000079f5539b6000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x000079f55398c000)\n\tlibjvm.so => not found\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000079f55396f000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000079f55396a000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000079f553600000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000079f5539f0000)\n\tlibjvm.so => not found\n\tlibjvm.so => not found\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libsplashscreen.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libsplashscreen.so",
+    "returncode": 0,
+    "sha256": "ecdaad070b33eb91b144b0a03630a2852aa5dcdcdb96ef56897ede0b8f5912a2",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd1ebb6000)\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007344c6175000)\n\tlibjvm.so => not found\n\tlibX11.so.6 => /lib/x86_64-linux-gnu/libX11.so.6 (0x00007344c601f000)\n\tlibXext.so.6 => /lib/x86_64-linux-gnu/libXext.so.6 (0x00007344c600a000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007344c5f23000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007344c5f1c000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007344c5f17000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007344c5c00000)\n\tlibjvm.so => not found\n\tlibxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x00007344c5eed000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007344c6208000)\n\tlibXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x00007344c5ee5000)\n\tlibXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x00007344c5edd000)\n\tlibbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x00007344c5ec5000)\n\tlibmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x00007344c5eb8000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libsyslookup.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libsyslookup.so",
+    "returncode": 0,
+    "sha256": "9a5f5a10aedbf2ea47ab048451905f63e03a113ee503070c11d67bfceb3c7c4e",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc8fea4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007b0f1ac00000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007b0f1ae63000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007b0f1ae5e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007b0f1af67000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libverify.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libverify.so",
+    "returncode": 0,
+    "sha256": "db6031e5a9748fb1962e2580c1f6fcbcc3db4db15a1d0f1ec13ee2ca0a5985cc",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffebef61000)\n\tlibjvm.so => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007486a7e00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007486a8149000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libzip.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libzip.so",
+    "returncode": 0,
+    "sha256": "2fa6bbb7398d28cce31a04b47c541d515b72297206b0b0c92530810fce606f77",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffb9f76000)\n\tlibjvm.so => not found\n\tlibjava.so => /mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/libjava.so (0x00007156e5373000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007156e5000000)\n\tlibjvm.so => not found\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007156e536c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007156e53d4000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/server/libjsig.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/server/libjsig.so",
+    "returncode": 0,
+    "sha256": "0784255cf2d38c70dddf2e154bb265d87ce46dfb8d4778e881fe762f4d30e137",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffd2525000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000071f104806000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000071f104400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000071f10482a000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/server/libjvm.so"
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/lib/server/libjvm.so",
+    "returncode": 0,
+    "sha256": "11e5d09f442e42bddc4619b6eed829eaf3952158a5f77c797a58d558fae21738",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffc6d4c000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000727f55001000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000727f54ffc000)\n\tlibrt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x0000727f54ff7000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000727f53b19000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000727f53800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000727f5501e000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_asyncio.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_asyncio.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "5d7e844113a8d95d04daea5820212d789c8403bcd7bc60bb65fbbaa763e96634",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc321d8000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075476e400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075476e6c4000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "7694659c2dea71e84ca42f0bc460dd8bad88a9971263182b91621a2aba08c00e",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff6c197000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007359eb400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007359eb7f1000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "8d6f81f975efd43245211233d6350f55c7b9775a3af8c8279fd3ae78130a766a",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcf55d9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ecf00400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ecf006e8000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "1ba83c781a880da47da85fb7a89fb9add41b83936ede5f7d953ffbec984fcf92",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe0d5c0000)\n\tlibbz2.so.1.0 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libbz2.so.1.0 (0x0000798de3dc5000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000798de3a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000798de3de3000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "7fdb1cf53dd1167e132c0aa9f32e98b08bf2102fe138cd30c1dc6c8eb4f66c40",
+    "stderr": "",
+    "stdout": "\tstatically linked\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "2412b98e59136f34d235dc581ec819d58ad79163904640fc0d7241a1d58d31bc",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffdea1a9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007bd624200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007bd62448b000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "65e9108eed07e35da63c19446a6be2ca02b3586bfeee50e13cf5c93f3f865846",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd137ae000)\n\tlibffi.so.8 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libffi.so.8 (0x00007cd80a5bc000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007cd80a5a1000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007cd80a59c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007cd80a200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007cd80a5f0000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "0d768c77505d0e0764f91a84b7c9995f2d09ee47164ad54d90eb93a924673a8c",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffee83bf000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000074b86cd84000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000074b86cd7f000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074b86ca00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000074b86cea3000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_decimal.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_decimal.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "88558c93fcd20e79f9ff4ec052338dec9a52bdb0eb12419fb7a46f226b779f0f",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd5d4a4000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007d44dd2a8000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007d44dd2a3000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d44dd000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007d44dd3f6000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_elementtree.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_elementtree.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "9967516b4318d4bd82c21ae1f448b7c3d4f4755d36536dfe55a9514939d8ba27",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc9dff1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000791aa1200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000791aa154d000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "5d00ef3921fc50cf555a78138c2ca2e7e733a1174dd71318cbea48ad523fa1fa",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffded5a3000)\n\tlibcrypto.so.3 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libcrypto.so.3 (0x000079f430800000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000079f430400000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000079f430cf0000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000079f430ceb000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000079f430d1e000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_heapq.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_heapq.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "4fe2b41cd3e2590e5803880fb3d5989f4528db3e9d2ee5542dfa7d5015e6dab5",
+    "stderr": "",
+    "stdout": "\tstatically linked\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "7f88e8f6da1a2d447e9ee5bfcece827ece8fc85329f4dce0f998cf046c8a57af",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcd519b000)\n\tliblzma.so.5 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../liblzma.so.5 (0x000071bea8277000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000071bea8000000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000071bea825c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000071bea82b5000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "735c366c73453d15a442aeb933dc88ce276505e2e37ba3ebf5cbb2885902c3bc",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd3df1d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077b934000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077b9343c6000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "c5d6d2a676acca5fce4c34bf70cc92edba2c056f876e49c3ffff78ab8c9296a0",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffde3ed000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000077c61362e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077c613400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077c61366d000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "e9f1538de7b9892260c0f5197bc11fb6af2c0f5e4f08c56278583fbd2f7f3c2c",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff5fb42000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007a49d2a62000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a49d2800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a49d2a87000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_queue.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_queue.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "1edc27342268b0f13620918e74e6f3e9af88429ff6d9d097a383c6d625bd8879",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc7ddfa000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f017ae00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f017b0b1000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "69dba6e4d4c736cda12dab1d3612b494fef03fc6159ac314d532ce9ad58c2825",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd4a9c3000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007b4cb4c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007b4cb4fbf000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "61eba753529759d0a806757ce7a1e6d8bf465eb9ace5a9d787af346a6a7d5238",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff58f61000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007426ab200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007426ab536000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "08de41a4f34033dbc4772a4f844deb0ce51ce0b21719a6822763b9787dca9f2a",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffee69cf000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000074cc6cd97000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074cc6ca00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000074cc6cdce000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "34137c9771a1cdbb91619e352f7ea48d3d839e99cad772201b58dd64ac3d62f4",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe8d5cb000)\n\tlibssl.so.3 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libssl.so.3 (0x000077a25ddb1000)\n\tlibcrypto.so.3 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libcrypto.so.3 (0x000077a25d800000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000077a25dd96000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077a25d400000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000077a25dd8f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077a25de8e000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "c5eb716854534b1c96b9723cfae56547b1571fd2d6b6263af70961f95113a9be",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe7c5ef000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ac9e4600000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ac9e496a000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_uuid.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_uuid.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "7e656c811e1fc89823086f5a4fa2b6dbcd9f73012f2fcc1d653b3a42b224b7bb",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc0fbfb000)\n\tlibuuid.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libuuid.so.1 (0x000073deef3bd000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000073deef3a2000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073deef000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073deef3cd000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "f52bf9b92607dba9247c9cc5e296487f0fafca37125e7248f3349d9b6d9a32ca",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffdb418d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a0011c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a0011f88000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "dd61083af4d3e78d44f32ff473fbcff7f5dbdb21db702a5babf05825e4f5a6f2",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcb950b000)\n\tlibz.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libz.so.1 (0x00007fe35dd9c000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fe35dd81000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fe35da00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fe35ddc6000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "183e13527124b832c86e8a0cd78d3c56862d467f3fab98ab82d07eb7e8dcd1d4",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe497e4000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000760dedb46000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000760ded800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000760dedb6b000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "67a2a81dec8bd6cb3ddf5057860e144afed0dcb36ad3d8ee6e174439607f9707",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffeeb1fb000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000075f92856f000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000075f92856a000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075f928200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075f928683000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/pyexpat.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/pyexpat.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "6ac904c68651e3b75c14657061c220f1f937c547422c33728fa9d92c49a8fd86",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc819cc000)\n\tlibexpat.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libexpat.so.1 (0x00007311c228b000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007311c2270000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007311c2000000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007311c1f19000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007311c22cf000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/readline.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/readline.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "e39cd15fd29c9e8f6fc208e4367621d905bc01cd59bb8fc0dfcda90d96afcf7e",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcdf515000)\n\tlibreadline.so.8 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libreadline.so.8 (0x000073f1eba76000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000073f1eba5b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073f1eb800000)\n\tlibtinfow.so.6 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../.././libtinfow.so.6 (0x000073f1eb7be000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073f1ebadc000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/resource.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/resource.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "132d1b92992447f123fa8726b008a80ca01eaa67b40de9cd98b49f754d7e5337",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff22fbc000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007d29fab0b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d29fa800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007d29fab2e000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "af832746bfcce6aacbc162558348a359e79e9a297ef38520996043fa63074cbd",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcc094e000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000073fd1cee6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073fd1cc00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073fd1cf0e000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/unicodedata.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/unicodedata.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "8ee002b856eed64bda45816dc0b77de7eb02a3f7b883d0f6b49fbead076d2d88",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd2e555000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007837a8000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007837a8522000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "701ac4d4e7b79e3541ad56d382d62c36efbc786a29659f33605fe59c876b0aa2",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffdef73e000)\n\tlibz.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/../../libz.so.1 (0x00007c66be18f000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007c66be174000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c66bde00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c66be1bc000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "578f65f0104d4203317c79c72d6727b441f80509cc18546119f041b6007acf4c",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffde63bc000)\n\tlibtiff.so.5 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../libtiff.so.5 (0x000078604627f000)\n\tlibjpeg.so.9 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../libjpeg.so.9 (0x0000786046240000)\n\tlibopenjp2.so.7 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../libopenjp2.so.7 (0x00007860461dc000)\n\tlibz.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../libz.so.1 (0x00007860461be000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000786045e00000)\n\tlibwebp.so.7 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../.././libwebp.so.7 (0x000078604611c000)\n\tlibzstd.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../.././libzstd.so.1 (0x0000786045cf0000)\n\tliblzma.so.5 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../.././liblzma.so.5 (0x00007860460ec000)\n\tlibLerc.so => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../.././libLerc.so (0x0000786046050000)\n\tlibdeflate.so.0 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../.././libdeflate.so.0 (0x0000786046039000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000786045c09000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000786046034000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000786046397000)\n\tlibsharpyuv.so.0 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../././libsharpyuv.so.0 (0x000078604602b000)\n\tlibstdc++.so.6 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../././libstdc++.so.6 (0x0000786045800000)\n\tlibgcc_s.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/../../../././libgcc_s.so.1 (0x0000786045bef000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/_elementpath.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/_elementpath.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "7e6434c7bdc001b04d17c683e2cd16607b791cba6fb59257c146e481750284b4",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffdf352d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000079fb3b400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000079fb3b729000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/etree.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/etree.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "7ba0b4d170895bdd785b0896e8122a7e1587efc0d89ffea2b144f2361f79b795",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc9838b000)\n\tlibxslt.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../../libxslt.so.1 (0x0000774b39fab000)\n\tlibexslt.so.0 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../../libexslt.so.0 (0x0000774b39f95000)\n\tlibxml2.so.2 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../../libxml2.so.2 (0x0000774b39e2d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000774b39800000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000774b39b03000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x0000774b39e26000)\n\tlibz.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../.././libz.so.1 (0x0000774b39ae5000)\n\tliblzma.so.5 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../.././liblzma.so.5 (0x0000774b39ab5000)\n\tlibicuuc.so.73 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../.././libicuuc.so.73 (0x0000774b39400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000774b39ff0000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000774b39e1f000)\n\tlibicudata.so.73 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../../././libicudata.so.73 (0x0000774b37400000)\n\tlibstdc++.so.6 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../../././libstdc++.so.6 (0x0000774b37000000)\n\tlibgcc_s.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lxml/../../../././libgcc_s.so.1 (0x0000774b39a9b000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_mklinit.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_mklinit.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "cb5912204d24c19f00e4c70d12b3a3f52ee3aa4925af84b99a86a1648f597759",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff681ce000)\n\tlibmkl_rt.so.2 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/../../../libmkl_rt.so.2 (0x00007d6fa5400000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d6fa5000000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007d6fa6044000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007d6fa6066000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_py_mkl_service.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_py_mkl_service.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "b95931cba2c676ddf69a01b73dccfb372938bb611a7c26713046b049dc2e41f6",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffba9ef000)\n\tlibmkl_rt.so.2 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/../../../libmkl_rt.so.2 (0x000071108f200000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000071108ee00000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000071108ff40000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000071108ff86000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "1ba8da4bb7c1f512e3def4606b41ea9d829b2c9840cf1445e7b1056950b09c56",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffffc7e0000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000734d3e826000)\n\tlibgcc_s.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/../../../../libgcc_s.so.1 (0x0000734d3e80c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000734d3e400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000734d3e94a000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "99f32edc4b6fe06371b0a60b07d9850e07977fdc1d33f7d8a2015975d04d5070",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc969f0000)\n\tlibmkl_rt.so.2 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/../../../../libmkl_rt.so.2 (0x000073c092200000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000073c0935ff000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x000073c0935fa000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000073c092f19000)\n\tlibgcc_s.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/../../../../libgcc_s.so.1 (0x000073c0935de000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073c091e00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073c09361c000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "a3a8a299b31682e3aebdb776afe2c4f57e702f1927c729b317b2e006114649c3",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff8cff3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007ade95cf0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ade95a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ade95e03000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "3c3dc2958a1c6bb6ecb257a03123a96e8bedb2b79ffbb26e72b91bb61602e950",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffec3d97000)\n\tlibmkl_rt.so.2 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/../../../../libmkl_rt.so.2 (0x00007a7ab1a00000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007a7ab273f000)\n\tlibgcc_s.so.1 => /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/../../../../libgcc_s.so.1 (0x00007a7ab2725000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a7ab1600000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007a7ab271e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a7ab286b000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "d6fccbabd6eb27ef0b4e243eb8d13b38037ff38834724b80ef479072a3a95c13",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe2eaf1000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000752d3b3b5000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000752d3b000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000752d3b505000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "84d82ad219c8dfa5c86d54d68d13a7924b19e68b0d32ba300d8fc2d1c60ec8f6",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcb0fb1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c4ca3400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c4ca3796000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "a58befa327074e09938806fc4fa9f73a7c43da7e6fe01159319a39af297f8360",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fffc7b65000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007193b65e1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007193b6200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007193b67b7000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "db1abc57248d308477f089fd1237286b9abd9809d98ee731bf7f8b2d90301c2a",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffdb2f8b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000732934400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007329347d3000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "cdb2aced0d010846a4f6b60f93d6f49027749367bcc0e7a88f79d6a6a783ca02",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffe3bda6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074456bc00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000074456bf54000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "0e70bdc26879b0479685bf89ab026d0809e0a870d37e135693a22bb2f02ba055",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcc47dc000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000072d3ac000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000072d3ac3e1000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "d15965948740124b554e30e0a06be90c063bdd195308cf8786ece1b6dddca1ec",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc1d9ea000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000788043a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000788043ce5000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "d75f8afcd8a6aae88aa6c636929057c7e61bd0f2c0c9873adee7cff0b3a9de0f",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd152f8000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000765b00000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000765b0043a000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "77ae047cd98ebb756c88e8b931464ea358b05111c1e1c8aa1fc228c0e19b1398",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd0fbf8000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000077ff38346000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077ff38000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077ff384ef000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/utils/cell.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/utils/cell.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "99ff14eae93f75ba87b2c782e890f6754915516222d8d67bb2a09b20c2e7b888",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffecef6b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c8e73000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c8e733c9000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/worksheet/_reader.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/worksheet/_reader.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "4f7ad3d1ccc672f3fbdbb23657c95ef740e236a039c20ee89653e55a8b1a3278",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffcdf79e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000765877e00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007658780c7000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/worksheet/_writer.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/worksheet/_writer.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "69d0ec3f7d928199823ce27eb64b3e103d48136ed094a1fc431fa08ef600a440",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffd3e92b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000790313400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007903136c6000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psutil_linux.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psutil_linux.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "534821bb8864995e3475645dc73348acc0d427496c9a751651dd54ad71800c12",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007ffc5ab18000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007147da400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007147da81d000)\n"
+  },
+  {
+    "command": [
+      "ldd",
+      "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psutil_posix.cpython-312-x86_64-linux-gnu.so"
+    ],
+    "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psutil_posix.cpython-312-x86_64-linux-gnu.so",
+    "returncode": 0,
+    "sha256": "d55b7a37605ff97085f032e008afb559c3d1c6a3addce6b3361050085657df4e",
+    "stderr": "",
+    "stdout": "\tlinux-vdso.so.1 (0x00007fff471c7000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007dda18400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007dda186ef000)\n"
+  }
+]

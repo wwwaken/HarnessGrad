@@ -1471,3 +1471,32 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Work only in registered `/tmp/hg-fix`, commit only on `wg-fix`; no main commit or
   merge. Pristine control removed after validation. No existing runs or frozen
   receipts touched, no model/GPU/paid endpoint/benchmark execution or authorization.
+## 2026-10-15 transitive verifier dependency inventory - w-tbdep
+
+- Added [the per-dataset inventory](../reports/w-tbdep-transitive-inventory.md)
+  with file-and-line evidence, explicit unpinned references, scorer-time versus
+  provisioning network distinctions and actor workdir/snapshot input questions.
+  Coverage includes the requested twelve, Jericho and Reasoning Gym, and active
+  AgentDojo outside the registry shared set. BFCL's present name-only diagnostic
+  is kept explicit; tau-bench's stdlib replay still requires its container/base ABI.
+- Reviewed/integrated isolated worker commits `8660b62` (native Python scorer
+  inspection), `ef72085` plus `26b79da` (container/source inventory and ignored raw
+  dpkg evidence), and `41826e9` (scope review), checking their actual diffs/source
+  and retaining only task-related artifacts. Parent added native import/JVM/ELF/
+  LibreOffice inspection and the consolidated report/citation checks. Worker
+  runtime inspection distinguishes all 89 Terminal-Bench source/image declarations
+  from 86 available local images; three missing images remain explicit. Protected
+  AppWorld task evaluators were not opened or treated as dependency-complete.
+- Raw source, imports, metadata, image inspection and ABI outputs are preserved in
+  `tests/fixtures/hg_wtbdep/` with a SHA-256 manifest. No benchmark task, scorer,
+  model, GPU or endpoint call, image build/pull or container execution occurred.
+  Only read-only Docker inspection/save and import/version/ELF inspection were used.
+- Registry untouched: `scorer-offline-closure` still requires pinned complete
+  image/native dependency custody, trusted workdir/snapshot/service inputs,
+  class-specific live official-scorer execution and lifecycle/resource/cleanup
+  evidence before any separately authorized pilot. No blocker closure, downgrade,
+  historical receipt change or production authorization is claimed.
+- Validation: blocker checker valid (28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`); 54 source-only blocker tests passed.
+  Citation, fixture manifest and authored-file checks are recorded in
+  [w-tbdep validation](../reports/w-tbdep-validation.txt).

@@ -1,0 +1,108 @@
+w-tbdep validation: source/local inspection only; no benchmark, model, GPU or endpoint calls.
+Source baseline: 1d31ea8; registry unchanged.
+Focused source-only tests executed before documentation/evidence consolidation (no production source changes):
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-tbdep
+......................................................                   [100%]
+54 passed in 3.28s
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+cwd=/tmp/hg-tbdep
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 tests/fixtures/hg_wtbdep/check_evidence.py
+cwd=/tmp/hg-tbdep
+Citation checks: 2364 literal path/line/locator records valid
+Manifest checks: 810 files covered; no missing or extra files
+exit_code=0
+
+$ sha256sum --check --quiet SHA256SUMS
+cwd=/tmp/hg-tbdep/tests/fixtures/hg_wtbdep
+exit_code=0
+
+$ git diff 1d31ea8 --exit-code -- docs/dataset-blockers.json
+cwd=/tmp/hg-tbdep
+exit_code=0
+
+$ git diff --check 1d31ea8 -- reports/w-tbdep-transitive-inventory.md docs/adapter-integration-journal.md tests/fixtures/hg_wtbdep/README.md tests/fixtures/hg_wtbdep/check_evidence.py tests/fixtures/hg_wtbdep/inspect_repository.py tests/fixtures/hg_wtbdep/native/inspect_native.py tests/fixtures/hg_wtbdep/container-abi/inspect_python_abi.py
+cwd=/tmp/hg-tbdep
+exit_code=0
+
+$ sha256sum --check --quiet SHA256SUMS
+cwd=/tmp/hg-tbdep/tests/fixtures/hg_wtbdep/runtime
+exit_code=0
+
+$ sha256sum --check --quiet SHA256SUMS
+cwd=/tmp/hg-tbdep/tests/fixtures/hg_wtbdep/scope
+exit_code=0
+
+$ sha256sum --check --quiet SHA256SUMS
+cwd=/tmp/hg-tbdep/tests/fixtures/hg_wtbdep/python
+exit_code=0
+
+Raw upstream fixtures preserve original whitespace; diff --check above applies to authored report/journal/collection files.
+No benchmark tasks or live class-specific scorer controls were run. No blocker closure is claimed.
+
+Exact inspection commands (already executed; not replayed by validation):
+$ python3 tests/fixtures/hg_wtbdep/inspect_repository.py
+$ python3 tests/fixtures/hg_wtbdep/native/inspect_native.py
+$ python3 tests/fixtures/hg_wtbdep/python/inspect_local.py
+$ python3 tests/fixtures/hg_wtbdep/scope/import-inspection.py reasoning_gym > tests/fixtures/hg_wtbdep/scope/reasoning-gym-import-only.json
+$ python3 tests/fixtures/hg_wtbdep/scope/import-inspection.py jericho > tests/fixtures/hg_wtbdep/scope/jericho-import-only.json
+$ /mnt/20t/xubuqiang/datasets/agentdojo/runtime/bin/python tests/fixtures/hg_wtbdep/scope/import-inspection.py hg_dojo_bridge --source data/datasets/agentdojo/bridge.py > tests/fixtures/hg_wtbdep/scope/agentdojo-import-only.json
+$ python3 tests/fixtures/hg_wtbdep/scope/capture-inspection.py
+$ python3 tests/fixtures/hg_wtbdep/container-abi/inspect_python_abi.py /tmp/hg-wtbdep-runtime-images.tar
+Preserved static Python ABI/source observations: 21 members
+$ python3 tests/fixtures/hg_wtbdep/check_evidence.py --write
+Citation checks: 2364 literal path/line/locator records valid
+Manifest checks: 810 files covered; no missing or extra files
+Embedded ldd/readelf and import-child argv are preserved by collection scripts/output JSON.
+
+$ docker image inspect harnessgrad/gaia:20261008
+recorded_exit_code=0
+recorded_output=gaia-image-inspect.json
+
+$ docker image history --no-trunc --format '{{json .}}' harnessgrad/gaia:20261008
+recorded_exit_code=0
+recorded_output=gaia-image-history.jsonl
+
+$ docker image inspect harnessgrad/tau-bench:20261006
+recorded_exit_code=0
+recorded_output=tau_bench-image-inspect.json
+
+$ docker image history --no-trunc --format '{{json .}}' harnessgrad/tau-bench:20261006
+recorded_exit_code=0
+recorded_output=tau_bench-image-history.jsonl
+
+$ docker image inspect harnessgrad/appworld-service:20261009-final2
+recorded_exit_code=0
+recorded_output=appworld-image-inspect.json
+
+$ docker image history --no-trunc --format '{{json .}}' harnessgrad/appworld-service:20261009-final2
+recorded_exit_code=0
+recorded_output=appworld-image-history.jsonl
+
+$ git -C /mnt/20t/xubuqiang/datasets/terminal-bench rev-parse HEAD
+recorded_exit_code=0
+recorded_output=terminal-bench-commit.txt
+
+$ docker image inspect alexgshaw/adaptive-rejection-sampler:20251031 alexgshaw/bn-fit-modify:20251031 alexgshaw/break-filter-js-from-html:20251031 alexgshaw/build-cython-ext:20251031 alexgshaw/build-pmars:20251031 alexgshaw/build-pov-ray:20251031 alexgshaw/caffe-cifar-10:20251031 alexgshaw/cancel-async-tasks:20251031 alexgshaw/chess-best-move:20251031 alexgshaw/circuit-fibsqrt:20251031 alexgshaw/cobol-modernization:20251031 alexgshaw/code-from-image:20251031 alexgshaw/compile-compcert:20251031 alexgshaw/configure-git-webserver:20251031 alexgshaw/constraints-scheduling:20251031 alexgshaw/count-dataset-tokens:20251031 alexgshaw/crack-7z-hash:20251031 alexgshaw/custom-memory-heap-crash:20251031 alexgshaw/db-wal-recovery:20251031 alexgshaw/distribution-search:20251031 alexgshaw/dna-assembly:20251031 alexgshaw/dna-insert:20251031 alexgshaw/extract-elf:20251031 alexgshaw/extract-moves-from-video:20251031 alexgshaw/feal-differential-cryptanalysis:20251031 alexgshaw/feal-linear-cryptanalysis:20251031 alexgshaw/filter-js-from-html:20251031 alexgshaw/financial-document-processor:20251031 alexgshaw/fix-code-vulnerability:20251031 alexgshaw/fix-git:20251031 alexgshaw/fix-ocaml-gc:20251031 alexgshaw/gcode-to-text:20251031 alexgshaw/git-leak-recovery:20251031 alexgshaw/git-multibranch:20251031 alexgshaw/gpt2-codegolf:20251031 alexgshaw/headless-terminal:20251031 alexgshaw/hf-model-inference:20251031 alexgshaw/install-windows-3.11:20251031 alexgshaw/kv-store-grpc:20251031 alexgshaw/large-scale-text-editing:20251031 alexgshaw/largest-eigenval:20251031 alexgshaw/llm-inference-batching-scheduler:20251031 alexgshaw/log-summary-date-ranges:20251031 alexgshaw/mailman:20251031 alexgshaw/make-doom-for-mips:20251031 alexgshaw/make-mips-interpreter:20251031 alexgshaw/mcmc-sampling-stan:20251031 alexgshaw/merge-diff-arc-agi-task:20251031 alexgshaw/model-extraction-relu-logits:20251031 alexgshaw/modernize-scientific-stack:20251031 alexgshaw/mteb-leaderboard:20251031 alexgshaw/mteb-retrieve:20251031 alexgshaw/multi-source-data-merger:20251031 alexgshaw/nginx-request-logging:20251031 alexgshaw/openssl-selfsigned-cert:20251031 alexgshaw/overfull-hbox:20251031 alexgshaw/password-recovery:20251031 alexgshaw/path-tracing:20251031 alexgshaw/path-tracing-reverse:20251031 alexgshaw/polyglot-c-py:20251031 alexgshaw/polyglot-rust-c:20251031 alexgshaw/portfolio-optimization:20251031 alexgshaw/protein-assembly:20251031 alexgshaw/prove-plus-comm:20251031 alexgshaw/pypi-server:20251031 alexgshaw/pytorch-model-cli:20251031 alexgshaw/pytorch-model-recovery:20251031 alexgshaw/qemu-alpine-ssh:20251031 alexgshaw/qemu-startup:20251031 alexgshaw/query-optimize:20251031 alexgshaw/raman-fitting:20251031 alexgshaw/regex-chess:20251031 alexgshaw/regex-log:20251031 alexgshaw/reshard-c4-data:20251031 alexgshaw/rstan-to-pystan:20251031 alexgshaw/sam-cell-seg:20251031 alexgshaw/sanitize-git-repo:20251031 alexgshaw/schemelike-metacircular-eval:20251031 alexgshaw/sparql-university:20251031 alexgshaw/sqlite-db-truncate:20251031 alexgshaw/sqlite-with-gcov:20251031 alexgshaw/torch-pipeline-parallelism:20251031 alexgshaw/torch-tensor-parallelism:20251031 alexgshaw/train-fasttext:20251031 alexgshaw/tune-mjcf:20251031 alexgshaw/video-processing:20251031 alexgshaw/vulnerable-secret:20251031 alexgshaw/winning-avg-corewars:20251031 alexgshaw/write-compressor:20251031
+recorded_exit_code=1
+recorded_output=terminal-bench-images-inspect.json
+
+$ docker image save harnessgrad/gaia:20261008 harnessgrad/tau-bench:20261006 harnessgrad/appworld-service:20261009-final2 -o /tmp/hg-wtbdep-runtime-images.tar
+recorded_exit_code=0
+recorded_output=saved-image-manifest.json (raw archive temporary, not committed; selected raw member hashes in archive-projection files)
+
+$ python3 tests/fixtures/hg_wtbdep/runtime/inspect_saved_images.py /tmp/hg-wtbdep-runtime-images.tar
+recorded_exit_code=0
+recorded_output=gaia-, tau_bench-, appworld_service- archive projections, sources, imports, package metadata, ELF readelf outputs
+
+$ python3 tools/check_dataset_blockers.py
+recorded_exit_code=0
+recorded_output={"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+$ sha256sum --check SHA256SUMS
+recorded_exit_code=0
+recorded_output=all saved fixture entries OK
