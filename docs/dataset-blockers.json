@@ -40,6 +40,16 @@
           "kind": "repository",
           "path": "reports/scorer-closure-codex170-report.md",
           "locator": "Generic production scoring"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/b10-shared-boundary-review.md",
+          "locator": "## scorer-offline-closure"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/b10-shared-boundaries-focused-tests.txt",
+          "locator": "test_unclosed_or_unsupported_declarations_fail_before_file_access[missing_dependency] PASSED"
         }
       ],
       "next_action": "Review generic integration of local closure checks and a dedicated offline scorer boundary using synthetic fixtures."
@@ -68,6 +78,16 @@
           "kind": "repository",
           "path": "reports/SHARED_ADMISSION_WIRING.md",
           "locator": "Container-state"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/b10-shared-boundary-review.md",
+          "locator": "## artifact-only-state-export"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/b10-shared-boundaries-focused-tests.txt",
+          "locator": "test_state_export_refuses_toolchain_links_special_or_missing_files[executable] PASSED"
         }
       ],
       "next_action": "Review allowlisted data-only export integration and bounded synthetic export controls."
