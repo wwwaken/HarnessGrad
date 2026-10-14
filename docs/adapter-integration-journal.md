@@ -2616,3 +2616,47 @@ The local wheel SHA-256 is `63a3456428e7a40f7270eafff1226f875bb3c3a2ce1770fa7058
 The published extension defines 53 double-conversion symbols with no undefined double-conversion imports or double-conversion DSO requirement; native symbol lookup resolves into the extension itself. The local build defines the same 53 names. This establishes embedded implementation, but cannot distinguish vendored compilation from linkage of an external static archive or identify the producer's actual source revision/build invocation. Authenticated original wheel-to-source/build custody remains unmet; `ujson-native-offline-closure` stays **external** and its next action/gates are preserved, with `observed` sharpened and new evidence locators.
 
 Both original and rebuilt wheels have fresh network-denied hash-checked install, exact installed-member/native/notice checks, eager binding, recursive provider and two unchanged fabricated-evaluator receipts. Strong provider resolution failures are zero (703/699 symbols checked, 28/25 optional weak unresolved). Complete commands/raw outputs, source archive, build inputs, comparison members, symbols/disassembly and SHA-256 manifest are in `tests/fixtures/hg_wujson2/`; report: `reports/w-ujson2-reproduction.md`; validation: `reports/w-ujson2-validation.txt`. All four evidence containers were removed with cleanup receipts. Focused validation passed: registry checker valid, 59 existing registry/runtime-receipt tests passed, all 564 packet files matched SHA-256, and frozen inputs/scoring code stayed unchanged. No benchmark/model/GPU/endpoint execution, production scorer change, frozen receipt change, `runs/` modification or H0 authorization occurred.
+## Parent review and merge — w-assess, w-ujson2 — 2026-10-15
+
+- Merged `55f194f` (w-assess) and `90f46cf` (w-ujson2). Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`.
+- **Neither shared blocker closed, and that is the right answer.** w-assess changed **no**
+  registry entry. For `scorer-offline-closure` it judged six clauses of its own next_action
+  **PARTIAL** - provisioning dataset-specific pinned closures, class-specific runtime evidence,
+  complete transitive image/ABI dependencies, official provenance/execution, trusted
+  lifecycle/resource/cleanup observations, and validating live controls before pilots. For
+  `artifact-only-state-export` it found two clauses **UNSATISFIED** - provisioning authoritative
+  per-task export, and private-input contracts for pristine scorers - with the rest PARTIAL. What
+  it did establish as satisfied is narrower and worth naming: connectivity, comparison safety, and
+  the snapshot/service review clause.
+- The value here is the shape of the result, not a closure. The phase has spent many rounds
+  accumulating genuine evidence, and the natural temptation was to read that pile as sufficiency.
+  w-assess converted "some remaining work" into an exact, quoted, per-clause list of what is
+  missing, which is the only form of that answer a later round can act on. It was briefed that
+  refusing closure out of habit was as wrong as forcing it, and it refused on the clauses.
+- **w-ujson2 attempted the strongest available form of the wheel-to-source linkage - rebuilding
+  from the pinned commit - and it did not reproduce.** All six file-member names match and
+  LICENSE, METADATA and top_level are byte-identical, but the compiled extension, WHEEL and
+  RECORD differ. The embedded double-conversion implementation is confirmed present; the original
+  vendored-versus-external-static build selection remains unproven. The blocker stays open. A
+  non-reproducing build is a real negative result and it was recorded as one rather than
+  reinterpreted as partial success.
+- **A stale `git` sequencer from round 40 corrupted this round's merge, and it is worth recording
+  because the obvious recovery was destructive.** Round 40's range cherry-pick was never fully
+  unwound: `.git/sequencer` still listed `5642899` and `5f76247` as pending even though their
+  content had already landed. The next `cherry-pick --continue` therefore tried to replay them and
+  reported failure, which looked like this round's merge failing. It had not: both commits were
+  already made and the tree was clean. `git cherry-pick --abort` would have reset to `67a0f71`
+  and destroyed `d07f066`, `7625787` and `4d58521`, so it was not used. The fix was to remove only
+  the stale sequencer metadata (`.git/sequencer`, and `CHERRY_PICK_HEAD`/`MERGE_MSG` if present),
+  after confirming `HEAD` and the tree first; `HEAD` stayed at `4d58521` and no commit was lost.
+  Lesson: when a cherry-pick reports a conflict, check whether a *previous* operation left the
+  sequencer armed before trusting the message, and never abort before confirming what `HEAD`
+  would reset to.
+- The parent also verified, per the round-40 lesson, that the deliverables named in each worker's
+  summary actually exist on `main`: `reports/w-assess-shared-closures.md`,
+  `reports/w-assess-validation.txt`, `reports/w-ujson2-reproduction.md` and
+  `tests/fixtures/hg_wujson2` are all present.
+- Resource state: w-assess performed no benchmark or runtime execution at all; w-ujson2 did local
+  container build work only - no model, GPU or endpoint call. Both GPUs stayed idle and no
+  utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
