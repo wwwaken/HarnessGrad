@@ -109,6 +109,33 @@ Rewrite: `data.qa` → `data.scaffolds.qa`, `data.registry` → `data.scaffolds.
 
 The move is mechanical but wide, and the suite must stay green at each step.
 
+**Prerequisite — establish one writer before the split.** The main checkout,
+`/mnt/20t/xubuqiang/Study/HarnessGrad`, is the only writer to the integration
+history. Registered `git worktree` checkouts are the supported isolated copies:
+agents commit there, and the parent reviews diffs, runs focused checks and merges
+safe commits into main. Do not create another full clone inside `Study/`.
+
+This is a concrete migration risk, not just housekeeping: the machine has multiple
+copies, and one has been a second writer. Two full clones inside `Study/`,
+`HarnessGrad-appworld-controls-20261117` and
+`HarnessGrad-gaia-controls-20261117`, are stranded on pre-rewrite commits whose
+objects are absent from main. They still carry the old layout, including
+`web/dist` and root-level report files. Both had `origin` pointing at the main
+checkout for **fetch and push**; those remotes have now been removed. A force push
+from either could otherwise have restored the old history over main. Keep these
+checkouts as frozen evidence, without fetching, merging, pushing, resetting or
+updating them: they hold receipts that exist nowhere else. Also, **10 of 20 local
+branches** point at pre-rewrite commits. These are refs, not additional working
+copies; preserve them pending an explicit decision, since they retain old work.
+
+A file move is safe only with one writer. If a stale clone produces a receipt or
+is used as the source of a merge, the split can look broken for a reason unrelated
+to the move. Before Stage D, confirm the integration checkout and each isolated
+worktree's base, exclude frozen copies from run/merge sources, and ensure reviews
+and new receipts refer to the intended current commit. This prerequisite comes
+from the working-copy finding and the repository's `AGENTS.md` policy; it
+supersedes the old rollout's assumption that file-move ordering alone was enough.
+
 **Stage A — make the boundary visible without touching an import (low risk).**
 Move the scaffolds to `data/scaffolds/` and leave `data/qa`, `data/registry`,
 `data/command_control` as thin documented re-export shims. Diff is small, no adapter
@@ -122,32 +149,91 @@ and make the aggregating denominator explicit per adapter. This is the change th
 actually prevents a repeat of 3.1, and it can land before any file moves.
 
 **Stage C — rewire the 22 edges (mechanical).** Point the 15+ adapters at
-`data.scaffolds.*`, delete the shims, extend the import guard to forbid
-`data.datasets.*` importing another adapter and to allow adapters to import only
-`data.scaffolds.*`.
+`data.scaffolds.*`, delete Stage A's temporary scaffold shims, extend the import
+guard to forbid `data.datasets.*` importing another adapter and to allow adapters
+to import only `data.scaffolds.*`.
 
-**Stage D — move the adapters (mechanical, wide).** `data/<name>.py` and
-`data/<name>/` into `data/datasets/`, update discovery in the four places above, and
-add `data.<name>` compatibility shims only if something outside the repo imports them
-(see §7).
+**Stage D — move the adapters without compatibility shims (mechanical, wide,
+after review gates).** The external-consumer scan supplied for this plan found
+exactly **three external imports**, all in frozen run receipts under
+`HarnessGrad-evidence-archive/`:
 
-Order matters: A and B are safe in either order; C must follow A; D must follow C.
+| Receipt path relative to the archive | Import |
+| --- | --- |
+| `codex/113/worktree/runs/no-model-controls-20261013/controls.py` | `from data.qa import base` |
+| `codex/105/receipt/loop-robustness/smoke.py` | `from data import registry` |
+| `codex/104/receipt/appworld-actor-protocol/smoke.py` | `from data import registry` |
 
-## 7. What could not be determined from the tree
+Old and incomplete receipts must be preserved, never resumed or overwritten.
+Do not edit these three files or re-execute them to validate the split. If they
+are ever re-executed and fail against a changed layout, that failure is the correct
+behaviour of a frozen receipt, not a compatibility defect to repair. The **90
+`data.*` imports in `HarnessGrad-gaia-controls-*`** resolve to that directory's own
+private `data/` copy; they are not consumers of this repository.
 
-* **Whether anything outside this repository imports `data.<name>`.** A compatibility
-  shim for 28 adapter paths is cheap insurance, but the decision needs to know whether
-  the paths are used by another project on this machine; the tree cannot answer that.
-* **Whether `data/registry.py`'s discovery order is externally observable.** It sorts
-  its output, but any code depending on glob order would only fail at runtime.
-* **`data/pinchbench/` is empty.** Whether it is a removed dataset's leftover or a
-  planned one is not recorded anywhere I could find.
+This evidence supersedes the old Stage D conditional-shim clause and §7's
+proposal that 28 adapter compatibility shims were "cheap insurance": **Stage D
+needs zero `data.<name>` compatibility shims.** The scan found no live external
+consumer requiring them; frozen receipts are not a compatibility obligation.
+Stage A's temporary scaffold shims remain a separate, internal sequencing tool
+and are removed in Stage C.
+
+After the one-writer prerequisite and Stage C, move `data/<name>.py` and the
+reviewed adapter-owned `data/<name>/` assets into `data/datasets/`. Update all
+in-repository imports, dynamic module strings, asset paths, discovery/inventory
+surfaces, schema references, tests and documentation identified in §5 in the same
+reviewable change. Preserve the same 28 published adapter names and their
+behaviour, including module-name-sensitive rules such as §3.1; a namespace change
+must not silently widen a control again. Check discovery order and asset
+ownership before treating the move as purely mechanical: the registry and
+`tau_bench` reviews are in flight, and `pinchbench`'s purpose remains open (§7).
+Do not silently classify uncertain files as adapter assets.
+
+Review the diff and run focused discovery, inventory, import-boundary,
+test-scope and affected control/asset-path checks against the current worktree;
+historical receipts are not validation runs. Stage D's scope/effort estimate is
+now the move plus consumer updates, review and validation, **excluding creation,
+testing and maintenance of 28 adapter shims**. Any estimate counting those shims
+is superseded; the 28-adapter inventory itself is unchanged.
+
+The dependency order is still A → C → D, and B remains independent of file moves,
+so A and B are safe in either order after the prerequisite. The recommended order
+is now **one-writer prerequisite → B → A → C → D**, with Stage D's unresolved
+reviews completed before it lands. Removing adapter shims removes work from D;
+it does not remove C's dependency on A or the need to fix the proven hazard.
+
+## 7. External finding and remaining open items
+
+* **External imports — resolved by the external scan recorded in Stage D.** The
+  earlier statement that this could not be answered from the tree is superseded
+  by evidence gathered outside the repository: three frozen receipt imports,
+  no live external consumers, and no need for 28 adapter compatibility shims.
+  The private-copy imports are excluded for the reason given there.
+* **Whether `data/registry.py`'s discovery order is externally observable —
+  investigation in flight.** It sorts its output, but any code depending on glob
+  order would only fail at runtime. Do not treat the lack of live external
+  importers as proof that order is unobservable to in-repository consumers.
+* **`data/pinchbench/` is empty — still open.** Whether it is a removed dataset's
+  leftover or a planned one is not recorded anywhere I could find.
 * **`data/tau_bench/` holds 40 files** and was not read in detail; whether all of it
   is adapter assets or some is vendored upstream code that should be treated
-  differently needs its own review.
+  differently needs its own review. **That classification review is in flight**;
+  no result is assumed here.
 
 ## 8. Recommendation
 
-Do **Stage B first**, because it is the only step that fixes a demonstrated
-cross-adapter defect rather than relabelling it. Then Stage A, then C, then D. If
-only one step is ever taken, take B.
+**First establish the one-writer prerequisite.** This supersedes the previous
+unconditional "Stage B first" instruction: a stale second writer can invalidate
+the provenance of either a semantic fix or a mechanical move. Then do **Stage B
+as the first implementation change**, because it is the only step that fixes a
+demonstrated cross-adapter defect rather than relabelling it. If only one
+implementation step is ever taken, take B.
+
+Stages A and C are mechanical namespace changes with diff review and focused
+guards; A's temporary scaffold shims disappear in C. Stage B still needs semantic
+review of each adapter's noop declaration and aggregating denominator. Stage D
+is a mechanical move only after the working-copy, discovery-order and asset
+classification reviews; its wide diff and behaviour/path preservation still need
+review and focused validation. Land A, then C, then the reviewed D, with **no
+adapter compatibility-shim stage or shim allowance in the estimate**. Neither
+finding weakens the scaffold hazards in §3 or the update obligations in §5.
