@@ -1340,7 +1340,7 @@
           "id": "hub-export-scorer-linkage",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Original scorer fixture and triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 remain unchanged. B5 acquired public hf-mirror.com exact-revision commit/root/config/split/file declarations for 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f and predecessor loader d63a76f01c8226449f76b437dd512cf8b17adf5d (blob a9a6932c23d378b9e5628ecec1f0509496806d77), distinct from task 225 historical source. Conversion PR #8 metadata links that predecessor, rc.nocontext additions and loader deletion. Direct Hub requests still fail; mirror origin and actual converter execution are not independently authenticated. The predecessor omits HumanAnswers/domain/verified fields. No immutable build/export execution receipt or full answer-set/selection/grouping/denominator compatibility is established; no rows were read.",
+          "observed": "Original scorer fixture and triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 remain unchanged. w-trivia fetched authoritative huggingface.co exact-revision/root/config/split/file, predecessor loader/input and PR #8 metadata via verified HTTPS; ten responses exactly match B5 mirror bytes. All eight export subtrees reconstruct from 150 metadata entries. Fresh immutable GitHub scorer/license bytes match the original fixture. Origin corroboration now succeeds. Predecessor d63a76f01c8226449f76b437dd512cf8b17adf5d loader blob a9a6932c23d378b9e5628ecec1f0509496806d77 and PR ancestry do not identify executed converter/runtime/writer/input identities. The inspected public record has no immutable build/export execution receipt. HumanAnswers absence/redundancy, actual source/verified membership, writer duplicates and full scorer-key/denominator/aggregation compatibility remain unestablished; no rows were read.",
           "evidence": [
             {
               "kind": "repository",
@@ -1371,9 +1371,24 @@
               "kind": "repository",
               "path": "tests/fixtures/external_provenance_b5/README.md",
               "locator": "## triviaqa: hub-export-scorer-linkage"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-trivia-review.md",
+              "locator": "The blocker remains external: authoritative Hub identities are corroborated, but immutable conversion execution provenance is missing."
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/hg_trivia/README.md",
+              "locator": "## Request URL and recomputed response digest"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## TriviaQA authoritative Hub origin and missing execution provenance - 2026-10-15 - w-trivia"
             }
           ],
-          "next_action": "Independently corroborate mirror-supplied exact Hub revision/tree/config/split identities against authoritative Hub origin, and obtain immutable build/export provenance identifying the loader/converter actually executed, source/license hashes, runtime/writer versions and input revision/hashes. PR ancestry and identical predecessor blobs do not attest execution. Review HumanAnswers preservation/absence/redundancy, Domain/VerifiedEval/source membership, duplicates, scorer-key mapping and denominator/aggregation without rows. Preserve v2 and historical identities and all shared admission gates; no production authorization."
+          "next_action": "Obtain immutable build/export provenance binding Hub export 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f to the loader/converter actually executed, source/license hashes, runtime/writer versions and consumed input revision/hashes; the inspected authoritative public record supplies ancestry/output declarations but no execution receipt. PR ancestry, identical predecessor blobs and similarly named converter artifacts do not attest execution. Review HumanAnswers preservation/absence/redundancy, Domain/VerifiedEval/source membership, duplicates, scorer-key mapping and denominator/aggregation without rows. Preserve v2 and historical identities and all shared admission gates; no production authorization."
         }
       ],
       "historical_runs": []

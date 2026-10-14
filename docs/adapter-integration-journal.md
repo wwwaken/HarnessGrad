@@ -2120,3 +2120,42 @@ Validation in `reports/w-ujson-validation.txt`: blocker checker valid
 - Resource state: both merged workers performed public-source acquisition and local review only -
   no benchmark task, model, GPU, endpoint or container. Both GPUs stayed idle and no utilisation is
   claimed. Historical runs, frozen receipts and archives were untouched.
+
+
+## TriviaQA authoritative Hub origin and missing execution provenance - 2026-10-15 - w-trivia
+
+In registered `/tmp/hg-trivia` (`wg-trivia`), fetched 13 public HTTPS source/metadata
+responses through the canonical egress proxy with default TLS verification.
+Eleven are authoritative `huggingface.co` responses, two are immutable raw GitHub
+scorer/license responses. Every original body/header and URL/status/time receipt
+is preserved under `tests/fixtures/hg_trivia/` with recomputed SHA-256 manifest.
+Ten origin responses exactly match B5 mirror bytes. Exact revision, root and
+rc.nocontext subtree, all config/split declarations, selected file declarations,
+predecessor loader/input declarations and PR #8 ancestry are now corroborated.
+The recursive tree has 150 entries; all eight config subtree Git identities
+reconstruct, with no payload retrieval. Scorer/license bytes match task 196.
+
+`triviaqa / hub-export-scorer-linkage` remains `external`. The inspected public
+record has no immutable build/job receipt binding this export to the executed
+loader/converter, source/license hashes, runtime/writer versions and consumed
+input revision/hashes. An ancestral loader or similarly named converter cannot
+attest execution. HumanAnswers absence/redundancy, actual verified/source
+membership, writer duplicates, scorer keys and full denominator/aggregation
+compatibility remain unestablished. Local v2 remains component alias-max EM,
+not a certified full official evaluation. Human/custodian sign-off is not
+reintroduced; `docs/independent-review-deferred.md` governs that withdrawn gate.
+
+Evidence and file+line review: `reports/w-trivia-review.md`; exact commands and
+outputs: `reports/w-trivia-validation.txt`. Registry changes only this blocker's
+observed/next_action and adds current evidence. Shared gates, metric/history,
+production authorization, all earlier fixtures/reports and receipts are preserved.
+Offline integrity, historical-source/scorer checkers, focused existing synthetic
+scorer/registry tests and diff/scope review are the validation; no acquired loader,
+benchmark task, dataset payload, model, GPU or endpoint is run. No runs/ or frozen
+receipts are touched. This is a well-evidenced partial closure of acquisition,
+not closure of the blocker or production authorization.
+
+Final w-trivia validation: 98 focused tests passed in 4.58s; manifest and all
+provenance/registry checks passed (28 datasets, 2 shared blockers, 11 historical
+records, production_authorized=false). Authored diff is whitespace-clean; raw
+HTTP header whitespace is retained as acquired and documented in validation.
