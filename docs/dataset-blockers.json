@@ -319,7 +319,7 @@
           "id": "sql-coverage-reconciliation",
           "family": "measurement-coverage",
           "status": "measurement",
-          "observed": "Source review establishes v5's historical complete label is limited to reported 28/34 measured tasks, 90 verify phases, versus 34x3=102 planned task-trials; v4 remains incomplete. Verify phases do not establish measured trial counts, six task gaps are not zeros, and the reported 0.3214285714 cannot be denominator-reconstructed without the missing original metadata. Synthetic SQL cases distinguish gold/schema failures (unmeasured) from prediction/schema failures (measured EX zero); they do not classify historical failures.",
+          "observed": "Bounded tracked-source inventory is checked in; it finds journal/registry/readiness summaries and pinned historical records, not original selected-ID/phase/trial/error rows. Preserve v4 incomplete and v5 historical complete label with partial-measurement/effect=null: 34x3=102 planned task-trials, reported 28/34 measured tasks and 90 verify phases, score 0.3214285714. Current source executes gold first: caught gold/schema errors are unmeasured, runnable-gold prediction errors are measured EX zero; uncaught connection/read failures require raw phase status. Neither current source nor phase arithmetic establishes historical SQLite/schema/scorer identity, measured trial counts, error counts or score denominator. Original metadata reconciliation remains open.",
           "evidence": [
             {
               "kind": "repository",
@@ -335,6 +335,11 @@
               "kind": "repository",
               "path": "tests/quality/test_measurement_coverage_hg_b3.py",
               "locator": "def test_bird_schema_failure_depends_on_which_query_failed"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/e1-fever-physics-bird-review.md",
+              "locator": "## Bird: historical labels preserved; original measurement metadata missing"
             }
           ],
           "next_action": "Keep this measurement gate open until original selected-ID/phase/trial/error metadata binds the 90 phases to actual measurements, invalid/unmeasured counts, SQLite/schema/scorer identity and the score denominator. Preserve v4 incomplete and v5 partial-measurement/effect=null, including the historical complete label; do not infer 90 or 84 measured trials or compare full-coverage effects."
@@ -591,7 +596,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal review complete: the adapter claims FEVER strict_score via a local sheffieldnlp/fever-scorer transcription, loads only the declared pinned copenlu validation JSONL, and inherits a files/command verifier with no image. Mirror-specific singleton evidence conversion and stale refusal prose are recorded; original evidence-group preservation, acquired scorer identity, local bytes and offline/pristine runtime remain unverified. Documentation coverage is closed; measurement and all shared gates remain open.",
+          "observed": "Acquired scorer source pins sheffieldnlp/fever-scorer@4801615100fbf6327f8e99b5dbaefe5dd890e869 and documents complete-group strictness/five-pair default. Tags/releases are empty and setup says 0.0.0; no named release is invented. After preserved direct failures, the recorded public proxy authenticated the exact declared Hub revision/tree/README and valid.jsonl Git blob identity/size. The README-referenced repository converter emits flat conjunctions per original group, but its revision-to-Hub-export binding and original group/ID preservation are unverified. Local singleton conversion can change conjunction semantics. Source acquisition advances; actual export/installed/selected custody, comparability and offline/pristine runtime remain open.",
           "evidence": [
             {
               "kind": "repository",
@@ -612,9 +617,14 @@
               "kind": "repository",
               "path": "docs/enforcement-proof-decision.md",
               "locator": "Snapshot/cleanup uncertainty alone is not a new"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/e1-fever-physics-bird-review.md",
+              "locator": "## FEVER: evaluator acquired; export and group preservation unresolved"
             }
           ],
-          "next_action": "NEXT gate: source-provenance and metric-comparability. Independently authenticate the pinned Hub export/conversion and original FEVER evidence-group preservation, with an exact upstream scorer release; document metric identity and establish offline/pristine runtime evidence before any diagnostic. The official-scorer-identity proof obligation is withdrawn; retain the remaining shared gates. This source review authorizes no execution."
+          "next_action": "NEXT gate remains source-provenance and metric-comparability: bind the authenticated exact Hub revision/tree export metadata to actual export bytes, the producing conversion and original FEVER ID/evidence-group correspondence; establish installed bytes and selected manifest custody. Use the acquired exact scorer source revision without inventing a release or claiming singleton equivalence. Document the actual metric and establish scorer-offline-closure and pristine verifier evidence with all remaining shared gates before any separately authorized diagnostic. The official-scorer-identity proof obligation stays withdrawn."
         }
       ],
       "historical_runs": []
@@ -911,7 +921,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal review complete: exact_str_match is locally implemented over parsed accepted spellings (reference-only period stripping), with an unpinned BIG-bench metric citation; tasks are declared as the pinned and checksum-specified ReWOO CSV, count-guarded at 53, with platform hash division and a files/command verifier. Archive/member-to-BIG-bench lineage, independent evaluator custody, actual bytes/count and offline/pristine runtime remain unverified. Documentation coverage is closed; measurement and all shared gates remain open.",
+          "observed": "Acquired ReWOO archive matches declared SHA-256 7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136; its declared CSV member has 53 ordered input/accepted-target-list pairs identical to the nonblank examples of authenticated BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b. Exact task/evaluator sources and raw responses are checked in. Upstream exact_str_match uses unnormalized membership and the task passes output_regex to model generation; the local adapter uses asymmetric whitespace/reference-period normalization, so full metric/protocol equivalence is not established. Source content linkage and evaluator acquisition close; installed/selected custody, runtime and measurement remain open.",
           "evidence": [
             {
               "kind": "repository",
@@ -932,9 +942,14 @@
               "kind": "repository",
               "path": "docs/enforcement-proof-decision.md",
               "locator": "Snapshot/cleanup uncertainty alone is not a new"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/e1-fever-physics-bird-review.md",
+              "locator": "## Physics Questions: content linkage established; metric differs; runtime open"
             }
           ],
-          "next_action": "NEXT gate: source-provenance and metric identity. Authenticate the ReWOO archive/member-to-BIG-bench task/release and accepted-target linkage, and independently pin the original exact_str_match evaluator; then establish scorer-offline-closure and pristine verifier evidence. The official-scorer-identity proof obligation is withdrawn; retain the remaining shared gates and unmeasured coverage. No diagnostic is authorized."
+          "next_action": "NEXT gate: installed source/split/eligibility/selected-manifest custody, then scorer-offline-closure and pristine verifier evidence. Retain checked-in archive/member-to-pinned-BIG-bench accepted-target linkage and exact evaluator source. Report local accepted-spelling EM with asymmetric normalization separately from a matched full BIG-bench response-processing/aggregation protocol. Do not infer the historical converter revision or an installed runtime from acquired sources. Keep remaining shared gates, unmeasured coverage and withdrawn official-scorer-identity proof decision; no diagnostic is authorized."
         }
       ],
       "historical_runs": []

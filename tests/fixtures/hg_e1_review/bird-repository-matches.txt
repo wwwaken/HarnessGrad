@@ -1,0 +1,32 @@
+HEAD:docs/adapter-integration-journal.md:308:- Scope: v5 planned 34 train-side tasks × 3 trials, `jobs=1`; only 28/34 tasks were measured (90 verify phases). The historical archive label `complete` does not certify full measurement coverage.
+HEAD:docs/adapter-integration-journal.md:310:- Evidence: `bird-minidev-h0-10pct-v5`; v5 score `0.3214285714`; v4 stalled and remains incomplete
+HEAD:docs/adapter-integration-journal.md:1020:  Planned 34x3=102, reported 28/34 measured tasks and 90 verify phases do not
+HEAD:docs/dataset-blockers.json:331:          "observed": "Source review establishes v5's historical complete label is limited to reported 28/34 measured tasks, 90 verify phases, versus 34x3=102 planned task-trials; v4 remains incomplete. Verify phases do not establish measured trial counts, six task gaps are not zeros, and the reported 0.3214285714 cannot be denominator-reconstructed without the missing original metadata. Synthetic SQL cases distinguish gold/schema failures (unmeasured) from prediction/schema failures (measured EX zero); they do not classify historical failures.",
+HEAD:docs/dataset-blockers.json:374:          "run_id": "bird-minidev-h0-10pct-v5",
+HEAD:docs/dataset-blockers.json:377:          "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+HEAD:docs/dataset-blockers.json:382:              "locator": "only 28/34 tasks were measured (90 verify phases)"
+HEAD:docs/dataset-blockers.md:111:review, leaving `current-runtime-identity` open. Bird's 28/34 measured-task claim
+HEAD:docs/dataset-blockers.md:112:and 90 verify phases do not reconcile its planned 102 trials; its
+HEAD:docs/task-234-diagnostic-readiness.json:534:          "observed": "V5 is historically labeled complete, but only 28/34 tasks were measured; v4 remains incomplete.",
+HEAD:docs/task-234-diagnostic-readiness.json:567:          "run_id": "bird-minidev-h0-10pct-v5",
+HEAD:docs/task-234-diagnostic-readiness.json:570:          "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+HEAD:docs/task-234-diagnostic-readiness.json:575:              "locator": "only 28/34 tasks were measured (90 verify phases)"
+HEAD:docs/task-234-diagnostic-readiness.json:588:      "comparison_or_expansion_assessment": "Reconcile V5 28/34 measured tasks and trial metadata; preserve V4 incomplete and V5's historical label/coverage limit.",
+HEAD:docs/task-234-diagnostic-readiness.md:125:| `bird_minidev` | **Blocked, S+L+P** — `sql-coverage-reconciliation`: establish selected SQL engine/schema/scorer reachability and coverage/error classification. | Reconcile V5 28/34 measured tasks and trial metadata; preserve V4 incomplete and V5's historical label/coverage limit. |
+HEAD:docs/task-236-diagnostic-readiness.json:657:          "observed": "V5 is historically labeled complete, but only 28/34 tasks were measured; v4 remains incomplete.",
+HEAD:docs/task-236-diagnostic-readiness.json:690:          "run_id": "bird-minidev-h0-10pct-v5",
+HEAD:docs/task-236-diagnostic-readiness.json:693:          "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+HEAD:docs/task-236-diagnostic-readiness.json:698:              "locator": "only 28/34 tasks were measured (90 verify phases)"
+HEAD:docs/task-236-diagnostic-readiness.json:712:      "comparison_or_expansion_assessment": "Reconcile historical V5 28/34 measured tasks and trial metadata; retain V4 incomplete and V5 historical coverage limits.",
+HEAD:docs/task-236-diagnostic-readiness.md:66:| `bird_minidev` — **blocked**, S+L+P | `sql-coverage-reconciliation`: selected SQL engine/schema/scorer route and correct error/coverage classification require current admission. | Reconcile historical V5 28/34 measured tasks and trial metadata; retain V4 incomplete and V5 historical coverage limits. |
+HEAD:docs/task-243-diagnostic-readiness.json:266:              "locator": "only 28/34 tasks were measured (90 verify phases)",
+HEAD:docs/task-243-diagnostic-readiness.json:275:          "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+HEAD:docs/task-243-diagnostic-readiness.json:277:          "run_id": "bird-minidev-h0-10pct-v5",
+HEAD:docs/task-243-diagnostic-readiness.md:80:| bird_minidev | Blocked | Current selected SQL/schema/scorer reachability and failure classification. Old 28/34 coverage is a comparison issue, not a prior-run prerequisite. |
+HEAD:reports/measurement-coverage-hg-b3-review.md:27:> observed: V5 is historically labeled complete, but only 28/34 tasks were measured; v4 remains incomplete.
+HEAD:reports/measurement-coverage-hg-b3-review.md:94:  34 selected tasks ×3 trials, `jobs=1`, **102 planned task-trials**, **28/34
+HEAD:reports/measurement-coverage-hg-b3-review.md:95:  measured tasks**, and **90 verify phases**. Six tasks lack certified task-level
+HEAD:reports/measurement-coverage-hg-b3-review.md:98:- **What cannot be reconciled:** 90 verify phases are not 90 verified measured
+HEAD:tests/fixtures/dataset_blockers/history-codex178.json:53:        "run_id": "bird-minidev-h0-10pct-v5",
+HEAD:tests/fixtures/dataset_blockers/history-codex178.json:56:        "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+HEAD:tests/fixtures/dataset_blockers/history-codex178.json:61:            "locator": "only 28/34 tasks were measured (90 verify phases)"

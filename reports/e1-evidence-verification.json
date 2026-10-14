@@ -1,0 +1,83 @@
+{
+  "valid": true,
+  "checksummed_files": 64,
+  "successful_http_responses": [
+    "bigbench-head.receipt.json",
+    "bigbench-json-task-api.receipt.json",
+    "bigbench-metrics-api.receipt.json",
+    "bigbench-task-api.receipt.json",
+    "fever-conversion-head.receipt.json",
+    "fever-conversion-reader-api.receipt.json",
+    "fever-conversion-source-api.receipt.json",
+    "fever-conversion-tree.receipt.json",
+    "fever-hub-proxy-readme.receipt.json",
+    "fever-hub-proxy-revision.receipt.json",
+    "fever-hub-proxy-tree.receipt.json",
+    "fever-scorer-head.receipt.json",
+    "fever-scorer-releases.receipt.json",
+    "fever-scorer-setup-api.receipt.json",
+    "fever-scorer-source-api.receipt.json",
+    "fever-scorer-tags.receipt.json",
+    "rewoo-archive.receipt.json",
+    "rewoo-commit.receipt.json"
+  ],
+  "preserved_failed_requests": [
+    "bigbench-metrics.receipt.json",
+    "bigbench-task.receipt.json",
+    "fever-hub-proxy-loader.receipt.json",
+    "fever-hub-revision.receipt.json",
+    "fever-hub-www-revision.receipt.json",
+    "fever-scorer-setup.receipt.json",
+    "fever-scorer-source.receipt.json"
+  ],
+  "decoded_sources": {
+    "fever-upstream-scorer.py": {
+      "sha256": "fa12eaab2c88208f990948fc5d533ad4f91a6b8f48640f29317d1f00ab410ac9",
+      "git_blob_sha1": "ecae63dcd900f84c498ad0f2e5d7dd06e305e329"
+    },
+    "fever-upstream-setup.py": {
+      "sha256": "1e1c494d70d6a201552c718d719d0c6b0ec5a0d0159b093b0027695a997daeb5",
+      "git_blob_sha1": "8e3c37cbac636e04101bb5d82cd4d48d18f61abd"
+    },
+    "bigbench-physics-task.json": {
+      "sha256": "ea55d3ee0d688b7f6f023f9d607313d8b7d3a4bd9151451141c239cd10d82eb5",
+      "git_blob_sha1": "e888016a8bbabf9f924a6342bffe50536d96bed9"
+    },
+    "bigbench-task-metrics.py": {
+      "sha256": "0d210ed501882ee38742f689b5e4bbc363a7481ef39dc8ee9959bfbc39903e73",
+      "git_blob_sha1": "6e94e8be90c570065d32ca2df2f62e0d30f88b12"
+    },
+    "bigbench-json-task.py": {
+      "sha256": "105c1edad3c2d1f398be3f831f44a38937866f3088d4413f126edd20245a8e59",
+      "git_blob_sha1": "808d37329309c72f0248404f9a1256a1f97f93de"
+    },
+    "fever-create-nli-dataset.py": {
+      "sha256": "09054c04a53eb5f3f035d94fd2fe8a271a57bf69c5768eadd0535497f8cec884",
+      "git_blob_sha1": "7a82da41e51c9d41ec259f67f9230f7c3f2917e5"
+    },
+    "fever-conversion-datareader.py": {
+      "sha256": "6c66ec132b327cdcafe76f3af15eb9d26b75ccaa15e14bf0758a8d44b351c3f6",
+      "git_blob_sha1": "af2815307479f0262e018c64fd6f6e3da2f28421"
+    }
+  },
+  "fever": {
+    "hub_revision": "a6b8d891d393e97a4efac791afffb2d7de5e57c6",
+    "valid_export_git_blob_sha1_from_metadata": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+    "valid_export_bytes_from_metadata": 6471611,
+    "hub_readme_matches_revision_tree": true,
+    "referenced_conversion_source_revision": "aaa126ec4f3cf7163f69b82a0a0976d2579a04a6",
+    "conversion_source_to_hub_export_binding_verified": false,
+    "original_evidence_group_preservation_verified": false
+  },
+  "physics": {
+    "archive_sha256_matches_declaration": true,
+    "csv_member_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+    "csv_rows": 53,
+    "bigbench_examples": 54,
+    "ordered_input_and_target_list_matches": 53,
+    "bigbench_revision": "092b196c1f8f14a54bbc62f24759d43bde46dd3b",
+    "installed_source_or_selected_manifest_verified": false
+  },
+  "bird_original_metadata_present_in_packet": false,
+  "production_runtime_or_measurement_verified": false
+}
