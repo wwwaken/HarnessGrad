@@ -1121,3 +1121,40 @@ close. The three coverage-only entries above remain explicitly pending.
 - Denominator boundary: current data/aggregation_policies.json declares 2Wiki corpus gold_rows versus MuSiQue provided_results, separately from run_reward measured_tasks. Current adapter paths are under data/datasets/. No numeric policy changed.
 - Evidence: [per-blocker review with full digests](../reports/b6-dataset-blocker-review.md), [machine-readable acquisition/coverage review](../reports/b6-blocker-evidence/review.json), [complete evidence digest manifest](../reports/b6-blocker-evidence/SHA256SUMS), and [focused validation](../reports/b6-dataset-blocker-validation.txt).
 - Validation: checker valid, 28 datasets / 8 shared blockers / 11 historical records, production_authorized=false; 72 focused metadata/registry/existing-wheel tests passed in 2.82s. No whole-suite execution. Parent diff review, safe integration and actual deployment notice/runtime custody remain separate.
+
+## E2 — public LCB / 2Wiki provenance metadata — 2026-10-15
+
+Reviewed the existing B6 acquisition, task-206 source review and task-207 custody
+procedure before acquiring new metadata. Work stays in registered worktree
+`/tmp/hg-e2` at base `13fa17c451eb0cb44adcf5126fa25ccd345c47c8`.
+[The cited review](../reports/e2-upstream-provenance-review.md) records both current
+`next_action` strings verbatim, all response SHA-256 values, existing evidence
+limits and precise custodian/independent-review requirements.
+
+LCB: canonical pinned card/refs/history acquired; the card Git blob matches B6's
+canonical metadata. Task-207 target fields, original-ID train rule and eligible-ID
+ranking match the unchanged preserved inert selection at metadata level. No
+complete ID catalog, authenticated local row/pool/split/statement custody record
+or independent approved digest is obtained. `row-attestation` remains external.
+
+2Wiki: exact-revision upload history, empty release/tag inventories, zero-result
+license-issue search and original/later Dropbox HEAD receipts acquired. A later
+attachment advertises 259216602 bytes and an opaque ETag, not a content digest;
+it is not substituted for the pinned December release. B6's historical imposed
+split and ordered selected-ID manifests agree locally. Original-release member
+custody, explicit dataset/alias rights, alias completeness/ID coverage and
+independently authenticated selected-manifest linkage remain missing.
+`hub-data-provenance` remains external. Zero full blockers closed.
+
+New raw responses, parsed response headers, failure/refusal receipts, inherited
+pins and derived non-attesting comparisons are in
+`tests/fixtures/upstream_provenance_e2/`, all with SHA-256 coverage. Offline checks
+verify 15 response hops, one preserved allowlist refusal and 17 inherited files.
+Focused registry tests: **54 passed in 2.95s**. Registry checker: `valid=true`,
+28 datasets, four shared blockers, 11 historical records,
+`production_authorized=false`. Only the two owned observations/evidence lists
+change; their statuses/next actions and all other registry objects are preserved.
+No whole test suite, payload/statement read, adapter import, scorer/model/GPU or
+benchmark execution. No custodian contact, positive attestation or human approval
+is supplied. Parent review and merge remain separate. Validation transcript:
+[reports/e2-upstream-provenance-validation.txt](../reports/e2-upstream-provenance-validation.txt).

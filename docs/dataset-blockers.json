@@ -812,7 +812,7 @@
           "id": "row-attestation",
           "family": "source-provenance",
           "status": "external",
-          "observed": "B6 acquired canonical HTTPS metadata/tree and builder at 0fe84c3912ea0c4d4a78037083943e8f0c4dd505, matching all six declared shard LFS hashes. The builder maps release_v6 to six files in upstream test order; the source loader passes version_tag and optional date filters. Local prepare.py instead sorts unique question_id values and imposes a platform hash split. No complete ID-only rank catalog, externally custodied local row/pool/split/statement record or independent approval was obtained. Task 207 remains an unsent procedure, not an issued attestation; self-hashes and upstream ordinals do not bind local row 740 to abc360_a.",
+          "observed": "B6 acquired canonical HTTPS metadata/tree and builder at 0fe84c3912ea0c4d4a78037083943e8f0c4dd505, matching all six declared shard LFS hashes. The builder maps release_v6 to six files in upstream test order; the source loader passes version_tag and optional date filters. Local prepare.py instead sorts unique question_id values and imposes a platform hash split. No complete ID-only rank catalog, externally custodied local row/pool/split/statement record or independent approval was obtained. Task 207 remains an unsent procedure, not an issued attestation; self-hashes and upstream ordinals do not bind local row 740 to abc360_a. E2 acquired canonical pinned card, refs and commit history (including add-v6 commits); no complete ID-only catalog or authenticated local custody record is supplied. Task-207 target fields and original-ID train/ranking rules match the unchanged inert selection at local-metadata level only. Independent custodian/key authentication, row/pool/split/statement evidence and separate reviewer approval remain absent; row_attested=false and no fresh pool verification.",
           "evidence": [
             {
               "kind": "repository",
@@ -823,6 +823,11 @@
               "kind": "repository",
               "path": "reports/b6-dataset-blocker-review.md",
               "locator": "## LiveCodeBench: row-attestation"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/e2-upstream-provenance-review.md",
+              "locator": "## LiveCodeBench: acquired evidence and limits"
             }
           ],
           "next_action": "Use the existing task-207 custody/reviewer procedure to obtain a genuine metadata-only complete catalog/rank and authenticated row/pool/split/statement linkage, plus separate independent approval. Compare against the preserved inert selection without payload reads. Exact upstream release/builder/shard metadata is now acquired; it cannot establish the local sorted-row mapping or manufacture reviewer approval."
@@ -1405,7 +1410,7 @@
           "id": "hub-data-provenance",
           "family": "source-provenance",
           "status": "external",
-          "observed": "B6 acquired canonical HTTPS Hub metadata/tree and builder for f4f0d7e4ae275d9281e90c46c93e66d6cdda3674. Advertised dev/alias LFS SHA-256 and witness validation hash match the adapter pins. The pinned upstream README links the December 2020 ID-enriched release, id_aliases.json and evaluator v1.1. The Hub builder drops answer_id/evidences_id and does not load aliases; its generated dataset is not the adapter raw-JSON route. Original-release-to-Hub byte linkage, data/alias rights and completeness, and independently custodied selected-manifest binding remain unestablished.",
+          "observed": "B6 acquired canonical HTTPS Hub metadata/tree and builder for f4f0d7e4ae275d9281e90c46c93e66d6cdda3674. Advertised dev/alias LFS SHA-256 and witness validation hash match the adapter pins. The pinned upstream README links the December 2020 ID-enriched release, id_aliases.json and evaluator v1.1. The Hub builder drops answer_id/evidences_id and does not load aliases; its generated dataset is not the adapter raw-JSON route. Original-release-to-Hub byte linkage, data/alias rights and completeness, and independently custodied selected-manifest binding remain unestablished. E2 acquired exact-revision upload history, empty upstream release/tag inventories and a zero-result license-issue search. Original Dropbox HEAD returns HTML metadata; a different later link advertises a 259216602-byte attachment with an opaque ETag, not an archive SHA-256. Preserved split/selection metadata is locally consistent, without independent raw-artifact binding. No original-release digest custody, dataset/alias rights, ID-coverage attestation or authenticated selected-manifest linkage was obtained.",
           "evidence": [
             {
               "kind": "repository",
@@ -1421,6 +1426,11 @@
               "kind": "repository",
               "path": "reports/b6-dataset-blocker-review.md",
               "locator": "## 2Wiki: hub-data-provenance"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/e2-upstream-provenance-review.md",
+              "locator": "## 2Wiki: acquired evidence and limits"
             }
           ],
           "next_action": "Obtain metadata-only original-release archive/file digest custody, explicit dataset/alias rights and completeness/ID-coverage attestation, and independently authenticated selected-manifest linkage to the pinned raw artifacts. Canonical Hub artifact identity and intended evaluator-version documentation are acquired; do not substitute builder-converted rows or infer original release equivalence. Keep payload and production execution outside this review."
