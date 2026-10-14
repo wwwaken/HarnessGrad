@@ -1,0 +1,145 @@
+{
+  "class_note": "Survey class denotes source-wired route. Chess current source and retained incomplete receipt identify its additional trusted in-process controller; no class relabeling or comparison.",
+  "closure_completeness": "zero complete portable offline scorer closures established; all dataset records partial-byte-pins",
+  "gaia": "policy refusal retained: no provisioning or execution; source bytes hashed only",
+  "inspection": "source/bytes only; no task/scorer/model/GPU/endpoint or container execution; no runs/ access",
+  "schema": "harnessgrad.w-clo-runtime.scope.v1",
+  "scope": [
+    {
+      "dataset": "alfworld",
+      "survey_route": "F: `actor-workdir` "
+    },
+    {
+      "dataset": "appworld",
+      "survey_route": "V: `snapshot-service` "
+    },
+    {
+      "dataset": "bfcl_v3",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "bird_minidev",
+      "survey_route": "F: `actor-workdir` "
+    },
+    {
+      "dataset": "chessbench_puzzles",
+      "survey_route": "Default Q: `actor-workdir`; opt-in trusted-controller `in-process` branch (currently recorded `unknown`; see below) "
+    },
+    {
+      "dataset": "ds1000",
+      "survey_route": "F: `actor-workdir`, with another scorer child "
+    },
+    {
+      "dataset": "fever",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "gaia",
+      "survey_route": "S: `snapshot-service` "
+    },
+    {
+      "dataset": "gsm8k",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "hotpotqa",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "jericho",
+      "survey_route": "F: `actor-workdir` "
+    },
+    {
+      "dataset": "livecodebench",
+      "survey_route": "F: `actor-workdir`, with another scorer child "
+    },
+    {
+      "dataset": "musique",
+      "survey_route": "Q: `actor-workdir` in both joint and legacy modes "
+    },
+    {
+      "dataset": "physicsquestions",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "reasoning_gym",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "scienceworld",
+      "survey_route": "F: `actor-workdir`, with JVM runtime "
+    },
+    {
+      "dataset": "sportsunderstanding",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "spreadsheetbench",
+      "survey_route": "F: `actor-workdir`; formula branch may launch LibreOffice "
+    },
+    {
+      "dataset": "strategyqa",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "tau_bench",
+      "survey_route": "S: `snapshot-service` "
+    },
+    {
+      "dataset": "terminal_bench",
+      "survey_route": "S: `snapshot-service` "
+    },
+    {
+      "dataset": "triviaqa",
+      "survey_route": "Q: `actor-workdir` "
+    },
+    {
+      "dataset": "twowikimultihopqa",
+      "survey_route": "Q: `actor-workdir` "
+    }
+  ],
+  "scope_count": 23,
+  "source_and_prior_review_bytes": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "c451af64f9c85585c4ba77f28b9434dd64284792093a84528249cdcd6c1ac6d6"
+    },
+    {
+      "path": "reports/w-shared-topology-survey.md",
+      "sha256": "cce8345f083a46cc67336677cb18380b58625c717801754208afa0a589a1a982"
+    },
+    {
+      "path": "reports/w-tbdep-transitive-inventory.md",
+      "sha256": "8312885ec3843830dad7bbd0d58d51863a579ada173e14832f9ca4256f0d5fd9"
+    },
+    {
+      "path": "reports/w-net-receipts.md",
+      "sha256": "85f7bda96b05774bf8cf48fab5b410e46de61a4f832b79b55a154ad85da8b9cf"
+    },
+    {
+      "path": "reports/w-alf-receipts.md",
+      "sha256": "56e62ebcf89c6d5e1b3161395bd8b7e711fd20184105c8c2545ba419be4dad79"
+    },
+    {
+      "path": "reports/w-chess-receipts.md",
+      "sha256": "16e85ac9ab98601ad3aab75d966a9f66640649208692fdec1ffbd9b2021ee387"
+    },
+    {
+      "path": "eval/run/runner.py",
+      "sha256": "e0b3c147dd6c25523e9c1a39532ca290e3814d19807d4804ddef6215b7ccf42b"
+    },
+    {
+      "path": "eval/verification/verifier.py",
+      "sha256": "fc7970fcc107b07bca0d1a345a968fa066917787e697f6d5dee4361325d06bae"
+    },
+    {
+      "path": "eval/containers/container_state.py",
+      "sha256": "7355cf0282de1253de4f06439e13989cb714ce10631ce86b46a99194552897f8"
+    },
+    {
+      "path": "eval/containers/sandbox.py",
+      "sha256": "df6870f6f6140105858def9eb943cbee973e36cfa03b1b3c5dc0cbed221572b1"
+    }
+  ],
+  "source_baseline": "19b700d"
+}

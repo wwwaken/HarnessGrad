@@ -1751,3 +1751,50 @@ is supplied. Parent review and merge remain separate. Validation transcript:
   integrity is bound by `tests/fixtures/hg_wclo_actor/SHA256SUMS`. Production scoring code and
   historical runs/receipts/archives are unchanged. Work is committed only in isolated `wg-clo`
   for parent review; no main commit, merge, pilot expansion or production authorization.
+### 2026-10-15 scorer closure byte inspection and retained runtime gaps - w-clo-runtime
+
+Read `AGENTS.md`, `reports/w-shared-topology-survey.md`,
+`reports/w-tbdep-transitive-inventory.md` and `reports/w-net-receipts.md` before
+collection. The survey expands the requested minimum to all 23 shared-scope
+command/container datasets: 19 `actor-workdir`, four `snapshot-service`, with
+ChessBench's additional trusted `in-process` controller recorded separately.
+No adapter/scorer/world/task, model, GPU, container or endpoint was invoked;
+GAIA was inspected from existing bytes only, never provisioned or run. No `runs/`
+tree, historical receipt or archive was modified or rerun.
+
+Added `tests/fixtures/hg_wclo_runtime/` with 23 per-dataset partial closure records,
+exact scorer/helper/check file:line/SHA-256 entrypoints, expected-source bytes and
+provenance findings, the inspection interpreter/standard-library identity,
+installed distribution metadata and full available non-bytecode payload digests,
+static native ABI candidates, literal locators and fixture-wide `SHA256SUMS`.
+Absolute external source/runtime paths identify read-only byte observations;
+protected payloads were not copied into the repository. The parent reviewed and
+merged the isolated fixture commits `6b8683d` (QA), `7a755d2` (snapshot/service)
+and `afab74e` (native), correcting the Jericho constructor-dependent verb-count
+finding before merge. Production scoring code is unchanged; no main commit was
+created or moved.
+
+New concrete gaps: required committed Tau-bench `db/airline.json` and
+`db/retail.json` are absent; AppWorld's installed `world.evaluate()` body and
+container interpreter/package bytes are unavailable. Of 810 prior dependency
+manifest entries, 685 preimages are absent in this checkout and 125 present files
+match after recomputation. Missing historical projections were not reconstructed
+or represented by copied hashes. Every record is `partial-byte-pins`, with no
+complete portable offline closure claimed. Per-dataset pins and remaining gaps
+are in `reports/w-clo-runtime-closures.md`.
+
+`scorer-offline-closure` stays open, with its original observation retained and a
+precise appended observation/evidence locator. Its status and next_action, all
+own-dataset requirements (including GAIA's refusal), and all historical records
+are unchanged. Complete transitive image/interpreter/ABI/offline provisioning,
+execution-bound selected inputs, official provenance/execution and the required
+trusted class-specific lifecycle/resource/cleanup/live controls remain unmet.
+The retained one-task Terminal-Bench raw scorer execution and ALFWorld noop raw
+zero retain unmeasured publication; Chess's controller attempt is incomplete.
+They do not authorize another task/class, a comparison or pilot expansion.
+
+Validation: parent regeneration, QA symbol/archive-member checks, 20,922 unique
+source/data/native/metadata byte preimages with no skipped external files,
+1,248 literal entrypoint locators, fixture checksums and the registry checker
+passed. Exact commands and focused source-only registry tests are recorded in
+`reports/w-clo-runtime-validation.txt`; no benchmark execution is part of validation.
