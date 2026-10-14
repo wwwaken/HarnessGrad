@@ -160,7 +160,13 @@ def test_fixtures_are_not_published_and_metadata_is_never_executed(tmp_path):
     ("authorize", "cannot authorize production"),
 ])
 def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message):
-    target = row(document, "jericho")
+    # `bfcl_v3` rather than the previously-used `jericho`: jericho's only blocker was closed
+    # with measured evidence and it now legitimately carries none, and this test mutates
+    # `blockers[0]`. A dataset with an empty list is a supported state since
+    # `docs/enforcement-proof-decision.md`, so the fixture has to be a dataset that still has
+    # a blocker to corrupt. Keeping the old dataset here would have meant either re-adding a
+    # blocker to satisfy a test, or letting this guard quietly stop testing anything.
+    target = row(document, "bfcl_v3")
     blocker = target["blockers"][0]
     if mutation == "missing":
         document["datasets"].remove(target)
@@ -243,6 +249,37 @@ def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document)
     ]
     assert target["historical_runs"][0]["status"] == "incomplete"
     assert target["historical_runs"][0]["effect"] is None
+
+
+def test_b7_local_runtime_closures_retain_all_shared_gates(document):
+    """Two dataset-local runtime gates closed with measured evidence; the shared ones stand.
+
+    `jericho`'s `independent-runtime-proof` and `scienceworld`'s `prevent-platform-writes` are
+    both gone. The first closed because `b7` measured it -- fresh external-root noop/oracle
+    controls at 0/30 and 30/30, with a parent collector reading the final kernel mounts and
+    source identities before the subject ran, so the observation does not depend on the
+    child's own verdict. The second was withdrawn by operator decision
+    (`docs/enforcement-proof-decision.md`).
+
+    `b7` also proposed replacing both with a per-dataset `shared-runtime-admission` blocker.
+    That was **not** merged: its content is the shared gate the entry already lists under
+    `shared_blockers`, and duplicating a shared requirement per dataset is how a registry
+    grows two sources of truth for one fact. The evidence is not lost with it -- the reports
+    are still checked in and pinned below, because measured evidence outlives the gate it was
+    gathered for.
+    """
+    shared = [item["id"] for item in document["shared_blockers"]]
+    for name in ("jericho", "scienceworld"):
+        target = row(document, name)
+        assert target["shared_blockers"] == shared, f"{name}: shared gates drifted"
+        assert target["blockers"] == [], (
+            f"{name}: a dataset-local blocker has returned; if that is deliberate, name it "
+            "here and say why, rather than re-adding the shared duplicate")
+    for report in ("reports/runtime-blockers-b7.md", "reports/jericho-runtime-b7.json",
+                   "reports/scienceworld-runtime-b7.json",
+                   "tests/quality/test_runtime_blocker_evidence_b7.py"):
+        assert (ROOT / report).is_file(), f"{report}: the evidence behind the closure is gone"
+    assert document["review"]["production_authorized"] is False
 
 
 def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(document):

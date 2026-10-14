@@ -833,22 +833,7 @@
         "pristine-verifier",
         "artifact-only-state-export"
       ],
-      "blockers": [
-        {
-          "id": "independent-runtime-proof",
-          "family": "trusted-verifier-runtime",
-          "status": "runtime",
-          "observed": "Public runtime projection and phase bounds were repaired; independently exercised production work-root evidence remains missing.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "## Jericho — runtime boundary repair"
-            }
-          ],
-          "next_action": "Review selected metadata and an independent runtime-boundary receipt from a work root outside the platform checkout."
-        }
-      ],
+      "blockers": [],
       "historical_runs": []
     },
     {
