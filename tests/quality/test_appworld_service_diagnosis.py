@@ -11,6 +11,7 @@ import pytest
 from eval.containers import container
 from eval.run import runner
 from eval.service import services
+from policy_assertions import assert_policy_refusal
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -69,8 +70,14 @@ def test_runner_mounts_dependency_overlay_once(tmp_path, monkeypatch):
         return subprocess.CompletedProcess(cmd, 0, "", "")
 
     monkeypatch.setattr(runner.container_mod, "run", launch)
-    result = runner.run_one(repo, {"task_id": "train_1"},
-                            env={"kind": "exec", "image": "sha256:" + "a" * 64})
+    env = {"kind": "exec", "image": "sha256:" + "a" * 64}
+    refused = runner.run_one(repo, {"task_id": "train_1"}, env=env)
+    assert_policy_refusal(refused, ("env.exec_defaults",))
+    assert commands == [], "unobserved exec must not reach the mocked backend"
+    # Keep the duplicate-mount regression at the mocked backend layer, after pinning
+    # real admission. This test-local patch is not a production observer or override.
+    monkeypatch.setattr(runner, "_refuse_unobserved_policies", lambda *a: None)
+    result = runner.run_one(repo, {"task_id": "train_1"}, env=env)
     assert commands and result["exit_code"] == 0
     assert "actor_started" in result["trace"]
 

@@ -36,6 +36,7 @@ from data import registry
 from eval.run.runner import evaluate, run_one
 from harnessgrad.environments import _env_record, _resolve_envs
 from harnessgrad.records import _cost_of
+from policy_assertions import assert_driver_policy_refusal, assert_invalid_policy, assert_policy_refusal
 
 ROOT = Path(__file__).resolve().parents[2]
 DEMO_IMAGE = os.environ.get("HG_EXEC_DEMO_IMAGE",
@@ -328,41 +329,25 @@ def test_a_harness_reaches_the_service_by_the_name_it_was_told(tmp_path):
         running.stop()
 
 
-def test_a_service_that_is_not_healthy_refuses_the_task(tmp_path):
-    """**The negative control for the whole invalid category.**
-
-    A service that is listening but whose own health check never passes must produce an
-    `invalid` task -- attributed to the dataset and the service -- and not a zero. A
-    zero here is indistinguishable from a weak harness, which is the distinction this
-    platform exists to preserve.
-    """
+def test_unobserved_service_task_is_refused_before_health_checks(tmp_path, monkeypatch):
+    """008348b: admission precedes service health, so this is not a health failure."""
     _require_docker()
-    spec = _env([_service(health={"argv": ["false"], "timeout_s": 3})])
-    result = _evaluate(tmp_path, spec)
-    # Nothing was scored, so the caller has to be able to see that it was not.
-    assert "s01" not in result["per_task"], (
-        f"an unmeasurable task was given a score: {result['per_task']}")
-    assert result["invalid"]["s01"]["stage"] == "health"
-    assert result["invalid"]["s01"]["service"] == "orders"
-    assert "not a harness result" in result["invalid"]["s01"]["detail"]
+    monkeypatch.setattr(services, "start", lambda *a, **kw: pytest.fail("must not start a service"))
+    result = _evaluate(tmp_path, _env([_service(health={"argv": ["false"], "timeout_s": 3})]))
+    assert result["per_task"] == {}
+    assert set(result["invalid"]) == {"s01"}
+    assert_invalid_policy(result["invalid"]["s01"], ("env.exec_defaults", "env.network"))
+    assert not (tmp_path / "recordings").exists()
 
 
-def test_the_same_task_scores_when_its_service_is_healthy(tmp_path):
-    """The other half: the test above is only a measurement if the healthy case passes.
-
-    Same task, same harness, same everything except the health command -- so the
-    difference in outcome is the health check and nothing else.
-    """
+def test_healthy_service_cannot_authorize_an_unobserved_backend(tmp_path, monkeypatch):
     _require_docker()
-    result = _evaluate(tmp_path, _env(), verifier={
-        "kind": "command", "argv": [
-            "python3", "-c",
-            "import json,pathlib,sys;"
-            "p=pathlib.Path('/recordings/orders/harnessgrad.json');"
-            "d=json.loads(p.read_text()) if p.exists() else {};"
-            "sys.exit(0 if any(r.get('path')=='/orders' for r in d.get('received',[])) else 1)"]})
-    assert result["invalid"] == {}, result["invalid"]
-    assert result["per_task"] == {"s01": 1.0}
+    monkeypatch.setattr(services, "start", lambda *a, **kw: pytest.fail("must not start a service"))
+    result = _evaluate(tmp_path, _env(), verifier={"kind": "command", "argv": ["true"]})
+    assert result["per_task"] == {}
+    assert set(result["invalid"]) == {"s01"}
+    assert_invalid_policy(result["invalid"]["s01"], ("env.exec_defaults", "env.network"))
+    assert not (tmp_path / "recordings").exists()
 
 
 def test_the_health_check_actually_waits(tmp_path):
@@ -446,7 +431,6 @@ def test_network_cleanup_is_idempotent_but_keeps_real_errors(monkeypatch, stderr
     assert calls == [("network", "rm", "owned-net")] * 2
     expected = [] if missing else [f"network 'owned-net': {stderr.strip()[:200]}"]
     assert direct == stopped == expected
-
 
 
 def test_a_leftover_network_from_a_crash_does_not_kill_the_next_run(tmp_path):
@@ -670,27 +654,22 @@ def test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero(tmp_pa
         "a curve point was written for a task set that was never measured")
 
 
-def test_a_healthy_service_run_names_the_service_in_its_header(tmp_path):
-    """The header is where a reader takes the run's conditions from, and "a mock API
-    was reachable" is a condition."""
+def test_a_refused_service_run_names_the_service_in_its_header(tmp_path):
     _require_docker()
     proc = _run_driver(tmp_path, "verify_service", extra_env={"HG_AGENT_PROBE": "idle"})
-    assert proc.returncode == 0, _said(proc)[-1500:]
+    assert_driver_policy_refusal(proc, tmp_path, ("s01", "s02"))
     assert "services[orders]" in _said(proc), _said(proc)[:1500]
 
 
-def test_the_declared_environment_reaches_the_curve(tmp_path):
+def test_an_unmeasured_service_environment_is_recorded_without_a_curve(tmp_path):
     _require_docker()
-    assert _run_driver(tmp_path, "verify_service",
-                       extra_env={"HG_AGENT_PROBE": "idle"}).returncode == 0
-    point = json.loads((tmp_path / "runs" / "probe" / "curve.jsonl")
-                       .read_text().splitlines()[-1])
-    assert point["env"]["services"][0]["name"] == "orders"
-    assert point["env"]["services"][0]["image_digest"].startswith("sha256:")
-    assert point["env"]["network"] == "services"
-    assert point["env"]["seed"] is None, "no service asked for a seed"
-    assert point["cost"]["env_generation_tokens"] is None, (
-        "the service reported no usage, and that is not the same as reporting zero")
+    proc = _run_driver(tmp_path, "verify_service", extra_env={"HG_AGENT_PROBE": "idle"})
+    assert_driver_policy_refusal(proc, tmp_path, ("s01", "s02"))
+    meta = json.loads((tmp_path / "runs/probe/run_meta.json").read_text())
+    assert meta["env"]["services"][0]["name"] == "orders"
+    assert meta["env"]["services"][0]["image_digest"].startswith("sha256:")
+    assert meta["env"]["network"] == "services"
+    assert meta["env"]["seed"] is None, "no service asked for a seed"
 
 
 # ------------------------------------------------------- the model gateway ---
@@ -780,11 +759,36 @@ def test_a_container_reaches_the_host_on_the_internal_gateway(tmp_path):
         services.remove_network(net)
 
 
-def test_a_containerised_harness_gets_its_model_and_not_the_internet(tmp_path):
+def test_a_model_gateway_cannot_bypass_unobserved_exec_admission(tmp_path, monkeypatch):
+    """No host gateway, network or actor is allocated before policy admission."""
+    _require_docker()
+    from eval.service import modelgate
+
+    def unexpected(*a, **kw):
+        pytest.fail("admission must precede gateway, network and actor allocation")
+
+    monkeypatch.setattr(services, "create_network", unexpected)
+    monkeypatch.setattr(modelgate.ModelGateway, "start", unexpected)
+    monkeypatch.setattr(container, "run", unexpected)
+    monkeypatch.setenv("HG_AGENT_BACKEND", "openai")
+    monkeypatch.setenv("HG_AGENT_BASE_URL", "http://127.0.0.1:1/v1")
+    result = run_one(
+        _harness(tmp_path), {"task_id": "g01", "goal": "call the model"}, sandbox=True,
+        env={"kind": "exec", "image": _pin(DEMO_IMAGE), "workdir": "/app",
+             "network": "none", "placement": "inside", "services": []},
+        run_id="gl", run_seed="s", recordings_root=tmp_path / "rec")
+    assert_policy_refusal(result, ("env.exec_defaults", "env.network"))
+    assert not (tmp_path / "rec").exists()
+
+
+def test_synthetic_model_gateway_backend_still_isolates_the_internet(tmp_path, monkeypatch):
     """The end-to-end version, through `run_one`: the run records `model_gateway`, the
     harness's base URL was rewritten to the published address, and the internet is still
     unreachable from inside."""
     _require_docker()
+    # The real-admission test above pins production refusal. Exercise the dormant
+    # backend here with an authored HTTP stand-in, never a model or benchmark run.
+    monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a: None)
     import http.server
     import threading
     from eval.service import modelgate
@@ -856,6 +860,7 @@ def test_a_containerised_harness_gets_its_model_and_not_the_internet(tmp_path):
     assert gw["connections"] == 1, gw
     assert gw["bytes_to_upstream"] > 0 and gw["bytes_to_client"] > 0, gw
     assert gw["upstream_connect_failed"] == 0 and gw["read_errors"] == [], gw
+
 
 
 def test_a_remote_model_with_an_offline_network_is_refused(tmp_path):

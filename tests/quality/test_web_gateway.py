@@ -25,6 +25,7 @@ import eval.containers.container as container  # noqa: E402
 import eval.service.services as services  # noqa: E402
 from eval.run.runner import run_one  # noqa: E402
 from data import registry  # noqa: E402
+from policy_assertions import assert_policy_refusal
 
 DEMO_IMAGE = os.environ.get("HG_EXEC_DEMO_IMAGE", "docker.m.daocloud.io/library/python:3.11-slim")
 
@@ -160,7 +161,7 @@ def test_paid_provider_without_key_refuses_to_start():
     assert "serper" in proc.stderr.lower()
 
 
-def test_declared_task_gets_web_url_and_undeclared_task_cannot_reach_live_gateway(tmp_path, monkeypatch):
+def test_unobserved_admission_and_synthetic_web_isolation_backend(tmp_path, monkeypatch):
     """A negative connection probe against a confirmed live, named destination."""
     if container.available() is None:
         pytest.skip("no docker daemon")
@@ -198,7 +199,19 @@ else:
 """)
     common = {"kind": "exec", "image": image, "workdir": "/app",
               "placement": "inside", "services": []}
-    network = services.create_network("web-isolation", "live-probe")
+    # Pin current production refusal before exercising the synthetic backend.
+    for policy in ({"network": "none"},
+                   {"network": "services", "web": {"search": True, "fetch": True}}):
+        refused = run_one(repo, {"task_id": "refused", "goal": "synthetic"},
+                          env={**common, **policy}, recordings_root=tmp_path / "recordings")
+        assert_policy_refusal(refused, ("env.exec_defaults", "env.network"))
+        assert "web_gateway" not in refused
+    assert not (tmp_path / "recordings").exists()
+    # Only this authored HTTP fixture reaches the dormant backend. No production
+    # observer, pilot, dataset score or admission override is exposed by the platform.
+    monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a: None)
+    import uuid
+    network = services.create_network("web-isolation-" + uuid.uuid4().hex, "live-probe")
     try:
         probe = WebGateway(bind_host=services.gateway_ip(network)).start()
         try:
@@ -225,6 +238,7 @@ else:
     assert without_web["web_gateway"] is None
     rows = [json.loads(line) for line in (tmp_path / "recordings/with/web/requests.jsonl").read_text().splitlines()]
     assert len(rows) == 1 and rows[0]["provider"] == "none"
+
 
 
 def mock_dns(monkeypatch, addresses=None):
@@ -431,7 +445,7 @@ def test_driver_writes_real_run_meta_before_task_launch(tmp_path, monkeypatch, p
         raise BeforeTaskLaunch()
     monkeypatch.setattr(driver, 'stage_workspace', inspect_meta)
     monkeypatch.setattr(sys, 'argv', ['driver.py', '--harness', 'oracle', '--dataset', 'demo',
-        '--rounds', '0', '--improver', 'none', '--no-sandbox', '--run-id', 'meta',
+        '--rounds', '0', '--sampling', 'all', '--improver', 'none', '--no-sandbox', '--run-id', 'meta',
         '--runs-root', str(tmp_path / 'runs'), '--work-root', str(tmp_path / 'work')])
     try:
         with pytest.raises(BeforeTaskLaunch):

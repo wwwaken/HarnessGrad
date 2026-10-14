@@ -27,6 +27,7 @@ import pytest
 
 import eval.containers.container as container
 from data import registry
+from policy_assertions import EXEC_POLICY_FIELDS, assert_policy_refusal
 
 ROOT = Path(__file__).resolve().parents[2]
 TB_ROOT = Path(os.environ.get("HG_TERMINAL_BENCH",
@@ -346,69 +347,27 @@ def _one_ready_task():
                 "tools/import_env.py for one of " + ", ".join(ORACLE_VERIFIED))
 
 
-def test_the_oracle_control_passes(tmp_path):
-    """**The control that makes every other number on this dataset mean something.**
-
-    `base_harness/oracle` runs the dataset's own reference solution and does nothing
-    else. If it does not score, the dataset's check is not reachable and no harness's
-    score on it means anything -- which is exactly the ambiguity this removes. It found
-    three real bugs here: a `docker cp` path that landed the task one directory too deep,
-    a `mkdir` issued to a container that was not running yet, and a verifier with no
-    network while all 89 real checks install their own test dependencies at verify time.
-    """
-    from eval.run.runner import run_one
+def test_the_oracle_cannot_authorize_unobserved_container_state(tmp_path, monkeypatch):
+    """008348b: a reference solution is not a trusted backend observation."""
+    from eval.run import runner
 
     task, setup, verifier, env = _one_ready_task()
-    tid = task["task_id"]
-    import importlib
-    tb = importlib.import_module("data.terminal_bench")
-    if not (TB_ROOT / tid / "solution").is_dir():
-        pytest.skip(f"{tid} ships no solution for the oracle")
+    resolved, problem = __import__("driver")._resolve_envs({task["task_id"]: env})
+    assert problem is None, problem
 
-    # The oracle is handed the solution through the ordinary SETUP path, which is what
-    # the adapter does under HG_TB_ORACLE=1.
-    old = os.environ.copy()
-    os.environ.update({"HG_TB_ORACLE": "1", "HG_TB_TASKS": tid,
-                       "HG_AGENT_BACKEND": "mock",
-                       "HARNESSGRAD_WORK_ROOT": str(tmp_path / "work")})
-    try:
-        resolved, problem = __import__("driver")._resolve_envs({tid: env})
-        assert problem is None, problem
-        setup = {"files": [{"path": ".oracle",
-                            "from": str(TB_ROOT / tid / "solution")}]}
-        result = run_one((ROOT / "base_harness" / "oracle"), task, sandbox=True,
-                         setup=setup, verifier=verifier, env=resolved[tid],
-                         # Per process, for the same reason as the leak test below: a
-                         # fixed id means an interrupted run leaves a network named
-                         # `hg-oracle-test-<task>` behind, and from then on this test fails
-                         # with `network ... already exists` -- red for a reason that has
-                         # nothing to do with the oracle. Measured 2026-10-06, on an
-                         # unmodified checkout: both this test and the leak test below were
-                         # failing that way, so nothing but a manual `docker network rm`
-                         # could make them green again.
-                         run_id=f"oracle-test-{os.getpid()}", run_seed="s",
-                         recordings_root=tmp_path / "recordings")
-    finally:
-        os.environ.clear()
-        os.environ.update(old)
+    def unexpected(*a, **kw):
+        pytest.fail("a refused oracle must not allocate or snapshot a container")
 
-    verdict = result.get("verdict") or {}
-    # A check that could not fetch its *own* tooling says nothing about whether the
-    # platform can reach it, so it is skipped loudly rather than counted as a failure.
-    # Anything else **fails**: that is the whole job of this control.
-    why = _environmental(verdict)
-    if why is not None:
-        pytest.skip(
-            f"the host could not fetch the check's own tooling ({why!r}), so this run "
-            f"measured the network and not the platform. The oracle is verified "
-            f"conditionally, not permanently.")
-    assert verdict.get("score") == 1.0, (
-        f"the oracle did not pass {tid}, so its check is not reachable and no harness's "
-        f"score on this dataset means anything yet: "
-        f"{json.dumps(verdict, ensure_ascii=False)[:800]}")
+    monkeypatch.setattr(runner, "_run_one_container_state", unexpected)
+    result = runner.run_one(ROOT / "base_harness/oracle", task, sandbox=True,
+                            setup=setup, verifier=verifier, env=resolved[task["task_id"]],
+                            run_id=f"oracle-test-{os.getpid()}", run_seed="s",
+                            recordings_root=tmp_path / "recordings")
+    assert_policy_refusal(result, (*EXEC_POLICY_FIELDS, "env.state=container"))
+    assert not (tmp_path / "recordings").exists()
 
 
-def test_a_container_state_run_leaves_nothing_behind(tmp_path):
+def test_a_refused_container_state_run_leaves_nothing_behind(tmp_path):
     """A snapshot image per task is a disk leak waiting to happen, and it is the platform
     that made it."""
     from eval.run.runner import run_one
@@ -438,7 +397,7 @@ def test_a_container_state_run_leaves_nothing_behind(tmp_path):
                        "HARNESSGRAD_WORK_ROOT": str(tmp_path / "work")})
     try:
         resolved, _ = __import__("driver")._resolve_envs({task["task_id"]: env})
-        run_one((ROOT / "base_harness" / "oracle"), task, sandbox=True,
+        result = run_one((ROOT / "base_harness" / "oracle"), task, sandbox=True,
                 setup={"files": [{"path": ".oracle",
                                   "from": str(TB_ROOT / task["task_id"] / "solution")}]},
                 verifier=verifier, env=resolved[task["task_id"]],
@@ -448,6 +407,7 @@ def test_a_container_state_run_leaves_nothing_behind(tmp_path):
         os.environ.clear()
         os.environ.update(old)
 
+    assert_policy_refusal(result, (*EXEC_POLICY_FIELDS, "env.state=container"))
     after = set(container.docker(
         "images", "--format", "{{.Repository}}:{{.Tag}}").stdout.split())
     # Only this process's namespace: another run's snapshots are not this test's leak,

@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from eval.containers import sandbox
+from policy_assertions import assert_policy_refusal
 from eval.run.runner import run_one
 from eval.policy.runtime_policy import admit_native_network, stage_agent_runtime
 
@@ -49,9 +50,9 @@ def test_live_backend_is_refused_before_staging_or_execution(tmp_path, monkeypat
         pytest.fail("admission must happen before allocating task storage")
 
     monkeypatch.setattr("eval.run.runner.tempfile.mkdtemp", unexpected)
-    with pytest.raises(ValueError, match="live agent backend"):
-        run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
-                env={"kind": "files", "network": "none"})
+    result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+                     env={"kind": "files", "network": "none"})
+    assert_policy_refusal(result, ("env.network",))
 
 
 def test_network_none_admits_controls_and_mock_but_leaves_ordinary_tasks_alone():

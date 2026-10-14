@@ -26,6 +26,7 @@ import eval.containers.container as container
 from ckpt.git_state import STATE_DIRNAME
 from data import registry
 from eval.run.integrity import PLATFORM_ROOT
+from policy_assertions import assert_driver_policy_refusal
 
 ROOT = Path(__file__).resolve().parents[2]
 DEMO_IMAGE = os.environ.get("HG_EXEC_DEMO_IMAGE",
@@ -254,21 +255,15 @@ def test_the_task_mount_is_read_only_for_the_check(tmp_path):
 
 # -------------------------------------------------------- the whole thing ---
 
-def test_a_working_harness_scores_full_marks(tmp_path):
-    """All four tasks, in containers, including `e02`, which is the one that can tell
-    a real `exec` run from a `files` run wearing a container's name."""
+def test_a_working_exec_harness_is_unmeasured_without_backend_observations(tmp_path):
+    """008348b: even a solving harness cannot authorize an unobserved backend."""
     _require_docker()
-    proc = _run(tmp_path, mode="solve")
-    assert proc.returncode == 0, proc.stdout[-1500:] + proc.stderr[-1500:]
-    points = _curve(tmp_path)
-    assert points[-1]["score"] == 1.0, json.dumps(points[-1]["per_task"], indent=1)
+    assert_driver_policy_refusal(_run(tmp_path, mode="solve"), tmp_path, ("e01", "e02"))
 
 
-def test_an_idle_harness_scores_zero(tmp_path):
+def test_an_idle_exec_harness_is_invalid_rather_than_zero(tmp_path):
     _require_docker()
-    proc = _run(tmp_path, mode="idle")
-    assert proc.returncode == 0, proc.stdout[-1500:]
-    assert _curve(tmp_path)[-1]["score"] == 0.0
+    assert_driver_policy_refusal(_run(tmp_path, mode="idle"), tmp_path, ("e01", "e02"))
 
 
 def test_the_check_reports_the_images_interpreter_not_the_hosts(tmp_path):
@@ -307,30 +302,10 @@ def test_the_check_reports_the_images_interpreter_not_the_hosts(tmp_path):
         f"{expected!r}, so the task is unpassable rather than discriminating")
 
 
-def test_a_harness_cannot_grade_itself_in_a_container(tmp_path):
-    """`e03`, with a harness that rewrites the specification to `sys.exit(0)`.
-
-    The same control `verify_demo` runs for the host path, repeated for the container
-    path because §2.5.6's guarantee has to hold in both -- and in the container it is
-    harder to see, since the harness and the check share a bind mount and the check is
-    started by a second `docker run` that the first one has no handle on.
-    """
+def test_a_cheating_exec_harness_cannot_bypass_policy_admission(tmp_path):
+    """The direct restored/cheated verifier control below still tests input integrity."""
     _require_docker()
-    proc = _run(tmp_path, mode="cheat")
-    assert proc.returncode == 0, proc.stdout[-1500:]
-    # A run covers one side, and the default is the train side -- so the tasks this
-    # harness was scored on are all in `per_task`, and there is no second set to put in
-    # `train_per_task` (INTERFACE.md §2.6).
-    point = _curve(tmp_path)[-1]
-    per_task = point["per_task"]
-    assert set(per_task) == {"e01", "e02"}, (
-        f"a train run's per_task is the train side: {per_task}")
-    assert point["train_per_task"] == {} and point["train_score"] is None, point
-    # The control is only meaningful if the edit was the *only* thing that failed: this
-    # harness solves e01 and e04 normally, so a run that scored zero everywhere would
-    # make the assertion below pass for an unrelated reason. `e03` is on the eval side
-    # and is not in this run at all now -- which is the point of the split.
-    assert per_task.get("e01") == 1.0, per_task
+    assert_driver_policy_refusal(_run(tmp_path, mode="cheat"), tmp_path, ("e01", "e02"))
 
 
 def test_the_cheat_would_pass_if_the_inputs_were_not_restored(tmp_path):
@@ -367,22 +342,16 @@ def test_the_cheat_would_pass_if_the_inputs_were_not_restored(tmp_path):
     assert cheated.returncode == 0
 
 
-def test_the_curve_records_the_environment(tmp_path):
-    """§2.5.4. A `files` curve and an `exec` curve are different quantities, and so are
-    two `exec` curves under different digests -- so the environment travels with the
-    number on every point, not only in `run_meta.json`."""
+def test_an_unmeasured_exec_environment_is_recorded_without_a_curve(tmp_path):
     _require_docker()
-    assert _run(tmp_path, mode="idle").returncode == 0
-    for point in _curve(tmp_path):
-        env = point["env"]
-        assert env["kind"] == "exec", env
-        assert env["image_digest"].startswith("sha256:"), env
-        assert env["network"] == "none", env
-        assert env["placement"] == "inside", env
-        # Recorded as null rather than omitted: §2.5.7 has not landed, and "not
-        # applicable yet" must be distinguishable from "the platform forgot".
-        assert "model" in env and env["model"] is None
-        assert "seed" in env and env["seed"] is None
+    assert_driver_policy_refusal(_run(tmp_path, mode="idle"), tmp_path, ("e01", "e02"))
+    env = json.loads((tmp_path / "runs/probe/run_meta.json").read_text())["env"]
+    assert env["kind"] == "exec", env
+    assert env["image_digest"].startswith("sha256:"), env
+    assert env["network"] == "none", env
+    assert env["placement"] == "inside", env
+    assert "model" in env and env["model"] is None
+    assert "seed" in env and env["seed"] is None
 
 
 def test_files_datasets_still_record_a_files_environment(tmp_path):
@@ -493,46 +462,24 @@ def test_importing_a_harness_actually_runs_its_install(tmp_path):
                        capture_output=True, text=True)
 
 
-def test_the_run_record_and_the_curve_agree_about_the_image(tmp_path):
-    """The bug this pins, because it is a shape that will be attempted again.
-
-    Images were first pinned next to the `env_kinds` gate -- which is where the check
-    *logically* belongs, and which runs *after* the header and `run_meta.json` are
-    written. So the header named the image's tag, `run_meta.json` recorded
-    `image_digest: null`, and every curve point carried the digest. Two records of one
-    run disagreeing about what it ran in is precisely the failure §2.5.4 exists to
-    prevent, and it was invisible from the curve alone.
-    """
+def test_a_refused_run_still_records_the_resolved_image(tmp_path):
+    """Image resolution precedes run metadata, including when no curve is authorized."""
     _require_docker()
-    assert _run(tmp_path, mode="idle").returncode == 0
-    meta = json.loads((tmp_path / "runs" / "probe" / "run_meta.json").read_text())
-    points = _curve(tmp_path)
+    assert_driver_policy_refusal(_run(tmp_path, mode="idle"), tmp_path, ("e01", "e02"))
+    meta = json.loads((tmp_path / "runs/probe/run_meta.json").read_text())
     assert meta["env"]["kind"] == "exec", meta["env"]
-    assert meta["env"]["image_digest"], (
-        f"run_meta.json describes the run without pinning it: {meta['env']}")
-    assert meta["env"]["image_digest"] == points[0]["env"]["image_digest"], (
-        f"the run record and the curve disagree: {meta['env']} vs {points[0]['env']}")
+    pinned = container.resolve_digest(registry.load_envs("verify_exec")["e01"]["image"])
+    assert meta["env"]["image_digest"] == container.digest_of(pinned)
 
 
-def test_no_sandbox_does_not_disable_the_container(tmp_path):
-    """`--no-sandbox` and the container boundary are different switches.
-
-    The container is not a wrapper around the task, it **is** the task's environment
-    (INTERFACE.md §2.5.5), so `--no-sandbox` cannot switch it off -- removing it would
-    not make the task run unisolated, it would make the task not run at all. What
-    `--no-sandbox` does turn off is the host-side bwrap, which for an `exec` dataset is
-    already not the boundary. The header has to say so, or a reader sees "no sandbox"
-    and concludes there was no boundary anywhere.
-    """
+def test_no_sandbox_does_not_bypass_exec_policy_admission(tmp_path):
+    """--no-sandbox changes host bwrap; it cannot authorize container execution."""
     _require_docker()
     proc = _run(tmp_path, mode="solve", extra_argv=("--no-sandbox",))
-    assert proc.returncode == 0, (proc.stdout + proc.stderr)[-1500:]
+    assert_driver_policy_refusal(proc, tmp_path, ("e01", "e02"))
     header = " ".join((proc.stdout + proc.stderr).split())
     assert "exec" in header, header[:800]
-    assert "host-side bwrap OFF for the method" in header, (
-        f"the header reads as if there were no boundary at all: {header[:800]}")
-    # And the run is still a real one: the container-based task scored.
-    assert _curve(tmp_path)[-1]["score"] == 1.0
+    assert "host-side bwrap OFF for the method" in header, header[:800]
 
 
 # ------------------------------------------------------ snapshot failure controls ---

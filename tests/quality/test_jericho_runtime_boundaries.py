@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT))
 
 from data.registry import _check_env, _normalize_env
 from eval.containers import sandbox
+from policy_assertions import assert_policy_refusal
 from eval.run.runner import run_one
 from eval.policy.runtime_policy import phase_timeout, stage_agent_runtime
 from eval.verification.verifier import _verify, _verify_container_state
@@ -146,13 +147,14 @@ def harness(path, body):
 
 def test_runner_refuses_unsandboxed_declared_isolation(tmp_path):
     repo = harness(tmp_path / "harness", "raise AssertionError('must not execute')")
-    with pytest.raises(ValueError, match="requires sandbox"):
-        run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
-                env={"kind": "files", "network": "none"})
+    result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
+                     env={"kind": "files", "network": "none"})
+    assert_policy_refusal(result, ("env.network",))
+    assert list(tmp_path.iterdir()) == [repo]
 
 
 @pytest.mark.skipif(shutil.which("bwrap") is None, reason="bubblewrap unavailable")
-def test_agent_projection_network_denial_and_trusted_verifier_end_to_end(tmp_path, monkeypatch):
+def test_unobserved_admission_and_synthetic_projection_backend_boundaries(tmp_path, monkeypatch):
     # A separate synthetic platform tree preserves the production staging rule.
     # All test writes remain in the user-authorized worktree.
     platform = tmp_path / "platform"
@@ -198,9 +200,18 @@ pathlib.Path(a.workdir, 'answer.txt').write_text(json.dumps(seen))
         verifier = {"kind": "command", "timeout_s": 2, "argv": [sys.executable, "-c",
             f"import sys; sys.path.insert(0, {str(package.parent)!r}); import boundary_fixture as p; "
             "assert p.REFERENCE == 'SYNTHETIC_SECRET'; print('trusted package retained')"]}
+        env = {"kind": "files", "network": "none", "agent_timeout_s": 3,
+               "verify_timeout_s": 5, "agent_runtime": runtime}
+        refused = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+                          env=env, verifier=verifier)
+        assert_policy_refusal(refused, ("env.network", "env.agent_timeout_s", "env.verify_timeout_s"))
+        assert not list(work.glob("task-*"))
+        assert (package / "__init__.py").read_text() == 'REFERENCE = "SYNTHETIC_SECRET"\n'
+        # Synthetic backend regression only: production admission above remains blocked.
+        # This local monkeypatch grants no observer receipt or production authorization.
+        monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a: None)
         result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
-                         env={"kind": "files", "network": "none", "agent_timeout_s": 3,
-                              "verify_timeout_s": 5, "agent_runtime": runtime}, verifier=verifier)
+                         env=env, verifier=verifier)
     assert result["exit_code"] == 0, result["stderr"]
     assert json.loads(result["answer"]) == {"public": True, "reference": False, "data": False,
                                            "bytecode": False, "writable": False,
