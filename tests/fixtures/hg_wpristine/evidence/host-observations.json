@@ -1,0 +1,49 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "id"
+      ],
+      "returncode": 0,
+      "stdout": "uid=1026(xubuqiang) gid=1026(xubuqiang) \u7ec4=1026(xubuqiang),1034(docker)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{{json .SecurityOptions}} {{json .CgroupDriver}} {{json .CgroupVersion}}"
+      ],
+      "returncode": 0,
+      "stdout": "[\"name=apparmor\",\"name=seccomp,profile=builtin\",\"name=cgroupns\"] \"systemd\" \"2\"\n",
+      "stderr": ""
+    }
+  ],
+  "retained_refusal_projection_stats": [
+    {
+      "path": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/refusal-image/input",
+      "mode": "0o700",
+      "uid": 1026,
+      "gid": 1026,
+      "answer_mode": "0o600",
+      "answer_uid": 1026
+    },
+    {
+      "path": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/refusal-mount/input",
+      "mode": "0o700",
+      "uid": 1026,
+      "gid": 1026,
+      "answer_mode": "0o600",
+      "answer_uid": 1026
+    },
+    {
+      "path": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/refusal-network/input",
+      "mode": "0o700",
+      "uid": 1026,
+      "gid": 1026,
+      "answer_mode": "0o600",
+      "answer_uid": 1026
+    }
+  ]
+}

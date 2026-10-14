@@ -1,0 +1,12 @@
+{
+  "kind": "synthetic-diagnostic-control",
+  "task_id": "w-pristine-addition-control",
+  "goal": "Write the base-10 sum of 19 and 23 followed by a newline to answer.txt.",
+  "expected_answer": "42\n",
+  "control_submission": "41\n",
+  "metric": "exact-answer-command-exit0",
+  "authority": "Locally authored control specification; no benchmark or official dataset claim.",
+  "private_input": "expected.txt is sealed scorer dependency; never copied to actor state.",
+  "export": "Only answer.txt; at most 16 bytes, 2 inodes including projection root.",
+  "source_quiescence": "No actor process is launched. Platform prepares submission and makes source read-only before export. Same-UID external mutation is not attested."
+}

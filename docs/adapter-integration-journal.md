@@ -2660,3 +2660,40 @@ Both original and rebuilt wheels have fresh network-denied hash-checked install,
 - Resource state: w-assess performed no benchmark or runtime execution at all; w-ujson2 did local
   container build work only - no model, GPU or endpoint call. Both GPUs stayed idle and no
   utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
+
+## 2026-10-15 production pristine diagnostic, invalid-zero finding - w-pristine
+
+Built a real sealed `harnessgrad.scorer-bundle.v2` control and independently pinned
+per-task artifact contract under `tests/fixtures/hg_wpristine/`. The authored task
+is 19+23, private expected answer 42, deliberate submission 41; it is a synthetic
+diagnostic, not a benchmark or method. Ran the unmodified production pristine
+dispatcher once from `/tmp/hg-pristine`, external work root
+`/tmp/hg-wpristine-runtime`, fresh run ID
+`w-pristine-control-20261014T225600Z-7cbd8f16`. No model/GPU/endpoint, actor harness,
+staged pilot, dataset adapter, production scoring edit or `runs/` change occurred.
+
+The actual container passed created-instance inspection and both projection
+rechecks, then the shell could not read `/control-input/answer.txt`: exported file
+mode 0600 / owner UID 1026, default container root with all capabilities dropped.
+Production nevertheless returned class `pristine-offline`, numeric zero for normal
+exit 1. The known-answer comparison never ran; the final audited disjoint counts
+are measured=0, invalid=1, unmeasured=0, score=null. Preserve the native verdict,
+original naive driver's measured count and initial overlapping audit unchanged;
+`evidence/measurement-audit.json` supersedes their measurement classifications.
+Report the readability and invalid-zero defects at artifact_admission.py:280/292
+and pristine.py:67-82/100-108; no UID/chmod/capability workaround or rerun was made.
+
+Raw stopped-result inspection, actual Docker configuration limits, removal output
+and post-removal absence are saved. Effective kernel cgroup/tmpfs observations are
+unknown because the script failed before its observation loop; formal lifecycle
+stays null. Three extra real stopped-instance admission probes refused unexpected
+image, bridge network and extra bind, and all were removed without start. The
+bridge probe also returned a reordered Env list, so it does not isolate the network
+clause. Both shared blockers' observed text is sharpened at this failed control's
+scope; neither shared blocker nor any dataset blocker closes. Statuses/actions,
+all dataset references and historical records are unchanged.
+
+`reports/w-pristine-receipts.md` gives commands, independent pins, raw paths/values,
+counts and source-line findings. `reports/w-pristine-validation.txt` records the
+registry checker and focused tests. The complete fixture has a SHA-256 inventory;
+original external receipts, saved local image and all older runs remain preserved.

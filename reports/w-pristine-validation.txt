@@ -1,0 +1,17 @@
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 tests/fixtures/hg_wpristine/validate_packet.py
+{"bundle": {"bundle_sha256": "168d15a4945ea4ef093da3040fb7bd441ad1ec77ef4143379fbd1a6d318c4fbd", "bytes": 2194251, "declared_network": "none", "files": 3, "isolation_class": "pristine-offline", "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d", "schema": "harnessgrad.scorer-bundle-receipt.v1", "scope": "local_declared_closure_integrity", "source_sha256": "8e13963d42f2b87eb36756e9124922e24bc91ea9ef20af81ff15e9334dfd3f0b"}, "dataset_records_unchanged": true, "fixture_files": 55, "journal_append_only": true, "measurement": {"coverage": {"expected_trials": 1, "invalid_tasks": 1, "invalid_trials": 1, "measured_tasks": 0, "measured_trials": 0, "selected_tasks": 1, "unmeasured_tasks": 0, "unmeasured_trials": 0}, "outcomes": [{"reason": "scorer_failed_before_control_check", "score": null, "status": "invalid", "task_id": "w-pristine-addition-control", "trial": 1}], "score": null}, "network_causality": "confounded", "production_authorized": false, "production_sources_unchanged": true, "real_stopped_refusals": 3, "valid": true}
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_scorer_isolation_option_b.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_terminal_artifact_admission.py tests/quality/test_scorer_bundle_codex170.py tests/quality/test_dataset_blockers.py --basetemp=/tmp/hg-wpristine-pytest-final-7cbd8f16
+........................................................................ [ 35%]
+........................................................................ [ 71%]
+..........................................................               [100%]
+202 passed in 16.61s
+exit_code=0
+
+$ git diff --check
+exit_code=0

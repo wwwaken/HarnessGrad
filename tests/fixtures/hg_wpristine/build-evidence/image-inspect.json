@@ -1,0 +1,40 @@
+[
+    {
+        "Id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+        "RepoTags": [],
+        "RepoDigests": [],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-15T06:50:11.266122494+08:00",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "WorkingDir": "/"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 1988,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:8f2ed55adc1879ac79ed385f79edcb820dcaccae52e4e9cfa075cd1f13319f4c"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-14T22:50:11.679731567Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+            "size": 855
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "xsx1e3rtalmve9c13pgri13p6",
+                    "CreatedAt": "2026-10-15T06:50:11.721621591+08:00"
+                }
+            ]
+        }
+    }
+]

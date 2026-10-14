@@ -1,0 +1,226 @@
+[
+  {
+    "event": "call",
+    "function": "verify_scorer_files",
+    "monotonic_ns": 6541252090977673
+  },
+  {
+    "event": "return",
+    "function": "verify_scorer_files",
+    "monotonic_ns": 6541252097415704,
+    "returned": {
+      "bytes": 2194251,
+      "files": 3,
+      "scope": "local_declared_closure_integrity"
+    },
+    "root": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/platform/scorer/closure",
+    "root_inventory": [
+      {
+        "bytes": 976,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "check.sh",
+        "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa",
+        "uid": 1026
+      },
+      {
+        "bytes": 3,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "expected.txt",
+        "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+        "uid": 1026
+      },
+      {
+        "bytes": 2193272,
+        "mode": "0o555",
+        "nlink": 1,
+        "path": "sh",
+        "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+        "uid": 1026
+      }
+    ]
+  },
+  {
+    "event": "call",
+    "function": "require_artifact_runtime",
+    "monotonic_ns": 6541252299547913
+  },
+  {
+    "event": "call",
+    "function": "verify_scorer_files",
+    "monotonic_ns": 6541252300598639
+  },
+  {
+    "event": "return",
+    "function": "verify_scorer_files",
+    "monotonic_ns": 6541252310673567,
+    "returned": {
+      "bytes": 2194251,
+      "files": 3,
+      "scope": "local_declared_closure_integrity"
+    },
+    "root": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/platform/scorer/closure",
+    "root_inventory": [
+      {
+        "bytes": 976,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "check.sh",
+        "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa",
+        "uid": 1026
+      },
+      {
+        "bytes": 3,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "expected.txt",
+        "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+        "uid": 1026
+      },
+      {
+        "bytes": 2193272,
+        "mode": "0o555",
+        "nlink": 1,
+        "path": "sh",
+        "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+        "uid": 1026
+      }
+    ]
+  },
+  {
+    "event": "call",
+    "function": "verify_state_export",
+    "monotonic_ns": 6541252316500706
+  },
+  {
+    "event": "return",
+    "function": "verify_state_export",
+    "monotonic_ns": 6541252319024541,
+    "returned": null,
+    "root": "/tmp/hg-pristine-sfa9udgm/input",
+    "root_inventory": [
+      {
+        "bytes": 3,
+        "mode": "0o600",
+        "nlink": 1,
+        "path": "answer.txt",
+        "sha256": "040316eca5e77dbb2212c1efe8b81cb23bc67ce0ac8cb5c9d902d98bd45ddfa1",
+        "uid": 1026
+      }
+    ]
+  },
+  {
+    "event": "call",
+    "function": "_verify_artifact_runtime",
+    "monotonic_ns": 6541252319338407
+  },
+  {
+    "artifact_root": "/tmp/hg-pristine-sfa9udgm/input",
+    "artifact_root_inventory": [
+      {
+        "bytes": 3,
+        "mode": "0o600",
+        "nlink": 1,
+        "path": "answer.txt",
+        "sha256": "040316eca5e77dbb2212c1efe8b81cb23bc67ce0ac8cb5c9d902d98bd45ddfa1",
+        "uid": 1026
+      }
+    ],
+    "closure_root": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/platform/scorer/closure",
+    "closure_root_inventory": [
+      {
+        "bytes": 976,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "check.sh",
+        "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa",
+        "uid": 1026
+      },
+      {
+        "bytes": 3,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "expected.txt",
+        "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+        "uid": 1026
+      },
+      {
+        "bytes": 2193272,
+        "mode": "0o555",
+        "nlink": 1,
+        "path": "sh",
+        "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+        "uid": 1026
+      }
+    ],
+    "event": "return",
+    "function": "_verify_artifact_runtime",
+    "monotonic_ns": 6541252319895681,
+    "returned": {
+      "contract_sha256": "28d615baa4b11c72c67f097e25025817f19a18e8abb3c22a6207e7172cda82e6",
+      "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+      "schema": "harnessgrad.artifact-runtime-receipt.v1",
+      "scope": "inspected_runtime_contract",
+      "task_id": "w-pristine-addition-control",
+      "tmpfs": {
+        "/control-output": "rw,nosuid,nodev,noexec,size=65536,nr_inodes=16,mode=1777",
+        "/tmp": "rw,nosuid,nodev,noexec,size=1048576,nr_inodes=64,mode=1777"
+      }
+    }
+  },
+  {
+    "artifact_root": "/tmp/hg-pristine-sfa9udgm/input",
+    "artifact_root_inventory": [
+      {
+        "bytes": 3,
+        "mode": "0o600",
+        "nlink": 1,
+        "path": "answer.txt",
+        "sha256": "040316eca5e77dbb2212c1efe8b81cb23bc67ce0ac8cb5c9d902d98bd45ddfa1",
+        "uid": 1026
+      }
+    ],
+    "closure_root": "/tmp/hg-wpristine-runtime/w-pristine-control-20261014T225600Z-7cbd8f16/platform/scorer/closure",
+    "closure_root_inventory": [
+      {
+        "bytes": 976,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "check.sh",
+        "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa",
+        "uid": 1026
+      },
+      {
+        "bytes": 3,
+        "mode": "0o664",
+        "nlink": 1,
+        "path": "expected.txt",
+        "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+        "uid": 1026
+      },
+      {
+        "bytes": 2193272,
+        "mode": "0o555",
+        "nlink": 1,
+        "path": "sh",
+        "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+        "uid": 1026
+      }
+    ],
+    "event": "return",
+    "function": "require_artifact_runtime",
+    "monotonic_ns": 6541252325913206,
+    "returned": {
+      "contract_sha256": "28d615baa4b11c72c67f097e25025817f19a18e8abb3c22a6207e7172cda82e6",
+      "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+      "schema": "harnessgrad.artifact-runtime-receipt.v1",
+      "scope": "inspected_runtime_contract",
+      "task_id": "w-pristine-addition-control",
+      "tmpfs": {
+        "/control-output": "rw,nosuid,nodev,noexec,size=65536,nr_inodes=16,mode=1777",
+        "/tmp": "rw,nosuid,nodev,noexec,size=1048576,nr_inodes=64,mode=1777"
+      }
+    }
+  }
+]
