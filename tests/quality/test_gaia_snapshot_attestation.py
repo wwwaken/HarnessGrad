@@ -146,7 +146,7 @@ def test_invalid_source_paths_are_rejected(path):
 @pytest.mark.parametrize("mode", ["100755", "120000"])
 def test_review_only_path_cannot_exempt_executable_or_symlink(mode):
     candidate = source()
-    candidate["files"]["GAIA_GATE.md"] = {"mode": mode, "oid": "c" * 40}
+    candidate["files"]["reports/GAIA_GATE.md"] = {"mode": mode, "oid": "c" * 40}
     with pytest.raises(attestation.CompatibilityError, match="nonexecutable"):
         compare(candidate)
 
@@ -157,7 +157,7 @@ def test_missing_critical_source_and_invalid_receipt_digest_are_rejected():
     with pytest.raises(attestation.CompatibilityError, match="source identity"):
         compare(candidate)
     with pytest.raises(attestation.CompatibilityError, match="receipt digest"):
-        compare(reference_receipt_sha256="report.md")
+        compare(reference_receipt_sha256="reports/report.md")
 
 
 def test_attestation_is_deterministic_and_does_not_mutate_inputs():

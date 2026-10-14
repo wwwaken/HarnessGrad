@@ -107,7 +107,7 @@ installation or image contents merely because it belongs to the framework.
 
 ## Live admission obligations remain independent
 
-The [existing integration review](../TERMINAL_INTEGRATION_REVIEW.md) and current
+The [existing integration review](../reports/TERMINAL_INTEGRATION_REVIEW.md) and current
 local source continue to describe a snapshot-based platform path:
 [`eval/container_state.py`](../eval/container_state.py) stops and commits actor
 state; the verifier creates a grader from that snapshot. That is separate from

@@ -130,7 +130,7 @@ transitions recheck supplied `policy`/`observed` facts through this module. Seal
 requires snapshot completion, artifact identity, snapshot-worker runtime admission,
 and snapshot preflight; preflight alone never suffices. Failed/unknown stages may
 only advance to cleanup, and successful cleanup cannot restore measurement validity.
-See [the lifecycle review](../lifecycle-codex177-report.md) for bindings, publication
+See [the lifecycle review](../reports/lifecycle-codex177-report.md) for bindings, publication
 rules, failure persistence and remaining backend obligations. The
 [scorer backend and lifecycle API](scorer-backend-lifecycle-api.md) documents optional
 composition, ordinary-user access and the distinction between missing scorer and

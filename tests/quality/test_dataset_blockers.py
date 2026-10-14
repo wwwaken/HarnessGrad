@@ -159,7 +159,7 @@ def test_agentdojo_metadata_closure_keeps_the_production_route_blocked(document)
     assert document["review"]["production_authorized"] is False
     evidence = {item["path"] for item in production["evidence"]}
     assert "docs/adapter-integration-journal.md" in evidence
-    assert "agentdojo-metadata-privacy-codex180-report.md" in evidence
+    assert "reports/agentdojo-metadata-privacy-codex180-report.md" in evidence
 
 
 def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document):
@@ -171,7 +171,7 @@ def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document)
     evidence = {item["path"] for item in blocker["evidence"]}
     assert "tests/quality/test_scienceworld_platform_writes_codex186.py" in evidence
     assert "tests/quality/test_scienceworld_integrity_codex181.py" in evidence
-    assert "scienceworld-platform-writes-codex186-report.md" in evidence
+    assert "reports/scienceworld-platform-writes-codex186-report.md" in evidence
     assert "runtime-observations" in target["shared_blockers"]
     assert document["review"]["production_authorized"] is False
     baseline = checker.read_json(checker.HISTORY)

@@ -3,7 +3,7 @@
 **Unsent instructions; no custody record, signature or approval is supplied.**
 Gate: `BLOCKED_EXTERNAL_ROW_ATTESTATION`. This packet operationalizes the
 [task-198 request](task-198-livecodebench-custodian-request.md); it grants no H0
-authority. [LCB_GATE.md](../LCB_GATE.md) remains the admission contract.
+authority. [reports/LCB_GATE.md](../reports/LCB_GATE.md) remains the admission contract.
 
 ## Exact requested metadata
 

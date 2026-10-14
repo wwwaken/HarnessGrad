@@ -103,7 +103,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Trigger: the cached-pilot reservation ledger does not enforce writable disk/inode quotas; GAIA snapshot failure exposed missing snapshot/resource closure.
 - Contract: `eval.runner_admission` checks trusted observations against frozen runtime, no-network, byte/inode, snapshot and cleanup policies. Receipts bind adapter/run/trial/manifest, retain policy/observation hashes and stay at most 16 KiB. Cleanup uncertainty requests quarantine and capacity retention.
 - Known-fault repair: byte-only Docker snapshot preflight now refuses malformed/nonpositive limits, negative sizes, unknown roots and query failures; receipts expose maxima, reserves, deadlines and `quota_enforced=false`.
-- Validation: fabricated facts and fake Docker only; focused command and results in `runner-admission-codex-158-report.md`.
+- Validation: fabricated facts and fake Docker only; focused command and results in `reports/runner-admission-codex-158-report.md`.
 - Reuse: [runner admission contract](runner-admission-contract.md); backend observer/enforcement, atomic lease integration, snapshot worker limits and complete owned cleanup still require independent verification.
 - Status: `isolated`; no production runner wiring or filesystem quota installation; no Docker/model/H0/heldout execution.
 - Commit: accompanying `platform: add offline runner quota and cleanup admission contracts` commit.
@@ -113,7 +113,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Trigger: distinguish enforceable byte/inode quotas from capacity observations and supplied admission facts.
 - Finding: no complete backend is connected to bwrap/files, Docker exec or harness/method workspaces. Bounded tmpfs exists only in separate control/helper paths; no live kernel enforcement was inspected.
 - Contract: [backend audit](filesystem-quota-backends.md) specifies XFS/ext4 project hard quotas, bounded tmpfs, driver/snapshotter integration, pre-staging allocation, trusted read-only effective-limit observations, fail-closed runner wiring and verified scope cleanup.
-- Validation: 252 existing synthetic runner/artifact contract tests passed, with real subprocess/network execution denied; [report](../filesystem-quota-codex168-report.md), [source hashes](../filesystem-quota-codex168-source-evidence.json) and [output](../filesystem-quota-codex168-test-result.txt).
+- Validation: 252 existing synthetic runner/artifact contract tests passed, with real subprocess/network execution denied; [report](../reports/filesystem-quota-codex168-report.md), [source hashes](../reports/filesystem-quota-codex168-source-evidence.json) and [output](../reports/filesystem-quota-codex168-test-result.txt).
 - Status: `documented_blocker`; documentation only, no detector or runtime source change; no mounts, quota operations, Docker daemon queries, model/H0 or benchmark. Production quota enforcement remains unsupported.
 
 ### C-010 — Source-only blocker registry and historical preservation — Codex 178
@@ -129,7 +129,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 
 - Trigger: README and installer demo commands inherited the staged diagnostic default, and user-facing guidance did not clearly separate ordinary development prerequisites from production evidence requirements.
 - Contract: clarify ordinary-user native/files demos and help; explicitly select demo/mock/all in local examples; local success grants no production/H0 authorization. Working sandbox prerequisites, staged gates and declared-policy fail-closed refusals remain unchanged.
-- Evidence: [task-235 audit](task-235-local-entrypoint-audit.md), [focused tests](../tests/quality/test_local_entrypoint_docs_codex235.py), [final output](../local-entrypoint-codex235-final-test-result.txt).
+- Evidence: [task-235 audit](task-235-local-entrypoint-audit.md), [focused tests](../tests/quality/test_local_entrypoint_docs_codex235.py), [final output](../reports/local-entrypoint-codex235-final-test-result.txt).
 - Validation: **255 passed in 0.57s**; guarded help/command parsing and report-only installer rendering plus existing synthetic admission regressions. Driver AST is unchanged excluding argparse description/help strings; runner/admission/runtime source is unchanged. No H0, model, payload, Docker or host administration.
 - Status: `isolated`; documentation/help/output-text clarification only. No runtime readiness, gate closure or production authorization; parent review/integration remains separate.
 - Commit: accompanying focused task-235 documentation/help/tests commit.

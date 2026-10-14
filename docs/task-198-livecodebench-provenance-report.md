@@ -90,7 +90,7 @@ Local code/documentation used only to define the requested claim:
 - `data/registry.py`: `split_sha`, `is_eval_id`, `default_split`.
 - `tools/lcb740_identity.py`: strict metadata schema and independently supplied
   approval-digest requirement.
-- `LCB_GATE.md`, `DOWNLOADS.md` and the existing journal/blocker entries:
+- `reports/LCB_GATE.md`, `DOWNLOADS.md` and the existing journal/blocker entries:
   historical declarations of the unresolved gate. They are local claims, not
   independent custody evidence. The public-statement file and all pool/source
   rows, tests and reference solutions were left unread.

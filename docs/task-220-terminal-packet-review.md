@@ -29,7 +29,7 @@ review adds no schema keys or observer implementation.
 
 No mistaken runtime closure was found:
 
-- The [Codex 168 audit](../filesystem-quota-codex168-report.md) explicitly says
+- The [Codex 168 audit](../reports/filesystem-quota-codex168-report.md) explicitly says
   host kernel/mount/quota state was not inspected. Its source inventory also
   records `host_kernel_mount_and_quota_state="not_inspected"` and live enforcement
   as unverified. The packet correctly keeps current host capability unknown.

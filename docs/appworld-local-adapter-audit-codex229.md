@@ -36,7 +36,7 @@ The adapter describes `ground_truth/evaluation.py` and
 ([adapter](../data/appworld.py#L49), lines 49–51). The checker delegates to
 `world.evaluate()` rather than naming an evaluator source hash. These local
 declarations alone do not authenticate the canonical upstream release, evaluator
-implementation, or license. The separate [canonical public-source review](../appworld-canonical-source-codex229-report.md)
+implementation, or license. The separate [canonical public-source review](../reports/appworld-canonical-source-codex229-report.md)
 supplies pinned public code/license evidence; task evaluator payloads were not
 inspected and actual production-image correspondence remains unverified.
 

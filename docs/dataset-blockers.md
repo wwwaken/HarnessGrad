@@ -27,21 +27,21 @@ remain represented with their refusal evidence. Adapters without a specific
 journal entry have an explicit `journal-coverage` gap, rather than an inferred
 passing status. AgentDojo's code-solvable selected metadata/privacy and defensive
 detection review is closed by the synthetic controls documented in
-[the Codex 180 report](../agentdojo-metadata-privacy-codex180-report.md). The active
+[the Codex 180 report](../reports/agentdojo-metadata-privacy-codex180-report.md). The active
 `production-route-admission` runtime blocker preserves the separate unresolved
 production route. No production `run_one` or H0 readiness follows from these
 tests, and no adversarial execution is delegated by this index.
 
 AppWorld's `trusted-trial-evidence-writer` code blocker is closed for saved
 verdicts by the synthetic writer/report tests documented in
-[the Codex 183 report](../appworld-trusted-trial-writer-codex183-report.md).
+[the Codex 183 report](../reports/appworld-trusted-trial-writer-codex183-report.md).
 Scorer facts and explicit original trial identities survive persistence;
 anonymous or compacted cells stay unaligned. Progress/events remain insufficient
 measurement inputs. The successful-task and shared production gates remain open.
 
 BFCL's `simple-ast-contract` remains `external` after partial pinned official
-source acquisition in [Codex 195](../bfcl-source-provenance-codex195-report.md)
-and the [Codex 227 checker retry](../bfcl-blob-retry-codex227-report.md).
+source acquisition in [Codex 195](../reports/bfcl-source-provenance-codex195-report.md)
+and the [Codex 227 checker retry](../reports/bfcl-blob-retry-codex227-report.md).
 `ast_checker.py` and `type_mappings.py` are acquired with Git blob checks;
 direct model-config and Java/JS converter helpers, complete dependency/runtime
 closure, archive binding and independent custodian approval remain missing.
@@ -81,14 +81,14 @@ review did not authenticate the external artifacts or measure any benchmark.
 The registry never authorizes production execution.
 
 TriviaQA's original evaluator acquisition gate is closed at source/test level by
-the pinned code-only fixture and the [Codex 215 review](../triviaqa-review-codex215-report.md).
+the pinned code-only fixture and the [Codex 215 review](../reports/triviaqa-review-codex215-report.md).
 The active `upstream-evaluator-acquisition` entry is retired. Normalization and
 all-alias EM corrections are already merged; fabricated text, structured,
 empty and absent answers retain the v2 scorer identity and upstream reference
 in evidence written by the materialized verifier. No further adapter EM drift
 was reproduced. The remaining `hub-export-scorer-linkage` blocker is `external`:
 independently pinned export-to-loader/scorer code and metadata are still needed.
-The [Codex 225 metadata review](../triviaqa-hub-linkage-codex225-report.md)
+The [Codex 225 metadata review](../reports/triviaqa-hub-linkage-codex225-report.md)
 pins an Apache-2.0 historical loader and manifest at `413205c1`, with Git
 commit/tree/blob checks. That source trims normalized aliases but omits human
 answers and domain/verified flags; no-context removes document lists. Exact Hub

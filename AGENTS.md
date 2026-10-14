@@ -4,7 +4,7 @@
 
 1. Close automatically solvable blockers and internalize reusable platform capabilities before launching large pilots.
 2. Use isolated Codex worktrees only. Parent reviews every diff, runs focused tests, rejects stale reports and unrelated changes, then merges safe commits and updates the journal.
-3. Keep up to 10 independent Codex tasks active when work can be parallelized. Every task must have a unique output filename; never trust inherited `report.md` without checking the diff and commit.
+3. Keep up to 10 independent Codex tasks active when work can be parallelized. Every task must have a unique output filename; never trust inherited `reports/report.md` without checking the diff and commit.
 4. Avoid idle rounds: combine waits with concrete receipt inspection, diff review, test execution, journal work or launch preparation. Do not spend a round only polling unchanged status.
 
 ## GPU execution

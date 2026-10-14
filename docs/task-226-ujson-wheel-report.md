@@ -202,12 +202,12 @@ python -B tools/check_dataset_blockers.py
 ```
 
 Final test counts and task-local cleanup are recorded in
-[`ujson-wheel-codex226-test-result.txt`](../ujson-wheel-codex226-test-result.txt)
+[`reports/ujson-wheel-codex226-test-result.txt`](../reports/ujson-wheel-codex226-test-result.txt)
 and the integration journal. The initial run had 23 failures and 38 passes:
 one lexical-versus-version ordering comparison error in the new ELF test and
 one nonliteral registry locator causing 22 cascading registry failures.
 Both were corrected; the original failure output is preserved in
-[`ujson-wheel-codex226-initial-test-result.txt`](../ujson-wheel-codex226-initial-test-result.txt).
+[`reports/ujson-wheel-codex226-initial-test-result.txt`](../reports/ujson-wheel-codex226-initial-test-result.txt).
 Raw readelf reports and initial pytest output retain tool-emitted trailing
 whitespace. Authored docs/code pass the focused staged whitespace check;
 normalizing pinned evidence would alter the preserved bytes.

@@ -417,7 +417,7 @@ implementation is supplied by this documentation change.
 
 The following findings and test count belong to Codex 168's historical revision,
 not this checklist conversion or a live host. Source hashes remain in
-[the audit inventory](../filesystem-quota-codex168-source-evidence.json).
+[the audit inventory](../reports/filesystem-quota-codex168-source-evidence.json).
 
 ### Historical source evidence
 
@@ -463,5 +463,5 @@ Docker observations are fabricated and disk usage is mocked. All test temporary
 files were confined to this worktree and removed afterwards. These tests validate
 contract refusals and bounded artifact handling, not installed quotas.
 
-See [the task report](../filesystem-quota-codex168-report.md) for the exact command
-and [captured output](../filesystem-quota-codex168-test-result.txt).
+See [the task report](../reports/filesystem-quota-codex168-report.md) for the exact command
+and [captured output](../reports/filesystem-quota-codex168-test-result.txt).

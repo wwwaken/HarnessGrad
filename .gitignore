@@ -296,3 +296,8 @@ harnessgrad_work/
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
 *.bundle
+
+# ------------------------------------------------------------ local scratch ---
+# pytest basetemp and Codex/review scratch trees: test output, never source.
+.scratch/
+.overleaf-mcp/

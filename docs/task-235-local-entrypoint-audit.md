@@ -51,8 +51,8 @@ proceeding past argparse, and render only the installer's report section using
 authored success facts. Existing synthetic regressions verify policy refusal before
 dispatch/cache/scoring, ordinary files compatibility and false authorization flags.
 The initial 251-test pass predates the installer text correction; both
-[initial](../local-entrypoint-codex235-test-result.txt) and
-[final](../local-entrypoint-codex235-final-test-result.txt) outputs are retained.
+[initial](../reports/local-entrypoint-codex235-test-result.txt) and
+[final](../reports/local-entrypoint-codex235-final-test-result.txt) outputs are retained.
 
 An AST comparison against the review basis confirms that `driver.py` is unchanged
 after excluding argparse description/help strings. `eval/`, `harnessgrad/`, `ckpt/`,

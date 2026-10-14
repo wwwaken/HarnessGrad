@@ -181,7 +181,7 @@ is permitted here.
    measured receipt separately before any expansion; failures/unmeasured results
    are not ordinary zero scores. This packet authorizes no H0 or pilot.
 
-Evidence: [Task 195 report](../bfcl-source-provenance-codex195-report.md),
+Evidence: [Task 195 report](../reports/bfcl-source-provenance-codex195-report.md),
 [source review](../tests/fixtures/bfcl_ast_source/candidate-codex195/README.md),
 [custodian request](../tests/fixtures/bfcl_ast_source/candidate-codex195/CUSTODIAN_REQUEST.md),
 source contract/gate above and selected-reader source/regressions. Historical

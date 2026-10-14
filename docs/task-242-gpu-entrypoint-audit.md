@@ -49,7 +49,7 @@ Even empty/null declarations trigger the hook. Its bounded receipt says
 `backend_observation_unavailable`, `observation=unknown`, `measured=false` and
 `production_authorized=false`, with no fabricated score. Tests retain both
 sandbox settings and cached-success refusal. See the historical
-[shared wiring audit](../SHARED_ADMISSION_WIRING.md).
+[shared wiring audit](../reports/SHARED_ADMISSION_WIRING.md).
 
 Thus, “no universal prerequisite” does not mean that every dataset currently runs.
 The task neither removes that existing hook nor introduces a strict backend mode,
@@ -65,7 +65,7 @@ effective quotas nor sandbox enforcement. Missing observations remain unknown,
 not claims that the host lacks support.
 
 The [quota specification](filesystem-quota-backends.md),
-[diagnostic policy](../DIAGNOSTIC_POLICY.md) and pinned
+[diagnostic policy](../reports/DIAGNOSTIC_POLICY.md) and pinned
 [task-234 readiness review](task-234-diagnostic-readiness.md) keep their own
 scope and requirements. This task supplies no production admission, dataset-gate
 closure, diagnostic receipt, benchmark score or expansion authorization.
@@ -81,13 +81,13 @@ command binds both pytest basetemp and standard-library `TMPDIR` beneath
 Initial invocation: **1 passed, 5 setup errors** because `.scratch` did not exist;
 no runtime control failed. After creating that directory, the new suite passed
 **6 tests**. Both outputs are preserved in
-`gpu-entrypoint-codex242-initial-test-result.txt` and
-`gpu-entrypoint-codex242-corrected-test-result.txt`.
+`reports/gpu-entrypoint-codex242-initial-test-result.txt` and
+`reports/gpu-entrypoint-codex242-corrected-test-result.txt`.
 
 An earlier focused run also passed 156 tests, but bound only pytest's scratch
 path. Existing receipt tests use standard-library temporary runner directories,
 so the suite was repeated with explicit `TMPDIR`. The earlier output is preserved
-in `gpu-entrypoint-codex242-focused-initial-test-result.txt`; it is not evidence
+in `reports/gpu-entrypoint-codex242-focused-initial-test-result.txt`; it is not evidence
 that all scratch writes stayed inside this worktree.
 
 Final focused verification uses:
@@ -104,10 +104,10 @@ env TMPDIR=/tmp/hg-codex-242/.scratch/task242-stdlib-temp \
 ```
 
 Focused result: **156 passed**, no failures or skips. The
-[focused output](../gpu-entrypoint-codex242-test-result.txt) is the test result,
+[focused output](../reports/gpu-entrypoint-codex242-test-result.txt) is the test result,
 not production runtime evidence. `bash -n` passed for the three shell entrypoints;
 `git diff --check` passed. The
-[static checks](../gpu-entrypoint-codex242-static-validation.txt) also confirm
+[static checks](../reports/gpu-entrypoint-codex242-static-validation.txt) also confirm
 that the driver AST is unchanged after removing argparse description/help text.
 Scratch cleanup is test-file housekeeping, not a backend cleanup receipt.
 The [HTML overview](task-242-gpu-entrypoint-overview.html) summarizes these boundaries.

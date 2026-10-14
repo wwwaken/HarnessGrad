@@ -108,7 +108,7 @@
       "evidence": [
         {
           "kind": "repository",
-          "path": "SHARED_ADMISSION_WIRING.md",
+          "path": "reports/SHARED_ADMISSION_WIRING.md",
           "locator": "These APIs validate supplied dictionaries"
         }
       ],
@@ -145,7 +145,7 @@
       "evidence": [
         {
           "kind": "repository",
-          "path": "scorer-closure-codex170-report.md",
+          "path": "reports/scorer-closure-codex170-report.md",
           "locator": "Generic production scoring"
         }
       ],
@@ -163,7 +163,7 @@
       "evidence": [
         {
           "kind": "repository",
-          "path": "scorer-closure-codex170-report.md",
+          "path": "reports/scorer-closure-codex170-report.md",
           "locator": "Trusted verifier isolation"
         }
       ],
@@ -181,7 +181,7 @@
       "evidence": [
         {
           "kind": "repository",
-          "path": "SHARED_ADMISSION_WIRING.md",
+          "path": "reports/SHARED_ADMISSION_WIRING.md",
           "locator": "Container-state"
         }
       ],
@@ -199,7 +199,7 @@
       "evidence": [
         {
           "kind": "repository",
-          "path": "scorer-closure-codex170-report.md",
+          "path": "reports/scorer-closure-codex170-report.md",
           "locator": "Official scorer invocation"
         }
       ],
@@ -218,7 +218,7 @@
       "evidence": [
         {
           "kind": "repository",
-          "path": "runner-admission-codex-158-report.md",
+          "path": "reports/runner-admission-codex-158-report.md",
           "locator": "snapshot"
         }
       ],
@@ -284,7 +284,7 @@
       "commit": "c95c2e0e17521707e8f96e05b773a95a5474f356",
       "registry_followup_commit": "9890b721abcd50bf175e06359b89127bff0b566d",
       "evidence": [
-        "bfcl-blob-retry-codex227-report.md",
+        "reports/bfcl-blob-retry-codex227-report.md",
         "tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json",
         "tests/fixtures/bfcl_ast_source/retry-codex227/verification.json"
       ],
@@ -307,7 +307,7 @@
       "task": "229",
       "commit": "5b957766af78884d5c4d9f592ba24f36fa057c7b",
       "evidence": [
-        "appworld-canonical-source-codex229-report.md",
+        "reports/appworld-canonical-source-codex229-report.md",
         "docs/appworld-local-adapter-audit-codex229.md",
         "docs/evidence/appworld-codex229/source-provenance.json"
       ],
@@ -362,7 +362,7 @@
       "task": "225-integrated",
       "commit": "22b7011635c8ecbcd1a5ea951e5580ec14e02e10",
       "evidence": [
-        "triviaqa-hub-linkage-codex225-report.md",
+        "reports/triviaqa-hub-linkage-codex225-report.md",
         "tests/fixtures/triviaqa_hub_codex225/README.md"
       ],
       "observed": "Historical HuggingFace loader/config/license and Git linkage retained; exact export revision requests failed.",
@@ -395,7 +395,7 @@
             },
             {
               "kind": "repository",
-              "path": "agentdojo-metadata-privacy-codex180-report.md",
+              "path": "reports/agentdojo-metadata-privacy-codex180-report.md",
               "locator": "Metadata review closure and production boundary"
             },
             {
@@ -609,7 +609,7 @@
             },
             {
               "kind": "repository",
-              "path": "bfcl-blob-retry-codex227-report.md",
+              "path": "reports/bfcl-blob-retry-codex227-report.md",
               "locator": "checker acquired; complete checker closure remains blocked"
             },
             {
@@ -1425,7 +1425,7 @@
             },
             {
               "kind": "repository",
-              "path": "scienceworld-platform-writes-codex186-report.md",
+              "path": "reports/scienceworld-platform-writes-codex186-report.md",
               "locator": "Code-solvable prevention review is closed"
             }
           ],
@@ -1782,7 +1782,7 @@
             },
             {
               "kind": "repository",
-              "path": "triviaqa-review-codex215-report.md",
+              "path": "reports/triviaqa-review-codex215-report.md",
               "locator": "Only confirmed repository-solvable mismatch: the active registry still named upstream evaluator acquisition as open."
             },
             {
@@ -1792,7 +1792,7 @@
             },
             {
               "kind": "repository",
-              "path": "triviaqa-hub-linkage-codex225-report.md",
+              "path": "reports/triviaqa-hub-linkage-codex225-report.md",
               "locator": "Compatibility for the exact Hub revision is not established."
             }
           ],
@@ -1941,10 +1941,10 @@
   },
   "source_inputs_sha256": {
     "AGENTS.md": "21d1d9e375bcb849bcfcdf4c4f1101e8467114d9d977d9b9a9ebd763b5c14602",
-    "SHARED_ADMISSION_WIRING.md": "925c47070fdc739a30c01dff3c015579a3a42903ef1cde8196814f794eafb07b",
-    "appworld-canonical-source-codex229-report.md": "7bd0ddb5a6e40d96802d53fb7929813f0bfeb654293b9857310418a6d013fd54",
-    "bfcl-blob-retry-codex227-report.md": "646bd482ab41fc6c1f462f9f9b3d755c0def676f73fc1195e10546373786c542",
-    "bfcl-packet-review-codex217-report.md": "c4cfb7cb5a8de9445c2da48e5bf9673dbd16f4b80edb978b32e8d9b8770d9190",
+    "reports/SHARED_ADMISSION_WIRING.md": "925c47070fdc739a30c01dff3c015579a3a42903ef1cde8196814f794eafb07b",
+    "reports/appworld-canonical-source-codex229-report.md": "7bd0ddb5a6e40d96802d53fb7929813f0bfeb654293b9857310418a6d013fd54",
+    "reports/bfcl-blob-retry-codex227-report.md": "646bd482ab41fc6c1f462f9f9b3d755c0def676f73fc1195e10546373786c542",
+    "reports/bfcl-packet-review-codex217-report.md": "c4cfb7cb5a8de9445c2da48e5bf9673dbd16f4b80edb978b32e8d9b8770d9190",
     "data/agentdojo.py": "0cc0b62386178ce8f4cb0589289d7a3001de60d1b217dfb8f3129951363a77b5",
     "data/alfworld.py": "9c146d216458a6736afd889770eddf1e3c1edae93b54ce69ff0cd5f7fe8be5b4",
     "data/api_bank.py": "6f286e6af09c32f73bfd79d1a2d0923110ecb31a8a2f005f885ec14b77ebf960",
@@ -2022,11 +2022,11 @@
     "eval/scorer_bundle.py": "f8f61d1affc1960e7561c5f5a2c6a2b655b2535e4968b01e2acf15e8ee4be9df",
     "eval/tracing.py": "09fa5368e4c387cf0f386f23bf1de685938c5178f247a0889eeb03daa86e291c",
     "eval/verifier.py": "68f090e599d4e18f340c261ed0dc1fec3423b7bfc5b0b322bc40a6bbe4ad254a",
-    "filesystem-quota-codex168-report.md": "da888d7d3ac11fcae185d8c2f47a71d0d5eda5eda4993e693f188dc3269187f1",
-    "filesystem-quota-codex168-source-evidence.json": "4f3fe417d30e2777852d9e97580ef3890c5c6a0421355cad2d565a7a338786fb",
+    "reports/filesystem-quota-codex168-report.md": "da888d7d3ac11fcae185d8c2f47a71d0d5eda5eda4993e693f188dc3269187f1",
+    "reports/filesystem-quota-codex168-source-evidence.json": "4f3fe417d30e2777852d9e97580ef3890c5c6a0421355cad2d565a7a338786fb",
     "harnessgrad/records.py": "8c2266f4b4e22726db30a2a0215a3f63886a972687cbb86be6c09174e30a9979",
     "harnessgrad/trusted_runner.py": "a6a779ce1aca4bc79fea87989520917d87aebef657771d5b751caf6ea7146f18",
-    "scorer-backend-review-codex221-report.md": "b5ba52f6aacfa857f2d5ac4e60089bf7f818e8d98e22e413558b017839ad9a6c",
+    "reports/scorer-backend-review-codex221-report.md": "b5ba52f6aacfa857f2d5ac4e60089bf7f818e8d98e22e413558b017839ad9a6c",
     "tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json": "cfe068700a22530ff30d53da0d0ba605745e50eae0996c00dc6cff17a94e5244",
     "tests/fixtures/bfcl_ast_source/retry-codex227/verification.json": "4709d6ec3236982e11159296a26bf6dd711c8aadfdae155e6e027d07d05aff43",
     "tests/fixtures/dataset_blockers/history-codex178.json": "4c778d435f4147eb04dbcee4e37a2bac3f0ac5a55584e3adf252ab12972d1300",
@@ -2038,7 +2038,7 @@
     "tests/quality/test_dataset_blockers.py": "99d7e8b54e6ae261d463dbebcf6fd7e43d2d32ac4e47683bb29bc074d018b786",
     "tools/check_dataset_blockers.py": "2ef27119dfd07f8950d79f63bbd1454f4b5d22a0ceb6a72414b22a5ab08a5133",
     "tools/dataset_classes.py": "9b37863c3cc3c57bf9e054dcb4392c33cda948d59748453afdc4be34d4c4b151",
-    "triviaqa-hub-linkage-codex225-report.md": "97ab863db9220006def15d36784568870d02e66c0ae15404dde545578466710a",
-    "triviaqa-review-codex215-report.md": "fabf448fae30d131d55173d9c841785486c0fa39289db5be7ac63f9ea9946732"
+    "reports/triviaqa-hub-linkage-codex225-report.md": "97ab863db9220006def15d36784568870d02e66c0ae15404dde545578466710a",
+    "reports/triviaqa-review-codex215-report.md": "fabf448fae30d131d55173d9c841785486c0fa39289db5be7ac63f9ea9946732"
   }
 }

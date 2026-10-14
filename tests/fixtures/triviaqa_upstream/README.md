@@ -138,7 +138,7 @@ reads before importing its private adapter instance.
 The task-205 suite adds separator/Unicode differential cases, matches beyond
 alias 200 (normalized aliases, human answers and their combination), and actual
 shared-verifier evidence checks on synthetic hit/miss inputs. See
-[`triviaqa-scorer-review-codex205-report.md`](../../../triviaqa-scorer-review-codex205-report.md).
+[`reports/triviaqa-scorer-review-codex205-report.md`](../../../reports/triviaqa-scorer-review-codex205-report.md).
 
 Run the current review from the repository root, with temporary output inside this worktree:
 

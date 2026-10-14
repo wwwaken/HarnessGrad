@@ -208,7 +208,7 @@ evidence remains blocked and invalid/unmeasured, never an ordinary zero score; c
 sampling or using `--no-sandbox` does not satisfy those gates. These local demo examples
 explicitly use general sampling (`all`); the CLI default is staged `diagnostic`, which
 requires `--policy-evidence`, one task, one trial, one job and zero improvement rounds.
-Production diagnostics and pilots remain subject to [the staged policy](DIAGNOSTIC_POLICY.md)
+Production diagnostics and pilots remain subject to [the staged policy](reports/DIAGNOSTIC_POLICY.md)
 and dataset gates; general sampling is not production authorization. See the
 [runner admission contract](docs/runner-admission-contract.md) and the
 [operator/backend quota checklist](docs/filesystem-quota-backends.md).

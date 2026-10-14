@@ -10,7 +10,7 @@ The checks below are requirements for claiming the strict profile's enforced
 byte/inode bounds; they do not add an installation step for every user. Existing
 gated diagnostics/pilots still need their required evidence and review.
 
-Review basis: the [quota source audit](../filesystem-quota-codex168-report.md)
+Review basis: the [quota source audit](../reports/filesystem-quota-codex168-report.md)
 at `10e983fc5fcb006c5afdbce1ef851dad71e953f2` found no complete connected
 byte-and-inode backend; it did **not** inspect host quota capabilities. The
 [2026-10-06 storage note](moving-docker-data-root.md) reports containerd-backed

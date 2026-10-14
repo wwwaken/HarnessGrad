@@ -21,8 +21,8 @@ or represented as a diagnostic receipt.
 | `driver.save_policy_receipt`, train/eval publication callbacks | The current driver always supplies unknown cleanup/snapshot and no lifecycle, even if a lifecycle is placed in the policy-evidence file. Otherwise measured scores become unmeasured/null; staged curve publication is refused. A trusted producer and its integration remain a launch blocker. |
 | [Run metadata writer](../harnessgrad/records.py), driver metadata call | `run_meta.json` records declared context and planned coverage, separately from final receipt evidence. No operational `runs/` directory or `run_meta.json` was available in this worktree. This review covers the current writer contract, not a live run elsewhere. |
 
-The [Codex 193 audit](../staged-receipt-audit-codex193-report.md) and
-[Codex 177 lifecycle review](../lifecycle-codex177-report.md) provide historical
+The [Codex 193 audit](../reports/staged-receipt-audit-codex193-report.md) and
+[Codex 177 lifecycle review](../reports/lifecycle-codex177-report.md) provide historical
 findings; the behavior above was rechecked against current source. Their synthetic
 successes are not production evidence. No dataset is declared ready here.
 

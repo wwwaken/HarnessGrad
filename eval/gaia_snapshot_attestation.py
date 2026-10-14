@@ -20,7 +20,7 @@ ATTESTATION_SCHEMA = "harnessgrad.gaia-compatibility.v1"
 # These two files are exclusively this offline review's output and tests.
 # No directory-wide docs/tests exemption: such files can be runtime inputs.
 REVIEW_ONLY = frozenset({
-    "GAIA_GATE.md", "tests/quality/test_gaia_snapshot_attestation.py",
+    "reports/GAIA_GATE.md", "tests/quality/test_gaia_snapshot_attestation.py",
 })
 REQUIRED_SOURCE = frozenset({
     "data/gaia.py", "data/gaia/control.py", "data/command_control.py",

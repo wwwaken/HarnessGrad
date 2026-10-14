@@ -16,7 +16,7 @@ and visible Git history; its findings remain pending reconciliation.
   Git. All six local source/document SHA-256s in its metadata match this checkout.
   This checks those files, not complete source/runtime equivalence.
 - Local context: [dry-preflight report](gaia-preflight-codex175-report.md),
-  [source/snapshot gate](../GAIA_GATE.md), and
+  [source/snapshot gate](../reports/GAIA_GATE.md), and
   [quota checklist](filesystem-quota-backends.md). Historical receipts cited by
   these documents were not opened or revalidated.
 - Task 210 read repository source/docs and Git metadata only, within
