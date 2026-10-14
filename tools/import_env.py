@@ -53,7 +53,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-import eval.container as container
+import eval.containers.container as container
 
 
 def _run(argv: list[str], *, timeout: int = 1800) -> subprocess.CompletedProcess:

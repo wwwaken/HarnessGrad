@@ -18,7 +18,7 @@ JDK **17**, not the newest: the JAR is built in 2025 and a newer JDK may refuse 
 target in a way that does not name Java.
 
 The platform's verification namespace hides everything outside `/usr`, the interpreter
-prefix and the task directory (`eval/sandbox.py`), and the dataset root is none of those.
+prefix and the task directory (`eval/containers/sandbox.py`), and the dataset root is none of those.
 So the JRE is materialized **into the workdir** by both `SETUP` and `VERIFY.inputs` and
 found through `java_home(workdir)` below. That is the same rule the QA batch learned for
 its check (§15.1): anything the check needs must be in its inputs, because the platform

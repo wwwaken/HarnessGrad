@@ -14,9 +14,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from eval import artifact_admission as artifacts
-from eval import scorer_bundle as bundles
-from eval.pilot_admission import AdmissionError
+from eval.admission import artifact_admission as artifacts
+from eval.admission import scorer_bundle as bundles
+from eval.admission.pilot_admission import AdmissionError
 
 
 @pytest.fixture(autouse=True)

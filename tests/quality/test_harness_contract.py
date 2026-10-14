@@ -123,7 +123,7 @@ def _harness_imports(entry: Path) -> set[str]:
 
 def _overlay_importables(harness_dir: Path) -> set[str] | None:
     """这个 harness 的覆盖层里能 import 到的顶层名字。没有覆盖层就返回 None。"""
-    from eval import harness_runtime
+    from eval.containers import harness_runtime
     spec = harness_runtime.install_spec(harness_dir)
     if spec is None:
         return None

@@ -15,8 +15,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval import artifact_admission as artifacts
-from eval.pilot_admission import AdmissionError, LOG_CONFIG
+from eval.admission import artifact_admission as artifacts
+from eval.admission.pilot_admission import AdmissionError, LOG_CONFIG
 
 
 @pytest.fixture(autouse=True)

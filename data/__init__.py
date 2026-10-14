@@ -3,7 +3,7 @@
 Before the QA batch this directory had no `__init__.py`, which made it a namespace
 package: `import data.alfworld` worked and there was no package object to speak of.
 A check that runs inside the verification namespace may not read the platform tree
-(`eval/sandbox.py` puts a tmpfs over it), so the check's imports travel with it -- the
+(`eval/containers/sandbox.py` puts a tmpfs over it), so the check's imports travel with it -- the
 scaffold is copied into `<workdir>/data/qa/` and the adapter into `<workdir>/data/`,
 and the scaffold's own `from data.qa import base` then has to resolve **there**.
 

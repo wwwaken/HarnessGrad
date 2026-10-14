@@ -7,7 +7,8 @@ import subprocess
 
 import pytest
 
-from eval import diagnostic_policy as policy, lifecycle_receipt as lifecycle
+from eval.policy import diagnostic_policy as policy
+from eval.admission import lifecycle_receipt as lifecycle
 from lifecycle_fixtures_codex177 import attest, completed_lifecycle, stage_evidence, summaries
 
 BINDING = dict(adapter_id="synthetic-adapter-177", run_id="unit-diagnostic",

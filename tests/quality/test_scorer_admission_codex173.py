@@ -14,10 +14,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from eval import artifact_admission as artifacts
-from eval import scorer_admission as admission
-from eval import scorer_bundle as bundles
-from eval.pilot_admission import AdmissionError, LOG_CONFIG
+from eval.admission import artifact_admission as artifacts
+from eval.admission import scorer_admission as admission
+from eval.admission import scorer_bundle as bundles
+from eval.admission.pilot_admission import AdmissionError, LOG_CONFIG
 
 
 @pytest.fixture(autouse=True)

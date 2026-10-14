@@ -386,7 +386,7 @@ def test_a_task_outside_the_run_cannot_refuse_it():
     `envs`、`setups`、`verifiers` 三个表里都有另一侧的条目,而镜像预检遍历的是
     `envs` 的全部值。
     """
-    import eval.container as container
+    import eval.containers.container as container
 
     class _Spec:                                     # 只够 _resolve_envs 用
         kind = "exec"

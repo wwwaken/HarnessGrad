@@ -101,7 +101,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 ### C-008 — Offline runner enforcement and bounded receipts
 
 - Trigger: the cached-pilot reservation ledger does not enforce writable disk/inode quotas; GAIA snapshot failure exposed missing snapshot/resource closure.
-- Contract: `eval.runner_admission` checks trusted observations against frozen runtime, no-network, byte/inode, snapshot and cleanup policies. Receipts bind adapter/run/trial/manifest, retain policy/observation hashes and stay at most 16 KiB. Cleanup uncertainty requests quarantine and capacity retention.
+- Contract: `eval.admission.runner_admission` checks trusted observations against frozen runtime, no-network, byte/inode, snapshot and cleanup policies. Receipts bind adapter/run/trial/manifest, retain policy/observation hashes and stay at most 16 KiB. Cleanup uncertainty requests quarantine and capacity retention.
 - Known-fault repair: byte-only Docker snapshot preflight now refuses malformed/nonpositive limits, negative sizes, unknown roots and query failures; receipts expose maxima, reserves, deadlines and `quota_enforced=false`.
 - Validation: fabricated facts and fake Docker only; focused command and results in `reports/runner-admission-codex-158-report.md`.
 - Reuse: [runner admission contract](runner-admission-contract.md); backend observer/enforcement, atomic lease integration, snapshot worker limits and complete owned cleanup still require independent verification.

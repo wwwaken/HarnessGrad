@@ -52,7 +52,7 @@ or split alone does not establish comparability across scorer identities.
 
 ## Trial-mean versus test@N
 
-`eval/runner.py::evaluate` implements repeated-trial averaging. For a task with
+`eval/run/runner.py::evaluate` implements repeated-trial averaging. For a task with
 measured rewards `r_1, ..., r_N`, its score is `(r_1 + ... + r_N) / N`. The run score
 averages these task means across measured tasks. Thus binary rewards `[1, 0, 0]`
 produce a task mean of `1/3`. Increasing `--trials` measures repeatability; it adds

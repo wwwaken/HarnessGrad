@@ -7,7 +7,7 @@ Workspace: `/tmp/hg-codex-220`; date: 2026-10-14.
 ## Corrections
 
 - The [packet's scorer observation checklist](task-211-terminal-operator-backend-packet.md)
-  said “created/stopped.” The actual [artifact runtime check](../eval/artifact_admission.py)
+  said “created/stopped.” The actual [artifact runtime check](../eval/admission/artifact_admission.py)
   requires both `State.Status="created"` and `State.Running=false`. An exited
   container with `Running=false` is refused. The packet now states the exact
   fields, and three facade regressions cover an exited container and either
@@ -33,15 +33,15 @@ No mistaken runtime closure was found:
   host kernel/mount/quota state was not inspected. Its source inventory also
   records `host_kernel_mount_and_quota_state="not_inspected"` and live enforcement
   as unverified. The packet correctly keeps current host capability unknown.
-- The [scorer facade](../eval/scorer_admission.py) checks pinned declared bytes,
+- The [scorer facade](../eval/admission/scorer_admission.py) checks pinned declared bytes,
   selected exports and supplied runtime facts. It does not prove official-source
   completeness, authenticate an observer or execute the official scorer. The
   packet preserves those open obligations.
-- [Runner admission](../eval/runner_admission.py) still requires a read-only root,
+- [Runner admission](../eval/admission/runner_admission.py) still requires a read-only root,
   network none, exact paired limits and distinct scope IDs. Writable-root quota
   evidence or a local endpoint does not change those refusals. Its five-kind
   cleanup receipt does not replace the sidecar's eight-kind cleanup requirements.
-- `benchmark_blockers` in [pilot admission](../eval/pilot_admission.py) retains
+- `benchmark_blockers` in [pilot admission](../eval/admission/pilot_admission.py) retains
   three unconditional gates per task plus quota and official-execution blockers.
   The [driver](../driver.py) still writes unknown cleanup/snapshot without a
   lifecycle receipt. Task-211 does not authorize a diagnostic or expansion.

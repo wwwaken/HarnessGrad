@@ -334,7 +334,7 @@ def test_the_check_s_own_tally_becomes_a_rate():
     是 0.1、噪声约 ±0.1:仪器看不见它自己要测的效应,而这个数从 2026-10-04 起就被解析出来了,
     只是 `_save_verdicts` 手挑六个字段把它丢了。
     """
-    from eval.runner import test_rate_of
+    from eval.run.runner import test_rate_of
 
     assert test_rate_of({"tests": {"passed": 4, "failed": 1}}) == 0.8
     assert test_rate_of({"tests": {"passed": 0, "failed": 5}}) == 0.0
@@ -358,7 +358,7 @@ def test_the_curve_point_always_says_whether_a_tally_existed(tmp_path):
     `+0.100` 的提升(`docs/experiment_noise.md`)。所以字段恒在:`null` 表示平台看过、没有检查
     报测试数,`test_rate_n_tasks` 说有几道题报了。
     """
-    from eval.runner import test_rate_of
+    from eval.run.runner import test_rate_of
     from harnessgrad.records import _curve_point, test_rate_fields
 
     # 没有任何检查报测试数

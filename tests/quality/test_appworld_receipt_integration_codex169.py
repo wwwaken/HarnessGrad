@@ -14,9 +14,9 @@ import sys
 
 import pytest
 
-from eval.appworld_reporting import TGC_METRIC, build_report, make_manifest, receipts_from_verdicts
-from eval.console import Console
-from eval.tracing import _write_progress
+from eval.policy.appworld_reporting import TGC_METRIC, build_report, make_manifest, receipts_from_verdicts
+from eval.observe.console import Console
+from eval.observe.tracing import _write_progress
 from harnessgrad.records import _save_verdicts
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -35,7 +35,7 @@ dataset_root = Path(sys.argv[1]).resolve().parents[1] / 'data'
 class DenyExecutionImports(importlib.abc.MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
         if (fullname.split('.')[0] in {'data', 'appworld'}
-                or fullname in {'eval.runner', 'eval.container', 'harnessgrad.trusted_runner'}):
+                or fullname in {'eval.run.runner', 'eval.containers.container', 'harnessgrad.trusted_runner'}):
             raise AssertionError('report attempted an execution/dataset import')
 sys.meta_path.insert(0, DenyExecutionImports())
 def deny_execution(event, args):

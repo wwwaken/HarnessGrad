@@ -11,9 +11,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval import sandbox
-from eval.runner import run_one
-from eval.runtime_policy import admit_native_network, stage_agent_runtime
+from eval.containers import sandbox
+from eval.run.runner import run_one
+from eval.policy.runtime_policy import admit_native_network, stage_agent_runtime
 
 
 def control_module():
@@ -48,7 +48,7 @@ def test_live_backend_is_refused_before_staging_or_execution(tmp_path, monkeypat
     def unexpected(*args, **kwargs):
         pytest.fail("admission must happen before allocating task storage")
 
-    monkeypatch.setattr("eval.runner.tempfile.mkdtemp", unexpected)
+    monkeypatch.setattr("eval.run.runner.tempfile.mkdtemp", unexpected)
     with pytest.raises(ValueError, match="live agent backend"):
         run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
                 env={"kind": "files", "network": "none"})
@@ -117,7 +117,7 @@ def test_control_cannot_accept_an_unmeasured_zero(tmp_path, monkeypatch, verdict
     control = control_module()
     module = SimpleNamespace(VERIFY={"synthetic": {}}, VERIFY_TIMEOUT_S=300,
                              DEFAULT_ENV={"kind": "files", "network": "none"})
-    monkeypatch.setattr("eval.verifier._verify", lambda *args, **kwargs: verdict)
+    monkeypatch.setattr("eval.verification.verifier._verify", lambda *args, **kwargs: verdict)
     reward, _ = control.run_check(module, {"task_id": "synthetic"}, tmp_path)
     assert reward == -1.0
 

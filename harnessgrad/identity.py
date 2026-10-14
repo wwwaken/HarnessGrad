@@ -159,7 +159,7 @@ def _identity(man: dict, sha: str, mode: str, method_model: str = "n/a",
         # harness we wrote. An agent CLI reads its model from its own config file or a
         # flag, so the platform's environment can be entirely ignored -- which is how
         # the record starts lying. A harness may therefore declare what ran it, in its
-        # trace (`eval/tracing.py:_last_identity`), and the declaration wins.
+        # trace (`eval/observe/tracing.py:_last_identity`), and the declaration wins.
         "agent_model": _model_of(declared),
         "agent_backend": _backend_of(declared),
         "agent_model_source": ("harness" if (declared or {}).get("agent_model")

@@ -12,7 +12,7 @@ Everything here is about one of five things, and each one is a claim the adapter
   a differential so a re-implementation cannot drift into agreement on the easy third of the pool;
 * **the two leaks** -- `Annotator Metadata` (the annotator's search steps) and `file_path` (an
   internal release path) must not appear anywhere a task shows the agent;
-* **the containers** -- both control arms through `eval.runner.run_one`, because for an `exec`
+* **the containers** -- both control arms through `eval.run.runner.run_one`, because for an `exec`
   dataset the by-hand arm has no meaningful form (the verifier's paths are container-absolute).
 """
 from __future__ import annotations
@@ -203,7 +203,7 @@ def test_platform_control_refuses_regardless_of_arm():
     score for either arm). A real container run belongs to the staged diagnostic path
     once a trusted backend observer exists; it is not a unit test.
     """
-    from eval import runner
+    from eval.run import runner
 
     task = {"task_id": CONTROL_TASK}
     for env in (dataset.ENV[CONTROL_TASK], {"kind": "exec", "state": "container",

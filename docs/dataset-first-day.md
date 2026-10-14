@@ -147,7 +147,7 @@ Dropping rows is allowed. Dropping them **silently** is not. The batch's worked 
 
 Measured on this host by running one check under `--platform` and asking what exists outside
 its workdir: an absolute path under the dataset root **did not exist**, `HOME` was `/tmp`, and
-a neighbouring dataset's runtime was absent. `eval/sandbox.py` starts from an empty root and
+a neighbouring dataset's runtime was absent. `eval/containers/sandbox.py` starts from an empty root and
 binds only `/usr`, the interpreter prefix, the work root and the task directory.
 
 The consequence is stronger than "prefer `VERIFY.inputs`": **a dependency outside the work root

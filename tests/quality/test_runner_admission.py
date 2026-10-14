@@ -10,7 +10,8 @@ from types import SimpleNamespace
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from eval import container, runner_admission as admission
+from eval.containers import container
+from eval.admission import runner_admission as admission
 
 BINDING = dict(adapter_id="synthetic-adapter", run_id="synthetic-run-158",
                trial_id="synthetic-trial-1", manifest_sha256="a" * 64)

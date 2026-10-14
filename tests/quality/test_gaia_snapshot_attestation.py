@@ -10,8 +10,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from eval import container
-from eval import gaia_snapshot_attestation as attestation
+from eval.containers import container
+from eval.policy import gaia_snapshot_attestation as attestation
 
 
 @pytest.fixture(autouse=True)
@@ -297,7 +297,7 @@ def test_admission_failure_prevents_commit(monkeypatch):
 @pytest.mark.parametrize("failure_stage", ["stop", "admission", "commit"])
 def test_runner_snapshot_failures_are_invalid_and_attempt_owned_teardown(
         tmp_path, monkeypatch, failure_stage):
-    from eval import container_state
+    from eval.containers import container_state
 
     repo = tmp_path / "synthetic-harness"
     repo.mkdir()

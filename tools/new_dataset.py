@@ -457,7 +457,7 @@ read here is the platform\'s and not anything the agent could have edited.
 Two outcomes that must not be confused, and this check keeps them apart:
 
 * **the task cannot be measured** -- the gold it was handed is missing or unreadable. No
-  reward file is written and the evidence says `measured: false`; `eval/verifier.py` reports
+  reward file is written and the evidence says `measured: false`; `eval/verification/verifier.py` reports
   that as an unmeasured task rather than as a zero the agent earned.
 * **the agent failed** -- the interface file was there and the state does not match. That is
   a `0`, written like any other reward.
@@ -539,7 +539,7 @@ artefact it hands over: `SETUP[task]` materializes the tree, the harness acts in
 
 **Three traps this shape has already paid for.**
 
-1. **The check cannot see the dataset root.** `eval/sandbox.py` starts the verification
+1. **The check cannot see the dataset root.** `eval/containers/sandbox.py` starts the verification
    namespace from an empty root and binds only `/usr`, the interpreter prefix, the work root
    and the task directory, so an absolute path under `DATASET_ROOT` is simply absent
    (`FileNotFoundError`, `HOME=/tmp`). Everything the check needs -- gold, schema, a helper

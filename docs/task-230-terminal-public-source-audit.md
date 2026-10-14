@@ -69,7 +69,7 @@ task's `tests/` into `/tests`, reads `/logs/verifier/reward.txt` and asks for
 `/logs/verifier/ctrf.json` as evidence. These declarations were reviewed as
 platform source; the adapter was never imported.
 
-[`eval/verifier.py`](../eval/verifier.py) parses a numeric text reward and
+[`eval/verification/verifier.py`](../eval/verification/verifier.py) parses a numeric text reward and
 constructs `passed=bool(score)`. Its container-state path also uses its own CTRF
 evidence handling. The acquired Harbor source instead exposes a named-reward
 result and JSON-before-text precedence. These observations distinguish the
@@ -109,7 +109,7 @@ installation or image contents merely because it belongs to the framework.
 
 The [existing integration review](../reports/TERMINAL_INTEGRATION_REVIEW.md) and current
 local source continue to describe a snapshot-based platform path:
-[`eval/container_state.py`](../eval/container_state.py) stops and commits actor
+[`eval/containers/container_state.py`](../eval/containers/container_state.py) stops and commits actor
 state; the verifier creates a grader from that snapshot. That is separate from
 official runner provenance and from a bounded artifact-only export.
 

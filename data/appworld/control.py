@@ -63,7 +63,7 @@ def _local(task: dict, oracle: bool, workdir: Path) -> int:
 
 
 def _platform(task: dict, oracle: bool, workdir: Path, sandbox: bool) -> int:
-    from eval.runner import run_one
+    from eval.run.runner import run_one
     repo = workdir / "harness"
     shutil.copytree(ROOT / "data/appworld/oracle_harness", repo, dirs_exist_ok=True)
     setup = {"files": [{"path": "aw", "from": str(ROOT / "data/appworld/cli/aw")}]}

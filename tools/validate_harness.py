@@ -48,7 +48,7 @@ def _compile_problems(base: Path) -> list[str]:
     """Python in this harness that does not compile.
 
     **Not part of `smoke`.** `smoke` runs the harness, and the candidate path turns it
-    off -- `eval/candidate.py` calls `validate(..., smoke=False)`, because running a
+    off -- `eval/run/candidate.py` calls `validate(..., smoke=False)`, because running a
     candidate to decide whether it is a candidate is circular and expensive. So the syntax
     of a candidate tree was never checked on the one path where a tree is most likely to
     be broken: a method wrote it.
@@ -56,7 +56,7 @@ def _compile_problems(base: Path) -> list[str]:
     Measured (2026-10-04, `B2-llm`): the method's edit replaced `agent.py` with two lines
     and a `SyntaxError`; the candidate validated (re-verified by running this validator on
     the saved state: "NO PROBLEMS"), and the run recorded **five `harness_failed` tasks
-    and a 0.000 curve point** where one named problem belonged. `eval/candidate.py`'s own
+    and a 0.000 curve point** where one named problem belonged. `eval/run/candidate.py`'s own
     docstring already listed "Python that does not compile" as one of the three outcomes
     its check exists to separate.
 

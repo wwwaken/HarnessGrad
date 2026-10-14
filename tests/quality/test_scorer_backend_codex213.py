@@ -7,8 +7,8 @@ import json
 
 import pytest
 
-from eval import lifecycle_receipt as lifecycle, runner_admission, scorer_admission
-from eval import scorer_backend as backend
+from eval.admission import lifecycle_receipt as lifecycle, runner_admission, scorer_admission
+from eval.admission import scorer_backend as backend
 from lifecycle_fixtures_codex177 import attest, gate_facts
 # Reuse the public-API inert bundle/export fixture and its execution/socket guards.
 from test_scorer_admission_codex173 import example, offline_only

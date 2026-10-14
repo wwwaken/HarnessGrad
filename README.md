@@ -303,7 +303,7 @@ each is the kind that would otherwise have been read as a result:
    * the platform hashes its own files around every method call, so a method that
      edits its own scorer fails the run — `FAILING RUN`, the paths named, no
      `curve.jsonl`, exit `3`;
-   * the harness now runs in its **own mount namespace** (`eval/sandbox.py`), where
+   * the harness now runs in its **own mount namespace** (`eval/containers/sandbox.py`), where
      `HarnessGrad/` is not present at all. Measured from inside: `.env`,
      `driver.py`, `harnessgrad/`, `eval/`, `methods/` and other runs' workspaces do not exist —
      the path is an empty mount point, not a refused read. Cost: **+11.1 ms** per task, +0.53% against a model call, and

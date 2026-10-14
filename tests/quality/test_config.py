@@ -201,12 +201,12 @@ def test_the_migrated_modules_read_the_snapshot_not_the_raw_environment(monkeypa
 
     monkeypatch.setenv("HG_ENV_MODEL", "env-side-model")
     config.reset()
-    from eval.services import service_env
+    from eval.service.services import service_env
     env = service_env([{"name": "sim", "port": 1, "needs_model": True}],
                       task_id="t", run_seed="s")
     assert env["HG_ENV_MODEL"] == "env-side-model"
 
     monkeypatch.setenv("HG_OVERLAY_ROOT", "/tmp/hg-overlays-test")
     config.reset()
-    from eval import harness_runtime
+    from eval.containers import harness_runtime
     assert harness_runtime.overlays_root() == Path("/tmp/hg-overlays-test")

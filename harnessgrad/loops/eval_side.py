@@ -15,8 +15,8 @@ import os
 import time
 
 from ckpt.git_state import commit_state
-from eval.console import CONSOLE as console
-from eval.runner import evaluate
+from eval.observe.console import CONSOLE as console
+from eval.run.runner import evaluate
 from harnessgrad.environments import _env_record
 from harnessgrad.environments import _report_harness_failed
 from harnessgrad.environments import _report_invalid

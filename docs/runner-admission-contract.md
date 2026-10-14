@@ -1,6 +1,6 @@
 # Offline runner admission contract
 
-`eval.runner_admission` provides reusable checks for adapter runtime, snapshot and
+`eval.admission.runner_admission` provides reusable checks for adapter runtime, snapshot and
 cleanup observations. It performs no execution or discovery. The supplied facts
 must come from a trusted backend observer, independently of actor output and adapter
 declarations. A passing synthetic contract is not a production H0 authorization.
@@ -99,7 +99,7 @@ bounded by the actor's cgroup. No generic multiplier proves commit peak usage.
 Record commit exit/OOM/timeout, final image identity and size, and owned-image
 cleanup separately. Failure or incomplete evidence stays unmeasured.
 
-The existing `eval.container.snapshot_admission` remains byte-only preflight. It
+The existing `eval.containers.container.snapshot_admission` remains byte-only preflight. It
 now rejects malformed limits, negative/invalid size observations, invalid Docker
 roots and query failures, and records byte limits and inspection/commit deadlines.
 Its receipt explicitly says `preflight_only=true`, `quota_enforced=false`. It
@@ -124,7 +124,7 @@ apply `lease_action=release` after a passing receipt; every cleanup refusal carr
 
 ## Synthetic validation
 
-`eval.lifecycle_receipt` composes these checks into immutable lifecycle checkpoints:
+`eval.admission.lifecycle_receipt` composes these checks into immutable lifecycle checkpoints:
 `scope → admit → execute → quiesce → score → seal → cleanup`. Runtime and cleanup
 transitions recheck supplied `policy`/`observed` facts through this module. Seal
 requires snapshot completion, artifact identity, snapshot-worker runtime admission,

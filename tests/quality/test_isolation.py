@@ -24,7 +24,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval.integrity import (PLATFORM, diff, snapshot,  # noqa: E402
+from eval.run.integrity import (PLATFORM, diff, snapshot,  # noqa: E402
                             workspace_is_outside_platform)
 
 #: The shared platform directories this file may read but must never write.
@@ -101,8 +101,8 @@ def test_snapshot_covers_the_referee_not_the_candidate():
     """
     snap = snapshot(ROOT)
     assert "driver.py" in snap, "the driver decides what a curve means"
-    assert "eval/integrity.py" in snap, "the checker watches itself"
-    assert "eval/runner.py" in snap, "the runner runs the subject"
+    assert "eval/run/integrity.py" in snap, "the checker watches itself"
+    assert "eval/run/runner.py" in snap, "the runner runs the subject"
     assert ".env" in snap, "the credentials pay for the measurement"
     assert not [k for k in snap if k.startswith("base_harness/")], \
         "base_harness/ is a candidate, not a referee"
@@ -195,23 +195,23 @@ def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path, monkeypatch):
     """Rule 2, exercised through the real runner.
 
     The harness here is the worst case the platform can be handed: one whose
-    entrypoint appends to `eval/runner.py` -- the file that decides what its own
+    entrypoint appends to `eval/run/runner.py` -- the file that decides what its own
     answer is worth. `evaluate()` must name it.
 
     `PLATFORM_ROOT` points at a synthetic platform under `tmp_path` rather than
-    the checkout. `evaluate()` is in `eval/runner.py`, which imports that global
+    the checkout. `evaluate()` is in `eval/run/runner.py`, which imports that global
     into its own namespace, so patching it there changes the root the check
-    actually hashes -- and rewriting the real `eval/runner.py` is what raced
+    actually hashes -- and rewriting the real `eval/run/runner.py` is what raced
     every concurrent test that imports or walks `eval/`.
     """
     import data.registry as registry
-    from eval.runner import evaluate
+    from eval.run.runner import evaluate
 
     platform = tmp_path / "platform"
-    (platform / "eval").mkdir(parents=True)
-    victim = platform / "eval" / "runner.py"
+    victim = platform / "eval" / "run" / "runner.py"
+    victim.parent.mkdir(parents=True)
     victim.write_text("# the synthetic runner\n")
-    monkeypatch.setattr("eval.runner.PLATFORM_ROOT", platform)
+    monkeypatch.setattr("eval.run.runner.PLATFORM_ROOT", platform)
 
     tasks_all, scorable = registry.load("demo")
     tasks = tasks_all[:1]
@@ -233,7 +233,7 @@ def test_a_harness_that_edits_the_platform_fails_the_run(tmp_path, monkeypatch):
     # unavailable. With the sandbox on, the same harness cannot write at all --
     # see tests/quality/test_sandbox.py for that half.
     res = evaluate(harness, tasks, scorable, harness_sha="evil", sandbox=False)
-    assert "eval/runner.py" in res["tampered"].get("modified", []), res
+    assert "eval/run/runner.py" in res["tampered"].get("modified", []), res
     assert victim.read_bytes() != original, "the harness really did write"
 
     # And the honest case must be silent, or the check is just noise.
@@ -265,7 +265,7 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
     `runs/`.
 
     The whole platform is copied and the driver runs from the copy. The probe
-    harness has to be able to edit `eval/runner.py` for the check to fire, and
+    harness has to be able to edit `eval/run/runner.py` for the check to fire, and
     doing that against the real checkout made this file unsafe to run next to
     anything else: a file rewritten for a moment is missing for whoever walks
     the tree at that moment. The copy is byte-identical, so the check under test
@@ -277,7 +277,7 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
 
     harness = copy / "base_harness" / "_probe_evil"
     harness.mkdir()
-    victim = copy / "eval" / "runner.py"
+    victim = copy / "eval" / "run" / "runner.py"
     (harness / "harness.json").write_text(json.dumps(
         {"name": "probe-evil", "version": "0.0.1", "entrypoint": "agent.py"}))
     (harness / "agent.py").write_text(
@@ -298,7 +298,7 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
     )
     assert proc.returncode == 3, f"{proc.returncode}: {proc.stdout[-500:]}"
     assert "FAILING RUN" in proc.stderr, proc.stderr[-600:]
-    assert "eval/runner.py" in proc.stderr, proc.stderr[-600:]
+    assert "eval/run/runner.py" in proc.stderr, proc.stderr[-600:]
     # The refusal has to say the number is unusable, not merely that something moved.
     # This asserted the literal phrase "not a measurement" until it stopped existing;
     # `harnessgrad/records.py::_require_untampered` now says the run's integrity is
@@ -337,7 +337,7 @@ def test_the_method_side_guard_fails_the_call(tmp_path):
         ".git", "runs", "__pycache__", "current_harness"))
 
     cheat = tmp_path / "cheat.py"
-    victim = copy / "eval" / "metrics.py"
+    victim = copy / "eval" / "run" / "metrics.py"
     cheat.write_text(
         "import pathlib, sys\n"
         f"victim = pathlib.Path({str(victim)!r})\n"
@@ -366,7 +366,7 @@ def test_the_method_side_guard_fails_the_call(tmp_path):
         proc = subprocess.run([sys.executable, str(probe)], cwd=copy,
                               capture_output=True, text=True, timeout=180)
         assert proc.returncode == 3, f"{proc.returncode}: {proc.stdout} {proc.stderr}"
-        assert "eval/metrics.py" in proc.stdout, proc.stdout
+        assert "eval/run/metrics.py" in proc.stdout, proc.stdout
     finally:
         shutil.rmtree(copy, ignore_errors=True)
 
@@ -428,7 +428,7 @@ out = {
     "listing": sorted(x.name for x in platform.iterdir()) if platform.is_dir() else None,
     "data": (platform / "data" / "probe_set.py").exists(),
     "dotenv": (platform / ".env").exists(),
-    "scorer": (platform / "eval" / "runner.py").exists(),
+    "scorer": (platform / "eval" / "run" / "runner.py").exists(),
     "own_program": Path(sys.argv[0]).exists(),
     "agent_key": bool(os.environ.get("HG_AGENT_API_KEY")),
     # 记录目录:里面有**每一道题的轨迹**,包括 eval 侧。它是方法最想要的东西 ——
@@ -456,7 +456,7 @@ def test_a_method_cannot_read_the_platform_it_is_being_measured_by(tmp_path):
 
     方法原本是普通子进程,平台整个在盘上 —— 而它自己的 `argv[0]` 就是
     `methods/<name>/run.py`,往上三层就是平台根。实测能读到 `data/probe_set.py`
-    (也就是**每一道题的期望答案,包括 eval 侧**)、`.env` 和 `eval/runner.py`,而且手里
+    (也就是**每一道题的期望答案,包括 eval 侧**)、`.env` 和 `eval/run/runner.py`,而且手里
     有两把密钥。唯一的检查是调用前后的哈希,只看得见**写**。
 
     后果不是"泄露一点信息":方法把答案写死进 harness,每题满分,平台报告说这个方法很强,
@@ -599,7 +599,7 @@ def test_the_harness_gets_only_its_own_credential(tmp_path):
 def test_the_harness_has_no_memory_from_one_task_to_the_next(tmp_path):
     """**每一条可写路径都必须是每任务独立的。**
 
-    `.state/` 用的是 tmpfs 而不是 bind,理由写在 `eval/sandbox.py` 里:任务 N 留下的
+    `.state/` 用的是 tmpfs 而不是 bind,理由写在 `eval/containers/sandbox.py` 里:任务 N 留下的
     东西不能影响任务 N+1 的分数。但 `.state/` 只是三条可写路径之一,另外两条是
     `/tmp` 和 `HOME` —— 而一个有记忆的 harness 可以跨题累积,更重要的是可以把 eval 侧
     的信息带出去。这里四条路径一起测。

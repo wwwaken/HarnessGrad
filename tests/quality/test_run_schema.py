@@ -145,12 +145,12 @@ def test_a_tampered_run_is_reported_and_never_certified(tmp_path):
 
     在磁盘上它和有效的 run 没有区别 —— 除非校验器去看 `tampered`。
     """
-    point = _minimal_point(tampered={"modified": ["eval/runner.py"]})
+    point = _minimal_point(tampered={"modified": ["eval/run/runner.py"]})
     d = _write_run(tmp_path, points=[point], meta=_meta())
     got = certify(d)
     assert got["tampered"], got
     assert not got["certified"]
-    assert any("eval/runner.py" in t for t in got["tampered"])
+    assert any("eval/run/runner.py" in t for t in got["tampered"])
 
 
 def test_a_startup_failure_is_not_silently_a_low_score(tmp_path):

@@ -160,7 +160,7 @@ def test_targeted_platform_control_passes_selected_specs_to_runner(
         reward, _ = control.run_check(dataset, record, episode)
         return {"exit_code": 0, "verdict": {"score": reward, "passed": bool(reward)}}
 
-    monkeypatch.setitem(sys.modules, "eval.runner", SimpleNamespace(run_one=run_one))
+    monkeypatch.setitem(sys.modules, "eval.run.runner", SimpleNamespace(run_one=run_one))
     monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(tmp_path / "initial-work-root"))
     assert control.main([
         "--dataset", "chessbench_puzzles", "--oracle" if oracle else "--noop",

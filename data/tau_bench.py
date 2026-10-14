@@ -342,7 +342,7 @@ def _verifier(record: dict) -> dict:
         # **Top level, not `/verifier/...`, and that is not cosmetic.** The platform
         # copies these in *before* it starts the check's container, and it creates the
         # reward file's directory only *after* starting it (see `mkdir_in` in
-        # `eval/verifier.py`). `docker cp <file> <ctr>:/a/b/c` therefore fails with
+        # `eval/verification/verifier.py`). `docker cp <file> <ctr>:/a/b/c` therefore fails with
         # `Could not find the file /a/b` when the destination is nested and nothing has
         # made the parent yet. A top-level destination has `/` as its parent, which always
         # exists. Measured 2026-10-06: `/verifier/gt.json` failed the whole run with

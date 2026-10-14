@@ -15,7 +15,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval.integrity import diff, snapshot  # noqa: E402
+from eval.run.integrity import diff, snapshot  # noqa: E402
 from harnessgrad import methods, records  # noqa: E402
 
 

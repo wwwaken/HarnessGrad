@@ -21,8 +21,8 @@ import shutil
 import subprocess
 
 from ckpt.git_state import materialize
-from eval.tracing import loop_facts as _loop_facts
-from eval.tracing import task_file
+from eval.observe.tracing import loop_facts as _loop_facts
+from eval.observe.tracing import task_file
 
 from harnessgrad import PLATFORM_ROOT
 from harnessgrad.config import current as current_config
@@ -183,7 +183,7 @@ def _stage_task_context(work: Path, tasks, setups, verifiers, result,
     dest.mkdir(parents=True, exist_ok=True)
     verdicts = (result or {}).get("verdicts") or {}
     scores = (result or {}).get("per_task") or {}
-    #: What each harness **printed**, kept by `eval/runner.py` whether it failed or not.
+    #: What each harness **printed**, kept by `eval/run/runner.py` whether it failed or not.
     #: Shown here for the same reason the verifier's report is: the platform captured it
     #: and, until this existed, nobody read it.
     harness_output = (result or {}).get("harness_output") or {}

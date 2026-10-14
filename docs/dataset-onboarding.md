@@ -19,7 +19,7 @@ Three rules that produce most of the failures this page exists to prevent:
 1. **Read the function that computes the number**, not the paper. Dropping a requirement is
    a downgrade; adding one is an invention; both produce a plausible number.
 2. **Everything the check needs must travel in `VERIFY.inputs`.** The verification namespace
-   hides the platform tree (`eval/sandbox.py`), so a check that imports from `data/` works
+   hides the platform tree (`eval/containers/sandbox.py`), so a check that imports from `data/` works
    by hand and fails under `--platform`.
 3. **The gold never reaches the agent.** `SETUP` is trimmed of reference solutions,
    walkthroughs and expected outputs; `VERIFY.inputs` is re-materialised after the agent
@@ -43,7 +43,7 @@ unreachable check from a weak harness, and these are what separate them.
 
 Gates 1 and 2 must pass **twice**: by hand, and through the platform
 (`… --oracle --platform`, which drives `SETUP → harness → VERIFY` via
-`eval.runner.run_one`). The QA family's control is shared —
+`eval.run.runner.run_one`). The QA family's control is shared —
 `python3 data/qa/control.py --dataset <name> --oracle` — not a per-dataset script. Gate 3
 means *transcribe their function*, quote its upstream line numbers, and add a drift test that
 fails when the upstream lines move. Importing their package and calling it "the same" is not
@@ -226,7 +226,7 @@ Three measured traps:
   `agent_timeout_s` and friends — the platform defaults apply, so a task that needs longer
   must be sized down or dropped, and the drop must be recorded.
 * **A directory in `VERIFY.inputs` must be re-materialisable.** The platform clears the
-  target before copying (`eval/tracing.py::_clear_tree`), because a read-only input tree
+  target before copying (`eval/observe/tracing.py::_clear_tree`), because a read-only input tree
   (a JRE, a game suite) cannot be overwritten otherwise.
 * **A dataset-private helper must be named per dataset.** Two datasets that both ship a
   module called `control` collide in `sys.modules`; this only shows in a full-suite run.

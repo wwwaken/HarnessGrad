@@ -14,7 +14,7 @@ the official scorer says*. Everything else is identical and is written once here
 
 The answer contract, and why it is a file
 -----------------------------------------
-`answer.txt` is the platform's own convention (`eval/runner.py` reads it, every base
+`answer.txt` is the platform's own convention (`eval/run/runner.py` reads it, every base
 harness writes it), so a QA task needs no new channel: the goal says to write it, the
 harness writes it, and the check reads it. `data/qa/cli/qa` exists so a harness that
 only knows how to run shell commands can still answer, and so the format the scorer
@@ -75,7 +75,7 @@ ANSWER_FILE = "answer.txt"
 PREDICTION_FILE = "prediction.json"
 CLI_FILE = "qa"
 
-#: The container contract's locations. On a `files` environment `eval/verifier.py`
+#: The container contract's locations. On a `files` environment `eval/verification/verifier.py`
 #: resolves the absolute spelling against the workdir; the check's own `argv` carries
 #: the relative spelling its working directory understands. Identical to ALFWorld's, and
 #: for the same reason: the adapter stays a valid container dataset if one is ever built.
@@ -328,7 +328,7 @@ class QASpec:
         the copy the check reads is not the one the agent could have found.
 
         **Everything the check imports travels with it.** That is not tidiness: the
-        verification namespace puts a tmpfs over the platform tree (`eval/sandbox.py`
+        verification namespace puts a tmpfs over the platform tree (`eval/containers/sandbox.py`
         hides the work root's ancestors), so a check that imported `data.qa.verify.check`
         from the platform would fail to find it -- or, worse, would find whatever the
         subject left at that path. So the check, the parquet reader and the dataset's own

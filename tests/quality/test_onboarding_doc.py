@@ -200,7 +200,7 @@ def test_the_first_day_page_carries_the_measured_environment_fact():
     """The sandbox measurement is the one that decides heavy-dependency designs."""
     text = _first_day()
     assert "work root" in text and "VERIFY.inputs" in text
-    assert "eval/sandbox.py" in text, "the measurement must name the mechanism it measured"
+    assert "eval/containers/sandbox.py" in text, "the measurement must name the mechanism it measured"
 
 
 def test_the_two_pages_point_at_each_other():

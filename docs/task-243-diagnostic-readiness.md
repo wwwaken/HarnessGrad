@@ -34,14 +34,14 @@ turn a declaration into proof or supply an implemented ordinary-user admission p
 1. **The staged driver cannot produce a measured first-diagnostic receipt.**
    [`save_policy_receipt`](../driver.py#L572) always passes unknown cleanup and
    snapshot summaries and omits `lifecycle`, regardless of extra fields in supplied
-   policy evidence. [`build_receipt`](../eval/diagnostic_policy.py#L163) consequently
+   policy evidence. [`build_receipt`](../eval/policy/diagnostic_policy.py#L163) consequently
    withholds provisional measured scores as unmeasured/null; the driver refuses
    staged publication. This is a known missing producer/integration, not a demand
    for future cleanup facts before launch. It remains independent of quota policy.
 
 2. **The simplest QA candidates also encounter a concrete non-quota refusal.**
    [`QASpec.verifier`](../data/qa/base.py#L317) declares a verifier timeout;
-   [`_refuse_unobserved_policies`](../eval/runner.py#L33) refuses that declaration
+   [`_refuse_unobserved_policies`](../eval/run/runner.py#L33) refuses that declaration
    without trusted observations, before execution and cache lookup. A `files`
    environment therefore does not establish that GSM8K, Reasoning Gym, Physics
    Questions, Sports Understanding or StrategyQA has an admitted ordinary route.

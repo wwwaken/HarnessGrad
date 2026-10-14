@@ -8,7 +8,9 @@ import sys
 
 import pytest
 
-from eval import container, runner, services
+from eval.containers import container
+from eval.run import runner
+from eval.service import services
 
 ROOT = Path(__file__).resolve().parents[2]
 

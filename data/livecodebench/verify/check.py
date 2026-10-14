@@ -67,7 +67,7 @@ def _workdir_on_path() -> None:
     solves it by launching its runner from a scratch directory that holds `execution.py`; here
     the two directories are one `sys.path` entry apart, which is cheaper. Measured, because the
     platform arm failed on exactly this: by hand the control sets `PYTHONPATH`, and under
-    `eval.verifier` it does not, so `import testing_util` raised `ModuleNotFoundError` only in
+    `eval.verification.verifier` it does not, so `import testing_util` raised `ModuleNotFoundError` only in
     the sandbox run.
     """
     work = str(Path.cwd())

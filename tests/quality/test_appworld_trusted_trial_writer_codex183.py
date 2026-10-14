@@ -11,7 +11,7 @@ import subprocess
 
 import pytest
 
-from eval.appworld_reporting import TGC_METRIC, build_report, make_manifest, receipts_from_verdicts
+from eval.policy.appworld_reporting import TGC_METRIC, build_report, make_manifest, receipts_from_verdicts
 from harnessgrad.records import _save_verdicts
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -25,7 +25,7 @@ def reporting_only(monkeypatch, tmp_path):
 
     def guarded_import(name, *args, **kwargs):
         assert name.split(".")[0] not in {"data", "appworld"}
-        assert name not in {"eval.runner", "eval.container", "harnessgrad.trusted_runner"}
+        assert name not in {"eval.run.runner", "eval.containers.container", "harnessgrad.trusted_runner"}
         return original_import(name, *args, **kwargs)
 
     def guarded_open(path, *args, **kwargs):

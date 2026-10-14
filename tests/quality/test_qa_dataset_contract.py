@@ -88,7 +88,7 @@ def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
 
 def _run_check(module, record: dict, workdir: Path, *,
                re_materialize: bool = True) -> tuple[float, dict]:
-    """Run the check the way `eval/verifier.py` does: re-materialize, then run."""
+    """Run the check the way `eval/verification/verifier.py` does: re-materialize, then run."""
     verifier = module.VERIFY[record["task_id"]]
     if re_materialize:
         for entry in verifier.get("inputs") or []:

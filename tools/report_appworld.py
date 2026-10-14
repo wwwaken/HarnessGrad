@@ -17,7 +17,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from eval.appworld_reporting import build_report, make_manifest, receipts_from_verdicts
+from eval.policy.appworld_reporting import build_report, make_manifest, receipts_from_verdicts
 
 
 def main() -> int:

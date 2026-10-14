@@ -52,7 +52,7 @@ inspected and actual production-image correspondence remains unverified.
 Counts and `SPLIT_SOURCE="declared"` are constants in
 [adapter](../data/appworld.py#L44), lines 44–47; the harness partition is in
 [adapter](../data/appworld.py#L194), lines 194–199. The report's labels are in
-[reporter](../eval/appworld_reporting.py#L13), lines 13–17. These are source-code
+[reporter](../eval/policy/appworld_reporting.py#L13), lines 13–17. These are source-code
 declarations, not a fresh validation of bundle contents or split coverage. The
 paper-era train/dev counts in the adapter docstring are an attributed historical
 claim; this audit does not use them as verified release facts.
@@ -68,7 +68,7 @@ successes. Its SGC identity is `appworld.scenario_goal_completion`; SGC is the
 fraction of same-trial conjunctions of all three variants of each scenario.
 Scenario and variant are parsed from task ID suffix `_1`, `_2`, `_3`, and
 cross-split scenarios are rejected
-([reporter](../eval/appworld_reporting.py#L20), lines 20–41 and 155–182).
+([reporter](../eval/policy/appworld_reporting.py#L20), lines 20–41 and 155–182).
 Incomplete variant selection, nonmeasured cells, or unaligned trials withhold
 SGC. A conjunction of task means is never used. The separate canonical review
 confirms upstream task/scenario metric terminology and all-variant aggregation.
@@ -79,11 +79,11 @@ Measured report cells require `measured is True`, the exact TGC metric identity,
 Boolean `success`, and no invalid/unmeasured override. Generic `passed`, scalar
 scores, or means cannot supply these facts. The report rejects explicit
 task/split/trial contradictions but permits absent evidence task/split fields
-([reporter](../eval/appworld_reporting.py#L120), lines 120–153). Report fractions
+([reporter](../eval/policy/appworld_reporting.py#L120), lines 120–153). Report fractions
 exclude missing, invalid and unmeasured cells and publish coverage separately.
 `recorded_unmeasured_task_trials` is a disjoint count;
 `unmeasured_task_trials` is the aggregate of invalid + missing + recorded
-unmeasured ([reporter](../eval/appworld_reporting.py#L184), lines 184–219).
+unmeasured ([reporter](../eval/policy/appworld_reporting.py#L184), lines 184–219).
 
 ## Saved writer capability and exact production evidence gap
 
@@ -105,7 +105,7 @@ The production runner iterates `for trial in range(trials)` but does not pass
 that number into `run_one` or add it to the returned verdict. Provider failures
 after a successful trial may be skipped. Multi-trial histories are lists of the
 surviving verdict dictionaries, without original numeric identity added
-([runner](../eval/runner.py#L915), lines 915–926, 948–959 and 1096–1098).
+([runner](../eval/run/runner.py#L915), lines 915–926, 948–959 and 1096–1098).
 Consequently the saved writer cannot establish same-trial SGC from this route's
 new anonymous checker verdicts, even if all three variants are selected and
 their TGC cells are measured; single anonymous verdicts are also unaligned.
@@ -116,7 +116,7 @@ from inventing identity for new records.
 The progress writer persists generic score/trial scores, last `passed`,
 `kind`, `detail`, `tests`, wall clock and completion status; it omits final and
 per-trial metric evidence and original trial identity
-([progress writer](../eval/tracing.py#L210), lines 210–237). These files cannot
+([progress writer](../eval/observe/tracing.py#L210), lines 210–237). These files cannot
 replace measured AppWorld receipts.
 
 The separate trusted-runner facade invokes an injected runner with a trial
@@ -128,7 +128,7 @@ numeric `trial` into the saved-verdict/report contract
 
 The shared verifier does preserve a JSON evidence file on the command/reward
 path and marks a missing evidence file unmeasured
-([verifier](../eval/verifier.py#L598), lines 598–641). That preservation neither
+([verifier](../eval/verification/verifier.py#L598), lines 598–641). That preservation neither
 creates missing original trial IDs nor binds the scorer source to production.
 
 Exact unresolved production writer requirement: a trusted producer must supply

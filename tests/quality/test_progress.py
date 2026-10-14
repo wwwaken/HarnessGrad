@@ -30,8 +30,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import eval.progress as progress                                    # noqa: E402
-from eval.console import Console                                    # noqa: E402
+import eval.observe.progress as progress                                    # noqa: E402
+from eval.observe.console import Console                                    # noqa: E402
 
 
 def _events(tmp_path: Path):
@@ -160,12 +160,12 @@ def test_a_long_docker_call_beats_while_it_waits(tmp_path, monkeypatch):
     这是这一整套东西存在的那个场景本身 —— 11:52 到 12:13 之间平台一条事件都没写,
     而它当时正在等一个容器把题做完。
 
-    心跳由**阶段**负责(`eval/progress.py` 里那条线程),不是由 stream 循环负责:
+    心跳由**阶段**负责(`eval/observe/progress.py` 里那条线程),不是由 stream 循环负责:
     第一版两处都在 beat,于是同一个间隔里出现两条记录 —— 一份自相矛盾的日志。
     这条测试因此分两半:stream 循环把输出读回来、按超时抛异常(下一条测试);
     阶段在**一个很长的等待**期间持续 beat(这一条)。
     """
-    import eval.container as container
+    import eval.containers.container as container
     import threading
     monkeypatch.setenv(progress.ENV_BEAT_S, "0.05")
     console, read = _events(tmp_path)
@@ -193,7 +193,7 @@ def test_a_long_docker_call_beats_while_it_waits(tmp_path, monkeypatch):
 
 def test_the_streaming_runner_still_raises_on_timeout(monkeypatch):
     """心跳不能把超时吃掉。超时是 enforcer 的一部分,不是可以顺带丢掉的细节。"""
-    import eval.container as container
+    import eval.containers.container as container
 
     class _NeverFinishes(_TimingOutPopen):
         def wait(self, timeout=None):

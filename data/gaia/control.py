@@ -13,7 +13,7 @@ dataset-specific is `oracle_files(task)` in `data/gaia.py` -- and here that is t
 **For an `exec` dataset the by-hand arm does not exist**: the verifier's paths are
 container-absolute (`/check.py`, `/app/answer.txt`), so running its argv on the host cannot
 work. The registration therefore passes `--platform`, and the arm that proves gates 1 and 2 is
-`eval.runner.run_one` against the real container -- which is also the arm that would catch an
+`eval.run.runner.run_one` against the real container -- which is also the arm that would catch an
 image or network mistake. `data/tau_bench.py` records the same situation and registers no
 control at all; this is the version that at least runs the arm that means something.
 """

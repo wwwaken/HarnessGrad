@@ -18,11 +18,11 @@ SOURCE_DIRS = ("data", "eval", "harnessgrad", "tools")
 
 # Exact file/module edges, not permission for all of eval to depend on config.
 ALLOWED_EVAL_CONFIG_EDGES = {
-    ("eval/harness_runtime.py", "harnessgrad.config"):
+    ("eval/containers/harness_runtime.py", "harnessgrad.config"):
         "Reads the resolved runtime overlay configuration.",
-    ("eval/sandbox.py", "harnessgrad.config"):
+    ("eval/containers/sandbox.py", "harnessgrad.config"):
         "Reads the resolved sandbox configuration.",
-    ("eval/services.py", "harnessgrad.config"):
+    ("eval/service/services.py", "harnessgrad.config"):
         "Reads the resolved service configuration.",
 }
 
@@ -30,27 +30,27 @@ ALLOWED_EVAL_CONFIG_EDGES = {
 # neither a whole control directory nor other imports from these files are exempt.
 # Remove an entry when its dependency is moved; stale entries fail the guard.
 EXCEPTIONS = {
-    ("data-eval", "data/alfworld/control.py", "eval.runner"):
+    ("data-eval", "data/alfworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one to validate adapter wiring.",
-    ("data-eval", "data/appworld/control.py", "eval.runner"):
+    ("data-eval", "data/appworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the AppWorld verifier.",
-    ("data-eval", "data/appworld.py", "eval.appworld_reporting"):
+    ("data-eval", "data/appworld.py", "eval.policy.appworld_reporting"):
         "The adapter shares make_manifest with reporting; moving it needs a separate refactor.",
-    ("data-eval", "data/command_control.py", "eval.runner"):
+    ("data-eval", "data/command_control.py", "eval.run.runner"):
         "The shared command control invokes run_one for platform verification.",
-    ("data-eval", "data/jericho/control.py", "eval.runtime_policy"):
+    ("data-eval", "data/jericho/control.py", "eval.policy.runtime_policy"):
         "The local control stages the declared runtime and applies the platform timeout.",
-    ("data-eval", "data/jericho/control.py", "eval.sandbox"):
+    ("data-eval", "data/jericho/control.py", "eval.containers.sandbox"):
         "The local control executes the game CLI in the platform sandbox.",
-    ("data-eval", "data/jericho/control.py", "eval.verifier"):
+    ("data-eval", "data/jericho/control.py", "eval.verification.verifier"):
         "The local control uses the platform verifier to interpret measured evidence.",
-    ("data-eval", "data/jericho/control.py", "eval.runner"):
+    ("data-eval", "data/jericho/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the Jericho verifier.",
-    ("data-eval", "data/qa/control.py", "eval.runner"):
+    ("data-eval", "data/qa/control.py", "eval.run.runner"):
         "The shared QA control invokes run_one to validate adapter wiring.",
-    ("data-eval", "data/scienceworld/control.py", "eval.runner"):
+    ("data-eval", "data/scienceworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the ScienceWorld verifier.",
-    ("data-eval", "data/spreadsheetbench/control.py", "eval.runner"):
+    ("data-eval", "data/spreadsheetbench/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the spreadsheet verifier.",
 }
 
@@ -168,6 +168,16 @@ def _policy_errors(edges: list[ImportEdge], exceptions=EXCEPTIONS,
 
 
 class ImportDirectionTests(unittest.TestCase):
+    def test_production_imports_use_canonical_eval_paths(self):
+        compatibility_modules = {
+            "eval." + path.stem for path in (ROOT / "eval").glob("*.py")
+        }
+        stale = [edge for edge in _source_imports(ROOT)
+                 if edge.target in compatibility_modules
+                 and edge.source not in compatibility_modules]
+        self.assertFalse(stale, "Import the canonical eval implementation:\n" + "\n".join(
+            f"{edge.file}:{edge.line}: {edge.statement}" for edge in stale))
+
     def test_current_source_layering(self):
         for directory in SOURCE_DIRS:
             self.assertTrue((ROOT / directory).is_dir(), f"missing source directory: {directory}")
@@ -176,7 +186,7 @@ class ImportDirectionTests(unittest.TestCase):
 
     def test_forbidden_import_forms(self):
         cases = [
-            ("harnessgrad/config/areas.py", "import eval.runner as runner"),
+            ("harnessgrad/config/areas.py", "import eval.run.runner as runner"),
             ("harnessgrad/config/__init__.py", "from data import registry"),
             ("harnessgrad/config/loader.py", "from tools.validate_run import main"),
             ("harnessgrad/config/loader.py", "from driver import main"),
@@ -185,17 +195,17 @@ class ImportDirectionTests(unittest.TestCase):
             ("harnessgrad/runtime/events.py", "import tools.validate_run"),
             ("harnessgrad/runtime/events.py", "import driver as cli"),
             ("data/new_adapter.py", "def load():\n    from eval import runner"),
-            ("data/new_adapter.py", "if False:\n    import eval.runner"),
+            ("data/new_adapter.py", "if False:\n    import eval.run.runner"),
             ("data/new_adapter.py", "from legacy import adapter"),
             ("eval/new_runner.py", "from legacy.compat import run"),
             ("harnessgrad/new_runtime.py", "import legacy.compat as compat"),
             ("eval/new_runner.py", "from harnessgrad import config"),
             # An approved file cannot add a dependency on a config submodule.
-            ("eval/services.py", "from harnessgrad.config import loader"),
+            ("eval/service/services.py", "from harnessgrad.config import loader"),
             # A directory/file exception cannot admit a different eval module.
-            ("data/qa/control.py", "from eval.services import start"),
+            ("data/qa/control.py", "from eval.service.services import start"),
         ]
-        modules = {"eval.runner", "data.registry", "harnessgrad.config",
+        modules = {"eval.run.runner", "data.registry", "harnessgrad.config",
                    "harnessgrad.config.loader"}
         for file, text in cases:
             with self.subTest(file=file, text=text):
@@ -207,33 +217,33 @@ class ImportDirectionTests(unittest.TestCase):
     def test_relative_imports_and_module_attributes(self):
         cases = [
             ("harnessgrad/runtime/__init__.py", "from .events import Stage", "harnessgrad.runtime.events"),
-            ("eval/runner.py", "from . import sandbox as sb", "eval.sandbox"),
+            ("eval/run/runner.py", "from ..containers import sandbox as sb", "eval.containers.sandbox"),
             ("harnessgrad/runtime/compat.py", "from ..config import current", "harnessgrad.config"),
-            ("eval/sub/runner.py", "from .. import services", "eval.services"),
-            ("eval/runner.py", "from harnessgrad import config as cfg", "harnessgrad.config"),
-            ("eval/runner.py", "from harnessgrad.config import *", "harnessgrad.config"),
+            ("eval/sub/runner.py", "from ..service import services", "eval.service.services"),
+            ("eval/run/runner.py", "from harnessgrad import config as cfg", "harnessgrad.config"),
+            ("eval/run/runner.py", "from harnessgrad.config import *", "harnessgrad.config"),
         ]
-        modules = {"eval.sandbox", "eval.services", "harnessgrad.config"}
+        modules = {"eval.containers.sandbox", "eval.service.services", "harnessgrad.config"}
         for file, text, target in cases:
             with self.subTest(file=file, text=text):
                 edges = _imports(file, text, modules)
                 self.assertEqual([edge.target for edge in edges], [target])
 
     def test_permissions_are_exact_and_require_reasons(self):
-        edges = _imports("data/example.py", "from eval.runner import run_one", set())
-        key = ("data-eval", "data/example.py", "eval.runner")
+        edges = _imports("data/example.py", "from eval.run.runner import run_one", set())
+        key = ("data-eval", "data/example.py", "eval.run.runner")
         self.assertEqual(_policy_errors(edges, {key: "Existing control dependency."}, {}), [])
         self.assertIn("review reason", "\n".join(_policy_errors(edges, {key: " "}, {})))
         self.assertIn("stale permission", "\n".join(_policy_errors([], {key: "Old edge."}, {})))
-        allowed = {("eval/services.py", "harnessgrad.config"): "Reads service configuration."}
-        edges = _imports("eval/services.py", "from harnessgrad import config", {"harnessgrad.config"})
+        allowed = {("eval/service/services.py", "harnessgrad.config"): "Reads service configuration."}
+        edges = _imports("eval/service/services.py", "from harnessgrad import config", {"harnessgrad.config"})
         self.assertEqual(_policy_errors(edges, {}, allowed), [])
         self.assertIn("stale permission", "\n".join(_policy_errors([], {}, allowed)))
 
     def test_permissions_do_not_admit_neighboring_files_or_modules(self):
         cases = [
-            ("data/example.py", "eval.runner", "eval.services", "data/other.py", "data-eval"),
-            ("eval/services.py", "harnessgrad.config", "harnessgrad.config.loader",
+            ("data/example.py", "eval.run.runner", "eval.service.services", "data/other.py", "data-eval"),
+            ("eval/service/services.py", "harnessgrad.config", "harnessgrad.config.loader",
              "eval/other.py", "eval-config"),
         ]
         for file, target, other_target, other_file, rule in cases:
@@ -248,10 +258,10 @@ class ImportDirectionTests(unittest.TestCase):
 
     def test_unrelated_layers_and_import_text_are_not_banned(self):
         cases = [
-            ("harnessgrad/trusted_runner.py", "from eval.runner import run_one"),
+            ("harnessgrad/trusted_runner.py", "from eval.run.runner import run_one"),
             ("data/example.py", "import evaluation\nimport legacy_helpers"),
             ("harnessgrad/runtime/events.py", "from ..config import current"),
-            ("data/example.py", '# import eval.runner\ntext = "import legacy"'),
+            ("data/example.py", '# import eval.run.runner\ntext = "import legacy"'),
         ]
         for file, text in cases:
             with self.subTest(file=file, text=text):

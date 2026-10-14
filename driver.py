@@ -31,16 +31,16 @@ from tools.improver import forbidden_reason
 from tools.improver import load_config as load_improvers
 from tools.improver import resolve as resolve_improver
 from ckpt.git_state import commit_state, manifest, stage_workspace
-from eval.console import CONSOLE as console
-from eval.metrics import select_task_set
-from eval import metrics
-from eval import diagnostic_policy
-from eval.integrity import PLATFORM_ROOT, workspace_is_outside_platform
-from eval.runner import evaluate
-import eval.container as container
-import eval.modelgate as modelgate
-import eval.sandbox as sandbox
-import eval.services as services_mod
+from eval.observe.console import CONSOLE as console
+from eval.run.metrics import select_task_set
+from eval.run import metrics
+from eval.policy import diagnostic_policy
+from eval.run.integrity import PLATFORM_ROOT, workspace_is_outside_platform
+from eval.run.runner import evaluate
+import eval.containers.container as container
+import eval.service.modelgate as modelgate
+import eval.containers.sandbox as sandbox
+import eval.service.services as services_mod
 import tools.web_gateway as web_gateway_mod
 
 
@@ -212,7 +212,7 @@ def describe_model() -> dict:
     }
 
 
-# The curve table is rendered by `eval/console.py`, next to the header and the
+# The curve table is rendered by `eval/observe/console.py`, next to the header and the
 # round lines, so that the human text and `events.jsonl` cannot drift apart. It
 # used to live here and carried a `sel` column that read `?` on every row of
 # every run this platform has produced, because mode A has no selection step to
@@ -893,7 +893,7 @@ def main() -> int:
             # the run's conditions from (§2.5.4).
             where += f" + services[{', '.join(svc_names)}]"
         # `args.sandbox`, **not** `sandbox`: the bare name in this module is
-        # `import eval.sandbox as sandbox`, so a truthiness test on it tests a *module
+        # `import eval.containers.sandbox as sandbox`, so a truthiness test on it tests a *module
         # object* and is always true. Measured: this condition silently never fired, so
         # the header named the container boundary and left out that the host-side one
         # was off. It is the same shadowing that produced `'bool' object has no

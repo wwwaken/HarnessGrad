@@ -12,13 +12,13 @@ The rule
 
 Nothing else is read. Not stdout, not a trace, not a summary the harness wrote beside
 the answer: an interactive or tool-using harness can make all of those say anything,
-and `answer.txt` is the platform's own answer channel (`eval/runner.py`), so it is the
+and `answer.txt` is the platform's own answer channel (`eval/run/runner.py`), so it is the
 one a harness has to mean.
 
 Why the gold is a file and not an argument
 ------------------------------------------
 `VERIFY.inputs` re-materializes it immediately before this check runs
-(`eval/verifier.py::_verify`), so the `gold.json` read here is the platform's copy. If
+(`eval/verification/verifier.py::_verify`), so the `gold.json` read here is the platform's copy. If
 the gold travelled as an argv value the check would be identical, but a check that reads
 a *path* is the shape ALFWorld already uses for its trusted game file, and one shape for
 "trusted input" is easier to keep trustworthy than two.
@@ -27,7 +27,7 @@ a *path* is the shape ALFWorld already uses for its trusted game file, and one s
 -------------------------------
 A check that cannot run -- no `gold.json`, a dataset module that will not import, an
 official scorer that refuses the contract -- writes **no reward file**, writes evidence
-saying `measured: false` and why, and exits 3. `eval/verifier.py` turns that into an
+saying `measured: false` and why, and exits 3. `eval/verification/verifier.py` turns that into an
 `invalid` task. A bare 0 would be indistinguishable from "the agent answered wrongly",
 and that distinction is the whole reason the evidence file exists.
 

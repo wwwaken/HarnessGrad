@@ -16,7 +16,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from eval import pilot_admission as admission
+from eval.admission import pilot_admission as admission
 POLICY = dict(growth_bytes_per_device=4, floor_bytes_per_device=8,
               inodes_per_device=100, floor_inodes_per_device=10,
               cpus=2, memory_bytes=9, pids=20)

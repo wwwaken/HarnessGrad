@@ -28,8 +28,8 @@ assignment, effective limits or coverage.
 | [Quota schema](filesystem-quota-evidence.schema.json), `$defs.observer`, `host_provisioning`, `project_scope` | Observer/boot/implementation/raw-observation hashes; administrator/change IDs; scope-to-provisioning digest; run/trial/manifest and allocation generation | No signature, key, host identity, challenge, trusted enrollment or replay database. An administrator ID is a claim; a hash checks bytes, not origin. |
 | [Backend requirements](filesystem-quota-backends.md), mandatory semantic checks | Protected immutable metadata, independent observer, exact arithmetic, matching host/boot/filesystem, increasing sequences, complete coverage and cleanup | These are requirements for a future semantic validator. Protected storage and submitted sequence fields alone do not authenticate a report. |
 | [Task-222 checklist](task-222-quota-administrator-checklist.md) | Inspection, separately approved maintenance and fresh post-change readback are distinct; incomplete observations stay worksheets | Does not specify enrollment, signer roles, signed bytes or a run-specific challenge/consumption protocol. |
-| [Runner contract](runner-admission-contract.md), [implementation](../eval/runner_admission.py), `_observation` / `admit_runtime` | Exact four-field binding and paired limits; distinct scope IDs; closed projected observations | Checks evidence-hash syntax and supplied facts. Does not resolve sidecars, verify signatures, query the kernel or remember consumed observations. |
-| [Lifecycle implementation](../eval/lifecycle_receipt.py), `_gate`, `_attestation`, `validate_lifecycle_receipt` | Replays ordered stages/facts, hashes events, binds scoring/sealing/snapshot/cleanup | Explicitly states that digests do not authenticate origin. The name `attestation` does not imply a signature. No collector, freshness service or lease update. |
+| [Runner contract](runner-admission-contract.md), [implementation](../eval/admission/runner_admission.py), `_observation` / `admit_runtime` | Exact four-field binding and paired limits; distinct scope IDs; closed projected observations | Checks evidence-hash syntax and supplied facts. Does not resolve sidecars, verify signatures, query the kernel or remember consumed observations. |
+| [Lifecycle implementation](../eval/admission/lifecycle_receipt.py), `_gate`, `_attestation`, `validate_lifecycle_receipt` | Replays ordered stages/facts, hashes events, binds scoring/sealing/snapshot/cleanup | Explicitly states that digests do not authenticate origin. The name `attestation` does not imply a signature. No collector, freshness service or lease update. |
 
 Quota sidecars and admission receipts retain `measured=false` and
 `production_authorized=false`. Lifecycle structural publication readiness is also
@@ -342,7 +342,7 @@ fresh evidence and permitted lifecycle handling, never a consumed permission.
 
 **Worker-binding mismatch requires an explicit contract decision.** The runner
 document requests distinct trial bindings/manifests for workers or phases;
-`eval.lifecycle_receipt._gate` always supplies the enclosing binding, including
+`eval.admission.lifecycle_receipt._gate` always supplies the enclosing binding, including
 snapshot worker runtime/preflight observations. Nesting a child-bound worker
 receipt cannot satisfy both. Proposed future resolution: separately admit
 preparation/snapshot workers using fresh child bindings; freeze an authenticated

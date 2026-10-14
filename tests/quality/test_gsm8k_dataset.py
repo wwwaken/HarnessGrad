@@ -56,7 +56,7 @@ def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
 
 def _run_check(module, record: dict, workdir: Path, *,
                re_materialize: bool = True) -> tuple[float, dict]:
-    """Run the check the way `eval/verifier.py` does: re-materialize, then run.
+    """Run the check the way `eval/verification/verifier.py` does: re-materialize, then run.
 
     The re-materialization is the part that matters. It is what makes the grade
     independent of the workdir's contents, and a test that skipped it would pass while
@@ -218,7 +218,7 @@ def test_the_check_re_materializes_the_gold(gsm8k, record, tmp_path):
 
     The workdir is writable by the subject, so a check that trusted the copy it found
     would let a harness grade itself. Here the check's copy is rewritten after the
-    harness would have stopped, exactly as `eval/verifier.py` does, and the planted gold
+    harness would have stopped, exactly as `eval/verification/verifier.py` does, and the planted gold
     (the agent's answer) does not move the reward.
     """
     _materialize(gsm8k, record, tmp_path, oracle=False)
@@ -235,7 +235,7 @@ def test_the_check_re_materializes_the_gold(gsm8k, record, tmp_path):
 def test_the_check_reports_unmeasured_when_the_gold_is_absent(gsm8k, record, tmp_path):
     """No gold means no measurement -- not the agent's zero.
 
-    `eval/verifier.py` reads `evidence["measured"] is False` and marks the task invalid,
+    `eval/verification/verifier.py` reads `evidence["measured"] is False` and marks the task invalid,
     which is a different outcome from a 0 the agent earned.
     """
     _materialize(gsm8k, record, tmp_path, oracle=True)

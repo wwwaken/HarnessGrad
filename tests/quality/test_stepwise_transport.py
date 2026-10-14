@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import data.chessbench_puzzles as dataset
-from eval.stepwise_transport import StepwiseTransportError, transport_stepwise
+from eval.service.stepwise_transport import StepwiseTransportError, transport_stepwise
 
 
 CHESS_FIELDS = frozenset({"contract", "fen", "solver_turn", "status", "verdict"})

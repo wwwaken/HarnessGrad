@@ -85,7 +85,7 @@ def _point_at_the_jvm(workdir: Path) -> Path | None:
     Measured, and it cost a control run: `py4j.java_gateway.launch_gateway` resolves the
     interpreter as `os.path.join(os.environ["JAVA_HOME"], "bin", "java")` and falls back to
     the bare name `java`. The platform hands a check a **minimal environment**
-    (`eval/verifier.py::_verifier_env`: PATH, HOME, LANG only), so without this the check
+    (`eval/verification/verifier.py::_verifier_env`: PATH, HOME, LANG only), so without this the check
     dies with `FileNotFoundError: [Errno 2] No such file or directory: 'java'` -- and the
     CLI, which ran with the login shell's PATH, had worked. A JVM only one of the two sides
     can find is exactly the failure `docs/dataset-onboarding-skill.md` §12 warns about.

@@ -19,7 +19,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from eval.runner import run_one  # noqa: E402
+from eval.run.runner import run_one  # noqa: E402
 
 
 ACTOR = '''import argparse, json, subprocess, sys

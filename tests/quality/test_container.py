@@ -22,10 +22,10 @@ from pathlib import Path
 
 import pytest
 
-import eval.container as container
+import eval.containers.container as container
 from ckpt.git_state import STATE_DIRNAME
 from data import registry
-from eval.integrity import PLATFORM_ROOT
+from eval.run.integrity import PLATFORM_ROOT
 
 ROOT = Path(__file__).resolve().parents[2]
 DEMO_IMAGE = os.environ.get("HG_EXEC_DEMO_IMAGE",
@@ -48,7 +48,7 @@ def _require_docker() -> str:
 #: makes the same file usable as the `files` control.
 #:
 #: The mode travels in `HG_AGENT_PROBE_MODE` rather than a plainer name on purpose --
-#: `eval/container.py` forwards an allowlist of `HG_AGENT_*` and the mode has to survive
+#: `eval/containers/container.py` forwards an allowlist of `HG_AGENT_*` and the mode has to survive
 #: it. `test_only_declared_variables_cross_into_the_container` pins the other half.
 HARNESS = '''\
 import argparse, json, os, pathlib, subprocess, sys
@@ -348,7 +348,7 @@ def test_the_cheat_would_pass_if_the_inputs_were_not_restored(tmp_path):
     (work / "out.txt").write_text("wrong\n")
 
     # What the platform does: restore the input, then run.
-    from eval.runner import _materialize
+    from eval.run.runner import _materialize
     _materialize(work, registry.load_tasks("verify_exec")[2]["e03"]["inputs"],
                  PLATFORM_ROOT)
 

@@ -10,7 +10,8 @@ from pathlib import Path
 import pytest
 
 from data import registry
-from eval import container, services
+from eval.containers import container
+from eval.service import services
 from harnessgrad.environments import _env_record, _resolve_envs
 
 ROOT = Path(__file__).resolve().parents[2]

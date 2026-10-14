@@ -187,7 +187,7 @@ location and against inputs the harness cannot modify**:
 **Exit code and score are independent.** The harness's exit code says whether the
 *harness* finished; the verifier says whether the *task* was completed. A harness
 that crashed but left working artifacts still scores — the platform grades the
-result, not the process. (This was already true: `eval/runner.py` recorded
+result, not the process. (This was already true: `eval/run/runner.py` recorded
 `exit_code` and never used it in the score.)
 
 **The harness may run the task's tests itself**, for its own feedback. That is its
@@ -315,7 +315,7 @@ because the same harness runs the exam: a harness that can read the verifier can
 on the eval side too. That is the boundary §2.5.9 holds — the check's inputs are copied in
 *after* the harness has stopped, into a fresh container — and it is why the expected
 answers may live in the **channel** while never being written into a **trace**
-(`eval/runner.py` writes no `scorable` into a trace, so no harness can read its own grade).
+(`eval/run/runner.py` writes no `scorable` into a trace, so no harness can read its own grade).
 
 **The channel is not the record.** `curve.jsonl`, the console's curve and per-task detail,
 and an exported harness's `PROVENANCE.md` keep everything. The channel is the copy a method
@@ -392,7 +392,7 @@ refused rather than clamped — the same rule method edits follow (§4.7).
 The harness's argv, its `task.json`, its read-only tree, its `.state/` scratch
 directory, and the sandbox that hides the platform are all exactly as before. A
 dataset with no `SETUP` and no `VERIFY` runs through the identical code path, and
-`eval/runner.py` short-circuits to the old string comparison.
+`eval/run/runner.py` short-circuits to the old string comparison.
 
 #### What this deliberately leaves out
 
@@ -459,7 +459,7 @@ harness *written against* that helper, which is us, not Codex.
 Running it inside buys three things:
 
 * **Paths are honest.** The harness sees `/app` because that is where the files are.
-  No translation, which is the property `eval/sandbox.py` already refuses to give up.
+  No translation, which is the property `eval/containers/sandbox.py` already refuses to give up.
 * **A CLI's tools are the task's tools.** `bash`, the file editor and the interpreter
   are the image's.
 * **`install` finally has a meaning** (§2.5.6): dependencies go into the environment.
@@ -756,7 +756,7 @@ silently upgraded.
 
 An environment-side model is a **third** model budget, after the harness's and the method's, and
 it needs the same separation the other two already have (`harness_env()` strips `HG_METHOD_*`,
-`eval/container.py` forwards an allowlist). So there are two prefixes with **two different
+`eval/containers/container.py` forwards an allowlist). So there are two prefixes with **two different
 audiences**, and the split is the point:
 
 | prefix | who receives it | what it carries |
@@ -1512,7 +1512,7 @@ candidate the method never produced.
 
 Two definitions, two owners:
 
-* **`eval/candidate.py` owns `apply` and `validate`.** It is the platform's definition of
+* **`eval/run/candidate.py` owns `apply` and `validate`.** It is the platform's definition of
   what it is about to measure, and it reuses `tools/validate_harness.py` so the door, the
   CLI and the run path cannot disagree about what a harness is. The platform applies this
   check to the candidate **itself**, because a method is code the platform did not write:
@@ -1555,7 +1555,7 @@ header, a warn and one round. The console UI polls that file every 1.5s and redr
 when it changes, so it showed one screen for an hour. From outside, *working* and *hung*
 were the same picture, and the only way to tell them apart was `docker top`.
 
-So progress is part of the record (`eval/progress.py`), with the same durability rule as
+So progress is part of the record (`eval/observe/progress.py`), with the same durability rule as
 every other event: appended and flushed when it happens, so a run killed mid-task has an
 honest record up to the kill.
 
@@ -1580,7 +1580,7 @@ Three properties, each of which cost a decision:
   to produce becomes the thing that slows the run down.
 * **Heartbeats must survive a blocking call.** The longest waits are single blocking
   calls (`docker exec` on a harness for an hour, `docker exec` on the check), so
-  `eval/container.py` streams those with `Popen` and beats while `wait` times out. Every
+  `eval/containers/container.py` streams those with `Popen` and beats while `wait` times out. Every
   other docker call -- `create`, `cp`, `commit` -- stays one `subprocess.run`. The branch
   is on whether a task is in flight, not on a flag per call site, because the three call
   sites that block for minutes do not know whether anyone is watching.
@@ -2125,7 +2125,7 @@ a sandbox, not by convention:
 | its own program (`methods/`) | — |
 | `base_harness`, read-only | the whole platform |
 | its `workspace`, writable | `data/*.py` — **the expected answer for every task, eval side included** |
-| the channel above | `.env`, `eval/runner.py`, `driver.py`, `harnessgrad/` |
+| the channel above | `.env`, `eval/run/runner.py`, `driver.py`, `harnessgrad/` |
 | its own model credentials | the agent's credentials |
 
 Measured, with a probe method placed where a real one lives: it read
@@ -2175,7 +2175,7 @@ What that does and does not buy, because the difference matters when reading a s
 
 | claim | status | mechanism |
 | --- | --- | --- |
-| the harness cannot reach the platform at all | **enforced** | it runs in its own mount namespace (`eval/sandbox.py`); the platform is not on its disk |
+| the harness cannot reach the platform at all | **enforced** | it runs in its own mount namespace (`eval/containers/sandbox.py`); the platform is not on its disk |
 | the subject cannot reach the platform by `..` | **enforced** | workspace lives outside the platform tree; a run refuses to start if they overlap |
 | the harness cannot rewrite the platform | **enforced** | same namespace: `driver.py`, `harnessgrad/` and `eval/` are absent, so there is nothing to write to |
 | the method cannot rewrite the platform | **detected** | the platform hashes its own files around every method call |

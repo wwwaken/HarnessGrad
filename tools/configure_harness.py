@@ -5,7 +5,7 @@
     python3 tools/configure_harness.py --harness base_harness/loop --python 3.13
     python3 tools/configure_harness.py --harness base_harness/loop --list
 
-This is the "configure once" half of `eval/harness_runtime.py`: that module only looks
+This is the "configure once" half of `eval/containers/harness_runtime.py`: that module only looks
 overlays up, because §2.5.5 puts anything that pulls or builds behind a human at import
 time rather than on a run's path. Both halves exist so that a harness can be run against
 a benchmark whose images already exist, **without rebuilding any of them**.
@@ -52,8 +52,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-import eval.container as container                              # noqa: E402
-import eval.harness_runtime as runtime                          # noqa: E402
+import eval.containers.container as container                              # noqa: E402
+import eval.containers.harness_runtime as runtime                          # noqa: E402
 
 
 def _has_pip(image: str, python: str) -> bool:

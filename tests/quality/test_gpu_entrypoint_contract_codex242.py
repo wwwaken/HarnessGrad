@@ -11,7 +11,7 @@ from types import SimpleNamespace
 import pytest
 
 import driver
-from eval import runner
+from eval.run import runner
 from tools import serve_ui
 
 

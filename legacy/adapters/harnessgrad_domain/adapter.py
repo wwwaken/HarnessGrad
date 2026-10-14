@@ -15,7 +15,7 @@ domain must answer are answered here:
 
 Where the boundary falls
 ------------------------
-HarnessGrad measures; RRSI decides. `run()` calls the platform's `eval.runner.run_one`
+HarnessGrad measures; RRSI decides. `run()` calls the platform's `eval.run.runner.run_one`
 per task, in the platform's own sandbox, and writes one `result.json` per trial in the
 shape the domain contract expects. `score()` returns `TaskResult` objects carrying
 **per-trial rewards and per-trial token counts**, because RRSI's cost rule
@@ -169,8 +169,8 @@ class HarnessGradDomain(Domain):
         Resume-safe by construction: an existing `result.json` is left alone, which is
         what RRSI's contract asks for and what makes a long run restartable.
         """
-        from eval.runner import run_one
-        from eval.tracing import _last_usage
+        from eval.run.runner import run_one
+        from eval.observe.tracing import _last_usage
 
         root, runs_dir = Path(root).resolve(), Path(runs_dir).resolve()
         by_id = self._by_id()
@@ -422,10 +422,10 @@ class HarnessGradDomain(Domain):
     #: harness does its job, and a denylist that rejects the harness's own tool would
     #: reject every real candidate.
     critic_patterns = [
-        (r"\beval/runner\.py\b", "the platform's scorer in the diff"),
-        (r"\beval/metrics\.py\b", "the platform's metrics in the diff"),
+        (r"\beval/(?:run/)?runner\.py\b", "the platform's scorer in the diff"),
+        (r"\beval/(?:run/)?metrics\.py\b", "the platform's metrics in the diff"),
         (r"\bdriver\.py\b", "the platform's driver in the diff"),
-        (r"\beval/integrity\.py\b", "the platform's self-check in the diff"),
+        (r"\beval/(?:run/)?integrity\.py\b", "the platform's self-check in the diff"),
         (r"\bscorable\b|\bSCORABLE\b", "the answer key referenced in the diff"),
         (r"\.env\b", "credential file referenced in the diff"),
         (r"\bHG_METHOD_", "the method's own budget referenced in the diff"),

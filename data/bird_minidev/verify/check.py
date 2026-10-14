@@ -80,7 +80,7 @@ def _measure(args, reward: float, why: str) -> int:
 
 
 def _cannot_measure(args, why: str) -> int:
-    """No reward file at all: `eval/verifier.py` turns this into an `invalid` task."""
+    """No reward file at all: `eval/verification/verifier.py` turns this into an `invalid` task."""
     _write(args.evidence_file, json.dumps(
         {"measured": False, "metric": "EX", "error": why}, sort_keys=True) + "\n")
     print(f"check cannot measure: {why}", file=sys.stderr)

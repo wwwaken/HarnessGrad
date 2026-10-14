@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pytest
 
-import eval.container as container
+import eval.containers.container as container
 from data import registry
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -356,7 +356,7 @@ def test_the_oracle_control_passes(tmp_path):
     a `mkdir` issued to a container that was not running yet, and a verifier with no
     network while all 89 real checks install their own test dependencies at verify time.
     """
-    from eval.runner import run_one
+    from eval.run.runner import run_one
 
     task, setup, verifier, env = _one_ready_task()
     tid = task["task_id"]
@@ -411,7 +411,7 @@ def test_the_oracle_control_passes(tmp_path):
 def test_a_container_state_run_leaves_nothing_behind(tmp_path):
     """A snapshot image per task is a disk leak waiting to happen, and it is the platform
     that made it."""
-    from eval.runner import run_one
+    from eval.run.runner import run_one
 
     task, setup, verifier, env = _one_ready_task()
     import importlib
@@ -498,10 +498,10 @@ def test_a_directory_input_lands_at_the_destination_even_when_it_already_exists(
     钉住的是**平台那一行选择**(`contents=`),不是 `docker cp` 本身:我在真容器上量过四种组合,
     `src/.` 两种情况下都对。平台这一侧一旦有人把 `contents=` 去掉,这条就红。
     """
-    import eval.container as container_mod
-    # `_copy_verifier_inputs` moved to `eval.verifier` with the rest of the
+    import eval.containers.container as container_mod
+    # `_copy_verifier_inputs` moved to `eval.verification.verifier` with the rest of the
     # check-running layer (stage 4).
-    from eval import verifier as runner_mod
+    from eval.verification import verifier as runner_mod
 
     calls: list[tuple] = []
 

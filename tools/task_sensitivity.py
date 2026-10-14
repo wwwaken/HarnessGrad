@@ -37,7 +37,7 @@ and it is recorded rather than turned into a zero.
     excepted: a cell the platform could not measure is dropped from that task's
     correlation and counted, never filled with a zero.
 
-The measurement itself is the platform's own `eval.runner.evaluate`, with one cache shared
+The measurement itself is the platform's own `eval.run.runner.evaluate`, with one cache shared
 across all harnesses (keyed by content hash, task and trial count), so re-running this cost
 nothing and a run that is interrupted can be resumed by re-running it.
 """
@@ -58,8 +58,8 @@ sys.path.insert(0, str(ROOT))
 from ckpt.git_state import commit_state, stage_workspace          # noqa: E402
 from data import registry                                          # noqa: E402
 from driver import load_env                                        # noqa: E402
-from eval.console import CONSOLE as console                         # noqa: E402
-from eval.runner import evaluate                                    # noqa: E402
+from eval.observe.console import CONSOLE as console                         # noqa: E402
+from eval.run.runner import evaluate                                    # noqa: E402
 from harnessgrad.records import _require_untampered                 # noqa: E402
 
 

@@ -251,7 +251,7 @@ def test_every_task_can_tell_the_agent_where_the_rom_is(jericho):
 def _run_check(jericho, record: dict, workdir: Path, *,
                re_materialize: bool = True,
                skip: set[str] | None = None) -> tuple[float, dict]:
-    """Run the check as `eval/verifier.py` does: re-materialize the inputs, then run.
+    """Run the check as `eval/verification/verifier.py` does: re-materialize the inputs, then run.
 
     `skip` exists for the one test that needs an input to be **absent**: the platform writes
     every entry, so "the check cannot measure" has to be provoked by materializing everything

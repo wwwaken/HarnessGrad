@@ -10,8 +10,8 @@ import sys
 
 import pytest
 
-from eval import gaia_preflight as preflight, gaia_snapshot_attestation as compatibility
-from eval import runner
+from eval.policy import gaia_preflight as preflight, gaia_snapshot_attestation as compatibility
+from eval.run import runner
 
 ROOT = Path(__file__).resolve().parents[2]
 ARGS = ["--reference-commit", "a" * 40, "--candidate-commit", "b" * 40]
@@ -102,7 +102,7 @@ def test_new_cli_and_its_report_are_not_review_only_exemptions(monkeypatch, caps
     def collect(repo, commit, **kwargs):
         manifest = source(commit)
         if kwargs:
-            for path in ("eval/gaia_preflight.py", "docs/gaia-preflight-codex175-report.md"):
+            for path in ("eval/policy/gaia_preflight.py", "docs/gaia-preflight-codex175-report.md"):
                 manifest["files"][path] = {"mode": "100644", "oid": "3" * 40}
         return manifest
 
@@ -110,7 +110,7 @@ def test_new_cli_and_its_report_are_not_review_only_exemptions(monkeypatch, caps
     report = review(capsys)
     assert report["source_comparison"]["source_compatible_only"] is False
     assert report["source_comparison"]["runtime_changed_paths"] == [
-        "docs/gaia-preflight-codex175-report.md", "eval/gaia_preflight.py"]
+        "docs/gaia-preflight-codex175-report.md", "eval/policy/gaia_preflight.py"]
 
 
 @pytest.mark.parametrize("extra", [
@@ -189,10 +189,10 @@ def guard(event, args):
     if event in {"subprocess.Popen", "os.system", "socket.__new__", "socket.connect"}:
         raise AssertionError("backend access")
 sys.addaudithook(guard)
-from eval import gaia_snapshot_attestation as compatibility
+from eval.policy import gaia_snapshot_attestation as compatibility
 compatibility.collect_source = lambda repo, commit, **kw: SOURCE
 sys.argv = ["gaia_preflight", "--reference-commit", "a" * 40, "--candidate-commit", "b" * 40]
-runpy.run_module("eval.gaia_preflight", run_name="__main__")
+runpy.run_module("eval.policy.gaia_preflight", run_name="__main__")
 '''.replace("SOURCE", repr(source("a" * 40)))
     # This one subprocess is the guarded Python test, never an execution backend.
     with monkeypatch.context() as patch:

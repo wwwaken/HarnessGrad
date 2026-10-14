@@ -11,7 +11,7 @@ returns exit **2** for every review, including matching source/runtime identitie
 Work was confined to the detached worktree `/tmp/hg-codex-175`, based on main's
 commit `e7acaa1126c4c63c8ddc338bd9a7f4988f43ffdf`, tree
 `4d06f74e9c86d273327e549adb59ed45a6378baa`. Main's existing
-`eval.gaia_snapshot_attestation.collect_source` collected 796 committed entries;
+`eval.policy.gaia_snapshot_attestation.collect_source` collected 796 committed entries;
 its canonical source identity is
 `815a0ad7d16507ec3ce6d9cdfa62c7d5d2ce99abc74591ed18449a0e0fc4cebd`.
 That collection describes the base commit, not this delivery's eventual candidate
@@ -66,14 +66,14 @@ preflight inputs. `prepare.py --check` hashes the entire pool and reads its head
 Existing official-scorer tests can open those external files and execute controls;
 they were excluded from this validation.
 
-`eval.container_state` passes the actor snapshot and network to
-`eval.verifier._verify_container_state`, which creates the verifier from that
+`eval.containers.container_state` passes the actor snapshot and network to
+`eval.verification.verifier._verify_container_state`, which creates the verifier from that
 snapshot. Fresh reward/evidence storage prevents stale reward reuse, but does not
 replace an actor-controlled interpreter/dependency tree with a trusted one.
 The Dockerfile uses a mutable base and unversioned apt/pip packages; its source
 cannot establish a complete immutable scorer ABI/dependency closure.
 
-`eval.runner._refuse_unobserved_policies` has no positive observation override.
+`eval.run.runner._refuse_unobserved_policies` has no positive observation override.
 `run_one` calls it before harness-manifest/storage access; `_evaluate` calls it
 before cache lookup. Direct backend/verifier calls remain outside that boundary,
 and driver image checks can occur earlier. The CLI calls only the refusal helper,
@@ -84,7 +84,7 @@ never `driver`, the control loader, `run_one`, `_evaluate`, or a verifier.
 From a **clean committed checkout**, use full commit hashes:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m eval.gaia_preflight \
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m eval.policy.gaia_preflight \
   --reference-commit e7acaa1126c4c63c8ddc338bd9a7f4988f43ffdf \
   --candidate-commit <full-candidate-HEAD>
 ```

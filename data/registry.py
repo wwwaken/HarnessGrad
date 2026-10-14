@@ -267,7 +267,7 @@ ENV_DEFAULTS = {"cpus": 2, "memory_mb": 4096,
                 "agent_timeout_s": 3600, "verify_timeout_s": 3600}
 
 #: A service's fields (INTERFACE.md §2.5.7). Every one has a consequence in
-#: `eval/services.py`; none is decoration.
+#: `eval/service/services.py`; none is decoration.
 SERVICE_FIELDS = ("name", "image", "port", "health", "record", "needs_seed",
                   "needs_model", "command", "entrypoint")
 
@@ -278,7 +278,7 @@ SERVICE_FIELDS = ("name", "image", "port", "health", "record", "needs_seed",
 SERVICE_NAME_RE = re.compile(r"[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\Z")
 
 #: Where the task's files land inside an `exec` environment when the dataset does not
-#: say. Duplicated from `eval/container.py` on purpose: the registry must be able to
+#: say. Duplicated from `eval/containers/container.py` on purpose: the registry must be able to
 #: state a normalized env without importing the container driver, which needs Docker.
 DEFAULT_WORKDIR = "/app"
 

@@ -21,9 +21,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 import tools.web_gateway as gateway_mod  # noqa: E402
 from tools.web_gateway import ProviderError, WebGateway, parse_fetched, parse_searxng, parse_serper  # noqa: E402
-import eval.container as container  # noqa: E402
-import eval.services as services  # noqa: E402
-from eval.runner import run_one  # noqa: E402
+import eval.containers.container as container  # noqa: E402
+import eval.service.services as services  # noqa: E402
+from eval.run.runner import run_one  # noqa: E402
 from data import registry  # noqa: E402
 
 DEMO_IMAGE = os.environ.get("HG_EXEC_DEMO_IMAGE", "docker.m.daocloud.io/library/python:3.11-slim")

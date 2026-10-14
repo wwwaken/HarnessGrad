@@ -15,7 +15,7 @@
 
 两个定义,两个主人
 ------------------
-  * **apply 与 validate 在 `eval/candidate.py`** —— 那是平台对「我即将测的东西」的定义。
+  * **apply 与 validate 在 `eval/run/candidate.py`** —— 那是平台对「我即将测的东西」的定义。
     如果每个方法各写一份,定义就会漂移;而且方法自检只是**声明**,平台的复检才是判据。
   * **重试在方法里**(`editor.propose_and_apply`) —— 重新提案是改进器自己的修复。平台若
     自己去调模型,那就是平台在写方法了。平台欠的是**检查器**,并且要能从这里调用。
@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT / "methods"))
 
 # apply 在方法侧(沙箱里可见),判据在平台侧(方法看不到也改不到)——两侧都测
 import apply as method_apply                                   # noqa: E402
-import eval.candidate as candidate                             # noqa: E402
+import eval.run.candidate as candidate                             # noqa: E402
 apply = method_apply.apply
 
 
@@ -122,7 +122,7 @@ def test_the_two_copies_are_two_roles_not_two_drafts():
 
     这是分两份的唯一理由,所以它可测。
     """
-    import eval.sandbox as sandbox
+    import eval.containers.sandbox as sandbox
     code = [ln.split("#", 1)[0].strip()
             for ln in (ROOT / "methods" / "editor.py").read_text(encoding="utf-8").splitlines()]
     offenders = [ln for ln in code
@@ -134,7 +134,7 @@ def test_the_two_copies_are_two_roles_not_two_drafts():
     # 变成在测"文件叫什么",而不是在测"平台有没有自己的一份"。
     impl_src = "\n".join(p.read_text(encoding="utf-8")
                           for p in (ROOT / "harnessgrad").rglob("*.py"))
-    assert "import eval.candidate" in impl_src, "平台没有自己那份判据"
+    assert "import eval.run.candidate" in impl_src, "平台没有自己那份判据"
     assert "eval" not in [p.strip("/") for p in sandbox.RUNTIME], \
         "eval/ 出现在方法沙箱可见的路径里了"
 
@@ -334,7 +334,7 @@ def test_the_platform_never_runs_a_task_for_the_method(tmp_path):
     `/var/run/docker.sock` 不存在),要么在平台侧的一份临时目录里(平台对方法不可见)。
     方法拿到的是**通道**(轨迹和每道题的那一页),那是它被允许研究的证据,不是环境。
     """
-    import eval.sandbox as sandbox
+    import eval.containers.sandbox as sandbox
     assert not any("docker" in p for p in sandbox.RUNTIME), \
         "docker 相关路径不该在方法的沙箱里可见"
     assert not any("docker" in p for p in sandbox.DNS)
@@ -719,7 +719,7 @@ sys.stdout.write(json.dumps({"changed": True, "files": ["agent.py"],
 def test_python_that_does_not_compile_is_a_named_problem(tmp_path):
     """`--smoke` 能发现它,但候选那条路**关掉了 smoke** —— 所以必须有一步是永远做的。
 
-    `eval/candidate.py` 的文档一直把"Python 编译不过"列在它要分辨的三种结局里,而实现
+    `eval/run/candidate.py` 的文档一直把"Python 编译不过"列在它要分辨的三种结局里,而实现
     只有 `validate(repo, smoke=False)`。于是这条路上没人检查语法,而这条路上写代码的
     恰恰是方法。
     """

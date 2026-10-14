@@ -19,8 +19,9 @@ from types import SimpleNamespace
 import pytest
 
 from data import registry
-from eval import container_state, runner
-from eval.task_contract import runtime_task
+from eval.containers import container_state
+from eval.run import runner
+from eval.run.task_contract import runtime_task
 
 ROOT = Path(__file__).resolve().parents[2]
 

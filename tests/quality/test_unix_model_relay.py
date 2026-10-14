@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from eval import unix_model_relay as relay_mod
+from eval.service import unix_model_relay as relay_mod
 
 MODEL = "SYNTHETIC_OFFLINE_PROVIDER"
 

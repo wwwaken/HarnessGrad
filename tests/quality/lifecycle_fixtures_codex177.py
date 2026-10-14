@@ -1,7 +1,8 @@
 """Authored lifecycle facts, exclusively for offline unit tests."""
 from copy import deepcopy
 
-from eval import diagnostic_policy as policy, lifecycle_receipt as lifecycle, runner_admission
+from eval.policy import diagnostic_policy as policy
+from eval.admission import lifecycle_receipt as lifecycle, runner_admission
 
 
 def gate_facts(binding, stage):

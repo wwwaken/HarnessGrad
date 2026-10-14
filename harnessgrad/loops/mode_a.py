@@ -23,8 +23,8 @@ import time
 
 from ckpt.git_state import commit_state
 from ckpt.git_state import reset_hard
-from eval.console import CONSOLE as console
-from eval.runner import evaluate
+from eval.observe.console import CONSOLE as console
+from eval.run.runner import evaluate
 from harnessgrad import PLATFORM_API_VERSION
 from harnessgrad import code_metrics
 from harnessgrad import config as platform_config
@@ -48,7 +48,7 @@ from harnessgrad.records import _scored
 from harnessgrad.records import test_rate_fields as _test_rate_fields
 from harnessgrad.records import _write_curve
 from harnessgrad.records import _write_run_meta
-import eval.candidate as candidate
+import eval.run.candidate as candidate
 
 
 def _no_loadable_change(changed: list[str], unreachable: list[str]) -> dict | None:
@@ -540,7 +540,7 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             point["kept_round"] = kept_round
             point["kept_score"] = (kept_point or {}).get("score")
         # **What the round says about the *harness*, not about the tasks.** `None` unless
-        # no task in the round got the harness started at all (`eval/runner.py` decides).
+        # no task in the round got the harness started at all (`eval/run/runner.py` decides).
         # On the point because "the candidate never ran" and "the candidate ran and lost"
         # are both `score 0.000` and only one of them is a measurement of quality.
         point["startup_failure"] = startup_failure

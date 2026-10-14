@@ -15,10 +15,10 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from data.registry import _check_env, _normalize_env
-from eval import sandbox
-from eval.runner import run_one
-from eval.runtime_policy import phase_timeout, stage_agent_runtime
-from eval.verifier import _verify, _verify_container_state
+from eval.containers import sandbox
+from eval.run.runner import run_one
+from eval.policy.runtime_policy import phase_timeout, stage_agent_runtime
+from eval.verification.verifier import _verify, _verify_container_state
 
 
 def load_asset(name):
@@ -115,15 +115,15 @@ def test_verifier_declaration_reaches_every_launch_path(tmp_path, monkeypatch, m
         raise subprocess.TimeoutExpired("synthetic", captured[-1])
 
     if mode == "snapshot":
-        monkeypatch.setattr("eval.verifier.container_mod.create", lambda *a, **k: "fixture")
-        monkeypatch.setattr("eval.verifier.container_mod.exec_in", timeout)
-        monkeypatch.setattr("eval.verifier.container_mod.start", lambda *a, **k: None)
-        monkeypatch.setattr("eval.verifier.container_mod.remove_container", lambda *a, **k: None)
+        monkeypatch.setattr("eval.verification.verifier.container_mod.create", lambda *a, **k: "fixture")
+        monkeypatch.setattr("eval.verification.verifier.container_mod.exec_in", timeout)
+        monkeypatch.setattr("eval.verification.verifier.container_mod.start", lambda *a, **k: None)
+        monkeypatch.setattr("eval.verification.verifier.container_mod.remove_container", lambda *a, **k: None)
         verdict = _verify_container_state("fixture", spec, task_mount="/app", staging=tmp_path,
                                           timeout_s=900, run_id="synthetic", task_id="synthetic")
     else:
         target = {"host": "subprocess.run", "sandbox": "sandbox_mod.run", "exec": "container_mod.run"}[mode]
-        monkeypatch.setattr("eval.verifier." + target, timeout)
+        monkeypatch.setattr("eval.verification.verifier." + target, timeout)
         verdict = _verify(tmp_path, spec, "", sandbox=mode != "host", timeout_s=900,
                           env={"kind": "exec", "image": "synthetic"} if mode == "exec" else {"kind": "files"})
     assert captured == [0.02]
@@ -157,8 +157,8 @@ def test_agent_projection_network_denial_and_trusted_verifier_end_to_end(tmp_pat
     # All test writes remain in the user-authorized worktree.
     platform = tmp_path / "platform"
     platform.mkdir()
-    monkeypatch.setattr("eval.runner.PLATFORM_ROOT", platform)
-    monkeypatch.setattr("eval.verifier.PLATFORM_ROOT", platform)
+    monkeypatch.setattr("eval.run.runner.PLATFORM_ROOT", platform)
+    monkeypatch.setattr("eval.verification.verifier.PLATFORM_ROOT", platform)
     work = tmp_path / "work"
     package = work / "packages" / "boundary_fixture"
     package.mkdir(parents=True)

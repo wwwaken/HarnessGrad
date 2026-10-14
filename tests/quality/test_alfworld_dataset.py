@@ -126,7 +126,7 @@ def test_the_check_re_materializes_its_inputs(alfworld, tmp_path):
     runs. Without the overwrite, an agent that writes `reward.txt` itself passes every
     task -- a capture channel the contract would not have.
     """
-    from eval.verifier import _verify
+    from eval.verification.verifier import _verify
 
     record = alfworld._RECORDS[0]
     tid = record["task_id"]
@@ -163,8 +163,8 @@ def test_the_sandboxed_check_can_still_write_its_verdict(alfworld, tmp_path,
     tree, so `verifier/reward.txt` can be written while everything the harness produced
     stays frozen.
     """
-    from eval import sandbox as sandbox_mod
-    from eval.verifier import _verify
+    from eval.containers import sandbox as sandbox_mod
+    from eval.verification.verifier import _verify
 
     try:
         sandbox_mod._bwrap()

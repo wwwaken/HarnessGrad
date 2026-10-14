@@ -3,7 +3,7 @@ import ast
 from pathlib import Path
 
 import pytest
-from eval.metrics import diagnostic_task_set, pilot_task_set, select_task_set
+from eval.run.metrics import diagnostic_task_set, pilot_task_set, select_task_set
 
 
 @pytest.mark.parametrize('n,count', [(0,0),(1,1),(9,1),(10,1),(11,2),(118,12),

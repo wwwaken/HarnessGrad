@@ -25,7 +25,7 @@ Two ways to run each control
 `--oracle`/`--noop` drive the CLI by hand and run the check directly. This needs the staged
 JRE under the dataset root and nothing else -- no Docker, no platform sandbox.
 
-`--platform` runs the same episode through the platform's own `eval.runner.run_one` with the
+`--platform` runs the same episode through the platform's own `eval.run.runner.run_one` with the
 control harness in `oracle_harness/`, with the mount namespace **on** by default. That
 exercises `SETUP` -> harness -> `VERIFY` end to end, which is where a contract error lives
 that the check alone cannot reveal -- and it is also what proves the JRE travels into the
@@ -148,7 +148,7 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     verifier = module.VERIFY[record["task_id"]]
     for entry in verifier.get("inputs") or []:
         # Same rule as `materialize`, and a shared helper so the two cannot drift: the
-        # platform's `_materialize` (`eval/tracing.py`) copies trees as trees, and this
+        # platform's `_materialize` (`eval/observe/tracing.py`) copies trees as trees, and this
         # mirrors it.
         _copy_entry(entry, workdir)
     argv = [sys.executable, *verifier["argv"][1:]]
@@ -189,8 +189,8 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
 
 def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
                  sandbox: bool = True) -> int:
-    """The same episode through `eval.runner.run_one`, with no Docker and no model."""
-    from eval.runner import run_one
+    """The same episode through `eval.run.runner.run_one`, with no Docker and no model."""
+    from eval.run.runner import run_one
 
     tid = record["task_id"]
     task = next(t for t in module.load()[0] if t["task_id"] == tid)

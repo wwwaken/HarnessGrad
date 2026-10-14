@@ -16,7 +16,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval import sandbox  # noqa: E402
+from eval.containers import sandbox  # noqa: E402
 from harnessgrad import methods  # noqa: E402
 
 

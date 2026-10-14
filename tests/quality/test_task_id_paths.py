@@ -13,7 +13,7 @@ the same task was lost more quietly -- `_write_progress` never raises by design,
 only sign was a warning line nobody read, and the run looked like it had recorded nothing
 because it had.
 
-The fix is `eval/tracing.py::task_file`, used by all five writers. These tests use ids with
+The fix is `eval/observe/tracing.py::task_file`, used by all five writers. These tests use ids with
 slashes and assert the file **is on disk**, which is the assertion the old code would fail
 at four of the five sites.
 """
@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval.tracing import _write_progress, task_file                    # noqa: E402
+from eval.observe.tracing import _write_progress, task_file                    # noqa: E402
 from harnessgrad import channel                                        # noqa: E402
 from harnessgrad.records import _save_traces, _save_verdicts           # noqa: E402
 

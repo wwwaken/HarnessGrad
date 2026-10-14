@@ -51,11 +51,11 @@ cannot resolve the effect).
 So the generator recovers them from the data that *is* on disk:
 
 * `verdict.tests` is parsed out of the verdict's own `detail` string, which is where
-  `eval/runner.py:_test_report_failures` got it in the first place
+  `eval/run/runner.py:_test_report_failures` got it in the first place
   (`check_report … (3 passed)` → `{passed: 3, failed: 0}`);
 * `point.test_rate`, `point.per_task_test_rate`, `point.tests_passed` and
   `point.tests_total` are computed from those tallies with the same formula as
-  `eval/runner.py:test_rate_of` — `passed / (passed + failed)`, skipping tasks whose check
+  `eval/run/runner.py:test_rate_of` — `passed / (passed + failed)`, skipping tasks whose check
   reported no tally, treating `None` as "not zero".
 
 `src/logic/fixtures.test.ts` runs the real logic over these files, so a drift between the

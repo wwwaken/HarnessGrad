@@ -18,11 +18,11 @@ import shutil
 import subprocess
 import time
 
-from eval.console import CONSOLE as console
-from eval.metrics import ci95
-from eval.metrics import mean
+from eval.observe.console import CONSOLE as console
+from eval.run.metrics import ci95
+from eval.run.metrics import mean
 from harnessgrad.environments import _env_record
-from eval.tracing import task_file
+from eval.observe.tracing import task_file
 from harnessgrad.methods import PlatformTampered
 
 def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
@@ -177,7 +177,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         "env": {**(env_record or _env_record({}, [])),
                 "model_gateway": model_gateway,
                 # Which interpreter ran the harness, and where its own dependencies came
-                # from (`eval/harness_runtime.py`). A list because the version is a
+                # from (`eval/containers/harness_runtime.py`). A list because the version is a
                 # property of each task's image and a run may cross several -- the same
                 # reason `variants` exists above. `[]` means the harness declared no
                 # dependencies at all, which is a fact rather than a missing field.
@@ -230,7 +230,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         # of ten all-or-nothing checks has a resolution of 0.1 and, measured on this
         # platform, a noise band of about +/-0.1: the instrument cannot see the effect it
         # exists to measure. Most `command` checks tally individual tests, and that tally
-        # was already parsed (`eval/runner.py:_test_report_failures`) and already saved in
+        # was already parsed (`eval/run/runner.py:_test_report_failures`) and already saved in
         # the verdict's `detail` string -- this is that number, as a number.
         #
         # **Always present, `null` when nothing reported.** The rest of this file omits a
@@ -377,7 +377,7 @@ def _platform_record() -> dict:
     global _PLATFORM_RECORD
     if _PLATFORM_RECORD is not None:
         return _PLATFORM_RECORD
-    from eval.integrity import PLATFORM_ROOT, content_sha
+    from eval.run.integrity import PLATFORM_ROOT, content_sha
     record: dict = {"content_sha": content_sha(PLATFORM_ROOT)}
     try:
         import subprocess

@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from eval import trace, tracing
+from eval.observe import trace, tracing
 
 
 def test_legacy_module_reexports_the_canonical_reader():
@@ -17,11 +17,12 @@ def test_legacy_module_reexports_the_canonical_reader():
         assert getattr(trace, name) is getattr(tracing, name)
     assert trace._ended is tracing._ended
     for name in ("first_object", "loop_facts", "_ended"):
-        assert getattr(trace, name).__module__ == "eval.tracing"
+        assert getattr(trace, name).__module__ == "eval.observe.tracing"
 
 
 def test_consumers_use_the_canonical_reader():
-    from eval import container_state, runner
+    from eval.containers import container_state
+    from eval.run import runner
     from harnessgrad import channel
     from tools import serve_ui
 

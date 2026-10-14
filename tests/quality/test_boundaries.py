@@ -161,12 +161,12 @@ def test_r6_an_unmeasurable_candidate_is_never_given_a_platform_score():
     nothing to do with either.
 
     The assertions span the whole rendering surface, not one file. When the table
-    moved into `eval/console.py` the first two stayed in the driver and the third
+    moved into `eval/observe/console.py` the first two stayed in the driver and the third
     moved, and a check pinned to a single path would have called that a
     regression -- or, worse, passed while the rendering it guards was deleted.
     """
     platform = _platform_text()
-    rendering = platform + (ROOT / "eval" / "console.py").read_text()
+    rendering = platform + (ROOT / "eval" / "observe" / "console.py").read_text()
     assert "measured_by_platform" in platform, (
         "every curve point must say whether the platform produced its score"
     )
@@ -315,7 +315,7 @@ def test_r11_the_two_models_are_separately_configured_and_separated():
             "about is a variable nobody sets"
         )
 
-    runner = (ROOT / "eval" / "runner.py").read_text()
+    runner = (ROOT / "eval" / "run" / "runner.py").read_text()
     assert "HG_METHOD_" in runner, (
         "the harness's environment must be filtered; without it the harness "
         "inherits the method's credentials"

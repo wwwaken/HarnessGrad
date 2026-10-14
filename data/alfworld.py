@@ -60,7 +60,7 @@ host with nothing but `pip install alfworld textworld`: the CLI and the check bo
 under the platform's Python. The consequence is stated loudly in
 `docs/dataset-onboarding-skill.md`: a `files` environment cannot declare a longer
 `agent_timeout_s`, and the platform's `reward_file`/`evidence_file` channels were
-container-only before this dataset (`eval/verifier.py::_verify` now honours them for a
+container-only before this dataset (`eval/verification/verifier.py::_verify` now honours them for a
 host check as well -- the smallest change that let a no-Docker dataset keep the
 contract's evidence channel).
 
@@ -160,7 +160,7 @@ LOG_IN_WORKDIR = _GYM_ENV.LOG_FILENAME
 
 #: Where the check is told to put its verdict. The absolute paths are the container
 #: contract; on a `files` environment the platform resolves them against the workdir
-#: (`eval/verifier.py::_verify`), and the check's `argv` passes the same location in the
+#: (`eval/verification/verifier.py::_verify`), and the check's `argv` passes the same location in the
 #: relative spelling its own working directory understands.
 REWARD_FILE = "/verifier/reward.txt"
 EVIDENCE_FILE = "/verifier/evidence.json"
@@ -333,7 +333,7 @@ def _verifier(record: dict) -> dict:
     time, so nothing the agent wrote to any of them is what runs.
 
     `reward_file`/`evidence_file` are absolute in-environment paths -- the container
-    contract. On a `files` environment `eval/verifier.py` resolves them against the
+    contract. On a `files` environment `eval/verification/verifier.py` resolves them against the
     workdir, and the `argv` flags below write to that same resolved location. Note the
     **top-level-in-the-container** rule from `data/tau_bench.py:_verifier` does not
     apply here (there is no `docker cp`), but the paths are kept absolute anyway so the

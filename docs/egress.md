@@ -21,7 +21,7 @@ when in fact nobody had measured it.
 
 ```
 task check (in a container)
-  └─ HTTP(S)_PROXY = http://172.17.0.1:17890      <- HG_EGRESS_PROXY, set by eval/runner.py:_check_env
+  └─ HTTP(S)_PROXY = http://172.17.0.1:17890      <- HG_EGRESS_PROXY, set by eval/run/runner.py:_check_env
        └─ tools/egress_forwarder.py  172.17.0.1:17890 -> 127.0.0.1:17891
             └─ mihomo (our own)  127.0.0.1:17891         <- ~/.config/harnessgrad-proxy/
                  └─ the internet
@@ -60,7 +60,7 @@ around. The config is regenerated from the subscription, never hand-edited.
 
 **Never the harness.** A harness reaches its model through the platform (the model gateway
 when the endpoint is host-local, or the provider directly when it is not), and putting an
-HTTP proxy in front of that breaks the model calls. `eval/runner.py:_check_env` hands the
+HTTP proxy in front of that breaks the model calls. `eval/run/runner.py:_check_env` hands the
 proxy to the check's process only.
 
 ## Verifying it

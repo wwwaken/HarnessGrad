@@ -9,7 +9,7 @@ copies them into the workdir exactly as a correct agent would have left them.
 It is deliberately dumber than a harness. It reads nothing from the task, decides nothing, and
 its grade cannot come from anything it says -- the check reads the artefact it left behind and
 compares it with its own trusted copy. It exists so that `--platform` can prove a dataset's
-VERIFY path reaches reward 1 through `eval.runner.run_one`, which is a different claim from
+VERIFY path reaches reward 1 through `eval.run.runner.run_one`, which is a different claim from
 "the check works when I run it by hand".
 
 Generated datasets get this harness by copy (`tools/new_dataset.py`); it lives here so that a

@@ -260,7 +260,7 @@ def _run_check(module, record: dict, workdir: Path, *,
         control = _load_control("scienceworld")
         for entry in verifier.get("inputs") or []:
             # The control's helper, so this mirrors the platform's `_materialize` in one
-            # place rather than in three (this file, the control, `eval/tracing.py`).
+            # place rather than in three (this file, the control, `eval/observe/tracing.py`).
             control._copy_entry(entry, workdir)
     proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=workdir,
                           capture_output=True, text=True)

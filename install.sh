@@ -220,7 +220,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, ".")
 try:
-    import eval.sandbox as sandbox
+    import eval.containers.sandbox as sandbox
 except Exception as exc:
     print(f"could not import the platform's sandbox module: {exc}")
     raise SystemExit(1)

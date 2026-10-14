@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from eval import diagnostic_policy as policy
+from eval.policy import diagnostic_policy as policy
 from lifecycle_fixtures_codex177 import completed_lifecycle, summaries
 
 ROOT = Path(__file__).resolve().parents[2]

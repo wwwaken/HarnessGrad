@@ -21,7 +21,7 @@ Use `python3 web/server/serve.py --help` for the list.
 **The API is an observer of a tree that a run may be appending to while it
 serves.** Every file under `runs/` is opened for reading only; nothing is
 created, moved, renamed or deleted. `web/server/` does not appear in
-`eval/integrity.py:PLATFORM`, so building and running it cannot invalidate a run.
+`eval/run/integrity.py:PLATFORM`, so building and running it cannot invalidate a run.
 
 Two implementation rules enforce the read-only property:
 

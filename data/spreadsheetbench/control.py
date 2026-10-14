@@ -97,7 +97,7 @@ def solve(record: dict, workdir: Path) -> None:
 
 
 def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
-    """Run the check the way `eval/verifier.py` does, re-materializing its inputs."""
+    """Run the check the way `eval/verification/verifier.py` does, re-materializing its inputs."""
     verifier = module.VERIFY[record["task_id"]]
     for entry in verifier.get("inputs") or []:
         target = workdir / entry["path"]
@@ -144,7 +144,7 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
 
 def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
                  sandbox: bool = True) -> int:
-    from eval.runner import run_one
+    from eval.run.runner import run_one
 
     tid = record["task_id"]
     task = next(t for t in module.load()[0] if t["task_id"] == tid)

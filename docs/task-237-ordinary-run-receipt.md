@@ -69,7 +69,7 @@ official metric equivalence or formal benchmark eligibility.
 Formal consumers must require their own supported schema, trusted observations,
 dataset gates, complete lifecycle evidence and separate review. In particular,
 [diagnostic v2](../eval/diagnostic_receipt.schema.json) and
-[staged policy](../eval/diagnostic_policy.py) do not accept this schema. Even fully
+[staged policy](../eval/policy/diagnostic_policy.py) do not accept this schema. Even fully
 known ordinary provenance or a successful local zero does not authorize H0,
 pilot expansion, a leaderboard submission or merging into a formal result table.
 A future formal attempt needs fresh identities, gate review and execution under

@@ -7,7 +7,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval.sandbox import SandboxUnavailable, hidden_trees
+from eval.containers.sandbox import SandboxUnavailable, hidden_trees
 
 
 def test_production_sandbox_refuses_a_work_root_inside_this_worktree():

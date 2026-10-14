@@ -21,7 +21,7 @@ adapter's own records -- the same field the check is handed -- so a control that
 because both sides are wrong is not possible.
 
 The by-hand form needs nothing but the staged data and the platform's interpreter; the
-`--platform` form exercises `SETUP` -> harness -> `VERIFY` through `eval.runner.run_one`,
+`--platform` form exercises `SETUP` -> harness -> `VERIFY` through `eval.run.runner.run_one`,
 which is where a contract error lives that the check alone cannot reveal.
 """
 from __future__ import annotations
@@ -139,7 +139,7 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     """Run the check the way the platform's verifier does, grades and all.
 
     The verifier's inputs are written here **again**, exactly as
-    `eval/verifier.py::_verify` re-materializes them after the harness stops. That is
+    `eval/verification/verifier.py::_verify` re-materializes them after the harness stops. That is
     what makes the grade independent of anything the agent did to `<workdir>/gold.json`.
     """
     verifier = (module.verify_for(record) if callable(getattr(module, "verify_for", None))
@@ -206,8 +206,8 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
 
 def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
                  sandbox: bool = True) -> int:
-    """The same episode through `eval.runner.run_one`, with no Docker and no model."""
-    from eval.runner import run_one
+    """The same episode through `eval.run.runner.run_one`, with no Docker and no model."""
+    from eval.run.runner import run_one
 
     tid = record["task_id"]
     if callable(getattr(module, "control_task", None)):

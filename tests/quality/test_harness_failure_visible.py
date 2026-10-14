@@ -8,7 +8,7 @@
     ModuleNotFoundError: No module named 'openai'      exit code 1
     trace: 0 字节        score: 0.000        运行记录里的解释: 无
 
-`exit_code` 和 `stderr` 在 `eval/runner.py` 里被算出来、放进返回值,然后**没有任何
+`exit_code` 和 `stderr` 在 `eval/run/runner.py` 里被算出来、放进返回值,然后**没有任何
 东西持久化它们**。于是曲线上的读数和「方法决定不改」完全一样:
 
     RRSI rule: no edit (b_t=4)      train 0.000
@@ -39,7 +39,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval.runner import _harness_failure                         # noqa: E402
+from eval.run.runner import _harness_failure                         # noqa: E402
 
 
 # ------------------------------------------------------------ 判定的边界 ---

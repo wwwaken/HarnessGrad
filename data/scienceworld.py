@@ -146,7 +146,7 @@ STEP_BUDGET = _LIB.STEP_BUDGET
 LOG_IN_WORKDIR = _LIB.LOG_FILENAME
 TASK_IN_WORKDIR = _LIB.TASK_FILENAME
 
-#: The container contract's locations. On a `files` environment `eval/verifier.py` resolves
+#: The container contract's locations. On a `files` environment `eval/verification/verifier.py` resolves
 #: the absolute spelling against the workdir; the check's `argv` carries the relative
 #: spelling its own working directory understands.
 REWARD_FILE = "/verifier/reward.txt"

@@ -25,7 +25,7 @@ Docker/container execution, model/H0 calls, task payloads or benchmark runs.
 | [Quota source audit, Codex 168](../reports/filesystem-quota-codex168-report.md) | No complete connected paired byte/inode quota backend was found at its audited revision. | Source-only historical finding; no claim that the current host has or lacks quota support. Its 252 passing tests were synthetic, not enforcement evidence. |
 | [Operator/backend requirements, Codex 191](filesystem-quota-backends.md) and [proposed sidecar schema](filesystem-quota-evidence.schema.json) | Defines provisioning, allocation, observation, snapshot and cleanup acceptance requirements. | Documentation/schema only; no implemented observer or semantic validator. |
 | [Historical host storage note](moving-docker-data-root.md) | Reports `overlayfs` with `io.containerd.snapshotter.v1` on 2026-10-06; Docker metadata and containerd image storage occupy different roots. | Old observation, not fresh host/quota evidence. The first move attempt was incomplete; this packet does not adopt or execute its migration procedure. |
-| [Terminal admission report](../reports/report.md) and [current library](../eval/pilot_admission.py) | Cooperative reservations and synthetic runtime/ownership refusals exist; `benchmark_blockers` retains three gates per inherited task plus quota and official-execution blockers. | The report's 199 tests and six cached-image claims are historical. No task/image availability or dependency behavior was reverified here. |
+| [Terminal admission report](../reports/report.md) and [current library](../eval/admission/pilot_admission.py) | Cooperative reservations and synthetic runtime/ownership refusals exist; `benchmark_blockers` retains three gates per inherited task plus quota and official-execution blockers. | The report's 199 tests and six cached-image claims are historical. No task/image availability or dependency behavior was reverified here. |
 | [Scorer audit](../reports/scorer-closure-codex170-report.md) and [current facade contract](scorer-admission-contract.md) | Declared bundle integrity, export and supplied runtime facts can be checked separately. | No proof of complete dependencies, official origin, production invocation or observer authenticity. Claims that task scripts fetch packages remain inherited and unverified. |
 | [Staged receipt audit](../reports/staged-receipt-audit-codex193-report.md) and [driver writer](../driver.py) | The current staged writer supplies unknown cleanup/snapshot and omits lifecycle evidence. | Source observation reconfirmed for this packet; the driver cannot presently produce a valid measured diagnostic through that path. |
 
@@ -97,7 +97,7 @@ preparation, actor, method, scorer, daemon/snapshot helper, export and receipt w
 Allocate protected, bounded failure-evidence capacity before starting any writer.
 Required integration includes `driver.py` before workspace initialization,
 `ckpt/git_state.py` before staging/materialization, method workspace copies and
-`eval/runner.py` before setup/scratch/verifier writes. Admission only at actor
+`eval/run/runner.py` before setup/scratch/verifier writes. Admission only at actor
 start leaves earlier host writes uncovered. These are pending integration work.
 
 ## Containerd snapshotter limits and execution design
@@ -113,7 +113,7 @@ containerd, workspace and evidence paths. Historical root sizes prove no ceiling
 | Classic `overlay2` with `storage-opt size` | Depends on suitable XFS project quotas; the size option supplies no independent inode hard-limit proof. It cannot be assumed to work for containerd snapshotters or ext4. |
 | Writable containerd snapshot upper | Requires supported snapshotter-aware per-run allocation, paired effective readback and driver-coordinated project ownership before create/copy/start. Unknown support remains blocked. Do not retag a live driver-owned upper. |
 | Read-only root with bounded mounts | Compatible direction for current `admit_runtime`, provided all writable mounts are independently bounded and state is transferred through a reviewed artifact contract. Terminal's existing container-state semantics are not automatically compatible. |
-| Writable-root admission | Current `eval.runner_admission.admit_runtime` refuses it even if storage evidence is valid. Requires a separately reviewed contract and production implementation change. |
+| Writable-root admission | Current `eval.admission.runner_admission.admit_runtime` refuses it even if storage evidence is valid. Requires a separately reviewed contract and production implementation change. |
 | Shared content store or daemon pool | Free space/reservations are insufficient. Require enforceable run ownership and paired growth bounds for relevant writes, or keep this design blocked. |
 | Docker commit | Excludes bind/tmpfs data and cannot establish artifact-only scorer inputs. Actor snapshots cannot supply the trusted scorer shell/toolchain. Retained snapshots still require bounds and cleanup. |
 
@@ -178,7 +178,7 @@ Required scorer return package:
   Process exit alone is not a score; missing or malformed reports stay unmeasured.
 
 Recheck bundle bytes, export inventory/content and supplied runtime facts with
-`eval.scorer_admission` immediately before use. Pins must remain outside actor
+`eval.admission.scorer_admission` immediately before use. Pins must remain outside actor
 state. The facade does not launch the scorer, establish official provenance,
 discover dependencies or authenticate observations. If a selected task's state
 cannot be represented by the current bounded data-only contract, block that task

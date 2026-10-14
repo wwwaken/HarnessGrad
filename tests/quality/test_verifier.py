@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 import data.registry as registry                                  # noqa: E402
-from eval.runner import evaluate, run_one                          # noqa: E402
+from eval.run.runner import evaluate, run_one                          # noqa: E402
 
 
 def _exec_file_spec():
@@ -39,10 +39,10 @@ def test_exec_verdict_ignores_precreated_reward_and_evidence(tmp_path, monkeypat
     stale.mkdir()
     (stale / "reward.txt").write_text("1.0\n")
     (stale / "evidence.json").write_text('{"measured":true}')
-    with patch("eval.verifier.container_mod.run",
+    with patch("eval.verification.verifier.container_mod.run",
                return_value=subprocess.CompletedProcess(["false"], 3, "", "failed")), \
-         patch("eval.verifier.container_mod.cp_out", return_value=False):
-        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+         patch("eval.verification.verifier.container_mod.cp_out", return_value=False):
+        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
             env={"kind": "exec", "image": "repo@sha256:" + "a" * 64, "workdir": "/app"})
     assert verdict["score"] == 0.0 and verdict["passed"] is False
@@ -57,10 +57,10 @@ def test_exec_verdict_does_not_follow_subject_symlink(tmp_path):
     outside.mkdir()
     (outside / "reward.txt").write_text("1.0\n")
     (work / ".verifier").symlink_to(outside, target_is_directory=True)
-    with patch("eval.verifier.container_mod.run",
+    with patch("eval.verification.verifier.container_mod.run",
                return_value=subprocess.CompletedProcess(["false"], 3, "", "failed")), \
-         patch("eval.verifier.container_mod.cp_out", return_value=False):
-        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+         patch("eval.verification.verifier.container_mod.cp_out", return_value=False):
+        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
             env={"kind": "exec", "image": "repo@sha256:" + "b" * 64, "workdir": "/app"})
     assert verdict["score"] == 0.0
@@ -71,10 +71,10 @@ def test_exec_verdict_missing_new_reward_is_zero(tmp_path):
     from unittest.mock import patch
     work = tmp_path / "task"
     work.mkdir()
-    with patch("eval.verifier.container_mod.run",
+    with patch("eval.verification.verifier.container_mod.run",
                return_value=subprocess.CompletedProcess(["false"], 3, "", "failed")), \
-         patch("eval.verifier.container_mod.cp_out", return_value=False):
-        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+         patch("eval.verification.verifier.container_mod.cp_out", return_value=False):
+        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
             env={"kind": "exec", "image": "repo@sha256:" + "c" * 64, "workdir": "/app"})
     assert verdict["score"] == 0.0 and "wrote no" in verdict["detail"]
@@ -84,8 +84,8 @@ def test_exec_verdict_timeout_is_not_a_forged_score(tmp_path):
     from unittest.mock import patch
     work = tmp_path / "task"
     work.mkdir()
-    with patch("eval.verifier.container_mod.run", side_effect=subprocess.TimeoutExpired(["false"], 1)):
-        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+    with patch("eval.verification.verifier.container_mod.run", side_effect=subprocess.TimeoutExpired(["false"], 1)):
+        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=1,
             env={"kind": "exec", "image": "repo@sha256:" + "d" * 64, "workdir": "/app"})
     assert verdict["passed"] is False and "timed out" in verdict["detail"]
@@ -102,9 +102,9 @@ def test_host_verdict_clears_precreated_files_and_rejects_symlink_parent(tmp_pat
     parent.mkdir()
     (parent / "reward.txt").write_text("1.0\n")
     (parent / "evidence.json").write_text('{"measured": true}')
-    with patch("eval.verifier.subprocess.run",
+    with patch("eval.verification.verifier.subprocess.run",
                return_value=subprocess.CompletedProcess(["python3"], 0, "", "")):
-        verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
     assert verdict["passed"] is False and verdict["score"] == 0.0
 
@@ -112,7 +112,7 @@ def test_host_verdict_clears_precreated_files_and_rejects_symlink_parent(tmp_pat
     outside.mkdir()
     parent.rmdir()
     parent.symlink_to(outside, target_is_directory=True)
-    verdict = __import__("eval.verifier", fromlist=["_verify"])._verify(
+    verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
         work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
     assert verdict["passed"] is False and "symlink" in verdict["detail"]
 
@@ -352,7 +352,7 @@ def test_a_check_report_is_summarised_into_the_verdict():
     """
     # The verifier moved out of the runner (stage 4): the seam is the point,
     # so the test imports it where it lives.
-    from eval.verifier import _test_report_failures
+    from eval.verification.verifier import _test_report_failures
     report = {"results": {
         "summary": {"tests": 6, "passed": 5, "failed": 1, "skipped": 0},
         "tests": [
@@ -380,7 +380,7 @@ def test_an_unreadable_check_report_cannot_take_the_verdict_down():
     """这是别人的格式,读不了只能少说一句,不能让整个 verdict 变成异常。"""
     # The verifier moved out of the runner (stage 4): the seam is the point,
     # so the test imports it where it lives.
-    from eval.verifier import _test_report_failures
+    from eval.verification.verifier import _test_report_failures
     for junk in (None, {}, {"results": None}, {"results": {"tests": "nope"}},
                  {"results": {"tests": [None, {"status": "failed"}]}}):
         failures, counts, numbers = _test_report_failures(junk)
@@ -396,7 +396,7 @@ def test_both_of_a_check_s_streams_reach_the_verdict():
     实测:`break-filter-js-from-html` 的 `uvx: command not found` 在 stderr,stdout 里
     是 apt 的进度,于是"检查没跑成"读起来像"harness 答错了"。
     """
-    from eval.verifier import _check_output_detail
+    from eval.verification.verifier import _check_output_detail
     detail = _check_output_detail("apt progress\n", "uvx: command not found\n")
     assert "stdout apt progress" in detail and "stderr uvx: command not found" in detail
     assert _check_output_detail("", "only stderr") == "stderr only stderr"
@@ -420,11 +420,11 @@ def test_a_configured_egress_proxy_reaches_the_check_and_only_the_check(monkeypa
     只给检查,不给 harness:harness 的模型调用走平台自己的路(host-local 时是 model
     gateway),给那条路加代理会把它弄坏。
     """
-    # `_check_env` moved to `eval.verifier` with the rest of the check-running layer
+    # `_check_env` moved to `eval.verification.verifier` with the rest of the check-running layer
     # (stage 4). Reloaded so a monkeypatched environment cannot be seen through a
     # cached module-level proxy.
     import importlib
-    import eval.verifier as runner
+    import eval.verification.verifier as runner
     importlib.reload(runner)
     monkeypatch.delenv("HG_EGRESS_PROXY", raising=False)
     assert runner._check_env() == {}, "没配置就不能改变任何行为"

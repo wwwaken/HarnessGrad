@@ -11,7 +11,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from eval.appworld_reporting import (
+from eval.policy.appworld_reporting import (
     TGC_METRIC, build_report, make_manifest, receipts_from_verdicts,
 )
 from harnessgrad.records import _save_verdicts

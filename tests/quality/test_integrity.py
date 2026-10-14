@@ -6,7 +6,7 @@
 
 这不是假设。`improvers/` 就是在这条检查被写出来的时候发现的缺口:它装着**发给改进器的
 默认 skill** 和**决定跑哪个改进器的注册表** —— 都是裁判侧的东西,一个方法可以改掉它们
-而 `FAILED RUN` 不会响。同一时刻 `eval/integrity.py` 里已经有一段长注释解释
+而 `FAILED RUN` 不会响。同一时刻 `eval/run/integrity.py` 里已经有一段长注释解释
 `base_harness/` 为什么**故意**不在清单里,却没有一条机制保证"故意"是唯一的漏法。
 
 所以这里测两件事:
@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from eval.integrity import NOT_PLATFORM, PLATFORM, PLATFORM_ROOT, snapshot  # noqa: E402
+from eval.run.integrity import NOT_PLATFORM, PLATFORM, PLATFORM_ROOT, snapshot  # noqa: E402
 
 #: 运行产物与缓存:由运行本身生成,不是平台源码。和 `runs/` 同类,所以按前缀放行,
 #: 不逐个登记 —— 它们的名字带日期/编号,登记不完。
@@ -45,7 +45,7 @@ def test_every_top_level_entry_is_classified():
                     if name not in set(PLATFORM) and name not in NOT_PLATFORM]
     assert not unclassified, (
         f"这些顶层条目既不在 PLATFORM 里、也没有理由说明它为什么不在: {unclassified}。"
-        f"要么把它加进 PLATFORM(eval/integrity.py),要么在 NOT_PLATFORM 里写下理由。")
+        f"要么把它加进 PLATFORM(eval/run/integrity.py),要么在 NOT_PLATFORM 里写下理由。")
 
 
 def test_every_exclusion_carries_a_reason():

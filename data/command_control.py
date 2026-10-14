@@ -4,7 +4,7 @@ A dataset whose verifier is `command` needs three things an `answer` dataset doe
 
 * a workdir built the way `SETUP` builds it,
 * a reference artefact that gets it to reward 1,
-* a check run the way `eval/verifier.py` runs it, with `VERIFY.inputs` re-materialized.
+* a check run the way `eval/verification/verifier.py` runs it, with `VERIFY.inputs` re-materialized.
 
 Those three are dataset-agnostic. Only the reference artefact is not -- and for
 SpreadsheetBench it is a golden workbook, for DS-1000 it is `reference_code`, for a
@@ -43,7 +43,7 @@ import time
 from pathlib import Path
 
 #: Where the check writes its grade, workdir-relative and absolute. The platform's
-#: `eval/verifier.py` owns these names; a `command` dataset must use them.
+#: `eval/verification/verifier.py` owns these names; a `command` dataset must use them.
 REWARD_REL = "verifier/reward.txt"
 EVIDENCE_REL = "verifier/evidence.json"
 REWARD_FILE = "/verifier/reward.txt"
@@ -123,7 +123,7 @@ def solve(module, task: dict, workdir: Path) -> None:
 
 
 def run_check(module, task: dict, workdir: Path) -> tuple[float, str]:
-    """Run the check the way `eval/verifier.py` does, re-materializing its inputs.
+    """Run the check the way `eval/verification/verifier.py` does, re-materializing its inputs.
 
     The verifier's inputs are written **again** here, as the platform does after the
     harness stops. That is what makes the grade independent of anything the agent did to
@@ -175,7 +175,7 @@ def run_local(module, task: dict, *, oracle: bool, workdir: Path) -> int:
 
 def run_platform(module, task: dict, *, oracle: bool, workdir: Path,
                  sandbox: bool = True) -> int:
-    from eval.runner import run_one
+    from eval.run.runner import run_one
 
     tid = task["task_id"]
     setup = {"files": list(module.SETUP[tid]["files"])}

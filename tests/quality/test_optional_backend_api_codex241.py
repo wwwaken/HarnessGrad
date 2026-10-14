@@ -6,8 +6,8 @@ import os
 
 import pytest
 
-from eval import lifecycle_receipt as lifecycle
-from eval import scorer_backend as backend
+from eval.admission import lifecycle_receipt as lifecycle
+from eval.admission import scorer_backend as backend
 from lifecycle_fixtures_codex177 import attest, gate_facts, stage_evidence
 from test_scorer_admission_codex173 import example, offline_only
 from test_scorer_backend_codex213 import request_inputs

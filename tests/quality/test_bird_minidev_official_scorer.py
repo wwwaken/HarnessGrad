@@ -252,7 +252,7 @@ def test_the_module_imports_without_its_data(tmp_path):
 
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
 def test_platform_control(arm, expected):
-    """Gates 1 and 2 through `eval.runner.run_one` with the sandbox on, which is where a
+    """Gates 1 and 2 through `eval.run.runner.run_one` with the sandbox on, which is where a
     `VERIFY.inputs` path error would show up."""
     proc = subprocess.run([sys.executable, "data/bird_minidev/control.py", arm, "--platform"],
                           capture_output=True, text=True, timeout=600)

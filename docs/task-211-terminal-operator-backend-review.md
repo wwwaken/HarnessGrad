@@ -53,18 +53,18 @@ quota evidence records. Old reports retain their original revisions/test claims.
 | [docs/filesystem-quota-evidence.schema.json](../docs/filesystem-quota-evidence.schema.json) | `f8077199a91a72db252483cd0d12e02272964a7b1d8d1add24ba54bdd4b3e4cc` |
 | [docs/moving-docker-data-root.md](../docs/moving-docker-data-root.md) | `b1960a4cb32768c9908e2eb4724a7f3e804e231311af7dddb0fb505cc8084cea` |
 | [reports/report.md](../reports/report.md) | `6f34a125082dcd2b134d3b4bb92cf677f2bb5acf81a7a6c2cd59c3d62cd3b5b4` |
-| [eval/pilot_admission.py](../eval/pilot_admission.py) | `1bcdb66299fc1db88541e8a517138ae29cb166809deaa1cb6ca665bfc657770a` |
+| [eval/admission/pilot_admission.py](../eval/admission/pilot_admission.py) | `1bcdb66299fc1db88541e8a517138ae29cb166809deaa1cb6ca665bfc657770a` |
 | [docs/runner-admission-contract.md](../docs/runner-admission-contract.md) | `279129dac26d3416e0753402d6eeef6fc6ad5ca6c9f2f18a95bc5cfc795963f4` |
-| [eval/runner_admission.py](../eval/runner_admission.py) | `f9d9dee76e1e1a94366d1f486c122a100bb42755b4ec9d4a86c48b4941c1f663` |
+| [eval/admission/runner_admission.py](../eval/admission/runner_admission.py) | `f9d9dee76e1e1a94366d1f486c122a100bb42755b4ec9d4a86c48b4941c1f663` |
 | [reports/scorer-closure-codex170-report.md](../reports/scorer-closure-codex170-report.md) | `fd742934629a20630ae03eaa681f0f71eb7802bda2cfdd411e07ef4f5ef17297` |
 | [docs/scorer-admission-contract.md](../docs/scorer-admission-contract.md) | `2b10aa92b37de4a4c5a832001e1154bbcf785a719af566fee914ad5edd4a8255` |
-| [eval/scorer_admission.py](../eval/scorer_admission.py) | `481230cf7f327f83ef7a234e429abc1f5ebfc5937cbd4e9463b616897e9b5f0a` |
-| [eval/artifact_admission.py](../eval/artifact_admission.py) | `9a6b8528dd02377bb3ce62afbd430ee7c0c212f8b30ee2f617a0902ffba5f2e2` |
+| [eval/admission/scorer_admission.py](../eval/admission/scorer_admission.py) | `481230cf7f327f83ef7a234e429abc1f5ebfc5937cbd4e9463b616897e9b5f0a` |
+| [eval/admission/artifact_admission.py](../eval/admission/artifact_admission.py) | `9a6b8528dd02377bb3ce62afbd430ee7c0c212f8b30ee2f617a0902ffba5f2e2` |
 | [reports/staged-receipt-audit-codex193-report.md](../reports/staged-receipt-audit-codex193-report.md) | `9f39737bf0b8d398e0d1fb624a323e27d9787bef74aa33e667c9adca858b0c0b` |
-| [eval/diagnostic_policy.py](../eval/diagnostic_policy.py) | `3c0639d76111a25106d6a87d6d481ec491b06dbaa1d31b9fd3a13f4d7bcdff47` |
+| [eval/policy/diagnostic_policy.py](../eval/policy/diagnostic_policy.py) | `3c0639d76111a25106d6a87d6d481ec491b06dbaa1d31b9fd3a13f4d7bcdff47` |
 | [eval/diagnostic_receipt.schema.json](../eval/diagnostic_receipt.schema.json) | `9f487740fb22f3dc4d162323763830507766e04f8b19894db0e1a62c905ab32e` |
-| [eval/lifecycle_receipt.py](../eval/lifecycle_receipt.py) | `c2089fc914f501a7e0ca4a0e19399725c79c65f586805065a7ccb3f2b5613a52` |
-| [eval/metrics.py](../eval/metrics.py) | `d520a9ff98493466b2e1670d452bb2e37bb08ae5f00ecfc44e0e1364a884d34b` |
+| [eval/admission/lifecycle_receipt.py](../eval/admission/lifecycle_receipt.py) | `c2089fc914f501a7e0ca4a0e19399725c79c65f586805065a7ccb3f2b5613a52` |
+| [eval/run/metrics.py](../eval/run/metrics.py) | `d520a9ff98493466b2e1670d452bb2e37bb08ae5f00ecfc44e0e1364a884d34b` |
 | [driver.py](../driver.py) | `a2e0d112f0edc2dce1df124596c9667068186d51f1ea6244d718e3e61e460f88` |
 
 ## Documentation validation

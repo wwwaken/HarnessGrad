@@ -75,7 +75,7 @@ def studied_per_task(point: dict) -> dict:
     **The platform's copy of a rule that also exists in `methods/protocol.py`.** A method
     runs inside a sandbox that hides the platform, so it cannot import this; the platform
     cannot import a method either. Two copies of one rule is a cost, and it is the same cost
-    `methods/apply.py` and `eval/candidate.py` already pay for the same reason -- with the
+    `methods/apply.py` and `eval/run/candidate.py` already pay for the same reason -- with the
     same mitigation: a test asserts the two agree (`tests/quality/test_scoring_policies.py`).
 
     `score_kind` decides, and never a fallback that reaches the exam: `training` means the

@@ -43,6 +43,33 @@ The distinct cross-layer module edges at that revision are summarized below.
 The wider graph therefore has cycles today. The guard protects the boundaries
 below; it does not assert that all of `harnessgrad/` is below `eval/`.
 
+## Eval concern packages
+
+The structural refactor from `9c928ed` first scanned the real import graph using
+`ast`, printing every internal eval edge and every external importer edge. That
+whole-tree scan covered 437 Python files and found 211 distinct edges targeting
+`eval`, including 50 internal edges. The full outgoing production eval graph
+before the move (including dependencies outside eval) is preserved in the
+[audit report](../reports/eval-package-refactor-e1.md).
+
+The graph supports seven concern packages: `eval.run`, `eval.containers`,
+`eval.admission`, `eval.service`, `eval.observe`, `eval.policy`, and
+`eval.verification`. In particular, observation modules consume `phases`,
+`harness_runtime` consumes `container`, and `stepwise_transport` is a transport
+leaf. Verification has its own package because it composes containers, services
+and runtime policy rather than defining admission evidence. The package names
+`containers` and `service` avoid collisions with legacy module names, allowing
+identity-preserving aliases instead of state-copying package facades.
+
+This is a concern map, not a claim of an acyclic package graph. Existing
+cross-concern imports are retained. Every production importer now targets a
+canonical implementation. The 32 documented old-path aliases add compatibility
+edges only; package `__init__.py` files have no implementation imports. The
+[architecture map](architecture.md#compatibility-import-paths) lists every shim.
+The exact eleven data exceptions and three config edges below retain their
+original justifications and now name the moved implementations. The guard also
+checks that canonical production modules never import the compatibility paths.
+
 ## Enforced boundaries
 
 - `harnessgrad/config/` and `harnessgrad/runtime/` cannot import `eval`, `data`,
@@ -58,30 +85,31 @@ The permitted config edges are:
 
 | File | Imported module | Reason |
 | --- | --- | --- |
-| `eval/harness_runtime.py` | `harnessgrad.config` | Resolved runtime overlay configuration |
-| `eval/sandbox.py` | `harnessgrad.config` | Resolved sandbox configuration |
-| `eval/services.py` | `harnessgrad.config` | Resolved service configuration |
+| `eval/containers/harness_runtime.py` | `harnessgrad.config` | Resolved runtime overlay configuration |
+| `eval/containers/sandbox.py` | `harnessgrad.config` | Resolved sandbox configuration |
+| `eval/service/services.py` | `harnessgrad.config` | Resolved service configuration |
 
 ## Existing exceptions
 
 The `data -> eval` invariant was already violated at the audited revision. These
 are documented layering debt, preserved to keep this change focused on the guard.
-No production import was changed. Every exception is keyed by rule, exact file,
+The structural refactor rewires those same dependencies to canonical paths.
+Every exception is keyed by rule, exact file,
 and exact imported module in `EXCEPTIONS`, with a reason:
 
 | File | Imported module | Reason |
 | --- | --- | --- |
-| `data/alfworld/control.py` | `eval.runner` | Platform control validates adapter wiring through `run_one` |
-| `data/appworld/control.py` | `eval.runner` | Platform control invokes the AppWorld verifier through `run_one` |
-| `data/appworld.py` | `eval.appworld_reporting` | Adapter and reporting share `make_manifest`; extraction needs a separate refactor |
-| `data/command_control.py` | `eval.runner` | Shared command control runs platform verification |
-| `data/jericho/control.py` | `eval.runtime_policy` | Local control stages runtime and applies platform timeout |
-| `data/jericho/control.py` | `eval.sandbox` | Local control executes the game CLI in the platform sandbox |
-| `data/jericho/control.py` | `eval.verifier` | Local control interprets measured evidence through the platform verifier |
-| `data/jericho/control.py` | `eval.runner` | Platform control invokes the Jericho verifier through `run_one` |
-| `data/qa/control.py` | `eval.runner` | Shared QA control validates adapter wiring through `run_one` |
-| `data/scienceworld/control.py` | `eval.runner` | Platform control invokes the ScienceWorld verifier through `run_one` |
-| `data/spreadsheetbench/control.py` | `eval.runner` | Platform control invokes the spreadsheet verifier through `run_one` |
+| `data/alfworld/control.py` | `eval.run.runner` | Platform control validates adapter wiring through `run_one` |
+| `data/appworld/control.py` | `eval.run.runner` | Platform control invokes the AppWorld verifier through `run_one` |
+| `data/appworld.py` | `eval.policy.appworld_reporting` | Adapter and reporting share `make_manifest`; extraction needs a separate refactor |
+| `data/command_control.py` | `eval.run.runner` | Shared command control runs platform verification |
+| `data/jericho/control.py` | `eval.policy.runtime_policy` | Local control stages runtime and applies platform timeout |
+| `data/jericho/control.py` | `eval.containers.sandbox` | Local control executes the game CLI in the platform sandbox |
+| `data/jericho/control.py` | `eval.verification.verifier` | Local control interprets measured evidence through the platform verifier |
+| `data/jericho/control.py` | `eval.run.runner` | Platform control invokes the Jericho verifier through `run_one` |
+| `data/qa/control.py` | `eval.run.runner` | Shared QA control validates adapter wiring through `run_one` |
+| `data/scienceworld/control.py` | `eval.run.runner` | Platform control invokes the ScienceWorld verifier through `run_one` |
+| `data/spreadsheetbench/control.py` | `eval.run.runner` | Platform control invokes the spreadsheet verifier through `run_one` |
 
 New permissions require a focused diff explaining the exact dependency and its
 reason. Empty reasons and stale permissions fail the guard, including removed

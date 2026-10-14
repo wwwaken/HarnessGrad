@@ -1,6 +1,6 @@
 """What a task needs in order to run, and what the platform could not measure.
 
-`data/` declares an environment kind, `eval/container.py` pins an image; this is the
+`data/` declares an environment kind, `eval/containers/container.py` pins an image; this is the
 platform's half in between: narrowing a dataset to the tasks a run actually scores,
 resolving image digests before anything is paid for, checking that a harness can operate on
 the environment at all, and saying out loud which tasks the platform refused to score and
@@ -16,10 +16,10 @@ from __future__ import annotations
 from pathlib import Path
 import os
 
-from eval.console import CONSOLE as console
+from eval.observe.console import CONSOLE as console
 import data.registry as datasets
-import eval.container as container
-import eval.harness_runtime as harness_runtime
+import eval.containers.container as container
+import eval.containers.harness_runtime as harness_runtime
 from harnessgrad.config import current as current_config
 
 def _required_env_kinds(envs: dict) -> set[str]:

@@ -73,7 +73,7 @@ explicitly N/A for no-model controls. Unobserved counts remain unknown, not zero
 ### Current contract clarification — Task 219
 
 This delivery checklist is not an accepted preflight input or a complete receipt
-schema. `eval.gaia_preflight` accepts full source commit identities and optional
+schema. `eval.policy.gaia_preflight` accepts full source commit identities and optional
 paired inline `harnessgrad.gaia-runtime.v1` declarations only, never receipt files
 or task/attachment paths. Every review returns exit 2 with execution blocked,
 `measured=false`, `production_authorized=false`, `lifecycle_authorized=false`,
@@ -98,7 +98,7 @@ pre-execution `scope_sha256`. Its successful sequence is
 contains the completed snapshot attestation, its preflight and worker-runtime
 evidence, and the same outcomes digest as scoring. Before any aggregate or
 individual measured score is published, require passing gates/snapshot/cleanup
-and replay via `eval.diagnostic_policy.validate_receipt`, which checks scope,
+and replay via `eval.policy.diagnostic_policy.validate_receipt`, which checks scope,
 coverage, outcomes and exact cleanup/snapshot digests. JSON Schema shape validation
 alone does not perform those checks. Failed/unknown lifecycle work remains
 nonpublishable after cleanup; cleanup may still be attempted. `publication_ready`

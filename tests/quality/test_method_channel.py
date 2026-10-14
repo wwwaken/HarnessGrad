@@ -243,7 +243,7 @@ def test_a_round_with_no_method_records_no_hypothesis():
 def test_the_console_prints_the_reason_not_only_the_label():
     """标签是方法的**摘要**,而摘要可以误导 —— RRSI 就是。理由要单独印出来。"""
     import io as _io
-    from eval.console import Console
+    from eval.observe.console import Console
     stream = _io.StringIO()
     console = Console(stream=stream)
     console.round_line(2, "model: no change (b_t=4)", point={

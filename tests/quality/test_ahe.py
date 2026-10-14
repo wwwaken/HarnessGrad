@@ -181,7 +181,7 @@ def test_a_regression_outside_every_declaration_is_unattributed():
 
 
 def test_observed_diff_reads_the_one_zero_scores():
-    """平台 per-task 分就是 0.0/1.0(`eval/runner.py:168-172`),所以 AHE 的
+    """平台 per-task 分就是 0.0/1.0(`eval/run/runner.py:168-172`),所以 AHE 的
     `reward >= 1.0`(`evolve.py:634`)可以原样映射,没有阈值要调。"""
     mod = _load()
     before = _point(0, {"t1": 1.0, "t2": 0.0, "t3": 1.0})

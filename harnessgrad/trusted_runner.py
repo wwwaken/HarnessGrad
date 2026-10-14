@@ -17,7 +17,7 @@ import stat
 from pathlib import Path
 from typing import Any, Mapping
 
-from eval import candidate as candidate_checks
+from eval.run import candidate as candidate_checks
 
 
 class TrustedRunnerError(ValueError):

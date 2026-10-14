@@ -6,8 +6,8 @@ its source.** No execution or gate closure is authorized.
 Reviewed base: commit `82459cfa6d16c323ca40f21db2daf597921aedb3`, tree
 `8f8a6b117c9ba234d366fdc083251b698b789f49`, in `/tmp/hg-codex-219` only.
 The initial worktree was clean. Inputs were the task-210 packet, current
-`eval/gaia_preflight.py`, `eval/gaia_snapshot_attestation.py`,
-`eval/lifecycle_receipt.py`, `eval/diagnostic_policy.py`,
+`eval/policy/gaia_preflight.py`, `eval/policy/gaia_snapshot_attestation.py`,
+`eval/admission/lifecycle_receipt.py`, `eval/policy/diagnostic_policy.py`,
 `eval/diagnostic_receipt.schema.json`, shared admission source, and repository
 documentation/authored tests. Historical receipt pointers were not followed.
 No benchmark task, answer, attachment or heldout content was read; no Docker,

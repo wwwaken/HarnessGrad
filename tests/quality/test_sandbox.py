@@ -29,7 +29,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import eval.sandbox as sandbox  # noqa: E402
+import eval.containers.sandbox as sandbox  # noqa: E402
 
 needs_bwrap = pytest.mark.skipif(
     shutil.which("bwrap") is None,
@@ -90,7 +90,7 @@ def test_the_platform_is_not_on_the_subjects_disk(tmp_path, staged_harness):
         # platform's code, so the package that holds it is probed too. A sandbox
         # that hid the entrypoint and left the scorer readable would look fine.
         "  'impl': (p / 'harnessgrad').exists(),\n"
-        "  'scorer': (p / 'eval' / 'metrics.py').exists(),\n"
+        "  'scorer': (p / 'eval' / 'run' / 'metrics.py').exists(),\n"
         "  'methods': (p / 'methods').exists(),\n"
         "  'listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n"
         "}))\n"), repo=repo)

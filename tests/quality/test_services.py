@@ -29,10 +29,10 @@ from pathlib import Path
 
 import pytest
 
-import eval.container as container
-import eval.services as services
+import eval.containers.container as container
+import eval.service.services as services
 from data import registry
-from eval.runner import evaluate, run_one
+from eval.run.runner import evaluate, run_one
 from harnessgrad.environments import _env_record, _resolve_envs
 from harnessgrad.records import _cost_of
 
@@ -234,7 +234,7 @@ def test_the_normalized_env_carries_the_services_through():
 def test_the_environment_credential_never_reaches_the_harness():
     """A third budget needs a third exclusion, and the leak was on the path with no
     services at all: `harness_env()` forwards everything that is not the *method's*."""
-    from eval.runner import harness_env
+    from eval.run.runner import harness_env
 
     old = os.environ.copy()
     os.environ.update({"HG_ENV_API_KEY": "env-secret", "HG_ENV_MODEL": "env-model",
@@ -671,14 +671,14 @@ def test_the_declared_environment_reaches_the_curve(tmp_path):
 #
 # A containerised harness cannot reach a model on the host's loopback, and the wrong
 # fix is `--network bridge` -- that would give the task the internet and silently change
-# what it is. `eval/modelgate.py` publishes the endpoint on the network the task already
+# what it is. `eval/service/modelgate.py` publishes the endpoint on the network the task already
 # has. These tests pin the load-bearing fact and the wiring, in that order.
 
 def test_a_host_local_url_is_recognised_and_a_remote_one_is_not():
     """The decision that selects the mechanism. A remote endpoint is *not* published:
     the container has no route to it, and pretending otherwise would produce a gateway
     that forwards into nothing."""
-    from eval import modelgate
+    from eval.service import modelgate
 
     for local in ("http://127.0.0.1:8001/v1", "http://localhost:8001/v1",
                   "http://0.0.0.0:8001/v1", "http://host.docker.internal:8001/v1"):
@@ -691,7 +691,7 @@ def test_a_host_local_url_is_recognised_and_a_remote_one_is_not():
 def test_the_gateway_preserves_the_path():
     """`/v1` is part of an OpenAI-compatible endpoint. Dropping it produces a 404 that
     reads like a wrong model rather than a wrong URL."""
-    from eval import modelgate
+    from eval.service import modelgate
 
     target, path = modelgate.split("http://127.0.0.1:8001/v1")
     assert target == ("127.0.0.1", 8001)
@@ -761,7 +761,7 @@ def test_a_containerised_harness_gets_its_model_and_not_the_internet(tmp_path):
     _require_docker()
     import http.server
     import threading
-    from eval import modelgate
+    from eval.service import modelgate
 
     # A stand-in model on the host's loopback, which is what the container cannot reach
     # directly -- so passing this test cannot be an accident of the host being reachable.

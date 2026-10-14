@@ -33,7 +33,7 @@ import shutil
 import zipfile
 from pathlib import Path
 
-from eval.appworld_reporting import make_manifest
+from eval.policy.appworld_reporting import make_manifest
 
 KIND = "dataset"
 DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/appworld")

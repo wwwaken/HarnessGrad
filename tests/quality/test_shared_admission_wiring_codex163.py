@@ -10,7 +10,8 @@ from types import SimpleNamespace
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from eval import runner, runner_admission
+from eval.run import runner
+from eval.admission import runner_admission
 
 TASK = {"task_id": "synthetic-admission-163"}
 
@@ -81,7 +82,7 @@ def test_verifier_artifact_policy_refuses_before_scoring(tmp_path, verifier):
 def test_a_verifier_timeout_is_not_a_backend_observation_trigger():
     """The platform enforces a verifier deadline itself, so it is not refused.
 
-    `eval/verifier.py` passes `timeout_s` to `phase_timeout` and to the verifier
+    `eval/verification/verifier.py` passes `timeout_s` to `phase_timeout` and to the verifier
     subprocess' `timeout=`, and records expiry as an explicit unmeasured outcome.
     Nothing outside this process has to be observed, so demanding an observation
     refused every adapter that declares a deadline -- the shared QA scaffold sets

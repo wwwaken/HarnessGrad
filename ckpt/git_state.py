@@ -13,7 +13,7 @@ from pathlib import Path
 
 #: The harness's own writable scratch space inside its tree during a task. Named
 #: here because three modules need to agree on it: `init_repo` creates it,
-#: `eval/sandbox.py` makes it writable, and `run_one` exports its path.
+#: `eval/containers/sandbox.py` makes it writable, and `run_one` exports its path.
 STATE_DIRNAME = ".state"
 
 
@@ -38,7 +38,7 @@ def init_repo(root: Path) -> None:
     # from the process-call entrypoints. Neither is harness state, and committing
     # either would make a no-op round mint a new sha and look like movement.
     # `.state/` is the harness's own scratch space during a task: it is the one
-    # writable place inside an otherwise read-only tree (eval/sandbox.py), so its
+    # writable place inside an otherwise read-only tree (eval/containers/sandbox.py), so its
     # contents are by definition not part of the harness and must never be
     # committed -- a harness that wrote a cache file would otherwise mint a new
     # sha and the curve would show movement that no method made.

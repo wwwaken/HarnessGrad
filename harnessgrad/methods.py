@@ -19,10 +19,10 @@ import os
 import subprocess
 import sys
 
-from eval.integrity import diff
-from eval.integrity import snapshot
+from eval.run.integrity import diff
+from eval.run.integrity import snapshot
 from harnessgrad import PLATFORM_ROOT
-import eval.sandbox as sandbox
+import eval.containers.sandbox as sandbox
 
 def _check_method_entrypoint(argv: list[str]) -> str | None:
     """一个相对的脚本路径会让方法静默地跑不起来,所以在这里挡住。
@@ -57,13 +57,13 @@ def _check_method_entrypoint(argv: list[str]) -> str | None:
 def _method_sandbox_plan(work: Path, argv: list[str], scratch: Path,
                          readonly: tuple[Path, ...] = (),
                          runtime: tuple[str, ...] = ()) -> dict:
-    """What a method is allowed to see, expressed for `eval/sandbox.py`.
+    """What a method is allowed to see, expressed for `eval/containers/sandbox.py`.
 
     A method used to run as an ordinary subprocess with the whole platform on disk.
     Measured, with a probe placed where a real method lives (`methods/<name>/run.py`):
     it could read `data/probe_set.py` -- **the expected answer for every task,
     including the eval side this platform goes to some trouble to withhold** -- along
-    with `.env` and `eval/runner.py`, and it held both API keys. The only check was a
+    with `.env` and `eval/run/runner.py`, and it held both API keys. The only check was a
     hash either side of the call, which sees writes and not reads.
 
     So a method is sandboxed like the harness, with one difference: the platform is
@@ -114,7 +114,7 @@ def _method_sandbox_plan(work: Path, argv: list[str], scratch: Path,
         # a later mount wins -- which is how `base_harness` stays untouchable while its
         # sibling is the method's scratch.
         "task_dir": scratch,
-        # **Not optional.** `eval/sandbox.py` reads `repo=None` as "the repo is the
+        # **Not optional.** `eval/containers/sandbox.py` reads `repo=None` as "the repo is the
         # platform" and binds it read-only -- so leaving this out handed the platform
         # straight back. Measured: with `repo` omitted, a probe method still read
         # `data/probe_set.py` and `.env`, and the sandbox looked like it was working.
@@ -221,7 +221,7 @@ def _call_method(work: Path, argv: list[str], request: dict, timeout_s: int,
     """Invoke a method with the platform's own files checked before and after.
 
     Detection, not prevention: a method runs as an ordinary subprocess with the
-    platform on disk, and nothing here stops it from appending to `eval/runner.py`.
+    platform on disk, and nothing here stops it from appending to `eval/run/runner.py`.
     What this does is refuse a content mismatch. The snapshots do not identify
     its writer: concurrent user edits and untracked artifacts can also cause it.
     """

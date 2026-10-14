@@ -1,9 +1,9 @@
 # Offline scorer admission API
 
-`eval.scorer_admission` is the public facade for task-independent sealed scorer
+`eval.admission.scorer_admission` is the public facade for task-independent sealed scorer
 bundles and task-bound artifact runtime admission. It validates local bytes and
 supplied observations without creating or executing a runtime. Existing
-`eval.scorer_bundle` and `eval.artifact_admission` entry points and successful
+`eval.admission.scorer_bundle` and `eval.admission.artifact_admission` entry points and successful
 receipt schemas remain available.
 
 ## Checks and trust inputs

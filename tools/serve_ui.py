@@ -57,8 +57,8 @@ from urllib.parse import urlparse
 # whose failure a bare `except Exception` swallowed). The order is load-bearing.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import data.registry as registry   # noqa: E402
-import eval.container as container   # noqa: E402
-import eval.harness_runtime as harness_runtime   # noqa: E402
+import eval.containers.container as container   # noqa: E402
+import eval.containers.harness_runtime as harness_runtime   # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs"
@@ -1394,7 +1394,7 @@ def find_trace_dir(run_id: str) -> Path | None:
     return None
 
 
-from eval.tracing import first_object as _trace_first_object  # noqa: E402
+from eval.observe.tracing import first_object as _trace_first_object  # noqa: E402
 
 
 def task_detail(run_id: str, task_id: str) -> dict:

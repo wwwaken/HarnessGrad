@@ -13,7 +13,7 @@ Without a route, the check never runs, and the platform recorded that as a task 
 So this forwards `172.17.0.1:<port>` to the host's proxy with the same byte pump the model
 gateway uses. It is bound to the docker bridge address only: containers can use it, the LAN
 cannot. The platform then hands `HG_EGRESS_PROXY=http://172.17.0.1:<port>` to the check's
-process (`eval/runner.py:_check_env`), and never to the harness -- a harness reaches its
+process (`eval/run/runner.py:_check_env`), and never to the harness -- a harness reaches its
 model through the platform, and a proxy in front of that breaks it.
 
     python3 tools/egress_forwarder.py        # 172.17.0.1:17890 -> 127.0.0.1:17891
@@ -31,7 +31,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from eval.modelgate import ModelGateway  # noqa: E402
+from eval.service.modelgate import ModelGateway  # noqa: E402
 
 
 def main() -> int:

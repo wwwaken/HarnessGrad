@@ -153,7 +153,7 @@ def test_the_gate_gives_up_after_its_retry_budget(agent, tmp_path, monkeypatch):
 
 def test_loop_facts_distinguish_how_the_harness_ended(tmp_path):
     """四种结束方式必须能分开,因为它们的修法完全不同。"""
-    from eval import tracing as trace_mod
+    from eval.observe import tracing as trace_mod
 
     def facts(records):
         p = tmp_path / "t.jsonl"
@@ -198,7 +198,7 @@ def test_a_command_carrying_reply_counts_as_a_command_not_an_answer(tmp_path):
     这正是 `cancel-async-tasks` 的形状:回复里有实现、也有一个空 answer。旧记录把它
     读成"答案 0 条命令"(于是看不见任何问题);现在要看得出"这条回复想执行命令"。
     """
-    from eval import tracing as trace_mod
+    from eval.observe import tracing as trace_mod
     p = tmp_path / "t.jsonl"
     p.write_text(json.dumps({"step": 0, "reply":
         '{"tool": "bash", "command": "cat > /app/run.py << \'EOF\'\\nx=1\\nEOF", "answer": ""}'})
@@ -218,7 +218,7 @@ def test_multi_object_replies_are_counted_so_a_fixed_bug_is_not_diagnosed_twice(
         multi_object_replies=32, parse_errors=0   -> 解析器吸收了,别再去改它
         multi_object_replies=32, parse_errors=32  -> 还是没吸收
     """
-    from eval import tracing as trace_mod
+    from eval.observe import tracing as trace_mod
     p = tmp_path / "t.jsonl"
     p.write_text("\n".join(json.dumps(r) for r in [
         {"step": 0, "reply": '{"tool":"bash","command":"a"}}\n{"answer":""}'},
@@ -242,7 +242,7 @@ def test_the_summary_counts_empty_commands_separately(tmp_path):
     一个方法读到的是"这只 harness 工作正常"。而其中 10 条执行的是空字符串:重复的 JSON 键
     把模型的真命令换成了 `""`。这道题得 0.0,原因不在模型。
     """
-    import eval.tracing as trace_mod
+    import eval.observe.tracing as trace_mod
     trace = tmp_path / "t.jsonl"
     trace.write_text(
         '{"step": 0, "reply": "{\\"tool\\": \\"bash\\", \\"command\\": \\"ls\\", '
@@ -321,7 +321,7 @@ def test_repeated_commands_are_counted_apart_from_the_harness_nudge(tmp_path):
     而 `repeat_nudge` 只触发 2 次 —— 这个差距就是已知的盲区(提醒只看紧挨着的一次重复)。
     轮级记录原本只有一个 0.000,方法看不出"预算被原地打转烧光了"。
     """
-    from eval import tracing as trace_mod
+    from eval.observe import tracing as trace_mod
 
     records = [
         {"step": 0, "command": "ls"},

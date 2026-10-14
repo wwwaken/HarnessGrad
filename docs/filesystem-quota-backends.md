@@ -168,7 +168,7 @@ prescribed or executed here.
 
 - [ ] Gate `driver.py` before workspace initialization; `ckpt/git_state.py` before
   staging/copy/extraction/materialization; method loops before base/workspace copies;
-  `eval/runner.py` before task setup, scratch, HOME/TMPDIR and verifier output writes.
+  `eval/run/runner.py` before task setup, scratch, HOME/TMPDIR and verifier output writes.
   These are required integration points, not implemented changes.
 - [ ] Route all destinations, Git objects/worktrees, archives, temporary copy trees,
   trajectories, cache fills, logs and export/evidence writes to allocated scopes.
@@ -428,18 +428,18 @@ the historical audit did not establish live application of their limits.
 
 | Path / symbol | Existing behavior | Missing enforcement |
 | --- | --- | --- |
-| `eval/sandbox.py:command` | Read-only runtime/workspace binds; writable host task and verifier-output binds; bare tmpfs mounts for hidden trees, private `/tmp`, and `.state` | No task-bind project quota; no explicit paired byte/inode limits on tmpfs; no backend identity or kernel quota observer |
-| `eval/separated_stdio.py:namespace_command` | Separate native namespace with bare `/tmp` tmpfs and writable `/work` or `/verdict` binds | Same missing host-bind enforcement and paired tmpfs limits |
-| `eval/runner.py:run_one` | Creates task scratch, `.state`, HOME and TMPDIR; dispatches to sandbox or container functions | No quota provisioning/admission before those writes |
-| `eval/container.py:command`, `_mounts` | Docker/files root is read-only; `/tmp` requests `size=512m`; task and `.state` are writable host binds | No explicit inode policy for `/tmp`; neither bind has a quota backend |
-| `eval/container_state.py:_run_one_container_state` → `eval/container.py:create` | Docker exec/container-state root is writable; `create` passes CPU/memory/PID bounds; scratch and HOME are bare tmpfs; state is copied into the root and later committed | No byte/inode limits for the writable layer or tmpfs; no graph-driver/snapshotter quota integration |
+| `eval/containers/sandbox.py:command` | Read-only runtime/workspace binds; writable host task and verifier-output binds; bare tmpfs mounts for hidden trees, private `/tmp`, and `.state` | No task-bind project quota; no explicit paired byte/inode limits on tmpfs; no backend identity or kernel quota observer |
+| `eval/service/separated_stdio.py:namespace_command` | Separate native namespace with bare `/tmp` tmpfs and writable `/work` or `/verdict` binds | Same missing host-bind enforcement and paired tmpfs limits |
+| `eval/run/runner.py:run_one` | Creates task scratch, `.state`, HOME and TMPDIR; dispatches to sandbox or container functions | No quota provisioning/admission before those writes |
+| `eval/containers/container.py:command`, `_mounts` | Docker/files root is read-only; `/tmp` requests `size=512m`; task and `.state` are writable host binds | No explicit inode policy for `/tmp`; neither bind has a quota backend |
+| `eval/containers/container_state.py:_run_one_container_state` → `eval/containers/container.py:create` | Docker exec/container-state root is writable; `create` passes CPU/memory/PID bounds; scratch and HOME are bare tmpfs; state is copied into the root and later committed | No byte/inode limits for the writable layer or tmpfs; no graph-driver/snapshotter quota integration |
 | `driver.py:main` → `ckpt/git_state.py:stage_workspace`, `materialize` | Ordinary host mkdir/copy/git/archive operations; workspace-location isolation | No quota-aware allocator; no limit before staging, Git storage or extraction |
 | `harnessgrad/loops/mode_a.py:_run_mode_a`, `harnessgrad/methods.py:_method_sandbox_plan` | Copies base workspace, creates method workspace, makes the enclosing scratch directory writable | No independent quota scope for these writable trees/trajectory output |
-| `eval/pilot_admission.py:control_command`, `_runtime_envelope` | Explicit `size` and `nr_inodes` for control `/tmp`; read-only root and restricted mount plan | Limited control path; not a writable task/workspace backend or kernel project-quota observer |
-| `eval/artifact_admission.py:runtime_tmpfs`, `require_artifact_runtime` | Bounded tmpfs options and validation of supplied Docker inspect facts; checks small allowlisted artifact exports | An option builder / supplied-observation contract, not exec-layer or workspace provisioning |
-| `eval/runner_admission.py:admit_runtime` | Validates supplied `tmpfs` or `project-quota` facts, exact limits and distinct scope IDs | No implementation that allocates a project, queries effective kernel limits, or wires trusted observations into the runners |
-| `eval/pilot_admission.py:filesystem_capacity`, `ReservationLedger` | `statvfs` free byte/inode readings and cooperative reservations | Observation/accounting only; cannot stop writes |
-| `eval/container.py:snapshot_admission` | Size/free-byte preflight before commit; receipt says `preflight_only=true`, `quota_enforced=false` | No inode or growth enforcement; actor cgroups do not bound daemon snapshot storage |
+| `eval/admission/pilot_admission.py:control_command`, `_runtime_envelope` | Explicit `size` and `nr_inodes` for control `/tmp`; read-only root and restricted mount plan | Limited control path; not a writable task/workspace backend or kernel project-quota observer |
+| `eval/admission/artifact_admission.py:runtime_tmpfs`, `require_artifact_runtime` | Bounded tmpfs options and validation of supplied Docker inspect facts; checks small allowlisted artifact exports | An option builder / supplied-observation contract, not exec-layer or workspace provisioning |
+| `eval/admission/runner_admission.py:admit_runtime` | Validates supplied `tmpfs` or `project-quota` facts, exact limits and distinct scope IDs | No implementation that allocates a project, queries effective kernel limits, or wires trusted observations into the runners |
+| `eval/admission/pilot_admission.py:filesystem_capacity`, `ReservationLedger` | `statvfs` free byte/inode readings and cooperative reservations | Observation/accounting only; cannot stop writes |
+| `eval/containers/container.py:snapshot_admission` | Size/free-byte preflight before commit; receipt says `preflight_only=true`, `quota_enforced=false` | No inode or growth enforcement; actor cgroups do not bound daemon snapshot storage |
 
 The platform source search found no implementation of project ID assignment,
 project-inheritance management, `quotactl`, project hard-limit queries or setters,

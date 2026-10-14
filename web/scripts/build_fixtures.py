@@ -25,9 +25,9 @@ Two derived values, both marked in the fixture README:
 
 * `verdict.tests` -- the per-test tally. No verdict on disk carries it yet (the stage-0
   field was added after every recorded run), so it is parsed out of the verdict's own
-  `detail` string, which is where `eval/runner.py:_test_report_failures` got it.
+  `detail` string, which is where `eval/run/runner.py:_test_report_failures` got it.
 * `point.test_rate` / `point.per_task_test_rate` -- computed from those tallies by the
-  same formula as `eval/runner.py:test_rate_of` (`passed / (passed + failed)`).
+  same formula as `eval/run/runner.py:test_rate_of` (`passed / (passed + failed)`).
 """
 from __future__ import annotations
 
@@ -260,7 +260,7 @@ def read_trace(run: str, round_no: int, task: str) -> tuple[list[dict], list[str
 
 
 def point_test_rate(verdicts: dict[str, dict]) -> float | None:
-    """`eval/runner.py:test_rate_of`, applied to the recovered tallies."""
+    """`eval/run/runner.py:test_rate_of`, applied to the recovered tallies."""
     rates = []
     for verdict in verdicts.values():
         tally = verdict.get("tests")

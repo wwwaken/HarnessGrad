@@ -79,8 +79,8 @@ def materialize(record: dict, workdir: Path) -> None:
 
 def drive(workdir: Path, actions: list[str], *, timeout_s: float = 300) -> int:
     """Act through the CLI exactly as an agent would. Returns how many commands ran."""
-    from eval.runtime_policy import phase_timeout, stage_agent_runtime
-    from eval import sandbox
+    from eval.policy.runtime_policy import phase_timeout, stage_agent_runtime
+    from eval.containers import sandbox
 
     workdir = workdir.resolve()
     control_root = workdir / ".control"
@@ -106,7 +106,7 @@ def drive(workdir: Path, actions: list[str], *, timeout_s: float = 300) -> int:
 
 def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     """Run the check the way the platform's verifier does, re-materializing its inputs."""
-    from eval.verifier import _verify
+    from eval.verification.verifier import _verify
     verifier = module.VERIFY[record["task_id"]]
     workdir = workdir.resolve()
     control_root = workdir / ".control"
@@ -159,8 +159,8 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
 
 def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
                  sandbox: bool = True) -> int:
-    """The same episode through `eval.runner.run_one`, with no Docker and no model."""
-    from eval.runner import run_one
+    """The same episode through `eval.run.runner.run_one`, with no Docker and no model."""
+    from eval.run.runner import run_one
 
     tid = record["task_id"]
     task = {"task_id": tid, "goal": module._goal(record), "inputs": []}

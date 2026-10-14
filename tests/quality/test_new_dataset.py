@@ -174,7 +174,7 @@ def test_the_files_check_separates_unmeasurable_from_failed(files_scaffold):
     This is the `files` kind's own contract, and it is the one a scaffold author copies:
     a missing **interface** file is a measured `0` (the agent failed to act), while a missing
     **platform** input -- the gold -- is not a grade at all. No reward file is written and
-    the evidence says `measured: false`, which `eval/verifier.py` reports as unmeasured
+    the evidence says `measured: false`, which `eval/verification/verifier.py` reports as unmeasured
     rather than as a zero the agent earned.
     """
     module = registry.importlib.import_module(f"data.{files_scaffold}")

@@ -13,7 +13,7 @@ Two ways to run each control
 nothing but `pip install alfworld textworld` plus the extracted data, and it is the
 "no Docker" path.
 
-`--platform` runs the same episode through the platform's own `eval.runner.run_one`
+`--platform` runs the same episode through the platform's own `eval.run.runner.run_one`
 with an oracle control harness (`data/alfworld/oracle_harness/`). That exercises
 `SETUP` -> harness -> `VERIFY` end to end on a `files` environment, with the mount
 namespace **on** by default -- which is also what proves the adapter's `VERIFY` works
@@ -137,7 +137,7 @@ def run_local(record: dict, *, oracle: bool, workdir: Path, budget: int) -> int:
 
 def run_platform(record: dict, *, oracle: bool, workdir: Path,
                  sandbox: bool = True) -> int:
-    """The same episode through `eval.runner.run_one`, with no Docker and no model.
+    """The same episode through `eval.run.runner.run_one`, with no Docker and no model.
 
     The control harness (`data/alfworld/oracle_harness/`) replays `.oracle/actions.json`
     through the CLI and otherwise does nothing, which is exactly what a harness control
@@ -149,7 +149,7 @@ def run_platform(record: dict, *, oracle: bool, workdir: Path,
     control also proves that the adapter's `VERIFY` works with the namespace in place --
     including the writable verdict directory the reward-file contract needs.
     """
-    from eval.runner import run_one
+    from eval.run.runner import run_one
 
     tid = record["task_id"]
     task = next(t for t in alfworld.load()[0] if t["task_id"] == tid)

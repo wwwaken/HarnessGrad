@@ -1,6 +1,6 @@
 # Optional scorer backend and lifecycle API
 
-This contract covers `eval.scorer_backend` and `eval.lifecycle_receipt`.
+This contract covers `eval.admission.scorer_backend` and `eval.admission.lifecycle_receipt`.
 They are local Python validators, with no HTTP service, provisioning callbacks,
 backend selection, administrator role or production execution route. Backend
 integration is optional; every argument of `check_backend` is still required.

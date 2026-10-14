@@ -7,7 +7,7 @@
 
 而平台给它们记的是 **0.0** —— 一次网关故障被读成了"harness 做不出来"。
 
-机制在容器里复现过(`eval/modelgate.py` 有完整说明):vLLM 的 uvicorn 默认 5 秒关掉
+机制在容器里复现过(`eval/service/modelgate.py` 有完整说明):vLLM 的 uvicorn 默认 5 秒关掉
 空闲 keep-alive,而平台的字节转发网关把上游的 EOF 半关到客户端,于是 harness 隔十几秒
 的下一次调用复用了一条死连接。**keep-alive 是客户端的正常行为,所以这是网关的缺陷。**
 
@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import eval.runner as runner  # noqa: E402
+import eval.run.runner as runner  # noqa: E402
 
 #: 真实那一次的 stderr 尾部(截取)。
 CONNECTION_TAIL = '''  File "/app/agent.py", line 162, in _call_openai
@@ -171,14 +171,14 @@ def _poll(gw, key, want, timeout=5.0):
 def test_the_gateway_counts_who_hung_up_first():
     """上游空闲关闭 → 网关把 EOF 传给客户端,这一次连接记在 upstream 头上。
 
-    这就是 `bn-fit-modify` / `chess-best-move` 那次的机制(`eval/modelgate.py` 顶部
+    这就是 `bn-fit-modify` / `chess-best-move` 那次的机制(`eval/service/modelgate.py` 顶部
     有完整复现):harness 的下一次调用复用了一条死连接,而客户端看到的只有
     `Connection error`。转发器不懂 HTTP,所以现在还修不了根 —— 但至少要记账。
     """
     import socket
     import threading
 
-    import eval.modelgate as modelgate
+    import eval.service.modelgate as modelgate
 
     listener = socket.socket()
     listener.bind(("127.0.0.1", 0))
@@ -210,7 +210,7 @@ def test_the_gateway_says_why_it_could_not_reach_the_model():
     吞掉:harness 报同一句 `Connection error`,记录里一个字的原因都没有。"""
     import socket
 
-    import eval.modelgate as modelgate
+    import eval.service.modelgate as modelgate
 
     probe = socket.socket()
     probe.bind(("127.0.0.1", 0))
@@ -235,7 +235,7 @@ def test_the_gateway_says_why_it_could_not_reach_the_model():
 
 def test_a_record_with_no_gateway_attributes_nothing():
     """端点本来就直连的时候没有网关,不能被赖上 —— 空的归因比错的归因好。"""
-    import eval.modelgate as modelgate
+    import eval.service.modelgate as modelgate
 
     assert modelgate.describe(None) == ""
     assert modelgate.describe({}) == ""
@@ -256,7 +256,7 @@ def test_a_silent_upstream_is_not_mistaken_for_a_hung_up_one(monkeypatch):
     import socket
     import threading
 
-    import eval.modelgate as modelgate
+    import eval.service.modelgate as modelgate
 
     monkeypatch.setattr(modelgate, "UPSTREAM_CONNECT_TIMEOUT_S", 0.3)
     listener = socket.socket()

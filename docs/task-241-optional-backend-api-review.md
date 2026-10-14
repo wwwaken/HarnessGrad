@@ -13,7 +13,7 @@ six synthetic checks; it changes no production code or receipt schemas.
 ## A Review findings
 
 Reviewed base: `0930d99cc882c5a049c98f9123e9427470e7e818`.
-Primary sources: `eval/scorer_backend.py`, `eval/lifecycle_receipt.py`, their
+Primary sources: `eval/admission/scorer_backend.py`, `eval/admission/lifecycle_receipt.py`, their
 admission dependencies, and focused synthetic tests. The inherited task-221
 report supplied context; current source and fresh tests established these results.
 

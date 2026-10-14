@@ -450,7 +450,7 @@ def test_platform_controls_reuse_record_without_second_selected_load(
         assert reward == float(oracle or task_id.startswith("irrelevance/")), detail
         return {"exit_code": 0, "verdict": {"score": reward, "passed": bool(reward)}}
 
-    monkeypatch.setitem(sys.modules, "eval.runner", SimpleNamespace(run_one=run_one))
+    monkeypatch.setitem(sys.modules, "eval.run.runner", SimpleNamespace(run_one=run_one))
     monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(tmp_path / "initial-work-root"))
     assert control.main(["--dataset", "bfcl_v3", "--oracle" if oracle else "--noop",
                          "--platform", "--task-id", task_id,
