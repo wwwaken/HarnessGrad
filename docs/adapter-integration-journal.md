@@ -4,6 +4,15 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Fresh diagnostic dry-launch template — 2026-10-14 — Task 223
+
+- Status: `planning`; no dataset/task selected; no run ID reserved; no model/H0 or endpoint execution.
+- Scope: docs-only source review in `/tmp/hg-codex-223`, base `82459cfa6d16c323ca40f21db2daf597921aedb3`; driver staged policy, diagnostic schema, lifecycle/admission contracts and current run-metadata writer.
+- Evidence: [unique dry template and checklist](task-223-dry-diagnostic-launch.md), including exact receipt/metadata fields, empty planning envelope, future coverage invariants and evidence bindings.
+- Finding: the current driver still supplies unknown cleanup/snapshot and no lifecycle producer; metadata records a plan, not production completion. Trusted observation/integration and dataset gates remain pending. This document grants no launch or expansion authorization.
+- Validation: static embedded-JSON/schema-key/link checks and `git diff --check`; no runtime imports, datasets, tests, backend or model calls. Validation details accompany the template.
+- Commit: accompanying Task 223 docs-only change; no parent/main merge.
+
 ## Staged diagnostic receipt audit — 2026-10-14 — Codex 193
 
 - Status: `preflight`; narrow correctness fixes verified, publication remains blocked by missing trusted observations.
