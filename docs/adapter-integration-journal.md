@@ -1619,3 +1619,46 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Corrected the zero-call interpretation, without changing accounting: `env_usage.calls=0` is environment-service spend. The old saved invalid trace records 32 agent calls; the new trace/aggregate also record 32, with gateway traffic to `127.0.0.1:8002`. The old invalid aggregate drops traces and obscures spend, an accounting limitation rather than an uninvoked agent. Source citations and raw historical evidence are in [the audit](../reports/w-net-calls-audit.md).
 - Driver exit remains 2 and the publication receipt remains `score=null`, `unmeasured_trials=1`, `invalid_trials=0`, reason `policy_enforcement_not_observed`; raw scorer success does not change those policy limits. Cleanup probes observe no owned containers/network/snapshot; lifecycle admission fields stay unknown/null. No comparable score, expansion or production authorization is claimed; all historical runs/receipts/archives remain untouched.
 - [Validation](../reports/w-net-validation.txt) preserves checker and complete test outputs. Additional boundary suites had 104 passes and a Jericho monkeypatch signature failure reproduced unchanged at baseline `919e2b9` in a registered temporary worktree, then removed. No unrelated test or refusal was weakened. Changes committed only in `/tmp/hg-net`; parent reviews/merges separately.
+## Parent review and merge — w-net — 2026-10-15
+
+- Merged `5728db7` (w-net) on top of `7a1be3c`. Result `5e252aa`. Only the journal conflicted,
+  resolved by keeping both sides. Registry valid: 28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`.
+- **The first real Terminal-Bench measurement on this host now exists.**
+  `terminal_bench / cached-runtime-admission` is closed and `terminal_bench` joins the set of
+  datasets with zero own blockers. The parent verified the evidence directly rather than taking
+  the report: `reports/w-net-evidence/ctrf.json` is a genuine pytest 8.4.1 CTRF report with
+  `tests=6, passed=5, failed=1`, the single failure being
+  `test_outputs.py::test_python_verification_script`, which yields the measured verifier score
+  `0.0`. The agent executed - 32 local model calls - so this is a run in which the harness
+  actually acted, not an empty lifecycle.
+- **The fix is the declared-network defect, and it is minimal and correctly scoped.**
+  `eval/containers/container_state.py` now passes `declared_network=env_spec.get("network","none")`
+  to `_verify_container_state`, and `eval/verification/verifier.py` adds
+  `if declared_network == "bridge" and network != "bridge": container_mod.network_connect(name, "bridge")`.
+  The internal model-gateway network is preserved, and a task declaring `none` still gets no
+  bridge. The parent read the diff and confirmed both directions, and the new
+  `tests/quality/test_verifier_declared_network_w_net.py` asserts them synthetically for actor
+  and verifier alike, including the create/connect/start ordering and the final network removal.
+  This honours the policy the platform already declared (`data/datasets/terminal_bench.py:35,203`
+  maps `allow_internet` to `env.network`) instead of weakening a gate, which is the distinction
+  that matters here: the previous behaviour silently denied the verifier the egress its own task
+  metadata asked for.
+- **The `env_usage: {calls: 0}` reading from the previous round is resolved, and it was not the
+  agent.** `reports/w-net-calls-audit.md` traces it to separate environment-service accounting.
+  The run that produced the score records 32 model calls, so the earlier 0 belongs to the
+  env-service counter, not to the agent's model traffic. Worth stating plainly because the
+  previous journal entry treated `calls: 0` as evidence the agent never acted.
+- What this does and does not establish. It establishes one measured task with its verifier
+  producing a score and a CTRF artifact, which is exactly the evidence
+  `docs/terminal-bench-runtime-admission.md` section 4 demanded. The publication score remains
+  `null` and `production_authorized` remains `false`: this is a one-task diagnostic, not a
+  pilot, and the two shared blockers (`scorer-offline-closure`, `artifact-only-state-export`)
+  remain open because their own next_actions still require dataset-specific pinned closures and
+  terminal_bench's run does not by itself provision them. The blocker closed; the phase did not.
+- Validation: 139 focused tests passed on `main` after the merge, including
+  `test_container_state.py`, the new declared-network test, the blocker registry and the c2
+  diagnostic tests. One pre-existing Jericho failure was reproduced unchanged by the worker.
+- Resource state: this run legitimately exercised the local endpoint on GPU1, so the endpoint
+  was genuinely used for an authorised diagnostic rather than left idle; no utilisation figure is
+  claimed beyond what the run receipts record, and GPU0 remained idle.
