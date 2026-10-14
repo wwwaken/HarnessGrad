@@ -1566,3 +1566,46 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Identified a real runtime defect without patching it: `eval/containers/container_state.py:79` unconditionally creates an internal task network; `:216-217` sends the verifier onto it instead of the task's declared `bridge`. A separate no-model/no-scorer control in the same cached image reproduced `Network is unreachable` for both proxy requests on an internal network. Its bridge probe reached PyPI but got HTTP 403 for the Astral installer through urllib, so switching networks alone is not asserted sufficient. No further benchmark run or behavior workaround followed the defect, as instructed.
 - Original artifacts remain intact under `/tmp/hg-tbrun4/runs/`, including the run, launch evidence and distinct `w-tbrun4-egress-control-20261014T195910Z-ec4ee67b` control. The report and complete archive/inventories bind a pre-execution manifest to real image/resource/snapshot/cleanup observations; driver lifecycle fields stay unknown/null, with no invented admission or lease-release attestation. Historical runs/archives are untouched. `terminal_bench / cached-runtime-admission` remains open; its registry observation now names this defect and absent CTRF/score. Accepted cleanup uncertainty is not raised as a new gate; both shared scorer/export blockers remain.
 - Corrected only the stale verifier comment to canonical port `17890` and cited `docs/egress.md`; executable behavior is unchanged. [w-tbrun4-validation.txt](../reports/w-tbrun4-validation.txt) records a valid blocker checker and `255 passed` focused tests, plus post-edit registry checks and archive integrity. No existing test pins this entry's wording/status. Commit only in this isolated worktree; no main merge or production authorization.
+## Parent review and merge — w-tbrun4 — 2026-10-15
+
+- Merged `606c62a` (w-tbrun4) on top of `3b8a84b`. Result `919e2b9`. Registry valid: 28 datasets,
+  2 shared blockers, 11 historical records, `production_authorized=false`.
+- **The `ctrf.json` gap is now root-caused to a real platform defect, not a missing flag.** The
+  previous round assumed the documented `HG_EGRESS_PROXY` recipe was the whole answer; that
+  assumption was wrong and the record should say so plainly. Setting the proxy for attempt 4
+  still produced `invalid_trials=1`, `score=null`, with the sharper reason "the check wrote no
+  `/logs/verifier/ctrf.json`: its tests did not run, so this task was not measured". The parent
+  then read the code and confirmed the mechanism: in `eval/containers/container_state.py` the
+  internal model-gateway network is created unconditionally (~line 55/79), the **actor** is
+  started on it and additionally connected to the declared `bridge` when the task declares
+  `allow_internet` (~lines 111-112), while the **verifier** at ~line 216 receives
+  `network_name` (internal) whenever it is set and is **never** connected to `bridge`. So the
+  task's own `test.sh` cannot reach egress, its tests never run, and the trial is correctly
+  invalid. Terminal-Bench's executed class is `snapshot-service`, and
+  `data/datasets/terminal_bench.py:35,203` maps the task's `allow_internet` to `env.network`,
+  so the platform is failing to honour its own declared policy for the verifier - that is a
+  defect to fix, not a gate to weaken, and the fix was dispatched under that constraint.
+- The stale comment in `eval/verification/verifier.py:89` was corrected from `7890` to the
+  canonical `17890`; the parent verified independently that `docs/egress.md:24,39,73` names
+  `http://172.17.0.1:17890`, that `tools/egress_forwarder.py` is running with
+  `HG_EGRESS_UPSTREAM=127.0.0.1:17891`, and that through the proxy both `pypi.org` and
+  `astral.sh` answer 200.
+- **Second honest limit found in the same receipt: `env_usage: {calls: 0}`.** The agent made zero
+  model calls in that diagnostic, so the local endpoint was never exercised and the 0 %
+  utilisation samples are the true reading rather than a measurement of a busy endpoint. Whether
+  that is expected for this harness/task or a second wiring defect is under investigation; until
+  it is answered, a run whose agent never acted is not the measurement the blocker asks for.
+- **Full-lane verification completed and attributed without a false regression report.** The
+  parallel/exclusive runner finished 156+ files and classified 9 files as failing even alone and
+  4 as load-sensitive (`identity_and_verdicts`, `split`, `stop_semantics`, `unified_budget`).
+  `test_appworld_official_scorer.py` ran 20 m 36 s in the exclusive lane (147 per-task AppWorld
+  subprocesses) and failed 2. The parent re-ran all 9 on current `main` and then re-ran the
+  ambiguous ones in a **pristine control worktree at `bd25f5a`**, i.e. before any of this
+  round's merges: `test_candidate_apply.py` (2 failed) and `test_method_lint.py` (2 failed) fail
+  *identically* there, so they are pre-existing docker/host/lint conditions, not regressions
+  from `w-hotpot`, `w-obs` or `w-fix`. That control mattered because this round's merges touched
+  `eval/verification/verifier.py` timeout paths and `eval/verification/isolation.py`, both of
+  which are exactly the kind of change that could have broken those files.
+- Resource state: no approved production pilot, so the endpoint on GPU1 stays loaded and idle and
+  GPU0 idle; every sample taken this round was 0 % utilisation, and the one real task that
+  executed confirms it - the receipt records zero model calls. No utilisation is claimed.
