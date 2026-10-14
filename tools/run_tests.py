@@ -151,6 +151,12 @@ def main() -> int:
     ap.add_argument("--basetemp-root", default="",
                     help="parent for per-file pytest basetemps; default is a fresh "
                          "/tmp tree. It must be OUTSIDE the platform tree.")
+    ap.add_argument("--allow-load-sensitive", action="store_true",
+                    help="exit 0 when the only failures are files that pass when run "
+                         "alone. Off by default: a test that only passes alone is a real "
+                         "isolation defect, it is just not the failure it first looked like.")
+    ap.add_argument("--no-rerun", action="store_true",
+                    help="skip the run-alone recheck of failed files")
     ap.add_argument("--pytest-arg", action="append", default=[],
                     help="extra argument forwarded to every pytest invocation")
     args = ap.parse_args()
@@ -250,16 +256,52 @@ def main() -> int:
     print()
     print(f"{len(results)} files in {wall:.1f}s wall clock "
           f"(serial measured total {sum(cost_of(f, costs) for f in files):.0f}s)")
-    if failed:
-        print(f"{len(failed)} file(s) failed:")
+    if not failed:
+        print("all files passed")
+        return 0
+
+    # A failure under load and a failure in the code look identical in the summary, and
+    # they need different responses. Re-run each failed file on its own: if it passes
+    # alone, the earlier failure was contention between processes, not a broken test.
+    # That distinction is the difference between "this suite is unreliable" and "this
+    # test is not isolated", and only the second is worth chasing.
+    by_name = {f.name: f for f in files}
+    if args.no_rerun:
+        load_sensitive, real = [], failed
+    else:
+        print()
+        print(f"rechecking {len(failed)} failed file(s) one at a time to separate "
+              "load contention from real failures...")
+        load_sensitive, real = [], []
         for r in failed:
+            alone = run_one(by_name[r["file"]], basetemp_root, args.pytest_arg)
+            if alone["code"] == 0:
+                load_sensitive.append(r)
+                print(f"  load-sensitive {r['file']} (passes alone: {alone['summary']})")
+            else:
+                real.append(r)
+                print(f"  REAL failure   {r['file']} ({alone['summary']})")
+
+    if real:
+        print()
+        print(f"{len(real)} file(s) failed even when run alone:")
+        for r in real:
             print(f"  FAIL {r['file']} -> {r['summary']}")
             if r["stderr_tail"]:
                 for ln in r["stderr_tail"].splitlines():
                     print(f"        {ln}")
+    if load_sensitive:
+        print()
+        print(f"{len(load_sensitive)} file(s) pass alone but failed under {args.jobs} "
+              "concurrent files:")
+        for r in load_sensitive:
+            print(f"  {r['file']} -> {r['summary']}")
+        print("  These are isolation defects in the tests, not code regressions. Lower")
+        print("  --jobs, or fix the shared resource; do not ignore them forever.")
+
+    if real:
         return 1
-    print("all files passed")
-    return 0
+    return 0 if args.allow_load_sensitive else 1
 
 
 if __name__ == "__main__":
