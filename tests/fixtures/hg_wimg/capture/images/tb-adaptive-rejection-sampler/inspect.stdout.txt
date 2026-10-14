@@ -1,0 +1,55 @@
+[
+    {
+        "Id": "sha256:985bed39e8448bc95f138b5f766b59003a95c4be171c96af8e76448338f3dd8f",
+        "RepoTags": [
+            "alexgshaw/adaptive-rejection-sampler:20251031"
+        ],
+        "RepoDigests": [
+            "alexgshaw/adaptive-rejection-sampler@sha256:985bed39e8448bc95f138b5f766b59003a95c4be171c96af8e76448338f3dd8f"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-28T09:26:10.819122637Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-adaptive-rejection-sampler",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 29731756,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020",
+                "sha256:043ebca2b2dfbb18e6c334940cfd3eb25641f51a37184377bc01b5f920180fbd"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T03:16:30.019930538Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:985bed39e8448bc95f138b5f766b59003a95c4be171c96af8e76448338f3dd8f",
+            "size": 943
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/adaptive-rejection-sampler"
+                }
+            ]
+        }
+    }
+]

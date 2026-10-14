@@ -1,0 +1,57 @@
+[
+    {
+        "Id": "sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/polyglot-rust-c:20251031",
+            "alexgshaw/polyglot-rust-c:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/polyglot-rust-c@sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e",
+            "alexgshaw/polyglot-rust-c@sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-28T22:17:19.70827865Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-polyglot-rust-c",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 271244257,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020",
+                "sha256:d1f815742bb207ddea92a7cf9c87f4feff1cfa7e24609ed8276ac8fd9ec14f51"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T07:12:19.333819037Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e",
+            "size": 948
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/polyglot-rust-c"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,70 @@
+[
+    {
+        "Id": "sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/train-fasttext:20251031",
+            "alexgshaw/train-fasttext:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/train-fasttext@sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157",
+            "alexgshaw/train-fasttext@sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-09-13T18:40:45.320008834Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-train-fasttext",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 509018113,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+                "sha256:b6dd48c3959229b7419c71945fe541303f8c0b156a6e7dfbe3fc0d1b8d7287d5",
+                "sha256:919e95726e0c042c2672fa148003ad3d1825a9820fe1e0f1d670843bc37c3c09",
+                "sha256:793a0d19b851868677d11db755844c71bd2c64d3cd49f165131fe352b2fe09a6",
+                "sha256:bae0301a33b43d62d309996e331fbb09f5ec41946315fda260dd09e7eac55e8a",
+                "sha256:01972069ecdb189e1aeb700e395b90a328a2038e2f4642beadc595a8022ec20c",
+                "sha256:8505cca61b3103f90a37ea84bed1854c9c6169ff40813f0c34881acd4448f814",
+                "sha256:a81b2c3d48f50b5a2a02506f0989f6543dace106a868d56df0f963a6c408c55c"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T07:38:16.705532277Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157",
+            "size": 2840
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/train-fasttext"
+                },
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/train-fasttext"
+                }
+            ]
+        }
+    }
+]

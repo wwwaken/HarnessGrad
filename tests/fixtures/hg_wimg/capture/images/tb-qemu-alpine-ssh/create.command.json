@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-20261014T214331Z-869cd5-tb-qemu-alpine-ssh",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=1536m",
+    "--memory-swap=1536m",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m",
+    "--env=OPENBLAS_NUM_THREADS=1",
+    "--env=OMP_NUM_THREADS=1",
+    "--env=PYTHONDONTWRITEBYTECODE=1",
+    "--env=HOME=/tmp",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--workdir=/tmp",
+    "--entrypoint=/bin/sh",
+    "sha256:541e8214a8c4faa7b556531b899d45da21048fa2ca6dd328d8cb6c4cffa8e964",
+    "/wimg/probe.sh",
+    "tb-qemu-alpine-ssh"
+  ],
+  "ended_utc": "2026-10-14T21:44:18.219402+00:00",
+  "returncode": 0,
+  "shell_display": "docker create --name hg-wimg-20261014T214331Z-869cd5-tb-qemu-alpine-ssh --pull=never --network=none --read-only --cpus=1 --memory=1536m --memory-swap=1536m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges --tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m --env=OPENBLAS_NUM_THREADS=1 --env=OMP_NUM_THREADS=1 --env=PYTHONDONTWRITEBYTECODE=1 --env=HOME=/tmp --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --workdir=/tmp --entrypoint=/bin/sh sha256:541e8214a8c4faa7b556531b899d45da21048fa2ca6dd328d8cb6c4cffa8e964 /wimg/probe.sh tb-qemu-alpine-ssh",
+  "started_utc": "2026-10-14T21:44:18.092575+00:00"
+}

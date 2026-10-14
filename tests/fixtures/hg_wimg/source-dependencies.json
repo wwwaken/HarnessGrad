@@ -1,0 +1,5526 @@
+[
+  {
+    "dependency_lines": [
+      {
+        "line": 1,
+        "text": "import json"
+      },
+      {
+        "line": 2,
+        "text": "import re"
+      },
+      {
+        "line": 3,
+        "text": "import string"
+      },
+      {
+        "line": 4,
+        "text": "import warnings"
+      },
+      {
+        "line": 6,
+        "text": "import numpy as np"
+      }
+    ],
+    "imports": [
+      {
+        "line": 1,
+        "text": "import json"
+      },
+      {
+        "line": 2,
+        "text": "import re"
+      },
+      {
+        "line": 3,
+        "text": "import string"
+      },
+      {
+        "line": 4,
+        "text": "import warnings"
+      },
+      {
+        "line": 6,
+        "text": "import numpy as np"
+      }
+    ],
+    "path": "/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py",
+    "sha256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 27,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 29,
+        "text": "import argparse"
+      },
+      {
+        "line": 30,
+        "text": "import json"
+      },
+      {
+        "line": 31,
+        "text": "import os"
+      },
+      {
+        "line": 32,
+        "text": "import shutil"
+      },
+      {
+        "line": 33,
+        "text": "import subprocess"
+      },
+      {
+        "line": 34,
+        "text": "import sys"
+      },
+      {
+        "line": 35,
+        "text": "import tempfile"
+      },
+      {
+        "line": 36,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 41,
+        "text": "import data.datasets.alfworld as alfworld  # noqa: E402"
+      },
+      {
+        "line": 59,
+        "text": "    \"\"\"The reference solution, read from the *unstripped* game file on disk.\"\"\""
+      },
+      {
+        "line": 79,
+        "text": "        subprocess.run([sys.executable, \"alf\", \"do\", action], cwd=workdir,"
+      },
+      {
+        "line": 81,
+        "text": "    subprocess.run([sys.executable, \"alf\", \"done\"], cwd=workdir,"
+      },
+      {
+        "line": 97,
+        "text": "    argv = [sys.executable, \"check.py\","
+      },
+      {
+        "line": 104,
+        "text": "    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)"
+      },
+      {
+        "line": 152,
+        "text": "    from eval.run.runner import run_one"
+      },
+      {
+        "line": 202,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 220,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 244,
+        "text": "    raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 27,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 29,
+        "text": "import argparse"
+      },
+      {
+        "line": 30,
+        "text": "import json"
+      },
+      {
+        "line": 31,
+        "text": "import os"
+      },
+      {
+        "line": 32,
+        "text": "import shutil"
+      },
+      {
+        "line": 33,
+        "text": "import subprocess"
+      },
+      {
+        "line": 34,
+        "text": "import sys"
+      },
+      {
+        "line": 35,
+        "text": "import tempfile"
+      },
+      {
+        "line": 36,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 41,
+        "text": "import data.datasets.alfworld as alfworld"
+      },
+      {
+        "line": 152,
+        "text": "from eval.run.runner import run_one"
+      }
+    ],
+    "path": "data/datasets/alfworld/control.py",
+    "sha256": "a2ef4dfda759695e2577cca1305a6777114b6c0f2a6ed4736c30e33a03104dfd"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 14,
+        "text": "action\", and both programs import it:"
+      },
+      {
+        "line": 27,
+        "text": "`won` is computed by TextWorld from the game's PDDL goal. It is not produced by"
+      },
+      {
+        "line": 39,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 51,
+        "text": "#: reads from the agent: the check never trusts an observation, a `won` flag or a"
+      },
+      {
+        "line": 67,
+        "text": "    import textworld"
+      },
+      {
+        "line": 68,
+        "text": "    import textworld.gym"
+      },
+      {
+        "line": 69,
+        "text": "    from alfworld.agents.environment.alfred_tw_env import AlfredDemangler, AlfredInfos"
+      },
+      {
+        "line": 105,
+        "text": "    \"\"\"Replay `actions` from a fresh episode and report the environment's own verdict."
+      },
+      {
+        "line": 146,
+        "text": "    import json"
+      },
+      {
+        "line": 147,
+        "text": "    from pathlib import Path"
+      }
+    ],
+    "imports": [
+      {
+        "line": 39,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 67,
+        "text": "import textworld"
+      },
+      {
+        "line": 68,
+        "text": "import textworld.gym"
+      },
+      {
+        "line": 69,
+        "text": "from alfworld.agents.environment.alfred_tw_env import AlfredDemangler, AlfredInfos"
+      },
+      {
+        "line": 146,
+        "text": "import json"
+      },
+      {
+        "line": 147,
+        "text": "from pathlib import Path"
+      }
+    ],
+    "path": "data/datasets/alfworld/lib/gym_env.py",
+    "sha256": "46dfb6b0574c8ed391e30162c0d54ce6cd7e6030cf545ad867effaef6561e448"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 11,
+        "text": "Its grade cannot come from anything it says -- the check replays the CLI's log in a"
+      },
+      {
+        "line": 18,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 20,
+        "text": "import argparse"
+      },
+      {
+        "line": 21,
+        "text": "import json"
+      },
+      {
+        "line": 22,
+        "text": "import pathlib"
+      },
+      {
+        "line": 23,
+        "text": "import subprocess"
+      },
+      {
+        "line": 24,
+        "text": "import sys"
+      },
+      {
+        "line": 41,
+        "text": "        proc = subprocess.run([sys.executable, str(work / \"alf\"), \"do\", action],"
+      },
+      {
+        "line": 48,
+        "text": "    subprocess.run([sys.executable, str(work / \"alf\"), \"done\"], cwd=work,"
+      }
+    ],
+    "imports": [
+      {
+        "line": 18,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 20,
+        "text": "import argparse"
+      },
+      {
+        "line": 21,
+        "text": "import json"
+      },
+      {
+        "line": 22,
+        "text": "import pathlib"
+      },
+      {
+        "line": 23,
+        "text": "import subprocess"
+      },
+      {
+        "line": 24,
+        "text": "import sys"
+      }
+    ],
+    "path": "data/datasets/alfworld/oracle_harness/agent.py",
+    "sha256": "dd734c59f71f83a5c61b707c1cb7116ba62da52053f2a6272cdeef93c9d609b1"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 8,
+        "text": "anything. It reads one thing from the agent: the ordered list of actions in"
+      },
+      {
+        "line": 9,
+        "text": "`alf_actions.jsonl`. It then rebuilds the game from a trusted copy of the game file,"
+      },
+      {
+        "line": 29,
+        "text": "-- which is a different failure from dropping one, and just as misleading. The record"
+      },
+      {
+        "line": 37,
+        "text": "  own CLI, and verification overwrites them. The check imports `gym_env` from the"
+      },
+      {
+        "line": 42,
+        "text": "  from a wrong answer, and that distinction is the whole reason this file writes"
+      },
+      {
+        "line": 52,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 54,
+        "text": "import argparse"
+      },
+      {
+        "line": 55,
+        "text": "import json"
+      },
+      {
+        "line": 56,
+        "text": "import os"
+      },
+      {
+        "line": 57,
+        "text": "import sys"
+      },
+      {
+        "line": 58,
+        "text": "import traceback"
+      },
+      {
+        "line": 59,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 62,
+        "text": "import gym_env  # noqa: E402"
+      },
+      {
+        "line": 70,
+        "text": "def parse_args(argv):"
+      },
+      {
+        "line": 82,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 107,
+        "text": "    \"\"\"The per-episode score ALFWorld's own evaluator computes from a `won` sequence."
+      },
+      {
+        "line": 109,
+        "text": "    Copied from `alfworld/agents/eval/evaluate_dagger.py`, which builds"
+      },
+      {
+        "line": 120,
+        "text": "    verbatim copy of upstream's code -- the copy, not an import of their package."
+      },
+      {
+        "line": 131,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 132,
+        "text": "    args = parse_args(argv)"
+      },
+      {
+        "line": 175,
+        "text": "    # refused\" apart from \"the agent did nothing\"."
+      },
+      {
+        "line": 230,
+        "text": "        raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 52,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 54,
+        "text": "import argparse"
+      },
+      {
+        "line": 55,
+        "text": "import json"
+      },
+      {
+        "line": 56,
+        "text": "import os"
+      },
+      {
+        "line": 57,
+        "text": "import sys"
+      },
+      {
+        "line": 58,
+        "text": "import traceback"
+      },
+      {
+        "line": 59,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 62,
+        "text": "import gym_env"
+      }
+    ],
+    "path": "data/datasets/alfworld/verify/check.py",
+    "sha256": "c1e7b97377122babc47c519128244ffce60b4511c1b5faa061c10b50a1e03c6d"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 4,
+        "text": "    python3 tools/datasets.py --write        # regenerate DOWNLOADS.md from downloads()"
+      },
+      {
+        "line": 22,
+        "text": "   Face.** The filenames and the release tags come from ALFWorld's own"
+      },
+      {
+        "line": 38,
+        "text": "   `scripts/alfworld-download` copies them from the *installed package* into"
+      },
+      {
+        "line": 57,
+        "text": "The environment is `kind: \"files\"`, not a container. That is forced by a hard constraint"
+      },
+      {
+        "line": 79,
+        "text": "train/eval division. The platform needs one, so it is **imposed here**, derived from the"
+      },
+      {
+        "line": 95,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 115,
+        "text": "import hashlib"
+      },
+      {
+        "line": 116,
+        "text": "import json"
+      },
+      {
+        "line": 117,
+        "text": "import os"
+      },
+      {
+        "line": 118,
+        "text": "import re"
+      },
+      {
+        "line": 119,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 140,
+        "text": "#: Repeating `30` here would be a second declaration that can drift from the one the"
+      },
+      {
+        "line": 142,
+        "text": "#: and truncated for the check. Loaded by file path rather than by `import gym_env`,"
+      },
+      {
+        "line": 143,
+        "text": "#: because `lib/` is not on `sys.path` and putting it there from inside a dataset module"
+      },
+      {
+        "line": 146,
+        "text": "    import importlib.util"
+      },
+      {
+        "line": 163,
+        "text": "#: (`eval/verification/verifier.py::_verify`), and the check's `argv` passes the same location in the"
+      },
+      {
+        "line": 192,
+        "text": "#: oracle control reads the original from the data root."
+      },
+      {
+        "line": 204,
+        "text": "    calling it would drag in `textworld` and crawl the whole data tree at import time,"
+      },
+      {
+        "line": 206,
+        "text": "    (see `published()` in `data/scaffolds/registry.py`: a module that will not import is hidden"
+      },
+      {
+        "line": 207,
+        "text": "    from the chooser). The rules, in the same order upstream applies them:"
+      },
+      {
+        "line": 231,
+        "text": "            raise ValueError(f\"alfworld: {label} is unreadable: {exc}\") from exc"
+      },
+      {
+        "line": 268,
+        "text": "    content, and because it means the stripped copy is built once at import instead of"
+      },
+      {
+        "line": 269,
+        "text": "    being written somewhere on disk that could drift from its source."
+      },
+      {
+        "line": 279,
+        "text": "    how to act, and the budget -- the three things the agent cannot discover from the"
+      },
+      {
+        "line": 305,
+        "text": "        f\"- Your actions are replayed from the beginning in a fresh environment, and the\\n\""
+      },
+      {
+        "line": 337,
+        "text": "    workdir, and the `argv` flags below write to that same resolved location. Note the"
+      },
+      {
+        "line": 338,
+        "text": "    **top-level-in-the-container** rule from `data/datasets/tau_bench.py:_verifier` does not"
+      },
+      {
+        "line": 344,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 367,
+        "text": "    Read by `tools/datasets.py`; the generated `DOWNLOADS.md` is rendered from this"
+      },
+      {
+        "line": 368,
+        "text": "    function, never from a hand-written table, so the two cannot disagree. Version"
+      },
+      {
+        "line": 373,
+        "text": "    fetches; the release tags and URLs below are copied from that script, not guessed."
+      },
+      {
+        "line": 462,
+        "text": "    Deliberately does not import `textworld` or build an environment: this is the"
+      },
+      {
+        "line": 488,
+        "text": "#: immutable. A missing data root is **not** an import failure: `published()` catches"
+      },
+      {
+        "line": 532,
+        "text": "DEFAULT_ENV: dict = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 534,
+        "text": "ENV: dict[str, dict] = {r[\"task_id\"]: {\"kind\": \"files\"} for r in _RECORDS}"
+      }
+    ],
+    "imports": [
+      {
+        "line": 95,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 115,
+        "text": "import hashlib"
+      },
+      {
+        "line": 116,
+        "text": "import json"
+      },
+      {
+        "line": 117,
+        "text": "import os"
+      },
+      {
+        "line": 118,
+        "text": "import re"
+      },
+      {
+        "line": 119,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 146,
+        "text": "import importlib.util"
+      }
+    ],
+    "path": "data/datasets/alfworld.py",
+    "sha256": "9a91e5f9b8a77815222996edcceb8a55feff8b194186e2f8590cfb92e04e1e91"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 4,
+        "text": "import argparse"
+      },
+      {
+        "line": 5,
+        "text": "import json"
+      },
+      {
+        "line": 6,
+        "text": "import os"
+      },
+      {
+        "line": 7,
+        "text": "import shutil"
+      },
+      {
+        "line": 8,
+        "text": "import subprocess"
+      },
+      {
+        "line": 9,
+        "text": "import sys"
+      },
+      {
+        "line": 10,
+        "text": "import tempfile"
+      },
+      {
+        "line": 11,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 17,
+        "text": "import data.datasets.appworld as dataset"
+      },
+      {
+        "line": 34,
+        "text": "        \"import os\\nfrom appworld import AppWorld\\n\""
+      },
+      {
+        "line": 38,
+        "text": "        \"    tracker=world.evaluate()\\n\""
+      },
+      {
+        "line": 42,
+        "text": "    proc = subprocess.run([str(AW_PYTHON), str(probe)], cwd=workdir, text=True, capture_output=True)"
+      },
+      {
+        "line": 51,
+        "text": "    checked = subprocess.run(cmd, cwd=workdir, text=True, capture_output=True)"
+      },
+      {
+        "line": 66,
+        "text": "    from eval.run.runner import run_one"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 4,
+        "text": "import argparse"
+      },
+      {
+        "line": 5,
+        "text": "import json"
+      },
+      {
+        "line": 6,
+        "text": "import os"
+      },
+      {
+        "line": 7,
+        "text": "import shutil"
+      },
+      {
+        "line": 8,
+        "text": "import subprocess"
+      },
+      {
+        "line": 9,
+        "text": "import sys"
+      },
+      {
+        "line": 10,
+        "text": "import tempfile"
+      },
+      {
+        "line": 11,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 17,
+        "text": "import data.datasets.appworld as dataset"
+      },
+      {
+        "line": 66,
+        "text": "from eval.run.runner import run_one"
+      }
+    ],
+    "path": "data/datasets/appworld/control.py",
+    "sha256": "032eb58ae4fd0d676b8d2ef07bbba3490775c9cbcc701015837e47eb18e91b5c"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 2,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 3,
+        "text": "import argparse"
+      },
+      {
+        "line": 4,
+        "text": "import json"
+      },
+      {
+        "line": 5,
+        "text": "import os"
+      },
+      {
+        "line": 6,
+        "text": "import pathlib"
+      },
+      {
+        "line": 7,
+        "text": "import urllib.request"
+      }
+    ],
+    "imports": [
+      {
+        "line": 2,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 3,
+        "text": "import argparse"
+      },
+      {
+        "line": 4,
+        "text": "import json"
+      },
+      {
+        "line": 5,
+        "text": "import os"
+      },
+      {
+        "line": 6,
+        "text": "import pathlib"
+      },
+      {
+        "line": 7,
+        "text": "import urllib.request"
+      }
+    ],
+    "path": "data/datasets/appworld/oracle_harness/agent.py",
+    "sha256": "922965a694c81625907909acd230137c79bac0806678f21f06f76ca933ac7c8e"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 5,
+        "text": "import sys"
+      },
+      {
+        "line": 6,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 12,
+        "text": "from data.datasets.appworld import prepare  # noqa: E402"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 5,
+        "text": "import sys"
+      },
+      {
+        "line": 6,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 12,
+        "text": "from data.datasets.appworld import prepare"
+      }
+    ],
+    "path": "data/datasets/appworld/prepare.py",
+    "sha256": "3c1025072bf892ea67b95b90a867a6a0fa71f321a17ae11c63429553fbb22d81"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 8,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 10,
+        "text": "import os"
+      },
+      {
+        "line": 11,
+        "text": "from typing import Any"
+      },
+      {
+        "line": 13,
+        "text": "from fastapi import Body, FastAPI, HTTPException"
+      },
+      {
+        "line": 14,
+        "text": "from munch import unmunchify"
+      },
+      {
+        "line": 15,
+        "text": "from appworld import AppWorld"
+      }
+    ],
+    "imports": [
+      {
+        "line": 8,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 10,
+        "text": "import os"
+      },
+      {
+        "line": 11,
+        "text": "from typing import Any"
+      },
+      {
+        "line": 13,
+        "text": "from fastapi import Body, FastAPI, HTTPException"
+      },
+      {
+        "line": 14,
+        "text": "from munch import unmunchify"
+      },
+      {
+        "line": 15,
+        "text": "from appworld import AppWorld"
+      }
+    ],
+    "path": "data/datasets/appworld/service.py",
+    "sha256": "c99019172d073ed9b8e8df260e94894f2a2b7c2cd1c87bed8ea30a7745055cd8"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 4,
+        "text": "import argparse"
+      },
+      {
+        "line": 5,
+        "text": "import json"
+      },
+      {
+        "line": 6,
+        "text": "import os"
+      },
+      {
+        "line": 7,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 8,
+        "text": "import tempfile"
+      },
+      {
+        "line": 9,
+        "text": "import sys"
+      },
+      {
+        "line": 44,
+        "text": "        from appworld import AppWorld"
+      },
+      {
+        "line": 56,
+        "text": "            tracker = world.evaluate()"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 4,
+        "text": "import argparse"
+      },
+      {
+        "line": 5,
+        "text": "import json"
+      },
+      {
+        "line": 6,
+        "text": "import os"
+      },
+      {
+        "line": 7,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 8,
+        "text": "import tempfile"
+      },
+      {
+        "line": 9,
+        "text": "import sys"
+      },
+      {
+        "line": 44,
+        "text": "from appworld import AppWorld"
+      }
+    ],
+    "path": "data/datasets/appworld/verify/check.py",
+    "sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 23,
+        "text": "test tasks raise from ``oracle_files`` rather than receiving an empty reference."
+      },
+      {
+        "line": 25,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 27,
+        "text": "import hashlib"
+      },
+      {
+        "line": 28,
+        "text": "import io"
+      },
+      {
+        "line": 29,
+        "text": "import json"
+      },
+      {
+        "line": 30,
+        "text": "import os"
+      },
+      {
+        "line": 31,
+        "text": "import shlex"
+      },
+      {
+        "line": 32,
+        "text": "import shutil"
+      },
+      {
+        "line": 33,
+        "text": "import zipfile"
+      },
+      {
+        "line": 34,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 36,
+        "text": "from eval.policy.appworld_reporting import make_manifest"
+      },
+      {
+        "line": 53,
+        "text": "IMAGE = os.environ.get("
+      },
+      {
+        "line": 54,
+        "text": "    \"HG_APPWORLD_IMAGE\","
+      },
+      {
+        "line": 57,
+        "text": "SERVICE_IMAGE = os.environ.get("
+      },
+      {
+        "line": 58,
+        "text": "    \"HG_APPWORLD_SERVICE_IMAGE\","
+      },
+      {
+        "line": 61,
+        "text": "VERIFIER_IMAGE = os.environ.get("
+      },
+      {
+        "line": 62,
+        "text": "    \"HG_APPWORLD_VERIFIER_IMAGE\","
+      },
+      {
+        "line": 73,
+        "text": "    from cryptography.hazmat.primitives import hashes"
+      },
+      {
+        "line": 74,
+        "text": "    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes"
+      },
+      {
+        "line": 75,
+        "text": "    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC"
+      },
+      {
+        "line": 183,
+        "text": "            f\"import json\\ncalls = json.loads({calls!r})\\n\" +"
+      },
+      {
+        "line": 253,
+        "text": "    \"\"\"Trusted, selected-only reporting metadata derived from public IDs/splits."
+      },
+      {
+        "line": 271,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 288,
+        "text": "        \"image\": VERIFIER_IMAGE,"
+      },
+      {
+        "line": 296,
+        "text": "    \"image\": IMAGE,"
+      },
+      {
+        "line": 304,
+        "text": "            \"image\": SERVICE_IMAGE,"
+      },
+      {
+        "line": 308,
+        "text": "                \"argv\": ["
+      },
+      {
+        "line": 311,
+        "text": "                    \"import urllib.request as u; u.urlopen('http://localhost:8000/').read()\","
+      },
+      {
+        "line": 338,
+        "text": "            \"note\": \"Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the trusted service image contains the pinned appworld package and task data.\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 25,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 27,
+        "text": "import hashlib"
+      },
+      {
+        "line": 28,
+        "text": "import io"
+      },
+      {
+        "line": 29,
+        "text": "import json"
+      },
+      {
+        "line": 30,
+        "text": "import os"
+      },
+      {
+        "line": 31,
+        "text": "import shlex"
+      },
+      {
+        "line": 32,
+        "text": "import shutil"
+      },
+      {
+        "line": 33,
+        "text": "import zipfile"
+      },
+      {
+        "line": 34,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 36,
+        "text": "from eval.policy.appworld_reporting import make_manifest"
+      },
+      {
+        "line": 73,
+        "text": "from cryptography.hazmat.primitives import hashes"
+      },
+      {
+        "line": 74,
+        "text": "from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes"
+      },
+      {
+        "line": 75,
+        "text": "from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC"
+      }
+    ],
+    "path": "data/datasets/appworld.py",
+    "sha256": "2c16e7152f3e793fa1c712daf3c3ae26a2b262a127fa462fbde417e9708b5935"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 2,
+        "text": "\"\"\"bird_minidev: the oracle and do-nothing controls. Generated by `--kind files`."
+      },
+      {
+        "line": 14,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 16,
+        "text": "import sys"
+      },
+      {
+        "line": 17,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 22,
+        "text": "from data.scaffolds import command_control  # noqa: E402"
+      },
+      {
+        "line": 26,
+        "text": "    raise SystemExit(command_control.control_main(\"bird_minidev\", sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 14,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 16,
+        "text": "import sys"
+      },
+      {
+        "line": 17,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 22,
+        "text": "from data.scaffolds import command_control"
+      }
+    ],
+    "path": "data/datasets/bird_minidev/control.py",
+    "sha256": "9e92bc6afad5ecedb88b713aba7fa8cc228d3b1bf2685b34ee4e74bd4678f930"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 2,
+        "text": "\"\"\"BIRD Mini-Dev's official **EX**, with \"cannot measure\" kept apart from \"wrong\"."
+      },
+      {
+        "line": 25,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 27,
+        "text": "import argparse"
+      },
+      {
+        "line": 28,
+        "text": "import json"
+      },
+      {
+        "line": 29,
+        "text": "import signal"
+      },
+      {
+        "line": 30,
+        "text": "import sqlite3"
+      },
+      {
+        "line": 31,
+        "text": "import sys"
+      },
+      {
+        "line": 32,
+        "text": "from pathlib import Path"
+      }
+    ],
+    "imports": [
+      {
+        "line": 25,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 27,
+        "text": "import argparse"
+      },
+      {
+        "line": 28,
+        "text": "import json"
+      },
+      {
+        "line": 29,
+        "text": "import signal"
+      },
+      {
+        "line": 30,
+        "text": "import sqlite3"
+      },
+      {
+        "line": 31,
+        "text": "import sys"
+      },
+      {
+        "line": 32,
+        "text": "from pathlib import Path"
+      }
+    ],
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "sha256": "2c0a012468c9d3b6126428008f9eae6f08fc7f81c454e02bf68000b0011840d0"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 9,
+        "text": "`minidev.zip` (800,943,648 bytes) from the official OSS mirror, pinned by sha256 *and* by"
+      },
+      {
+        "line": 52,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 54,
+        "text": "import csv"
+      },
+      {
+        "line": 55,
+        "text": "import io"
+      },
+      {
+        "line": 56,
+        "text": "import json"
+      },
+      {
+        "line": 57,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 59,
+        "text": "from data.scaffolds import registry"
+      },
+      {
+        "line": 113,
+        "text": "    Read at import **inside a guard**, the pattern `data/datasets/spreadsheetbench.py` uses, because"
+      },
+      {
+        "line": 117,
+        "text": "    this dataset from `published()` -- 27 datasets became 26 with no error anywhere."
+      },
+      {
+        "line": 137,
+        "text": "    \"\"\"`{column: note}` from the release's per-database description CSVs."
+      },
+      {
+        "line": 177,
+        "text": "    \"\"\"The official schema as DDL, from `dev_tables.json` plus the column descriptions."
+      },
+      {
+        "line": 255,
+        "text": "        \"argv\": [\"python3\", \"check.py\", \"--db\", \"database.sqlite\", \"--gold\", \"gold.sql\","
+      },
+      {
+        "line": 289,
+        "text": "    import would tax every module that only asks which datasets exist. This mirrors"
+      },
+      {
+        "line": 308,
+        "text": "DEFAULT_ENV = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 309,
+        "text": "ENV = {task_id: {\"kind\": \"files\"} for task_id in _ids()}"
+      },
+      {
+        "line": 342,
+        "text": "         \"note\": \"Official Mini-Dev release: 500 questions, the gold SQL, and 11 SQLite databases (1.4 GB). Pinned by sha256 and by the object's ETag/Last-Modified, both re-derived by the test. The agent gets the question, the released evidence hint and the schema rendered from dev_tables.json -- never the database, which holds the answer rows, and never the gold SQL.\"},"
+      }
+    ],
+    "imports": [
+      {
+        "line": 52,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 54,
+        "text": "import csv"
+      },
+      {
+        "line": 55,
+        "text": "import io"
+      },
+      {
+        "line": 56,
+        "text": "import json"
+      },
+      {
+        "line": 57,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 59,
+        "text": "from data.scaffolds import registry"
+      }
+    ],
+    "path": "data/datasets/bird_minidev.py",
+    "sha256": "d6e26d4cf541f889a949992e823e446d52048eb5e05d99c3566bf4a95479667d"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 19,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 21,
+        "text": "import csv"
+      },
+      {
+        "line": 22,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 23,
+        "text": "import re"
+      },
+      {
+        "line": 25,
+        "text": "import chess"
+      },
+      {
+        "line": 27,
+        "text": "from data.scaffolds.qa import base"
+      },
+      {
+        "line": 170,
+        "text": "                # Lichess accepts any mate-in-one when it differs from the stored line."
+      },
+      {
+        "line": 208,
+        "text": "    A runner must isolate this object and gold from the actor, and retain submissions"
+      },
+      {
+        "line": 385,
+        "text": "DEFAULT_ENV = {\"kind\": \"files\"}"
+      }
+    ],
+    "imports": [
+      {
+        "line": 19,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 21,
+        "text": "import csv"
+      },
+      {
+        "line": 22,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 23,
+        "text": "import re"
+      },
+      {
+        "line": 25,
+        "text": "import chess"
+      },
+      {
+        "line": 27,
+        "text": "from data.scaffolds.qa import base"
+      }
+    ],
+    "path": "data/datasets/chessbench_puzzles.py",
+    "sha256": "61165a5351b9068ebdac5e66f34cba1b6ed3c658ee1198ebdaf789be4e11b261"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 2,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 3,
+        "text": "import sys"
+      },
+      {
+        "line": 4,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 7,
+        "text": "from data.scaffolds import command_control  # noqa: E402"
+      },
+      {
+        "line": 9,
+        "text": "    raise SystemExit(command_control.control_main(\"ds1000\", sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 2,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 3,
+        "text": "import sys"
+      },
+      {
+        "line": 4,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 7,
+        "text": "from data.scaffolds import command_control"
+      }
+    ],
+    "path": "data/datasets/ds1000/control.py",
+    "sha256": "a9be8c901a01234c7cae3d2ca4aa96b92783a845c7c71541b572f17aebfbdee1"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 9,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 11,
+        "text": "import argparse"
+      },
+      {
+        "line": 12,
+        "text": "import json"
+      },
+      {
+        "line": 13,
+        "text": "import pathlib"
+      },
+      {
+        "line": 14,
+        "text": "import re"
+      },
+      {
+        "line": 15,
+        "text": "import subprocess"
+      },
+      {
+        "line": 16,
+        "text": "import sys"
+      },
+      {
+        "line": 17,
+        "text": "import tempfile"
+      },
+      {
+        "line": 33,
+        "text": "    # program is passed via a temporary JSON file so the child can import the official runner."
+      },
+      {
+        "line": 38,
+        "text": "        \"import json, sys\\n\""
+      },
+      {
+        "line": 39,
+        "text": "        \"from execution import check_correctness\\n\""
+      },
+      {
+        "line": 40,
+        "text": "        \"program=json.loads(open(sys.argv[1]).read())\\n\""
+      },
+      {
+        "line": 47,
+        "text": "    # path runs offline instead of fetching from GitHub mid-check."
+      },
+      {
+        "line": 48,
+        "text": "    import os"
+      },
+      {
+        "line": 53,
+        "text": "    proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,"
+      }
+    ],
+    "imports": [
+      {
+        "line": 9,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 11,
+        "text": "import argparse"
+      },
+      {
+        "line": 12,
+        "text": "import json"
+      },
+      {
+        "line": 13,
+        "text": "import pathlib"
+      },
+      {
+        "line": 14,
+        "text": "import re"
+      },
+      {
+        "line": 15,
+        "text": "import subprocess"
+      },
+      {
+        "line": 16,
+        "text": "import sys"
+      },
+      {
+        "line": 17,
+        "text": "import tempfile"
+      },
+      {
+        "line": 48,
+        "text": "import os"
+      }
+    ],
+    "path": "data/datasets/ds1000/verify/check.py",
+    "sha256": "6ec35d0227f1adab6b32a7cb4200b5a2f86cc38e1d2d8eea6853f122c2b12f8e"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 19,
+        "text": "  `--platform` the verification namespace starts from an empty root and binds only `/usr`,"
+      },
+      {
+        "line": 24,
+        "text": "  acceptable here. This group is recomputed from `code_context`, so it cannot drift."
+      },
+      {
+        "line": 33,
+        "text": "  versions its numbers came from; these rows are where that pin differs from this host."
+      },
+      {
+        "line": 37,
+        "text": "from a pinned copy of `mwaskom/seaborn-data` and are **included**, because caching the same"
+      },
+      {
+        "line": 40,
+        "text": "holds the per-row result, and `MEASURED_EXCLUSIONS` is derived from it."
+      },
+      {
+        "line": 42,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 44,
+        "text": "import json"
+      },
+      {
+        "line": 45,
+        "text": "import re"
+      },
+      {
+        "line": 46,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 48,
+        "text": "from data.scaffolds import command_control"
+      },
+      {
+        "line": 49,
+        "text": "from data.scaffolds.qa.base import is_eval"
+      },
+      {
+        "line": 88,
+        "text": "#: as the runner reported it. Frozen from `_src/oracle-sweep.json`; do not edit by hand --"
+      },
+      {
+        "line": 106,
+        "text": "#: test code imports. Recomputing it keeps the frozen table from drifting away from the data."
+      },
+      {
+        "line": 107,
+        "text": "_TF_PATTERN = re.compile(r\"\\b(import tensorflow|from tensorflow|tf\\.)\")"
+      },
+      {
+        "line": 132,
+        "text": "    \"\"\"Rows whose official test code imports tensorflow, recomputed from the release.\"\"\""
+      },
+      {
+        "line": 168,
+        "text": "ENV = {task_id(i): {\"kind\": \"files\"} for i in included_indices()}"
+      },
+      {
+        "line": 195,
+        "text": "        \"argv\": [\"python3\", \"verify/check.py\","
+      },
+      {
+        "line": 255,
+        "text": "                 \"fetches from GitHub at evaluation time (raw.githubusercontent is blocked \""
+      }
+    ],
+    "imports": [
+      {
+        "line": 42,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 44,
+        "text": "import json"
+      },
+      {
+        "line": 45,
+        "text": "import re"
+      },
+      {
+        "line": 46,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 48,
+        "text": "from data.scaffolds import command_control"
+      },
+      {
+        "line": 49,
+        "text": "from data.scaffolds.qa.base import is_eval"
+      }
+    ],
+    "path": "data/datasets/ds1000.py",
+    "sha256": "7a58535f566e58d23819cad86c0ad9b0620e16f11b33033d6645dfcb977fb9a5"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 2,
+        "text": "\"\"\"gaia: the oracle and do-nothing controls. Generated by `--kind files`."
+      },
+      {
+        "line": 14,
+        "text": "container-absolute (`/check.py`, `/app/answer.txt`), so running its argv on the host cannot"
+      },
+      {
+        "line": 17,
+        "text": "image or network mistake. `data/datasets/tau_bench.py` records the same situation and registers no"
+      },
+      {
+        "line": 20,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 22,
+        "text": "import sys"
+      },
+      {
+        "line": 23,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 28,
+        "text": "from data.scaffolds import command_control  # noqa: E402"
+      },
+      {
+        "line": 32,
+        "text": "    raise SystemExit(command_control.control_main(\"gaia\", sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 20,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 22,
+        "text": "import sys"
+      },
+      {
+        "line": 23,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 28,
+        "text": "from data.scaffolds import command_control"
+      }
+    ],
+    "path": "data/datasets/gaia/control.py",
+    "sha256": "f62d52022337c1e516af80ac2a099e21b8e9ba039d608470f35976472b9f35e4"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 10,
+        "text": "`2023/test/`. Reading a parquet at import would put `pyarrow` between the adapter and every"
+      },
+      {
+        "line": 32,
+        "text": "files return 403 without one. The token is read from `HF_TOKEN`, else from the standard"
+      },
+      {
+        "line": 34,
+        "text": "is unreachable from this host, so downloads go through `hf-mirror.com`, which honours the same"
+      },
+      {
+        "line": 37,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 39,
+        "text": "import argparse"
+      },
+      {
+        "line": 40,
+        "text": "import hashlib"
+      },
+      {
+        "line": 41,
+        "text": "import json"
+      },
+      {
+        "line": 42,
+        "text": "import os"
+      },
+      {
+        "line": 43,
+        "text": "import pathlib"
+      },
+      {
+        "line": 44,
+        "text": "import sys"
+      },
+      {
+        "line": 45,
+        "text": "import urllib.request"
+      },
+      {
+        "line": 50,
+        "text": "import data.datasets.gaia as adapter  # noqa: E402"
+      },
+      {
+        "line": 113,
+        "text": "    import pyarrow.parquet as pq"
+      },
+      {
+        "line": 162,
+        "text": "def main(argv=None) -> int:"
+      },
+      {
+        "line": 165,
+        "text": "    args = parser.parse_args(argv)"
+      }
+    ],
+    "imports": [
+      {
+        "line": 37,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 39,
+        "text": "import argparse"
+      },
+      {
+        "line": 40,
+        "text": "import hashlib"
+      },
+      {
+        "line": 41,
+        "text": "import json"
+      },
+      {
+        "line": 42,
+        "text": "import os"
+      },
+      {
+        "line": 43,
+        "text": "import pathlib"
+      },
+      {
+        "line": 44,
+        "text": "import sys"
+      },
+      {
+        "line": 45,
+        "text": "import urllib.request"
+      },
+      {
+        "line": 50,
+        "text": "import data.datasets.gaia as adapter"
+      },
+      {
+        "line": 113,
+        "text": "import pyarrow.parquet as pq"
+      }
+    ],
+    "path": "data/datasets/gaia/prepare.py",
+    "sha256": "bdc147ce1f385eb15a950efa7c7e0ef6939ee7695570ab49b41228b2e8d277f6"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 5,
+        "text": "was pinned by sha256 from the official leaderboard Space. This script therefore runs upstream's"
+      },
+      {
+        "line": 24,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 26,
+        "text": "import argparse"
+      },
+      {
+        "line": 27,
+        "text": "import contextlib"
+      },
+      {
+        "line": 28,
+        "text": "import io"
+      },
+      {
+        "line": 29,
+        "text": "import json"
+      },
+      {
+        "line": 30,
+        "text": "import sys"
+      },
+      {
+        "line": 31,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 72,
+        "text": "        from scorer import question_scorer"
+      }
+    ],
+    "imports": [
+      {
+        "line": 24,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 26,
+        "text": "import argparse"
+      },
+      {
+        "line": 27,
+        "text": "import contextlib"
+      },
+      {
+        "line": 28,
+        "text": "import io"
+      },
+      {
+        "line": 29,
+        "text": "import json"
+      },
+      {
+        "line": 30,
+        "text": "import sys"
+      },
+      {
+        "line": 31,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 72,
+        "text": "from scorer import question_scorer"
+      }
+    ],
+    "path": "data/datasets/gaia/verify/check.py",
+    "sha256": "59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 25,
+        "text": "step away from at all times."
+      },
+      {
+        "line": 37,
+        "text": "`question_scorer(model_answer, ground_truth) -> bool` from the official leaderboard Space"
+      },
+      {
+        "line": 57,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 59,
+        "text": "import json"
+      },
+      {
+        "line": 60,
+        "text": "import os"
+      },
+      {
+        "line": 61,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 63,
+        "text": "from data.scaffolds import registry"
+      },
+      {
+        "line": 76,
+        "text": "#: and `2023/test`, and a `dst` taken from the basename made one overwrite the other (measured)."
+      },
+      {
+        "line": 93,
+        "text": "#: Built once from `data/datasets/gaia/Dockerfile`; the platform will not build it during a run."
+      },
+      {
+        "line": 94,
+        "text": "IMAGE = os.environ.get(\"HG_GAIA_IMAGE\", \"harnessgrad/gaia:20261008\")"
+      },
+      {
+        "line": 101,
+        "text": "    \"image\": IMAGE,"
+      },
+      {
+        "line": 202,
+        "text": "        \"argv\": [\"python3\", \"/check.py\", \"--answer\", ANSWER_FILE, \"--gold\", GOLD_IN_CONTAINER,"
+      },
+      {
+        "line": 237,
+        "text": "    `pool.jsonl` from `data/datasets/gaia/prepare.py`). The policy one: `data/scaffolds/registry.py::published()`"
+      },
+      {
+        "line": 254,
+        "text": "        raise AttributeError(f\"module {__name__!r} has no attribute {name!r}\") from None"
+      },
+      {
+        "line": 275,
+        "text": "         \"note\": \"The scored pool. Gated (`gated: auto`), so `--fetch` needs HF_TOKEN in the environment or in ~/.cache/huggingface/token; the URL goes through hf-mirror.com because huggingface.co is unreachable from this host. `prepare.py` reads it and writes pool.jsonl, whose own digest transitively pins the 42 validation attachments (each carries its size and sha256 in the pool header).\"},"
+      },
+      {
+        "line": 285,
+        "text": "         \"note\": \"`question_scorer` / `normalize_str` / `normalize_number_str` / `split_string`, pinned from the official leaderboard Space at its revision. Copied into the verification namespace as a VERIFY.inputs entry and imported there, so the reward is upstream's function rather than a transcription -- the three branches (float, comma list, string) normalize differently and an exact-match re-implementation gets them wrong. Never enters an agent SETUP.\"},"
+      },
+      {
+        "line": 302,
+        "text": "           \"IMAGE\", \"WORKDIR\", \"ANSWER_FILE\", \"load\", \"oracle_files\", \"downloads\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 57,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 59,
+        "text": "import json"
+      },
+      {
+        "line": 60,
+        "text": "import os"
+      },
+      {
+        "line": 61,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 63,
+        "text": "from data.scaffolds import registry"
+      }
+    ],
+    "path": "data/datasets/gaia.py",
+    "sha256": "42b4f0c655103b75baa168bb7d1af7b8c6e72dcfc3ad59602885c34adcaca810"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 17,
+        "text": "from the repository's gold-path archive, and that is deliberate: **the archived paths were"
+      },
+      {
+        "line": 34,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 36,
+        "text": "import argparse"
+      },
+      {
+        "line": 37,
+        "text": "import json"
+      },
+      {
+        "line": 38,
+        "text": "import os"
+      },
+      {
+        "line": 39,
+        "text": "import shutil"
+      },
+      {
+        "line": 40,
+        "text": "import subprocess"
+      },
+      {
+        "line": 41,
+        "text": "import sys"
+      },
+      {
+        "line": 42,
+        "text": "import tempfile"
+      },
+      {
+        "line": 43,
+        "text": "import time"
+      },
+      {
+        "line": 44,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 50,
+        "text": "import data.datasets.scienceworld as scienceworld  # noqa: E402"
+      },
+      {
+        "line": 51,
+        "text": "import scw_env  # noqa: E402"
+      },
+      {
+        "line": 134,
+        "text": "        proc = subprocess.run([sys.executable, \"scw\", \"do\", action], cwd=workdir,"
+      },
+      {
+        "line": 138,
+        "text": "    subprocess.run([sys.executable, \"scw\", \"done\"], cwd=workdir, capture_output=True,"
+      },
+      {
+        "line": 154,
+        "text": "    argv = [sys.executable, *verifier[\"argv\"][1:]]"
+      },
+      {
+        "line": 155,
+        "text": "    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)"
+      },
+      {
+        "line": 193,
+        "text": "    from eval.run.runner import run_one"
+      },
+      {
+        "line": 202,
+        "text": "        # fail with `FileNotFoundError: .../scw_task.json` from the control itself."
+      },
+      {
+        "line": 248,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 262,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 287,
+        "text": "    raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 34,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 36,
+        "text": "import argparse"
+      },
+      {
+        "line": 37,
+        "text": "import json"
+      },
+      {
+        "line": 38,
+        "text": "import os"
+      },
+      {
+        "line": 39,
+        "text": "import shutil"
+      },
+      {
+        "line": 40,
+        "text": "import subprocess"
+      },
+      {
+        "line": 41,
+        "text": "import sys"
+      },
+      {
+        "line": 42,
+        "text": "import tempfile"
+      },
+      {
+        "line": 43,
+        "text": "import time"
+      },
+      {
+        "line": 44,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 50,
+        "text": "import data.datasets.scienceworld as scienceworld"
+      },
+      {
+        "line": 51,
+        "text": "import scw_env"
+      },
+      {
+        "line": 193,
+        "text": "from eval.run.runner import run_one"
+      }
+    ],
+    "path": "data/datasets/scienceworld/control.py",
+    "sha256": "e3a13b4b2a901db8a69b71cf53a3c0001ee04553a26b7b1f191b4d55aa99a76f"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 12,
+        "text": "This machine has no system `java` and no root, so a pinned **Adoptium JRE 17** tarball is"
+      },
+      {
+        "line": 15,
+        "text": "    <root>/jre/jdk-17.0.20.1+1-jre/bin/java   ->  openjdk 17.0.20.1 Temurin"
+      },
+      {
+        "line": 23,
+        "text": "found through `java_home(workdir)` below. That is the same rule the QA batch learned for"
+      },
+      {
+        "line": 31,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 33,
+        "text": "import json"
+      },
+      {
+        "line": 34,
+        "text": "import os"
+      },
+      {
+        "line": 35,
+        "text": "import tarfile"
+      },
+      {
+        "line": 36,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 52,
+        "text": "#: The task identity travels **in the workdir**, not in the agent's argv: the CLI needs"
+      },
+      {
+        "line": 54,
+        "text": "#: neither may read them from the other's bytes. `SETUP` and `VERIFY.inputs` both write"
+      },
+      {
+        "line": 64,
+        "text": "#: re-download that changed bytes from the runtime this dataset was validated against."
+      },
+      {
+        "line": 71,
+        "text": "#: `<JAVA_HOME>/bin/java -jar scienceworld.jar`."
+      },
+      {
+        "line": 75,
+        "text": "def java_home(workdir: Path) -> Path:"
+      },
+      {
+        "line": 93,
+        "text": "        if candidate and (candidate / \"bin\" / \"java\").is_file():"
+      },
+      {
+        "line": 95,
+        "text": "            # (`/tmp`, from `scienceworld.constants`), not with the caller's directory, so"
+      },
+      {
+        "line": 96,
+        "text": "            # a relative `JAVA_HOME` produces `FileNotFoundError: 'java'` from a subprocess"
+      },
+      {
+        "line": 118,
+        "text": "    The import is inside the function on purpose: `data/datasets/scienceworld.py` is imported by"
+      },
+      {
+        "line": 120,
+        "text": "    module-level `import scienceworld` there would be a second thing that can fail."
+      },
+      {
+        "line": 122,
+        "text": "    home = java_home(workdir)"
+      },
+      {
+        "line": 125,
+        "text": "    from scienceworld import ScienceWorldEnv"
+      },
+      {
+        "line": 154,
+        "text": "    only come from a crash mid-append, and a crash means the episode is over. Skipped"
+      },
+      {
+        "line": 193,
+        "text": "    if (home / \"bin\" / \"java\").is_file():"
+      },
+      {
+        "line": 201,
+        "text": "    if not (home / \"bin\" / \"java\").is_file():"
+      },
+      {
+        "line": 202,
+        "text": "        raise RuntimeError(f\"the JRE tarball did not contain {JRE_DIRNAME}/bin/java\")"
+      },
+      {
+        "line": 209,
+        "text": "    A tarball from a pinned URL is as trusted as anything else in this repository, and"
+      },
+      {
+        "line": 223,
+        "text": "           \"java_home\", \"staged_jre\", \"make_env\", \"load_task\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 31,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 33,
+        "text": "import json"
+      },
+      {
+        "line": 34,
+        "text": "import os"
+      },
+      {
+        "line": 35,
+        "text": "import tarfile"
+      },
+      {
+        "line": 36,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 125,
+        "text": "from scienceworld import ScienceWorldEnv"
+      }
+    ],
+    "path": "data/datasets/scienceworld/lib/scw_env.py",
+    "sha256": "8d5ac70cbfdaaddecb6cb874368c9f123cbb47d901682c6b886086fa7587df13"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 12,
+        "text": "Its grade cannot come from anything it says -- the check replays the CLI's log in a fresh"
+      },
+      {
+        "line": 18,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 20,
+        "text": "import argparse"
+      },
+      {
+        "line": 21,
+        "text": "import json"
+      },
+      {
+        "line": 22,
+        "text": "import pathlib"
+      },
+      {
+        "line": 23,
+        "text": "import subprocess"
+      },
+      {
+        "line": 24,
+        "text": "import sys"
+      },
+      {
+        "line": 41,
+        "text": "        proc = subprocess.run([sys.executable, str(work / \"scw\"), \"do\", action],"
+      },
+      {
+        "line": 48,
+        "text": "    subprocess.run([sys.executable, str(work / \"scw\"), \"done\"], cwd=work,"
+      }
+    ],
+    "imports": [
+      {
+        "line": 18,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 20,
+        "text": "import argparse"
+      },
+      {
+        "line": 21,
+        "text": "import json"
+      },
+      {
+        "line": 22,
+        "text": "import pathlib"
+      },
+      {
+        "line": 23,
+        "text": "import subprocess"
+      },
+      {
+        "line": 24,
+        "text": "import sys"
+      }
+    ],
+    "path": "data/datasets/scienceworld/oracle_harness/agent.py",
+    "sha256": "cc3eb3f6244e077d3a99f34b334a805a18f16dafe0c64529fc4d7906ef45db19"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 6,
+        "text": "bytes. It reads one thing from the agent: the ordered list of actions in"
+      },
+      {
+        "line": 7,
+        "text": "`scw_actions.jsonl`. It then rebuilds the world from a trusted copy of the task file (the"
+      },
+      {
+        "line": 49,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 51,
+        "text": "import argparse"
+      },
+      {
+        "line": 52,
+        "text": "import json"
+      },
+      {
+        "line": 53,
+        "text": "import os"
+      },
+      {
+        "line": 54,
+        "text": "import sys"
+      },
+      {
+        "line": 55,
+        "text": "import traceback"
+      },
+      {
+        "line": 56,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 59,
+        "text": "import scw_env  # noqa: E402"
+      },
+      {
+        "line": 65,
+        "text": "def parse_args(argv):"
+      },
+      {
+        "line": 73,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 85,
+        "text": "    Measured, and it cost a control run: `py4j.java_gateway.launch_gateway` resolves the"
+      },
+      {
+        "line": 86,
+        "text": "    interpreter as `os.path.join(os.environ[\"JAVA_HOME\"], \"bin\", \"java\")` and falls back to"
+      },
+      {
+        "line": 87,
+        "text": "    the bare name `java`. The platform hands a check a **minimal environment**"
+      },
+      {
+        "line": 89,
+        "text": "    dies with `FileNotFoundError: [Errno 2] No such file or directory: 'java'` -- and the"
+      },
+      {
+        "line": 102,
+        "text": "        home = scw_env.java_home(workdir)"
+      },
+      {
+        "line": 125,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 126,
+        "text": "    args = parse_args(argv)"
+      },
+      {
+        "line": 147,
+        "text": "    java_home = _point_at_the_jvm(workdir)"
+      },
+      {
+        "line": 148,
+        "text": "    evidence[\"java_home\"] = str(java_home) if java_home else None"
+      },
+      {
+        "line": 149,
+        "text": "    if java_home is None:"
+      },
+      {
+        "line": 232,
+        "text": "        raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 49,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 51,
+        "text": "import argparse"
+      },
+      {
+        "line": 52,
+        "text": "import json"
+      },
+      {
+        "line": 53,
+        "text": "import os"
+      },
+      {
+        "line": 54,
+        "text": "import sys"
+      },
+      {
+        "line": 55,
+        "text": "import traceback"
+      },
+      {
+        "line": 56,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 59,
+        "text": "import scw_env"
+      }
+    ],
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "sha256": "afa6b10db53458afb02df9f25fb08e690f2f415019f28f1dec2e2508be69cf2f"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 42,
+        "text": "beside them, and a test rebuilds the file from the archive and fails if the two disagree."
+      },
+      {
+        "line": 44,
+        "text": "regenerated from the environment's own API, which is what makes the oracle control test the"
+      },
+      {
+        "line": 90,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 92,
+        "text": "import os"
+      },
+      {
+        "line": 93,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 113,
+        "text": "import importlib.util"
+      },
+      {
+        "line": 114,
+        "text": "import json"
+      },
+      {
+        "line": 128,
+        "text": "def _load_lib():"
+      },
+      {
+        "line": 131,
+        "text": "    Not `from data.datasets.scienceworld.lib import scw_env`: the check imports this module inside"
+      },
+      {
+        "line": 142,
+        "text": "_LIB = _load_lib()"
+      },
+      {
+        "line": 150,
+        "text": "#: the absolute spelling against the workdir; the check's `argv` carries the relative"
+      },
+      {
+        "line": 165,
+        "text": "#: it comes from is unreachable reproducibly here (see the module docstring), and only the"
+      },
+      {
+        "line": 166,
+        "text": "#: tasks' *identity* is needed -- the gold sequences are regenerated from the environment."
+      },
+      {
+        "line": 179,
+        "text": "    exclusion is recomputed from the data on every load, and the raise below is the guard"
+      },
+      {
+        "line": 235,
+        "text": "    The description is read from the environment (`get_task_description()`), which is the"
+      },
+      {
+        "line": 267,
+        "text": "        f\"- Your actions are replayed from the beginning in a fresh environment running the\\n\""
+      },
+      {
+        "line": 291,
+        "text": "        # The runtime, as a prepared tree. `lib/scw_env.py::java_home` finds it at"
+      },
+      {
+        "line": 292,
+        "text": "        # `<workdir>/jre/<dirname>` and sets JAVA_HOME/PATH from it; py4j then launches it"
+      },
+      {
+        "line": 308,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 335,
+        "text": "    Read by `tools/datasets.py`; the generated `DOWNLOADS.md` is rendered from this"
+      },
+      {
+        "line": 336,
+        "text": "    function, never from a hand-written table, so the two cannot disagree."
+      },
+      {
+        "line": 363,
+        "text": "            \"note\": \"Trap: this machine has **no system `java` and no root**, so a runtime \""
+      },
+      {
+        "line": 377,
+        "text": "    Deliberately does not import `scienceworld` or start a JVM: this is the answer to \"did"
+      },
+      {
+        "line": 380,
+        "text": "    java = DATASET_ROOT / \"jre\" / _LIB.JRE_DIRNAME / \"bin\" / \"java\""
+      },
+      {
+        "line": 384,
+        "text": "        \"present\": java.is_file() and tarball.is_file() and FOLD_FILE.is_file(),"
+      },
+      {
+        "line": 386,
+        "text": "        \"java\": str(java) if java.is_file() else None,"
+      },
+      {
+        "line": 430,
+        "text": "            f\"that `pip show scienceworld` reports 1.2.3.\") from exc"
+      },
+      {
+        "line": 445,
+        "text": "    import hashlib"
+      },
+      {
+        "line": 452,
+        "text": "DEFAULT_ENV: dict = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 458,
+        "text": "    Deriving it from the records would mean building 21,621 goal/verifier structures just"
+      },
+      {
+        "line": 486,
+        "text": "                \"ENV\": {tid: {\"kind\": \"files\"} for tid in ids},"
+      }
+    ],
+    "imports": [
+      {
+        "line": 90,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 92,
+        "text": "import os"
+      },
+      {
+        "line": 93,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 113,
+        "text": "import importlib.util"
+      },
+      {
+        "line": 114,
+        "text": "import json"
+      },
+      {
+        "line": 445,
+        "text": "import hashlib"
+      }
+    ],
+    "path": "data/datasets/scienceworld.py",
+    "sha256": "e49b0c7ee0ddb5634214145cf7fff7726cdd1775ef7f97fb635cd47cf83f2366"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 20,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 22,
+        "text": "import argparse"
+      },
+      {
+        "line": 23,
+        "text": "import json"
+      },
+      {
+        "line": 24,
+        "text": "import os"
+      },
+      {
+        "line": 25,
+        "text": "import shutil"
+      },
+      {
+        "line": 26,
+        "text": "import subprocess"
+      },
+      {
+        "line": 27,
+        "text": "import sys"
+      },
+      {
+        "line": 28,
+        "text": "import tempfile"
+      },
+      {
+        "line": 29,
+        "text": "import time"
+      },
+      {
+        "line": 30,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 35,
+        "text": "import data.datasets.spreadsheetbench as sb  # noqa: E402"
+      },
+      {
+        "line": 49,
+        "text": "            import openpyxl"
+      },
+      {
+        "line": 95,
+        "text": "    subprocess.run([sys.executable, \"qa/bin/qa\", \"submit\", sb.RESULT_WORKBOOK],"
+      },
+      {
+        "line": 109,
+        "text": "    proc = subprocess.run([sys.executable, *verifier[\"argv\"][1:]], cwd=workdir,"
+      },
+      {
+        "line": 147,
+        "text": "    from eval.run.runner import run_one"
+      },
+      {
+        "line": 195,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 207,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 232,
+        "text": "    raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 20,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 22,
+        "text": "import argparse"
+      },
+      {
+        "line": 23,
+        "text": "import json"
+      },
+      {
+        "line": 24,
+        "text": "import os"
+      },
+      {
+        "line": 25,
+        "text": "import shutil"
+      },
+      {
+        "line": 26,
+        "text": "import subprocess"
+      },
+      {
+        "line": 27,
+        "text": "import sys"
+      },
+      {
+        "line": 28,
+        "text": "import tempfile"
+      },
+      {
+        "line": 29,
+        "text": "import time"
+      },
+      {
+        "line": 30,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 35,
+        "text": "import data.datasets.spreadsheetbench as sb"
+      },
+      {
+        "line": 147,
+        "text": "from eval.run.runner import run_one"
+      },
+      {
+        "line": 49,
+        "text": "import openpyxl"
+      }
+    ],
+    "path": "data/datasets/spreadsheetbench/control.py",
+    "sha256": "d82d1f681c45feba0a4fa26270357e1a8b6c8f2588bf7358e69b13303d83a5a8"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 11,
+        "text": "Its grade cannot come from anything it says -- the check reads the workbook it left behind and"
+      },
+      {
+        "line": 14,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 16,
+        "text": "import argparse"
+      },
+      {
+        "line": 17,
+        "text": "import json"
+      },
+      {
+        "line": 18,
+        "text": "import pathlib"
+      },
+      {
+        "line": 19,
+        "text": "import shutil"
+      },
+      {
+        "line": 20,
+        "text": "import subprocess"
+      },
+      {
+        "line": 21,
+        "text": "import sys"
+      },
+      {
+        "line": 36,
+        "text": "    proc = subprocess.run([sys.executable, str(work / \"qa\" / \"bin\" / \"qa\"), \"submit\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 14,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 16,
+        "text": "import argparse"
+      },
+      {
+        "line": 17,
+        "text": "import json"
+      },
+      {
+        "line": 18,
+        "text": "import pathlib"
+      },
+      {
+        "line": 19,
+        "text": "import shutil"
+      },
+      {
+        "line": 20,
+        "text": "import subprocess"
+      },
+      {
+        "line": 21,
+        "text": "import sys"
+      }
+    ],
+    "path": "data/datasets/spreadsheetbench/oracle_harness/agent.py",
+    "sha256": "b035247b908792b89b201ae739afd7fdf64cd2aef8f03ec9ccefade5e78a2647"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 24,
+        "text": "`evaluation/open_spreadsheet.py` does, and the reason `soffice` has to be installed."
+      },
+      {
+        "line": 31,
+        "text": "saying `measured: false`, and exits 3. A bare 0 is indistinguishable from a wrong workbook."
+      },
+      {
+        "line": 36,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 38,
+        "text": "import argparse"
+      },
+      {
+        "line": 39,
+        "text": "import datetime"
+      },
+      {
+        "line": 40,
+        "text": "import json"
+      },
+      {
+        "line": 41,
+        "text": "import os"
+      },
+      {
+        "line": 42,
+        "text": "import shutil"
+      },
+      {
+        "line": 43,
+        "text": "import subprocess"
+      },
+      {
+        "line": 44,
+        "text": "import sys"
+      },
+      {
+        "line": 45,
+        "text": "import tempfile"
+      },
+      {
+        "line": 46,
+        "text": "import traceback"
+      },
+      {
+        "line": 47,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 165,
+        "text": "    import openpyxl"
+      },
+      {
+        "line": 174,
+        "text": "        raise RuntimeError(f\"workbook load failed: {type(exc).__name__}: {exc}\") from exc"
+      },
+      {
+        "line": 214,
+        "text": "def soffice_path() -> str | None:"
+      },
+      {
+        "line": 215,
+        "text": "    \"\"\"The LibreOffice binary, from `PATH` or the two conventional names.\"\"\""
+      },
+      {
+        "line": 216,
+        "text": "    for candidate in (\"soffice\", \"libreoffice\"):"
+      },
+      {
+        "line": 223,
+        "text": "def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, str]:"
+      },
+      {
+        "line": 237,
+        "text": "    cmd = [soffice, \"--headless\", \"--calc\", \"--norestore\", \"--nolockcheck\","
+      },
+      {
+        "line": 242,
+        "text": "        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)"
+      },
+      {
+        "line": 243,
+        "text": "    except subprocess.TimeoutExpired:"
+      },
+      {
+        "line": 256,
+        "text": "    import openpyxl"
+      },
+      {
+        "line": 262,
+        "text": "                           f\"{type(exc).__name__}: {exc}\") from exc"
+      },
+      {
+        "line": 274,
+        "text": "def parse_args(argv):"
+      },
+      {
+        "line": 283,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 304,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 305,
+        "text": "    args = parse_args(argv)"
+      },
+      {
+        "line": 359,
+        "text": "            soffice = soffice_path()"
+      },
+      {
+        "line": 360,
+        "text": "            if soffice is None:"
+      },
+      {
+        "line": 365,
+        "text": "                ok, why = recalculate(candidate, scratch=Path(scratch), soffice=soffice)"
+      },
+      {
+        "line": 396,
+        "text": "        raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 36,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 38,
+        "text": "import argparse"
+      },
+      {
+        "line": 39,
+        "text": "import datetime"
+      },
+      {
+        "line": 40,
+        "text": "import json"
+      },
+      {
+        "line": 41,
+        "text": "import os"
+      },
+      {
+        "line": 42,
+        "text": "import shutil"
+      },
+      {
+        "line": 43,
+        "text": "import subprocess"
+      },
+      {
+        "line": 44,
+        "text": "import sys"
+      },
+      {
+        "line": 45,
+        "text": "import tempfile"
+      },
+      {
+        "line": 46,
+        "text": "import traceback"
+      },
+      {
+        "line": 47,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 165,
+        "text": "import openpyxl"
+      },
+      {
+        "line": 256,
+        "text": "import openpyxl"
+      }
+    ],
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "sha256": "9ec684b333d4d4ca648c76fe6991085a8c4d046f9a620566a945bf0cbcb7bd19"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 10,
+        "text": "from the HuggingFace mirror `KAKA22/SpreadsheetBench`"
+      },
+      {
+        "line": 36,
+        "text": "`evaluation/open_spreadsheet.py` exists to do. Measured on this host: `soffice` is installed"
+      },
+      {
+        "line": 37,
+        "text": "(`/usr/bin/soffice`) and `--headless --calc --convert-to xlsx` does cache the computed values."
+      },
+      {
+        "line": 51,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 53,
+        "text": "import json"
+      },
+      {
+        "line": 54,
+        "text": "import os"
+      },
+      {
+        "line": 55,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 98,
+        "text": "#: `evaluation.py::compare_workbooks` reads the answer's cell names from this field."
+      },
+      {
+        "line": 231,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 273,
+        "text": "                    \"exists to do, and `soffice` must be installed for any formula-using task. \""
+      },
+      {
+        "line": 326,
+        "text": "        \"libreoffice\": _soffice(),"
+      },
+      {
+        "line": 331,
+        "text": "def _soffice() -> str | None:"
+      },
+      {
+        "line": 334,
+        "text": "    import shutil"
+      },
+      {
+        "line": 335,
+        "text": "    for candidate in (\"soffice\", \"libreoffice\"):"
+      },
+      {
+        "line": 353,
+        "text": "    import hashlib"
+      },
+      {
+        "line": 357,
+        "text": "DEFAULT_ENV: dict = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 362,
+        "text": "        return {r[\"task_id\"]: {\"kind\": \"files\"} for r in _ensure()}"
+      }
+    ],
+    "imports": [
+      {
+        "line": 51,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 53,
+        "text": "import json"
+      },
+      {
+        "line": 54,
+        "text": "import os"
+      },
+      {
+        "line": 55,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 334,
+        "text": "import shutil"
+      },
+      {
+        "line": 353,
+        "text": "import hashlib"
+      }
+    ],
+    "path": "data/datasets/spreadsheetbench.py",
+    "sha256": "8fdfad8f320bce041555ca3b4c8b769b79d07ad971af78f314852eb5f9799505"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 41,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 43,
+        "text": "import importlib"
+      },
+      {
+        "line": 44,
+        "text": "import json"
+      },
+      {
+        "line": 45,
+        "text": "import os"
+      },
+      {
+        "line": 46,
+        "text": "import sys"
+      },
+      {
+        "line": 47,
+        "text": "import tempfile"
+      },
+      {
+        "line": 48,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 79,
+        "text": "    _fail(f\"cannot tell the domain from the database keys {sorted(keys)}; \""
+      },
+      {
+        "line": 114,
+        "text": "        _fail(f\"cannot load the {domain} tools from {LIB}: {exc}\")"
+      },
+      {
+        "line": 153,
+        "text": "def cmd_list(argv: list) -> int:"
+      },
+      {
+        "line": 163,
+        "text": "def cmd_policy(argv: list) -> int:"
+      },
+      {
+        "line": 172,
+        "text": "def cmd_show(argv: list) -> int:"
+      },
+      {
+        "line": 177,
+        "text": "def cmd_call(argv: list) -> int:"
+      },
+      {
+        "line": 180,
+        "text": "    if len(argv) < 2:"
+      },
+      {
+        "line": 182,
+        "text": "    name, raw = argv[0], \" \".join(argv[1:])"
+      },
+      {
+        "line": 211,
+        "text": "def cmd_say(argv: list) -> int:"
+      },
+      {
+        "line": 219,
+        "text": "    text = \" \".join(argv).strip()"
+      },
+      {
+        "line": 228,
+        "text": "def cmd_done(argv: list) -> int:"
+      },
+      {
+        "line": 240,
+        "text": "def _extract_domain(argv: list) -> list:"
+      },
+      {
+        "line": 241,
+        "text": "    \"\"\"Pull a global `--domain X` / `--domain=X` out of `argv` into TAU_DOMAIN.\"\"\""
+      },
+      {
+        "line": 244,
+        "text": "    while i < len(argv):"
+      },
+      {
+        "line": 245,
+        "text": "        item = argv[i]"
+      },
+      {
+        "line": 247,
+        "text": "            if i + 1 >= len(argv):"
+      },
+      {
+        "line": 249,
+        "text": "            os.environ[\"TAU_DOMAIN\"] = argv[i + 1]"
+      },
+      {
+        "line": 262,
+        "text": "    \"\"\"`--domain`/`TAU_DOMAIN`, else the domain inferred from the database.\"\"\""
+      },
+      {
+        "line": 285,
+        "text": "def main(argv: list) -> int:"
+      },
+      {
+        "line": 286,
+        "text": "    argv = _extract_domain(list(argv))"
+      },
+      {
+        "line": 287,
+        "text": "    if not argv or argv[0] in (\"-h\", \"--help\", \"help\"):"
+      },
+      {
+        "line": 290,
+        "text": "    command, rest = argv[0], argv[1:]"
+      },
+      {
+        "line": 301,
+        "text": "    raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 41,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 43,
+        "text": "import importlib"
+      },
+      {
+        "line": 44,
+        "text": "import json"
+      },
+      {
+        "line": 45,
+        "text": "import os"
+      },
+      {
+        "line": 46,
+        "text": "import sys"
+      },
+      {
+        "line": 47,
+        "text": "import tempfile"
+      },
+      {
+        "line": 48,
+        "text": "from pathlib import Path"
+      }
+    ],
+    "path": "data/datasets/tau_bench/image/tau_cli.py",
+    "sha256": "999e44c6ebd854eda9094719cf4d47ecfe8ea23c94cf7ba9f35c650103d85cfe"
+  },
+  {
+    "dependency_lines": [],
+    "imports": [],
+    "path": "data/datasets/tau_bench/lib/tau_bench/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "dependency_lines": [],
+    "imports": [],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "dependency_lines": [],
+    "imports": [],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from .book_reservation import BookReservation"
+      },
+      {
+        "line": 4,
+        "text": "from .calculate import Calculate"
+      },
+      {
+        "line": 5,
+        "text": "from .cancel_reservation import CancelReservation"
+      },
+      {
+        "line": 6,
+        "text": "from .get_reservation_details import GetReservationDetails"
+      },
+      {
+        "line": 7,
+        "text": "from .get_user_details import GetUserDetails"
+      },
+      {
+        "line": 8,
+        "text": "from .list_all_airports import ListAllAirports"
+      },
+      {
+        "line": 9,
+        "text": "from .search_direct_flight import SearchDirectFlight"
+      },
+      {
+        "line": 10,
+        "text": "from .search_onestop_flight import SearchOnestopFlight"
+      },
+      {
+        "line": 11,
+        "text": "from .send_certificate import SendCertificate"
+      },
+      {
+        "line": 12,
+        "text": "from .think import Think"
+      },
+      {
+        "line": 13,
+        "text": "from .transfer_to_human_agents import TransferToHumanAgents"
+      },
+      {
+        "line": 14,
+        "text": "from .update_reservation_baggages import UpdateReservationBaggages"
+      },
+      {
+        "line": 15,
+        "text": "from .update_reservation_flights import UpdateReservationFlights"
+      },
+      {
+        "line": 16,
+        "text": "from .update_reservation_passengers import UpdateReservationPassengers"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from .book_reservation import BookReservation"
+      },
+      {
+        "line": 4,
+        "text": "from .calculate import Calculate"
+      },
+      {
+        "line": 5,
+        "text": "from .cancel_reservation import CancelReservation"
+      },
+      {
+        "line": 6,
+        "text": "from .get_reservation_details import GetReservationDetails"
+      },
+      {
+        "line": 7,
+        "text": "from .get_user_details import GetUserDetails"
+      },
+      {
+        "line": 8,
+        "text": "from .list_all_airports import ListAllAirports"
+      },
+      {
+        "line": 9,
+        "text": "from .search_direct_flight import SearchDirectFlight"
+      },
+      {
+        "line": 10,
+        "text": "from .search_onestop_flight import SearchOnestopFlight"
+      },
+      {
+        "line": 11,
+        "text": "from .send_certificate import SendCertificate"
+      },
+      {
+        "line": 12,
+        "text": "from .think import Think"
+      },
+      {
+        "line": 13,
+        "text": "from .transfer_to_human_agents import TransferToHumanAgents"
+      },
+      {
+        "line": 14,
+        "text": "from .update_reservation_baggages import UpdateReservationBaggages"
+      },
+      {
+        "line": 15,
+        "text": "from .update_reservation_flights import UpdateReservationFlights"
+      },
+      {
+        "line": 16,
+        "text": "from .update_reservation_passengers import UpdateReservationPassengers"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/__init__.py",
+    "sha256": "98cbafc429cf917a088112b652ec6ef8641b509f0981c04047875f90ec4967f3"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from copy import deepcopy"
+      },
+      {
+        "line": 5,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 6,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from copy import deepcopy"
+      },
+      {
+        "line": 5,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 6,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/book_reservation.py",
+    "sha256": "927ca66e6bf289d27582c939d7300ee028ed0a237e2592afed160265f9953304"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/calculate.py",
+    "sha256": "3be497428304817e4dae17222dc9d1d41a27d28bf0abc2a613687a6e890d70fe"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/cancel_reservation.py",
+    "sha256": "5dd83916f9dce20a4bac6ecf45c2f4555ae28f0981339c7d237d3f98af2e6b98"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/get_reservation_details.py",
+    "sha256": "3c45957d9489e4226000de99f015c67ca5cc920f867c5a5739edba20cd920b6b"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/get_user_details.py",
+    "sha256": "50cd80bee1fa2da99852ebd37289964f0b5f34994d9f34104f7d6953216fa7c4"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/list_all_airports.py",
+    "sha256": "8c6921b793ce6e93bfa18024e40fa1136f8c4e8204f8fa6f0248beaf674651ba"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/search_direct_flight.py",
+    "sha256": "ca64bab422da436c0ab9e3a77135f786ca934e8cb917d502f0dbab2847716c78"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/search_onestop_flight.py",
+    "sha256": "205b32a28de70bff29f8846c875964af78c6d6d94685bf79579861b3308efa3d"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/send_certificate.py",
+    "sha256": "d067a526d0a3579cd4a814fa14d231a62da4854520124ff2af8969f16715a773"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/think.py",
+    "sha256": "ff2b17409d3d6fade8657e2ada46b0b50e33c6570502cba4ec0202652c51ffa5"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/transfer_to_human_agents.py",
+    "sha256": "d3f105f8a8efc11e8dbb039b12e9e1d86d7c1f1ae16a26bd2bbf41cde2b21db6"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/update_reservation_baggages.py",
+    "sha256": "5b72dc0fcd0a2ae21bb116ddc0a76dcc5d2fc2c71dec1fae75942f24f5d6eafd"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from copy import deepcopy"
+      },
+      {
+        "line": 5,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 6,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from copy import deepcopy"
+      },
+      {
+        "line": 5,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 6,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/update_reservation_flights.py",
+    "sha256": "58ef41d20d5ba53782dce1bbcbd514aaa6fcb0670980f54070d8263ab9f8b985"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/airline/tools/update_reservation_passengers.py",
+    "sha256": "6ed46b57dc3c6c487219720a10f116774686046f11868c747493ae9a703d2957"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "The block below is copied verbatim from `tau_bench/envs/base.py` in the"
+      },
+      {
+        "line": 4,
+        "text": "upstream checkout (everything from `ToHashable =` up to `class Env`), with the"
+      },
+      {
+        "line": 12,
+        "text": "from hashlib import sha256"
+      },
+      {
+        "line": 13,
+        "text": "from typing import Dict, List, Set, Tuple, Union"
+      }
+    ],
+    "imports": [
+      {
+        "line": 12,
+        "text": "from hashlib import sha256"
+      },
+      {
+        "line": 13,
+        "text": "from typing import Dict, List, Set, Tuple, Union"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/hash.py",
+    "sha256": "6ac9372d00aa9cb7fed52b8444c93a7c3e43b611fc445c439ae77c2e6771d60a"
+  },
+  {
+    "dependency_lines": [],
+    "imports": [],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from .calculate import Calculate"
+      },
+      {
+        "line": 4,
+        "text": "from .cancel_pending_order import CancelPendingOrder"
+      },
+      {
+        "line": 5,
+        "text": "from .exchange_delivered_order_items import ExchangeDeliveredOrderItems"
+      },
+      {
+        "line": 6,
+        "text": "from .find_user_id_by_email import FindUserIdByEmail"
+      },
+      {
+        "line": 7,
+        "text": "from .find_user_id_by_name_zip import FindUserIdByNameZip"
+      },
+      {
+        "line": 8,
+        "text": "from .get_order_details import GetOrderDetails"
+      },
+      {
+        "line": 9,
+        "text": "from .get_product_details import GetProductDetails"
+      },
+      {
+        "line": 10,
+        "text": "from .get_user_details import GetUserDetails"
+      },
+      {
+        "line": 11,
+        "text": "from .list_all_product_types import ListAllProductTypes"
+      },
+      {
+        "line": 12,
+        "text": "from .modify_pending_order_address import ModifyPendingOrderAddress"
+      },
+      {
+        "line": 13,
+        "text": "from .modify_pending_order_items import ModifyPendingOrderItems"
+      },
+      {
+        "line": 14,
+        "text": "from .modify_pending_order_payment import ModifyPendingOrderPayment"
+      },
+      {
+        "line": 15,
+        "text": "from .modify_user_address import ModifyUserAddress"
+      },
+      {
+        "line": 16,
+        "text": "from .return_delivered_order_items import ReturnDeliveredOrderItems"
+      },
+      {
+        "line": 17,
+        "text": "from .think import Think"
+      },
+      {
+        "line": 18,
+        "text": "from .transfer_to_human_agents import TransferToHumanAgents"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from .calculate import Calculate"
+      },
+      {
+        "line": 4,
+        "text": "from .cancel_pending_order import CancelPendingOrder"
+      },
+      {
+        "line": 5,
+        "text": "from .exchange_delivered_order_items import ExchangeDeliveredOrderItems"
+      },
+      {
+        "line": 6,
+        "text": "from .find_user_id_by_email import FindUserIdByEmail"
+      },
+      {
+        "line": 7,
+        "text": "from .find_user_id_by_name_zip import FindUserIdByNameZip"
+      },
+      {
+        "line": 8,
+        "text": "from .get_order_details import GetOrderDetails"
+      },
+      {
+        "line": 9,
+        "text": "from .get_product_details import GetProductDetails"
+      },
+      {
+        "line": 10,
+        "text": "from .get_user_details import GetUserDetails"
+      },
+      {
+        "line": 11,
+        "text": "from .list_all_product_types import ListAllProductTypes"
+      },
+      {
+        "line": 12,
+        "text": "from .modify_pending_order_address import ModifyPendingOrderAddress"
+      },
+      {
+        "line": 13,
+        "text": "from .modify_pending_order_items import ModifyPendingOrderItems"
+      },
+      {
+        "line": 14,
+        "text": "from .modify_pending_order_payment import ModifyPendingOrderPayment"
+      },
+      {
+        "line": 15,
+        "text": "from .modify_user_address import ModifyUserAddress"
+      },
+      {
+        "line": 16,
+        "text": "from .return_delivered_order_items import ReturnDeliveredOrderItems"
+      },
+      {
+        "line": 17,
+        "text": "from .think import Think"
+      },
+      {
+        "line": 18,
+        "text": "from .transfer_to_human_agents import TransferToHumanAgents"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/__init__.py",
+    "sha256": "db8f1252a01eaa333ee409d78858d5dcf5cdc2f27c24bc6d941615ccd2ac54df"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/calculate.py",
+    "sha256": "2c3380802673493843ef6d7f3e569e2aed52265ca0b9f7ac248346828d0c75f7"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/cancel_pending_order.py",
+    "sha256": "c33151a896b62ac87ed1bcbcbd62dabcd47c8c1eaf47bbb5e2f15f8b6283b19d"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 6,
+        "text": "from tau_bench.envs.tool import Tool"
+      },
+      {
+        "line": 114,
+        "text": "                                \"such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user or order details.\""
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 6,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/exchange_delivered_order_items.py",
+    "sha256": "d547d44b28e97513d4a15714d4bd2bbca13f76827bfe06b71e1b51a742f44489"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/find_user_id_by_email.py",
+    "sha256": "a289f00eb689146f102d97951d6e7b29c9c639314c203efbfcd888f893d91560"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/find_user_id_by_name_zip.py",
+    "sha256": "22c176ffc285b25db573e0e38d82d678e2641298c6d1318f69d2582d52eb7433"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/get_order_details.py",
+    "sha256": "ca6c23cc89c1e981251b9adb1e6d705e364ff942aee986b12335b36e94281056"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      },
+      {
+        "line": 28,
+        "text": "                            \"description\": \"The product id, such as '6086499569'. Be careful the product id is different from the item id.\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/get_product_details.py",
+    "sha256": "9578fb31b5e092361a5d0e5d4a8e2afe4b8fb4a96d279d031b01266d9b5c768d"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/get_user_details.py",
+    "sha256": "f22b59126c2a2aaa102f39dea778653a9298d1902477dd5246509d019318e8d3"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/list_all_product_types.py",
+    "sha256": "63b9f562f893bab36fc6fb91da92978ba9c106f2d6fad88aee3ca20801e4a2e3"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/modify_pending_order_address.py",
+    "sha256": "8f23d24511078ca10818fac8501db358ad699584952233d696a695e78993d001"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      },
+      {
+        "line": 118,
+        "text": "                            \"description\": \"The payment method id to pay or receive refund for the item price difference, such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user or order details.\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/modify_pending_order_items.py",
+    "sha256": "f1a39d42e42c162dc961afa7f1b4d29c73c5a3710a3b9dff318a076213b6c858"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      },
+      {
+        "line": 38,
+        "text": "                \"Error: the new payment method should be different from the current one\""
+      },
+      {
+        "line": 102,
+        "text": "                            \"description\": \"The payment method id to pay or receive refund for the item price difference, such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user or order details.\","
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/modify_pending_order_payment.py",
+    "sha256": "6c2d4c329fae0d66d50bd48cb6ae9520167137f8b20d3385fa407aa5b03d2fe5"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/modify_user_address.py",
+    "sha256": "b1f8ac2141056ccee668824d6ab124ce659ea3574e7b186b39af3f558c07ac61"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      },
+      {
+        "line": 75,
+        "text": "                                \"These can be looked up from the user or order details.\""
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "import json"
+      },
+      {
+        "line": 4,
+        "text": "from typing import Any, Dict, List"
+      },
+      {
+        "line": 5,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/return_delivered_order_items.py",
+    "sha256": "7d92e8962c17e5fa9c8e3240d21e31fc1adf5e68100c92bb0f67e0a67ea5b7bf"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/think.py",
+    "sha256": "9d9423922fcdc98578c1d6544f35d28ff155e9a5a172355b662db326ef7eb1fc"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "imports": [
+      {
+        "line": 3,
+        "text": "from typing import Any, Dict"
+      },
+      {
+        "line": 4,
+        "text": "from tau_bench.envs.tool import Tool"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/retail/tools/transfer_to_human_agents.py",
+    "sha256": "2b6d4685da53f72709b28b60e14e1897947ac366bc7ecee6d2b7c7169a3d95a6"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 1,
+        "text": "import abc"
+      },
+      {
+        "line": 2,
+        "text": "from typing import Any"
+      }
+    ],
+    "imports": [
+      {
+        "line": 1,
+        "text": "import abc"
+      },
+      {
+        "line": 2,
+        "text": "from typing import Any"
+      }
+    ],
+    "path": "data/datasets/tau_bench/lib/tau_bench/envs/tool.py",
+    "sha256": "0a158be298092fc64862ae8843f35f57cfba139aa02c2ee8fbe87b1e4a1de0fc"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 10,
+        "text": "    1. read the agent's database from the workdir (`/app/db.json`);"
+      },
+      {
+        "line": 11,
+        "text": "    2. import the domain's tool classes from `/verifier/lib` -- a host-staged copy"
+      },
+      {
+        "line": 18,
+        "text": "       extracted verbatim from `tau_bench/envs/base.py`;"
+      },
+      {
+        "line": 60,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 62,
+        "text": "import argparse"
+      },
+      {
+        "line": 63,
+        "text": "import json"
+      },
+      {
+        "line": 64,
+        "text": "import os"
+      },
+      {
+        "line": 65,
+        "text": "import sys"
+      },
+      {
+        "line": 66,
+        "text": "import traceback"
+      },
+      {
+        "line": 67,
+        "text": "from collections import Counter"
+      },
+      {
+        "line": 68,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 102,
+        "text": "def parse_args(argv):"
+      },
+      {
+        "line": 110,
+        "text": "    args = parser.parse_args(argv)"
+      },
+      {
+        "line": 116,
+        "text": "    from tau_bench.envs.hash import consistent_hash, to_hashable"
+      },
+      {
+        "line": 137,
+        "text": "    import importlib"
+      },
+      {
+        "line": 213,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 214,
+        "text": "    paths = parse_args(argv)"
+      },
+      {
+        "line": 248,
+        "text": "        evidence[\"error\"] = f\"cannot import the {domain} tools: {exc}\""
+      },
+      {
+        "line": 269,
+        "text": "            # the database (so a no-op agent scores) is told apart from a real one."
+      },
+      {
+        "line": 342,
+        "text": "        raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 60,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 62,
+        "text": "import argparse"
+      },
+      {
+        "line": 63,
+        "text": "import json"
+      },
+      {
+        "line": 64,
+        "text": "import os"
+      },
+      {
+        "line": 65,
+        "text": "import sys"
+      },
+      {
+        "line": 66,
+        "text": "import traceback"
+      },
+      {
+        "line": 67,
+        "text": "from collections import Counter"
+      },
+      {
+        "line": 68,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 116,
+        "text": "from tau_bench.envs.hash import consistent_hash, to_hashable"
+      },
+      {
+        "line": 137,
+        "text": "import importlib"
+      }
+    ],
+    "path": "data/datasets/tau_bench/verify/check.py",
+    "sha256": "b2cad46a3f541eae927334961a76c91c79e3dbb730b5016f0dc325a544dad6ec"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 29,
+        "text": "(`list` / `call` / `policy` / `say` / `done`). It is one container image"
+      },
+      {
+        "line": 46,
+        "text": "  functions extracted verbatim from `tau_bench/envs/base.py` and compares it with the"
+      },
+      {
+        "line": 78,
+        "text": "one side, so an excluded task has to be absent from `load()` entirely. Their"
+      },
+      {
+        "line": 87,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 108,
+        "text": "import json"
+      },
+      {
+        "line": 109,
+        "text": "import os"
+      },
+      {
+        "line": 110,
+        "text": "import sys"
+      },
+      {
+        "line": 111,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 123,
+        "text": "#: The image. Built once from `data/datasets/tau_bench/Dockerfile`; the platform does not"
+      },
+      {
+        "line": 125,
+        "text": "IMAGE = os.environ.get(\"HG_TAU_IMAGE\", \"harnessgrad/tau-bench:20261006\")"
+      },
+      {
+        "line": 141,
+        "text": "#: `train = retail, eval = airline` is the brief and is not derived from anything --"
+      },
+      {
+        "line": 154,
+        "text": "#: immediate `tau done`, and there is no output to say. They are removed from what"
+      },
+      {
+        "line": 155,
+        "text": "#: `load()` returns -- not merely from `SPLIT`, because `data/scaffolds/registry.py` requires"
+      },
+      {
+        "line": 162,
+        "text": "#:     python3 -c \"import data.datasets.tau_bench as t; print(t.measured_no_op_tasks())\""
+      },
+      {
+        "line": 178,
+        "text": "#: One environment for every task: same image, same writable workdir, no network."
+      },
+      {
+        "line": 179,
+        "text": "#: The tool implementations and the clean database are in the image; the task's own"
+      },
+      {
+        "line": 181,
+        "text": "#: in its writable state rather than a read-only image path."
+      },
+      {
+        "line": 184,
+        "text": "    \"image\": IMAGE,"
+      },
+      {
+        "line": 261,
+        "text": "        f\"  come from a tool observation. Do not invent values.\\n\""
+      },
+      {
+        "line": 277,
+        "text": "    replay at import time would make the task list depend on the checkout's tools at"
+      },
+      {
+        "line": 280,
+        "text": "        python3 -c \"import data.datasets.tau_bench as t; print(t.measured_no_op_tasks())\""
+      },
+      {
+        "line": 288,
+        "text": "    import importlib"
+      },
+      {
+        "line": 291,
+        "text": "    from tau_bench.envs.hash import consistent_hash, to_hashable"
+      },
+      {
+        "line": 331,
+        "text": "    The ground truth is an input rather than an image file: an image is built once,"
+      },
+      {
+        "line": 341,
+        "text": "        \"argv\": [\"python3\", CHECK_IN_CONTAINER],"
+      },
+      {
+        "line": 396,
+        "text": "    and `lib/`. `tools/datasets.py --write` renders it into `DOWNLOADS.md` from here,"
+      },
+      {
+        "line": 397,
+        "text": "    so there is one list rather than a document that can drift from the loader."
+      }
+    ],
+    "imports": [
+      {
+        "line": 87,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 108,
+        "text": "import json"
+      },
+      {
+        "line": 109,
+        "text": "import os"
+      },
+      {
+        "line": 110,
+        "text": "import sys"
+      },
+      {
+        "line": 111,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 288,
+        "text": "import importlib"
+      },
+      {
+        "line": 291,
+        "text": "from tau_bench.envs.hash import consistent_hash, to_hashable"
+      }
+    ],
+    "path": "data/datasets/tau_bench.py",
+    "sha256": "8f51d577b8d7cca2e5b4f13e92db56321d57d6ca91c96f4b6a9df2861cd89b7b"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "    python tools/import_env.py ...          # not needed: every task ships an image"
+      },
+      {
+        "line": 9,
+        "text": "a sample image). It is deliberately outside the platform tree:"
+      },
+      {
+        "line": 17,
+        "text": "What it costs to get the images"
+      },
+      {
+        "line": 19,
+        "text": "Every task ships a prebuilt image, so nothing is *built* \u2014 but 89 images have to be"
+      },
+      {
+        "line": 27,
+        "text": "the images are the run's largest fixed cost by two orders of magnitude."
+      },
+      {
+        "line": 34,
+        "text": "| `task.toml` `environment.docker_image` | `env.image` (a tag; the driver pins it and refuses to start without a digest) |"
+      },
+      {
+        "line": 38,
+        "text": "| the image's `WORKDIR` | `env.workdir`, and `state: \"container\"` because the task lives there |"
+      },
+      {
+        "line": 42,
+        "text": "`SETUP` is empty on purpose: the environment is the image's, and every task's Dockerfile"
+      },
+      {
+        "line": 44,
+        "text": "mount -- measured: the image ships `/app` **empty** and the instruction says to write"
+      },
+      {
+        "line": 59,
+        "text": "`# Fields moved from docker-compose.yaml`. They were migrated to single containers and"
+      },
+      {
+        "line": 71,
+        "text": "platform's contract wants one because a method needs diagnostics to work from and must not"
+      },
+      {
+        "line": 72,
+        "text": "be scored on them (\u00a72.3). So the split is **imposed here**, derived from the task id so it"
+      },
+      {
+        "line": 73,
+        "text": "is stable across runs and reproducible from the record, and it is stated loudly because a"
+      },
+      {
+        "line": 79,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 100,
+        "text": "import hashlib"
+      },
+      {
+        "line": 101,
+        "text": "import os"
+      },
+      {
+        "line": 102,
+        "text": "import re"
+      },
+      {
+        "line": 103,
+        "text": "import tomllib"
+      },
+      {
+        "line": 104,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 117,
+        "text": "#: A subset for iterating without pulling 89 images. Comma-separated task ids."
+      },
+      {
+        "line": 137,
+        "text": "#: a verdict a method cannot learn from is a wasted round."
+      },
+      {
+        "line": 142,
+        "text": "    \"\"\"The image's `WORKDIR`, which is where the task's state lives."
+      },
+      {
+        "line": 144,
+        "text": "    Read from the Dockerfile because that is where Terminal-Bench declares it -- measured:"
+      },
+      {
+        "line": 145,
+        "text": "    the Dockerfile sets `WORKDIR /app` and the image's own config agrees. Falling back to"
+      },
+      {
+        "line": 162,
+        "text": "    under `tasks/` in `terminal-bench-2-1`, with the *same* `20251031` image tags in"
+      },
+      {
+        "line": 195,
+        "text": "        # The tag from `task.toml`. The driver resolves it to a digest before the run"
+      },
+      {
+        "line": 198,
+        "text": "        \"image\": env_meta[\"docker_image\"],"
+      },
+      {
+        "line": 200,
+        "text": "        # The task's state is the container's filesystem, not a bind mount: the image"
+      },
+      {
+        "line": 217,
+        "text": "    # platform copying files in would duplicate -- or fight -- what the image already did."
+      },
+      {
+        "line": 234,
+        "text": "        \"argv\": [\"bash\", \"/tests/test.sh\"],"
+      },
+      {
+        "line": 299,
+        "text": "#: from `.git`, because the pin has to survive the checkout being copied without its"
+      },
+      {
+        "line": 307,
+        "text": "    The 89 task images are the run's real cost (~104 GB, pulled once by"
+      },
+      {
+        "line": 309,
+        "text": "    describes \"89 tagged images\"; they are named in the note rather than hidden, so a"
+      },
+      {
+        "line": 322,
+        "text": "                \"The task IMAGES are separate and much larger -- measured ~104 GB, \""
+      }
+    ],
+    "imports": [
+      {
+        "line": 79,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 100,
+        "text": "import hashlib"
+      },
+      {
+        "line": 101,
+        "text": "import os"
+      },
+      {
+        "line": 102,
+        "text": "import re"
+      },
+      {
+        "line": 103,
+        "text": "import tomllib"
+      },
+      {
+        "line": 104,
+        "text": "from pathlib import Path"
+      }
+    ],
+    "path": "data/datasets/terminal_bench.py",
+    "sha256": "8f3d8c1b0ecb0fbbb9696f876257706ff3c0019e7a5657dd296dc295a9a47175"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 21,
+        "text": "expects is reachable from inside the task."
+      },
+      {
+        "line": 41,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 43,
+        "text": "import hashlib"
+      },
+      {
+        "line": 44,
+        "text": "import json"
+      },
+      {
+        "line": 45,
+        "text": "import os"
+      },
+      {
+        "line": 46,
+        "text": "import re"
+      },
+      {
+        "line": 47,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 48,
+        "text": "from typing import Callable, Sequence"
+      },
+      {
+        "line": 53,
+        "text": "from data.scaffolds.qa.read import (  # noqa: F401"
+      },
+      {
+        "line": 79,
+        "text": "#: resolves the absolute spelling against the workdir; the check's own `argv` carries"
+      },
+      {
+        "line": 113,
+        "text": "#: skill warns about. What the check may not do is import a name that arrived in `argv`"
+      },
+      {
+        "line": 139,
+        "text": "    read a byte at import time."
+      },
+      {
+        "line": 179,
+        "text": "        #: stops imposing one: `build()` derives the two sides from the split each task id"
+      },
+      {
+        "line": 183,
+        "text": "        #: came from and what was chosen about it."
+      },
+      {
+        "line": 190,
+        "text": "        #: is not on disk -- see `build()` for why that must not be an import failure."
+      },
+      {
+        "line": 199,
+        "text": "        every task's goal and every `VERIFY` entry at import time: measured on triviaqa,"
+      },
+      {
+        "line": 203,
+        "text": "        deferred to `load()`, and `load()` is not re-run per subprocess."
+      },
+      {
+        "line": 226,
+        "text": "        one -- and what keeps a `train` and a `test` row at the same index from colliding."
+      },
+      {
+        "line": 233,
+        "text": "                f\"`python3 tools/datasets.py --fetch --dataset {self.name}`\") from exc"
+      },
+      {
+        "line": 323,
+        "text": "        \"\"\"The grade: a check that re-derives the official metric from `answer.txt`."
+      },
+      {
+        "line": 333,
+        "text": "        from the platform would fail to find it -- or, worse, would find whatever the"
+      },
+      {
+        "line": 335,
+        "text": "        scorer are copied into `qa/` in the workdir and imported from there. The"
+      },
+      {
+        "line": 336,
+        "text": "        scorer itself must import nothing but the standard library for this to work,"
+      },
+      {
+        "line": 341,
+        "text": "            \"argv\": ["
+      },
+      {
+        "line": 356,
+        "text": "                # uses (`data.scaffolds.qa`), so the adapter's own `from data.scaffolds.qa import base` is"
+      },
+      {
+        "line": 357,
+        "text": "                # the same line in both contexts. A shim that made the import *different*"
+      },
+      {
+        "line": 362,
+        "text": "                # so the adapter's own `from data.scaffolds.qa import base` is the same line in"
+      },
+      {
+        "line": 366,
+        "text": "                # so the import would resolve into the tree the sandbox hides."
+      },
+      {
+        "line": 431,
+        "text": "        **A missing data root is not an import failure.** `data/scaffolds/registry.py::published`"
+      },
+      {
+        "line": 444,
+        "text": "            \"DEFAULT_ENV\": {\"kind\": \"files\"},"
+      },
+      {
+        "line": 445,
+        "text": "            \"ENV\": {tid: {\"kind\": \"files\"} for tid in ids},"
+      },
+      {
+        "line": 460,
+        "text": "        # import made importing triviaqa cost 18 s. The caller that needs them (the"
+      },
+      {
+        "line": 472,
+        "text": "    #: materializes one entry per task on purpose (building it at import cost 18 s on"
+      },
+      {
+        "line": 477,
+        "text": "    #: the declaration cannot drift away from what `verifier()` actually builds."
+      },
+      {
+        "line": 494,
+        "text": "    them at import cost 18 s on triviaqa (`QASpec.ensure`); `_RECORDS` is exposed because"
+      }
+    ],
+    "imports": [
+      {
+        "line": 41,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 43,
+        "text": "import hashlib"
+      },
+      {
+        "line": 44,
+        "text": "import json"
+      },
+      {
+        "line": 45,
+        "text": "import os"
+      },
+      {
+        "line": 46,
+        "text": "import re"
+      },
+      {
+        "line": 47,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 48,
+        "text": "from typing import Callable, Sequence"
+      },
+      {
+        "line": 53,
+        "text": "from data.scaffolds.qa.read import (  # noqa: F401\n    SOURCE_INDEX,\n    is_missing,\n    jsonl_rows,\n    parquet_rows,\n    tables,\n)"
+      }
+    ],
+    "path": "data/scaffolds/qa/base.py",
+    "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 22,
+        "text": "the gold travelled as an argv value the check would be identical, but a check that reads"
+      },
+      {
+        "line": 31,
+        "text": "`invalid` task. A bare 0 would be indistinguishable from \"the agent answered wrongly\","
+      },
+      {
+        "line": 37,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 39,
+        "text": "import argparse"
+      },
+      {
+        "line": 40,
+        "text": "import json"
+      },
+      {
+        "line": 41,
+        "text": "import re"
+      },
+      {
+        "line": 42,
+        "text": "import sys"
+      },
+      {
+        "line": 43,
+        "text": "import traceback"
+      },
+      {
+        "line": 44,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 47,
+        "text": "#: `VERIFY.inputs` entry, and it is also runnable in place from the platform checkout."
+      },
+      {
+        "line": 62,
+        "text": "#: validated before it is used to build an import name. Validated rather than escaped: a"
+      },
+      {
+        "line": 63,
+        "text": "#: dynamic import of `data.` + an unchecked value is a route into any importable module,"
+      },
+      {
+        "line": 75,
+        "text": "def parse_args(argv):"
+      },
+      {
+        "line": 83,
+        "text": "                        help=\"omit trusted gold from all verifier evidence paths\")"
+      },
+      {
+        "line": 86,
+        "text": "    return parser.parse_args(argv)"
+      },
+      {
+        "line": 137,
+        "text": "def main(argv) -> int:"
+      },
+      {
+        "line": 138,
+        "text": "    args = parse_args(argv)"
+      },
+      {
+        "line": 188,
+        "text": "            from data.scaffolds.qa.prediction import validate_prediction"
+      },
+      {
+        "line": 213,
+        "text": "        # every dynamic import call and refuses one that is not a literal, because a"
+      },
+      {
+        "line": 230,
+        "text": "        return unmeasured(args, evidence, f\"could not import {module_name}: \""
+      },
+      {
+        "line": 274,
+        "text": "        raise SystemExit(main(sys.argv[1:]))"
+      }
+    ],
+    "imports": [
+      {
+        "line": 37,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 39,
+        "text": "import argparse"
+      },
+      {
+        "line": 40,
+        "text": "import json"
+      },
+      {
+        "line": 41,
+        "text": "import re"
+      },
+      {
+        "line": 42,
+        "text": "import sys"
+      },
+      {
+        "line": 43,
+        "text": "import traceback"
+      },
+      {
+        "line": 44,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 188,
+        "text": "from data.scaffolds.qa.prediction import validate_prediction"
+      }
+    ],
+    "path": "data/scaffolds/qa/verify/check.py",
+    "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+  },
+  {
+    "dependency_lines": [
+      {
+        "line": 3,
+        "text": "`data/` declares an environment kind, `eval/containers/container.py` pins an image; this is the"
+      },
+      {
+        "line": 5,
+        "text": "resolving image digests before anything is paid for, checking that a harness can operate on"
+      },
+      {
+        "line": 14,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 16,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 17,
+        "text": "import os"
+      },
+      {
+        "line": 19,
+        "text": "from eval.observe.console import CONSOLE as console"
+      },
+      {
+        "line": 20,
+        "text": "import data.scaffolds.registry as datasets"
+      },
+      {
+        "line": 21,
+        "text": "import eval.containers.container as container"
+      },
+      {
+        "line": 22,
+        "text": "import eval.containers.harness_runtime as harness_runtime"
+      },
+      {
+        "line": 23,
+        "text": "from harnessgrad.config import current as current_config"
+      },
+      {
+        "line": 26,
+        "text": "    \"\"\"What a dataset needs from the environment it runs in."
+      },
+      {
+        "line": 28,
+        "text": "    Read from the task environments rather than inferred from whether SETUP or VERIFY"
+      },
+      {
+        "line": 30,
+        "text": "    that guessed the kind from the shape of the other fields would refuse the wrong"
+      },
+      {
+        "line": 33,
+        "text": "    kinds = {str((spec or {}).get(\"kind\", \"files\")) for spec in (envs or {}).values()}"
+      },
+      {
+        "line": 34,
+        "text": "    return kinds or {\"files\"}"
+      },
+      {
+        "line": 42,
+        "text": "    -- the capability gate, the image preflight, the environment block on each curve"
+      },
+      {
+        "line": 45,
+        "text": "    run was refused over an *eval* task's missing image, and the read of that refusal"
+      },
+      {
+        "line": 58,
+        "text": "    \"\"\"Pin every dataset image to a digest, once, before the run starts."
+      },
+      {
+        "line": 67,
+        "text": "    bad image costs nothing instead of costing a whole round."
+      },
+      {
+        "line": 71,
+        "text": "        spec = spec or {\"kind\": \"files\"}"
+      },
+      {
+        "line": 76,
+        "text": "            pinned = container.resolve_digest(spec[\"image\"])"
+      },
+      {
+        "line": 79,
+        "text": "        # Service images are pinned by the same rule and in the same place. A service"
+      },
+      {
+        "line": 81,
+        "text": "        # image retagged is a different task -- so \"no digest, no start\" has to reach"
+      },
+      {
+        "line": 87,
+        "text": "                svc_pinned = container.resolve_digest(svc[\"image\"])"
+      },
+      {
+        "line": 90,
+        "text": "            services.append({**svc, \"image\": svc_pinned,"
+      },
+      {
+        "line": 91,
+        "text": "                             \"image_digest\": container.digest_of(svc_pinned)})"
+      },
+      {
+        "line": 92,
+        "text": "        resolved[tid] = {**spec, \"image\": pinned,"
+      },
+      {
+        "line": 93,
+        "text": "                         \"image_digest\": container.digest_of(pinned),"
+      },
+      {
+        "line": 101,
+        "text": "    able to tell `files` from `exec`, and one image from another, without reading"
+      },
+      {
+        "line": 104,
+        "text": "    applicable yet\" is distinguishable from \"this platform forgot\"."
+      },
+      {
+        "line": 112,
+        "text": "        spec = (envs or {}).get(tid) or {\"kind\": \"files\"}"
+      },
+      {
+        "line": 124,
+        "text": "        specs = [{\"kind\": \"files\"}]"
+      },
+      {
+        "line": 127,
+        "text": "    # task from one without, and two runs with different service images are not two"
+      },
+      {
+        "line": 128,
+        "text": "    # measurements of one thing -- the same argument as `image_digest`, applied one"
+      },
+      {
+        "line": 131,
+        "text": "        ({\"name\": svc[\"name\"], \"image_digest\": svc.get(\"image_digest\"),"
+      },
+      {
+        "line": 136,
+        "text": "    # Read from the platform's own environment, the same way `HARNESSGRAD_WORK_ROOT`"
+      },
+      {
+        "line": 145,
+        "text": "        \"kind\": first.get(\"kind\", \"files\"),"
+      },
+      {
+        "line": 146,
+        "text": "        \"image_digest\": first.get(\"image_digest\"),"
+      },
+      {
+        "line": 150,
+        "text": "        # Filled per point from the runner's result; the key always exists so that"
+      },
+      {
+        "line": 158,
+        "text": "        from tools.web_gateway import selected_providers"
+      },
+      {
+        "line": 185,
+        "text": "    declared = set(man.get(\"env_kinds\") or [\"files\"])"
+      },
+      {
+        "line": 221,
+        "text": "        f\"on each image's own interpreter. If an image has no such package the harness \""
+      },
+      {
+        "line": 247,
+        "text": "    image died on its first model call with `ModuleNotFoundError: No module named"
+      },
+      {
+        "line": 272,
+        "text": "    # nor the method's evidence. A reader cannot tell that apart from \"the model wrote"
+      },
+      {
+        "line": 285,
+        "text": "#: The environment kinds, taken from the module that validates a dataset's"
+      }
+    ],
+    "imports": [
+      {
+        "line": 14,
+        "text": "from __future__ import annotations"
+      },
+      {
+        "line": 16,
+        "text": "from pathlib import Path"
+      },
+      {
+        "line": 17,
+        "text": "import os"
+      },
+      {
+        "line": 19,
+        "text": "from eval.observe.console import CONSOLE as console"
+      },
+      {
+        "line": 20,
+        "text": "import data.scaffolds.registry as datasets"
+      },
+      {
+        "line": 21,
+        "text": "import eval.containers.container as container"
+      },
+      {
+        "line": 22,
+        "text": "import eval.containers.harness_runtime as harness_runtime"
+      },
+      {
+        "line": 23,
+        "text": "from harnessgrad.config import current as current_config"
+      },
+      {
+        "line": 158,
+        "text": "from tools.web_gateway import selected_providers"
+      }
+    ],
+    "path": "harnessgrad/environments.py",
+    "sha256": "a1b8b761bce5ec6ed1aca62ca68a9c200c401e48bc2291cd66126cb1577ab817"
+  }
+]

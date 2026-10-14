@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-20261014T214331Z-869cd5-tb-gpt2-codegolf",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=1536m",
+    "--memory-swap=1536m",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m",
+    "--env=OPENBLAS_NUM_THREADS=1",
+    "--env=OMP_NUM_THREADS=1",
+    "--env=PYTHONDONTWRITEBYTECODE=1",
+    "--env=HOME=/tmp",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--workdir=/tmp",
+    "--entrypoint=/bin/sh",
+    "sha256:537e7bd26b02db5c761230515fa09dc05f89403c6737fbdae4b5793ebc2c7066",
+    "/wimg/probe.sh",
+    "tb-gpt2-codegolf"
+  ],
+  "ended_utc": "2026-10-14T21:43:58.472837+00:00",
+  "returncode": 0,
+  "shell_display": "docker create --name hg-wimg-20261014T214331Z-869cd5-tb-gpt2-codegolf --pull=never --network=none --read-only --cpus=1 --memory=1536m --memory-swap=1536m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges --tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m --env=OPENBLAS_NUM_THREADS=1 --env=OMP_NUM_THREADS=1 --env=PYTHONDONTWRITEBYTECODE=1 --env=HOME=/tmp --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --workdir=/tmp --entrypoint=/bin/sh sha256:537e7bd26b02db5c761230515fa09dc05f89403c6737fbdae4b5793ebc2c7066 /wimg/probe.sh tb-gpt2-codegolf",
+  "started_utc": "2026-10-14T21:43:58.344479+00:00"
+}

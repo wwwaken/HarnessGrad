@@ -1,0 +1,70 @@
+[
+    {
+        "Id": "sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/make-mips-interpreter:20251031",
+            "alexgshaw/make-mips-interpreter:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/make-mips-interpreter@sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2",
+            "alexgshaw/make-mips-interpreter@sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-09-13T17:56:43.984507648Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-make-mips-interpreter",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 518975750,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+                "sha256:0724408e29af00169b0fda3d72574bd7e7bcd1a825297c719ac434639b2418c9",
+                "sha256:a1fc0880907ac2f493b4cb68c878b74a4a79fc56ac6c49086aae643f627422bf",
+                "sha256:abc1f3b8378e9f1e36fb97da20ee47b1cf3bb0fec08e7f47b6c9b8251e83bed5",
+                "sha256:5f22d52a7eeb3e6fb2c4b1513eaa15cb9daf7dc7baeca0a7f670551664ecc4d0",
+                "sha256:e587ceec765ee29c74446a796c25815e5a8243223c8824694ab93a1fa0228c99",
+                "sha256:3194e966964ad577504b7b4cfc3be647c14a46d13cb4e192dba281d158a0f0d2",
+                "sha256:d88ece12b8329df5d22368f4050640647f6558732f0c492a51dad169f35d2ade"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T06:54:26.409444704Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2",
+            "size": 2842
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/make-mips-interpreter"
+                },
+                {
+                    "Repository": "docker.io/alexgshaw/make-mips-interpreter"
+                }
+            ]
+        }
+    }
+]

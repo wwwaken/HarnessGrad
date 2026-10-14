@@ -1,0 +1,61 @@
+[
+    {
+        "Id": "sha256:64e69cee13bf6b0b9016e735b51891bce996a60f1e2d1a005bf12c949e221d71",
+        "RepoTags": [
+            "alexgshaw/modernize-scientific-stack:20251031"
+        ],
+        "RepoDigests": [
+            "alexgshaw/modernize-scientific-stack@sha256:64e69cee13bf6b0b9016e735b51891bce996a60f1e2d1a005bf12c949e221d71"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-28T21:55:17.220554192Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-modernize-scientific-stack",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 346671153,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+                "sha256:0a99cdac515568ebf3a766b4e9597fdfd0aca664592c0071ba7390e559736c28",
+                "sha256:e094644097c47740a7f3debe9634541b7fa366cd17a8fd031a4abaf4b2e5043a",
+                "sha256:8ec58155191522e75e41af8509ea46a99a904ccbb8a622801ea0931a05b29632"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T06:58:34.785621155Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:64e69cee13bf6b0b9016e735b51891bce996a60f1e2d1a005bf12c949e221d71",
+            "size": 1999
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/modernize-scientific-stack"
+                }
+            ]
+        }
+    }
+]

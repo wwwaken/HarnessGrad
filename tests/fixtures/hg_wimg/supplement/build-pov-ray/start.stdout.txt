@@ -1,0 +1,543 @@
+=== libc and loader ===
+glibc 2.39
+ldd (Ubuntu GLIBC 2.39-0ubuntu8.6) 2.39
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+=== requested tools ===
+
+TOOL /usr/local/bin/povray
+ABSENT_AS_FILE_ON_PATH
+
+TOOL R
+ABSENT_AS_FILE_ON_PATH
+
+TOOL Rscript
+ABSENT_AS_FILE_ON_PATH
+
+TOOL apt-get
+PATH /usr/bin/apt-get
+/usr/bin/apt-get
+eb53b3b66cbb7a90a370e26439e941b7cf146ddd91a5422063c761ce9e59c53b  /usr/bin/apt-get
+	linux-vdso.so.1 (0x00007fff7ebc6000)
+	libapt-private.so.0.0 => /lib/x86_64-linux-gnu/libapt-private.so.0.0 (0x00007bf82cea7000)
+	libapt-pkg.so.6.0 => /lib/x86_64-linux-gnu/libapt-pkg.so.6.0 (0x00007bf82ccbb000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007bf82ca3d000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007bf82ca0f000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007bf82c7fd000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007bf82c7df000)
+	libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007bf82c7cb000)
+	liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007bf82c799000)
+	liblz4.so.1 => /lib/x86_64-linux-gnu/liblz4.so.1 (0x00007bf82c777000)
+	libzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007bf82c6bd000)
+	libudev.so.1 => /lib/x86_64-linux-gnu/libudev.so.1 (0x00007bf82c68a000)
+	libsystemd.so.0 => /lib/x86_64-linux-gnu/libsystemd.so.0 (0x00007bf82c5a8000)
+	libgcrypt.so.20 => /lib/x86_64-linux-gnu/libgcrypt.so.20 (0x00007bf82c460000)
+	libxxhash.so.0 => /lib/x86_64-linux-gnu/libxxhash.so.0 (0x00007bf82c44d000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007bf82c364000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007bf82cf23000)
+	libcap.so.2 => /lib/x86_64-linux-gnu/libcap.so.2 (0x00007bf82c357000)
+	libgpg-error.so.0 => /lib/x86_64-linux-gnu/libgpg-error.so.0 (0x00007bf82c330000)
+2ae6368a58b406939290afbeeff691e642c91b3a970174ff5763b14af81ab9e0  /lib/x86_64-linux-gnu/libapt-private.so.0.0
+a550bb7ffd9d27ef5034611134a4c3587fcf6aa2e4f5d3353b37fc52dc686780  /lib/x86_64-linux-gnu/libapt-pkg.so.6.0
+a68762c86d371e6041f03f03a33a78fa235809ae7d81c90185940c93c3535aed  /lib/x86_64-linux-gnu/libstdc++.so.6
+02f3f192bf5f79b811f1e34a650fea443d407408703448906585232383957f60  /lib/x86_64-linux-gnu/libgcc_s.so.1
+511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0  /lib/x86_64-linux-gnu/libc.so.6
+9b64150b28505a33d6bc3ecf709c279f6de97a1c184dbda65d06ee4537f6d286  /lib/x86_64-linux-gnu/libz.so.1
+218c4abdabce31161f3c2778762986d1fe06633705c7eb004a740946a5ccdfff  /lib/x86_64-linux-gnu/libbz2.so.1.0
+a9793942a8a5f6f4d0f523ef9e0a5be4f0033f2c6c28520cd2b4e706d53c6e17  /lib/x86_64-linux-gnu/liblzma.so.5
+40bffd0a098387368b16b992abd5f7cf43c0fa2f05cabe5a6d483719554adfda  /lib/x86_64-linux-gnu/liblz4.so.1
+0a2128bc10841fb29e76d08d945864dfb0b6a66da5df6df5d8299197439e54bb  /lib/x86_64-linux-gnu/libzstd.so.1
+5c27e7401a1cd85f4dc5d268c252e5c042e36269d76b2ffa4966c5adde43eaec  /lib/x86_64-linux-gnu/libudev.so.1
+22f00869d0077590fcaa652e3cc6e629efd5d1d6813e2d67817c1f7cfec9a10d  /lib/x86_64-linux-gnu/libsystemd.so.0
+f207cbaa2f5ad2acb0a0991f79c2329808493af500ca8cf25dfc386e6639bf1b  /lib/x86_64-linux-gnu/libgcrypt.so.20
+a43c43c2fbb643f42572577b6c2514905804f963d186d4d630e184c4015e68a7  /lib/x86_64-linux-gnu/libxxhash.so.0
+f06f2ce1f1833df5f41cf13b6447ff07bea993ad9b27297d3428c2f70ab3f0e7  /lib/x86_64-linux-gnu/libm.so.6
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+0e62ac3921a103914968b82c8c8514f34a056f4c9ac3d1ab927ca35de383ae02  /lib/x86_64-linux-gnu/libcap.so.2
+6cb18a007bfcb623029f4528a36b46578fea7dc34c2b505b8e6e0d99e6348cd1  /lib/x86_64-linux-gnu/libgpg-error.so.0
+
+TOOL bash
+PATH /usr/bin/bash
+/usr/bin/bash
+bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1  /usr/bin/bash
+	linux-vdso.so.1 (0x00007ffd40128000)
+	libtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x000077b31129f000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077b31108d000)
+	/lib64/ld-linux-x86-64.so.2 (0x000077b311444000)
+61f693cd7f8e55ad3ab518b20a00c01adb46ef829cf90773c97615a73f99e09b  /lib/x86_64-linux-gnu/libtinfo.so.6
+511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0  /lib/x86_64-linux-gnu/libc.so.6
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+
+TOOL cargo
+ABSENT_AS_FILE_ON_PATH
+
+TOOL cc
+ABSENT_AS_FILE_ON_PATH
+
+TOOL cmake
+ABSENT_AS_FILE_ON_PATH
+
+TOOL convert
+PATH /usr/bin/convert
+/usr/bin/convert-im6.q16
+f467153741d19c80d87430cf2603d365bb99bea2326ec75019521557e21201b4  /usr/bin/convert
+	linux-vdso.so.1 (0x00007ffc2f709000)
+	libMagickCore-6.Q16.so.7 => /lib/x86_64-linux-gnu/libMagickCore-6.Q16.so.7 (0x0000774387ad6000)
+	libMagickWand-6.Q16.so.7 => /lib/x86_64-linux-gnu/libMagickWand-6.Q16.so.7 (0x00007743879a1000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077438778f000)
+	liblcms2.so.2 => /lib/x86_64-linux-gnu/liblcms2.so.2 (0x000077438772d000)
+	liblqr-1.so.0 => /lib/x86_64-linux-gnu/liblqr-1.so.0 (0x000077438771e000)
+	libfftw3.so.3 => /lib/x86_64-linux-gnu/libfftw3.so.3 (0x00007743874f9000)
+	libxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x0000774387317000)
+	libfontconfig.so.1 => /lib/x86_64-linux-gnu/libfontconfig.so.1 (0x00007743872c6000)
+	libfreetype.so.6 => /lib/x86_64-linux-gnu/libfreetype.so.6 (0x00007743871fa000)
+	libXext.so.6 => /lib/x86_64-linux-gnu/libXext.so.6 (0x00007743871e6000)
+	libX11.so.6 => /lib/x86_64-linux-gnu/libX11.so.6 (0x00007743870a9000)
+	libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x0000774387093000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000774387077000)
+	libltdl.so.7 => /lib/x86_64-linux-gnu/libltdl.so.7 (0x000077438706c000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000774386f83000)
+	libgomp.so.1 => /lib/x86_64-linux-gnu/libgomp.so.1 (0x0000774386f2d000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000774386eff000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000774387db0000)
+	libglib-2.0.so.0 => /lib/x86_64-linux-gnu/libglib-2.0.so.0 (0x0000774386db4000)
+	libicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x0000774386ba7000)
+	liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x0000774386b75000)
+	libexpat.so.1 => /lib/x86_64-linux-gnu/libexpat.so.1 (0x0000774386b49000)
+	libpng16.so.16 => /lib/x86_64-linux-gnu/libpng16.so.16 (0x0000774386b11000)
+	libbrotlidec.so.1 => /lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x0000774386b01000)
+	libxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x0000774386ad8000)
+	libpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x0000774386a3e000)
+	libicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x0000774384cde000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x0000774384a60000)
+	libbrotlicommon.so.1 => /lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x0000774384a3b000)
+	libXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x0000774384a35000)
+	libXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x0000774384a2d000)
+	libbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x0000774384a17000)
+	libmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x0000774384a08000)
+a49ee3ac2b586218279961fee9bb9e015df8eb402d1dfad0c3e155aaa3bfc221  /lib/x86_64-linux-gnu/libMagickCore-6.Q16.so.7
+6a2acd2b8095a45dc14e97974cdf06e2927430f4b4428fcb8e85946a59290d8e  /lib/x86_64-linux-gnu/libMagickWand-6.Q16.so.7
+511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0  /lib/x86_64-linux-gnu/libc.so.6
+dd7b063d304d19b1593f90161874da72fd5cb2b8d2061987855f0e590e60e49f  /lib/x86_64-linux-gnu/liblcms2.so.2
+78fa5fcfc3a9c95a1af6a46bfefc9f244281a19edc201f11a4847d73354247e5  /lib/x86_64-linux-gnu/liblqr-1.so.0
+b5cc02c4d360b5b20111cb0a251f8368af8c9ce3145357f5ba54c51ac4ca9b35  /lib/x86_64-linux-gnu/libfftw3.so.3
+0ec89f65e1868cb79caa8a4cd5f47194ce95ac09f7a1d49e76049f391254a3a3  /lib/x86_64-linux-gnu/libxml2.so.2
+a94b4059b27766f563894c8f7e61762b6f6b2e25c59ef36b730164d4b75c6c98  /lib/x86_64-linux-gnu/libfontconfig.so.1
+fd0e52814df60ceb150c70a734f706528ef5d20ebbef8654ea526eadc70e473a  /lib/x86_64-linux-gnu/libfreetype.so.6
+2907e6a996465de5b32a0dd10534d4416b87f1dee5670aaa7b19301a1fc93f44  /lib/x86_64-linux-gnu/libXext.so.6
+c5b5d782bd9cab3420a62df88f5c991507edf3331a89f98464ddbc538c37b879  /lib/x86_64-linux-gnu/libX11.so.6
+218c4abdabce31161f3c2778762986d1fe06633705c7eb004a740946a5ccdfff  /lib/x86_64-linux-gnu/libbz2.so.1.0
+9b64150b28505a33d6bc3ecf709c279f6de97a1c184dbda65d06ee4537f6d286  /lib/x86_64-linux-gnu/libz.so.1
+f059d7bfdc300ea3de7241bf0d21b2b5c9a5eac47cf8b8b28d3accafed90fe6e  /lib/x86_64-linux-gnu/libltdl.so.7
+f06f2ce1f1833df5f41cf13b6447ff07bea993ad9b27297d3428c2f70ab3f0e7  /lib/x86_64-linux-gnu/libm.so.6
+16c68465193c58900805106b70b26eecd6da5da42155f237ccddb922a3280ee6  /lib/x86_64-linux-gnu/libgomp.so.1
+02f3f192bf5f79b811f1e34a650fea443d407408703448906585232383957f60  /lib/x86_64-linux-gnu/libgcc_s.so.1
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+599f8d6fb928ef3a321f727d590f1006966cde4d02995a4ca26b1dee561f5a69  /lib/x86_64-linux-gnu/libglib-2.0.so.0
+7560aadde38e5f4237a47a1ddd5891f9b36768a77a60faae30beee003ac01901  /lib/x86_64-linux-gnu/libicuuc.so.74
+a9793942a8a5f6f4d0f523ef9e0a5be4f0033f2c6c28520cd2b4e706d53c6e17  /lib/x86_64-linux-gnu/liblzma.so.5
+7ae38be4b2f909d25c5ca3107ed04bc3128a8a24ea7adfe30102c3f04089c9c3  /lib/x86_64-linux-gnu/libexpat.so.1
+29896eea00b1567c55044ff497ebd7a8bd5594ac3e0b5a52fbcda619ce8badc2  /lib/x86_64-linux-gnu/libpng16.so.16
+64d8a5019d4c294b89fde1193343ea324bbd8603652554e5545f0a01595fa2c5  /lib/x86_64-linux-gnu/libbrotlidec.so.1
+7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440  /lib/x86_64-linux-gnu/libxcb.so.1
+e00576d71d81d3ba0cfa4903c835a44a8723aac96f72f79ff75200b4cff9071b  /lib/x86_64-linux-gnu/libpcre2-8.so.0
+ddbb3718b8bd9cbd780e5ab08b4503c30a6c4fa0706ebe5d074ed6b596c1714e  /lib/x86_64-linux-gnu/libicudata.so.74
+a68762c86d371e6041f03f03a33a78fa235809ae7d81c90185940c93c3535aed  /lib/x86_64-linux-gnu/libstdc++.so.6
+a91ead095d2c80520c55a89057bbe10b031a075340442e63f44b310f93883a1b  /lib/x86_64-linux-gnu/libbrotlicommon.so.1
+8040da3f8516c1acfe39f04ff022480cdb273705ba5e7a4ca70bbdb1527cd67a  /lib/x86_64-linux-gnu/libXau.so.6
+667d97d6da16016400ab10de9f83ef4ab209ceb6adf68ff9650225ec13e723b0  /lib/x86_64-linux-gnu/libXdmcp.so.6
+e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb  /lib/x86_64-linux-gnu/libbsd.so.0
+423e18586b6ea740f4465afd64f7a9a4cb7264ed979c8e7256f9085af5345fef  /lib/x86_64-linux-gnu/libmd.so.0
+
+TOOL curl
+PATH /usr/bin/curl
+/usr/bin/curl
+aca992dba6da014cd5baaa739624e68362c8930337f3a547114afdbd708d06a4  /usr/bin/curl
+	linux-vdso.so.1 (0x00007ffe1affa000)
+	libcurl.so.4 => /lib/x86_64-linux-gnu/libcurl.so.4 (0x0000726093150000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000726093134000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000726092f22000)
+	libnghttp2.so.14 => /lib/x86_64-linux-gnu/libnghttp2.so.14 (0x0000726092ef7000)
+	libidn2.so.0 => /lib/x86_64-linux-gnu/libidn2.so.0 (0x0000726092ed5000)
+	librtmp.so.1 => /lib/x86_64-linux-gnu/librtmp.so.1 (0x0000726092eb5000)
+	libssh.so.4 => /lib/x86_64-linux-gnu/libssh.so.4 (0x0000726092e44000)
+	libpsl.so.5 => /lib/x86_64-linux-gnu/libpsl.so.5 (0x0000726092e30000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x0000726092d86000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x0000726092873000)
+	libgssapi_krb5.so.2 => /lib/x86_64-linux-gnu/libgssapi_krb5.so.2 (0x000072609281f000)
+	libldap.so.2 => /lib/x86_64-linux-gnu/libldap.so.2 (0x00007260927bf000)
+	liblber.so.2 => /lib/x86_64-linux-gnu/liblber.so.2 (0x00007260927af000)
+	libzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007260926f5000)
+	libbrotlidec.so.1 => /lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x00007260926e7000)
+	/lib64/ld-linux-x86-64.so.2 (0x000072609325f000)
+	libunistring.so.5 => /lib/x86_64-linux-gnu/libunistring.so.5 (0x000072609253a000)
+	libgnutls.so.30 => /lib/x86_64-linux-gnu/libgnutls.so.30 (0x000072609233e000)
+	libhogweed.so.6 => /lib/x86_64-linux-gnu/libhogweed.so.6 (0x00007260922f6000)
+	libnettle.so.8 => /lib/x86_64-linux-gnu/libnettle.so.8 (0x00007260922a1000)
+	libgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x000072609221d000)
+	libkrb5.so.3 => /lib/x86_64-linux-gnu/libkrb5.so.3 (0x0000726092154000)
+	libk5crypto.so.3 => /lib/x86_64-linux-gnu/libk5crypto.so.3 (0x0000726092126000)
+	libcom_err.so.2 => /lib/x86_64-linux-gnu/libcom_err.so.2 (0x0000726092120000)
+	libkrb5support.so.0 => /lib/x86_64-linux-gnu/libkrb5support.so.0 (0x0000726092113000)
+	libsasl2.so.2 => /lib/x86_64-linux-gnu/libsasl2.so.2 (0x00007260920f9000)
+	libbrotlicommon.so.1 => /lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x00007260920d6000)
+	libp11-kit.so.0 => /lib/x86_64-linux-gnu/libp11-kit.so.0 (0x0000726091f30000)
+	libtasn1.so.6 => /lib/x86_64-linux-gnu/libtasn1.so.6 (0x0000726091f1a000)
+	libkeyutils.so.1 => /lib/x86_64-linux-gnu/libkeyutils.so.1 (0x0000726091f13000)
+	libresolv.so.2 => /lib/x86_64-linux-gnu/libresolv.so.2 (0x0000726091f00000)
+	libffi.so.8 => /lib/x86_64-linux-gnu/libffi.so.8 (0x0000726091ef4000)
+bc0f65f0c1574a232b9cbd90bd5b45e04a1a263a04eae36007336dd5bbb2293c  /lib/x86_64-linux-gnu/libcurl.so.4
+9b64150b28505a33d6bc3ecf709c279f6de97a1c184dbda65d06ee4537f6d286  /lib/x86_64-linux-gnu/libz.so.1
+511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0  /lib/x86_64-linux-gnu/libc.so.6
+398c6d2025210279f4c7413ebdb7f4c63bc5afda5ec3b1ccc58885a65acc2b78  /lib/x86_64-linux-gnu/libnghttp2.so.14
+6e632fd9a3125db60bbc623719bbc17b0470330321c5b1c57f1ff7190e5551ad  /lib/x86_64-linux-gnu/libidn2.so.0
+15a2a75e8c437b9c99971b5ee10278ab110beef1a56d1d9e5d6759ea140e98ac  /lib/x86_64-linux-gnu/librtmp.so.1
+ed3828e179eaea8effe1b6b001ae827b38de4575d2fa768c04489dc74b54ccde  /lib/x86_64-linux-gnu/libssh.so.4
+ae6c5a9aecc249fc66e03c16ec6c4385d09d7e12e0ea7694bb831ab4fee8133c  /lib/x86_64-linux-gnu/libpsl.so.5
+63597a81ef19496ad0423cbaaf04d5b0244c7a9e261e331a5a7f3ac0fcdb9590  /lib/x86_64-linux-gnu/libssl.so.3
+c19c2cf8d7cf91c4f273b1d3bbc56a9d19c91a739bfe57ad630756ee8ede7b77  /lib/x86_64-linux-gnu/libcrypto.so.3
+b9a20df712d206654477c079f03b568276933e91cbe237e62af791f0f3ab8d8b  /lib/x86_64-linux-gnu/libgssapi_krb5.so.2
+4a0664ab6a8a66c685e78d5604b79df330f5710f0c5e2c382536a8325dc4c2a4  /lib/x86_64-linux-gnu/libldap.so.2
+6f6935b26c962d5b51ef2011332472cfd96ff244a4edc9d47120be6faa70e602  /lib/x86_64-linux-gnu/liblber.so.2
+0a2128bc10841fb29e76d08d945864dfb0b6a66da5df6df5d8299197439e54bb  /lib/x86_64-linux-gnu/libzstd.so.1
+64d8a5019d4c294b89fde1193343ea324bbd8603652554e5545f0a01595fa2c5  /lib/x86_64-linux-gnu/libbrotlidec.so.1
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+7bcf825cd449892db5105ad2aed91dcf94a27b796426600c765720c584c54dd1  /lib/x86_64-linux-gnu/libunistring.so.5
+96137275400f39510c9a533c6ad8a921e94266e664e7e09c9ad6ea9f23277c23  /lib/x86_64-linux-gnu/libgnutls.so.30
+c3c606139d4f7776efa4dbd4a6b62e30c916b07a0cafd8c3ef173d6f093607e3  /lib/x86_64-linux-gnu/libhogweed.so.6
+a245ed916229583d6fe0b07657b3ed945bc148c28cc08b5266295f620d2b91cc  /lib/x86_64-linux-gnu/libnettle.so.8
+0ccdfb6d6f5c039465f6d002cf7e4c072d48ac6a2cffc8dd6c748dec31592804  /lib/x86_64-linux-gnu/libgmp.so.10
+52c143c9c77a223a4dac5449eac41fd2490e37c8a30430f1559c1421f4f8ed73  /lib/x86_64-linux-gnu/libkrb5.so.3
+8394027f2be7c2cc7b2da4797476a8b688a21f75ee231941fa2df8d00ba79d08  /lib/x86_64-linux-gnu/libk5crypto.so.3
+022943b3b11c860b049bce41342f1c2594941b7b401d95dfdf235521099fee08  /lib/x86_64-linux-gnu/libcom_err.so.2
+8e1ef5a40f7b0d5b0fbcd6e4f28dd50b263650338a2bb72503be34632f3629d6  /lib/x86_64-linux-gnu/libkrb5support.so.0
+a0f410ad093236856eee59c4ff2838dc04d932ea0993400f23ed77d67d85af34  /lib/x86_64-linux-gnu/libsasl2.so.2
+a91ead095d2c80520c55a89057bbe10b031a075340442e63f44b310f93883a1b  /lib/x86_64-linux-gnu/libbrotlicommon.so.1
+c6b469a006685ebf2075e200180c3b21f41b88ad722c5697d736ea558cfe3ea1  /lib/x86_64-linux-gnu/libp11-kit.so.0
+7c9c7830afbaac7b07ec21ddaa6b4d606423432c264efd2636e8ca9734b4d7b6  /lib/x86_64-linux-gnu/libtasn1.so.6
+f48214417757f18793ed6e180cc14ee1d6f04252a518fc7270e8ca1d0b4260fe  /lib/x86_64-linux-gnu/libkeyutils.so.1
+878e927be164fde61bf85f44c27901a1d569526f5c8f058990e8a4edc3df1fa0  /lib/x86_64-linux-gnu/libresolv.so.2
+00f593fe192f2851b8ce23b25cec2488d769beb5a8f63e8c9e563071e1075153  /lib/x86_64-linux-gnu/libffi.so.8
+
+TOOL ffmpeg
+ABSENT_AS_FILE_ON_PATH
+
+TOOL g++
+ABSENT_AS_FILE_ON_PATH
+
+TOOL gcc
+ABSENT_AS_FILE_ON_PATH
+
+TOOL go
+ABSENT_AS_FILE_ON_PATH
+
+TOOL java
+ABSENT_AS_FILE_ON_PATH
+
+TOOL make
+ABSENT_AS_FILE_ON_PATH
+
+TOOL node
+ABSENT_AS_FILE_ON_PATH
+
+TOOL openssl
+PATH /usr/bin/openssl
+/usr/bin/openssl
+204951390b4f82d39f98b0dd0fa54502f27256c8d2fd08b55a5e3781408ae83b  /usr/bin/openssl
+	linux-vdso.so.1 (0x00007ffcf5f48000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x0000766c0cea8000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x0000766c0c995000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000766c0c783000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000766c0d04e000)
+63597a81ef19496ad0423cbaaf04d5b0244c7a9e261e331a5a7f3ac0fcdb9590  /lib/x86_64-linux-gnu/libssl.so.3
+c19c2cf8d7cf91c4f273b1d3bbc56a9d19c91a739bfe57ad630756ee8ede7b77  /lib/x86_64-linux-gnu/libcrypto.so.3
+511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0  /lib/x86_64-linux-gnu/libc.so.6
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+
+TOOL pdflatex
+ABSENT_AS_FILE_ON_PATH
+
+TOOL pytest
+ABSENT_AS_FILE_ON_PATH
+
+TOOL python
+ABSENT_AS_FILE_ON_PATH
+
+TOOL python3
+ABSENT_AS_FILE_ON_PATH
+
+TOOL ruby
+ABSENT_AS_FILE_ON_PATH
+
+TOOL rustc
+ABSENT_AS_FILE_ON_PATH
+
+TOOL sh
+PATH /usr/bin/sh
+/usr/bin/dash
+86d31f6fb799e91fa21bad341484564510ca287703a16e9e46c53338776f4f42  /usr/bin/sh
+	linux-vdso.so.1 (0x00007ffee33e5000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c7410f9c000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007c74111d6000)
+511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0  /lib/x86_64-linux-gnu/libc.so.6
+6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28  /lib64/ld-linux-x86-64.so.2
+
+TOOL sqlite3
+ABSENT_AS_FILE_ON_PATH
+
+TOOL stockfish
+ABSENT_AS_FILE_ON_PATH
+
+TOOL uv
+ABSENT_AS_FILE_ON_PATH
+
+TOOL uvx
+ABSENT_AS_FILE_ON_PATH
+=== available package inventory ===
+adduser	3.137ubuntu1	all
+apt	2.8.3	amd64
+base-files	13ubuntu10.3	amd64
+base-passwd	3.6.3build1	amd64
+bash	5.2.21-2ubuntu4	amd64
+bsdutils	1:2.39.3-9ubuntu6.3	amd64
+ca-certificates	20240203	all
+coreutils	9.4-3ubuntu6.1	amd64
+curl	8.5.0-2ubuntu10.6	amd64
+dash	0.5.12-6ubuntu5	amd64
+dbus	1.14.10-4ubuntu4.1	amd64
+dbus-bin	1.14.10-4ubuntu4.1	amd64
+dbus-daemon	1.14.10-4ubuntu4.1	amd64
+dbus-session-bus-common	1.14.10-4ubuntu4.1	all
+dbus-system-bus-common	1.14.10-4ubuntu4.1	all
+debconf	1.5.86ubuntu1	all
+debianutils	5.17build1	amd64
+diffutils	1:3.10-1build1	amd64
+dpkg	1.22.6ubuntu6.5	amd64
+e2fsprogs	1.47.0-2.4~exp1ubuntu4.1	amd64
+findutils	4.9.0-5build1	amd64
+fontconfig	2.15.0-1.1ubuntu2	amd64
+fontconfig-config	2.15.0-1.1ubuntu2	amd64
+fonts-dejavu-core	2.37-8	all
+fonts-dejavu-mono	2.37-8	all
+fonts-droid-fallback	1:6.0.1r16-1.1build1	all
+fonts-noto-mono	20201225-2	all
+fonts-urw-base35	20200910-8	all
+gcc-14-base	14.2.0-4ubuntu2~24.04	amd64
+ghostscript	10.02.1~dfsg1-0ubuntu7.8	amd64
+git	1:2.43.0-1ubuntu7.3	amd64
+git-man	1:2.43.0-1ubuntu7.3	all
+gpgv	2.4.4-2ubuntu17.3	amd64
+grep	3.11-4build1	amd64
+gzip	1.12-1ubuntu3.1	amd64
+hicolor-icon-theme	0.17-2	all
+hostname	3.23+nmu2ubuntu2	amd64
+imagemagick	8:6.9.12.98+dfsg1-5.2build2	amd64
+imagemagick-6-common	8:6.9.12.98+dfsg1-5.2build2	all
+imagemagick-6.q16	8:6.9.12.98+dfsg1-5.2build2	amd64
+init-system-helpers	1.66ubuntu1	all
+krb5-locales	1.20.1-6ubuntu2.6	all
+less	590-2ubuntu2.1	amd64
+libacl1	2.3.2-1build1.1	amd64
+libaom3	3.8.2-2ubuntu0.1	amd64
+libapparmor1	4.0.1really4.0.1-0ubuntu0.24.04.4	amd64
+libapt-pkg6.0t64	2.8.3	amd64
+libassuan0	2.5.6-1build1	amd64
+libattr1	1:2.5.2-1build1.1	amd64
+libaudit-common	1:3.1.2-2.1build1.1	all
+libaudit1	1:3.1.2-2.1build1.1	amd64
+libavahi-client3	0.8-13ubuntu6	amd64
+libavahi-common-data	0.8-13ubuntu6	amd64
+libavahi-common3	0.8-13ubuntu6	amd64
+libblkid1	2.39.3-9ubuntu6.3	amd64
+libbrotli1	1.1.0-2build2	amd64
+libbsd0	0.12.1-1build1.1	amd64
+libbz2-1.0	1.0.8-5.1build0.1	amd64
+libc-bin	2.39-0ubuntu8.6	amd64
+libc6	2.39-0ubuntu8.6	amd64
+libcairo2	1.18.0-3build1	amd64
+libcap-ng0	0.8.4-2build2	amd64
+libcap2	1:2.66-5ubuntu2.2	amd64
+libcbor0.10	0.10.2-1.2ubuntu2	amd64
+libcom-err2	1.47.0-2.4~exp1ubuntu4.1	amd64
+libcrypt1	1:4.4.36-4build1	amd64
+libcups2t64	2.4.7-1.2ubuntu7.4	amd64
+libcurl3t64-gnutls	8.5.0-2ubuntu10.6	amd64
+libcurl4t64	8.5.0-2ubuntu10.6	amd64
+libdatrie1	0.2.13-3build1	amd64
+libdb5.3t64	5.3.28+dfsg2-7	amd64
+libdbus-1-3	1.14.10-4ubuntu4.1	amd64
+libde265-0	1.0.15-1build3	amd64
+libdebconfclient0	0.271ubuntu3	amd64
+libdeflate0	1.19-1build1.1	amd64
+libdjvulibre-text	3.5.28-2ubuntu0.24.04.1	all
+libdjvulibre21	3.5.28-2ubuntu0.24.04.1	amd64
+libedit2	3.1-20230828-1build1	amd64
+liberror-perl	0.17029-2	all
+libexpat1	2.6.1-2ubuntu0.3	amd64
+libext2fs2t64	1.47.0-2.4~exp1ubuntu4.1	amd64
+libffi8	3.4.6-1build1	amd64
+libfftw3-double3	3.3.10-1ubuntu3	amd64
+libfido2-1	1.14.0-1build3	amd64
+libfontconfig1	2.15.0-1.1ubuntu2	amd64
+libfontenc1	1:1.1.8-1build1	amd64
+libfreetype6	2.13.2+dfsg-1build3	amd64
+libfribidi0	1.0.13-3build1	amd64
+libgcc-s1	14.2.0-4ubuntu2~24.04	amd64
+libgcrypt20	1.10.3-2build1	amd64
+libgdbm-compat4t64	1.23-5.1build1	amd64
+libgdbm6t64	1.23-5.1build1	amd64
+libglib2.0-0t64	2.80.0-6ubuntu3.4	amd64
+libglib2.0-data	2.80.0-6ubuntu3.4	all
+libgmp10	2:6.3.0+dfsg-2ubuntu6.1	amd64
+libgnutls30t64	3.8.3-1.1ubuntu3.4	amd64
+libgomp1	14.2.0-4ubuntu2~24.04	amd64
+libgpg-error0	1.47-3build2.1	amd64
+libgraphite2-3	1.3.14-2build1	amd64
+libgs-common	10.02.1~dfsg1-0ubuntu7.8	all
+libgs10	10.02.1~dfsg1-0ubuntu7.8	amd64
+libgs10-common	10.02.1~dfsg1-0ubuntu7.8	all
+libgssapi-krb5-2	1.20.1-6ubuntu2.6	amd64
+libharfbuzz0b	8.3.0-2build2	amd64
+libheif-plugin-aomdec	1.17.6-1ubuntu4.1	amd64
+libheif-plugin-aomenc	1.17.6-1ubuntu4.1	amd64
+libheif-plugin-libde265	1.17.6-1ubuntu4.1	amd64
+libheif1	1.17.6-1ubuntu4.1	amd64
+libhogweed6t64	3.9.1-2.2build1.1	amd64
+libice6	2:1.0.10-1build3	amd64
+libicu74	74.2-1ubuntu3.1	amd64
+libidn12	1.42-1build1	amd64
+libidn2-0	2.3.7-2build1.1	amd64
+libijs-0.35	0.35-15.1build1	amd64
+libimath-3-1-29t64	3.1.9-3.1ubuntu2	amd64
+libjbig0	2.1-6.1ubuntu2	amd64
+libjbig2dec0	0.20-1build3	amd64
+libjpeg-turbo8	2.1.5-2ubuntu2	amd64
+libjpeg8	8c-2ubuntu11	amd64
+libjxr-tools	1.2~git20170615.f752187-5.1ubuntu2	amd64
+libjxr0t64	1.2~git20170615.f752187-5.1ubuntu2	amd64
+libk5crypto3	1.20.1-6ubuntu2.6	amd64
+libkeyutils1	1.6.3-3build1	amd64
+libkrb5-3	1.20.1-6ubuntu2.6	amd64
+libkrb5support0	1.20.1-6ubuntu2.6	amd64
+liblcms2-2	2.14-2build1	amd64
+libldap-common	2.6.7+dfsg-1~exp1ubuntu8.2	all
+libldap2	2.6.7+dfsg-1~exp1ubuntu8.2	amd64
+liblerc4	4.0.0+ds-4ubuntu2	amd64
+liblqr-1-0	0.4.2-2.1build2	amd64
+libltdl7	2.4.7-7build1	amd64
+liblz4-1	1.9.4-1build1.1	amd64
+liblzma5	5.6.1+really5.4.5-1ubuntu0.2	amd64
+libmagickcore-6.q16-7-extra	8:6.9.12.98+dfsg1-5.2build2	amd64
+libmagickcore-6.q16-7t64	8:6.9.12.98+dfsg1-5.2build2	amd64
+libmagickwand-6.q16-7t64	8:6.9.12.98+dfsg1-5.2build2	amd64
+libmd0	1.1.0-2build1.1	amd64
+libmount1	2.39.3-9ubuntu6.3	amd64
+libncursesw6	6.4+20240113-1ubuntu2	amd64
+libnetpbm11t64	2:11.05.02-1.1build1	amd64
+libnettle8t64	3.9.1-2.2build1.1	amd64
+libnghttp2-14	1.59.0-1ubuntu0.2	amd64
+libnpth0t64	1.6-3.1build1	amd64
+libopenexr-3-1-30	3.1.5-5.1build3	amd64
+libopenjp2-7	2.5.0-2ubuntu0.4	amd64
+libp11-kit0	0.25.3-4ubuntu2.1	amd64
+libpam-modules	1.5.3-5ubuntu5.5	amd64
+libpam-modules-bin	1.5.3-5ubuntu5.5	amd64
+libpam-runtime	1.5.3-5ubuntu5.5	all
+libpam0g	1.5.3-5ubuntu5.5	amd64
+libpango-1.0-0	1.52.1+ds-1build1	amd64
+libpangocairo-1.0-0	1.52.1+ds-1build1	amd64
+libpangoft2-1.0-0	1.52.1+ds-1build1	amd64
+libpaper-utils	1.1.29build1	amd64
+libpaper1	1.1.29build1	amd64
+libpcre2-8-0	10.42-4ubuntu2.1	amd64
+libperl5.38t64	5.38.2-3.2ubuntu0.2	amd64
+libpixman-1-0	0.42.2-1build1	amd64
+libpng16-16t64	1.6.43-5build1	amd64
+libproc2-0	2:4.0.4-4ubuntu3.2	amd64
+libpsl5t64	0.21.2-1.1build1	amd64
+libraw23t64	0.21.2-2.1ubuntu0.24.04.1	amd64
+librtmp1	2.4+20151223.gitfa8646d.1-2build7	amd64
+libsasl2-2	2.1.28+dfsg1-5ubuntu3.1	amd64
+libsasl2-modules	2.1.28+dfsg1-5ubuntu3.1	amd64
+libsasl2-modules-db	2.1.28+dfsg1-5ubuntu3.1	amd64
+libseccomp2	2.5.5-1ubuntu3.1	amd64
+libselinux1	3.5-2ubuntu2.1	amd64
+libsemanage-common	3.5-1build5	all
+libsemanage2	3.5-1build5	amd64
+libsepol2	3.5-2build1	amd64
+libsharpyuv0	1.3.2-0.4build3	amd64
+libsm6	2:1.2.3-1build3	amd64
+libsmartcols1	2.39.3-9ubuntu6.3	amd64
+libss2	1.47.0-2.4~exp1ubuntu4.1	amd64
+libssh-4	0.10.6-2ubuntu0.2	amd64
+libssl3t64	3.0.13-0ubuntu3.6	amd64
+libstdc++6	14.2.0-4ubuntu2~24.04	amd64
+libsystemd0	255.4-1ubuntu8.10	amd64
+libtasn1-6	4.19.0-3ubuntu0.24.04.1	amd64
+libthai-data	0.1.29-2build1	all
+libthai0	0.1.29-2build1	amd64
+libtiff6	4.5.1+git230720-4ubuntu2.4	amd64
+libtinfo6	6.4+20240113-1ubuntu2	amd64
+libudev1	255.4-1ubuntu8.10	amd64
+libunistring5	1.1-2build1.1	amd64
+libuuid1	2.39.3-9ubuntu6.3	amd64
+libwebp7	1.3.2-0.4build3	amd64
+libwebpdemux2	1.3.2-0.4build3	amd64
+libwebpmux3	1.3.2-0.4build3	amd64
+libwmflite-0.2-7	0.2.13-1.1build3	amd64
+libx11-6	2:1.8.7-1build1	amd64
+libx11-data	2:1.8.7-1build1	all
+libxau6	1:1.0.9-1build6	amd64
+libxcb-render0	1.15-1ubuntu2	amd64
+libxcb-shm0	1.15-1ubuntu2	amd64
+libxcb1	1.15-1ubuntu2	amd64
+libxdmcp6	1:1.1.3-0ubuntu6	amd64
+libxext6	2:1.3.4-1build2	amd64
+libxml2	2.9.14+dfsg-1.3ubuntu3.6	amd64
+libxmuu1	2:1.1.3-3build2	amd64
+libxrender1	1:0.9.10-1.1build1	amd64
+libxt6t64	1:1.2.1-1.2build1	amd64
+libxxhash0	0.8.2-2build1	amd64
+libzstd1	1.5.5+dfsg2-2build1.1	amd64
+login	1:4.13+dfsg1-4ubuntu3.2	amd64
+logsave	1.47.0-2.4~exp1ubuntu4.1	amd64
+mawk	1.3.4.20240123-1build1	amd64
+mount	2.39.3-9ubuntu6.3	amd64
+ncurses-base	6.4+20240113-1ubuntu2	all
+ncurses-bin	6.4+20240113-1ubuntu2	amd64
+netbase	6.4	all
+netpbm	2:11.05.02-1.1build1	amd64
+openssh-client	1:9.6p1-3ubuntu13.14	amd64
+openssl	3.0.13-0ubuntu3.6	amd64
+passwd	1:4.13+dfsg1-4ubuntu3.2	amd64
+patch	2.7.6-7build3	amd64
+perl	5.38.2-3.2ubuntu0.2	amd64
+perl-base	5.38.2-3.2ubuntu0.2	amd64
+perl-modules-5.38	5.38.2-3.2ubuntu0.2	all
+poppler-data	0.4.12-1	all
+procps	2:4.0.4-4ubuntu3.2	amd64
+publicsuffix	20231001.0357-0.1	all
+sed	4.9-2build1	amd64
+sensible-utils	0.0.22	all
+shared-mime-info	2.4-4	amd64
+sysvinit-utils	3.08-6ubuntu3	amd64
+tar	1.35+dfsg-3build1	amd64
+ubuntu-keyring	2023.11.28.1	all
+ucf	3.0043+nmu1	all
+unminimize	0.2.1	amd64
+util-linux	2.39.3-9ubuntu6.3	amd64
+wget	1.21.4-1ubuntu4.1	amd64
+x11-common	1:7.7+23ubuntu3	all
+xauth	1:1.1.2-1build1	amd64
+xdg-user-dirs	0.18-1build1	amd64
+xfonts-encodings	1:1.0.5-0ubuntu2	all
+xfonts-utils	1:7.7+6build3	amd64
+zlib1g	1:1.3.dfsg-3.1ubuntu2.1	amd64

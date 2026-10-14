@@ -1,0 +1,54 @@
+[
+    {
+        "Id": "sha256:14a9dcca7d08ce53c5a0ed9fbd663a996ef28f207c199ed69d9ccf6064f8b184",
+        "RepoTags": [
+            "alexgshaw/extract-moves-from-video:20251031"
+        ],
+        "RepoDigests": [
+            "alexgshaw/extract-moves-from-video@sha256:14a9dcca7d08ce53c5a0ed9fbd663a996ef28f207c199ed69d9ccf6064f8b184"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-22T02:31:16.720374204Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-extract-moves-from-video",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 29725529,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T04:27:17.168317937Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:14a9dcca7d08ce53c5a0ed9fbd663a996ef28f207c199ed69d9ccf6064f8b184",
+            "size": 735
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/extract-moves-from-video"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,61 @@
+[
+    {
+        "Id": "sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/query-optimize:20251031",
+            "alexgshaw/query-optimize:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/query-optimize@sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14",
+            "alexgshaw/query-optimize@sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-28T22:15:02.242169134Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-query-optimize",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 120494963,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020",
+                "sha256:7534c54fa79189169bf3b8ec481ec434fd8bd9eb1aeeffc223bb962a8c788c1a",
+                "sha256:a4b7064ca9968887841c2b17cdb4127d0b315e0f8badd9c2a4153ff22bbf8a6f",
+                "sha256:91896e809310db01d412a84e574d277b70ea86bb395ee10efa4fb78286dfa3c7",
+                "sha256:378d8ac0c3e9423fe5a1ba57871ea5bd3e529c72e632c166e7c60e7950586a3c",
+                "sha256:050bc5664ff9cc073eac92eacf9d779fc38d304b6eade2aa2630ce9996ca4cdc"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T07:36:24.845853867Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14",
+            "size": 1789
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/query-optimize"
+                }
+            ]
+        }
+    }
+]

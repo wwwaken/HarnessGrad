@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-20261014T214331Z-869cd5-tb-protein-assembly",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=1536m",
+    "--memory-swap=1536m",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m",
+    "--env=OPENBLAS_NUM_THREADS=1",
+    "--env=OMP_NUM_THREADS=1",
+    "--env=PYTHONDONTWRITEBYTECODE=1",
+    "--env=HOME=/tmp",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--workdir=/tmp",
+    "--entrypoint=/bin/sh",
+    "sha256:94de701b57e7ecfdbada6044f8534876e4b58874f8f313184dadc4d7533e0818",
+    "/wimg/probe.sh",
+    "tb-protein-assembly"
+  ],
+  "ended_utc": "2026-10-14T21:44:15.283367+00:00",
+  "returncode": 0,
+  "shell_display": "docker create --name hg-wimg-20261014T214331Z-869cd5-tb-protein-assembly --pull=never --network=none --read-only --cpus=1 --memory=1536m --memory-swap=1536m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges --tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m --env=OPENBLAS_NUM_THREADS=1 --env=OMP_NUM_THREADS=1 --env=PYTHONDONTWRITEBYTECODE=1 --env=HOME=/tmp --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --workdir=/tmp --entrypoint=/bin/sh sha256:94de701b57e7ecfdbada6044f8534876e4b58874f8f313184dadc4d7533e0818 /wimg/probe.sh tb-protein-assembly",
+  "started_utc": "2026-10-14T21:44:15.142719+00:00"
+}

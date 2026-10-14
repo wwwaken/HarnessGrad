@@ -1,0 +1,69 @@
+[
+    {
+        "Id": "sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/chess-best-move:20251031",
+            "alexgshaw/chess-best-move:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/chess-best-move@sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647",
+            "alexgshaw/chess-best-move@sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-28T21:56:18.86612692Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-chess-best-move",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 240211717,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020",
+                "sha256:e7b122d3e268f8ac286a9671ddc7c44744ff64e270ccc4d01ee5a11eee230396",
+                "sha256:e0c360f8f8437111d4aeb18aaae3793e791a3ee0ad1d5cf5c5df4f4325bd3a31",
+                "sha256:b2586d25a111f550115c7ebf8a7765ce8753ba99086e93f59c14b964af044f92",
+                "sha256:1a08b75a6bc6ea5b7931b92f5659f9a3791ae7a941a26872bae935d45e2fa180",
+                "sha256:c2682bba1af908386f8585efdd1defd9e5226950b2e699bae463981f07691892",
+                "sha256:23d19ab14ec4da11f4c70a2f48d9cff7b972f772ab2ef62323b66a58d4b19098",
+                "sha256:89f6f29c0f47e33e5c07fc7ce340530b08e5795e0e9fa24037a848e2911a0d84",
+                "sha256:fae4cd31e6279e7417e13b804cce78a608032f2648ac998381d2a95c55d646b3",
+                "sha256:2d8f43e4662543a7bf7b05d6bac729803f024362e0287ed15363178b40a713fd",
+                "sha256:2d0623db9238897a6887523c9c84962e6e55cb5bdae9ab82aa17490d68e265ec"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T06:33:08.858177961Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647",
+            "size": 2835
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/chess-best-move"
+                },
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/chess-best-move"
+                }
+            ]
+        }
+    }
+]

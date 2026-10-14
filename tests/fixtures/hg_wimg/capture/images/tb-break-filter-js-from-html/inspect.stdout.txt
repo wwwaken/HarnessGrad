@@ -1,0 +1,73 @@
+[
+    {
+        "Id": "sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/break-filter-js-from-html:20251031",
+            "alexgshaw/break-filter-js-from-html:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/break-filter-js-from-html@sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8",
+            "alexgshaw/break-filter-js-from-html@sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-31T02:53:41.208878618Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-break-filter-js-from-html",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 382374925,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:6020058a01e27516f41b83421cc6f3f77f9ba038b739928c39e8cb49511b53b9",
+                "sha256:0afa1a4433b660e0c80107da530db4a31ac52edd7423e0641104d0a40102bf89",
+                "sha256:3e5af5dfa3b02f80c6690085b5b07d1cf230d252eaba69966e061b38b398ab5f",
+                "sha256:36c52ab2455e74fa332254906e28e297bd4508b05817c44686c6fc6211ad094f",
+                "sha256:b739b15f8e163a065e6f1a86c7e4dabef5141141072115f12d580e1848e8c42e"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T05:26:20.651562741Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8",
+            "size": 2205
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "hub.rat.dev/alexgshaw/break-filter-js-from-html"
+                },
+                {
+                    "Repository": "docker.io/alexgshaw/break-filter-js-from-html"
+                },
+                {
+                    "Repository": "docker.1ms.run/alexgshaw/break-filter-js-from-html"
+                },
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/break-filter-js-from-html"
+                }
+            ]
+        }
+    }
+]

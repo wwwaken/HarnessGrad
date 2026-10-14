@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-20261014T214331Z-869cd5-tb-dna-insert",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=1536m",
+    "--memory-swap=1536m",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m",
+    "--env=OPENBLAS_NUM_THREADS=1",
+    "--env=OMP_NUM_THREADS=1",
+    "--env=PYTHONDONTWRITEBYTECODE=1",
+    "--env=HOME=/tmp",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--workdir=/tmp",
+    "--entrypoint=/bin/sh",
+    "sha256:4dd8760694e355de85ecf03605cb487ccdb33322f6afad513d2920829baa33b2",
+    "/wimg/probe.sh",
+    "tb-dna-insert"
+  ],
+  "ended_utc": "2026-10-14T21:43:51.617732+00:00",
+  "returncode": 0,
+  "shell_display": "docker create --name hg-wimg-20261014T214331Z-869cd5-tb-dna-insert --pull=never --network=none --read-only --cpus=1 --memory=1536m --memory-swap=1536m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges --tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m --env=OPENBLAS_NUM_THREADS=1 --env=OMP_NUM_THREADS=1 --env=PYTHONDONTWRITEBYTECODE=1 --env=HOME=/tmp --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --workdir=/tmp --entrypoint=/bin/sh sha256:4dd8760694e355de85ecf03605cb487ccdb33322f6afad513d2920829baa33b2 /wimg/probe.sh tb-dna-insert",
+  "started_utc": "2026-10-14T21:43:51.495427+00:00"
+}

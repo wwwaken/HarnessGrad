@@ -1,0 +1,67 @@
+[
+    {
+        "Id": "sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/make-doom-for-mips:20251031",
+            "alexgshaw/make-doom-for-mips:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/make-doom-for-mips@sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec",
+            "alexgshaw/make-doom-for-mips@sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-09-13T17:55:52.841460117Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-make-doom-for-mips",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 189554675,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+                "sha256:2089ee496a75fd77f7b2bd17f4a3ad9d36e4499554c676ed14815e2819657ab2",
+                "sha256:5c8bc6a5a11389fc28b62fb8fd2cb9e71b84d4f40d12c21f475245ceb149d50e",
+                "sha256:eafc03538923add7ae58fe44e33101f8cdbd8e1b58f58b2e0fca3ea75146984f",
+                "sha256:4fea3cc715efc2df2ea453990bfa5c6b4224b47dd8e07822dbc04dfe7a9a0bd7",
+                "sha256:74b8d96edb4716a4dfc2d7acd02d0ec3a5d3c6d098b3d033357ded372c867209",
+                "sha256:63932a2cbb10e0caf80290aa35ef55494d7a01ba4e4d692f64f26ba80e9d3f81",
+                "sha256:1becd91ee810350caf16cf7dee7dd6bf19a2a312588b88986abb34a7fd342b5c"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T06:53:43.277435025Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec",
+            "size": 2840
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/make-doom-for-mips"
+                }
+            ]
+        }
+    }
+]

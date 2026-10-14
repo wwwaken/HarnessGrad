@@ -1,0 +1,293 @@
+{
+  "distribution_native_inventory": [
+    {
+      "name": "numpy",
+      "native_files": [
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0",
+          "size": 2833617
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0",
+          "size": 250985
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy.libs/libscipy_openblas64_-8fb3d286.so",
+          "size": 25050385
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_multiarray_tests.cpython-313-x86_64-linux-gnu.so",
+          "size": 141784
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so",
+          "size": 10804753
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_operand_flag_tests.cpython-313-x86_64-linux-gnu.so",
+          "size": 16800
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_rational_tests.cpython-313-x86_64-linux-gnu.so",
+          "size": 59592
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_simd.cpython-313-x86_64-linux-gnu.so",
+          "size": 2882368
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_struct_ufunc_tests.cpython-313-x86_64-linux-gnu.so",
+          "size": 16928
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_umath_tests.cpython-313-x86_64-linux-gnu.so",
+          "size": 50304
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/fft/_pocketfft_umath.cpython-313-x86_64-linux-gnu.so",
+          "size": 539072
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/linalg/_umath_linalg.cpython-313-x86_64-linux-gnu.so",
+          "size": 231833
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/linalg/lapack_lite.cpython-313-x86_64-linux-gnu.so",
+          "size": 29985
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_bounded_integers.cpython-313-x86_64-linux-gnu.so",
+          "size": 323032
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_common.cpython-313-x86_64-linux-gnu.so",
+          "size": 258952
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_generator.cpython-313-x86_64-linux-gnu.so",
+          "size": 993232
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_mt19937.cpython-313-x86_64-linux-gnu.so",
+          "size": 133776
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_pcg64.cpython-313-x86_64-linux-gnu.so",
+          "size": 148120
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_philox.cpython-313-x86_64-linux-gnu.so",
+          "size": 120760
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/_sfc64.cpython-313-x86_64-linux-gnu.so",
+          "size": 89496
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/bit_generator.cpython-313-x86_64-linux-gnu.so",
+          "size": 238960
+        },
+        {
+          "path": "/usr/local/lib/python3.13/site-packages/numpy/random/mtrand.cpython-313-x86_64-linux-gnu.so",
+          "size": 785736
+        }
+      ],
+      "version": "2.3.2"
+    }
+  ],
+  "objects": [
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd16f81000)\n\tlibscipy_openblas64_-8fb3d286.so => /usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libscipy_openblas64_-8fb3d286.so (0x0000794a8fe96000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x0000794a8fc78000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000794a8fb98000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000794a8fb78000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000794a8f996000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000794a91f99000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000794a8f98f000)\n\tlibgfortran-040039e1-0352e75f.so.5.0.0 => /usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0 (0x0000794a8f400000)\n\tlibquadmath-96973f99-934c22de.so.0.0.0 => /usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0 (0x0000794a8f000000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000794a8f970000)\n"
+      },
+      "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "4484387c1b7a439300fb7790fb0beda19f197ba0a1935b28ea689da8db7613ba",
+      "size": 10804753,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.13/site-packages/numpy/linalg/_umath_linalg.cpython-313-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff476a4000)\n\tlibscipy_openblas64_-8fb3d286.so => /usr/local/lib/python3.13/site-packages/numpy/linalg/../../numpy.libs/libscipy_openblas64_-8fb3d286.so (0x000079eb909e9000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000079eb90905000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000079eb908e5000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000079eb90703000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000079eb906fe000)\n\tlibgfortran-040039e1-0352e75f.so.5.0.0 => /usr/local/lib/python3.13/site-packages/numpy/linalg/../../numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0 (0x000079eb90200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000079eb92132000)\n\tlibquadmath-96973f99-934c22de.so.0.0.0 => /usr/local/lib/python3.13/site-packages/numpy/linalg/../../numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0 (0x000079eb8fe00000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000079eb906dd000)\n"
+      },
+      "path": "/usr/local/lib/python3.13/site-packages/numpy/linalg/_umath_linalg.cpython-313-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.13/site-packages/numpy/linalg/_umath_linalg.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "415434bff065c0048d0d13eb2899c4310ceee3e349054e0155b4b6a93bcdbbbe",
+      "size": 231833,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libscipy_openblas64_-8fb3d286.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc07da5000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f35ba480000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f35ba47b000)\n\tlibgfortran-040039e1-0352e75f.so.5.0.0 => /usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0 (0x00007f35b9e00000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f35b9c1e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f35bbc7b000)\n\tlibquadmath-96973f99-934c22de.so.0.0.0 => /usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0 (0x00007f35b9800000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f35ba45a000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f35ba43a000)\n"
+      },
+      "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libscipy_openblas64_-8fb3d286.so",
+      "resolved": "/usr/local/lib/python3.13/site-packages/numpy.libs/libscipy_openblas64_-8fb3d286.so",
+      "sha256": "37ba6b373a22ff42844e014f5dcbb428183f2325fd993361b41fccf68241333d",
+      "size": 25050385,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libstdc++.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc6fc8f000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000724cfc2e9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000724cfc107000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000724cfc5e9000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000724cfc0e7000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libstdc++.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+      "sha256": "e7848e32af4932840ba775169041759a2a8dd5a008af360e5c55bce506eebcf4",
+      "size": 2190440,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libm.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd43399000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c3784c3c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c3784f04000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libm.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "7f2ca87f652f56b094462474b076749e90e689d0ecb9cb63c7679820b271b4e7",
+      "size": 911904,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libgcc_s.so.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffe25ea000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e3ec2f37000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e3ec313f000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "2bd1552c47799ef67e701e81d4383061fd76059868e446e63560f0dd0d5ec14e",
+      "size": 125312,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libc.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\t/lib64/ld-linux-x86-64.so.2 (0x00007220850da000)\n\tlinux-vdso.so.1 (0x00007fffea9f1000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libc.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835",
+      "size": 1926232,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib64/ld-linux-x86-64.so.2"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tstatically linked\n"
+      },
+      "path": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4",
+      "size": 215000,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libpthread.so.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffec374000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fdcc4f9f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fdcc518c000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libpthread.so.0",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "sha256": "b93a680da8a05b939b235c1533572e7a2f6d3d8808bf70209997edc64ea5fedc",
+      "size": 14480,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff651e1000)\n\tlibquadmath-96973f99-934c22de.so.0.0.0 => /usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0 (0x00007a92cb000000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007a92cb3e1000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007a92cb301000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007a92cb2e1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a92cae1e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a92cb8cb000)\n"
+      },
+      "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0",
+      "resolved": "/usr/local/lib/python3.13/site-packages/numpy.libs/libgfortran-040039e1-0352e75f.so.5.0.0",
+      "sha256": "c6090048eccc763522c12ef016f81da6b627cb3a044f55cf0479a839c41c0980",
+      "size": 2833617,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffda11aa000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007e1ef3120000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e1ef2f3e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e1ef3485000)\n"
+      },
+      "path": "/usr/local/lib/python3.13/site-packages/numpy/_core/../../numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0",
+      "resolved": "/usr/local/lib/python3.13/site-packages/numpy.libs/libquadmath-96973f99-934c22de.so.0.0.0",
+      "sha256": "6ed5137f412781ad7863439fb543613f620b43c32b63292a0029246162f5bbc6",
+      "size": 250985,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libz.so.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd7bd8c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000714949898000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000714949a9f000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libz.so.1",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libz.so.1.2.13",
+      "sha256": "7e2a72b4c4b38c61e6962de6e3f4a5e9ae692e732c68deead10a7ce2135a7f68",
+      "size": 121280,
+      "unresolved_sonames": []
+    }
+  ],
+  "scope": "static ELF only; packages are not imported and no model/GPU/task code is invoked"
+}

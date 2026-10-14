@@ -1,0 +1,2630 @@
+=== libc and loader ===
+glibc 2.36
+ldd (Debian GLIBC 2.36-9+deb12u13) 2.36
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+=== requested tools ===
+
+TOOL R
+ABSENT_AS_FILE_ON_PATH
+
+TOOL Rscript
+ABSENT_AS_FILE_ON_PATH
+
+TOOL apt-get
+PATH /usr/bin/apt-get
+/usr/bin/apt-get
+c2117516d26cc559ccbd16252778d8ab8cee1ceac4be60e9c975e5c4bbbb47fe  /usr/bin/apt-get
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x4ab0
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x003808 0x003808 R   0x1000
+  LOAD           0x004000 0x0000000000004000 0x0000000000004000 0x00509d 0x00509d R E 0x1000
+  LOAD           0x00a000 0x000000000000a000 0x000000000000a000 0x0012dd 0x0012dd R   0x1000
+  LOAD           0x00b7a0 0x000000000000c7a0 0x000000000000c7a0 0x000878 0x000bb8 RW  0x1000
+  DYNAMIC        0x00ba60 0x000000000000ca60 0x000000000000ca60 0x000240 0x000240 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x00a8a8 0x000000000000a8a8 0x000000000000a8a8 0x000154 0x000154 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x00b7a0 0x000000000000c7a0 0x000000000000c7a0 0x000860 0x000860 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame .gcc_except_table 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0xba60 contains 31 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libapt-private.so.0.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libapt-pkg.so.6.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x4000
+ 0x000000000000000d (FINI)               0x9094
+ 0x0000000000000019 (INIT_ARRAY)         0xc7a0
+ 0x000000000000001b (INIT_ARRAYSZ)       16 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0xc7b0
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0x11b0
+ 0x0000000000000006 (SYMTAB)             0x490
+ 0x000000000000000a (STRSZ)              5530 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0xcca0
+ 0x0000000000000002 (PLTRELSZ)           2112 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x2fc8
+ 0x0000000000000007 (RELA)               0x2998
+ 0x0000000000000008 (RELASZ)             1584 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x2868
+ 0x000000006fffffff (VERNEEDNUM)         5
+ 0x000000006ffffff0 (VERSYM)             0x274a
+ 0x000000006ffffff9 (RELACOUNT)          22
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 140 entries:
+ Addr: 0x000000000000274a  Offset: 0x0000274a  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBCXX_3.4)   3 (APTPKG_6.0)    3 (APTPKG_6.0) 
+  004:   3 (APTPKG_6.0)    3 (APTPKG_6.0)    2 (GLIBCXX_3.4)   4 (APTPRIVATE_0.0) 
+  008:   5 (GLIBCXX_3.4.21)    4 (APTPRIVATE_0.0)    3 (APTPKG_6.0)    5 (GLIBCXX_3.4.21) 
+  00c:   3 (APTPKG_6.0)    2 (GLIBCXX_3.4)   5 (GLIBCXX_3.4.21)    4 (APTPRIVATE_0.0) 
+  010:   4 (APTPRIVATE_0.0)    2 (GLIBCXX_3.4)   3 (APTPKG_6.0)    4 (APTPRIVATE_0.0) 
+  014:   4 (APTPRIVATE_0.0)    3 (APTPKG_6.0)    6 (CXXABI_1.3)    3 (APTPKG_6.0) 
+  018:   7 (GLIBC_2.2.5)   7 (GLIBC_2.2.5)   3 (APTPKG_6.0)    4 (APTPRIVATE_0.0) 
+  01c:   3 (APTPKG_6.0)    2 (GLIBCXX_3.4)   5 (GLIBCXX_3.4.21)    3 (APTPKG_6.0) 
+  020:   3 (APTPKG_6.0)    3 (APTPKG_6.0)    7 (GLIBC_2.2.5)   3 (APTPKG_6.0) 
+  024:   2 (GLIBCXX_3.4)   6 (CXXABI_1.3)    2 (GLIBCXX_3.4)   8 (GLIBC_2.34) 
+  028:   3 (APTPKG_6.0)    4 (APTPRIVATE_0.0)    3 (APTPKG_6.0)    9 (GLIBC_2.14) 
+  02c:   3 (APTPKG_6.0)    4 (APTPRIVATE_0.0)    3 (APTPKG_6.0)    3 (APTPKG_6.0) 
+  030:   7 (GLIBC_2.2.5)   4 (APTPRIVATE_0.0)    3 (APTPKG_6.0)    3 (APTPKG_6.0) 
+  034:   4 (APTPRIVATE_0.0)    2 (GLIBCXX_3.4)   a (CXXABI_1.3.9)   2 (GLIBCXX_3.4)
+  038:   7 (GLIBC_2.2.5)   3 (APTPKG_6.0)    b (GLIBC_2.4)     c (GLIBCXX_3.4.9)
+  03c:   d (GLIBCXX_3.4.11)    4 (APTPRIVATE_0.0)    2 (GLIBCXX_3.4)   3 (APTPKG_6.0) 
+  040:   5 (GLIBCXX_3.4.21)    2 (GLIBCXX_3.4)   3 (APTPKG_6.0)    6 (CXXABI_1.3) 
+  044:   5 (GLIBCXX_3.4.21)    4 (APTPRIVATE_0.0)    2 (GLIBCXX_3.4)   4 (APTPRIVATE_0.0) 
+  048:   3 (APTPKG_6.0)    2 (GLIBCXX_3.4)   7 (GLIBC_2.2.5)   6 (CXXABI_1.3) 
+  04c:   4 (APTPRIVATE_0.0)    3 (APTPKG_6.0)    e (GLIBCXX_3.4.20)    3 (APTPKG_6.0) 
+  050:   2 (GLIBCXX_3.4)   5 (GLIBCXX_3.4.21)    4 (APTPRIVATE_0.0)    3 (APTPKG_6.0) 
+  054:   6 (CXXABI_1.3)    6 (CXXABI_1.3)    3 (APTPKG_6.0)    2 (GLIBCXX_3.4)
+  058:   2 (GLIBCXX_3.4)   5 (GLIBCXX_3.4.21)    4 (APTPRIVATE_0.0)    3 (APTPKG_6.0) 
+  05c:   1 (*global*)      3 (APTPKG_6.0)    3 (APTPKG_6.0)    f (GCC_3.0)    
+  060:   5 (GLIBCXX_3.4.21)    3 (APTPKG_6.0)    3 (APTPKG_6.0)    3 (APTPKG_6.0) 
+  064:   3 (APTPKG_6.0)    7 (GLIBC_2.2.5)   3 (APTPKG_6.0)    1 (*global*)   
+  068:   3 (APTPKG_6.0)    1 (*global*)      4 (APTPRIVATE_0.0)    4 (APTPRIVATE_0.0) 
+  06c:   2 (GLIBCXX_3.4)   2 (GLIBCXX_3.4)   3 (APTPKG_6.0)    3 (APTPKG_6.0) 
+  070:   4 (APTPRIVATE_0.0)    1 (*global*)      3 (APTPKG_6.0)    3 (APTPKG_6.0) 
+  074:   3 (APTPKG_6.0)    1 (*global*)      5 (GLIBCXX_3.4.21)    1 (*global*)   
+  078:   2 (GLIBCXX_3.4)   3 (APTPKG_6.0)    1 (*global*)      1 (*global*)   
+  07c:   1 (*global*)      3 (APTPKG_6.0)    1 (*global*)      5 (GLIBCXX_3.4.21) 
+  080:   3 (APTPKG_6.0)    2 (GLIBCXX_3.4)   5 (GLIBCXX_3.4.21)    3 (APTPKG_6.0) 
+  084:   3 (APTPKG_6.0)    1 (*global*)      3 (APTPKG_6.0)    7 (GLIBC_2.2.5)
+  088:   1 (*global*)      2 (GLIBCXX_3.4)   1 (*global*)      1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 5 entries:
+ Addr: 0x0000000000002868  Offset: 0x00002868  Link: 7 (.dynstr)
+  000000: Version: 1  File: libgcc_s.so.1  Cnt: 1
+  0x0010:   Name: GCC_3.0  Flags: none  Version: 15
+  0x0020: Version: 1  File: libc.so.6  Cnt: 4
+  0x0030:   Name: GLIBC_2.4  Flags: none  Version: 11
+  0x0040:   Name: GLIBC_2.14  Flags: none  Version: 9
+  0x0050:   Name: GLIBC_2.34  Flags: none  Version: 8
+  0x0060:   Name: GLIBC_2.2.5  Flags: none  Version: 7
+  0x0070: Version: 1  File: libapt-private.so.0.0  Cnt: 1
+  0x0080:   Name: APTPRIVATE_0.0  Flags: none  Version: 4
+  0x0090: Version: 1  File: libapt-pkg.so.6.0  Cnt: 1
+  0x00a0:   Name: APTPKG_6.0  Flags: none  Version: 3
+  0x00b0: Version: 1  File: libstdc++.so.6  Cnt: 7
+  0x00c0:   Name: GLIBCXX_3.4.20  Flags: none  Version: 14
+  0x00d0:   Name: GLIBCXX_3.4.11  Flags: none  Version: 13
+  0x00e0:   Name: GLIBCXX_3.4.9  Flags: none  Version: 12
+  0x00f0:   Name: CXXABI_1.3.9  Flags: none  Version: 10
+  0x0100:   Name: CXXABI_1.3  Flags: none  Version: 6
+  0x0110:   Name: GLIBCXX_3.4.21  Flags: none  Version: 5
+  0x0120:   Name: GLIBCXX_3.4  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007fff25344000)
+	libapt-private.so.0.0 => /lib/x86_64-linux-gnu/libapt-private.so.0.0 (0x00007ad2bba56000)
+	libapt-pkg.so.6.0 => /lib/x86_64-linux-gnu/libapt-pkg.so.6.0 (0x00007ad2bb85b000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007ad2bb641000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007ad2bb621000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ad2bb43f000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007ad2bb41e000)
+	libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007ad2bb40b000)
+	liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007ad2bb3dc000)
+	liblz4.so.1 => /lib/x86_64-linux-gnu/liblz4.so.1 (0x00007ad2bb3b6000)
+	libzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007ad2bb2fa000)
+	libudev.so.1 => /lib/x86_64-linux-gnu/libudev.so.1 (0x00007ad2bb2cc000)
+	libsystemd.so.0 => /lib/x86_64-linux-gnu/libsystemd.so.0 (0x00007ad2bb1fa000)
+	libgcrypt.so.20 => /lib/x86_64-linux-gnu/libgcrypt.so.20 (0x00007ad2bb0b3000)
+	libxxhash.so.0 => /lib/x86_64-linux-gnu/libxxhash.so.0 (0x00007ad2bb09e000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007ad2bafbe000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007ad2bbae6000)
+	libcap.so.2 => /lib/x86_64-linux-gnu/libcap.so.2 (0x00007ad2bafb2000)
+	libgpg-error.so.0 => /lib/x86_64-linux-gnu/libgpg-error.so.0 (0x00007ad2baf88000)
+ef18dee859d453fc7154dd02a80a25066589e5c20080db0a3bff366f4f3243d5  /lib/x86_64-linux-gnu/libapt-private.so.0.0
+12d1d6a5980e70084f464de916512da8f295a78dfd8bfb09b65ce178a48edf11  /lib/x86_64-linux-gnu/libapt-pkg.so.6.0
+e7848e32af4932840ba775169041759a2a8dd5a008af360e5c55bce506eebcf4  /lib/x86_64-linux-gnu/libstdc++.so.6
+2bd1552c47799ef67e701e81d4383061fd76059868e446e63560f0dd0d5ec14e  /lib/x86_64-linux-gnu/libgcc_s.so.1
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+7e2a72b4c4b38c61e6962de6e3f4a5e9ae692e732c68deead10a7ce2135a7f68  /lib/x86_64-linux-gnu/libz.so.1
+e4f501c8bd22390e42422691093d8af4e744a3e854809b809948055e8b08bda5  /lib/x86_64-linux-gnu/libbz2.so.1.0
+aaead752b2f290547267341891424f17244d86a95202c3f3a41cc75c77d76821  /lib/x86_64-linux-gnu/liblzma.so.5
+0f0ce52208a22570370eb2e96d250b3c088cb024f15cb7c48565e749eeab7cd5  /lib/x86_64-linux-gnu/liblz4.so.1
+37412b7ac11063c25a375bdff6f4fdb340362f926cd9c3a55962e8a9c9bc702e  /lib/x86_64-linux-gnu/libzstd.so.1
+6cf4f673a54e5bec5f0730a792178258adbe136a68f4f90456741ea01c06fdb2  /lib/x86_64-linux-gnu/libudev.so.1
+1875dcc77e67b512719857c8aa0671a888064587a4d0818d3d1ace93ab0349d6  /lib/x86_64-linux-gnu/libsystemd.so.0
+fe29e63f2d536bdf48f17237e8c71e34d0b3c43dc202644521787f86b15b0179  /lib/x86_64-linux-gnu/libgcrypt.so.20
+ff91ff0dc073ccdd9a123e48b0cc27a1050462403697a4ff2bd78599b7fd77bd  /lib/x86_64-linux-gnu/libxxhash.so.0
+7f2ca87f652f56b094462474b076749e90e689d0ecb9cb63c7679820b271b4e7  /lib/x86_64-linux-gnu/libm.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+3f6ab3254365a725e0e3110d1d72d4658516b6bd36732535da5697368a6ffbb8  /lib/x86_64-linux-gnu/libcap.so.2
+f93b4f9a2d482d553f743d1fe6ac6b219f88f20d59b528d46a61610c5d0ac10e  /lib/x86_64-linux-gnu/libgpg-error.so.0
+
+TOOL bash
+PATH /usr/bin/bash
+/usr/bin/bash
+25c34e130c601c5610c131710ce7fca96248d6e56bf99e39a3c74072a98db158  /usr/bin/bash
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x31750
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x02ed48 0x02ed48 R   0x1000
+  LOAD           0x02f000 0x000000000002f000 0x000000000002f000 0x0c0b9d 0x0c0b9d R E 0x1000
+  LOAD           0x0f0000 0x00000000000f0000 0x00000000000f0000 0x037f44 0x037f44 R   0x1000
+  LOAD           0x128af0 0x0000000000128af0 0x0000000000128af0 0x00bc74 0x016cf0 RW  0x1000
+  DYNAMIC        0x12b5e8 0x000000000012b5e8 0x000000000012b5e8 0x000200 0x000200 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x109f3c 0x0000000000109f3c 0x0000000000109f3c 0x004734 0x004734 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x128af0 0x0000000000128af0 0x0000000000128af0 0x003510 0x003510 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x12b5e8 contains 28 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libtinfo.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x2f000
+ 0x000000000000000d (FINI)               0xefb94
+ 0x0000000000000019 (INIT_ARRAY)         0x128af0
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x128af8
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0x141e0
+ 0x0000000000000006 (SYMTAB)             0x5078
+ 0x000000000000000a (STRSZ)              41283 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x12b7e8
+ 0x0000000000000002 (PLTRELSZ)           5304 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x2d890
+ 0x0000000000000007 (RELA)               0x1f838
+ 0x0000000000000008 (RELASZ)             57432 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x1f748
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x1e324
+ 0x000000006ffffff9 (RELACOUNT)          2379
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 2575 entries:
+ Addr: 0x000000000001e324  Offset: 0x0001e324  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   3 (GLIBC_2.3)     2 (GLIBC_2.2.5)
+  004:   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)   5 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  008:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   6 (NCURSES6_TINFO_5.0.19991023)              
+  00c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)
+  010:   5 (GLIBC_2.34)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  014:   2 (GLIBC_2.2.5)   1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  018:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  01c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  024:   2 (GLIBC_2.2.5)   7 (GLIBC_2.4)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  028:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  02c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  030:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  034:   6 (NCURSES6_TINFO_5.0.19991023)                 2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  038:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  03c:   7 (GLIBC_2.4)     2 (GLIBC_2.2.5)   7 (GLIBC_2.4)     2 (GLIBC_2.2.5)
+  040:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  044:   2 (GLIBC_2.2.5)   8 (GLIBC_2.36)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  048:   9 (GLIBC_2.15)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  04c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  050:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  054:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  058:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  05c:   2 (GLIBC_2.2.5)   a (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  060:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   b (GLIBC_2.8)     2 (GLIBC_2.2.5)
+  064:   2 (GLIBC_2.2.5)   5 (GLIBC_2.34)    2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)
+  068:   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)   1 (*global*)   
+  06c:   2 (GLIBC_2.2.5)   a (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  070:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   c (GLIBC_2.14)    2 (GLIBC_2.2.5)
+  074:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  078:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  07c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  080:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  084:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   6 (NCURSES6_TINFO_5.0.19991023)                 2 (GLIBC_2.2.5)
+  088:   4 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  08c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   6 (NCURSES6_TINFO_5.0.19991023)                 6 (NCURSES6_TINFO_5.0.19991023)              
+  090:   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)   4 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)
+  094:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  098:   4 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  09c:   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0a0:   2 (GLIBC_2.2.5)   d (GLIBC_2.11)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0a4:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0a8:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0ac:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0b0:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0b4:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0b8:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   5 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  0bc:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0c0:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0c4:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)
+  0c8:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   1 (*global*)      e (GLIBC_2.25) 
+  0cc:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0d0:   2 (GLIBC_2.2.5)   6 (NCURSES6_TINFO_5.0.19991023)                 2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  0d4:   5 (GLIBC_2.34)    2 (GLIBC_2.2.5)   a (GLIBC_2.33)    2 (GLIBC_2.2.5)
+  0d8:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (GLIBC_2.3)  
+  0dc:   3 (GLIBC_2.3)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.3.4)
+  0e0:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   1 (*global*)      1 (*global*)   
+  0e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  0e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  0ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  0f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  0f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  0f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  0fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  100:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  104:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  108:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  10c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  110:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  114:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  118:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  11c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  120:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  124:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  128:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  12c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  130:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  134:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  138:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  13c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  140:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  144:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  148:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  14c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  150:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  154:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  158:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  15c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  160:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  164:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  168:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  16c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  170:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  174:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  178:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  17c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  180:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  184:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  188:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  18c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  190:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  194:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  198:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  19c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1bc:   1 (*global*)      1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)
+  1c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  1fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  200:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  204:   1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)      1 (*global*)   
+  208:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  20c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  210:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  214:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  218:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  21c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  220:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  224:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  228:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  22c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  230:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  234:   1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)      1 (*global*)   
+  238:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  23c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  240:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  244:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  248:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  24c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  250:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  254:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  258:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  25c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  260:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  264:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  268:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  26c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  270:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  274:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  278:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  27c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  280:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  284:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  288:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  28c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  290:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  294:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  298:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  29c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  2fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  300:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  304:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  308:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  30c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  310:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  314:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  318:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  31c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  320:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  324:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  328:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  32c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  330:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  334:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  338:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  33c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  340:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  344:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  348:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  34c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  350:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  354:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  358:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  35c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  360:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  364:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  368:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  36c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  370:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  374:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  378:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  37c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  380:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  384:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  388:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  38c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  390:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  394:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  398:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  39c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  3fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  400:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  404:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  408:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  40c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  410:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  414:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  418:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  41c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  420:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  424:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  428:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  42c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  430:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  434:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  438:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  43c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  440:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  444:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  448:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  44c:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)   
+  450:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  454:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  458:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  45c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  460:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  464:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  468:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  46c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  470:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  474:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  478:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  47c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  480:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  484:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  488:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  48c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  490:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  494:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  498:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  49c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4a0:   6 (NCURSES6_TINFO_5.0.19991023)                 1 (*global*)      1 (*global*)      1 (*global*)   
+  4a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  4fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  500:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  504:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  508:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  50c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  510:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  514:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  518:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  51c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  520:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  524:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  528:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  52c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  530:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  534:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  538:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  53c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  540:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  544:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  548:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  54c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  550:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  554:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  558:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  55c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  560:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  564:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  568:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  56c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  570:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  574:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  578:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  57c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  580:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  584:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  588:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  58c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  590:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  594:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  598:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  59c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  5fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  600:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  604:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  608:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  60c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  610:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  614:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  618:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  61c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  620:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  624:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  628:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  62c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  630:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  634:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  638:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  63c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  640:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  644:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  648:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  64c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  650:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  654:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  658:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  65c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  660:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  664:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  668:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  66c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  670:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  674:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  678:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  67c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  680:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  684:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  688:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  68c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  690:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  694:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  698:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  69c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6b8:   1 (*global*)      1 (*global*)      6 (NCURSES6_TINFO_5.0.19991023)                 1 (*global*)   
+  6bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  6fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  700:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  704:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  708:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  70c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  710:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  714:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  718:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  71c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  720:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  724:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  728:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  72c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  730:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  734:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  738:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  73c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  740:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  744:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  748:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  74c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  750:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  754:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  758:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  75c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  760:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  764:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  768:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  76c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  770:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  774:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  778:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  77c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  780:   1 (*global*)      1 (*global*)      6 (NCURSES6_TINFO_5.0.19991023)                 1 (*global*)   
+  784:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  788:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  78c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  790:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  794:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  798:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  79c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7ac:   1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)      1 (*global*)   
+  7b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  7fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  800:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  804:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  808:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  80c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  810:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  814:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  818:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  81c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  820:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  824:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  828:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  82c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  830:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  834:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  838:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  83c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  840:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  844:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  848:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  84c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  850:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  854:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  858:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  85c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  860:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  864:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  868:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  86c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  870:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  874:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  878:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  87c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  880:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  884:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  888:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  88c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  890:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  894:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  898:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  89c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8c4:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)   
+  8c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  8fc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  900:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  904:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  908:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  90c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  910:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  914:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  918:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  91c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  920:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  924:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  928:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  92c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  930:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  934:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  938:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  93c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  940:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  944:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  948:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  94c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  950:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  954:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  958:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  95c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  960:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  964:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  968:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  96c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  970:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  974:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  978:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  97c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  980:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  984:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  988:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  98c:   1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)      1 (*global*)   
+  990:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  994:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  998:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  99c:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9a0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9a4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9a8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9ac:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9b0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9b4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9b8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9bc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9c0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9c4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9c8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9cc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9d0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9d4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9d8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9dc:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9e0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9e4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9e8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9ec:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9f0:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9f4:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9f8:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  9fc:   1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)      1 (*global*)   
+  a00:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  a04:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  a08:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  a0c:   1 (*global*)      1 (*global*)      1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 2 entries:
+ Addr: 0x000000000001f748  Offset: 0x0001f748  Link: 7 (.dynstr)
+  000000: Version: 1  File: libtinfo.so.6  Cnt: 1
+  0x0010:   Name: NCURSES6_TINFO_5.0.19991023  Flags: none  Version: 6
+  0x0020: Version: 1  File: libc.so.6  Cnt: 12
+  0x0030:   Name: GLIBC_2.25  Flags: none  Version: 14
+  0x0040:   Name: GLIBC_2.11  Flags: none  Version: 13
+  0x0050:   Name: GLIBC_2.14  Flags: none  Version: 12
+  0x0060:   Name: GLIBC_2.8  Flags: none  Version: 11
+  0x0070:   Name: GLIBC_2.33  Flags: none  Version: 10
+  0x0080:   Name: GLIBC_2.15  Flags: none  Version: 9
+  0x0090:   Name: GLIBC_2.36  Flags: none  Version: 8
+  0x00a0:   Name: GLIBC_2.4  Flags: none  Version: 7
+  0x00b0:   Name: GLIBC_2.34  Flags: none  Version: 5
+  0x00c0:   Name: GLIBC_2.3.4  Flags: none  Version: 4
+  0x00d0:   Name: GLIBC_2.3  Flags: none  Version: 3
+  0x00e0:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffe22ff9000)
+	libtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x00007fb685793000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb6855b1000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fb68590d000)
+5c19747909b3815b996ac20b94bccb1faf1c6ff1ad240b05792ee4feab733a88  /lib/x86_64-linux-gnu/libtinfo.so.6
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL cargo
+ABSENT_AS_FILE_ON_PATH
+
+TOOL cc
+PATH /usr/bin/cc
+/usr/bin/x86_64-linux-gnu-gcc-12
+75e997ec62297a6484f491bae28ab0ccb489daba23e398fd10fe68e9e6f0def8  /usr/bin/cc
+
+Elf file type is EXEC (Executable file)
+Entry point 0x405840
+There are 14 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000400040 0x0000000000400040 0x000310 0x000310 R   0x8
+  INTERP         0x000350 0x0000000000400350 0x0000000000400350 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000400000 0x0000000000400000 0x0028a0 0x0028a0 R   0x1000
+  LOAD           0x003000 0x0000000000403000 0x0000000000403000 0x098989 0x098989 R E 0x1000
+  LOAD           0x09c000 0x000000000049c000 0x000000000049c000 0x09cb20 0x09cb20 R   0x1000
+  LOAD           0x1393e8 0x00000000005393e8 0x00000000005393e8 0x003d20 0x007858 RW  0x1000
+  DYNAMIC        0x13bdb8 0x000000000053bdb8 0x000000000053bdb8 0x0001e0 0x0001e0 RW  0x8
+  NOTE           0x000370 0x0000000000400370 0x0000000000400370 0x000020 0x000020 R   0x8
+  NOTE           0x000390 0x0000000000400390 0x0000000000400390 0x000044 0x000044 R   0x4
+  TLS            0x1393e8 0x00000000005393e8 0x00000000005393e8 0x000000 0x000010 R   0x8
+  GNU_PROPERTY   0x000370 0x0000000000400370 0x0000000000400370 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x11f994 0x000000000051f994 0x000000000051f994 0x0036cc 0x0036cc R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x1393e8 0x00000000005393e8 0x00000000005393e8 0x002c18 0x002c18 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .stapsdt.base .eh_frame_hdr .eh_frame .gcc_except_table 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .got.plt .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .tbss 
+   10     .note.gnu.property 
+   11     .eh_frame_hdr 
+   12     
+   13     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x13bdb8 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]
+ 0x000000000000000c (INIT)               0x403000
+ 0x000000000000000d (FINI)               0x49b980
+ 0x0000000000000019 (INIT_ARRAY)         0x5393e8
+ 0x000000000000001b (INIT_ARRAYSZ)       48 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x539418
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x4003d8
+ 0x0000000000000005 (STRTAB)             0x4012e8
+ 0x0000000000000006 (SYMTAB)             0x400448
+ 0x000000000000000a (STRSZ)              1464 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x53bfe8
+ 0x0000000000000002 (PLTRELSZ)           3240 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x401bf8
+ 0x0000000000000007 (RELA)               0x401aa8
+ 0x0000000000000008 (RELASZ)             336 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0x4019d8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x4018a0
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 156 entries:
+ Addr: 0x00000000004018a0  Offset: 0x000018a0  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   3 (GLIBC_2.11)    2 (GLIBC_2.2.5)
+  004:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34) 
+  008:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  00c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  010:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  014:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  018:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  01c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  024:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  028:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  02c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  030:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  034:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  038:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  03c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  040:   5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  044:   6 (GLIBC_2.3)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  048:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   7 (GLIBC_2.32) 
+  04c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  050:   1 (*global*)      5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   8 (GLIBC_2.3)  
+  054:   9 (GLIBC_2.14)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  058:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  05c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   a (GLIBC_2.7)     2 (GLIBC_2.2.5)
+  060:   2 (GLIBC_2.2.5)   b (GLIBC_2.35)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  064:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  068:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  06c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  070:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  074:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  078:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   c (GLIBC_2.9)  
+  07c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  080:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  084:   5 (GLIBC_2.33)    4 (GLIBC_2.34)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  088:   2 (GLIBC_2.2.5)   8 (GLIBC_2.3)     8 (GLIBC_2.3)     2 (GLIBC_2.2.5)
+  08c:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)   
+  090:   1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  094:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  098:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 2 entries:
+ Addr: 0x00000000004019d8  Offset: 0x000019d8  Link: 7 (.dynstr)
+  000000: Version: 1  File: ld-linux-x86-64.so.2  Cnt: 1
+  0x0010:   Name: GLIBC_2.3  Flags: none  Version: 6
+  0x0020: Version: 1  File: libc.so.6  Cnt: 10
+  0x0030:   Name: GLIBC_2.9  Flags: none  Version: 12
+  0x0040:   Name: GLIBC_2.35  Flags: none  Version: 11
+  0x0050:   Name: GLIBC_2.7  Flags: none  Version: 10
+  0x0060:   Name: GLIBC_2.14  Flags: none  Version: 9
+  0x0070:   Name: GLIBC_2.3  Flags: none  Version: 8
+  0x0080:   Name: GLIBC_2.32  Flags: none  Version: 7
+  0x0090:   Name: GLIBC_2.33  Flags: none  Version: 5
+  0x00a0:   Name: GLIBC_2.34  Flags: none  Version: 4
+  0x00b0:   Name: GLIBC_2.11  Flags: none  Version: 3
+  0x00c0:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffe003bd000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000070eda1273000)
+	/lib64/ld-linux-x86-64.so.2 (0x000070eda145c000)
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL cmake
+ABSENT_AS_FILE_ON_PATH
+
+TOOL curl
+PATH /usr/bin/curl
+/usr/bin/curl
+58824afa640f512e07e895c0f2d1e1fe2c3fd1456acab689b6e4c1c75cef2593  /usr/bin/curl
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0xba90
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x00a2a0 0x00a2a0 R   0x1000
+  LOAD           0x00b000 0x000000000000b000 0x000000000000b000 0x017415 0x017415 R E 0x1000
+  LOAD           0x023000 0x0000000000023000 0x0000000000023000 0x01be94 0x01be94 R   0x1000
+  LOAD           0x03f790 0x000000000003f790 0x000000000003f790 0x0048c8 0x004e18 RW  0x1000
+  DYNAMIC        0x043950 0x0000000000043950 0x0000000000043950 0x000210 0x000210 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x03bb38 0x000000000003bb38 0x000000000003bb38 0x00064c 0x00064c R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x03f790 0x000000000003f790 0x000000000003f790 0x004870 0x004870 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x43950 contains 29 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libcurl.so.4]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0xb000
+ 0x000000000000000d (FINI)               0x2240c
+ 0x0000000000000019 (INIT_ARRAY)         0x3f790
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x3f798
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0x10e0
+ 0x0000000000000006 (SYMTAB)             0x3d8
+ 0x000000000000000a (STRSZ)              1714 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x43b60
+ 0x0000000000000002 (PLTRELSZ)           3120 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x9670
+ 0x0000000000000007 (RELA)               0x1978
+ 0x0000000000000008 (RELASZ)             31992 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x18a8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x1792
+ 0x000000006ffffff9 (RELACOUNT)          1325
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 139 entries:
+ Addr: 0x0000000000001792  Offset: 0x00001792  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  004:   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  008:   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)
+  00c:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  010:   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  014:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)
+  018:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  01c:   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34) 
+  024:   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    1 (*global*)   
+  028:   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    5 (GLIBC_2.14)    1 (*global*)   
+  02c:   2 (GLIBC_2.2.5)   6 (GLIBC_2.33)    7 (GLIBC_2.17)    2 (GLIBC_2.2.5)
+  030:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4) 
+  034:   8 (GLIBC_2.7)     2 (GLIBC_2.2.5)   1 (*global*)      2 (GLIBC_2.2.5)
+  038:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  03c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   9 (GLIBC_2.4)  
+  040:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4) 
+  044:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  048:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4) 
+  04c:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  050:   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4) 
+  054:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   a (GLIBC_2.3.4)
+  058:   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  05c:   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  060:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  064:   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  068:   b (GLIBC_2.15)    3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)
+  06c:   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  070:   6 (GLIBC_2.33)    3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4) 
+  074:   1 (*global*)      2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4) 
+  078:   3 (CURL_OPENSSL_4)    3 (CURL_OPENSSL_4)    c (GLIBC_2.3)     2 (GLIBC_2.2.5)
+  07c:   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)
+  080:   1 (*global*)      3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)   1 (*global*)   
+  084:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (CURL_OPENSSL_4)    2 (GLIBC_2.2.5)
+  088:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+
+Version needs section '.gnu.version_r' contains 2 entries:
+ Addr: 0x00000000000018a8  Offset: 0x000018a8  Link: 7 (.dynstr)
+  000000: Version: 1  File: libcurl.so.4  Cnt: 1
+  0x0010:   Name: CURL_OPENSSL_4  Flags: none  Version: 3
+  0x0020: Version: 1  File: libc.so.6  Cnt: 10
+  0x0030:   Name: GLIBC_2.3  Flags: none  Version: 12
+  0x0040:   Name: GLIBC_2.15  Flags: none  Version: 11
+  0x0050:   Name: GLIBC_2.3.4  Flags: none  Version: 10
+  0x0060:   Name: GLIBC_2.4  Flags: none  Version: 9
+  0x0070:   Name: GLIBC_2.7  Flags: none  Version: 8
+  0x0080:   Name: GLIBC_2.17  Flags: none  Version: 7
+  0x0090:   Name: GLIBC_2.33  Flags: none  Version: 6
+  0x00a0:   Name: GLIBC_2.14  Flags: none  Version: 5
+  0x00b0:   Name: GLIBC_2.34  Flags: none  Version: 4
+  0x00c0:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffcae178000)
+	libcurl.so.4 => /lib/x86_64-linux-gnu/libcurl.so.4 (0x0000736a2fa13000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000736a2f9f4000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000736a2f812000)
+	libnghttp2.so.14 => /lib/x86_64-linux-gnu/libnghttp2.so.14 (0x0000736a2f7e3000)
+	libidn2.so.0 => /lib/x86_64-linux-gnu/libidn2.so.0 (0x0000736a2f7b2000)
+	librtmp.so.1 => /lib/x86_64-linux-gnu/librtmp.so.1 (0x0000736a2f791000)
+	libssh2.so.1 => /lib/x86_64-linux-gnu/libssh2.so.1 (0x0000736a2f750000)
+	libpsl.so.5 => /lib/x86_64-linux-gnu/libpsl.so.5 (0x0000736a2f73c000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x0000736a2f693000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x0000736a2f20c000)
+	libgssapi_krb5.so.2 => /lib/x86_64-linux-gnu/libgssapi_krb5.so.2 (0x0000736a2f1b9000)
+	libldap-2.5.so.0 => /lib/x86_64-linux-gnu/libldap-2.5.so.0 (0x0000736a2f158000)
+	liblber-2.5.so.0 => /lib/x86_64-linux-gnu/liblber-2.5.so.0 (0x0000736a2f148000)
+	libzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x0000736a2f08c000)
+	libbrotlidec.so.1 => /lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x0000736a2f07f000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000736a2fb0e000)
+	libunistring.so.2 => /lib/x86_64-linux-gnu/libunistring.so.2 (0x0000736a2eec9000)
+	libgnutls.so.30 => /lib/x86_64-linux-gnu/libgnutls.so.30 (0x0000736a2ecab000)
+	libhogweed.so.6 => /lib/x86_64-linux-gnu/libhogweed.so.6 (0x0000736a2ec62000)
+	libnettle.so.8 => /lib/x86_64-linux-gnu/libnettle.so.8 (0x0000736a2ec14000)
+	libgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x0000736a2eb93000)
+	libkrb5.so.3 => /lib/x86_64-linux-gnu/libkrb5.so.3 (0x0000736a2eab9000)
+	libk5crypto.so.3 => /lib/x86_64-linux-gnu/libk5crypto.so.3 (0x0000736a2ea8a000)
+	libcom_err.so.2 => /lib/x86_64-linux-gnu/libcom_err.so.2 (0x0000736a2ea84000)
+	libkrb5support.so.0 => /lib/x86_64-linux-gnu/libkrb5support.so.0 (0x0000736a2ea76000)
+	libsasl2.so.2 => /lib/x86_64-linux-gnu/libsasl2.so.2 (0x0000736a2ea59000)
+	libbrotlicommon.so.1 => /lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x0000736a2ea36000)
+	libp11-kit.so.0 => /lib/x86_64-linux-gnu/libp11-kit.so.0 (0x0000736a2e900000)
+	libtasn1.so.6 => /lib/x86_64-linux-gnu/libtasn1.so.6 (0x0000736a2e8eb000)
+	libkeyutils.so.1 => /lib/x86_64-linux-gnu/libkeyutils.so.1 (0x0000736a2e8e4000)
+	libresolv.so.2 => /lib/x86_64-linux-gnu/libresolv.so.2 (0x0000736a2e8d3000)
+	libffi.so.8 => /lib/x86_64-linux-gnu/libffi.so.8 (0x0000736a2e8c7000)
+779a9dc6aefb38a1f7c4da99677dc04983fdc7605080f626e271a3074a2dbc58  /lib/x86_64-linux-gnu/libcurl.so.4
+7e2a72b4c4b38c61e6962de6e3f4a5e9ae692e732c68deead10a7ce2135a7f68  /lib/x86_64-linux-gnu/libz.so.1
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+c01aa2676582ecdb05cda3fce4a9fb83ddd17002c3e31f88aa11fdef3b99f56c  /lib/x86_64-linux-gnu/libnghttp2.so.14
+864f32ec2dc74d90c51d389a02b30003465b84e2090bf940039c0cd4b41b8f63  /lib/x86_64-linux-gnu/libidn2.so.0
+60631c5df675831d9e9338e5cf859f3df713f8b04571aaff1ca65c9287832cb8  /lib/x86_64-linux-gnu/librtmp.so.1
+66f751ec9d3d5bff254a498e020d37f9bbde8e0193ba11d1b78f29153ffe694a  /lib/x86_64-linux-gnu/libssh2.so.1
+20f0bf67e12445271935d9c05d9a9d8fd567046132c6873388eb1c0a8681c28e  /lib/x86_64-linux-gnu/libpsl.so.5
+a3035eb28fa9f42630142755c20b5796ce687bddbc601dfcc3e9c5cf18b2726c  /lib/x86_64-linux-gnu/libssl.so.3
+9b87c69009a86f732a3668b5d3598b2e52616ad4f44764606b65e5cdbe5f7a5d  /lib/x86_64-linux-gnu/libcrypto.so.3
+351f31c41c2789de0446bf80843a3968aa78a0f7ce19025be3b0fa30018f3cd2  /lib/x86_64-linux-gnu/libgssapi_krb5.so.2
+062bb940f27b45cdcac5d3d66a727f441755b17f59842641ceaebaf990e1634d  /lib/x86_64-linux-gnu/libldap-2.5.so.0
+64f183c14330855843841747ff1975ed87e767de2e2f1b1cc4d7abd2302cb7a9  /lib/x86_64-linux-gnu/liblber-2.5.so.0
+37412b7ac11063c25a375bdff6f4fdb340362f926cd9c3a55962e8a9c9bc702e  /lib/x86_64-linux-gnu/libzstd.so.1
+928b2613f2d3d73f78bc05c81d79c04cef7e196564f733c0ffdf893602d83aaa  /lib/x86_64-linux-gnu/libbrotlidec.so.1
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+bc5951aa3d6eaba20ff9688efa3420dc95785aae3709ec48ff6df46d6f409ee5  /lib/x86_64-linux-gnu/libunistring.so.2
+750be5c0ce95061563e1561019e382823eb1e011ffe7980e9e005eeafd82efa3  /lib/x86_64-linux-gnu/libgnutls.so.30
+480675ed8d58f9266ced954eb746c74a6c4ae3479bf5dccbcbc56ff0c814b9e4  /lib/x86_64-linux-gnu/libhogweed.so.6
+63f8ec7a41906ad65a800d27294cdbb34bf6c709252a575ed513a3c048d71019  /lib/x86_64-linux-gnu/libnettle.so.8
+7376c9af0afd6e7698a64ee19de3c8a0199418664974384c70435a51c7ff7f3f  /lib/x86_64-linux-gnu/libgmp.so.10
+47b51d738881cbab3825dfcf8eb69fc64922a60d67609bb55b3f46e69276d572  /lib/x86_64-linux-gnu/libkrb5.so.3
+6c7fa0480ed36f756eb63f83baef482bb2a01a5157f32d92be84832a63b926e6  /lib/x86_64-linux-gnu/libk5crypto.so.3
+2af7b6aeb8685c319a4783fc3732c7166f1c71f56bdea79a619e1fe0cdb17074  /lib/x86_64-linux-gnu/libcom_err.so.2
+2feeee09768665c44514696ef3b919426fc6f4726f8868e3d9a8885b7137215d  /lib/x86_64-linux-gnu/libkrb5support.so.0
+0e214d8cc294d6ce547946b2b1145d394a06bba3aea7506f0f37b38d32d660bf  /lib/x86_64-linux-gnu/libsasl2.so.2
+d0dd623a89c3cd7c085757e41c940a39916a571a9b22b50bd736accd3f3aec53  /lib/x86_64-linux-gnu/libbrotlicommon.so.1
+a0a560ae54a793a11ab78d6ce12b902537932b2d7aab2352250391a035977ef1  /lib/x86_64-linux-gnu/libp11-kit.so.0
+139e933ac55f26bb80520fc63893ff2a528055fdf8058d8341bbd9d7bd762a5e  /lib/x86_64-linux-gnu/libtasn1.so.6
+3b2f8f3f07a1f8083f1084c6d61f242071fb6e6938a318dbf968b345507c7b71  /lib/x86_64-linux-gnu/libkeyutils.so.1
+ac3924c6cdb26cdfff10fec2ab2748705c83931b39c7f6e638a2b31ae34d420b  /lib/x86_64-linux-gnu/libresolv.so.2
+983e72b7e964f3db43fe8a3dc8b338e731fade6ca38df6867aebb58186aaeb68  /lib/x86_64-linux-gnu/libffi.so.8
+
+TOOL ffmpeg
+ABSENT_AS_FILE_ON_PATH
+
+TOOL g++
+PATH /usr/bin/g++
+/usr/bin/x86_64-linux-gnu-g++-12
+dd91977c184e327710578363ad93ebb175c3a457b6236b874fd3911b7c055c65  /usr/bin/g++
+
+Elf file type is EXEC (Executable file)
+Entry point 0x405850
+There are 14 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000400040 0x0000000000400040 0x000310 0x000310 R   0x8
+  INTERP         0x000350 0x0000000000400350 0x0000000000400350 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000400000 0x0000000000400000 0x0028a0 0x0028a0 R   0x1000
+  LOAD           0x003000 0x0000000000403000 0x0000000000403000 0x099469 0x099469 R E 0x1000
+  LOAD           0x09d000 0x000000000049d000 0x000000000049d000 0x09cb88 0x09cb88 R   0x1000
+  LOAD           0x13a3e8 0x000000000053a3e8 0x000000000053a3e8 0x003d20 0x007858 RW  0x1000
+  DYNAMIC        0x13cdb8 0x000000000053cdb8 0x000000000053cdb8 0x0001e0 0x0001e0 RW  0x8
+  NOTE           0x000370 0x0000000000400370 0x0000000000400370 0x000020 0x000020 R   0x8
+  NOTE           0x000390 0x0000000000400390 0x0000000000400390 0x000044 0x000044 R   0x4
+  TLS            0x13a3e8 0x000000000053a3e8 0x000000000053a3e8 0x000000 0x000010 R   0x8
+  GNU_PROPERTY   0x000370 0x0000000000400370 0x0000000000400370 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x1209d4 0x00000000005209d4 0x00000000005209d4 0x0036d4 0x0036d4 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x13a3e8 0x000000000053a3e8 0x000000000053a3e8 0x002c18 0x002c18 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .stapsdt.base .eh_frame_hdr .eh_frame .gcc_except_table 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .got.plt .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .tbss 
+   10     .note.gnu.property 
+   11     .eh_frame_hdr 
+   12     
+   13     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x13cdb8 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]
+ 0x000000000000000c (INIT)               0x403000
+ 0x000000000000000d (FINI)               0x49c460
+ 0x0000000000000019 (INIT_ARRAY)         0x53a3e8
+ 0x000000000000001b (INIT_ARRAYSZ)       48 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x53a418
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x4003d8
+ 0x0000000000000005 (STRTAB)             0x4012e8
+ 0x0000000000000006 (SYMTAB)             0x400448
+ 0x000000000000000a (STRSZ)              1464 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x53cfe8
+ 0x0000000000000002 (PLTRELSZ)           3240 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x401bf8
+ 0x0000000000000007 (RELA)               0x401aa8
+ 0x0000000000000008 (RELASZ)             336 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0x4019d8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x4018a0
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 156 entries:
+ Addr: 0x00000000004018a0  Offset: 0x000018a0  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   3 (GLIBC_2.11)    2 (GLIBC_2.2.5)
+  004:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34) 
+  008:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  00c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  010:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  014:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  018:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  01c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  024:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  028:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  02c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  030:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  034:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  038:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  03c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  040:   5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  044:   6 (GLIBC_2.3)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  048:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   7 (GLIBC_2.32) 
+  04c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  050:   1 (*global*)      5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   8 (GLIBC_2.3)  
+  054:   9 (GLIBC_2.14)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  058:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  05c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   a (GLIBC_2.7)     2 (GLIBC_2.2.5)
+  060:   2 (GLIBC_2.2.5)   b (GLIBC_2.35)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  064:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  068:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  06c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  070:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  074:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  078:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   c (GLIBC_2.9)  
+  07c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  080:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  084:   5 (GLIBC_2.33)    4 (GLIBC_2.34)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  088:   2 (GLIBC_2.2.5)   8 (GLIBC_2.3)     8 (GLIBC_2.3)     2 (GLIBC_2.2.5)
+  08c:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)   
+  090:   1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  094:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  098:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 2 entries:
+ Addr: 0x00000000004019d8  Offset: 0x000019d8  Link: 7 (.dynstr)
+  000000: Version: 1  File: ld-linux-x86-64.so.2  Cnt: 1
+  0x0010:   Name: GLIBC_2.3  Flags: none  Version: 6
+  0x0020: Version: 1  File: libc.so.6  Cnt: 10
+  0x0030:   Name: GLIBC_2.9  Flags: none  Version: 12
+  0x0040:   Name: GLIBC_2.35  Flags: none  Version: 11
+  0x0050:   Name: GLIBC_2.7  Flags: none  Version: 10
+  0x0060:   Name: GLIBC_2.14  Flags: none  Version: 9
+  0x0070:   Name: GLIBC_2.3  Flags: none  Version: 8
+  0x0080:   Name: GLIBC_2.32  Flags: none  Version: 7
+  0x0090:   Name: GLIBC_2.33  Flags: none  Version: 5
+  0x00a0:   Name: GLIBC_2.34  Flags: none  Version: 4
+  0x00b0:   Name: GLIBC_2.11  Flags: none  Version: 3
+  0x00c0:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007fff7fddf000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000741e87ea8000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000741e88091000)
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL gcc
+PATH /usr/bin/gcc
+/usr/bin/x86_64-linux-gnu-gcc-12
+75e997ec62297a6484f491bae28ab0ccb489daba23e398fd10fe68e9e6f0def8  /usr/bin/gcc
+
+Elf file type is EXEC (Executable file)
+Entry point 0x405840
+There are 14 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000400040 0x0000000000400040 0x000310 0x000310 R   0x8
+  INTERP         0x000350 0x0000000000400350 0x0000000000400350 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000400000 0x0000000000400000 0x0028a0 0x0028a0 R   0x1000
+  LOAD           0x003000 0x0000000000403000 0x0000000000403000 0x098989 0x098989 R E 0x1000
+  LOAD           0x09c000 0x000000000049c000 0x000000000049c000 0x09cb20 0x09cb20 R   0x1000
+  LOAD           0x1393e8 0x00000000005393e8 0x00000000005393e8 0x003d20 0x007858 RW  0x1000
+  DYNAMIC        0x13bdb8 0x000000000053bdb8 0x000000000053bdb8 0x0001e0 0x0001e0 RW  0x8
+  NOTE           0x000370 0x0000000000400370 0x0000000000400370 0x000020 0x000020 R   0x8
+  NOTE           0x000390 0x0000000000400390 0x0000000000400390 0x000044 0x000044 R   0x4
+  TLS            0x1393e8 0x00000000005393e8 0x00000000005393e8 0x000000 0x000010 R   0x8
+  GNU_PROPERTY   0x000370 0x0000000000400370 0x0000000000400370 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x11f994 0x000000000051f994 0x000000000051f994 0x0036cc 0x0036cc R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x1393e8 0x00000000005393e8 0x00000000005393e8 0x002c18 0x002c18 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .stapsdt.base .eh_frame_hdr .eh_frame .gcc_except_table 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .got.plt .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .tbss 
+   10     .note.gnu.property 
+   11     .eh_frame_hdr 
+   12     
+   13     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x13bdb8 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]
+ 0x000000000000000c (INIT)               0x403000
+ 0x000000000000000d (FINI)               0x49b980
+ 0x0000000000000019 (INIT_ARRAY)         0x5393e8
+ 0x000000000000001b (INIT_ARRAYSZ)       48 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x539418
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x4003d8
+ 0x0000000000000005 (STRTAB)             0x4012e8
+ 0x0000000000000006 (SYMTAB)             0x400448
+ 0x000000000000000a (STRSZ)              1464 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x53bfe8
+ 0x0000000000000002 (PLTRELSZ)           3240 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x401bf8
+ 0x0000000000000007 (RELA)               0x401aa8
+ 0x0000000000000008 (RELASZ)             336 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0x4019d8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x4018a0
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 156 entries:
+ Addr: 0x00000000004018a0  Offset: 0x000018a0  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   3 (GLIBC_2.11)    2 (GLIBC_2.2.5)
+  004:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34) 
+  008:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  00c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  010:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  014:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  018:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  01c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  024:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  028:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  02c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  030:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  034:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  038:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  03c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  040:   5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  044:   6 (GLIBC_2.3)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  048:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   7 (GLIBC_2.32) 
+  04c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  050:   1 (*global*)      5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   8 (GLIBC_2.3)  
+  054:   9 (GLIBC_2.14)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  058:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  05c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   a (GLIBC_2.7)     2 (GLIBC_2.2.5)
+  060:   2 (GLIBC_2.2.5)   b (GLIBC_2.35)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  064:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  068:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  06c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  070:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  074:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  078:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   c (GLIBC_2.9)  
+  07c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  080:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  084:   5 (GLIBC_2.33)    4 (GLIBC_2.34)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  088:   2 (GLIBC_2.2.5)   8 (GLIBC_2.3)     8 (GLIBC_2.3)     2 (GLIBC_2.2.5)
+  08c:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   1 (*global*)   
+  090:   1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  094:   1 (*global*)      1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  098:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 2 entries:
+ Addr: 0x00000000004019d8  Offset: 0x000019d8  Link: 7 (.dynstr)
+  000000: Version: 1  File: ld-linux-x86-64.so.2  Cnt: 1
+  0x0010:   Name: GLIBC_2.3  Flags: none  Version: 6
+  0x0020: Version: 1  File: libc.so.6  Cnt: 10
+  0x0030:   Name: GLIBC_2.9  Flags: none  Version: 12
+  0x0040:   Name: GLIBC_2.35  Flags: none  Version: 11
+  0x0050:   Name: GLIBC_2.7  Flags: none  Version: 10
+  0x0060:   Name: GLIBC_2.14  Flags: none  Version: 9
+  0x0070:   Name: GLIBC_2.3  Flags: none  Version: 8
+  0x0080:   Name: GLIBC_2.32  Flags: none  Version: 7
+  0x0090:   Name: GLIBC_2.33  Flags: none  Version: 5
+  0x00a0:   Name: GLIBC_2.34  Flags: none  Version: 4
+  0x00b0:   Name: GLIBC_2.11  Flags: none  Version: 3
+  0x00c0:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007fff739e9000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075237e3de000)
+	/lib64/ld-linux-x86-64.so.2 (0x000075237e5c7000)
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL go
+ABSENT_AS_FILE_ON_PATH
+
+TOOL java
+ABSENT_AS_FILE_ON_PATH
+
+TOOL make
+ABSENT_AS_FILE_ON_PATH
+
+TOOL node
+ABSENT_AS_FILE_ON_PATH
+
+TOOL openssl
+PATH /usr/bin/openssl
+/usr/bin/openssl
+a4bbb2131b9919b3cb0b580c5467d3b08535e0571b763b55f9d7a7cdc358f5ec  /usr/bin/openssl
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x42490
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x03b7b0 0x03b7b0 R   0x1000
+  LOAD           0x03c000 0x000000000003c000 0x000000000003c000 0x06af79 0x06af79 R E 0x1000
+  LOAD           0x0a7000 0x00000000000a7000 0x00000000000a7000 0x02cc78 0x02cc78 R   0x1000
+  LOAD           0x0d4010 0x00000000000d4010 0x00000000000d4010 0x019c70 0x01b578 RW  0x1000
+  DYNAMIC        0x0e2be0 0x00000000000e2be0 0x00000000000e2be0 0x000210 0x000210 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x0c9f34 0x00000000000c9f34 0x00000000000c9f34 0x0010a4 0x0010a4 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x0d4010 0x00000000000d4010 0x00000000000d4010 0x011ff0 0x011ff0 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0xe2be0 contains 29 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]
+ 0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x3c000
+ 0x000000000000000d (FINI)               0xa6f70
+ 0x0000000000000019 (INIT_ARRAY)         0xd4010
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0xd4018
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0x9a30
+ 0x0000000000000006 (SYMTAB)             0x490
+ 0x000000000000000a (STRSZ)              32322 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0xe2df0
+ 0x0000000000000002 (PLTRELSZ)           37080 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x326d8
+ 0x0000000000000007 (RELA)               0x125f0
+ 0x0000000000000008 (RELASZ)             131304 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x124f0
+ 0x000000006fffffff (VERNEEDNUM)         3
+ 0x000000006ffffff0 (VERSYM)             0x11872
+ 0x000000006ffffff9 (RELACOUNT)          5419
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 1596 entries:
+ Addr: 0x0000000000011872  Offset: 0x00011872  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)
+  004:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  008:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  00c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  010:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  014:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  018:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  01c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  020:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  024:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  028:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  02c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  030:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  034:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  038:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  03c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  040:   6 (GLIBC_2.3)     2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  044:   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  048:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  04c:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  050:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  054:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  058:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  05c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  060:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  064:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  068:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  06c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  070:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  074:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  078:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  07c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  080:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  084:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  088:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  08c:   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  090:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  094:   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  098:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  09c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0a0:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  0a4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  0a8:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0ac:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0b0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0b4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0b8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0bc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0c0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0c4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0c8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0cc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0d0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  0d4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0d8:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0dc:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0e0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  0e4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0e8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0ec:   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0f0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0f4:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  0f8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  0fc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  100:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  104:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  108:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  10c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  110:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  114:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  118:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  11c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  120:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  124:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  128:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  12c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  130:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  134:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  138:   3 (GLIBC_2.3.4)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  13c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  140:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  144:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  148:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  14c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  150:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  154:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  158:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  15c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  160:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  164:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  168:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  16c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  170:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  174:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  178:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  17c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  180:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  184:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  188:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  18c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  190:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  194:   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  198:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  19c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1a0:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)   2 (OPENSSL_3.0.0)
+  1a4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1a8:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1ac:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1b0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1b4:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1b8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1bc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1c0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1c4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1c8:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1cc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1d0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1d4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1d8:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1dc:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1e0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1e4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1e8:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1ec:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1f0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1f4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1f8:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  1fc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  200:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  204:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  208:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  20c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  210:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  214:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  218:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   7 (GLIBC_2.34) 
+  21c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  220:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  224:   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  228:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  22c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  230:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  234:   2 (OPENSSL_3.0.0)   8 (OPENSSL_3.0.3)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  238:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  23c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  240:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  244:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  248:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  24c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  250:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  254:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  258:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  25c:   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  260:   9 (GLIBC_2.14)    2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  264:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  268:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  26c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  270:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  274:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  278:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  27c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  280:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  284:   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  288:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  28c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  290:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  294:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  298:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  29c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2a0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2a4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  2a8:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   a (GLIBC_2.33)    2 (OPENSSL_3.0.0)
+  2ac:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2b0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  2b4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2b8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2bc:   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  2c0:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2c4:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2c8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  2cc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  2d0:   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2d4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  2d8:   b (GLIBC_2.7)     2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2dc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2e0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  2e4:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2e8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2ec:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2f0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2f4:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2f8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  2fc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  300:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  304:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  308:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  30c:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  310:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  314:   5 (GLIBC_2.2.5)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  318:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  31c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  320:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  324:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  328:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   6 (GLIBC_2.3)  
+  32c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  330:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  334:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  338:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  33c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  340:   c (GLIBC_2.4)     2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  344:   c (GLIBC_2.4)     2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  348:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  34c:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  350:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  354:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  358:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  35c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  360:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  364:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  368:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  36c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  370:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   8 (OPENSSL_3.0.3)   2 (OPENSSL_3.0.0)
+  374:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  378:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  37c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  380:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  384:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  388:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  38c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  390:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  394:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  398:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  39c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3a0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3a4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3a8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3ac:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3b0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3b4:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3b8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3bc:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3c0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3c4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3c8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3cc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  3d0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3d4:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3d8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3dc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3e0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3e4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3e8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3ec:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3f0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3f4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3f8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  3fc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  400:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  404:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  408:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  40c:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)
+  410:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  414:   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  418:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  41c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  420:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  424:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  428:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  42c:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  430:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)   4 (OPENSSL_3.0.0)
+  434:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  438:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  43c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  440:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  444:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  448:   5 (GLIBC_2.2.5)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  44c:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  450:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  454:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  458:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  45c:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  460:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  464:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  468:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  46c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  470:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  474:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  478:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  47c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  480:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  484:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  488:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  48c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   d (OPENSSL_3.0.9)   2 (OPENSSL_3.0.0)
+  490:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  494:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  498:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  49c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4a0:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4a4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4a8:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4ac:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4b0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  4b4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  4b8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  4bc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  4c0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4c4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4c8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4cc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)
+  4d0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4d4:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4d8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4dc:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  4e0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4e4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   e (GLIBC_2.15) 
+  4e8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  4ec:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4f0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4f4:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4f8:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  4fc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  500:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  504:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  508:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  50c:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  510:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)   4 (OPENSSL_3.0.0)
+  514:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  518:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  51c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  520:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  524:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  528:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  52c:   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  530:   a (GLIBC_2.33)    2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  534:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  538:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  53c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  540:   2 (OPENSSL_3.0.0)   3 (GLIBC_2.3.4)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  544:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  548:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  54c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  550:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  554:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  558:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  55c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  560:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  564:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  568:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  56c:   1 (*global*)      2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  570:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  574:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  578:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  57c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  580:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  584:   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  588:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  58c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  590:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  594:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  598:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  59c:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5a0:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5a4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5a8:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5ac:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5b0:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  5b4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5b8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5bc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  5c0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5c4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5c8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5cc:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5d0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5d4:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   1 (*global*)      2 (OPENSSL_3.0.0)
+  5d8:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5dc:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5e0:   2 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5e4:   2 (OPENSSL_3.0.0)   1 (*global*)      2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  5e8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  5ec:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5f0:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5f4:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5f8:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  5fc:   a (GLIBC_2.33)    5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  600:   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  604:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  608:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  60c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  610:   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  614:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  618:   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  61c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  620:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  624:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  628:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  62c:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+  630:   5 (GLIBC_2.2.5)   5 (GLIBC_2.2.5)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)
+  634:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   5 (GLIBC_2.2.5)
+  638:   2 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)   4 (OPENSSL_3.0.0)   2 (OPENSSL_3.0.0)
+
+Version needs section '.gnu.version_r' contains 3 entries:
+ Addr: 0x00000000000124f0  Offset: 0x000124f0  Link: 7 (.dynstr)
+  000000: Version: 1  File: libssl.so.3  Cnt: 1
+  0x0010:   Name: OPENSSL_3.0.0  Flags: none  Version: 4
+  0x0020: Version: 1  File: libc.so.6  Cnt: 9
+  0x0030:   Name: GLIBC_2.15  Flags: none  Version: 14
+  0x0040:   Name: GLIBC_2.4  Flags: none  Version: 12
+  0x0050:   Name: GLIBC_2.7  Flags: none  Version: 11
+  0x0060:   Name: GLIBC_2.33  Flags: none  Version: 10
+  0x0070:   Name: GLIBC_2.14  Flags: none  Version: 9
+  0x0080:   Name: GLIBC_2.34  Flags: none  Version: 7
+  0x0090:   Name: GLIBC_2.3  Flags: none  Version: 6
+  0x00a0:   Name: GLIBC_2.2.5  Flags: none  Version: 5
+  0x00b0:   Name: GLIBC_2.3.4  Flags: none  Version: 3
+  0x00c0: Version: 1  File: libcrypto.so.3  Cnt: 3
+  0x00d0:   Name: OPENSSL_3.0.9  Flags: none  Version: 13
+  0x00e0:   Name: OPENSSL_3.0.3  Flags: none  Version: 8
+  0x00f0:   Name: OPENSSL_3.0.0  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffd7a4e3000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007b23a421f000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007b23a3d98000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007b23a3bb6000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007b23a43bf000)
+a3035eb28fa9f42630142755c20b5796ce687bddbc601dfcc3e9c5cf18b2726c  /lib/x86_64-linux-gnu/libssl.so.3
+9b87c69009a86f732a3668b5d3598b2e52616ad4f44764606b65e5cdbe5f7a5d  /lib/x86_64-linux-gnu/libcrypto.so.3
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL pdflatex
+ABSENT_AS_FILE_ON_PATH
+
+TOOL pytest
+ABSENT_AS_FILE_ON_PATH
+
+TOOL python
+PATH /usr/local/bin/python
+/usr/local/bin/python3.13
+73b68fc2dac176af16098180a2c98a03ee9f1f1b02db25d42d44d782e79e2330  /usr/local/bin/python
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x1050
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000750 0x000750 R   0x1000
+  LOAD           0x001000 0x0000000000001000 0x0000000000001000 0x000151 0x000151 R E 0x1000
+  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x0000d0 0x0000d0 R   0x1000
+  LOAD           0x002db0 0x0000000000003db0 0x0000000000003db0 0x000268 0x000270 RW  0x1000
+  DYNAMIC        0x002dc0 0x0000000000003dc0 0x0000000000003dc0 0x000200 0x000200 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x002004 0x0000000000002004 0x0000000000002004 0x00002c 0x00002c R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x002db0 0x0000000000003db0 0x0000000000003db0 0x000250 0x000250 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .dynamic .got .got.plt .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .dynamic .got 
+
+Dynamic section at offset 0x2dc0 contains 28 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libpython3.13.so.1.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN/../lib]
+ 0x000000000000000c (INIT)               0x1000
+ 0x000000000000000d (FINI)               0x1148
+ 0x0000000000000019 (INIT_ARRAY)         0x3db0
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x3db8
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0x538
+ 0x0000000000000006 (SYMTAB)             0x3e8
+ 0x000000000000000a (STRSZ)              237 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x3fe8
+ 0x0000000000000002 (PLTRELSZ)           24 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x738
+ 0x0000000000000007 (RELA)               0x678
+ 0x0000000000000008 (RELASZ)             192 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffb (FLAGS_1)            Flags: PIE
+ 0x000000006ffffffe (VERNEED)            0x648
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x626
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 14 entries:
+ Addr: 0x0000000000000626  Offset: 0x00000626  Link: 6 (.dynsym)
+  000:   0 (*local*)       1 (*global*)      1 (*global*)      1 (*global*)   
+  004:   1 (*global*)      3 (GLIBC_2.34)    1 (*global*)      2 (GLIBC_2.2.5)
+  008:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  00c:   1 (*global*)      1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 1 entry:
+ Addr: 0x0000000000000648  Offset: 0x00000648  Link: 7 (.dynstr)
+  000000: Version: 1  File: libc.so.6  Cnt: 2
+  0x0010:   Name: GLIBC_2.34  Flags: none  Version: 3
+  0x0020:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffe992ff000)
+	libpython3.13.so.1.0 => /usr/local/bin/../lib/libpython3.13.so.1.0 (0x00007ba6a310f000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ba6a2f28000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007ba6a2e48000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007ba6a3689000)
+6dd6bffa36638908d03134fbfd784d72f385e5c12bb121158207d78b329c14ed  /usr/local/bin/../lib/libpython3.13.so.1.0
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+7f2ca87f652f56b094462474b076749e90e689d0ecb9cb63c7679820b271b4e7  /lib/x86_64-linux-gnu/libm.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL python3
+PATH /usr/local/bin/python3
+/usr/local/bin/python3.13
+73b68fc2dac176af16098180a2c98a03ee9f1f1b02db25d42d44d782e79e2330  /usr/local/bin/python3
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x1050
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000750 0x000750 R   0x1000
+  LOAD           0x001000 0x0000000000001000 0x0000000000001000 0x000151 0x000151 R E 0x1000
+  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x0000d0 0x0000d0 R   0x1000
+  LOAD           0x002db0 0x0000000000003db0 0x0000000000003db0 0x000268 0x000270 RW  0x1000
+  DYNAMIC        0x002dc0 0x0000000000003dc0 0x0000000000003dc0 0x000200 0x000200 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x002004 0x0000000000002004 0x0000000000002004 0x00002c 0x00002c R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x002db0 0x0000000000003db0 0x0000000000003db0 0x000250 0x000250 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .dynamic .got .got.plt .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .dynamic .got 
+
+Dynamic section at offset 0x2dc0 contains 28 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libpython3.13.so.1.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN/../lib]
+ 0x000000000000000c (INIT)               0x1000
+ 0x000000000000000d (FINI)               0x1148
+ 0x0000000000000019 (INIT_ARRAY)         0x3db0
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x3db8
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0x538
+ 0x0000000000000006 (SYMTAB)             0x3e8
+ 0x000000000000000a (STRSZ)              237 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x3fe8
+ 0x0000000000000002 (PLTRELSZ)           24 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x738
+ 0x0000000000000007 (RELA)               0x678
+ 0x0000000000000008 (RELASZ)             192 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffb (FLAGS_1)            Flags: PIE
+ 0x000000006ffffffe (VERNEED)            0x648
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x626
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 14 entries:
+ Addr: 0x0000000000000626  Offset: 0x00000626  Link: 6 (.dynsym)
+  000:   0 (*local*)       1 (*global*)      1 (*global*)      1 (*global*)   
+  004:   1 (*global*)      3 (GLIBC_2.34)    1 (*global*)      2 (GLIBC_2.2.5)
+  008:   1 (*global*)      1 (*global*)      1 (*global*)      1 (*global*)   
+  00c:   1 (*global*)      1 (*global*)   
+
+Version needs section '.gnu.version_r' contains 1 entry:
+ Addr: 0x0000000000000648  Offset: 0x00000648  Link: 7 (.dynstr)
+  000000: Version: 1  File: libc.so.6  Cnt: 2
+  0x0010:   Name: GLIBC_2.34  Flags: none  Version: 3
+  0x0020:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffde89f7000)
+	libpython3.13.so.1.0 => /usr/local/bin/../lib/libpython3.13.so.1.0 (0x00007476fc7db000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007476fc5f4000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007476fc514000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007476fcd55000)
+6dd6bffa36638908d03134fbfd784d72f385e5c12bb121158207d78b329c14ed  /usr/local/bin/../lib/libpython3.13.so.1.0
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+7f2ca87f652f56b094462474b076749e90e689d0ecb9cb63c7679820b271b4e7  /lib/x86_64-linux-gnu/libm.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL ruby
+ABSENT_AS_FILE_ON_PATH
+
+TOOL rustc
+ABSENT_AS_FILE_ON_PATH
+
+TOOL sh
+PATH /usr/bin/sh
+/usr/bin/dash
+f5adb8bf0100ed0f8c7782ca5f92814e9229525a4b4e0d401cf3bea09ac960a6  /usr/bin/sh
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x4760
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0036d8 0x0036d8 R   0x1000
+  LOAD           0x004000 0x0000000000004000 0x0000000000004000 0x012bb9 0x012bb9 R E 0x1000
+  LOAD           0x017000 0x0000000000017000 0x0000000000017000 0x005864 0x005864 R   0x1000
+  LOAD           0x01ce30 0x000000000001de30 0x000000000001de30 0x001410 0x004140 RW  0x1000
+  DYNAMIC        0x01db28 0x000000000001eb28 0x000000000001eb28 0x0001f0 0x0001f0 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x018f24 0x0000000000018f24 0x0000000000018f24 0x0007fc 0x0007fc R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x01ce30 0x000000000001de30 0x000000000001de30 0x0011d0 0x0011d0 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x1db28 contains 27 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x4000
+ 0x000000000000000d (FINI)               0x16bb0
+ 0x0000000000000019 (INIT_ARRAY)         0x1de30
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x1de38
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0xda8
+ 0x0000000000000006 (SYMTAB)             0x3d0
+ 0x000000000000000a (STRSZ)              969 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x1ed18
+ 0x0000000000000002 (PLTRELSZ)           2016 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x2ef8
+ 0x0000000000000007 (RELA)               0x12d8
+ 0x0000000000000008 (RELASZ)             7200 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x1248
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x1172
+ 0x000000006ffffff9 (RELACOUNT)          281
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 105 entries:
+ Addr: 0x0000000000001172  Offset: 0x00001172  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  004:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   3 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  008:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   1 (*global*)      2 (GLIBC_2.2.5)
+  00c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  010:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.4)  
+  014:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  018:   5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  01c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   4 (GLIBC_2.4)     2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  024:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  028:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  02c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  030:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  034:   2 (GLIBC_2.2.5)   1 (*global*)      2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  038:   6 (GLIBC_2.14)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  03c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  040:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   7 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)
+  044:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  048:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   8 (GLIBC_2.11) 
+  04c:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  050:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  054:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  058:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  05c:   5 (GLIBC_2.33)    2 (GLIBC_2.2.5)   1 (*global*)      2 (GLIBC_2.2.5)
+  060:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  064:   2 (GLIBC_2.2.5)   9 (GLIBC_2.3)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  068:   2 (GLIBC_2.2.5)
+
+Version needs section '.gnu.version_r' contains 1 entry:
+ Addr: 0x0000000000001248  Offset: 0x00001248  Link: 7 (.dynstr)
+  000000: Version: 1  File: libc.so.6  Cnt: 8
+  0x0010:   Name: GLIBC_2.3  Flags: none  Version: 9
+  0x0020:   Name: GLIBC_2.11  Flags: none  Version: 8
+  0x0030:   Name: GLIBC_2.3.4  Flags: none  Version: 7
+  0x0040:   Name: GLIBC_2.14  Flags: none  Version: 6
+  0x0050:   Name: GLIBC_2.33  Flags: none  Version: 5
+  0x0060:   Name: GLIBC_2.4  Flags: none  Version: 4
+  0x0070:   Name: GLIBC_2.34  Flags: none  Version: 3
+  0x0080:   Name: GLIBC_2.2.5  Flags: none  Version: 2
+	linux-vdso.so.1 (0x00007ffcb93a8000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000071edbdc0c000)
+	/lib64/ld-linux-x86-64.so.2 (0x000071edbde17000)
+bff8750fe719e6000791b88b11747dce8772c37118d0b2348044b70819d13835  /lib/x86_64-linux-gnu/libc.so.6
+593bb1d5355658e645f36e6b1f49832691b24e177209765914e4cce51499dbb4  /lib64/ld-linux-x86-64.so.2
+
+TOOL sqlite3
+ABSENT_AS_FILE_ON_PATH
+
+TOOL stockfish
+ABSENT_AS_FILE_ON_PATH
+
+TOOL uv
+ABSENT_AS_FILE_ON_PATH
+
+TOOL uvx
+ABSENT_AS_FILE_ON_PATH
+=== available package inventory ===
+adduser	3.134	all
+apt	2.6.1	amd64
+base-files	12.4+deb12u11	amd64
+base-passwd	3.6.1	amd64
+bash	5.2.15-2+b8	amd64
+binutils	2.40-2	amd64
+binutils-common	2.40-2	amd64
+binutils-x86-64-linux-gnu	2.40-2	amd64
+bsdutils	1:2.38.1-5+deb12u3	amd64
+ca-certificates	20230311+deb12u1	all
+coreutils	9.1-1	amd64
+cpp	4:12.2.0-3	amd64
+cpp-12	12.2.0-14+deb12u1	amd64
+curl	7.88.1-10+deb12u14	amd64
+dash	0.5.12-2	amd64
+debconf	1.5.82	all
+debian-archive-keyring	2023.3+deb12u2	all
+debianutils	5.7-0.5~deb12u1	amd64
+diffutils	1:3.8-4	amd64
+dpkg	1.21.22	amd64
+e2fsprogs	1.47.0-2	amd64
+findutils	4.9.0-4	amd64
+fontconfig-config	2.14.1-4	amd64
+fonts-dejavu-core	2.37-6	all
+g++	4:12.2.0-3	amd64
+g++-12	12.2.0-14+deb12u1	amd64
+gcc	4:12.2.0-3	amd64
+gcc-12	12.2.0-14+deb12u1	amd64
+gcc-12-base	12.2.0-14+deb12u1	amd64
+gfortran	4:12.2.0-3	amd64
+gfortran-12	12.2.0-14+deb12u1	amd64
+git	1:2.39.5-0+deb12u2	amd64
+git-man	1:2.39.5-0+deb12u2	all
+gpgv	2.2.40-1.1	amd64
+grep	3.8-5	amd64
+gzip	1.12-1	amd64
+hdf5-helpers	1.10.8+repack1-1	amd64
+hostname	3.23+nmu1	amd64
+init-system-helpers	1.65.2	all
+krb5-locales	1.20.1-2+deb12u4	all
+less	590-2.1~deb12u2	amd64
+libabsl20220623	20220623.1-1+deb12u2	amd64
+libacl1	2.3.1-3	amd64
+libaec-dev	1.0.6-1+b1	amd64
+libaec0	1.0.6-1+b1	amd64
+libaom3	3.6.0-1+deb12u2	amd64
+libapt-pkg6.0	2.6.1	amd64
+libasan8	12.2.0-14+deb12u1	amd64
+libatomic1	12.2.0-14+deb12u1	amd64
+libattr1	1:2.5.1-4	amd64
+libaudit-common	1:3.0.9-1	all
+libaudit1	1:3.0.9-1	amd64
+libavif15	0.11.1-1+deb12u1	amd64
+libbinutils	2.40-2	amd64
+libblas-dev	3.11.0-2	amd64
+libblas3	3.11.0-2	amd64
+libblkid1	2.38.1-5+deb12u3	amd64
+libbrotli1	1.0.9-2+b6	amd64
+libbsd0	0.11.7-2	amd64
+libbz2-1.0	1.0.8-5+b1	amd64
+libc-bin	2.36-9+deb12u13	amd64
+libc-dev-bin	2.36-9+deb12u13	amd64
+libc-devtools	2.36-9+deb12u13	amd64
+libc6	2.36-9+deb12u13	amd64
+libc6-dev	2.36-9+deb12u13	amd64
+libcap-ng0	0.8.3-1+b3	amd64
+libcap2	1:2.66-4+deb12u1	amd64
+libcbor0.8	0.8.0-2+b1	amd64
+libcc1-0	12.2.0-14+deb12u1	amd64
+libcom-err2	1.47.0-2	amd64
+libcrypt-dev	1:4.4.33-2	amd64
+libcrypt1	1:4.4.33-2	amd64
+libctf-nobfd0	2.40-2	amd64
+libctf0	2.40-2	amd64
+libcurl3-gnutls	7.88.1-10+deb12u14	amd64
+libcurl4	7.88.1-10+deb12u14	amd64
+libcurl4-openssl-dev	7.88.1-10+deb12u14	amd64
+libdav1d6	1.0.0-2+deb12u1	amd64
+libdb5.3	5.3.28+dfsg2-1	amd64
+libde265-0	1.0.11-1+deb12u2	amd64
+libdebconfclient0	0.270	amd64
+libdeflate0	1.14-1	amd64
+libedit2	3.1-20221030-2	amd64
+liberror-perl	0.17029-2	all
+libexpat1	2.5.0-1+deb12u2	amd64
+libext2fs2	1.47.0-2	amd64
+libffi8	3.4.4-1	amd64
+libfido2-1	1.12.0-2+b1	amd64
+libfontconfig1	2.14.1-4	amd64
+libfreetype6	2.12.1+dfsg-5+deb12u4	amd64
+libgav1-1	0.18.0-1+b1	amd64
+libgcc-12-dev	12.2.0-14+deb12u1	amd64
+libgcc-s1	12.2.0-14+deb12u1	amd64
+libgcrypt20	1.10.1-3	amd64
+libgd3	2.3.3-9	amd64
+libgdbm-compat4	1.23-3	amd64
+libgdbm6	1.23-3	amd64
+libgfortran-12-dev	12.2.0-14+deb12u1	amd64
+libgfortran5	12.2.0-14+deb12u1	amd64
+libgmp10	2:6.2.1+dfsg1-1.1	amd64
+libgnutls30	3.7.9-2+deb12u5	amd64
+libgomp1	12.2.0-14+deb12u1	amd64
+libgpg-error0	1.46-1	amd64
+libgprofng0	2.40-2	amd64
+libgssapi-krb5-2	1.20.1-2+deb12u4	amd64
+libhdf5-103-1	1.10.8+repack1-1	amd64
+libhdf5-cpp-103-1	1.10.8+repack1-1	amd64
+libhdf5-dev	1.10.8+repack1-1	amd64
+libhdf5-fortran-102	1.10.8+repack1-1	amd64
+libhdf5-hl-100	1.10.8+repack1-1	amd64
+libhdf5-hl-cpp-100	1.10.8+repack1-1	amd64
+libhdf5-hl-fortran-100	1.10.8+repack1-1	amd64
+libheif1	1.15.1-1+deb12u1	amd64
+libhogweed6	3.8.1-2	amd64
+libidn2-0	2.3.3-1+b1	amd64
+libisl23	0.25-1.1	amd64
+libitm1	12.2.0-14+deb12u1	amd64
+libjansson4	2.14-2	amd64
+libjbig0	2.1-6.1	amd64
+libjpeg-dev	1:2.1.5-2	amd64
+libjpeg62-turbo	1:2.1.5-2	amd64
+libjpeg62-turbo-dev	1:2.1.5-2	amd64
+libk5crypto3	1.20.1-2+deb12u4	amd64
+libkeyutils1	1.6.3-2	amd64
+libkrb5-3	1.20.1-2+deb12u4	amd64
+libkrb5support0	1.20.1-2+deb12u4	amd64
+liblapack-dev	3.11.0-2	amd64
+liblapack3	3.11.0-2	amd64
+libldap-2.5-0	2.5.13+dfsg-5	amd64
+libldap-common	2.5.13+dfsg-5	all
+liblerc4	4.0.0+ds-2	amd64
+liblsan0	12.2.0-14+deb12u1	amd64
+liblz4-1	1.9.4-1	amd64
+liblzma5	5.4.1-1	amd64
+libmd0	1.0.4-2	amd64
+libmount1	2.38.1-5+deb12u3	amd64
+libmpc3	1.3.1-1	amd64
+libmpfr6	4.2.0-1	amd64
+libncursesw6	6.4-4	amd64
+libnettle8	3.8.1-2	amd64
+libnghttp2-14	1.52.0-1+deb12u2	amd64
+libnsl-dev	1.3.0-2	amd64
+libnsl2	1.3.0-2	amd64
+libnuma1	2.0.16-1	amd64
+libp11-kit0	0.24.1-2	amd64
+libpam-modules	1.5.2-6+deb12u1	amd64
+libpam-modules-bin	1.5.2-6+deb12u1	amd64
+libpam-runtime	1.5.2-6+deb12u1	all
+libpam0g	1.5.2-6+deb12u1	amd64
+libpcre2-8-0	10.42-1	amd64
+libperl5.36	5.36.0-7+deb12u3	amd64
+libpkgconf3	1.8.1-1	amd64
+libpng16-16	1.6.39-2	amd64
+libpsl5	0.21.2-1	amd64
+libquadmath0	12.2.0-14+deb12u1	amd64
+librav1e0	0.5.1-6	amd64
+libreadline8	8.2-1.3	amd64
+librtmp1	2.4+20151223.gitfa8646d.1-2+b2	amd64
+libsasl2-2	2.1.28+dfsg-10	amd64
+libsasl2-modules	2.1.28+dfsg-10	amd64
+libsasl2-modules-db	2.1.28+dfsg-10	amd64
+libseccomp2	2.5.4-1+deb12u1	amd64
+libselinux1	3.4-1+b6	amd64
+libsemanage-common	3.4-1	all
+libsemanage2	3.4-1+b5	amd64
+libsepol2	3.4-2.1	amd64
+libsmartcols1	2.38.1-5+deb12u3	amd64
+libsqlite3-0	3.40.1-2+deb12u1	amd64
+libss2	1.47.0-2	amd64
+libssh2-1	1.10.0-3+b1	amd64
+libssl-dev	3.0.17-1~deb12u3	amd64
+libssl3	3.0.17-1~deb12u3	amd64
+libstdc++-12-dev	12.2.0-14+deb12u1	amd64
+libstdc++6	12.2.0-14+deb12u1	amd64
+libsvtav1enc1	1.4.1+dfsg-1	amd64
+libsystemd0	252.38-1~deb12u1	amd64
+libsz2	1.0.6-1+b1	amd64
+libtasn1-6	4.19.0-2+deb12u1	amd64
+libtiff6	4.5.0-6+deb12u3	amd64
+libtinfo6	6.4-4	amd64
+libtirpc-common	1.3.3+ds-1	all
+libtirpc-dev	1.3.3+ds-1	amd64
+libtirpc3	1.3.3+ds-1	amd64
+libtsan2	12.2.0-14+deb12u1	amd64
+libubsan1	12.2.0-14+deb12u1	amd64
+libudev1	252.38-1~deb12u1	amd64
+libunistring2	1.0-2	amd64
+libuuid1	2.38.1-5+deb12u3	amd64
+libwebp7	1.2.4-0.2+deb12u1	amd64
+libx11-6	2:1.8.4-2+deb12u2	amd64
+libx11-data	2:1.8.4-2+deb12u2	all
+libx265-199	3.5-2+b1	amd64
+libxau6	1:1.0.9-1	amd64
+libxcb1	1.15-1	amd64
+libxdmcp6	1:1.1.2-3	amd64
+libxext6	2:1.3.4-1+b1	amd64
+libxmuu1	2:1.1.3-3	amd64
+libxpm4	1:3.5.12-1.1+deb12u1	amd64
+libxxhash0	0.8.1-1	amd64
+libyuv0	0.0~git20230123.b2528b0-1	amd64
+libzstd1	1.5.4+dfsg2-5	amd64
+linux-libc-dev	6.1.153-1	amd64
+login	1:4.13+dfsg1-1+deb12u1	amd64
+logsave	1.47.0-2	amd64
+manpages	6.03-2	all
+manpages-dev	6.03-2	all
+mawk	1.3.4.20200120-3.1	amd64
+mount	2.38.1-5+deb12u3	amd64
+ncurses-base	6.4-4	all
+ncurses-bin	6.4-4	amd64
+netbase	6.4	all
+openssh-client	1:9.2p1-2+deb12u7	amd64
+openssl	3.0.17-1~deb12u3	amd64
+passwd	1:4.13+dfsg1-1+deb12u1	amd64
+patch	2.7.6-7	amd64
+perl	5.36.0-7+deb12u3	amd64
+perl-base	5.36.0-7+deb12u3	amd64
+perl-modules-5.36	5.36.0-7+deb12u3	all
+pkg-config	1.8.1-1	amd64
+pkgconf	1.8.1-1	amd64
+pkgconf-bin	1.8.1-1	amd64
+publicsuffix	20230209.2326-1	all
+readline-common	8.2-1.3	all
+rpcsvc-proto	1.4.3-1	amd64
+sed	4.9-1	amd64
+sysvinit-utils	3.06-4	amd64
+tar	1.34+dfsg-1.2+deb12u1	amd64
+tzdata	2025b-0+deb12u1	all
+usr-is-merged	37~deb12u1	all
+util-linux	2.38.1-5+deb12u3	amd64
+util-linux-extra	2.38.1-5+deb12u3	amd64
+wget	1.21.3-1+deb12u1	amd64
+xauth	1:1.1.2-1	amd64
+zlib1g	1:1.2.13.dfsg-1	amd64
+zlib1g-dev	1:1.2.13.dfsg-1	amd64

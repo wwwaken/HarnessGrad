@@ -1,0 +1,60 @@
+[
+    {
+        "Id": "sha256:92acda0f124b988036a6f426ce0bc47fac19f5efe9fc5e6ea3ea52ccb075d0a4",
+        "RepoTags": [
+            "alexgshaw/filter-js-from-html:20251031"
+        ],
+        "RepoDigests": [
+            "alexgshaw/filter-js-from-html@sha256:92acda0f124b988036a6f426ce0bc47fac19f5efe9fc5e6ea3ea52ccb075d0a4"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-09-13T17:53:42.57859873Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-filter-js-from-html",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 377970833,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:9ac6f34e07487a68887d3ba5083668e7789664cb43e171a3dc291aaf35424a16",
+                "sha256:af53724cb40eb1cb6d5b59ffd4da16de18157523d86a2ccaf700decdb1cf3e6a",
+                "sha256:30d7f1ba192358d45aa11f0092914568945af74fc508af063f86c9fbcf3dbe5a"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-26T05:16:38.086471167Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:92acda0f124b988036a6f426ce0bc47fac19f5efe9fc5e6ea3ea52ccb075d0a4",
+            "size": 1790
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/filter-js-from-html"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,67 @@
+[
+    {
+        "Id": "sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/portfolio-optimization:20251031",
+            "alexgshaw/portfolio-optimization:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/portfolio-optimization@sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8",
+            "alexgshaw/portfolio-optimization@sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-31T02:56:51.534489971Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-portfolio-optimization",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 196461134,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+                "sha256:ea33dd086f86dcf6121e3a166b890878cab67fed174dfe833090028aeefa52e4",
+                "sha256:6ed52f32be4232018457b14327f5c6a1bc5c182367d05e789059c22ebbebf4dd",
+                "sha256:da03042e4abc7598d4f1c5c6637fcfb2df5db49b65a6ed238f11a51ae2c89fc0",
+                "sha256:0ce50c570f4472e1ac8e4a51ac95695151d3c77132132dc96ef47d91b1d4117f",
+                "sha256:6d7d56c1b34684b18a0926730dc9b7ba53e0d628cc8c6807d7541effaa6c1808",
+                "sha256:8e96e17c5add7a26c74fe93ef04c6bc8887ac8d7123af66c5e74ab59d106581e",
+                "sha256:b7bcc001a754b3e7fe0d30537151074d9540a9ba39ec4a8b30afa9d297d5a86d"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T07:12:42.829925666Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8",
+            "size": 2827
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/portfolio-optimization"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-20261014T214331Z-869cd5-tb-schemelike-metacircular-eval",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=1536m",
+    "--memory-swap=1536m",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m",
+    "--env=OPENBLAS_NUM_THREADS=1",
+    "--env=OMP_NUM_THREADS=1",
+    "--env=PYTHONDONTWRITEBYTECODE=1",
+    "--env=HOME=/tmp",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--workdir=/tmp",
+    "--entrypoint=/bin/sh",
+    "sha256:b485be38bf80d56c1a4cd9da95bbf7ec129dc03f6786b86c0525518a96f6d1db",
+    "/wimg/probe.sh",
+    "tb-schemelike-metacircular-eval"
+  ],
+  "ended_utc": "2026-10-14T21:44:23.944039+00:00",
+  "returncode": 0,
+  "shell_display": "docker create --name hg-wimg-20261014T214331Z-869cd5-tb-schemelike-metacircular-eval --pull=never --network=none --read-only --cpus=1 --memory=1536m --memory-swap=1536m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges --tmpfs=/tmp:rw,exec,nosuid,nodev,size=128m --env=OPENBLAS_NUM_THREADS=1 --env=OMP_NUM_THREADS=1 --env=PYTHONDONTWRITEBYTECODE=1 --env=HOME=/tmp --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --workdir=/tmp --entrypoint=/bin/sh sha256:b485be38bf80d56c1a4cd9da95bbf7ec129dc03f6786b86c0525518a96f6d1db /wimg/probe.sh tb-schemelike-metacircular-eval",
+  "started_utc": "2026-10-14T21:44:23.821983+00:00"
+}

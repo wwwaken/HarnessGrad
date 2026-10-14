@@ -1,0 +1,1282 @@
+=== image-local shell facts ===
+/usr/bin/sh
+/usr/bin/bash
+/usr/local/bin/python3
+/usr/local/bin/python
+glibc 2.41
+ldd (Debian GLIBC 2.41-12+deb13u4) 2.41
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+=== loader paths ===
+-rwxr-xr-x 1 root root 225672 Jun 29 21:37 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+lrwxrwxrwx 1 root root     44 Jun 29 21:37 /lib64/ld-linux-x86-64.so.2 -> ../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+-rwxr-xr-x 1 root root 225672 Jun 29 21:37 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+=== shell ABI ===
+	linux-vdso.so.1 (0x00007ffd4fde8000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000749a96043000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000749a9625f000)
+	linux-vdso.so.1 (0x00007ffc4ed8e000)
+	libtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x000072e30b8d9000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000072e30b6e5000)
+	/lib64/ld-linux-x86-64.so.2 (0x000072e30ba5c000)
+=== interpreter ===
+Python 3.12.15
+=== bash ===
+GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+This is free software; you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+=== network namespace ===
+Iface	Destination	Gateway 	Flags	RefCnt	Use	Metric	Mask		MTU	Window	IRTT                                                       
+lo
+=== Python collector follows ===
+{
+  "commands": [
+    {
+      "argv": [
+        "getconf",
+        "GNU_LIBC_VERSION"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "glibc 2.41\n"
+    },
+    {
+      "argv": [
+        "ldd",
+        "--version"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "ldd (Debian GLIBC 2.41-12+deb13u4) 2.41\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Roland McGrath and Ulrich Drepper.\n"
+    },
+    {
+      "argv": [
+        "dpkg-query",
+        "-W",
+        "-f=${Package}\t${Version}\t${Architecture}\n"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "adduser\t3.152\tall\napt\t3.0.3\tamd64\nbase-files\t13.8+deb13u7\tamd64\nbase-passwd\t3.6.7\tamd64\nbash\t5.2.37-2+b10\tamd64\nbsdutils\t1:2.41.5-0+deb13u1\tamd64\nca-certificates\t20250419\tall\ncoreutils\t9.7-3\tamd64\ncurl\t8.14.1-2+deb13u5\tamd64\ndash\t0.5.12-12\tamd64\ndebconf\t1.5.91\tall\ndebian-archive-keyring\t2025.1\tall\ndebianutils\t5.23.2\tamd64\ndiffutils\t1:3.10-4\tamd64\ndirmngr\t2.4.7-21+deb13u1+b5\tamd64\ndpkg\t1.22.22\tamd64\nfile\t1:5.46-5\tamd64\nfindutils\t4.10.0-3\tamd64\nfontconfig-config\t2.15.0-2.3\tamd64\nfonts-dejavu-core\t2.37-8\tall\nfonts-dejavu-mono\t2.37-8\tall\ngcc-14-base\t14.2.0-19\tamd64\ngnupg\t2.4.7-21+deb13u1\tall\ngnupg-l10n\t2.4.7-21+deb13u1\tall\ngpg\t2.4.7-21+deb13u1+b5\tamd64\ngpg-agent\t2.4.7-21+deb13u1+b5\tamd64\ngpgconf\t2.4.7-21+deb13u1+b5\tamd64\ngpgsm\t2.4.7-21+deb13u1+b5\tamd64\ngrep\t3.11-4\tamd64\ngzip\t1.13-1+deb13u1\tamd64\nhostname\t3.25\tamd64\ninit-system-helpers\t1.69~deb13u1\tall\nlibacl1\t2.3.2-2+b1\tamd64\nlibapt-pkg7.0\t3.0.3\tamd64\nlibassuan9\t3.0.2-2\tamd64\nlibattr1\t1:2.5.2-3\tamd64\nlibaudit-common\t1:4.0.2-2+deb13u1\tall\nlibaudit1\t1:4.0.2-2+deb13u1\tamd64\nlibblkid1\t2.41.5-0+deb13u1\tamd64\nlibbrotli1\t1.1.0-2+b7\tamd64\nlibbsd0\t0.12.2-2\tamd64\nlibbz2-1.0\t1.0.8-6\tamd64\nlibc-bin\t2.41-12+deb13u4\tamd64\nlibc6\t2.41-12+deb13u4\tamd64\nlibcairo2\t1.18.4-1+b1\tamd64\nlibcap-ng0\t0.8.5-4+b1\tamd64\nlibcap2\t1:2.75-10+deb13u1+b3\tamd64\nlibcom-err2\t1.47.2-3+b12\tamd64\nlibcrypt1\t1:4.4.38-1\tamd64\nlibcurl3t64-gnutls\t8.14.1-2+deb13u5\tamd64\nlibcurl4t64\t8.14.1-2+deb13u5\tamd64\nlibdb5.3t64\t5.3.28+dfsg2-9\tamd64\nlibdebconfclient0\t0.280\tamd64\nlibdeflate0\t1.23-2\tamd64\nlibexpat1\t2.8.3-1~deb13u1\tamd64\nlibffi8\t3.4.8-2\tamd64\nlibfontconfig1\t2.15.0-2.3\tamd64\nlibfreetype6\t2.13.3+dfsg-1+deb13u1\tamd64\nlibgcc-s1\t14.2.0-19\tamd64\nlibgcrypt20\t1.11.0-7+deb13u1\tamd64\nlibgdbm6t64\t1.24-2\tamd64\nlibgmp10\t2:6.3.0+dfsg-3\tamd64\nlibgnutls30t64\t3.8.9-3+deb13u4\tamd64\nlibgpg-error0\t1.51-4\tamd64\nlibgpgme11t64\t1.24.2-3\tamd64\nlibgpgmepp6t64\t1.24.2-3\tamd64\nlibgssapi-krb5-2\t1.21.3-5+deb13u1\tamd64\nlibhogweed6t64\t3.10.1-1\tamd64\nlibidn2-0\t2.3.8-2\tamd64\nlibjbig0\t2.1-6.1+b2\tamd64\nlibjpeg62-turbo\t1:2.1.5-4\tamd64\nlibk5crypto3\t1.21.3-5+deb13u1\tamd64\nlibkeyutils1\t1.6.3-6\tamd64\nlibkrb5-3\t1.21.3-5+deb13u1\tamd64\nlibkrb5support0\t1.21.3-5+deb13u1\tamd64\nlibksba8\t1.6.7-2+b1\tamd64\nliblastlog2-2\t2.41.5-0+deb13u1\tamd64\nliblcms2-2\t2.16-2+deb13u2\tamd64\nlibldap2\t2.6.10+dfsg-1\tamd64\nliblerc4\t4.0.0+ds-5\tamd64\nliblz4-1\t1.10.0-4\tamd64\nliblzma5\t5.8.1-1+deb13u1\tamd64\nlibmagic-mgc\t1:5.46-5\tamd64\nlibmagic1t64\t1:5.46-5\tamd64\nlibmd0\t1.1.0-2+b1\tamd64\nlibmount1\t2.41.5-0+deb13u1\tamd64\nlibncursesw6\t6.5+20250216-2\tamd64\nlibnettle8t64\t3.10.1-1\tamd64\nlibnghttp2-14\t1.64.0-1.1+deb13u1\tamd64\nlibnghttp3-9\t1.8.0-1\tamd64\nlibngtcp2-16\t1.11.0-1+deb13u1\tamd64\nlibngtcp2-crypto-gnutls8\t1.11.0-1+deb13u1\tamd64\nlibnpth0t64\t1.8-3\tamd64\nlibnspr4\t2:4.36-1\tamd64\nlibnss3\t2:3.110-1+deb13u4\tamd64\nlibopenjp2-7\t2.5.3-2.1~deb13u2\tamd64\nlibp11-kit0\t0.25.5-3\tamd64\nlibpam-modules\t1.7.0-5\tamd64\nlibpam-modules-bin\t1.7.0-5\tamd64\nlibpam-runtime\t1.7.0-5\tall\nlibpam0g\t1.7.0-5\tamd64\nlibpcre2-8-0\t10.46-1~deb13u3\tamd64\nlibpixman-1-0\t0.44.0-3\tamd64\nlibpng16-16t64\t1.6.48-1+deb13u6\tamd64\nlibpoppler147\t25.03.0-5+deb13u4\tamd64\nlibpsl5t64\t0.21.2-1.1+b1\tamd64\nlibreadline8t64\t8.2-6\tamd64\nlibrtmp1\t2.4+20151223.gitfa8646d.1-2+b5\tamd64\nlibsasl2-2\t2.1.28+dfsg1-9\tamd64\nlibsasl2-modules-db\t2.1.28+dfsg1-9\tamd64\nlibseccomp2\t2.6.0-2\tamd64\nlibselinux1\t3.8.1-1\tamd64\nlibsemanage-common\t3.8.1-1\tall\nlibsemanage2\t3.8.1-1\tamd64\nlibsepol2\t3.8.1-1\tamd64\nlibsharpyuv0\t1.5.0-0.1\tamd64\nlibsmartcols1\t2.41.5-0+deb13u1\tamd64\nlibsqlite3-0\t3.46.1-7+deb13u2\tamd64\nlibssh2-1t64\t1.11.1-1+deb13u2\tamd64\nlibssl3t64\t3.5.7-1~deb13u3\tamd64\nlibstdc++6\t14.2.0-19\tamd64\nlibsystemd0\t257.13-1~deb13u1\tamd64\nlibtasn1-6\t4.20.0-2+deb13u1\tamd64\nlibtiff6\t4.7.0-3+deb13u3\tamd64\nlibtinfo6\t6.5+20250216-2\tamd64\nlibudev1\t257.13-1~deb13u1\tamd64\nlibunistring5\t1.3-2\tamd64\nlibuuid1\t2.41.5-0+deb13u1\tamd64\nlibwebp7\t1.5.0-0.1\tamd64\nlibx11-6\t2:1.8.12-1\tamd64\nlibx11-data\t2:1.8.12-1\tall\nlibxau6\t1:1.0.11-1\tamd64\nlibxcb-render0\t1.17.0-2+b1\tamd64\nlibxcb-shm0\t1.17.0-2+b1\tamd64\nlibxcb1\t1.17.0-2+b1\tamd64\nlibxdmcp6\t1:1.1.5-1\tamd64\nlibxext6\t2:1.3.4-1+b3\tamd64\nlibxrender1\t1:0.9.12-1\tamd64\nlibxxhash0\t0.8.3-2\tamd64\nlibzstd1\t1.5.7+dfsg-1\tamd64\nlogin\t1:4.16.0-2+really2.41.5-0+deb13u1\tamd64\nlogin.defs\t1:4.17.4-2\tall\nmawk\t1.3.4.20250131-1\tamd64\nmount\t2.41.5-0+deb13u1\tamd64\nncurses-base\t6.5+20250216-2\tall\nncurses-bin\t6.5+20250216-2\tamd64\nnetbase\t6.5\tall\nopenssl\t3.5.7-1~deb13u3\tamd64\nopenssl-provider-legacy\t3.5.7-1~deb13u3\tamd64\npasswd\t1:4.17.4-2\tamd64\nperl-base\t5.40.1-6+deb13u1\tamd64\npinentry-curses\t1.3.1-2\tamd64\npoppler-utils\t25.03.0-5+deb13u4\tamd64\nreadline-common\t8.2-6\tall\nsed\t4.9-2+deb13u1\tamd64\nsqv\t1.3.0-3+b2\tamd64\nsysvinit-utils\t3.14-4\tamd64\ntar\t1.35+dfsg-3.1\tamd64\ntzdata\t2026c-0+deb13u1\tall\nutil-linux\t2.41.5-0+deb13u1\tamd64\nzlib1g\t1:1.3.dfsg+really1.3.1-1+b1\tamd64\n"
+    },
+    {
+      "argv": [
+        "apk",
+        "info",
+        "-v"
+      ],
+      "error": "FileNotFoundError(2, 'No such file or directory')"
+    }
+  ],
+  "distributions": [
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/beautifulsoup4-4.15.0.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/beautifulsoup4-4.15.0.dist-info/METADATA",
+          "sha256": "b2f888103259f1607c85f3b1163be1bc49fc9941a3243c3b89a21075bfc6d4fb",
+          "size": 3812
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/beautifulsoup4-4.15.0.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/beautifulsoup4-4.15.0.dist-info/RECORD",
+          "sha256": "aed187a48c8926e528f22be27a1af359caf7c17558e1b2e6f0c97015dac29f2e",
+          "size": 2529
+        }
+      ],
+      "name": "beautifulsoup4",
+      "requires": [
+        "soupsieve>=1.6.1",
+        "typing-extensions>=4.0.0",
+        "cchardet; extra == 'cchardet'",
+        "chardet; extra == 'chardet'",
+        "charset-normalizer; extra == 'charset-normalizer'",
+        "html5lib; extra == 'html5lib'",
+        "lxml; extra == 'lxml'"
+      ],
+      "version": "4.15.0"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/certifi-2026.7.22.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/certifi-2026.7.22.dist-info/METADATA",
+          "sha256": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090",
+          "size": 2474
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/certifi-2026.7.22.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/certifi-2026.7.22.dist-info/RECORD",
+          "sha256": "54fa8ebe7e5d1cd4a48064f94e706e5f7a6cdcccef364379692ed7657bfed982",
+          "size": 1301
+        }
+      ],
+      "name": "certifi",
+      "requires": [],
+      "version": "2026.7.22"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/charset_normalizer-3.5.2.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/charset_normalizer-3.5.2.dist-info/METADATA",
+          "sha256": "89ce6362bb7be88558f4be99a98f5d1b4da93d19cd0323e5ee0bac05cf883dfb",
+          "size": 46395
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/charset_normalizer-3.5.2.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/charset_normalizer-3.5.2.dist-info/RECORD",
+          "sha256": "b5d6b3909c14affd6591d76ce150384820a45e93847c1f911511c2d3b821d0f5",
+          "size": 2785
+        }
+      ],
+      "name": "charset-normalizer",
+      "requires": [],
+      "version": "3.5.2"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/et_xmlfile-2.0.0.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/et_xmlfile-2.0.0.dist-info/METADATA",
+          "sha256": "0e97d7ea909ed0fbe03d88bc8b6f58677cee1b07bd3353ce361cd2405915204e",
+          "size": 2711
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/et_xmlfile-2.0.0.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/et_xmlfile-2.0.0.dist-info/RECORD",
+          "sha256": "f5d4caac240da585f132d2b01af2ba967ecca65376790111698b67c2ef555100",
+          "size": 1102
+        }
+      ],
+      "name": "et_xmlfile",
+      "requires": [],
+      "version": "2.0.0"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/idna-3.20.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/idna-3.20.dist-info/METADATA",
+          "sha256": "dbd8c14c1e4ca1e0c9824a6dbc7cbbf78884f38eb52d91148cd3025f671e4b85",
+          "size": 7207
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/idna-3.20.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/idna-3.20.dist-info/RECORD",
+          "sha256": "41149230f7b31e320da741e4f1d04b4f1de2ff8b1963c509336c597d4d2de4ec",
+          "size": 1785
+        }
+      ],
+      "name": "idna",
+      "requires": [
+        "ruff >= 0.16.0 ; extra == \"all\"",
+        "mypy >= 1.11.2 ; extra == \"all\"",
+        "ty >= 0.0.37 ; extra == \"all\"",
+        "pytest >= 8.3.2 ; extra == \"all\"",
+        "hypothesis >= 6.141.1 ; extra == \"all\"",
+        "coverage >= 7.10.0 ; extra == \"all\""
+      ],
+      "version": "3.20"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/lxml-6.1.3.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/lxml-6.1.3.dist-info/METADATA",
+          "sha256": "aad89f8107bc74045b86c9b7f7c0984196102520dd7faed5e4e45693b7c315ef",
+          "size": 3279
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/lxml-6.1.3.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/lxml-6.1.3.dist-info/RECORD",
+          "sha256": "cc8580f4659bfbb48100afdd765b9134b9c65cace8de9a2f0a0492fa2216ae49",
+          "size": 16806
+        }
+      ],
+      "name": "lxml",
+      "requires": [
+        "cssselect>=0.7; extra == \"cssselect\"",
+        "html5lib; extra == \"html5\"",
+        "BeautifulSoup4; extra == \"htmlsoup\"",
+        "lxml_html_clean; extra == \"html-clean\""
+      ],
+      "version": "6.1.3"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/numpy-2.5.3.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/numpy-2.5.3.dist-info/METADATA",
+          "sha256": "451a9b8028000588e66b0b415587b6aef0bbc51a96d8e8a0cba0dc23acf64f99",
+          "size": 6635
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/numpy-2.5.3.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/numpy-2.5.3.dist-info/RECORD",
+          "sha256": "2635c99fd5c937fc4f66de74cec39482463a24c9b84ed4556075718fa99eeb5b",
+          "size": 111603
+        }
+      ],
+      "name": "numpy",
+      "requires": [],
+      "version": "2.5.3"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/openpyxl-3.1.5.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/openpyxl-3.1.5.dist-info/METADATA",
+          "sha256": "23f80ca9830dd89435da1710f26deda8f81e5409287e74540210c72627a4ad96",
+          "size": 2510
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/openpyxl-3.1.5.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/openpyxl-3.1.5.dist-info/RECORD",
+          "sha256": "1c090d66dae3db301874398d4145fd12aa4b22eb7a4057d82ff73c242acf5cb9",
+          "size": 27747
+        }
+      ],
+      "name": "openpyxl",
+      "requires": [
+        "et-xmlfile"
+      ],
+      "version": "3.1.5"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/pillow-12.3.0.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/pillow-12.3.0.dist-info/METADATA",
+          "sha256": "8fc07146cab33ef7582361dab6eac596d340b03ec648f18217da7894f73838c8",
+          "size": 9093
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/pillow-12.3.0.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/pillow-12.3.0.dist-info/RECORD",
+          "sha256": "3c8c81345169b66224a19d036e57e2ce59ff232e914c7e366f313d40e9312310",
+          "size": 16324
+        }
+      ],
+      "name": "pillow",
+      "requires": [
+        "furo; extra == \"docs\"",
+        "olefile; extra == \"docs\"",
+        "sphinx>=8.2; extra == \"docs\"",
+        "sphinx-autobuild; extra == \"docs\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "sphinx-inline-tabs; extra == \"docs\"",
+        "sphinxext-opengraph; extra == \"docs\"",
+        "olefile; extra == \"fpx\"",
+        "olefile; extra == \"mic\"",
+        "arro3-compute; extra == \"test-arrow\"",
+        "arro3-core; extra == \"test-arrow\"",
+        "nanoarrow; extra == \"test-arrow\"",
+        "pyarrow; extra == \"test-arrow\"",
+        "coverage>=7.4.2; extra == \"tests\"",
+        "defusedxml; extra == \"tests\"",
+        "markdown2; extra == \"tests\"",
+        "olefile; extra == \"tests\"",
+        "packaging; extra == \"tests\"",
+        "pytest; extra == \"tests\"",
+        "pytest-cov; extra == \"tests\"",
+        "pytest-timeout; extra == \"tests\"",
+        "pytest-xdist; extra == \"tests\"",
+        "setuptools; extra == \"tests\"",
+        "trove-classifiers>=2024.10.12; extra == \"tests\"",
+        "defusedxml; extra == \"xmp\""
+      ],
+      "version": "12.3.0"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/pip-25.0.1.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/pip-25.0.1.dist-info/METADATA",
+          "sha256": "4fa7318cf30f979db7cec45c12cbbc2b4f88a15f12eefbf59a6291d0a03af926",
+          "size": 3677
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/pip-25.0.1.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/pip-25.0.1.dist-info/RECORD",
+          "sha256": "4af16711a1539d6b293f8e10feae2ba0e452295dc7fae8057aa591c77fb77649",
+          "size": 65643
+        }
+      ],
+      "name": "pip",
+      "requires": [],
+      "version": "25.0.1"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/requests-2.34.2.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/requests-2.34.2.dist-info/METADATA",
+          "sha256": "8c384ba3e979480faae2859d3c5e6c1276dd2c3616e322e124d52c8cfc556f27",
+          "size": 4806
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/requests-2.34.2.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/requests-2.34.2.dist-info/RECORD",
+          "sha256": "da741c2b9ead7ebcdbe3837ca1f094090666b76db41385596e6c57ee5d90938e",
+          "size": 3153
+        }
+      ],
+      "name": "requests",
+      "requires": [
+        "charset_normalizer<4,>=2",
+        "idna<4,>=2.5",
+        "urllib3<3,>=1.26",
+        "certifi>=2023.5.7",
+        "PySocks!=1.5.7,>=1.5.6; extra == \"socks\"",
+        "chardet<8,>=3.0.2; extra == \"use-chardet-on-py3\""
+      ],
+      "version": "2.34.2"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/soupsieve-2.10.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/soupsieve-2.10.dist-info/METADATA",
+          "sha256": "02ecd6c72d2fa0911bedfd99d53b2198e1bbf556f4606108819e8c19fdf32880",
+          "size": 4437
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/soupsieve-2.10.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/soupsieve-2.10.dist-info/RECORD",
+          "sha256": "69dbed70f473d9ba57dbb3eebf1556622f2e0a43c8664ed18be606fff030a8fb",
+          "size": 1377
+        }
+      ],
+      "name": "soupsieve",
+      "requires": [],
+      "version": "2.10"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/METADATA",
+          "sha256": "b05084ca1d50879865178d9fff9fabeab61bdfb1f361bfbde95421ffc8f9be46",
+          "size": 3310
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/RECORD",
+          "sha256": "78f74ed46a377d6e1debed78b3e994ff9cfe02a529d393d7c8ab80989bd25079",
+          "size": 580
+        }
+      ],
+      "name": "typing_extensions",
+      "requires": [],
+      "version": "4.16.0"
+    },
+    {
+      "metadata": [
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/urllib3-2.8.0.dist-info/METADATA",
+          "resolved": "/usr/local/lib/python3.12/site-packages/urllib3-2.8.0.dist-info/METADATA",
+          "sha256": "10898c620e8007c030e07fa5622b68358a43010025dfbd78a1cb797699de2bb4",
+          "size": 7389
+        },
+        {
+          "path": "/usr/local/lib/python3.12/site-packages/urllib3-2.8.0.dist-info/RECORD",
+          "resolved": "/usr/local/lib/python3.12/site-packages/urllib3-2.8.0.dist-info/RECORD",
+          "sha256": "5d88c4832d0406a7fd3c000f924b00394c2d7f694b332bc441370d1a7f5fe392",
+          "size": 5528
+        }
+      ],
+      "name": "urllib3",
+      "requires": [
+        "brotli>=1.2.0; (platform_python_implementation == 'CPython') and extra == 'brotli'",
+        "brotlicffi>=1.2.0.0; (platform_python_implementation != 'CPython') and extra == 'brotli'",
+        "h2<5,>=4; extra == 'h2'",
+        "pysocks!=1.5.7,<2.0,>=1.5.6; extra == 'socks'",
+        "backports-zstd>=1.0.0; (python_version < '3.14') and extra == 'zstd'"
+      ],
+      "version": "2.8.0"
+    }
+  ],
+  "elf": [
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/bin/bash"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc5bae7000)\n\tlibtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x000077eaf2519000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077eaf2325000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077eaf269c000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307",
+        "size": 225672
+      },
+      "path": "/bin/bash",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/bin/bash",
+      "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+      "size": 1298416
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/bin/sh"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc17363000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb720090000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fb7202ac000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307",
+        "size": 225672
+      },
+      "path": "/bin/sh",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/bin/dash",
+      "sha256": "a6f559e00b69a4aa4d8cb607be18d9386c5aee55c509e2c075549dcf00e00fc7",
+      "size": 129736
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tstatically linked\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307",
+      "size": 225672
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffff59c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075b6ca62d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075b6ca839000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+      "sha256": "c630f057efedc12f848710d71f40283895591e5b4608539f387895c64e0553da",
+      "size": 74688
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libc.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\t/lib64/ld-linux-x86-64.so.2 (0x00007ea7f8691000)\n\tlinux-vdso.so.1 (0x00007ffedd1f3000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307",
+        "size": 225672
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "9792e3cbb541c8f44c7acf5f14f4022ea62998ecc787d326bed4d8b6547dfd92",
+      "size": 1995216
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libcrypto.so.3"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe49d37000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007588f4757000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007588f468d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007588f4499000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007588f4db7000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "sha256": "8ae56f0a9481280a68c19f59809cd242a07a91ad7142944d21a878221992244b",
+      "size": 6521408
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffa6595000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075f4291b4000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075f4293ba000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4",
+      "sha256": "922024ec5a23f7de1095b1cff2f6cbfb377b5d58cd51fd0ec2e8fe35427653e2",
+      "size": 47576
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe8c3d0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000767566aca000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000767566cf0000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "30c61ab012a4241bed033725a09b61f5fdd3bb7df95ee852d0b096520524c7af",
+      "size": 182856
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe95bd4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000078daf8ed1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000078daf90fb000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1",
+      "sha256": "01e05a4b5268805a10a2414a8904fb1fb45c60626dce53b5ea19c1d491049b99",
+      "size": 198832
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libm.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffda8d75000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000763942955000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000763942c3e000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "6d567d53e895273ca14a1f9dc164fc6c8d39aed2f60aa46a733c2784228915f3",
+      "size": 977112
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libpthread.so.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffcc0090000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073433f6a9000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073433f8a7000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "sha256": "85e21f7dba0394411d00959176fd18b470e575b0b05f1f4f41e5636802ce0500",
+      "size": 14408
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffcff887000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000777f94c41000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000777f94a4d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000777f94eb6000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+      "sha256": "317d80bf5d592f98a71e14d2330591d6a339f631f37c5977835af748a1f26715",
+      "size": 1571096
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libssl.so.3"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff191ad000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000072a800b90000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000072a80099c000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000072a80097c000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x000072a8008b2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000072a8012e0000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+      "sha256": "9592038e92d1f41affcbb625334d0b6e788714c889104fa6d5b107cf9fd657f2",
+      "size": 1109952
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffedd753000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000792ed795b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000792ed7767000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000792ed7cb6000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000792ed773a000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "sha256": "972bb2a18b71140dab0240f8a1f68ab3fb1d56bcd4c4f824a91b70888faf5a00",
+      "size": 2497768
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc9c8fc000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000751caa2f8000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000751caa511000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+      "sha256": "85590dd58edf5445e18bc7193e5ebc01ac5841f1ae187e97705a662e90c6421e",
+      "size": 125376
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffee293c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000072471d9c6000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000072471dc89000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+      "sha256": "27f07c9a49c2c956bcfb64cd4712976586a66facbf15fc7f09bc37413b5f2b21",
+      "size": 825336
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/bin/python3.12"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffcd9524000)\n\tlibpython3.12.so.1.0 => /usr/local/bin/../lib/libpython3.12.so.1.0 (0x0000706279ae9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007062798f2000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000706279802000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000070627a145000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307",
+        "size": 225672
+      },
+      "path": "/usr/local/bin/python3.12",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/local/bin/python3.12",
+      "sha256": "0e6475dfda68a9b2d93501449fc47593ca169010e8f4881577b97463fd0c1263",
+      "size": 14472
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/libpython3.12.so.1.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe99b4b000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007caf95a2d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007caf95839000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007caf96177000)\n"
+      },
+      "path": "/usr/local/lib/libpython3.12.so.1.0",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/libpython3.12.so.1.0",
+      "sha256": "eb1599eecbe4002798fdcec98d0f4d85dab01afaaa8db89b39c5d30abdb9f5aa",
+      "size": 6630672
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd84978000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000078eb0f5b1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000078eb0f7b1000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "99e5c4ecc7cbf7769410f69e3c2b31860b7b2b327521b7473029a3adf5a1b4dc",
+      "size": 23416
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc460fa000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000789d17289000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000789d1748f000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9272d0db5c3d0f6a0e7ce74fdf2e780f1697eb16a9c3bd95b7f96cfa828b267d",
+      "size": 48632
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc33493000)\n\tlibbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007f0df7ca6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f0df7ab2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f0df7cc6000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "af6446403db2e8fd0643feb3b4a9fd4dbf3f797b14ee52b8aabf3ac4aeb31d26",
+      "size": 27888
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tstatically linked\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8a5146382a14d3f892e3d9b74a90e1bdad246960afef500c823f95cbd53f926f",
+      "size": 14352
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff873e6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073e589ec2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073e58a0c5000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "acee243df244c5cca8636a524c2fb2fbfa11890548d69e7002917b0cb12f738d",
+      "size": 37472
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd73d7f000)\n\tlibffi.so.8 => /lib/x86_64-linux-gnu/libffi.so.8 (0x000077cd5da00000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077cd5d80c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077cd5da33000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "c4e932d98dd779c09aee18533e04b5c6e5b6214878f3bc0ba867e5559fa5d5d1",
+      "size": 129536
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe939d2000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000073d5cf411000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073d5cf21d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073d5cf521000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "1d0c3421db754a85c0a168fdc873d98a2ed2ddf3078f57629b05ed0ff1a0208b",
+      "size": 108912
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe58884000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007198532e0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007198530ec000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007198530cc000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x0000719853002000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000719853931000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "fb0751d9c1d28f82f27bff1901df75dc598b5d456316fe4f491e89d65d464d87",
+      "size": 64184
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffa2bdd000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e6896b33000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e6896d37000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "4448a535456a9dab93645194b6706b38c85ab2dc292bfab6935f4431616dab5c",
+      "size": 40688
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffeb1bfc000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007eee5e9bd000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007eee5e7c9000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007eee5e9ff000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b8a74cc9b0ef9553214871f77a0a7f40cedba073a006ee120f575f36db95eb78",
+      "size": 45000
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe333b1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007bae57692000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007bae57890000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "bdbc4dd1dd0ac096b30e0715251561a3aa17574465e4efad5529cbd6cd42d139",
+      "size": 14744
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff6d8c9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000072fb7afe7000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000072fb7b1fe000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8f2fefabccfc7d0a7c3c910c2ead5dd40acfcbf38a58507db7b1b8a81b817b4f",
+      "size": 124704
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd28dfc000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000784f784ae000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000784f786af000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "405368efb426b8b427daa857837acf4fea9c2bffce1e62adbe532d0fd0e882e4",
+      "size": 27240
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe3fbaf000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074e1524bd000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000074e1526bd000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "218ab54eca95be57ee345a2271f3d1f01414df8c6f9fc61ecb496e1ec27efefb",
+      "size": 23232
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe2236d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000710144e27000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000710145034000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "a639ebb7c37d355c37c9f76b462a6324645cbcf92c611a5ac783001ac34daa91",
+      "size": 77712
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd26f55000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000070a6d9fa5000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000070a6da1b8000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "3eac65ca6bd75987f0aea2ad7fe43b6354a544f57117f1c2f716cf862f7d26ea",
+      "size": 104152
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc49d3c000)\n\tlibsqlite3.so.0 => /lib/x86_64-linux-gnu/libsqlite3.so.0 (0x00007ad0eca69000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ad0ec875000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007ad0ec785000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ad0ecc0e000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "91b141970b89aabda66c1518c86deb0d71bd332f32bedd01067bb4e757ce95d0",
+      "size": 132336
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff87d14000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x000077cbe7d79000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000077cbe773e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077cbe754a000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000077cbe752a000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x000077cbe745e000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077cbe7ec3000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "6891800dbb9144863d3e1fbcf812694035533c6872a29575f857d5163a8b5c7e",
+      "size": 212992
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc1569e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007092760f3000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007092762f9000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ac01e0f445ffc5ca514afe3252c68341e8a1208b97276769ce6a33f04e6c4d07",
+      "size": 54992
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd67767000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000728039273000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000072803947d000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "005b3be02a0b7a4deb23c34a007477433ef633058c22b69e39c356fa1e2178cb",
+      "size": 70560
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffe8d1f000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007794cbf7e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007794cbd8a000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007794cbfac000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "c0c0c47864f092e5ccac8397a43d649e2dcf7cbfa3983b3e1e7114b3e03a6f35",
+      "size": 32216
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd6030d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000073557a818000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073557aa18000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9dd396ef78b4d584b0dc3d060e6ba55c0cdbb5ffbb83b4b13b0d3f927f28de70",
+      "size": 22984
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffef33e7000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007d00686d1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d00684dd000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007d00687d8000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "80b2b5e822e2d2357a2681f0807c120ab106a57fe3e137fe8a127847bef353a8",
+      "size": 70424
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffe0dfe000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007575650ea000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007575652ec000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "4d28423a7bb3a98e4157c122573f671a787530926891a189b7abab64cbae34cc",
+      "size": 32768
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd7cae0000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000073028951d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000730289329000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000073028954f000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "93e46df50e17712a32a4ec2d548f5122df0ac2b634175e2d065669544ee625e8",
+      "size": 50192
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffeec51e000)\n\tlibquadmath-2284e583-a9307bba.so.0.0.0 => /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0 (0x00007caf2e000000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007caf2ea3f000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007caf2e94f000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007caf2e922000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007caf2de0c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007caf2ea64000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0",
+      "sha256": "a6a368328d02a5d8a149746f13f6268f8cc9192df5c18777b25c3c9b5ef52160",
+      "size": 2862249
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff2d9fe000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000076946c710000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000076946c51c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000076946ca76000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0",
+      "sha256": "6bc3069003caec1f075be3c51ae8355332f081fa9465910c4b5724e7fe7d8ad4",
+      "size": 275553
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffda7fe1000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007cd504574000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007cd50456f000)\n\tlibgfortran-83c28eba-468e71e5.so.5.0.0 => /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0 (0x00007cd504000000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007cd503e0c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007cd505ccd000)\n\tlibquadmath-2284e583-a9307bba.so.0.0.0 => /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0 (0x00007cd503a00000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007cd50454d000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007cd504520000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so",
+      "sha256": "432e1c1739731468ba305771af96773939e43016643e2d630f58cb45b6670e96",
+      "size": 24325657
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffcae5e6000)\n\tlibscipy_openblas64_-f48b354e.so => /usr/local/lib/python3.12/site-packages/numpy/_core/../../numpy.libs/libscipy_openblas64_-f48b354e.so (0x0000718e3a933000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x0000718e3a6ca000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000718e3a5da000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000718e3a5ad000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000718e3a3b7000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000718e3c952000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000718e3a3b2000)\n\tlibgfortran-83c28eba-468e71e5.so.5.0.0 => /usr/local/lib/python3.12/site-packages/numpy/_core/../../numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0 (0x0000718e39e00000)\n\tlibquadmath-2284e583-a9307bba.so.0.0.0 => /usr/local/lib/python3.12/site-packages/numpy/_core/../../numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0 (0x0000718e39a00000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000718e3a392000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ceec5ba13ab88318632307fdd2df74f317fa293ce77be559c4298ddd1f4306b0",
+      "size": 10637297
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff13ce9000)\n\tlibscipy_openblas64_-f48b354e.so => /usr/local/lib/python3.12/site-packages/numpy/linalg/../../numpy.libs/libscipy_openblas64_-f48b354e.so (0x0000717bac0c3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000717babfd0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000717babddc000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000717babdd7000)\n\tlibgfortran-83c28eba-468e71e5.so.5.0.0 => /usr/local/lib/python3.12/site-packages/numpy/linalg/../../numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0 (0x0000717bab800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000717bad75b000)\n\tlibquadmath-2284e583-a9307bba.so.0.0.0 => /usr/local/lib/python3.12/site-packages/numpy/linalg/../../numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0 (0x0000717bab400000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000717babdb5000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000717babd88000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "19d024507f73b42889baeb00f9da0004e33a42ed7a78fd77662fd6236e930d78",
+      "size": 231801
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libtinfo.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffce5f7000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007825145c2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007825147f1000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libtinfo.so.6",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5",
+      "sha256": "4013e7651ac68f547d8333517def25b2366c97eec7de7f06e105dbf3444ffebf",
+      "size": 220464
+    }
+  ],
+  "executable": {
+    "path": "/usr/local/bin/python3",
+    "resolved": "/usr/local/bin/python3.12",
+    "sha256": "0e6475dfda68a9b2d93501449fc47593ca169010e8f4881577b97463fd0c1263",
+    "size": 14472
+  },
+  "glibc_confstr": "glibc 2.41",
+  "glibc_runtime": "2.41",
+  "implementation": "CPython",
+  "imports": {
+    "_ctypes": {
+      "file": "/usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "version": "1.1.0"
+    },
+    "_hashlib": {
+      "file": "/usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "version": null
+    },
+    "_sqlite3": {
+      "file": "/usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "version": null
+    },
+    "_ssl": {
+      "file": "/usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "version": null
+    },
+    "bz2": {
+      "file": "/usr/local/lib/python3.12/bz2.py",
+      "version": null
+    },
+    "hashlib": {
+      "file": "/usr/local/lib/python3.12/hashlib.py",
+      "version": null
+    },
+    "lzma": {
+      "file": "/usr/local/lib/python3.12/lzma.py",
+      "version": null
+    },
+    "numpy": {
+      "file": "/usr/local/lib/python3.12/site-packages/numpy/__init__.py",
+      "version": "2.5.3"
+    },
+    "sqlite3": {
+      "file": "/usr/local/lib/python3.12/sqlite3/__init__.py",
+      "version": null
+    },
+    "ssl": {
+      "file": "/usr/local/lib/python3.12/ssl.py",
+      "version": null
+    },
+    "zlib": {
+      "file": "/usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+      "version": "1.0"
+    }
+  },
+  "label": "gaia",
+  "libc": [
+    "glibc",
+    "2.41"
+  ],
+  "machine": "x86_64",
+  "openssl": "OpenSSL 3.5.7 9 Jun 2026",
+  "process_maps": "5ab79b870000-5ab79b871000 r--p 00000000 00:67 94246497                   /usr/local/bin/python3.12\n5ab79b871000-5ab79b872000 r-xp 00001000 00:67 94246497                   /usr/local/bin/python3.12\n5ab79b872000-5ab79b873000 r--p 00002000 00:67 94246497                   /usr/local/bin/python3.12\n5ab79b873000-5ab79b874000 r--p 00002000 00:67 94246497                   /usr/local/bin/python3.12\n5ab79b874000-5ab79b875000 rw-p 00003000 00:67 94246497                   /usr/local/bin/python3.12\n5ab7a4fe6000-5ab7a58b0000 rw-p 00000000 00:00 0                          [heap]\n7e957af00000-7e957d200000 rw-p 00000000 00:00 0 \n7e957d200000-7e957d240000 r-xp 00000000 00:67 94256281                   /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0\n7e957d240000-7e957d43f000 ---p 00040000 00:67 94256281                   /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0\n7e957d43f000-7e957d440000 r--p 0003f000 00:67 94256281                   /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0\n7e957d440000-7e957d441000 rw-p 00040000 00:67 94256281                   /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0\n7e957d441000-7e957d442000 rw-p 00042000 00:67 94256281                   /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0\n7e957d442000-7e957d443000 rw-p 00043000 00:67 94256281                   /usr/local/lib/python3.12/site-packages/numpy.libs/libquadmath-2284e583-a9307bba.so.0.0.0\n7e957d4ce000-7e957d4d2000 r--p 00000000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d4d2000-7e957d4f6000 r-xp 00004000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d4f6000-7e957d4fb000 r--p 00028000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d4fb000-7e957d4fc000 r--p 0002d000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d4fc000-7e957d4fd000 rw-p 0002e000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d4fd000-7e957d4ff000 rw-p 00036000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d4ff000-7e957d500000 rw-p 00038000 00:67 94255729                   /usr/local/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so\n7e957d500000-7e957d600000 rw-p 00000000 00:00 0 \n7e957d600000-7e957d87c000 r-xp 00000000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957d87c000-7e957da7c000 ---p 0027c000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957da7c000-7e957da7e000 r--p 0027c000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957da7e000-7e957da7f000 rw-p 0027e000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957da7f000-7e957da8b000 rw-p 00282000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957da8b000-7e957da94000 rw-p 0028e000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957da94000-7e957da9d000 rw-p 00297000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957da9d000-7e957daa6000 rw-p 002a0000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957daa6000-7e957daaf000 rw-p 002a9000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957daaf000-7e957dab8000 rw-p 002b2000 00:67 94256280                   /usr/local/lib/python3.12/site-packages/numpy.libs/libgfortran-83c28eba-468e71e5.so.5.0.0\n7e957dac2000-7e957dac7000 r--p 00000000 00:67 94247235                   /usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so\n7e957dac7000-7e957dad8000 r-xp 00005000 00:67 94247235                   /usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so\n7e957dad8000-7e957dade000 r--p 00016000 00:67 94247235                   /usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so\n7e957dade000-7e957dadf000 r--p 0001c000 00:67 94247235                   /usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so\n7e957dadf000-7e957dae0000 rw-p 0001d000 00:67 94247235                   /usr/local/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so\n7e957dae0000-7e957db7d000 r--p 00000000 00:67 94243493                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33\n7e957db7d000-7e957dca6000 r-xp 0009d000 00:67 94243493                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33\n7e957dca6000-7e957dd34000 r--p 001c6000 00:67 94243493                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33\n7e957dd34000-7e957dd3f000 r--p 00254000 00:67 94243493                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33\n7e957dd3f000-7e957dd42000 rw-p 0025f000 00:67 94243493                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33\n7e957dd42000-7e957dd46000 rw-p 00000000 00:00 0 \n7e957dd46000-7e957ddc8000 r--p 00000000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957ddc8000-7e957f103000 r-xp 00082000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f103000-7e957f2ea000 r--p 013bd000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f2ea000-7e957f2f2000 r--p 015a3000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f2f2000-7e957f301000 rw-p 015ab000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f301000-7e957f306000 rw-p 00000000 00:00 0 \n7e957f306000-7e957f30e000 ---p 015c0000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f30e000-7e957f335000 rw-p 01697000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f335000-7e957f352000 rw-p 016be000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f352000-7e957f36f000 rw-p 016db000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f36f000-7e957f38d000 rw-p 016f8000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f38d000-7e957f3aa000 rw-p 01716000 00:67 94256282                   /usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so\n7e957f3aa000-7e957f3d5000 r--p 00000000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957f3d5000-7e957fb8a000 r-xp 0002b000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957fb8a000-7e957fd1b000 r--p 007e0000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957fd1b000-7e957fd1e000 r--p 00971000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957fd1e000-7e957fd41000 rw-p 00974000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957fd41000-7e957fd58000 rw-p 00000000 00:00 0 \n7e957fd58000-7e957fd5e000 rw-p 00a1a000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957fd5e000-7e957fd63000 rw-p 00a20000 00:67 94254863                   /usr/local/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so\n7e957fd63000-7e957fd8a000 r--p 00000000 00:67 94243490                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n7e957fd8a000-7e957fe9a000 r-xp 00027000 00:67 94243490                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n7e957fe9a000-7e957fed8000 r--p 00137000 00:67 94243490                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n7e957fed8000-7e957fede000 r--p 00175000 00:67 94243490                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n7e957fede000-7e957fee3000 rw-p 0017b000 00:67 94243490                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n7e957fee3000-7e957feea000 r--p 00000000 00:67 94247244                   /usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n7e957feea000-7e957fef9000 r-xp 00007000 00:67 94247244                   /usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n7e957fef9000-7e957ff00000 r--p 00016000 00:67 94247244                   /usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n7e957ff00000-7e957ff01000 r--p 0001d000 00:67 94247244                   /usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n7e957ff01000-7e957ff03000 rw-p 0001e000 00:67 94247244                   /usr/local/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n7e957ff03000-7e9580003000 rw-p 00000000 00:00 0 \n7e9580003000-7e9580026000 r--p 00000000 00:67 94243491                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n7e9580026000-7e95800d1000 r-xp 00023000 00:67 94243491                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n7e95800d1000-7e9580104000 r--p 000ce000 00:67 94243491                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n7e9580104000-7e958010f000 r--p 00100000 00:67 94243491                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n7e958010f000-7e9580113000 rw-p 0010b000 00:67 94243491                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n7e9580113000-7e9580125000 r--p 00000000 00:67 94247245                   /usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n7e9580125000-7e9580130000 r-xp 00012000 00:67 94247245                   /usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n7e9580130000-7e958013e000 r--p 0001d000 00:67 94247245                   /usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n7e958013e000-7e958013f000 r--p 0002a000 00:67 94247245                   /usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n7e958013f000-7e9580148000 rw-p 0002b000 00:67 94247245                   /usr/local/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n7e9580148000-7e9580248000 rw-p 00000000 00:00 0 \n7e958024c000-7e958024d000 r--p 00000000 00:67 94247214                   /usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so\n7e958024d000-7e958024e000 r-xp 00001000 00:67 94247214                   /usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so\n7e958024e000-7e958024f000 r--p 00002000 00:67 94247214                   /usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so\n7e958024f000-7e9580250000 r--p 00002000 00:67 94247214                   /usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so\n7e9580250000-7e9580251000 rw-p 00003000 00:67 94247214                   /usr/local/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so\n7e9580251000-7e9580253000 r--p 00000000 00:67 94247237                   /usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so\n7e9580253000-7e9580256000 r-xp 00002000 00:67 94247237                   /usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so\n7e9580256000-7e9580257000 r--p 00005000 00:67 94247237                   /usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so\n7e9580257000-7e9580258000 r--p 00005000 00:67 94247237                   /usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so\n7e9580258000-7e9580259000 rw-p 00006000 00:67 94247237                   /usr/local/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so\n7e9580259000-7e958025a000 r--p 00000000 00:67 94247265                   /usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so\n7e958025a000-7e958025c000 r-xp 00001000 00:67 94247265                   /usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so\n7e958025c000-7e958025e000 r--p 00003000 00:67 94247265                   /usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so\n7e958025e000-7e958025f000 r--p 00004000 00:67 94247265                   /usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so\n7e958025f000-7e9580260000 rw-p 00005000 00:67 94247265                   /usr/local/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so\n7e9580260000-7e9580262000 r--p 00000000 00:67 94247228                   /usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n7e9580262000-7e9580267000 r-xp 00002000 00:67 94247228                   /usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n7e9580267000-7e9580269000 r--p 00007000 00:67 94247228                   /usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n7e9580269000-7e958026a000 r--p 00008000 00:67 94247228                   /usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n7e958026a000-7e958026b000 rw-p 00009000 00:67 94247228                   /usr/local/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n7e958026b000-7e9580270000 r--p 00000000 00:67 94247221                   /usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so\n7e9580270000-7e958027d000 r-xp 00005000 00:67 94247221                   /usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so\n7e958027d000-7e9580282000 r--p 00012000 00:67 94247221                   /usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so\n7e9580282000-7e9580283000 r--p 00017000 00:67 94247221                   /usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so\n7e9580283000-7e9580286000 rw-p 00018000 00:67 94247221                   /usr/local/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so\n7e9580286000-7e958028a000 r--p 00000000 00:67 94247261                   /usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so\n7e958028a000-7e9580291000 r-xp 00004000 00:67 94247261                   /usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so\n7e9580291000-7e9580295000 r--p 0000b000 00:67 94247261                   /usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so\n7e9580295000-7e9580296000 r--p 0000f000 00:67 94247261                   /usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so\n7e9580296000-7e9580297000 rw-p 00010000 00:67 94247261                   /usr/local/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so\n7e9580297000-7e9580299000 r--p 00000000 00:67 94247273                   /usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so\n7e9580299000-7e958029c000 r-xp 00002000 00:67 94247273                   /usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so\n7e958029c000-7e958029e000 r--p 00005000 00:67 94247273                   /usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so\n7e958029e000-7e958029f000 r--p 00006000 00:67 94247273                   /usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so\n7e958029f000-7e95802a0000 rw-p 00007000 00:67 94247273                   /usr/local/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so\n7e95802a0000-7e95802a4000 r--p 00000000 00:67 94247243                   /usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so\n7e95802a4000-7e95802af000 r-xp 00004000 00:67 94247243                   /usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so\n7e95802af000-7e95802b8000 r--p 0000f000 00:67 94247243                   /usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so\n7e95802b8000-7e95802b9000 r--p 00017000 00:67 94247243                   /usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so\n7e95802b9000-7e95802ba000 rw-p 00018000 00:67 94247243                   /usr/local/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so\n7e95802ba000-7e95802bc000 r--p 00000000 00:67 94247241                   /usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so\n7e95802bc000-7e95802ca000 r-xp 00002000 00:67 94247241                   /usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so\n7e95802ca000-7e95802cc000 r--p 00010000 00:67 94247241                   /usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so\n7e95802cc000-7e95802cd000 r--p 00011000 00:67 94247241                   /usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so\n7e95802cd000-7e95802ce000 rw-p 00012000 00:67 94247241                   /usr/local/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so\n7e95802ce000-7e95802d0000 r--p 00000000 00:67 94247239                   /usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so\n7e95802d0000-7e95802d2000 r-xp 00002000 00:67 94247239                   /usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so\n7e95802d2000-7e95802d3000 r--p 00004000 00:67 94247239                   /usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so\n7e95802d3000-7e95802d4000 r--p 00004000 00:67 94247239                   /usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so\n7e95802d4000-7e95802d5000 rw-p 00005000 00:67 94247239                   /usr/local/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so\n7e95802d5000-7e95802d7000 r--p 00000000 00:67 94247205                   /usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so\n7e95802d7000-7e95802d9000 r-xp 00002000 00:67 94247205                   /usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so\n7e95802d9000-7e95802da000 r--p 00004000 00:67 94247205                   /usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so\n7e95802da000-7e95802db000 r--p 00004000 00:67 94247205                   /usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so\n7e95802db000-7e95802dc000 rw-p 00005000 00:67 94247205                   /usr/local/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so\n7e95802dc000-7e95803dc000 rw-p 00000000 00:00 0 \n7e95803dc000-7e95803dd000 r--p 00000000 00:67 94247234                   /usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so\n7e95803dd000-7e95803de000 r-xp 00001000 00:67 94247234                   /usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so\n7e95803de000-7e95803df000 r--p 00002000 00:67 94247234                   /usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so\n7e95803df000-7e95803e0000 r--p 00002000 00:67 94247234                   /usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so\n7e95803e0000-7e95803e1000 rw-p 00003000 00:67 94247234                   /usr/local/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so\n7e95803e2000-7e95803e3000 r--p 00000000 00:67 94243479                   /usr/lib/x86_64-linux-gnu/libpthread.so.0\n7e95803e3000-7e95803e4000 r-xp 00001000 00:67 94243479                   /usr/lib/x86_64-linux-gnu/libpthread.so.0\n7e95803e4000-7e95803e5000 r--p 00002000 00:67 94243479                   /usr/lib/x86_64-linux-gnu/libpthread.so.0\n7e95803e5000-7e95803e6000 r--p 00002000 00:67 94243479                   /usr/lib/x86_64-linux-gnu/libpthread.so.0\n7e95803e6000-7e95803e7000 rw-p 00003000 00:67 94243479                   /usr/lib/x86_64-linux-gnu/libpthread.so.0\n7e95803e7000-7e95803eb000 r--p 00000000 00:67 94243443                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1\n7e95803eb000-7e958040e000 r-xp 00004000 00:67 94243443                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1\n7e958040e000-7e9580412000 r--p 00027000 00:67 94243443                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1\n7e9580412000-7e9580413000 r--p 0002b000 00:67 94243443                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1\n7e9580413000-7e9580414000 rw-p 0002c000 00:67 94243443                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1\n7e9580414000-7e9580514000 rw-p 00000000 00:00 0 \n7e9580514000-7e9580518000 r--p 00000000 00:67 94243453                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1\n7e9580518000-7e9580537000 r-xp 00004000 00:67 94243453                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1\n7e9580537000-7e9580543000 r--p 00023000 00:67 94243453                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1\n7e9580543000-7e9580544000 r--p 0002f000 00:67 94243453                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1\n7e9580544000-7e9580545000 rw-p 00030000 00:67 94243453                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.8.1\n7e9580545000-7e9580548000 r--p 00000000 00:67 94247230                   /usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n7e9580548000-7e958054c000 r-xp 00003000 00:67 94247230                   /usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n7e958054c000-7e958054f000 r--p 00007000 00:67 94247230                   /usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n7e958054f000-7e9580550000 r--p 00009000 00:67 94247230                   /usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n7e9580550000-7e9580551000 rw-p 0000a000 00:67 94247230                   /usr/local/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n7e9580551000-7e9580553000 r--p 00000000 00:67 94243427                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n7e9580553000-7e9580560000 r-xp 00002000 00:67 94243427                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n7e9580560000-7e9580562000 r--p 0000f000 00:67 94243427                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n7e9580562000-7e9580563000 r--p 00010000 00:67 94243427                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n7e9580563000-7e9580564000 rw-p 00011000 00:67 94243427                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n7e9580564000-7e9580566000 r--p 00000000 00:67 94247207                   /usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n7e9580566000-7e9580568000 r-xp 00002000 00:67 94247207                   /usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n7e9580568000-7e958056a000 r--p 00004000 00:67 94247207                   /usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n7e958056a000-7e958056b000 r--p 00005000 00:67 94247207                   /usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n7e958056b000-7e958056c000 rw-p 00006000 00:67 94247207                   /usr/local/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n7e958056c000-7e958056f000 r--p 00000000 00:67 94247281                   /usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so\n7e958056f000-7e9580574000 r-xp 00003000 00:67 94247281                   /usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so\n7e9580574000-7e9580577000 r--p 00008000 00:67 94247281                   /usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so\n7e9580577000-7e9580578000 r--p 0000a000 00:67 94247281                   /usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so\n7e9580578000-7e9580579000 rw-p 0000b000 00:67 94247281                   /usr/local/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so\n7e9580579000-7e958057b000 r--p 00000000 00:67 94247263                   /usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so\n7e958057b000-7e958057e000 r-xp 00002000 00:67 94247263                   /usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so\n7e958057e000-7e9580580000 r--p 00005000 00:67 94247263                   /usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so\n7e9580580000-7e9580581000 r--p 00006000 00:67 94247263                   /usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so\n7e9580581000-7e9580582000 rw-p 00007000 00:67 94247263                   /usr/local/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so\n7e9580582000-7e9580585000 r--p 00000000 00:67 94247267                   /usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so\n7e9580585000-7e958058d000 r-xp 00003000 00:67 94247267                   /usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so\n7e958058d000-7e9580592000 r--p 0000b000 00:67 94247267                   /usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so\n7e9580592000-7e9580593000 r--p 0000f000 00:67 94247267                   /usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so\n7e9580593000-7e9580594000 rw-p 00010000 00:67 94247267                   /usr/local/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so\n7e9580594000-7e9580596000 r--p 00000000 00:67 94247216                   /usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so\n7e9580596000-7e9580599000 r-xp 00002000 00:67 94247216                   /usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so\n7e9580599000-7e958059c000 r--p 00005000 00:67 94247216                   /usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so\n7e958059c000-7e958059d000 r--p 00007000 00:67 94247216                   /usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so\n7e958059d000-7e958059e000 rw-p 00008000 00:67 94247216                   /usr/local/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so\n7e958059e000-7e958069e000 rw-p 00000000 00:00 0 \n7e958069e000-7e95806a0000 r--p 00000000 00:67 94247206                   /usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so\n7e95806a0000-7e95806a7000 r-xp 00002000 00:67 94247206                   /usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so\n7e95806a7000-7e95806a9000 r--p 00009000 00:67 94247206                   /usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so\n7e95806a9000-7e95806aa000 r--p 0000a000 00:67 94247206                   /usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so\n7e95806aa000-7e95806ab000 rw-p 0000b000 00:67 94247206                   /usr/local/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so\n7e95806ab000-7e95806b0000 r--p 00000000 00:67 94243511                   /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7\n7e95806b0000-7e958075f000 r-xp 00005000 00:67 94243511                   /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7\n7e958075f000-7e9580773000 r--p 000b4000 00:67 94243511                   /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7\n7e9580773000-7e9580774000 r--p 000c8000 00:67 94243511                   /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7\n7e9580774000-7e9580775000 rw-p 000c9000 00:67 94243511                   /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7\n7e9580775000-7e9580778000 r--p 00000000 00:67 94243509                   /usr/lib/x86_64-linux-gnu/libz.so.1.3.1\n7e9580778000-7e958078c000 r-xp 00003000 00:67 94243509                   /usr/lib/x86_64-linux-gnu/libz.so.1.3.1\n7e958078c000-7e9580793000 r--p 00017000 00:67 94243509                   /usr/lib/x86_64-linux-gnu/libz.so.1.3.1\n7e9580793000-7e9580794000 r--p 0001d000 00:67 94243509                   /usr/lib/x86_64-linux-gnu/libz.so.1.3.1\n7e9580794000-7e9580795000 rw-p 0001e000 00:67 94243509                   /usr/lib/x86_64-linux-gnu/libz.so.1.3.1\n7e9580795000-7e958088c000 r--p 00000000 00:67 94243436                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n7e958088c000-7e9580c10000 r-xp 000f7000 00:67 94243436                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n7e9580c10000-7e9580d47000 r--p 0047b000 00:67 94243436                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n7e9580d47000-7e9580dca000 r--p 005b2000 00:67 94243436                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n7e9580dca000-7e9580dcd000 rw-p 00635000 00:67 94243436                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n7e9580dcd000-7e9580dd0000 rw-p 00000000 00:00 0 \n7e9580dd0000-7e9580dd4000 r--p 00000000 00:67 94247226                   /usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n7e9580dd4000-7e9580dda000 r-xp 00004000 00:67 94247226                   /usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n7e9580dda000-7e9580dde000 r--p 0000a000 00:67 94247226                   /usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n7e9580dde000-7e9580ddf000 r--p 0000d000 00:67 94247226                   /usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n7e9580ddf000-7e9580de1000 rw-p 0000e000 00:67 94247226                   /usr/local/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n7e9580de1000-7e9580de4000 r--p 00000000 00:67 94247247                   /usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so\n7e9580de4000-7e9580de9000 r-xp 00003000 00:67 94247247                   /usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so\n7e9580de9000-7e9580dec000 r--p 00008000 00:67 94247247                   /usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so\n7e9580dec000-7e9580ded000 r--p 0000b000 00:67 94247247                   /usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so\n7e9580ded000-7e9580dee000 rw-p 0000c000 00:67 94247247                   /usr/local/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so\n7e9580dee000-7e9580df0000 r--p 00000000 00:67 94246470                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n7e9580df0000-7e9580df7000 r-xp 00002000 00:67 94246470                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n7e9580df7000-7e9580df9000 r--p 00009000 00:67 94246470                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n7e9580df9000-7e9580dfa000 r--p 0000a000 00:67 94246470                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n7e9580dfa000-7e9580dfb000 rw-p 0000b000 00:67 94246470                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n7e9580dfb000-7e9580e01000 r--p 00000000 00:67 94247217                   /usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n7e9580e01000-7e9580e11000 r-xp 00006000 00:67 94247217                   /usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n7e9580e11000-7e9580e17000 r--p 00016000 00:67 94247217                   /usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n7e9580e17000-7e9580e18000 r--p 0001b000 00:67 94247217                   /usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n7e9580e18000-7e9580e1c000 rw-p 0001c000 00:67 94247217                   /usr/local/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n7e9580e1c000-7e9581082000 rw-p 00000000 00:00 0 \n7e9581082000-7e9581089000 r--s 00000000 00:67 94243399                   /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache\n7e9581089000-7e95810e3000 r--p 00000000 00:67 94243111                   /usr/lib/locale/C.utf8/LC_CTYPE\n7e95810e3000-7e95810e5000 rw-p 00000000 00:00 0 \n7e95810e5000-7e95810f6000 r--p 00000000 00:67 94243454                   /usr/lib/x86_64-linux-gnu/libm.so.6\n7e95810f6000-7e9581173000 r-xp 00011000 00:67 94243454                   /usr/lib/x86_64-linux-gnu/libm.so.6\n7e9581173000-7e95811d3000 r--p 0008e000 00:67 94243454                   /usr/lib/x86_64-linux-gnu/libm.so.6\n7e95811d3000-7e95811d4000 r--p 000ed000 00:67 94243454                   /usr/lib/x86_64-linux-gnu/libm.so.6\n7e95811d4000-7e95811d5000 rw-p 000ee000 00:67 94243454                   /usr/lib/x86_64-linux-gnu/libm.so.6\n7e95811d5000-7e95811fd000 r--p 00000000 00:67 94243428                   /usr/lib/x86_64-linux-gnu/libc.so.6\n7e95811fd000-7e9581360000 r-xp 00028000 00:67 94243428                   /usr/lib/x86_64-linux-gnu/libc.so.6\n7e9581360000-7e95813b6000 r--p 0018b000 00:67 94243428                   /usr/lib/x86_64-linux-gnu/libc.so.6\n7e95813b6000-7e95813ba000 r--p 001e0000 00:67 94243428                   /usr/lib/x86_64-linux-gnu/libc.so.6\n7e95813ba000-7e95813bc000 rw-p 001e4000 00:67 94243428                   /usr/lib/x86_64-linux-gnu/libc.so.6\n7e95813bc000-7e95813c9000 rw-p 00000000 00:00 0 \n7e95813cc000-7e95814cc000 r--p 00000000 00:67 94246719                   /usr/local/lib/libpython3.12.so.1.0\n7e95814cc000-7e95816eb000 r-xp 00100000 00:67 94246719                   /usr/local/lib/libpython3.12.so.1.0\n7e95816eb000-7e958183a000 r--p 0031f000 00:67 94246719                   /usr/local/lib/libpython3.12.so.1.0\n7e958183a000-7e95818b1000 r--p 0046d000 00:67 94246719                   /usr/local/lib/libpython3.12.so.1.0\n7e95818b1000-7e9581a20000 rw-p 004e4000 00:67 94246719                   /usr/local/lib/libpython3.12.so.1.0\n7e9581a20000-7e9581a23000 rw-p 00000000 00:00 0 \n7e9581a23000-7e9581a24000 r--p 00000000 00:67 94243408                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7e9581a24000-7e9581a4c000 r-xp 00001000 00:67 94243408                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7e9581a4c000-7e9581a57000 r--p 00029000 00:67 94243408                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7e9581a57000-7e9581a59000 r--p 00034000 00:67 94243408                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7e9581a59000-7e9581a5a000 rw-p 00036000 00:67 94243408                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7e9581a5a000-7e9581a5b000 rw-p 00000000 00:00 0 \n7ffe3c72a000-7ffe3c74b000 rw-p 00000000 00:00 0                          [stack]\n7ffe3c79e000-7ffe3c7a2000 r--p 00000000 00:00 0                          [vvar]\n7ffe3c7a2000-7ffe3c7a4000 r-xp 00000000 00:00 0                          [vdso]\nffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]\n",
+  "python": "3.12.15 (main, Oct  6 2026, 02:02:22) [GCC 14.2.0]",
+  "scope": "base image import/ELF probe; no benchmark, scoring, model or GPU calls",
+  "soabi": "cpython-312-x86_64-linux-gnu",
+  "sqlite": "3.46.1"
+}

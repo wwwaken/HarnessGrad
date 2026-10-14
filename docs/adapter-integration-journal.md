@@ -2243,3 +2243,50 @@ and scope checks passed. Registry checker returned valid=true: 28 datasets,
 - Resource state: public-source acquisition and local review only - no benchmark task, model, GPU,
   endpoint or container. Both GPUs stayed idle and no utilisation is claimed. Historical runs,
   frozen receipts and archives were untouched.
+## 2026-10-15 Snapshot-service image and ABI custody - w-img
+
+Recorded current adapter image declarations and file:line evidence for the survey's
+four snapshot-service datasets: GAIA, Tau-bench, Terminal-Bench and AppWorld. The
+six additional named datasets (ChessBench, ALFWorld, ScienceWorld, BIRD Mini-Dev,
+DS-1000, SpreadsheetBench) use native files routes and have no adapter image;
+their freshly observed host interpreter/base ABI is kept separate.
+
+Fresh local Docker inspect covered 94 configured references, including all 89
+Terminal-Bench task images and all three AppWorld roles. Of these, 91 exist
+locally and all have RepoDigests. Read actual local OCI blobs through a disposable
+network-disabled, read-only metadata reader and independently recomputed 101
+manifest/index/attestation digests. GAIA, Tau-bench and all 89 Terminal-Bench
+adapter refs remain movable tags. AppWorld actor/service/verifier defaults
+already pin different digests; no production image declaration was changed.
+
+Image-local interpreter/glibc/loader/provider identities now exist for GAIA
+(CPython 3.12.15, glibc 2.41), Tau-bench and the AppWorld verifier (CPython
+3.11.16, glibc 2.41). Terminal-Bench has 60 CPython/ELF records, 26 bases without
+python3 on PATH with shell/libc/loader/tool records, and three unavailable images:
+mteb-leaderboard, pytorch-model-recovery and reshard-c4-data. All 86 present
+Terminal-Bench images have static verifier import/bootstrap/process inventories
+and independent installed-tool/provider receipts. These base observations do not
+attest post-bootstrap or actor-snapshot ABIs. The six native routes have only a
+fresh common host-base probe here (CPython 3.12.4, glibc 2.35), not new full
+native scoring-runtime closure. A further fresh static ELF supplement covers key
+scientific/plotting native objects in 16 Terminal-Bench bases without importing
+ML packages: unresolved standalone ldd SONAMEs are retained, not called image
+absence or import failure. One system-package metadata inventory supplies no
+RECORD-listed native preimages; its earlier interpreter/tool evidence is retained.
+
+Raw argv/status/streams, source/import inventories, ABI records and SHA256SUMS
+are under tests/fixtures/hg_wimg/. Report: reports/w-img-abi-custody.md;
+verification commands/output: reports/w-img-validation.txt. Retained missing-Python
+failures and the separate fresh tool supplement were not overwritten. All three
+inspection-session owned-container absence queries are empty; all 194 disposable
+inspection containers were removed. These are inspection cleanup receipts, not
+trusted production lifecycle evidence. No benchmark, scorer task, world, model,
+GPU, endpoint, package installation, image pull/build or runs/ access occurred.
+Historical receipts/archives and production scoring code are preserved.
+
+Only the shared scorer-offline-closure observed/evidence fields are extended.
+Its status/next_action, all other blockers and production_authorized=false stay
+unchanged: official provenance/execution, execution-bound transitive dependencies,
+trusted class-specific lifecycle/resource/cleanup and valid live controls remain
+required. Zero complete offline scorer closures are certified. Focused receipt,
+source, manifest, scope and blocker-registry checks are recorded in validation.

@@ -1,0 +1,485 @@
+{
+  "distribution_native_inventory": [
+    {
+      "name": "pillow",
+      "native_files": [
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so",
+          "size": 3365689
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingcms.cpython-312-x86_64-linux-gnu.so",
+          "size": 137273
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingft.cpython-312-x86_64-linux-gnu.so",
+          "size": 310601
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmath.cpython-312-x86_64-linux-gnu.so",
+          "size": 163184
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmorph.cpython-312-x86_64-linux-gnu.so",
+          "size": 36448
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingtk.cpython-312-x86_64-linux-gnu.so",
+          "size": 47480
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/PIL/_webp.cpython-312-x86_64-linux-gnu.so",
+          "size": 88289
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libXau-154567c4.so.6.0.0",
+          "size": 22081
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libbrotlicommon-c55a5f7a.so.1.1.0",
+          "size": 144425
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libbrotlidec-2ced2f3a.so.1.1.0",
+          "size": 62337
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libfreetype-5d47eaee.so.6.20.2",
+          "size": 1430825
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libharfbuzz-3ac4a098.so.0.61101.0",
+          "size": 1739409
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libjpeg-b82026ff.so.62.4.0",
+          "size": 832177
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/liblcms2-cc10e42f.so.2.0.17",
+          "size": 519073
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/liblzma-64b7ab39.so.5.8.1",
+          "size": 266369
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libopenjp2-56811f71.so.2.5.3",
+          "size": 585849
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libpng16-ade663c1.so.16.47.0",
+          "size": 278001
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libsharpyuv-60a7c00b.so.0.1.1",
+          "size": 46113
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libtiff-5df1d27b.so.6.1.0",
+          "size": 746233
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libwebp-5f0275c0.so.7.1.10",
+          "size": 731185
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libwebpdemux-efaed568.so.2.0.16",
+          "size": 30217
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libwebpmux-6f2b1ad9.so.3.1.1",
+          "size": 58617
+        },
+        {
+          "path": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libxcb-55eab65a.so.1.1.0",
+          "size": 251425
+        }
+      ],
+      "version": "11.2.1"
+    }
+  ],
+  "objects": [
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd80ca4000)\n\tlibtiff-5df1d27b.so.6.1.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libtiff-5df1d27b.so.6.1.0 (0x0000742e090d6000)\n\tlibjpeg-b82026ff.so.62.4.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libjpeg-b82026ff.so.62.4.0 (0x0000742e0900a000)\n\tlibopenjp2-56811f71.so.2.5.3 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libopenjp2-56811f71.so.2.5.3 (0x0000742e08f7b000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000742e08f5c000)\n\tlibxcb-55eab65a.so.1.1.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libxcb-55eab65a.so.1.1.0 (0x0000742e08f1e000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000742e08f17000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000742e08d05000)\n\tliblzma-64b7ab39.so.5.8.1 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/liblzma-64b7ab39.so.5.8.1 (0x0000742e08cc3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000742e08bda000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000742e09247000)\n\tlibXau-154567c4.so.6.0.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libXau-154567c4.so.6.0.0 (0x0000742e08800000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e8740cc6362819d7fb2bcf280b56affc27a56e89dc1caf4909a80f208ed75df2",
+      "size": 3365689,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/_imagingcms.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffdbc5fa000)\n\tliblcms2-cc10e42f.so.2.0.17 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/liblcms2-cc10e42f.so.2.0.17 (0x00007db24e27d000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007db24e275000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007db24e063000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007db24df7a000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007db24e30a000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingcms.cpython-312-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingcms.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "728f8c06ca8ecaf94bfd9fcaa9914888c9bb2139322a583b51e95ac77f100682",
+      "size": 137273,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/_imagingft.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe9d727000)\n\tlibfreetype-5d47eaee.so.6.20.2 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libfreetype-5d47eaee.so.6.20.2 (0x00007984c3dc8000)\n\tlibharfbuzz-3ac4a098.so.0.61101.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libharfbuzz-3ac4a098.so.0.61101.0 (0x00007984c3c1f000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007984c3c17000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007984c3a05000)\n\tlibpng16-ade663c1.so.16.47.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libpng16-ade663c1.so.16.47.0 (0x00007984c39c0000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007984c39a2000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007984c38b9000)\n\tlibbrotlidec-2ced2f3a.so.1.1.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libbrotlidec-2ced2f3a.so.1.1.0 (0x00007984c38a8000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007984c3eea000)\n\tlibbrotlicommon-c55a5f7a.so.1.1.0 => /usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libbrotlicommon-c55a5f7a.so.1.1.0 (0x00007984c3884000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingft.cpython-312-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingft.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e76c960ad1685b1bb1bbe3bba2358efb5cf5997671991b04dc42a501bcf39459",
+      "size": 310601,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmath.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd50df6000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000075298053f000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075298032d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000752980553000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmath.cpython-312-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "86d342f41beeb3f7544dcd2734b01f5f03427708a5d79127166ce54ee5ab3183",
+      "size": 163184,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmorph.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff4d6f9000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x000077d13b0e4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077d13aed2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077d13b0f3000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmorph.cpython-312-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingmorph.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "da9fe6e35e6636b0c6efb14ea7b33ecff7ce44e2080abc7e994ad856363391bf",
+      "size": 36448,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/_imagingtk.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff8107d000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000741fef7df000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000741fef5cd000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000741fef7ee000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingtk.cpython-312-x86_64-linux-gnu.so",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/PIL/_imagingtk.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ba3e0b48529e97cb3368202381bde99d2957ee97079fc70277c97121fb661649",
+      "size": 47480,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libtiff-5df1d27b.so.6.1.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff48bf2000)\n\tliblzma-64b7ab39.so.5.8.1 => not found\n\tlibjpeg-b82026ff.so.62.4.0 => not found\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000726388525000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000072638843c000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000726388437000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000726388223000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007263885fc000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libtiff-5df1d27b.so.6.1.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libtiff-5df1d27b.so.6.1.0",
+      "sha256": "975acc7c170298489482adaaec4fbe4255455a4690505384cbd8efc22d13a88a",
+      "size": 746233,
+      "unresolved_sonames": [
+        "liblzma-64b7ab39.so.5.8.1",
+        "libjpeg-b82026ff.so.62.4.0"
+      ]
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libjpeg-b82026ff.so.62.4.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffec182d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f69053d9000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f69056bc000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libjpeg-b82026ff.so.62.4.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libjpeg-b82026ff.so.62.4.0",
+      "sha256": "267551247c7d2c7cef4f20a0bc82dc7e9757b870789bd99f27a20a9d009c802f",
+      "size": 832177,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libopenjp2-56811f71.so.2.5.3"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd16d81000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007437bc0f1000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007437bc0ec000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007437bbeda000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007437bc26e000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libopenjp2-56811f71.so.2.5.3",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libopenjp2-56811f71.so.2.5.3",
+      "sha256": "686f62cbed321379e3e38be7ae94c56411d4345bde8d54e557b40472d9a7693a",
+      "size": 585849,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libz.so.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffa8a7f000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f24cc4ee000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f24cc721000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libz.so.1",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libz.so.1.3",
+      "sha256": "9b64150b28505a33d6bc3ecf709c279f6de97a1c184dbda65d06ee4537f6d286",
+      "size": 113000,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libxcb-55eab65a.so.1.1.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffcdb7b4000)\n\tlibXau-154567c4.so.6.0.0 => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000742e04342000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000742e04597000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libxcb-55eab65a.so.1.1.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libxcb-55eab65a.so.1.1.0",
+      "sha256": "2b1150ac9cba5177560b0c3858c9647fbc5bbc9a964f44f51d24fae3db4117d2",
+      "size": 251425,
+      "unresolved_sonames": [
+        "libXau-154567c4.so.6.0.0"
+      ]
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libpthread.so.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffff1f32000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000070996bae5000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000070996bd01000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libpthread.so.0",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "sha256": "4472cde19acc87a431ad1eefe9e86f8238dd1f26f8dac692cff7040474d9d085",
+      "size": 14408,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libc.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\t/lib64/ld-linux-x86-64.so.2 (0x00007bb92d2ab000)\n\tlinux-vdso.so.1 (0x00007ffdc8bba000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libc.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0",
+      "size": 2125328,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/liblzma-64b7ab39.so.5.8.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffde3739000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000774cd2db6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000774cd2ba4000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000774cd2e02000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/liblzma-64b7ab39.so.5.8.1",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/liblzma-64b7ab39.so.5.8.1",
+      "sha256": "84dd81d913c433ac0e82f111fe0e377cd8db350fd2b2b7a75f6c2501f1d6fa70",
+      "size": 266369,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libm.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffff014b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007c43f4b62000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007c43f4e62000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libm.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "f06f2ce1f1833df5f41cf13b6447ff07bea993ad9b27297d3428c2f70ab3f0e7",
+      "size": 952616,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib64/ld-linux-x86-64.so.2"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tstatically linked\n"
+      },
+      "path": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28",
+      "size": 236616,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libXau-154567c4.so.6.0.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe4fab0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d7ad4dee000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007d7ad5291000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libXau-154567c4.so.6.0.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libXau-154567c4.so.6.0.0",
+      "sha256": "05484d24bf78cb8ed03169f1cb067204d829cb7af21de8820400d29d115e4320",
+      "size": 22081,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/liblcms2-cc10e42f.so.2.0.17"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffee38c1000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007517d36f8000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007517d36f3000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007517d34e1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007517d3865000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/liblcms2-cc10e42f.so.2.0.17",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/liblcms2-cc10e42f.so.2.0.17",
+      "sha256": "e4932310354a330c5c8a785b425eaa8512da7b30224056043d2cfe2ae96d1ded",
+      "size": 519073,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libfreetype-5d47eaee.so.6.20.2"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc9a1e8000)\n\tlibpng16-ade663c1.so.16.47.0 => not found\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000742d29b0f000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000742d29a26000)\n\tlibbrotlidec-2ced2f3a.so.1.1.0 => not found\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x0000742d29a21000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000742d2980d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000742d29c3d000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libfreetype-5d47eaee.so.6.20.2",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libfreetype-5d47eaee.so.6.20.2",
+      "sha256": "42c2f91ba01e32f7b9efcf18905c7415c75e085cd509b76e8bfe9fbb7bcbddb0",
+      "size": 1430825,
+      "unresolved_sonames": [
+        "libpng16-ade663c1.so.16.47.0",
+        "libbrotlidec-2ced2f3a.so.1.1.0"
+      ]
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libharfbuzz-3ac4a098.so.0.61101.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffda492b000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fc13f7f5000)\n\tlibfreetype-5d47eaee.so.6.20.2 => not found\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fc13f7f0000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fc13f5de000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fc13fa8c000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libharfbuzz-3ac4a098.so.0.61101.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libharfbuzz-3ac4a098.so.0.61101.0",
+      "sha256": "4193ec488a9bcf06567887d20a9be071bc0f3edf17befbab4858d24bbd0930bd",
+      "size": 1739409,
+      "unresolved_sonames": [
+        "libfreetype-5d47eaee.so.6.20.2"
+      ]
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libpng16-ade663c1.so.16.47.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffdaffa9000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000713deba8b000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000713deb9a2000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000713deb790000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000713debaf1000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libpng16-ade663c1.so.16.47.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libpng16-ade663c1.so.16.47.0",
+      "sha256": "2c00c3455a639da534b8ad0ba52384876f4363bd3f661f70705ebf705aff0944",
+      "size": 278001,
+      "unresolved_sonames": []
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libbrotlidec-2ced2f3a.so.1.1.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd367e6000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000077aa88a73000)\n\tlibbrotlicommon-c55a5f7a.so.1.1.0 => not found\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077aa88861000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077aa88b72000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libbrotlidec-2ced2f3a.so.1.1.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libbrotlidec-2ced2f3a.so.1.1.0",
+      "sha256": "04ec1e9154e2462a6462eb270579b31868623ec070048e830d63cb92fc406d11",
+      "size": 62337,
+      "unresolved_sonames": [
+        "libbrotlicommon-c55a5f7a.so.1.1.0"
+      ]
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libbrotlicommon-c55a5f7a.so.1.1.0"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd71867000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000788197b49000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000788197937000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000788197c5b000)\n"
+      },
+      "path": "/usr/local/lib/python3.12/dist-packages/PIL/../pillow.libs/libbrotlicommon-c55a5f7a.so.1.1.0",
+      "resolved": "/usr/local/lib/python3.12/dist-packages/pillow.libs/libbrotlicommon-c55a5f7a.so.1.1.0",
+      "sha256": "1da2db326dd87a15fbe7dc2017b654d2457085d817e2e91fbd034acada1aaf0f",
+      "size": 144425,
+      "unresolved_sonames": []
+    }
+  ],
+  "scope": "static ELF only; packages are not imported and no model/GPU/task code is invoked"
+}

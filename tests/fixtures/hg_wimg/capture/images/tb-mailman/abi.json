@@ -1,0 +1,1084 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "getconf",
+        "GNU_LIBC_VERSION"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "glibc 2.39\n"
+    },
+    {
+      "argv": [
+        "ldd",
+        "--version"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.6) 2.39\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Roland McGrath and Ulrich Drepper.\n"
+    },
+    {
+      "argv": [
+        "dpkg-query",
+        "-W",
+        "-f=${Package}\t${Version}\t${Architecture}\n"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "adduser\t3.137ubuntu1\tall\napt\t2.8.3\tamd64\nbase-files\t13ubuntu10.3\tamd64\nbase-passwd\t3.6.3build1\tamd64\nbash\t5.2.21-2ubuntu4\tamd64\nbsdutils\t1:2.39.3-9ubuntu6.3\tamd64\nca-certificates\t20240203\tall\ncoreutils\t9.4-3ubuntu6.1\tamd64\ncpio\t2.15+dfsg-1ubuntu2\tamd64\ncron\t3.0pl1-184ubuntu2\tamd64\ncron-daemon-common\t3.0pl1-184ubuntu2\tall\ndash\t0.5.12-6ubuntu5\tamd64\ndbconfig-common\t2.0.24\tall\ndbconfig-sqlite3\t2.0.24\tall\ndbus\t1.14.10-4ubuntu4.1\tamd64\ndbus-bin\t1.14.10-4ubuntu4.1\tamd64\ndbus-daemon\t1.14.10-4ubuntu4.1\tamd64\ndbus-session-bus-common\t1.14.10-4ubuntu4.1\tall\ndbus-system-bus-common\t1.14.10-4ubuntu4.1\tall\ndebconf\t1.5.86ubuntu1\tall\ndebianutils\t5.17build1\tamd64\ndiffutils\t1:3.10-1build1\tamd64\ndmsetup\t2:1.02.185-3ubuntu3.2\tamd64\ndpkg\t1.22.6ubuntu6.5\tamd64\ne2fsprogs\t1.47.0-2.4~exp1ubuntu4.1\tamd64\nfindutils\t4.9.0-5build1\tamd64\nfonts-font-awesome\t5.0.10+really4.7.0~dfsg-4.1\tall\nfonts-lato\t2.015-1\tall\ngcc-14-base\t14.2.0-4ubuntu2~24.04\tamd64\ngir1.2-girepository-2.0\t1.80.1-1\tamd64\ngir1.2-glib-2.0\t2.80.0-6ubuntu3.4\tamd64\ngpgv\t2.4.4-2ubuntu17.3\tamd64\ngrep\t3.11-4build1\tamd64\ngsasl-common\t2.2.1-1willsync1build2\tall\nguile-3.0-libs\t3.0.9-1build2\tamd64\ngzip\t1.12-1ubuntu3.1\tamd64\nhostname\t3.23+nmu2ubuntu2\tamd64\ninit-system-helpers\t1.66ubuntu1\tall\njavascript-common\t11+nmu1\tall\nkrb5-locales\t1.20.1-6ubuntu2.6\tall\nless\t590-2ubuntu2.1\tamd64\nlibacl1\t2.3.2-1build1.1\tamd64\nlibapparmor1\t4.0.1really4.0.1-0ubuntu0.24.04.4\tamd64\nlibapt-pkg6.0t64\t2.8.3\tamd64\nlibargon2-1\t0~20190702+dfsg-4build1\tamd64\nlibassuan0\t2.5.6-1build1\tamd64\nlibattr1\t1:2.5.2-1build1.1\tamd64\nlibaudit-common\t1:3.1.2-2.1build1.1\tall\nlibaudit1\t1:3.1.2-2.1build1.1\tamd64\nlibblkid1\t2.39.3-9ubuntu6.3\tamd64\nlibbz2-1.0\t1.0.8-5.1build0.1\tamd64\nlibc-bin\t2.39-0ubuntu8.6\tamd64\nlibc6\t2.39-0ubuntu8.6\tamd64\nlibcap-ng0\t0.8.4-2build2\tamd64\nlibcap2\t1:2.66-5ubuntu2.2\tamd64\nlibcom-err2\t1.47.0-2.4~exp1ubuntu4.1\tamd64\nlibcrypt1\t1:4.4.36-4build1\tamd64\nlibcryptsetup12\t2:2.7.0-1ubuntu4.2\tamd64\nlibdb5.3t64\t5.3.28+dfsg2-7\tamd64\nlibdbus-1-3\t1.14.10-4ubuntu4.1\tamd64\nlibdebconfclient0\t0.271ubuntu3\tamd64\nlibdevmapper1.02.1\t2:1.02.185-3ubuntu3.2\tamd64\nlibexpat1\t2.6.1-2ubuntu0.3\tamd64\nlibext2fs2t64\t1.47.0-2.4~exp1ubuntu4.1\tamd64\nlibfdisk1\t2.39.3-9ubuntu6.3\tamd64\nlibffi8\t3.4.6-1build1\tamd64\nlibfribidi0\t1.0.13-3build1\tamd64\nlibgc1\t1:8.2.6-1build1\tamd64\nlibgcc-s1\t14.2.0-4ubuntu2~24.04\tamd64\nlibgcrypt20\t1.10.3-2build1\tamd64\nlibgirepository-1.0-1\t1.80.1-1\tamd64\nlibglib2.0-0t64\t2.80.0-6ubuntu3.4\tamd64\nlibglib2.0-data\t2.80.0-6ubuntu3.4\tall\nlibgmp10\t2:6.3.0+dfsg-2ubuntu6.1\tamd64\nlibgnutls30t64\t3.8.3-1.1ubuntu3.4\tamd64\nlibgpg-error0\t1.47-3build2.1\tamd64\nlibgpm2\t1.20.7-11\tamd64\nlibgsasl18\t2.2.1-1willsync1build2\tamd64\nlibgssapi-krb5-2\t1.20.1-6ubuntu2.6\tamd64\nlibgssglue1\t0.9-1build1\tamd64\nlibhogweed6t64\t3.9.1-2.2build1.1\tamd64\nlibicu74\t74.2-1ubuntu3.1\tamd64\nlibidn12\t1.42-1build1\tamd64\nlibidn2-0\t2.3.7-2build1.1\tamd64\nlibjs-jquery\t3.6.1+dfsg+~3.5.14-1\tall\nlibjs-sphinxdoc\t7.2.6-6\tall\nlibjs-underscore\t1.13.4~dfsg+~1.11.4-3\tall\nlibjson-c5\t0.17-1build1\tamd64\nlibk5crypto3\t1.20.1-6ubuntu2.6\tamd64\nlibkeyutils1\t1.6.3-3build1\tamd64\nlibkmod2\t31+20240202-2ubuntu7.1\tamd64\nlibkrb5-3\t1.20.1-6ubuntu2.6\tamd64\nlibkrb5support0\t1.20.1-6ubuntu2.6\tamd64\nlibldap-common\t2.6.7+dfsg-1~exp1ubuntu8.2\tall\nlibldap2\t2.6.7+dfsg-1~exp1ubuntu8.2\tamd64\nlibltdl7\t2.4.7-7build1\tamd64\nliblz4-1\t1.9.4-1build1.1\tamd64\nliblzma5\t5.6.1+really5.4.5-1ubuntu0.2\tamd64\nlibmailutils9t64\t1:3.17-1.1build3\tamd64\nlibmd0\t1.1.0-2build1.1\tamd64\nlibmount1\t2.39.3-9ubuntu6.3\tamd64\nlibmysqlclient21\t8.0.43-0ubuntu0.24.04.2\tamd64\nlibncurses6\t6.4+20240113-1ubuntu2\tamd64\nlibncursesw6\t6.4+20240113-1ubuntu2\tamd64\nlibnettle8t64\t3.9.1-2.2build1.1\tamd64\nlibnpth0t64\t1.6-3.1build1\tamd64\nlibnsl2\t1.3.0-3build3\tamd64\nlibntlm0\t1.7-1build1\tamd64\nlibp11-kit0\t0.25.3-4ubuntu2.1\tamd64\nlibpam-modules\t1.5.3-5ubuntu5.5\tamd64\nlibpam-modules-bin\t1.5.3-5ubuntu5.5\tamd64\nlibpam-runtime\t1.5.3-5ubuntu5.5\tall\nlibpam0g\t1.5.3-5ubuntu5.5\tamd64\nlibpcre2-8-0\t10.42-4ubuntu2.1\tamd64\nlibpopt0\t1.19+dfsg-1build1\tamd64\nlibpq5\t16.10-0ubuntu0.24.04.1\tamd64\nlibproc2-0\t2:4.0.4-4ubuntu3.2\tamd64\nlibpython3-stdlib\t3.12.3-0ubuntu2\tamd64\nlibpython3.12-minimal\t3.12.3-1ubuntu0.8\tamd64\nlibpython3.12-stdlib\t3.12.3-1ubuntu0.8\tamd64\nlibpython3.12t64\t3.12.3-1ubuntu0.8\tamd64\nlibreadline8t64\t8.2-4build1\tamd64\nlibsasl2-2\t2.1.28+dfsg1-5ubuntu3.1\tamd64\nlibsasl2-modules\t2.1.28+dfsg1-5ubuntu3.1\tamd64\nlibsasl2-modules-db\t2.1.28+dfsg1-5ubuntu3.1\tamd64\nlibseccomp2\t2.5.5-1ubuntu3.1\tamd64\nlibselinux1\t3.5-2ubuntu2.1\tamd64\nlibsemanage-common\t3.5-1build5\tall\nlibsemanage2\t3.5-1build5\tamd64\nlibsepol2\t3.5-2build1\tamd64\nlibsmartcols1\t2.39.3-9ubuntu6.3\tamd64\nlibsodium23\t1.0.18-1build3\tamd64\nlibsqlite3-0\t3.45.1-1ubuntu2.5\tamd64\nlibss2\t1.47.0-2.4~exp1ubuntu4.1\tamd64\nlibssl3t64\t3.0.13-0ubuntu3.6\tamd64\nlibstdc++6\t14.2.0-4ubuntu2~24.04\tamd64\nlibsystemd-shared\t255.4-1ubuntu8.11\tamd64\nlibsystemd0\t255.4-1ubuntu8.11\tamd64\nlibtasn1-6\t4.19.0-3ubuntu0.24.04.1\tamd64\nlibtinfo6\t6.4+20240113-1ubuntu2\tamd64\nlibtirpc-common\t1.3.4+ds-1.1build1\tall\nlibtirpc3t64\t1.3.4+ds-1.1build1\tamd64\nlibudev1\t255.4-1ubuntu8.11\tamd64\nlibunistring5\t1.1-2build1.1\tamd64\nlibuuid1\t2.39.3-9ubuntu6.3\tamd64\nlibxml2\t2.9.14+dfsg-1.3ubuntu3.5\tamd64\nlibxxhash0\t0.8.2-2build1\tamd64\nlibzstd1\t1.5.5+dfsg2-2build1.1\tamd64\nlogin\t1:4.13+dfsg1-4ubuntu3.2\tamd64\nlogrotate\t3.21.0-2build1\tamd64\nlogsave\t1.47.0-2.4~exp1ubuntu4.1\tamd64\nmailman3\t3.3.8-3.1ubuntu0.1\tall\nmailutils\t1:3.17-1.1build3\tamd64\nmailutils-common\t1:3.17-1.1build3\tall\nmawk\t1.3.4.20240123-1build1\tamd64\nmedia-types\t10.1.0\tall\nmount\t2.39.3-9ubuntu6.3\tamd64\nmysql-common\t5.8+1.1.0build1\tall\nnano\t7.2-2ubuntu0.1\tamd64\nncurses-base\t6.4+20240113-1ubuntu2\tall\nncurses-bin\t6.4+20240113-1ubuntu2\tamd64\nnet-tools\t2.10-0.1ubuntu4.4\tamd64\nnetbase\t6.4\tall\nnetworkd-dispatcher\t2.2.4-1\tall\nopenssl\t3.0.13-0ubuntu3.6\tamd64\npasswd\t1:4.13+dfsg1-4ubuntu3.2\tamd64\nperl-base\t5.38.2-3.2ubuntu0.2\tamd64\npostfix\t3.8.6-1build2\tamd64\nprocps\t2:4.0.4-4ubuntu3.2\tamd64\npublicsuffix\t20231001.0357-0.1\tall\npython3\t3.12.3-0ubuntu2\tamd64\npython3-aiosmtpd\t1.4.4.post2-1\tall\npython3-alembic\t1.13.1-3\tall\npython3-attr\t23.2.0-2\tall\npython3-authheaders\t0.16.2-1\tall\npython3-authres\t1.2.0-3\tall\npython3-cbor2\t5.6.2-1build1\tamd64\npython3-certifi\t2023.11.17-1\tall\npython3-cffi-backend\t1.16.0-2build1\tamd64\npython3-chardet\t5.2.0+dfsg-1\tall\npython3-click\t8.1.6-2\tall\npython3-colorama\t0.4.6-4\tall\npython3-cryptography\t41.0.7-4ubuntu0.1\tamd64\npython3-dateutil\t2.8.2-3ubuntu1\tall\npython3-dbus\t1.3.2-5build3\tamd64\npython3-dkim\t1.1.6-1\tall\npython3-dnspython\t2.6.1-1ubuntu1\tall\npython3-falcon\t3.1.1-2build2\tamd64\npython3-flufl.bounce\t4.0-4\tall\npython3-flufl.i18n\t5.0.2-1\tall\npython3-flufl.lock\t5.0.1-5\tall\npython3-gi\t3.48.2-1\tamd64\npython3-greenlet\t3.0.3-0ubuntu5.1\tamd64\npython3-gunicorn\t20.1.0-6\tall\npython3-idna\t3.6-2ubuntu0.1\tall\npython3-json-pointer\t2.0-0ubuntu1\tall\npython3-jsonschema\t4.10.3-2ubuntu1\tall\npython3-lazr.config\t3.0-1\tall\npython3-lazr.delegates\t2.1.0-1\tall\npython3-mako\t1.3.2-1\tall\npython3-markupsafe\t2.1.5-1build2\tamd64\npython3-mimeparse\t1.6.0-3build1\tall\npython3-minimal\t3.12.3-0ubuntu2\tamd64\npython3-msgpack\t1.0.3-3build2\tamd64\npython3-nacl\t1.5.0-4build1\tamd64\npython3-passlib\t1.7.4-4\tall\npython3-pkg-resources\t68.1.2-2ubuntu1.2\tall\npython3-psutil\t5.9.8-2build2\tamd64\npython3-psycopg2\t2.9.9-1build1\tamd64\npython3-public\t4.0-2\tall\npython3-publicsuffix2\t2.20191221-3\tall\npython3-pyrsistent\t0.20.0-1build2\tamd64\npython3-rapidjson\t1.4-2build5\tamd64\npython3-requests\t2.31.0+dfsg-1ubuntu1.1\tall\npython3-setuptools\t68.1.2-2ubuntu1.2\tall\npython3-six\t1.16.0-4\tall\npython3-spf\t2.0.14-3\tall\npython3-sqlalchemy\t1.4.50+ds1-1build1\tall\npython3-sqlalchemy-ext\t1.4.50+ds1-1build1\tamd64\npython3-typing-extensions\t4.10.0-1\tall\npython3-urllib3\t2.0.7-1ubuntu0.2\tall\npython3-zope.component\t6.0-0.2\tall\npython3-zope.configuration\t5.0-1\tall\npython3-zope.event\t5.0-0.1\tall\npython3-zope.hookable\t6.0-1build1\tamd64\npython3-zope.i18nmessageid\t6.1.0-2build1\tamd64\npython3-zope.interface\t6.1-1build1\tamd64\npython3-zope.schema\t7.0.1-1\tall\npython3.12\t3.12.3-1ubuntu0.8\tamd64\npython3.12-minimal\t3.12.3-1ubuntu0.8\tamd64\nreadline-common\t8.2-4build1\tall\nsed\t4.9-2build1\tamd64\nsensible-utils\t0.0.22\tall\nshared-mime-info\t2.4-4\tamd64\nsphinx-rtd-theme-common\t2.0.0+dfsg-1\tall\nsqlite3\t3.45.1-1ubuntu2.5\tamd64\nssl-cert\t1.1.2ubuntu1\tall\nsystemd\t255.4-1ubuntu8.11\tamd64\nsystemd-dev\t255.4-1ubuntu8.11\tall\nsystemd-resolved\t255.4-1ubuntu8.11\tamd64\nsystemd-timesyncd\t255.4-1ubuntu8.11\tamd64\nsysvinit-utils\t3.08-6ubuntu3\tamd64\ntar\t1.35+dfsg-3build1\tamd64\ntzdata\t2025b-0ubuntu0.24.04.1\tall\nubuntu-keyring\t2023.11.28.1\tall\nucf\t3.0043+nmu1\tall\nunminimize\t0.2.1\tamd64\nutil-linux\t2.39.3-9ubuntu6.3\tamd64\nxdg-user-dirs\t0.18-1build1\tamd64\nzlib1g\t1:1.3.dfsg-3.1ubuntu2.1\tamd64\n"
+    },
+    {
+      "argv": [
+        "apk",
+        "info",
+        "-v"
+      ],
+      "error": "FileNotFoundError(2, 'No such file or directory')"
+    }
+  ],
+  "distributions": [
+    {
+      "metadata": [],
+      "name": "aiosmtpd",
+      "requires": [
+        "atpublic",
+        "attrs",
+        "typing-extensions ; python_version < \"3.8\""
+      ],
+      "version": "1.4.4.post2"
+    },
+    {
+      "metadata": [],
+      "name": "alembic",
+      "requires": [
+        "backports.zoneinfo; (python_version < \"3.9\") and extra == \"tz\""
+      ],
+      "version": "1.13.1.dev0"
+    },
+    {
+      "metadata": [],
+      "name": "atpublic",
+      "requires": [],
+      "version": "4.0"
+    },
+    {
+      "metadata": [],
+      "name": "attrs",
+      "requires": [
+        "importlib-metadata; python_version < '3.8'",
+        "attrs[tests]; extra == 'cov'",
+        "coverage[toml]>=5.3; extra == 'cov'",
+        "attrs[tests]; extra == 'dev'",
+        "pre-commit; extra == 'dev'",
+        "furo; extra == 'docs'",
+        "myst-parser; extra == 'docs'",
+        "sphinx; extra == 'docs'",
+        "sphinx-notfound-page; extra == 'docs'",
+        "sphinxcontrib-towncrier; extra == 'docs'",
+        "towncrier; extra == 'docs'",
+        "zope-interface; extra == 'docs'",
+        "attrs[tests-no-zope]; extra == 'tests'",
+        "zope-interface; extra == 'tests'",
+        "mypy>=1.6; (platform_python_implementation == 'CPython' and python_version >= '3.8') and extra == 'tests-mypy'",
+        "pytest-mypy-plugins; (platform_python_implementation == 'CPython' and python_version >= '3.8') and extra == 'tests-mypy'",
+        "attrs[tests-mypy]; extra == 'tests-no-zope'",
+        "cloudpickle; (platform_python_implementation == 'CPython') and extra == 'tests-no-zope'",
+        "hypothesis; extra == 'tests-no-zope'",
+        "pympler; extra == 'tests-no-zope'",
+        "pytest-xdist[psutil]; extra == 'tests-no-zope'",
+        "pytest>=4.3.0; extra == 'tests-no-zope'"
+      ],
+      "version": "23.2.0"
+    },
+    {
+      "metadata": [],
+      "name": "authheaders",
+      "requires": [],
+      "version": "0.16.2"
+    },
+    {
+      "metadata": [],
+      "name": "authres",
+      "requires": [],
+      "version": "1.2.0"
+    },
+    {
+      "metadata": [],
+      "name": "cbor2",
+      "requires": [
+        "pytest-benchmark ==4.0.0 ; extra == 'benchmarks'",
+        "Sphinx >=7 ; extra == 'doc'",
+        "packaging ; extra == 'doc'",
+        "sphinx-autodoc-typehints >=1.2.0 ; extra == 'doc'",
+        "sphinx-rtd-theme >=1.3.0 ; extra == 'doc'",
+        "typing-extensions ; (python_version < \"3.12\") and extra == 'doc'",
+        "coverage >=7 ; extra == 'test'",
+        "hypothesis ; extra == 'test'",
+        "pytest ; extra == 'test'"
+      ],
+      "version": "5.6.2"
+    },
+    {
+      "metadata": [],
+      "name": "certifi",
+      "requires": [],
+      "version": "2023.11.17"
+    },
+    {
+      "metadata": [],
+      "name": "chardet",
+      "requires": [],
+      "version": "5.2.0"
+    },
+    {
+      "metadata": [],
+      "name": "click",
+      "requires": [
+        "colorama; platform_system == \"Windows\""
+      ],
+      "version": "8.1.6"
+    },
+    {
+      "metadata": [],
+      "name": "colorama",
+      "requires": [],
+      "version": "0.4.6"
+    },
+    {
+      "metadata": [],
+      "name": "cryptography",
+      "requires": [
+        "sphinx-rtd-theme >=1.1.1 ; extra == 'docs'",
+        "sphinx >=5.3.0 ; extra == 'docs'",
+        "pyenchant >=1.6.11 ; extra == 'docstest'",
+        "sphinxcontrib-spelling >=4.0.1 ; extra == 'docstest'",
+        "twine >=1.12.0 ; extra == 'docstest'",
+        "nox ; extra == 'nox'",
+        "black ; extra == 'pep8test'",
+        "check-sdist ; extra == 'pep8test'",
+        "mypy ; extra == 'pep8test'",
+        "ruff ; extra == 'pep8test'",
+        "build ; extra == 'sdist'",
+        "bcrypt >=3.1.5 ; extra == 'ssh'",
+        "pretend ; extra == 'test'",
+        "pytest-benchmark ; extra == 'test'",
+        "pytest-cov ; extra == 'test'",
+        "pytest-xdist ; extra == 'test'",
+        "pytest >=6.2.0 ; extra == 'test'",
+        "pytest-randomly ; extra == 'test-randomorder'"
+      ],
+      "version": "41.0.7"
+    },
+    {
+      "metadata": [],
+      "name": "cryptography",
+      "requires": [
+        "sphinx-rtd-theme>=1.1.1; extra == \"docs\"",
+        "sphinx>=5.3.0; extra == \"docs\"",
+        "pyenchant>=1.6.11; extra == \"docstest\"",
+        "sphinxcontrib-spelling>=4.0.1; extra == \"docstest\"",
+        "twine>=1.12.0; extra == \"docstest\"",
+        "nox; extra == \"nox\"",
+        "black; extra == \"pep8test\"",
+        "check-sdist; extra == \"pep8test\"",
+        "mypy; extra == \"pep8test\"",
+        "ruff; extra == \"pep8test\"",
+        "build; extra == \"sdist\"",
+        "bcrypt>=3.1.5; extra == \"ssh\"",
+        "pretend; extra == \"test\"",
+        "pytest-benchmark; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "pytest-xdist; extra == \"test\"",
+        "pytest>=6.2.0; extra == \"test\"",
+        "pytest-randomly; extra == \"test-randomorder\""
+      ],
+      "version": "41.0.7"
+    },
+    {
+      "metadata": [],
+      "name": "dbus-python",
+      "requires": [
+        "sphinx; extra == \"doc\"",
+        "sphinx_rtd_theme; extra == \"doc\"",
+        "tap.py; extra == \"test\""
+      ],
+      "version": "1.3.2"
+    },
+    {
+      "metadata": [],
+      "name": "dkimpy",
+      "requires": [
+        "dnspython>=2.0.0",
+        "authres; extra == \"ARC\"",
+        "aiodns; extra == \"asyncio\"",
+        "pynacl; extra == \"ed25519\"",
+        "authres; extra == \"testing\"",
+        "pynacl; extra == \"testing\""
+      ],
+      "version": "1.1.6"
+    },
+    {
+      "metadata": [],
+      "name": "dnspython",
+      "requires": [
+        "black>=23.1.0; extra == 'dev'",
+        "coverage>=7.0; extra == 'dev'",
+        "flake8>=7; extra == 'dev'",
+        "mypy>=1.8; extra == 'dev'",
+        "pylint>=3; extra == 'dev'",
+        "pytest-cov>=4.1.0; extra == 'dev'",
+        "pytest>=7.4; extra == 'dev'",
+        "sphinx>=7.2.0; extra == 'dev'",
+        "twine>=4.0.0; extra == 'dev'",
+        "wheel>=0.42.0; extra == 'dev'",
+        "cryptography>=41; extra == 'dnssec'",
+        "h2>=4.1.0; extra == 'doh'",
+        "httpcore>=1.0.0; extra == 'doh'",
+        "httpx>=0.26.0; extra == 'doh'",
+        "aioquic>=0.9.25; extra == 'doq'",
+        "idna>=3.6; extra == 'idna'",
+        "trio>=0.23; extra == 'trio'",
+        "wmi>=1.5.1; extra == 'wmi'"
+      ],
+      "version": "2.6.1"
+    },
+    {
+      "metadata": [],
+      "name": "falcon",
+      "requires": [],
+      "version": "3.1.1"
+    },
+    {
+      "metadata": [],
+      "name": "flufl.bounce",
+      "requires": [],
+      "version": "4.0"
+    },
+    {
+      "metadata": [],
+      "name": "flufl.i18n",
+      "requires": [
+        "atpublic"
+      ],
+      "version": "0.0.0"
+    },
+    {
+      "metadata": [],
+      "name": "flufl.lock",
+      "requires": [],
+      "version": "5.0.1"
+    },
+    {
+      "metadata": [],
+      "name": "greenlet",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "furo; extra == \"docs\"",
+        "objgraph; extra == \"test\"",
+        "psutil; extra == \"test\""
+      ],
+      "version": "3.0.3"
+    },
+    {
+      "metadata": [],
+      "name": "gunicorn",
+      "requires": [
+        "eventlet>=0.24.1; extra == \"eventlet\"",
+        "gevent>=1.4.0; extra == \"gevent\"",
+        "setproctitle; extra == \"setproctitle\"",
+        "tornado>=0.2; extra == \"tornado\""
+      ],
+      "version": "20.1.0"
+    },
+    {
+      "metadata": [],
+      "name": "idna",
+      "requires": [],
+      "version": "3.6"
+    },
+    {
+      "metadata": [],
+      "name": "jsonpointer",
+      "requires": [],
+      "version": "2.0"
+    },
+    {
+      "metadata": [],
+      "name": "jsonschema",
+      "requires": [
+        "attrs>=17.4.0",
+        "importlib-metadata; python_version < '3.8'",
+        "importlib-resources>=1.4.0; python_version < '3.9'",
+        "pkgutil-resolve-name>=1.3.10; python_version < '3.9'",
+        "pyrsistent!=0.17.0,!=0.17.1,!=0.17.2,>=0.14.0",
+        "typing-extensions; python_version < '3.8'",
+        "fqdn; extra == 'format'",
+        "idna; extra == 'format'",
+        "isoduration; extra == 'format'",
+        "jsonpointer>1.13; extra == 'format'",
+        "rfc3339-validator; extra == 'format'",
+        "rfc3987; extra == 'format'",
+        "uri-template; extra == 'format'",
+        "webcolors>=1.11; extra == 'format'",
+        "fqdn; extra == 'format-nongpl'",
+        "idna; extra == 'format-nongpl'",
+        "isoduration; extra == 'format-nongpl'",
+        "jsonpointer>1.13; extra == 'format-nongpl'",
+        "rfc3339-validator; extra == 'format-nongpl'",
+        "rfc3986-validator>0.1.0; extra == 'format-nongpl'",
+        "uri-template; extra == 'format-nongpl'",
+        "webcolors>=1.11; extra == 'format-nongpl'"
+      ],
+      "version": "4.10.3"
+    },
+    {
+      "metadata": [],
+      "name": "lazr.config",
+      "requires": [
+        "Sphinx; extra == \"docs\""
+      ],
+      "version": "3.0"
+    },
+    {
+      "metadata": [],
+      "name": "lazr.delegates",
+      "requires": [
+        "Sphinx; extra == \"docs\""
+      ],
+      "version": "2.1.0"
+    },
+    {
+      "metadata": [],
+      "name": "mailman",
+      "requires": [],
+      "version": "3.3.8"
+    },
+    {
+      "metadata": [],
+      "name": "Mako",
+      "requires": [
+        "Babel; extra == \"babel\"",
+        "lingua; extra == \"lingua\"",
+        "pytest; extra == \"testing\""
+      ],
+      "version": "1.3.2.dev0"
+    },
+    {
+      "metadata": [],
+      "name": "MarkupSafe",
+      "requires": [],
+      "version": "2.1.5"
+    },
+    {
+      "metadata": [],
+      "name": "msgpack",
+      "requires": [],
+      "version": "1.0.3"
+    },
+    {
+      "metadata": [],
+      "name": "passlib",
+      "requires": [
+        "argon2_cffi>=18.2.0; extra == \"argon2\"",
+        "bcrypt>=3.1.0; extra == \"bcrypt\"",
+        "cloud_sptheme>=1.10.1; extra == \"build_docs\"",
+        "sphinx>=1.6; extra == \"build_docs\"",
+        "sphinxcontrib-fulltoc>=1.2.0; extra == \"build_docs\"",
+        "cryptography; extra == \"totp\""
+      ],
+      "version": "1.7.4"
+    },
+    {
+      "metadata": [],
+      "name": "psutil",
+      "requires": [
+        "ipaddress ; (python_version < \"3.0\") and extra == 'test'",
+        "mock ; (python_version < \"3.0\") and extra == 'test'",
+        "enum34 ; (python_version <= \"3.4\") and extra == 'test'",
+        "pywin32 ; (sys_platform == \"win32\") and extra == 'test'",
+        "wmi ; (sys_platform == \"win32\") and extra == 'test'"
+      ],
+      "version": "5.9.8"
+    },
+    {
+      "metadata": [],
+      "name": "psycopg2",
+      "requires": [],
+      "version": "2.9.9"
+    },
+    {
+      "metadata": [],
+      "name": "publicsuffix2",
+      "requires": [],
+      "version": "2.20191221"
+    },
+    {
+      "metadata": [],
+      "name": "PyGObject",
+      "requires": [],
+      "version": "3.48.2"
+    },
+    {
+      "metadata": [],
+      "name": "PyNaCl",
+      "requires": [
+        "cffi >=1.4.1",
+        "sphinx >=1.6.5 ; extra == 'docs'",
+        "sphinx-rtd-theme ; extra == 'docs'",
+        "hypothesis >=3.27.0 ; extra == 'tests'",
+        "pytest !=3.3.0,>=3.2.1 ; extra == 'tests'"
+      ],
+      "version": "1.5.0"
+    },
+    {
+      "metadata": [],
+      "name": "pyrsistent",
+      "requires": [],
+      "version": "0.20.0"
+    },
+    {
+      "metadata": [],
+      "name": "python-dateutil",
+      "requires": [],
+      "version": "2.8.2"
+    },
+    {
+      "metadata": [],
+      "name": "python-mimeparse",
+      "requires": [],
+      "version": "1.6.0"
+    },
+    {
+      "metadata": [],
+      "name": "python-rapidjson",
+      "requires": [],
+      "version": "1.4"
+    },
+    {
+      "metadata": [],
+      "name": "requests",
+      "requires": [
+        "PySocks!=1.5.7,>=1.5.6; extra == \"socks\"",
+        "chardet<6,>=3.0.2; extra == \"use_chardet_on_py3\""
+      ],
+      "version": "2.31.0"
+    },
+    {
+      "metadata": [],
+      "name": "setuptools",
+      "requires": [],
+      "version": "68.1.2"
+    },
+    {
+      "metadata": [],
+      "name": "six",
+      "requires": [],
+      "version": "1.16.0"
+    },
+    {
+      "metadata": [],
+      "name": "SQLAlchemy",
+      "requires": [
+        "greenlet!=0.4.17; python_version >= \"3\" and (platform_machine == \"aarch64\" or (platform_machine == \"ppc64le\" or (platform_machine == \"x86_64\" or (platform_machine == \"amd64\" or (platform_machine == \"AMD64\" or (platform_machine == \"win32\" or platform_machine == \"WIN32\"))))))",
+        "aiomysql>=0.2.0; (python_version >= \"3\") and extra == \"aiomysql\"",
+        "greenlet!=0.4.17; (python_version >= \"3\") and extra == \"aiomysql\"",
+        "typing_extensions!=3.10.0.1; extra == \"aiosqlite\"",
+        "aiosqlite; (python_version >= \"3\") and extra == \"aiosqlite\"",
+        "greenlet!=0.4.17; (python_version >= \"3\") and extra == \"aiosqlite\"",
+        "greenlet!=0.4.17; (python_version >= \"3\") and extra == \"asyncio\"",
+        "asyncmy!=0.2.4,>=0.2.3; (python_version >= \"3\") and extra == \"asyncmy\"",
+        "greenlet!=0.4.17; (python_version >= \"3\") and extra == \"asyncmy\"",
+        "mariadb!=1.1.2,>=1.0.1; (python_version >= \"3\") and extra == \"mariadb_connector\"",
+        "pyodbc; extra == \"mssql\"",
+        "pymssql; extra == \"mssql_pymssql\"",
+        "pyodbc; extra == \"mssql_pyodbc\"",
+        "sqlalchemy2-stubs; extra == \"mypy\"",
+        "mypy>=0.910; (python_version >= \"3\") and extra == \"mypy\"",
+        "mysqlclient<2,>=1.4.0; (python_version < \"3\") and extra == \"mysql\"",
+        "mysqlclient>=1.4.0; (python_version >= \"3\") and extra == \"mysql\"",
+        "mysql-connector-python; extra == \"mysql_connector\"",
+        "cx_oracle<8,>=7; (python_version < \"3\") and extra == \"oracle\"",
+        "cx_oracle>=7; (python_version >= \"3\") and extra == \"oracle\"",
+        "psycopg2>=2.7; extra == \"postgresql\"",
+        "asyncpg; (python_version >= \"3\") and extra == \"postgresql_asyncpg\"",
+        "greenlet!=0.4.17; (python_version >= \"3\") and extra == \"postgresql_asyncpg\"",
+        "pg8000!=1.29.0,>=1.16.6; extra == \"postgresql_pg8000\"",
+        "psycopg2-binary; extra == \"postgresql_psycopg2binary\"",
+        "psycopg2cffi; extra == \"postgresql_psycopg2cffi\"",
+        "pymysql<1; (python_version < \"3\") and extra == \"pymysql\"",
+        "pymysql; (python_version >= \"3\") and extra == \"pymysql\"",
+        "sqlcipher3_binary; (python_version >= \"3\") and extra == \"sqlcipher\""
+      ],
+      "version": "1.4.50"
+    },
+    {
+      "metadata": [],
+      "name": "typing_extensions",
+      "requires": [],
+      "version": "4.10.0"
+    },
+    {
+      "metadata": [],
+      "name": "urllib3",
+      "requires": [
+        "brotli>=1.0.9; (platform_python_implementation == 'CPython') and extra == 'brotli'",
+        "brotlicffi>=0.8.0; (platform_python_implementation != 'CPython') and extra == 'brotli'",
+        "certifi; extra == 'secure'",
+        "cryptography>=1.9; extra == 'secure'",
+        "idna>=2.0.0; extra == 'secure'",
+        "pyopenssl>=17.1.0; extra == 'secure'",
+        "urllib3-secure-extra; extra == 'secure'",
+        "pysocks!=1.5.7,<2.0,>=1.5.6; extra == 'socks'",
+        "zstandard>=0.18.0; extra == 'zstd'"
+      ],
+      "version": "2.0.7"
+    },
+    {
+      "metadata": [],
+      "name": "zope.component",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "ZODB; extra == \"docs\"",
+        "repoze.sphinx.autointerface; extra == \"docs\"",
+        "zope.configuration; extra == \"mintests\"",
+        "zope.i18nmessageid; extra == \"mintests\"",
+        "zope.testing; extra == \"mintests\"",
+        "zope.testrunner; extra == \"mintests\"",
+        "persistent; extra == \"persistentregistry\"",
+        "zope.location; extra == \"security\"",
+        "zope.proxy; extra == \"security\"",
+        "zope.security; extra == \"security\"",
+        "persistent; extra == \"test\"",
+        "zope.configuration; extra == \"test\"",
+        "zope.i18nmessageid; extra == \"test\"",
+        "zope.location; extra == \"test\"",
+        "zope.proxy; extra == \"test\"",
+        "zope.security; extra == \"test\"",
+        "zope.testing; extra == \"test\"",
+        "zope.testrunner; extra == \"test\"",
+        "zope.configuration; extra == \"zcml\"",
+        "zope.i18nmessageid; extra == \"zcml\""
+      ],
+      "version": "6.0"
+    },
+    {
+      "metadata": [],
+      "name": "zope.configuration",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "repoze.sphinx.autointerface; extra == \"docs\"",
+        "manuel; extra == \"test\"",
+        "zope.schema>=4.9.0; extra == \"test\"",
+        "zope.testing; extra == \"test\"",
+        "zope.testrunner; extra == \"test\""
+      ],
+      "version": "5.0"
+    },
+    {
+      "metadata": [],
+      "name": "zope.event",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "zope.testrunner; extra == \"test\""
+      ],
+      "version": "5.0"
+    },
+    {
+      "metadata": [],
+      "name": "zope.hookable",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "sphinx_rtd_theme; extra == \"docs\"",
+        "zope.testing; extra == \"test\"",
+        "zope.testrunner; extra == \"test\"",
+        "coverage; extra == \"testing\"",
+        "zope.testing; extra == \"testing\"",
+        "zope.testrunner; extra == \"testing\""
+      ],
+      "version": "6.0"
+    },
+    {
+      "metadata": [],
+      "name": "zope.i18nmessageid",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "sphinx_rtd_theme; extra == \"docs\"",
+        "coverage; extra == \"test\"",
+        "zope.testrunner; extra == \"test\"",
+        "coverage; extra == \"testing\"",
+        "zope.testrunner; extra == \"testing\""
+      ],
+      "version": "6.1.0"
+    },
+    {
+      "metadata": [],
+      "name": "zope.interface",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "repoze.sphinx.autointerface; extra == \"docs\"",
+        "sphinx_rtd_theme; extra == \"docs\"",
+        "coverage>=5.0.3; extra == \"test\"",
+        "zope.event; extra == \"test\"",
+        "zope.testing; extra == \"test\"",
+        "coverage>=5.0.3; extra == \"testing\"",
+        "zope.event; extra == \"testing\"",
+        "zope.testing; extra == \"testing\""
+      ],
+      "version": "6.1"
+    },
+    {
+      "metadata": [],
+      "name": "zope.schema",
+      "requires": [
+        "Sphinx; extra == \"docs\"",
+        "repoze.sphinx.autointerface; extra == \"docs\"",
+        "zope.i18nmessageid; extra == \"test\"",
+        "zope.testing; extra == \"test\"",
+        "zope.testrunner; extra == \"test\""
+      ],
+      "version": "7.0.1"
+    }
+  ],
+  "elf": [
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/bin/bash"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc48b4a000)\n\tlibtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x000076850bb87000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000076850b975000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000076850bd2c000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28",
+        "size": 236616
+      },
+      "path": "/bin/bash",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/bin/bash",
+      "sha256": "bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1",
+      "size": 1446024
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/bin/sh"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffac3f6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000071bc5dbbc000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000071bc5ddf6000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28",
+        "size": 236616
+      },
+      "path": "/bin/sh",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/bin/dash",
+      "sha256": "86d31f6fb799e91fa21bad341484564510ca287703a16e9e46c53338776f4f42",
+      "size": 129784
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/bin/python3.12"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff17105000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000072af7dc37000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000072af7dc1b000)\n\tlibexpat.so.1 => /lib/x86_64-linux-gnu/libexpat.so.1 (0x000072af7dbef000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000072af7d9dd000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000072af7dd25000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28",
+        "size": 236616
+      },
+      "path": "/usr/bin/python3.12",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/bin/python3.12",
+      "sha256": "1d3cf64f97cadc79fdc6fe2496a21b7b456cb94211978cfef5a65f616af74fd5",
+      "size": 8021824
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffeff14c000)\n\tlibbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007a6f66f7a000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a6f66d68000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a6f66f9c000)\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "5bccbbb9dc55210d519bdcbab48caddfab44a3af5f632b1dac9dfffc2bc32260",
+      "size": 32112
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe55fdc000)\n\tlibffi.so.8 => /lib/x86_64-linux-gnu/libffi.so.8 (0x00007fee8b5b1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fee8b39f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fee8b5e5000)\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "448504ee777c5e9366e9ac741be127c50787345dd04ec27a58d1d0514b3589c7",
+      "size": 137968
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff44ff4000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007dbd82ff7000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007dbd82de5000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007dbd83520000)\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "78f06b9e16ed0518c44a7ee0d4973037ac7608c2e469165308236bbc8dde7aaa",
+      "size": 64368
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tstatically linked\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "de1fdfa616ae2f72cb80a1dad76bf7143463d9a34600e0daf37109523abcf5d6",
+      "size": 48952
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffef93c0000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007ae042c56000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ae042a44000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ae042c9a000)\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e3f0237f9d36a2c45e4b10ffe92bb4c29ad049d5e8642a1f9ce555c8edc6a12a",
+      "size": 49256
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd21b7f000)\n\tlibsqlite3.so.0 => /lib/x86_64-linux-gnu/libsqlite3.so.0 (0x000074997981c000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000074997960a000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000749979521000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007499799ac000)\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "c4338e31ba6fb0f75a9357b19eaf1a3acf1f73c32979e5f4238544fb5415b272",
+      "size": 144792
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffce2631000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x000076c022e49000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000076c022936000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000076c022724000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000076c022f30000)\n"
+      },
+      "path": "/usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "pt_interp": null,
+      "resolved": "/usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "de6167d40100c03b612d81182fd3ca9b1646e8108940d769e8f521a2e0d20501",
+      "size": 225488
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tstatically linked\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28",
+      "size": 236616
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff156e2000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a146d62c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a146d857000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+      "sha256": "218c4abdabce31161f3c2778762986d1fe06633705c7eb004a740946a5ccdfff",
+      "size": 78944
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libc.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\t/lib64/ld-linux-x86-64.so.2 (0x0000733d5c5b3000)\n\tlinux-vdso.so.1 (0x00007ffc731fd000)\n"
+      },
+      "loader": {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "6222a16be7f2d458d6870efe6e715fc0c8d45766fb79cf7dcc3125538d703e28",
+        "size": 236616
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "pt_interp": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "511f825ee075610ac9c0f7f91e2c13de2000d0f7b859f6461137e809a0a009d0",
+      "size": 2125328
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libcrypto.so.3"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffd24167000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000710a0dd6b000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000710a0e495000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "sha256": "c19c2cf8d7cf91c4f273b1d3bbc56a9d19c91a739bfe57ad630756ee8ede7b77",
+      "size": 5305304
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff44d8e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007cc1c04c8000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007cc1c070b000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1",
+      "sha256": "7ae38be4b2f909d25c5ca3107ed04bc3128a8a24ea7adfe30102c3f04089c9c3",
+      "size": 174336
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffcb556e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000078159e02f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000078159e252000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4",
+      "sha256": "00f593fe192f2851b8ce23b25cec2488d769beb5a8f63e8c9e563071e1075153",
+      "size": 47672
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffe0a9e5000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000078cddeda1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000078cddefea000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5",
+      "sha256": "a9793942a8a5f6f4d0f523ef9e0a5be4f0033f2c6c28520cd2b4e706d53c6e17",
+      "size": 202904
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libm.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fffb8545000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000770a4df80000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000770a4e280000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "f06f2ce1f1833df5f41cf13b6447ff07bea993ad9b27297d3428c2f70ab3f0e7",
+      "size": 952616
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007fff484ee000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007a306c49e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a306c28c000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a306c6f4000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+      "sha256": "eac351cf84d688d1f9235e6165bd57555b31a491cd2f65e0dca67daa69036370",
+      "size": 1468440
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libssl.so.3"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc5b7bd000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007ce6658a1000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ce66568f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ce665e63000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+      "sha256": "63597a81ef19496ad0423cbaaf04d5b0244c7a9e261e331a5a7f3ac0fcdb9590",
+      "size": 696512
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/usr/lib/x86_64-linux-gnu/libz.so.1.3"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc98d03000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000726217ba1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000726217dd4000)\n"
+      },
+      "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libz.so.1.3",
+      "sha256": "9b64150b28505a33d6bc3ecf709c279f6de97a1c184dbda65d06ee4537f6d286",
+      "size": 113000
+    },
+    {
+      "ldd": {
+        "argv": [
+          "ldd",
+          "/lib/x86_64-linux-gnu/libtinfo.so.6"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x00007ffc107ad000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000076a0e7a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000076a0e7c4b000)\n"
+      },
+      "path": "/lib/x86_64-linux-gnu/libtinfo.so.6",
+      "pt_interp": null,
+      "resolved": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4",
+      "sha256": "61f693cd7f8e55ad3ab518b20a00c01adb46ef829cf90773c97615a73f99e09b",
+      "size": 208328
+    }
+  ],
+  "executable": {
+    "path": "/usr/bin/python3",
+    "resolved": "/usr/bin/python3.12",
+    "sha256": "1d3cf64f97cadc79fdc6fe2496a21b7b456cb94211978cfef5a65f616af74fd5",
+    "size": 8021824
+  },
+  "glibc_confstr": "glibc 2.39",
+  "glibc_runtime": "2.39",
+  "implementation": "CPython",
+  "imports": {
+    "_ctypes": {
+      "file": "/usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "version": "1.1.0"
+    },
+    "_hashlib": {
+      "file": "/usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "version": null
+    },
+    "_sqlite3": {
+      "file": "/usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "version": null
+    },
+    "_ssl": {
+      "file": "/usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "version": null
+    },
+    "bz2": {
+      "file": "/usr/lib/python3.12/bz2.py",
+      "version": null
+    },
+    "hashlib": {
+      "file": "/usr/lib/python3.12/hashlib.py",
+      "version": null
+    },
+    "lzma": {
+      "file": "/usr/lib/python3.12/lzma.py",
+      "version": null
+    },
+    "sqlite3": {
+      "file": "/usr/lib/python3.12/sqlite3/__init__.py",
+      "version": null
+    },
+    "ssl": {
+      "file": "/usr/lib/python3.12/ssl.py",
+      "version": null
+    },
+    "zlib": {
+      "file": null,
+      "version": "1.0"
+    }
+  },
+  "label": "tb-mailman",
+  "libc": [
+    "glibc",
+    "2.39"
+  ],
+  "machine": "x86_64",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024",
+  "process_maps": "00400000-00420000 r--p 00000000 00:67 87319901                           /usr/bin/python3.12\n00420000-00703000 r-xp 00020000 00:67 87319901                           /usr/bin/python3.12\n00703000-00a28000 r--p 00303000 00:67 87319901                           /usr/bin/python3.12\n00a28000-00a29000 r--p 00627000 00:67 87319901                           /usr/bin/python3.12\n00a29000-00ba7000 rw-p 00628000 00:67 87319901                           /usr/bin/python3.12\n00ba7000-00bab000 rw-p 00000000 00:00 0 \n3bd80000-3c1c6000 rw-p 00000000 00:00 0                                  [heap]\n761eb4304000-761eb4324000 r--p 00000000 00:67 87328534                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n761eb4324000-761eb442f000 r-xp 00020000 00:67 87328534                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n761eb442f000-761eb4463000 r--p 0012b000 00:67 87328534                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n761eb4463000-761eb4467000 r--p 0015e000 00:67 87328534                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n761eb4467000-761eb446b000 rw-p 00162000 00:67 87328534                   /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6\n761eb446b000-761eb446c000 rw-p 00000000 00:00 0 \n761eb446c000-761eb4473000 r--p 00000000 00:67 87327004                   /usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n761eb4473000-761eb4485000 r-xp 00007000 00:67 87327004                   /usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n761eb4485000-761eb448c000 r--p 00019000 00:67 87327004                   /usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n761eb448c000-761eb448d000 r--p 00020000 00:67 87327004                   /usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n761eb448d000-761eb448f000 rw-p 00021000 00:67 87327004                   /usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so\n761eb448f000-761eb458f000 rw-p 00000000 00:00 0 \n761eb458f000-761eb45ad000 r--p 00000000 00:67 85357563                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n761eb45ad000-761eb460f000 r-xp 0001e000 00:67 85357563                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n761eb460f000-761eb462b000 r--p 00080000 00:67 85357563                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n761eb462b000-761eb4635000 r--p 0009c000 00:67 85357563                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n761eb4635000-761eb4639000 rw-p 000a6000 00:67 85357563                   /usr/lib/x86_64-linux-gnu/libssl.so.3\n761eb4639000-761eb464c000 r--p 00000000 00:67 87327005                   /usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n761eb464c000-761eb4659000 r-xp 00013000 00:67 87327005                   /usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n761eb4659000-761eb4667000 r--p 00020000 00:67 87327005                   /usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n761eb4667000-761eb4668000 r--p 0002d000 00:67 87327005                   /usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n761eb4668000-761eb4671000 rw-p 0002e000 00:67 87327005                   /usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so\n761eb4671000-761eb4771000 rw-p 00000000 00:00 0 \n761eb4787000-761eb4789000 r--p 00000000 00:67 87326997                   /usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n761eb4789000-761eb4790000 r-xp 00002000 00:67 87326997                   /usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n761eb4790000-761eb4792000 r--p 00009000 00:67 87326997                   /usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n761eb4792000-761eb4793000 r--p 0000a000 00:67 87326997                   /usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n761eb4793000-761eb4794000 rw-p 0000b000 00:67 87326997                   /usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so\n761eb4794000-761eb4894000 rw-p 00000000 00:00 0 \n761eb48c7000-761eb48ca000 r--p 00000000 00:67 85357513                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5\n761eb48ca000-761eb48ec000 r-xp 00003000 00:67 85357513                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5\n761eb48ec000-761eb48f7000 r--p 00025000 00:67 85357513                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5\n761eb48f7000-761eb48f8000 r--p 00030000 00:67 85357513                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5\n761eb48f8000-761eb48f9000 rw-p 00031000 00:67 85357513                   /usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5\n761eb48f9000-761eb48fc000 r--p 00000000 00:67 87326999                   /usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n761eb48fc000-761eb4901000 r-xp 00003000 00:67 87326999                   /usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n761eb4901000-761eb4904000 r--p 00008000 00:67 87326999                   /usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n761eb4904000-761eb4905000 r--p 0000a000 00:67 87326999                   /usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n761eb4905000-761eb4906000 rw-p 0000b000 00:67 87326999                   /usr/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so\n761eb4906000-761eb4908000 r--p 00000000 00:67 85357471                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n761eb4908000-761eb4916000 r-xp 00002000 00:67 85357471                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n761eb4916000-761eb4918000 r--p 00010000 00:67 85357471                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n761eb4918000-761eb4919000 r--p 00011000 00:67 85357471                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n761eb4919000-761eb491a000 rw-p 00012000 00:67 85357471                   /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4\n761eb491a000-761eb491c000 r--p 00000000 00:67 87326981                   /usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n761eb491c000-761eb491f000 r-xp 00002000 00:67 87326981                   /usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n761eb491f000-761eb4921000 r--p 00005000 00:67 87326981                   /usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n761eb4921000-761eb4922000 r--p 00006000 00:67 87326981                   /usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n761eb4922000-761eb4923000 rw-p 00007000 00:67 87326981                   /usr/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so\n761eb4923000-761eb4b23000 rw-p 00000000 00:00 0 \n761eb4b23000-761eb4bd6000 r--p 00000000 00:67 85357482                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n761eb4bd6000-761eb4f09000 r-xp 000b3000 00:67 85357482                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n761eb4f09000-761eb4fd4000 r--p 003e6000 00:67 85357482                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n761eb4fd4000-761eb5030000 r--p 004b0000 00:67 85357482                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n761eb5030000-761eb5033000 rw-p 0050c000 00:67 85357482                   /usr/lib/x86_64-linux-gnu/libcrypto.so.3\n761eb5033000-761eb5036000 rw-p 00000000 00:00 0 \n761eb5036000-761eb503a000 r--p 00000000 00:67 87326996                   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n761eb503a000-761eb5040000 r-xp 00004000 00:67 87326996                   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n761eb5040000-761eb5044000 r--p 0000a000 00:67 87326996                   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n761eb5044000-761eb5045000 r--p 0000d000 00:67 87326996                   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n761eb5045000-761eb5047000 rw-p 0000e000 00:67 87326996                   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so\n761eb5047000-761eb5049000 r--p 00000000 00:67 85357494                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n761eb5049000-761eb5050000 r-xp 00002000 00:67 85357494                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n761eb5050000-761eb5051000 r--p 00009000 00:67 85357494                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n761eb5051000-761eb5052000 r--p 0000a000 00:67 85357494                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n761eb5052000-761eb5053000 rw-p 0000b000 00:67 85357494                   /usr/lib/x86_64-linux-gnu/libffi.so.8.1.4\n761eb5053000-761eb5059000 r--p 00000000 00:67 87326990                   /usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n761eb5059000-761eb506b000 r-xp 00006000 00:67 87326990                   /usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n761eb506b000-761eb5071000 r--p 00018000 00:67 87326990                   /usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n761eb5071000-761eb5072000 r--p 0001d000 00:67 87326990                   /usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n761eb5072000-761eb5076000 rw-p 0001e000 00:67 87326990                   /usr/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so\n761eb5076000-761eb52dc000 rw-p 00000000 00:00 0 \n761eb52dc000-761eb52e3000 r--s 00000000 00:67 85357443                   /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache\n761eb52e3000-761eb533c000 r--p 00000000 00:67 85357138                   /usr/lib/locale/C.utf8/LC_CTYPE\n761eb533c000-761eb533e000 rw-p 00000000 00:00 0 \n761eb533e000-761eb5366000 r--p 00000000 00:67 85357472                   /usr/lib/x86_64-linux-gnu/libc.so.6\n761eb5366000-761eb54ee000 r-xp 00028000 00:67 85357472                   /usr/lib/x86_64-linux-gnu/libc.so.6\n761eb54ee000-761eb553d000 r--p 001b0000 00:67 85357472                   /usr/lib/x86_64-linux-gnu/libc.so.6\n761eb553d000-761eb5541000 r--p 001fe000 00:67 85357472                   /usr/lib/x86_64-linux-gnu/libc.so.6\n761eb5541000-761eb5543000 rw-p 00202000 00:67 85357472                   /usr/lib/x86_64-linux-gnu/libc.so.6\n761eb5543000-761eb5550000 rw-p 00000000 00:00 0 \n761eb5550000-761eb5554000 r--p 00000000 00:67 87328413                   /usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1\n761eb5554000-761eb5571000 r-xp 00004000 00:67 87328413                   /usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1\n761eb5571000-761eb5579000 r--p 00021000 00:67 87328413                   /usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1\n761eb5579000-761eb557b000 r--p 00028000 00:67 87328413                   /usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1\n761eb557b000-761eb557c000 rw-p 0002a000 00:67 87328413                   /usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1\n761eb557c000-761eb557e000 r--p 00000000 00:67 85357585                   /usr/lib/x86_64-linux-gnu/libz.so.1.3\n761eb557e000-761eb5590000 r-xp 00002000 00:67 85357585                   /usr/lib/x86_64-linux-gnu/libz.so.1.3\n761eb5590000-761eb5596000 r--p 00014000 00:67 85357585                   /usr/lib/x86_64-linux-gnu/libz.so.1.3\n761eb5596000-761eb5597000 r--p 0001a000 00:67 85357585                   /usr/lib/x86_64-linux-gnu/libz.so.1.3\n761eb5597000-761eb5598000 rw-p 0001b000 00:67 85357585                   /usr/lib/x86_64-linux-gnu/libz.so.1.3\n761eb5598000-761eb55a8000 r--p 00000000 00:67 85357514                   /usr/lib/x86_64-linux-gnu/libm.so.6\n761eb55a8000-761eb5627000 r-xp 00010000 00:67 85357514                   /usr/lib/x86_64-linux-gnu/libm.so.6\n761eb5627000-761eb567f000 r--p 0008f000 00:67 85357514                   /usr/lib/x86_64-linux-gnu/libm.so.6\n761eb567f000-761eb5680000 r--p 000e7000 00:67 85357514                   /usr/lib/x86_64-linux-gnu/libm.so.6\n761eb5680000-761eb5681000 rw-p 000e8000 00:67 85357514                   /usr/lib/x86_64-linux-gnu/libm.so.6\n761eb5684000-761eb5686000 rw-p 00000000 00:00 0 \n761eb5686000-761eb5687000 r--p 00000000 00:67 85357452                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n761eb5687000-761eb56b2000 r-xp 00001000 00:67 85357452                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n761eb56b2000-761eb56bc000 r--p 0002c000 00:67 85357452                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n761eb56bc000-761eb56be000 r--p 00036000 00:67 85357452                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n761eb56be000-761eb56c0000 rw-p 00038000 00:67 85357452                   /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7fff02c01000-7fff02c22000 rw-p 00000000 00:00 0                          [stack]\n7fff02db4000-7fff02db8000 r--p 00000000 00:00 0                          [vvar]\n7fff02db8000-7fff02dba000 r-xp 00000000 00:00 0                          [vdso]\nffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]\n",
+  "python": "3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]",
+  "scope": "base image import/ELF probe; no benchmark, scoring, model or GPU calls",
+  "soabi": "cpython-312-x86_64-linux-gnu",
+  "sqlite": "3.45.1"
+}

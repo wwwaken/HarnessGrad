@@ -1,0 +1,1248 @@
+[
+  {
+    "lines": [
+      {
+        "line": 3,
+        "text": "    python3 data/datasets/gaia/prepare.py          # fetch the pool + the 42 attachments (needs HF_TOKEN)"
+      },
+      {
+        "line": 4,
+        "text": "    python3 data/datasets/gaia/control.py --oracle --platform"
+      },
+      {
+        "line": 5,
+        "text": "    python3 tools/dataset_lint.py --dataset gaia"
+      },
+      {
+        "line": 94,
+        "text": "IMAGE = os.environ.get(\"HG_GAIA_IMAGE\", \"harnessgrad/gaia:20261008\")"
+      },
+      {
+        "line": 101,
+        "text": "    \"image\": IMAGE,"
+      },
+      {
+        "line": 103,
+        "text": "    \"state\": \"container\","
+      },
+      {
+        "line": 124,
+        "text": "    '    python3 bin/ask submit \"<answer>\"\\n')"
+      },
+      {
+        "line": 162,
+        "text": "                f\"`python3 data/datasets/gaia/prepare.py` (needs HF_TOKEN: the release is gated).\")"
+      },
+      {
+        "line": 202,
+        "text": "        \"argv\": [\"python3\", \"/check.py\", \"--answer\", ANSWER_FILE, \"--gold\", GOLD_IN_CONTAINER,"
+      },
+      {
+        "line": 302,
+        "text": "           \"IMAGE\", \"WORKDIR\", \"ANSWER_FILE\", \"load\", \"oracle_files\", \"downloads\","
+      }
+    ],
+    "path": "data/datasets/gaia.py",
+    "sha256": "42b4f0c655103b75baa168bb7d1af7b8c6e72dcfc3ad59602885c34adcaca810"
+  },
+  {
+    "lines": [
+      {
+        "line": 29,
+        "text": "(`list` / `call` / `policy` / `say` / `done`). It is one container image"
+      },
+      {
+        "line": 30,
+        "text": "(`harnessgrad/tau-bench:20261006`) for both domains, with `state: \"container\"`"
+      },
+      {
+        "line": 31,
+        "text": "because the mutated database is the state."
+      },
+      {
+        "line": 37,
+        "text": "depend on a second model. It does not have to: the reward compares database states,"
+      },
+      {
+        "line": 45,
+        "text": "* **Database state.** `verify/check.py` hashes `/app/db.json` with the hash"
+      },
+      {
+        "line": 48,
+        "text": "  same tool classes. Terminating actions are not replayed, exactly as upstream:"
+      },
+      {
+        "line": 66,
+        "text": "one is imposed here and is stated loudly. Both sides are narrowed by the exclusion"
+      },
+      {
+        "line": 123,
+        "text": "#: The image. Built once from `data/datasets/tau_bench/Dockerfile`; the platform does not"
+      },
+      {
+        "line": 125,
+        "text": "IMAGE = os.environ.get(\"HG_TAU_IMAGE\", \"harnessgrad/tau-bench:20261006\")"
+      },
+      {
+        "line": 162,
+        "text": "#:     python3 -c \"import data.datasets.tau_bench as t; print(t.measured_no_op_tasks())\""
+      },
+      {
+        "line": 178,
+        "text": "#: One environment for every task: same image, same writable workdir, no network."
+      },
+      {
+        "line": 179,
+        "text": "#: The tool implementations and the clean database are in the image; the task's own"
+      },
+      {
+        "line": 181,
+        "text": "#: in its writable state rather than a read-only image path."
+      },
+      {
+        "line": 184,
+        "text": "    \"image\": IMAGE,"
+      },
+      {
+        "line": 186,
+        "text": "    \"state\": \"container\","
+      },
+      {
+        "line": 231,
+        "text": "    Nothing here hints at the answer. It states the user id (which the reward makes"
+      },
+      {
+        "line": 280,
+        "text": "        python3 -c \"import data.datasets.tau_bench as t; print(t.measured_no_op_tasks())\""
+      },
+      {
+        "line": 283,
+        "text": "    tool classes on a fresh copy of the clean database, then keep the task when"
+      },
+      {
+        "line": 331,
+        "text": "    The ground truth is an input rather than an image file: an image is built once,"
+      },
+      {
+        "line": 341,
+        "text": "        \"argv\": [\"python3\", CHECK_IN_CONTAINER],"
+      }
+    ],
+    "path": "data/datasets/tau_bench.py",
+    "sha256": "8f51d577b8d7cca2e5b4f13e92db56321d57d6ca91c96f4b6a9df2861cd89b7b"
+  },
+  {
+    "lines": [
+      {
+        "line": 7,
+        "text": "because the release calls both non-test files development material; this is stated here"
+      },
+      {
+        "line": 53,
+        "text": "IMAGE = os.environ.get("
+      },
+      {
+        "line": 54,
+        "text": "    \"HG_APPWORLD_IMAGE\","
+      },
+      {
+        "line": 57,
+        "text": "SERVICE_IMAGE = os.environ.get("
+      },
+      {
+        "line": 58,
+        "text": "    \"HG_APPWORLD_SERVICE_IMAGE\","
+      },
+      {
+        "line": 61,
+        "text": "VERIFIER_IMAGE = os.environ.get("
+      },
+      {
+        "line": 62,
+        "text": "    \"HG_APPWORLD_VERIFIER_IMAGE\","
+      },
+      {
+        "line": 219,
+        "text": "The service interpreter already defines `apis`. Variables and API state persist"
+      },
+      {
+        "line": 270,
+        "text": "        \"scorer_bundle\": {\"isolation_class\": \"snapshot-service\"},"
+      },
+      {
+        "line": 271,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 272,
+        "text": "            \"python3\","
+      },
+      {
+        "line": 288,
+        "text": "        \"image\": VERIFIER_IMAGE,"
+      },
+      {
+        "line": 296,
+        "text": "    \"image\": IMAGE,"
+      },
+      {
+        "line": 298,
+        "text": "    \"state\": \"mount\","
+      },
+      {
+        "line": 304,
+        "text": "            \"image\": SERVICE_IMAGE,"
+      },
+      {
+        "line": 308,
+        "text": "                \"argv\": ["
+      },
+      {
+        "line": 338,
+        "text": "            \"note\": \"Official encrypted AppWorld 0.1.0 bundle. prepare.py decrypts and extracts it under the external dataset root, then writes pool.jsonl; the trusted service image contains the pinned appworld package and task data.\","
+      }
+    ],
+    "path": "data/datasets/appworld.py",
+    "sha256": "2c16e7152f3e793fa1c712daf3c3ae26a2b262a127fa462fbde417e9708b5935"
+  },
+  {
+    "lines": [
+      {
+        "line": 3,
+        "text": "    python tools/import_env.py ...          # not needed: every task ships an image"
+      },
+      {
+        "line": 9,
+        "text": "a sample image). It is deliberately outside the platform tree:"
+      },
+      {
+        "line": 17,
+        "text": "What it costs to get the images"
+      },
+      {
+        "line": 19,
+        "text": "Every task ships a prebuilt image, so nothing is *built* \u2014 but 89 images have to be"
+      },
+      {
+        "line": 27,
+        "text": "the images are the run's largest fixed cost by two orders of magnitude."
+      },
+      {
+        "line": 34,
+        "text": "| `task.toml` `environment.docker_image` | `env.image` (a tag; the driver pins it and refuses to start without a digest) |"
+      },
+      {
+        "line": 38,
+        "text": "| the image's `WORKDIR` | `env.workdir`, and `state: \"container\"` because the task lives there |"
+      },
+      {
+        "line": 42,
+        "text": "`SETUP` is empty on purpose: the environment is the image's, and every task's Dockerfile"
+      },
+      {
+        "line": 43,
+        "text": "does its own `COPY`. That is also why the state has to be `container` rather than a bind"
+      },
+      {
+        "line": 44,
+        "text": "mount -- measured: the image ships `/app` **empty** and the instruction says to write"
+      },
+      {
+        "line": 73,
+        "text": "is stable across runs and reproducible from the record, and it is stated loudly because a"
+      },
+      {
+        "line": 117,
+        "text": "#: A subset for iterating without pulling 89 images. Comma-separated task ids."
+      },
+      {
+        "line": 142,
+        "text": "    \"\"\"The image's `WORKDIR`, which is where the task's state lives."
+      },
+      {
+        "line": 145,
+        "text": "    the Dockerfile sets `WORKDIR /app` and the image's own config agrees. Falling back to"
+      },
+      {
+        "line": 162,
+        "text": "    under `tasks/` in `terminal-bench-2-1`, with the *same* `20251031` image tags in"
+      },
+      {
+        "line": 198,
+        "text": "        \"image\": env_meta[\"docker_image\"],"
+      },
+      {
+        "line": 200,
+        "text": "        # The task's state is the container's filesystem, not a bind mount: the image"
+      },
+      {
+        "line": 202,
+        "text": "        \"state\": \"container\","
+      },
+      {
+        "line": 217,
+        "text": "    # platform copying files in would duplicate -- or fight -- what the image already did."
+      },
+      {
+        "line": 233,
+        "text": "        \"scorer_bundle\": {\"isolation_class\": \"snapshot-service\"},"
+      },
+      {
+        "line": 234,
+        "text": "        \"argv\": [\"bash\", \"/tests/test.sh\"],"
+      },
+      {
+        "line": 240,
+        "text": "        # or 0, because the `if` that writes the file is its last statement."
+      },
+      {
+        "line": 307,
+        "text": "    The 89 task images are the run's real cost (~104 GB, pulled once by"
+      },
+      {
+        "line": 309,
+        "text": "    describes \"89 tagged images\"; they are named in the note rather than hidden, so a"
+      },
+      {
+        "line": 322,
+        "text": "                \"The task IMAGES are separate and much larger -- measured ~104 GB, \""
+      }
+    ],
+    "path": "data/datasets/terminal_bench.py",
+    "sha256": "8f3d8c1b0ecb0fbbb9696f876257706ff3c0019e7a5657dd296dc295a9a47175"
+  },
+  {
+    "lines": [
+      {
+        "line": 142,
+        "text": "        \"`python3 qa/bin/qa submit \\\"<moves>\\\"`. \""
+      },
+      {
+        "line": 201,
+        "text": "class StepwisePuzzle:"
+      },
+      {
+        "line": 298,
+        "text": "    \"\"\"Replay requested solver tokens through the same legal stepwise state machine.\"\"\""
+      },
+      {
+        "line": 385,
+        "text": "DEFAULT_ENV = {\"kind\": \"files\"}"
+      }
+    ],
+    "path": "data/datasets/chessbench_puzzles.py",
+    "sha256": "61165a5351b9068ebdac5e66f34cba1b6ed3c658ee1198ebdaf789be4e11b261"
+  },
+  {
+    "lines": [
+      {
+        "line": 4,
+        "text": "    python3 tools/datasets.py --write        # regenerate DOWNLOADS.md from downloads()"
+      },
+      {
+        "line": 5,
+        "text": "    python3 data/datasets/alfworld/control.py --oracle   # the oracle control (no Docker)"
+      },
+      {
+        "line": 26,
+        "text": "   `traj_data.json` (7302 of them) and `json_2.1.1_pddl.zip` only `initial_state.pddl`"
+      },
+      {
+        "line": 57,
+        "text": "The environment is `kind: \"files\"`, not a container. That is forced by a hard constraint"
+      },
+      {
+        "line": 60,
+        "text": "under the platform's Python. The consequence is stated loudly in"
+      },
+      {
+        "line": 163,
+        "text": "#: (`eval/verification/verifier.py::_verify`), and the check's `argv` passes the same location in the"
+      },
+      {
+        "line": 189,
+        "text": "#: solve it. The game file is the task's initial state, so it is handed to the agent;"
+      },
+      {
+        "line": 278,
+        "text": "    Nothing here hints at the solution. It states the goal the environment will check,"
+      },
+      {
+        "line": 293,
+        "text": "        f\"      python3 alf look\\n\""
+      },
+      {
+        "line": 296,
+        "text": "        f\"      python3 alf do \\\"go to desk 2\\\"\\n\""
+      },
+      {
+        "line": 298,
+        "text": "        f\"      python3 alf done\\n\""
+      },
+      {
+        "line": 337,
+        "text": "    workdir, and the `argv` flags below write to that same resolved location. Note the"
+      },
+      {
+        "line": 344,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 345,
+        "text": "            \"python3\", \"check.py\","
+      },
+      {
+        "line": 402,
+        "text": "            \"note\": \"Holds only `initial_state.pddl` (7080 files). Measured: the loading \""
+      },
+      {
+        "line": 505,
+        "text": "                         f\"Provision it with `python3 tools/datasets.py --list`.\")"
+      },
+      {
+        "line": 511,
+        "text": "            f\"`python3 tools/datasets.py --check`.\")"
+      },
+      {
+        "line": 532,
+        "text": "DEFAULT_ENV: dict = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 534,
+        "text": "ENV: dict[str, dict] = {r[\"task_id\"]: {\"kind\": \"files\"} for r in _RECORDS}"
+      }
+    ],
+    "path": "data/datasets/alfworld.py",
+    "sha256": "9a91e5f9b8a77815222996edcceb8a55feff8b194186e2f8590cfb92e04e1e91"
+  },
+  {
+    "lines": [
+      {
+        "line": 4,
+        "text": "    python3 tools/datasets.py --fetch --dataset scienceworld"
+      },
+      {
+        "line": 5,
+        "text": "    python3 data/datasets/scienceworld/control.py --oracle"
+      },
+      {
+        "line": 6,
+        "text": "    python3 data/datasets/scienceworld/control.py --oracle --platform"
+      },
+      {
+        "line": 150,
+        "text": "#: the absolute spelling against the workdir; the check's `argv` carries the relative"
+      },
+      {
+        "line": 237,
+        "text": "    identity and the goal is rendered when the task is listed. The preamble states the"
+      },
+      {
+        "line": 247,
+        "text": "        f\"also be printed with `python3 scw task`.\\n\""
+      },
+      {
+        "line": 252,
+        "text": "        f\"      python3 scw look\\n\""
+      },
+      {
+        "line": 255,
+        "text": "        f\"      python3 scw do \\\"pick up thermometer\\\"\\n\""
+      },
+      {
+        "line": 257,
+        "text": "        f\"      python3 scw task\\n\""
+      },
+      {
+        "line": 259,
+        "text": "        f\"      python3 scw inventory\\n\""
+      },
+      {
+        "line": 261,
+        "text": "        f\"      python3 scw done\\n\""
+      },
+      {
+        "line": 308,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 309,
+        "text": "            \"python3\", \"check.py\","
+      },
+      {
+        "line": 429,
+        "text": "            f\"with `python3 tools/datasets.py --fetch --dataset scienceworld` and check \""
+      },
+      {
+        "line": 452,
+        "text": "DEFAULT_ENV: dict = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 469,
+        "text": "class _Lazy:"
+      },
+      {
+        "line": 486,
+        "text": "                \"ENV\": {tid: {\"kind\": \"files\"} for tid in ids},"
+      }
+    ],
+    "path": "data/datasets/scienceworld.py",
+    "sha256": "e49b0c7ee0ddb5634214145cf7fff7726cdd1775ef7f97fb635cd47cf83f2366"
+  },
+  {
+    "lines": [
+      {
+        "line": 3,
+        "text": "    python3 tools/datasets.py --fetch --dataset bird_minidev"
+      },
+      {
+        "line": 4,
+        "text": "    python3 data/datasets/bird_minidev/control.py --oracle --platform"
+      },
+      {
+        "line": 5,
+        "text": "    python3 tools/dataset_lint.py --dataset bird_minidev"
+      },
+      {
+        "line": 123,
+        "text": "        f\"`python3 tools/datasets.py --fetch --dataset bird_minidev`\")"
+      },
+      {
+        "line": 230,
+        "text": "            f'    python3 bird/bin/bird submit \"<SQL>\"\\n\\n'"
+      },
+      {
+        "line": 239,
+        "text": "            f\"`schema.sql`, and `python3 bird/bin/bird show` prints the task. Reward is the \""
+      },
+      {
+        "line": 255,
+        "text": "        \"argv\": [\"python3\", \"check.py\", \"--db\", \"database.sqlite\", \"--gold\", \"gold.sql\","
+      },
+      {
+        "line": 308,
+        "text": "DEFAULT_ENV = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 309,
+        "text": "ENV = {task_id: {\"kind\": \"files\"} for task_id in _ids()}"
+      }
+    ],
+    "path": "data/datasets/bird_minidev.py",
+    "sha256": "d6e26d4cf541f889a949992e823e446d52048eb5e05d99c3566bf4a95479667d"
+  },
+  {
+    "lines": [
+      {
+        "line": 168,
+        "text": "ENV = {task_id(i): {\"kind\": \"files\"} for i in included_indices()}"
+      },
+      {
+        "line": 195,
+        "text": "        \"argv\": [\"python3\", \"verify/check.py\","
+      }
+    ],
+    "path": "data/datasets/ds1000.py",
+    "sha256": "7a58535f566e58d23819cad86c0ad9b0620e16f11b33033d6645dfcb977fb9a5"
+  },
+  {
+    "lines": [
+      {
+        "line": 3,
+        "text": "    python3 tools/datasets.py --fetch --dataset spreadsheetbench"
+      },
+      {
+        "line": 4,
+        "text": "    python3 data/datasets/spreadsheetbench/control.py --oracle"
+      },
+      {
+        "line": 187,
+        "text": "        \"tool available to you (for example `python3` with `openpyxl`, which is installed).\\n\""
+      },
+      {
+        "line": 194,
+        "text": "        \"    python3 -c \\\"open('answer.txt','w').write('result.xlsx')\\\"\\n\""
+      },
+      {
+        "line": 231,
+        "text": "        \"argv\": ["
+      },
+      {
+        "line": 232,
+        "text": "            \"python3\", \"check.py\","
+      },
+      {
+        "line": 346,
+        "text": "            f\"`python3 tools/datasets.py --fetch --dataset spreadsheetbench`.\")"
+      },
+      {
+        "line": 357,
+        "text": "DEFAULT_ENV: dict = {\"kind\": \"files\"}"
+      },
+      {
+        "line": 362,
+        "text": "        return {r[\"task_id\"]: {\"kind\": \"files\"} for r in _ensure()}"
+      }
+    ],
+    "path": "data/datasets/spreadsheetbench.py",
+    "sha256": "8fdfad8f320bce041555ca3b4c8b769b79d07ad971af78f314852eb5f9799505"
+  },
+  {
+    "lines": [
+      {
+        "line": 10,
+        "text": "  image's, and `network: none` becomes available because the container has its own"
+      },
+      {
+        "line": 20,
+        "text": "**Nothing is built here.** A task image is built by `tools/import_env.py`, once, by a"
+      },
+      {
+        "line": 21,
+        "text": "human, at import time (\u00a72.5.5). `docker run` on a missing image would silently pull"
+      },
+      {
+        "line": 23,
+        "text": "If the image is not on the local daemon, that is a refusal with instructions."
+      },
+      {
+        "line": 66,
+        "text": "    \"\"\"Docker is not usable, or the image cannot be pinned to a content address.\"\"\""
+      },
+      {
+        "line": 70,
+        "text": "    \"\"\"The container could not be stopped or admitted/committed as a snapshot.\"\"\""
+      },
+      {
+        "line": 73,
+        "text": "# A snapshot is a Docker image layer. Bound both the writable layer and the space Docker"
+      },
+      {
+        "line": 82,
+        "text": "def _snapshot_limit(key: str, default: int) -> int:"
+      },
+      {
+        "line": 89,
+        "text": "        raise SnapshotUnavailable(f\"snapshot admission failed kind=resource: invalid {key}\") from exc"
+      },
+      {
+        "line": 92,
+        "text": "def _snapshot_failure(stage: str, proc: subprocess.CompletedProcess | None = None,"
+      },
+      {
+        "line": 113,
+        "text": "    return SnapshotUnavailable(f\"snapshot {stage} failed kind={kind}{code}: {text[-1200:]}\")"
+      },
+      {
+        "line": 116,
+        "text": "def snapshot_admission(name: str) -> dict[str, int | str | bool]:"
+      },
+      {
+        "line": 120,
+        "text": "    A commit killed by the daemon can leave an incomplete image and used to surface"
+      },
+      {
+        "line": 124,
+        "text": "    maximum = _snapshot_limit(\"HG_SNAPSHOT_MAX_BYTES\", SNAPSHOT_MAX_BYTES)"
+      },
+      {
+        "line": 125,
+        "text": "    reserve = _snapshot_limit(\"HG_SNAPSHOT_RESERVE_BYTES\", SNAPSHOT_RESERVE_BYTES)"
+      },
+      {
+        "line": 130,
+        "text": "        raise _snapshot_failure(\"admission inspect\", exc=exc) from exc"
+      },
+      {
+        "line": 132,
+        "text": "        raise _snapshot_failure(\"admission inspect\", proc)"
+      },
+      {
+        "line": 137,
+        "text": "            \"snapshot admission failed kind=docker: invalid writable size\")"
+      },
+      {
+        "line": 139,
+        "text": "        raise SnapshotUnavailable(\"snapshot admission failed kind=docker: invalid writable size\")"
+      },
+      {
+        "line": 142,
+        "text": "            f\"snapshot admission rejected kind=disk writable_bytes={writable} \""
+      },
+      {
+        "line": 149,
+        "text": "        raise _snapshot_failure(\"admission docker-info\", exc=exc) from exc"
+      },
+      {
+        "line": 151,
+        "text": "        raise _snapshot_failure(\"admission docker-info\", info)"
+      },
+      {
+        "line": 156,
+        "text": "        raise SnapshotUnavailable(\"snapshot admission failed kind=docker: invalid Docker root\")"
+      },
+      {
+        "line": 160,
+        "text": "        raise _snapshot_failure(\"admission disk-usage\", exc=exc) from exc"
+      },
+      {
+        "line": 162,
+        "text": "        raise SnapshotUnavailable(\"snapshot admission failed kind=disk: invalid free bytes\")"
+      },
+      {
+        "line": 166,
+        "text": "            f\"snapshot admission rejected kind=disk docker_root={root} free_bytes={free} \""
+      },
+      {
+        "line": 293,
+        "text": "def looks_pinned(image: str) -> bool:"
+      },
+      {
+        "line": 294,
+        "text": "    \"\"\"True for `repo@sha256:<64 hex>` and for a bare `sha256:<64 hex>` image id.\"\"\""
+      },
+      {
+        "line": 295,
+        "text": "    if \"@sha256:\" in image:"
+      },
+      {
+        "line": 296,
+        "text": "        return _is_hex(image.rsplit(\"@sha256:\", 1)[1])"
+      },
+      {
+        "line": 297,
+        "text": "    if image.startswith(\"sha256:\"):"
+      },
+      {
+        "line": 298,
+        "text": "        return _is_hex(image[len(\"sha256:\"):])"
+      },
+      {
+        "line": 306,
+        "text": "def resolve_digest(image: str) -> str:"
+      },
+      {
+        "line": 307,
+        "text": "    \"\"\"Pin `image` to a content address, locally, without pulling or building."
+      },
+      {
+        "line": 309,
+        "text": "    Returns a reference `docker run` accepts -- `repo@sha256:...` when the image"
+      },
+      {
+        "line": 310,
+        "text": "    carries a registry digest, else the bare image ID, which is itself a content hash"
+      },
+      {
+        "line": 311,
+        "text": "    of the local image and therefore pinnable."
+      },
+      {
+        "line": 314,
+        "text": "    makes the run depend on what the registry served that day; importing the image is"
+      },
+      {
+        "line": 317,
+        "text": "    if looks_pinned(image):"
+      },
+      {
+        "line": 318,
+        "text": "        return image"
+      },
+      {
+        "line": 319,
+        "text": "    if image in _DIGEST_CACHE:"
+      },
+      {
+        "line": 320,
+        "text": "        return _DIGEST_CACHE[image]"
+      },
+      {
+        "line": 323,
+        "text": "        proc = _docker(\"image\", \"inspect\", \"--format\","
+      },
+      {
+        "line": 324,
+        "text": "                       \"{{if .RepoDigests}}{{index .RepoDigests 0}}{{else}}{{.Id}}{{end}}\","
+      },
+      {
+        "line": 325,
+        "text": "                       image, timeout=60)"
+      },
+      {
+        "line": 327,
+        "text": "        raise ContainerUnavailable(f\"timed out inspecting image {image!r}\") from exc"
+      },
+      {
+        "line": 330,
+        "text": "            f\"image {image!r} is not on the local daemon, and this platform does not \""
+      },
+      {
+        "line": 332,
+        "text": "            f\"    python tools/import_env.py --image {image}\\n\""
+      },
+      {
+        "line": 338,
+        "text": "            f\"could not pin image {image!r} to a content address; \""
+      },
+      {
+        "line": 339,
+        "text": "            f\"`docker image inspect` returned {pinned!r}\")"
+      },
+      {
+        "line": 340,
+        "text": "    _DIGEST_CACHE[image] = pinned"
+      },
+      {
+        "line": 344,
+        "text": "#: One `docker image inspect` per distinct reference, not one per task: resolution is"
+      },
+      {
+        "line": 363,
+        "text": "    `python <entry>` -- and **a task image need not have a Python at all**. Measured: the"
+      },
+      {
+        "line": 364,
+        "text": "    real Terminal-Bench image is `ubuntu:24.04` plus a `COPY`, with no `python3`, no `R`"
+      },
+      {
+        "line": 366,
+        "text": "    needs. So assuming the image provides the interpreter is assuming something the"
+      },
+      {
+        "line": 383,
+        "text": "#: One probe per image, not one per task."
+      },
+      {
+        "line": 387,
+        "text": "def image_python(image: str) -> str | None:"
+      },
+      {
+        "line": 388,
+        "text": "    \"\"\"The interpreter the image itself provides, or None if it has none."
+      },
+      {
+        "line": 390,
+        "text": "    The platform injects its own interpreter into a container, because a task image need"
+      },
+      {
+        "line": 391,
+        "text": "    not have one -- measured: the real Terminal-Bench image is `ubuntu:24.04` plus a"
+      },
+      {
+        "line": 394,
+        "text": "    file editor and **the interpreter** are the image's\"."
+      },
+      {
+        "line": 396,
+        "text": "    So the image wins when it has an interpreter, and the platform's is the fallback."
+      },
+      {
+        "line": 397,
+        "text": "    Both halves are measured: a `files`-style image with its own Python keeps it (and"
+      },
+      {
+        "line": 398,
+        "text": "    keeps its own installed packages), and an image with none still runs the harness."
+      },
+      {
+        "line": 400,
+        "text": "    if image in _PYTHON_CACHE:"
+      },
+      {
+        "line": 401,
+        "text": "        return _PYTHON_CACHE[image]"
+      },
+      {
+        "line": 404,
+        "text": "        proc = docker(\"run\", \"--rm\", \"--network\", \"none\", \"--entrypoint\", \"sh\", image,"
+      },
+      {
+        "line": 411,
+        "text": "    _PYTHON_CACHE[image] = found or None"
+      },
+      {
+        "line": 412,
+        "text": "    return _PYTHON_CACHE[image]"
+      },
+      {
+        "line": 525,
+        "text": "    # image's\", which is false for a task image that ships no runtime."
+      },
+      {
+        "line": 531,
+        "text": "def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,"
+      },
+      {
+        "line": 544,
+        "text": "        # The environment is the image (\u00a72.5.3). A rootfs the harness can write to"
+      },
+      {
+        "line": 571,
+        "text": "    cmd += [image, *argv]"
+      },
+      {
+        "line": 575,
+        "text": "def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,"
+      },
+      {
+        "line": 590,
+        "text": "    image makes the guarantee structural instead of best-effort, and it costs one"
+      },
+      {
+        "line": 596,
+        "text": "    # The safety net, not the mechanism. The driver resolves every dataset image once"
+      },
+      {
+        "line": 599,
+        "text": "    if not looks_pinned(image):"
+      },
+      {
+        "line": 601,
+        "text": "            f\"refusing to run {image!r}: it is not pinned to a content address, and \""
+      },
+      {
+        "line": 604,
+        "text": "    cmd = command(argv, image=image, task_dir=task_dir, task_mount=task_mount,"
+      },
+      {
+        "line": 630,
+        "text": "#: Python: the image is the task's, and a task image need not have a Python we can"
+      },
+      {
+        "line": 634,
+        "text": "#: the container runs as a non-root uid, which cannot write `/usr` in *any* image, so"
+      },
+      {
+        "line": 636,
+        "text": "#: check that cannot fail. `/var/tmp` is 1777 in a Debian-family image, so it is"
+      },
+      {
+        "line": 653,
+        "text": "def self_check(platform: Path, image: str) -> dict:"
+      },
+      {
+        "line": 672,
+        "text": "        pinned = resolve_digest(image)"
+      },
+      {
+        "line": 699,
+        "text": "            proc = run([\"sh\", \"-c\", probe], image=pinned, task_dir=task_dir,"
+      },
+      {
+        "line": 736,
+        "text": "                        \"the image and two runs of one task need not agree\")"
+      },
+      {
+        "line": 742,
+        "text": "                       else f\"image {digest_of(pinned)}: \" + \", \".join("
+      },
+      {
+        "line": 744,
+        "text": "            \"facts\": facts, \"image_digest\": digest_of(pinned)}"
+      },
+      {
+        "line": 750,
+        "text": "# rather than in a bind mount -- measured on the real Terminal-Bench images: `WORKDIR"
+      },
+      {
+        "line": 751,
+        "text": "# /app` is set by the image, `/app` ships *empty*, and the check reads `/app`. A bind"
+      },
+      {
+        "line": 755,
+        "text": "# **commits** the result, and verifies against a fresh container from that snapshot."
+      },
+      {
+        "line": 758,
+        "text": "def create(name: str, *, image: str, limits: dict | None = None,"
+      },
+      {
+        "line": 763,
+        "text": "    `sleep infinity` as the command because the image is the task's, and a task image"
+      },
+      {
+        "line": 764,
+        "text": "    need not have a long-running entrypoint -- measured: the Terminal-Bench images have"
+      },
+      {
+        "line": 768,
+        "text": "    **Root, unlike everything else here.** These images and their checks need it: the"
+      },
+      {
+        "line": 793,
+        "text": "    cmd += [image, \"sleep\", \"infinity\"]"
+      },
+      {
+        "line": 797,
+        "text": "            f\"could not create a container for {image!r}: {proc.stderr.strip()[:300]}\")"
+      },
+      {
+        "line": 805,
+        "text": "    task lives *in* the container: what is copied in is part of the image the check will"
+      },
+      {
+        "line": 864,
+        "text": "    and it is free here: `docker commit` works on a stopped container, so the snapshot"
+      },
+      {
+        "line": 870,
+        "text": "        raise _snapshot_failure(\"stop\", exc=exc) from exc"
+      },
+      {
+        "line": 872,
+        "text": "        raise _snapshot_failure(\"stop\", proc)"
+      },
+      {
+        "line": 876,
+        "text": "    \"\"\"Snapshot a container into an image, and return its id."
+      },
+      {
+        "line": 878,
+        "text": "    An **image** rather than a tarball because an image is immutable: the check runs on a"
+      },
+      {
+        "line": 882,
+        "text": "    snapshot_admission(name)"
+      },
+      {
+        "line": 886,
+        "text": "        raise _snapshot_failure(\"commit\", exc=exc) from exc"
+      },
+      {
+        "line": 888,
+        "text": "        raise _snapshot_failure(\"commit\", proc)"
+      },
+      {
+        "line": 889,
+        "text": "    image_id = proc.stdout.strip()"
+      },
+      {
+        "line": 890,
+        "text": "    if not looks_pinned(image_id):"
+      },
+      {
+        "line": 892,
+        "text": "            f\"snapshot commit failed kind=docker: `docker commit` reported {image_id!r}, \""
+      },
+      {
+        "line": 894,
+        "text": "    return image_id"
+      },
+      {
+        "line": 905,
+        "text": "def remove_image(image: str) -> None:"
+      },
+      {
+        "line": 906,
+        "text": "    \"\"\"Never raises. A leaked snapshot is a disk leak, and there is one per task.\"\"\""
+      },
+      {
+        "line": 908,
+        "text": "        docker(\"image\", \"rm\", \"--force\", image, timeout=300)"
+      }
+    ],
+    "path": "eval/containers/container.py",
+    "sha256": "8f08c33eeb48607d9ae67be72dbc499f16b59c4cdd2baeb5ffd41d2e13f9d61b"
+  },
+  {
+    "lines": [
+      {
+        "line": 4,
+        "text": "task's own image, the platform snapshots the container afterwards, and the check runs"
+      },
+      {
+        "line": 5,
+        "text": "against that snapshot. It is the longest single path in the platform and the one with the"
+      },
+      {
+        "line": 6,
+        "text": "most moving parts -- a model gateway, a published network, a snapshot image, a teardown that"
+      },
+      {
+        "line": 46,
+        "text": "    the task state travels by snapshot rather than by re-materialization."
+      },
+      {
+        "line": 52,
+        "text": "    snapshot_tag = f\"hg-snapshot:{label(f'{run_id or \"run\"}-{tid}')}\""
+      },
+      {
+        "line": 53,
+        "text": "    snapshot = None"
+      },
+      {
+        "line": 72,
+        "text": "            # snapshot either."
+      },
+      {
+        "line": 80,
+        "text": "                # The harness's own dependencies, resolved for this image's Python"
+      },
+      {
+        "line": 81,
+        "text": "                # version and mounted read-only from outside the image. It is a **bind"
+      },
+      {
+        "line": 82,
+        "text": "                # mount**, which is what keeps it out of the graded snapshot: measured,"
+      },
+      {
+        "line": 86,
+        "text": "                image_python_here = container_mod.image_python(env_spec[\"image\"])"
+      },
+      {
+        "line": 88,
+        "text": "                    repo, image_python_here or sys.executable,"
+      },
+      {
+        "line": 89,
+        "text": "                    image=env_spec[\"image\"],"
+      },
+      {
+        "line": 90,
+        "text": "                    image_digest=env_spec.get(\"image_digest\"))"
+      },
+      {
+        "line": 92,
+        "text": "                container_mod.create("
+      },
+      {
+        "line": 93,
+        "text": "                    name, image=env_spec[\"image\"],"
+      },
+      {
+        "line": 100,
+        "text": "                                         + (() if image_python_here"
+      },
+      {
+        "line": 106,
+        "text": "                    # snapshot the check grades. The snapshot should be the harness's work,"
+      },
+      {
+        "line": 132,
+        "text": "                image_python = container_mod.image_python(env_spec[\"image\"])"
+      },
+      {
+        "line": 133,
+        "text": "                argv = [image_python or sys.executable, str(repo / entry), \"--task\","
+      },
+      {
+        "line": 184,
+        "text": "            with phases(\"snapshot\"):"
+      },
+      {
+        "line": 191,
+        "text": "                    snapshot = container_mod.commit(name, snapshot_tag)"
+      },
+      {
+        "line": 194,
+        "text": "                            \"invalid\": {\"stage\": \"snapshot\", \"service\": \"docker\","
+      },
+      {
+        "line": 199,
+        "text": "                                overlay, platform_interpreter=(image_python_here is None)),"
+      },
+      {
+        "line": 202,
+        "text": "                # What the harness produced, read back out of the snapshot. `cp_out` is a"
+      },
+      {
+        "line": 214,
+        "text": "                    snapshot, verifier, task_mount=task_mount, staging=staging,"
+      },
+      {
+        "line": 225,
+        "text": "                        overlay, platform_interpreter=(image_python_here is None)),"
+      },
+      {
+        "line": 236,
+        "text": "            # invisible while it took minutes: removing one image per task plus the"
+      },
+      {
+        "line": 244,
+        "text": "                if snapshot is not None:"
+      },
+      {
+        "line": 245,
+        "text": "                    container_mod.remove_image(snapshot)"
+      }
+    ],
+    "path": "eval/containers/container_state.py",
+    "sha256": "7355cf0282de1253de4f06439e13989cb714ce10631ce86b46a99194552897f8"
+  },
+  {
+    "lines": [
+      {
+        "line": 48,
+        "text": "    No `PATH`: the image has its own and the host's names directories that do not"
+      },
+      {
+        "line": 239,
+        "text": "def _verify_container_state(snapshot: str, verifier, *, task_mount: str,"
+      },
+      {
+        "line": 244,
+        "text": "    if declared_class(verifier) not in (\"unknown\", \"snapshot-service\"):"
+      },
+      {
+        "line": 246,
+        "text": "                             \"unmeasured\": \"scorer declaration cannot run on actor snapshot\"},"
+      },
+      {
+        "line": 249,
+        "text": "        snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,"
+      },
+      {
+        "line": 252,
+        "text": "    return record_class(verdict, verifier, \"snapshot-service\")"
+      },
+      {
+        "line": 255,
+        "text": "def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,"
+      },
+      {
+        "line": 260,
+        "text": "    \"\"\"Steps 5-9: a fresh container from the snapshot, the check's inputs copied in"
+      },
+      {
+        "line": 265,
+        "text": "    which is why this is a re-materialization and not a snapshot of the harness's view."
+      },
+      {
+        "line": 276,
+        "text": "            # The snapshot is harness-owned state.  Reward/evidence files must be"
+      },
+      {
+        "line": 290,
+        "text": "        container_mod.create(name, image=snapshot, limits=limits or {},"
+      },
+      {
+        "line": 311,
+        "text": "            # container starts, so no snapshot directory is reused."
+      },
+      {
+        "line": 431,
+        "text": "            # container is built from the snapshot, which is the **harness's** filesystem."
+      },
+      {
+        "line": 467,
+        "text": "              \"snapshot-service\" if running is not None or service_specs else \"actor-workdir\")"
+      },
+      {
+        "line": 511,
+        "text": "    #: reachable only from a container snapshot (`_verify_container_state`); this is the"
+      },
+      {
+        "line": 564,
+        "text": "            # A **fresh** container from the same image, sharing only the task bind"
+      },
+      {
+        "line": 582,
+        "text": "                argv, image=spec.get(\"image\") or env_spec[\"image\"], task_dir=workdir,"
+      }
+    ],
+    "path": "eval/verification/verifier.py",
+    "sha256": "fc7970fcc107b07bca0d1a345a968fa066917787e697f6d5dee4361325d06bae"
+  }
+]

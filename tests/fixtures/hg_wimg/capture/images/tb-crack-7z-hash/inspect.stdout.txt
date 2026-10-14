@@ -1,0 +1,62 @@
+[
+    {
+        "Id": "sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/crack-7z-hash:20251031",
+            "alexgshaw/crack-7z-hash:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/crack-7z-hash@sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3",
+            "alexgshaw/crack-7z-hash@sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-31T02:56:48.69951924Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-crack-7z-hash",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 355846985,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:ed230b3dcbb88faf3908d85ef5f88492bfa6af708f1ff35869afd763fd5c8911",
+                "sha256:cf134f7e41e96f338fb77f834bf45d4f9fe59b578e95bd327c329c7627439a6c",
+                "sha256:0f8ee8b7fdffc68f02179ce82aaa62c6d2ec35d5b499631e05a774e500e94019",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:a2304b1b2ee00bfedf5093da7e6309bd10d23e1ba8c112f0f92a14705aa7415c",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:f94c51365acf9847ceb3164a8420d98aa4ad1dc1e7a7ee3b661c2b883ebd235e"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T06:43:11.880246341Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3",
+            "size": 1998
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/crack-7z-hash"
+                }
+            ]
+        }
+    }
+]

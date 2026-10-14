@@ -1,0 +1,56 @@
+[
+    {
+        "Id": "sha256:5aeb11ca6e802b83816c9a31f055ac9d028309a853509400c2e3139ac2d8380d",
+        "RepoTags": [
+            "alexgshaw/bn-fit-modify:20251031"
+        ],
+        "RepoDigests": [
+            "alexgshaw/bn-fit-modify@sha256:5aeb11ca6e802b83816c9a31f055ac9d028309a853509400c2e3139ac2d8380d"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-31T02:58:44.468330828Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-bn-fit-modify",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 262234970,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc",
+                "sha256:de73336e6e281a16a028fdea97e190e9c6fc297b6a73e8025ea2d32f3f9fded4",
+                "sha256:ad935d611618e6e163fbfd766e051b7fdeee69202a75c919252ce68754c13b8c",
+                "sha256:94d7f15161afbd0f51015e79077f76009e86c9345e071e450d16b5cf4335c6b7"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-26T04:37:02.098327699Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:5aeb11ca6e802b83816c9a31f055ac9d028309a853509400c2e3139ac2d8380d",
+            "size": 1158
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.io/alexgshaw/bn-fit-modify"
+                }
+            ]
+        }
+    }
+]

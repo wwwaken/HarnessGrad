@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-native-20261014T215530Z-cf898e-make-mips-interpreter",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=512m",
+    "--memory-swap=512m",
+    "--pids-limit=64",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--entrypoint=python3",
+    "sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2",
+    "-I",
+    "-B",
+    "/wimg/native-probe.py"
+  ],
+  "shell_display": "docker create --name hg-wimg-native-20261014T215530Z-cf898e-make-mips-interpreter --pull=never --network=none --read-only --cpus=1 --memory=512m --memory-swap=512m --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --entrypoint=python3 sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2 -I -B /wimg/native-probe.py",
+  "returncode": 0,
+  "captured_utc": "2026-10-14T21:55:35.901305+00:00"
+}

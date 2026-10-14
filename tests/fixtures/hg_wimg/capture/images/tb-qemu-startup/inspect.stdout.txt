@@ -1,0 +1,59 @@
+[
+    {
+        "Id": "sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/qemu-startup:20251031",
+            "alexgshaw/qemu-startup:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/qemu-startup@sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04",
+            "alexgshaw/qemu-startup@sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-22T02:39:30.549436451Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "bash"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-qemu-startup",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 1308553941,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:584a83027a87baa03abecf175bc8b63c45f7397cc88438b6a921f1558ba8c884",
+                "sha256:4366053a697428491710d864238b8086b3012e71c462d74678006defea124cad",
+                "sha256:b2211716e8a439006698653ec425e6efb7d18ee095c8402b3944597391cba8cd",
+                "sha256:d10ee47214d3592a1ef6ef54d62911e90400323cc7f1aa82fcefed4d8c482449",
+                "sha256:75bf4969696d0102c3073f66fb9f84526820e56d96b8ff31b41dfce8b0b523a3",
+                "sha256:464f1edcf3710241bce7962a5cc9541a3d86acc9c663d50446b53b705763db93",
+                "sha256:a38b7ba50684b860f8ac4e1285ac70b03194e36a08d9c7bed9d11f1d34ce738e"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T09:08:09.964053748Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04",
+            "size": 1792
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/qemu-startup"
+                }
+            ]
+        }
+    }
+]

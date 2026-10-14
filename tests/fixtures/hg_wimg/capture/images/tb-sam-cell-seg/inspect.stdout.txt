@@ -1,0 +1,67 @@
+[
+    {
+        "Id": "sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0",
+        "RepoTags": [
+            "docker.1panel.live/alexgshaw/sam-cell-seg:20251031",
+            "alexgshaw/sam-cell-seg:20251031"
+        ],
+        "RepoDigests": [
+            "docker.1panel.live/alexgshaw/sam-cell-seg@sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0",
+            "alexgshaw/sam-cell-seg@sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-10-28T22:18:51.104837507Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+                "PYTHON_VERSION=3.11.14",
+                "PYTHON_SHA256=8d3ed8ec5c88c1c95f5e558612a725450d2452813ddad5e58fdb1a53b1209b78"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/app",
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-sam-cell-seg",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 411503162,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:f2522c6ed78b338a9e272dd5038005d008f74729e036073e837f701f221b99ba",
+                "sha256:fbde375eafc7442622b62f4756226bc327ab9e9a6acb70c5a3a685a2a036a669",
+                "sha256:c041ff8d6c7338794cad076d734c7e4259395b9925ac352c50c816346a794f60",
+                "sha256:713ad1f34d943ebd182ad2e7dc34fefc80b3b51f6123a3ad95402f6b8c95ca25",
+                "sha256:4320ca771c55bcea391376042be0e6321fe7cbcda1c533d05ade412ed814c966",
+                "sha256:a3d5032ca97badb0884802328be836f771ead63a5ff5579f84a760a969b263e7",
+                "sha256:a631cee3114db71336b815cdf4ef73bb6fb514ad0cc3da5666816b83e071e287",
+                "sha256:65c0880b8e56148f995c57dda650364c8c08e4ee54b560a933d80d189451a917",
+                "sha256:5c7afab991cb475e0e0eecb72b06a29436c42a8e3b5552b7fa8032021442b0f8",
+                "sha256:54388c247642ea2cd3a0c70ecfbf83cd295b3afb47f6f3a21ca2745852979d43",
+                "sha256:9f9e0b5f841c481a014c253fa4b43f2f4ae15db6d6e7000af2d2586570980c2d"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-29T07:37:10.00636165Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0",
+            "size": 2631
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "docker.1panel.live/alexgshaw/sam-cell-seg"
+                }
+            ]
+        }
+    }
+]

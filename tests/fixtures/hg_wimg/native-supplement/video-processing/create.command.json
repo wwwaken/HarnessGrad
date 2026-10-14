@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-wimg-native-20261014T215530Z-cf898e-video-processing",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=512m",
+    "--memory-swap=512m",
+    "--pids-limit=64",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--mount",
+    "type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly",
+    "--entrypoint=python3",
+    "sha256:a2c0f39e3ab04e67ac6e49cad9167bb0d987babe32511768c01aa0c6905a875f",
+    "-I",
+    "-B",
+    "/wimg/native-probe.py"
+  ],
+  "shell_display": "docker create --name hg-wimg-native-20261014T215530Z-cf898e-video-processing --pull=never --network=none --read-only --cpus=1 --memory=512m --memory-swap=512m --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges --mount type=bind,src=/tmp/hg-img/tests/fixtures/hg_wimg,dst=/wimg,readonly --entrypoint=python3 sha256:a2c0f39e3ab04e67ac6e49cad9167bb0d987babe32511768c01aa0c6905a875f -I -B /wimg/native-probe.py",
+  "returncode": 0,
+  "captured_utc": "2026-10-14T21:55:44.048425+00:00"
+}
