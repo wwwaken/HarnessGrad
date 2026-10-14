@@ -1,0 +1,136 @@
+{
+  "scope": "One explicitly requested no-model oracle control; no production H0 authorization.",
+  "base_commit": "065d29cd570ec84b0035e835b40ca0ceb292d116",
+  "cause": "The standalone workdir /tmp/jericho-control-* has grandparent /. Without HARNESSGRAD_WORK_ROOT, eval.verifier uses that grandparent. The final read-only bind of / covers the private /tmp tmpfs; TMPDIR=/tmp names an existing but read-only directory. Python tempfile collapses candidate create/write failures to ENOENT.",
+  "probe_identity": {
+    "uid": 1026,
+    "euid": 1026,
+    "gid": 1026,
+    "python": "3.12.4"
+  },
+  "tempfile_probe": "os.open with tempfile._bin_openflags and mode 0600; os.write(b\"blat\"); close; unlink. Inspected Python 3.12 _candidate_tempdir_list and _get_default_tempdir.",
+  "host_candidate_observations": {
+    "available_bytes": 133584175104,
+    "free_inodes": 112465948,
+    "/tmp": "1777, W_OK true, create/write/close/unlink succeeded (both duplicate entries)",
+    "/var/tmp": "1777, W_OK true, create/write/close/unlink succeeded",
+    "/usr/tmp": "absent, stat/create errno 2",
+    "control_workdir": "0700, owned by UID 1026, create/write/close/unlink succeeded"
+  },
+  "exact_original_sandbox_observations": {
+    "inherited_HARNESSGRAD_WORK_ROOT": null,
+    "effective_work_root": "/",
+    "TMPDIR": "/tmp",
+    "available_bytes": 133574725632,
+    "free_inodes": 112464638,
+    "/tmp": "1777, W_OK false, ST_RDONLY true, create errno 30 (both duplicate entries)",
+    "/var/tmp": "1777, W_OK false, ST_RDONLY true, create errno 30",
+    "/usr/tmp": "absent, stat/create errno 2",
+    "control_workdir": "0700, W_OK false, ST_RDONLY true, create errno 30"
+  },
+  "fixed_sandbox_probe": {
+    "work_root": "<control-workdir>/.control",
+    "TMPDIR": "/tmp",
+    "/tmp": "private tmpfs, 0755, owned by UID 1026, writable, create/write/close/unlink succeeded",
+    "available_bytes": 135002632192,
+    "free_inodes": 32959625,
+    "control_workdir": "remains read-only, create errno 30",
+    "/var/tmp": "absent, errno 2",
+    "/usr/tmp": "absent, errno 2"
+  },
+  "baseline": {
+    "command": "python3 data/jericho/control.py --oracle --task-id acorncourt",
+    "exit_code": 1,
+    "reward": -1,
+    "measured": false,
+    "invalid": 0,
+    "unmeasured": 1,
+    "detail": "exit 3; check cannot measure: could not start the game: [Errno 2] No usable temporary directory found in ['/tmp', '/tmp', '/var/tmp', '/usr/tmp', '/tmp/jericho-control-x7_gf4pq']",
+    "wall_seconds": 4.3,
+    "cleanup": {
+      "path": "/tmp/jericho-control-x7_gf4pq",
+      "absent_now": true
+    }
+  },
+  "fixed_exact_command": {
+    "command": "python3 data/jericho/control.py --oracle --task-id acorncourt",
+    "exit_code": 0,
+    "reward": 1,
+    "score": 30,
+    "max_score": 30,
+    "moves": 17,
+    "measured": true,
+    "invalid": 0,
+    "unmeasured": 0,
+    "wall_seconds": 3.7
+  },
+  "cleanup_observed_recheck": {
+    "invocation": "control.main([\"--oracle\", \"--task-id\", \"acorncourt\"]) with temp allocator path observation only",
+    "exit_code": 0,
+    "stdout": "task    acorncourt  (17 reference commands)\nmode    oracle\nreward  1\n{\n \"detail\": \"reward 1 from /verifier/reward.txt (exit 0) | the game is finished: 30/30 points in 17 moves | stdout reward 1: the game is finished: 30/30 points in 17 moves\",\n \"max_score\": 30,\n \"measured\": true,\n \"moves\": 17,\n \"passed\": true,\n \"reward\": 1.0,\n \"score\": 30,\n \"why\": \"the game is finished: 30/30 points in 17 moves\"\n}\nelapsed 3.5s\n",
+    "stderr": "",
+    "cleanup": [
+      {
+        "path": "/tmp/jericho-control-uxau8ren",
+        "absent_after_main": true
+      }
+    ]
+  },
+  "coverage_per_invocation": {
+    "eligible": 56,
+    "selected": 1,
+    "tasks": [
+      "acorncourt"
+    ],
+    "trials": 1,
+    "commands": 17,
+    "seed": 4
+  },
+  "metric": "game score / game get_max_score(); not normalized to the reference walkthrough",
+  "source": {
+    "archive_sha256_declared_by_adapter": "7c3b38d946009c591c3f8e88d87b6a0141f0f701f447b97477162dfc17ff9b2c",
+    "rom_sha256": "7b13c904bf7608fa0de902ce7ecd5fcd0e026f293fc67baa87b99a35a3190c9e",
+    "selected_manifest_sha256": "58e2230f877e55290808c223ffec06740dc080c8e4eae1b4601b10380f913bdb",
+    "selected_manifest_hash_encoding": "json.dumps(selected record except host path, sort_keys=True), UTF-8",
+    "split": "explicit task-id selection; no split sampling",
+    "source_archive_reverified": false
+  },
+  "files_sha256": {
+    "data/jericho.py": "6c5665a0ed8efe9e962bbe1935df805137fc8e5216beb35f35d50e53f0a7edca",
+    "data/jericho/control.py": "05c7e6e1118f0ab56a52e6bc6a694236da52643681bdf53647ba97ad31a08656",
+    "data/jericho/verify/check.py": "da09db93dd0b3159311114d77f90bd2c79f2c83dcb3e7bf87685540c2924227f",
+    "data/jericho/lib/jer_env.py": "49d893cf88402e7bc7f9c9d52f3f14e40cb99f157435fffb0963ae0c8cfb0b29",
+    "data/jericho/runtime.py": "7e32e91044d4ebb996375eb33b87112becc81449b985a9ef3e84ea0542c21d7b",
+    "eval/verifier.py": "68f090e599d4e18f340c261ed0dc1fec3423b7bfc5b0b322bc40a6bbe4ad254a",
+    "eval/sandbox.py": "b027213258621bbb348d4a483373b657a42a98fdbee24d5075f49c344ce0d64f",
+    "tests/quality/test_jericho_control_tempdir.py": "07cf955013ed0744eadce3b61b5338ab884ee29bbcca817bcebeeb83e5be91df"
+  },
+  "binding": {
+    "model": null,
+    "model_hash": null,
+    "endpoint": null,
+    "harness": "local released oracle via sandboxed Jericho CLI",
+    "gpu": null
+  },
+  "limits": {
+    "agent_timeout_s": 300,
+    "verify_timeout_s": 300,
+    "concurrency": 1,
+    "paid_calls": 0,
+    "agent_network": "none",
+    "extra_cpu_memory_disk_limits": "not added by this local control"
+  },
+  "focused_test": {
+    "command": "python3 -m pytest -q tests/quality/test_jericho_control_tempdir.py",
+    "exit_code": 0,
+    "passed": 4,
+    "skipped": 0,
+    "wall_seconds": 0.17,
+    "covers": [
+      "real sandbox private tempfile writes",
+      "task artifacts remain read-only",
+      "absent/inherited work root restored on success and exception"
+    ]
+  },
+  "comparability": "Baseline is unmeasured and must not be treated as zero. Only one selected game is validated; no pilot, model measurement, broader dataset authorization or score aggregation."
+}

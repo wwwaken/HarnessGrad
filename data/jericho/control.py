@@ -108,8 +108,22 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     """Run the check the way the platform's verifier does, re-materializing its inputs."""
     from eval.verifier import _verify
     verifier = module.VERIFY[record["task_id"]]
-    verdict = _verify(workdir.resolve(), verifier, "", sandbox=True,
-                      timeout_s=module.VERIFY_TIMEOUT_S, env=module.DEFAULT_ENV)
+    workdir = workdir.resolve()
+    control_root = workdir / ".control"
+    control_root.mkdir(exist_ok=True)
+    # A standalone /tmp/jericho-control-* has grandparent '/', the verifier's
+    # fallback work root. Binding that read-only covers the private /tmp tmpfs.
+    # Use the same dedicated root as drive(), preserving a writable private /tmp.
+    old_work_root = os.environ.get("HARNESSGRAD_WORK_ROOT")
+    os.environ["HARNESSGRAD_WORK_ROOT"] = str(control_root)
+    try:
+        verdict = _verify(workdir, verifier, "", sandbox=True,
+                          timeout_s=module.VERIFY_TIMEOUT_S, env=module.DEFAULT_ENV)
+    finally:
+        if old_work_root is None:
+            os.environ.pop("HARNESSGRAD_WORK_ROOT", None)
+        else:
+            os.environ["HARNESSGRAD_WORK_ROOT"] = old_work_root
     evidence = verdict.get("evidence") or {}
     reward = (float(verdict["score"]) if verdict.get("score") is not None
               and evidence.get("measured") is True and not verdict.get("unmeasured") else -1.0)

@@ -4,6 +4,15 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Jericho standalone verifier temp directory — 2026-10-14 — S2
+
+- Scope: isolated `/tmp/hg-s2`; only the explicitly requested `acorncourt` oracle and a new focused regression file. No model or GPU execution.
+- Cause: the standalone `/tmp/jericho-control-*` layout makes the verifier's fallback work root (`workdir.parent.parent`) equal `/`. The final read-only root bind covers the sandbox's private `/tmp`. Under the check's UID 1026, `/tmp`, `/var/tmp`, and the task directory fail creation with `EROFS`; `/usr/tmp` is absent. About 124 GiB and 112 million inodes remain available. Python's tempfile probing reports the combined failures as `ENOENT`.
+- Change: `data/jericho/control.py::run_check` supplies its own `.control` work root, matching the agent phase, and restores the caller's environment even on verifier exceptions. The check retains writable private `/tmp` and read-only task artifacts. Shared sandbox/verifier code and the scoring rule are unchanged.
+- Validation: `python3 data/jericho/control.py --oracle --task-id acorncourt` changes from unmeasured reward `-1` to measured reward **1**, **30/30 points in 17 moves**. `python3 -m pytest -q tests/quality/test_jericho_control_tempdir.py` passes **4/4**, including real sandbox temp writes and exception restoration. No whole-suite execution.
+- Evidence: [unique receipt](../reports/jericho-control-tempdir-s2-receipt.json) records same-user candidate probes, source/code hashes, selected-task coverage, limits, exact control results, and an additional identical-control invocation with observed cleanup.
+- Commit: accompanying focused `fix: give Jericho control verifier a dedicated work root`; parent integration remains separate.
+
 ## Canonical trace reader — 2026-10-14 — ref2
 
 - Scope: structural refactor in isolated `/tmp/hg-ref-2`; no model/H0 execution.
