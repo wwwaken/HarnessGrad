@@ -1679,3 +1679,44 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - `reports/w-chess-evidence/execution/diagnostic_receipt.json` records `score=null`, `measured_trials=0`, `invalid_trials=0`, `unmeasured_trials=1`, and explicitly unknown enforcement/lifecycle facts. Relay cleanup records `server_closed=true`, `thread_joined=true`, `socket_removed=true`; `reports/w-chess-evidence/cleanup-observation.json` independently finds the observed task and socket directories absent. The external harness workspace is retained as evidence. These observations do not upgrade policy cleanup/snapshot admission from unknown.
 - The blocker remains `runtime`: a solver submission and delivered terminal exchange are still missing. Offline-only measurement and protocol-comparison restrictions remain. No production code, gate, allowance, harness or reference data changed; no rerun, method tuning, expansion or production authorization followed. `interruption-closure`, every historical receipt/run ID and all historical registry records remain untouched. Original run files, review copies and a byte-for-byte archive are retained with an integrity inventory.
 - Validation: `reports/w-chess-validation.txt` contains focused-test and registry checker output; raw focused output is `reports/w-chess-evidence/focused-tests.txt`. Work is committed only in the isolated `wg-chess` worktree for parent review.
+## Parent review and merge — w-alf, w-chess — 2026-10-15
+
+- Merged `ab81db7` (w-alf) and `06194c0` (w-chess) on top of `990095c`. Only the journal
+  conflicted, resolved by keeping both sides. Result `0baf080`. Registry valid: 28 datasets,
+  2 shared blockers, 11 historical records, `production_authorized=false`. 95 focused tests
+  passed on `main` after the merge.
+- **`alfworld / current-runtime-identity` is closed by a real control run.** The parent read the
+  receipt rather than the summary: `reports/w-alf-evidence/runtime-attempt/run-one-result.json`
+  is a genuine `alfworld-oracle 1` noop control, `exit_code=0`, verdict
+  `kind=command, passed=False, score=0.0, scorer_isolation_class=actor-workdir`. That is exactly
+  what this blocker's next_action asked for - a *current* selected oracle/noop identity,
+  scorer/runtime identity, effective limits (actor/verifier timeouts 3600/300 s, budget 30
+  actions) and cleanup evidence - as opposed to the historical generation, which was neither
+  rerun nor overwritten. `alfworld` now carries zero own blockers, bringing the set to seven
+  (`agentdojo`, `alfworld`, `gsm8k`, `jericho`, `musique`, `scienceworld`, `terminal_bench`).
+- What the alfworld closure does NOT claim, and the record says so: CPU/RAM caps remain
+  **unproven**, formal lifecycle remains unknown, publication is withheld (`score=null`,
+  0 invalid, 1 unmeasured trial), and the historical raw trial/provenance receipts are still
+  absent so historical comparison remains a separate `measurement` need. The blocker was about
+  establishing identity, limits and cleanup - not about a measured score - and it is closed on
+  that narrower basis only. Shared gates on `alfworld` are untouched.
+- **`chessbench_puzzles / trusted-stepwise-transport` stays OPEN, and that is the right result.**
+  A real interactive stepwise attempt ran through the live relay, so the protocol now has
+  execution evidence where it previously had only wiring. But the actor disconnected after
+  receiving the initial board without submitting a move: the receipt records `measured=false`,
+  `answer_receive_failed`, isolation class `in-process`, 0 invalid / 1 unmeasured trial, and
+  relay cleanup passed. The worker refused to close the blocker and refused to touch the harness
+  to force a result; the parent agrees. The receipt also confirms the recorded class is
+  `in-process`, which is the trusted-platform controller class `w-obs` set out to record, so that
+  earlier fix is observable in a real receipt. The blocker's own "keep the offline-only claim
+  until then" clause still binds: a wired or aborted transport is not a measurement, and no
+  comparison may mix stepwise with strict-replay.
+- Both workers were told to prefer leaving a blocker open with a precise reason over closing it,
+  and in this round one did each. That asymmetry is the useful signal: the noop control produced
+  the evidence its blocker named, and the stepwise attempt did not produce a measurement, so only
+  the first closed.
+- Resource state: the chessbench stepwise attempt legitimately used the relay and the local
+  endpoint for an authorised diagnostic; the alfworld noop control is a no-model control. GPU0
+  stayed idle. No utilisation figure is claimed beyond what the run receipts record. All
+  historical runs, frozen receipts and archives were left untouched; neither worker resumed or
+  overwrote `chess-pilot-h0-20261013` or its recovery run.
