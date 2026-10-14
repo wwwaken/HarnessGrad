@@ -1,7 +1,12 @@
 # BFCL Simple full-call AST source acquisition contract — Codex 184
 
 Status: **external source/provenance blocker remains open**. This directory
-contains no acquired evaluator, receipt, approved receipt pin or benchmark data.
+contains no complete acquired evaluator, approved receipt or approved receipt pin.
+The [Codex 195 public-source candidate](candidate-codex195/README.md) preserves
+seven commit-pinned original code/license/specification files and partial source
+semantics. Its separate candidate record is deliberately inadmissible; checker
+and helper closure, independent archive/member custody and approval remain open.
+There is no benchmark data in this directory.
 The registry's `simple-ast-contract` implementation depends on independent
 source acquisition. Its current blocking status is therefore `external`.
 
@@ -10,7 +15,10 @@ source acquisition. Its current blocking status is therefore `external`.
 `data/bfcl_v3.py` declares `ShishirPatil/gorilla`, tag `v1.3`, archive URL
 `https://codeload.github.com/ShishirPatil/gorilla/tar.gz/refs/tags/v1.3`, and SHA-256
 `57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe`.
-These are adapter declarations, not verified acquisition evidence. A tag can
+The archive digest remains an adapter declaration, not verified acquisition
+evidence. Codex 195 observed the public tag pointing to commit
+`ea13468e4423454d0c213704fb87cf7cb3990433` and the official release explicitly
+describing V3. This observation does not verify the declared archive digest. A tag can
 move; the archive digest and independently verified tag-to-commit linkage are
 required together. A current upstream checkout, pip package or BFCL-v4 evaluator
 cannot silently substitute for this declared v3 release.
@@ -22,9 +30,11 @@ alternatives and retains only names. Its `official` evidence key does not make
 the diagnostic an official metric. The prose claiming that acceptable-value
 lists make full-call scoring impossible is unsupported.
 
-No official parser/checker/dispatcher filenames, Python symbols or signatures
-are established by available local source. Do not guess them. The exact semantic
-contract must be derived from acquired original code, including:
+The candidate establishes original parser/runner/aggregation symbols and identifies
+the missing checker through the pinned source import and directory metadata.
+Its complete checker signature and full-call acceptance semantics are unresolved.
+Do not guess them. The exact complete semantic contract must be derived from
+acquired original code, including:
 
 - Simple category/language routing and result decoding into the parser; raw
   prediction format, syntax failure, empty result and call-count handling.
