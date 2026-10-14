@@ -2007,3 +2007,39 @@ Validation in `reports/w-ujson-validation.txt`: blocker checker valid
   network-denied container for its receipts, which is the authorised diagnostic work its blocker
   requires; no benchmark task, model or endpoint call was made, so the model endpoint stayed idle
   and no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
+## BFCL v1.3 public custody and Simple code-only review — 2026-10-15 - w-bfcl
+
+- Scope: registered isolated worktree `/tmp/hg-bfcl`, branch `wg-bfcl`, base
+  `83cad84f59f61a94af8e919c70f7fe5a68ed970d`. Read the complete starting
+  `bfcl_v3/simple-ast-contract` observed/next_action, cited BFCL reviews, B5/E3
+  custody and the operator's independent-review deferral before acquisition.
+- New custody: five public HTTPS GET responses, raw bodies/headers and exact
+  request receipts in `tests/fixtures/hg_bfcl/`. Recomputed archive SHA-256
+  matches the adapter's v1.3 pin; the measured 44,552,456-byte archive's PAX
+  commit matches the fresh tag/commit. Reconstructed signed Git commit and all
+  93 tree objects; all 83 retained original source/license/spec files match
+  exact archive member names, measured sizes, SHA-256 and Git blobs. Original
+  Apache-2.0 bytes are decoded from a fresh response and matched to the archive.
+- Static review: `reports/w-bfcl-review.md` covers the complete retained
+  handler/parser/checker/dispatch/helper graph, expression eval and route
+  distinctions, 55 handler classes and 21 third-party import roots, with
+  file+line. Official Simple validates full calls/alternatives; the adapter
+  explicitly supplies bare-name multiset diagnostic scoring. Eager native
+  Tree-sitter/grammar and provider imports require actual offline artifacts;
+  partly pinned pyproject declarations are not a package/native/ABI lock.
+- Disposition: blocker remains `external`, family `official-scorer-execution`.
+  Missing: complete offline direct/transitive/native/Python ABI/license custody,
+  concrete local-model handler/grammar and selected full-call integration,
+  fabricated differential contract and actual official scorer execution.
+  Updated only this blocker's observed/next_action/evidence to record progress
+  and remove the operator-withdrawn approval wording. No human or independent
+  sign-off is required. No gate implementation, adapter score, selected/privacy
+  boundary, historical source candidate or receipt was modified.
+- Validation: offline custody verifier and SHA-256 manifest pass; blocker checker
+  is valid (28 datasets, two shared blockers, 11 historical records,
+  production_authorized=false). Existing source-contract/registry/B5 suites:
+  98 passed. Exact commands and checker output: `reports/w-bfcl-validation.txt`.
+  Static review overview: `reports/w-bfcl-overview.html`.
+- No upstream evaluator, fabricated differential, benchmark task, model, GPU,
+  endpoint, container or package install ran. `runs/`, frozen receipts and
+  dataset roots were untouched; no production H0 authorization follows.

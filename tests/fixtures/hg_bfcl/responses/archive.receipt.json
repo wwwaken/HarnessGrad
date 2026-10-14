@@ -1,0 +1,47 @@
+{
+  "url": "https://codeload.github.com/ShishirPatil/gorilla/tar.gz/refs/tags/v1.3",
+  "method": "GET",
+  "command": [
+    "curl",
+    "--proxy",
+    "http://172.17.0.1:17890",
+    "--noproxy",
+    "",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "20",
+    "--max-time",
+    "240",
+    "--max-redirs",
+    "0",
+    "--header",
+    "User-Agent: HarnessGrad-w-bfcl-public-custody/1",
+    "--header",
+    "Accept: application/octet-stream",
+    "--dump-header",
+    "tests/fixtures/hg_bfcl/responses/archive.headers",
+    "--output",
+    "tests/fixtures/hg_bfcl/responses/archive.body",
+    "--write-out",
+    "%{http_code}",
+    "https://codeload.github.com/ShishirPatil/gorilla/tar.gz/refs/tags/v1.3"
+  ],
+  "proxy": "http://172.17.0.1:17890",
+  "started_at_utc": "2026-10-14T21:19:09.248319+00:00",
+  "completed_at_utc": "2026-10-14T21:19:14.581398+00:00",
+  "curl_exit_code": 0,
+  "http_status": "200",
+  "stderr": "",
+  "production_authorized": false,
+  "body": {
+    "path": "tests/fixtures/hg_bfcl/responses/archive.body",
+    "bytes": 44552456,
+    "sha256": "57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe"
+  },
+  "headers": {
+    "path": "tests/fixtures/hg_bfcl/responses/archive.headers",
+    "bytes": 713,
+    "sha256": "5772edbeaaf18aa13da0194bf7b46fe5eaa42778e59d68b9b519cdaf32abd02a"
+  }
+}

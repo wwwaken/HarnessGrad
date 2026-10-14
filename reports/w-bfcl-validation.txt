@@ -1,0 +1,84 @@
+Worktree: /tmp/hg-bfcl; base: 83cad84f59f61a94af8e919c70f7fe5a68ed970d
+No upstream evaluator/task/model/GPU/endpoint execution.
+
+Acquisition command (already executed once, not repeated):
+$ HG_EGRESS_PROXY=http://172.17.0.1:17890 PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_bfcl/acquire.py
+All five requests: HTTP 200, curl exit 0. Exact per-request curl commands, raw headers/bodies and SHA-256 are preserved in tests/fixtures/hg_bfcl/responses/*.receipt.json.
+
+Inventory/manifest creation command (already executed):
+$ PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_bfcl/verify.py --write
+PASS: five raw HTTP bodies/headers; reconstructed commit and 93 trees; 83/83 archive/source/blob bindings; 81 Python syntax trees; SHA256SUMS.
+Initial helper draft refused on recursive-response sha versus root-tree sha; corrected before successful archive audit.
+
+$ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 tests/fixtures/hg_bfcl/verify.py
+PASS: five raw HTTP bodies/headers; reconstructed commit and 93 trees; 83/83 archive/source/blob bindings; 81 Python syntax trees; SHA256SUMS.
+Archive SHA-256: 57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe
+Official scorer executed=false; runtime closure=false; measured=false; production_authorized=false.
+exit_code=0
+
+$ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. bash -c 'cd tests/fixtures/hg_bfcl && sha256sum -c SHA256SUMS'
+LICENSE.upstream: 成功
+README.md: 成功
+acquire.py: 成功
+inventory.json: 成功
+responses/archive.body: 成功
+responses/archive.headers: 成功
+responses/archive.receipt.json: 成功
+responses/commit.body: 成功
+responses/commit.headers: 成功
+responses/commit.receipt.json: 成功
+responses/license-blob.body: 成功
+responses/license-blob.headers: 成功
+responses/license-blob.receipt.json: 成功
+responses/release.body: 成功
+responses/release.headers: 成功
+responses/release.receipt.json: 成功
+responses/tag.body: 成功
+responses/tag.headers: 成功
+responses/tag.receipt.json: 成功
+starting-blocker.json: 成功
+verify.py: 成功
+exit_code=0
+
+$ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-w-bfcl tests/quality/test_bfcl_ast_source_contract.py tests/quality/test_dataset_blockers.py tests/quality/test_external_provenance_b5.py
+........................................................................ [ 73%]
+..........................                                               [100%]
+98 passed in 2.67s
+exit_code=0
+
+$ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. git diff --check
+exit_code=0
+
+$ python3 -B -c 'from pathlib import Path
+import json, subprocess
+base = json.loads(subprocess.check_output(['"'"'git'"'"', '"'"'show'"'"', '"'"'HEAD:docs/dataset-blockers.json'"'"']))
+current = json.loads(Path('"'"'docs/dataset-blockers.json'"'"').read_text())
+def target(doc):
+    return next(b for d in doc['"'"'datasets'"'"'] if d['"'"'dataset'"'"'] == '"'"'bfcl_v3'"'"' for b in d['"'"'blockers'"'"'] if b['"'"'id'"'"'] == '"'"'simple-ast-contract'"'"')
+a, b = target(base), target(current)
+assert b['"'"'status'"'"'] == a['"'"'status'"'"'] == '"'"'external'"'"'
+assert b['"'"'family'"'"'] == a['"'"'family'"'"'] == '"'"'official-scorer-execution'"'"'
+for field in ('"'"'observed'"'"', '"'"'next_action'"'"', '"'"'evidence'"'"'):
+    b[field] = a[field]
+assert current == base, '"'"'unowned registry change'"'"'
+old = subprocess.check_output(['"'"'git'"'"', '"'"'show'"'"', '"'"'HEAD:docs/adapter-integration-journal.md'"'"'])
+assert Path('"'"'docs/adapter-integration-journal.md'"'"').read_bytes().startswith(old)
+changed = subprocess.check_output(['"'"'git'"'"', '"'"'diff'"'"', '"'"'--name-only'"'"'], text=True).splitlines()
+assert set(changed) == {'"'"'docs/dataset-blockers.json'"'"', '"'"'docs/adapter-integration-journal.md'"'"'}
+print('"'"'PASS: only owned blocker observation/action/evidence changed; status/family, all other registry/history/shared data and journal prefix preserved; no tracked adapter/source/runtime/receipt/run changes.'"'"')
+'
+PASS: only owned blocker observation/action/evidence changed; status/family, all other registry/history/shared data and journal prefix preserved; no tracked adapter/source/runtime/receipt/run changes.
+exit_code=0
+
+Raw-header whitespace: full git diff --cached --check exited 2 for the five raw CRLF header responses (plus an authored log final blank line, subsequently removed). Raw header CRLF, status-line space and final terminators are intentionally preserved. The authored-text check below excludes only those five headers; it changes no Git setting or gate.
+
+$ git diff --cached --check -- . ':(exclude)tests/fixtures/hg_bfcl/responses/*.headers'
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0

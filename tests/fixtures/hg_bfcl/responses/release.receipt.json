@@ -1,0 +1,47 @@
+{
+  "url": "https://api.github.com/repos/ShishirPatil/gorilla/releases/tags/v1.3",
+  "method": "GET",
+  "command": [
+    "curl",
+    "--proxy",
+    "http://172.17.0.1:17890",
+    "--noproxy",
+    "",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "20",
+    "--max-time",
+    "240",
+    "--max-redirs",
+    "0",
+    "--header",
+    "User-Agent: HarnessGrad-w-bfcl-public-custody/1",
+    "--header",
+    "Accept: application/json",
+    "--dump-header",
+    "tests/fixtures/hg_bfcl/responses/release.headers",
+    "--output",
+    "tests/fixtures/hg_bfcl/responses/release.body",
+    "--write-out",
+    "%{http_code}",
+    "https://api.github.com/repos/ShishirPatil/gorilla/releases/tags/v1.3"
+  ],
+  "proxy": "http://172.17.0.1:17890",
+  "started_at_utc": "2026-10-14T21:19:07.708778+00:00",
+  "completed_at_utc": "2026-10-14T21:19:08.238214+00:00",
+  "curl_exit_code": 0,
+  "http_status": "200",
+  "stderr": "",
+  "production_authorized": false,
+  "body": {
+    "path": "tests/fixtures/hg_bfcl/responses/release.body",
+    "bytes": 19950,
+    "sha256": "83290385b6160c577bb385d3c83bc990eead8fb57dfeeafb28071762c27592a7"
+  },
+  "headers": {
+    "path": "tests/fixtures/hg_bfcl/responses/release.headers",
+    "bytes": 1333,
+    "sha256": "5ecb501436841cf5ec13580cbeb69397da699f7d08f54e7a51be09116d289900"
+  }
+}

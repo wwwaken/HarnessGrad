@@ -1,0 +1,47 @@
+{
+  "url": "https://api.github.com/repos/ShishirPatil/gorilla/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+  "method": "GET",
+  "command": [
+    "curl",
+    "--proxy",
+    "http://172.17.0.1:17890",
+    "--noproxy",
+    "",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "20",
+    "--max-time",
+    "240",
+    "--max-redirs",
+    "0",
+    "--header",
+    "User-Agent: HarnessGrad-w-bfcl-public-custody/1",
+    "--header",
+    "Accept: application/json",
+    "--dump-header",
+    "tests/fixtures/hg_bfcl/responses/license-blob.headers",
+    "--output",
+    "tests/fixtures/hg_bfcl/responses/license-blob.body",
+    "--write-out",
+    "%{http_code}",
+    "https://api.github.com/repos/ShishirPatil/gorilla/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64"
+  ],
+  "proxy": "http://172.17.0.1:17890",
+  "started_at_utc": "2026-10-14T21:19:08.722884+00:00",
+  "completed_at_utc": "2026-10-14T21:19:09.245418+00:00",
+  "curl_exit_code": 0,
+  "http_status": "200",
+  "stderr": "",
+  "production_authorized": false,
+  "body": {
+    "path": "tests/fixtures/hg_bfcl/responses/license-blob.body",
+    "bytes": 15937,
+    "sha256": "50da305e0d4fda682c3b928ab2d03994b787b2828903b2198d1ed129bcbc5825"
+  },
+  "headers": {
+    "path": "tests/fixtures/hg_bfcl/responses/license-blob.headers",
+    "bytes": 1293,
+    "sha256": "fbde3a48a53456d788cd5886a12df802e1a7eaee34a0fbfa7246f505c19ad2ae"
+  }
+}

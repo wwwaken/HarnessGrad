@@ -1,0 +1,47 @@
+{
+  "url": "https://api.github.com/repos/ShishirPatil/gorilla/git/commits/ea13468e4423454d0c213704fb87cf7cb3990433",
+  "method": "GET",
+  "command": [
+    "curl",
+    "--proxy",
+    "http://172.17.0.1:17890",
+    "--noproxy",
+    "",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "20",
+    "--max-time",
+    "240",
+    "--max-redirs",
+    "0",
+    "--header",
+    "User-Agent: HarnessGrad-w-bfcl-public-custody/1",
+    "--header",
+    "Accept: application/json",
+    "--dump-header",
+    "tests/fixtures/hg_bfcl/responses/commit.headers",
+    "--output",
+    "tests/fixtures/hg_bfcl/responses/commit.body",
+    "--write-out",
+    "%{http_code}",
+    "https://api.github.com/repos/ShishirPatil/gorilla/git/commits/ea13468e4423454d0c213704fb87cf7cb3990433"
+  ],
+  "proxy": "http://172.17.0.1:17890",
+  "started_at_utc": "2026-10-14T21:19:08.239104+00:00",
+  "completed_at_utc": "2026-10-14T21:19:08.720117+00:00",
+  "curl_exit_code": 0,
+  "http_status": "200",
+  "stderr": "",
+  "production_authorized": false,
+  "body": {
+    "path": "tests/fixtures/hg_bfcl/responses/commit.body",
+    "bytes": 3047,
+    "sha256": "e9f5ca4365d35fe97b3bf8c5497c3859e54625871dde06b05466609892d515f8"
+  },
+  "headers": {
+    "path": "tests/fixtures/hg_bfcl/responses/commit.headers",
+    "bytes": 1354,
+    "sha256": "71efc01168c19572578da2dadcc26d47503746c48c748dda47cdca2bf2a0c7ab"
+  }
+}
