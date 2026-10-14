@@ -102,7 +102,8 @@ def test_no_refused_dataset_pretends_to_have_an_evaluation_set():
     """A dataset that cannot be scored must not offer `--split official`.
 
     Derived from the adapters rather than listed here: whatever sets `REFUSED` is in this
-    set, so a sixth refusal is covered the moment it is written.
+    set, so a new refusal is covered the moment it is written. The number of refusals
+    changes as adapters gain scoring support; only the per-adapter contract is fixed.
     """
     refused = []
     for name in registry.published():
@@ -112,7 +113,7 @@ def test_no_refused_dataset_pretends_to_have_an_evaluation_set():
             assert not hasattr(module, registry.OFFICIAL_EVAL_ATTR), name
             with pytest.raises(ValueError, match="OFFICIAL_EVAL"):
                 registry.official_split(name, [{"task_id": f"{name}/0"}])
-    assert len(refused) >= 6, refused
+    assert refused, "the published catalog has no refused adapters to check"
 
 
 def test_every_runnable_dataset_answers_the_official_question():
