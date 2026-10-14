@@ -1,0 +1,30 @@
++ set -eu
++++ dirname tests/fixtures/hg_woffscorer2/worlds/commands.sh
+++ cd tests/fixtures/hg_woffscorer2/worlds
+++ pwd
++ fixture=/tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds
+++ git -C /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds rev-parse --show-toplevel
++ repo=/tmp/hg-offscorer2-worlds
+++ mktemp -d /tmp/hg-woffscorer2-worlds-exec-XXXXXX
++ scratch=/tmp/hg-woffscorer2-worlds-exec-k3o6bJ
++ mkdir /tmp/hg-woffscorer2-worlds-exec-k3o6bJ/tmp
++ export HG_WOFFSCORER2_WORLD_SCRATCH=/tmp/hg-woffscorer2-worlds-exec-k3o6bJ
++ HG_WOFFSCORER2_WORLD_SCRATCH=/tmp/hg-woffscorer2-worlds-exec-k3o6bJ
++ export HG_WOFFSCORER2_PARENT_NETNS
+++ readlink /proc/self/ns/net
++ HG_WOFFSCORER2_PARENT_NETNS='net:[4026531840]'
++ export PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES=
++ PYTHONDONTWRITEBYTECODE=1
++ CUDA_VISIBLE_DEVICES=
++ python3 /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/prepare.py
++ python3 - /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds /tmp/hg-woffscorer2-worlds-exec-k3o6bJ /tmp/hg-offscorer2-worlds
++ for mode in official local
++ timeout --kill-after=5s 150s env TMPDIR=/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/tmp python3 /tmp/hg-offscorer2-worlds/tests/fixtures/hg_wverify/scorers/offline_exec.py /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/execute.py jericho official
++ for mode in official local
++ timeout --kill-after=5s 150s env TMPDIR=/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/tmp python3 /tmp/hg-offscorer2-worlds/tests/fixtures/hg_wverify/scorers/offline_exec.py /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/execute.py jericho local
++ for mode in official local
++ timeout --kill-after=5s 150s bwrap --die-with-parent --unshare-net --ro-bind / / --tmpfs /tmp --ro-bind /tmp/hg-offscorer2-worlds /tmp/hg-offscorer2-worlds --bind /tmp/hg-woffscorer2-worlds-exec-k3o6bJ /tmp/hg-woffscorer2-worlds-exec-k3o6bJ --proc /proc --dev /dev --chdir /tmp/hg-woffscorer2-worlds-exec-k3o6bJ --setenv TMPDIR /tmp/hg-woffscorer2-worlds-exec-k3o6bJ/tmp --setenv PYTHONDONTWRITEBYTECODE 1 -- python3 /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/namespace_exec.py /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/execute.py scienceworld official
++ for mode in official local
++ timeout --kill-after=5s 150s bwrap --die-with-parent --unshare-net --ro-bind / / --tmpfs /tmp --ro-bind /tmp/hg-offscorer2-worlds /tmp/hg-offscorer2-worlds --bind /tmp/hg-woffscorer2-worlds-exec-k3o6bJ /tmp/hg-woffscorer2-worlds-exec-k3o6bJ --proc /proc --dev /dev --chdir /tmp/hg-woffscorer2-worlds-exec-k3o6bJ --setenv TMPDIR /tmp/hg-woffscorer2-worlds-exec-k3o6bJ/tmp --setenv PYTHONDONTWRITEBYTECODE 1 -- python3 /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/namespace_exec.py /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/execute.py scienceworld local
++ python3 /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds/compare.py
++ python3 - /tmp/hg-offscorer2-worlds/tests/fixtures/hg_woffscorer2/worlds /tmp/hg-woffscorer2-worlds-exec-k3o6bJ

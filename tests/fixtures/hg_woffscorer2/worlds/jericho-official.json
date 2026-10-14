@@ -1,0 +1,286 @@
+{
+  "cases": [
+    {
+      "empty_trace_score_contract": "actual upstream get_score() / JVM getScore() query; no local initialization borrowed",
+      "id": "j-empty",
+      "initial_info": {
+        "moves": 1,
+        "score": 0
+      },
+      "initial_native_score": 0,
+      "initial_observation": "\nGREAT.  THEY'VE DONE IT TO ME AGAIN.  You think to yourself. THEY'VE STUCK ME IN ANOTHER ONE OF THEIR SILLY SCENARIOS.  You glance about with a look of irritation on your face.  WELL, I'LL SHOW THEM.  I'LL MAKE SHORT WORK OF THEIR STUPID LITTLE PUZZLE...\n\nTHE ACORN COURT\nAn Interactive Text Adventure\nCopyright (c) 1997 by Todd S. Murchison.\nRelease 3 / Serial number 970904 / Inform v6.13 Library 6/5\nStandard interpreter 1.0\n\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the west wall, above and to the right of the gate, is a large squirrels nest made of sticks, twigs, and leaves.\n\nA carpeting of old brown leaves from past winters rustle about on the ground in the breeze and drift listlessly across a cracked, stained, pale green tennis court with a rotting net.  In one corner of the court yard an impressively large oak tree casts long shadows in the dimming light.  The acorns nestled among the tree's massive branches and vividly healthy leaves are new and green.  Near the tree is a quaint looking well of crumbling stone.\n\nA rusty tin pail rests in the grass near the ball machine.\n\nThe tennis ball launching machine sitting in one corner of the yard looks like a relic from the 1930s.",
+      "maximum": 30,
+      "measured": true,
+      "official_normalized_fraction": 0.0,
+      "raw_steps": [],
+      "score": 0
+    },
+    {
+      "empty_trace_score_contract": "actual upstream get_score() / JVM getScore() query; no local initialization borrowed",
+      "id": "j-look",
+      "initial_info": {
+        "moves": 1,
+        "score": 0
+      },
+      "initial_native_score": 0,
+      "initial_observation": "\nGREAT.  THEY'VE DONE IT TO ME AGAIN.  You think to yourself. THEY'VE STUCK ME IN ANOTHER ONE OF THEIR SILLY SCENARIOS.  You glance about with a look of irritation on your face.  WELL, I'LL SHOW THEM.  I'LL MAKE SHORT WORK OF THEIR STUPID LITTLE PUZZLE...\n\nTHE ACORN COURT\nAn Interactive Text Adventure\nCopyright (c) 1997 by Todd S. Murchison.\nRelease 3 / Serial number 970904 / Inform v6.13 Library 6/5\nStandard interpreter 1.0\n\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the west wall, above and to the right of the gate, is a large squirrels nest made of sticks, twigs, and leaves.\n\nA carpeting of old brown leaves from past winters rustle about on the ground in the breeze and drift listlessly across a cracked, stained, pale green tennis court with a rotting net.  In one corner of the court yard an impressively large oak tree casts long shadows in the dimming light.  The acorns nestled among the tree's massive branches and vividly healthy leaves are new and green.  Near the tree is a quaint looking well of crumbling stone.\n\nA rusty tin pail rests in the grass near the ball machine.\n\nThe tennis ball launching machine sitting in one corner of the yard looks like a relic from the 1930s.",
+      "maximum": 30,
+      "measured": true,
+      "official_normalized_fraction": 0.0,
+      "raw_steps": [
+        {
+          "action": "look",
+          "done": false,
+          "info": {
+            "moves": 2,
+            "score": 0
+          },
+          "observation": "\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the west wall, above and to the right of the gate, is a large squirrels nest made of sticks, twigs, and leaves.\n\nA carpeting of old brown leaves from past winters rustle about on the ground in the breeze and drift listlessly across a cracked, stained, pale green tennis court with a rotting net.  In one corner of the court yard an impressively large oak tree casts long shadows in the dimming light.  The acorns nestled among the tree's massive branches and vividly healthy leaves are new and green.  Near the tree is a quaint looking well of crumbling stone.\n\nA rusty tin pail rests in the grass near the ball machine.\n\nThe tennis ball launching machine sitting in one corner of the yard looks like a relic from the 1930s.",
+          "reward": 0
+        }
+      ],
+      "score": 0
+    },
+    {
+      "empty_trace_score_contract": "actual upstream get_score() / JVM getScore() query; no local initialization borrowed",
+      "id": "j-impossible-command",
+      "initial_info": {
+        "moves": 1,
+        "score": 0
+      },
+      "initial_native_score": 0,
+      "initial_observation": "\nGREAT.  THEY'VE DONE IT TO ME AGAIN.  You think to yourself. THEY'VE STUCK ME IN ANOTHER ONE OF THEIR SILLY SCENARIOS.  You glance about with a look of irritation on your face.  WELL, I'LL SHOW THEM.  I'LL MAKE SHORT WORK OF THEIR STUPID LITTLE PUZZLE...\n\nTHE ACORN COURT\nAn Interactive Text Adventure\nCopyright (c) 1997 by Todd S. Murchison.\nRelease 3 / Serial number 970904 / Inform v6.13 Library 6/5\nStandard interpreter 1.0\n\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the west wall, above and to the right of the gate, is a large squirrels nest made of sticks, twigs, and leaves.\n\nA carpeting of old brown leaves from past winters rustle about on the ground in the breeze and drift listlessly across a cracked, stained, pale green tennis court with a rotting net.  In one corner of the court yard an impressively large oak tree casts long shadows in the dimming light.  The acorns nestled among the tree's massive branches and vividly healthy leaves are new and green.  Near the tree is a quaint looking well of crumbling stone.\n\nA rusty tin pail rests in the grass near the ball machine.\n\nThe tennis ball launching machine sitting in one corner of the yard looks like a relic from the 1930s.",
+      "maximum": 30,
+      "measured": true,
+      "official_normalized_fraction": 0.0,
+      "raw_steps": [
+        {
+          "action": "woffscorer2 nonexistent action",
+          "done": false,
+          "info": {
+            "moves": 1,
+            "score": 0
+          },
+          "observation": "That's not a verb I recognise.",
+          "reward": 0
+        }
+      ],
+      "score": 0
+    },
+    {
+      "empty_trace_score_contract": "actual upstream get_score() / JVM getScore() query; no local initialization borrowed",
+      "id": "j-get-ball",
+      "initial_info": {
+        "moves": 1,
+        "score": 0
+      },
+      "initial_native_score": 0,
+      "initial_observation": "\nGREAT.  THEY'VE DONE IT TO ME AGAIN.  You think to yourself. THEY'VE STUCK ME IN ANOTHER ONE OF THEIR SILLY SCENARIOS.  You glance about with a look of irritation on your face.  WELL, I'LL SHOW THEM.  I'LL MAKE SHORT WORK OF THEIR STUPID LITTLE PUZZLE...\n\nTHE ACORN COURT\nAn Interactive Text Adventure\nCopyright (c) 1997 by Todd S. Murchison.\nRelease 3 / Serial number 970904 / Inform v6.13 Library 6/5\nStandard interpreter 1.0\n\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the west wall, above and to the right of the gate, is a large squirrels nest made of sticks, twigs, and leaves.\n\nA carpeting of old brown leaves from past winters rustle about on the ground in the breeze and drift listlessly across a cracked, stained, pale green tennis court with a rotting net.  In one corner of the court yard an impressively large oak tree casts long shadows in the dimming light.  The acorns nestled among the tree's massive branches and vividly healthy leaves are new and green.  Near the tree is a quaint looking well of crumbling stone.\n\nA rusty tin pail rests in the grass near the ball machine.\n\nThe tennis ball launching machine sitting in one corner of the yard looks like a relic from the 1930s.",
+      "maximum": 30,
+      "measured": true,
+      "official_normalized_fraction": 0.0,
+      "raw_steps": [
+        {
+          "action": "get ball",
+          "done": false,
+          "info": {
+            "moves": 2,
+            "score": 0
+          },
+          "observation": "Taken.",
+          "reward": 0
+        }
+      ],
+      "score": 0
+    },
+    {
+      "empty_trace_score_contract": "actual upstream get_score() / JVM getScore() query; no local initialization borrowed",
+      "id": "j-study-reference-full",
+      "initial_info": {
+        "moves": 1,
+        "score": 0
+      },
+      "initial_native_score": 0,
+      "initial_observation": "\nGREAT.  THEY'VE DONE IT TO ME AGAIN.  You think to yourself. THEY'VE STUCK ME IN ANOTHER ONE OF THEIR SILLY SCENARIOS.  You glance about with a look of irritation on your face.  WELL, I'LL SHOW THEM.  I'LL MAKE SHORT WORK OF THEIR STUPID LITTLE PUZZLE...\n\nTHE ACORN COURT\nAn Interactive Text Adventure\nCopyright (c) 1997 by Todd S. Murchison.\nRelease 3 / Serial number 970904 / Inform v6.13 Library 6/5\nStandard interpreter 1.0\n\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the west wall, above and to the right of the gate, is a large squirrels nest made of sticks, twigs, and leaves.\n\nA carpeting of old brown leaves from past winters rustle about on the ground in the breeze and drift listlessly across a cracked, stained, pale green tennis court with a rotting net.  In one corner of the court yard an impressively large oak tree casts long shadows in the dimming light.  The acorns nestled among the tree's massive branches and vividly healthy leaves are new and green.  Near the tree is a quaint looking well of crumbling stone.\n\nA rusty tin pail rests in the grass near the ball machine.\n\nThe tennis ball launching machine sitting in one corner of the yard looks like a relic from the 1930s.",
+      "maximum": 30,
+      "measured": true,
+      "official_normalized_fraction": 1.0,
+      "raw_steps": [
+        {
+          "action": "point machine at tree",
+          "done": false,
+          "info": {
+            "moves": 2,
+            "score": 0
+          },
+          "observation": "You do your best to push the large machine about until it appears to be oriented correctly.",
+          "reward": 0
+        },
+        {
+          "action": "get ball",
+          "done": false,
+          "info": {
+            "moves": 3,
+            "score": 0
+          },
+          "observation": "Taken.",
+          "reward": 0
+        },
+        {
+          "action": "put ball in machine",
+          "done": false,
+          "info": {
+            "moves": 4,
+            "score": 0
+          },
+          "observation": "You put the tennis ball into the tennis ball launching machine.",
+          "reward": 0
+        },
+        {
+          "action": "turn on machine",
+          "done": false,
+          "info": {
+            "moves": 5,
+            "score": 10
+          },
+          "observation": "The machine is old and incrusted with dirt, but it looks as if it might still work.\nThe device spitters to life in a noisy cacophony of pseudo-humorous mechanical sounds.  The launching spring begins to coil back into place.\nA tennis ball launches out of the machine driven by the machine's old fashioned spring mechanism.  The ball bounces about the branches of the tree before falling back to the ground bellow.  A shower of shiny green acorns accompanies the ball down.",
+          "reward": 10
+        },
+        {
+          "action": "turn off machine",
+          "done": false,
+          "info": {
+            "moves": 6,
+            "score": 10
+          },
+          "observation": "The machine's noisy symphony winds to a halt.",
+          "reward": 0
+        },
+        {
+          "action": "fix bucket with acorn",
+          "done": false,
+          "info": {
+            "moves": 7,
+            "score": 10
+          },
+          "observation": "You plug one of the holes in the tin bucket with a green acorn.  There are now only 3 holes left.",
+          "reward": 0
+        },
+        {
+          "action": "fix bucket with acorn",
+          "done": false,
+          "info": {
+            "moves": 8,
+            "score": 10
+          },
+          "observation": "You plug one of the holes in the tin bucket with a green acorn.  There are now only 2 holes left.",
+          "reward": 0
+        },
+        {
+          "action": "fix bucket with acorn",
+          "done": false,
+          "info": {
+            "moves": 9,
+            "score": 10
+          },
+          "observation": "You plug one of the holes in the tin bucket with a green acorn.  There is now only 1 hole left in the tin bucket.",
+          "reward": 0
+        },
+        {
+          "action": "fix bucket with acorn",
+          "done": false,
+          "info": {
+            "moves": 10,
+            "score": 10
+          },
+          "observation": "You plug up the last hole in the tin bucket with a green acorn.",
+          "reward": 0
+        },
+        {
+          "action": "turn crank",
+          "done": false,
+          "info": {
+            "moves": 11,
+            "score": 10
+          },
+          "observation": "You turn the crank slowly raising the old tattered rope to reveal it's frayed end.",
+          "reward": 0
+        },
+        {
+          "action": "tie bucket to rope",
+          "done": false,
+          "info": {
+            "moves": 12,
+            "score": 10
+          },
+          "observation": "You tie the bucket onto the end of the rope.",
+          "reward": 0
+        },
+        {
+          "action": "turn crank",
+          "done": false,
+          "info": {
+            "moves": 13,
+            "score": 10
+          },
+          "observation": "You turn the old wooden crank slowly lowering the bucket down into the dark, chilly hole.",
+          "reward": 0
+        },
+        {
+          "action": "turn crank",
+          "done": false,
+          "info": {
+            "moves": 14,
+            "score": 10
+          },
+          "observation": "You turn the crank slowly raising the old tattered rope to reveal the rusty bucket which you tied to the end of it earlier. Incredibly the acorns which you plugged the bucket with have held.  A small pool of water remains in the bucket with something floating on the surface...",
+          "reward": 0
+        },
+        {
+          "action": "look in bucket",
+          "done": false,
+          "info": {
+            "moves": 15,
+            "score": 10
+          },
+          "observation": "In the tin bucket are a hand carved wooden key, four green acorns and twenty tennis balls.",
+          "reward": 0
+        },
+        {
+          "action": "get key",
+          "done": false,
+          "info": {
+            "moves": 16,
+            "score": 30
+          },
+          "observation": "Taken.",
+          "reward": 20
+        },
+        {
+          "action": "unlock gate",
+          "done": false,
+          "info": {
+            "moves": 17,
+            "score": 30
+          },
+          "observation": "(with the hand carved wooden key)\nYou unlock the iron gate.",
+          "reward": 0
+        },
+        {
+          "action": "open gate",
+          "done": true,
+          "info": {
+            "moves": 17,
+            "score": 30
+          },
+          "observation": "You open the iron gate.\n\n\n    *** You have won ***\n\n\nIn that game you scored 30 out of a possible 30, in 17 turns.\n\nWould you like to RESTART, RESTORE a saved game or QUIT?\n>                                                                                                                                 Court YardScore: 30Moves: 17",
+          "reward": 0
+        }
+      ],
+      "score": 30
+    }
+  ],
+  "dataset": "jericho",
+  "mode": "official",
+  "production_runtime_observation": false
+}

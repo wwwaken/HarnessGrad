@@ -1,0 +1,149 @@
+{
+  "cases": [
+    {
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-empty-7altk8k3/jer_actions.jsonl",
+        "actions_in_log": 0,
+        "actions_not_replayed": 0,
+        "actions_replayed": 0,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-empty-7altk8k3/jer_game.json",
+        "game_over": false,
+        "log_records": 0,
+        "max_score": 30,
+        "measured": true,
+        "moves": 0,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [],
+        "unparseable_lines": 0,
+        "why": "the log holds no actions, so no points were scored"
+      },
+      "exit_code": 1,
+      "id": "j-empty",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: the log holds no actions, so no points were scored\n"
+    },
+    {
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-look-12dscglm/jer_actions.jsonl",
+        "actions_in_log": 1,
+        "actions_not_replayed": 0,
+        "actions_replayed": 1,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-look-12dscglm/jer_game.json",
+        "game_over": false,
+        "log_records": 1,
+        "max_score": 30,
+        "measured": true,
+        "moves": 2,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [
+          {
+            "action": "look",
+            "done": false,
+            "moves": 2,
+            "observation": "\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "0/30 points (0.000) after 2 moves; the game is not finished"
+      },
+      "exit_code": 1,
+      "id": "j-look",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: 0/30 points (0.000) after 2 moves; the game is not finished\n"
+    },
+    {
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-impossible-command-lbzsbq1v/jer_actions.jsonl",
+        "actions_in_log": 1,
+        "actions_not_replayed": 0,
+        "actions_replayed": 1,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-impossible-command-lbzsbq1v/jer_game.json",
+        "game_over": false,
+        "log_records": 1,
+        "max_score": 30,
+        "measured": true,
+        "moves": 1,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [
+          {
+            "action": "woffscorer2 nonexistent action",
+            "done": false,
+            "moves": 1,
+            "observation": "That's not a verb I recognise.",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "0/30 points (0.000) after 1 moves; the game is not finished"
+      },
+      "exit_code": 1,
+      "id": "j-impossible-command",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: 0/30 points (0.000) after 1 moves; the game is not finished\n"
+    },
+    {
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-get-ball-snadjdem/jer_actions.jsonl",
+        "actions_in_log": 1,
+        "actions_not_replayed": 0,
+        "actions_replayed": 1,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-k3o6bJ/jericho-j-get-ball-snadjdem/jer_game.json",
+        "game_over": false,
+        "log_records": 1,
+        "max_score": 30,
+        "measured": true,
+        "moves": 2,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [
+          {
+            "action": "get ball",
+            "done": false,
+            "moves": 2,
+            "observation": "Taken.",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "0/30 points (0.000) after 2 moves; the game is not finished"
+      },
+      "exit_code": 1,
+      "id": "j-get-ball",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: 0/30 points (0.000) after 2 moves; the game is not finished\n"
+    }
+  ],
+  "dataset": "jericho",
+  "mode": "local",
+  "production_runtime_observation": false
+}

@@ -1,0 +1,336 @@
+{
+  "cases": [
+    {
+      "child_cleanup": [],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-empty-1niam8ji/jer_actions.jsonl",
+        "actions_in_log": 0,
+        "actions_not_replayed": 0,
+        "actions_replayed": 0,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-empty-1niam8ji/jer_game.json",
+        "game_over": false,
+        "log_records": 0,
+        "max_score": 30,
+        "measured": true,
+        "moves": 0,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [],
+        "unparseable_lines": 0,
+        "why": "the log holds no actions, so no points were scored"
+      },
+      "exit_code": 1,
+      "id": "j-empty",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: the log holds no actions, so no points were scored\n"
+    },
+    {
+      "child_cleanup": [],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-look-kjw48dd3/jer_actions.jsonl",
+        "actions_in_log": 1,
+        "actions_not_replayed": 0,
+        "actions_replayed": 1,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-look-kjw48dd3/jer_game.json",
+        "game_over": false,
+        "log_records": 1,
+        "max_score": 30,
+        "measured": true,
+        "moves": 2,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [
+          {
+            "action": "look",
+            "done": false,
+            "moves": 2,
+            "observation": "\nCourt Yard\nA good sized courtyard with an air of late British colonialism about it.  To the west, in the direction the sun is setting, is a high, grey stone wall with an ornate iron gate set into the rock.  The walls of a large stone mansion rise several stories into the chilly evening air to the east, north, and south.  In the east wall, two or three stories up, is a large window.  On top of the",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "0/30 points (0.000) after 2 moves; the game is not finished"
+      },
+      "exit_code": 1,
+      "id": "j-look",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: 0/30 points (0.000) after 2 moves; the game is not finished\n"
+    },
+    {
+      "child_cleanup": [],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-impossible-command-sti3p4_n/jer_actions.jsonl",
+        "actions_in_log": 1,
+        "actions_not_replayed": 0,
+        "actions_replayed": 1,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-impossible-command-sti3p4_n/jer_game.json",
+        "game_over": false,
+        "log_records": 1,
+        "max_score": 30,
+        "measured": true,
+        "moves": 1,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [
+          {
+            "action": "woffscorer2 nonexistent action",
+            "done": false,
+            "moves": 1,
+            "observation": "That's not a verb I recognise.",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "0/30 points (0.000) after 1 moves; the game is not finished"
+      },
+      "exit_code": 1,
+      "id": "j-impossible-command",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: 0/30 points (0.000) after 1 moves; the game is not finished\n"
+    },
+    {
+      "child_cleanup": [],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-get-ball-vc5rv2pq/jer_actions.jsonl",
+        "actions_in_log": 1,
+        "actions_not_replayed": 0,
+        "actions_replayed": 1,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-get-ball-vc5rv2pq/jer_game.json",
+        "game_over": false,
+        "log_records": 1,
+        "max_score": 30,
+        "measured": true,
+        "moves": 2,
+        "reward": 0.0,
+        "rom": null,
+        "score": 0,
+        "seed": 4,
+        "solved": false,
+        "steps": [
+          {
+            "action": "get ball",
+            "done": false,
+            "moves": 2,
+            "observation": "Taken.",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "0/30 points (0.000) after 2 moves; the game is not finished"
+      },
+      "exit_code": 1,
+      "id": "j-get-ball",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: 0/30 points (0.000) after 2 moves; the game is not finished\n"
+    },
+    {
+      "child_cleanup": [],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-study-reference-full-fhmmmhv_/jer_actions.jsonl",
+        "actions_in_log": 17,
+        "actions_not_replayed": 0,
+        "actions_replayed": 17,
+        "agent_declared_done": false,
+        "game_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/jericho-j-study-reference-full-fhmmmhv_/jer_game.json",
+        "game_over": true,
+        "log_records": 17,
+        "max_score": 30,
+        "measured": true,
+        "moves": 17,
+        "reward": 1.0,
+        "rom": null,
+        "score": 30,
+        "seed": 4,
+        "solved": true,
+        "steps": [
+          {
+            "action": "point machine at tree",
+            "done": false,
+            "moves": 2,
+            "observation": "You do your best to push the large machine about until it appears to be oriented correctly.",
+            "reward": 0,
+            "score": 0,
+            "step": 0
+          },
+          {
+            "action": "get ball",
+            "done": false,
+            "moves": 3,
+            "observation": "Taken.",
+            "reward": 0,
+            "score": 0,
+            "step": 1
+          },
+          {
+            "action": "put ball in machine",
+            "done": false,
+            "moves": 4,
+            "observation": "You put the tennis ball into the tennis ball launching machine.",
+            "reward": 0,
+            "score": 0,
+            "step": 2
+          },
+          {
+            "action": "turn on machine",
+            "done": false,
+            "moves": 5,
+            "observation": "The machine is old and incrusted with dirt, but it looks as if it might still work.\nThe device spitters to life in a noisy cacophony of pseudo-humorous mechanical sounds.  The launching spring begins to coil back into place.\nA tennis ball launches out of the machine driven by the machine's old fashioned spring mechanism.  The ball bounces about the branches of the tree before falling back to the g",
+            "reward": 10,
+            "score": 10,
+            "step": 3
+          },
+          {
+            "action": "turn off machine",
+            "done": false,
+            "moves": 6,
+            "observation": "The machine's noisy symphony winds to a halt.",
+            "reward": 0,
+            "score": 10,
+            "step": 4
+          },
+          {
+            "action": "fix bucket with acorn",
+            "done": false,
+            "moves": 7,
+            "observation": "You plug one of the holes in the tin bucket with a green acorn.  There are now only 3 holes left.",
+            "reward": 0,
+            "score": 10,
+            "step": 5
+          },
+          {
+            "action": "fix bucket with acorn",
+            "done": false,
+            "moves": 8,
+            "observation": "You plug one of the holes in the tin bucket with a green acorn.  There are now only 2 holes left.",
+            "reward": 0,
+            "score": 10,
+            "step": 6
+          },
+          {
+            "action": "fix bucket with acorn",
+            "done": false,
+            "moves": 9,
+            "observation": "You plug one of the holes in the tin bucket with a green acorn.  There is now only 1 hole left in the tin bucket.",
+            "reward": 0,
+            "score": 10,
+            "step": 7
+          },
+          {
+            "action": "fix bucket with acorn",
+            "done": false,
+            "moves": 10,
+            "observation": "You plug up the last hole in the tin bucket with a green acorn.",
+            "reward": 0,
+            "score": 10,
+            "step": 8
+          },
+          {
+            "action": "turn crank",
+            "done": false,
+            "moves": 11,
+            "observation": "You turn the crank slowly raising the old tattered rope to reveal it's frayed end.",
+            "reward": 0,
+            "score": 10,
+            "step": 9
+          },
+          {
+            "action": "tie bucket to rope",
+            "done": false,
+            "moves": 12,
+            "observation": "You tie the bucket onto the end of the rope.",
+            "reward": 0,
+            "score": 10,
+            "step": 10
+          },
+          {
+            "action": "turn crank",
+            "done": false,
+            "moves": 13,
+            "observation": "You turn the old wooden crank slowly lowering the bucket down into the dark, chilly hole.",
+            "reward": 0,
+            "score": 10,
+            "step": 11
+          },
+          {
+            "action": "turn crank",
+            "done": false,
+            "moves": 14,
+            "observation": "You turn the crank slowly raising the old tattered rope to reveal the rusty bucket which you tied to the end of it earlier. Incredibly the acorns which you plugged the bucket with have held.  A small pool of water remains in the bucket with something floating on the surface...",
+            "reward": 0,
+            "score": 10,
+            "step": 12
+          },
+          {
+            "action": "look in bucket",
+            "done": false,
+            "moves": 15,
+            "observation": "In the tin bucket are a hand carved wooden key, four green acorns and twenty tennis balls.",
+            "reward": 0,
+            "score": 10,
+            "step": 13
+          },
+          {
+            "action": "get key",
+            "done": false,
+            "moves": 16,
+            "observation": "Taken.",
+            "reward": 20,
+            "score": 30,
+            "step": 14
+          },
+          {
+            "action": "unlock gate",
+            "done": false,
+            "moves": 17,
+            "observation": "(with the hand carved wooden key)\nYou unlock the iron gate.",
+            "reward": 0,
+            "score": 30,
+            "step": 15
+          },
+          {
+            "action": "open gate",
+            "done": true,
+            "moves": 17,
+            "observation": "You open the iron gate.\n\n\n    *** You have won ***\n\n\nIn that game you scored 30 out of a possible 30, in 17 turns.\n\nWould you like to RESTART, RESTORE a saved game or QUIT?\n>                                                                                                                                 Court YardScore: 30Moves: 17",
+            "reward": 0,
+            "score": 30,
+            "step": 16
+          }
+        ],
+        "unparseable_lines": 0,
+        "why": "the game is finished: 30/30 points in 17 moves"
+      },
+      "exit_code": 0,
+      "id": "j-study-reference-full",
+      "reward_file": "1\n",
+      "stderr": "",
+      "stdout": "reward 1: the game is finished: 30/30 points in 17 moves\n"
+    }
+  ],
+  "dataset": "jericho",
+  "mode": "local",
+  "production_runtime_observation": false
+}

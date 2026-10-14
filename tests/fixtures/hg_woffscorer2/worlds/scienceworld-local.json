@@ -1,0 +1,166 @@
+{
+  "cases": [
+    {
+      "child_cleanup": [
+        {
+          "no_longer_our_child": true,
+          "pid": 551584
+        }
+      ],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-empty-665pv663/scw_actions.jsonl",
+        "actions_in_log": 0,
+        "agent_declared_done": false,
+        "budget": 8,
+        "budget_exhausted": false,
+        "goal_progress": "Completed keys: \n----------------------------------------------------------------------------------------------------\nSequential Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t               GoalFocusOnNonlivingThing\tfocus on a non-living thing\n1\tfalse\t                   GoalObjectInContainer\tmove living thing to answer box\n----------------------------------------------------------------------------------------------------\nUnordered and Optional Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t                   GoalObjectInContainer\tPick up object\n1\tfalse\t                  GoalInRoomWithOpenDoor\tBe in a room with an open door\n2\tfalse\t                   GoalMoveToNewLocation\tMove to a new location\n3\tfalse\t                      GoalMoveToLocation\tMove to the location of the answer box\n----------------------------------------------------------------------------------------------------\n",
+        "java_home": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre",
+        "log_records": 0,
+        "measured": true,
+        "moves": 0,
+        "reward": 0.0,
+        "score": 0,
+        "solved": false,
+        "steps": [],
+        "task_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-empty-665pv663/scw_task.json",
+        "unparseable_lines": null,
+        "why": "the log holds no actions, so the goal cannot have been met"
+      },
+      "exit_code": 1,
+      "id": "s-empty",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: the log holds no actions, so the goal cannot have been met\n"
+    },
+    {
+      "child_cleanup": [
+        {
+          "no_longer_our_child": true,
+          "pid": 551678
+        }
+      ],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-look-2ghxqgkz/scw_actions.jsonl",
+        "actions_in_log": 1,
+        "agent_declared_done": false,
+        "budget": 8,
+        "budget_exhausted": false,
+        "goal_progress": "Completed keys: \n----------------------------------------------------------------------------------------------------\nSequential Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t               GoalFocusOnNonlivingThing\tfocus on a non-living thing\n1\tfalse\t                   GoalObjectInContainer\tmove living thing to answer box\n----------------------------------------------------------------------------------------------------\nUnordered and Optional Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t                   GoalObjectInContainer\tPick up object\n1\tfalse\t                  GoalInRoomWithOpenDoor\tBe in a room with an open door\n2\tfalse\t                   GoalMoveToNewLocation\tMove to a new location\n3\tfalse\t                      GoalMoveToLocation\tMove to the location of the answer box\n----------------------------------------------------------------------------------------------------\n",
+        "java_home": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre",
+        "log_records": 1,
+        "measured": true,
+        "moves": 1,
+        "reward": 0.0,
+        "score": 0,
+        "solved": false,
+        "steps": [
+          {
+            "action": "look around",
+            "done": false,
+            "observation": "This room is called the hallway. In it, you see: \n\tthe agent\n\ta substance called air\n\ta picture\nYou also see:\n\tA door to the art studio (that is closed)\n\tA door to the bedroom (that is closed)\n\tA door",
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "task_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-look-2ghxqgkz/scw_task.json",
+        "unparseable_lines": null,
+        "why": "the episode ended after 1 move(s) with score 0/100; the goal was not met"
+      },
+      "exit_code": 1,
+      "id": "s-look",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: the episode ended after 1 move(s) with score 0/100; the goal was not met\n"
+    },
+    {
+      "child_cleanup": [
+        {
+          "no_longer_our_child": true,
+          "pid": 551779
+        }
+      ],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-impossible-command-8wejuqti/scw_actions.jsonl",
+        "actions_in_log": 1,
+        "agent_declared_done": false,
+        "budget": 8,
+        "budget_exhausted": false,
+        "goal_progress": "Completed keys: \n----------------------------------------------------------------------------------------------------\nSequential Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t               GoalFocusOnNonlivingThing\tfocus on a non-living thing\n1\tfalse\t                   GoalObjectInContainer\tmove living thing to answer box\n----------------------------------------------------------------------------------------------------\nUnordered and Optional Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t                   GoalObjectInContainer\tPick up object\n1\tfalse\t                  GoalInRoomWithOpenDoor\tBe in a room with an open door\n2\tfalse\t                   GoalMoveToNewLocation\tMove to a new location\n3\tfalse\t                      GoalMoveToLocation\tMove to the location of the answer box\n----------------------------------------------------------------------------------------------------\n",
+        "java_home": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre",
+        "log_records": 1,
+        "measured": true,
+        "moves": 1,
+        "reward": 0.0,
+        "score": 0,
+        "solved": false,
+        "steps": [
+          {
+            "action": "woffscorer2 nonexistent action",
+            "done": false,
+            "observation": "No known action matches that input.",
+            "score": 0,
+            "step": 0
+          }
+        ],
+        "task_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-impossible-command-8wejuqti/scw_task.json",
+        "unparseable_lines": null,
+        "why": "the episode ended after 1 move(s) with score 0/100; the goal was not met"
+      },
+      "exit_code": 1,
+      "id": "s-impossible-command",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: the episode ended after 1 move(s) with score 0/100; the goal was not met\n"
+    },
+    {
+      "child_cleanup": [
+        {
+          "no_longer_our_child": true,
+          "pid": 551887
+        }
+      ],
+      "evidence": {
+        "action_log": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-focus-x7meeyd9/scw_actions.jsonl",
+        "actions_in_log": 2,
+        "agent_declared_done": false,
+        "budget": 8,
+        "budget_exhausted": false,
+        "goal_progress": "Completed keys: \n----------------------------------------------------------------------------------------------------\nSequential Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t               GoalFocusOnNonlivingThing\tfocus on a non-living thing\n1\tfalse\t                   GoalObjectInContainer\tmove living thing to answer box\n----------------------------------------------------------------------------------------------------\nUnordered and Optional Subgoals:\n----------------------------------------------------------------------------------------------------\n0\tfalse\t                   GoalObjectInContainer\tPick up object\n1\tfalse\t                  GoalInRoomWithOpenDoor\tBe in a room with an open door\n2\tfalse\t                   GoalMoveToNewLocation\tMove to a new location\n3\tfalse\t                      GoalMoveToLocation\tMove to the location of the answer box\n----------------------------------------------------------------------------------------------------\n",
+        "java_home": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre",
+        "log_records": 2,
+        "measured": true,
+        "moves": 2,
+        "reward": 0.0,
+        "score": 0,
+        "solved": false,
+        "steps": [
+          {
+            "action": "look around",
+            "done": false,
+            "observation": "This room is called the hallway. In it, you see: \n\tthe agent\n\ta substance called air\n\ta picture\nYou also see:\n\tA door to the art studio (that is closed)\n\tA door to the bedroom (that is closed)\n\tA door",
+            "score": 0,
+            "step": 0
+          },
+          {
+            "action": "focus on table",
+            "done": false,
+            "observation": "No known action matches that input.",
+            "score": 0,
+            "step": 1
+          }
+        ],
+        "task_file": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV/scienceworld-s-focus-x7meeyd9/scw_task.json",
+        "unparseable_lines": null,
+        "why": "the episode ended after 2 move(s) with score 0/100; the goal was not met"
+      },
+      "exit_code": 1,
+      "id": "s-focus",
+      "reward_file": "0\n",
+      "stderr": "",
+      "stdout": "reward 0: the episode ended after 2 move(s) with score 0/100; the goal was not met\n"
+    }
+  ],
+  "dataset": "scienceworld",
+  "mode": "local",
+  "production_runtime_observation": false
+}

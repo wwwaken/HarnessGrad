@@ -1,0 +1,17 @@
+{
+  "scratch": "/tmp/hg-woffscorer2-worlds-exec-9QmSYV",
+  "repo": "/tmp/hg-offscorer2-worlds",
+  "parent_netns": "net:[4026531840]",
+  "model": null,
+  "endpoint": null,
+  "jobs": 1,
+  "controlled_input_count": {
+    "jericho": 5,
+    "scienceworld": 4
+  },
+  "maximum_actions_bound_each_case": 20,
+  "maximum_wall_seconds_each_dataset_mode": 150,
+  "production_runtime_observation": false,
+  "eligible_benchmark_task_coverage": "not measured; study scorer controls only",
+  "trials": "one fresh world per authored trace per independent side"
+}

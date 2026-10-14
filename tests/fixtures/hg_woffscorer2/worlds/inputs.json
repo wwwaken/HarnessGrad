@@ -1,0 +1,92 @@
+{
+  "jericho": {
+    "cases": [
+      {
+        "actions": [],
+        "id": "j-empty"
+      },
+      {
+        "actions": [
+          "look"
+        ],
+        "id": "j-look"
+      },
+      {
+        "actions": [
+          "woffscorer2 nonexistent action"
+        ],
+        "id": "j-impossible-command"
+      },
+      {
+        "actions": [
+          "get ball"
+        ],
+        "id": "j-get-ball"
+      },
+      {
+        "actions": [
+          "point machine at tree",
+          "get ball",
+          "put ball in machine",
+          "turn on machine",
+          "turn off machine",
+          "fix bucket with acorn",
+          "fix bucket with acorn",
+          "fix bucket with acorn",
+          "fix bucket with acorn",
+          "turn crank",
+          "tie bucket to rope",
+          "turn crank",
+          "turn crank",
+          "look in bucket",
+          "get key",
+          "unlock gate",
+          "open gate"
+        ],
+        "id": "j-study-reference-full",
+        "input_kind": "selected upstream study walkthrough",
+        "source_receipt": "reference-selection.json"
+      }
+    ],
+    "game": {
+      "rom": "acorncourt.z5",
+      "seed": 4,
+      "task_id": "acorncourt"
+    },
+    "label": "Four authored bounded traces plus one explicitly reference-derived non-heldout acorncourt study trace"
+  },
+  "scienceworld": {
+    "budget": 8,
+    "cases": [
+      {
+        "actions": [],
+        "id": "s-empty"
+      },
+      {
+        "actions": [
+          "look around"
+        ],
+        "id": "s-look"
+      },
+      {
+        "actions": [
+          "woffscorer2 nonexistent action"
+        ],
+        "id": "s-impossible-command"
+      },
+      {
+        "actions": [
+          "look around",
+          "focus on table"
+        ],
+        "id": "s-focus"
+      }
+    ],
+    "label": "Authored bounded action traces on variation zero absent from the checked-in test fold; no gold path generated",
+    "task": {
+      "simplifications": "",
+      "task_name": "find-non-living-thing",
+      "variation": 0
+    }
+  }
+}
