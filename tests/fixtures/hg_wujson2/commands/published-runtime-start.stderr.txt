@@ -1,0 +1,13 @@
++ python -I -B /opt/hg-wujson/network.py
++ wheel_dir=/opt/hg-wujson
++ set -- /opt/hg-wujson/ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
++ wheel=/opt/hg-wujson/ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
++ python -I -B - /opt/hg-wujson/ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
++ python -I -B -m venv /tmp/fresh-ujson
++ /tmp/fresh-ujson/bin/python -I -B -m pip --isolated --disable-pip-version-check --no-cache-dir install --no-index --find-links=/opt/hg-wujson --require-hashes --only-binary=:all: --no-deps --no-compile --report=/receipts/pip-install-report.json -r /receipts/requirements.txt
++ mkdir -p /tmp/fresh-ujson/share/licenses/hg-wujson2
++ cp /opt/hg-wujson/notices/ujson-LICENSE.txt /opt/hg-wujson/notices/double-conversion-LICENSE /tmp/fresh-ujson/share/licenses/hg-wujson2/
++ /tmp/fresh-ujson/bin/python -I -B /packet/scripts/runtime.py /opt/hg-wujson/ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
++ LD_BIND_NOW=1 LD_DEBUG=libs,versions,bindings /tmp/fresh-ujson/bin/python -I -B /packet/scripts/runtime.py /opt/hg-wujson/ujson-5.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
++ /tmp/fresh-ujson/bin/python -I -B /opt/hg-wujson/synthetic.py
++ /tmp/fresh-ujson/bin/python -I -B /opt/hg-wujson/providers.py

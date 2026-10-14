@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "objcopy",
+    "--dump-section",
+    ".rodata=/receipts/rebuilt/rodata.bin",
+    "/receipts/rebuilt/ujson.cpython-312-x86_64-linux-gnu.so",
+    "/tmp/rebuilt-objcopy.so"
+  ],
+  "returncode": 0
+}

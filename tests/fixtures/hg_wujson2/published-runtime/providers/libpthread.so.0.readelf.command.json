@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "readelf",
+    "-h",
+    "-l",
+    "-d",
+    "-V",
+    "--dyn-syms",
+    "-W",
+    "/usr/lib/x86_64-linux-gnu/libpthread.so.0"
+  ],
+  "returncode": 0
+}

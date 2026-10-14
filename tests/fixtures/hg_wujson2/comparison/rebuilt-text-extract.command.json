@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "objcopy",
+    "--dump-section",
+    ".text=/receipts/rebuilt/text.bin",
+    "/receipts/rebuilt/ujson.cpython-312-x86_64-linux-gnu.so",
+    "/tmp/rebuilt-objcopy.so"
+  ],
+  "returncode": 0
+}

@@ -1,0 +1,39 @@
+w-ujson2 focused validation (raw stdout/stderr follow each exact command)
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+[exit=0]
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_w_ujson_receipts.py --basetemp=/tmp/harnessgrad-pytest-w-ujson2
+...........................................................              [100%]
+59 passed in 3.38s
+[exit=0]
+
+$ sha256sum --check --quiet tests/fixtures/hg_wujson2/SHA256SUMS
+[exit=0]
+
+$ git diff --check
+[exit=0]
+
+$ git diff --exit-code HEAD -- runs/ tests/fixtures/hg_wujson/ tests/fixtures/ujson_pypi_codex226/ reports/w-ujson-receipts.md eval/
+[exit=0]
+
+$ python3 -c 'import json,subprocess
+from pathlib import Path
+p='"'"'docs/dataset-blockers.json'"'"'
+a=json.loads(subprocess.check_output(['"'"'git'"'"','"'"'show'"'"','"'"'HEAD:'"'"'+p]))
+b=json.loads(Path(p).read_text())
+for obj in (a,b):
+ d=next(d for d in obj['"'"'datasets'"'"'] if d['"'"'dataset'"'"']=='"'"'twowikimultihopqa'"'"')
+ x=next(x for x in d['"'"'blockers'"'"'] if x['"'"'id'"'"']=='"'"'ujson-native-offline-closure'"'"')
+ assert x['"'"'status'"'"']=='"'"'external'"'"'
+ x.pop('"'"'observed'"'"');x.pop('"'"'evidence'"'"')
+assert a==b
+print('"'"'Only target observed/evidence changed; statuses, next actions, gates and other registry entries unchanged.'"'"')'
+Only target observed/evidence changed; statuses, next actions, gates and other registry entries unchanged.
+[exit=0]
+
+All focused checks passed. No benchmark/model/GPU/endpoint execution.
+
+Staged review: raw HTTP headers, numbered source excerpts, extracted original members and readelf/disassembly outputs retain original CRLF/trailing whitespace. The unscoped staged whitespace check flags these retained bytes; they were not normalized. Authored code/docs and generated JSON/manifest are checked explicitly below.
+$ git diff --cached --check -- docs/adapter-integration-journal.md docs/dataset-blockers.json reports/w-ujson2-reproduction.md reports/w-ujson2-validation.txt tests/fixtures/hg_wujson2/README.md tests/fixtures/hg_wujson2/scripts tests/fixtures/hg_wujson2/build-env.sh tests/fixtures/hg_wujson2/build-requirements.txt tests/fixtures/hg_wujson2/SHA256SUMS tests/fixtures/hg_wujson2/assessment.json tests/fixtures/hg_wujson2/source-verification.json
+[exit=0]

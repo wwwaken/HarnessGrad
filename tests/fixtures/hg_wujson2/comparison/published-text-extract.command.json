@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "objcopy",
+    "--dump-section",
+    ".text=/receipts/published/text.bin",
+    "/receipts/published/ujson.cpython-312-x86_64-linux-gnu.so",
+    "/tmp/published-objcopy.so"
+  ],
+  "returncode": 0
+}

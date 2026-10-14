@@ -1,0 +1,71 @@
++ python -I -B /opt/hg-wujson/network.py
++ . /packet/build-env.sh
++ export SETUPTOOLS_SCM_PRETEND_VERSION=5.10.0
++ export SOURCE_DATE_EPOCH=1715651320
++ export PYTHONHASHSEED=0
++ export TZ=UTC
++ export LC_ALL=C.UTF-8
++ unset UJSON_BUILD_DC_LIBS UJSON_BUILD_DC_INCLUDES UJSON_BUILD_NO_STRIP
++ python -I -B -m venv /tmp/builder
++ /tmp/builder/bin/python -I -B -m pip --isolated --disable-pip-version-check --no-cache-dir install --no-index --find-links=/packet/acquired --require-hashes --only-binary=:all: --no-deps --report=/receipts/build-deps-install-report.json -r /packet/build-requirements.txt
++ /tmp/builder/bin/python -I -B -m pip list
+WARNING: The directory '/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
++ python -I -B /packet/scripts/environment.py
++ gcc --version
++ g++ --version
++ ld --version
++ ldd --version
++ mkdir /tmp/source
++ tar -xzf /packet/acquired/ultrajson-59875e089937c8b05c2f4b474530e3a9ec706a56.tar.gz -C /tmp/source --strip-components=1
++ cd /tmp/source
++ sha256sum setup.py pyproject.toml setup.cfg LICENSE.txt deps/double-conversion/LICENSE
++ echo FILE: setup.py
++ nl -ba setup.py
++ echo FILE: pyproject.toml
++ nl -ba pyproject.toml
++ echo FILE: setup.cfg
++ nl -ba setup.cfg
++ echo FILE: .github/workflows/deploy.yml
++ nl -ba .github/workflows/deploy.yml
++ echo FILE: lib/dconv_wrapper.cc
++ nl -ba lib/dconv_wrapper.cc
++ echo FILE: deps/double-conversion/double-conversion/string-to-double.cc
++ nl -ba deps/double-conversion/double-conversion/string-to-double.cc
++ /tmp/builder/bin/python -B setup.py bdist_wheel --dist-dir=/receipts/wheels
+/tmp/builder/lib/python3.12/site-packages/setuptools/__init__.py:81: _DeprecatedInstaller: setuptools.installer and fetch_build_eggs are deprecated.
+!!
+
+        ********************************************************************************
+        Requirements should be satisfied by a PEP 517 installer.
+        If you are using pip, you can try `pip install --use-pep517`.
+        ********************************************************************************
+
+!!
+  dist.fetch_build_eggs(dist.setup_requires)
+WARNING setuptools_scm.pyproject_reading toml section missing 'pyproject.toml does not contain a tool.setuptools_scm section'
+Traceback (most recent call last):
+  File "/tmp/builder/lib/python3.12/site-packages/setuptools_scm/_integration/pyproject_reading.py", line 36, in read_pyproject
+    section = defn.get("tool", {})[tool_name]
+              ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'setuptools_scm'
+./python/objToJSON.c: In function ‘PyUnicodeToUTF8Raw’:
+./python/objToJSON.c:129:18: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  129 |     char *data = PyUnicode_AsUTF8AndSize(obj, &len);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+/tmp/builder/lib/python3.12/site-packages/setuptools/_distutils/cmd.py:66: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+!!
+
+        ********************************************************************************
+        Please avoid running ``setup.py`` directly.
+        Instead, use pypa/build, pypa/installer or other
+        standards-based tools.
+
+        See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+        ********************************************************************************
+
+!!
+  self.initialize_options()
+warning: install_lib: byte-compiling is disabled, skipping.
+
+ERROR setuptools_scm._file_finders.git listing git files failed - pretending there aren't any
++ sha256sum /receipts/wheels/ujson-5.10.0-cp312-cp312-linux_x86_64.whl

@@ -1,0 +1,95 @@
+Looking in links: /packet/acquired
+Processing /packet/acquired/setuptools-69.5.1-py3-none-any.whl (from -r /packet/build-requirements.txt (line 1))
+Processing /packet/acquired/wheel-0.43.0-py3-none-any.whl (from -r /packet/build-requirements.txt (line 2))
+Processing /packet/acquired/setuptools_scm-8.1.0-py3-none-any.whl (from -r /packet/build-requirements.txt (line 3))
+Processing /packet/acquired/packaging-24.0-py3-none-any.whl (from -r /packet/build-requirements.txt (line 4))
+Installing collected packages: wheel, setuptools_scm, setuptools, packaging
+Successfully installed packaging-24.0 setuptools-69.5.1 setuptools_scm-8.1.0 wheel-0.43.0
+Package        Version
+-------------- -------
+packaging      24.0
+pip            25.0.1
+setuptools     69.5.1
+setuptools-scm 8.1.0
+wheel          0.43.0
+gcc (Debian 12.2.0-14+deb12u1) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+g++ (Debian 12.2.0-14+deb12u1) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+GNU ld (GNU Binutils for Debian) 2.40
+Copyright (C) 2023 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or (at your option) a later version.
+This program has absolutely no warranty.
+ldd (Debian GLIBC 2.36-9+deb12u14) 2.36
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+1202739ff87e1d5abb516549c15b42693c012439dac96c8980e5b0384bf0db0d  setup.py
+c8482503471a70badd4bf82cae78b0b9521e5755b8068ec5d041ddc14e81c1b3  pyproject.toml
+79a65dfaec0db34ede72dd535bb9aa05306caeadcd0e685dd1c6900659c5f1d2  setup.cfg
+36866344f0a486541bd9800f1a407a056c0c214a82c658f059694daf3dc394d2  LICENSE.txt
+4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca  deps/double-conversion/LICENSE
+running bdist_wheel
+running build
+running build_ext
+building 'ujson' extension
+creating build
+creating build/temp.linux-x86_64-cpython-312
+creating build/temp.linux-x86_64-cpython-312/deps
+creating build/temp.linux-x86_64-cpython-312/deps/double-conversion
+creating build/temp.linux-x86_64-cpython-312/deps/double-conversion/double-conversion
+creating build/temp.linux-x86_64-cpython-312/lib
+creating build/temp.linux-x86_64-cpython-312/python
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/bignum-dtoa.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/bignum-dtoa.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/bignum.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/bignum.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/cached-powers.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/cached-powers.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/double-to-string.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/double-to-string.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/fast-dtoa.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/fast-dtoa.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/fixed-dtoa.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/fixed-dtoa.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/string-to-double.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/string-to-double.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./deps/double-conversion/double-conversion/strtod.cc -o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/strtod.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./lib/dconv_wrapper.cc -o build/temp.linux-x86_64-cpython-312/./lib/dconv_wrapper.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./lib/ultrajsondec.c -o build/temp.linux-x86_64-cpython-312/./lib/ultrajsondec.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./lib/ultrajsonenc.c -o build/temp.linux-x86_64-cpython-312/./lib/ultrajsonenc.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./python/JSONtoObj.c -o build/temp.linux-x86_64-cpython-312/./python/JSONtoObj.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./python/objToJSON.c -o build/temp.linux-x86_64-cpython-312/./python/objToJSON.o -D_GNU_SOURCE
+gcc -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -I./python -I./lib -I./deps/double-conversion/double-conversion -I/tmp/builder/include -I/usr/local/include/python3.12 -c ./python/ujson.c -o build/temp.linux-x86_64-cpython-312/./python/ujson.o -D_GNU_SOURCE
+creating build/lib.linux-x86_64-cpython-312
+g++ -shared build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/bignum-dtoa.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/bignum.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/cached-powers.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/double-to-string.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/fast-dtoa.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/fixed-dtoa.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/string-to-double.o build/temp.linux-x86_64-cpython-312/./deps/double-conversion/double-conversion/strtod.o build/temp.linux-x86_64-cpython-312/./lib/dconv_wrapper.o build/temp.linux-x86_64-cpython-312/./lib/ultrajsondec.o build/temp.linux-x86_64-cpython-312/./lib/ultrajsonenc.o build/temp.linux-x86_64-cpython-312/./python/JSONtoObj.o build/temp.linux-x86_64-cpython-312/./python/objToJSON.o build/temp.linux-x86_64-cpython-312/./python/ujson.o -L/usr/local/lib -o build/lib.linux-x86_64-cpython-312/ujson.cpython-312-x86_64-linux-gnu.so -lstdc++ -lm -Wl,--strip-all
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64
+creating build/bdist.linux-x86_64/wheel
+copying build/lib.linux-x86_64-cpython-312/ujson.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel
+running install_egg_info
+running egg_info
+creating ujson.egg-info
+writing ujson.egg-info/PKG-INFO
+writing dependency_links to ujson.egg-info/dependency_links.txt
+writing top-level names to ujson.egg-info/top_level.txt
+writing manifest file 'ujson.egg-info/SOURCES.txt'
+reading manifest file 'ujson.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+adding license file 'LICENSE.txt'
+writing manifest file 'ujson.egg-info/SOURCES.txt'
+Copying ujson.egg-info to build/bdist.linux-x86_64/wheel/ujson-5.10.0-py3.12.egg-info
+running install_scripts
+creating build/bdist.linux-x86_64/wheel/ujson-5.10.0.dist-info/WHEEL
+creating '/receipts/wheels/ujson-5.10.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'ujson.cpython-312-x86_64-linux-gnu.so'
+adding 'ujson-5.10.0.dist-info/LICENSE.txt'
+adding 'ujson-5.10.0.dist-info/METADATA'
+adding 'ujson-5.10.0.dist-info/WHEEL'
+adding 'ujson-5.10.0.dist-info/top_level.txt'
+adding 'ujson-5.10.0.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+63a3456428e7a40f7270eafff1226f875bb3c3a2ce1770fa7058ce4dbcdcd378  /receipts/wheels/ujson-5.10.0-cp312-cp312-linux_x86_64.whl

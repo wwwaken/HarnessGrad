@@ -1,0 +1,1161 @@
+FILE: setup.py
+     1	import platform
+     2	import shlex
+     3	from glob import glob
+     4	from os import environ, pathsep
+     5	
+     6	from setuptools import Extension, setup
+     7	
+     8	dconv_includes = [
+     9	    dir
+    10	    for dir in environ.get(
+    11	        "UJSON_BUILD_DC_INCLUDES",
+    12	        "./deps/double-conversion/double-conversion",
+    13	    ).split(pathsep)
+    14	    if dir
+    15	]
+    16	dconv_libs = shlex.split(environ.get("UJSON_BUILD_DC_LIBS", ""))
+    17	dconv_source_files = []
+    18	if not dconv_libs:
+    19	    dconv_source_files.extend(glob("./deps/double-conversion/double-conversion/*.cc"))
+    20	dconv_source_files.append("./lib/dconv_wrapper.cc")
+    21	
+    22	if platform.system() == "Linux" and environ.get("UJSON_BUILD_NO_STRIP", "0") not in (
+    23	    "1",
+    24	    "True",
+    25	):
+    26	    strip_flags = ["-Wl,--strip-all"]
+    27	else:
+    28	    strip_flags = []
+    29	
+    30	module1 = Extension(
+    31	    "ujson",
+    32	    sources=dconv_source_files
+    33	    + [
+    34	        "./python/ujson.c",
+    35	        "./python/objToJSON.c",
+    36	        "./python/JSONtoObj.c",
+    37	        "./lib/ultrajsonenc.c",
+    38	        "./lib/ultrajsondec.c",
+    39	    ],
+    40	    include_dirs=["./python", "./lib"] + dconv_includes,
+    41	    extra_compile_args=["-D_GNU_SOURCE"],
+    42	    extra_link_args=["-lstdc++", "-lm"] + dconv_libs + strip_flags,
+    43	)
+    44	
+    45	with open("python/version_template.h") as f:
+    46	    version_template = f.read()
+    47	
+    48	
+    49	def local_scheme(version):
+    50	    """Skip the local version (eg. +xyz of 0.6.1.dev4+gdf99fe2)
+    51	    to be able to upload to Test PyPI"""
+    52	    return ""
+    53	
+    54	
+    55	setup(
+    56	    ext_modules=[module1],
+    57	    use_scm_version={
+    58	        "local_scheme": local_scheme,
+    59	        "write_to": "python/version.h",
+    60	        "write_to_template": version_template,
+    61	    },
+    62	)
+FILE: pyproject.toml
+     1	[build-system]
+     2	requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4"]
+     3	
+     4	[tool.black]
+     5	target_version = ["py38"]
+     6	
+     7	[tool.isort]
+     8	profile = "black"
+FILE: setup.cfg
+     1	[metadata]
+     2	name = ujson
+     3	description = Ultra fast JSON encoder and decoder for Python
+     4	long_description = file: README.md
+     5	long_description_content_type = text/markdown
+     6	url = https://github.com/ultrajson/ultrajson
+     7	author = Jonas Tarnstrom
+     8	license_files = LICENSE.txt
+     9	platforms = any
+    10	classifiers =
+    11	    Development Status :: 5 - Production/Stable
+    12	    Intended Audience :: Developers
+    13	    License :: OSI Approved :: BSD License
+    14	    Programming Language :: C
+    15	    Programming Language :: Python :: 3
+    16	    Programming Language :: Python :: 3 :: Only
+    17	    Programming Language :: Python :: 3.8
+    18	    Programming Language :: Python :: 3.9
+    19	    Programming Language :: Python :: 3.10
+    20	    Programming Language :: Python :: 3.11
+    21	    Programming Language :: Python :: 3.12
+    22	    Programming Language :: Python :: 3.13
+    23	download_url = https://github.com/ultrajson/ultrajson
+    24	project_urls =
+    25	    Source=https://github.com/ultrajson/ultrajson
+    26	
+    27	[options]
+    28	python_requires = >=3.8
+    29	setup_requires =
+    30	    setuptools-scm
+    31	
+    32	[flake8]
+    33	max_line_length = 88
+FILE: .github/workflows/deploy.yml
+     1	---
+     2	name: Deploy
+     3	
+     4	on:
+     5	  push:
+     6	    branches:
+     7	      - main
+     8	  pull_request:
+     9	    paths:
+    10	      - ".github/workflows/deploy.yml"
+    11	  release:
+    12	    types:
+    13	      - published
+    14	  workflow_dispatch:
+    15	
+    16	env:
+    17	  FORCE_COLOR: 1
+    18	
+    19	jobs:
+    20	  build-native-wheels:
+    21	    runs-on: ${{ matrix.os }}
+    22	    strategy:
+    23	      fail-fast: false
+    24	      matrix:
+    25	        os: [windows-latest, macOS-latest, ubuntu-latest]
+    26	
+    27	    steps:
+    28	      - uses: actions/checkout@v4
+    29	      - run: git fetch --prune --unshallow
+    30	
+    31	      - name: Set up Python
+    32	        uses: actions/setup-python@v5
+    33	        with:
+    34	          python-version: "3.x"
+    35	          cache: pip
+    36	          cache-dependency-path: ".github/workflows/deploy.yml"
+    37	
+    38	      # https://github.com/pypa/cibuildwheel
+    39	      - name: Build wheels
+    40	        uses: pypa/cibuildwheel@v2.18.0
+    41	        with:
+    42	          output-dir: dist
+    43	        # Options are supplied via environment variables:
+    44	        env:
+    45	          # Build separate wheels for macOS's different architectures.
+    46	          CIBW_ARCHS_MACOS: "x86_64 arm64"
+    47	          # Build only on Linux architectures that don't need qemu emulation.
+    48	          CIBW_ARCHS_LINUX: "x86_64 i686"
+    49	          # Include latest Python beta.
+    50	          CIBW_PRERELEASE_PYTHONS: True
+    51	          # Run the test suite after each build.
+    52	          CIBW_TEST_REQUIRES: "pytest"
+    53	          CIBW_TEST_COMMAND: pytest {package}/tests
+    54	
+    55	      - name: Upload as build artifacts
+    56	        uses: actions/upload-artifact@v4
+    57	        with:
+    58	          name: wheels-${{ matrix.os }}
+    59	          path: dist/*.whl
+    60	
+    61	  build-QEMU-emulated-wheels:
+    62	    runs-on: ubuntu-latest
+    63	    strategy:
+    64	      fail-fast: false
+    65	      matrix:
+    66	        python-version:
+    67	          - pp39
+    68	          - pp310
+    69	          - cp38
+    70	          - cp39
+    71	          - cp310
+    72	          - cp311
+    73	          - cp312
+    74	          - cp313
+    75	
+    76	    steps:
+    77	      - uses: actions/checkout@v4
+    78	      - run: git fetch --prune --unshallow
+    79	
+    80	      - name: Set up Python
+    81	        uses: actions/setup-python@v5
+    82	        with:
+    83	          python-version: "3.x"
+    84	          cache: pip
+    85	          cache-dependency-path: ".github/workflows/deploy.yml"
+    86	
+    87	      # https://github.com/docker/setup-qemu-action
+    88	      - name: Set up QEMU
+    89	        uses: docker/setup-qemu-action@v3
+    90	
+    91	      # https://github.com/pypa/cibuildwheel
+    92	      - name: Build wheels
+    93	        uses: pypa/cibuildwheel@v2.18.0
+    94	        with:
+    95	          output-dir: dist
+    96	        # Options are supplied via environment variables:
+    97	        env:
+    98	          # Build only the currently selected Linux architecture (so we can
+    99	          # parallelise for speed).
+   100	          CIBW_ARCHS_LINUX: "aarch64"
+   101	          # Likewise, select only one Python version per job to speed this up.
+   102	          CIBW_BUILD: "${{ matrix.python-version }}-*"
+   103	          # Include latest Python beta.
+   104	          CIBW_PRERELEASE_PYTHONS: True
+   105	          # Run the test suite after each build.
+   106	          CIBW_TEST_REQUIRES: "pytest"
+   107	          CIBW_TEST_COMMAND: pytest {package}/tests
+   108	
+   109	      - name: Upload as build artifacts
+   110	        uses: actions/upload-artifact@v4
+   111	        with:
+   112	          name: wheels-qemu-${{ matrix.python-version }}
+   113	          path: dist/*.whl
+   114	
+   115	  build-sdist-and-upload:
+   116	    runs-on: ubuntu-latest
+   117	    needs: ['build-native-wheels', 'build-QEMU-emulated-wheels']
+   118	    permissions:
+   119	      # IMPORTANT: this permission is mandatory for trusted publishing
+   120	      id-token: write
+   121	
+   122	    steps:
+   123	      - uses: actions/checkout@v4
+   124	      - run: |
+   125	            git fetch --prune --unshallow
+   126	
+   127	      - name: Set up Python
+   128	        uses: actions/setup-python@v5
+   129	        with:
+   130	          python-version: "3.x"
+   131	          cache: pip
+   132	          cache-dependency-path: "setup.py"
+   133	
+   134	      - name: Install dependencies
+   135	        run: |
+   136	          python -m pip install -U pip
+   137	          python -m pip install -U build twine
+   138	
+   139	      - name: Download wheels from build artifacts
+   140	        uses: actions/download-artifact@v4
+   141	        with:
+   142	          pattern: wheels-*
+   143	          merge-multiple: true
+   144	          path: dist-wheels/
+   145	
+   146	      - name: Build package
+   147	        run: |
+   148	          git tag
+   149	          python -m build --sdist
+   150	          twine check --strict dist/*
+   151	          twine check --strict dist-wheels/*
+   152	
+   153	      - name: Publish wheels to PyPI
+   154	        if: github.event.action == 'published'
+   155	        uses: pypa/gh-action-pypi-publish@release/v1
+   156	        with:
+   157	          packages-dir: dist-wheels/
+   158	
+   159	      - name: Publish sdist to PyPI
+   160	        if: github.event.action == 'published'
+   161	        uses: pypa/gh-action-pypi-publish@release/v1
+   162	
+   163	      - name: Publish wheels to TestPyPI
+   164	        if: |
+   165	          github.repository == 'ultrajson/ultrajson' &&
+   166	          github.ref == 'refs/heads/main'
+   167	        uses: pypa/gh-action-pypi-publish@release/v1
+   168	        with:
+   169	          repository-url: https://test.pypi.org/legacy/
+   170	          packages-dir: dist-wheels/
+   171	
+   172	      - name: Publish sdist to TestPyPI
+   173	        if: |
+   174	          github.repository == 'ultrajson/ultrajson' &&
+   175	          github.ref == 'refs/heads/main'
+   176	        uses: pypa/gh-action-pypi-publish@release/v1
+   177	        with:
+   178	          repository-url: https://test.pypi.org/legacy/
+FILE: lib/dconv_wrapper.cc
+     1	#include "double-conversion.h"
+     2	
+     3	namespace double_conversion
+     4	{
+     5	  extern "C"
+     6	  {
+     7	    void dconv_d2s_init(void **d2s,
+     8	                        int flags,
+     9	                        const char* infinity_symbol,
+    10	                        const char* nan_symbol,
+    11	                        char exponent_character,
+    12	                        int decimal_in_shortest_low,
+    13	                        int decimal_in_shortest_high,
+    14	                        int max_leading_padding_zeroes_in_precision_mode,
+    15	                        int max_trailing_padding_zeroes_in_precision_mode)
+    16	    {
+    17	        *d2s = new DoubleToStringConverter(flags, infinity_symbol, nan_symbol,
+    18	                                        exponent_character, decimal_in_shortest_low,
+    19	                                        decimal_in_shortest_high, max_leading_padding_zeroes_in_precision_mode,
+    20	                                        max_trailing_padding_zeroes_in_precision_mode);
+    21	    }
+    22	
+    23	    int dconv_d2s(void *d2s, double value, char* buf, int buflen, int* strlength)
+    24	    {
+    25	        StringBuilder sb(buf, buflen);
+    26	        int success =  static_cast<int>(static_cast<DoubleToStringConverter*>(d2s)->ToShortest(value, &sb));
+    27	        *strlength = success ? sb.position() : -1;
+    28	        return success;
+    29	    }
+    30	
+    31	    void dconv_d2s_free(void **d2s)
+    32	    {
+    33	        delete static_cast<DoubleToStringConverter*>(*d2s);
+    34	        *d2s = NULL;
+    35	    }
+    36	
+    37	    void dconv_s2d_init(void **s2d, int flags, double empty_string_value,
+    38	                        double junk_string_value, const char* infinity_symbol,
+    39	                        const char* nan_symbol)
+    40	    {
+    41	        *s2d = new StringToDoubleConverter(flags, empty_string_value,
+    42	                            junk_string_value, infinity_symbol, nan_symbol);
+    43	    }
+    44	
+    45	    double dconv_s2d(void *s2d, const char* buffer, int length, int* processed_characters_count)
+    46	    {
+    47	        return static_cast<StringToDoubleConverter*>(s2d)->StringToDouble(buffer, length, processed_characters_count);
+    48	    }
+    49	
+    50	    void dconv_s2d_free(void **s2d)
+    51	    {
+    52	        delete static_cast<StringToDoubleConverter*>(*s2d);
+    53	        *s2d = NULL;
+    54	    }
+    55	  }
+    56	}
+FILE: deps/double-conversion/double-conversion/string-to-double.cc
+     1	// Copyright 2010 the V8 project authors. All rights reserved.
+     2	// Redistribution and use in source and binary forms, with or without
+     3	// modification, are permitted provided that the following conditions are
+     4	// met:
+     5	//
+     6	//     * Redistributions of source code must retain the above copyright
+     7	//       notice, this list of conditions and the following disclaimer.
+     8	//     * Redistributions in binary form must reproduce the above
+     9	//       copyright notice, this list of conditions and the following
+    10	//       disclaimer in the documentation and/or other materials provided
+    11	//       with the distribution.
+    12	//     * Neither the name of Google Inc. nor the names of its
+    13	//       contributors may be used to endorse or promote products derived
+    14	//       from this software without specific prior written permission.
+    15	//
+    16	// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    17	// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    18	// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    19	// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    20	// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    21	// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+    22	// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    23	// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    24	// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    25	// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    26	// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    27	
+    28	#include <climits>
+    29	#include <locale>
+    30	#include <cmath>
+    31	
+    32	#include "string-to-double.h"
+    33	
+    34	#include "ieee.h"
+    35	#include "strtod.h"
+    36	#include "utils.h"
+    37	
+    38	#ifdef _MSC_VER
+    39	#  if _MSC_VER >= 1900
+    40	// Fix MSVC >= 2015 (_MSC_VER == 1900) warning
+    41	// C4244: 'argument': conversion from 'const uc16' to 'char', possible loss of data
+    42	// against Advance and friends, when instantiated with **it as char, not uc16.
+    43	 __pragma(warning(disable: 4244))
+    44	#  endif
+    45	#  if _MSC_VER <= 1700 // VS2012, see IsDecimalDigitForRadix warning fix, below
+    46	#    define VS2012_RADIXWARN
+    47	#  endif
+    48	#endif
+    49	
+    50	namespace double_conversion {
+    51	
+    52	namespace {
+    53	
+    54	inline char ToLower(char ch) {
+    55	  static const std::ctype<char>& cType =
+    56	      std::use_facet<std::ctype<char> >(std::locale::classic());
+    57	  return cType.tolower(ch);
+    58	}
+    59	
+    60	inline char Pass(char ch) {
+    61	  return ch;
+    62	}
+    63	
+    64	template <class Iterator, class Converter>
+    65	static inline bool ConsumeSubStringImpl(Iterator* current,
+    66	                                        Iterator end,
+    67	                                        const char* substring,
+    68	                                        Converter converter) {
+    69	  DOUBLE_CONVERSION_ASSERT(converter(**current) == *substring);
+    70	  for (substring++; *substring != '\0'; substring++) {
+    71	    ++*current;
+    72	    if (*current == end || converter(**current) != *substring) {
+    73	      return false;
+    74	    }
+    75	  }
+    76	  ++*current;
+    77	  return true;
+    78	}
+    79	
+    80	// Consumes the given substring from the iterator.
+    81	// Returns false, if the substring does not match.
+    82	template <class Iterator>
+    83	static bool ConsumeSubString(Iterator* current,
+    84	                             Iterator end,
+    85	                             const char* substring,
+    86	                             bool allow_case_insensitivity) {
+    87	  if (allow_case_insensitivity) {
+    88	    return ConsumeSubStringImpl(current, end, substring, ToLower);
+    89	  } else {
+    90	    return ConsumeSubStringImpl(current, end, substring, Pass);
+    91	  }
+    92	}
+    93	
+    94	// Consumes first character of the str is equal to ch
+    95	inline bool ConsumeFirstCharacter(char ch,
+    96	                                         const char* str,
+    97	                                         bool case_insensitivity) {
+    98	  return case_insensitivity ? ToLower(ch) == str[0] : ch == str[0];
+    99	}
+   100	}  // namespace
+   101	
+   102	// Maximum number of significant digits in decimal representation.
+   103	// The longest possible double in decimal representation is
+   104	// (2^53 - 1) * 2 ^ -1074 that is (2 ^ 53 - 1) * 5 ^ 1074 / 10 ^ 1074
+   105	// (768 digits). If we parse a number whose first digits are equal to a
+   106	// mean of 2 adjacent doubles (that could have up to 769 digits) the result
+   107	// must be rounded to the bigger one unless the tail consists of zeros, so
+   108	// we don't need to preserve all the digits.
+   109	const int kMaxSignificantDigits = 772;
+   110	
+   111	
+   112	static const char kWhitespaceTable7[] = { 32, 13, 10, 9, 11, 12 };
+   113	static const int kWhitespaceTable7Length = DOUBLE_CONVERSION_ARRAY_SIZE(kWhitespaceTable7);
+   114	
+   115	
+   116	static const uc16 kWhitespaceTable16[] = {
+   117	  160, 8232, 8233, 5760, 6158, 8192, 8193, 8194, 8195,
+   118	  8196, 8197, 8198, 8199, 8200, 8201, 8202, 8239, 8287, 12288, 65279
+   119	};
+   120	static const int kWhitespaceTable16Length = DOUBLE_CONVERSION_ARRAY_SIZE(kWhitespaceTable16);
+   121	
+   122	
+   123	static bool isWhitespace(int x) {
+   124	  if (x < 128) {
+   125	    for (int i = 0; i < kWhitespaceTable7Length; i++) {
+   126	      if (kWhitespaceTable7[i] == x) return true;
+   127	    }
+   128	  } else {
+   129	    for (int i = 0; i < kWhitespaceTable16Length; i++) {
+   130	      if (kWhitespaceTable16[i] == x) return true;
+   131	    }
+   132	  }
+   133	  return false;
+   134	}
+   135	
+   136	
+   137	// Returns true if a nonspace found and false if the end has reached.
+   138	template <class Iterator>
+   139	static inline bool AdvanceToNonspace(Iterator* current, Iterator end) {
+   140	  while (*current != end) {
+   141	    if (!isWhitespace(**current)) return true;
+   142	    ++*current;
+   143	  }
+   144	  return false;
+   145	}
+   146	
+   147	
+   148	static bool isDigit(int x, int radix) {
+   149	  return (x >= '0' && x <= '9' && x < '0' + radix)
+   150	      || (radix > 10 && x >= 'a' && x < 'a' + radix - 10)
+   151	      || (radix > 10 && x >= 'A' && x < 'A' + radix - 10);
+   152	}
+   153	
+   154	
+   155	static double SignedZero(bool sign) {
+   156	  return sign ? -0.0 : 0.0;
+   157	}
+   158	
+   159	
+   160	// Returns true if 'c' is a decimal digit that is valid for the given radix.
+   161	//
+   162	// The function is small and could be inlined, but VS2012 emitted a warning
+   163	// because it constant-propagated the radix and concluded that the last
+   164	// condition was always true. Moving it into a separate function and
+   165	// suppressing optimisation keeps the compiler from warning.
+   166	#ifdef VS2012_RADIXWARN
+   167	#pragma optimize("",off)
+   168	static bool IsDecimalDigitForRadix(int c, int radix) {
+   169	  return '0' <= c && c <= '9' && (c - '0') < radix;
+   170	}
+   171	#pragma optimize("",on)
+   172	#else
+   173	static bool inline IsDecimalDigitForRadix(int c, int radix) {
+   174	  return '0' <= c && c <= '9' && (c - '0') < radix;
+   175	}
+   176	#endif
+   177	// Returns true if 'c' is a character digit that is valid for the given radix.
+   178	// The 'a_character' should be 'a' or 'A'.
+   179	//
+   180	// The function is small and could be inlined, but VS2012 emitted a warning
+   181	// because it constant-propagated the radix and concluded that the first
+   182	// condition was always false. By moving it into a separate function the
+   183	// compiler wouldn't warn anymore.
+   184	static bool IsCharacterDigitForRadix(int c, int radix, char a_character) {
+   185	  return radix > 10 && c >= a_character && c < a_character + radix - 10;
+   186	}
+   187	
+   188	// Returns true, when the iterator is equal to end.
+   189	template<class Iterator>
+   190	static bool Advance (Iterator* it, uc16 separator, int base, Iterator& end) {
+   191	  if (separator == StringToDoubleConverter::kNoSeparator) {
+   192	    ++(*it);
+   193	    return *it == end;
+   194	  }
+   195	  if (!isDigit(**it, base)) {
+   196	    ++(*it);
+   197	    return *it == end;
+   198	  }
+   199	  ++(*it);
+   200	  if (*it == end) return true;
+   201	  if (*it + 1 == end) return false;
+   202	  if (**it == separator && isDigit(*(*it + 1), base)) {
+   203	    ++(*it);
+   204	  }
+   205	  return *it == end;
+   206	}
+   207	
+   208	// Checks whether the string in the range start-end is a hex-float string.
+   209	// This function assumes that the leading '0x'/'0X' is already consumed.
+   210	//
+   211	// Hex float strings are of one of the following forms:
+   212	//   - hex_digits+ 'p' ('+'|'-')? exponent_digits+
+   213	//   - hex_digits* '.' hex_digits+ 'p' ('+'|'-')? exponent_digits+
+   214	//   - hex_digits+ '.' 'p' ('+'|'-')? exponent_digits+
+   215	template<class Iterator>
+   216	static bool IsHexFloatString(Iterator start,
+   217	                             Iterator end,
+   218	                             uc16 separator,
+   219	                             bool allow_trailing_junk) {
+   220	  DOUBLE_CONVERSION_ASSERT(start != end);
+   221	
+   222	  Iterator current = start;
+   223	
+   224	  bool saw_digit = false;
+   225	  while (isDigit(*current, 16)) {
+   226	    saw_digit = true;
+   227	    if (Advance(&current, separator, 16, end)) return false;
+   228	  }
+   229	  if (*current == '.') {
+   230	    if (Advance(&current, separator, 16, end)) return false;
+   231	    while (isDigit(*current, 16)) {
+   232	      saw_digit = true;
+   233	      if (Advance(&current, separator, 16, end)) return false;
+   234	    }
+   235	  }
+   236	  if (!saw_digit) return false;
+   237	  if (*current != 'p' && *current != 'P') return false;
+   238	  if (Advance(&current, separator, 16, end)) return false;
+   239	  if (*current == '+' || *current == '-') {
+   240	    if (Advance(&current, separator, 16, end)) return false;
+   241	  }
+   242	  if (!isDigit(*current, 10)) return false;
+   243	  if (Advance(&current, separator, 16, end)) return true;
+   244	  while (isDigit(*current, 10)) {
+   245	    if (Advance(&current, separator, 16, end)) return true;
+   246	  }
+   247	  return allow_trailing_junk || !AdvanceToNonspace(&current, end);
+   248	}
+   249	
+   250	
+   251	// Parsing integers with radix 2, 4, 8, 16, 32. Assumes current != end.
+   252	//
+   253	// If parse_as_hex_float is true, then the string must be a valid
+   254	// hex-float.
+   255	template <int radix_log_2, class Iterator>
+   256	static double RadixStringToIeee(Iterator* current,
+   257	                                Iterator end,
+   258	                                bool sign,
+   259	                                uc16 separator,
+   260	                                bool parse_as_hex_float,
+   261	                                bool allow_trailing_junk,
+   262	                                double junk_string_value,
+   263	                                bool read_as_double,
+   264	                                bool* result_is_junk) {
+   265	  DOUBLE_CONVERSION_ASSERT(*current != end);
+   266	  DOUBLE_CONVERSION_ASSERT(!parse_as_hex_float ||
+   267	      IsHexFloatString(*current, end, separator, allow_trailing_junk));
+   268	
+   269	  const int kDoubleSize = Double::kSignificandSize;
+   270	  const int kSingleSize = Single::kSignificandSize;
+   271	  const int kSignificandSize = read_as_double? kDoubleSize: kSingleSize;
+   272	
+   273	  *result_is_junk = true;
+   274	
+   275	  int64_t number = 0;
+   276	  int exponent = 0;
+   277	  const int radix = (1 << radix_log_2);
+   278	  // Whether we have encountered a '.' and are parsing the decimal digits.
+   279	  // Only relevant if parse_as_hex_float is true.
+   280	  bool post_decimal = false;
+   281	
+   282	  // Skip leading 0s.
+   283	  while (**current == '0') {
+   284	    if (Advance(current, separator, radix, end)) {
+   285	      *result_is_junk = false;
+   286	      return SignedZero(sign);
+   287	    }
+   288	  }
+   289	
+   290	  while (true) {
+   291	    int digit;
+   292	    if (IsDecimalDigitForRadix(**current, radix)) {
+   293	      digit = static_cast<char>(**current) - '0';
+   294	      if (post_decimal) exponent -= radix_log_2;
+   295	    } else if (IsCharacterDigitForRadix(**current, radix, 'a')) {
+   296	      digit = static_cast<char>(**current) - 'a' + 10;
+   297	      if (post_decimal) exponent -= radix_log_2;
+   298	    } else if (IsCharacterDigitForRadix(**current, radix, 'A')) {
+   299	      digit = static_cast<char>(**current) - 'A' + 10;
+   300	      if (post_decimal) exponent -= radix_log_2;
+   301	    } else if (parse_as_hex_float && **current == '.') {
+   302	      post_decimal = true;
+   303	      Advance(current, separator, radix, end);
+   304	      DOUBLE_CONVERSION_ASSERT(*current != end);
+   305	      continue;
+   306	    } else if (parse_as_hex_float && (**current == 'p' || **current == 'P')) {
+   307	      break;
+   308	    } else {
+   309	      if (allow_trailing_junk || !AdvanceToNonspace(current, end)) {
+   310	        break;
+   311	      } else {
+   312	        return junk_string_value;
+   313	      }
+   314	    }
+   315	
+   316	    number = number * radix + digit;
+   317	    int overflow = static_cast<int>(number >> kSignificandSize);
+   318	    if (overflow != 0) {
+   319	      // Overflow occurred. Need to determine which direction to round the
+   320	      // result.
+   321	      int overflow_bits_count = 1;
+   322	      while (overflow > 1) {
+   323	        overflow_bits_count++;
+   324	        overflow >>= 1;
+   325	      }
+   326	
+   327	      int dropped_bits_mask = ((1 << overflow_bits_count) - 1);
+   328	      int dropped_bits = static_cast<int>(number) & dropped_bits_mask;
+   329	      number >>= overflow_bits_count;
+   330	      exponent += overflow_bits_count;
+   331	
+   332	      bool zero_tail = true;
+   333	      for (;;) {
+   334	        if (Advance(current, separator, radix, end)) break;
+   335	        if (parse_as_hex_float && **current == '.') {
+   336	          // Just run over the '.'. We are just trying to see whether there is
+   337	          // a non-zero digit somewhere.
+   338	          Advance(current, separator, radix, end);
+   339	          DOUBLE_CONVERSION_ASSERT(*current != end);
+   340	          post_decimal = true;
+   341	        }
+   342	        if (!isDigit(**current, radix)) break;
+   343	        zero_tail = zero_tail && **current == '0';
+   344	        if (!post_decimal) exponent += radix_log_2;
+   345	      }
+   346	
+   347	      if (!parse_as_hex_float &&
+   348	          !allow_trailing_junk &&
+   349	          AdvanceToNonspace(current, end)) {
+   350	        return junk_string_value;
+   351	      }
+   352	
+   353	      int middle_value = (1 << (overflow_bits_count - 1));
+   354	      if (dropped_bits > middle_value) {
+   355	        number++;  // Rounding up.
+   356	      } else if (dropped_bits == middle_value) {
+   357	        // Rounding to even to consistency with decimals: half-way case rounds
+   358	        // up if significant part is odd and down otherwise.
+   359	        if ((number & 1) != 0 || !zero_tail) {
+   360	          number++;  // Rounding up.
+   361	        }
+   362	      }
+   363	
+   364	      // Rounding up may cause overflow.
+   365	      if ((number & ((int64_t)1 << kSignificandSize)) != 0) {
+   366	        exponent++;
+   367	        number >>= 1;
+   368	      }
+   369	      break;
+   370	    }
+   371	    if (Advance(current, separator, radix, end)) break;
+   372	  }
+   373	
+   374	  DOUBLE_CONVERSION_ASSERT(number < ((int64_t)1 << kSignificandSize));
+   375	  DOUBLE_CONVERSION_ASSERT(static_cast<int64_t>(static_cast<double>(number)) == number);
+   376	
+   377	  *result_is_junk = false;
+   378	
+   379	  if (parse_as_hex_float) {
+   380	    DOUBLE_CONVERSION_ASSERT(**current == 'p' || **current == 'P');
+   381	    Advance(current, separator, radix, end);
+   382	    DOUBLE_CONVERSION_ASSERT(*current != end);
+   383	    bool is_negative = false;
+   384	    if (**current == '+') {
+   385	      Advance(current, separator, radix, end);
+   386	      DOUBLE_CONVERSION_ASSERT(*current != end);
+   387	    } else if (**current == '-') {
+   388	      is_negative = true;
+   389	      Advance(current, separator, radix, end);
+   390	      DOUBLE_CONVERSION_ASSERT(*current != end);
+   391	    }
+   392	    int written_exponent = 0;
+   393	    while (IsDecimalDigitForRadix(**current, 10)) {
+   394	      // No need to read exponents if they are too big. That could potentially overflow
+   395	      // the `written_exponent` variable.
+   396	      if (abs(written_exponent) <= 100 * Double::kMaxExponent) {
+   397	        written_exponent = 10 * written_exponent + **current - '0';
+   398	      }
+   399	      if (Advance(current, separator, radix, end)) break;
+   400	    }
+   401	    if (is_negative) written_exponent = -written_exponent;
+   402	    exponent += written_exponent;
+   403	  }
+   404	
+   405	  if (exponent == 0 || number == 0) {
+   406	    if (sign) {
+   407	      if (number == 0) return -0.0;
+   408	      number = -number;
+   409	    }
+   410	    return static_cast<double>(number);
+   411	  }
+   412	
+   413	  DOUBLE_CONVERSION_ASSERT(number != 0);
+   414	  double result = Double(DiyFp(number, exponent)).value();
+   415	  return sign ? -result : result;
+   416	}
+   417	
+   418	template <class Iterator>
+   419	double StringToDoubleConverter::StringToIeee(
+   420	    Iterator input,
+   421	    int length,
+   422	    bool read_as_double,
+   423	    int* processed_characters_count) const {
+   424	  Iterator current = input;
+   425	  Iterator end = input + length;
+   426	
+   427	  *processed_characters_count = 0;
+   428	
+   429	  const bool allow_trailing_junk = (flags_ & ALLOW_TRAILING_JUNK) != 0;
+   430	  const bool allow_leading_spaces = (flags_ & ALLOW_LEADING_SPACES) != 0;
+   431	  const bool allow_trailing_spaces = (flags_ & ALLOW_TRAILING_SPACES) != 0;
+   432	  const bool allow_spaces_after_sign = (flags_ & ALLOW_SPACES_AFTER_SIGN) != 0;
+   433	  const bool allow_case_insensitivity = (flags_ & ALLOW_CASE_INSENSITIVITY) != 0;
+   434	
+   435	  // To make sure that iterator dereferencing is valid the following
+   436	  // convention is used:
+   437	  // 1. Each '++current' statement is followed by check for equality to 'end'.
+   438	  // 2. If AdvanceToNonspace returned false then current == end.
+   439	  // 3. If 'current' becomes equal to 'end' the function returns or goes to
+   440	  // 'parsing_done'.
+   441	  // 4. 'current' is not dereferenced after the 'parsing_done' label.
+   442	  // 5. Code before 'parsing_done' may rely on 'current != end'.
+   443	  if (current == end) return empty_string_value_;
+   444	
+   445	  if (allow_leading_spaces || allow_trailing_spaces) {
+   446	    if (!AdvanceToNonspace(&current, end)) {
+   447	      *processed_characters_count = static_cast<int>(current - input);
+   448	      return empty_string_value_;
+   449	    }
+   450	    if (!allow_leading_spaces && (input != current)) {
+   451	      // No leading spaces allowed, but AdvanceToNonspace moved forward.
+   452	      return junk_string_value_;
+   453	    }
+   454	  }
+   455	
+   456	  // Exponent will be adjusted if insignificant digits of the integer part
+   457	  // or insignificant leading zeros of the fractional part are dropped.
+   458	  int exponent = 0;
+   459	  int significant_digits = 0;
+   460	  int insignificant_digits = 0;
+   461	  bool nonzero_digit_dropped = false;
+   462	
+   463	  bool sign = false;
+   464	
+   465	  if (*current == '+' || *current == '-') {
+   466	    sign = (*current == '-');
+   467	    ++current;
+   468	    Iterator next_non_space = current;
+   469	    // Skip following spaces (if allowed).
+   470	    if (!AdvanceToNonspace(&next_non_space, end)) return junk_string_value_;
+   471	    if (!allow_spaces_after_sign && (current != next_non_space)) {
+   472	      return junk_string_value_;
+   473	    }
+   474	    current = next_non_space;
+   475	  }
+   476	
+   477	  if (infinity_symbol_ != DOUBLE_CONVERSION_NULLPTR) {
+   478	    if (ConsumeFirstCharacter(*current, infinity_symbol_, allow_case_insensitivity)) {
+   479	      if (!ConsumeSubString(&current, end, infinity_symbol_, allow_case_insensitivity)) {
+   480	        return junk_string_value_;
+   481	      }
+   482	
+   483	      if (!(allow_trailing_spaces || allow_trailing_junk) && (current != end)) {
+   484	        return junk_string_value_;
+   485	      }
+   486	      if (!allow_trailing_junk && AdvanceToNonspace(&current, end)) {
+   487	        return junk_string_value_;
+   488	      }
+   489	
+   490	      *processed_characters_count = static_cast<int>(current - input);
+   491	      return sign ? -Double::Infinity() : Double::Infinity();
+   492	    }
+   493	  }
+   494	
+   495	  if (nan_symbol_ != DOUBLE_CONVERSION_NULLPTR) {
+   496	    if (ConsumeFirstCharacter(*current, nan_symbol_, allow_case_insensitivity)) {
+   497	      if (!ConsumeSubString(&current, end, nan_symbol_, allow_case_insensitivity)) {
+   498	        return junk_string_value_;
+   499	      }
+   500	
+   501	      if (!(allow_trailing_spaces || allow_trailing_junk) && (current != end)) {
+   502	        return junk_string_value_;
+   503	      }
+   504	      if (!allow_trailing_junk && AdvanceToNonspace(&current, end)) {
+   505	        return junk_string_value_;
+   506	      }
+   507	
+   508	      *processed_characters_count = static_cast<int>(current - input);
+   509	      return sign ? -Double::NaN() : Double::NaN();
+   510	    }
+   511	  }
+   512	
+   513	  bool leading_zero = false;
+   514	  if (*current == '0') {
+   515	    if (Advance(&current, separator_, 10, end)) {
+   516	      *processed_characters_count = static_cast<int>(current - input);
+   517	      return SignedZero(sign);
+   518	    }
+   519	
+   520	    leading_zero = true;
+   521	
+   522	    // It could be hexadecimal value.
+   523	    if (((flags_ & ALLOW_HEX) || (flags_ & ALLOW_HEX_FLOATS)) &&
+   524	        (*current == 'x' || *current == 'X')) {
+   525	      ++current;
+   526	
+   527	      if (current == end) return junk_string_value_;  // "0x"
+   528	
+   529	      bool parse_as_hex_float = (flags_ & ALLOW_HEX_FLOATS) &&
+   530	                IsHexFloatString(current, end, separator_, allow_trailing_junk);
+   531	
+   532	      if (!parse_as_hex_float && !isDigit(*current, 16)) {
+   533	        return junk_string_value_;
+   534	      }
+   535	
+   536	      bool result_is_junk;
+   537	      double result = RadixStringToIeee<4>(&current,
+   538	                                           end,
+   539	                                           sign,
+   540	                                           separator_,
+   541	                                           parse_as_hex_float,
+   542	                                           allow_trailing_junk,
+   543	                                           junk_string_value_,
+   544	                                           read_as_double,
+   545	                                           &result_is_junk);
+   546	      if (!result_is_junk) {
+   547	        if (allow_trailing_spaces) AdvanceToNonspace(&current, end);
+   548	        *processed_characters_count = static_cast<int>(current - input);
+   549	      }
+   550	      return result;
+   551	    }
+   552	
+   553	    // Ignore leading zeros in the integer part.
+   554	    while (*current == '0') {
+   555	      if (Advance(&current, separator_, 10, end)) {
+   556	        *processed_characters_count = static_cast<int>(current - input);
+   557	        return SignedZero(sign);
+   558	      }
+   559	    }
+   560	  }
+   561	
+   562	  bool octal = leading_zero && (flags_ & ALLOW_OCTALS) != 0;
+   563	
+   564	  // The longest form of simplified number is: "-<significant digits>.1eXXX\0".
+   565	  const int kBufferSize = kMaxSignificantDigits + 10;
+   566	  DOUBLE_CONVERSION_STACK_UNINITIALIZED char
+   567	      buffer[kBufferSize];  // NOLINT: size is known at compile time.
+   568	  int buffer_pos = 0;
+   569	
+   570	  // Copy significant digits of the integer part (if any) to the buffer.
+   571	  while (*current >= '0' && *current <= '9') {
+   572	    if (significant_digits < kMaxSignificantDigits) {
+   573	      DOUBLE_CONVERSION_ASSERT(buffer_pos < kBufferSize);
+   574	      buffer[buffer_pos++] = static_cast<char>(*current);
+   575	      significant_digits++;
+   576	      // Will later check if it's an octal in the buffer.
+   577	    } else {
+   578	      insignificant_digits++;  // Move the digit into the exponential part.
+   579	      nonzero_digit_dropped = nonzero_digit_dropped || *current != '0';
+   580	    }
+   581	    octal = octal && *current < '8';
+   582	    if (Advance(&current, separator_, 10, end)) goto parsing_done;
+   583	  }
+   584	
+   585	  if (significant_digits == 0) {
+   586	    octal = false;
+   587	  }
+   588	
+   589	  if (*current == '.') {
+   590	    if (octal && !allow_trailing_junk) return junk_string_value_;
+   591	    if (octal) goto parsing_done;
+   592	
+   593	    if (Advance(&current, separator_, 10, end)) {
+   594	      if (significant_digits == 0 && !leading_zero) {
+   595	        return junk_string_value_;
+   596	      } else {
+   597	        goto parsing_done;
+   598	      }
+   599	    }
+   600	
+   601	    if (significant_digits == 0) {
+   602	      // octal = false;
+   603	      // Integer part consists of 0 or is absent. Significant digits start after
+   604	      // leading zeros (if any).
+   605	      while (*current == '0') {
+   606	        if (Advance(&current, separator_, 10, end)) {
+   607	          *processed_characters_count = static_cast<int>(current - input);
+   608	          return SignedZero(sign);
+   609	        }
+   610	        exponent--;  // Move this 0 into the exponent.
+   611	      }
+   612	    }
+   613	
+   614	    // There is a fractional part.
+   615	    // We don't emit a '.', but adjust the exponent instead.
+   616	    while (*current >= '0' && *current <= '9') {
+   617	      if (significant_digits < kMaxSignificantDigits) {
+   618	        DOUBLE_CONVERSION_ASSERT(buffer_pos < kBufferSize);
+   619	        buffer[buffer_pos++] = static_cast<char>(*current);
+   620	        significant_digits++;
+   621	        exponent--;
+   622	      } else {
+   623	        // Ignore insignificant digits in the fractional part.
+   624	        nonzero_digit_dropped = nonzero_digit_dropped || *current != '0';
+   625	      }
+   626	      if (Advance(&current, separator_, 10, end)) goto parsing_done;
+   627	    }
+   628	  }
+   629	
+   630	  if (!leading_zero && exponent == 0 && significant_digits == 0) {
+   631	    // If leading_zeros is true then the string contains zeros.
+   632	    // If exponent < 0 then string was [+-]\.0*...
+   633	    // If significant_digits != 0 the string is not equal to 0.
+   634	    // Otherwise there are no digits in the string.
+   635	    return junk_string_value_;
+   636	  }
+   637	
+   638	  // Parse exponential part.
+   639	  if (*current == 'e' || *current == 'E') {
+   640	    if (octal && !allow_trailing_junk) return junk_string_value_;
+   641	    if (octal) goto parsing_done;
+   642	    Iterator junk_begin = current;
+   643	    ++current;
+   644	    if (current == end) {
+   645	      if (allow_trailing_junk) {
+   646	        current = junk_begin;
+   647	        goto parsing_done;
+   648	      } else {
+   649	        return junk_string_value_;
+   650	      }
+   651	    }
+   652	    char exponen_sign = '+';
+   653	    if (*current == '+' || *current == '-') {
+   654	      exponen_sign = static_cast<char>(*current);
+   655	      ++current;
+   656	      if (current == end) {
+   657	        if (allow_trailing_junk) {
+   658	          current = junk_begin;
+   659	          goto parsing_done;
+   660	        } else {
+   661	          return junk_string_value_;
+   662	        }
+   663	      }
+   664	    }
+   665	
+   666	    if (current == end || *current < '0' || *current > '9') {
+   667	      if (allow_trailing_junk) {
+   668	        current = junk_begin;
+   669	        goto parsing_done;
+   670	      } else {
+   671	        return junk_string_value_;
+   672	      }
+   673	    }
+   674	
+   675	    const int max_exponent = INT_MAX / 2;
+   676	    DOUBLE_CONVERSION_ASSERT(-max_exponent / 2 <= exponent && exponent <= max_exponent / 2);
+   677	    int num = 0;
+   678	    do {
+   679	      // Check overflow.
+   680	      int digit = *current - '0';
+   681	      if (num >= max_exponent / 10
+   682	          && !(num == max_exponent / 10 && digit <= max_exponent % 10)) {
+   683	        num = max_exponent;
+   684	      } else {
+   685	        num = num * 10 + digit;
+   686	      }
+   687	      ++current;
+   688	    } while (current != end && *current >= '0' && *current <= '9');
+   689	
+   690	    exponent += (exponen_sign == '-' ? -num : num);
+   691	  }
+   692	
+   693	  if (!(allow_trailing_spaces || allow_trailing_junk) && (current != end)) {
+   694	    return junk_string_value_;
+   695	  }
+   696	  if (!allow_trailing_junk && AdvanceToNonspace(&current, end)) {
+   697	    return junk_string_value_;
+   698	  }
+   699	  if (allow_trailing_spaces) {
+   700	    AdvanceToNonspace(&current, end);
+   701	  }
+   702	
+   703	  parsing_done:
+   704	  exponent += insignificant_digits;
+   705	
+   706	  if (octal) {
+   707	    double result;
+   708	    bool result_is_junk;
+   709	    char* start = buffer;
+   710	    result = RadixStringToIeee<3>(&start,
+   711	                                  buffer + buffer_pos,
+   712	                                  sign,
+   713	                                  separator_,
+   714	                                  false, // Don't parse as hex_float.
+   715	                                  allow_trailing_junk,
+   716	                                  junk_string_value_,
+   717	                                  read_as_double,
+   718	                                  &result_is_junk);
+   719	    DOUBLE_CONVERSION_ASSERT(!result_is_junk);
+   720	    *processed_characters_count = static_cast<int>(current - input);
+   721	    return result;
+   722	  }
+   723	
+   724	  if (nonzero_digit_dropped) {
+   725	    buffer[buffer_pos++] = '1';
+   726	    exponent--;
+   727	  }
+   728	
+   729	  DOUBLE_CONVERSION_ASSERT(buffer_pos < kBufferSize);
+   730	  buffer[buffer_pos] = '\0';
+   731	
+   732	  // Code above ensures there are no leading zeros and the buffer has fewer than
+   733	  // kMaxSignificantDecimalDigits characters. Trim trailing zeros.
+   734	  Vector<const char> chars(buffer, buffer_pos);
+   735	  chars = TrimTrailingZeros(chars);
+   736	  exponent += buffer_pos - chars.length();
+   737	
+   738	  double converted;
+   739	  if (read_as_double) {
+   740	    converted = StrtodTrimmed(chars, exponent);
+   741	  } else {
+   742	    converted = StrtofTrimmed(chars, exponent);
+   743	  }
+   744	  *processed_characters_count = static_cast<int>(current - input);
+   745	  return sign? -converted: converted;
+   746	}
+   747	
+   748	
+   749	double StringToDoubleConverter::StringToDouble(
+   750	    const char* buffer,
+   751	    int length,
+   752	    int* processed_characters_count) const {
+   753	  return StringToIeee(buffer, length, true, processed_characters_count);
+   754	}
+   755	
+   756	
+   757	double StringToDoubleConverter::StringToDouble(
+   758	    const uc16* buffer,
+   759	    int length,
+   760	    int* processed_characters_count) const {
+   761	  return StringToIeee(buffer, length, true, processed_characters_count);
+   762	}
+   763	
+   764	
+   765	float StringToDoubleConverter::StringToFloat(
+   766	    const char* buffer,
+   767	    int length,
+   768	    int* processed_characters_count) const {
+   769	  return static_cast<float>(StringToIeee(buffer, length, false,
+   770	                                         processed_characters_count));
+   771	}
+   772	
+   773	
+   774	float StringToDoubleConverter::StringToFloat(
+   775	    const uc16* buffer,
+   776	    int length,
+   777	    int* processed_characters_count) const {
+   778	  return static_cast<float>(StringToIeee(buffer, length, false,
+   779	                                         processed_characters_count));
+   780	}
+   781	
+   782	
+   783	template<>
+   784	double StringToDoubleConverter::StringTo<double>(
+   785	    const char* buffer,
+   786	    int length,
+   787	    int* processed_characters_count) const {
+   788	    return StringToDouble(buffer, length, processed_characters_count);
+   789	}
+   790	
+   791	
+   792	template<>
+   793	float StringToDoubleConverter::StringTo<float>(
+   794	    const char* buffer,
+   795	    int length,
+   796	    int* processed_characters_count) const {
+   797	    return StringToFloat(buffer, length, processed_characters_count);
+   798	}
+   799	
+   800	
+   801	template<>
+   802	double StringToDoubleConverter::StringTo<double>(
+   803	    const uc16* buffer,
+   804	    int length,
+   805	    int* processed_characters_count) const {
+   806	    return StringToDouble(buffer, length, processed_characters_count);
+   807	}
+   808	
+   809	
+   810	template<>
+   811	float StringToDoubleConverter::StringTo<float>(
+   812	    const uc16* buffer,
+   813	    int length,
+   814	    int* processed_characters_count) const {
+   815	    return StringToFloat(buffer, length, processed_characters_count);
+   816	}
+   817	
+   818	}  // namespace double_conversion

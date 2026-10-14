@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "docker",
+    "container",
+    "ls",
+    "--all",
+    "--no-trunc",
+    "--filter",
+    "name=^/hg-wujson2-comparison-20261014T223906111738Z$",
+    "--format",
+    "{{json .}}"
+  ],
+  "cwd": "/tmp/hg-ujson2",
+  "started_utc": "2026-10-14T22:39:07.674570+00:00",
+  "finished_utc": "2026-10-14T22:39:07.699034+00:00",
+  "returncode": 0
+}
