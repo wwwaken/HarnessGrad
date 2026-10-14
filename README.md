@@ -240,6 +240,11 @@ and retains an `exec` task's container boundary. Source review and mocked tests
 establish neither effective sandbox/quota enforcement nor production readiness.
 See [the entrypoint audit](docs/task-242-gpu-entrypoint-audit.md) for scope and evidence.
 
+The [ordinary-run receipt proposal](docs/task-237-ordinary-run-receipt.md) defines
+how local results can record missing or unknown filesystem quotas without quota
+administration, while retaining sandbox facts, metric identity and explicit
+non-production labels. It is a docs/test contract; runtime integration is pending.
+
 ## Layout
 
 ```

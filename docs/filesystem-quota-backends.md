@@ -28,6 +28,11 @@ Host provisioning, quota allocation, effective-kernel observers, Docker storage 
 production runner integration and verified cleanup remain external/runtime work.
 No checklist item below is marked complete by this document or its schema.
 
+The [Task 237 ordinary-run receipt proposal](task-237-ordinary-run-receipt.md)
+separately describes local feedback without quota administration, with explicit
+`false`/`"unknown"` quota facts and non-production labels. It implements no runtime
+path, closes no backend requirement and supplies no formal benchmark evidence.
+
 For a concise administrator handoff separating read-only inspection, approved
 maintenance and post-change verification, use the
 [safe administrator checklist](task-222-quota-administrator-checklist.md).

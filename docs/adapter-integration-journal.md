@@ -4,6 +4,14 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Ordinary-run receipt semantics — Task 237 — 2026-10-14
+
+- Scope: docs/tests only in isolated `/tmp/hg-codex-237`, base `0930d99cc882c5a049c98f9123e9427470e7e818`; no execution, host inspection, admin change, benchmark, provider, model, GPU, Docker or scorer calls.
+- Deliverables: [proposed semantics and explicitly illustrative receipt](task-237-ordinary-run-receipt.md), [closed documentation schema](task-237-ordinary-run-receipt.schema.json) and [authored contract tests](../tests/quality/test_ordinary_run_receipt_codex237.py). Existing runtime/admission code and schemas are unchanged.
+- Semantics: quota `false` is a known coverage gap; `"unknown"` is missing evidence. Requested/effective host/task sandbox boundaries remain separate. Local measured zeros, invalid attempts and unmeasured attempts remain distinct; snapshot/cleanup failures withhold the aggregate. Metric identity, selection/trial coverage, provenance gaps and comparison limits are explicit.
+- Authorization: ordinary results always carry non-production labels and false production/formal-evidence/publication flags. Existing `certified` metadata is not formal authorization. This proposal adds no driver mode, no ordinary receipt writer, no relaxed gate and no permission to disable isolation or run a refused dataset.
+- Validation: tests authored but **not executed**, per the task instruction; no pass count, score, runtime receipt or cleanup claim. Static source/diff review and `git diff --check` only; the whitespace check passed. Parent review/integration and any future implementation remain separate.
+
 ## Fresh diagnostic dry-launch template — 2026-10-14 — Task 223
 
 - Status: `planning`; no dataset/task selected; no run ID reserved; no model/H0 or endpoint execution.

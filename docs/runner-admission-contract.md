@@ -12,6 +12,12 @@ are not general installation prerequisites. Calls to this API still require all
 facts below; this clarification adds no relaxed admission mode. A local run without
 verified enforcement cannot claim this contract's byte/inode guarantees.
 
+For local feedback without quota administration, the
+[Task 237 ordinary-run receipt proposal](task-237-ordinary-run-receipt.md) records
+quota uncertainty, sandbox choice and local metric identity under explicit
+non-production labels. It adds no runtime implementation or exception to this
+formal admission contract; ordinary receipts cannot satisfy these gates.
+
 ## API and receipts
 
 All three functions take `(binding, policy, observed)` and return a JSON-compatible
