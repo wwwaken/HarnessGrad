@@ -1,0 +1,75 @@
+w-assess: source-only validation; no benchmark/runtime evidence created
+cwd: /tmp/hg-assess
+branch: wg-assess
+baseline: d07f066a6835ff87d14f246c19eca9333b4bdc24
+environment: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+exit_code=0
+
+$ python3 -m pytest -vv -p no:cacheprovider --basetemp=/tmp/hg-w-assess-pytest tests/quality/test_dataset_blockers.py
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python3
+rootdir: /tmp/hg-assess
+collecting ... collected 54 items
+
+tests/quality/test_dataset_blockers.py::test_source_inventory_and_taxonomy_cover_every_publishable_dataset PASSED [  1%]
+tests/quality/test_dataset_blockers.py::test_every_journal_coverage_dataset_points_to_a_checked_in_review PASSED [  3%]
+tests/quality/test_dataset_blockers.py::test_new_declared_dataset_fails_coverage_even_when_its_import_would_fail PASSED [  5%]
+tests/quality/test_dataset_blockers.py::test_fixtures_are_not_published_and_metadata_is_never_executed PASSED [  7%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[missing-missing published datasets] PASSED [  9%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[duplicate-duplicate dataset] PASSED [ 11%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[fixture-unpublished dataset] PASSED [ 12%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[demand-demand x surface drift] PASSED [ 14%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[surface-demand x surface drift] PASSED [ 16%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[exercises-exercise drift] PASSED [ 18%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[flat-category-fields must be] PASSED [ 20%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[unknown-status-unknown status] PASSED [ 22%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[unknown-family-unknown blocker family] PASSED [ 24%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[unknown-shared-unknown shared blocker] PASSED [ 25%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[duplicate-blocker-duplicate blocker] PASSED [ 27%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[missing-action-empty text] PASSED [ 29%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[missing-evidence-evidence required] PASSED [ 31%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[stale-anchor-stale evidence locator] PASSED [ 33%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[missing-path-missing evidence] PASSED [ 35%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[escape-path-must stay inside root] PASSED [ 37%]
+tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[authorize-cannot authorize production] PASSED [ 38%]
+tests/quality/test_dataset_blockers.py::test_within_task_memory_exercise_does_not_create_a_memory_demand PASSED [ 40%]
+tests/quality/test_dataset_blockers.py::test_agentdojo_production_gate_is_revoked_and_the_privacy_closure_stands PASSED [ 42%]
+tests/quality/test_dataset_blockers.py::test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked PASSED [ 44%]
+tests/quality/test_dataset_blockers.py::test_b7_local_runtime_closures_retain_all_shared_gates PASSED [ 46%]
+tests/quality/test_dataset_blockers.py::test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody PASSED [ 48%]
+tests/quality/test_dataset_blockers.py::test_twowiki_source_closure_keeps_dependency_and_data_gates_external PASSED [ 50%]
+tests/quality/test_dataset_blockers.py::test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history PASSED [ 51%]
+tests/quality/test_dataset_blockers.py::test_twowiki_task_capability_is_separate_from_harness_exercises PASSED [ 53%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[remove] PASSED [ 55%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[complete] PASSED [ 57%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[zero] PASSED [ 59%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[coverage] PASSED [ 61%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[path] PASSED [ 62%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[id] PASSED [ 64%]
+tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[move] PASSED [ 66%]
+tests/quality/test_dataset_blockers.py::test_history_baseline_pin_is_independent_and_checked PASSED [ 68%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[appworld-initial-infrastructure-smoke] PASSED [ 70%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[bird-v4-incomplete] PASSED [ 72%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[bird-v5-partial-coverage] PASSED [ 74%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[chess-original-incomplete] PASSED [ 75%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[chess-recovery-incomplete] PASSED [ 77%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[ds1000-v4-pending-review] PASSED [ 79%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[gaia-v2-incomplete] PASSED [ 81%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[gaia-v3-incomplete] PASSED [ 83%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[hotpot-v4-incomplete] PASSED [ 85%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[scienceworld-v4-incomplete] PASSED [ 87%]
+tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[twowiki-original-invalid-pilot] PASSED [ 88%]
+tests/quality/test_dataset_blockers.py::test_history_can_append_without_overwriting_old_records PASSED [ 90%]
+tests/quality/test_dataset_blockers.py::test_new_historical_record_cannot_reuse_an_existing_run_id PASSED [ 92%]
+tests/quality/test_dataset_blockers.py::test_chess_future_launch_guidance_requires_new_ids_and_preserves_history PASSED [ 94%]
+tests/quality/test_dataset_blockers.py::test_noncanonical_json_is_rejected[{"datasets": [], "datasets": []}] PASSED [ 96%]
+tests/quality/test_dataset_blockers.py::test_noncanonical_json_is_rejected[{"score": NaN}] PASSED [ 98%]
+tests/quality/test_dataset_blockers.py::test_cli_produces_counts_and_nonzero_invalid_result PASSED [100%]
+
+============================== 54 passed in 4.62s ==============================
+
+exit_code=0

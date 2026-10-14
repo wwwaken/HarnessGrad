@@ -2563,3 +2563,47 @@ The verification checkout lacks several cited original scorer packet sources/scr
 - Resource state: verification only - no model, GPU, endpoint, container, pull or registry
   mutation; local scorer runs and read-only `docker image inspect` on already-present images.
   Historical runs, frozen receipts and archives were untouched.
+
+## 2026-10-15 shared closure evidence assessment at d07f066 - w-assess
+
+Assessed both shared blockers against each distinct clause of their own unchanged
+next_action, using the named byte/dependency/image/official-scorer inventories, real
+Terminal-Bench/ALFWorld/Chess3 receipts, adversarial verification, admission reviews
+and corrected isolation-class machinery. Full clause tables and raw artifact values
+are in `reports/w-assess-shared-closures.md`. Read-only independent audits were
+reconciled with the parent inspection. No new benchmark/runtime evidence was produced.
+
+`scorer-offline-closure` remains OPEN: dataset-specific pinned scorer closures,
+class-specific runtime evidence, complete transitive image/ABI dependencies, official
+provenance/execution, trusted lifecycle/resource/cleanup observations and valid live
+controls are still partial. The 19 actor and 23 runtime byte inventories explicitly
+certify zero complete provisioned closures. Nine bounded official QA components and
+three scoped raw live controls cannot establish universal dataset/runtime coverage.
+Snapshot/service connectivity preservation and matching-known-class comparison are
+satisfied mechanisms; unknown records remain writable and explicitly noncomparable.
+
+`artifact-only-state-export` remains OPEN: authoritative per-task pristine export and
+private-input contracts are not provisioned; ownership, quiescence/trial binding,
+scoring equivalence and live lifecycle/cleanup validation remain partial. The final
+snapshot/service state/recording review is satisfied at source-review scope, with no
+inferred pristine artifact allowlist. Snapshot/service routes retain their actual
+state, recording and connectivity contracts. Best-effort lifecycle uncertainty is
+preserved; no withdrawn enforcement-infallibility or atomic lease proof gate is restored.
+
+Checked availability rather than trusting inherited report paths: the assessment
+checkout lacks the runtime packet's per-dataset records, but all 23 existing original
+JSONs under `/tmp/hg-clo2/tests/fixtures/hg_wclo_runtime/datasets/` were read without
+modification and each still says `closure_status="partial-byte-pins"`. Missing local
+transitive/scorer preimages are disclosed, not reconstructed. Chess3's completed
+terminal loss supersedes older incomplete Chess evidence; its raw controller zero
+does not replace the staged null publication. All three staged live-control receipts
+retain zero measured / one unmeasured / zero invalid trials.
+
+Registry, both original next_actions/statuses, all 46 dataset references, pinned
+registry tests, production code, adapters and frozen receipts are unchanged. This
+work commits only in registered `/tmp/hg-assess` on `wg-assess`; it does not merge to
+main or authorize a pilot. `reports/w-assess-validation.txt` records the registry
+checker (`valid=true`, 28 datasets, two shared blockers, 11 historical records,
+`production_authorized=false`) and focused source-only test output (**54 passed**).
+No benchmark, scorer replay, model,
+GPU, endpoint or container was run during this assessment.
