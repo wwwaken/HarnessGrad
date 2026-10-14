@@ -1,0 +1,202 @@
+{
+  "archive": {
+    "bytes": 105324,
+    "sha256": "6a7c6469ddca5557eea1ade2684848282ff18f6ceb4ae84a4e0463721b200897",
+    "matches_preserved_identity": true,
+    "ordinary_file_members": 218,
+    "inventory_files": 218,
+    "inventory_mismatches": []
+  },
+  "ctrf": {
+    "independent_test_status_counts": {
+      "tests": 6,
+      "passed": 5,
+      "failed": 1,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0
+    },
+    "reported_summary": {
+      "tests": 6,
+      "passed": 5,
+      "failed": 1,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0
+    },
+    "all_counts_match": true,
+    "failed_names": [
+      "test_outputs.py::test_python_verification_script"
+    ],
+    "bytes": 4020,
+    "sha256": "67dbb020f78873084b681fa47cbe1f6e5c96f887ae80fab729aa91bb385e88ef",
+    "matches_observer_digest": true,
+    "review_copy_identical": true
+  },
+  "reward": {
+    "raw_bytes_repr": "b'0\\n'",
+    "parsed_score": 0.0,
+    "raw_execution_score": 0.0,
+    "verdict_score": 0.0,
+    "progress_score": 0.0,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "matches_observer_digest": true,
+    "official_script_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+  },
+  "model_calls": {
+    "trace_reply_records": 32,
+    "trace_reply_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "trace_usage": [
+      {
+        "calls": 32,
+        "input_tokens": 163009,
+        "output_tokens": 8527,
+        "retries": 0,
+        "context_trims": 0
+      }
+    ],
+    "execution_tokens": {
+      "input": 163009,
+      "output": 8527,
+      "calls": 32,
+      "tasks_reported": 1
+    },
+    "gateway_connections": 32,
+    "env_usage": {
+      "input": 0,
+      "output": 0,
+      "calls": 0,
+      "services_reported": 0
+    }
+  },
+  "isolation": {
+    "fields": {
+      "execution": "snapshot-service",
+      "execution_per_task": "snapshot-service",
+      "verdict": "snapshot-service",
+      "verdict_declared": "snapshot-service",
+      "progress": "snapshot-service",
+      "progress_trial": "snapshot-service"
+    },
+    "all_class_fields_agree": true,
+    "actor_container_id": "33b07aa5952a86161ef9d329a92a6e61026ae1df30c5abb5ab01ff6816fe58a3",
+    "verifier_container_id": "65a5383c36f88ae502ebee61c87906c10f4fdf9b2cd78c9b9afd267d43eb7cf3",
+    "actor_image": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+    "verifier_image": "sha256:59c94f3462a248e5af5909b2249cba07e2e46574eee4fd362896d7c048eac779",
+    "snapshot_id": "sha256:59c94f3462a248e5af5909b2249cba07e2e46574eee4fd362896d7c048eac779",
+    "snapshot_parent": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+    "different_containers": true,
+    "verifier_uses_snapshot_of_actor_image": true,
+    "actor_networks": [
+      "bridge",
+      "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert"
+    ],
+    "verifier_networks": [
+      "bridge",
+      "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert"
+    ],
+    "scorer_isolation_comparable": true,
+    "publication_comparable": false
+  },
+  "publication": {
+    "stored_coverage": {
+      "eligible_tasks": 1,
+      "expected_trials": 1,
+      "invalid_tasks": 0,
+      "invalid_trials": 0,
+      "measured_tasks": 0,
+      "measured_trials": 0,
+      "selected_tasks": 1,
+      "unmeasured_tasks": 1,
+      "unmeasured_trials": 1
+    },
+    "independently_counted_coverage": {
+      "expected_trials": 1,
+      "measured_trials": 0,
+      "measured_tasks": 0,
+      "unmeasured_trials": 1,
+      "unmeasured_tasks": 1,
+      "invalid_trials": 0,
+      "invalid_tasks": 0,
+      "selected_tasks": 1,
+      "eligible_tasks": 1
+    },
+    "coverage_matches": true,
+    "outcome_status_counts": {
+      "unmeasured": 1
+    },
+    "outcomes": [
+      {
+        "reason": "policy_enforcement_not_observed",
+        "score": null,
+        "status": "unmeasured",
+        "task_id": "openssl-selfsigned-cert",
+        "trial": 1
+      }
+    ],
+    "published_score": null,
+    "enforcement": {
+      "comparable": false,
+      "measured": false,
+      "non_comparable_reason": "policy_enforcement_not_observed",
+      "operator_authorization": "Operator authorizes one cached openssl-selfsigned-cert diagnostic after the verifier declared-network repair, with HG_TB_SPLIT=none and the documented proxy; existing loop/train CLI is required by unchanged guards. Dataset enforcement observations remain unknown; this requests raw CTRF/scorer evidence only, with no comparable score publication, pilot expansion, or production authorization.",
+      "policy_enforcement_observed": false,
+      "production_authorized": false,
+      "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+      "stage": "diagnostic",
+      "task_id": "openssl-selfsigned-cert"
+    },
+    "execution_invalid": {},
+    "selection_task_ids": [
+      "openssl-selfsigned-cert"
+    ],
+    "selection_split": null,
+    "planned_selected_task_ids": [
+      "openssl-selfsigned-cert"
+    ],
+    "plan_matches_final_selection": true,
+    "cleanup": {
+      "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+      "receipt_sha256": null,
+      "status": "unknown"
+    },
+    "snapshot": {
+      "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+      "receipt_sha256": null,
+      "status": "unknown"
+    }
+  }
+}
