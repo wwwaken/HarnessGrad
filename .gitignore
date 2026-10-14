@@ -323,6 +323,10 @@ harnessgrad_work/
 # whose only content was proof that an enforcement mechanism cannot fail. Cited from
 # `docs/dataset-blockers.json` and from `tools/check_dataset_blockers.py`.
 !/docs/enforcement-proof-decision.md
+# The deferral record for the independence and custodian-approval gates: without it the
+# withdrawal of those blockers would read as 'not needed' rather than 'operator's to
+# review'. Cited from `docs/dataset-blockers.json` and from tests/quality.
+!/docs/independent-review-deferred.md
 # The review that answers terminal-bench's `cached-runtime-admission`; the registry points
 # at it as the evidence behind that entry's `observed`.
 !/docs/terminal-bench-runtime-admission.md

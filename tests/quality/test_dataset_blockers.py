@@ -296,13 +296,29 @@ def test_b7_local_runtime_closures_retain_all_shared_gates(document):
 
 
 def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(document):
+    """The custody-of-approval gate is revoked; the acquisition gate is not.
+
+    `release-index-custody` required *human custodian approval* of historical tag/archive
+    bindings. Operator decision 2026-10-15: requirements whose content is "someone
+    independent must sign this" are revoked, and the operator will review them personally
+    once the rest is wired up (`docs/independent-review-deferred.md`). The requirement is
+    deferred, not judged unnecessary, which is why the deferral is recorded rather than the
+    entry simply vanishing.
+
+    `simple-ast-contract` stays: it asks for concrete missing source bodies and a reviewed
+    invocation graph, which is work rather than a signature.
+    """
     blockers = {item["id"]: item for item in row(document, "bfcl_v3")["blockers"]}
-    assert blockers["release-index-custody"]["status"] == "external"
+    assert "release-index-custody" not in blockers, (
+        "the approval gate was revoked and deferred to operator review")
     ast_contract = blockers["simple-ast-contract"]
     assert ast_contract["status"] == "external"
     assert ast_contract["family"] == "official-scorer-execution"
     assert "tests/fixtures/bfcl_ast_source/README.md" in {
         item["path"] for item in ast_contract["evidence"]}
+    deferral = ROOT / "docs/independent-review-deferred.md"
+    assert deferral.is_file(), "the deferral record is gone; the review would be lost"
+    assert "release-index-custody" in deferral.read_text(encoding="utf-8")
     assert document["review"]["production_authorized"] is False
 
 
