@@ -326,7 +326,14 @@ def test_shared_verifier_without_new_flags_retains_existing_semantics(
         "def score(answer, gold):\n"
         "    return {'reward': float(answer == gold['answer']), 'official': {'metric':'inert'}}\n"
     )
-    (tmp_path / "data/inert_qa.py").write_text(inert_adapter)
+    # `--dataset inert_qa` resolves through `registry.module_name`, which puts an
+    # adapter under `data.datasets.*`. Writing the fabricated adapter at the old flat
+    # `data/inert_qa.py` made the check fail with ModuleNotFoundError for
+    # `data.datasets.inert_qa` -- the same path construction the split changed, in a
+    # test that is about the shared verifier rather than about the layout.
+    inert_path = tmp_path / "data" / "datasets" / "inert_qa.py"
+    inert_path.parent.mkdir(parents=True, exist_ok=True)
+    inert_path.write_text(inert_adapter)
     (tmp_path / "answer.txt").write_text(train_record["gold"]["answer"])
     verifier["argv"][verifier["argv"].index("--dataset") + 1] = "inert_qa"
     assert "--score-mode" not in verifier["argv"]

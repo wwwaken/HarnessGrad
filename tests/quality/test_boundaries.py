@@ -73,9 +73,21 @@ def test_r1_platform_does_not_import_a_method():
         # imports `data.datasets.<name>`, which is a dataset, and always has. A check whose
         # false positives are fixed by rewording comments is a check that gets deleted
         # rather than trusted.
+        #
+        # The registry used to spell that import as an f-string, so it carried a quote and
+        # slipped past the "opaque argument" rule. Rewriting it to `module_name(name)` --
+        # the same dataset, now through a named resolver -- made the rule fire. The
+        # exemption below is therefore earned rather than granted: the argument is allowed
+        # only when it is `module_name(...)`, and only after `test_registry_resolver_...`
+        # below has shown that resolver returns a `data.datasets.*` name. Renaming it to
+        # reach a method fails both halves.
         for call in re.finditer(r"importlib\.import_module\(([^)]*)\)", src):
             arg = call.group(1).strip()
-            if "method" in arg or "base_harness" in arg or '"' not in arg and "'" not in arg:
+            # The capture stops at the first `)`, so a nested call arrives truncated
+            # (`module_name(name`); match the resolver by prefix rather than equality.
+            resolved_dataset = arg.startswith("module_name(")
+            if "method" in arg or "base_harness" in arg or (
+                    not resolved_dataset and '"' not in arg and "'" not in arg):
                 bad.append(f"{path.relative_to(ROOT)} dynamically imports "
                            f"{'a method' if arg else 'an opaque module'}: "
                            f"import_module({arg})")
@@ -83,6 +95,27 @@ def test_r1_platform_does_not_import_a_method():
         "the platform must reach a method only through the manifest entrypoints "
         "(INTERFACE.md R1): " + "; ".join(bad)
     )
+
+
+def test_the_registry_resolver_only_ever_names_a_dataset():
+    """The exemption in R1 above is earned here, not asserted there.
+
+    `test_r1_platform_does_not_import_a_method` lets `import_module(module_name(name))`
+    through because that resolver answers the dataset question. This pins the property
+    that makes it safe: whatever it returns, it is under `data.` and never names the
+    method or harness trees. Rename or repoint the resolver at `methods` and R1 stops
+    being exempt for it, because this test fails first.
+    """
+    from data.scaffolds import registry
+
+    assert registry.module_name("fever") == "data.datasets.fever", \
+        "an adapter must resolve under data.datasets"
+    assert registry.module_name("demo") == "data.demo", \
+        "a retained top-level fixture must keep resolving at the top level"
+    for name in list(registry.published()) + ["demo"]:
+        resolved = registry.module_name(name)
+        assert resolved.startswith("data."), (name, resolved)
+        assert "methods" not in resolved and "base_harness" not in resolved, (name, resolved)
 
 
 def test_r2_platform_never_writes_into_a_method_directory():
