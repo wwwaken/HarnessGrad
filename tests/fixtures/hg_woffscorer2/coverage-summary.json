@@ -1,0 +1,89 @@
+{
+  "new_bounded_components": [
+    "reasoning_gym",
+    "bird_minidev",
+    "ds1000",
+    "spreadsheetbench",
+    "jericho",
+    "scienceworld"
+  ],
+  "no_new_packet_execution": [
+    "alfworld",
+    "appworld",
+    "bfcl_v3",
+    "chessbench_puzzles",
+    "gaia",
+    "livecodebench",
+    "tau_bench",
+    "terminal_bench"
+  ],
+  "not_new_but_existing_terminal_bench": "one real openssl-selfsigned-cert task in reports/w-net-receipts.md; unchanged scope",
+  "reasoning_gym": {
+    "controlled_inputs": 27,
+    "numeric_comparisons": 24,
+    "agreements": 24,
+    "divergences": 0,
+    "official_errors": 3,
+    "local_errors": 3,
+    "nonnumeric_inputs": 3
+  },
+  "bird_minidev": {
+    "controls": 12,
+    "agree": 9,
+    "diverge": 2,
+    "local_unmeasured": 1,
+    "official_exception": 0
+  },
+  "ds1000": {
+    "controls": 9,
+    "agree": 9,
+    "diverge": 0,
+    "local_unmeasured": 0,
+    "official_exception": 0
+  },
+  "spreadsheetbench": {
+    "controlled_inputs": 19,
+    "released_rows_scored": 0,
+    "direct_function": {
+      "numeric_comparisons": 15,
+      "agreements": 15,
+      "divergences": 0,
+      "nonnumeric_inputs": 4,
+      "official_exceptions": 2,
+      "local_exceptions": 3
+    },
+    "caller_profile": {
+      "official_cli_returncode": 0,
+      "official_cli_copy_evaluations": 57,
+      "numeric_comparisons": 16,
+      "agreements": 16,
+      "divergences": 0,
+      "local_unmeasured_inputs": 3
+    },
+    "formula_netns_profile": {
+      "controlled_inputs": 1,
+      "official_data_only_result": 0,
+      "local_recalculated_reward": 1.0,
+      "local_measured": true,
+      "local_recalculated": true,
+      "numeric_comparisons": 1,
+      "agreements": 0,
+      "divergences": 1,
+      "scope": "one formula workflow comparison in fresh network namespace with local UNIX IPC; separate from strict deny-all-sockets profile"
+    }
+  },
+  "jericho": {
+    "agreements": 5,
+    "divergences": 0,
+    "inputs": 5,
+    "unmeasured": 0
+  },
+  "scienceworld": {
+    "agreements": 4,
+    "divergences": 0,
+    "inputs": 4,
+    "unmeasured": 0
+  },
+  "closed_blockers": [],
+  "production_authorized": false
+}

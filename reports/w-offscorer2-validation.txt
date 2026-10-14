@@ -1,0 +1,243 @@
+Parent review and final validation - w-offscorer2
+Cwd: /tmp/hg-offscorer2 unless stated below.
+All outputs are actual captured stdout/stderr. No scoring replay occurs in this validation.
+
+Reviewed component commits before integration:
+fc1a408d3394cd840d0bba6172e44e79ac91fe36 (BIRD/DS; integrated ed32632)
+f15b440ff18f389712de0f3a9c1bb8789080c5eb + b1c2faa95df8d79f968d64fe72c1ec734f14eced (SpreadsheetBench; integrated b83d7fc + bfa4327)
+7ae0b13374dab6a7fcd967075714a082c3c77a0c (worlds; integrated ab39994)
+Parent inspected source/control/guard diffs and ran component validators before cherry-pick.
+Child worktrees were removed after integration; main was not modified.
+
+Full diff whitespace check below intentionally preserves upstream source bytes and returns 2.
+Its output is losslessly JSON-escaped to retain original trailing whitespace without adding
+that whitespace to this authored log. The scoped check excludes only those upstream copies
+and passes. Production source and all gates remain unchanged.
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer2/verify.py
+{
+  "verified_fixture_files": 236,
+  "registry_changes": [
+    "scorer-offline-closure"
+  ],
+  "unchanged_source_files": 23,
+  "dataset_blocker_changes": 0,
+  "production_source_changes": 0,
+  "journal_append_only": true,
+  "reasoning_gym_numeric_agreements": 24,
+  "reasoning_gym_numeric_divergences": 0,
+  "reasoning_gym_nonnumeric_inputs": 3,
+  "production_authorized": false
+}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer2/bird_ds/validate.py
+{
+  "validated": true,
+  "datasets": [
+    {
+      "dataset": "bird_minidev",
+      "inputs": 12,
+      "counts": {
+        "agree": 9,
+        "diverge": 2,
+        "local_unmeasured": 1,
+        "official_exception": 0
+      },
+      "source_digests_recomputed": true,
+      "local_checker_unchanged": true,
+      "ip_socket_denial_probes": "passed",
+      "temporary_worlds_removed": true
+    },
+    {
+      "dataset": "ds1000",
+      "inputs": 9,
+      "counts": {
+        "agree": 9,
+        "diverge": 0,
+        "local_unmeasured": 0,
+        "official_exception": 0
+      },
+      "source_digests_recomputed": true,
+      "local_checker_unchanged": true,
+      "ip_socket_denial_probes": "passed",
+      "temporary_worlds_removed": true
+    }
+  ]
+}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer2/spreadsheetbench/validate.py
+{"caller_profile": {"agreements": 16, "divergences": 0, "local_unmeasured_inputs": 3, "numeric_comparisons": 16, "official_cli_copy_evaluations": 57, "official_cli_returncode": 0}, "complete_module_imports": ["official", "local", "official-cli", "local-main"], "controlled_inputs": 19, "direct_function": {"agreements": 15, "divergences": 0, "local_exceptions": 3, "nonnumeric_inputs": 4, "numeric_comparisons": 15, "official_exceptions": 2}, "formula_netns_profile": {"agreements": 0, "controlled_inputs": 1, "divergences": 1, "local_measured": true, "local_recalculated": true, "local_recalculated_reward": 1.0, "numeric_comparisons": 1, "official_data_only_result": 0, "scope": "one formula workflow comparison in fresh network namespace with local UNIX IPC; separate from strict deny-all-sockets profile"}, "released_rows_scored": 0, "valid": true}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer2/worlds/verify.py
+{
+  "comparisons": {
+    "jericho": {
+      "agreements": 5,
+      "divergences": 0,
+      "inputs": 5,
+      "rows": [
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "j-empty",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 30,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "j-look",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 30,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "j-impossible-command",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 30,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "j-get-ball",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 30,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "j-study-reference-full",
+          "local_exit_code": 0,
+          "local_reward": 1.0,
+          "local_score": 30,
+          "official_maximum": 30,
+          "official_normalized_fraction": 1.0,
+          "official_score": 30
+        }
+      ],
+      "unmeasured": 0
+    },
+    "scienceworld": {
+      "agreements": 4,
+      "divergences": 0,
+      "inputs": 4,
+      "rows": [
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "s-empty",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 100,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "s-look",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 100,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "s-impossible-command",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 100,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        },
+        {
+          "agreement": true,
+          "both_measured": true,
+          "id": "s-focus",
+          "local_exit_code": 1,
+          "local_reward": 0.0,
+          "local_score": 0,
+          "official_maximum": 100,
+          "official_normalized_fraction": 0.0,
+          "official_score": 0
+        }
+      ],
+      "unmeasured": 0
+    }
+  },
+  "external_identities_recomputed": 45,
+  "local_java_child_after_execution_observation": [
+    {
+      "exists_after_execution": false,
+      "pid": 551584
+    },
+    {
+      "exists_after_execution": false,
+      "pid": 551678
+    },
+    {
+      "exists_after_execution": false,
+      "pid": 551779
+    },
+    {
+      "exists_after_execution": false,
+      "pid": 551887
+    }
+  ],
+  "preserved_first_attempt_scienceworld_FileNotFoundError_count": 4,
+  "source_revision_provenance": "installed version plus byte identities; no authenticated upstream Git revision claimed",
+  "status": "verified"
+}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/hg-offscorer2-pytest-registry
+......................................................                   [100%]
+54 passed in 4.68s
+exit_code=0
+
+$ sha256sum --quiet --check SHA256SUMS
+cwd: /tmp/hg-offscorer2/tests/fixtures/hg_woffscorer2
+exit_code=0
+
+$ git diff --check 9dab533 -- . ':(exclude)tests/fixtures/hg_woffscorer2/bird_ds/source/*' ':(exclude)tests/fixtures/hg_woffscorer2/spreadsheetbench/source/official-evaluation.py'
+exit_code=0
+
+$ git diff --check 9dab533
+stdout_stderr_json: "tests/fixtures/hg_woffscorer2/bird_ds/source/bird_minidev/evaluation_ex.py:150: trailing whitespace.\n+    score_lists = [simple_acc, moderate_acc, challenging_acc, acc] \ntests/fixtures/hg_woffscorer2/bird_ds/source/bird_minidev/evaluation_utils.py:92: trailing whitespace.\n+                db_name = \"financial\"               \ntests/fixtures/hg_woffscorer2/bird_ds/source/bird_minidev/evaluation_utils.py:119: trailing whitespace.\n+    \ntests/fixtures/hg_woffscorer2/bird_ds/source/ds1000/execution.py:21: trailing whitespace.\n+    suite provided in the problem. \ntests/fixtures/hg_woffscorer2/bird_ds/source/ds1000/execution.py:156: trailing whitespace.\n+    generated code, should not be blindly executed outside of one. See the \ntests/fixtures/hg_woffscorer2/bird_ds/source/ds1000/official_test_ds1000.py:5: trailing whitespace.\n+import concurrent.futures as cfuts \ntests/fixtures/hg_woffscorer2/spreadsheetbench/source/official-evaluation.py:102: trailing whitespace.\n+    \ntests/fixtures/hg_woffscorer2/spreadsheetbench/source/official-evaluation.py:139: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer2/spreadsheetbench/source/official-evaluation.py:179: trailing whitespace.\n+    \ntests/fixtures/hg_woffscorer2/spreadsheetbench/source/official-evaluation.py:193: trailing whitespace.\n+    \ntests/fixtures/hg_woffscorer2/spreadsheetbench/source/official-evaluation.py:230: trailing whitespace.\n+    \n"
+exit_code=2
+
+$ git diff 9dab533 --name-only -- data eval tools tests/quality
+exit_code=0
+
+Result: checker valid; 54 registry tests pass; packet manifest and all component validators pass.
+All source/status/next_action/dataset scopes are unchanged except appended shared S4 observation/evidence.
+S1, S3, S4 and S6 remain partial. No shared or dataset blocker is closed.

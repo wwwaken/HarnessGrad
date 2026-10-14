@@ -2967,3 +2967,43 @@ review and merge.
 - Resource state: local `docker image inspect` and tests only - no benchmark task, model, GPU,
   endpoint or container start. Both GPUs stayed idle and no utilisation is claimed. Historical
   runs, frozen receipts and archives were untouched.
+## Bounded official scorer extension - 2026-10-15 - w-offscorer2
+
+Narrowed only shared blocker `scorer-offline-closure` clause S4 with bounded offline
+upstream/local controls for `reasoning_gym`, `bird_minidev`, `ds1000`,
+`spreadsheetbench`, `jericho` and `scienceworld`. Report with exact commands,
+identities, recomputed digests and per-input comparisons:
+`reports/w-offscorer2-coverage.md`; raw evidence and SHA-256 manifest:
+`tests/fixtures/hg_woffscorer2/`; final validation:
+`reports/w-offscorer2-validation.txt`.
+
+Reasoning Gym: 24 numeric agreements, three deliberately malformed inputs each
+raising KeyError in official/local paths; only three admitted families executed.
+BIRD: nine agreements, two numeric divergences (empty SQL/empty result and SQL
+mutation order), one official-zero/local-unmeasured broken-gold classification;
+full module import fails on psycopg2, unchanged selected SQLite functions execute.
+DS-1000: nine agreements using complete execution runner and selected unchanged
+upstream construction; strict socket denial fails, explicit local UNIX IPC succeeds.
+SpreadsheetBench: 15/15 direct numeric agreements plus four nonnumeric boundaries;
+16/16 strict caller numeric agreements plus three unmeasured; separate formula
+workflow comparison is official uncached 0/local recalculated 1 in an offline
+network namespace. Strict-profile LibreOffice failure and all exceptions remain.
+Jericho: 5/5 native agreements, including a labelled 17-action non-heldout study
+reference walkthrough reaching actual 30/30. ScienceWorld: 4/4 JVM zero-score study
+trace agreements, not solved-task evidence. Initial Java launch/destructor failures
+and the corrected fixture-only empty-state initialization mistake are preserved.
+Installed world-package bytes/versions are identified without claiming authenticated
+upstream Git revisions. No production adapter/helper/checker changes occur.
+
+Parent reviewed all component diffs and ran their focused validators before
+cherry-picking their safe commits onto this isolated worktree. Registry observation
+and one verbatim evidence anchor are additive; all statuses, next_actions, dataset
+records and references stay unchanged. S1, S3, S4 and S6 remain partial, both shared
+blockers stay open, and no dataset blocker closes. No model, GPU, endpoint, H0 trial,
+heldout task, production verifier, runs/ path or frozen receipt was used. Child
+worktrees are removed after review/integration; main is untouched.
+
+Final validation: all 236 packet files and 23 production source pins verify;
+registry checker valid; 54 focused registry tests pass. The authored-file whitespace
+check passes while verbatim upstream source whitespace remains intact. Exact
+commands, checker output and retained formatting observations are in the validation log.
