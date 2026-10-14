@@ -1,0 +1,365 @@
+{
+  "cases": [
+    {
+      "agreement": false,
+      "boolean_projected_local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "label": "Yes",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "yes"
+          },
+          "reward": 1.0,
+          "why": "matches 'yes' vs 'yes'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "id": "boolean-True-True",
+      "input": {
+        "gold_answer": true,
+        "id": "boolean-True-True",
+        "prediction": true
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "Yes",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "true"
+          },
+          "reward": 0.0,
+          "why": "no match for 'true' vs 'yes'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 1.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0
+      ],
+      "projected_agrees": true
+    },
+    {
+      "agreement": true,
+      "boolean_projected_local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "Yes",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "no"
+          },
+          "reward": 0.0,
+          "why": "no match for 'no' vs 'yes'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "id": "boolean-True-False",
+      "input": {
+        "gold_answer": true,
+        "id": "boolean-True-False",
+        "prediction": false
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "Yes",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": ""
+          },
+          "reward": 0.0,
+          "why": "no match for '' vs 'yes'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ],
+      "projected_agrees": true
+    },
+    {
+      "agreement": true,
+      "boolean_projected_local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "No",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "yes"
+          },
+          "reward": 0.0,
+          "why": "no match for 'yes' vs 'no'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "id": "boolean-False-True",
+      "input": {
+        "gold_answer": false,
+        "id": "boolean-False-True",
+        "prediction": true
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "No",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "true"
+          },
+          "reward": 0.0,
+          "why": "no match for 'true' vs 'no'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ],
+      "projected_agrees": true
+    },
+    {
+      "agreement": false,
+      "boolean_projected_local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "label": "No",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "no"
+          },
+          "reward": 1.0,
+          "why": "matches 'no' vs 'no'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "id": "boolean-False-False",
+      "input": {
+        "gold_answer": false,
+        "id": "boolean-False-False",
+        "prediction": false
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "No",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": ""
+          },
+          "reward": 0.0,
+          "why": "no match for '' vs 'no'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 1.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0
+      ],
+      "projected_agrees": true
+    },
+    {
+      "agreement": false,
+      "id": "upper-yes",
+      "input": {
+        "gold_answer": true,
+        "id": "upper-yes",
+        "prediction": "YES"
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "label": "Yes",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "yes"
+          },
+          "reward": 1.0,
+          "why": "matches 'yes' vs 'yes'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ]
+    },
+    {
+      "agreement": false,
+      "id": "padded-no",
+      "input": {
+        "gold_answer": false,
+        "id": "padded-no",
+        "prediction": " No! "
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "label": "No",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "no"
+          },
+          "reward": 1.0,
+          "why": "matches 'no' vs 'no'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ]
+    },
+    {
+      "agreement": true,
+      "id": "yes-explanation",
+      "input": {
+        "gold_answer": true,
+        "id": "yes-explanation",
+        "prediction": "Yes because it follows"
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "label": "Yes",
+            "metric": "exact_match after ReWOO's normalize_answer",
+            "normalized_prediction": "yes because it follows"
+          },
+          "reward": 0.0,
+          "why": "no match for 'yes because it follows' vs 'yes'; the whole answer is compared, not its first token"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "Accuracy": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ]
+    }
+  ],
+  "dataset": "strategyqa",
+  "import_row_loading_guard": {
+    "cached_records_after_score": 0,
+    "refused_specs": [
+      "strategyqa"
+    ],
+    "restored_before_score": true
+  },
+  "input_sha256": "0df8ad1aa3579735dbed7e3bb74e02e871611811a6526f7746f127e48a8998e7",
+  "panel": "authored",
+  "scope": "bounded synthetic scoring; no benchmark/model/production runtime execution",
+  "sources": [
+    {
+      "path": "tests/fixtures/hg_wverify/extra-scorers/source/strategyqa/eval.py",
+      "sha256": "68c0edcd2fd26daf2cec368302d9f564cbf351288aa4a2c265f47bdc00704044"
+    },
+    {
+      "path": "data/datasets/strategyqa.py",
+      "sha256": "eaad45dfb944241fad84eb575882560ffcf7243de40c9d34fd0766a40c16a50a"
+    },
+    {
+      "path": "data/scaffolds/qa/evidence_scorers.py",
+      "sha256": "a962f23e0c0f704b31294902ddaae3facee0e7496dfc43041bf973a912043729"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e"
+    },
+    {
+      "path": "data/scaffolds/qa/prediction.py",
+      "sha256": "598ebb5fe688f561d6cb6388ef202be4233de14058c51e65391613c7a6bedd7e"
+    }
+  ],
+  "summary": {
+    "agree": 3,
+    "boolean_projected_agree": 4,
+    "boolean_projected_compared": 4,
+    "diverge": 4,
+    "inputs": 7,
+    "nonnumeric": 0,
+    "numeric_comparisons": 7
+  }
+}

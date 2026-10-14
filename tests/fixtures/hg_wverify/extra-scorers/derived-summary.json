@@ -1,0 +1,222 @@
+[
+  {
+    "dataset": "strategyqa",
+    "panel": "authored",
+    "summary": {
+      "agree": 3,
+      "boolean_projected_agree": 4,
+      "boolean_projected_compared": 4,
+      "diverge": 4,
+      "inputs": 7,
+      "nonnumeric": 0,
+      "numeric_comparisons": 7
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "strategyqa"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "strategyqa",
+    "panel": "crosscheck",
+    "summary": {
+      "agree": 5,
+      "boolean_projected_agree": 4,
+      "boolean_projected_compared": 4,
+      "diverge": 7,
+      "inputs": 12,
+      "nonnumeric": 0,
+      "numeric_comparisons": 12
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "strategyqa"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "sportsunderstanding",
+    "panel": "authored",
+    "summary": {
+      "agree": 1,
+      "diverge": 3,
+      "inputs": 4,
+      "nonnumeric": 0,
+      "numeric_comparisons": 4
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "sportsunderstanding"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "sportsunderstanding",
+    "panel": "crosscheck",
+    "summary": {
+      "agree": 7,
+      "diverge": 5,
+      "inputs": 12,
+      "nonnumeric": 0,
+      "numeric_comparisons": 12
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "sportsunderstanding"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "fever",
+    "panel": "authored",
+    "summary": {
+      "agree": 3,
+      "diverge": 1,
+      "full_singleton_errors": 1,
+      "inputs": 4,
+      "nonnumeric": 0,
+      "numeric_comparisons": 4
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "fever"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "fever",
+    "panel": "crosscheck",
+    "summary": {
+      "agree": 16,
+      "diverge": 1,
+      "full_singleton_errors": 3,
+      "inputs": 17,
+      "nonnumeric": 0,
+      "numeric_comparisons": 17
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "fever"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "hotpotqa",
+    "panel": "authored",
+    "summary": {
+      "agree": 3,
+      "diverge": 1,
+      "inputs": 4,
+      "nonnumeric": 0,
+      "numeric_comparisons": 4
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "hotpotqa"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "hotpotqa",
+    "panel": "crosscheck",
+    "summary": {
+      "agree": 12,
+      "diverge": 1,
+      "inputs": 13,
+      "nonnumeric": 0,
+      "numeric_comparisons": 13
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "hotpotqa"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "triviaqa",
+    "panel": "authored",
+    "summary": {
+      "agree": 3,
+      "diverge": 0,
+      "inputs": 4,
+      "nonnumeric": 1,
+      "numeric_comparisons": 3
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "triviaqa"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "triviaqa",
+    "panel": "crosscheck",
+    "summary": {
+      "agree": 10,
+      "diverge": 0,
+      "inputs": 11,
+      "nonnumeric": 1,
+      "numeric_comparisons": 10
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [
+        "triviaqa"
+      ],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "musique",
+    "panel": "authored",
+    "summary": {
+      "agree": 5,
+      "diverge": 0,
+      "inputs": 5,
+      "nonnumeric": 0,
+      "numeric_comparisons": 5,
+      "reward_policy_differences": 4
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [],
+      "restored_before_score": true
+    }
+  },
+  {
+    "dataset": "musique",
+    "panel": "crosscheck",
+    "summary": {
+      "agree": 12,
+      "diverge": 0,
+      "inputs": 12,
+      "nonnumeric": 0,
+      "numeric_comparisons": 12,
+      "reward_policy_differences": 5
+    },
+    "guard": {
+      "cached_records_after_score": 0,
+      "refused_specs": [],
+      "restored_before_score": true
+    }
+  }
+]

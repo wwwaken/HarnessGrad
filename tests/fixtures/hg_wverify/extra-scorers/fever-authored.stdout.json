@@ -1,0 +1,403 @@
+{
+  "cases": [
+    {
+      "agreement": true,
+      "id": "group-complete",
+      "input": {
+        "canonical_gold": {
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ],
+          "label": "SUPPORTS"
+        },
+        "id": "group-complete",
+        "local_gold": {
+          "answer": "SUPPORTS",
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ]
+        },
+        "prediction": {
+          "answer": "SUPPORTS",
+          "predicted_evidence": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ]
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "max_evidence": 5,
+            "metric": "FEVER strict_score"
+          },
+          "reward": 1.0,
+          "why": "strict label and evidence match"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": true,
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0
+      ],
+      "official_full_singleton_api": {
+        "error": null,
+        "return": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "stdout": ""
+      }
+    },
+    {
+      "agreement": true,
+      "id": "group-partial",
+      "input": {
+        "canonical_gold": {
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ],
+          "label": "SUPPORTS"
+        },
+        "id": "group-partial",
+        "local_gold": {
+          "answer": "SUPPORTS",
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ]
+        },
+        "prediction": {
+          "answer": "SUPPORTS",
+          "predicted_evidence": [
+            [
+              "Verify_A",
+              3
+            ]
+          ]
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "max_evidence": 5,
+            "metric": "FEVER strict_score"
+          },
+          "reward": 0.0,
+          "why": "label or required evidence did not match"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": false,
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ],
+      "official_full_singleton_api": {
+        "error": null,
+        "return": [
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "stdout": ""
+      }
+    },
+    {
+      "agreement": false,
+      "id": "flat-partial",
+      "input": {
+        "canonical_gold": {
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ],
+          "label": "SUPPORTS"
+        },
+        "id": "flat-partial",
+        "local_gold": {
+          "answer": "SUPPORTS",
+          "evidence": [
+            [
+              "Verify_A",
+              3,
+              "synthetic"
+            ],
+            [
+              "Verify_B",
+              8,
+              "synthetic"
+            ]
+          ]
+        },
+        "prediction": {
+          "answer": "SUPPORTS",
+          "predicted_evidence": [
+            [
+              "Verify_A",
+              3
+            ]
+          ]
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "max_evidence": 5,
+            "metric": "FEVER strict_score"
+          },
+          "reward": 1.0,
+          "why": "strict label and evidence match"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": false,
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ],
+      "official_full_singleton_api": {
+        "error": null,
+        "return": [
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "stdout": ""
+      }
+    },
+    {
+      "agreement": true,
+      "id": "group-wrong",
+      "input": {
+        "canonical_gold": {
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ],
+          "label": "SUPPORTS"
+        },
+        "id": "group-wrong",
+        "local_gold": {
+          "answer": "SUPPORTS",
+          "evidence": [
+            [
+              [
+                0,
+                0,
+                "Verify_A",
+                3
+              ],
+              [
+                0,
+                1,
+                "Verify_B",
+                8
+              ]
+            ]
+          ]
+        },
+        "prediction": {
+          "answer": "SUPPORTS",
+          "predicted_evidence": [
+            [
+              "Verify_Unknown",
+              11
+            ]
+          ]
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "max_evidence": 5,
+            "metric": "FEVER strict_score"
+          },
+          "reward": 0.0,
+          "why": "label or required evidence did not match"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": false,
+        "stdout": ""
+      },
+      "official_compared": [
+        0.0
+      ],
+      "official_full_singleton_api": {
+        "error": {
+          "message": "float division by zero",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-verify-scorers-extra/tests/fixtures/hg_wverify/extra-scorers/verify.py\", line 32, in caught\n    value = call()\n            ^^^^^^\n  File \"/tmp/hg-verify-scorers-extra/tests/fixtures/hg_wverify/extra-scorers/verify.py\", line 124, in <lambda>\n    item['official_full_singleton_api'] = caught(lambda: official.fever_score([copy.deepcopy(instance)]))\n                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-verify-scorers-extra/tests/fixtures/hg_wverify/extra-scorers/source/fever/scorer.py\", line 151, in fever_score\n    f1 = 2.0 * pr * rec / (pr + rec)\n         ~~~~~~~~~~~~~~~^~~~~~~~~~~~\nZeroDivisionError: float division by zero\n",
+          "type": "ZeroDivisionError"
+        },
+        "return": null,
+        "stdout": ""
+      }
+    }
+  ],
+  "dataset": "fever",
+  "import_row_loading_guard": {
+    "cached_records_after_score": 0,
+    "refused_specs": [
+      "fever"
+    ],
+    "restored_before_score": true
+  },
+  "input_sha256": "0df8ad1aa3579735dbed7e3bb74e02e871611811a6526f7746f127e48a8998e7",
+  "panel": "authored",
+  "scope": "bounded synthetic scoring; no benchmark/model/production runtime execution",
+  "sources": [
+    {
+      "path": "tests/fixtures/hg_wverify/extra-scorers/source/fever/scorer.py",
+      "sha256": "fa12eaab2c88208f990948fc5d533ad4f91a6b8f48640f29317d1f00ab410ac9"
+    },
+    {
+      "path": "data/datasets/fever.py",
+      "sha256": "7c0cd67c7d82d9c71f2bde4c52e564f279930f6fc7f62aae4cdda5b7c27afcd0"
+    },
+    {
+      "path": "data/scaffolds/qa/evidence_scorers.py",
+      "sha256": "a962f23e0c0f704b31294902ddaae3facee0e7496dfc43041bf973a912043729"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e"
+    },
+    {
+      "path": "data/scaffolds/qa/prediction.py",
+      "sha256": "598ebb5fe688f561d6cb6388ef202be4233de14058c51e65391613c7a6bedd7e"
+    }
+  ],
+  "summary": {
+    "agree": 3,
+    "diverge": 1,
+    "full_singleton_errors": 1,
+    "inputs": 4,
+    "nonnumeric": 0,
+    "numeric_comparisons": 4
+  }
+}

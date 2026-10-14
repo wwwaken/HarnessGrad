@@ -1,0 +1,606 @@
+{
+  "strategyqa": [
+    {
+      "id": "boolean-True-True",
+      "gold_answer": true,
+      "prediction": true
+    },
+    {
+      "id": "boolean-True-False",
+      "gold_answer": true,
+      "prediction": false
+    },
+    {
+      "id": "boolean-False-True",
+      "gold_answer": false,
+      "prediction": true
+    },
+    {
+      "id": "boolean-False-False",
+      "gold_answer": false,
+      "prediction": false
+    },
+    {
+      "id": "upper-yes",
+      "gold_answer": true,
+      "prediction": "YES"
+    },
+    {
+      "id": "padded-no",
+      "gold_answer": false,
+      "prediction": " No! "
+    },
+    {
+      "id": "yes-explanation",
+      "gold_answer": true,
+      "prediction": "Yes because it follows"
+    }
+  ],
+  "sportsunderstanding": [
+    {
+      "id": "matched",
+      "official_sample": {
+        "choice": [
+          "plausible",
+          "implausible"
+        ],
+        "log_prob": [
+          -0.2,
+          -3.0
+        ],
+        "target_scores": {
+          "plausible": 1,
+          "implausible": 0
+        }
+      },
+      "local_prediction": "plausible",
+      "local_gold": {
+        "answer": "plausible"
+      }
+    },
+    {
+      "id": "empty",
+      "official_sample": {
+        "choice": [
+          "plausible",
+          "implausible"
+        ],
+        "log_prob": [
+          -0.2,
+          -3.0
+        ],
+        "target_scores": {
+          "plausible": 1,
+          "implausible": 0
+        }
+      },
+      "local_prediction": "",
+      "local_gold": {
+        "answer": "plausible"
+      }
+    },
+    {
+      "id": "both",
+      "official_sample": {
+        "choice": [
+          "plausible",
+          "implausible"
+        ],
+        "log_prob": [
+          -0.2,
+          -3.0
+        ],
+        "target_scores": {
+          "plausible": 1,
+          "implausible": 0
+        }
+      },
+      "local_prediction": "plausible / implausible",
+      "local_gold": {
+        "answer": "plausible"
+      }
+    },
+    {
+      "id": "contradicting-vector",
+      "official_sample": {
+        "choice": [
+          "plausible",
+          "implausible"
+        ],
+        "log_prob": [
+          -3.0,
+          -0.2
+        ],
+        "target_scores": {
+          "plausible": 1,
+          "implausible": 0
+        }
+      },
+      "local_prediction": "plausible",
+      "local_gold": {
+        "answer": "plausible"
+      }
+    }
+  ],
+  "fever": [
+    {
+      "id": "group-complete",
+      "canonical_gold": {
+        "label": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "local_gold": {
+        "answer": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "SUPPORTS",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "group-partial",
+      "canonical_gold": {
+        "label": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "local_gold": {
+        "answer": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "SUPPORTS",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flat-partial",
+      "canonical_gold": {
+        "label": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "local_gold": {
+        "answer": "SUPPORTS",
+        "evidence": [
+          [
+            "Verify_A",
+            3,
+            "synthetic"
+          ],
+          [
+            "Verify_B",
+            8,
+            "synthetic"
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "SUPPORTS",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "id": "group-wrong",
+      "canonical_gold": {
+        "label": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "local_gold": {
+        "answer": "SUPPORTS",
+        "evidence": [
+          [
+            [
+              0,
+              0,
+              "Verify_A",
+              3
+            ],
+            [
+              0,
+              1,
+              "Verify_B",
+              8
+            ]
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "SUPPORTS",
+        "predicted_evidence": [
+          [
+            "Verify_Unknown",
+            11
+          ]
+        ]
+      }
+    }
+  ],
+  "hotpotqa": [
+    {
+      "id": "complete",
+      "gold": {
+        "answer": "olive silver",
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "olive silver",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "partial",
+      "gold": {
+        "answer": "olive silver",
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "olive silver",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "id": "empty-both",
+      "gold": {
+        "answer": "olive silver",
+        "supporting_facts": []
+      },
+      "prediction": {
+        "answer": "olive silver",
+        "predicted_evidence": []
+      }
+    },
+    {
+      "id": "partial-answer",
+      "gold": {
+        "answer": "olive silver",
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "answer": "olive",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      }
+    }
+  ],
+  "triviaqa": [
+    {
+      "id": "exact",
+      "gold": {
+        "NormalizedAliases": [
+          "olive silver"
+        ],
+        "HumanAnswers": []
+      },
+      "prediction": "olive silver"
+    },
+    {
+      "id": "normalize",
+      "gold": {
+        "NormalizedAliases": [
+          "olive silver"
+        ],
+        "HumanAnswers": []
+      },
+      "prediction": "The OLIVE-SILVER"
+    },
+    {
+      "id": "partial",
+      "gold": {
+        "NormalizedAliases": [
+          "olive silver"
+        ],
+        "HumanAnswers": []
+      },
+      "prediction": "olive"
+    },
+    {
+      "id": "empty-alias-exception",
+      "gold": {
+        "NormalizedAliases": [],
+        "HumanAnswers": []
+      },
+      "prediction": "olive"
+    }
+  ],
+  "musique": [
+    {
+      "id": "complete",
+      "gold": {
+        "id": "complete",
+        "answer": "olive silver",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "olive silver",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "partial",
+      "gold": {
+        "id": "partial",
+        "answer": "olive silver",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "olive silver",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "id": "extra",
+      "gold": {
+        "id": "extra",
+        "answer": "olive silver",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "olive silver",
+        "predicted_evidence": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ],
+          [
+            "Verify_C",
+            14
+          ]
+        ]
+      }
+    },
+    {
+      "id": "omitted",
+      "gold": {
+        "id": "omitted",
+        "answer": "olive silver",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "olive silver"
+      }
+    },
+    {
+      "id": "empty",
+      "gold": {
+        "id": "empty",
+        "answer": "olive silver",
+        "aliases": [],
+        "supporting_facts": [
+          [
+            "Verify_A",
+            3
+          ],
+          [
+            "Verify_B",
+            8
+          ]
+        ]
+      },
+      "prediction": {
+        "schema_version": 1,
+        "answer": "olive silver",
+        "predicted_evidence": []
+      }
+    }
+  ]
+}

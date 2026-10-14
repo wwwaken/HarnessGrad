@@ -1,0 +1,424 @@
+{
+  "cases": [
+    {
+      "agreement": true,
+      "id": "complete",
+      "input": {
+        "gold": {
+          "aliases": [],
+          "answer": "olive silver",
+          "id": "complete",
+          "supporting_facts": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ]
+        },
+        "id": "complete",
+        "prediction": {
+          "answer": "olive silver",
+          "predicted_evidence": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ],
+          "schema_version": 1
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": true,
+          "official": {
+            "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals",
+            "answer_em": 1,
+            "answer_f1": 1.0,
+            "id": "complete",
+            "joint_em": 1,
+            "joint_em_policy": "platform answer_em * support_em (not an official metric)",
+            "joint_f1": 1.0,
+            "metric": "MuSiQue-Ans",
+            "mode": "answer_support",
+            "reward_policy": "platform answer_f1 * support_f1 (not an official metric)",
+            "support_em": 1,
+            "support_f1": 1.0
+          },
+          "reward": 1.0,
+          "why": "answer_f1=1, support_f1=1, answer_em=1; platform joint_f1=1"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0,
+        1,
+        1.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "answer_em": 1.0,
+          "answer_f1": 1.0,
+          "support_f1": 1.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_policy_differs_from_answer_f1": false
+    },
+    {
+      "agreement": true,
+      "id": "partial",
+      "input": {
+        "gold": {
+          "aliases": [],
+          "answer": "olive silver",
+          "id": "partial",
+          "supporting_facts": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ]
+        },
+        "id": "partial",
+        "prediction": {
+          "answer": "olive silver",
+          "predicted_evidence": [
+            [
+              "Verify_A",
+              3
+            ]
+          ],
+          "schema_version": 1
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals",
+            "answer_em": 1,
+            "answer_f1": 1.0,
+            "id": "partial",
+            "joint_em": 0,
+            "joint_em_policy": "platform answer_em * support_em (not an official metric)",
+            "joint_f1": 0.6666666666666666,
+            "metric": "MuSiQue-Ans",
+            "mode": "answer_support",
+            "reward_policy": "platform answer_f1 * support_f1 (not an official metric)",
+            "support_em": 0,
+            "support_f1": 0.6666666666666666
+          },
+          "reward": 0.6666666666666666,
+          "why": "answer_f1=1, support_f1=0.666667, answer_em=1; platform joint_f1=0.666667"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0,
+        1,
+        0.667
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "answer_em": 1.0,
+          "answer_f1": 1.0,
+          "support_f1": 0.667
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0,
+        1.0,
+        0.667
+      ],
+      "reward_policy_differs_from_answer_f1": true
+    },
+    {
+      "agreement": true,
+      "id": "extra",
+      "input": {
+        "gold": {
+          "aliases": [],
+          "answer": "olive silver",
+          "id": "extra",
+          "supporting_facts": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ]
+        },
+        "id": "extra",
+        "prediction": {
+          "answer": "olive silver",
+          "predicted_evidence": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ],
+            [
+              "Verify_C",
+              14
+            ]
+          ],
+          "schema_version": 1
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals",
+            "answer_em": 1,
+            "answer_f1": 1.0,
+            "id": "extra",
+            "joint_em": 0,
+            "joint_em_policy": "platform answer_em * support_em (not an official metric)",
+            "joint_f1": 0.8,
+            "metric": "MuSiQue-Ans",
+            "mode": "answer_support",
+            "reward_policy": "platform answer_f1 * support_f1 (not an official metric)",
+            "support_em": 0,
+            "support_f1": 0.8
+          },
+          "reward": 0.8,
+          "why": "answer_f1=1, support_f1=0.8, answer_em=1; platform joint_f1=0.8"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0,
+        1,
+        0.8
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "answer_em": 1.0,
+          "answer_f1": 1.0,
+          "support_f1": 0.8
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0,
+        1.0,
+        0.8
+      ],
+      "reward_policy_differs_from_answer_f1": true
+    },
+    {
+      "agreement": true,
+      "id": "omitted",
+      "input": {
+        "gold": {
+          "aliases": [],
+          "answer": "olive silver",
+          "id": "omitted",
+          "supporting_facts": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ]
+        },
+        "id": "omitted",
+        "prediction": {
+          "answer": "olive silver",
+          "schema_version": 1
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals",
+            "answer_em": 1,
+            "answer_f1": 1.0,
+            "id": "omitted",
+            "joint_em": 0,
+            "joint_em_policy": "platform answer_em * support_em (not an official metric)",
+            "joint_f1": 0.0,
+            "metric": "MuSiQue-Ans",
+            "mode": "answer_support",
+            "reward_policy": "platform answer_f1 * support_f1 (not an official metric)",
+            "support_em": 0,
+            "support_f1": 0.0
+          },
+          "reward": 0.0,
+          "why": "answer_f1=1, support_f1=0, answer_em=1; platform joint_f1=0"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0,
+        1,
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "answer_em": 1.0,
+          "answer_f1": 1.0,
+          "support_f1": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "reward_policy_differs_from_answer_f1": true
+    },
+    {
+      "agreement": true,
+      "id": "empty",
+      "input": {
+        "gold": {
+          "aliases": [],
+          "answer": "olive silver",
+          "id": "empty",
+          "supporting_facts": [
+            [
+              "Verify_A",
+              3
+            ],
+            [
+              "Verify_B",
+              8
+            ]
+          ]
+        },
+        "id": "empty",
+        "prediction": {
+          "answer": "olive silver",
+          "predicted_evidence": [],
+          "schema_version": 1
+        }
+      },
+      "local": {
+        "error": null,
+        "return": {
+          "correct": false,
+          "official": {
+            "aggregate_policy": "ordered macro mean; official columns rounded to 3 decimals",
+            "answer_em": 1,
+            "answer_f1": 1.0,
+            "id": "empty",
+            "joint_em": 0,
+            "joint_em_policy": "platform answer_em * support_em (not an official metric)",
+            "joint_f1": 0.0,
+            "metric": "MuSiQue-Ans",
+            "mode": "answer_support",
+            "reward_policy": "platform answer_f1 * support_f1 (not an official metric)",
+            "support_em": 0,
+            "support_f1": 0.0
+          },
+          "reward": 0.0,
+          "why": "answer_f1=1, support_f1=0, answer_em=1; platform joint_f1=0"
+        },
+        "stdout": ""
+      },
+      "local_compared": [
+        1.0,
+        1,
+        0.0
+      ],
+      "numeric_comparison": true,
+      "official": {
+        "error": null,
+        "return": {
+          "answer_em": 1.0,
+          "answer_f1": 1.0,
+          "support_f1": 0.0
+        },
+        "stdout": ""
+      },
+      "official_compared": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "reward_policy_differs_from_answer_f1": true
+    }
+  ],
+  "dataset": "musique",
+  "import_row_loading_guard": {
+    "cached_records_after_score": 0,
+    "refused_specs": [],
+    "restored_before_score": true
+  },
+  "input_sha256": "0df8ad1aa3579735dbed7e3bb74e02e871611811a6526f7746f127e48a8998e7",
+  "panel": "authored",
+  "scope": "bounded synthetic scoring; no benchmark/model/production runtime execution",
+  "sources": [
+    {
+      "path": "tests/fixtures/hg_wverify/extra-scorers/source/musique/evaluate_v1.0.py",
+      "sha256": "f5fe66ae61dbea5172cba9d428d9924a5811f3457edc945fc1d81369c30e74b7"
+    },
+    {
+      "path": "data/datasets/musique.py",
+      "sha256": "817af68df579bcf577c64a9613fa5b368424ee00dc4101f20ad00010c357e5f2"
+    },
+    {
+      "path": "data/scaffolds/qa/evidence_scorers.py",
+      "sha256": "a962f23e0c0f704b31294902ddaae3facee0e7496dfc43041bf973a912043729"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e"
+    },
+    {
+      "path": "data/scaffolds/qa/prediction.py",
+      "sha256": "598ebb5fe688f561d6cb6388ef202be4233de14058c51e65391613c7a6bedd7e"
+    }
+  ],
+  "summary": {
+    "agree": 5,
+    "diverge": 0,
+    "inputs": 5,
+    "nonnumeric": 0,
+    "numeric_comparisons": 5,
+    "reward_policy_differences": 4
+  }
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py strategyqa authored > tests/fixtures/hg_wverify/extra-scorers/strategyqa-authored.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/strategyqa-authored.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py strategyqa crosscheck > tests/fixtures/hg_wverify/extra-scorers/strategyqa-crosscheck.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/strategyqa-crosscheck.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py sportsunderstanding authored > tests/fixtures/hg_wverify/extra-scorers/sportsunderstanding-authored.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/sportsunderstanding-authored.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py sportsunderstanding crosscheck > tests/fixtures/hg_wverify/extra-scorers/sportsunderstanding-crosscheck.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/sportsunderstanding-crosscheck.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py fever authored > tests/fixtures/hg_wverify/extra-scorers/fever-authored.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/fever-authored.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py fever crosscheck > tests/fixtures/hg_wverify/extra-scorers/fever-crosscheck.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/fever-crosscheck.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py hotpotqa authored > tests/fixtures/hg_wverify/extra-scorers/hotpotqa-authored.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/hotpotqa-authored.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py hotpotqa crosscheck > tests/fixtures/hg_wverify/extra-scorers/hotpotqa-crosscheck.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/hotpotqa-crosscheck.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py triviaqa authored > tests/fixtures/hg_wverify/extra-scorers/triviaqa-authored.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/triviaqa-authored.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py triviaqa crosscheck > tests/fixtures/hg_wverify/extra-scorers/triviaqa-crosscheck.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/triviaqa-crosscheck.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py musique authored > tests/fixtures/hg_wverify/extra-scorers/musique-authored.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/musique-authored.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/verify.py musique crosscheck > tests/fixtures/hg_wverify/extra-scorers/musique-crosscheck.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/musique-crosscheck.offline.txt",
+    "exit_code": 0
+  },
+  {
+    "cwd": "/tmp/hg-verify-scorers-extra",
+    "command": "timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_wverify/extra-scorers/offline_exec.py tests/fixtures/hg_wverify/extra-scorers/musique_precision_and_aggregate.py > tests/fixtures/hg_wverify/extra-scorers/musique-precision-aggregate.stdout.json 2> tests/fixtures/hg_wverify/extra-scorers/musique-precision-aggregate.offline.txt",
+    "exit_code": 0
+  }
+]
