@@ -240,13 +240,16 @@ def _config_help() -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=(
+            "Ordinary runs have no universal filesystem-quota or backend-observer\n"
+            "prerequisite. Existing declared-policy refusals still apply.\n"
             "Ordinary local development runs as your user. Native/files demos and --help\n"
             "require no sudo, dedicated quota volume, root Docker access, or strict runtime mode.\n"
             "Sandboxed runs still require working bubblewrap/user namespaces; container-backed\n"
             "tasks and image/overlay builds have separate Docker prerequisites.\n"
             "Local/demo success grants no production/H0 authorization. Declared runtime policies\n"
             "still fail closed without trusted backend observations: missing evidence remains\n"
-            "blocked and invalid/unmeasured, never an ordinary zero score."),
+            "blocked and invalid/unmeasured, never an ordinary zero score.\n"
+            "Synthetic checks do not authorize production diagnostics or H0."),
         epilog=_config_help())
     ap.add_argument("--harness", default="loop")
     ap.add_argument("--dataset", default="demo")
