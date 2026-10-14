@@ -28,18 +28,13 @@ sys.path.insert(0, str(ROOT))
 
 from eval.runner import run_one                                      # noqa: E402
 
-#: A work root the sandbox does **not** hide. `runtime_paths` are bound before the
-#: hides, so anything under `/tmp` (and under the platform) is covered again by the
-#: tmpfs and stays invisible -- measured, not assumed: the first version of this
-#: fixture put the CLI in `tmp_path` and the wrapper reported "the CLI does not exist".
-WORK_ROOT = ROOT.parent / "harnessgrad_work" / "pytest-cli"
-
 
 @pytest.fixture
-def work_root():
-    WORK_ROOT.mkdir(parents=True, exist_ok=True)
-    yield WORK_ROOT
-    shutil.rmtree(WORK_ROOT, ignore_errors=True)
+def work_root(tmp_path):
+    """Per-test work tree: one test's cleanup must never delete another's run."""
+    root = tmp_path / "work"
+    root.mkdir()
+    return root
 
 
 #: Where the fake CLI is put for these tests: **outside the platform, outside the work
@@ -48,16 +43,17 @@ def work_root():
 #: binds read-only, so the "unreachable without a declaration" test passed the wrong
 #: way (the CLI was reachable with no declaration at all).
 #:
-#: It is also the directory `base_harness/cli_agent/harness.json` names in its
-#: `runtime_paths`, so the wrapper's own manifest makes it reachable.
-CLI_DIR = ROOT.parent / "harnessgrad_cli"
-
-
-def _cli_dir() -> Path:
-    """The fake CLI, somewhere the sandbox cannot see unless it is told to."""
-    CLI_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "tools" / "fake_cli.py", CLI_DIR / "fake_cli.py")
-    return CLI_DIR
+#: Use an external --basetemp outside `/tmp` for this file. The CLI remains a
+#: sibling of the work root, so the work-root bind cannot expose it implicitly.
+@pytest.fixture
+def cli_dir(tmp_path) -> Path:
+    """A unique fake CLI, visible only when its runtime path is declared."""
+    root = tmp_path / "cli"
+    if Path("/tmp") in root.resolve().parents:
+        pytest.fail("CLI runtime fixture requires --basetemp outside /tmp")
+    root.mkdir()
+    shutil.copy2(ROOT / "tools" / "fake_cli.py", root / "fake_cli.py")
+    return root
 
 
 def _harness(work_root: Path, body: str, *,
@@ -154,18 +150,26 @@ def test_the_harness_declaration_beats_the_platform_environment(work_root, monke
 
 
 def test_the_curve_point_prefers_the_declaration_and_records_the_conflict(
-        work_root, monkeypatch, tmp_path):
+        work_root, cli_dir, monkeypatch, tmp_path):
     """端到端:曲线点上是声明值,而且不一致这件事本身要留在记录里。"""
     monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(work_root))
     monkeypatch.setenv("HG_AGENT_MODEL", "platform-env-model")
-    cli_dir = _cli_dir()
     monkeypatch.setenv("HG_CLI", f"{sys.executable} {cli_dir / 'fake_cli.py'} -p")
     monkeypatch.setenv("HG_CLI_MODEL", "fake-model-1")
     monkeypatch.setenv("HG_AGENT_BACKEND", "mock")
 
+    # Declare this test's CLI rather than relying on the example manifest's
+    # machine-specific installation path. Leave the reference harness untouched.
+    repo = tmp_path / "cli-agent"
+    shutil.copytree(ROOT / "base_harness" / "cli_agent", repo)
+    manifest = repo / "harness.json"
+    spec = json.loads(manifest.read_text())
+    spec["runtime_paths"] = [str(cli_dir)]
+    manifest.write_text(json.dumps(spec))
+
     runs = tmp_path / "runs"
     proc = subprocess.run(
-        [sys.executable, "driver.py", "--harness", "cli_agent", "--mode", "A",
+        [sys.executable, "driver.py", "--harness", str(repo), "--mode", "A",
          "--rounds", "1", "--run-id", "ident", "--dataset", "verify_demo",
          "--sampling", "all", "--runs-root", str(runs),
          "--work-root", str(work_root),
@@ -185,14 +189,13 @@ def test_the_curve_point_prefers_the_declaration_and_records_the_conflict(
 # ------------------------------------------------ 4) 声明式的运行时路径 ---
 
 def test_a_cli_outside_usr_is_unreachable_until_the_manifest_declares_it(
-        work_root, monkeypatch):
+        work_root, cli_dir, monkeypatch):
     """CLI 装在 `/usr` 之外时,harness 清单必须说出来。
 
     这和解释器前缀是同一件事:平台没法知道某个人的 agent CLI 装在哪,所以 harness 声明,
     平台照绑(只读、且在隐藏之前绑,所以声明平台自己的路径也还是会被藏掉)。
     """
     monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(work_root))
-    cli_dir = _cli_dir()
     body = (
         "import subprocess\n"
         "p = subprocess.run([sys.executable, " + repr(str(cli_dir / "fake_cli.py")) +
