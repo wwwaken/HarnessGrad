@@ -1,0 +1,167 @@
+$ /mnt/8t/xubuqiang/anaconda3/bin/python -m pytest tests/quality/test_jericho_runtime_boundaries.py --basetemp=/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries -vv --tb=long -ra --color=no --junitxml=/tmp/hg-t5/reports/t5-evidence/baseline-test_jericho_runtime_boundaries.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/hg-t5
+plugins: anyio-4.13.0
+collecting ... collected 17 items
+
+tests/quality/test_jericho_runtime_boundaries.py::test_adapter_import_does_not_read_release_payload PASSED [  5%]
+tests/quality/test_jericho_runtime_boundaries.py::test_projection_reads_only_code_and_excludes_docs_data_and_bytecode ERROR [ 11%]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[0] PASSED [ 17%]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[-1] PASSED [ 23%]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[True] PASSED [ 29%]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[300] PASSED [ 35%]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[nan] PASSED [ 41%]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[inf] PASSED [ 47%]
+tests/quality/test_jericho_runtime_boundaries.py::test_limits_cannot_be_loosened_and_files_policy_survives_normalization PASSED [ 52%]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[host] ERROR [ 58%]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[sandbox] ERROR [ 64%]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[exec] ERROR [ 70%]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[snapshot] ERROR [ 76%]
+tests/quality/test_jericho_runtime_boundaries.py::test_real_host_sleep_obeys_declared_timeout ERROR [ 82%]
+tests/quality/test_jericho_runtime_boundaries.py::test_runner_refuses_unsandboxed_declared_isolation ERROR [ 88%]
+tests/quality/test_jericho_runtime_boundaries.py::test_agent_projection_network_denial_and_trusted_verifier_end_to_end ERROR [ 94%]
+tests/quality/test_jericho_runtime_boundaries.py::test_control_materialization_resets_actions_and_requires_explicit_id ERROR [100%]
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_projection_reads_only_code_and_excludes_docs_data_and_bytecode _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_verifier_declaration_reaches_every_launch_path[host] __
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_verifier_declaration_reaches_every_launch_path[sandbox] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_verifier_declaration_reaches_every_launch_path[exec] __
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_verifier_declaration_reaches_every_launch_path[snapshot] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+________ ERROR at setup of test_real_host_sleep_obeys_declared_timeout _________
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_____ ERROR at setup of test_runner_refuses_unsandboxed_declared_isolation _____
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_agent_projection_network_denial_and_trusted_verifier_end_to_end _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_control_materialization_resets_actions_and_requires_explicit_id _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+- generated xml file: /tmp/hg-t5/reports/t5-evidence/baseline-test_jericho_runtime_boundaries.xml -
+=========================== short test summary info ============================
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_projection_reads_only_code_and_excludes_docs_data_and_bytecode
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[host]
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[sandbox]
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[exec]
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[snapshot]
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_real_host_sleep_obeys_declared_timeout
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_runner_refuses_unsandboxed_declared_isolation
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_agent_projection_network_denial_and_trusted_verifier_end_to_end
+ERROR tests/quality/test_jericho_runtime_boundaries.py::test_control_materialization_resets_actions_and_requires_explicit_id
+========================= 8 passed, 9 errors in 0.28s ==========================
+
+exit_code=1

@@ -1,0 +1,51 @@
+--- a/tests/quality/test_services.py
++++ b/tests/quality/test_services.py
+@@ -25,6 +25,7 @@
+ import subprocess
+ import sys
+ import time
++import uuid
+ from pathlib import Path
+ 
+ import pytest
+@@ -446,20 +447,21 @@
+ 
+ 
+ def test_reap_removes_a_service_container_a_crash_left_running(tmp_path):
+-    """`docker run --rm` 只在容器**退出**时删它,而被杀掉的 driver 从不 stop 它。
+-
+-    实测:一个 probe 跑道的服务容器在宿主上挂了 15 小时。清容器必须在清网络**之前** ——
+-    网络上有容器时 `docker network rm` 会失败。
+-    """
+-    _require_docker()
+-    run_id = "reaped-crash"
++    """A fresh namespace preserves pre-existing crash evidence and concurrent runs."""
++    _require_docker()
++    run_id = "reaped-crash-" + uuid.uuid4().hex
+     running = services.start([_service()], recordings_root=tmp_path / "rec",
+                              run_id=run_id, task_id="s01", run_seed="R")
+     cid = list(running.containers.values())[0]
+-    # 崩溃的样子:不调用 `stop()`。reap 就是下一个跑道做的事。
+-    assert services.reap(run_id) == [], "reap 没能清掉一个还在跑的服务容器"
+-    assert container.docker("inspect", cid).returncode != 0, "服务容器还活着"
+-    assert _leftovers(run_id) == [], "容器没了,网络还在"
++    try:
++        assert container.docker("inspect", cid).returncode == 0
++        assert _leftovers(run_id) == [running.network]
++        # Simulate a crash: do not call stop before reap.
++        assert services.reap(run_id) == []
++        assert container.docker("inspect", cid).returncode != 0
++        assert _leftovers(run_id) == []
++    finally:
++        assert running.stop() == []
+ 
+ 
+ def test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out(
+@@ -841,6 +843,7 @@
+     proc = _run_driver(tmp_path, "verify_exec",
+                        extra_env={"HG_AGENT_BACKEND": "openai",
+                                   "HG_AGENT_BASE_URL": "https://api.example.com/v1",
++                                  "HG_AGENT_MODEL": "synthetic-remote-model",
+                                   "HG_AGENT_API_KEY": "x"})
+     assert proc.returncode == 2, _said(proc)[-1500:]
+     assert "not on this host" in _said(proc), _said(proc)[-1200:]

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="6" failures="0" skipped="0" tests="6" time="0.175" timestamp="2026-10-14T21:44:20.574396" hostname="mistral"><testcase classname="tests.quality.test_appworld_service_diagnosis" name="test_aw_dispatches_init_and_action[False]" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_appworld_service_diagnosis" name="test_aw_dispatches_init_and_action[True]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_appworld_service_diagnosis" name="test_runner_mounts_dependency_overlay_once" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_appworld_service_diagnosis" name="test_invalid_check_keeps_actor_failure_in_progress" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_appworld_service_diagnosis" name="test_service_logs_survive_teardown_and_do_not_block_cleanup[False]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_appworld_service_diagnosis" name="test_service_logs_survive_teardown_and_do_not_block_cleanup[True]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase></testsuite></testsuites>

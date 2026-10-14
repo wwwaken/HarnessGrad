@@ -1,0 +1,13 @@
+$ docker network create --internal hg-t5-cleanup-proof-ae1c7662e60344119b387d5280dc4c3e
+d593ffc2ee19e5addb378e5047a9a1be80e0a6a12998f07743681c7a4d6fad81
+exit_code=0
+
+$ docker network rm hg-t5-cleanup-proof-ae1c7662e60344119b387d5280dc4c3e
+hg-t5-cleanup-proof-ae1c7662e60344119b387d5280dc4c3e
+exit_code=0
+
+$ docker network rm hg-t5-cleanup-proof-ae1c7662e60344119b387d5280dc4c3e
+Error response from daemon: network hg-t5-cleanup-proof-ae1c7662e60344119b387d5280dc4c3e not found
+exit status 1
+exit_code=1
+

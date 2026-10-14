@@ -1,0 +1,48 @@
+$ /mnt/8t/xubuqiang/anaconda3/bin/python -m pytest tests/quality/test_jericho_runtime_admission.py --basetemp=/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission -vv --tb=long -ra --color=no --junitxml=/tmp/hg-t5/reports/t5-evidence/baseline-test_jericho_runtime_admission.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/hg-t5
+plugins: anyio-4.13.0
+collecting ... collected 13 items
+
+tests/quality/test_jericho_runtime_admission.py::test_lazy_missing_provisioning_retains_the_actionable_load_error PASSED [  7%]
+tests/quality/test_jericho_runtime_admission.py::test_live_backend_is_refused_before_staging_or_execution FAILED [ 15%]
+tests/quality/test_jericho_runtime_admission.py::test_network_none_admits_controls_and_mock_but_leaves_ordinary_tasks_alone PASSED [ 23%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[../escape.py] PASSED [ 30%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[/escape.py] PASSED [ 38%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[__pycache__/cached.pyc] PASSED [ 46%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[module.pyc] PASSED [ 53%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_bulk_copies_symlinks_and_leftover_data PASSED [ 61%]
+tests/quality/test_jericho_runtime_admission.py::test_control_resets_a_previous_log_symlink_without_touching_its_target PASSED [ 69%]
+tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict0] PASSED [ 76%]
+tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict1] PASSED [ 84%]
+tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict2] PASSED [ 92%]
+tests/quality/test_jericho_runtime_admission.py::test_installed_jericho_projection_imports_without_reference_payload PASSED [100%]
+
+=================================== FAILURES ===================================
+___________ test_live_backend_is_refused_before_staging_or_execution ___________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission/test_live_backend_is_refused_b0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76935d198170>
+
+    def test_live_backend_is_refused_before_staging_or_execution(tmp_path, monkeypatch):
+        repo = tmp_path / "harness"
+        repo.mkdir()
+        (repo / "harness.json").write_text(json.dumps({"entrypoint": "agent.py"}))
+        monkeypatch.setenv("HG_AGENT_BACKEND", "openai")
+    
+        def unexpected(*args, **kwargs):
+            pytest.fail("admission must happen before allocating task storage")
+    
+        monkeypatch.setattr("eval.run.runner.tempfile.mkdtemp", unexpected)
+>       with pytest.raises(ValueError, match="live agent backend"):
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/quality/test_jericho_runtime_admission.py:52: Failed
+- generated xml file: /tmp/hg-t5/reports/t5-evidence/baseline-test_jericho_runtime_admission.xml -
+=========================== short test summary info ============================
+FAILED tests/quality/test_jericho_runtime_admission.py::test_live_backend_is_refused_before_staging_or_execution
+========================= 1 failed, 12 passed in 0.47s =========================
+
+exit_code=1

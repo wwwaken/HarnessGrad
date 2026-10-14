@@ -1,0 +1,11 @@
+$ docker network ls --no-trunc
+NETWORK ID                                                         NAME                                        DRIVER    SCOPE
+70b7f49f2cf30727ed32d71d463d24ceb29f3febed434962891e537432e02519   bridge                                      bridge    local
+e6977c7f196de6b99f278cfa92685416e8ae74e48e4492de757369042267ccbf   hg-oracle-test-2025544-cancel-async-tasks   bridge    local
+29818c9093b168a98bc415526e0fb7074bfb89e94306e1a7b6cbb6a38e2f2772   hg-oracle-test-3399750-cancel-async-tasks   bridge    local
+f3a07effd8330eb3d09ad56817581b4701f16fa44433419504acac8e64fdd9f0   hg-reaped-crash-s01                         bridge    local
+afc012dc7827cdff7019937485be52f7a31d82fa8637c3677a32170c6241ef67   host                                        host      local
+48474429c7c0d9fb1d88ce20b321c760223c93d68912c7758052d2ae401fa445   none                                        null      local
+5b5da34683f1edf30d8bd0eb1433d36453350852ac5ebe015bcfb2c793cc325c   searxng_default                             bridge    local
+
+exit_code=0

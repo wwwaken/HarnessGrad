@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="9" failures="0" skipped="0" tests="17" time="0.287" timestamp="2026-10-14T21:44:19.748788" hostname="mistral"><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_adapter_import_does_not_read_release_payload" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_projection_reads_only_code_and_excludes_docs_data_and_bytecode" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[0]" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[-1]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[True]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[300]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[nan]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[inf]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_limits_cannot_be_loosened_and_files_policy_survives_normalization" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[host]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[sandbox]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[exec]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[snapshot]" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_real_host_sleep_obeys_declared_timeout" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_runner_refuses_unsandboxed_declared_isolation" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_agent_projection_network_denial_and_trusted_verifier_end_to_end" time="0.000"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_control_materialization_resets_actions_and_requires_explicit_id" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'&quot;">self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError</error></testcase></testsuite></testsuites>

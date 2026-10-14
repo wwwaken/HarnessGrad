@@ -1,0 +1,124 @@
+$ /mnt/8t/xubuqiang/anaconda3/bin/python -m pytest tests/quality/test_container_state.py --basetemp=/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state -vv --tb=long -ra --color=no --junitxml=/tmp/hg-t5/reports/t5-evidence/baseline-test_container_state.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/hg-t5
+plugins: anyio-4.13.0
+collecting ... collected 19 items
+
+tests/quality/test_container_state.py::test_a_container_state_task_that_also_asks_for_services_is_refused PASSED [  5%]
+tests/quality/test_container_state.py::test_an_unknown_state_is_refused PASSED [ 10%]
+tests/quality/test_container_state.py::test_resources_and_timeouts_must_be_positive_numbers PASSED [ 15%]
+tests/quality/test_container_state.py::test_the_resource_defaults_are_filled_in PASSED [ 21%]
+tests/quality/test_container_state.py::test_reward_file_and_pass_when_together_are_refused PASSED [ 26%]
+tests/quality/test_container_state.py::test_a_reward_file_must_be_absolute PASSED [ 31%]
+tests/quality/test_container_state.py::test_an_input_dst_must_be_absolute PASSED [ 36%]
+tests/quality/test_container_state.py::test_an_input_with_neither_path_nor_dst_is_refused PASSED [ 42%]
+tests/quality/test_container_state.py::test_the_adapter_reads_the_real_task_set PASSED [ 47%]
+tests/quality/test_container_state.py::test_no_task_is_excluded_by_a_stale_metadata_flag PASSED [ 52%]
+tests/quality/test_container_state.py::test_the_importer_attempts_a_mirror_and_reports_what_it_tried ERROR [ 57%]
+tests/quality/test_container_state.py::test_both_checkout_layouts_are_found ERROR [ 63%]
+tests/quality/test_container_state.py::test_a_checkout_with_no_tasks_says_where_it_looked ERROR [ 68%]
+tests/quality/test_container_state.py::test_the_split_is_derived_and_stable PASSED [ 73%]
+tests/quality/test_container_state.py::test_the_oracle_control_passes ERROR [ 78%]
+tests/quality/test_container_state.py::test_a_container_state_run_leaves_nothing_behind ERROR [ 84%]
+tests/quality/test_container_state.py::test_the_image_interpreter_wins_when_it_has_one PASSED [ 89%]
+tests/quality/test_container_state.py::test_a_directory_input_lands_at_the_destination_even_when_it_already_exists ERROR [ 94%]
+tests/quality/test_container_state.py::test_every_scratch_directory_the_environment_names_exists PASSED [100%]
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_the_importer_attempts_a_mirror_and_reports_what_it_tried _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+____________ ERROR at setup of test_both_checkout_layouts_are_found ____________
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_____ ERROR at setup of test_a_checkout_with_no_tasks_says_where_it_looked _____
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_______________ ERROR at setup of test_the_oracle_control_passes _______________
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+______ ERROR at setup of test_a_container_state_run_leaves_nothing_behind ______
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_a_directory_input_lands_at_the_destination_even_when_it_already_exists _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_container_state'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+- generated xml file: /tmp/hg-t5/reports/t5-evidence/baseline-test_container_state.xml -
+=========================== short test summary info ============================
+ERROR tests/quality/test_container_state.py::test_the_importer_attempts_a_mirror_and_reports_what_it_tried
+ERROR tests/quality/test_container_state.py::test_both_checkout_layouts_are_found
+ERROR tests/quality/test_container_state.py::test_a_checkout_with_no_tasks_says_where_it_looked
+ERROR tests/quality/test_container_state.py::test_the_oracle_control_passes
+ERROR tests/quality/test_container_state.py::test_a_container_state_run_leaves_nothing_behind
+ERROR tests/quality/test_container_state.py::test_a_directory_input_lands_at_the_destination_even_when_it_already_exists
+========================= 13 passed, 6 errors in 8.76s =========================
+
+exit_code=1

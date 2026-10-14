@@ -1,0 +1,318 @@
+$ /mnt/8t/xubuqiang/anaconda3/bin/python -m pytest tests/quality/test_services.py --basetemp=/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services -vv --tb=long -ra --color=no --junitxml=/tmp/hg-t5/reports/t5-evidence/baseline-test_services.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/hg-t5
+plugins: anyio-4.13.0
+collecting ... collected 37 items
+
+tests/quality/test_services.py::test_services_without_a_service_network_are_refused PASSED [  2%]
+tests/quality/test_services.py::test_a_service_name_must_be_a_dns_label PASSED [  5%]
+tests/quality/test_services.py::test_a_service_needs_a_health_check PASSED [  8%]
+tests/quality/test_services.py::test_duplicate_service_names_are_refused PASSED [ 10%]
+tests/quality/test_services.py::test_a_service_needs_an_image_and_a_port PASSED [ 13%]
+tests/quality/test_services.py::test_an_unknown_service_field_is_refused PASSED [ 16%]
+tests/quality/test_services.py::test_services_are_refused_on_a_files_environment PASSED [ 18%]
+tests/quality/test_services.py::test_the_normalized_env_carries_the_services_through PASSED [ 21%]
+tests/quality/test_services.py::test_the_environment_credential_never_reaches_the_harness PASSED [ 24%]
+tests/quality/test_services.py::test_services_receive_the_environment_budget_and_the_harness_does_not PASSED [ 27%]
+tests/quality/test_services.py::test_the_task_seed_is_derived_and_reproducible PASSED [ 29%]
+tests/quality/test_services.py::test_the_harness_is_given_no_view_of_a_recording PASSED [ 32%]
+tests/quality/test_services.py::test_the_check_is_given_the_recording_read_only PASSED [ 35%]
+tests/quality/test_services.py::test_an_unknown_audience_is_refused_rather_than_defaulted PASSED [ 37%]
+tests/quality/test_services.py::test_a_harness_reaches_the_service_by_the_name_it_was_told PASSED [ 40%]
+tests/quality/test_services.py::test_a_service_that_is_not_healthy_refuses_the_task FAILED [ 43%]
+tests/quality/test_services.py::test_the_same_task_scores_when_its_service_is_healthy FAILED [ 45%]
+tests/quality/test_services.py::test_the_health_check_actually_waits PASSED [ 48%]
+tests/quality/test_services.py::test_nothing_is_left_behind_after_teardown PASSED [ 51%]
+tests/quality/test_services.py::test_a_start_that_fails_does_not_leave_a_network PASSED [ 54%]
+tests/quality/test_services.py::test_a_leftover_network_from_a_crash_does_not_kill_the_next_run PASSED [ 56%]
+tests/quality/test_services.py::test_reap_removes_a_service_container_a_crash_left_running FAILED [ 59%]
+tests/quality/test_services.py::test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out PASSED [ 62%]
+tests/quality/test_services.py::test_the_record_carries_the_services_and_their_digests PASSED [ 64%]
+tests/quality/test_services.py::test_the_record_says_which_services_if_any_are_missing PASSED [ 67%]
+tests/quality/test_services.py::test_needs_seed_and_needs_model_decide_whether_the_record_is_null PASSED [ 70%]
+tests/quality/test_services.py::test_the_environment_spend_is_reported_separately_from_the_harness PASSED [ 72%]
+tests/quality/test_services.py::test_the_improvers_own_split_reaches_the_point PASSED [ 75%]
+tests/quality/test_services.py::test_a_service_needing_a_model_stops_the_run_when_none_is_configured PASSED [ 78%]
+tests/quality/test_services.py::test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero PASSED [ 81%]
+tests/quality/test_services.py::test_a_healthy_service_run_names_the_service_in_its_header FAILED [ 83%]
+tests/quality/test_services.py::test_the_declared_environment_reaches_the_curve FAILED [ 86%]
+tests/quality/test_services.py::test_a_host_local_url_is_recognised_and_a_remote_one_is_not PASSED [ 89%]
+tests/quality/test_services.py::test_the_gateway_preserves_the_path PASSED [ 91%]
+tests/quality/test_services.py::test_a_container_reaches_the_host_on_the_internal_gateway PASSED [ 94%]
+tests/quality/test_services.py::test_a_containerised_harness_gets_its_model_and_not_the_internet FAILED [ 97%]
+tests/quality/test_services.py::test_a_remote_model_with_an_offline_network_is_refused FAILED [100%]
+
+=================================== FAILURES ===================================
+_____________ test_a_service_that_is_not_healthy_refuses_the_task ______________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_service_that_is_not_hea0')
+
+    def test_a_service_that_is_not_healthy_refuses_the_task(tmp_path):
+        """**The negative control for the whole invalid category.**
+    
+        A service that is listening but whose own health check never passes must produce an
+        `invalid` task -- attributed to the dataset and the service -- and not a zero. A
+        zero here is indistinguishable from a weak harness, which is the distinction this
+        platform exists to preserve.
+        """
+        _require_docker()
+        spec = _env([_service(health={"argv": ["false"], "timeout_s": 3})])
+        result = _evaluate(tmp_path, spec)
+        # Nothing was scored, so the caller has to be able to see that it was not.
+        assert "s01" not in result["per_task"], (
+            f"an unmeasurable task was given a score: {result['per_task']}")
+>       assert result["invalid"]["s01"]["stage"] == "health"
+E       AssertionError: assert 'admission' == 'health'
+E         - health
+E         + admission
+
+tests/quality/test_services.py:344: AssertionError
+____________ test_the_same_task_scores_when_its_service_is_healthy _____________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_same_task_scores_when0')
+
+    def test_the_same_task_scores_when_its_service_is_healthy(tmp_path):
+        """The other half: the test above is only a measurement if the healthy case passes.
+    
+        Same task, same harness, same everything except the health command -- so the
+        difference in outcome is the health check and nothing else.
+        """
+        _require_docker()
+        result = _evaluate(tmp_path, _env(), verifier={
+            "kind": "command", "argv": [
+                "python3", "-c",
+                "import json,pathlib,sys;"
+                "p=pathlib.Path('/recordings/orders/harnessgrad.json');"
+                "d=json.loads(p.read_text()) if p.exists() else {};"
+                "sys.exit(0 if any(r.get('path')=='/orders' for r in d.get('received',[])) else 1)"]})
+>       assert result["invalid"] == {}, result["invalid"]
+E       AssertionError: {'s01': {'detail': 'backend_observation_unavailable', 'receipt': {'measured': False, 'observation': 'unknown', 'policy...s': ['env.exec_defaults', 'env.network'], 'production_authorized': False, ...}, 'service': None, 'stage': 'admission'}}
+E       assert {'s01': {'stage': 'admission', 'service': None, 'detail': 'backend_observation_unavailable', 'receipt': {'schema': 'harnessgrad.runner-policy-refusal.v1', 'stage': 'admission', 'status': 'blocked', 'reason': 'backend_observation_unavailable', 'measured': False, 'production_authorized': False, 'observation': 'unknown', 'policy_fields': ['env.exec_defaults', 'env.network']}}} == {}
+E         Left contains 1 more item:
+E         {'s01': {'detail': 'backend_observation_unavailable',
+E                  'receipt': {'measured': False,
+E                              'observation': 'unknown',
+E                              'policy_fields': ['env.exec_defaults', 'env.network'],
+E                              'production_authorized': False,
+E                              'reason': 'backend_observation_unavailable',
+E                              'schema': 'harnessgrad.runner-policy-refusal.v1',
+E                              'stage': 'admission',
+E                              'status': 'blocked'},
+E                  'service': None,
+E                  'stage': 'admission'}}
+E         Full diff:
+E           {
+E         -  ,
+E         +  's01': {'detail': 'backend_observation_unavailable',
+E         +          'receipt': {'measured': False,
+E         +                      'observation': 'unknown',
+E         +                      'policy_fields': ['env.exec_defaults',
+E         +                                        'env.network'],
+E         +                      'production_authorized': False,
+E         +                      'reason': 'backend_observation_unavailable',
+E         +                      'schema': 'harnessgrad.runner-policy-refusal.v1',
+E         +                      'stage': 'admission',
+E         +                      'status': 'blocked'},
+E         +          'service': None,
+E         +          'stage': 'admission'},
+E           }
+
+tests/quality/test_services.py:363: AssertionError
+__________ test_reap_removes_a_service_container_a_crash_left_running __________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_reap_removes_a_service_co0')
+
+    def test_reap_removes_a_service_container_a_crash_left_running(tmp_path):
+        """`docker run --rm` 只在容器**退出**时删它,而被杀掉的 driver 从不 stop 它。
+    
+        实测:一个 probe 跑道的服务容器在宿主上挂了 15 小时。清容器必须在清网络**之前** ——
+        网络上有容器时 `docker network rm` 会失败。
+        """
+        _require_docker()
+        run_id = "reaped-crash"
+>       running = services.start([_service()], recordings_root=tmp_path / "rec",
+                                 run_id=run_id, task_id="s01", run_seed="R")
+
+tests/quality/test_services.py:456: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+services = [{'health': {'argv': ['python3', '-c', "import urllib.request as u;u.urlopen('http://localhost:8080/health', timeout=2...sha256:3a3d25e5d25065b2599076f8de628eb473dbcfdebe3014c0814ed71196b33c18', 'name': 'orders', 'needs_model': False, ...}]
+
+    def start(services: list[dict], *, recordings_root: Path, run_id: str,
+              task_id: str, run_seed: str) -> RunningServices:
+        """Create the network, start every service, and wait for each to be healthy.
+    
+        Raises `ServiceUnavailable` — having already torn down whatever it started, so a
+        failed task does not leave a network behind for the next one to inherit.
+        """
+        # The same safety net `eval/container.run` carries, for the same reason: the driver
+        # pins every service image before the run starts (§2.5.4), and a service started
+        # from a tag would pull whatever the registry served that day.
+        for svc in services:
+            if not container_mod.looks_pinned(svc["image"]):
+                raise ServiceUnavailable(
+                    f"service {svc['name']!r} names {svc['image']!r}, which is not pinned "
+                    f"to a content address. Resolve it with `container.resolve_digest` "
+                    f"first (INTERFACE.md §2.5.4).", service=svc["name"], stage="start")
+    
+>       net = create_network(run_id, task_id)
+
+eval/service/services.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+run_id = 'reaped-crash', task_id = 's01'
+
+    def create_network(run_id: str, task_id: str) -> str:
+        """Create the task's `--internal` network. Returns its name.
+    
+        Public because a task needs one even when it declares no services: a containerised
+        harness cannot reach a model on the host's loopback, so the platform publishes the
+        endpoint on this network (`eval/service/modelgate.py`). Without that the harness has no
+        model, and a harness with no model is not being measured.
+        """
+        net = label(f"hg-{run_id}-{task_id}")
+        proc = container_mod.docker("network", "create", "--internal", net,
+                                    "--label", f"harnessgrad.run={run_id}",
+                                    "--label", f"harnessgrad.task={task_id}", timeout=120)
+        if proc.returncode != 0:
+>           raise ServiceUnavailable(
+                f"could not create the internal network for task {task_id!r}: "
+                f"{proc.stderr.strip()[:300]}")
+E           eval.service.services.ServiceUnavailable: could not create the internal network for task 's01': Error response from daemon: network with name hg-reaped-crash-s01 already exists
+
+eval/service/services.py:254: ServiceUnavailable
+__________ test_a_healthy_service_run_names_the_service_in_its_header __________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_healthy_service_run_nam0')
+
+    def test_a_healthy_service_run_names_the_service_in_its_header(tmp_path):
+        """The header is where a reader takes the run's conditions from, and "a mock API
+        was reachable" is a condition."""
+        _require_docker()
+        proc = _run_driver(tmp_path, "verify_service", extra_env={"HG_AGENT_PROBE": "idle"})
+>       assert proc.returncode == 0, _said(proc)[-1500:]
+E       AssertionError: ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity · container boundary holds (docker 29.2.1): image sha256:9792dc939cfe33d9a9a30138a7f178420bd626afcefa779c4408f52cc8a02750: docker_socket=no, harness_readable=yes, harness_writable=no, platform_visible=no, rootfs_writable=no, sibling_visible=no, state_writable=yes, task_writable=yes, tmp_writable=yes, uid=1026 probe harness svc-probe 1 mode unified · method drives its own loop data verify_service · 2 tasks on the train side · train 2 / eval 2 model (none) · mock ← not a live model sandbox exec — sha256:9792dc939cfe33d9a9a + services[orders] ! s01: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable ! s02: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable ✗ refusing to run: none of the 2 tasks in 'verify_service' produced a scoreable result. The curve would have to report a score for a task set that was never measured.
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python', 'driver.py', '--harness', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_healthy_service_run_nam0/svc_harness', '--mode', 'A', '--rounds', '0', '--sampling', 'all', '--dataset', 'verify_service', '--run-id', 'probe', '--runs-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_healthy_service_run_nam0/runs', '--work-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_healthy_service_run_nam0/work', '--method-entrypoint', '/mnt/8t/xubuqiang/anaconda3/bin/python /tmp/hg-t5/methods/noop/run.py'], returncode=2, stdout="  ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity\n  · container boundary holds (docker 29.2.1): image sha256:9792dc939cfe33d9a9a30138a7f178420bd626afcefa779c4408f52cc8a02750: docker_socket=no, harness_readable=yes, harness_writable=no, platform_visible=no, rootfs_writable=no, sibling_visible=no, state_writable=yes, task_writable=yes, tmp_writable=yes, uid=1026\nprobe\n\n  harness   svc-probe 1\n  mode      unified · method drives its own loop\n  data      verify_service · 2 tasks on the train side · train 2 / eval 2\n  model     (none) · mock   ← not a live model\n  sandbox   exec — sha256:9792dc939cfe33d9a9a + services[orders]\n\n  ! s01: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable\n  ! s02: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable\n", stderr="  ✗ refusing to run: none of the 2 tasks in 'verify_service' produced a scoreable result. The curve would have to report a score for a task set that was never measured.\n").returncode
+
+tests/quality/test_services.py:652: AssertionError
+_______________ test_the_declared_environment_reaches_the_curve ________________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0')
+
+    def test_the_declared_environment_reaches_the_curve(tmp_path):
+        _require_docker()
+>       assert _run_driver(tmp_path, "verify_service",
+                           extra_env={"HG_AGENT_PROBE": "idle"}).returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python', 'driver.py', '--harness', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0/svc_harness', '--mode', 'A', '--rounds', '0', '--sampling', 'all', '--dataset', 'verify_service', '--run-id', 'probe', '--runs-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0/runs', '--work-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0/work', '--method-entrypoint', '/mnt/8t/xubuqiang/anaconda3/bin/python /tmp/hg-t5/methods/noop/run.py'], returncode=2, stdout="  ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity\n  · container boundary holds (docker 29.2.1): image sha256:9792dc939cfe33d9a9a30138a7f178420bd626afcefa779c4408f52cc8a02750: docker_socket=no, harness_readable=yes, harness_writable=no, platform_visible=no, rootfs_writable=no, sibling_visible=no, state_writable=yes, task_writable=yes, tmp_writable=yes, uid=1026\nprobe\n\n  harness   svc-probe 1\n  mode      unified · method drives its own loop\n  data      verify_service · 2 tasks on the train side · train 2 / eval 2\n  model     (none) · mock   ← not a live model\n  sandbox   exec — sha256:9792dc939cfe33d9a9a + services[orders]\n\n  ! s01: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable\n  ! s02: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable\n", stderr="  ✗ refusing to run: none of the 2 tasks in 'verify_service' produced a scoreable result. The curve would have to report a score for a task set that was never measured.\n").returncode
+E        +    where CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python', 'driver.py', '--harness', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0/svc_harness', '--mode', 'A', '--rounds', '0', '--sampling', 'all', '--dataset', 'verify_service', '--run-id', 'probe', '--runs-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0/runs', '--work-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0/work', '--method-entrypoint', '/mnt/8t/xubuqiang/anaconda3/bin/python /tmp/hg-t5/methods/noop/run.py'], returncode=2, stdout="  ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity\n  · container boundary holds (docker 29.2.1): image sha256:9792dc939cfe33d9a9a30138a7f178420bd626afcefa779c4408f52cc8a02750: docker_socket=no, harness_readable=yes, harness_writable=no, platform_visible=no, rootfs_writable=no, sibling_visible=no, state_writable=yes, task_writable=yes, tmp_writable=yes, uid=1026\nprobe\n\n  harness   svc-probe 1\n  mode      unified · method drives its own loop\n  data      verify_service · 2 tasks on the train side · train 2 / eval 2\n  model     (none) · mock   ← not a live model\n  sandbox   exec — sha256:9792dc939cfe33d9a9a + services[orders]\n\n  ! s01: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable\n  ! s02: invalid for dataset 'verify_service' at stage 'admission' -- backend_observation_unavailable\n", stderr="  ✗ refusing to run: none of the 2 tasks in 'verify_service' produced a scoreable result. The curve would have to report a score for a task set that was never measured.\n") = _run_driver(PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_the_declared_environment_0'), 'verify_service', extra_env={'HG_AGENT_PROBE': 'idle'})
+
+tests/quality/test_services.py:658: AssertionError
+_______ test_a_containerised_harness_gets_its_model_and_not_the_internet _______
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_containerised_harness_g0')
+
+    def test_a_containerised_harness_gets_its_model_and_not_the_internet(tmp_path):
+        """The end-to-end version, through `run_one`: the run records `model_gateway`, the
+        harness's base URL was rewritten to the published address, and the internet is still
+        unreachable from inside."""
+        _require_docker()
+        import http.server
+        import threading
+        from eval.service import modelgate
+    
+        # A stand-in model on the host's loopback, which is what the container cannot reach
+        # directly -- so passing this test cannot be an accident of the host being reachable.
+        class _H(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):                           # noqa: N802
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"ok")
+    
+            def log_message(self, *a):
+                pass
+    
+        loopback = http.server.HTTPServer(("127.0.0.1", 0), _H)
+        port = loopback.server_address[1]
+        threading.Thread(target=loopback.serve_forever, daemon=True).start()
+    
+        harness = tmp_path / "gl_harness"
+        harness.mkdir()
+        (harness / "harness.json").write_text(json.dumps({
+            "name": "gl", "version": "1", "entrypoint": "agent.py", "backend": "cli",
+            "env_kinds": ["exec"]}))
+        (harness / "agent.py").write_text(
+            "import argparse, json, os, pathlib, urllib.request\n"
+            "ap = argparse.ArgumentParser()\n"
+            "ap.add_argument('--task'); ap.add_argument('--workdir')\n"
+            "a = ap.parse_args()\n"
+            "w = pathlib.Path(a.workdir)\n"
+            "base = os.environ['HG_AGENT_BASE_URL']\n"
+            "seen = urllib.request.urlopen(base, timeout=10).read().decode()\n"
+            "try:\n"
+            "    urllib.request.urlopen('http://1.1.1.1', timeout=4)\n"
+            "    net = 'internet'\n"
+            "except Exception:\n"
+            "    net = 'offline'\n"
+            "(w / 'answer.txt').write_text(f'{base}|{seen}|{net}')\n"
+            "(w / 'trace.jsonl').write_text('{}\\n')\n")
+    
+        old = os.environ.copy()
+        os.environ.update({"HG_AGENT_BACKEND": "openai",
+                           "HG_AGENT_BASE_URL": f"http://127.0.0.1:{port}",
+                           "HARNESSGRAD_WORK_ROOT": str(tmp_path / "work")})
+        try:
+            result = run_one(
+                harness, {"task_id": "g01", "goal": "call the model"}, sandbox=True,
+                env={"kind": "exec", "image": _pin(DEMO_IMAGE), "workdir": "/app",
+                     "network": "none", "placement": "inside", "services": []},
+                run_id="gl", run_seed="s", recordings_root=tmp_path / "rec")
+        finally:
+            loopback.shutdown()
+            loopback.server_close()
+            os.environ.clear()
+            os.environ.update(old)
+    
+>       assert result["answer"].startswith("http://"), result["answer"]
+E       AssertionError: 
+E       assert False
+E        +  where False = <built-in method startswith of str object at 0x956e70>('http://')
+E        +    where <built-in method startswith of str object at 0x956e70> = ''.startswith
+
+tests/quality/test_services.py:818: AssertionError
+____________ test_a_remote_model_with_an_offline_network_is_refused ____________
+
+tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_remote_model_with_an_of0')
+
+    def test_a_remote_model_with_an_offline_network_is_refused(tmp_path):
+        """A containerised harness whose model is not on this host needs the internet, and a
+        task that did not ask for the internet must not silently get it. Refused rather than
+        attempted: the harness would have no model, so every score would be a zero that
+        means nothing and would look like a weak harness."""
+        _require_docker()
+        proc = _run_driver(tmp_path, "verify_exec",
+                           extra_env={"HG_AGENT_BACKEND": "openai",
+                                      "HG_AGENT_BASE_URL": "https://api.example.com/v1",
+                                      "HG_AGENT_API_KEY": "x"})
+        assert proc.returncode == 2, _said(proc)[-1500:]
+>       assert "not on this host" in _said(proc), _said(proc)[-1200:]
+E       AssertionError: backend is 'openai' but HG_AGENT_MODEL is unset; every score would come from a harness that cannot reach a model. See .env.example.
+E       assert 'not on this host' in "backend is 'openai' but HG_AGENT_MODEL is unset; every score would come from a harness that cannot reach a model. See .env.example."
+E        +  where "backend is 'openai' but HG_AGENT_MODEL is unset; every score would come from a harness that cannot reach a model. See .env.example." = _said(CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python', 'driver.py', '--harness', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_remote_model_with_an_of0/svc_harness', '--mode', 'A', '--rounds', '0', '--sampling', 'all', '--dataset', 'verify_exec', '--run-id', 'probe', '--runs-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_remote_model_with_an_of0/runs', '--work-root', '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_services/test_a_remote_model_with_an_of0/work', '--method-entrypoint', '/mnt/8t/xubuqiang/anaconda3/bin/python /tmp/hg-t5/methods/noop/run.py'], returncode=2, stdout='', stderr="backend is 'openai' but HG_AGENT_MODEL is unset; every score would come from a harness that cannot reach a model. See .env.example.\n"))
+
+tests/quality/test_services.py:846: AssertionError
+- generated xml file: /tmp/hg-t5/reports/t5-evidence/baseline-test_services.xml -
+=========================== short test summary info ============================
+FAILED tests/quality/test_services.py::test_a_service_that_is_not_healthy_refuses_the_task
+FAILED tests/quality/test_services.py::test_the_same_task_scores_when_its_service_is_healthy
+FAILED tests/quality/test_services.py::test_reap_removes_a_service_container_a_crash_left_running
+FAILED tests/quality/test_services.py::test_a_healthy_service_run_names_the_service_in_its_header
+FAILED tests/quality/test_services.py::test_the_declared_environment_reaches_the_curve
+FAILED tests/quality/test_services.py::test_a_containerised_harness_gets_its_model_and_not_the_internet
+FAILED tests/quality/test_services.py::test_a_remote_model_with_an_offline_network_is_refused
+======================== 7 failed, 30 passed in 29.45s =========================
+
+exit_code=1

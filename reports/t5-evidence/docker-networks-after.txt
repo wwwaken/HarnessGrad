@@ -1,0 +1,8 @@
+$ docker network ls --no-trunc
+NETWORK ID                                                         NAME              DRIVER    SCOPE
+70b7f49f2cf30727ed32d71d463d24ceb29f3febed434962891e537432e02519   bridge            bridge    local
+afc012dc7827cdff7019937485be52f7a31d82fa8637c3677a32170c6241ef67   host              host      local
+48474429c7c0d9fb1d88ce20b321c760223c93d68912c7758052d2ae401fa445   none              null      local
+5b5da34683f1edf30d8bd0eb1433d36453350852ac5ebe015bcfb2c793cc325c   searxng_default   bridge    local
+
+exit_code=0

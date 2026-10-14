@@ -1,0 +1,193 @@
+$ /mnt/8t/xubuqiang/anaconda3/bin/python -m pytest tests/quality/test_jericho_runtime_admission.py --basetemp=/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission -vv --tb=long -ra --color=no --junitxml=/tmp/hg-t5/reports/t5-evidence/baseline-test_jericho_runtime_admission.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/hg-t5
+plugins: anyio-4.13.0
+collecting ... collected 13 items
+
+tests/quality/test_jericho_runtime_admission.py::test_lazy_missing_provisioning_retains_the_actionable_load_error PASSED [  7%]
+tests/quality/test_jericho_runtime_admission.py::test_live_backend_is_refused_before_staging_or_execution ERROR [ 15%]
+tests/quality/test_jericho_runtime_admission.py::test_network_none_admits_controls_and_mock_but_leaves_ordinary_tasks_alone PASSED [ 23%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[../escape.py] ERROR [ 30%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[/escape.py] ERROR [ 38%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[__pycache__/cached.pyc] ERROR [ 46%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[module.pyc] ERROR [ 53%]
+tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_bulk_copies_symlinks_and_leftover_data ERROR [ 61%]
+tests/quality/test_jericho_runtime_admission.py::test_control_resets_a_previous_log_symlink_without_touching_its_target ERROR [ 69%]
+tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict0] ERROR [ 76%]
+tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict1] ERROR [ 84%]
+tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict2] ERROR [ 92%]
+tests/quality/test_jericho_runtime_admission.py::test_installed_jericho_projection_imports_without_reference_payload ERROR [100%]
+
+==================================== ERRORS ====================================
+__ ERROR at setup of test_live_backend_is_refused_before_staging_or_execution __
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_projection_rejects_escaping_paths_and_cached_code[../escape.py] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_projection_rejects_escaping_paths_and_cached_code[/escape.py] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_projection_rejects_escaping_paths_and_cached_code[__pycache__/cached.pyc] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_projection_rejects_escaping_paths_and_cached_code[module.pyc] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_projection_rejects_bulk_copies_symlinks_and_leftover_data _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_control_resets_a_previous_log_symlink_without_touching_its_target _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+__ ERROR at setup of test_control_cannot_accept_an_unmeasured_zero[verdict0] ___
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+__ ERROR at setup of test_control_cannot_accept_an_unmeasured_zero[verdict1] ___
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+__ ERROR at setup of test_control_cannot_accept_an_unmeasured_zero[verdict2] ___
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_installed_jericho_projection_imports_without_reference_payload _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_admission'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+- generated xml file: /tmp/hg-t5/reports/t5-evidence/baseline-test_jericho_runtime_admission.xml -
+=========================== short test summary info ============================
+ERROR tests/quality/test_jericho_runtime_admission.py::test_live_backend_is_refused_before_staging_or_execution
+ERROR tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[../escape.py]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[/escape.py]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[__pycache__/cached.pyc]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_escaping_paths_and_cached_code[module.pyc]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_projection_rejects_bulk_copies_symlinks_and_leftover_data
+ERROR tests/quality/test_jericho_runtime_admission.py::test_control_resets_a_previous_log_symlink_without_touching_its_target
+ERROR tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict0]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict1]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_control_cannot_accept_an_unmeasured_zero[verdict2]
+ERROR tests/quality/test_jericho_runtime_admission.py::test_installed_jericho_projection_imports_without_reference_payload
+========================= 2 passed, 11 errors in 0.31s =========================
+
+exit_code=1

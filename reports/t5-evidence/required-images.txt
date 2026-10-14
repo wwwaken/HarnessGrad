@@ -1,0 +1,12 @@
+$ docker image inspect docker.m.daocloud.io/library/python:3.11-slim --format {{.Id}} {{json .RepoTags}} {{json .RepoDigests}}
+sha256:9c900dea9e8fb7e16277c179b555cc72d29a352dbc33cff48ad5a0412fd5bfc7 ["docker.m.daocloud.io/library/python:3.11-slim"] ["docker.m.daocloud.io/library/python@sha256:9c900dea9e8fb7e16277c179b555cc72d29a352dbc33cff48ad5a0412fd5bfc7"]
+exit_code=0
+
+$ docker image inspect harnessgrad-fake-service:demo --format {{.Id}} {{json .RepoTags}} {{json .RepoDigests}}
+sha256:3a3d25e5d25065b2599076f8de628eb473dbcfdebe3014c0814ed71196b33c18 ["harnessgrad-fake-service:demo"] ["harnessgrad-fake-service@sha256:3a3d25e5d25065b2599076f8de628eb473dbcfdebe3014c0814ed71196b33c18"]
+exit_code=0
+
+$ docker image inspect alexgshaw/cancel-async-tasks:20251031 --format {{.Id}} {{json .RepoTags}} {{json .RepoDigests}}
+sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d ["alexgshaw/cancel-async-tasks:20251031"] ["alexgshaw/cancel-async-tasks@sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d"]
+exit_code=0
+

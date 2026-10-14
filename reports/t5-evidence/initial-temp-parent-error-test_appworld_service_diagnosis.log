@@ -1,0 +1,111 @@
+$ /mnt/8t/xubuqiang/anaconda3/bin/python -m pytest tests/quality/test_appworld_service_diagnosis.py --basetemp=/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis -vv --tb=long -ra --color=no --junitxml=/tmp/hg-t5/reports/t5-evidence/baseline-test_appworld_service_diagnosis.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-7.4.4, pluggy-1.0.0 -- /mnt/8t/xubuqiang/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/hg-t5
+plugins: anyio-4.13.0
+collecting ... collected 6 items
+
+tests/quality/test_appworld_service_diagnosis.py::test_aw_dispatches_init_and_action[False] ERROR [ 16%]
+tests/quality/test_appworld_service_diagnosis.py::test_aw_dispatches_init_and_action[True] ERROR [ 33%]
+tests/quality/test_appworld_service_diagnosis.py::test_runner_mounts_dependency_overlay_once ERROR [ 50%]
+tests/quality/test_appworld_service_diagnosis.py::test_invalid_check_keeps_actor_failure_in_progress ERROR [ 66%]
+tests/quality/test_appworld_service_diagnosis.py::test_service_logs_survive_teardown_and_do_not_block_cleanup[False] ERROR [ 83%]
+tests/quality/test_appworld_service_diagnosis.py::test_service_logs_survive_teardown_and_do_not_block_cleanup[True] ERROR [100%]
+
+==================================== ERRORS ====================================
+_________ ERROR at setup of test_aw_dispatches_init_and_action[False] __________
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+__________ ERROR at setup of test_aw_dispatches_init_and_action[True] __________
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_________ ERROR at setup of test_runner_mounts_dependency_overlay_once _________
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_____ ERROR at setup of test_invalid_check_keeps_actor_failure_in_progress _____
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_service_logs_survive_teardown_and_do_not_block_cleanup[False] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_service_logs_survive_teardown_and_do_not_block_cleanup[True] _
+
+self = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_appworld_service_diagnosis'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+- generated xml file: /tmp/hg-t5/reports/t5-evidence/baseline-test_appworld_service_diagnosis.xml -
+=========================== short test summary info ============================
+ERROR tests/quality/test_appworld_service_diagnosis.py::test_aw_dispatches_init_and_action[False]
+ERROR tests/quality/test_appworld_service_diagnosis.py::test_aw_dispatches_init_and_action[True]
+ERROR tests/quality/test_appworld_service_diagnosis.py::test_runner_mounts_dependency_overlay_once
+ERROR tests/quality/test_appworld_service_diagnosis.py::test_invalid_check_keeps_actor_failure_in_progress
+ERROR tests/quality/test_appworld_service_diagnosis.py::test_service_logs_survive_teardown_and_do_not_block_cleanup[False]
+ERROR tests/quality/test_appworld_service_diagnosis.py::test_service_logs_survive_teardown_and_do_not_block_cleanup[True]
+============================== 6 errors in 0.17s ===============================
+
+exit_code=1

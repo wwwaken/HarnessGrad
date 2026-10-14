@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="17" time="0.169" timestamp="2026-10-14T21:46:29.285262" hostname="mistral"><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_adapter_import_does_not_read_release_payload" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_projection_reads_only_code_and_excludes_docs_data_and_bytecode" time="0.008" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[0]" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[-1]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[True]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[300]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[nan]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_invalid_timeouts_refused[inf]" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_limits_cannot_be_loosened_and_files_policy_survives_normalization" time="0.000" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[host]" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[sandbox]" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[exec]" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_verifier_declaration_reaches_every_launch_path[snapshot]" time="0.001" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_real_host_sleep_obeys_declared_timeout" time="0.043" /><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_runner_refuses_unsandboxed_declared_isolation" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries/test_runner_refuses_unsandboxe0')
+
+    def test_runner_refuses_unsandboxed_declared_isolation(tmp_path):
+        repo = harness(tmp_path / "harness", "raise AssertionError('must not execute')")
+&gt;       with pytest.raises(ValueError, match="requires sandbox"):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/quality/test_jericho_runtime_boundaries.py:149: Failed</failure></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_agent_projection_network_denial_and_trusted_verifier_end_to_end" time="0.002"><failure message="AssertionError: &#10;assert None == 0">tmp_path = PosixPath('/mnt/20t/xubuqiang/.hg-pytest/t5/baseline-test_jericho_runtime_boundaries/test_agent_projection_network_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7d554c89ac60&gt;
+
+    @pytest.mark.skipif(shutil.which("bwrap") is None, reason="bubblewrap unavailable")
+    def test_agent_projection_network_denial_and_trusted_verifier_end_to_end(tmp_path, monkeypatch):
+        # A separate synthetic platform tree preserves the production staging rule.
+        # All test writes remain in the user-authorized worktree.
+        platform = tmp_path / "platform"
+        platform.mkdir()
+        monkeypatch.setattr("eval.run.runner.PLATFORM_ROOT", platform)
+        monkeypatch.setattr("eval.verification.verifier.PLATFORM_ROOT", platform)
+        work = tmp_path / "work"
+        package = work / "packages" / "boundary_fixture"
+        package.mkdir(parents=True)
+        (package / "__init__.py").write_text('REFERENCE = "SYNTHETIC_SECRET"\n')
+        (package / "game_info.py").write_text('REFERENCE = "SYNTHETIC_SECRET"\n')
+        (package / "__pycache__").mkdir()
+        (package / "__pycache__/game_info.pyc").write_bytes(b"SYNTHETIC_SECRET")
+        runtime = {"package_dir": str(package), "files": [{"path": "__init__.py", "content": "PUBLIC = True\n"}]}
+        monkeypatch.setenv("HG_AGENT_BACKEND", "mock")
+        monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(work))
+        with socket.socket() as listener:
+            listener.bind(("127.0.0.1", 0))
+            listener.listen()
+            host_port = listener.getsockname()[1]
+            body = f'''import argparse, json, os, pathlib, socket, sys
+    ap = argparse.ArgumentParser(); ap.add_argument('--task'); ap.add_argument('--workdir'); a = ap.parse_args()
+    assert os.environ['HG_AGENT_DEADLINE_S'] == '3'
+    sys.path.insert(0, {str(package.parent)!r})
+    import boundary_fixture as pkg
+    seen = {{'public': pkg.PUBLIC, 'reference': hasattr(pkg, 'REFERENCE'),
+            'data': pathlib.Path(pkg.__file__).with_name('game_info.py').exists(),
+            'bytecode': pathlib.Path(pkg.__file__).with_name('__pycache__').exists()}}
+    try:
+        pathlib.Path(pkg.__file__).write_text('rewritten'); seen['writable'] = True
+    except OSError:
+        seen['writable'] = False
+    for label, target in [('egress', ('192.0.2.1', 9)), ('host_loopback', ('127.0.0.1', {host_port}))]:
+        with socket.socket() as sock:
+            sock.settimeout(.2)
+            try:
+                sock.connect(target); seen[label] = True
+            except OSError:
+                seen[label] = False
+    pathlib.Path(a.workdir, 'answer.txt').write_text(json.dumps(seen))
+    '''
+            repo = harness(work / "run/workspace", body)
+            verifier = {"kind": "command", "timeout_s": 2, "argv": [sys.executable, "-c",
+                f"import sys; sys.path.insert(0, {str(package.parent)!r}); import boundary_fixture as p; "
+                "assert p.REFERENCE == 'SYNTHETIC_SECRET'; print('trusted package retained')"]}
+            result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+                             env={"kind": "files", "network": "none", "agent_timeout_s": 3,
+                                  "verify_timeout_s": 5, "agent_runtime": runtime}, verifier=verifier)
+&gt;       assert result["exit_code"] == 0, result["stderr"]
+E       AssertionError: 
+E       assert None == 0
+
+tests/quality/test_jericho_runtime_boundaries.py:204: AssertionError</failure></testcase><testcase classname="tests.quality.test_jericho_runtime_boundaries" name="test_control_materialization_resets_actions_and_requires_explicit_id" time="0.006" /></testsuite></testsuites>
