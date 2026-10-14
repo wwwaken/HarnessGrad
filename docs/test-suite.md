@@ -90,3 +90,30 @@ are reached only through the cross-dataset tests. The list can shrink, not grow.
 3. Run `python3 tools/run_tests.py --dataset <dataset> --with-registry`.
 4. Run `python3 tools/run_tests.py --file test_test_scope` to confirm the scoping
    guard accepts the new name.
+
+## Where the temporary directories go
+
+Per-file pytest basetemps are placed on the **roomiest writable scratch filesystem**,
+not blindly in `/tmp`, and each file's tree is removed when that file finishes.
+
+This is not tidiness. On a shared machine `/tmp` is often a small root filesystem, and
+when it fills, tests fail with `No usable temporary directory found` — which looks like a
+broken test rather than a full disk. It also makes real integration tests time out, so a
+nearly-full disk quietly converts working code into a red suite. A test run must neither
+depend on that filesystem having room nor be the thing that fills it.
+
+Override the location with `HG_TEST_TMPDIR=/some/roomy/path`. The runner prints the chosen
+directory and its free space before it starts. `--keep-basetemp` retains the trees for
+debugging; without it, 140 files would leave 140 trees behind.
+
+## Reading a failure
+
+A failure under load and a failure in the code look identical in a summary, so the runner
+re-runs every failed file **on its own** and separates them:
+
+* **REAL failure** — still fails alone. Investigate.
+* **load-sensitive** — passes alone. The test is not isolated (usually a fixed port or a
+  shared service). Lower `--jobs`, or fix the test; do not ignore it forever.
+
+Both exit non-zero by default. `--allow-load-sensitive` exits 0 when only the second kind
+remain, for a fast local loop.
