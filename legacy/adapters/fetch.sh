@@ -12,7 +12,7 @@
 # which revision was read (SOURCES.md) and how to get it (this script).
 set -euo pipefail
 
-DEST="${DEST:-$(cd "$(dirname "$0")/../.." && pwd)/methods_src}"
+DEST="${DEST:-$(cd "$(dirname "$0")/../../.." && pwd)/methods_src}"
 mkdir -p "$DEST"
 
 fetch() {  # name repo branch
@@ -40,7 +40,7 @@ fetch metaharness stanford-iris-lab/meta-harness-tbench2-artifact main
 
 # RRSI is not fetched here: it is the one method that had to be patched to run
 # on this host at all, and RISE/tools/rrsi/ carries those patches plus the
-# dataset pin. See adapters/SOURCES.md.
+# dataset pin. See legacy/adapters/SOURCES.md.
 
 cat <<'NOTE'
 

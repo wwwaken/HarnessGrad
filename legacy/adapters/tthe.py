@@ -23,9 +23,9 @@ connects. Anything it added would be an edit the platform made to someone else's
 harness, which is exactly the line `INTERFACE.md` §4.3 draws.
 
 Usage:
-    python adapters/tthe.py --repo <tthe> --domain text_to_sql --harness react \
+    python legacy/adapters/tthe.py --repo <tthe> --domain text_to_sql --harness react \
         --out-dir <dir>            # compile one harness
-    python adapters/tthe.py --repo <tthe> --domain text_to_sql --trajectory \
+    python legacy/adapters/tthe.py --repo <tthe> --domain text_to_sql --trajectory \
         --out trajectory.json      # a two-step trajectory: bare, then react
 """
 from __future__ import annotations

@@ -58,7 +58,7 @@ it.** The project's own rule covers the case -- a state the platform cannot
 materialize is reported, never guessed at -- so this adapter reports.
 
 Usage:
-    python adapters/metaharness.py --repo <artifact> --out trajectory.json
+    python legacy/adapters/metaharness.py --repo <artifact> --out trajectory.json
 """
 from __future__ import annotations
 

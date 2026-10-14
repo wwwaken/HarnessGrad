@@ -36,7 +36,7 @@ What is not reproduced, and two findings worth carrying
 -------------------------------------------------------
 1. **`--update_archive` defaults to `keep_all`, not `keep_better`**
    (`DGM_outer.py:232`). Our own read-only adapter states the opposite
-   (`adapters/dgm.py:145-149`). With `keep_all` the archive is not a filter at
+   (`legacy/adapters/dgm.py:145-149`). With `keep_all` the archive is not a filter at
    all: every compiled variant enters, and the only thing that ever leaves the
    parent pool is a commit whose metadata will not load. Both are implemented
    here and the choice is recorded, because a run that silently picks one and

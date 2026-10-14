@@ -7,7 +7,7 @@ Meta-Harness as *"a method that publishes an output and not a process"*, on the 
 Terminal-Bench 2 harness. That was one half of the method. The process is
 `stanford-iris-lab/meta-harness`, *"Official code for Meta-Harness (2603.28052)"*, and it
 has been a port candidate the whole time. The false claim was written into four files
-(`adapters/SOURCES.md`, `adapters/README.md`, `adapters/metaharness.py`,
+(`legacy/adapters/SOURCES.md`, `legacy/adapters/README.md`, `legacy/adapters/metaharness.py`,
 `docs/methods_we_port.md`); the correction is recorded in each rather than deleted, because
 reading one release and inferring the process from it is a shortcut anyone can take.
 

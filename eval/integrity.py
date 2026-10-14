@@ -79,9 +79,8 @@ NOT_PLATFORM = {
                     "one write the platform exists to make",
     "current_harness": "output of `tools/export_harnesses.py`, derived from runs; "
                        "nothing a run reads",
-    "adapters": "historical record of the abandoned replay route (see `adapters/README.md`); "
-                "not read at run time. `adapters/harnessgrad_domain/` is maintained but "
-                "still only a *tool for a human* to port a method",
+    "legacy": "unmaintained historical record (see `legacy/README.md`); not a supported "
+              "route and not imported or read at run time",
     "install.sh": "provisions a machine (`bubblewrap`, `git`, `python3`); it does not "
                   "decide what a number means",
     "README.md": "the front door for a human, not something a run reads",

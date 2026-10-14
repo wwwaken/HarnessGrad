@@ -13,10 +13,10 @@
 > the platform measures every state itself. Seven published methods now have one;
 > see the "second route" section at the bottom of this file.
 >
-> **What still reads this directory:** `tests/quality/test_adapters.py` (so the
-> code does not rot silently) and `adapters/harnessgrad_domain/`, which is **not
-> replay** — it is the live interface that lets RRSI's own search loop drive with
-> the platform supplying measurement, and it remains maintained.
+> **This is NOT a supported route.** Only historical tests read this directory;
+> production modules must not import it. `tests/quality/test_adapters.py` retains
+> the adapter contract checks. The former RRSI interface in
+> `legacy/adapters/harnessgrad_domain/` is also an unmaintained historical record.
 >
 > Two methods have no port: **MAC**, whose code contains no decision rule to port, and
 > **Meta-Harness**, whose *output* is a harness that needs harbor's runtime and whose
@@ -32,7 +32,7 @@ method: the method's repository is a read-only source of runs.
 
     methods_src/<method>/      the method's own code (cloned, never edited)
     <method>_runs/             what the method produced when it ran
-    adapters/<method>.py       reads those runs -> HarnessGrad trajectory
+    legacy/adapters/<method>.py       reads those runs -> HarnessGrad trajectory
 
 This is deliberately different from `base_harness/<name>/old-method-design/`, which is where a
 method lives when the harness is *ours*. An external method has its own loop, its
@@ -81,14 +81,14 @@ which is what this directory contained before the contract existed:
     (repo)                   metaharness
 ```
 
-`adapters/context.py` fixes the shape at three arguments — **`repo`** (where the
+`legacy/adapters/context.py` fixes the shape at three arguments — **`repo`** (where the
 method's checkout is, read-only), **`run_dir`** (where the adapter may write), and
-**`options`** (method-specific keys) — and `adapters/entrypoint.py` drives any
+**`options`** (method-specific keys) — and `legacy/adapters/entrypoint.py` drives any
 adapter through it:
 
 ```bash
 HG_ADAPTER=harnessx HG_REPO=/path/to/harnessx HG_OPTIONS='{"example":"coding"}' \
-    python adapters/entrypoint.py     # reads the platform's request on stdin
+    python legacy/adapters/entrypoint.py     # reads the platform's request on stdin
 ```
 
 `call()` inspects the adapter's signature rather than keeping a table, because a

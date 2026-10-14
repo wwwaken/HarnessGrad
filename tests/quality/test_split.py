@@ -298,7 +298,7 @@ def test_the_rrsi_domain_reads_the_platforms_split_instead_of_assuming_none():
         f"`rrsi` 解析成了模块而不是包({rrsi.__file__});"
         f"检出目录里同时有 rrsi.py 和 rrsi/,sys.path 的顺序决定了拿到哪个")
 
-    path = ROOT / "adapters" / "harnessgrad_domain" / "adapter.py"
+    path = ROOT / "legacy" / "adapters" / "harnessgrad_domain" / "adapter.py"
     spec = importlib.util.spec_from_file_location("hg_domain_adapter", path)
     mod = importlib.util.module_from_spec(spec)
     try:

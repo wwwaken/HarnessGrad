@@ -32,8 +32,8 @@ itself treats as the harness; `init_workspace` (`evolve.py:306`) copies exactly
 this directory into a workspace for the evolve agent.
 
 Usage:
-    python adapters/ahe.py --repo <ahe> --out-dir <dir>
-    python adapters/ahe.py --repo <ahe> --trajectory --out trajectory.json
+    python legacy/adapters/ahe.py --repo <ahe> --out-dir <dir>
+    python legacy/adapters/ahe.py --repo <ahe> --trajectory --out trajectory.json
 """
 from __future__ import annotations
 

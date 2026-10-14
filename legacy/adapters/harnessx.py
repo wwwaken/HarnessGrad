@@ -35,8 +35,8 @@ processors by editing the YAML, or add new ones by writing code — and those ar
 different kinds of edit, which is exactly what `edit_kind` is for.
 
 Usage:
-    python adapters/harnessx.py --repo <harnessx> --example minimal --out-dir <dir>
-    python adapters/harnessx.py --repo <harnessx> --trajectory --out trajectory.json
+    python legacy/adapters/harnessx.py --repo <harnessx> --example minimal --out-dir <dir>
+    python legacy/adapters/harnessx.py --repo <harnessx> --trajectory --out trajectory.json
 """
 from __future__ import annotations
 

@@ -23,7 +23,7 @@ answer to "can this method change its own search rule?" is structurally no. That
 reading comes from the configuration, not from a diff, and it needs no run.
 
 Usage:
-    python adapters/rrsi.py --repo <rrsi> --run-root <rrsi>/runs/coding \
+    python legacy/adapters/rrsi.py --repo <rrsi> --run-root <rrsi>/runs/coding \
         --out trajectory.json
 """
 from __future__ import annotations

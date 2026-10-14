@@ -34,9 +34,9 @@ cross-platform measurement means, and it is why the curve point records who
 measured the number.
 
 Usage:
-    python adapters/mac.py --repo <mac> --solution solution/baseline_thinking_agent.py \
+    python legacy/adapters/mac.py --repo <mac> --solution solution/baseline_thinking_agent.py \
         --out-dir <dir>
-    python adapters/mac.py --repo <mac> --trajectory --out trajectory.json
+    python legacy/adapters/mac.py --repo <mac> --trajectory --out trajectory.json
 """
 from __future__ import annotations
 

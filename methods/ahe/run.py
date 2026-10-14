@@ -110,7 +110,7 @@ time.
 
 A correction to our own adapter
 -------------------------------
-`adapters/ahe.py:193-198` records AHE's acceptance rule as *"keep the candidate
+`legacy/adapters/ahe.py:193-198` records AHE's acceptance rule as *"keep the candidate
 if PASS@1 beats the incumbent's best-so-far (Algorithm 1 line 14)"*. That claim
 is not in this code. No branch in the main loop rejects or reverts a workspace on
 score; the loop runs to `max_iterations` or the target pass rate, and the only

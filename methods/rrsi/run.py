@@ -190,7 +190,7 @@ _STRING_LINE = re.compile(r'^[+-]\s*(?:[frb]?["\']|""")')
 #: The critic's deterministic layer: RRSI's generic credential denylist
 #: (`rrsi/critic.py:50-52`) plus this platform's own patterns, which are the
 #: `critic_patterns` the HarnessGrad domain adapter hands RRSI
-#: (`adapters/harnessgrad_domain/adapter.py:421-431`). A hit here is a hard
+#: (`legacy/adapters/harnessgrad_domain/adapter.py:421-431`). A hit here is a hard
 #: rejection before any model is asked (`rrsi/critic.py:105-119`).
 CRITIC_PATTERNS = [
     (r"AIza[0-9A-Za-z_-]{35}|sk-[A-Za-z0-9]{20,}|api_key\s*=\s*[\"\'][^\"\']{8,}",

@@ -151,7 +151,7 @@ def test_dgm_keep_better_compares_against_the_initial_score(monkeypatch):
 def test_dgm_keep_all_is_the_default_the_adapter_got_wrong():
     """`--update_archive` 出厂默认是 keep_all,不是 keep_better。
 
-    我们自己的适配器写反了(adapters/dgm.py)。这里钉住的是**代码里的默认值**,
+    我们自己的适配器写反了(legacy/adapters/dgm.py)。这里钉住的是**代码里的默认值**,
     因为一个默认跑 keep_all 却声称自己是 keep_better 的运行,是对别人方法的一句假话。
     """
     dgm = _load("dgm")

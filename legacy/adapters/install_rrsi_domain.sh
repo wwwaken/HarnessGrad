@@ -6,7 +6,7 @@
 # measurement API changes. RRSI's own `domains/` directory belongs to RRSI, so this
 # copies rather than editing in place, and re-running it is how you update.
 #
-#     ./adapters/install_rrsi_domain.sh [--rrsi DIR] [--harness NAME] [--check]
+#     ./legacy/adapters/install_rrsi_domain.sh [--rrsi DIR] [--harness NAME] [--check]
 #
 # What it does, in order:
 #   1. copies the domain (adapter, config, briefs, and the two prompt documents)
@@ -16,8 +16,8 @@
 # It does not touch RRSI's Python, its config, or any of its own domains.
 set -uo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SRC="$ROOT/adapters/harnessgrad_domain"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+SRC="$ROOT/legacy/adapters/harnessgrad_domain"
 
 RRSI="${RRSI_ROOT:-/mnt/20t/xubuqiang/Study/rrsi-run}"
 HARNESS="loop"

@@ -57,10 +57,12 @@ from pathlib import Path
 
 #: Where the platform lives. Importable, not installed -- the platform is a checkout,
 #: and this adapter is the only thing that needs to know where.
-HG_ROOT = Path(os.environ.get(
-    "HARNESSGRAD_ROOT",
-    Path(__file__).resolve().parent.parent.parent.parent / "HarnessGrad",
-)).resolve()
+#: The archive has an extra level; installed RRSI copies retain the sibling default.
+_source = Path(__file__).resolve()
+_default_root = _source.parents[3]
+if _source.parts[-4:-1] != ("legacy", "adapters", "harnessgrad_domain"):
+    _default_root /= "HarnessGrad"
+HG_ROOT = Path(os.environ.get("HARNESSGRAD_ROOT", _default_root)).resolve()
 if str(HG_ROOT) not in sys.path:
     sys.path.insert(0, str(HG_ROOT))
 
@@ -483,7 +485,7 @@ def _load_sibling(name: str):
     path = Path(__file__).resolve().parent / f"{name}.py"
     if not path.exists():
         raise SystemExit(f"the harnessgrad domain is incomplete: {path} is missing. "
-                         f"Re-run adapters/install_rrsi_domain.sh.")
+                         f"Re-run legacy/adapters/install_rrsi_domain.sh.")
     spec = importlib.util.spec_from_file_location(f"harnessgrad_domain_{name}", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

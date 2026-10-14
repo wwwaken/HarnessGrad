@@ -24,7 +24,7 @@ platform has to accommodate.
    method has stated somewhere.
 
 Usage:
-    python adapters/dgm.py --repo <dgm> --run-root <dgm-output-dir> --out trajectory.json
+    python legacy/adapters/dgm.py --repo <dgm> --run-root <dgm-output-dir> --out trajectory.json
 """
 from __future__ import annotations
 

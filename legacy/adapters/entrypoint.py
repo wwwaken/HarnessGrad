@@ -6,7 +6,7 @@ which method it is running -- and because nine scripts with three different call
 conventions is nine scripts, not nine integrations.
 
     HG_ADAPTER=harnessx HG_REPO=/path/to/harnessx HG_OPTIONS='{"example":"coding"}' \
-        python adapters/entrypoint.py
+        python legacy/adapters/entrypoint.py
 
 Environment:
     HG_ADAPTER   which adapter module to load (required)

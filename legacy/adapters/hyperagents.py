@@ -29,7 +29,7 @@ records the boundary instead of asking a method to declare it: four methods, fou
 different boundaries, and all four are visible in what the diff touched.
 
 Usage:
-    python adapters/hyperagents.py --run-root <output_dir> --out trajectory.json
+    python legacy/adapters/hyperagents.py --run-root <output_dir> --out trajectory.json
 """
 from __future__ import annotations
 

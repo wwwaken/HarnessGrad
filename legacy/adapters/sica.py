@@ -22,7 +22,7 @@ directory is a tree that can be committed -- but it means the unit of state is
 "a copy", not "a revision", and the adapter has to say so.
 
 Usage:
-    python adapters/sica.py --run-root <sica>/results/run_<id> --out trajectory.json
+    python legacy/adapters/sica.py --run-root <sica>/results/run_<id> --out trajectory.json
 """
 from __future__ import annotations
 

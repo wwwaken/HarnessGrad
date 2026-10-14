@@ -1,4 +1,4 @@
-"""Every adapter must be reachable through the platform's own entrypoint.
+"""Preserve the historical adapters' contract outside the supported platform.
 
 This is the test that was missing when nine adapters were described as "done".
 They had three different `to_trajectory` signatures and the entrypoint supplied a
@@ -7,12 +7,12 @@ platform at all. Each worked when invoked directly from Python, which is why the
 gap survived nine rounds of adapter work: **the adapters were tested the way they
 were written, not the way they are used.**
 
-The uniform contract is `adapters/context.py`. This checks the property that
-matters -- not that a signature matches, but that a caller who knows only the
-platform's protocol can get a trajectory out of every adapter.
+The uniform contract is `legacy/adapters/context.py`. These checks preserve the
+historical entrypoint behavior; production modules must not import the archive.
 """
 from __future__ import annotations
 
+import ast
 import json
 import os
 import subprocess
@@ -22,13 +22,13 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-ADAPTERS = ROOT / "adapters"
+ADAPTERS = ROOT / "legacy" / "adapters"
 METHODS = ROOT.parent / "methods_src"
 RRSI = ROOT.parent / "rrsi-run"
 
 #: (adapter, method checkout, extra environment). An adapter whose checkout is
 #: absent is skipped rather than failed: the sources are other people's
-#: repositories, fetched by `adapters/fetch.sh`, and a platform test must not
+#: repositories, fetched by `legacy/adapters/fetch.sh`, and a platform test must not
 #: require them to be present.
 #: A reader-adapter also needs a *run* to read, not just a checkout. SICA and
 #: HyperAgents ship no run artifacts, so their cases are skipped unless a run
@@ -64,20 +64,49 @@ CASES = [
 ]
 
 
-def test_the_uniform_contract_is_what_the_adapters_implement():
+def test_legacy_adapters_are_explicitly_unmaintained():
+    assert not (ROOT / "adapters").exists()
+    for path in (ROOT / "legacy" / "README.md", ADAPTERS / "README.md"):
+        text = " ".join(path.read_text().lower().split())
+        assert "historical record" in text
+        assert "not a supported route" in text
+    assert "not maintained" in (ADAPTERS / "README.md").read_text().lower()
+
+
+def test_no_production_module_imports_legacy_adapters():
+    violations = []
+    for path in ROOT.rglob("*.py"):
+        relative = path.relative_to(ROOT)
+        if relative.parts[0] in {"legacy", "tests"} or any(
+                part.startswith(".") for part in relative.parts):
+            continue
+        for node in ast.walk(ast.parse(path.read_text(), filename=str(relative))):
+            if isinstance(node, ast.Import):
+                names = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                names = [f"{node.module}.{alias.name}" for alias in node.names]
+            else:
+                continue
+            if any(name == prefix or name.startswith(prefix + ".")
+                   for name in names for prefix in ("adapters", "legacy.adapters")):
+                violations.append(f"{relative}:{node.lineno}")
+    assert not violations, "production imports historical adapters: " + ", ".join(violations)
+
+
+def test_the_uniform_contract_is_what_the_adapters_implement(monkeypatch):
     """`to_trajectory` on every adapter, discovered rather than listed: a hand-kept
     list drifts, and the drift looks like a broken adapter."""
     import importlib
     import inspect
 
-    sys.path.insert(0, str(ADAPTERS))
+    monkeypatch.syspath_prepend(str(ROOT))
     found = sorted(p.stem for p in ADAPTERS.glob("*.py")
                    if p.stem not in ("entrypoint", "context", "__init__"))
     assert len(found) == 9, f"expected nine adapters, found {found}"
 
     bad = []
     for name in found:
-        fn = getattr(importlib.import_module(name), "to_trajectory", None)
+        fn = getattr(importlib.import_module(f"legacy.adapters.{name}"), "to_trajectory", None)
         if fn is None:
             bad.append(f"{name}: no to_trajectory")
             continue
@@ -90,7 +119,7 @@ def test_the_uniform_contract_is_what_the_adapters_implement():
         if unknown:
             bad.append(f"{name}: unrecognised parameters {sorted(unknown)}")
     assert not bad, ("the uniform contract cannot call these adapters; add the "
-                     "parameter to adapters/context.py::call: " + "; ".join(bad))
+                     "parameter to legacy/adapters/context.py::call: " + "; ".join(bad))
 
 
 @pytest.mark.parametrize("name,repo,extra,needs_runs", CASES,

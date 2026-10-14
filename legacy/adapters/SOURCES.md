@@ -5,12 +5,12 @@ vendored** — a clone of this repo contains code and records, not datasets,
 papers or four different licences. This file records what was read so the
 adapters' claims can be checked.
 
-Retrieve with `adapters/fetch.sh` (downloads to a sibling `methods_src/`).
+Retrieve with `legacy/adapters/fetch.sh` (downloads to a sibling `methods_src/`).
 
 | method | repo | branch | code files | digest |
 | --- | --- | --- | ---: | --- |
 | AHE | `china-qijizhifeng/agentic-harness-engineering` | `main` | 197 | `d9d5d16800a24a0d` |
-| AHE (runtime) | — | — | — | needs the `nexau` engine and `LLM_*` env vars; see `adapters/README.md` |
+| AHE (runtime) | — | — | — | needs the `nexau` engine and `LLM_*` env vars; see `legacy/adapters/README.md` |
 | DGM | `jennyzzt/dgm` | `main` | 40 | `c0e9bd2f3d16d6b5` |
 | HarnessX | `darwin-agent/HarnessX` | `main` | 609 | `e64f6e9dd4c62c5f` |
 | HarnessX (runtime) | — | — | — | needs the `harnessx` package (`omegaconf` et al.) and a model config |
@@ -18,10 +18,10 @@ Retrieve with `adapters/fetch.sh` (downloads to a sibling `methods_src/`).
 | MAC | `ant-research/meta-agent-challenge` | `main` | 107 | `57d00e2458d5750a` |
 | MAC (runtime) | — | — | — | needs `TASK_MODEL_API_KEY` and the artifact's own endpoint |
 | Meta-Harness (artifact only) | `stanford-iris-lab/meta-harness-tbench2-artifact` | `main` | 4 | `483f9304774e6615` |
-| Meta-Harness (runtime) | — | — | — | needs harbor's sandbox protocol; see `adapters/README.md` |
+| Meta-Harness (runtime) | — | — | — | needs harbor's sandbox protocol; see `legacy/adapters/README.md` |
 | SICA | `MaximeRobeyns/self_improving_coding_agent` | **`master`** | 113 | `1e617c7abdba1c4d` |
 | TTHE | `junnie00/TTHE` | `main` | 57 | `08a983bf109f4c33` |
-| TTHE (runtime) | — | — | — | needs its own `config.yaml`; see `adapters/README.md` |
+| TTHE (runtime) | — | — | — | needs its own `config.yaml`; see `legacy/adapters/README.md` |
 | Meta-Harness (framework) | `stanford-iris-lab/meta-harness` | `main` | 65 | tree `8123ccab…` — see below |
 | RRSI | `google-research/rrsi` | — | — | see below |
 
@@ -48,7 +48,7 @@ which carries the framework, two reference experiments
 (`reference_examples/terminal_bench_2/meta_harness.py` is the TB2 search loop) and an
 `experimental/harbor_meta_harness/controller.py`. Until 2026-10-04 this file recorded
 only the artifact and asserted that "the search framework is not released"; that
-sentence was false and had propagated into `adapters/README.md` and
+sentence was false and had propagated into `legacy/adapters/README.md` and
 `docs/methods_we_port.md` §6. The framework's tree sha when the correction was made is
 `8123ccabe2b19fa1123090b2e5f1bacc20963ce8` (branch `main`, pushed 2026-10-02); its
 content digest is not in the table below, for the reason in the next section.
@@ -67,7 +67,7 @@ three checkouts on this host and **none** of their recorded digests:
 | SICA | 113 | `6eb2b1358dc50eb7` | `1e617c7abdba1c4d` |
 | TTHE | 57 | `0821dbf28e8c7d07` | `08a983bf109f4c33` |
 
-`adapters/fetch.sh` contains no digest computation, so the recorded values were produced
+`legacy/adapters/fetch.sh` contains no digest computation, so the recorded values were produced
 by something that is not in this repository. Until the column is recomputed under a rule
 that lives here, read it as a label and not as a check: the verifiable identity of a
 checkout is the tree sha you fetched, and the file count is a weak second.

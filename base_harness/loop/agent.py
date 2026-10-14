@@ -51,7 +51,7 @@ from pathlib import Path
 #: harness being measured: it is a floor effect, and a floor makes every method look
 #: identical because there is no gradient for one to move.
 #:
-#: Raising this does not make the harness cleverer -- `adapters/harnessgrad_domain/`
+#: Raising this does not make the harness cleverer -- `legacy/adapters/harnessgrad_domain/`
 #: already names this lever as the trap ("helps only if the model is already using the
 #: steps it has"). Here the trace shows it *was* using them, which is exactly when the
 #: lever is legitimate. What it costs is bounded by the task, not by this number: the

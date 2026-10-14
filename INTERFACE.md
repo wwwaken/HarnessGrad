@@ -2253,7 +2253,7 @@ behind it rather than a convention.
 ## 4.9 What nine adapters found, and the assumption they did not change
 
 > **This section records a historical finding, not a current capability.** The
-> replay route it describes is no longer maintained (see `adapters/README.md`).
+> replay route it describes is no longer maintained (see `legacy/adapters/README.md`).
 > What outlives it is the *reading*: the boundary table below is why the platform
 > records `editable_surface_touched` instead of accepting a declared mode, and the
 > nine shapes are why a port has to say which of its rules mode A cannot express.
