@@ -206,6 +206,63 @@ Finally, eval size and `--trials` reduce different noises — eval size reduces
 task-sampling noise, trials reduce run-to-run noise. Neither substitutes for the
 other, and `--trials >= 3` remains required.
 
+### Small datasets: a coverage problem, not a splitting problem
+
+Small datasets come in two kinds, and pooling does not rescue either.
+
+**Small but in a populated cell.** `physicsquestions` (53) sits in
+`reasoning/reasoning` with 13 915 tasks, so it is 0.38% of its cell. Even a 50%
+improvement in it moves the cell mean by 0.19 pp, far below the noise floor, and
+`gsm8k`'s 8792 tasks would drown it. Pooling therefore helps the *cell* and not the
+dataset. If the claim is cell-level the dataset contributes nothing measurable; if
+the claim is dataset-level the dataset can never carry it. **Pooling is not worth
+doing.**
+
+**Small and alone in its cell.** Measured singleton cells:
+
+| Cell | Dataset | Eligible |
+| --- | --- | ---: |
+| `artifact/spreadsheet` | spreadsheetbench | 400 |
+| `artifact/text_to_sql` | bird_minidev | 500 |
+| `environment/interactive_fiction` | jericho | **56** |
+| `environment/embodied_text` | alfworld | not enumerated |
+| `environment/terminal` | terminal_bench | not enumerated |
+| `environment/science_simulation` | scienceworld | 1666 |
+| `reasoning/planning_and_search` | chessbench_puzzles | 10 000 |
+
+`chessbench_puzzles` and `scienceworld` are singletons *and* large, and carry a curve
+normally. Singleton-ness and smallness are independent properties; only their
+intersection is a problem.
+
+The key consequence: **`jericho` at 56 tasks is not a splitting problem.** It is the
+sole member of `environment/interactive_fiction`, which violates
+`MIN_MEMBERS_PER_DEMAND = 2`. The platform already has a mechanism for that — the
+two-way below-floor declaration. So its handling is a coverage declaration, not a new
+split rule.
+
+### Tiering
+
+| Tier | Condition | Split | Supports |
+| --- | --- | --- | --- |
+| **A** `curve_eligible` | eligible ≥ 800 | `clamp(10%, 150, 500)`, whole groups | the R1/R2 curve |
+| **B** `point_eligible` | 150 ≤ eligible < 800 | same rule, one frozen `N` only | single-point comparison (~9–13 pp) |
+| **C** `illustrative` | eligible < 150, or singleton and < 800 | **no split, use all tasks** | existence, end-to-end, coverage — no number |
+
+Singleton status stacks on top of the tier: a singleton cell also carries a
+coverage-gap declaration regardless of its tier.
+
+**Do not split a Tier C dataset.** Splitting `jericho` 40/8/8 yields 8 eval tasks and
+a 29 pp resolution floor; that number demonstrates nothing and invites citation. All
+56 tasks used for an end-to-end existence claim and for coverage of the
+`interactive_fiction` surface is a defensible asset, where the split would convert a
+usable asset into an unusable number.
+
+If a number is genuinely needed for such a dataset, the only honest form is an
+explicitly labelled **in-sample diagnostic**: no split, all tasks, vary `N`, reported
+as mechanism sensitivity and declared not to be generalisation evidence. The platform
+already distinguishes valid, unmeasured and diagnostic, so the label is available —
+but it must not enter the R1 table.
+
 ## 6. Open items
 
 * The same measurement has not been run for the other multi-hop adapters
