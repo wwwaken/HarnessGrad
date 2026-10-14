@@ -158,10 +158,11 @@ Required scorer return package:
   pristine runtime accepts read-only `/control-input` and `/control-scorer` only;
   any additional trusted-input projection requires an explicit reviewed contract
   or a task-specific trusted closure. Never add a mount by declaration alone.
-- Fresh created/stopped pristine scorer observation binding exact command, image,
-  environment allowlist, read-only root/mounts, network and bounded scratch/output;
-  separate CPU/memory/swap/PID/deadline and ownership evidence. Keep checked bytes
-  and runtime boundaries unchanged through invocation.
+- Fresh pristine scorer observation with `State.Status="created"` and
+  `State.Running=false`; an exited/stopped runtime is not accepted. Bind exact
+  command, image, environment allowlist, read-only root/mounts, network and bounded
+  scratch/output; separate CPU/memory/swap/PID/deadline and ownership evidence.
+  Keep checked bytes and runtime boundaries unchanged through invocation.
 - Actual official scorer invocation receipt with run/trial/task, independent pins,
   export digest, runtime identity, metric, exit/OOM/timeout, resources and cleanup.
   Process exit alone is not a score; missing or malformed reports stay unmeasured.
@@ -187,7 +188,7 @@ closed objects. Required envelope fields are:
 | Provenance | `source_revision`, `source_sha256`, `split_sha256`, `harness_sha256`, `policy_sha256`, `ownership_intent_sha256`, `model_sha256`, `endpoint_binding`, `model_bound`. Model/endpoint are null only for a frozen model-free lifecycle. |
 | Observer | `observer_id`, `implementation_sha256`, `boot_id`, UTC `observed_at`, monotonic positive `sequence`, `privilege_boundary_sha256`, `raw_observation_sha256`. Collector is independent of actor output. |
 | Phase | `lifecycle.phase`, `allocation_generation`, positive `deadline_ms`; provisioning/allocation/prestage/prestart/snapshot_preflight/snapshot_complete/cleanup as appropriate. |
-| Result | `result.status` = verified/blocked/unknown, fixed `reason`; `measured=false`, `production_authorized=false`; matching kind-specific `facts`, nullable only as specified for unavailable/refused collection. |
+| Result | `result.status` = verified/blocked/unknown; `result.reason=null` for verified, otherwise a fixed schema reason code. `measured=false`, `production_authorized=false`; matching kind-specific `facts`, nullable only as specified for unavailable/refused collection. |
 
 Collect all seven kinds at their required boundaries: `host_provisioning`,
 `project_scope`, `tmpfs_scope`, `writable_inventory`, `docker_storage`, `snapshot`

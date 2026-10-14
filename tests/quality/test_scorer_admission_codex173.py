@@ -225,6 +225,18 @@ def test_missing_or_incomplete_observer_evidence_remains_unknown(example, key, v
     refused(admission.admit_runtime, arguments, "runtime", "unknown")
 
 
+@pytest.mark.parametrize("state,status", [
+    (dict(Status="exited", Running=False), "blocked"),
+    (dict(Running=False), "unknown"),
+    (dict(Status="created"), "unknown"),
+])
+def test_pristine_scorer_requires_created_and_not_running_observation(example, state, status):
+    # Task 220: a stopped runtime is not the required created-state observation.
+    _, _, arguments = example
+    arguments["info"]["State"] = state
+    refused(admission.admit_runtime, arguments, "runtime", status)
+
+
 def test_invalid_pin_remains_blocked_even_when_observation_is_missing(example):
     _, _, arguments = example
     arguments["bundle_sha256"] = "c" * 64
