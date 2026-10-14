@@ -36,6 +36,9 @@ source completeness, image ABI completeness, observer authenticity, freshness,
 ownership, CPU/memory/PID/deadline enforcement or cleanup. Those remain independent
 backend obligations. Production adapter integration remains unverified.
 
+For optional backend composition, ordinary-user access, lifecycle progression and
+preflight refusal handling, see the [scorer backend and lifecycle API](scorer-backend-lifecycle-api.md).
+
 ## Receipts and refusals
 
 Both checks return a JSON-compatible `harnessgrad.scorer-admission.v1` receipt with
