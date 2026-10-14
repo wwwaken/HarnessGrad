@@ -1,0 +1,123 @@
+{
+  "kind": "derived from saved driver/scorer artifacts; not replacement receipt",
+  "sources": [
+    "execution/diagnostic_execution.json",
+    "execution/diagnostic_receipt.json",
+    "reports/w-appworld-evidence/execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl"
+  ],
+  "task_id": "cf6abd2_2",
+  "raw_verdict": {
+    "kind": "command",
+    "passed": false,
+    "score": 0.0,
+    "detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0",
+    "evidence": {
+      "task_id": "cf6abd2_2",
+      "source_split": "train",
+      "metric": "appworld.task_goal_completion",
+      "metric_name": "TGC",
+      "measured": true,
+      "success": false,
+      "num_tests": 8,
+      "passes": [
+        {
+          "requirement": "assert model changes match simple_note.Note.",
+          "label": "no_op_fail"
+        },
+        {
+          "requirement": "obtain added, updated, removed simple_note.Note records using models.changed_records,\nand assert 0 were added or removed.",
+          "label": "no_op_pass"
+        },
+        {
+          "requirement": "assert exactly 1 simple_note.Note was updated.",
+          "label": "no_op_fail"
+        },
+        {
+          "requirement": "assert the updated note's id matches data.private.note_id.",
+          "label": "no_op_fail"
+        },
+        {
+          "requirement": "assert the updated note's content first line after stripping matches data.private.note_header_line.",
+          "label": "no_op_fail"
+        },
+        {
+          "requirement": "assert the updated note's content rest of the lines after stripping\nmatches data.private.note_body_lines (normalize_text=True).",
+          "label": "no_op_fail"
+        },
+        {
+          "requirement": "obtained changed_field_names of the updated note and assure none of them are in\n[\"title\", \"tags\", \"pinned\"].",
+          "label": "no_op_fail"
+        }
+      ],
+      "failures": [
+        {
+          "requirement": "assert answers match.",
+          "trace": "```python\nwith test(\n    \"\"\"\n    assert answers match.\n    \"\"\"\n):\n    test.answer(predicted_answer, ground_truth_answer)\n```\n----------\nAssertionError:  '<<not_given>>' == 'null'",
+          "label": "no_op_fail"
+        }
+      ]
+    },
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "snapshot-service"
+  },
+  "raw_counts": {
+    "measured": 1,
+    "invalid": 0,
+    "unmeasured": 0
+  },
+  "staged_coverage": {
+    "eligible_tasks": 147,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "staged_score": null,
+  "staged_reason": "policy_enforcement_not_observed",
+  "api_call_count": 14,
+  "model_gateway": {
+    "published": true,
+    "target": "127.0.0.1:8002",
+    "connections": 16,
+    "upstream_connect_failed": 0,
+    "upstream_connect_error": null,
+    "upstream_closed_first": 16,
+    "client_closed_first": 0,
+    "bytes_to_upstream": 215585,
+    "bytes_to_client": 17087,
+    "read_errors": []
+  },
+  "tokens": {
+    "input": 56264,
+    "output": 1286,
+    "calls": 16,
+    "tasks_reported": 1
+  },
+  "harness_output": {
+    "cf6abd2_2": {
+      "exit_code": 0,
+      "stderr": ""
+    }
+  },
+  "actor_identity": {
+    "harness": "loop",
+    "config": {
+      "max_steps": 32,
+      "submit_retries": 2,
+      "parse_retries": 2,
+      "finish_nudge_steps": 4,
+      "repeat_nudge_limit": 2,
+      "output_limit": 4000,
+      "context_chars": 60000,
+      "shell": "/usr/bin/bash",
+      "shell_dialect": "Bash",
+      "max_output_tokens": 2048
+    },
+    "agent_model": "qwen3.5-9b-local",
+    "agent_backend": "openai"
+  }
+}

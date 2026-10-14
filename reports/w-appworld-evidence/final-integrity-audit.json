@@ -1,0 +1,55 @@
+{
+  "observed_at": "2026-10-14T22:58:22.889444+00:00",
+  "tracked_source_baseline": [
+    {
+      "path": "eval/run/runner.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "eval/service/services.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "eval/verification/verifier.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "eval/containers/container.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "data/datasets/appworld.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "data/datasets/appworld/verify/check.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "base_harness/loop/agent.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "tests/quality/test_appworld_service_diagnosis.py",
+      "matches_HEAD": true
+    }
+  ],
+  "registry_preservation": {
+    "only_expected_two_observed_and_two_evidence_additions": true,
+    "all_statuses_next_actions_references_history_preserved": true
+  },
+  "evidence_checks": [
+    {
+      "all_original_run_files_and_copies_hash_match": 25
+    },
+    {
+      "distinct_three_roles_shared_network_correct_recording_mounts": true
+    },
+    {
+      "exact_container_network_and_temporary_directory_absence": true
+    },
+    {
+      "raw_measured_loss_preserved_formal_unmeasured_not_upgraded": true
+    }
+  ]
+}

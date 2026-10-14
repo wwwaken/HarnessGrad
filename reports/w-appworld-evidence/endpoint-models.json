@@ -1,0 +1,35 @@
+{
+  "url": "http://127.0.0.1:8002/v1/models",
+  "observed_at": "2026-10-14T22:50:23.894116+00:00",
+  "body": {
+    "object": "list",
+    "data": [
+      {
+        "id": "qwen3.5-9b-local",
+        "object": "model",
+        "created": 1792018223,
+        "owned_by": "vllm",
+        "root": "/mnt/20t/qzs/PLMs/Qwen3.5-9B",
+        "parent": null,
+        "max_model_len": 16384,
+        "permission": [
+          {
+            "id": "modelperm-b84c55551148b8e7",
+            "object": "model_permission",
+            "created": 1792018223,
+            "allow_create_engine": false,
+            "allow_sampling": true,
+            "allow_logprobs": true,
+            "allow_search_indices": false,
+            "allow_view": true,
+            "allow_fine_tuning": false,
+            "organization": "*",
+            "group": null,
+            "is_blocking": false
+          }
+        ]
+      }
+    ]
+  },
+  "model_completion_probe_sent": false
+}

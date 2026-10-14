@@ -2697,3 +2697,63 @@ all dataset references and historical records are unchanged.
 counts and source-line findings. `reports/w-pristine-validation.txt` records the
 registry checker and focused tests. The complete fixture has a SHA-256 inventory;
 original external receipts, saved local image and all older runs remain preserved.
+## 2026-10-15 AppWorld mounted-service lifecycle control - w-appworld
+
+Ran exactly one authorized diagnostic, fresh run
+`w-appworld-20261014T225023Z-f02d7cd5`, in registered `/tmp/hg-appworld`
+(`wg-appworld`), with an external work root, rounds 0 / trials 1 / jobs 1.
+Deterministic selection chose train task `cf6abd2_2` from 147 train/dev study-side
+tasks. The unchanged loop actor used `qwen3.5-9b-local` through the single local
+`http://127.0.0.1:8002/v1` endpoint (16 calls). No tuning, improvement, second
+control, oracle actor, paid endpoint or pilot expansion occurred.
+
+The separate verifier container `99c409ac8168...` used pinned image
+`sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca`,
+read the service recording through a read-only `/recordings/appworld` mount and
+joined the still-running service's owned `Internal=true` network. This was mounted
+state, not an actor-image snapshot. The actor used
+`sha256:d3a04ec8e295710347e978d8e58c663161d829e7dfa544da4d82d0d67abbd8eb`;
+the service used
+`sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4`.
+The actor had no recording mount. Raw official TGC evidence returned
+`measured=true`, `success=false`, `score=0.0`, `num_tests=8`; the failed requirement
+was `assert answers match.`. Raw scorer counts are measured 1 / unmeasured 0 /
+invalid 0. The formal staged receipt retains measured 0 / unmeasured 1 / invalid 0,
+`score=null`, `policy_enforcement_not_observed`, `lifecycle=null`, unknown cleanup
+and snapshot fields, and `production_authorized=false`; driver exit 2 preserves
+that publication refusal after completed execution.
+
+Running Docker inspections show actor/verifier `NanoCpus=2000000000`,
+`Memory=4294967296`, `PidsLimit=1024`. Service raw configuration is
+`NanoCpus=0`, `Memory=0`, `PidsLimit=null`: no explicit per-container CPU/memory/PID
+cap. Live host cgroup reads corroborate verifier CPU/memory/PID limits and preserve
+the service's actual `cpu.max=max 100000`, `memory.max=max`, `pids.max=308691`.
+The actor had already exited before the host cgroup sample; its observed scope is
+Docker configuration. No resource or quota proof is inferred beyond these values.
+
+Docker events record actor/verifier normal exit and removal; service forced
+teardown (signal 9 / exit 137, `OOMKilled=false`) follows verifier completion.
+Exact post-run inspect commands report all three task-role containers and the
+owned network absent. Both temporary task/verdict directories and all three
+sampled host PID paths are absent; the gateway listener probe returns no listener.
+Recordings and receipts are preserved. `reports/w-appworld-evidence/` contains raw
+inspections/events, cgroup reads, exact cleanup probes, verdict-file copies with
+copy provenance, launch command/policy/hashes, and byte-identical copies of all
+25 original run files. Full observations and limits:
+`reports/w-appworld-receipts.md`.
+
+Shared `scorer-offline-closure.observed` now credits the AppWorld mounted-service
+control at one-task S2/S5 scope. It remains `code-solvable`: broader runtime/live
+coverage and complete scorer closure are still unmet. AppWorld
+`successful-task-evidence` remains `measurement`; a failed task cannot close it.
+Both next actions, all shared references and historical records are retained;
+`artifact-only-state-export` is unchanged. No production/test gate was weakened.
+
+Validation is recorded in `reports/w-appworld-validation.txt`. Initial focused
+pytest output is 82 passed / 1 failed: unchanged
+`tests/quality/test_appworld_service_diagnosis.py:79` stubs the refusal hook with
+`lambda *a: None`, which rejects the existing runner's `run_id` keyword at
+`eval/run/runner.py:160-162`. The stale test double is reported, not patched around;
+its original failure output is preserved. Registry checker remains valid; final
+source-only registry tests passed (54 passed). This work commits only in the
+isolated worktree; parent review/merge remains separate.

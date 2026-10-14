@@ -1,0 +1,113 @@
+{
+  "run_id": "w-appworld-20261014T225023Z-f02d7cd5",
+  "observed_at": "2026-10-14T22:51:15.294984+00:00",
+  "containers": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "de5d479559dfadf027baf769426298656ce99d90f4be207c9c4eec86036cad3a"
+      ],
+      "observed_at": "2026-10-14T22:51:15.337606+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: de5d479559dfadf027baf769426298656ce99d90f4be207c9c4eec86036cad3a\n"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "cb1e975618f9ab90105019eb19cbcff8004a5dd047d0ed741a20b4a9a81233fd"
+      ],
+      "observed_at": "2026-10-14T22:51:15.376892+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: cb1e975618f9ab90105019eb19cbcff8004a5dd047d0ed741a20b4a9a81233fd\n"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "208c058ff3c62f00242676a9438de3227f26e219868923cb43eaabb9e9dfed48"
+      ],
+      "observed_at": "2026-10-14T22:51:15.413481+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 208c058ff3c62f00242676a9438de3227f26e219868923cb43eaabb9e9dfed48\n"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "1be0358d6873aa39d2235e2da9df6261aa820484af2cf0f2f94e708a40a91eea"
+      ],
+      "observed_at": "2026-10-14T22:51:15.451935+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 1be0358d6873aa39d2235e2da9df6261aa820484af2cf0f2f94e708a40a91eea\n"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "99c409ac81685df81f439e6f25d4a11803b512054bd1f404a3ccb917c92c8550"
+      ],
+      "observed_at": "2026-10-14T22:51:15.490172+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 99c409ac81685df81f439e6f25d4a11803b512054bd1f404a3ccb917c92c8550\n"
+    }
+  ],
+  "networks": [
+    {
+      "command": [
+        "docker",
+        "network",
+        "inspect",
+        "hg-w-appworld-20261014T225023Z-f02d7cd5-cf6abd2_2"
+      ],
+      "observed_at": "2026-10-14T22:51:15.508513+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network hg-w-appworld-20261014T225023Z-f02d7cd5-cf6abd2_2 not found\n"
+    }
+  ],
+  "temporary_paths": [
+    {
+      "path": "/tmp/hg-task-_hfsrkcw",
+      "exists": false
+    },
+    {
+      "path": "/tmp/hg-verdict-vsh36_jz",
+      "exists": false
+    }
+  ],
+  "scoped_containers": {
+    "command": [
+      "docker",
+      "ps",
+      "-a",
+      "--filter",
+      "label=harnessgrad.run=w-appworld-20261014T225023Z-f02d7cd5",
+      "--no-trunc"
+    ],
+    "observed_at": "2026-10-14T22:51:15.527883+00:00",
+    "returncode": 0,
+    "stdout": "CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES\n",
+    "stderr": ""
+  },
+  "scoped_networks": {
+    "command": [
+      "docker",
+      "network",
+      "ls",
+      "--filter",
+      "label=harnessgrad.run=w-appworld-20261014T225023Z-f02d7cd5",
+      "--no-trunc"
+    ],
+    "observed_at": "2026-10-14T22:51:15.545982+00:00",
+    "returncode": 0,
+    "stdout": "NETWORK ID   NAME      DRIVER    SCOPE\n",
+    "stderr": ""
+  }
+}

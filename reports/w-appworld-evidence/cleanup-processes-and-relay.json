@@ -1,0 +1,39 @@
+{
+  "observed_at": "2026-10-14T22:53:42.416371+00:00",
+  "processes": [
+    {
+      "role": "service",
+      "container_id": "cb1e975618f9ab90105019eb19cbcff8004a5dd047d0ed741a20b4a9a81233fd",
+      "observed_at": "2026-10-14T22:53:42.386955+00:00",
+      "last_observed_pid": 471632,
+      "proc_path": "/proc/471632",
+      "proc_exists_after": false
+    },
+    {
+      "role": "actor",
+      "container_id": "1be0358d6873aa39d2235e2da9df6261aa820484af2cf0f2f94e708a40a91eea",
+      "observed_at": "2026-10-14T22:53:42.387011+00:00",
+      "last_observed_pid": 473746,
+      "proc_path": "/proc/473746",
+      "proc_exists_after": false
+    },
+    {
+      "role": "verifier",
+      "container_id": "99c409ac81685df81f439e6f25d4a11803b512054bd1f404a3ccb917c92c8550",
+      "observed_at": "2026-10-14T22:53:42.387033+00:00",
+      "last_observed_pid": 483087,
+      "proc_path": "/proc/483087",
+      "proc_exists_after": false
+    }
+  ],
+  "gateway_listener_probe": {
+    "command": [
+      "ss",
+      "-ltn",
+      "sport = :41625"
+    ],
+    "returncode": 0,
+    "stdout": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+    "stderr": ""
+  }
+}

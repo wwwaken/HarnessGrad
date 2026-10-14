@@ -1,0 +1,31 @@
+{
+ "task_id": "cf6abd2_2",
+ "round": 0,
+ "score": 0.0,
+ "scorer_isolation_class": "snapshot-service",
+ "scorer_isolation_comparable": true,
+ "trial_scorer_isolation": [
+  "snapshot-service"
+ ],
+ "trial_scores": [
+  0.0
+ ],
+ "n_trials": 1,
+ "passed": false,
+ "kind": "command",
+ "detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0",
+ "tests": null,
+ "wall_clock_s": 31.8,
+ "complete": true,
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-appworld-20261014T225023Z-f02d7cd5",
+  "task_id": "cf6abd2_2",
+  "operator_authorization": "Operator explicitly authorizes ONE AppWorld mounted-service diagnostic to collect separate-verifier recording mounts, network, resource and cleanup observations for shared scorer-offline-closure S2/S5. Gates and enforcement remain unknown; raw scorer output is not comparable score publication, successful-task evidence unless authentic measured success exists, pilot expansion or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ }
+}

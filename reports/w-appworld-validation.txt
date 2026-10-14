@@ -1,0 +1,167 @@
+w-appworld validation
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_appworld_service_diagnosis.py tests/quality/test_service_start_cleanup.py tests/quality/test_unobserved_diagnostic_c2.py tests/quality/test_verifier_declared_network_w_net.py --basetemp=/tmp/harnessgrad-pytest-w-appworld -q
+........................................................F............... [ 86%]
+...........                                                              [100%]
+=================================== FAILURES ===================================
+__________________ test_runner_mounts_dependency_overlay_once __________________
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-appworld/test_runner_mounts_dependency_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7646a9c891c0>
+
+    def test_runner_mounts_dependency_overlay_once(tmp_path, monkeypatch):
+        repo = tmp_path / "harness"
+        repo.mkdir()
+        (repo / "harness.json").write_text(json.dumps({"entrypoint": "agent.py"}))
+        overlay_path = tmp_path / "overlay"
+        overlay_path.mkdir()
+        overlay = {"path": overlay_path, "python": "3.11", "install": "requirements.txt",
+                   "install_sha256": "abc", "provenance": {}}
+        monkeypatch.setenv("HG_AGENT_BACKEND", "mock")
+        monkeypatch.delenv("HG_AGENT_BASE_URL", raising=False)
+        monkeypatch.setattr(runner.container_mod, "image_python", lambda _: "/usr/local/bin/python3")
+        monkeypatch.setattr(runner.harness_runtime, "lookup", lambda *a, **kw: overlay)
+        monkeypatch.setattr(runner, "_verify", lambda *a, **kw: {"passed": True})
+        commands = []
+    
+        def launch(argv, **kw):
+            # Exercise the actual Docker command builder, including nested mounts.
+            cmd = container.command(argv, **{k: v for k, v in kw.items() if k != "timeout_s"})
+            destinations = [cmd[i + 1].split("dst=", 1)[1].split(",", 1)[0]
+                            for i, value in enumerate(cmd) if value == "--mount"]
+            commands.append(cmd)
+            assert len(destinations) == len(set(destinations)), "Docker rejects duplicate destinations"
+            assert destinations.count(str(overlay_path)) == 1
+            assert kw["env"]["PYTHONPATH"].split(":")[0] == str(overlay_path)
+            (kw["task_dir"] / "trace.jsonl").write_text('{"actor_started": true}\n')
+            return subprocess.CompletedProcess(cmd, 0, "", "")
+    
+        monkeypatch.setattr(runner.container_mod, "run", launch)
+        env = {"kind": "exec", "image": "sha256:" + "a" * 64}
+        refused = runner.run_one(repo, {"task_id": "train_1"}, env=env)
+        assert_policy_refusal(refused, ("env.exec_defaults",))
+        assert commands == [], "unobserved exec must not reach the mocked backend"
+        # Keep the duplicate-mount regression at the mocked backend layer, after pinning
+        # real admission. This test-local patch is not a production observer or override.
+        monkeypatch.setattr(runner, "_refuse_unobserved_policies", lambda *a: None)
+>       result = runner.run_one(repo, {"task_id": "train_1"}, env=env)
+
+tests/quality/test_appworld_service_diagnosis.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repo = PosixPath('/tmp/harnessgrad-pytest-w-appworld/test_runner_mounts_dependency_0/harness')
+task = {'task_id': 'train_1'}, timeout_s = None, sandbox = True, setup = None
+verifier = None, verify_timeout_s = None
+env = {'image': 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'kind': 'exec'}
+run_id = '', run_seed = '', recordings_root = None
+diagnostic_authorization = None
+
+    def run_one(repo: Path, task: dict, timeout_s: int | None = None,
+                sandbox: bool = True, setup: dict | None = None,
+                verifier: dict | None = None,
+                verify_timeout_s: int | None = None,
+                env: dict | None = None,
+                run_id: str = "", run_seed: str = "",
+                recordings_root: Path | None = None,
+                diagnostic_authorization: Authorization | None = None) -> dict:
+        if diagnostic_authorization is not None:
+            diagnostic_authorization.require_scope(run_id, [task["task_id"]])
+>       refusal = _refuse_unobserved_policies(
+            task, env, verifier, run_id=run_id,
+            diagnostic_authorization=diagnostic_authorization)
+E       TypeError: test_runner_mounts_dependency_overlay_once.<locals>.<lambda>() got an unexpected keyword argument 'run_id'
+
+eval/run/runner.py:160: TypeError
+=========================== short test summary info ============================
+FAILED tests/quality/test_appworld_service_diagnosis.py::test_runner_mounts_dependency_overlay_once
+1 failed, 82 passed in 5.41s
+exit_code=1
+
+Existing stale test stub: tests/quality/test_appworld_service_diagnosis.py:79 uses lambda *a: None; unchanged eval/run/runner.py:160-162 passes run_id and diagnostic_authorization keyword arguments. No runtime/test gate or stub was modified. Full initial failure preserved above.
+
+$ python3 -m pytest tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-appworld-registry -q
+......................................................                   [100%]
+54 passed in 3.79s
+exit_code=0
+
+Evidence integrity audit (read-only assertions, no model/container launch):
+{
+  "observed_at": "2026-10-14T22:58:22.889444+00:00",
+  "tracked_source_baseline": [
+    {
+      "path": "eval/run/runner.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "eval/service/services.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "eval/verification/verifier.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "eval/containers/container.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "data/datasets/appworld.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "data/datasets/appworld/verify/check.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "base_harness/loop/agent.py",
+      "matches_HEAD": true
+    },
+    {
+      "path": "tests/quality/test_appworld_service_diagnosis.py",
+      "matches_HEAD": true
+    }
+  ],
+  "registry_preservation": {
+    "only_expected_two_observed_and_two_evidence_additions": true,
+    "all_statuses_next_actions_references_history_preserved": true
+  },
+  "evidence_checks": [
+    {
+      "all_original_run_files_and_copies_hash_match": 25
+    },
+    {
+      "distinct_three_roles_shared_network_correct_recording_mounts": true
+    },
+    {
+      "exact_container_network_and_temporary_directory_absence": true
+    },
+    {
+      "raw_measured_loss_preserved_formal_unmeasured_not_upgraded": true
+    }
+  ]
+}
+
+$ git diff --cached --check
+reports/w-appworld-evidence/execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/environment_io.md:629: new blank line at EOF.
+reports/w-appworld-evidence/focused-tests-initial.txt:23: trailing whitespace.
++    
+reports/w-appworld-evidence/focused-tests-initial.txt:35: trailing whitespace.
++    
+reports/w-appworld-evidence/focused-tests-initial.txt:46: trailing whitespace.
++tests/quality/test_appworld_service_diagnosis.py:80: 
+reports/w-appworld-evidence/focused-tests-initial.txt:47: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+reports/w-appworld-validation.txt:30: trailing whitespace.
++    
+reports/w-appworld-validation.txt:42: trailing whitespace.
++    
+reports/w-appworld-validation.txt:53: trailing whitespace.
++tests/quality/test_appworld_service_diagnosis.py:80: 
+reports/w-appworld-validation.txt:54: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+exit_code=2
+Only byte-preserved raw pytest output and the service recording environment_io.md have whitespace warnings; original evidence bytes were not normalized.

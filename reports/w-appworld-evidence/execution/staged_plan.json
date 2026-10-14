@@ -1,0 +1,94 @@
+{
+  "cleanup": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "context": {
+    "comparability_notes": [
+      "One deterministic train+dev study-side task from 147 eligible; no eval-side task or oracle is supplied to actor.",
+      "Raw official scorer evidence and passive Docker observations are separate from staged publication; enforcement remains unobserved.",
+      "No tuning, improvement, pilot expansion or production authorization. Model weight hash is unknown; source hashes are not complete transitive closure.",
+      "Resource limits in policy describe requested actor/verifier configuration; service limits must be read from Docker observations."
+    ],
+    "dataset": "appworld",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "gates": {
+      "detail": "Operator authorizes one unobserved mounted-service diagnostic. Shared and successful-task blockers remain open; no backend enforcement attestation.",
+      "receipt_sha256": null,
+      "status": "unknown"
+    },
+    "hashes": {
+      "harness": "3b3079a730139ac4bcd603f85606cacfa16560adddc53b0cc6f02ba3c252889c",
+      "manifest": "9ab0b2b8342d8073ae009e0f9c6f9b4624abec1fea84e343117d78c162a3dde9",
+      "model": null,
+      "source": "24603418aca4321802353989029418684db53a894904844b6b535e8b3e957ae9",
+      "split": "c4ce84665842ad34fadf7d9a4172e1fdfc07092cc78bac42b6c2cebdf0077e8d"
+    },
+    "limits": {
+      "budget": {
+        "max_output_tokens_per_call": 2048,
+        "max_steps": 32
+      },
+      "resource": {
+        "agent_timeout_s": 900,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "pids": 1024,
+        "verify_timeout_s": 900
+      }
+    },
+    "metric": {
+      "name": "appworld.task_goal_completion (TGC)",
+      "scorer_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5"
+    },
+    "side": "train"
+  },
+  "coverage": {
+    "eligible_tasks": 147,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "eligible_task_ids_sha256": "e17d70834fdfcb27cc250999c22687f86fe1b7f12f0e51127c2f72002e60da8c",
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator explicitly authorizes ONE AppWorld mounted-service diagnostic to collect separate-verifier recording mounts, network, resource and cleanup observations for shared scorer-offline-closure S2/S5. Gates and enforcement remain unknown; raw scorer output is not comparable score publication, successful-task evidence unless authentic measured success exists, pilot expansion or production authorization.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-appworld-20261014T225023Z-f02d7cd5",
+    "stage": "diagnostic",
+    "task_id": "cf6abd2_2"
+  },
+  "jobs": 1,
+  "lifecycle": null,
+  "outcomes": [
+    {
+      "reason": "no outcome recorded",
+      "score": null,
+      "status": "unmeasured",
+      "task_id": "cf6abd2_2",
+      "trial": 1
+    }
+  ],
+  "run_id": "w-appworld-20261014T225023Z-f02d7cd5",
+  "schema": "harnessgrad.diagnostic-receipt.v2",
+  "score": null,
+  "selected_task_ids": [
+    "cf6abd2_2"
+  ],
+  "snapshot": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "stage": "diagnostic",
+  "trials": 1
+}
