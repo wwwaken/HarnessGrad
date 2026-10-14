@@ -12,6 +12,7 @@
 """
 from __future__ import annotations
 
+import shutil
 import sys
 import threading
 import time
@@ -23,6 +24,21 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 import eval.runner as runner  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def isolated_platform(tmp_path, monkeypatch):
+    """Hash a private fixture instead of every unrelated adapter in the checkout.
+
+    Keep the real snapshot/diff checks enabled: the unit tests substitute task execution,
+    so their platform input should be isolated too. The driver test stages its runtime
+    here and exercises those same checks in a subprocess.
+    """
+    platform = tmp_path / "platform"
+    platform.mkdir()
+    (platform / "driver.py").write_text("# Synthetic platform integrity input.\n")
+    monkeypatch.setattr(runner, "PLATFORM_ROOT", platform)
+    return platform
 
 
 def _tasks(n: int) -> list[dict]:
@@ -211,11 +227,26 @@ def test_a_clean_round_has_no_startup_failure(tmp_path, monkeypatch):
     assert res["per_task"] == {"t0": 1.0, "t1": 1.0, "t2": 1.0}
 
 
-def test_jobs_reaches_the_run_through_the_driver(tmp_path):
+def test_jobs_reaches_the_run_through_the_driver(tmp_path, isolated_platform):
     """端到端:`--jobs 2` 要能真的跑完一次,并且记在 run_meta 里。"""
     import json
     import os
     import subprocess
+
+    # Stage the actual runtime with only the demo adapter needed by this test. Full
+    # platform hashing and the sandbox still run, without importing or hashing the
+    # checkout's provisioned datasets or inheriting its .env.
+    platform = isolated_platform
+    shutil.copy2(ROOT / "driver.py", platform / "driver.py")
+    for name in ("ckpt", "eval", "harnessgrad", "tools", "methods", "improvers"):
+        shutil.copytree(ROOT / name, platform / name, symlinks=True,
+                        ignore=shutil.ignore_patterns("__pycache__"))
+    (platform / "data").mkdir()
+    for name in ("__init__.py", "registry.py", "demo.py"):
+        shutil.copy2(ROOT / "data" / name, platform / "data" / name)
+    shutil.copytree(ROOT / "base_harness" / "loop_plain",
+                    platform / "base_harness" / "loop_plain", symlinks=True,
+                    ignore=shutil.ignore_patterns("__pycache__"))
 
     runs = tmp_path / "runs"
     env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
@@ -224,9 +255,10 @@ def test_jobs_reaches_the_run_through_the_driver(tmp_path):
          "--rounds", "0", "--jobs", "2", "--run-id", "jobs-check", "--dataset", "demo",
          "--sampling", "all", "--runs-root", str(runs),
          "--work-root", str(tmp_path / "work")],
-        cwd=ROOT, capture_output=True, text=True, timeout=1800, env=env)
+        cwd=platform, capture_output=True, text=True, timeout=1800, env=env)
     assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
     meta = json.loads((runs / "jobs-check" / "run_meta.json").read_text())
+    assert meta["platform_root"] == str(platform)
     assert meta["jobs"] == 2 and meta["trials"] == 1
     point = json.loads((runs / "jobs-check" / "curve.jsonl").read_text().splitlines()[0])
     assert point["per_task"], "一道题都没测出来"
