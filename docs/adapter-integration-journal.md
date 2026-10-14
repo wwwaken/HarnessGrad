@@ -2043,3 +2043,24 @@ Validation in `reports/w-ujson-validation.txt`: blocker checker valid
 - No upstream evaluator, fabricated differential, benchmark task, model, GPU,
   endpoint, container or package install ran. `runs/`, frozen receipts and
   dataset roots were untouched; no production H0 authorization follows.
+## Parent review and merge — w-bfcl — 2026-10-15
+
+- Merged `b8f4a5a` (w-bfcl) on top of `6b41bd6`. Only the journal conflicted, resolved by keeping
+  both sides. Result `4b00f54`. Registry valid: 28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`. 54 passed with 11 skipped on the registry plus
+  `test_bfcl_v3_dataset.py`.
+- `bfcl_v3 / simple-ast-contract` **stays `external` and open**, which is the correct result. w-bfcl
+  pinned the v1.3 archive/tag/commit, all **83 retained members** and the Apache-2.0 license bytes,
+  and completed the code-only review of the Simple handler/parser/checker/dispatch/helper graph.
+  What is still missing is the offline third-party/native runtime custody, full-call
+  integration/differentials, and official scorer execution - all named in the record rather than
+  glossed.
+- One inspection worth recording because it looked alarming and was not: `git diff main..HEAD` in
+  the worker's tree showed 36 deletions in `docs/dataset-blockers.json`, including evidence
+  entries. That was an artifact of the worker branching before `w-spread2` and `w-ujson` were
+  merged - the diff reverses *those* commits. The worker's own tree carries **11** evidence entries
+  for `bfcl_v3` against 7 on `main`, i.e. a net addition, and a cherry-pick applies only its own
+  delta. The parent checked the evidence count rather than trusting the diff stat.
+- Resource state: w-bfcl performed public-source acquisition and local code review only - no
+  benchmark task, model, GPU, endpoint or container. Both GPUs stayed idle and no utilisation is
+  claimed. Historical runs, frozen receipts and archives were untouched.
