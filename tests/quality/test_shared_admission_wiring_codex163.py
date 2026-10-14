@@ -12,7 +12,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from eval.run import runner
 from eval.admission import runner_admission
-from eval.verification.isolation import IsolationMismatch
+from eval.verification.isolation import IsolationMismatch, require_comparable
 
 TASK = {"task_id": "synthetic-admission-163"}
 
@@ -170,20 +170,19 @@ def test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved(tmp_path,
         raise AssertionError("legacy cache hit must not execute")
 
     monkeypatch.setattr(runner, "run_one", refuse)
-    if class_ is None:
-        # Legacy cache bytes remain valid evidence, but absent observations can
-        # no longer supply comparable scores (docs/w-obs-runtime-review.md).
-        with pytest.raises(IsolationMismatch, match="unknown"):
-            runner._evaluate(tmp_path, [TASK], {}, cache=cache, harness_sha="synthetic-sha",
-                             envs={"unselected": {"network": "none"}})
-        assert cache == before
-        return
     result = runner._evaluate(tmp_path, [TASK], {}, cache=cache, harness_sha="synthetic-sha",
                               envs={"unselected": {"network": "none"}})
     assert result["per_task"] == {TASK["task_id"]: 1.0}
     assert result["cached_tasks"] == [TASK["task_id"]]
     assert result["invalid"] == {}
     assert cache == before
+    if class_ is None:
+        # Aggregation refusal asserted the write-path bug. Legacy cache evidence
+        # stays intact and readable, but absent observations still forbid comparison.
+        assert result["scorer_isolation_class"] == "unknown"
+        assert result["scorer_isolation_comparable"] is False
+        with pytest.raises(IsolationMismatch, match="unknown"):
+            require_comparable(result, result)
 
 
 @pytest.mark.parametrize("stage,policy", [

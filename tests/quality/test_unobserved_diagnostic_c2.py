@@ -51,9 +51,14 @@ def test_authorized_exec_runs_and_tags_every_result_without_cache_publication(tm
     assert len(synthetic_runtime) == 2
     assert result["enforcement"] == AUTH.record()
     assert result["per_task"] == {TASK["task_id"]: 0.25}  # raw scorer fact only
+    assert result["scorer_isolation_class"] == "unknown"
+    assert result["scorer_isolation_comparable"] is False
     assert cache == {}
     progress = json.loads((tmp_path / "records/progress/round-0" / f"{TASK['task_id']}.json").read_text())
     assert progress["enforcement"] == AUTH.record()
+    assert progress["scorer_isolation_class"] == "unknown"
+    assert progress["scorer_isolation_comparable"] is False
+    assert progress["score"] == 0.25 and progress["complete"] is True
 
 
 @pytest.mark.parametrize("change", [dict(run_id="other"), dict(trials=2), dict(jobs=2),
@@ -103,6 +108,10 @@ def test_operator_authorized_driver_runs_once_but_cannot_publish_or_expand(
     monkeypatch.setattr(sys, "argv", sys.argv + ["--authorize-unobserved-diagnostic", AUTH.operator_authorization])
     assert driver.main() == 2  # execution may finish, comparable publication must refuse
     assert len(synthetic_runtime) == 1
+    progress = json.loads((run_dir / "progress/round-0" / f"{TASK['task_id']}.json").read_text())
+    assert progress["enforcement"] == AUTH.record() and progress["complete"] is True
+    assert progress["scorer_isolation_class"] == "unknown"
+    assert progress["scorer_isolation_comparable"] is False
     receipt = json.loads((run_dir / "diagnostic_receipt.json").read_text())
     policy.validate_receipt(receipt)
     jsonschema.validate(receipt, SCHEMA)

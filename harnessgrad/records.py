@@ -210,6 +210,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         "edit_kind": None,
         "score": mean(scores, dataset=sampling.get("dataset")), "score_ci95": [lo, hi],
         "scorer_isolation_class": isolation,
+        "scorer_isolation_comparable": isolation != "unknown",
         "per_task_scorer_isolation": isolation_by_task,
         # **How noisy this number is.** One evaluation per (harness, task) is one sample,
         # and measured on this platform the *same* unmodified harness scored 0.333 in one
@@ -618,7 +619,11 @@ def _write_curve(path: Path, curve: list[dict]) -> None:
     common_class(observed_class(point) for point in curve)
     with path.open("w") as fh:
         for point in curve:
-            fh.write(json.dumps(point) + "\n")
+            # External/legacy points need the same explicit label as new points.
+            # Derive it from observations, never from a caller's claimed flag.
+            isolation = observed_class(point)
+            fh.write(json.dumps({**point, "scorer_isolation_class": isolation,
+                                 "scorer_isolation_comparable": isolation != "unknown"}) + "\n")
 
 def _keep_method_logs(method_ws: Path, run_dir: Path | None, round_no: int) -> None:
     """Copy a method's own `*.log` files into the record before its scratch dir goes.

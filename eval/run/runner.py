@@ -1360,6 +1360,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         }
     return {"per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
             "scorer_isolation_class": scorer_isolation_class,
+            # Preserve unobserved diagnostic facts without making them comparable.
+            "scorer_isolation_comparable": scorer_isolation_class != "unknown",
             "per_task_scorer_isolation": per_task_scorer_isolation,
             "per_task_trials": per_task_trials, "trials": trials,
             # The same measurement at the check's own resolution. `test_rate` averages only

@@ -1435,3 +1435,39 @@ is supplied. Parent review and merge remain separate. Validation transcript:
   files and is still replaying the 147-task AppWorld release (`SLOW` files run unless `--fast`);
   every failure it has shown matches the pre-existing docker/host and load-sensitive sets
   already recorded here.
+
+
+## 2026-10-15 Unknown-isolation write-path correction - w-fix
+
+- Correct `72f5c37`'s all-unknown write-path regression: `common_class` returns
+  `unknown` for uniform unknown inputs; `require_comparable` explicitly rejects
+  unknown. Mixed-class refusal stays at every existing boundary. Stepwise
+  ChessBench executed-class recording and its test remain unchanged.
+- Runner aggregates, progress and curve records retain raw facts with
+  `scorer_isolation_class="unknown"` and `scorer_isolation_comparable=false`.
+  Progress keeps trial counts/scores/classes, verdict summaries, enforcement and
+  traces. Curve writing labels external/legacy inputs from observations and
+  still refuses mixed history before opening its destination. `true` establishes
+  only the topology prerequisite, never full policy/scientific comparability.
+- Changed only bug-pinning unknown aggregation/persistence exception assertions
+  in w-obs, Option B and shared-admission cache controls, with explanatory safety
+  comments. Cache evidence/selected-task assertions and all actual admission,
+  comparison and mixed-class refusal assertions remain. Added complete-progress,
+  false-comparability-claim and mixed-writer controls. The c2 assertions are additive.
+- Baseline c2: **2 failed, 16 passed**; corrected: **18 passed**, including both
+  reported regressions. Full requested 14-file list: **6 failed, 344 passed before**;
+  **4 failed, 349 passed after** (three new controls). The four residuals reproduce
+  identically in pristine registered main control at `1d31ea8`: default improver
+  identity, parallel fixture's missing `scorer_isolation.py`, missing `.env` snapshot,
+  and sandbox listing `None` versus `[]`. Per the requested criterion these are
+  worktree/control artifacts; no repair or weakened assertions for them.
+- Checker remains `valid=true`: 28 datasets, two shared blockers, 11 historical
+  records, `production_authorized=false`. Registry changes exactly one inaccurate
+  mechanism-description note; no blocker sets, validator or gates change.
+- Corrected semantics: [docs/w-fix-unknown-isolation-records.md](w-fix-unknown-isolation-records.md).
+  Exact before/intermediate/after/checker/control commands and outputs:
+  [reports/w-fix-validation.txt](../reports/w-fix-validation.txt). Parent reviewed
+  every diff; independent read-only review found no corrective issues or gate weakening.
+- Work only in registered `/tmp/hg-fix`, commit only on `wg-fix`; no main commit or
+  merge. Pristine control removed after validation. No existing runs or frozen
+  receipts touched, no model/GPU/paid endpoint/benchmark execution or authorization.

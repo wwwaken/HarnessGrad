@@ -1,5 +1,10 @@
 # Runtime observation aggregation review - w-obs
 
+Correction: [w-fix](w-fix-unknown-isolation-records.md) supersedes this review's
+unknown-only write-path refusal. Preserve complete explicitly noncomparable
+records; keep unknown comparison and mixed-class refusals. The implementation
+and validation below describe the original w-obs change.
+
 Reviewed and repaired from `bd25f5a` in registered worktree `/tmp/hg-obs`,
 2026-10-15. Controls use fabricated results, fabricated ChessBench puzzles and a
 Docker double. No live dataset, Docker daemon, model, GPU or endpoint execution;

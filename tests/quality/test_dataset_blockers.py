@@ -359,8 +359,8 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     # The `pristine-verifier` source-review action is now completed by the opt-in
     # pinned offline runtime/inspection path (`docs/w-shared-verifier-review.md`).
     # w-obs also completes `runtime-observations`: ChessBench records its real
-    # controller class, and all-unknown score aggregation now refuses at every
-    # shared boundary (docs/w-obs-runtime-review.md). Remove exactly these two
+    # controller class; w-fix preserves unknown evidence as noncomparable and
+    # refuses comparison (docs/w-fix-unknown-isolation-records.md). Remove exactly these two
     # completed review gates; keep the real dependency/export gates pinned.
     assert set(target["shared_blockers"]) == {
         "scorer-offline-closure", "artifact-only-state-export",
