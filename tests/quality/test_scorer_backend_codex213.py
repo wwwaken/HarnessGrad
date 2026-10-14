@@ -164,6 +164,12 @@ def test_resource_gate_and_external_policy_pin_are_required(request_inputs, chan
     refused(request_inputs, "resources", "blocked")
 
 
+def test_policy_pin_mismatch_stays_blocked_when_runtime_observation_is_missing(request_inputs):
+    request_inputs["runtime_policy_sha256"] = "f" * 64
+    request_inputs["runtime_observed"] = None
+    refused(request_inputs, "resources", "blocked")
+
+
 def test_separately_valid_resource_policy_must_match_artifact_quota(request_inputs):
     # runner_admission alone permits this empty filesystem policy; composition
     # must still require the task contract's /tmp hard byte AND inode limits.

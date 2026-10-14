@@ -83,10 +83,13 @@ def check_backend(*, binding: dict, scope_sha256: str,
             raise scorer.AdmissionError("matching successful quiescence required")
 
         receipt["stage"] = "resources"
-        if runtime_policy is None or runtime_observed is None:
+        if runtime_policy is None:
             raise scorer.EvidenceUnavailable("runtime enforcement evidence missing")
+        # Check supplied policy pins before classifying unavailable observations.
         if lifecycle.digest(runtime_policy) != runtime_policy_sha256:
             raise scorer.AdmissionError("runtime policy pin mismatch")
+        if runtime_observed is None:
+            raise scorer.EvidenceUnavailable("runtime enforcement evidence missing")
         resource_check = resources.admit_runtime(binding, runtime_policy, runtime_observed)
         contract = scorer.load_contract(contract_raw, contract_sha256)
         if runtime_policy["filesystems"] != contract["quota"]:
