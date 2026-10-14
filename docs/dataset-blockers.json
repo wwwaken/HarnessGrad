@@ -825,29 +825,20 @@
           "id": "row-attestation",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Row 740 to abc360_a binding lacks an independently approved externally custodied record; self-hashes do not establish custody.",
+          "observed": "B6 acquired canonical HTTPS metadata/tree and builder at 0fe84c3912ea0c4d4a78037083943e8f0c4dd505, matching all six declared shard LFS hashes. The builder maps release_v6 to six files in upstream test order; the source loader passes version_tag and optional date filters. Local prepare.py instead sorts unique question_id values and imposes a platform hash split. No complete ID-only rank catalog, externally custodied local row/pool/split/statement record or independent approval was obtained. Task 207 remains an unsent procedure, not an issued attestation; self-hashes and upstream ordinals do not bind local row 740 to abc360_a.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "### LiveCodeBench `/740` trusted metadata validation"
-            }
-          ],
-          "next_action": "Obtain independent metadata-only row/pool/split attestation and compare its identity with the preserved inert selection."
-        },
-        {
-          "id": "smoke-scorer-comparability",
-          "family": "metric-comparability",
-          "status": "measurement",
-          "observed": "The smoke used an external-process scorer variant and is incomparable with official wrapped-function execution.",
-          "evidence": [
+            },
             {
               "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "### LiveCodeBench `/740` executable smoke"
+              "path": "reports/b6-dataset-blocker-review.md",
+              "locator": "## LiveCodeBench: row-attestation"
             }
           ],
-          "next_action": "Record the scorer/path difference and review code-only official execution requirements before any benchmark claim."
+          "next_action": "Use the existing task-207 custody/reviewer procedure to obtain a genuine metadata-only complete catalog/rank and authenticated row/pool/split/statement linkage, plus separate independent approval. Compare against the preserved inert selection without payload reads. Exact upstream release/builder/shard metadata is now acquired; it cannot establish the local sorted-row mapping or manufacture reviewer approval."
         }
       ],
       "historical_runs": []
@@ -1388,7 +1379,7 @@
           "id": "ujson-native-offline-closure",
           "family": "scorer-dependency-network",
           "status": "external",
-          "observed": "The original v1.0/v1.1 evaluator source gate is closed by the reviewed code-only Codex 197 fixture at commit 209e761834d1ce055856fc11072c0a5aab47601d. Codex 226 acquired the exact cp312 Linux x86_64 ujson==5.10.0 wheel using official PyPI JSON URL/hash, verified archive RECORD and a fresh offline venv installation without loading the extension. Its native bytes differ from the older installed module and declare five direct system libraries. Bundled-component notice completeness, supported-image identity, loader/transitive native closure and fresh image-bound native import/synthetic execution remain open.",
+          "observed": "Tasks 197/226 already establish original evaluator source, exact PyPI cp312 Linux x86_64 ujson==5.10.0 wheel/RECORD and fresh offline package installation without native import. B6 acquired immutable ujson commit 59875e089937c8b05c2f4b474530e3a9ec706a56, reconstructed root/vendored double-conversion trees, default bundled-build code and original V8 BSD terms, and carries both complete license files separately. Source/default-build observations do not attest wheel build inputs. No supported immutable image, resolved recursive loader providers or network-denied image-bound native import/synthetic execution receipt has been established.",
           "evidence": [
             {
               "kind": "repository",
@@ -1414,15 +1405,20 @@
               "kind": "repository",
               "path": "tests/fixtures/ujson_pypi_codex226/provenance.json",
               "locator": "\"runtime_closed\": false"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/b6-dataset-blocker-review.md",
+              "locator": "## 2Wiki: ujson-native-offline-closure"
             }
           ],
-          "next_action": "Review the bundled double_conversion source revision/license and carry required notices; bind the acquired wheel hash to a supported immutable CPython 3.12/Linux x86_64/glibc image, resolved native-loader providers and recursive dependency identities. Replay a fresh network-denied install and native import/synthetic check with image-bound receipts. Keep this blocker external until these runtime and notice requirements pass; the package-only installation receipt does not authorize H0."
+          "next_action": "Carry the acquired supplemental notices into the actual deployment distribution; bind the task-226 wheel SHA-256 f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1 to a supported immutable CPython 3.12/Linux x86_64/glibc image, source/build custody and resolved recursive loader/symbol providers. Obtain fresh network-denied install/native import/synthetic evaluator receipts for that image. Keep external until runtime closure passes; package-only install and source-license acquisition do not authorize H0."
         },
         {
           "id": "hub-data-provenance",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Evaluator commit/tree/blob and Apache-2.0 code-license linkage do not authenticate the Hub/data revision, split/selected manifest, alias-table identity/completeness, dataset rights or release-to-scorer mapping. No benchmark payload or external receipt was read in the source-gate review.",
+          "observed": "B6 acquired canonical HTTPS Hub metadata/tree and builder for f4f0d7e4ae275d9281e90c46c93e66d6cdda3674. Advertised dev/alias LFS SHA-256 and witness validation hash match the adapter pins. The pinned upstream README links the December 2020 ID-enriched release, id_aliases.json and evaluator v1.1. The Hub builder drops answer_id/evidences_id and does not load aliases; its generated dataset is not the adapter raw-JSON route. Original-release-to-Hub byte linkage, data/alias rights and completeness, and independently custodied selected-manifest binding remain unestablished.",
           "evidence": [
             {
               "kind": "repository",
@@ -1433,23 +1429,14 @@
               "kind": "repository",
               "path": "tests/fixtures/twowikimultihopqa_upstream_codex197/README.md",
               "locator": "this acquisition makes no assertion about dataset redistribution rights"
-            }
-          ],
-          "next_action": "Obtain independently authenticated metadata-only Hub/release revision, split/selected-manifest and alias-artifact custody plus dataset-license and evaluator-version linkage; keep payload access and production execution outside this review."
-        },
-        {
-          "id": "recovery-comparability",
-          "family": "metric-comparability",
-          "status": "measurement",
-          "observed": "The original pilot mixed legacy Answer F1 and structured Joint F1 and had two invalids; the journal reports a separate recovery.",
-          "evidence": [
+            },
             {
               "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "- Pilot recovery: the original 50-task pilot"
+              "path": "reports/b6-dataset-blocker-review.md",
+              "locator": "## 2Wiki: hub-data-provenance"
             }
           ],
-          "next_action": "Review the original and recovery metric/coverage metadata separately; do not rewrite the original pilot as fully measured."
+          "next_action": "Obtain metadata-only original-release archive/file digest custody, explicit dataset/alias rights and completeness/ID-coverage attestation, and independently authenticated selected-manifest linkage to the pinned raw artifacts. Canonical Hub artifact identity and intended evaluator-version documentation are acquired; do not substitute builder-converted rows or infer original release equivalence. Keep payload and production execution outside this review."
         }
       ],
       "historical_runs": [

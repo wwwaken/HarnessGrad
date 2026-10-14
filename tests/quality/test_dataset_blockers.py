@@ -343,10 +343,13 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     for gone in ("paired-filesystem-quotas", "pilot-guidance-conflict",
                  "official-scorer-identity", "snapshot-owned-cleanup"):
         assert gone not in target["shared_blockers"]
-    comparability = next(item for item in target["blockers"]
-                         if item["id"] == "recovery-comparability")
-    assert comparability["status"] == "measurement"
-    assert comparability["family"] == "metric-comparability"
+    # B6 completed the separate historical metadata review and rejected combining the
+    # generations. A closed review is removed from this active-only registry; the frozen
+    # original history must still remain partial with no effect. So the blocker is gone and
+    # the evidence for closing it is pinned by name rather than left as a claim.
+    assert "recovery-comparability" not in {item["id"] for item in target["blockers"]}
+    review = (ROOT / "reports/b6-dataset-blocker-review.md").read_text()
+    assert "recovery-comparability — review closed; combined comparison rejected" in review
     baseline = checker.read_json(checker.HISTORY)
     assert target["historical_runs"] == [
         item["record"] for item in baseline["records"]

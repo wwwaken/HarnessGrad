@@ -1,0 +1,32 @@
+Access-Control-Allow-Origin: https://hf-mirror.com
+Access-Control-Expose-Headers: 
+ X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+Access-Control-Max-Age: 86400
+Alt-Svc: h3=":443"; ma=2592000
+Cf-Cache-Status: MISS
+Cf-Ray: a4a84372fe43d48a-NRT
+Content-Type: application/json; charset=utf-8
+Cross-Origin-Opener-Policy: same-origin
+Date: Wed, 14 Oct 2026 17:21:58 GMT
+Etag: W/"819-97X/+JHvFoeZLCM5W4yUJ6Hdkl4"
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Ratelimit: "api";r=499;t=30
+Ratelimit-Policy: "fixed window";"api";q=500;w=300
+Referrer-Policy: strict-origin-when-cross-origin
+Report-To: 
+ {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=CRi3TAUq1NpE0xEwDG9NIO5LEzPzCv8NhO8JrlHRv8S1QpmhTfYkZVtvf9Le3%2BSsX0ny%2BAejUDXan3%2BsNgBLeRqTi8nwCYyIcfJ0VtoZeJXhEr7gVd3AQlUyhNdfhEFzpi8%2FwFh6VSM%3D"}]}
+Server: cloudflare
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+Via: 2.0 Caddy
+Via: 2.0 Caddy
+Via: 2.0 Caddy
+Via: 1.1 c5c80efabdc262a9e74eb36b7193bd0a.cloudfront.net (CloudFront)
+X-Amz-Cf-Id: -35h3YL5jSw3QS3ST34bT0tpBMkBEWhDoey3ZFZCpwDirV3-2RF1kw==
+X-Amz-Cf-Pop: NRT12-P2
+X-Cache: Miss from cloudfront
+X-Powered-By: huggingface-moon
+X-Request-Id: Root=1-6acfba36-173b754e2e5f18ed4fd0365a
+Connection: close
+Transfer-Encoding: chunked
+
