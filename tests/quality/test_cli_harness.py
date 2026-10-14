@@ -19,6 +19,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -43,17 +44,31 @@ def work_root(tmp_path):
 #: binds read-only, so the "unreachable without a declaration" test passed the wrong
 #: way (the CLI was reachable with no declaration at all).
 #:
-#: Use an external --basetemp outside `/tmp` for this file. The CLI remains a
-#: sibling of the work root, so the work-root bind cannot expose it implicitly.
+#: It must also be unique per test. The previous version used one fixed directory
+#: (`ROOT.parent / "harnessgrad_cli"`) shared by every process in the suite, so two
+#: test files running at once overwrote each other's CLI and cleaned up each other's
+#: files.
+#:
+#: The location is chosen rather than demanded. `--basetemp` outside `/tmp` (what the
+#: runner passes, and what the project's guidance recommends) puts `tmp_path` in a
+#: good place and pytest cleans it up. A plain `pytest tests/quality/test_cli_harness.py`
+#: uses pytest's default under `/tmp`, which the sandbox tmpfs-masks, so the CLI would
+#: be invisible -- the fixture then falls back to a unique directory beside the
+#: platform, which is outside both the platform and `/tmp`, and removes it afterwards.
 @pytest.fixture
 def cli_dir(tmp_path) -> Path:
     """A unique fake CLI, visible only when its runtime path is declared."""
     root = tmp_path / "cli"
+    temporary = False
     if Path("/tmp") in root.resolve().parents:
-        pytest.fail("CLI runtime fixture requires --basetemp outside /tmp")
-    root.mkdir()
+        root = Path(tempfile.mkdtemp(dir=ROOT.parent, prefix="harnessgrad_cli-"))
+        temporary = True
+    else:
+        root.mkdir()
     shutil.copy2(ROOT / "tools" / "fake_cli.py", root / "fake_cli.py")
-    return root
+    yield root
+    if temporary:
+        shutil.rmtree(root, ignore_errors=True)
 
 
 def _harness(work_root: Path, body: str, *,
