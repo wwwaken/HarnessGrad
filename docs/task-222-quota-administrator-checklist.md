@@ -13,6 +13,12 @@ and [proposed evidence schema](filesystem-quota-evidence.schema.json) define
 acceptance requirements; schema validity alone proves neither enforcement nor
 production readiness.
 
+For proposed signer roles, authenticated readback, per-allocation binding and the
+challenge/consumption sequence, see the
+[task-233 authentication review](task-233-quota-readback-authentication.md).
+It implements no verifier and completes no checklist item; a root change receipt
+cannot replace fresh trial enforcement observations.
+
 ## Read-only inspection — administrator / trusted observer
 
 - [ ] Record observation time, observer and boot identity, kernel release, and each

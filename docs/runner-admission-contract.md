@@ -16,6 +16,12 @@ The manifest must freeze source, split, harness, phase, limits and owned namespa
 Use a distinct trial binding/manifest for each worker or lifecycle phase; these
 stateless functions cannot detect replay within an identical binding.
 
+Evidence hashes authenticate no origin. The proposed external verifier, signing
+roles and challenge/allocation binding are reviewed in
+[task 233](task-233-quota-readback-authentication.md), including the distinct-worker
+binding mismatch with nested lifecycle snapshot checks. That proposal is not
+implemented and does not change these closed APIs.
+
 Receipts record the stage, binding, status, `measured=false` and
 `production_authorized=false`. Passing receipts include canonical policy and
 observation SHA-256 hashes and normalized evidence. Refusal receipts contain a

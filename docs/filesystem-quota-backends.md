@@ -11,6 +11,12 @@ For a concise administrator handoff separating read-only inspection, approved
 maintenance and post-change verification, use the
 [safe administrator checklist](task-222-quota-administrator-checklist.md).
 
+The [task-233 authentication proposal](task-233-quota-readback-authentication.md)
+specifies external signatures, trust enrollment, observer roles and fresh
+allocation/phase binding. Observer IDs and hashes in this sidecar schema are not
+authenticated by existing runner/lifecycle contracts. The proposal implements no
+verifier and closes no runtime gate.
+
 The historical source audit at revision
 `10e983fc5fcb006c5afdbce1ef851dad71e953f2` found no complete, connected byte-and-inode
 backend for native bwrap/files tasks, Docker exec or harness/method workspaces.
