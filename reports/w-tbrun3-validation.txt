@@ -1,0 +1,126 @@
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_diagnostic_policy.py tests/quality/test_unobserved_diagnostic_c2.py tests/quality/test_split_source.py tests/quality/test_container_state.py tests/quality/test_terminal_artifact_admission.py --basetemp=/tmp/harnessgrad-pytest-w-tbrun3
+........................................................................ [ 30%]
+.............................................................F.......F.. [ 61%]
+........................................................................ [ 92%]
+.................                                                        [100%]
+=================================== FAILURES ===================================
+__ test_authorized_exec_runs_and_tags_every_result_without_cache_publication ___
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-tbrun3/test_authorized_exec_runs_and_0')
+synthetic_runtime = [((PosixPath('/tmp/harnessgrad-pytest-w-tbrun3/test_authorized_exec_runs_and_0'), {'goal': 'synthetic diagnostic', 'ta...xec_runs_and_0'), {'goal': 'synthetic diagnostic', 'task_id': 'synthetic-task-193'}, None, True, None, None, ...), {})]
+
+    def test_authorized_exec_runs_and_tags_every_result_without_cache_publication(tmp_path, synthetic_runtime):
+        cache = {}
+        direct = runner.run_one(tmp_path, TASK, env=EXEC, run_id=AUTH.run_id,
+                                diagnostic_authorization=AUTH)
+        assert direct["enforcement"] == AUTH.record()
+>       result = runner.evaluate(tmp_path, [TASK], {}, cache, envs={TASK["task_id"]: EXEC},
+                                 run_id=AUTH.run_id, diagnostic_authorization=AUTH,
+                                 progress_dir=tmp_path / "records")
+
+tests/quality/test_unobserved_diagnostic_c2.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+eval/run/runner.py:771: in evaluate
+    result = _evaluate(repo, tasks, scorable, cache=cache, harness_sha=harness_sha,
+eval/run/runner.py:1202: in _evaluate
+    per_task_scorer_isolation[tid] = common_class(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+classes = <generator object _evaluate.<locals>.<genexpr> at 0x7fafb2c87d80>
+
+    def common_class(classes) -> str:
+        """Require one observed topology before aggregating nonempty score inputs.
+    
+        Empty inputs carry no measurement and retain the unknown sentinel. Historical
+        records stay readable through observed_class; absence is never an observation.
+        """
+        values = {c if isinstance(c, str) and c in CLASSES else "unknown" for c in classes}
+        if len(values) > 1:
+            raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+        if values == {"unknown"}:
+>           raise IsolationMismatch("scorer isolation class unknown: aggregation invalid")
+E           eval.verification.isolation.IsolationMismatch: scorer isolation class unknown: aggregation invalid
+
+eval/verification/isolation.py:30: IsolationMismatch
+----------------------------- Captured stdout call -----------------------------
+  ✓ round 0 · 第 1/1 题 synthetic-task-193 — done (0s)
+----------------------------- Captured stderr call -----------------------------
+warning: could not write the progress record for synthetic-task-193: scorer isolation class unknown: aggregation invalid
+____ test_operator_authorized_driver_runs_once_but_cannot_publish_or_expand ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fafb2d08740>
+diagnostic_driver = (<module 'driver' from '/tmp/hg-tbrun3/driver.py'>, PosixPath('/tmp/harnessgrad-pytest-w-tbrun3/test_operator_authorized_drive0/runs/synthetic-driver-193'))
+synthetic_runtime = [((PosixPath('/tmp/harnessgrad-pytest-w-tbrun3/test_operator_authorized_drive0/work/synthetic-driver-193/workspace'), {'task_id': 'synthetic-task-193'}, None, True, None, None, ...), {})]
+
+    def test_operator_authorized_driver_runs_once_but_cannot_publish_or_expand(
+            monkeypatch, diagnostic_driver, synthetic_runtime):
+        import sys
+        driver, run_dir = diagnostic_driver
+        monkeypatch.setattr(sys, "argv", sys.argv + ["--authorize-unobserved-diagnostic", AUTH.operator_authorization])
+>       assert driver.main() == 2  # execution may finish, comparable publication must refuse
+
+tests/quality/test_unobserved_diagnostic_c2.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+driver.py:1291: in main
+    result = _main(attempt)
+driver.py:1121: in _main
+    base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
+eval/run/runner.py:771: in evaluate
+    result = _evaluate(repo, tasks, scorable, cache=cache, harness_sha=harness_sha,
+eval/run/runner.py:1202: in _evaluate
+    per_task_scorer_isolation[tid] = common_class(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+classes = <generator object _evaluate.<locals>.<genexpr> at 0x7fafb2bdf5a0>
+
+    def common_class(classes) -> str:
+        """Require one observed topology before aggregating nonempty score inputs.
+    
+        Empty inputs carry no measurement and retain the unknown sentinel. Historical
+        records stay readable through observed_class; absence is never an observation.
+        """
+        values = {c if isinstance(c, str) and c in CLASSES else "unknown" for c in classes}
+        if len(values) > 1:
+            raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+        if values == {"unknown"}:
+>           raise IsolationMismatch("scorer isolation class unknown: aggregation invalid")
+E           eval.verification.isolation.IsolationMismatch: scorer isolation class unknown: aggregation invalid
+
+eval/verification/isolation.py:30: IsolationMismatch
+----------------------------- Captured stdout call -----------------------------
+  ✓ round 0 · 第 1/1 题 synthetic-task-193 — done (0s)
+----------------------------- Captured stderr call -----------------------------
+warning: could not write the progress record for synthetic-task-193: scorer isolation class unknown: aggregation invalid
+=========================== short test summary info ============================
+FAILED tests/quality/test_unobserved_diagnostic_c2.py::test_authorized_exec_runs_and_tags_every_result_without_cache_publication
+FAILED tests/quality/test_unobserved_diagnostic_c2.py::test_operator_authorized_driver_runs_once_but_cannot_publish_or_expand
+2 failed, 231 passed in 22.17s
+
+exit_code=1
+
+Post-documentation-edit registry validation
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-tbrun3-registry
+......................................................                   [100%]
+54 passed in 2.77s
+
+exit_code=0
+
+$ python3 reports/w-tbrun3-evidence/audit.py
+{
+  "archive_sha256_verified": true,
+  "original_and_archived_files_verified": 255,
+  "production_code_changed": false,
+  "tests_changed": false,
+  "cached_runtime_admission_still_open": true
+}
+exit_code=0

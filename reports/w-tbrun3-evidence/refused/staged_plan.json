@@ -1,0 +1,89 @@
+{
+  "cleanup": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "context": {
+    "comparability_notes": [
+      "Single cached task, HG_TB_SPLIT=none; train CLI flag required by driver.py unobserved-diagnostic guard; no improver and no generalization or production claim.",
+      "All unknown gate, budget and provenance input fields remain null; raw scorer output is distinct from publication permission.",
+      "Scorer hash binds test.sh only, not transitive dependencies. This is a fresh rounds=0 attempt, not a resume of w-tbrun."
+    ],
+    "dataset": "terminal_bench",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "gates": {
+      "detail": "Operator authorized one diagnostic with backend observations absent; shared scorer-offline-closure and artifact-only-state-export remain open; no enforcement observation is attested.",
+      "receipt_sha256": null,
+      "status": "unknown"
+    },
+    "hashes": {
+      "harness": null,
+      "manifest": null,
+      "model": null,
+      "source": null,
+      "split": null
+    },
+    "limits": {
+      "budget": null,
+      "resource": {
+        "agent_timeout_s": 900,
+        "cpus": 1,
+        "memory_mb": 2048,
+        "verify_timeout_s": 900
+      }
+    },
+    "metric": {
+      "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+      "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+    },
+    "side": "train"
+  },
+  "coverage": {
+    "eligible_tasks": 1,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "eligible_task_ids_sha256": "ca77390f8587d60e14a1390ede829e32aa62e2d421e8ef249f0bb12c4dd0b539",
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator explicitly requests one cached Terminal-Bench task with HG_TB_SPLIT=none at round 0 to obtain its real verifier reward and lifecycle artifacts; backend enforcement observations remain absent, with no production authorization or comparable score publication.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-tbrun3-terminal-bench-20261014T194038Z-a228b8e2",
+    "stage": "diagnostic",
+    "task_id": "openssl-selfsigned-cert"
+  },
+  "jobs": 1,
+  "lifecycle": null,
+  "outcomes": [
+    {
+      "reason": "no outcome recorded",
+      "score": null,
+      "status": "unmeasured",
+      "task_id": "openssl-selfsigned-cert",
+      "trial": 1
+    }
+  ],
+  "run_id": "w-tbrun3-terminal-bench-20261014T194038Z-a228b8e2",
+  "schema": "harnessgrad.diagnostic-receipt.v2",
+  "score": null,
+  "selected_task_ids": [
+    "openssl-selfsigned-cert"
+  ],
+  "snapshot": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "stage": "diagnostic",
+  "trials": 1
+}

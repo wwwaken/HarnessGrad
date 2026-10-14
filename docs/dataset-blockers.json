@@ -1291,7 +1291,7 @@
           "id": "cached-runtime-admission",
           "family": "trusted-verifier-runtime",
           "status": "runtime",
-          "observed": "Reviewed 2026-10-15: the identity requirements are enforced in code and verifiable -- the image is resolved to a digest before launch and a run refuses to start without one (eval/containers/container.py:603,672), the resolved digest is recorded (eval/run/runner.py:296), a produced snapshot must look pinned (eval/containers/container.py:889-894), and the admission binding must carry a manifest_sha256 (eval/admission/runner_admission.py::_binding). Under docs/enforcement-proof-decision.md, snapshot/cleanup observations are best-effort with uncertainty retained: incomplete evidence alone permits admission and lease release; known failures or integrity mismatches still refuse, with cleanup refusals quarantined. What is still absent is execution evidence: the cached images are cached artifacts, and no terminal-bench task has been run with a verifier producing a score. The full 89-image set (~104 GB) is not required -- the operator decided a subset run selected via HG_TB_TASKS from the locally cached jevloop-tb images is sufficient.",
+          "observed": "Observed 2026-10-15 - w-tbrun3: one real locally cached openssl-selfsigned-cert task executed with HG_TB_SPLIT=none, loop, rounds=0, trials=1, jobs=1 and the local qwen3.5-9b-local endpoint. The runtime created a pinned snapshot and ran bash /tests/test.sh in a fresh verifier container. Its reward file contained 0, but the required /logs/verifier/ctrf.json was absent; the driver classified the trial invalid (invalid_trials=1, measured_trials=0, score=null). This is not a measured failure. Image/resource/snapshot and after-run owned-object absence observations are preserved; the driver manifest hash and connected runtime/snapshot/cleanup receipt bindings remain absent or unknown. No cached artifact, raw zero, or empty namespace listing is counted as a valid score or admission attestation. The earlier source review remains historical evidence.",
           "evidence": [
             {
               "kind": "repository",
@@ -1307,9 +1307,14 @@
               "kind": "repository",
               "path": "docs/enforcement-proof-decision.md",
               "locator": "Snapshot/cleanup uncertainty alone is not a new"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-tbrun3-receipts.md",
+              "locator": "OPEN: no valid verifier score."
             }
           ],
-          "next_action": "The review its previous next_action asked for is complete. What remains is execution: run one cached terminal-bench task selected via HG_TB_TASKS, with its verifier producing a score and the manifest/image/resource/cleanup receipts, and close the shared scorer-offline-closure, pristine-verifier and runtime-observations reviews. Do not count a cached image, or this review, as a measurement."
+          "next_action": "Diagnose the official verifier failure to emit /logs/verifier/ctrf.json and preserve its stdout/stderr on the invalid path; the retained w-tbrun3 artifacts establish the missing report but not its underlying cause. A separately authorized fresh diagnostic must produce a valid verifier report and score with manifest/image/resource/cleanup bindings before this dataset-specific blocker closes. Preserve this invalid run and all earlier receipts. Keep the shared scorer-offline-closure and artifact-only-state-export gates attached; no pilot expansion or production authorization follows from this attempt."
         }
       ],
       "historical_runs": []

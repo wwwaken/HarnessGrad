@@ -1,0 +1,21 @@
+{
+ "run_id": "w-tbrun3-terminal-bench-20261014T194038Z-a228b8e2",
+ "dataset": "terminal_bench",
+ "sampling_policy": "diagnostic",
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tbrun3-terminal-bench-20261014T194038Z-a228b8e2",
+  "task_id": "openssl-selfsigned-cert",
+  "operator_authorization": "Operator explicitly requests one cached Terminal-Bench task with HG_TB_SPLIT=none at round 0 to obtain its real verifier reward and lifecycle artifacts; backend enforcement observations remain absent, with no production authorization or comparable score publication.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "platform": {
+  "content_sha": "76111cad711aa7ecee69225e15fecec9cf1182839c457a0d675e820f4dc67272",
+  "git_sha": "1d31ea8670ef140cdc1e2a885ab92f761f44623e",
+  "dirty": true
+ }
+}

@@ -1,0 +1,49 @@
+{
+  "run_id": "w-tbrun3-terminal-bench-20261014T194115Z-7eab177b",
+  "real_task_executed": true,
+  "driver_returncode": 2,
+  "valid_verifier_score": null,
+  "raw_reward_files": {
+    "/tmp/hg-tbrun3/runs/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b-launch-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa": "0\n"
+  },
+  "verdicts": {},
+  "invalid": {
+    "openssl-selfsigned-cert": {
+      "stage": "check",
+      "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+    }
+  },
+  "coverage": {
+    "eligible_tasks": 1,
+    "expected_trials": 1,
+    "invalid_tasks": 1,
+    "invalid_trials": 1,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 0,
+    "unmeasured_trials": 0
+  },
+  "score": null,
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator explicitly requests one cached Terminal-Bench task with HG_TB_SPLIT=none at round 0 to obtain its real verifier reward and lifecycle artifacts; backend enforcement observations remain absent, with no production authorization or comparable score publication.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-tbrun3-terminal-bench-20261014T194115Z-7eab177b",
+    "stage": "diagnostic",
+    "task_id": "openssl-selfsigned-cert"
+  },
+  "driver_artifact_presence": {
+    "staged_plan.json": true,
+    "diagnostic_receipt.json": true,
+    "diagnostic_execution.json": true,
+    "run_meta.json": true,
+    "events.jsonl": true,
+    "curve.jsonl": false
+  },
+  "blocker_closed": false,
+  "note": "The reward file exists but required CTRF evidence does not; no valid score is inferred."
+}

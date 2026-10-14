@@ -1,0 +1,182 @@
+{
+ "run_id": "w-tbrun3-terminal-bench-20261014T194115Z-7eab177b",
+ "mode": "unified",
+ "harness": "loop",
+ "dataset": "terminal_bench",
+ "sampling_policy": "diagnostic",
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tbrun3-terminal-bench-20261014T194115Z-7eab177b",
+  "task_id": "openssl-selfsigned-cert",
+  "operator_authorization": "Operator explicitly requests one cached Terminal-Bench task with HG_TB_SPLIT=none at round 0 to obtain its real verifier reward and lifecycle artifacts; backend enforcement observations remain absent, with no production authorization or comparable score publication.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "diagnostic_policy": {
+  "receipt_schema": "harnessgrad.diagnostic-receipt.v2",
+  "eligible_tasks": 1,
+  "eligible_task_ids_sha256": "ca77390f8587d60e14a1390ede829e32aa62e2d421e8ef249f0bb12c4dd0b539",
+  "selected_tasks": 1,
+  "selected_task_ids": [
+   "openssl-selfsigned-cert"
+  ],
+  "expected_trials": 1,
+  "trials": 1,
+  "jobs": 1,
+  "evidence_sha256": "82f8b70a66135d0c7dc49cdcc2a3f493feda4af1fa47b2a1112cb2d61d947043",
+  "context": {
+   "dataset": "terminal_bench",
+   "side": "train",
+   "metric": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+   },
+   "hashes": {
+    "source": null,
+    "split": null,
+    "manifest": null,
+    "model": null,
+    "harness": null
+   },
+   "endpoint": "http://127.0.0.1:8002/v1",
+   "limits": {
+    "resource": {
+     "cpus": 1,
+     "memory_mb": 2048,
+     "agent_timeout_s": 900,
+     "verify_timeout_s": 900
+    },
+    "budget": null
+   },
+   "gates": {
+    "status": "unknown",
+    "receipt_sha256": null,
+    "detail": "Operator authorized one diagnostic with backend observations absent; shared scorer-offline-closure and artifact-only-state-export remain open; no enforcement observation is attested."
+   },
+   "comparability_notes": [
+    "Single cached task, HG_TB_SPLIT=none; train CLI flag required by driver.py unobserved-diagnostic guard; no improver and no generalization or production claim.",
+    "All unknown gate, budget and provenance input fields remain null; raw scorer output is distinct from publication permission.",
+    "Scorer hash binds test.sh only, not transitive dependencies. This is a fresh rounds=0 attempt, not a resume of w-tbrun."
+   ]
+  }
+ },
+ "workspace": "/tmp/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b-work/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b/workspace",
+ "work_root": "/tmp/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b-work",
+ "platform_root": "/tmp/hg-tbrun3",
+ "sandbox": {
+  "requested": true,
+  "active": true,
+  "plan_version": 2,
+  "detail": "bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v2; /usr/bin/bwrap"
+ },
+ "config": {
+  "agent": {
+   "backend": "openai",
+   "model": "qwen3.5-9b-local",
+   "base_url": "http://127.0.0.1:8002/v1",
+   "api_key": {
+    "present": true
+   }
+  },
+  "method": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "timeout_s": 180,
+   "parse_retries": 2,
+   "history_rounds": 0,
+   "dump": null,
+   "source_limit": 200000,
+   "source_total": 60000,
+   "skill_limit": 24000
+  },
+  "improver": {
+   "selection": null,
+   "name": null,
+   "model": null,
+   "effort": null,
+   "args": "",
+   "skill": null,
+   "timeout_s": 1800,
+   "skip_tool_gate": null,
+   "codex_home_source": null,
+   "api_key": {
+    "present": false
+   }
+  },
+  "environment": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "seed": null
+  },
+  "sandbox": {
+   "bwrap": null
+  },
+  "egress": {
+   "proxy": null,
+   "bind": "172.17.0.1",
+   "port": 17890,
+   "upstream": "127.0.0.1:17891"
+  },
+  "runtime": {
+   "overlay_root": null,
+   "overlay_builder_image": null,
+   "registry_mirrors": null
+  },
+  "storage": {
+   "run_root": null,
+   "record_dir": "/recordings/orders",
+   "pull_timeout_s": 900
+  },
+  "run": {
+   "run_id": "w-tbrun3-terminal-bench-20261014T194115Z-7eab177b",
+   "harness": "loop",
+   "dataset": "terminal_bench",
+   "side": "train",
+   "sampling": "diagnostic",
+   "rounds": 0,
+   "trials": 1,
+   "jobs": 1,
+   "sandbox": true,
+   "mode": "unified",
+   "seed": "d893f3451101acc7",
+   "runs_root": "/tmp/hg-tbrun3/runs",
+   "work_root": "/tmp/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b-work",
+   "method_entrypoint": null,
+   "budget_profile": null,
+   "budget_ledger": null,
+   "budget_arm": "agent",
+   "budget_profile_hash": null
+  }
+ },
+ "env": {
+  "kind": "exec",
+  "image_digest": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+  "network": "bridge",
+  "placement": "inside",
+  "services": [],
+  "model_gateway": null,
+  "model": null,
+  "seed": null
+ },
+ "split_declared": false,
+ "oracle_source": "released",
+ "agent_model": "qwen3.5-9b-local",
+ "agent_backend": "openai",
+ "framework_version": "0.1.0",
+ "trials": 1,
+ "jobs": 1,
+ "platform": {
+  "content_sha": "76111cad711aa7ecee69225e15fecec9cf1182839c457a0d675e820f4dc67272",
+  "git_sha": "1d31ea8670ef140cdc1e2a885ab92f761f44623e",
+  "dirty": true
+ }
+}
