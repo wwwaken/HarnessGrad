@@ -367,6 +367,18 @@ def test_an_unreadable_verb_set_is_reported_not_defaulted(tmp_path):
     assert dataset_classes._declared_verbs(weird) == set()
 
 
+@pytest.fixture(scope="module")
+def classified():
+    """Classify once for the whole module.
+
+    `classify_all()` reads every dataset, which is the right cost for the one check
+    that asserts the population, and far too much to pay again for each filter
+    combination. The filter assertions below call the same `select()` the CLI uses,
+    so this is the shipped path, just not re-entered through a subprocess 34 times.
+    """
+    return dataset_classes.classify_all()
+
+
 def test_the_json_view_is_machine_readable():
     proc = subprocess.run([sys.executable, "tools/dataset_classes.py", "--json"],
                           cwd=ROOT, capture_output=True, text=True, timeout=300)
@@ -380,29 +392,40 @@ def test_the_json_view_is_machine_readable():
     assert all("domain" not in row for row in rows)
 
 
-def test_the_filters_select_what_they_say():
+def test_the_interaction_and_runnable_flags_reach_the_cli():
+    """One real CLI invocation, so the flag wiring itself is exercised end to end.
+
+    The filter *semantics* are covered in process below; what this adds is that
+    `--interaction` and `--runnable-only` are actually parsed and forwarded.
+    """
     proc = subprocess.run([sys.executable, "tools/dataset_classes.py", "--json",
                            "--interaction", "closed_loop", "--runnable-only"],
                           cwd=ROOT, capture_output=True, text=True, timeout=300)
+    assert proc.returncode == 0, proc.stderr[-400:]
     rows = json.loads(proc.stdout)
     assert rows and all(row["interaction"] == "closed_loop" and not row["refused"]
                         for row in rows)
-    # Pinned as an exact set on purpose: the closed-loop datasets have an exec environment.
     assert {row["dataset"] for row in rows} == {
         "agentdojo", "alfworld", "appworld", "gaia", "jericho", "scienceworld",
         "tau_bench", "terminal_bench"}
 
 
-def test_the_demand_surface_and_adversarial_filters_select_what_they_say():
-    def run(*flags):
-        proc = subprocess.run([sys.executable, "tools/dataset_classes.py", "--json", *flags],
-                              cwd=ROOT, capture_output=True, text=True, timeout=300)
-        assert proc.returncode == 0, proc.stderr[-400:]
-        return json.loads(proc.stdout)
+def test_the_filters_select_what_they_say(classified):
+    rows = dataset_classes.select(classified, interaction="closed_loop", runnable_only=True)
+    assert rows and all(row["interaction"] == "closed_loop" and not row["refused"]
+                        for row in rows)
+    assert {row["dataset"] for row in rows} == {
+        "agentdojo", "alfworld", "appworld", "gaia", "jericho", "scienceworld",
+        "tau_bench", "terminal_bench"}
 
-    demands = run()
+
+def test_the_demand_surface_and_adversarial_filters_select_what_they_say(classified):
+    def run(*flags, **kwargs):
+        return dataset_classes.select(classified, **kwargs)
+
+    demands = classified
     for demand in dataset_classes.DEMANDS:
-        filtered = run("--demand", demand)
+        filtered = run(demand=demand)
         if demand in dataset_classes.UNCOVERED_DEMANDS:
             assert filtered == [], f"{demand!r} is declared uncovered yet filtered non-empty"
             continue
@@ -411,14 +434,14 @@ def test_the_demand_surface_and_adversarial_filters_select_what_they_say():
             row["dataset"] for row in demands if row["demand"] == demand}
 
     for surface in sorted({row["surface"] for row in demands}):
-        filtered = run("--surface", surface)
+        filtered = run(surface=surface)
         assert filtered and all(row["surface"] == surface for row in filtered)
 
-    adversarial = run("--adversarial")
+    adversarial = run(adversarial=True)
     assert {row["dataset"] for row in adversarial} == set(dataset_classes.ADVERSARIAL)
 
     for function in dataset_classes.FUNCTIONS:
-        filtered = run("--function", function)
+        filtered = run(function=function)
         assert {row["dataset"] for row in filtered} == {
             row["dataset"] for row in demands if function in row["exercises"]}, function
 

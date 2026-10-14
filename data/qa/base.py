@@ -332,7 +332,7 @@ class QASpec:
         which the adapters satisfy by keeping their scoring half self-contained.
         """
         return {
-            "kind": "command",
+            "kind": self.VERIFIER_KIND,
             "argv": [
                 "python3", f"{CHECK_DIR}/{CHECK_NAME}",
                 "--dataset", self.name,
@@ -458,6 +458,15 @@ class QASpec:
     def setup_map(self) -> dict:
         """`SETUP`: one entry per task. Built on demand -- see `build()`."""
         return {r["task_id"]: self.setup(r) for r in self.ensure()}
+
+    #: The `kind` every entry of `VERIFY` carries, declared once. `verify_map()`
+    #: materializes one entry per task on purpose (building it at import cost 18 s on
+    #: triviaqa), so a caller that only needs the *set* of kinds must not be forced to
+    #: pay for 949 identical dicts -- that turned a taxonomy report into a 19-second
+    #: command and made the dataset-classification suite take fifteen minutes.
+    #: `tests/quality/test_dataset_classes.py` pins this against a materialized map so
+    #: the declaration cannot drift away from what `verifier()` actually builds.
+    VERIFIER_KIND = "command"
 
     def verify_map(self) -> dict:
         """`VERIFY`: one entry per task. Built on demand -- see `build()`."""

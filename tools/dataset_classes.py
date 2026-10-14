@@ -398,7 +398,12 @@ def classify(name: str) -> dict:
         return row
     tasks = module.load()[0]
     task_id = tasks[0]["task_id"]
-    row["verifier_kinds"] = sorted({v["kind"] for v in module.VERIFY.values()})
+    # Prefer the scaffold's declared kind: `VERIFY` is a lazy one-entry-per-task map,
+    # so iterating it built ~83k verifier dicts to recover a single distinct value.
+    # A module that declares no kind still walks its real map, which is small.
+    declared_kinds = getattr(getattr(module, "_SPEC", None), "VERIFIER_KIND", None)
+    row["verifier_kinds"] = ([declared_kinds] if declared_kinds
+                             else sorted({v["kind"] for v in module.VERIFY.values()}))
     scripts = _cli_scripts(module, task_id)
     surface_names = []
     acts = False
@@ -591,6 +596,33 @@ def _table(rows: list[dict]) -> str:
     return "\n".join(out)
 
 
+def select(rows: list[dict], *, demand: str | None = None, surface: str | None = None,
+           function: str | None = None, adversarial: bool = False,
+           interaction: str | None = None, runnable_only: bool = False) -> list[dict]:
+    """Apply the CLI's filters as a pure function over already-classified rows.
+
+    Extracted so the filter semantics can be tested without paying for a fresh
+    classification per combination. `classify_all()` reads every dataset, and one
+    dataset per task set is not cheap; running the whole command once per demand and
+    per surface turned a taxonomy check into fifteen minutes of suite time. The CLI
+    and the tests now share this function, so the tested path is the shipped path.
+    """
+    out = list(rows)
+    if demand:
+        out = [r for r in out if r["demand"] == demand]
+    if surface:
+        out = [r for r in out if r["surface"] == surface]
+    if function:
+        out = [r for r in out if function in r["exercises"]]
+    if adversarial:
+        out = [r for r in out if r["adversarial"]]
+    if interaction:
+        out = [r for r in out if r["interaction"] == interaction]
+    if runnable_only:
+        out = [r for r in out if not r["refused"]]
+    return out
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--json", action="store_true", help="machine-readable output")
@@ -605,19 +637,10 @@ def main(argv=None) -> int:
                         help="drop the datasets that refuse")
     args = parser.parse_args(argv)
 
-    rows = classify_all()
-    if args.demand:
-        rows = [r for r in rows if r["demand"] == args.demand]
-    if args.surface:
-        rows = [r for r in rows if r["surface"] == args.surface]
-    if args.function:
-        rows = [r for r in rows if args.function in r["exercises"]]
-    if args.adversarial:
-        rows = [r for r in rows if r["adversarial"]]
-    if args.interaction:
-        rows = [r for r in rows if r["interaction"] == args.interaction]
-    if args.runnable_only:
-        rows = [r for r in rows if not r["refused"]]
+    selection = {"demand": args.demand, "surface": args.surface, "function": args.function,
+                 "adversarial": args.adversarial, "interaction": args.interaction,
+                 "runnable_only": args.runnable_only}
+    rows = select(classify_all(), **selection)
     if args.json:
         print(json.dumps(rows, indent=1, sort_keys=True))
     else:
