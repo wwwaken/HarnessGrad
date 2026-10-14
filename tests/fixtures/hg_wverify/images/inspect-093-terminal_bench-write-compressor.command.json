@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "inspect",
+    "--format",
+    "{\"Id\":{{json .Id}},\"RepoDigests\":{{json .RepoDigests}},\"RepoTags\":{{json .RepoTags}},\"Size\":{{json .Size}}}",
+    "alexgshaw/write-compressor:20251031"
+  ],
+  "cwd": "/tmp/hg-verify-images",
+  "returncode": 0
+}

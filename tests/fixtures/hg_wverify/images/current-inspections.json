@@ -1,0 +1,2083 @@
+[
+  {
+    "command_file": "inspect-000-gaia-image.command.json",
+    "dataset": "gaia",
+    "environment_key": "HG_GAIA_IMAGE",
+    "line": 94,
+    "observed": {
+      "Id": "sha256:9cc27f813e596542d3f3447de10fc1166b27d66e282f271b2e057ee8ca0e0e13",
+      "RepoDigests": [
+        "harnessgrad/gaia@sha256:9cc27f813e596542d3f3447de10fc1166b27d66e282f271b2e057ee8ca0e0e13"
+      ],
+      "RepoTags": [
+        "harnessgrad/gaia:20261008"
+      ],
+      "Size": 102621041
+    },
+    "path": "/tmp/hg-verify-images/data/datasets/gaia.py",
+    "pin": "movable-tag",
+    "reference": "harnessgrad/gaia:20261008",
+    "returncode": 0,
+    "role": "IMAGE"
+  },
+  {
+    "command_file": "inspect-001-tau_bench-image.command.json",
+    "dataset": "tau_bench",
+    "environment_key": "HG_TAU_IMAGE",
+    "line": 125,
+    "observed": {
+      "Id": "sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23",
+      "RepoDigests": [
+        "harnessgrad/tau-bench@sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23"
+      ],
+      "RepoTags": [
+        "harnessgrad/tau-bench:20261006"
+      ],
+      "Size": 46091804
+    },
+    "path": "/tmp/hg-verify-images/data/datasets/tau_bench.py",
+    "pin": "movable-tag",
+    "reference": "harnessgrad/tau-bench:20261006",
+    "returncode": 0,
+    "role": "IMAGE"
+  },
+  {
+    "command_file": "inspect-002-appworld-image.command.json",
+    "dataset": "appworld",
+    "environment_key": "HG_APPWORLD_IMAGE",
+    "line": 53,
+    "observed": {
+      "Id": "sha256:d3a04ec8e295710347e978d8e58c663161d829e7dfa544da4d82d0d67abbd8eb",
+      "RepoDigests": [
+        "harnessgrad/appworld-agent@sha256:d3a04ec8e295710347e978d8e58c663161d829e7dfa544da4d82d0d67abbd8eb"
+      ],
+      "RepoTags": [
+        "harnessgrad/appworld-agent:20261009"
+      ],
+      "Size": 45534461
+    },
+    "path": "/tmp/hg-verify-images/data/datasets/appworld.py",
+    "pin": "digest",
+    "reference": "harnessgrad/appworld-agent@sha256:d3a04ec8e295710347e978d8e58c663161d829e7dfa544da4d82d0d67abbd8eb",
+    "returncode": 0,
+    "role": "IMAGE"
+  },
+  {
+    "command_file": "inspect-003-appworld-service_image.command.json",
+    "dataset": "appworld",
+    "environment_key": "HG_APPWORLD_SERVICE_IMAGE",
+    "line": 57,
+    "observed": {
+      "Id": "sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4",
+      "RepoDigests": [
+        "harnessgrad/appworld-service@sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4"
+      ],
+      "RepoTags": [
+        "harnessgrad/appworld-service:20261009-clean2"
+      ],
+      "Size": 156920267
+    },
+    "path": "/tmp/hg-verify-images/data/datasets/appworld.py",
+    "pin": "digest",
+    "reference": "harnessgrad/appworld-service@sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4",
+    "returncode": 0,
+    "role": "SERVICE_IMAGE"
+  },
+  {
+    "command_file": "inspect-004-appworld-verifier_image.command.json",
+    "dataset": "appworld",
+    "environment_key": "HG_APPWORLD_VERIFIER_IMAGE",
+    "line": 61,
+    "observed": {
+      "Id": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+      "RepoDigests": [
+        "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca"
+      ],
+      "RepoTags": [
+        "harnessgrad/appworld-service:20261009-final2"
+      ],
+      "Size": 159917668
+    },
+    "path": "/tmp/hg-verify-images/data/datasets/appworld.py",
+    "pin": "digest",
+    "reference": "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+    "returncode": 0,
+    "role": "VERIFIER_IMAGE"
+  },
+  {
+    "command_file": "inspect-005-terminal_bench-adaptive-rejection-sampler.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:985bed39e8448bc95f138b5f766b59003a95c4be171c96af8e76448338f3dd8f",
+      "RepoDigests": [
+        "alexgshaw/adaptive-rejection-sampler@sha256:985bed39e8448bc95f138b5f766b59003a95c4be171c96af8e76448338f3dd8f"
+      ],
+      "RepoTags": [
+        "alexgshaw/adaptive-rejection-sampler:20251031"
+      ],
+      "Size": 29731756
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/adaptive-rejection-sampler/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/adaptive-rejection-sampler:20251031",
+    "returncode": 0,
+    "role": "adaptive-rejection-sampler",
+    "sha256": "6ed7b37f74beb46e9d47b0f5fad53025667c9548baff4e96d467b56d429fab1a"
+  },
+  {
+    "command_file": "inspect-006-terminal_bench-bn-fit-modify.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:5aeb11ca6e802b83816c9a31f055ac9d028309a853509400c2e3139ac2d8380d",
+      "RepoDigests": [
+        "alexgshaw/bn-fit-modify@sha256:5aeb11ca6e802b83816c9a31f055ac9d028309a853509400c2e3139ac2d8380d"
+      ],
+      "RepoTags": [
+        "alexgshaw/bn-fit-modify:20251031"
+      ],
+      "Size": 262234970
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/bn-fit-modify/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/bn-fit-modify:20251031",
+    "returncode": 0,
+    "role": "bn-fit-modify",
+    "sha256": "6493f7162da424a4fd95da721bd3fd1ce7e5dd26e792132cb9c46db536b67090"
+  },
+  {
+    "command_file": "inspect-007-terminal_bench-break-filter-js-from-html.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/break-filter-js-from-html@sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8",
+        "alexgshaw/break-filter-js-from-html@sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/break-filter-js-from-html:20251031",
+        "alexgshaw/break-filter-js-from-html:20251031"
+      ],
+      "Size": 382374925
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/break-filter-js-from-html/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/break-filter-js-from-html:20251031",
+    "returncode": 0,
+    "role": "break-filter-js-from-html",
+    "sha256": "f820eb1b47e4ccc548b87d9a418fef519137dcf975ad73d0fb5246df00a9669b"
+  },
+  {
+    "command_file": "inspect-008-terminal_bench-build-cython-ext.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:3612a38fadb89a96f74a1a951fb0b0af734198fd160571eeaba6401593234594",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/build-cython-ext@sha256:3612a38fadb89a96f74a1a951fb0b0af734198fd160571eeaba6401593234594",
+        "alexgshaw/build-cython-ext@sha256:3612a38fadb89a96f74a1a951fb0b0af734198fd160571eeaba6401593234594"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/build-cython-ext:20251031",
+        "alexgshaw/build-cython-ext:20251031"
+      ],
+      "Size": 303222492
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/build-cython-ext:20251031",
+    "returncode": 0,
+    "role": "build-cython-ext",
+    "sha256": "c472f0e7522c128fb7f03e00b50c8cdf2e5e6474daa1e094e7441f4b54e770b2"
+  },
+  {
+    "command_file": "inspect-009-terminal_bench-build-pmars.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:57a82706f7491e0b2d1ff7e927e97ae5339892dd09c47ac43290b4ba1f5abc6f",
+      "RepoDigests": [
+        "alexgshaw/build-pmars@sha256:57a82706f7491e0b2d1ff7e927e97ae5339892dd09c47ac43290b4ba1f5abc6f"
+      ],
+      "RepoTags": [
+        "alexgshaw/build-pmars:20251031"
+      ],
+      "Size": 61142972
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-pmars/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/build-pmars:20251031",
+    "returncode": 0,
+    "role": "build-pmars",
+    "sha256": "7ee2eac27b99fd462e0760552a430454db693f86608af5bb570b020270e4c9cd"
+  },
+  {
+    "command_file": "inspect-010-terminal_bench-build-pov-ray.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:874baf49341e2853a15a9184e308c7eb632e97f434359fcff2891c6e5ca1b39b",
+      "RepoDigests": [
+        "alexgshaw/build-pov-ray@sha256:874baf49341e2853a15a9184e308c7eb632e97f434359fcff2891c6e5ca1b39b"
+      ],
+      "RepoTags": [
+        "alexgshaw/build-pov-ray:20251031"
+      ],
+      "Size": 163066497
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-pov-ray/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/build-pov-ray:20251031",
+    "returncode": 0,
+    "role": "build-pov-ray",
+    "sha256": "b90a47ec26c1191d3c523cc094ea96b170e42fbfe176ef1f814c57d05390c097"
+  },
+  {
+    "command_file": "inspect-011-terminal_bench-caffe-cifar-10.command.json",
+    "dataset": "terminal_bench",
+    "line": 27,
+    "observed": {
+      "Id": "sha256:5b54d6e8f1b392cdeb819e28215853f500b72b8e08b91270c7a3693bf44d1fe2",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/caffe-cifar-10@sha256:5b54d6e8f1b392cdeb819e28215853f500b72b8e08b91270c7a3693bf44d1fe2",
+        "alexgshaw/caffe-cifar-10@sha256:5b54d6e8f1b392cdeb819e28215853f500b72b8e08b91270c7a3693bf44d1fe2"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/caffe-cifar-10:20251031",
+        "alexgshaw/caffe-cifar-10:20251031"
+      ],
+      "Size": 209538723
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/caffe-cifar-10/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/caffe-cifar-10:20251031",
+    "returncode": 0,
+    "role": "caffe-cifar-10",
+    "sha256": "19daf54e378e1d811883d0f0c9c16344f58871770699993477f375e5fc1fe193"
+  },
+  {
+    "command_file": "inspect-012-terminal_bench-cancel-async-tasks.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d",
+      "RepoDigests": [
+        "alexgshaw/cancel-async-tasks@sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d"
+      ],
+      "RepoTags": [
+        "alexgshaw/cancel-async-tasks:20251031"
+      ],
+      "Size": 44171676
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/cancel-async-tasks/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/cancel-async-tasks:20251031",
+    "returncode": 0,
+    "role": "cancel-async-tasks",
+    "sha256": "14db0675e04408f2133b0067e8dbddf66a1d6e7baf6b8d38bef8ecccfc4e58a8"
+  },
+  {
+    "command_file": "inspect-013-terminal_bench-chess-best-move.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/chess-best-move@sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647",
+        "alexgshaw/chess-best-move@sha256:bb447f94d9e2a8ed879f85c85a514b213b7418f9fe11fd7b2428a0b0e436e647"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/chess-best-move:20251031",
+        "alexgshaw/chess-best-move:20251031"
+      ],
+      "Size": 240211717
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/chess-best-move/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/chess-best-move:20251031",
+    "returncode": 0,
+    "role": "chess-best-move",
+    "sha256": "d8f01d3c84ed5836edbb49c6c3b3cc7b5b96d951cf01a0987467c9206fb22f9e"
+  },
+  {
+    "command_file": "inspect-014-terminal_bench-circuit-fibsqrt.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:29783439f529eaed2145592f15af7a2281161528860392a382c825489030ae3a",
+      "RepoDigests": [
+        "alexgshaw/circuit-fibsqrt@sha256:29783439f529eaed2145592f15af7a2281161528860392a382c825489030ae3a"
+      ],
+      "RepoTags": [
+        "alexgshaw/circuit-fibsqrt:20251031"
+      ],
+      "Size": 149136738
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/circuit-fibsqrt/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/circuit-fibsqrt:20251031",
+    "returncode": 0,
+    "role": "circuit-fibsqrt",
+    "sha256": "9f5aa1f7ebbbcec90fd109121e9bd509af3cfff6b4cec701bd91947988f40972"
+  },
+  {
+    "command_file": "inspect-015-terminal_bench-cobol-modernization.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:593ab9df3d83f771e927888b2d9436b380cdf7ec4d0af2a9f0802d541edebba0",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/cobol-modernization@sha256:593ab9df3d83f771e927888b2d9436b380cdf7ec4d0af2a9f0802d541edebba0",
+        "alexgshaw/cobol-modernization@sha256:593ab9df3d83f771e927888b2d9436b380cdf7ec4d0af2a9f0802d541edebba0"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/cobol-modernization:20251031",
+        "alexgshaw/cobol-modernization:20251031"
+      ],
+      "Size": 162020401
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/cobol-modernization/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/cobol-modernization:20251031",
+    "returncode": 0,
+    "role": "cobol-modernization",
+    "sha256": "4b620211dc3d6b1b989f0210c5ecd2f606974581c8bce27bd78659d48cf0cfbd"
+  },
+  {
+    "command_file": "inspect-016-terminal_bench-code-from-image.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:2be9cdb746ed18c1b2b1404032efae0b2235a1b8fc479ef17730c95409d89f76",
+      "RepoDigests": [
+        "alexgshaw/code-from-image@sha256:2be9cdb746ed18c1b2b1404032efae0b2235a1b8fc479ef17730c95409d89f76"
+      ],
+      "RepoTags": [
+        "alexgshaw/code-from-image:20251031"
+      ],
+      "Size": 44252335
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/code-from-image/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/code-from-image:20251031",
+    "returncode": 0,
+    "role": "code-from-image",
+    "sha256": "3a13c1e252bb8759f51215be0b2b2cb1b4c697f0dd570f2d7702cc28b28f08de"
+  },
+  {
+    "command_file": "inspect-017-terminal_bench-compile-compcert.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:f316947b7be23ad0d187320126eb1cbb5685f48342c6543fdd3ac839aa9e1a7f",
+      "RepoDigests": [
+        "alexgshaw/compile-compcert@sha256:f316947b7be23ad0d187320126eb1cbb5685f48342c6543fdd3ac839aa9e1a7f"
+      ],
+      "RepoTags": [
+        "alexgshaw/compile-compcert:20251031"
+      ],
+      "Size": 29725521
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/compile-compcert/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/compile-compcert:20251031",
+    "returncode": 0,
+    "role": "compile-compcert",
+    "sha256": "d43ddbf12eeb623bcebd2b2ea8a1c059aaf83a29062321539a8f52f1f96c230e"
+  },
+  {
+    "command_file": "inspect-018-terminal_bench-configure-git-webserver.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:9e48389b917fd4650dda1f64406bd7198bbf20dc1c6b0e5c4d81a3c16369f88c",
+      "RepoDigests": [
+        "alexgshaw/configure-git-webserver@sha256:9e48389b917fd4650dda1f64406bd7198bbf20dc1c6b0e5c4d81a3c16369f88c"
+      ],
+      "RepoTags": [
+        "alexgshaw/configure-git-webserver:20251031"
+      ],
+      "Size": 72341286
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/configure-git-webserver/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/configure-git-webserver:20251031",
+    "returncode": 0,
+    "role": "configure-git-webserver",
+    "sha256": "ebb40d72f689512cbd90d865d88ef966b6665ab215544f9247b898b7fa94751b"
+  },
+  {
+    "command_file": "inspect-019-terminal_bench-constraints-scheduling.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:567ce5a189f8d11ac461790876e934cc7af38391baf89a78f95f4dafc1fec3b0",
+      "RepoDigests": [
+        "alexgshaw/constraints-scheduling@sha256:567ce5a189f8d11ac461790876e934cc7af38391baf89a78f95f4dafc1fec3b0"
+      ],
+      "RepoTags": [
+        "alexgshaw/constraints-scheduling:20251031"
+      ],
+      "Size": 49852952
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/constraints-scheduling/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/constraints-scheduling:20251031",
+    "returncode": 0,
+    "role": "constraints-scheduling",
+    "sha256": "7b9842de16d74e8faf8c7c0aa03b0b81145941cb12dd322d81ae23fc48607250"
+  },
+  {
+    "command_file": "inspect-020-terminal_bench-count-dataset-tokens.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:9c513c4ba342bd95be501f6f5eadd4806a2b18749c87c251615825100130232d",
+      "RepoDigests": [
+        "alexgshaw/count-dataset-tokens@sha256:9c513c4ba342bd95be501f6f5eadd4806a2b18749c87c251615825100130232d"
+      ],
+      "RepoTags": [
+        "alexgshaw/count-dataset-tokens:20251031"
+      ],
+      "Size": 44171678
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/count-dataset-tokens/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/count-dataset-tokens:20251031",
+    "returncode": 0,
+    "role": "count-dataset-tokens",
+    "sha256": "8220a1b8e6e08ecb95556920de358b6aa74b112d8a79625db6915f6b316ccd18"
+  },
+  {
+    "command_file": "inspect-021-terminal_bench-crack-7z-hash.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/crack-7z-hash@sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3",
+        "alexgshaw/crack-7z-hash@sha256:0f4453abd774c5a3d3d7e66ba28fae88ec2e49ada3a993b324ebc16c348666d3"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/crack-7z-hash:20251031",
+        "alexgshaw/crack-7z-hash:20251031"
+      ],
+      "Size": 355846985
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/crack-7z-hash/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/crack-7z-hash:20251031",
+    "returncode": 0,
+    "role": "crack-7z-hash",
+    "sha256": "8e192bcbe00e817419bde7ff9b562a5fa0c1e24ec4f3384cba4a31eda0a7b013"
+  },
+  {
+    "command_file": "inspect-022-terminal_bench-custom-memory-heap-crash.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:1895d7d6240d5fb2ec774d6bfdd1057d170f8d199c15c582e4585d3c63802557",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/custom-memory-heap-crash@sha256:1895d7d6240d5fb2ec774d6bfdd1057d170f8d199c15c582e4585d3c63802557",
+        "alexgshaw/custom-memory-heap-crash@sha256:1895d7d6240d5fb2ec774d6bfdd1057d170f8d199c15c582e4585d3c63802557"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/custom-memory-heap-crash:20251031",
+        "alexgshaw/custom-memory-heap-crash:20251031"
+      ],
+      "Size": 1267999268
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/custom-memory-heap-crash/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/custom-memory-heap-crash:20251031",
+    "returncode": 0,
+    "role": "custom-memory-heap-crash",
+    "sha256": "ed474be1983e212913aa8866ebb66216acbe36aef2339ac375d232aa46617481"
+  },
+  {
+    "command_file": "inspect-023-terminal_bench-db-wal-recovery.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:0e33ea5ec823975d1bd6c3778395c9f94251dd88f571146057bff6adb7e4594e",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/db-wal-recovery@sha256:0e33ea5ec823975d1bd6c3778395c9f94251dd88f571146057bff6adb7e4594e",
+        "alexgshaw/db-wal-recovery@sha256:0e33ea5ec823975d1bd6c3778395c9f94251dd88f571146057bff6adb7e4594e"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/db-wal-recovery:20251031",
+        "alexgshaw/db-wal-recovery:20251031"
+      ],
+      "Size": 175276145
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/db-wal-recovery/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/db-wal-recovery:20251031",
+    "returncode": 0,
+    "role": "db-wal-recovery",
+    "sha256": "1cdc2c615e259bc10265efbe71b518332070c1c002e226566399e9788f18d0aa"
+  },
+  {
+    "command_file": "inspect-024-terminal_bench-distribution-search.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:1448f7aa1c6080488251d00350e8e90477858989b1bec0accc866d7b3220738a",
+      "RepoDigests": [
+        "alexgshaw/distribution-search@sha256:1448f7aa1c6080488251d00350e8e90477858989b1bec0accc866d7b3220738a"
+      ],
+      "RepoTags": [
+        "alexgshaw/distribution-search:20251031"
+      ],
+      "Size": 181103978
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/distribution-search/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/distribution-search:20251031",
+    "returncode": 0,
+    "role": "distribution-search",
+    "sha256": "70c8e73cafd0a75306375bec2c2e1e4d82e0cb969fd7e38a63e7c344de43b681"
+  },
+  {
+    "command_file": "inspect-025-terminal_bench-dna-assembly.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:d1adf6835f1dd91205ba70e452c699d0aea601010038e5617f370716efb50569",
+      "RepoDigests": [
+        "alexgshaw/dna-assembly@sha256:d1adf6835f1dd91205ba70e452c699d0aea601010038e5617f370716efb50569"
+      ],
+      "RepoTags": [
+        "alexgshaw/dna-assembly:20251031"
+      ],
+      "Size": 29727501
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/dna-assembly/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/dna-assembly:20251031",
+    "returncode": 0,
+    "role": "dna-assembly",
+    "sha256": "7b571544b64d9be1c91526837e5d805c2181afe0e6fd57a7f0676bba36c868d7"
+  },
+  {
+    "command_file": "inspect-026-terminal_bench-dna-insert.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:4dd8760694e355de85ecf03605cb487ccdb33322f6afad513d2920829baa33b2",
+      "RepoDigests": [
+        "alexgshaw/dna-insert@sha256:4dd8760694e355de85ecf03605cb487ccdb33322f6afad513d2920829baa33b2"
+      ],
+      "RepoTags": [
+        "alexgshaw/dna-insert:20251031"
+      ],
+      "Size": 29727315
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/dna-insert/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/dna-insert:20251031",
+    "returncode": 0,
+    "role": "dna-insert",
+    "sha256": "1a9efd5c826d64d31c4874b395f1f9c488b2f26581b0c752fc4619ff177f25eb"
+  },
+  {
+    "command_file": "inspect-027-terminal_bench-extract-elf.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:6932e4cb318464307eacd497ef8dc617eaf551b6a90231f815ec0b911895cfed",
+      "RepoDigests": [
+        "alexgshaw/extract-elf@sha256:6932e4cb318464307eacd497ef8dc617eaf551b6a90231f815ec0b911895cfed",
+        "hub.rat.dev/alexgshaw/extract-elf@sha256:6932e4cb318464307eacd497ef8dc617eaf551b6a90231f815ec0b911895cfed"
+      ],
+      "RepoTags": [
+        "alexgshaw/extract-elf:20251031",
+        "hub.rat.dev/alexgshaw/extract-elf:20251031"
+      ],
+      "Size": 347389037
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/extract-elf/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/extract-elf:20251031",
+    "returncode": 0,
+    "role": "extract-elf",
+    "sha256": "14e2c28fd7cc1c9c7b64ab0db5565899fed538e38c55074824647cacc3f7a172"
+  },
+  {
+    "command_file": "inspect-028-terminal_bench-extract-moves-from-video.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:14a9dcca7d08ce53c5a0ed9fbd663a996ef28f207c199ed69d9ccf6064f8b184",
+      "RepoDigests": [
+        "alexgshaw/extract-moves-from-video@sha256:14a9dcca7d08ce53c5a0ed9fbd663a996ef28f207c199ed69d9ccf6064f8b184"
+      ],
+      "RepoTags": [
+        "alexgshaw/extract-moves-from-video:20251031"
+      ],
+      "Size": 29725529
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/extract-moves-from-video/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/extract-moves-from-video:20251031",
+    "returncode": 0,
+    "role": "extract-moves-from-video",
+    "sha256": "f0ba9af241fab0217ef689c90d02d0bd17225c3aadf9a2788dc024f87dbf81ec"
+  },
+  {
+    "command_file": "inspect-029-terminal_bench-feal-differential-cryptanalysis.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:bea93bafe9eab601ca58729f5735a13f8339f52055322d1cf840e3742b54a287",
+      "RepoDigests": [
+        "alexgshaw/feal-differential-cryptanalysis@sha256:bea93bafe9eab601ca58729f5735a13f8339f52055322d1cf840e3742b54a287"
+      ],
+      "RepoTags": [
+        "alexgshaw/feal-differential-cryptanalysis:20251031"
+      ],
+      "Size": 51639593
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/feal-differential-cryptanalysis/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/feal-differential-cryptanalysis:20251031",
+    "returncode": 0,
+    "role": "feal-differential-cryptanalysis",
+    "sha256": "dcb9f2f15047eee0be15ca18c39c357f89187a94aae6baeff276221e2383eecb"
+  },
+  {
+    "command_file": "inspect-030-terminal_bench-feal-linear-cryptanalysis.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:ea78749a8422c6228d26c8753f45906a6a2df089906764b7e3c3e27e8f718ee7",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/feal-linear-cryptanalysis@sha256:ea78749a8422c6228d26c8753f45906a6a2df089906764b7e3c3e27e8f718ee7",
+        "alexgshaw/feal-linear-cryptanalysis@sha256:ea78749a8422c6228d26c8753f45906a6a2df089906764b7e3c3e27e8f718ee7"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/feal-linear-cryptanalysis:20251031",
+        "alexgshaw/feal-linear-cryptanalysis:20251031"
+      ],
+      "Size": 150832274
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/feal-linear-cryptanalysis/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/feal-linear-cryptanalysis:20251031",
+    "returncode": 0,
+    "role": "feal-linear-cryptanalysis",
+    "sha256": "a39ec2c427af534c96c719dc87f70eb536956b487ce909d04b6365160e7c9fc4"
+  },
+  {
+    "command_file": "inspect-031-terminal_bench-filter-js-from-html.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:92acda0f124b988036a6f426ce0bc47fac19f5efe9fc5e6ea3ea52ccb075d0a4",
+      "RepoDigests": [
+        "alexgshaw/filter-js-from-html@sha256:92acda0f124b988036a6f426ce0bc47fac19f5efe9fc5e6ea3ea52ccb075d0a4"
+      ],
+      "RepoTags": [
+        "alexgshaw/filter-js-from-html:20251031"
+      ],
+      "Size": 377970833
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/filter-js-from-html/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/filter-js-from-html:20251031",
+    "returncode": 0,
+    "role": "filter-js-from-html",
+    "sha256": "61ce21be4baa704e4b667235cf70789bdd4f794ec647175bf573cb68b84dd415"
+  },
+  {
+    "command_file": "inspect-032-terminal_bench-financial-document-processor.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:ef6c9cfaaf14cdd200163008a188d5baa9f626f3bfb8d3e7d6f30c08518e6251",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/financial-document-processor@sha256:ef6c9cfaaf14cdd200163008a188d5baa9f626f3bfb8d3e7d6f30c08518e6251",
+        "alexgshaw/financial-document-processor@sha256:ef6c9cfaaf14cdd200163008a188d5baa9f626f3bfb8d3e7d6f30c08518e6251"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/financial-document-processor:20251031",
+        "alexgshaw/financial-document-processor:20251031"
+      ],
+      "Size": 51793196
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/financial-document-processor/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/financial-document-processor:20251031",
+    "returncode": 0,
+    "role": "financial-document-processor",
+    "sha256": "163ee252895c05d36ca37137dba4d6c24b46be28d56ce84ef8bb35bb5b894bda"
+  },
+  {
+    "command_file": "inspect-033-terminal_bench-fix-code-vulnerability.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:cac325252991f823713b2d0441502972901dd782bd67f66c03d9b1e410dac5c0",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/fix-code-vulnerability@sha256:cac325252991f823713b2d0441502972901dd782bd67f66c03d9b1e410dac5c0",
+        "alexgshaw/fix-code-vulnerability@sha256:cac325252991f823713b2d0441502972901dd782bd67f66c03d9b1e410dac5c0"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/fix-code-vulnerability:20251031",
+        "alexgshaw/fix-code-vulnerability:20251031"
+      ],
+      "Size": 190696453
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/fix-code-vulnerability/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/fix-code-vulnerability:20251031",
+    "returncode": 0,
+    "role": "fix-code-vulnerability",
+    "sha256": "9aa2bd14ce9408289d199d0608bc3fa65b8b5e23374c9641020de62197dbf1e2"
+  },
+  {
+    "command_file": "inspect-034-terminal_bench-fix-git.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+        "alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/fix-git:20251031",
+        "alexgshaw/fix-git:20251031"
+      ],
+      "Size": 158060522
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/fix-git/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/fix-git:20251031",
+    "returncode": 0,
+    "role": "fix-git",
+    "sha256": "25507ef6cbd6bf73c8bfdfbe7f7ba136224c8453fbba2de2993c639e2a61ad8b"
+  },
+  {
+    "command_file": "inspect-035-terminal_bench-fix-ocaml-gc.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:66a1e2293076c9ef27a118611b3089a6284fdf467fd4675592d0cce7d11e5b0b",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/fix-ocaml-gc@sha256:66a1e2293076c9ef27a118611b3089a6284fdf467fd4675592d0cce7d11e5b0b",
+        "alexgshaw/fix-ocaml-gc@sha256:66a1e2293076c9ef27a118611b3089a6284fdf467fd4675592d0cce7d11e5b0b"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/fix-ocaml-gc:20251031",
+        "alexgshaw/fix-ocaml-gc:20251031"
+      ],
+      "Size": 765429590
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/fix-ocaml-gc/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/fix-ocaml-gc:20251031",
+    "returncode": 0,
+    "role": "fix-ocaml-gc",
+    "sha256": "423aab8ce6f44ce9349dcde647ca3cbd09afd5ac023910c25699ed687a3c71b2"
+  },
+  {
+    "command_file": "inspect-036-terminal_bench-gcode-to-text.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/gcode-to-text@sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d",
+        "alexgshaw/gcode-to-text@sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/gcode-to-text:20251031",
+        "alexgshaw/gcode-to-text:20251031"
+      ],
+      "Size": 45044606
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/gcode-to-text/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/gcode-to-text:20251031",
+    "returncode": 0,
+    "role": "gcode-to-text",
+    "sha256": "3aa7a504fe5b3c6eaab16881b0e6dbbe8ac6d4f59084fa49b1e98ad9c71ea00c"
+  },
+  {
+    "command_file": "inspect-037-terminal_bench-git-leak-recovery.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:62160e522a4238b8bcd522411ea97b5b200f811e5899d34947e66809bef7e586",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/git-leak-recovery@sha256:62160e522a4238b8bcd522411ea97b5b200f811e5899d34947e66809bef7e586",
+        "alexgshaw/git-leak-recovery@sha256:62160e522a4238b8bcd522411ea97b5b200f811e5899d34947e66809bef7e586"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/git-leak-recovery:20251031",
+        "alexgshaw/git-leak-recovery:20251031"
+      ],
+      "Size": 95728320
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/git-leak-recovery/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/git-leak-recovery:20251031",
+    "returncode": 0,
+    "role": "git-leak-recovery",
+    "sha256": "d7f23fda4a6ba3fff902d2a475db8ff74feb5d328980696a77068c02c57d3044"
+  },
+  {
+    "command_file": "inspect-038-terminal_bench-git-multibranch.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:5bc449921c138295f6ddd8dca2977319fee2ce523811dbe56cec4ca663385fb5",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/git-multibranch@sha256:5bc449921c138295f6ddd8dca2977319fee2ce523811dbe56cec4ca663385fb5",
+        "alexgshaw/git-multibranch@sha256:5bc449921c138295f6ddd8dca2977319fee2ce523811dbe56cec4ca663385fb5"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/git-multibranch:20251031",
+        "alexgshaw/git-multibranch:20251031"
+      ],
+      "Size": 222134454
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/git-multibranch/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/git-multibranch:20251031",
+    "returncode": 0,
+    "role": "git-multibranch",
+    "sha256": "4b9981604578a31205257cca36a28d0c89c9d8d1058541330acd11d3f8d65f82"
+  },
+  {
+    "command_file": "inspect-039-terminal_bench-gpt2-codegolf.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:537e7bd26b02db5c761230515fa09dc05f89403c6737fbdae4b5793ebc2c7066",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/gpt2-codegolf@sha256:537e7bd26b02db5c761230515fa09dc05f89403c6737fbdae4b5793ebc2c7066",
+        "alexgshaw/gpt2-codegolf@sha256:537e7bd26b02db5c761230515fa09dc05f89403c6737fbdae4b5793ebc2c7066"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/gpt2-codegolf:20251031",
+        "alexgshaw/gpt2-codegolf:20251031"
+      ],
+      "Size": 614182829
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/gpt2-codegolf/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/gpt2-codegolf:20251031",
+    "returncode": 0,
+    "role": "gpt2-codegolf",
+    "sha256": "a3fa186d438a42af5909384b8dc0dfdc2ab7a3a68af9159e9d00464988895af0"
+  },
+  {
+    "command_file": "inspect-040-terminal_bench-headless-terminal.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:eb7e209672bf6cef2785fafd9e13509b10626c327bcc2b37f5bf40ca83eaf3aa",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/headless-terminal@sha256:eb7e209672bf6cef2785fafd9e13509b10626c327bcc2b37f5bf40ca83eaf3aa",
+        "alexgshaw/headless-terminal@sha256:eb7e209672bf6cef2785fafd9e13509b10626c327bcc2b37f5bf40ca83eaf3aa"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/headless-terminal:20251031",
+        "alexgshaw/headless-terminal:20251031"
+      ],
+      "Size": 62285180
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/headless-terminal:20251031",
+    "returncode": 0,
+    "role": "headless-terminal",
+    "sha256": "abe0de1ac3adff1fbf0e22e1765efbc061a412891fd255926ed92a5ccacf69e6"
+  },
+  {
+    "command_file": "inspect-041-terminal_bench-hf-model-inference.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:f96dd7d3c85c7257b404fd63ba8d24ced2478cd90232c20e297c372f953fa607",
+      "RepoDigests": [
+        "alexgshaw/hf-model-inference@sha256:f96dd7d3c85c7257b404fd63ba8d24ced2478cd90232c20e297c372f953fa607",
+        "hub.rat.dev/alexgshaw/hf-model-inference@sha256:f96dd7d3c85c7257b404fd63ba8d24ced2478cd90232c20e297c372f953fa607"
+      ],
+      "RepoTags": [
+        "alexgshaw/hf-model-inference:20251031",
+        "hub.rat.dev/alexgshaw/hf-model-inference:20251031"
+      ],
+      "Size": 6186003900
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/hf-model-inference:20251031",
+    "returncode": 0,
+    "role": "hf-model-inference",
+    "sha256": "a75f95a090ad0352069c6d7dc2f4de0a7b80cd12cd6b9ec1c57e59ad3956b89d"
+  },
+  {
+    "command_file": "inspect-042-terminal_bench-install-windows-3.11.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:c6695097316ef8810abce0545e347e65354aef9d51d4f7f662c3242e742f6a3e",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/install-windows-3.11@sha256:c6695097316ef8810abce0545e347e65354aef9d51d4f7f662c3242e742f6a3e",
+        "alexgshaw/install-windows-3.11@sha256:c6695097316ef8810abce0545e347e65354aef9d51d4f7f662c3242e742f6a3e"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/install-windows-3.11:20251031",
+        "alexgshaw/install-windows-3.11:20251031"
+      ],
+      "Size": 573381161
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/install-windows-3.11/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/install-windows-3.11:20251031",
+    "returncode": 0,
+    "role": "install-windows-3.11",
+    "sha256": "0485184bd16cc74883396115d93520bd25b36d23d61e248da88c0dceeab2eeac"
+  },
+  {
+    "command_file": "inspect-043-terminal_bench-kv-store-grpc.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/kv-store-grpc@sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791",
+        "alexgshaw/kv-store-grpc@sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/kv-store-grpc:20251031",
+        "alexgshaw/kv-store-grpc:20251031"
+      ],
+      "Size": 44171671
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/kv-store-grpc/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/kv-store-grpc:20251031",
+    "returncode": 0,
+    "role": "kv-store-grpc",
+    "sha256": "6ff0f30a526bfff86a67b0b53439b9965229c0f368167dc1a5d05f34d82299a3"
+  },
+  {
+    "command_file": "inspect-044-terminal_bench-large-scale-text-editing.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:719adca3f1388220546ce6a155eee56eff3c4fe318183100320606a210f6b59c",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/large-scale-text-editing@sha256:719adca3f1388220546ce6a155eee56eff3c4fe318183100320606a210f6b59c",
+        "alexgshaw/large-scale-text-editing@sha256:719adca3f1388220546ce6a155eee56eff3c4fe318183100320606a210f6b59c"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/large-scale-text-editing:20251031",
+        "alexgshaw/large-scale-text-editing:20251031"
+      ],
+      "Size": 73316987
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/large-scale-text-editing/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/large-scale-text-editing:20251031",
+    "returncode": 0,
+    "role": "large-scale-text-editing",
+    "sha256": "5c9488e80c1186f72efb8193e6be13c74eadf334b3846db2e794d24513a88f5f"
+  },
+  {
+    "command_file": "inspect-045-terminal_bench-largest-eigenval.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:cb9e3e3b09d0783f3bbcfeec8d77bc32d3791204fb2be6650b19be4fbc082b2e",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/largest-eigenval@sha256:cb9e3e3b09d0783f3bbcfeec8d77bc32d3791204fb2be6650b19be4fbc082b2e",
+        "alexgshaw/largest-eigenval@sha256:cb9e3e3b09d0783f3bbcfeec8d77bc32d3791204fb2be6650b19be4fbc082b2e"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/largest-eigenval:20251031",
+        "alexgshaw/largest-eigenval:20251031"
+      ],
+      "Size": 84694865
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/largest-eigenval/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/largest-eigenval:20251031",
+    "returncode": 0,
+    "role": "largest-eigenval",
+    "sha256": "f7b9b7dda446f969a3ce88f61039d216f4d58b5fc5c10ff9faa24e2403bbd830"
+  },
+  {
+    "command_file": "inspect-046-terminal_bench-llm-inference-batching-scheduler.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:19e79aa49be4e55dccca1dde966515ebe6852314b6010bcb9230afb48b996774",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/llm-inference-batching-scheduler@sha256:19e79aa49be4e55dccca1dde966515ebe6852314b6010bcb9230afb48b996774",
+        "alexgshaw/llm-inference-batching-scheduler@sha256:19e79aa49be4e55dccca1dde966515ebe6852314b6010bcb9230afb48b996774"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/llm-inference-batching-scheduler:20251031",
+        "alexgshaw/llm-inference-batching-scheduler:20251031"
+      ],
+      "Size": 44188631
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/llm-inference-batching-scheduler/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/llm-inference-batching-scheduler:20251031",
+    "returncode": 0,
+    "role": "llm-inference-batching-scheduler",
+    "sha256": "52aaac942f917e6a91ff658e0272195bd1cd842d41d71e302414c52603cc588b"
+  },
+  {
+    "command_file": "inspect-047-terminal_bench-log-summary-date-ranges.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/log-summary-date-ranges@sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51",
+        "alexgshaw/log-summary-date-ranges@sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/log-summary-date-ranges:20251031",
+        "alexgshaw/log-summary-date-ranges:20251031"
+      ],
+      "Size": 44866158
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/log-summary-date-ranges/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/log-summary-date-ranges:20251031",
+    "returncode": 0,
+    "role": "log-summary-date-ranges",
+    "sha256": "9a9593673d6805ef3a301ea734e9c4dbaf80da1b37c0fe9d1f2ceea2a8c57e18"
+  },
+  {
+    "command_file": "inspect-048-terminal_bench-mailman.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:04fac73db7e2b4f49d43f09fbc2266a94d70131f07efa1393d370abc059f4094",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/mailman@sha256:04fac73db7e2b4f49d43f09fbc2266a94d70131f07efa1393d370abc059f4094",
+        "alexgshaw/mailman@sha256:04fac73db7e2b4f49d43f09fbc2266a94d70131f07efa1393d370abc059f4094"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/mailman:20251031",
+        "alexgshaw/mailman:20251031"
+      ],
+      "Size": 161827504
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/mailman/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/mailman:20251031",
+    "returncode": 0,
+    "role": "mailman",
+    "sha256": "a04f4d0e9be25056d2cd79d6a018bc875b6e6fb51d429a9241f282272cc660d1"
+  },
+  {
+    "command_file": "inspect-049-terminal_bench-make-doom-for-mips.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/make-doom-for-mips@sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec",
+        "alexgshaw/make-doom-for-mips@sha256:80a9459f1b94b692ea8346f68e6b864f6c4d984fbdf6ffd68ad332308300c2ec"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/make-doom-for-mips:20251031",
+        "alexgshaw/make-doom-for-mips:20251031"
+      ],
+      "Size": 189554675
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/make-doom-for-mips/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/make-doom-for-mips:20251031",
+    "returncode": 0,
+    "role": "make-doom-for-mips",
+    "sha256": "a7d7a498f0d3a992b384e5086ba2b411767c1c1a013d1b41f6a25cdaf6d05acc"
+  },
+  {
+    "command_file": "inspect-050-terminal_bench-make-mips-interpreter.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/make-mips-interpreter@sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2",
+        "alexgshaw/make-mips-interpreter@sha256:082fc8821b317f30fdfbf8d08d528874ce331c03e8083aef0406d48cdd7132a2"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/make-mips-interpreter:20251031",
+        "alexgshaw/make-mips-interpreter:20251031"
+      ],
+      "Size": 518975750
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/make-mips-interpreter/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/make-mips-interpreter:20251031",
+    "returncode": 0,
+    "role": "make-mips-interpreter",
+    "sha256": "3fda43066642fd38516d07b2679f9813bdb3f1a42bc80b0c06151f60b9210e82"
+  },
+  {
+    "command_file": "inspect-051-terminal_bench-mcmc-sampling-stan.command.json",
+    "dataset": "terminal_bench",
+    "line": 31,
+    "observed": {
+      "Id": "sha256:073fc36a3347b4f6b43bd6e98339542c41ed531c771af8bee40ba10f00cfabaf",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/mcmc-sampling-stan@sha256:073fc36a3347b4f6b43bd6e98339542c41ed531c771af8bee40ba10f00cfabaf",
+        "alexgshaw/mcmc-sampling-stan@sha256:073fc36a3347b4f6b43bd6e98339542c41ed531c771af8bee40ba10f00cfabaf"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/mcmc-sampling-stan:20251031",
+        "alexgshaw/mcmc-sampling-stan:20251031"
+      ],
+      "Size": 237652069
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/mcmc-sampling-stan/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/mcmc-sampling-stan:20251031",
+    "returncode": 0,
+    "role": "mcmc-sampling-stan",
+    "sha256": "c1c0351670499e15b3818f7394894e2789f74fc2a61ea76eccab826c1a951a94"
+  },
+  {
+    "command_file": "inspect-052-terminal_bench-merge-diff-arc-agi-task.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:bfc2a235f2ceea64ffb1ffc5529c2acebf570bff61f3668f0e5669ef570c17d4",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/merge-diff-arc-agi-task@sha256:bfc2a235f2ceea64ffb1ffc5529c2acebf570bff61f3668f0e5669ef570c17d4",
+        "alexgshaw/merge-diff-arc-agi-task@sha256:bfc2a235f2ceea64ffb1ffc5529c2acebf570bff61f3668f0e5669ef570c17d4"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/merge-diff-arc-agi-task:20251031",
+        "alexgshaw/merge-diff-arc-agi-task:20251031"
+      ],
+      "Size": 29728285
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/merge-diff-arc-agi-task/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/merge-diff-arc-agi-task:20251031",
+    "returncode": 0,
+    "role": "merge-diff-arc-agi-task",
+    "sha256": "6ced40e06b43b169857509765eb7f07791db558f9437cc7367d2536771c2ca5b"
+  },
+  {
+    "command_file": "inspect-053-terminal_bench-model-extraction-relu-logits.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:52fe1f089f38650f0dc22d7531ee6e01ebd526de1b349aaa2ecb331dca9fabce",
+      "RepoDigests": [
+        "docker.1ms.run/alexgshaw/model-extraction-relu-logits@sha256:52fe1f089f38650f0dc22d7531ee6e01ebd526de1b349aaa2ecb331dca9fabce",
+        "alexgshaw/model-extraction-relu-logits@sha256:52fe1f089f38650f0dc22d7531ee6e01ebd526de1b349aaa2ecb331dca9fabce"
+      ],
+      "RepoTags": [
+        "docker.1ms.run/alexgshaw/model-extraction-relu-logits:20251031",
+        "alexgshaw/model-extraction-relu-logits:20251031"
+      ],
+      "Size": 83698971
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/model-extraction-relu-logits/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/model-extraction-relu-logits:20251031",
+    "returncode": 0,
+    "role": "model-extraction-relu-logits",
+    "sha256": "eb64dfaf8ae88868911ae28855cdc4f767de464001e2704919015b595be6dc29"
+  },
+  {
+    "command_file": "inspect-054-terminal_bench-modernize-scientific-stack.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:64e69cee13bf6b0b9016e735b51891bce996a60f1e2d1a005bf12c949e221d71",
+      "RepoDigests": [
+        "alexgshaw/modernize-scientific-stack@sha256:64e69cee13bf6b0b9016e735b51891bce996a60f1e2d1a005bf12c949e221d71"
+      ],
+      "RepoTags": [
+        "alexgshaw/modernize-scientific-stack:20251031"
+      ],
+      "Size": 346671153
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/modernize-scientific-stack/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/modernize-scientific-stack:20251031",
+    "returncode": 0,
+    "role": "modernize-scientific-stack",
+    "sha256": "a3029f3d4caaa1f08bd1b45488247bf8cb586bf1ce69717acf1114d20f51eb48"
+  },
+  {
+    "command_file": "inspect-055-terminal_bench-mteb-leaderboard.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/mteb-leaderboard/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/mteb-leaderboard:20251031",
+    "returncode": 1,
+    "role": "mteb-leaderboard",
+    "sha256": "05d14cf25aa812a66e4c607b5f4b3bc665f39aa7120a7c1b2d13a4c5e077d8ad",
+    "stderr": "Error response from daemon: No such image: alexgshaw/mteb-leaderboard:20251031\n"
+  },
+  {
+    "command_file": "inspect-056-terminal_bench-mteb-retrieve.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:99dd676a21fd3124b7b8164cd93e8f0c51f1fdab2f84a831c61049eff78d063d",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/mteb-retrieve@sha256:99dd676a21fd3124b7b8164cd93e8f0c51f1fdab2f84a831c61049eff78d063d",
+        "alexgshaw/mteb-retrieve@sha256:99dd676a21fd3124b7b8164cd93e8f0c51f1fdab2f84a831c61049eff78d063d"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/mteb-retrieve:20251031",
+        "alexgshaw/mteb-retrieve:20251031"
+      ],
+      "Size": 8810536725
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/mteb-retrieve/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/mteb-retrieve:20251031",
+    "returncode": 0,
+    "role": "mteb-retrieve",
+    "sha256": "35b8c675ae847e33652c6ce64fe1f914ddb05d0ae6a3a87be80821bd75fb2d2a"
+  },
+  {
+    "command_file": "inspect-057-terminal_bench-multi-source-data-merger.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:8b32782078ff7383a1b4e5d3cecca8ce287e30f50bb4c0e5db009a18064e666e",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/multi-source-data-merger@sha256:8b32782078ff7383a1b4e5d3cecca8ce287e30f50bb4c0e5db009a18064e666e",
+        "alexgshaw/multi-source-data-merger@sha256:8b32782078ff7383a1b4e5d3cecca8ce287e30f50bb4c0e5db009a18064e666e"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/multi-source-data-merger:20251031",
+        "alexgshaw/multi-source-data-merger:20251031"
+      ],
+      "Size": 220880128
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/multi-source-data-merger/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/multi-source-data-merger:20251031",
+    "returncode": 0,
+    "role": "multi-source-data-merger",
+    "sha256": "ee3964c0ee040f0a0cb121cefefbc15443d127684acb003fa5b61dd42f31c694"
+  },
+  {
+    "command_file": "inspect-058-terminal_bench-nginx-request-logging.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:693e64431a0dbf45952e8b91a298d54fd60247e501c6623fb8fa3ebc07fc3d3d",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/nginx-request-logging@sha256:693e64431a0dbf45952e8b91a298d54fd60247e501c6623fb8fa3ebc07fc3d3d",
+        "alexgshaw/nginx-request-logging@sha256:693e64431a0dbf45952e8b91a298d54fd60247e501c6623fb8fa3ebc07fc3d3d"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/nginx-request-logging:20251031",
+        "alexgshaw/nginx-request-logging:20251031"
+      ],
+      "Size": 67285778
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/nginx-request-logging/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/nginx-request-logging:20251031",
+    "returncode": 0,
+    "role": "nginx-request-logging",
+    "sha256": "b7a78d00be13656f75069197100b7b8c4fd268decf6f78929c853b3222a2729d"
+  },
+  {
+    "command_file": "inspect-059-terminal_bench-openssl-selfsigned-cert.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "jevloop-tb@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/openssl-selfsigned-cert:20251031",
+        "alexgshaw/openssl-selfsigned-cert:20251031",
+        "jevloop-tb:openssl-selfsigned-cert"
+      ],
+      "Size": 44173158
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/openssl-selfsigned-cert/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/openssl-selfsigned-cert:20251031",
+    "returncode": 0,
+    "role": "openssl-selfsigned-cert",
+    "sha256": "75c8913f0fa15890786c11999cde920b8bfc10d4ce8a14edf1e76985a2ac5800"
+  },
+  {
+    "command_file": "inspect-060-terminal_bench-overfull-hbox.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:67fe0ccc0ff2305d6fcb3652977d377b901bb7bd96904b6765835935574992e1",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/overfull-hbox@sha256:67fe0ccc0ff2305d6fcb3652977d377b901bb7bd96904b6765835935574992e1",
+        "alexgshaw/overfull-hbox@sha256:67fe0ccc0ff2305d6fcb3652977d377b901bb7bd96904b6765835935574992e1"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/overfull-hbox:20251031",
+        "alexgshaw/overfull-hbox:20251031"
+      ],
+      "Size": 131848558
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/overfull-hbox/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/overfull-hbox:20251031",
+    "returncode": 0,
+    "role": "overfull-hbox",
+    "sha256": "76dea2071850fd5c83a6e98b692f3e05c246629e7832a07181f7700784562922"
+  },
+  {
+    "command_file": "inspect-061-terminal_bench-password-recovery.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:15fcd84bf3b06270ee148211cc6da6599b13ec2f41ac1d0894cf75c2225872ee",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/password-recovery@sha256:15fcd84bf3b06270ee148211cc6da6599b13ec2f41ac1d0894cf75c2225872ee",
+        "alexgshaw/password-recovery@sha256:15fcd84bf3b06270ee148211cc6da6599b13ec2f41ac1d0894cf75c2225872ee"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/password-recovery:20251031",
+        "alexgshaw/password-recovery:20251031"
+      ],
+      "Size": 62189109
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/password-recovery/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/password-recovery:20251031",
+    "returncode": 0,
+    "role": "password-recovery",
+    "sha256": "cfd0362d201b957796f9bf1c02cc75646250cb2bd107ec88c768bfcfd091b24b"
+  },
+  {
+    "command_file": "inspect-062-terminal_bench-path-tracing.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:4b44725102cd627dfa895191a5a30d16dae3c5623bb43da6459f79135db6b482",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/path-tracing@sha256:4b44725102cd627dfa895191a5a30d16dae3c5623bb43da6459f79135db6b482",
+        "alexgshaw/path-tracing@sha256:4b44725102cd627dfa895191a5a30d16dae3c5623bb43da6459f79135db6b482"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/path-tracing:20251031",
+        "alexgshaw/path-tracing:20251031"
+      ],
+      "Size": 399390468
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/path-tracing/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/path-tracing:20251031",
+    "returncode": 0,
+    "role": "path-tracing",
+    "sha256": "cf47013f69bf1b43242da984f231d4daf364fdf44d3845f2eea2ca2cb9308c46"
+  },
+  {
+    "command_file": "inspect-063-terminal_bench-path-tracing-reverse.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:7911e42479d8f6d8af1248bc52442a0efbc5a33e3ecf535fdc20d252a2c64142",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/path-tracing-reverse@sha256:7911e42479d8f6d8af1248bc52442a0efbc5a33e3ecf535fdc20d252a2c64142",
+        "alexgshaw/path-tracing-reverse@sha256:7911e42479d8f6d8af1248bc52442a0efbc5a33e3ecf535fdc20d252a2c64142"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/path-tracing-reverse:20251031",
+        "alexgshaw/path-tracing-reverse:20251031"
+      ],
+      "Size": 170984127
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/path-tracing-reverse/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/path-tracing-reverse:20251031",
+    "returncode": 0,
+    "role": "path-tracing-reverse",
+    "sha256": "f609310c99bd5f379eea2711f4af8eca79b5bcd1178a034b2285b1171c031b5b"
+  },
+  {
+    "command_file": "inspect-064-terminal_bench-polyglot-c-py.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:0f1c3b7816d70cf5551573fd6aeef76893f2ae3000be2419997b6871b5d987ed",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/polyglot-c-py@sha256:0f1c3b7816d70cf5551573fd6aeef76893f2ae3000be2419997b6871b5d987ed",
+        "alexgshaw/polyglot-c-py@sha256:0f1c3b7816d70cf5551573fd6aeef76893f2ae3000be2419997b6871b5d987ed"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/polyglot-c-py:20251031",
+        "alexgshaw/polyglot-c-py:20251031"
+      ],
+      "Size": 148543403
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/polyglot-c-py/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/polyglot-c-py:20251031",
+    "returncode": 0,
+    "role": "polyglot-c-py",
+    "sha256": "d31b9f60c47eed0d79e10d3be8fd56a23e50b3986606e3f2546863d44ac9a9ea"
+  },
+  {
+    "command_file": "inspect-065-terminal_bench-polyglot-rust-c.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/polyglot-rust-c@sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e",
+        "alexgshaw/polyglot-rust-c@sha256:3ba84f0e138a4b65e58c53f920a0fc852571e6402901c3bdbb876e9dab6e6c5e"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/polyglot-rust-c:20251031",
+        "alexgshaw/polyglot-rust-c:20251031"
+      ],
+      "Size": 271244257
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/polyglot-rust-c/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/polyglot-rust-c:20251031",
+    "returncode": 0,
+    "role": "polyglot-rust-c",
+    "sha256": "3c41e83437068c62a3fdff74641899146e34907aefd9e47346213f47caeb82de"
+  },
+  {
+    "command_file": "inspect-066-terminal_bench-portfolio-optimization.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/portfolio-optimization@sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8",
+        "alexgshaw/portfolio-optimization@sha256:93461db3cec697c31585941a3b9387c1398495aa1ff0aee2ac752c7230b50ef8"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/portfolio-optimization:20251031",
+        "alexgshaw/portfolio-optimization:20251031"
+      ],
+      "Size": 196461134
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/portfolio-optimization/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/portfolio-optimization:20251031",
+    "returncode": 0,
+    "role": "portfolio-optimization",
+    "sha256": "4918687e4e261a9852e39e5a554156733c071c17dc89c5f544f15f2ef744ce0a"
+  },
+  {
+    "command_file": "inspect-067-terminal_bench-protein-assembly.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:94de701b57e7ecfdbada6044f8534876e4b58874f8f313184dadc4d7533e0818",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/protein-assembly@sha256:94de701b57e7ecfdbada6044f8534876e4b58874f8f313184dadc4d7533e0818",
+        "alexgshaw/protein-assembly@sha256:94de701b57e7ecfdbada6044f8534876e4b58874f8f313184dadc4d7533e0818"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/protein-assembly:20251031",
+        "alexgshaw/protein-assembly:20251031"
+      ],
+      "Size": 44176319
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/protein-assembly/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/protein-assembly:20251031",
+    "returncode": 0,
+    "role": "protein-assembly",
+    "sha256": "d714960681ec921a9247b382dfa0d8e97a9d13a3fe170a6ebd934ebe82398f24"
+  },
+  {
+    "command_file": "inspect-068-terminal_bench-prove-plus-comm.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:e26741d01681a9da1beeff8b7b7b65fe2b921b8b122a306a3707a81ebd051f73",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/prove-plus-comm@sha256:e26741d01681a9da1beeff8b7b7b65fe2b921b8b122a306a3707a81ebd051f73",
+        "alexgshaw/prove-plus-comm@sha256:e26741d01681a9da1beeff8b7b7b65fe2b921b8b122a306a3707a81ebd051f73"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/prove-plus-comm:20251031",
+        "alexgshaw/prove-plus-comm:20251031"
+      ],
+      "Size": 491453113
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/prove-plus-comm/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/prove-plus-comm:20251031",
+    "returncode": 0,
+    "role": "prove-plus-comm",
+    "sha256": "240f3ac0076e3362685c8598c4e56658e3882eb25a14ae6cc7e9ab3a4f6b09ea"
+  },
+  {
+    "command_file": "inspect-069-terminal_bench-pypi-server.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:d18bb30f47c7dcaa3acdbc31ac7413c98eadca2ea16540bbd380f2f063b95276",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/pypi-server@sha256:d18bb30f47c7dcaa3acdbc31ac7413c98eadca2ea16540bbd380f2f063b95276",
+        "alexgshaw/pypi-server@sha256:d18bb30f47c7dcaa3acdbc31ac7413c98eadca2ea16540bbd380f2f063b95276"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/pypi-server:20251031",
+        "alexgshaw/pypi-server:20251031"
+      ],
+      "Size": 83726049
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/pypi-server/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/pypi-server:20251031",
+    "returncode": 0,
+    "role": "pypi-server",
+    "sha256": "07c39d7a733c89adadf74bb63a3e906c3694feb6c490d5fc85ac187c003fd447"
+  },
+  {
+    "command_file": "inspect-070-terminal_bench-pytorch-model-cli.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:c996884b5fb5fb2c0c07d67da2c4f974f271f07234ed28e1a868240375c57a67",
+      "RepoDigests": [
+        "alexgshaw/pytorch-model-cli@sha256:c996884b5fb5fb2c0c07d67da2c4f974f271f07234ed28e1a868240375c57a67",
+        "hub.rat.dev/alexgshaw/pytorch-model-cli@sha256:c996884b5fb5fb2c0c07d67da2c4f974f271f07234ed28e1a868240375c57a67"
+      ],
+      "RepoTags": [
+        "alexgshaw/pytorch-model-cli:20251031",
+        "hub.rat.dev/alexgshaw/pytorch-model-cli:20251031"
+      ],
+      "Size": 44349611
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/pytorch-model-cli/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/pytorch-model-cli:20251031",
+    "returncode": 0,
+    "role": "pytorch-model-cli",
+    "sha256": "fc1c018efbd5d0537ac0741d53d1ebad3886faa51d14cbde8ec953856411bc0d"
+  },
+  {
+    "command_file": "inspect-071-terminal_bench-pytorch-model-recovery.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/pytorch-model-recovery/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/pytorch-model-recovery:20251031",
+    "returncode": 1,
+    "role": "pytorch-model-recovery",
+    "sha256": "5e21f208898908b55214de3081406f3c109f95f8d0e9b6ddae3521ba14c55a90",
+    "stderr": "Error response from daemon: No such image: alexgshaw/pytorch-model-recovery:20251031\n"
+  },
+  {
+    "command_file": "inspect-072-terminal_bench-qemu-alpine-ssh.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:541e8214a8c4faa7b556531b899d45da21048fa2ca6dd328d8cb6c4cffa8e964",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/qemu-alpine-ssh@sha256:541e8214a8c4faa7b556531b899d45da21048fa2ca6dd328d8cb6c4cffa8e964",
+        "alexgshaw/qemu-alpine-ssh@sha256:541e8214a8c4faa7b556531b899d45da21048fa2ca6dd328d8cb6c4cffa8e964"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/qemu-alpine-ssh:20251031",
+        "alexgshaw/qemu-alpine-ssh:20251031"
+      ],
+      "Size": 1308553944
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/qemu-alpine-ssh/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/qemu-alpine-ssh:20251031",
+    "returncode": 0,
+    "role": "qemu-alpine-ssh",
+    "sha256": "10a43ec6ee732eeba852c377f12e23178f7fa5a4868143f3699a15565ffb64c7"
+  },
+  {
+    "command_file": "inspect-073-terminal_bench-qemu-startup.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/qemu-startup@sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04",
+        "alexgshaw/qemu-startup@sha256:1a666e049db553c5e713830b1f5de1953210ab7c99212d006bb4e46cbc6b6d04"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/qemu-startup:20251031",
+        "alexgshaw/qemu-startup:20251031"
+      ],
+      "Size": 1308553941
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/qemu-startup/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/qemu-startup:20251031",
+    "returncode": 0,
+    "role": "qemu-startup",
+    "sha256": "dc46292fff83fba50192f4c30606a5f9c092a9fb82139686df7dabf6580937d4"
+  },
+  {
+    "command_file": "inspect-074-terminal_bench-query-optimize.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/query-optimize@sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14",
+        "alexgshaw/query-optimize@sha256:28de7da87004eab5b29bd5eaf1823579bc5b73ccea4b80349a5623185770da14"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/query-optimize:20251031",
+        "alexgshaw/query-optimize:20251031"
+      ],
+      "Size": 120494963
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/query-optimize/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/query-optimize:20251031",
+    "returncode": 0,
+    "role": "query-optimize",
+    "sha256": "6e88f2a86df699594bcb1bf81df4ed694505f79c9420f671335b02524bbe3868"
+  },
+  {
+    "command_file": "inspect-075-terminal_bench-raman-fitting.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:401fa95d5d491f44a473eda9d2c52930f9565cc889c796eabcb6e20fec26852e",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/raman-fitting@sha256:401fa95d5d491f44a473eda9d2c52930f9565cc889c796eabcb6e20fec26852e",
+        "alexgshaw/raman-fitting@sha256:401fa95d5d491f44a473eda9d2c52930f9565cc889c796eabcb6e20fec26852e"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/raman-fitting:20251031",
+        "alexgshaw/raman-fitting:20251031"
+      ],
+      "Size": 44212938
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/raman-fitting/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/raman-fitting:20251031",
+    "returncode": 0,
+    "role": "raman-fitting",
+    "sha256": "0f3f6b580d7435954b3a114e77cdfb6cd0a856f15cc0ad83cd1b69c48492dfed"
+  },
+  {
+    "command_file": "inspect-076-terminal_bench-regex-chess.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:e3b6d61d2d3930fbbdc5f7bf091a7f8b7f6125e1951ef8a7dbe165b1ef62942c",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/regex-chess@sha256:e3b6d61d2d3930fbbdc5f7bf091a7f8b7f6125e1951ef8a7dbe165b1ef62942c",
+        "alexgshaw/regex-chess@sha256:e3b6d61d2d3930fbbdc5f7bf091a7f8b7f6125e1951ef8a7dbe165b1ef62942c"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/regex-chess:20251031",
+        "alexgshaw/regex-chess:20251031"
+      ],
+      "Size": 55625584
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/regex-chess/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/regex-chess:20251031",
+    "returncode": 0,
+    "role": "regex-chess",
+    "sha256": "07fe52636fcc4bc9fff25d5630af145b97a5331219d719cc8decb4ca67ea21d4"
+  },
+  {
+    "command_file": "inspect-077-terminal_bench-regex-log.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9",
+      "RepoDigests": [
+        "alexgshaw/regex-log@sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9"
+      ],
+      "RepoTags": [
+        "alexgshaw/regex-log:20251031"
+      ],
+      "Size": 29725514
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/regex-log/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/regex-log:20251031",
+    "returncode": 0,
+    "role": "regex-log",
+    "sha256": "6bc98525852755caf1fe34c174c2f10f4328adb4ce6c1968dcafe1c877e4e160"
+  },
+  {
+    "command_file": "inspect-078-terminal_bench-reshard-c4-data.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/reshard-c4-data/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/reshard-c4-data:20251031",
+    "returncode": 1,
+    "role": "reshard-c4-data",
+    "sha256": "c2f146a1e00f798f7486ff60686ad52749bb73c7b71e984d52716d859e0f7dd8",
+    "stderr": "Error response from daemon: No such image: alexgshaw/reshard-c4-data:20251031\n"
+  },
+  {
+    "command_file": "inspect-079-terminal_bench-rstan-to-pystan.command.json",
+    "dataset": "terminal_bench",
+    "line": 31,
+    "observed": {
+      "Id": "sha256:b23d48839408524326095c15ada4145c772b87646cf299022ff1f58c97baba91",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/rstan-to-pystan@sha256:b23d48839408524326095c15ada4145c772b87646cf299022ff1f58c97baba91",
+        "alexgshaw/rstan-to-pystan@sha256:b23d48839408524326095c15ada4145c772b87646cf299022ff1f58c97baba91"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/rstan-to-pystan:20251031",
+        "alexgshaw/rstan-to-pystan:20251031"
+      ],
+      "Size": 50936961
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/rstan-to-pystan/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/rstan-to-pystan:20251031",
+    "returncode": 0,
+    "role": "rstan-to-pystan",
+    "sha256": "ed0cd4382cb353e73cb575aa7a20b624e35f09ddd8769c332f40f8986980e13f"
+  },
+  {
+    "command_file": "inspect-080-terminal_bench-sam-cell-seg.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/sam-cell-seg@sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0",
+        "alexgshaw/sam-cell-seg@sha256:d76bdeef19d8113f4094013249c982eca93e62e46130484846269b2d378879d0"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/sam-cell-seg:20251031",
+        "alexgshaw/sam-cell-seg:20251031"
+      ],
+      "Size": 411503162
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/sam-cell-seg/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/sam-cell-seg:20251031",
+    "returncode": 0,
+    "role": "sam-cell-seg",
+    "sha256": "f0eb6af2acb87cb6fee67d77e8fdd55e3b331baf48999260bc5b6c4ac466c128"
+  },
+  {
+    "command_file": "inspect-081-terminal_bench-sanitize-git-repo.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:4b5234da5bb0d67f3b0bf8db40a2883c07a5219f62b64c2bf9ff1ac84cd0f672",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/sanitize-git-repo@sha256:4b5234da5bb0d67f3b0bf8db40a2883c07a5219f62b64c2bf9ff1ac84cd0f672",
+        "alexgshaw/sanitize-git-repo@sha256:4b5234da5bb0d67f3b0bf8db40a2883c07a5219f62b64c2bf9ff1ac84cd0f672"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/sanitize-git-repo:20251031",
+        "alexgshaw/sanitize-git-repo:20251031"
+      ],
+      "Size": 202937050
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/sanitize-git-repo/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/sanitize-git-repo:20251031",
+    "returncode": 0,
+    "role": "sanitize-git-repo",
+    "sha256": "ff209feb7d07c68b8bd0d2e9abee96a1431c332095a1bbe0a532c44a833a264d"
+  },
+  {
+    "command_file": "inspect-082-terminal_bench-schemelike-metacircular-eval.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:b485be38bf80d56c1a4cd9da95bbf7ec129dc03f6786b86c0525518a96f6d1db",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/schemelike-metacircular-eval@sha256:b485be38bf80d56c1a4cd9da95bbf7ec129dc03f6786b86c0525518a96f6d1db",
+        "alexgshaw/schemelike-metacircular-eval@sha256:b485be38bf80d56c1a4cd9da95bbf7ec129dc03f6786b86c0525518a96f6d1db"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/schemelike-metacircular-eval:20251031",
+        "alexgshaw/schemelike-metacircular-eval:20251031"
+      ],
+      "Size": 44188336
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/schemelike-metacircular-eval/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/schemelike-metacircular-eval:20251031",
+    "returncode": 0,
+    "role": "schemelike-metacircular-eval",
+    "sha256": "8dae8eb226183b0ca92331c1106152a7abc93b03b4e5a95291b86a4ddc9b44e0"
+  },
+  {
+    "command_file": "inspect-083-terminal_bench-sparql-university.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:92fa4304e51167f9fb4466144eba33ef9272a7df0ac1cab9fc3986bccd1ab708",
+      "RepoDigests": [
+        "alexgshaw/sparql-university@sha256:92fa4304e51167f9fb4466144eba33ef9272a7df0ac1cab9fc3986bccd1ab708"
+      ],
+      "RepoTags": [
+        "alexgshaw/sparql-university:20251031"
+      ],
+      "Size": 29727705
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/sparql-university/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/sparql-university:20251031",
+    "returncode": 0,
+    "role": "sparql-university",
+    "sha256": "47a6f6dd9ce0fc7631ef607e900fcd039b2d064ea90545645b49c678cddc9585"
+  },
+  {
+    "command_file": "inspect-084-terminal_bench-sqlite-db-truncate.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/sqlite-db-truncate@sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4",
+        "alexgshaw/sqlite-db-truncate@sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/sqlite-db-truncate:20251031",
+        "alexgshaw/sqlite-db-truncate:20251031"
+      ],
+      "Size": 44172363
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/sqlite-db-truncate/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/sqlite-db-truncate:20251031",
+    "returncode": 0,
+    "role": "sqlite-db-truncate",
+    "sha256": "56061acd75d9933aa554aeb249b85d7d081227fca1b71a3da7e3dc97a675723e"
+  },
+  {
+    "command_file": "inspect-085-terminal_bench-sqlite-with-gcov.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:f986820b00c74ce75db7288719d364df313fde7c7917bea6eb6352a08431a89f",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/sqlite-with-gcov@sha256:f986820b00c74ce75db7288719d364df313fde7c7917bea6eb6352a08431a89f",
+        "alexgshaw/sqlite-with-gcov@sha256:f986820b00c74ce75db7288719d364df313fde7c7917bea6eb6352a08431a89f"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/sqlite-with-gcov:20251031",
+        "alexgshaw/sqlite-with-gcov:20251031"
+      ],
+      "Size": 42278767
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/sqlite-with-gcov/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/sqlite-with-gcov:20251031",
+    "returncode": 0,
+    "role": "sqlite-with-gcov",
+    "sha256": "9a0da96990ee2ecbf4d92682a4c5301a53db45fc6e2d46ac7d45d3b8ee7fe523"
+  },
+  {
+    "command_file": "inspect-086-terminal_bench-torch-pipeline-parallelism.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:3cb7b39d86f1704b20e668851da0b08b34b3270c01d583f136d65190984a8d1b",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/torch-pipeline-parallelism@sha256:3cb7b39d86f1704b20e668851da0b08b34b3270c01d583f136d65190984a8d1b",
+        "alexgshaw/torch-pipeline-parallelism@sha256:3cb7b39d86f1704b20e668851da0b08b34b3270c01d583f136d65190984a8d1b"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/torch-pipeline-parallelism:20251031",
+        "alexgshaw/torch-pipeline-parallelism:20251031"
+      ],
+      "Size": 29725531
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/torch-pipeline-parallelism/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/torch-pipeline-parallelism:20251031",
+    "returncode": 0,
+    "role": "torch-pipeline-parallelism",
+    "sha256": "6c2d193855224486ba436a4104bd25247ee9f0db3c8474b0050b41e866940ad5"
+  },
+  {
+    "command_file": "inspect-087-terminal_bench-torch-tensor-parallelism.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:c50ac169e11465f41b49749fe87e4487f24d31a0c39c0906cd3242cc5499c690",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/torch-tensor-parallelism@sha256:c50ac169e11465f41b49749fe87e4487f24d31a0c39c0906cd3242cc5499c690",
+        "alexgshaw/torch-tensor-parallelism@sha256:c50ac169e11465f41b49749fe87e4487f24d31a0c39c0906cd3242cc5499c690"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/torch-tensor-parallelism:20251031",
+        "alexgshaw/torch-tensor-parallelism:20251031"
+      ],
+      "Size": 29725529
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/torch-tensor-parallelism/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/torch-tensor-parallelism:20251031",
+    "returncode": 0,
+    "role": "torch-tensor-parallelism",
+    "sha256": "9e45f2211615b8a7f0ade68c7b45e343b02ef4b6d3978285b695a9a01837f682"
+  },
+  {
+    "command_file": "inspect-088-terminal_bench-train-fasttext.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/train-fasttext@sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157",
+        "alexgshaw/train-fasttext@sha256:3c77da9617e7fa577de04aef73fb1ac3114be32d7ffef72609c83929d842b157"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/train-fasttext:20251031",
+        "alexgshaw/train-fasttext:20251031"
+      ],
+      "Size": 509018113
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/train-fasttext/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/train-fasttext:20251031",
+    "returncode": 0,
+    "role": "train-fasttext",
+    "sha256": "994fda7c3081bbdd9f6d05d6279ef64faefa94c214d1e08fbcea656540e4fe91"
+  },
+  {
+    "command_file": "inspect-089-terminal_bench-tune-mjcf.command.json",
+    "dataset": "terminal_bench",
+    "line": 30,
+    "observed": {
+      "Id": "sha256:56c197739db2db79562384581fcc9d3d71e6c171bf052104b1a7ee0282e7c3cf",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/tune-mjcf@sha256:56c197739db2db79562384581fcc9d3d71e6c171bf052104b1a7ee0282e7c3cf",
+        "alexgshaw/tune-mjcf@sha256:56c197739db2db79562384581fcc9d3d71e6c171bf052104b1a7ee0282e7c3cf"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/tune-mjcf:20251031",
+        "alexgshaw/tune-mjcf:20251031"
+      ],
+      "Size": 80263536
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/tune-mjcf/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/tune-mjcf:20251031",
+    "returncode": 0,
+    "role": "tune-mjcf",
+    "sha256": "27b6d4e5a23761cc1a24a695125d891be74a2930fb83a02a66221db0244b08b3"
+  },
+  {
+    "command_file": "inspect-090-terminal_bench-video-processing.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:a2c0f39e3ab04e67ac6e49cad9167bb0d987babe32511768c01aa0c6905a875f",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/video-processing@sha256:a2c0f39e3ab04e67ac6e49cad9167bb0d987babe32511768c01aa0c6905a875f",
+        "alexgshaw/video-processing@sha256:a2c0f39e3ab04e67ac6e49cad9167bb0d987babe32511768c01aa0c6905a875f"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/video-processing:20251031",
+        "alexgshaw/video-processing:20251031"
+      ],
+      "Size": 311878553
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/video-processing/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/video-processing:20251031",
+    "returncode": 0,
+    "role": "video-processing",
+    "sha256": "be4fb42fccc5faa4862789cedd2c560eaa5758a2971989649a6dafeaeccc17aa"
+  },
+  {
+    "command_file": "inspect-091-terminal_bench-vulnerable-secret.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:61ebb40454dd103aa2f7e71ad6dafd91cf2b301e6bb07e69d5b472412d1ee15b",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/vulnerable-secret@sha256:61ebb40454dd103aa2f7e71ad6dafd91cf2b301e6bb07e69d5b472412d1ee15b",
+        "alexgshaw/vulnerable-secret@sha256:61ebb40454dd103aa2f7e71ad6dafd91cf2b301e6bb07e69d5b472412d1ee15b"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/vulnerable-secret:20251031",
+        "alexgshaw/vulnerable-secret:20251031"
+      ],
+      "Size": 133932203
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/vulnerable-secret/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/vulnerable-secret:20251031",
+    "returncode": 0,
+    "role": "vulnerable-secret",
+    "sha256": "51079626e4c76445e616eff8723efc53af7f1cf8d9c64d15aab2f4f0ecd6df3c"
+  },
+  {
+    "command_file": "inspect-092-terminal_bench-winning-avg-corewars.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:ad7a6b1c53aed59e10916c692aa7e2ae00042a4283187430aee1e3e79f72d5c6",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/winning-avg-corewars@sha256:ad7a6b1c53aed59e10916c692aa7e2ae00042a4283187430aee1e3e79f72d5c6",
+        "alexgshaw/winning-avg-corewars@sha256:ad7a6b1c53aed59e10916c692aa7e2ae00042a4283187430aee1e3e79f72d5c6"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/winning-avg-corewars:20251031",
+        "alexgshaw/winning-avg-corewars:20251031"
+      ],
+      "Size": 293671111
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/winning-avg-corewars/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/winning-avg-corewars:20251031",
+    "returncode": 0,
+    "role": "winning-avg-corewars",
+    "sha256": "a9b48765d03a66d966f6a162be203bc31e1d9d6e4abe616a2f4b42bac5dc246f"
+  },
+  {
+    "command_file": "inspect-093-terminal_bench-write-compressor.command.json",
+    "dataset": "terminal_bench",
+    "line": 29,
+    "observed": {
+      "Id": "sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1",
+      "RepoDigests": [
+        "docker.1panel.live/alexgshaw/write-compressor@sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1",
+        "alexgshaw/write-compressor@sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1"
+      ],
+      "RepoTags": [
+        "docker.1panel.live/alexgshaw/write-compressor:20251031",
+        "alexgshaw/write-compressor:20251031"
+      ],
+      "Size": 291927726
+    },
+    "path": "/mnt/20t/xubuqiang/datasets/terminal-bench/write-compressor/task.toml",
+    "pin": "movable-tag",
+    "reference": "alexgshaw/write-compressor:20251031",
+    "returncode": 0,
+    "role": "write-compressor",
+    "sha256": "6066a509066433c97c417fea68c4e3e73996f698dcdcbabe07718835eea355a6"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "appworld_digest_pins": 3,
+  "captured_utc": "2026-10-14T22:23:26.101637+00:00",
+  "fresh_image_id_bindings": 91,
+  "fresh_present_reference_bindings": 91,
+  "missing_count": 3,
+  "missing_errors": [
+    "Error response from daemon: No such image: alexgshaw/mteb-leaderboard:20251031",
+    "Error response from daemon: No such image: alexgshaw/pytorch-model-recovery:20251031",
+    "Error response from daemon: No such image: alexgshaw/reshard-c4-data:20251031"
+  ],
+  "missing_references": [
+    "alexgshaw/mteb-leaderboard:20251031",
+    "alexgshaw/pytorch-model-recovery:20251031",
+    "alexgshaw/reshard-c4-data:20251031"
+  ],
+  "present_count": 91,
+  "present_with_repo_digests": 91,
+  "preserved_manifest_count": 101,
+  "preserved_manifest_hash_matches": 101,
+  "reference_count": 94,
+  "references_by_dataset": {
+    "appworld": 3,
+    "gaia": 1,
+    "tau_bench": 1,
+    "terminal_bench": 89
+  },
+  "root_digest_hash_matches": 91,
+  "terminal_bench_missing": 3,
+  "terminal_bench_present": 86,
+  "terminal_bench_tags": 89,
+  "unique_reference_count": 94
+}

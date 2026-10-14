@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "sudo",
+    "-n",
+    "ctr",
+    "--address",
+    "/run/containerd/containerd.sock",
+    "--namespace",
+    "moby",
+    "images",
+    "list"
+  ],
+  "cwd": "/tmp/hg-verify-images",
+  "returncode": 1
+}

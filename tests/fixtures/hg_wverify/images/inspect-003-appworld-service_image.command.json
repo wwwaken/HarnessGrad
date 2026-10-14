@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "inspect",
+    "--format",
+    "{\"Id\":{{json .Id}},\"RepoDigests\":{{json .RepoDigests}},\"RepoTags\":{{json .RepoTags}},\"Size\":{{json .Size}}}",
+    "harnessgrad/appworld-service@sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4"
+  ],
+  "cwd": "/tmp/hg-verify-images",
+  "returncode": 0
+}
