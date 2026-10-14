@@ -26,10 +26,9 @@ recalculated first, with LibreOffice in headless mode -- the same thing the repo
 **What is not compared.** Cell fill and font colour: the official `cell_level_compare` has both
 comparisons present and commented out, and this file matches the code that runs.
 
-**A check that cannot measure** -- unreadable workbooks, unparseable answer ranges, no
+**A check that cannot measure** -- no answer, a result file that is not a workbook, no
 LibreOffice when the workbook holds formulas -- writes **no reward file**, writes evidence
 saying `measured: false`, and exits 3. A bare 0 is indistinguishable from a wrong workbook.
-An absent result artifact and a completed value/sheet mismatch remain measured zero.
 """
 from __future__ import annotations
 
@@ -50,8 +49,7 @@ DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
 
 # ------------------------------------------------------- the official scorer ---
 # `evaluation/evaluation.py`, transcribed. The function bodies are upstream's; the only
-# changes are `print` -> return values, the module-level imports it assumed, and raising
-# measurement failures instead of returning the same False as a completed mismatch.
+# changes are `print` -> return values and the module-level imports it assumed.
 
 
 def transform_value(v):
@@ -140,10 +138,9 @@ def generate_cell_names(range_str):
 def cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range):
     """`evaluation.py::cell_level_compare`, with the comparisons that are commented out
     upstream left out here too. Returns `(ok, message)`."""
-    # Invalid reference metadata is not an agent's missing-sheet mismatch.
-    ws_gt = wb_gt[sheet_name]
     if sheet_name not in wb_proc:
         return False, f"worksheet {sheet_name!r} not found in the result"
+    ws_gt = wb_gt[sheet_name]
     ws_proc = wb_proc[sheet_name]
     for cell_name in generate_cell_names(cell_range):
         cell_gt = ws_gt[cell_name]
@@ -155,7 +152,7 @@ def cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range):
 
 
 def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
-    """`evaluation.py::compare_workbooks`, with measurement failures raised.
+    """`evaluation.py::compare_workbooks`, verbatim in structure.
 
     `instruction_type` is accepted and unused, exactly as upstream: the comparison does not
     branch on it (upstream only uses it to group the report).
@@ -163,13 +160,12 @@ def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
     import openpyxl
 
     if not os.path.exists(proc_file):
-        # main() handles an absent submission; disappearance during comparison is a failure.
-        raise FileNotFoundError(f"result workbook unavailable for comparison: {proc_file}")
+        return False, "File not exist"
     try:
         wb_gt = openpyxl.load_workbook(filename=gt_file, data_only=True)
         wb_proc = openpyxl.load_workbook(filename=proc_file, data_only=True)
-    except Exception as exc:  # noqa: BLE001 - loading failed, no comparison was completed
-        raise RuntimeError(f"workbook load failed: {type(exc).__name__}: {exc}") from exc
+    except Exception as e:  # noqa: BLE001 - upstream returns the exception text as the message
+        return False, str(e)
 
     sheet_cell_ranges = answer_position.split(",")
     result_list = []
@@ -188,9 +184,8 @@ def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
             try:
                 _ = parse_cell_range(_cell)
             except Exception as exc:  # noqa: BLE001
-                raise ValueError(
-                    f"the task's answer_position {sheet_cell_range!r} is not a cell "
-                    f"range the official parser can read: {exc}") from exc
+                return False, (f"the task's answer_position {sheet_cell_range!r} is not a cell "
+                               f"range the official parser can read: {exc}")
         if "!" in sheet_cell_range:
             sheet_name, cell_range = sheet_cell_range.split("!")
             sheet_name = sheet_name.lstrip("'").rstrip("'")
@@ -255,9 +250,8 @@ def workbook_has_formulas(path: Path) -> bool:
 
     try:
         wb = openpyxl.load_workbook(filename=path, data_only=False)
-    except Exception as exc:  # noqa: BLE001 - False must mean a readable, formula-free file
-        raise RuntimeError(f"workbook load failed during formula detection: "
-                           f"{type(exc).__name__}: {exc}") from exc
+    except Exception:  # noqa: BLE001 - an unreadable file is reported by the caller
+        return False
     for ws in wb.worksheets:
         for row in ws.iter_rows():
             for cell in row:
@@ -349,30 +343,35 @@ def main(argv) -> int:
         print(f"reward 0: {evidence['why']}")
         return 1
 
-    phase = "formula detection"
-    try:
-        # Recalculate before comparing: data_only=True reads cached formula values.
-        if workbook_has_formulas(candidate):
-            phase = "LibreOffice recalculation"
-            soffice = soffice_path()
-            if soffice is None:
-                raise RuntimeError("the result workbook holds formulas and no LibreOffice is "
+    # Recalculate before comparing: `data_only=True` reads cached values, and a workbook whose
+    # formulas were never evaluated has none.
+    if workbook_has_formulas(candidate):
+        soffice = soffice_path()
+        if soffice is None:
+            evidence.update(measured=False,
+                            error=("the result workbook holds formulas and no LibreOffice is "
                                    "installed, so its values cannot be computed; the check "
-                                   "will not score an unevaluated workbook")
-            with tempfile.TemporaryDirectory(prefix="sb-recalc-") as scratch:
-                ok, why = recalculate(candidate, scratch=Path(scratch), soffice=soffice)
-            evidence["recalculated"] = ok
-            if not ok:
-                raise RuntimeError(f"could not recalculate the workbook: {why}")
-        else:
-            evidence["recalculated"] = False
+                                   "will not score an unevaluated workbook"))
+            write_evidence(args.evidence_file, evidence)
+            print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+            return 3
+        with tempfile.TemporaryDirectory(prefix="sb-recalc-") as scratch:
+            ok, why = recalculate(candidate, scratch=Path(scratch), soffice=soffice)
+        evidence["recalculated"] = ok
+        if not ok:
+            evidence.update(measured=False, error=f"could not recalculate the workbook: {why}")
+            write_evidence(args.evidence_file, evidence)
+            print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+            return 3
+    else:
+        evidence["recalculated"] = False
 
-        phase = "comparison"
+    try:
         ok, message = compare_workbooks(str(golden_path), str(candidate),
                                         spec.get("instruction_type"),
                                         str(spec["answer_position"]))
-    except Exception as exc:  # noqa: BLE001 - a failed tool/comparator is not a zero
-        evidence.update(measured=False, error=f"{phase} failed: {type(exc).__name__}: {exc}",
+    except Exception as exc:  # noqa: BLE001 - a comparator that raises is not a zero
+        evidence.update(measured=False, error=f"the comparison raised: {exc}",
                         traceback=traceback.format_exc()[-2000:])
         write_evidence(args.evidence_file, evidence)
         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)

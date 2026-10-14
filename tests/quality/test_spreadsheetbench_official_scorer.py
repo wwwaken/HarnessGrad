@@ -149,14 +149,13 @@ def test_the_comparison_reads_only_the_named_cells(check, tmp_path):
     assert ok is False and "A2" in msg, msg
 
 
-def test_a_missing_result_sheet_is_a_miss_but_comparison_file_loss_is_an_error(check, tmp_path):
+def test_a_missing_sheet_or_file_is_a_miss_not_an_error(check, tmp_path):
     golden = _write(tmp_path / "g.xlsx", {"A1": 1}, sheet="Wanted")
     other = _write(tmp_path / "o.xlsx", {"A1": 1}, sheet="Something")
     ok, msg = check.compare_workbooks(str(golden), str(other), "", "Wanted!A1:A1")
     assert ok is False and "not found" in msg, msg
-    # main() handles no submission as zero; a file lost during comparison is unmeasured.
-    with pytest.raises(FileNotFoundError, match="unavailable for comparison"):
-        check.compare_workbooks(str(golden), str(tmp_path / "nope.xlsx"), "", "A1")
+    ok, msg = check.compare_workbooks(str(golden), str(tmp_path / "nope.xlsx"), "", "A1")
+    assert ok is False and msg == "File not exist"
 
 
 def test_multiple_ranges_are_all_required(check, tmp_path):
@@ -231,9 +230,9 @@ def test_the_one_unparseable_answer_range_is_named(check, bench):
            and not any(ch.isdigit() for ch in r["answer_position"].split("!")[-1])]
     assert bad, "the unparseable task should be in the published data"
     assert [r["task_id"] for r in bad] == ["283-32"], [r["task_id"] for r in bad]
-    with pytest.raises(ValueError, match="not a cell range"):
-        check.compare_workbooks(str(bad[0]["golden_path"]), str(bad[0]["golden_path"]),
-                                "", bad[0]["answer_position"])
+    ok, msg = check.compare_workbooks(str(bad[0]["golden_path"]), str(bad[0]["golden_path"]),
+                                      "", bad[0]["answer_position"])
+    assert ok is False and "not a cell range" in msg, msg
 
 
 def test_the_initial_workbook_does_not_score_one(check, bench):
