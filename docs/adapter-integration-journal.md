@@ -1720,3 +1720,34 @@ is supplied. Parent review and merge remain separate. Validation transcript:
   stayed idle. No utilisation figure is claimed beyond what the run receipts record. All
   historical runs, frozen receipts and archives were left untouched; neither worker resumed or
   overwrote `chess-pilot-h0-20261013` or its recovery run.
+
+## 2026-10-15 — Actor-workdir scorer byte closures and retained runtime gaps - w-clo-actor
+
+- Read the shared topology survey, transitive dependency inventory/fixtures and Terminal-Bench
+  receipts before inspection. Confirmed all **19 actor-workdir routes** (12 QA commands + seven
+  native commands), including the native scorers and default ChessBench QA branch omitted from
+  the minimum request. The four snapshot/service datasets and ChessBench's alternate trusted
+  in-process controller remain separate. Missing inherited `hg_wtbdep/python/` and
+  `hg_wtbdep/runtime/` evidence is disclosed, not replaced with copied report hashes.
+- Added `tests/fixtures/hg_wclo_actor/`: per-dataset source-resolved entry-point hashes/locators,
+  current Python 3.12.4 executable/stdlib identity, network-denied package import observations,
+  installed-version/member-hash manifests and expected-data/provenance manifests. All file hashes
+  were calculated from actual local bytes, including external dataset/package files; no gold/test
+  contents were copied. Independently matched 611 source members to local archives. Distinguish
+  configured pins, current byte pins, metadata-only dependencies and unvalidated runtime custody.
+- `reports/w-clo-actor-closures.md` gives each dataset's pinned bytes and remaining findings:
+  staged task/gold binding; host/native/plugin ABI selection; family/JVM/LibreOffice behavior;
+  mirror provenance and metric limits. GSM8K retains its adapter numeric metric and BFCL its
+  explicitly non-official function-name diagnostic. No benchmark task, scorer, model, GPU,
+  endpoint, Docker execution or frozen run was invoked; only package imports were executed.
+- **Shared `scorer-offline-closure` remains OPEN.** Appended the partial inventory and its
+  literal report evidence to `observed`; preserved its status, full next_action, every dataset
+  reference/local blocker and all historical records. Complete provisioned transitive runtime/ABI
+  closures, official provenance/execution, trusted class-specific resource/lifecycle/cleanup
+  observations and valid live controls before pilots are still unmet. Existing ALFWorld noop
+  and Terminal-Bench snapshot/service observations are recomputed evidence references, not new
+  receipts or grounds for comparison across classes. No dataset-local registry update warranted.
+- Validation commands and checker output are in `reports/w-clo-actor-validation.txt`; fixture
+  integrity is bound by `tests/fixtures/hg_wclo_actor/SHA256SUMS`. Production scoring code and
+  historical runs/receipts/archives are unchanged. Work is committed only in isolated `wg-clo`
+  for parent review; no main commit, merge, pilot expansion or production authorization.

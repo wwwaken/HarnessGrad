@@ -1,0 +1,192 @@
+[
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"pyarrow.parquet\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/qa_parquet_startup.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"chess\", \"chess.engine\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/chessbench_puzzles.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"reasoning_gym\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/reasoning_gym.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"textworld.gym\", \"alfworld.agents.environment.alfred_tw_env\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/alfworld.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"sqlite3\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/bird_minidev.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"numpy\", \"pandas\", \"scipy\", \"sklearn\", \"matplotlib\", \"seaborn\", \"torch\", \"PIL\", \"yaml\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/ds1000.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"jericho\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/jericho.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"numpy\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/livecodebench.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"scienceworld\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/scienceworld.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-B",
+      "-c",
+      "\nimport importlib, importlib.metadata as md, json, pathlib, sys, sysconfig\ndef deny(event, args):\n    if event in ('socket.connect', 'socket.getaddrinfo', 'socket.bind'):\n        raise RuntimeError('network denied during import-only inspection: ' + event)\nsys.addaudithook(deny)\nrequested = json.loads(sys.argv[1])\nbefore = set(sys.modules)\nerrors = {}\nfor name in requested:\n    try:\n        importlib.import_module(name)\n    except Exception as exc:\n        errors[name] = type(exc).__name__ + ': ' + str(exc)\nsite = pathlib.Path(sysconfig.get_path('purelib')).resolve()\nmapping = md.packages_distributions()\nmodules = []\npackages = {}\nstartup_packages = {}\nunmapped = []\nfor name, module in sorted(sys.modules.copy().items()):\n    origin = getattr(module, '__file__', None)\n    if not origin:\n        continue\n    p = pathlib.Path(origin)\n    if not p.is_file():\n        continue\n    phase = 'preexisting interpreter/inspection' if name in before else 'requested package import'\n    modules.append({'module': name, 'path': str(p.resolve()), 'phase': phase})\n    if not p.resolve().is_relative_to(site):\n        continue\n    owners = mapping.get(name.split('.')[0], [])\n    if not owners:\n        unmapped.append({'module': name, 'path': str(p.resolve())})\n    for owner in owners:\n        d = md.distribution(owner)\n        target = startup_packages if name in before else packages\n        target[d.metadata['Name']] = d.version\npathlib.Path(sys.argv[2]).write_text(json.dumps({\n    'requested_imports': requested, 'errors': errors,\n    'inspection': 'import-only; network denied; no scorer, task, world or model called',\n    'modules': modules, 'packages': packages, 'startup_or_inspection_packages': startup_packages,\n    'unmapped_site_modules': unmapped}, indent=2, sort_keys=True) + '\\n')\n",
+      "[\"openpyxl\"]",
+      "/tmp/hg-clo/tests/fixtures/hg_wclo_actor/imports/spreadsheetbench.json"
+    ],
+    "cwd": "/tmp",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "MPLCONFIGDIR": "/tmp/hg-wclo-actor-mpl",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0
+  }
+]

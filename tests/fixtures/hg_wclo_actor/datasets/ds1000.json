@@ -1,0 +1,5288 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 13806,
+      "definitions": [
+        {
+          "line": 110,
+          "locator": "def _read() -> list[dict]:",
+          "symbol": "_read"
+        },
+        {
+          "line": 124,
+          "locator": "def _raw() -> list[dict]:",
+          "symbol": "_raw"
+        },
+        {
+          "line": 131,
+          "locator": "def tensorflow_indices() -> set[int]:",
+          "symbol": "tensorflow_indices"
+        },
+        {
+          "line": 136,
+          "locator": "def measured_exclusions() -> dict[int, str]:",
+          "symbol": "measured_exclusions"
+        },
+        {
+          "line": 143,
+          "locator": "def excluded_indices() -> set[int]:",
+          "symbol": "excluded_indices"
+        },
+        {
+          "line": 148,
+          "locator": "def included_indices() -> list[int]:",
+          "symbol": "included_indices"
+        },
+        {
+          "line": 156,
+          "locator": "def task_id(index: int) -> str:",
+          "symbol": "task_id"
+        },
+        {
+          "line": 171,
+          "locator": "def task_for(index: int) -> dict:",
+          "symbol": "task_for"
+        },
+        {
+          "line": 180,
+          "locator": "def setup_for(index: int) -> dict:",
+          "symbol": "setup_for"
+        },
+        {
+          "line": 192,
+          "locator": "def verify_for(index: int) -> dict:",
+          "symbol": "verify_for"
+        },
+        {
+          "line": 213,
+          "locator": "def load():",
+          "symbol": "load"
+        },
+        {
+          "line": 223,
+          "locator": "def _row_for_task(task: dict) -> dict:",
+          "symbol": "_row_for_task"
+        },
+        {
+          "line": 227,
+          "locator": "def oracle_files(task: dict) -> dict[str, str]:",
+          "symbol": "oracle_files"
+        },
+        {
+          "line": 231,
+          "locator": "def downloads():",
+          "symbol": "downloads"
+        },
+        {
+          "line": 263,
+          "locator": "def provision_status():",
+          "symbol": "provision_status"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 42,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 44,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 45,
+          "locator": "import re",
+          "statement": "import re"
+        },
+        {
+          "line": 46,
+          "locator": "from pathlib import Path",
+          "statement": "from pathlib import Path"
+        },
+        {
+          "line": 48,
+          "locator": "from data.scaffolds import command_control",
+          "statement": "from data.scaffolds import command_control"
+        },
+        {
+          "line": 49,
+          "locator": "from data.scaffolds.qa.base import is_eval",
+          "statement": "from data.scaffolds.qa.base import is_eval"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/ds1000.py",
+      "sha256": "7a58535f566e58d23819cad86c0ad9b0620e16f11b33033d6645dfcb977fb9a5"
+    },
+    {
+      "bytes": 3434,
+      "definitions": [
+        {
+          "line": 20,
+          "locator": "def main() -> int:",
+          "symbol": "main"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 9,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 11,
+          "locator": "import argparse",
+          "statement": "import argparse"
+        },
+        {
+          "line": 12,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 13,
+          "locator": "import pathlib",
+          "statement": "import pathlib"
+        },
+        {
+          "line": 14,
+          "locator": "import re",
+          "statement": "import re"
+        },
+        {
+          "line": 15,
+          "locator": "import subprocess",
+          "statement": "import subprocess"
+        },
+        {
+          "line": 16,
+          "locator": "import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 17,
+          "locator": "import tempfile",
+          "statement": "import tempfile"
+        },
+        {
+          "line": 48,
+          "locator": "    import os",
+          "statement": "import os"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/ds1000/verify/check.py",
+      "sha256": "6ec35d0227f1adab6b32a7cb4200b5a2f86cc38e1d2d8eea6853f122c2b12f8e"
+    },
+    {
+      "bytes": 5791,
+      "definitions": [
+        {
+          "line": 17,
+          "locator": "def check_correctness(program: str, timeout: float,",
+          "symbol": "check_correctness"
+        },
+        {
+          "line": 81,
+          "locator": "def time_limit(seconds: float):",
+          "symbol": "time_limit"
+        },
+        {
+          "line": 93,
+          "locator": "def swallow_io():",
+          "symbol": "swallow_io"
+        },
+        {
+          "line": 102,
+          "locator": "def create_tempdir():",
+          "symbol": "create_tempdir"
+        },
+        {
+          "line": 108,
+          "locator": "class TimeoutException(Exception):",
+          "symbol": "TimeoutException"
+        },
+        {
+          "line": 112,
+          "locator": "class WriteOnlyStringIO(io.StringIO):",
+          "symbol": "WriteOnlyStringIO"
+        },
+        {
+          "line": 129,
+          "locator": "class redirect_stdin(contextlib._RedirectStream):  # type: ignore",
+          "symbol": "redirect_stdin"
+        },
+        {
+          "line": 134,
+          "locator": "def chdir(root):",
+          "symbol": "chdir"
+        },
+        {
+          "line": 148,
+          "locator": "def reliability_guard(maximum_memory_bytes: Optional[int] = None):",
+          "symbol": "reliability_guard"
+        },
+        {
+          "line": 27,
+          "locator": "    def unsafe_execute():",
+          "symbol": "unsafe_execute"
+        },
+        {
+          "line": 82,
+          "locator": "    def signal_handler(signum, frame):",
+          "symbol": "signal_handler"
+        },
+        {
+          "line": 115,
+          "locator": "    def read(self, *args, **kwargs):",
+          "symbol": "read"
+        },
+        {
+          "line": 118,
+          "locator": "    def readline(self, *args, **kwargs):",
+          "symbol": "readline"
+        },
+        {
+          "line": 121,
+          "locator": "    def readlines(self, *args, **kwargs):",
+          "symbol": "readlines"
+        },
+        {
+          "line": 124,
+          "locator": "    def readable(self, *args, **kwargs):",
+          "symbol": "readable"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 5,
+          "locator": "from typing import Optional, Callable, Dict",
+          "statement": "from typing import Optional, Callable, Dict"
+        },
+        {
+          "line": 6,
+          "locator": "import ast",
+          "statement": "import ast"
+        },
+        {
+          "line": 7,
+          "locator": "import contextlib",
+          "statement": "import contextlib"
+        },
+        {
+          "line": 8,
+          "locator": "import faulthandler",
+          "statement": "import faulthandler"
+        },
+        {
+          "line": 9,
+          "locator": "import io",
+          "statement": "import io"
+        },
+        {
+          "line": 10,
+          "locator": "import os",
+          "statement": "import os"
+        },
+        {
+          "line": 11,
+          "locator": "import multiprocessing",
+          "statement": "import multiprocessing"
+        },
+        {
+          "line": 12,
+          "locator": "import platform",
+          "statement": "import platform"
+        },
+        {
+          "line": 13,
+          "locator": "import signal",
+          "statement": "import signal"
+        },
+        {
+          "line": 14,
+          "locator": "import tempfile",
+          "statement": "import tempfile"
+        },
+        {
+          "line": 170,
+          "locator": "    import builtins",
+          "statement": "import builtins"
+        },
+        {
+          "line": 174,
+          "locator": "    import os",
+          "statement": "import os"
+        },
+        {
+          "line": 205,
+          "locator": "    import shutil",
+          "statement": "import shutil"
+        },
+        {
+          "line": 210,
+          "locator": "    import subprocess",
+          "statement": "import subprocess"
+        },
+        {
+          "line": 215,
+          "locator": "    import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 162,
+          "locator": "        import resource",
+          "statement": "import resource"
+        },
+        {
+          "line": 31,
+          "locator": "            import os",
+          "statement": "import os"
+        },
+        {
+          "line": 32,
+          "locator": "            import shutil",
+          "statement": "import shutil"
+        }
+      ],
+      "location": "external-local",
+      "path": "/mnt/20t/xubuqiang/datasets/ds1000/_src/DS-1000-b39aab71/execution.py",
+      "sha256": "fab0beb2a5c3300f4540c2225ffc013881e5770fed388ad20d4620ae040cd311"
+    },
+    {
+      "bytes": 386,
+      "exists": true,
+      "location": "external-local",
+      "path": "/mnt/20t/xubuqiang/datasets/ds1000/_src/DS-1000-b39aab71/environment.yml",
+      "sha256": "61575788abe7cd77d26921ba2043efb652d2e1a9fe569378e9405a8469bb76aa"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "ds1000",
+  "declared_dependency_package_keys": [
+    "anyio",
+    "argon2-cffi",
+    "argon2-cffi-bindings",
+    "asttokens",
+    "async-lru",
+    "attrs",
+    "babel",
+    "beautifulsoup4",
+    "bleach",
+    "bottleneck",
+    "certifi",
+    "cffi",
+    "charset-normalizer",
+    "cloudpickle",
+    "colorama",
+    "comm",
+    "contourpy",
+    "cycler",
+    "debugpy",
+    "decorator",
+    "defusedxml",
+    "dill",
+    "executing",
+    "fastjsonschema",
+    "filelock",
+    "fonttools",
+    "fsspec",
+    "idna",
+    "ipykernel",
+    "ipython",
+    "ipython-genutils",
+    "ipywidgets",
+    "jedi",
+    "jinja2",
+    "joblib",
+    "json5",
+    "jsonschema",
+    "jsonschema-specifications",
+    "jupyter-client",
+    "jupyter-core",
+    "jupyter-events",
+    "jupyter-lsp",
+    "jupyter-server",
+    "jupyter-server-terminals",
+    "jupyterlab",
+    "jupyterlab-pygments",
+    "jupyterlab-server",
+    "jupyterlab-widgets",
+    "kiwisolver",
+    "lz4",
+    "markupsafe",
+    "matplotlib",
+    "matplotlib-inline",
+    "mistune",
+    "mkl-service",
+    "mpmath",
+    "nbclient",
+    "nbconvert",
+    "nbformat",
+    "nest-asyncio",
+    "networkx",
+    "notebook",
+    "notebook-shim",
+    "numexpr",
+    "numpy",
+    "nvidia-cublas-cu12",
+    "nvidia-cuda-cupti-cu12",
+    "nvidia-cuda-nvrtc-cu12",
+    "nvidia-cuda-runtime-cu12",
+    "nvidia-cudnn-cu12",
+    "nvidia-cufft-cu12",
+    "nvidia-curand-cu12",
+    "nvidia-cusolver-cu12",
+    "nvidia-cusparse-cu12",
+    "nvidia-ml-py",
+    "nvidia-nccl-cu12",
+    "nvidia-nvjitlink-cu12",
+    "nvidia-nvtx-cu12",
+    "overrides",
+    "packaging",
+    "pandas",
+    "pandocfilters",
+    "parso",
+    "patsy",
+    "pexpect",
+    "pickleshare",
+    "pillow",
+    "platformdirs",
+    "prometheus-client",
+    "prompt-toolkit",
+    "psutil",
+    "ptyprocess",
+    "pure-eval",
+    "pyarrow",
+    "pycparser",
+    "pygments",
+    "pyparsing",
+    "python-dateutil",
+    "python-json-logger",
+    "pytz",
+    "pyyaml",
+    "pyzmq",
+    "referencing",
+    "requests",
+    "rfc3339-validator",
+    "rfc3986-validator",
+    "rpds-py",
+    "scikit-learn",
+    "scipy",
+    "seaborn",
+    "send2trash",
+    "setuptools",
+    "six",
+    "soupsieve",
+    "stack-data",
+    "statsmodels",
+    "sympy",
+    "terminado",
+    "threadpoolctl",
+    "tinycss2",
+    "torch",
+    "tornado",
+    "tqdm",
+    "traitlets",
+    "triton",
+    "typing-extensions",
+    "tzdata",
+    "urllib3",
+    "wcwidth",
+    "webencodings",
+    "websocket-client",
+    "widgetsnbextension"
+  ],
+  "directly_observed_imported_packages": {
+    "Bottleneck": {
+      "content_manifest": {
+        "bytes": 12273,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/bottleneck.json",
+        "sha256": "e2ff219ece235dda141f5a15b8ed63ea88ac1908d5ef43904dbfaf0207a9762c"
+      },
+      "file_count": 41,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 7482,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/Bottleneck-1.3.7.dist-info/METADATA",
+          "sha256": "61cbe0f06b45a1a1d475959bded0929b14c1e5c4afd482f80a7a840a911cf767"
+        },
+        {
+          "bytes": 5294,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/Bottleneck-1.3.7.dist-info/RECORD",
+          "sha256": "edcc4f16ad009c7729f8882bc2fc1d9e44f43cba434d31a9d87d2d072852eec0"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/Bottleneck-1.3.7.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "Bottleneck",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpydoc ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "gitpython ; extra == 'doc'"
+        }
+      ],
+      "version": "1.3.7"
+    },
+    "PyYAML": {
+      "content_manifest": {
+        "bytes": 6984,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyyaml.json",
+        "sha256": "274ea506eeab5ac1c3c3dbcfb2ce63a3223f5970ab0ef665dcb6499707b5b6a8"
+      },
+      "file_count": 25,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 2351,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/METADATA",
+          "sha256": "03c3b415ed38d09faedc49360e930769b40c58f68585e6de00e2e4916a858d34"
+        },
+        {
+          "bytes": 2706,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/RECORD",
+          "sha256": "dc055c2d5a393702e5d36a3752bd97d380761dd6e9bc50b22234b3bcbe8b4ce3"
+        },
+        {
+          "bytes": 190,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/WHEEL",
+          "sha256": "0f1467590cfe2a9f7ee1ae217431ec4afd0a502dc7eec37d35b79fdfef118d75"
+        }
+      ],
+      "missing_members": 0,
+      "name": "PyYAML",
+      "requirements": [],
+      "version": "6.0.3"
+    },
+    "Pygments": {
+      "content_manifest": {
+        "bytes": 86811,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pygments.json",
+        "sha256": "7b315914be4c9c016b31938948760479d8e74f1873bf1fa3d4d11212f4304c00"
+      },
+      "file_count": 313,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 2451,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/Pygments-2.15.1.dist-info/METADATA",
+          "sha256": "d2f1ac4c1a84deadcf8b6fb62630ab4a299fb21e1e8d15466dd7444e6f085efe"
+        },
+        {
+          "bytes": 42755,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/Pygments-2.15.1.dist-info/RECORD",
+          "sha256": "f9d226fe40d3cb74316a45b7ece4b41335b2a1f010a3b1340fbf156d2b3f9172"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/Pygments-2.15.1.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "Pygments",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib-metadata ; (python_version < \"3.8\") and extra == 'plugins'"
+        }
+      ],
+      "version": "2.15.1"
+    },
+    "asttokens": {
+      "content_manifest": {
+        "bytes": 4432,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/asttokens.json",
+        "sha256": "0ad3a897808d1c47dc380fb40076b369845149023562ece6a69b83303b90b045"
+      },
+      "file_count": 14,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 4657,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/asttokens-2.0.5.dist-info/METADATA",
+          "sha256": "a1906d9ec7513b5869b26df2e6fa47e2c4cafc84ea2d6a638aef680d9e5723be"
+        },
+        {
+          "bytes": 1459,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/asttokens-2.0.5.dist-info/RECORD",
+          "sha256": "4608d0909f80a773e07620ed81e6934ede5d95d055efcae02d874c3e5e1d8128"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/asttokens-2.0.5.dist-info/WHEEL",
+          "sha256": "cfd8f4c406bf26650a3299b3ef62b464600b48cfe7fb04159866e5797c765478"
+        }
+      ],
+      "missing_members": 0,
+      "name": "asttokens",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "six"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "astroid ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'test'"
+        }
+      ],
+      "version": "2.0.5"
+    },
+    "cffi": {
+      "content_manifest": {
+        "bytes": 9036,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/cffi.json",
+        "sha256": "8b8685b5c2000a44d5b0fddad98aaf2792eab394a3d4a9d067b537d44452f7d1"
+      },
+      "file_count": 32,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1480,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/METADATA",
+          "sha256": "a8e048da2d2a4a52ce2b09b33636c97cb9ab4f31d5fc9152eee29b7058ffa7d6"
+        },
+        {
+          "bytes": 3364,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/RECORD",
+          "sha256": "9925f9ed7119070b4daa9e5eb348583b24292cf73024a8fd3d99d48a10ba447e"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "cffi",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pycparser"
+        }
+      ],
+      "version": "1.16.0"
+    },
+    "cloudpickle": {
+      "content_manifest": {
+        "bytes": 3611,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/cloudpickle.json",
+        "sha256": "81b9191468193bcc5f9a169d44cd1fd898fdf8a660a50e7278749698ddfc61f7"
+      },
+      "file_count": 12,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6868,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cloudpickle-2.2.1.dist-info/METADATA",
+          "sha256": "142f717f27097709f7334439a81fb019237da30618f4e7c7cda74f6d89c24c98"
+        },
+        {
+          "bytes": 1245,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cloudpickle-2.2.1.dist-info/RECORD",
+          "sha256": "40892e35a9292fb8c84eec2406f6826723980cb6bd68f0e47da534dcb7efc769"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cloudpickle-2.2.1.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "cloudpickle",
+      "requirements": [],
+      "version": "2.2.1"
+    },
+    "colorama": {
+      "content_manifest": {
+        "bytes": 5780,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/colorama.json",
+        "sha256": "943b0840c50b0700af94b4fd3307e9c55b26a51249e3649a021941da800d52e2"
+      },
+      "file_count": 20,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 17191,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/colorama-0.4.6.dist-info/METADATA",
+          "sha256": "b9bc55e5c00dcacc388e4f746fe33a2dc7bfb2bb177e23915d96d84794dc6696"
+        },
+        {
+          "bytes": 2360,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/colorama-0.4.6.dist-info/RECORD",
+          "sha256": "b4b4c4f1b2aa89a0d147c0318fcca79c69d227bf3c080cf14f3c6deb937ec69f"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/colorama-0.4.6.dist-info/WHEEL",
+          "sha256": "7da80bfd38f6f6683cd1f97097124d5b8e670436dba31174e139db73f8eddc18"
+        }
+      ],
+      "missing_members": 0,
+      "name": "colorama",
+      "requirements": [],
+      "version": "0.4.6"
+    },
+    "comm": {
+      "content_manifest": {
+        "bytes": 3174,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/comm.json",
+        "sha256": "3044a12c9b7e618e5d8f4b9565cad12d952e6dabe00b1ed1b48220bcb9e2cf68"
+      },
+      "file_count": 10,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3689,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/comm-0.2.1.dist-info/METADATA",
+          "sha256": "5e7d55611ebe8425ba0d40066d16f4858f132d9a4dc5370efab4c0f5f3dcda3a"
+        },
+        {
+          "bytes": 866,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/comm-0.2.1.dist-info/RECORD",
+          "sha256": "99915a8147e066068633470af899bf910affe0fbe64fff2f7c9eb584ef416187"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/comm-0.2.1.dist-info/WHEEL",
+          "sha256": "4c93e729db6b4ae7bbc59fc0546929f585dcbc3ae86ec8c176cd5dbb7371e9d7"
+        }
+      ],
+      "missing_members": 0,
+      "name": "comm",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "traitlets>=4"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest; extra == 'test'"
+        }
+      ],
+      "version": "0.2.1"
+    },
+    "cycler": {
+      "content_manifest": {
+        "bytes": 2730,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/cycler.json",
+        "sha256": "ab57817a9084529d6e33690ade93fe750ea8f16faa59da85103e08414d6271e2"
+      },
+      "file_count": 9,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 806,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/METADATA",
+          "sha256": "9f5567f456be6f314600e4bd935938516e091021713a675ca109f07cb1ac8fc2"
+        },
+        {
+          "bytes": 765,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/RECORD",
+          "sha256": "69577f0954147f1d137c95b69c8d059e6c0e5c8a5956bbe3568117627bd66d4c"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/WHEEL",
+          "sha256": "7b0c04b9e8a8d42d977874ef4f5ee7f1d6542603afc82582b7459534b0a53fda"
+        }
+      ],
+      "missing_members": 0,
+      "name": "cycler",
+      "requirements": [],
+      "version": "0.11.0"
+    },
+    "decorator": {
+      "content_manifest": {
+        "bytes": 3039,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/decorator.json",
+        "sha256": "0cfb028db2984987e78329fcb3e8fcdff43d24eb16b581b19a3a84b8ed526a18"
+      },
+      "file_count": 10,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3981,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/decorator-5.1.1.dist-info/METADATA",
+          "sha256": "af46dd2f1e1ea5f98566e444330e0f230e4e2c9c93e8015caa06eede496d744e"
+        },
+        {
+          "bytes": 883,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/decorator-5.1.1.dist-info/RECORD",
+          "sha256": "1683c7bf59595992d349a2ec8f44c0b79dda3f3d8025182985606f4dfdf908d0"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/decorator-5.1.1.dist-info/WHEEL",
+          "sha256": "1b5e87e00dc87a84269cead8578b9e6462928e18a95f1f3373c9eef451a5bcc0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "decorator",
+      "requirements": [],
+      "version": "5.1.1"
+    },
+    "defusedxml": {
+      "content_manifest": {
+        "bytes": 5493,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/defusedxml.json",
+        "sha256": "7716f6a415bf157aa320b802725108f2da8caf6d181e0f675a1d792524eb9b08"
+      },
+      "file_count": 19,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 32518,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/METADATA",
+          "sha256": "369d3cef64870daf849fba711cb8d05a7efe3c8d9ab0f763adc34079fe378bb1"
+        },
+        {
+          "bytes": 2116,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/RECORD",
+          "sha256": "fca6b1567fcc88d2fba042197714c1da900c2466d11c2f7d551d18499e7fbbb6"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/WHEEL",
+          "sha256": "67e9f2629c2b712ab17ddbb1e4c6e7fc3439db988fec9d831b72601af398c934"
+        }
+      ],
+      "missing_members": 0,
+      "name": "defusedxml",
+      "requirements": [],
+      "version": "0.7.1"
+    },
+    "dill": {
+      "content_manifest": {
+        "bytes": 15495,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/dill.json",
+        "sha256": "e9e02681cecfc96aa7b34b9e555aa07b6c2d739bdf72c50717931dda2c304bd0"
+      },
+      "file_count": 55,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 10174,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dill-0.4.0.dist-info/METADATA",
+          "sha256": "673af578ab6e4efaeb88bf87ff80e637b7f18c1f6d10dcc6473d03c0023bbb94"
+        },
+        {
+          "bytes": 6788,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dill-0.4.0.dist-info/RECORD",
+          "sha256": "604bd7a63330409d284c793f90aa4eb7811cfd696a05d6f988fcdb092ccd5848"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dill-0.4.0.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        }
+      ],
+      "missing_members": 0,
+      "name": "dill",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "objgraph >=1.7.2 ; extra == 'graph'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "gprof2dot >=2022.7.29 ; extra == 'profile'"
+        }
+      ],
+      "version": "0.4.0"
+    },
+    "executing": {
+      "content_manifest": {
+        "bytes": 3307,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/executing.json",
+        "sha256": "4ec06df495d551ccbd2b2401eb41f502012f805ee2a5763f68175dff4bfcbaef"
+      },
+      "file_count": 11,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8597,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/executing-0.8.3.dist-info/METADATA",
+          "sha256": "f5c0dbcb86e6f457c7b9875fd5fce7255280805dd100434580bafbf919ea86d3"
+        },
+        {
+          "bytes": 1068,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/executing-0.8.3.dist-info/RECORD",
+          "sha256": "7880835e6e22052550ad65e6540b065b452a32634c059e2b3260fe294cf2c31a"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/executing-0.8.3.dist-info/WHEEL",
+          "sha256": "cfd8f4c406bf26650a3299b3ef62b464600b48cfe7fb04159866e5797c765478"
+        }
+      ],
+      "missing_members": 0,
+      "name": "executing",
+      "requirements": [],
+      "version": "0.8.3"
+    },
+    "ipykernel": {
+      "content_manifest": {
+        "bytes": 20046,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/ipykernel.json",
+        "sha256": "be45cbfe76b692da7a3f2f46854c0fb64d66a3857f3df9296e99ed7c20ef6542"
+      },
+      "file_count": 58,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6031,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipykernel-6.28.0.dist-info/METADATA",
+          "sha256": "91f9781fefaf436144c8372431df2162841a7545cca1f16934f06b3822f5ebcb"
+        },
+        {
+          "bytes": 7201,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipykernel-6.28.0.dist-info/RECORD",
+          "sha256": "911bf434935669aa0856fcf73b9a02992091f064aaf3d511fa603e76b2aced63"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipykernel-6.28.0.dist-info/WHEEL",
+          "sha256": "f5006e1e183a14d5bb969a5ba05daf2956c2193573b05ca48114238e56a3ae10"
+        }
+      ],
+      "missing_members": 0,
+      "name": "ipykernel",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "appnope; platform_system == 'Darwin'"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "comm>=0.1.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "debugpy>=1.6.5"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "ipython>=7.23.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "jupyter-client>=6.1.12"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "jupyter-core!=5.0.*,>=4.12"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "matplotlib-inline>=0.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nest-asyncio"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "packaging"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "psutil"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pyzmq>=24"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "tornado>=6.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "traitlets>=5.4.0"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage[toml]; extra == 'cov'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "curio; extra == 'cov'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib; extra == 'cov'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == 'cov'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "trio; extra == 'cov'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "myst-parser; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata-sphinx-theme; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-autodoc-typehints; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-github-alt; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-spelling; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "trio; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyqt5; extra == 'pyqt5'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyside6; extra == 'pyside6'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flaky; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipyparallel; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pre-commit; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-asyncio; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest>=7.0; extra == 'test'"
+        }
+      ],
+      "version": "6.28.0"
+    },
+    "ipython": {
+      "content_manifest": {
+        "bytes": 88628,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/ipython.json",
+        "sha256": "ef1ebeb0efeb7af61c6b90e400948576fbb09a425cb6aa8b44414c1185bb92e3"
+      },
+      "file_count": 296,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 4934,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipython-8.25.0.dist-info/METADATA",
+          "sha256": "d57282b3a4a0b04ac8c2082032676c73181ecb07d95d0baeab13e3165c61ab66"
+        },
+        {
+          "bytes": 42587,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipython-8.25.0.dist-info/RECORD",
+          "sha256": "421807ca1d847652607a6063c876b7bba16d543bc9233e9d00abb0a38445374a"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipython-8.25.0.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        }
+      ],
+      "missing_members": 0,
+      "name": "ipython",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "decorator"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "jedi >=0.16"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "matplotlib-inline"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "prompt-toolkit <3.1.0,>=3.0.41"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pygments >=2.4.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "stack-data"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "traitlets >=5.13.0"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "exceptiongroup ; python_version < \"3.11\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions >=4.6 ; python_version < \"3.12\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pexpect >4.3 ; sys_platform != \"win32\" and sys_platform != \"emscripten\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "colorama ; sys_platform == \"win32\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipython[black,doc,kernel,matplotlib,nbconvert,nbformat,notebook,parallel,qtconsole] ; extra == 'all'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipython[test,test_extra] ; extra == 'all'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "black ; extra == 'black'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "docrepr ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "exceptiongroup ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "intersphinx-registry ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipython[test] ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "setuptools >=18.5 ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-rtd-theme ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx >=1.3 ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-jquery ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions ; extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli ; (python_version < \"3.11\") and extra == 'doc'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel ; extra == 'kernel'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib ; extra == 'matplotlib'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "nbconvert ; extra == 'nbconvert'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "nbformat ; extra == 'nbformat'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipywidgets ; extra == 'notebook'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "notebook ; extra == 'notebook'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipyparallel ; extra == 'parallel'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "qtconsole ; extra == 'qtconsole'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-asyncio <0.22 ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "testpath ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pickleshare ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipython[test] ; extra == 'test_extra'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "curio ; extra == 'test_extra'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib !=3.2.0 ; extra == 'test_extra'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "nbformat ; extra == 'test_extra'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy >=1.23 ; extra == 'test_extra'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas ; extra == 'test_extra'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "trio ; extra == 'test_extra'"
+        }
+      ],
+      "version": "8.25.0"
+    },
+    "ipython-genutils": {
+      "content_manifest": {
+        "bytes": 7055,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/ipython-genutils.json",
+        "sha256": "b27b6309a9655d2e8ceb34ca84eff12564ff4c45ed58a6609bcebe4183208c5f"
+      },
+      "file_count": 24,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 755,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipython_genutils-0.2.0.dist-info/METADATA",
+          "sha256": "56082718ba00e5acec78bc7034b86b8f53affffd99f356f5fe97070384623bab"
+        },
+        {
+          "bytes": 3118,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipython_genutils-0.2.0.dist-info/RECORD",
+          "sha256": "27ebb9a1b16241810fdffb86355159912274a862b86e0e92610b021404edb92c"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipython_genutils-0.2.0.dist-info/WHEEL",
+          "sha256": "00329ec9a1b2285e43c01344d2c444e69bd6f9b4a414c25f06e873677adc78fe"
+        }
+      ],
+      "missing_members": 0,
+      "name": "ipython-genutils",
+      "requirements": [],
+      "version": "0.2.0"
+    },
+    "ipywidgets": {
+      "content_manifest": {
+        "bytes": 19523,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/ipywidgets.json",
+        "sha256": "932d998f395beb69689c6d522415c10fdf1d223afac36ef41d47fd2d7c2af6d7"
+      },
+      "file_count": 63,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1895,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipywidgets-7.8.1.dist-info/METADATA",
+          "sha256": "5c5dfe7abbeeb1df427f9f1d8e788fb540e6f599bbc470a2b947c02c3c71b8ba"
+        },
+        {
+          "bytes": 9220,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipywidgets-7.8.1.dist-info/RECORD",
+          "sha256": "cf65b1e3fb350b8ab8ff4b263c1801c5dd791adbaeb3ba9b7af740dbe5668888"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/ipywidgets-7.8.1.dist-info/WHEEL",
+          "sha256": "89896fe5f5f7e7b3d0c914f6a3ab70d5b37e61c2851472aa07f2f01cee703fe8"
+        }
+      ],
+      "missing_members": 0,
+      "name": "ipywidgets",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "comm >=0.1.3"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "ipython-genutils ~=0.2.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "traitlets >=4.3.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "widgetsnbextension ~=3.6.6"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipython <6.0.0,>=4.0.0 ; python_version<\"3.3\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "ipython >=4.0.0 ; python_version>=\"3.3\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "jupyterlab-widgets <3,>=1.0.0 ; python_version>=\"3.6\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest >=3.6.0 ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mock ; (python_version==\"2.7\") and extra == 'test'"
+        }
+      ],
+      "version": "7.8.1"
+    },
+    "jedi": {
+      "content_manifest": {
+        "bytes": 585424,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/jedi.json",
+        "sha256": "3c002a559718dd119658056d8a6623f7b6e1eb564bc6773f53e7009d98a6c720"
+      },
+      "file_count": 1883,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 20309,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jedi-0.18.1.dist-info/METADATA",
+          "sha256": "86f317ddf1127a8215ad5e36063f78817ee3d48d48f25c4d9e083caf195abd26"
+        },
+        {
+          "bytes": 227507,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jedi-0.18.1.dist-info/RECORD",
+          "sha256": "933744626ac6e35f37a0c36d55af6d42fcabb5bc9df959607b141fcf7625d964"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jedi-0.18.1.dist-info/WHEEL",
+          "sha256": "89896fe5f5f7e7b3d0c914f6a3ab70d5b37e61c2851472aa07f2f01cee703fe8"
+        }
+      ],
+      "missing_members": 0,
+      "name": "jedi",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "parso <0.9.0,>=0.8.0"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flake8 ==3.8.3 ; extra == 'qa'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy ==0.782 ; extra == 'qa'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest <7.0.0 ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "docopt ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "colorama ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "Django <3.1 ; extra == 'testing'"
+        }
+      ],
+      "version": "0.18.1"
+    },
+    "joblib": {
+      "content_manifest": {
+        "bytes": 42934,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/joblib.json",
+        "sha256": "1b9467f8a82cca49bf15c2a9523898b78723d1efcc3f71a4d10cf22e03b1862f"
+      },
+      "file_count": 146,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 5364,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/joblib-1.4.2.dist-info/METADATA",
+          "sha256": "f8f2fb393ed13a31124fc5c3bc5b0d7ad893d42dfdc4fd078e23cd7d1e7537bf"
+        },
+        {
+          "bytes": 19017,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/joblib-1.4.2.dist-info/RECORD",
+          "sha256": "8f0bbdd8ebdba089c63f4166fdb97d5b19b31017cc30845944312e57a7c24c38"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/joblib-1.4.2.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        }
+      ],
+      "missing_members": 0,
+      "name": "joblib",
+      "requirements": [],
+      "version": "1.4.2"
+    },
+    "jupyter_client": {
+      "content_manifest": {
+        "bytes": 16852,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/jupyter-client.json",
+        "sha256": "5fb0c0bd2200ba590bb3c33dcad19c2232fd45515e3f35c209d524aa66adde79"
+      },
+      "file_count": 50,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8303,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jupyter_client-8.6.0.dist-info/METADATA",
+          "sha256": "435dd87c338069ea3a1fdd79e7380a7be94058af1bee31977707350c870b47ac"
+        },
+        {
+          "bytes": 6680,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jupyter_client-8.6.0.dist-info/RECORD",
+          "sha256": "a8aa3566536ddde4dd0c40ee8a552d7ca4814bf8fdbce9dd1b5e58c554e75f11"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jupyter_client-8.6.0.dist-info/WHEEL",
+          "sha256": "f5006e1e183a14d5bb969a5ba05daf2956c2193573b05ca48114238e56a3ae10"
+        }
+      ],
+      "missing_members": 0,
+      "name": "jupyter_client",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib-metadata>=4.8.3; python_version < '3.10'"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "jupyter-core!=5.0.*,>=4.12"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "python-dateutil>=2.8.2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pyzmq>=23.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "tornado>=6.2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "traitlets>=5.3"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "myst-parser; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata-sphinx-theme; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-autodoc-typehints; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=4; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-github-alt; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-spelling; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel>=6.14; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "paramiko; sys_platform == 'win32' and extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pre-commit; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-jupyter[client]>=0.4.1; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == 'test'"
+        }
+      ],
+      "version": "8.6.0"
+    },
+    "jupyter_core": {
+      "content_manifest": {
+        "bytes": 8022,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/jupyter-core.json",
+        "sha256": "28f5d878d1b01861eb1c9a45ad631bf1b0f56693075bdffb1fae02f1a62454e5"
+      },
+      "file_count": 22,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3446,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jupyter_core-5.7.2.dist-info/METADATA",
+          "sha256": "f447abbf2b8f787bdd307de262ce1e1586fea05d2dc31b32701e29423d262f61"
+        },
+        {
+          "bytes": 2377,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jupyter_core-5.7.2.dist-info/RECORD",
+          "sha256": "9122e3f073438bfdcff8ce2613280f19541ddadd02b66b35c9dfac1a5f82109c"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jupyter_core-5.7.2.dist-info/WHEEL",
+          "sha256": "4c93e729db6b4ae7bbc59fc0546929f585dcbc3ae86ec8c176cd5dbb7371e9d7"
+        }
+      ],
+      "missing_members": 0,
+      "name": "jupyter_core",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "platformdirs>=2.5"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pywin32>=300; sys_platform == 'win32' and platform_python_implementation != 'PyPy'"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "traitlets>=5.3"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "myst-parser; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata-sphinx-theme; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-autodoc-typehints; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-github-alt; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-spelling; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "traitlets; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pre-commit; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest<8; extra == 'test'"
+        }
+      ],
+      "version": "5.7.2"
+    },
+    "kiwisolver": {
+      "content_manifest": {
+        "bytes": 3741,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/kiwisolver.json",
+        "sha256": "3d574388d48f5b8c5f5b6be0af33f58098b0d123edbb4fca17cce1e8c7e8eb82"
+      },
+      "file_count": 12,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6340,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/METADATA",
+          "sha256": "1b9a5c81bf9da3f07d2f346ff7ffdbb5fcc646c3617b3c5c0f1851299af4a2de"
+        },
+        {
+          "bytes": 1078,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/RECORD",
+          "sha256": "bb4af1af641334ae81a62ec0ddb0b6b128aec46a9b0ece0e81c2a734f2e61599"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "kiwisolver",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions ; python_version < \"3.8\""
+        }
+      ],
+      "version": "1.4.4"
+    },
+    "lz4": {
+      "content_manifest": {
+        "bytes": 5101,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/lz4.json",
+        "sha256": "4c4343117b07d3410b17bba3c5f356a4d845d133c144ca7e72f42f3c0ec05327"
+      },
+      "file_count": 15,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3658,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lz4-4.3.2.dist-info/METADATA",
+          "sha256": "365eb460a34c9318a517b350c35e1eec4fc44ef911f950727077c9e6159e1e20"
+        },
+        {
+          "bytes": 1434,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lz4-4.3.2.dist-info/RECORD",
+          "sha256": "00628a134c40025a5c63e11887c1030207e520274a75113884c76ecff657d8e4"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/lz4-4.3.2.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "lz4",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx >=1.6.0 ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-bootstrap-theme ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flake8 ; extra == 'flake8'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest !=3.3.0 ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "psutil ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'tests'"
+        }
+      ],
+      "version": "4.3.2"
+    },
+    "matplotlib": {
+      "content_manifest": {
+        "bytes": 176878,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/matplotlib.json",
+        "sha256": "9f2ccfba2390688a1ef57d3ffea94a02f768934eef8e87a05bf9e50204043ba1"
+      },
+      "file_count": 613,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 5721,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/METADATA",
+          "sha256": "dce8487973569515a0d9a5ad0ebc49ac7cfebac884ea9c3f54146ecc202538f8"
+        },
+        {
+          "bytes": 75386,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/RECORD",
+          "sha256": "9d5dfba58d5e825257a46df88c874c09e93b67840d424191d9124be2753a1896"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "matplotlib",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "contourpy >=1.0.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "cycler >=0.10"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "fonttools >=4.22.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "kiwisolver >=1.3.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy >=1.21"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "packaging >=20.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pillow >=8"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pyparsing >=2.3.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "python-dateutil >=2.7"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib-resources >=3.2.0 ; python_version<\"3.10\""
+        }
+      ],
+      "version": "3.8.4"
+    },
+    "mkl-service": {
+      "content_manifest": {
+        "bytes": 490,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/mkl-service.json",
+        "sha256": "2660691ff8eb40871dd52f4e00d9214e971b3c0e658f8fe58d4c50a2eaf24e8c"
+      },
+      "file_count": 1,
+      "installed": true,
+      "metadata_files": [],
+      "missing_members": 0,
+      "name": "mkl-service",
+      "requirements": [],
+      "version": "2.4.0"
+    },
+    "numexpr": {
+      "content_manifest": {
+        "bytes": 5336,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/numexpr.json",
+        "sha256": "bcae34a08d4b28e0b5919879f3d714616ff725a5688ac0ba8d1c8c699fcf779f"
+      },
+      "file_count": 18,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8678,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numexpr-2.8.7.dist-info/METADATA",
+          "sha256": "bbf37472ffa1d28cf34a648caecad30a8cd6e9b6325414bd85b62e01d89cc5d6"
+        },
+        {
+          "bytes": 1904,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numexpr-2.8.7.dist-info/RECORD",
+          "sha256": "26596c49882cccb6d7f6000374ef051c6e01cb00579a2fc2bf5d8d811de1aade"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numexpr-2.8.7.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "numexpr",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy >=1.13.3"
+        }
+      ],
+      "version": "2.8.7"
+    },
+    "numpy": {
+      "content_manifest": {
+        "bytes": 225626,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/numpy.json",
+        "sha256": "661437f25f2d389466d0da62dbcd19def9d78302862306860c20cc64ebb4910d"
+      },
+      "file_count": 790,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 7335,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/METADATA",
+          "sha256": "4f151eefd36459b2a4b1831a4faaf673f3fa95a0397c27c52dc4cd2591202f66"
+        },
+        {
+          "bytes": 98414,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/RECORD",
+          "sha256": "e675fb07b66c67ed54918e4d01d31583781881e9870c95f2b46238e3351a62d6"
+        },
+        {
+          "bytes": 88,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/WHEEL",
+          "sha256": "634159ee5c5f58a5b2d30fe69e35e1149cf5f2be37f307e1642a9742d342a6f5"
+        }
+      ],
+      "missing_members": 0,
+      "name": "numpy",
+      "requirements": [],
+      "version": "1.26.4"
+    },
+    "nvidia-ml-py": {
+      "content_manifest": {
+        "bytes": 2199,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/nvidia-ml-py.json",
+        "sha256": "c11113a5b3987d0e6e43e8fb63c5fbb9ba9f40b1f3f17d6e72fd08b883dccd2c"
+      },
+      "file_count": 7,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 9318,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/nvidia_ml_py-12.575.51.dist-info/METADATA",
+          "sha256": "5098ef39aff580869f71f1a2226486b8ee60bccdac5b18114184a058f7293abe"
+        },
+        {
+          "bytes": 649,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/nvidia_ml_py-12.575.51.dist-info/RECORD",
+          "sha256": "44bc45eefc9d3d8d47e482f6540b511346647f376eda06609c83a51b0e54b60e"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/nvidia_ml_py-12.575.51.dist-info/WHEEL",
+          "sha256": "d02ba2519fe9f44e1c0fa3722c3e941bcd0b05763289261938a0e6e65a77db19"
+        }
+      ],
+      "missing_members": 0,
+      "name": "nvidia-ml-py",
+      "requirements": [],
+      "version": "12.575.51"
+    },
+    "packaging": {
+      "content_manifest": {
+        "bytes": 6270,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/packaging.json",
+        "sha256": "cc5ebe93d75b5561292889bc76f4fe3a66a354167b3676c116cfa0d700dbe51f"
+      },
+      "file_count": 22,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3203,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/METADATA",
+          "sha256": "b3574943ce848d906e97f50291034674771b2edb3a660e3f9b10aa93ad17eb1b"
+        },
+        {
+          "bytes": 2475,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/RECORD",
+          "sha256": "93f6c616d17f4d6df96b37b158444b743a38b6c87a63b034a9908f11a993e927"
+        },
+        {
+          "bytes": 81,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/WHEEL",
+          "sha256": "1196c6921ec87b83e865f450f08d19b8ff5592537f4ef719e83484e546abe33e"
+        }
+      ],
+      "missing_members": 0,
+      "name": "packaging",
+      "requirements": [],
+      "version": "23.2"
+    },
+    "pandas": {
+      "content_manifest": {
+        "bytes": 448159,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pandas.json",
+        "sha256": "ecd2b4c20b93b3cc7c6f1b25d58a7d4150aae7904b9f1aa698455958026c2866"
+      },
+      "file_count": 1512,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 19383,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pandas-2.2.2.dist-info/METADATA",
+          "sha256": "bb325559eb7e7cb0ac333a2ddeb79b998e7870626973b87d033ebdf4acd08ee7"
+        },
+        {
+          "bytes": 243431,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pandas-2.2.2.dist-info/RECORD",
+          "sha256": "04ef81a58e0ad4061157e2a615b756a912e06fdde4a211cbb5ad144df5e1ac27"
+        },
+        {
+          "bytes": 88,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pandas-2.2.2.dist-info/WHEEL",
+          "sha256": "634159ee5c5f58a5b2d30fe69e35e1149cf5f2be37f307e1642a9742d342a6f5"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pandas",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy>=1.22.4; python_version < \"3.11\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy>=1.23.2; python_version == \"3.11\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy>=1.26.0; python_version >= \"3.12\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "python-dateutil>=2.8.2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pytz>=2020.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "tzdata>=2022.7"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "hypothesis>=6.46.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest>=7.3.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist>=2.2.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyarrow>=10.0.1; extra == \"pyarrow\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "bottleneck>=1.3.6; extra == \"performance\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numba>=0.56.4; extra == \"performance\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numexpr>=2.8.4; extra == \"performance\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scipy>=1.10.0; extra == \"computation\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "xarray>=2022.12.0; extra == \"computation\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "fsspec>=2022.11.0; extra == \"fss\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "s3fs>=2022.11.0; extra == \"aws\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "gcsfs>=2022.11.0; extra == \"gcp\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas-gbq>=0.19.0; extra == \"gcp\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "odfpy>=1.4.1; extra == \"excel\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "openpyxl>=3.1.0; extra == \"excel\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "python-calamine>=0.1.7; extra == \"excel\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyxlsb>=1.0.10; extra == \"excel\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "xlrd>=2.0.1; extra == \"excel\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "xlsxwriter>=3.0.5; extra == \"excel\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyarrow>=10.0.1; extra == \"parquet\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyarrow>=10.0.1; extra == \"feather\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tables>=3.8.0; extra == \"hdf5\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyreadstat>=1.2.0; extra == \"spss\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "SQLAlchemy>=2.0.0; extra == \"postgresql\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "psycopg2>=2.9.6; extra == \"postgresql\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "adbc-driver-postgresql>=0.8.0; extra == \"postgresql\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "SQLAlchemy>=2.0.0; extra == \"mysql\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pymysql>=1.0.2; extra == \"mysql\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "SQLAlchemy>=2.0.0; extra == \"sql-other\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "adbc-driver-postgresql>=0.8.0; extra == \"sql-other\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "adbc-driver-sqlite>=0.8.0; extra == \"sql-other\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "beautifulsoup4>=4.11.2; extra == \"html\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "html5lib>=1.1; extra == \"html\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "lxml>=4.9.2; extra == \"html\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "lxml>=4.9.2; extra == \"xml\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.6.3; extra == \"plot\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jinja2>=3.1.2; extra == \"output-formatting\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tabulate>=0.9.0; extra == \"output-formatting\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "PyQt5>=5.15.9; extra == \"clipboard\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "qtpy>=2.3.0; extra == \"clipboard\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zstandard>=0.19.0; extra == \"compression\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "dataframe-api-compat>=0.1.7; extra == \"consortium-standard\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "adbc-driver-postgresql>=0.8.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "adbc-driver-sqlite>=0.8.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "beautifulsoup4>=4.11.2; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "bottleneck>=1.3.6; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "dataframe-api-compat>=0.1.7; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "fastparquet>=2022.12.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "fsspec>=2022.11.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "gcsfs>=2022.11.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "html5lib>=1.1; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "hypothesis>=6.46.1; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jinja2>=3.1.2; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "lxml>=4.9.2; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.6.3; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numba>=0.56.4; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numexpr>=2.8.4; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "odfpy>=1.4.1; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "openpyxl>=3.1.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas-gbq>=0.19.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "psycopg2>=2.9.6; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyarrow>=10.0.1; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pymysql>=1.0.2; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "PyQt5>=5.15.9; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyreadstat>=1.2.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest>=7.3.2; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist>=2.2.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "python-calamine>=0.1.7; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyxlsb>=1.0.10; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "qtpy>=2.3.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scipy>=1.10.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "s3fs>=2022.11.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "SQLAlchemy>=2.0.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tables>=3.8.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tabulate>=0.9.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "xarray>=2022.12.0; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "xlrd>=2.0.1; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "xlsxwriter>=3.0.5; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zstandard>=0.19.0; extra == \"all\""
+        }
+      ],
+      "version": "2.2.2"
+    },
+    "parso": {
+      "content_manifest": {
+        "bytes": 10817,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/parso.json",
+        "sha256": "e215587afb45153832ec6ef7db6293970de077abe4e713a79abb361628607084"
+      },
+      "file_count": 37,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 7598,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/parso-0.8.3.dist-info/METADATA",
+          "sha256": "ecb67fa4200ddbca48224ede0d18d97cdb58ac89cbaf3ad6a8729378cc3c2cc7"
+        },
+        {
+          "bytes": 3975,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/parso-0.8.3.dist-info/RECORD",
+          "sha256": "3dccce2af2b2748ffd39ad922e661f9724bbec9b6a20b86ea42ad7656f01dc8b"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/parso-0.8.3.dist-info/WHEEL",
+          "sha256": "5b367c7308e1f25d23b542cd8d8ab51e9afe582a824603ebfbe4d7e0fe48d56a"
+        }
+      ],
+      "missing_members": 0,
+      "name": "parso",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flake8 (==3.8.3) ; extra == 'qa'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy (==0.782) ; extra == 'qa'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest (<6.0.0) ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "docopt ; extra == 'testing'"
+        }
+      ],
+      "version": "0.8.3"
+    },
+    "patsy": {
+      "content_manifest": {
+        "bytes": 11063,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/patsy.json",
+        "sha256": "ebe6fb3f582c020b8a965c9bff4f577610f1a6e220508a2e2c6da88c51b6de4a"
+      },
+      "file_count": 38,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3480,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/patsy-0.5.6.dist-info/METADATA",
+          "sha256": "b112321cac838c5156d864029f1e8fe9c66221dbe630cc642477b7f496a6e2e9"
+        },
+        {
+          "bytes": 4413,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/patsy-0.5.6.dist-info/RECORD",
+          "sha256": "cd4f4b65b0e723af448086016ac0e5a06a8c6a4ba5244c8718cbd4c5948448b1"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/patsy-0.5.6.dist-info/WHEEL",
+          "sha256": "0d96a30f8a702d6b9eef40807dced86b14f5c0b51c88d06f37f4d372f5e996d1"
+        }
+      ],
+      "missing_members": 0,
+      "name": "patsy",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "six"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy >=1.4"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scipy ; extra == 'test'"
+        }
+      ],
+      "version": "0.5.6"
+    },
+    "pickleshare": {
+      "content_manifest": {
+        "bytes": 2909,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pickleshare.json",
+        "sha256": "2bcfbec6cf0b286d1a94bd2c1278e20fd69e88adeede0d3dffa6277ec4d4b7be"
+      },
+      "file_count": 9,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1520,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pickleshare-0.7.5.dist-info/METADATA",
+          "sha256": "19a4aec39660259a6ccf23c90f7c73d63b479a284d856e20b92cd49bf78b6615"
+        },
+        {
+          "bytes": 809,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pickleshare-0.7.5.dist-info/RECORD",
+          "sha256": "6f3c78e42335ac82e405ff1ddf8a2c602be280501e53d4339f6aa5f990cdf6c2"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pickleshare-0.7.5.dist-info/WHEEL",
+          "sha256": "00329ec9a1b2285e43c01344d2c444e69bd6f9b4a414c25f06e873677adc78fe"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pickleshare",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pathlib2 ; python_version in \"2.6 2.7 3.2 3.3\""
+        }
+      ],
+      "version": "0.7.5"
+    },
+    "pillow": {
+      "content_manifest": {
+        "bytes": 34985,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pillow.json",
+        "sha256": "05b26893588e327cdc5877000f3adf050eb9e444b903f7cab63c2bb192722c96"
+      },
+      "file_count": 119,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 9199,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/METADATA",
+          "sha256": "cfba9585acaec185ac5c33a48332ea1f4d1adc75d2d6540667c19e9c03af063a"
+        },
+        {
+          "bytes": 14013,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/RECORD",
+          "sha256": "697947a0fba8540517425a57cfd0ce2e4d7b0e9557de0e3fd733fa577824d412"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pillow",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "furo ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx >=2.4 ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-copybutton ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-inline-tabs ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-removed-in ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxext-opengraph ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'fpx'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'mic'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "check-manifest ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "defusedxml ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "markdown2 ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyroma ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions ; (python_version < \"3.10\") and extra == 'typing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "defusedxml ; extra == 'xmp'"
+        }
+      ],
+      "version": "10.3.0"
+    },
+    "platformdirs": {
+      "content_manifest": {
+        "bytes": 5905,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/platformdirs.json",
+        "sha256": "0ce2b0c37aa4d1e18dcc31b6c58c86a71569edb09754fc92ad58a1cc4b248215"
+      },
+      "file_count": 16,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 11482,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/platformdirs-3.10.0.dist-info/METADATA",
+          "sha256": "ab5f25a53347e316db071ba8d939c0ac6007b26a168b35e3cbff28e65e1fa81e"
+        },
+        {
+          "bytes": 1750,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/platformdirs-3.10.0.dist-info/RECORD",
+          "sha256": "8b693799d1c73053bcf53900f5885ed5acea2e3935295d0d0d22411a53e452e3"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/platformdirs-3.10.0.dist-info/WHEEL",
+          "sha256": "f5006e1e183a14d5bb969a5ba05daf2956c2193573b05ca48114238e56a3ae10"
+        }
+      ],
+      "missing_members": 0,
+      "name": "platformdirs",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions>=4.7.1; python_version < '3.8'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "furo>=2023.7.26; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "proselint>=0.13; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-autodoc-typehints>=1.24; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=7.1.1; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "appdirs==1.4.4; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "covdefaults>=2.3; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov>=4.1; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-mock>=3.11.1; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest>=7.4; extra == 'test'"
+        }
+      ],
+      "version": "3.10.0"
+    },
+    "prompt-toolkit": {
+      "content_manifest": {
+        "bytes": 44421,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/prompt-toolkit.json",
+        "sha256": "7d26c0027d9452dc5f54a72a4c1e84e2ce60b42dba65653c2aac24040e3ef0f1"
+      },
+      "file_count": 154,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6544,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit-3.0.43.dist-info/METADATA",
+          "sha256": "9ec96a2cd19e4e6dfac7e0593fa63c000ee616d596c3716a5a8dff3a50d5f56e"
+        },
+        {
+          "bytes": 23862,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit-3.0.43.dist-info/RECORD",
+          "sha256": "7e00c54bae74277002f9b0eaa38408d5a54ee4ea06f1eac234123f61588cca1f"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit-3.0.43.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "prompt-toolkit",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "wcwidth"
+        }
+      ],
+      "version": "3.0.43"
+    },
+    "psutil": {
+      "content_manifest": {
+        "bytes": 11598,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/psutil.json",
+        "sha256": "8f456d87593b5e33fb7071daa45830640dc6a9e2989554ed97c57af7f418c2d6"
+      },
+      "file_count": 38,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 21769,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil-5.9.0.dist-info/METADATA",
+          "sha256": "71ac62719c507d4f3510c43d80c3a3e8d38476b2954554828910dbdb11640d7d"
+        },
+        {
+          "bytes": 4638,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil-5.9.0.dist-info/RECORD",
+          "sha256": "edf8ce49529db20be056550c08490eb88a84e95666fa0fe63cd05168b10c675d"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil-5.9.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "psutil",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipaddress ; (python_version < \"3.0\") and extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mock ; (python_version < \"3.0\") and extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "unittest2 ; (python_version < \"3.0\") and extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "enum34 ; (python_version <= \"3.4\") and extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pywin32 ; (sys_platform == \"win32\") and extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wmi ; (sys_platform == \"win32\") and extra == 'test'"
+        }
+      ],
+      "version": "5.9.0"
+    },
+    "pure-eval": {
+      "content_manifest": {
+        "bytes": 4228,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pure-eval.json",
+        "sha256": "db913819f649a801b9475d0abdce3fe0be7e5187ce50255d7424f48ca53a5073"
+      },
+      "file_count": 14,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6245,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pure_eval-0.2.2.dist-info/METADATA",
+          "sha256": "ef29963bc44663329eb56ebb147938e63fb1ddc8a0e14de958093657ec39537f"
+        },
+        {
+          "bytes": 1401,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pure_eval-0.2.2.dist-info/RECORD",
+          "sha256": "b38414a31a92020078bf5ae5df7231d05280a468a2a0d8406935d3f1197a451c"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pure_eval-0.2.2.dist-info/WHEEL",
+          "sha256": "1b5e87e00dc87a84269cead8578b9e6462928e18a95f1f3373c9eef451a5bcc0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pure-eval",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'tests'"
+        }
+      ],
+      "version": "0.2.2"
+    },
+    "pyarrow": {
+      "content_manifest": {
+        "bytes": 215654,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyarrow.json",
+        "sha256": "978f1e0cbf2d09c981e6022a9fc3aa5df172fb3081b80609c11b06e2364925a7"
+      },
+      "file_count": 749,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 2980,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyarrow-23.0.0.dist-info/METADATA",
+          "sha256": "ba5f60d5fd106b548b2800ea3a66402d616375d3b21b13a280a1ee9313c82f22"
+        },
+        {
+          "bytes": 77601,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyarrow-23.0.0.dist-info/RECORD",
+          "sha256": "b065d2e004c7e5f2cdcd6fca6620ded250d4ac7b50bb74638455df41ccde52e8"
+        },
+        {
+          "bytes": 113,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyarrow-23.0.0.dist-info/WHEEL",
+          "sha256": "557bcd2a7ea715e08ce3918452b34b24e3bf27f7be70d269846b7dad6171c84d"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pyarrow",
+      "requirements": [],
+      "version": "23.0.0"
+    },
+    "pyparsing": {
+      "content_manifest": {
+        "bytes": 5699,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyparsing.json",
+        "sha256": "2093d3c43ef2e1c36bec517f6a6d09e76a975b8c7d988b882929e5c3f3907385"
+      },
+      "file_count": 19,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 4207,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/METADATA",
+          "sha256": "87f7e99bdaf0be066c13cbf960d178200a3e22968558239f5049b930c0722223"
+        },
+        {
+          "bytes": 2074,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/RECORD",
+          "sha256": "56f7685d5b4152cc68779328178e5b9ed0e7583553a7ff38df810a5c46ae9272"
+        },
+        {
+          "bytes": 81,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/WHEEL",
+          "sha256": "1196c6921ec87b83e865f450f08d19b8ff5592537f4ef719e83484e546abe33e"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pyparsing",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "railroad-diagrams ; extra == \"diagrams\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jinja2 ; extra == \"diagrams\""
+        }
+      ],
+      "version": "3.0.9"
+    },
+    "python-dateutil": {
+      "content_manifest": {
+        "bytes": 8179,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/python-dateutil.json",
+        "sha256": "680cb6d7d41d14e92b6572ec49ca5d2908b240cf1de0f8d2bbb1529a8d9c0954"
+      },
+      "file_count": 28,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8354,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/METADATA",
+          "sha256": "a9d436da322be808332f98d88325998e87cb693a678a9969feb4cfad729a6e93"
+        },
+        {
+          "bytes": 3336,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/RECORD",
+          "sha256": "b78da6c4b91896a7bda1693a0b824aa731e8a27490f3932388c2bb5df5307486"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/WHEEL",
+          "sha256": "0d96a30f8a702d6b9eef40807dced86b14f5c0b51c88d06f37f4d372f5e996d1"
+        }
+      ],
+      "missing_members": 0,
+      "name": "python-dateutil",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "six >=1.5"
+        }
+      ],
+      "version": "2.9.0.post0"
+    },
+    "pytz": {
+      "content_manifest": {
+        "bytes": 171765,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pytz.json",
+        "sha256": "dcfae221fa4682a25adc6b1205565d2bd17b6923c27a51a015b1c8b55adf78be"
+      },
+      "file_count": 618,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 22323,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/METADATA",
+          "sha256": "5d4c204eb835eda6dc096e45ebc1ccbcda45cd88c43ed7caccee7a88b890a19d"
+        },
+        {
+          "bytes": 53100,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/RECORD",
+          "sha256": "9a002e37dce2b8c9df799216f45ec9624e2cbb6f1b10566a818744c2a1941896"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pytz",
+      "requirements": [],
+      "version": "2024.1"
+    },
+    "pyzmq": {
+      "content_manifest": {
+        "bytes": 40349,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyzmq.json",
+        "sha256": "330279f76bab7bf4760fc4b8b4e6eb1c30b6d93234dd39a82deba606aa4b977d"
+      },
+      "file_count": 145,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 4948,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyzmq-25.1.2.dist-info/METADATA",
+          "sha256": "6bb52fc39ef9e873a9a8fdc373941cfdda1ddd22b08cdaa409fe4e1d000dbe21"
+        },
+        {
+          "bytes": 17377,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyzmq-25.1.2.dist-info/RECORD",
+          "sha256": "df26ef365384700f715fa8bb0400734422f6751ed71815ee7e5c8aceab334177"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyzmq-25.1.2.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pyzmq",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cffi ; implementation_name == \"pypy\""
+        }
+      ],
+      "version": "25.1.2"
+    },
+    "scikit-learn": {
+      "content_manifest": {
+        "bytes": 289092,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/scikit-learn.json",
+        "sha256": "16b01db7bcd2e4446386f9cb9b1ff5f4dd311a96115eb9aa8ba2deadf14ce8e2"
+      },
+      "file_count": 963,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 11684,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scikit_learn-1.8.0.dist-info/METADATA",
+          "sha256": "95a8f42f4170fc940a71fedfed4fd9353723eb44126130a971a072fe5305d967"
+        },
+        {
+          "bytes": 139951,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scikit_learn-1.8.0.dist-info/RECORD",
+          "sha256": "71f20134cacbb010dca07cd1e7594910a19530c2f2128bfe2e768e27143173a5"
+        },
+        {
+          "bytes": 138,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scikit_learn-1.8.0.dist-info/WHEEL",
+          "sha256": "ac90a994678616346852fc495a154e351832198199a0e921c9e8f4b372b28e82"
+        }
+      ],
+      "missing_members": 0,
+      "name": "scikit-learn",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy>=1.24.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "scipy>=1.10.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "joblib>=1.3.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "threadpoolctl>=3.2.0"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy>=1.24.1; extra == \"build\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scipy>=1.10.0; extra == \"build\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cython>=3.1.2; extra == \"build\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "meson-python>=0.17.1; extra == \"build\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy>=1.24.1; extra == \"install\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scipy>=1.10.0; extra == \"install\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "joblib>=1.3.0; extra == \"install\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "threadpoolctl>=3.2.0; extra == \"install\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.6.1; extra == \"benchmark\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas>=1.5.0; extra == \"benchmark\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "memory_profiler>=0.57.0; extra == \"benchmark\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.6.1; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scikit-image>=0.22.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas>=1.5.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "seaborn>=0.13.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "memory_profiler>=0.57.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=7.3.7; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-copybutton>=0.5.2; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-gallery>=0.17.1; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpydoc>=1.2.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "Pillow>=10.1.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pooch>=1.8.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-prompt>=1.4.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxext-opengraph>=0.9.1; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "plotly>=5.18.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "polars>=0.20.30; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-design>=0.6.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-sass>=0.3.4; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata-sphinx-theme>=0.15.3; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-remove-toctrees>=1.0.0.post1; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "towncrier>=24.8.0; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.6.1; extra == \"examples\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scikit-image>=0.22.0; extra == \"examples\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas>=1.5.0; extra == \"examples\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "seaborn>=0.13.0; extra == \"examples\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pooch>=1.8.0; extra == \"examples\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "plotly>=5.18.0; extra == \"examples\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.6.1; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas>=1.5.0; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest>=7.1.2; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov>=2.9.0; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ruff>=0.11.7; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy>=1.15; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyamg>=5.0.0; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "polars>=0.20.30; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyarrow>=12.0.0; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpydoc>=1.2.0; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pooch>=1.8.0; extra == \"tests\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "conda-lock==3.0.1; extra == \"maintenance\""
+        }
+      ],
+      "version": "1.8.0"
+    },
+    "scipy": {
+      "content_manifest": {
+        "bytes": 387249,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/scipy.json",
+        "sha256": "ebecc55e26416bf77f6fcb693c946b006318413432dfbc6d0f76de4b94bebd5a"
+      },
+      "file_count": 1329,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8075,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scipy-1.13.1.dist-info/METADATA",
+          "sha256": "daa3b9481a7879f190a33428547728d6b5d3151996b2bf2b8c64c5d9dd5820ee"
+        },
+        {
+          "bytes": 180263,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scipy-1.13.1.dist-info/RECORD",
+          "sha256": "8b4857584042bbabf8515a26b9ddb5eba48d5dea9b3420a0e60572676228677d"
+        },
+        {
+          "bytes": 88,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scipy-1.13.1.dist-info/WHEEL",
+          "sha256": "634159ee5c5f58a5b2d30fe69e35e1149cf5f2be37f307e1642a9742d342a6f5"
+        }
+      ],
+      "missing_members": 0,
+      "name": "scipy",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy<2.3,>=1.22.4"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "asv; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mpmath; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "gmpy2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "threadpoolctl; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scikit-umfpack; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pooch; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "hypothesis>=6.30; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "array-api-strict; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=5.0.0; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata-sphinx-theme>=0.15.2; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-design>=0.4.0; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib>=3.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpydoc; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jupytext; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "myst-nb; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pooch; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jupyterlite-sphinx>=0.12.0; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jupyterlite-pyodide-kernel; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing_extensions; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "types-psutil; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pycodestyle; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ruff; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cython-lint>=0.12.2; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "rich-click; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "doit>=0.36.0; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydevtool; extra == \"dev\""
+        }
+      ],
+      "version": "1.13.1"
+    },
+    "seaborn": {
+      "content_manifest": {
+        "bytes": 19444,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/seaborn.json",
+        "sha256": "01e49ed63ad32715cbd25c6e6ed0aa9f6e44af6c5fd10c4e047e902d7cd2c015"
+      },
+      "file_count": 61,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 5381,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/seaborn-0.13.2.dist-info/METADATA",
+          "sha256": "98cfe2b7a5004466cdd5c7c8ccf016ebdcfa0337fc177ea7aad27f527c53fc96"
+        },
+        {
+          "bytes": 7705,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/seaborn-0.13.2.dist-info/RECORD",
+          "sha256": "da386859462d52faf42a7310e278655efba121fc21f27f7b671b27172b0500f2"
+        },
+        {
+          "bytes": 81,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/seaborn-0.13.2.dist-info/WHEEL",
+          "sha256": "1196c6921ec87b83e865f450f08d19b8ff5592537f4ef719e83484e546abe33e"
+        }
+      ],
+      "missing_members": 0,
+      "name": "seaborn",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy>=1.20,!=1.24.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pandas>=1.2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "matplotlib>=3.4,!=3.6.1"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flake8 ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas-stubs ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pre-commit ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flit ; extra == \"dev\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpydoc ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "nbconvert ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx<6.0.0 ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-copybutton ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-issues ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-design ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyyaml ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata_sphinx_theme==0.10.0rc2 ; extra == \"docs\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "scipy>=1.7 ; extra == \"stats\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "statsmodels>=0.12 ; extra == \"stats\""
+        }
+      ],
+      "version": "0.13.2"
+    },
+    "six": {
+      "content_manifest": {
+        "bytes": 2702,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/six.json",
+        "sha256": "7632cab74fc13dedfacfc1dea6595a1c224f98c6f70e529b09651350bf98d12a"
+      },
+      "file_count": 9,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1817,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/METADATA",
+          "sha256": "d6f8435094b657a1639e3325726aacbaa9614e1681bb681302494e88204afd05"
+        },
+        {
+          "bytes": 738,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/RECORD",
+          "sha256": "5cd6b9754c73796267ddbfff91d15815e0024f8b795b56a8bc324321979679e5"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/WHEEL",
+          "sha256": "cfd8f4c406bf26650a3299b3ef62b464600b48cfe7fb04159866e5797c765478"
+        }
+      ],
+      "missing_members": 0,
+      "name": "six",
+      "requirements": [],
+      "version": "1.16.0"
+    },
+    "stack-data": {
+      "content_manifest": {
+        "bytes": 4706,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/stack-data.json",
+        "sha256": "2dc342c511c2e65e8ad08dfe3a1950df696595e40a9d67afbb94a6cae2b2d644"
+      },
+      "file_count": 13,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 18180,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/stack_data-0.2.0.dist-info/METADATA",
+          "sha256": "85d265f01512b17e913e6fa74be0fd8ce7a4d8fc1f06604751fe0ff6326ea8b7"
+        },
+        {
+          "bytes": 1332,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/stack_data-0.2.0.dist-info/RECORD",
+          "sha256": "b73c75c038dd784cc269f045765adc0bd5de15a9bda09d6a23fac8a5de58356b"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/stack_data-0.2.0.dist-info/WHEEL",
+          "sha256": "1b5e87e00dc87a84269cead8578b9e6462928e18a95f1f3373c9eef451a5bcc0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "stack-data",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "executing"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "asttokens"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pure-eval"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typeguard ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pygments ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "littleutils ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cython ; extra == 'tests'"
+        }
+      ],
+      "version": "0.2.0"
+    },
+    "statsmodels": {
+      "content_manifest": {
+        "bytes": 424654,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/statsmodels.json",
+        "sha256": "43b84e74810653a367c3ebca30c8c222911e51bee36f53e717caa88614bce616"
+      },
+      "file_count": 1403,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 9206,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/statsmodels-0.14.2.dist-info/METADATA",
+          "sha256": "4bc063cb19c7b381f3098051f731f217002908ef4e20ae64edd90ad6a65c5de6"
+        },
+        {
+          "bytes": 219344,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/statsmodels-0.14.2.dist-info/RECORD",
+          "sha256": "c8d86eb3e4e0879101661ba68dc7637734d6f5ed09431b04ae10cc54a9c8f830"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/statsmodels-0.14.2.dist-info/WHEEL",
+          "sha256": "8b938bcff9d8e8b609761ba9e42351d238907a99bc8da3b6e2c35e1fac72d9cb"
+        }
+      ],
+      "missing_members": 0,
+      "name": "statsmodels",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy >=1.22.3"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "scipy !=1.9.2,>=1.8"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pandas !=2.1.0,>=1.4"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "patsy >=0.5.6"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "packaging >=21.3"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cython >=0.29.33 ; extra == 'build'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cython >=0.29.33 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cython <4,>=3.0.10 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "setuptools-scm[toml] ~=8.0 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib >=3 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "colorama ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "joblib ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest <8,>=7.3.0 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-randomly ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "flake8 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "isort ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pywinpty ; (os_name == \"nt\") and extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "nbconvert ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jupyter-client ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipykernel ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "matplotlib ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "nbformat ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpydoc ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pandas-datareader ; extra == 'docs'"
+        }
+      ],
+      "version": "0.14.2"
+    },
+    "threadpoolctl": {
+      "content_manifest": {
+        "bytes": 1933,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/threadpoolctl.json",
+        "sha256": "eea7a69caf2e62bdec1de4b974f5fce2d2587e09404a58f364dd0359b39a8f77"
+      },
+      "file_count": 6,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 13843,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/threadpoolctl-3.6.0.dist-info/METADATA",
+          "sha256": "a45df8d07ea1883d772183a501d7d526076aa70dfcfddb276a2cbdc04def5341"
+        },
+        {
+          "bytes": 546,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/threadpoolctl-3.6.0.dist-info/RECORD",
+          "sha256": "a11fd1efc57e45a797ec0a092f745c4a3e54c40a7b1badd55c82f10327d04a29"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/threadpoolctl-3.6.0.dist-info/WHEEL",
+          "sha256": "ff6a3334508b59cf776cae1628708ef9e0d410d0e5a3e76073d714deaa2460ee"
+        }
+      ],
+      "missing_members": 0,
+      "name": "threadpoolctl",
+      "requirements": [],
+      "version": "3.6.0"
+    },
+    "torch": {
+      "content_manifest": {
+        "bytes": 3227365,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/torch.json",
+        "sha256": "fc8f1d88810b76ba974764d495c9e0a4d5ca4614ceb882c678be10ee68d36164"
+      },
+      "file_count": 10804,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 28312,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/torch-2.5.1.dist-info/METADATA",
+          "sha256": "c3b826e579db0f88c860fd942d03cc9624ab83a3bef8937ce258827a11b5619a"
+        },
+        {
+          "bytes": 1282288,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/torch-2.5.1.dist-info/RECORD",
+          "sha256": "be6116a9fb659a5580994e3feb5ddfd508da2188511f6a483d3620900158d7a3"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/torch-2.5.1.dist-info/WHEEL",
+          "sha256": "89711eca48d8fe1f5727e02db1ece0d7997c20f04c5032dc99a528e2ae0318e9"
+        }
+      ],
+      "missing_members": 0,
+      "name": "torch",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "filelock"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "typing-extensions (>=4.8.0)"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "networkx"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "jinja2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "fsspec"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cuda-nvrtc-cu12 (==12.4.127) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cuda-runtime-cu12 (==12.4.127) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cuda-cupti-cu12 (==12.4.127) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cudnn-cu12 (==9.1.0.70) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cublas-cu12 (==12.4.5.8) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cufft-cu12 (==11.2.1.3) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-curand-cu12 (==10.3.5.147) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cusolver-cu12 (==11.6.1.9) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-cusparse-cu12 (==12.3.1.170) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-nccl-cu12 (==2.21.5) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-nvtx-cu12 (==12.4.127) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "nvidia-nvjitlink-cu12 (==12.4.127) ; platform_system == \"Linux\" and platform_machine == \"x86_64\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "triton (==3.1.0) ; platform_system == \"Linux\" and platform_machine == \"x86_64\" and python_version < \"3.13\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sympy (==1.12.1) ; python_version == \"3.8\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "setuptools ; python_version >= \"3.12\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "sympy (==1.13.1) ; python_version >= \"3.9\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "opt-einsum (>=3.3) ; extra == 'opt-einsum'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "optree (>=0.12.0) ; extra == 'optree'"
+        }
+      ],
+      "version": "2.5.1"
+    },
+    "tornado": {
+      "content_manifest": {
+        "bytes": 27346,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/tornado.json",
+        "sha256": "ca64d42c09bf5d62887ce29d74a58c48a6311f07ca7dc1ca851f5b11208fcc02"
+      },
+      "file_count": 98,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 2484,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tornado-6.4.1.dist-info/METADATA",
+          "sha256": "f26cce4b1246cb754b38d01a681a64b0a43532043ec07518bfeb6f7767c28dbe"
+        },
+        {
+          "bytes": 12143,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tornado-6.4.1.dist-info/RECORD",
+          "sha256": "b6a8c69f57db9af49fe2383ae6ca2d192068caf2f180f32d948ab200190090b4"
+        },
+        {
+          "bytes": 103,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tornado-6.4.1.dist-info/WHEEL",
+          "sha256": "85d5996d61d1f9adc037b7ed68080baaddd4f88a71cc1eb3874a7ac6fe802083"
+        }
+      ],
+      "missing_members": 0,
+      "name": "tornado",
+      "requirements": [],
+      "version": "6.4.1"
+    },
+    "tqdm": {
+      "content_manifest": {
+        "bytes": 13013,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/tqdm.json",
+        "sha256": "071587f4dde201ff46792f063f89171a722f204557f23493c3049eb391131080"
+      },
+      "file_count": 44,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 57553,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm-4.66.4.dist-info/METADATA",
+          "sha256": "2ca8c7ec90d831bf4a647fc352c4735a780c3c930bd8210d782709cc1ae975ff"
+        },
+        {
+          "bytes": 4831,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm-4.66.4.dist-info/RECORD",
+          "sha256": "c28114d7fcddc6d8639ce0365460f9d2ee3177df78461b8aabe2e0de8a75c49e"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm-4.66.4.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        }
+      ],
+      "missing_members": 0,
+      "name": "tqdm",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "colorama ; platform_system == \"Windows\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest >=6 ; extra == 'dev'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'dev'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout ; extra == 'dev'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist ; extra == 'dev'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipywidgets >=6 ; extra == 'notebook'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "slack-sdk ; extra == 'slack'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "requests ; extra == 'telegram'"
+        }
+      ],
+      "version": "4.66.4"
+    },
+    "traitlets": {
+      "content_manifest": {
+        "bytes": 10189,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/traitlets.json",
+        "sha256": "ae3ec5a050b00d567078a1f37d871eaab722867f365f315be55a7a1981ae2e62"
+      },
+      "file_count": 32,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 10691,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/traitlets-5.14.3.dist-info/METADATA",
+          "sha256": "d54e5158db56edbb86d11e513866ad6dff6c4efec16596af43b77771d994cebb"
+        },
+        {
+          "bytes": 4068,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/traitlets-5.14.3.dist-info/RECORD",
+          "sha256": "a4f3597c4d835503093d2a3914e3eb26720c0c5b778095093e83ffb76f9f1f0d"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/traitlets-5.14.3.dist-info/WHEEL",
+          "sha256": "4c93e729db6b4ae7bbc59fc0546929f585dcbc3ae86ec8c176cd5dbb7371e9d7"
+        }
+      ],
+      "missing_members": 0,
+      "name": "traitlets",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "myst-parser; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydata-sphinx-theme; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "argcomplete>=3.0.3; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy>=1.7.0; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pre-commit; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-mock; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-mypy-testing; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest<8.2,>=7.0; extra == 'test'"
+        }
+      ],
+      "version": "5.14.3"
+    },
+    "typing_extensions": {
+      "content_manifest": {
+        "bytes": 1968,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/typing-extensions.json",
+        "sha256": "3b7e4ea3368046a45938613746eaf0a3f0a762d59d461ef593c34b8cec960b70"
+      },
+      "file_count": 6,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3259,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/typing_extensions-4.15.0.dist-info/METADATA",
+          "sha256": "c138378fe8f18934ac99de060535c53ec6c13aeed65e94c32641da7ee3192a72"
+        },
+        {
+          "bytes": 580,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/typing_extensions-4.15.0.dist-info/RECORD",
+          "sha256": "02f70a4ed6f81c3298a0024ca9dcc6807360938d388360ce3b768243f719cdce"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/typing_extensions-4.15.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        }
+      ],
+      "missing_members": 0,
+      "name": "typing_extensions",
+      "requirements": [],
+      "version": "4.15.0"
+    },
+    "wcwidth": {
+      "content_manifest": {
+        "bytes": 15284,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/wcwidth.json",
+        "sha256": "8b39672a802b6747e933bcd2910431cb12d35dfb9d82aa39cafe8fd2d04138b3"
+      },
+      "file_count": 53,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 43284,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/METADATA",
+          "sha256": "9a1f2d41c9dd637fc963f641c73978c7cb9a6f1ef85515f65b93b07d820187b3"
+        },
+        {
+          "bytes": 7807,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/RECORD",
+          "sha256": "7d537d002ea5df0ebe75aee4f571d6958f7ccf3bc026878c8f5bf788c37ad131"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/WHEEL",
+          "sha256": "99f7cfcbcc019d9427d959c9514e6313df4ab316927e2c8c1d5f58b7468b571b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "wcwidth",
+      "requirements": [],
+      "version": "0.8.2"
+    }
+  },
+  "entry_points": [
+    {
+      "bytes": 13806,
+      "exists": true,
+      "line": 192,
+      "location": "checkout",
+      "locator": "def verify_for(index: int) -> dict:",
+      "path": "data/datasets/ds1000.py",
+      "role": "native command/input construction",
+      "sha256": "7a58535f566e58d23819cad86c0ad9b0620e16f11b33033d6645dfcb977fb9a5",
+      "symbol": "verify_for"
+    },
+    {
+      "bytes": 3434,
+      "exists": true,
+      "line": 20,
+      "location": "checkout",
+      "locator": "def main() -> int:",
+      "path": "data/datasets/ds1000/verify/check.py",
+      "role": "native check/reduction entry",
+      "sha256": "6ec35d0227f1adab6b32a7cb4200b5a2f86cc38e1d2d8eea6853f122c2b12f8e",
+      "symbol": "main"
+    },
+    {
+      "bytes": 5791,
+      "exists": true,
+      "line": 17,
+      "location": "external-local",
+      "locator": "def check_correctness(program: str, timeout: float,",
+      "path": "/mnt/20t/xubuqiang/datasets/ds1000/_src/DS-1000-b39aab71/execution.py",
+      "role": "upstream scorer child/aggregation",
+      "sha256": "fab0beb2a5c3300f4540c2225ffc013881e5770fed388ad20d4620ae040cd311",
+      "symbol": "check_correctness"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 3434,
+      "exists": true,
+      "line": 26,
+      "location": "checkout",
+      "locator": "    task = json.loads((work / \"context.json\").read_text(encoding=\"utf-8\"))",
+      "path": "data/datasets/ds1000/verify/check.py",
+      "role": "expected-data use in native check",
+      "sha256": "6ec35d0227f1adab6b32a7cb4200b5a2f86cc38e1d2d8eea6853f122c2b12f8e"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 3265,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/ds1000.json",
+    "sha256": "5c308c0a1bf72930f3ea7f7dda4daee564d56fbf6a297788f0030e8d0bf497ad"
+  },
+  "import_receipts": [
+    {
+      "bytes": 1015297,
+      "exists": true,
+      "location": "checkout",
+      "path": "tests/fixtures/hg_wclo_actor/imports/ds1000.json",
+      "sha256": "a2d6ac3f012d5a7e4083a273bbef484845815a9e0f01e091e208c1126fc351f2"
+    }
+  ],
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "Task/candidate execution can add imports beyond inspected eligible-context packages; no candidate is executed.",
+    "Actor context.json is not restored by VERIFY.inputs; gold test custody remains unresolved.",
+    "Installed Python/scientific builds differ from upstream environment.yml; seaborn cache misses may fetch.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 73,
+      "source": "REVISION = \"4416080ac5cb80bdf7576aefb8f9a0b4d5426a44\"",
+      "symbol": "REVISION"
+    },
+    {
+      "line": 74,
+      "source": "DATA_SHA256 = \"26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363\"",
+      "symbol": "DATA_SHA256"
+    },
+    {
+      "line": 75,
+      "source": "SOURCE_COMMIT = \"b39aab71\"",
+      "symbol": "SOURCE_COMMIT"
+    },
+    {
+      "line": 76,
+      "source": "SOURCE_TARBALL_SHA256 = \"b14f1a2b0fb20ef55f0693019122f22c82b03ef6647faabf0e6e8ae1272a1dc0\"",
+      "symbol": "SOURCE_TARBALL_SHA256"
+    },
+    {
+      "line": 77,
+      "source": "SEABORN_COMMIT = \"71e2436a092d714350de0fc409ca8a8714e7e78f\"",
+      "symbol": "SEABORN_COMMIT"
+    },
+    {
+      "line": 78,
+      "source": "SEABORN_TARBALL_SHA256 = \"ac7ed3e81e634c8febecac42975456280b089bd5bcae3d54bc6be11d8cec1532\"",
+      "symbol": "SEABORN_TARBALL_SHA256"
+    }
+  ],
+  "qa_check_path": null,
+  "route": "F: native command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {
+    "setuptools": {
+      "content_manifest": {
+        "bytes": 134598,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/setuptools.json",
+        "sha256": "59bcbff6ac844a04b0942bcc11e1b90ccbdba018f6b19232491a61a752c19881"
+      },
+      "file_count": 440,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6573,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/METADATA",
+          "sha256": "ac7e92d32efa17a0d854cbccbe9c3244f7caa5e5633b32f1a1fde1da26ae915f"
+        },
+        {
+          "bytes": 64617,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/RECORD",
+          "sha256": "3166de15748cdd4190cb61f79a261ab1ac72043521dcab90325287306eb7a7d3"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/WHEEL",
+          "sha256": "6027f0606398322e49870d9f538c8d83012bc9b6f6217e4f13004a57865b741a"
+        },
+        {
+          "bytes": 15006,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/METADATA",
+          "sha256": "3800d9b91dceea2065a6ed6279383362e97ac38b8e56b9343f404ee531860099"
+        },
+        {
+          "bytes": 1072,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/RECORD",
+          "sha256": "2bee6072cbcec6390c57107c8dfcb0422918a98ecdb5a2cc362187f13d42e96f"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/WHEEL",
+          "sha256": "db07a93359e4e034b8785a58ad6d534ea3dca0635f1e184efe2e66e1c3a299ba"
+        },
+        {
+          "bytes": 2020,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/METADATA",
+          "sha256": "8215c54ead77d9dc5a108a25c6bdc72b5999aa6f62c9499a440359412afa5a51"
+        },
+        {
+          "bytes": 1056,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/RECORD",
+          "sha256": "0f69db719b54220d6a4adff8bfb04ac98affea3dc8b54054a1a787a17567f4d1"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        },
+        {
+          "bytes": 4670,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA",
+          "sha256": "a3e38b9ee4326289d4864704f30e299ee769e2309ce9f4a75f0de1a50ad0a356"
+        },
+        {
+          "bytes": 1868,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD",
+          "sha256": "52a6b8ee0de15cf7fd99625f43b97cd2e3942ac86f16054ea90de48e66f29355"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 3731,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/METADATA",
+          "sha256": "5c2fd09012c954f139b10624978d5335a654c34014cd06f6f466ca683dbc9c56"
+        },
+        {
+          "bytes": 1157,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/RECORD",
+          "sha256": "63b936c308d0fcbe1390e824567cc007536c32a849adb02278e95f1d4c736c31"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/WHEEL",
+          "sha256": "5b287efe76740c9628947367d7f84c6b894ceee0de743fd1195c1b9938f222d9"
+        },
+        {
+          "bytes": 4270,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/METADATA",
+          "sha256": "0435ebfc52055c5a9974ed20c171b6454383eaf9dbb1508814ba7ad97c59d712"
+        },
+        {
+          "bytes": 777,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/RECORD",
+          "sha256": "4599d876ceb42b7eef03aa39e235c4ebeab6aea2409dbe634496852393d1f837"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 2960,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/METADATA",
+          "sha256": "2e79da8dc3469924abe3ac8b22a3feb5692a79bf9f47bbc86b6535d618641849"
+        },
+        {
+          "bytes": 882,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/RECORD",
+          "sha256": "baafd2d6d94c1bde453e4c805ac05511dc53986e0a63b02f674ef0f788bec146"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 39413,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/METADATA",
+          "sha256": "6ab3515145abe58b067f087c867631cf4cf5d653fed81b9642ee12086c3904b8"
+        },
+        {
+          "bytes": 1095,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/RECORD",
+          "sha256": "9ed1b134c0aa83722f36e99f3918aa9610ce3a0a514d793bbb74a368d441a01d"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 3309,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/METADATA",
+          "sha256": "3362bb7d6a26da2962ba8daaa4785cd0bacac21aba908a1195cc8f59580a265a"
+        },
+        {
+          "bytes": 2113,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/RECORD",
+          "sha256": "f50503333aae9517807d2fb4d81fc27cb60aa644666f50176812626d6224ce5d"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 12831,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/METADATA",
+          "sha256": "bbc5216d5f4c77bfbc57227264d52e66bccde71ccf79e75e1a6046d029d30223"
+        },
+        {
+          "bytes": 1218,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/RECORD",
+          "sha256": "3d0d2f1cc018593c4d8baa2395baf0b1c1c645bbd8c18cd064f49cb4e4c95ea0"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/WHEEL",
+          "sha256": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+        },
+        {
+          "bytes": 10567,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/METADATA",
+          "sha256": "f5ac0a1f8fba908b4646cd655309e91aad969b6787616ac571ca462a3832ffce"
+        },
+        {
+          "bytes": 822,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/RECORD",
+          "sha256": "225430ce95640e8d4fcdb93cdae2fc38d685aec016d0e293d5fb99a695886fed"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 2410,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/METADATA",
+          "sha256": "22910aa97ca89cbcc20a019e27fe31360b7929a4bd66ca0d310f99a44f6ccd35"
+        },
+        {
+          "bytes": 1734,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/RECORD",
+          "sha256": "b0297c3ada17b8727e15ddd6d1e38c8a90a997f779fcf978996f6fec62ecb702"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 3563,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/METADATA",
+          "sha256": "bdd67d4d16cf0bf3b893e7d18cd3d2d774adb82f37ed985bc7770c607226b35b"
+        },
+        {
+          "bytes": 1078,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/RECORD",
+          "sha256": "3bfab660a24704f84228e4bb1ce1f0e3fa9ff80e5c806352a626b2f460ead836"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "setuptools",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest!=8.1.*,>=6; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "virtualenv>=13.0.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel>=0.44.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pip>=19.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging>=24.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.envs>=2.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist>=3; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.path>=3.7.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "build[virtualenv]>=1.0.3; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "filelock>=3.4.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ini2toml[lite]>=0.14; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli-w>=1.0.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-perf; sys_platform != \"cygwin\" and extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.develop>=7.21; (python_version >= \"3.9\" and sys_platform != \"cygwin\") and extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-home>=0.5; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-subprocess; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyproject-hooks!=1.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.test>=5.5; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=3.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.packaging>=9.3; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "rst.linker>=1.9; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "furo; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-lint; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.tidelift>=1.4; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pygments-github-lexers==0.0.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-favicon; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-inline-tabs; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-reredirects; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-towncrier; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-notfound-page<2,>=1; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyproject-hooks!=1.1; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "towncrier<24.7; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging>=24.2; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "more_itertools>=8.8; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.text>=3.7; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib_metadata>=6; python_version < \"3.10\" and extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli>=2.0.1; python_version < \"3.11\" and extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel>=0.43.0; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "platformdirs>=4.2.2; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.functools>=4; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "more_itertools; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-checkdocs>=2.4; extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-ruff>=0.2.1; sys_platform != \"cygwin\" and extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ruff>=0.13.0; sys_platform != \"cygwin\" and extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == \"cover\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-enabler>=2.2; extra == \"enabler\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-mypy; extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy==1.18.*; extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib_metadata>=7.0.2; python_version < \"3.10\" and extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.develop>=7.21; sys_platform != \"cygwin\" and extra == \"type\""
+        }
+      ],
+      "version": "82.0.0"
+    },
+    "zope.interface": {
+      "content_manifest": {
+        "bytes": 18714,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/zope-interface.json",
+        "sha256": "feb65e1a6988c146905310197b3240bdd120195ec55d25b124be34a021141037"
+      },
+      "file_count": 61,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 40634,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/METADATA",
+          "sha256": "40720c7b7e62c987519c1ae1516eb19e443e2e8f6149edd66352d819d61cd740"
+        },
+        {
+          "bytes": 8744,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/RECORD",
+          "sha256": "df3d93344e09fa0d7b06de3a6f7255d033f1a343cdfbe207650faeaf977b924a"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "zope.interface",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "setuptools"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "Sphinx ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "repoze.sphinx.autointerface ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage >=5.0.3 ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.event ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.testing ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage >=5.0.3 ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.event ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.testing ; extra == 'testing'"
+        }
+      ],
+      "version": "5.4.0"
+    }
+  },
+  "survey_row": "| `ds1000` | F: `actor-workdir`, with another scorer child | `data/datasets/ds1000.py:194` command; `data/datasets/ds1000.py:195` check argv; `data/datasets/ds1000.py:168` files environment | `data/datasets/ds1000/verify/check.py:29` composes official tests; `data/datasets/ds1000/verify/check.py:53` launches the execution runner child | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}

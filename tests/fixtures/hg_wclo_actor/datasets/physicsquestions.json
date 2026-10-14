@@ -1,0 +1,231 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 10853,
+      "definitions": [
+        {
+          "line": 73,
+          "locator": "def accepted_answers(target: str) -> list[str]:",
+          "symbol": "accepted_answers"
+        },
+        {
+          "line": 93,
+          "locator": "def exact_str_match(prediction: str, ground_truth: str) -> bool:",
+          "symbol": "exact_str_match"
+        },
+        {
+          "line": 103,
+          "locator": "def score(prediction: str, gold: dict) -> dict:",
+          "symbol": "score"
+        },
+        {
+          "line": 120,
+          "locator": "def _rows() -> list[dict]:",
+          "symbol": "_rows"
+        },
+        {
+          "line": 135,
+          "locator": "def _gold(row: dict) -> dict:",
+          "symbol": "_gold"
+        },
+        {
+          "line": 140,
+          "locator": "def _goal(question: str, gold: dict) -> str:",
+          "symbol": "_goal"
+        },
+        {
+          "line": 177,
+          "locator": "def _rewoo_entry(*, name: str, csv_size: str, note: str) -> dict:",
+          "symbol": "_rewoo_entry"
+        },
+        {
+          "line": 241,
+          "locator": "def __getattr__(name: str):",
+          "symbol": "__getattr__"
+        },
+        {
+          "line": 245,
+          "locator": "def load() -> tuple[list[dict], dict[str, str]]:",
+          "symbol": "load"
+        },
+        {
+          "line": 249,
+          "locator": "def downloads() -> list[dict]:",
+          "symbol": "downloads"
+        },
+        {
+          "line": 253,
+          "locator": "def provision_status() -> dict:",
+          "symbol": "provision_status"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 45,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 47,
+          "locator": "import csv",
+          "statement": "import csv"
+        },
+        {
+          "line": 48,
+          "locator": "import re",
+          "statement": "import re"
+        },
+        {
+          "line": 50,
+          "locator": "from data.scaffolds.qa import base",
+          "statement": "from data.scaffolds.qa import base"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/physicsquestions.py",
+      "sha256": "452d134d58a1900355112edb8dcc9837c39830c953d2d064db3b409d54c001cf"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "physicsquestions",
+  "declared_dependency_package_keys": [],
+  "directly_observed_imported_packages": {},
+  "entry_points": [
+    {
+      "bytes": 10853,
+      "exists": true,
+      "line": 103,
+      "location": "checkout",
+      "locator": "def score(prediction: str, gold: dict) -> dict:",
+      "path": "data/datasets/physicsquestions.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "452d134d58a1900355112edb8dcc9837c39830c953d2d064db3b409d54c001cf",
+      "symbol": "score"
+    },
+    {
+      "bytes": 27530,
+      "exists": true,
+      "line": 322,
+      "location": "checkout",
+      "locator": "    def verifier(self, record: dict) -> dict:",
+      "path": "data/scaffolds/qa/base.py",
+      "role": "QA command/input construction",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e",
+      "symbol": "verifier"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 137,
+      "location": "checkout",
+      "locator": "def main(argv) -> int:",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "shared QA check entry",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220",
+      "symbol": "main"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 166,
+      "location": "checkout",
+      "locator": "        gold = json.loads(gold_path.read_text(encoding=\"utf-8\"))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "read trusted gold.json",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 217,
+      "location": "checkout",
+      "locator": "        adapter = __import__(module_name, fromlist=[\"score\"])",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "import staged adapter",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 238,
+      "location": "checkout",
+      "locator": "        result = (evidence_scorer(structured, gold, **score_options)",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "structured evidence branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 242,
+      "location": "checkout",
+      "locator": "                  else scorer(prediction, gold, **score_options))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "answer branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 2078,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/physicsquestions.json",
+    "sha256": "1ef5ca5f4ea339ae72acce5c221cbf4bd7ec370931be9ffdfaf88aedb6761657"
+  },
+  "import_receipts": [],
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "ReWOO vendor provenance is pinned; direct upstream BIG-bench metric provenance/execution is not independently established here.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 172,
+      "source": "REWOO_COMMIT = \"9cd0283043ff4be0c9d614fda2789d143ca6ffd1\"",
+      "symbol": "REWOO_COMMIT"
+    },
+    {
+      "line": 174,
+      "source": "REWOO_SHA256 = \"7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136\"",
+      "symbol": "REWOO_SHA256"
+    }
+  ],
+  "qa_check_path": "data/scaffolds/qa/verify/check.py:137",
+  "route": "Q: shared QA command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {},
+  "survey_row": "| `physicsquestions` | Q: `actor-workdir` | `data/datasets/physicsquestions.py:191` QASpec binding; `data/datasets/physicsquestions.py:198` scorer binding; `data/datasets/physicsquestions.py:222` scaffold files environment | `data/datasets/physicsquestions.py:103` accepted-spelling scorer; `data/datasets/physicsquestions.py:105` matching rule | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}

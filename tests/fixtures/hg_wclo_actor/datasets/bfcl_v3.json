@@ -1,0 +1,367 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 28188,
+      "definitions": [
+        {
+          "line": 80,
+          "locator": "def NOOP_EXPECTED(record: dict) -> float:",
+          "symbol": "NOOP_EXPECTED"
+        },
+        {
+          "line": 123,
+          "locator": "def _read_jsonl(path: Path) -> list[dict]:",
+          "symbol": "_read_jsonl"
+        },
+        {
+          "line": 134,
+          "locator": "def _rows(subsets: set[str] | None = None) -> dict[str, list[dict]]:",
+          "symbol": "_rows"
+        },
+        {
+          "line": 152,
+          "locator": "def normalize_schema(parameters: dict) -> dict:",
+          "symbol": "normalize_schema"
+        },
+        {
+          "line": 173,
+          "locator": "def bare_name(name: str) -> str:",
+          "symbol": "bare_name"
+        },
+        {
+          "line": 184,
+          "locator": "def gold_names(ground_truth) -> list[str]:",
+          "symbol": "gold_names"
+        },
+        {
+          "line": 199,
+          "locator": "def parse_prediction(text: str) -> list[str]:",
+          "symbol": "parse_prediction"
+        },
+        {
+          "line": 217,
+          "locator": "def score(prediction: str, gold: dict) -> dict:",
+          "symbol": "score"
+        },
+        {
+          "line": 246,
+          "locator": "def _render_functions(functions: list[dict]) -> str:",
+          "symbol": "_render_functions"
+        },
+        {
+          "line": 258,
+          "locator": "def _goal(record: dict) -> str:",
+          "symbol": "_goal"
+        },
+        {
+          "line": 300,
+          "locator": "def _downloads() -> list[dict]:",
+          "symbol": "_downloads"
+        },
+        {
+          "line": 336,
+          "locator": "def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:",
+          "symbol": "_selected_records"
+        },
+        {
+          "line": 447,
+          "locator": "def _records(task_ids: list[str] | set[str] | None = None) -> list[dict]:",
+          "symbol": "_records"
+        },
+        {
+          "line": 468,
+          "locator": "def _record_from_row(subset: str, index: int, row: dict, ground_truth) -> dict:",
+          "symbol": "_record_from_row"
+        },
+        {
+          "line": 509,
+          "locator": "class _BFCLSpec(base.QASpec):",
+          "symbol": "_BFCLSpec"
+        },
+        {
+          "line": 548,
+          "locator": "def _ensure(task_ids: list[str] | set[str] | None = None) -> list[dict]:",
+          "symbol": "_ensure"
+        },
+        {
+          "line": 562,
+          "locator": "def load_selected(task_ids: list[str] | set[str]) -> tuple[list[dict], dict[str, str]]:",
+          "symbol": "load_selected"
+        },
+        {
+          "line": 569,
+          "locator": "def control_task(task_id: str | None) -> dict:",
+          "symbol": "control_task"
+        },
+        {
+          "line": 573,
+          "locator": "def task_for(record: dict) -> dict:",
+          "symbol": "task_for"
+        },
+        {
+          "line": 578,
+          "locator": "def setup_for(record: dict) -> dict:",
+          "symbol": "setup_for"
+        },
+        {
+          "line": 582,
+          "locator": "def verify_for(record: dict) -> dict:",
+          "symbol": "verify_for"
+        },
+        {
+          "line": 588,
+          "locator": "def load() -> tuple[list[dict], dict[str, str]]:",
+          "symbol": "load"
+        },
+        {
+          "line": 598,
+          "locator": "def _is_eval(task_id: str) -> bool:",
+          "symbol": "_is_eval"
+        },
+        {
+          "line": 603,
+          "locator": "def __getattr__(name: str):",
+          "symbol": "__getattr__"
+        },
+        {
+          "line": 620,
+          "locator": "def downloads() -> list[dict]:",
+          "symbol": "downloads"
+        },
+        {
+          "line": 624,
+          "locator": "def provision_status() -> dict:",
+          "symbol": "provision_status"
+        },
+        {
+          "line": 394,
+          "locator": "    def fingerprint(info):",
+          "symbol": "fingerprint"
+        },
+        {
+          "line": 398,
+          "locator": "    def read_span(handle, span: dict, question_id: str) -> dict:",
+          "symbol": "read_span"
+        },
+        {
+          "line": 518,
+          "locator": "    def __init__(self, **kwargs) -> None:",
+          "symbol": "__init__"
+        },
+        {
+          "line": 522,
+          "locator": "    def records(self) -> list[dict]:",
+          "symbol": "records"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 58,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 60,
+          "locator": "import hashlib",
+          "statement": "import hashlib"
+        },
+        {
+          "line": 61,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 62,
+          "locator": "import os",
+          "statement": "import os"
+        },
+        {
+          "line": 63,
+          "locator": "import re",
+          "statement": "import re"
+        },
+        {
+          "line": 64,
+          "locator": "import stat",
+          "statement": "import stat"
+        },
+        {
+          "line": 65,
+          "locator": "import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 66,
+          "locator": "from contextlib import ExitStack",
+          "statement": "from contextlib import ExitStack"
+        },
+        {
+          "line": 67,
+          "locator": "from pathlib import Path",
+          "statement": "from pathlib import Path"
+        },
+        {
+          "line": 69,
+          "locator": "from data.scaffolds.qa import base",
+          "statement": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 599,
+          "locator": "    import hashlib",
+          "statement": "import hashlib"
+        },
+        {
+          "line": 611,
+          "locator": "        import os",
+          "statement": "import os"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/bfcl_v3.py",
+      "sha256": "de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "bfcl_v3",
+  "declared_dependency_package_keys": [],
+  "directly_observed_imported_packages": {},
+  "entry_points": [
+    {
+      "bytes": 28188,
+      "exists": true,
+      "line": 217,
+      "location": "checkout",
+      "locator": "def score(prediction: str, gold: dict) -> dict:",
+      "path": "data/datasets/bfcl_v3.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17",
+      "symbol": "score"
+    },
+    {
+      "bytes": 27530,
+      "exists": true,
+      "line": 322,
+      "location": "checkout",
+      "locator": "    def verifier(self, record: dict) -> dict:",
+      "path": "data/scaffolds/qa/base.py",
+      "role": "QA command/input construction",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e",
+      "symbol": "verifier"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 137,
+      "location": "checkout",
+      "locator": "def main(argv) -> int:",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "shared QA check entry",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220",
+      "symbol": "main"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 166,
+      "location": "checkout",
+      "locator": "        gold = json.loads(gold_path.read_text(encoding=\"utf-8\"))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "read trusted gold.json",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 217,
+      "location": "checkout",
+      "locator": "        adapter = __import__(module_name, fromlist=[\"score\"])",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "import staged adapter",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 238,
+      "location": "checkout",
+      "locator": "        result = (evidence_scorer(structured, gold, **score_options)",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "structured evidence branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 242,
+      "location": "checkout",
+      "locator": "                  else scorer(prediction, gold, **score_options))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "answer branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 3867,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/bfcl_v3.json",
+    "sha256": "df3ec7de414371b7785f05953a18968a10c500b92e4eed39c4d9815dfe5a62d3"
+  },
+  "import_receipts": [],
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "Implemented function-name diagnostic is expressly NOT official BFCL AST scoring; no official BFCL execution claim.",
+    "Selected-index byte binding and per-task private gold are not materialized in this inspection.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 97,
+      "source": "REPO_TAG = \"v1.3\"",
+      "symbol": "REPO_TAG"
+    },
+    {
+      "line": 99,
+      "source": "TARBALL_SHA256 = \"57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe\"",
+      "symbol": "TARBALL_SHA256"
+    }
+  ],
+  "qa_check_path": "data/scaffolds/qa/verify/check.py:137",
+  "route": "Q: shared QA command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {},
+  "survey_row": "| `bfcl_v3` | Q: `actor-workdir` | `data/datasets/bfcl_v3.py:583` constructs Q verifier; `data/datasets/bfcl_v3.py:115` files environment | `data/datasets/bfcl_v3.py:217` function-name diagnostic scorer; `data/datasets/bfcl_v3.py:230` explicitly says it is not official BFCL score | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}

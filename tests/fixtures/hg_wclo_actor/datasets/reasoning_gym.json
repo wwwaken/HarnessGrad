@@ -1,0 +1,2332 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 10031,
+      "definitions": [
+        {
+          "line": 80,
+          "locator": "def _rows() -> dict[str, list[dict]]:",
+          "symbol": "_rows"
+        },
+        {
+          "line": 90,
+          "locator": "def _question(row: dict) -> str:",
+          "symbol": "_question"
+        },
+        {
+          "line": 94,
+          "locator": "def _gold(row: dict) -> dict:",
+          "symbol": "_gold"
+        },
+        {
+          "line": 106,
+          "locator": "def score(prediction: str, gold: dict) -> dict:",
+          "symbol": "score"
+        },
+        {
+          "line": 127,
+          "locator": "def _goal(question: str, gold: dict) -> str:",
+          "symbol": "_goal"
+        },
+        {
+          "line": 140,
+          "locator": "def _downloads() -> list[dict]:",
+          "symbol": "_downloads"
+        },
+        {
+          "line": 176,
+          "locator": "def __getattr__(name: str):",
+          "symbol": "__getattr__"
+        },
+        {
+          "line": 181,
+          "locator": "def load() -> tuple[list[dict], dict[str, str]]:",
+          "symbol": "load"
+        },
+        {
+          "line": 185,
+          "locator": "def downloads() -> list[dict]:",
+          "symbol": "downloads"
+        },
+        {
+          "line": 189,
+          "locator": "def provision_status() -> dict:",
+          "symbol": "provision_status"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 52,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 54,
+          "locator": "from data.scaffolds.qa import base",
+          "statement": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 108,
+          "locator": "    from reasoning_gym import create_dataset",
+          "statement": "from reasoning_gym import create_dataset"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/reasoning_gym.py",
+      "sha256": "fcf4be2daa187dc4d74395530bbbdaa308e317bc0173b346f7de0bb889ac7f33"
+    },
+    {
+      "bytes": 6506,
+      "definitions": [
+        {
+          "line": 76,
+          "locator": "def _entry(name: str, index: int) -> dict:",
+          "symbol": "_entry"
+        },
+        {
+          "line": 99,
+          "locator": "def build() -> tuple[str, int]:",
+          "symbol": "build"
+        },
+        {
+          "line": 108,
+          "locator": "def digest() -> str:",
+          "symbol": "digest"
+        },
+        {
+          "line": 112,
+          "locator": "def main(argv: list[str] | None = None) -> int:",
+          "symbol": "main"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 24,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 26,
+          "locator": "import argparse",
+          "statement": "import argparse"
+        },
+        {
+          "line": 27,
+          "locator": "import hashlib",
+          "statement": "import hashlib"
+        },
+        {
+          "line": 28,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 29,
+          "locator": "import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 30,
+          "locator": "from pathlib import Path",
+          "statement": "from pathlib import Path"
+        },
+        {
+          "line": 83,
+          "locator": "    from reasoning_gym import create_dataset",
+          "statement": "from reasoning_gym import create_dataset"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/reasoning_gym/prepare.py",
+      "sha256": "0b70953e525e8c4c3f2320f6617b8da7b604fa7f1adc1e3604464cc42db5bde3"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "reasoning_gym",
+  "declared_dependency_package_keys": [
+    "arckit",
+    "bfi",
+    "cellpylib",
+    "cffi",
+    "contourpy",
+    "cycler",
+    "defusedxml",
+    "drawsvg",
+    "fonttools",
+    "kiwisolver",
+    "magiccube",
+    "markdown-it-py",
+    "matplotlib",
+    "mdurl",
+    "mkl-service",
+    "mpmath",
+    "numpy",
+    "packaging",
+    "pillow",
+    "pycosat",
+    "pycparser",
+    "pyfiglet",
+    "pygments",
+    "pyparsing",
+    "python-dateutil",
+    "pytz",
+    "pyyaml",
+    "reasoning-gym",
+    "rich",
+    "six",
+    "sympy",
+    "tabulate",
+    "wcwidth",
+    "zss"
+  ],
+  "directly_observed_imported_packages": {
+    "PyYAML": {
+      "content_manifest": {
+        "bytes": 6984,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyyaml.json",
+        "sha256": "274ea506eeab5ac1c3c3dbcfb2ce63a3223f5970ab0ef665dcb6499707b5b6a8"
+      },
+      "file_count": 25,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 2351,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/METADATA",
+          "sha256": "03c3b415ed38d09faedc49360e930769b40c58f68585e6de00e2e4916a858d34"
+        },
+        {
+          "bytes": 2706,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/RECORD",
+          "sha256": "dc055c2d5a393702e5d36a3752bd97d380761dd6e9bc50b22234b3bcbe8b4ce3"
+        },
+        {
+          "bytes": 190,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/WHEEL",
+          "sha256": "0f1467590cfe2a9f7ee1ae217431ec4afd0a502dc7eec37d35b79fdfef118d75"
+        }
+      ],
+      "missing_members": 0,
+      "name": "PyYAML",
+      "requirements": [],
+      "version": "6.0.3"
+    },
+    "arckit": {
+      "content_manifest": {
+        "bytes": 5171,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/arckit.json",
+        "sha256": "f5fa3a4f79c5f969853ae0b91dd61c9c2e9fd194b914a484779c298786047905"
+      },
+      "file_count": 17,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 503,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit-0.1.0.dist-info/METADATA",
+          "sha256": "63fd9446fc387469761eb1909d9936fc8e5b0a0425c5e301a56b5d0b2f72c016"
+        },
+        {
+          "bytes": 1730,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit-0.1.0.dist-info/RECORD",
+          "sha256": "715a5fae742a6e1580f7cd4e35545c4cb4c4a026da9416a9beb7a51e6bf314c3"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit-0.1.0.dist-info/WHEEL",
+          "sha256": "9a0b8c95618c5fe5479cca4a3a38d089d228d6cb1194216ee1ae26069cf5b363"
+        }
+      ],
+      "missing_members": 0,
+      "name": "arckit",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "rich"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "drawsvg"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    "bfi": {
+      "content_manifest": {
+        "bytes": 8174,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/bfi.json",
+        "sha256": "1ab8a1a6c17305f2de12e74569733625665b885d21cb5618a9445184bcfda964"
+      },
+      "file_count": 29,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 12672,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/bfi-1.0.4.dist-info/METADATA",
+          "sha256": "ea520f7e532de8f5c12eb8419287386fc6ec11b8f87437ccad0110a7e90f2a8a"
+        },
+        {
+          "bytes": 2379,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/bfi-1.0.4.dist-info/RECORD",
+          "sha256": "7c850008c6d007a0302169f3323e1170755b97660affbe67c1673fad40441441"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/bfi-1.0.4.dist-info/WHEEL",
+          "sha256": "3aa464174798e461ecb0ca2b16395b4c8ab4ef6be91e917ad1f21003a952f710"
+        }
+      ],
+      "missing_members": 0,
+      "name": "bfi",
+      "requirements": [],
+      "version": "1.0.4"
+    },
+    "cellpylib": {
+      "content_manifest": {
+        "bytes": 5678,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/cellpylib.json",
+        "sha256": "7f05491b910c93dcb17a3dfb1bedf7b0acc2b15a0e203df978fdb697a3584e87"
+      },
+      "file_count": 19,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1197,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib-2.4.0.dist-info/METADATA",
+          "sha256": "677a9965963133bab0d96077e0fc0cda8ef458a475a1ae30d5ac9835fa218564"
+        },
+        {
+          "bytes": 2216,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib-2.4.0.dist-info/RECORD",
+          "sha256": "6bdf801084dd71da54ab273a1f79118fbfe290a796e755185072842505c55671"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib-2.4.0.dist-info/WHEEL",
+          "sha256": "6027f0606398322e49870d9f538c8d83012bc9b6f6217e4f13004a57865b741a"
+        }
+      ],
+      "missing_members": 0,
+      "name": "cellpylib",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy>=1.15.4"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "matplotlib>=3.0.2"
+        }
+      ],
+      "version": "2.4.0"
+    },
+    "cffi": {
+      "content_manifest": {
+        "bytes": 9036,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/cffi.json",
+        "sha256": "8b8685b5c2000a44d5b0fddad98aaf2792eab394a3d4a9d067b537d44452f7d1"
+      },
+      "file_count": 32,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1480,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/METADATA",
+          "sha256": "a8e048da2d2a4a52ce2b09b33636c97cb9ab4f31d5fc9152eee29b7058ffa7d6"
+        },
+        {
+          "bytes": 3364,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/RECORD",
+          "sha256": "9925f9ed7119070b4daa9e5eb348583b24292cf73024a8fd3d99d48a10ba447e"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "cffi",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pycparser"
+        }
+      ],
+      "version": "1.16.0"
+    },
+    "cycler": {
+      "content_manifest": {
+        "bytes": 2730,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/cycler.json",
+        "sha256": "ab57817a9084529d6e33690ade93fe750ea8f16faa59da85103e08414d6271e2"
+      },
+      "file_count": 9,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 806,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/METADATA",
+          "sha256": "9f5567f456be6f314600e4bd935938516e091021713a675ca109f07cb1ac8fc2"
+        },
+        {
+          "bytes": 765,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/RECORD",
+          "sha256": "69577f0954147f1d137c95b69c8d059e6c0e5c8a5956bbe3568117627bd66d4c"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/WHEEL",
+          "sha256": "7b0c04b9e8a8d42d977874ef4f5ee7f1d6542603afc82582b7459534b0a53fda"
+        }
+      ],
+      "missing_members": 0,
+      "name": "cycler",
+      "requirements": [],
+      "version": "0.11.0"
+    },
+    "defusedxml": {
+      "content_manifest": {
+        "bytes": 5493,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/defusedxml.json",
+        "sha256": "7716f6a415bf157aa320b802725108f2da8caf6d181e0f675a1d792524eb9b08"
+      },
+      "file_count": 19,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 32518,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/METADATA",
+          "sha256": "369d3cef64870daf849fba711cb8d05a7efe3c8d9ab0f763adc34079fe378bb1"
+        },
+        {
+          "bytes": 2116,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/RECORD",
+          "sha256": "fca6b1567fcc88d2fba042197714c1da900c2466d11c2f7d551d18499e7fbbb6"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/WHEEL",
+          "sha256": "67e9f2629c2b712ab17ddbb1e4c6e7fc3439db988fec9d831b72601af398c934"
+        }
+      ],
+      "missing_members": 0,
+      "name": "defusedxml",
+      "requirements": [],
+      "version": "0.7.1"
+    },
+    "drawsvg": {
+      "content_manifest": {
+        "bytes": 8759,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/drawsvg.json",
+        "sha256": "e9838e7446e3dc91e2363ab3553d379fd9582adc0ddbd1e2618411b3378c1ebc"
+      },
+      "file_count": 26,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 19783,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg-2.4.2.dist-info/METADATA",
+          "sha256": "6630c9ff5bdf746016bdde45d54f681c3088fa4b4bc8b38eff2978e6784d51de"
+        },
+        {
+          "bytes": 3287,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg-2.4.2.dist-info/RECORD",
+          "sha256": "1cd6798a88e1fc5f376f04ad07ea5afbeffdc1e6278b38dc59e6259bf5911c99"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg-2.4.2.dist-info/WHEEL",
+          "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+        }
+      ],
+      "missing_members": 0,
+      "name": "drawsvg",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cairoSVG~=2.3; extra == \"raster\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy<3,>=1.16; extra == \"raster\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "imageio~=2.5; extra == \"raster\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "imageio_ffmpeg~=0.4; extra == \"raster\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pwkit~=1.0; extra == \"color\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy<3,>=1.16; extra == \"color\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "cairoSVG~=2.3; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "numpy<3,>=1.16; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "imageio~=2.5; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "imageio_ffmpeg~=0.4; extra == \"all\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pwkit~=1.0; extra == \"all\""
+        }
+      ],
+      "version": "2.4.2"
+    },
+    "kiwisolver": {
+      "content_manifest": {
+        "bytes": 3741,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/kiwisolver.json",
+        "sha256": "3d574388d48f5b8c5f5b6be0af33f58098b0d123edbb4fca17cce1e8c7e8eb82"
+      },
+      "file_count": 12,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6340,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/METADATA",
+          "sha256": "1b9a5c81bf9da3f07d2f346ff7ffdbb5fcc646c3617b3c5c0f1851299af4a2de"
+        },
+        {
+          "bytes": 1078,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/RECORD",
+          "sha256": "bb4af1af641334ae81a62ec0ddb0b6b128aec46a9b0ece0e81c2a734f2e61599"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "kiwisolver",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions ; python_version < \"3.8\""
+        }
+      ],
+      "version": "1.4.4"
+    },
+    "magiccube": {
+      "content_manifest": {
+        "bytes": 5066,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/magiccube.json",
+        "sha256": "5fe5b116ad39a0d08e2e841d76865f7a88a74d29b7c4adafc0c988a4a05fcc86"
+      },
+      "file_count": 17,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3885,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube-0.3.0.dist-info/METADATA",
+          "sha256": "279fca3a487e447dd425849d19703a7e41f38eddef66953de998b24ae198fcce"
+        },
+        {
+          "bytes": 2059,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube-0.3.0.dist-info/RECORD",
+          "sha256": "43d714f1df0847d36d99d8e6e353785edf9f31b9aa4c208b3b13cb1c4c482a5e"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube-0.3.0.dist-info/WHEEL",
+          "sha256": "678a585ea47fad307b3963436053a6d6a464d115fa1853f6a3c2e0bcfe39dc79"
+        }
+      ],
+      "missing_members": 0,
+      "name": "magiccube",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy"
+        }
+      ],
+      "version": "0.3.0"
+    },
+    "matplotlib": {
+      "content_manifest": {
+        "bytes": 176878,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/matplotlib.json",
+        "sha256": "9f2ccfba2390688a1ef57d3ffea94a02f768934eef8e87a05bf9e50204043ba1"
+      },
+      "file_count": 613,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 5721,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/METADATA",
+          "sha256": "dce8487973569515a0d9a5ad0ebc49ac7cfebac884ea9c3f54146ecc202538f8"
+        },
+        {
+          "bytes": 75386,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/RECORD",
+          "sha256": "9d5dfba58d5e825257a46df88c874c09e93b67840d424191d9124be2753a1896"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "matplotlib",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "contourpy >=1.0.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "cycler >=0.10"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "fonttools >=4.22.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "kiwisolver >=1.3.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "numpy >=1.21"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "packaging >=20.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pillow >=8"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pyparsing >=2.3.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "python-dateutil >=2.7"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib-resources >=3.2.0 ; python_version<\"3.10\""
+        }
+      ],
+      "version": "3.8.4"
+    },
+    "mkl-service": {
+      "content_manifest": {
+        "bytes": 490,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/mkl-service.json",
+        "sha256": "2660691ff8eb40871dd52f4e00d9214e971b3c0e658f8fe58d4c50a2eaf24e8c"
+      },
+      "file_count": 1,
+      "installed": true,
+      "metadata_files": [],
+      "missing_members": 0,
+      "name": "mkl-service",
+      "requirements": [],
+      "version": "2.4.0"
+    },
+    "mpmath": {
+      "content_manifest": {
+        "bytes": 27530,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/mpmath.json",
+        "sha256": "90c48be4a01499c9dd42b7914c0c0e62033e78f8c61f8919378b9e5b1194f826"
+      },
+      "file_count": 95,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8624,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/METADATA",
+          "sha256": "b708710b4673af69ce727b4ef07bae1d74e1049cf5196f677e6583c305395558"
+        },
+        {
+          "bytes": 12868,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/RECORD",
+          "sha256": "8162f9d88bf1a32dbf56fe5e3ee226f934b9e484d897aae173e6d5470c7e88e3"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "mpmath",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest >=4.6 ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pycodestyle ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "codecov ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel ; extra == 'develop'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "gmpy2 >=2.1.0a4 ; (platform_python_implementation != \"PyPy\") and extra == 'gmpy'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest >=4.6 ; extra == 'tests'"
+        }
+      ],
+      "version": "1.3.0"
+    },
+    "numpy": {
+      "content_manifest": {
+        "bytes": 225626,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/numpy.json",
+        "sha256": "661437f25f2d389466d0da62dbcd19def9d78302862306860c20cc64ebb4910d"
+      },
+      "file_count": 790,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 7335,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/METADATA",
+          "sha256": "4f151eefd36459b2a4b1831a4faaf673f3fa95a0397c27c52dc4cd2591202f66"
+        },
+        {
+          "bytes": 98414,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/RECORD",
+          "sha256": "e675fb07b66c67ed54918e4d01d31583781881e9870c95f2b46238e3351a62d6"
+        },
+        {
+          "bytes": 88,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/WHEEL",
+          "sha256": "634159ee5c5f58a5b2d30fe69e35e1149cf5f2be37f307e1642a9742d342a6f5"
+        }
+      ],
+      "missing_members": 0,
+      "name": "numpy",
+      "requirements": [],
+      "version": "1.26.4"
+    },
+    "packaging": {
+      "content_manifest": {
+        "bytes": 6270,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/packaging.json",
+        "sha256": "cc5ebe93d75b5561292889bc76f4fe3a66a354167b3676c116cfa0d700dbe51f"
+      },
+      "file_count": 22,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 3203,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/METADATA",
+          "sha256": "b3574943ce848d906e97f50291034674771b2edb3a660e3f9b10aa93ad17eb1b"
+        },
+        {
+          "bytes": 2475,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/RECORD",
+          "sha256": "93f6c616d17f4d6df96b37b158444b743a38b6c87a63b034a9908f11a993e927"
+        },
+        {
+          "bytes": 81,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/WHEEL",
+          "sha256": "1196c6921ec87b83e865f450f08d19b8ff5592537f4ef719e83484e546abe33e"
+        }
+      ],
+      "missing_members": 0,
+      "name": "packaging",
+      "requirements": [],
+      "version": "23.2"
+    },
+    "pillow": {
+      "content_manifest": {
+        "bytes": 34985,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pillow.json",
+        "sha256": "05b26893588e327cdc5877000f3adf050eb9e444b903f7cab63c2bb192722c96"
+      },
+      "file_count": 119,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 9199,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/METADATA",
+          "sha256": "cfba9585acaec185ac5c33a48332ea1f4d1adc75d2d6540667c19e9c03af063a"
+        },
+        {
+          "bytes": 14013,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/RECORD",
+          "sha256": "697947a0fba8540517425a57cfd0ce2e4d7b0e9557de0e3fd733fa577824d412"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pillow",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "furo ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx >=2.4 ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-copybutton ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-inline-tabs ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-removed-in ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxext-opengraph ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'fpx'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'mic'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "check-manifest ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "defusedxml ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "markdown2 ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "olefile ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyroma ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout ; extra == 'tests'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typing-extensions ; (python_version < \"3.10\") and extra == 'typing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "defusedxml ; extra == 'xmp'"
+        }
+      ],
+      "version": "10.3.0"
+    },
+    "pycosat": {
+      "content_manifest": {
+        "bytes": 3311,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pycosat.json",
+        "sha256": "ffd5feb1e84f07be6505094671c06c290591c304c409d308377aa8a08bd2e518"
+      },
+      "file_count": 11,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 5361,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pycosat-0.6.6.dist-info/METADATA",
+          "sha256": "c3df68488a707ae6d6e0ec5c86eba6478b10910b74eb6a28a30fd5a2faf9cc7d"
+        },
+        {
+          "bytes": 969,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pycosat-0.6.6.dist-info/RECORD",
+          "sha256": "c05a045993469771e8fb4a9004fb26dcca266a771d22c80de3e0538215ab4008"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pycosat-0.6.6.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pycosat",
+      "requirements": [],
+      "version": "0.6.6"
+    },
+    "pyfiglet": {
+      "content_manifest": {
+        "bytes": 156904,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyfiglet.json",
+        "sha256": "b158c7d52ad8784595e7dee03f53eaa77f8dfd6e98da0e28114551a372e05069"
+      },
+      "file_count": 566,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 7055,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet-1.0.2.dist-info/METADATA",
+          "sha256": "f3ee56edaf2b7080a14152ff1d08a28cb8b384c0888b32524559a3135afdc1d8"
+        },
+        {
+          "bytes": 48201,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet-1.0.2.dist-info/RECORD",
+          "sha256": "b9ad6d46b5fea0cd3c5da6a2b648c26bc869208318977687e6c02c225eadf33d"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet-1.0.2.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pyfiglet",
+      "requirements": [],
+      "version": "1.0.2"
+    },
+    "pyparsing": {
+      "content_manifest": {
+        "bytes": 5699,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pyparsing.json",
+        "sha256": "2093d3c43ef2e1c36bec517f6a6d09e76a975b8c7d988b882929e5c3f3907385"
+      },
+      "file_count": 19,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 4207,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/METADATA",
+          "sha256": "87f7e99bdaf0be066c13cbf960d178200a3e22968558239f5049b930c0722223"
+        },
+        {
+          "bytes": 2074,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/RECORD",
+          "sha256": "56f7685d5b4152cc68779328178e5b9ed0e7583553a7ff38df810a5c46ae9272"
+        },
+        {
+          "bytes": 81,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/WHEEL",
+          "sha256": "1196c6921ec87b83e865f450f08d19b8ff5592537f4ef719e83484e546abe33e"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pyparsing",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "railroad-diagrams ; extra == \"diagrams\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jinja2 ; extra == \"diagrams\""
+        }
+      ],
+      "version": "3.0.9"
+    },
+    "python-dateutil": {
+      "content_manifest": {
+        "bytes": 8179,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/python-dateutil.json",
+        "sha256": "680cb6d7d41d14e92b6572ec49ca5d2908b240cf1de0f8d2bbb1529a8d9c0954"
+      },
+      "file_count": 28,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 8354,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/METADATA",
+          "sha256": "a9d436da322be808332f98d88325998e87cb693a678a9969feb4cfad729a6e93"
+        },
+        {
+          "bytes": 3336,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/RECORD",
+          "sha256": "b78da6c4b91896a7bda1693a0b824aa731e8a27490f3932388c2bb5df5307486"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/WHEEL",
+          "sha256": "0d96a30f8a702d6b9eef40807dced86b14f5c0b51c88d06f37f4d372f5e996d1"
+        }
+      ],
+      "missing_members": 0,
+      "name": "python-dateutil",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "six >=1.5"
+        }
+      ],
+      "version": "2.9.0.post0"
+    },
+    "pytz": {
+      "content_manifest": {
+        "bytes": 171765,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/pytz.json",
+        "sha256": "dcfae221fa4682a25adc6b1205565d2bd17b6923c27a51a015b1c8b55adf78be"
+      },
+      "file_count": 618,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 22323,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/METADATA",
+          "sha256": "5d4c204eb835eda6dc096e45ebc1ccbcda45cd88c43ed7caccee7a88b890a19d"
+        },
+        {
+          "bytes": 53100,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/RECORD",
+          "sha256": "9a002e37dce2b8c9df799216f45ec9624e2cbb6f1b10566a818744c2a1941896"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "pytz",
+      "requirements": [],
+      "version": "2024.1"
+    },
+    "reasoning_gym": {
+      "content_manifest": {
+        "bytes": 63119,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/reasoning-gym.json",
+        "sha256": "eece63b38a39dc194e6408dc006a5ab5d98e6536828cf4c636d7eb995c53c355"
+      },
+      "file_count": 208,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 10153,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym-0.1.25.dist-info/METADATA",
+          "sha256": "554856bb54258b024e65e841d890c6ce825ea7921bde577880bf15e3b66dfef2"
+        },
+        {
+          "bytes": 33561,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym-0.1.25.dist-info/RECORD",
+          "sha256": "9bec329d75a57438f67a96250914a229026cb659a4f0ee713f6f4ee56284122a"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym-0.1.25.dist-info/WHEEL",
+          "sha256": "41c708c5adba6e097513ab8ccb9f1d7865a2fb469e22491a9e01dcc64da459fc"
+        }
+      ],
+      "missing_members": 0,
+      "name": "reasoning_gym",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "arckit==0.1.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "bfi==1.0.4"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "cellpylib==2.4.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "magiccube==0.3.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pycosat==0.6.6"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pyfiglet==1.0.2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pytz>=2024.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pyyaml>=6.0.2"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "sympy>=1.13.1"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "tabulate==0.9.0"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "zss>=1.2.0"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "httpx>=0.27.0; extra == 'cli'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyyaml>=6.0.1; extra == 'cli'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "rich>=13.7.0; extra == 'cli'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "typer>=0.9.0; extra == 'cli'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "datasets>=3.5.0; extra == 'scripts'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "fastapi>=0.109.0; extra == 'server'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pydantic-settings>=2.1.0; extra == 'server'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "uvicorn>=0.27.0; extra == 'server'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "httpx>=0.27.0; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov>=4.0.0; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest>=7.0.0; extra == 'test'"
+        }
+      ],
+      "version": "0.1.25"
+    },
+    "rich": {
+      "content_manifest": {
+        "bytes": 29233,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/rich.json",
+        "sha256": "490fe8a07036531e5f89c8ed09045d9cc89c87b3dcc62b371f57eddb445c2697"
+      },
+      "file_count": 106,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 18445,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich-15.0.0.dist-info/METADATA",
+          "sha256": "fad34fc603fac4481bf81f8dd629492fc302c0ec31909c86644751512afb2e3b"
+        },
+        {
+          "bytes": 13122,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich-15.0.0.dist-info/RECORD",
+          "sha256": "ee3acd23cbe4ef74867591cee90c13a5f90a59535d839b1cd66d1dd3e6ee50e2"
+        },
+        {
+          "bytes": 88,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich-15.0.0.dist-info/WHEEL",
+          "sha256": "909091253fe0d1a75f009cd3c761943264bcd2b4c92151d109f1b40d080bab7a"
+        }
+      ],
+      "missing_members": 0,
+      "name": "rich",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ipywidgets (>=7.5.1,<9) ; extra == \"jupyter\""
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "markdown-it-py (>=2.2.0)"
+        },
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "pygments (>=2.13.0,<3.0.0)"
+        }
+      ],
+      "version": "15.0.0"
+    },
+    "six": {
+      "content_manifest": {
+        "bytes": 2702,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/six.json",
+        "sha256": "7632cab74fc13dedfacfc1dea6595a1c224f98c6f70e529b09651350bf98d12a"
+      },
+      "file_count": 9,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 1817,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/METADATA",
+          "sha256": "d6f8435094b657a1639e3325726aacbaa9614e1681bb681302494e88204afd05"
+        },
+        {
+          "bytes": 738,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/RECORD",
+          "sha256": "5cd6b9754c73796267ddbfff91d15815e0024f8b795b56a8bc324321979679e5"
+        },
+        {
+          "bytes": 110,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/WHEEL",
+          "sha256": "cfd8f4c406bf26650a3299b3ef62b464600b48cfe7fb04159866e5797c765478"
+        }
+      ],
+      "missing_members": 0,
+      "name": "six",
+      "requirements": [],
+      "version": "1.16.0"
+    },
+    "sympy": {
+      "content_manifest": {
+        "bytes": 445211,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/sympy.json",
+        "sha256": "9b13e142a50d4e6b4942992c48be99906447bf07e8e3face8ca1c6c2533c9a72"
+      },
+      "file_count": 1557,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 12470,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy-1.13.1.dist-info/METADATA",
+          "sha256": "d1dbbf156ee3ac2102086ee84196d252330153dc5ba5b290d49918c6ae5b8b1c"
+        },
+        {
+          "bytes": 243148,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy-1.13.1.dist-info/RECORD",
+          "sha256": "2fa5fb8cd9b42a7a1cc6c123fe802d7897f809aa213d7da576861f776d5655ce"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy-1.13.1.dist-info/WHEEL",
+          "sha256": "fa86100abef8245ddadfbcf69d19506b2b3f497d8ca8e00da2a56304100fdb21"
+        }
+      ],
+      "missing_members": 0,
+      "name": "sympy",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "mpmath <1.4,>=1.1.0"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest >=7.1.0 ; extra == 'dev'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "hypothesis >=6.70.0 ; extra == 'dev'"
+        }
+      ],
+      "version": "1.13.1"
+    },
+    "tabulate": {
+      "content_manifest": {
+        "bytes": 3699,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/tabulate.json",
+        "sha256": "f29c708e589aae649904aa1559a86706f534b2a3123e97d9c961a3c0f32df3cf"
+      },
+      "file_count": 12,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 34132,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tabulate-0.9.0.dist-info/METADATA",
+          "sha256": "f2802aade2612091b45951f265af29174f90c3236f68cc8ccdeb646941e62969"
+        },
+        {
+          "bytes": 1098,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tabulate-0.9.0.dist-info/RECORD",
+          "sha256": "fb8505fb8d1c2197b216f1b6c8ce3e8f8847cad92aaba87d4268b3c763c69a97"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tabulate-0.9.0.dist-info/WHEEL",
+          "sha256": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+        }
+      ],
+      "missing_members": 0,
+      "name": "tabulate",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wcwidth ; extra == 'widechars'"
+        }
+      ],
+      "version": "0.9.0"
+    },
+    "wcwidth": {
+      "content_manifest": {
+        "bytes": 15284,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/wcwidth.json",
+        "sha256": "8b39672a802b6747e933bcd2910431cb12d35dfb9d82aa39cafe8fd2d04138b3"
+      },
+      "file_count": 53,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 43284,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/METADATA",
+          "sha256": "9a1f2d41c9dd637fc963f641c73978c7cb9a6f1ef85515f65b93b07d820187b3"
+        },
+        {
+          "bytes": 7807,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/RECORD",
+          "sha256": "7d537d002ea5df0ebe75aee4f571d6958f7ccf3bc026878c8f5bf788c37ad131"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/WHEEL",
+          "sha256": "99f7cfcbcc019d9427d959c9514e6313df4ab316927e2c8c1d5f58b7468b571b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "wcwidth",
+      "requirements": [],
+      "version": "0.8.2"
+    },
+    "zss": {
+      "content_manifest": {
+        "bytes": 2771,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/zss.json",
+        "sha256": "fd38696064a0360d37f35eee1e2273c8feb97415f61e69bbb87121face1ede6b"
+      },
+      "file_count": 9,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 449,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss-1.2.0.dist-info/METADATA",
+          "sha256": "795d1beb2dab1c5403db031b5dd545bbe0b7e88842baf95e083cb4fccb5abcc5"
+        },
+        {
+          "bytes": 817,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss-1.2.0.dist-info/RECORD",
+          "sha256": "4d83ff20c3321895d485aae6f628c02b514121448ec860487a99c3e0b66a59ac"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss-1.2.0.dist-info/WHEEL",
+          "sha256": "6027f0606398322e49870d9f538c8d83012bc9b6f6217e4f13004a57865b741a"
+        }
+      ],
+      "missing_members": 0,
+      "name": "zss",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "six"
+        }
+      ],
+      "version": "1.2.0"
+    }
+  },
+  "entry_points": [
+    {
+      "bytes": 10031,
+      "exists": true,
+      "line": 106,
+      "location": "checkout",
+      "locator": "def score(prediction: str, gold: dict) -> dict:",
+      "path": "data/datasets/reasoning_gym.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "fcf4be2daa187dc4d74395530bbbdaa308e317bc0173b346f7de0bb889ac7f33",
+      "symbol": "score"
+    },
+    {
+      "bytes": 27530,
+      "exists": true,
+      "line": 322,
+      "location": "checkout",
+      "locator": "    def verifier(self, record: dict) -> dict:",
+      "path": "data/scaffolds/qa/base.py",
+      "role": "QA command/input construction",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e",
+      "symbol": "verifier"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 137,
+      "location": "checkout",
+      "locator": "def main(argv) -> int:",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "shared QA check entry",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220",
+      "symbol": "main"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 166,
+      "location": "checkout",
+      "locator": "        gold = json.loads(gold_path.read_text(encoding=\"utf-8\"))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "read trusted gold.json",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 217,
+      "location": "checkout",
+      "locator": "        adapter = __import__(module_name, fromlist=[\"score\"])",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "import staged adapter",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 238,
+      "location": "checkout",
+      "locator": "        result = (evidence_scorer(structured, gold, **score_options)",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "structured evidence branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 242,
+      "location": "checkout",
+      "locator": "                  else scorer(prediction, gold, **score_options))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "answer branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 1158,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/reasoning_gym.json",
+    "sha256": "4cd67772579d313f3426dd51992df195ec6bc58dbe6e18ca18615082b582ab70"
+  },
+  "import_receipts": [
+    {
+      "bytes": 442592,
+      "exists": true,
+      "location": "checkout",
+      "path": "tests/fixtures/hg_wclo_actor/imports/reasoning_gym.json",
+      "sha256": "4116b1c70baff342f14fed127ee2d9abe516ef8d2a2d63bd21f6c59570fbcd69"
+    }
+  ],
+  "installed_scorer_entry_points": {
+    "bytes": 143131,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/installed-scorer-entry-points.json",
+    "sha256": "4474bd06a213adbb34ec57ab79b233caf753a41b6d6b6aef65ff1f54ea812ec0"
+  },
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "Distribution version 0.1.25 differs from source __version__ 0.1.19; both are preserved.",
+    "Family constructors/score_answer are not called; family-specific lazy imports/resources and offline behavior are not live-validated.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 67,
+      "source": "VERSION = \"0.1.25\"",
+      "symbol": "VERSION"
+    },
+    {
+      "line": 77,
+      "source": "POOL_SHA256 = \"c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177\"",
+      "symbol": "POOL_SHA256"
+    }
+  ],
+  "qa_check_path": "data/scaffolds/qa/verify/check.py:137",
+  "route": "Q: shared QA command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {
+    "setuptools": {
+      "content_manifest": {
+        "bytes": 134598,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/setuptools.json",
+        "sha256": "59bcbff6ac844a04b0942bcc11e1b90ccbdba018f6b19232491a61a752c19881"
+      },
+      "file_count": 440,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6573,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/METADATA",
+          "sha256": "ac7e92d32efa17a0d854cbccbe9c3244f7caa5e5633b32f1a1fde1da26ae915f"
+        },
+        {
+          "bytes": 64617,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/RECORD",
+          "sha256": "3166de15748cdd4190cb61f79a261ab1ac72043521dcab90325287306eb7a7d3"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/WHEEL",
+          "sha256": "6027f0606398322e49870d9f538c8d83012bc9b6f6217e4f13004a57865b741a"
+        },
+        {
+          "bytes": 15006,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/METADATA",
+          "sha256": "3800d9b91dceea2065a6ed6279383362e97ac38b8e56b9343f404ee531860099"
+        },
+        {
+          "bytes": 1072,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/RECORD",
+          "sha256": "2bee6072cbcec6390c57107c8dfcb0422918a98ecdb5a2cc362187f13d42e96f"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/WHEEL",
+          "sha256": "db07a93359e4e034b8785a58ad6d534ea3dca0635f1e184efe2e66e1c3a299ba"
+        },
+        {
+          "bytes": 2020,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/METADATA",
+          "sha256": "8215c54ead77d9dc5a108a25c6bdc72b5999aa6f62c9499a440359412afa5a51"
+        },
+        {
+          "bytes": 1056,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/RECORD",
+          "sha256": "0f69db719b54220d6a4adff8bfb04ac98affea3dc8b54054a1a787a17567f4d1"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        },
+        {
+          "bytes": 4670,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA",
+          "sha256": "a3e38b9ee4326289d4864704f30e299ee769e2309ce9f4a75f0de1a50ad0a356"
+        },
+        {
+          "bytes": 1868,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD",
+          "sha256": "52a6b8ee0de15cf7fd99625f43b97cd2e3942ac86f16054ea90de48e66f29355"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 3731,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/METADATA",
+          "sha256": "5c2fd09012c954f139b10624978d5335a654c34014cd06f6f466ca683dbc9c56"
+        },
+        {
+          "bytes": 1157,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/RECORD",
+          "sha256": "63b936c308d0fcbe1390e824567cc007536c32a849adb02278e95f1d4c736c31"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/WHEEL",
+          "sha256": "5b287efe76740c9628947367d7f84c6b894ceee0de743fd1195c1b9938f222d9"
+        },
+        {
+          "bytes": 4270,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/METADATA",
+          "sha256": "0435ebfc52055c5a9974ed20c171b6454383eaf9dbb1508814ba7ad97c59d712"
+        },
+        {
+          "bytes": 777,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/RECORD",
+          "sha256": "4599d876ceb42b7eef03aa39e235c4ebeab6aea2409dbe634496852393d1f837"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 2960,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/METADATA",
+          "sha256": "2e79da8dc3469924abe3ac8b22a3feb5692a79bf9f47bbc86b6535d618641849"
+        },
+        {
+          "bytes": 882,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/RECORD",
+          "sha256": "baafd2d6d94c1bde453e4c805ac05511dc53986e0a63b02f674ef0f788bec146"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 39413,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/METADATA",
+          "sha256": "6ab3515145abe58b067f087c867631cf4cf5d653fed81b9642ee12086c3904b8"
+        },
+        {
+          "bytes": 1095,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/RECORD",
+          "sha256": "9ed1b134c0aa83722f36e99f3918aa9610ce3a0a514d793bbb74a368d441a01d"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 3309,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/METADATA",
+          "sha256": "3362bb7d6a26da2962ba8daaa4785cd0bacac21aba908a1195cc8f59580a265a"
+        },
+        {
+          "bytes": 2113,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/RECORD",
+          "sha256": "f50503333aae9517807d2fb4d81fc27cb60aa644666f50176812626d6224ce5d"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 12831,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/METADATA",
+          "sha256": "bbc5216d5f4c77bfbc57227264d52e66bccde71ccf79e75e1a6046d029d30223"
+        },
+        {
+          "bytes": 1218,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/RECORD",
+          "sha256": "3d0d2f1cc018593c4d8baa2395baf0b1c1c645bbd8c18cd064f49cb4e4c95ea0"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/WHEEL",
+          "sha256": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+        },
+        {
+          "bytes": 10567,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/METADATA",
+          "sha256": "f5ac0a1f8fba908b4646cd655309e91aad969b6787616ac571ca462a3832ffce"
+        },
+        {
+          "bytes": 822,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/RECORD",
+          "sha256": "225430ce95640e8d4fcdb93cdae2fc38d685aec016d0e293d5fb99a695886fed"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 2410,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/METADATA",
+          "sha256": "22910aa97ca89cbcc20a019e27fe31360b7929a4bd66ca0d310f99a44f6ccd35"
+        },
+        {
+          "bytes": 1734,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/RECORD",
+          "sha256": "b0297c3ada17b8727e15ddd6d1e38c8a90a997f779fcf978996f6fec62ecb702"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 3563,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/METADATA",
+          "sha256": "bdd67d4d16cf0bf3b893e7d18cd3d2d774adb82f37ed985bc7770c607226b35b"
+        },
+        {
+          "bytes": 1078,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/RECORD",
+          "sha256": "3bfab660a24704f84228e4bb1ce1f0e3fa9ff80e5c806352a626b2f460ead836"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "setuptools",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest!=8.1.*,>=6; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "virtualenv>=13.0.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel>=0.44.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pip>=19.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging>=24.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.envs>=2.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist>=3; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.path>=3.7.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "build[virtualenv]>=1.0.3; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "filelock>=3.4.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ini2toml[lite]>=0.14; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli-w>=1.0.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-perf; sys_platform != \"cygwin\" and extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.develop>=7.21; (python_version >= \"3.9\" and sys_platform != \"cygwin\") and extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-home>=0.5; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-subprocess; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyproject-hooks!=1.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.test>=5.5; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=3.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.packaging>=9.3; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "rst.linker>=1.9; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "furo; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-lint; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.tidelift>=1.4; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pygments-github-lexers==0.0.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-favicon; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-inline-tabs; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-reredirects; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-towncrier; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-notfound-page<2,>=1; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyproject-hooks!=1.1; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "towncrier<24.7; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging>=24.2; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "more_itertools>=8.8; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.text>=3.7; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib_metadata>=6; python_version < \"3.10\" and extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli>=2.0.1; python_version < \"3.11\" and extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel>=0.43.0; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "platformdirs>=4.2.2; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.functools>=4; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "more_itertools; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-checkdocs>=2.4; extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-ruff>=0.2.1; sys_platform != \"cygwin\" and extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ruff>=0.13.0; sys_platform != \"cygwin\" and extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == \"cover\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-enabler>=2.2; extra == \"enabler\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-mypy; extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy==1.18.*; extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib_metadata>=7.0.2; python_version < \"3.10\" and extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.develop>=7.21; sys_platform != \"cygwin\" and extra == \"type\""
+        }
+      ],
+      "version": "82.0.0"
+    },
+    "zope.interface": {
+      "content_manifest": {
+        "bytes": 18714,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/zope-interface.json",
+        "sha256": "feb65e1a6988c146905310197b3240bdd120195ec55d25b124be34a021141037"
+      },
+      "file_count": 61,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 40634,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/METADATA",
+          "sha256": "40720c7b7e62c987519c1ae1516eb19e443e2e8f6149edd66352d819d61cd740"
+        },
+        {
+          "bytes": 8744,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/RECORD",
+          "sha256": "df3d93344e09fa0d7b06de3a6f7255d033f1a343cdfbe207650faeaf977b924a"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "zope.interface",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "setuptools"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "Sphinx ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "repoze.sphinx.autointerface ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage >=5.0.3 ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.event ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.testing ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage >=5.0.3 ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.event ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.testing ; extra == 'testing'"
+        }
+      ],
+      "version": "5.4.0"
+    }
+  },
+  "survey_row": "| `reasoning_gym` | Q: `actor-workdir` | `data/datasets/reasoning_gym.py:153` QASpec binding; `data/datasets/reasoning_gym.py:169` scaffold files environment | `data/datasets/reasoning_gym.py:108` imports installed package; `data/datasets/reasoning_gym.py:114` reconstructs family; `data/datasets/reasoning_gym.py:115` calls `score_answer` | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}

@@ -1,0 +1,1369 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 19347,
+      "definitions": [
+        {
+          "line": 110,
+          "locator": "def estimate_pass_at_k(num_samples, num_correct, k):",
+          "symbol": "estimate_pass_at_k"
+        },
+        {
+          "line": 132,
+          "locator": "def compute_metrics_from_results(results, k_list=[1, 5]):",
+          "symbol": "compute_metrics_from_results"
+        },
+        {
+          "line": 163,
+          "locator": "def decode_private_test_cases(value: str) -> list[dict]:",
+          "symbol": "decode_private_test_cases"
+        },
+        {
+          "line": 185,
+          "locator": "def _raw() -> list[dict]:",
+          "symbol": "_raw"
+        },
+        {
+          "line": 204,
+          "locator": "def task_id(index: int) -> str:",
+          "symbol": "task_id"
+        },
+        {
+          "line": 208,
+          "locator": "def _row_for(task: dict) -> dict:",
+          "symbol": "_row_for"
+        },
+        {
+          "line": 212,
+          "locator": "def _tests_path(row: dict) -> Path:",
+          "symbol": "_tests_path"
+        },
+        {
+          "line": 229,
+          "locator": "def _question(row: dict) -> str:",
+          "symbol": "_question"
+        },
+        {
+          "line": 247,
+          "locator": "def _setup(row: dict) -> dict:",
+          "symbol": "_setup"
+        },
+        {
+          "line": 262,
+          "locator": "def _verify(row: dict) -> dict:",
+          "symbol": "_verify"
+        },
+        {
+          "line": 307,
+          "locator": "def references() -> dict[str, str]:",
+          "symbol": "references"
+        },
+        {
+          "line": 317,
+          "locator": "def _coverage() -> str:",
+          "symbol": "_coverage"
+        },
+        {
+          "line": 334,
+          "locator": "def oracle_files(task: dict) -> dict[str, str]:",
+          "symbol": "oracle_files"
+        },
+        {
+          "line": 352,
+          "locator": "def load() -> tuple[list[dict], dict[str, str]]:",
+          "symbol": "load"
+        },
+        {
+          "line": 360,
+          "locator": "def downloads() -> list[dict]:",
+          "symbol": "downloads"
+        },
+        {
+          "line": 377,
+          "locator": "def provision_status() -> dict:",
+          "symbol": "provision_status"
+        },
+        {
+          "line": 113,
+          "locator": "    def estimator(n: int, c: int, k: int) -> float:",
+          "symbol": "estimator"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 57,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 59,
+          "locator": "import base64",
+          "statement": "import base64"
+        },
+        {
+          "line": 60,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 61,
+          "locator": "import pickle",
+          "statement": "import pickle"
+        },
+        {
+          "line": 62,
+          "locator": "import zlib",
+          "statement": "import zlib"
+        },
+        {
+          "line": 63,
+          "locator": "from pathlib import Path",
+          "statement": "from pathlib import Path"
+        },
+        {
+          "line": 65,
+          "locator": "import numpy as np",
+          "statement": "import numpy as np"
+        },
+        {
+          "line": 67,
+          "locator": "from data.scaffolds import registry",
+          "statement": "from data.scaffolds import registry"
+        },
+        {
+          "line": 119,
+          "locator": "    import itertools",
+          "statement": "import itertools"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/livecodebench.py",
+      "sha256": "69b06146ce29a1376f293436f9f0d050866be0d89a647f6e862cb664f7850ec2"
+    },
+    {
+      "bytes": 10099,
+      "definitions": [
+        {
+          "line": 62,
+          "locator": "def _workdir_on_path() -> None:",
+          "symbol": "_workdir_on_path"
+        },
+        {
+          "line": 78,
+          "locator": "def _child(tests_text: str, solution: str, queue) -> None:",
+          "symbol": "_child"
+        },
+        {
+          "line": 100,
+          "locator": "def _positive(value) -> bool:",
+          "symbol": "_positive"
+        },
+        {
+          "line": 115,
+          "locator": "def _write(path: str, payload: str) -> None:",
+          "symbol": "_write"
+        },
+        {
+          "line": 121,
+          "locator": "def _measure(args, reward: float, why: str, total: int, passed: int, results) -> int:",
+          "symbol": "_measure"
+        },
+        {
+          "line": 131,
+          "locator": "def _cannot_measure(args, why: str) -> int:",
+          "symbol": "_cannot_measure"
+        },
+        {
+          "line": 138,
+          "locator": "def main() -> int:",
+          "symbol": "main"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 48,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 50,
+          "locator": "import argparse",
+          "statement": "import argparse"
+        },
+        {
+          "line": 51,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 52,
+          "locator": "import multiprocessing",
+          "statement": "import multiprocessing"
+        },
+        {
+          "line": 53,
+          "locator": "import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 54,
+          "locator": "from pathlib import Path",
+          "statement": "from pathlib import Path"
+        },
+        {
+          "line": 86,
+          "locator": "        from testing_util import run_test",
+          "statement": "from testing_util import run_test"
+        },
+        {
+          "line": 191,
+          "locator": "        from pass_k_utils import compute_metrics_from_results",
+          "statement": "from pass_k_utils import compute_metrics_from_results"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/livecodebench/verify/check.py",
+      "sha256": "191ee875cf2443dd1e284781d196864d563fe354b12863365b21de5954d75274"
+    },
+    {
+      "bytes": 8110,
+      "definitions": [
+        {
+          "line": 75,
+          "locator": "def _row(raw: dict, tests_path: pathlib.Path) -> dict:",
+          "symbol": "_row"
+        },
+        {
+          "line": 101,
+          "locator": "def build() -> tuple[list[dict], dict[str, int]]:",
+          "symbol": "build"
+        },
+        {
+          "line": 124,
+          "locator": "def digest() -> str:",
+          "symbol": "digest"
+        },
+        {
+          "line": 129,
+          "locator": "def main(argv=None) -> int:",
+          "symbol": "main"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 51,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 53,
+          "locator": "import argparse",
+          "statement": "import argparse"
+        },
+        {
+          "line": 54,
+          "locator": "import hashlib",
+          "statement": "import hashlib"
+        },
+        {
+          "line": 55,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 56,
+          "locator": "import pathlib",
+          "statement": "import pathlib"
+        },
+        {
+          "line": 57,
+          "locator": "import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 62,
+          "locator": "import data.datasets.livecodebench as adapter  # noqa: E402",
+          "statement": "import data.datasets.livecodebench as adapter"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/livecodebench/prepare.py",
+      "sha256": "3b422bb1fc913993b58873ea0dd543eaacecdbf2ebc65d001fa8326d2df1b6c5"
+    },
+    {
+      "bytes": 18276,
+      "definitions": [
+        {
+          "line": 30,
+          "locator": "def truncatefn(s, length=300):",
+          "symbol": "truncatefn"
+        },
+        {
+          "line": 41,
+          "locator": "class CODE_TYPE(Enum):",
+          "symbol": "CODE_TYPE"
+        },
+        {
+          "line": 47,
+          "locator": "class TimeoutException(Exception):",
+          "symbol": "TimeoutException"
+        },
+        {
+          "line": 51,
+          "locator": "def timeout_handler(signum, frame):",
+          "symbol": "timeout_handler"
+        },
+        {
+          "line": 59,
+          "locator": "class Capturing(list):",
+          "symbol": "Capturing"
+        },
+        {
+          "line": 74,
+          "locator": "class MockStdinWithBuffer:",
+          "symbol": "MockStdinWithBuffer"
+        },
+        {
+          "line": 94,
+          "locator": "class MockBuffer:",
+          "symbol": "MockBuffer"
+        },
+        {
+          "line": 106,
+          "locator": "def clean_if_name(code: str) -> str:",
+          "symbol": "clean_if_name"
+        },
+        {
+          "line": 122,
+          "locator": "def make_function(code: str) -> str:",
+          "symbol": "make_function"
+        },
+        {
+          "line": 154,
+          "locator": "def call_method(method, inputs):",
+          "symbol": "call_method"
+        },
+        {
+          "line": 184,
+          "locator": "def get_function(compiled_sol, fn_name: str):  # type: ignore",
+          "symbol": "get_function"
+        },
+        {
+          "line": 192,
+          "locator": "def compile_code(code: str, timeout: int):",
+          "symbol": "compile_code"
+        },
+        {
+          "line": 214,
+          "locator": "def convert_line_to_decimals(line: str) -> tuple[bool, list[Decimal]]:",
+          "symbol": "convert_line_to_decimals"
+        },
+        {
+          "line": 222,
+          "locator": "def get_stripped_lines(val: str):",
+          "symbol": "get_stripped_lines"
+        },
+        {
+          "line": 229,
+          "locator": "def grade_call_based(",
+          "symbol": "grade_call_based"
+        },
+        {
+          "line": 310,
+          "locator": "def grade_stdio(",
+          "symbol": "grade_stdio"
+        },
+        {
+          "line": 428,
+          "locator": "def run_test(sample, test=None, debug=False, timeout=6):",
+          "symbol": "run_test"
+        },
+        {
+          "line": 509,
+          "locator": "def reliability_guard(maximum_memory_bytes=None):",
+          "symbol": "reliability_guard"
+        },
+        {
+          "line": 60,
+          "locator": "    def __enter__(self):",
+          "symbol": "__enter__"
+        },
+        {
+          "line": 67,
+          "locator": "    def __exit__(self, *args):",
+          "symbol": "__exit__"
+        },
+        {
+          "line": 75,
+          "locator": "    def __init__(self, inputs: str):",
+          "symbol": "__init__"
+        },
+        {
+          "line": 80,
+          "locator": "    def read(self, *args):",
+          "symbol": "read"
+        },
+        {
+          "line": 83,
+          "locator": "    def readline(self, *args):",
+          "symbol": "readline"
+        },
+        {
+          "line": 86,
+          "locator": "    def readlines(self, *args):",
+          "symbol": "readlines"
+        },
+        {
+          "line": 89,
+          "locator": "    def __getattr__(self, name):",
+          "symbol": "__getattr__"
+        },
+        {
+          "line": 95,
+          "locator": "    def __init__(self, inputs: str):",
+          "symbol": "__init__"
+        },
+        {
+          "line": 98,
+          "locator": "    def read(self, *args):",
+          "symbol": "read"
+        },
+        {
+          "line": 102,
+          "locator": "    def readline(self, *args):",
+          "symbol": "readline"
+        },
+        {
+          "line": 173,
+          "locator": "    def _inner_call_method(_method):",
+          "symbol": "_inner_call_method"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 1,
+          "locator": "import ast",
+          "statement": "import ast"
+        },
+        {
+          "line": 2,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 3,
+          "locator": "import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 4,
+          "locator": "import faulthandler",
+          "statement": "import faulthandler"
+        },
+        {
+          "line": 5,
+          "locator": "import platform",
+          "statement": "import platform"
+        },
+        {
+          "line": 8,
+          "locator": "from datetime import datetime",
+          "statement": "from datetime import datetime"
+        },
+        {
+          "line": 11,
+          "locator": "import signal",
+          "statement": "import signal"
+        },
+        {
+          "line": 13,
+          "locator": "import numpy as np",
+          "statement": "import numpy as np"
+        },
+        {
+          "line": 15,
+          "locator": "from io import StringIO",
+          "statement": "from io import StringIO"
+        },
+        {
+          "line": 18,
+          "locator": "from unittest.mock import patch, mock_open",
+          "statement": "from unittest.mock import patch, mock_open"
+        },
+        {
+          "line": 21,
+          "locator": "from types import ModuleType",
+          "statement": "from types import ModuleType"
+        },
+        {
+          "line": 23,
+          "locator": "from enum import Enum",
+          "statement": "from enum import Enum"
+        },
+        {
+          "line": 24,
+          "locator": "from decimal import Decimal",
+          "statement": "from decimal import Decimal"
+        },
+        {
+          "line": 25,
+          "locator": "import time",
+          "statement": "import time"
+        },
+        {
+          "line": 537,
+          "locator": "    import builtins",
+          "statement": "import builtins"
+        },
+        {
+          "line": 542,
+          "locator": "    import os",
+          "statement": "import os"
+        },
+        {
+          "line": 574,
+          "locator": "    import shutil",
+          "statement": "import shutil"
+        },
+        {
+          "line": 580,
+          "locator": "    import subprocess",
+          "statement": "import subprocess"
+        },
+        {
+          "line": 586,
+          "locator": "    import sys",
+          "statement": "import sys"
+        },
+        {
+          "line": 522,
+          "locator": "        import resource",
+          "statement": "import resource"
+        }
+      ],
+      "location": "external-local",
+      "path": "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/testing_util.py",
+      "sha256": "b7cb6a8a69807bb868150a61742e25d7bb5328bbe01d514471b6ec43c9fa9ed2"
+    },
+    {
+      "bytes": 2063,
+      "definitions": [
+        {
+          "line": 4,
+          "locator": "def estimate_pass_at_k(num_samples, num_correct, k):",
+          "symbol": "estimate_pass_at_k"
+        },
+        {
+          "line": 26,
+          "locator": "def compute_metrics_from_results(results, k_list=[1, 5]):",
+          "symbol": "compute_metrics_from_results"
+        },
+        {
+          "line": 56,
+          "locator": "def extract_instance_results(results):",
+          "symbol": "extract_instance_results"
+        },
+        {
+          "line": 7,
+          "locator": "    def estimator(n: int, c: int, k: int) -> float:",
+          "symbol": "estimator"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 1,
+          "locator": "import numpy as np",
+          "statement": "import numpy as np"
+        },
+        {
+          "line": 13,
+          "locator": "    import itertools",
+          "statement": "import itertools"
+        }
+      ],
+      "location": "external-local",
+      "path": "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/pass_k_utils.py",
+      "sha256": "6af3ee55d40f96fa06fa511bd5e43d94b19604750e82454b4b3c1f45c5199010"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "livecodebench",
+  "declared_dependency_package_keys": [
+    "mkl-service",
+    "numpy"
+  ],
+  "directly_observed_imported_packages": {
+    "mkl-service": {
+      "content_manifest": {
+        "bytes": 490,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/mkl-service.json",
+        "sha256": "2660691ff8eb40871dd52f4e00d9214e971b3c0e658f8fe58d4c50a2eaf24e8c"
+      },
+      "file_count": 1,
+      "installed": true,
+      "metadata_files": [],
+      "missing_members": 0,
+      "name": "mkl-service",
+      "requirements": [],
+      "version": "2.4.0"
+    },
+    "numpy": {
+      "content_manifest": {
+        "bytes": 225626,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/numpy.json",
+        "sha256": "661437f25f2d389466d0da62dbcd19def9d78302862306860c20cc64ebb4910d"
+      },
+      "file_count": 790,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 7335,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/METADATA",
+          "sha256": "4f151eefd36459b2a4b1831a4faaf673f3fa95a0397c27c52dc4cd2591202f66"
+        },
+        {
+          "bytes": 98414,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/RECORD",
+          "sha256": "e675fb07b66c67ed54918e4d01d31583781881e9870c95f2b46238e3351a62d6"
+        },
+        {
+          "bytes": 88,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/WHEEL",
+          "sha256": "634159ee5c5f58a5b2d30fe69e35e1149cf5f2be37f307e1642a9742d342a6f5"
+        }
+      ],
+      "missing_members": 0,
+      "name": "numpy",
+      "requirements": [],
+      "version": "1.26.4"
+    }
+  },
+  "entry_points": [
+    {
+      "bytes": 19347,
+      "exists": true,
+      "line": 262,
+      "location": "checkout",
+      "locator": "def _verify(row: dict) -> dict:",
+      "path": "data/datasets/livecodebench.py",
+      "role": "native command/input construction",
+      "sha256": "69b06146ce29a1376f293436f9f0d050866be0d89a647f6e862cb664f7850ec2",
+      "symbol": "_verify"
+    },
+    {
+      "bytes": 10099,
+      "exists": true,
+      "line": 138,
+      "location": "checkout",
+      "locator": "def main() -> int:",
+      "path": "data/datasets/livecodebench/verify/check.py",
+      "role": "native check/reduction entry",
+      "sha256": "191ee875cf2443dd1e284781d196864d563fe354b12863365b21de5954d75274",
+      "symbol": "main"
+    },
+    {
+      "bytes": 18276,
+      "exists": true,
+      "line": 428,
+      "location": "external-local",
+      "locator": "def run_test(sample, test=None, debug=False, timeout=6):",
+      "path": "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/testing_util.py",
+      "role": "upstream scorer child/aggregation",
+      "sha256": "b7cb6a8a69807bb868150a61742e25d7bb5328bbe01d514471b6ec43c9fa9ed2",
+      "symbol": "run_test"
+    },
+    {
+      "bytes": 2063,
+      "exists": true,
+      "line": 26,
+      "location": "external-local",
+      "locator": "def compute_metrics_from_results(results, k_list=[1, 5]):",
+      "path": "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/pass_k_utils.py",
+      "role": "upstream scorer child/aggregation",
+      "sha256": "6af3ee55d40f96fa06fa511bd5e43d94b19604750e82454b4b3c1f45c5199010",
+      "symbol": "compute_metrics_from_results"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 10099,
+      "exists": true,
+      "line": 147,
+      "location": "checkout",
+      "locator": "    tests_path = Path(args.tests)",
+      "path": "data/datasets/livecodebench/verify/check.py",
+      "role": "expected-data use in native check",
+      "sha256": "191ee875cf2443dd1e284781d196864d563fe354b12863365b21de5954d75274"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 320613,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/livecodebench.json",
+    "sha256": "f3bca9164e01cbbd3db3992e46a8fba93ade9f81e6f3cf31152df7237ab10cb3"
+  },
+  "import_receipts": [
+    {
+      "bytes": 88996,
+      "exists": true,
+      "location": "checkout",
+      "path": "tests/fixtures/hg_wclo_actor/imports/livecodebench.json",
+      "sha256": "d3c68e83092516f678f8f2380da71231949531f31329c58c4e81e8f5ad560644"
+    }
+  ],
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "Decoded tests are hashed individually; linkage to pinned raw shards/prepare.py is not re-executed.",
+    "Candidate code can import additional modules; no arbitrary submitted-code closure is claimed.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 75,
+      "source": "REVISION = \"0fe84c3912ea0c4d4a78037083943e8f0c4dd505\"",
+      "symbol": "REVISION"
+    },
+    {
+      "line": 76,
+      "source": "UPSTREAM_COMMIT = \"28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24\"",
+      "symbol": "UPSTREAM_COMMIT"
+    },
+    {
+      "line": 78,
+      "source": "SOURCE_SHA256 = \"56c7c42aee979def86b69547ecd6d5a877a0e4940af8923bf4325ca0defecbaf\"",
+      "symbol": "SOURCE_SHA256"
+    },
+    {
+      "line": 81,
+      "source": "POOL_SHA256 = \"bbf2bf826856156656568f568e4026f7702f90b5da22a880b733b755a69f4256\"",
+      "symbol": "POOL_SHA256"
+    },
+    {
+      "line": 89,
+      "source": "REFERENCES = PACKAGE / \"references\"",
+      "symbol": "REFERENCES"
+    }
+  ],
+  "qa_check_path": null,
+  "route": "F: native command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {
+    "setuptools": {
+      "content_manifest": {
+        "bytes": 134598,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/setuptools.json",
+        "sha256": "59bcbff6ac844a04b0942bcc11e1b90ccbdba018f6b19232491a61a752c19881"
+      },
+      "file_count": 440,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 6573,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/METADATA",
+          "sha256": "ac7e92d32efa17a0d854cbccbe9c3244f7caa5e5633b32f1a1fde1da26ae915f"
+        },
+        {
+          "bytes": 64617,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/RECORD",
+          "sha256": "3166de15748cdd4190cb61f79a261ab1ac72043521dcab90325287306eb7a7d3"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools-82.0.0.dist-info/WHEEL",
+          "sha256": "6027f0606398322e49870d9f538c8d83012bc9b6f6217e4f13004a57865b741a"
+        },
+        {
+          "bytes": 15006,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/METADATA",
+          "sha256": "3800d9b91dceea2065a6ed6279383362e97ac38b8e56b9343f404ee531860099"
+        },
+        {
+          "bytes": 1072,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/RECORD",
+          "sha256": "2bee6072cbcec6390c57107c8dfcb0422918a98ecdb5a2cc362187f13d42e96f"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/autocommand-2.2.2.dist-info/WHEEL",
+          "sha256": "db07a93359e4e034b8785a58ad6d534ea3dca0635f1e184efe2e66e1c3a299ba"
+        },
+        {
+          "bytes": 2020,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/METADATA",
+          "sha256": "8215c54ead77d9dc5a108a25c6bdc72b5999aa6f62c9499a440359412afa5a51"
+        },
+        {
+          "bytes": 1056,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/RECORD",
+          "sha256": "0f69db719b54220d6a4adff8bfb04ac98affea3dc8b54054a1a787a17567f4d1"
+        },
+        {
+          "bytes": 92,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        },
+        {
+          "bytes": 4670,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA",
+          "sha256": "a3e38b9ee4326289d4864704f30e299ee769e2309ce9f4a75f0de1a50ad0a356"
+        },
+        {
+          "bytes": 1868,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD",
+          "sha256": "52a6b8ee0de15cf7fd99625f43b97cd2e3942ac86f16054ea90de48e66f29355"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 3731,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/METADATA",
+          "sha256": "5c2fd09012c954f139b10624978d5335a654c34014cd06f6f466ca683dbc9c56"
+        },
+        {
+          "bytes": 1157,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/RECORD",
+          "sha256": "63b936c308d0fcbe1390e824567cc007536c32a849adb02278e95f1d4c736c31"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco.text-4.0.0.dist-info/WHEEL",
+          "sha256": "5b287efe76740c9628947367d7f84c6b894ceee0de743fd1195c1b9938f222d9"
+        },
+        {
+          "bytes": 4270,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/METADATA",
+          "sha256": "0435ebfc52055c5a9974ed20c171b6454383eaf9dbb1508814ba7ad97c59d712"
+        },
+        {
+          "bytes": 777,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/RECORD",
+          "sha256": "4599d876ceb42b7eef03aa39e235c4ebeab6aea2409dbe634496852393d1f837"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_context-6.1.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 2960,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/METADATA",
+          "sha256": "2e79da8dc3469924abe3ac8b22a3feb5692a79bf9f47bbc86b6535d618641849"
+        },
+        {
+          "bytes": 882,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/RECORD",
+          "sha256": "baafd2d6d94c1bde453e4c805ac05511dc53986e0a63b02f674ef0f788bec146"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        },
+        {
+          "bytes": 39413,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/METADATA",
+          "sha256": "6ab3515145abe58b067f087c867631cf4cf5d653fed81b9642ee12086c3904b8"
+        },
+        {
+          "bytes": 1095,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/RECORD",
+          "sha256": "9ed1b134c0aa83722f36e99f3918aa9610ce3a0a514d793bbb74a368d441a01d"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/more_itertools-10.8.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 3309,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/METADATA",
+          "sha256": "3362bb7d6a26da2962ba8daaa4785cd0bacac21aba908a1195cc8f59580a265a"
+        },
+        {
+          "bytes": 2113,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/RECORD",
+          "sha256": "f50503333aae9517807d2fb4d81fc27cb60aa644666f50176812626d6224ce5d"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/packaging-26.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 12831,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/METADATA",
+          "sha256": "bbc5216d5f4c77bfbc57227264d52e66bccde71ccf79e75e1a6046d029d30223"
+        },
+        {
+          "bytes": 1218,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/RECORD",
+          "sha256": "3d0d2f1cc018593c4d8baa2395baf0b1c1c645bbd8c18cd064f49cb4e4c95ea0"
+        },
+        {
+          "bytes": 87,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/platformdirs-4.4.0.dist-info/WHEEL",
+          "sha256": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+        },
+        {
+          "bytes": 10567,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/METADATA",
+          "sha256": "f5ac0a1f8fba908b4646cd655309e91aad969b6787616ac571ca462a3832ffce"
+        },
+        {
+          "bytes": 822,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/RECORD",
+          "sha256": "225430ce95640e8d4fcdb93cdae2fc38d685aec016d0e293d5fb99a695886fed"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/tomli-2.4.0.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 2410,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/METADATA",
+          "sha256": "22910aa97ca89cbcc20a019e27fe31360b7929a4bd66ca0d310f99a44f6ccd35"
+        },
+        {
+          "bytes": 1734,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/RECORD",
+          "sha256": "b0297c3ada17b8727e15ddd6d1e38c8a90a997f779fcf978996f6fec62ecb702"
+        },
+        {
+          "bytes": 82,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/wheel-0.46.3.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+        },
+        {
+          "bytes": 3563,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/METADATA",
+          "sha256": "bdd67d4d16cf0bf3b893e7d18cd3d2d774adb82f37ed985bc7770c607226b35b"
+        },
+        {
+          "bytes": 1078,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/RECORD",
+          "sha256": "3bfab660a24704f84228e4bb1ce1f0e3fa9ff80e5c806352a626b2f460ead836"
+        },
+        {
+          "bytes": 91,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/_vendor/zipp-3.23.0.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "setuptools",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest!=8.1.*,>=6; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "virtualenv>=13.0.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel>=0.44.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pip>=19.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging>=24.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.envs>=2.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-xdist>=3; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.path>=3.7.2; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "build[virtualenv]>=1.0.3; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "filelock>=3.4.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ini2toml[lite]>=0.14; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli-w>=1.0.0; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-timeout; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-perf; sys_platform != \"cygwin\" and extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.develop>=7.21; (python_version >= \"3.9\" and sys_platform != \"cygwin\") and extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-home>=0.5; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-subprocess; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyproject-hooks!=1.1; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.test>=5.5; extra == \"test\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx>=3.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.packaging>=9.3; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "rst.linker>=1.9; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "furo; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-lint; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.tidelift>=1.4; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pygments-github-lexers==0.0.5; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-favicon; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-inline-tabs; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-reredirects; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinxcontrib-towncrier; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "sphinx-notfound-page<2,>=1; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pyproject-hooks!=1.1; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "towncrier<24.7; extra == \"doc\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "packaging>=24.2; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "more_itertools>=8.8; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.text>=3.7; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib_metadata>=6; python_version < \"3.10\" and extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "tomli>=2.0.1; python_version < \"3.11\" and extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "wheel>=0.43.0; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "platformdirs>=4.2.2; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.functools>=4; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "more_itertools; extra == \"core\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-checkdocs>=2.4; extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-ruff>=0.2.1; sys_platform != \"cygwin\" and extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "ruff>=0.13.0; sys_platform != \"cygwin\" and extra == \"check\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-cov; extra == \"cover\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-enabler>=2.2; extra == \"enabler\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "pytest-mypy; extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "mypy==1.18.*; extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "importlib_metadata>=7.0.2; python_version < \"3.10\" and extra == \"type\""
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "jaraco.develop>=7.21; sys_platform != \"cygwin\" and extra == \"type\""
+        }
+      ],
+      "version": "82.0.0"
+    },
+    "zope.interface": {
+      "content_manifest": {
+        "bytes": 18714,
+        "exists": true,
+        "location": "checkout",
+        "path": "tests/fixtures/hg_wclo_actor/packages/zope-interface.json",
+        "sha256": "feb65e1a6988c146905310197b3240bdd120195ec55d25b124be34a021141037"
+      },
+      "file_count": 61,
+      "installed": true,
+      "metadata_files": [
+        {
+          "bytes": 40634,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/METADATA",
+          "sha256": "40720c7b7e62c987519c1ae1516eb19e443e2e8f6149edd66352d819d61cd740"
+        },
+        {
+          "bytes": 8744,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/RECORD",
+          "sha256": "df3d93344e09fa0d7b06de3a6f7255d033f1a343cdfbe207650faeaf977b924a"
+        },
+        {
+          "bytes": 105,
+          "exists": true,
+          "location": "external-local",
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope.interface-5.4.0.dist-info/WHEEL",
+          "sha256": "92a0882861bfbcd45a4ff7d0aaad995165f50733ad70bb96b440cdd1f4f96a3b"
+        }
+      ],
+      "missing_members": 0,
+      "name": "zope.interface",
+      "requirements": [
+        {
+          "active_default_or_textworld_pddl": true,
+          "requirement": "setuptools"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "Sphinx ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "repoze.sphinx.autointerface ; extra == 'docs'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage >=5.0.3 ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.event ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.testing ; extra == 'test'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "coverage >=5.0.3 ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.event ; extra == 'testing'"
+        },
+        {
+          "active_default_or_textworld_pddl": false,
+          "requirement": "zope.testing ; extra == 'testing'"
+        }
+      ],
+      "version": "5.4.0"
+    }
+  },
+  "survey_row": "| `livecodebench` | F: `actor-workdir`, with another scorer child | `data/datasets/livecodebench.py:264` command; `data/datasets/livecodebench.py:265` check argv; `data/datasets/livecodebench.py:287` files environment | `data/datasets/livecodebench/verify/check.py:169` starts a separate executor process; `data/datasets/livecodebench/verify/check.py:91` calls pinned `run_test` there | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}

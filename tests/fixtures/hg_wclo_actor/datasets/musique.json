@@ -1,0 +1,337 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 13717,
+      "definitions": [
+        {
+          "line": 44,
+          "locator": "def normalize_answer(s):",
+          "symbol": "normalize_answer"
+        },
+        {
+          "line": 53,
+          "locator": "def compute_exact(a_gold, a_pred):",
+          "symbol": "compute_exact"
+        },
+        {
+          "line": 57,
+          "locator": "def compute_f1(a_gold, a_pred):",
+          "symbol": "compute_f1"
+        },
+        {
+          "line": 70,
+          "locator": "def _check_mode(mode: str) -> None:",
+          "symbol": "_check_mode"
+        },
+        {
+          "line": 75,
+          "locator": "def compute_support(predicted_indices: list[int], gold_indices: list[int]) -> dict:",
+          "symbol": "compute_support"
+        },
+        {
+          "line": 88,
+          "locator": "def _score(answer: str, evidence: list | None, gold: dict, mode: str) -> dict:",
+          "symbol": "_score"
+        },
+        {
+          "line": 116,
+          "locator": "def score_prediction(prediction: dict, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:",
+          "symbol": "score_prediction"
+        },
+        {
+          "line": 125,
+          "locator": "def score(prediction: str, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:",
+          "symbol": "score"
+        },
+        {
+          "line": 130,
+          "locator": "def aggregate(results: list[dict]) -> dict:",
+          "symbol": "aggregate"
+        },
+        {
+          "line": 166,
+          "locator": "def _rows():",
+          "symbol": "_rows"
+        },
+        {
+          "line": 176,
+          "locator": "def _question(row):",
+          "symbol": "_question"
+        },
+        {
+          "line": 182,
+          "locator": "def _gold(row):",
+          "symbol": "_gold"
+        },
+        {
+          "line": 188,
+          "locator": "def _goal(question, gold, *, mode=DEFAULT_MODE):",
+          "symbol": "_goal"
+        },
+        {
+          "line": 208,
+          "locator": "def _downloads():",
+          "symbol": "_downloads"
+        },
+        {
+          "line": 223,
+          "locator": "class _MuSiQueSpec(base.QASpec):",
+          "symbol": "_MuSiQueSpec"
+        },
+        {
+          "line": 259,
+          "locator": "def __getattr__(name):",
+          "symbol": "__getattr__"
+        },
+        {
+          "line": 265,
+          "locator": "def load(*, mode=DEFAULT_MODE):",
+          "symbol": "load"
+        },
+        {
+          "line": 271,
+          "locator": "def verify_for(record: dict, *, mode: str = DEFAULT_MODE) -> dict:",
+          "symbol": "verify_for"
+        },
+        {
+          "line": 279,
+          "locator": "def downloads():",
+          "symbol": "downloads"
+        },
+        {
+          "line": 283,
+          "locator": "def provision_status():",
+          "symbol": "provision_status"
+        },
+        {
+          "line": 46,
+          "locator": "    def remove_articles(text):",
+          "symbol": "remove_articles"
+        },
+        {
+          "line": 48,
+          "locator": "    def remove_punc(text):",
+          "symbol": "remove_punc"
+        },
+        {
+          "line": 226,
+          "locator": "    def verifier(self, record):",
+          "symbol": "verifier"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 17,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 19,
+          "locator": "import collections",
+          "statement": "import collections"
+        },
+        {
+          "line": 20,
+          "locator": "import json",
+          "statement": "import json"
+        },
+        {
+          "line": 21,
+          "locator": "import re",
+          "statement": "import re"
+        },
+        {
+          "line": 22,
+          "locator": "import string",
+          "statement": "import string"
+        },
+        {
+          "line": 23,
+          "locator": "from pathlib import Path",
+          "statement": "from pathlib import Path"
+        },
+        {
+          "line": 25,
+          "locator": "from data.scaffolds.qa import base",
+          "statement": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 117,
+          "locator": "    from data.scaffolds.qa.prediction import validate_prediction",
+          "statement": "from data.scaffolds.qa.prediction import validate_prediction"
+        },
+        {
+          "line": 140,
+          "locator": "    from data.scaffolds.aggregation import aggregation_denominator",
+          "statement": "from data.scaffolds.aggregation import aggregation_denominator"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/musique.py",
+      "sha256": "817af68df579bcf577c64a9613fa5b368424ee00dc4101f20ad00010c357e5f2"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "musique",
+  "declared_dependency_package_keys": [],
+  "directly_observed_imported_packages": {},
+  "entry_points": [
+    {
+      "bytes": 13717,
+      "exists": true,
+      "line": 125,
+      "location": "checkout",
+      "locator": "def score(prediction: str, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:",
+      "path": "data/datasets/musique.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "817af68df579bcf577c64a9613fa5b368424ee00dc4101f20ad00010c357e5f2",
+      "symbol": "score"
+    },
+    {
+      "bytes": 13717,
+      "exists": true,
+      "line": 116,
+      "location": "checkout",
+      "locator": "def score_prediction(prediction: dict, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:",
+      "path": "data/datasets/musique.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "817af68df579bcf577c64a9613fa5b368424ee00dc4101f20ad00010c357e5f2",
+      "symbol": "score_prediction"
+    },
+    {
+      "bytes": 27530,
+      "exists": true,
+      "line": 322,
+      "location": "checkout",
+      "locator": "    def verifier(self, record: dict) -> dict:",
+      "path": "data/scaffolds/qa/base.py",
+      "role": "QA command/input construction",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e",
+      "symbol": "verifier"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 137,
+      "location": "checkout",
+      "locator": "def main(argv) -> int:",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "shared QA check entry",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220",
+      "symbol": "main"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 166,
+      "location": "checkout",
+      "locator": "        gold = json.loads(gold_path.read_text(encoding=\"utf-8\"))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "read trusted gold.json",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 217,
+      "location": "checkout",
+      "locator": "        adapter = __import__(module_name, fromlist=[\"score\"])",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "import staged adapter",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 238,
+      "location": "checkout",
+      "locator": "        result = (evidence_scorer(structured, gold, **score_options)",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "structured evidence branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 242,
+      "location": "checkout",
+      "locator": "                  else scorer(prediction, gold, **score_options))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "answer branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 1467,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/musique.json",
+    "sha256": "561e7e2b13feccde6ef4c442ce7bd082ec2668cec24252cb4c2252f1b7a85e69"
+  },
+  "import_receipts": [],
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "Mirror identity against canonical HF remains unverified; joint answer/support reward is platform-defined; trusted mode must match.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 38,
+      "source": "REVISION = \"c8f4f8c9465fb69d31a8eae894c3fd509c4ca321\"",
+      "symbol": "REVISION"
+    },
+    {
+      "line": 39,
+      "source": "DATA_SHA256 = \"15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b\"",
+      "symbol": "DATA_SHA256"
+    },
+    {
+      "line": 40,
+      "source": "OFFICIAL_COMMIT = \"922ac98f19a201998dbdae6d7f2887a5258dbdeb\"",
+      "symbol": "OFFICIAL_COMMIT"
+    },
+    {
+      "line": 41,
+      "source": "SOURCE_SHA256 = \"c1cc3d121e3f623f9925857559030d48c136142ee2c9cdb52214bb6134c02272\"",
+      "symbol": "SOURCE_SHA256"
+    }
+  ],
+  "qa_check_path": "data/scaffolds/qa/verify/check.py:137",
+  "route": "Q: shared QA command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {},
+  "survey_row": "| `musique` | Q: `actor-workdir` in both joint and legacy modes | `data/datasets/musique.py:227` Q verifier; `data/datasets/musique.py:275` trusted mode argv; `data/datasets/musique.py:240` files environment | `data/datasets/musique.py:88` mode-specific scorer; `data/datasets/musique.py:99` legacy reward; `data/datasets/musique.py:111` platform joint reward | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}

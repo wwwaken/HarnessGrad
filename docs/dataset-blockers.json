@@ -23,7 +23,7 @@
       "id": "scorer-offline-closure",
       "family": "scorer-dependency-network",
       "status": "code-solvable",
-      "observed": "Option B is implemented: bundles declare isolation_class; production verification records scorer_isolation_class and refuses mixed-class aggregation/comparison. The opt-in pristine-offline path verifies pinned local bundle bytes and inspects the stopped offline two-projection runtime before execution; snapshot-service preserves dependency/service networking. Synthetic controls establish integration and refusals, not complete transitive image/ABI closure or live dataset runtime evidence.",
+      "observed": "Option B is implemented: bundles declare isolation_class; production verification records scorer_isolation_class and refuses mixed-class aggregation/comparison. The opt-in pristine-offline path verifies pinned local bundle bytes and inspects the stopped offline two-projection runtime before execution; snapshot-service preserves dependency/service networking. Synthetic controls establish integration and refusals, not complete transitive image/ABI closure or live dataset runtime evidence. Source/bytes review 2026-10-15 - w-clo-actor adds partial local byte-closure records for all 19 surveyed actor-workdir datasets (alfworld, bfcl_v3, bird_minidev, chessbench_puzzles, ds1000, fever, gsm8k, hotpotqa, jericho, livecodebench, musique, physicsquestions, reasoning_gym, scienceworld, sportsunderstanding, spreadsheetbench, strategyqa, triviaqa, twowikimultihopqa): recomputed entry-point/file, interpreter/stdlib, installed package-member and expected-data hashes, provenance pins and explicit gaps. No complete provisioned offline scorer closure is established for these datasets. Appworld, gaia, tau_bench and terminal_bench snapshot/service closures are outside this inventory. Existing ALFWorld actor-workdir noop observations and Terminal-Bench snapshot-service receipts are preserved and cannot establish complete cross-dataset/class evidence. Complete transitive ABI/runtime custody, official provenance/execution, trusted class-specific resource/lifecycle/cleanup observations and valid live controls remain unmet; next_action and all references/statuses are unchanged.",
       "evidence": [
         {
           "kind": "repository",
@@ -49,6 +49,11 @@
           "kind": "repository",
           "path": "reports/sb-option-b-focused-tests.txt",
           "locator": "test_comparison_across_two_classes_is_refused_with_reason REFUSED: scorer isolation class mismatch: pristine-offline, snapshot-service"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/w-clo-actor-closures.md",
+          "locator": "zero complete provisioned offline scorer closures are certified."
         }
       ],
       "next_action": "Provision dataset-specific pinned scorer closures and class-specific runtime evidence, including complete transitive image/ABI dependencies, official provenance/execution and trusted lifecycle/resource/cleanup observations; validate live controls before pilots, preserve snapshot/service connectivity and compare only matching known classes."

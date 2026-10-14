@@ -1,0 +1,21 @@
+{
+  "archive_member_bindings": [],
+  "artifact_count": 1,
+  "artifacts": [
+    {
+      "bytes": 28041820,
+      "exists": true,
+      "location": "external-local",
+      "matches_literal_adapter_digest": true,
+      "path": "/mnt/20t/xubuqiang/datasets/hotpotqa/fullwiki/validation-00000-of-00001.parquet",
+      "sha256": "78933c0a31a5f7b420d4effdf4cd4eed573b28c6a3da6179dcf7a02b39e51d03"
+    }
+  ],
+  "binding": "These are source/expected-data bytes. Inline per-task gold/task/context files are created by the hashed adapter and are not generated or attested here.",
+  "dataset": "hotpotqa",
+  "dataset_root": "/mnt/20t/xubuqiang/datasets/hotpotqa",
+  "missing_patterns": [],
+  "pin_finding": "Computed member hashes pin current bytes; matching adapter literals are marked separately. Archive members are independently read and compared only where archive_member_bindings records an equal hash; other archive/derived-file linkage is not attested. No per-task inline serialization or submitted prediction is generated.",
+  "provenance_archives_or_shards": [],
+  "provenance_pin": "hotpot_qa@1908d6afbbead072334abe2965f91bd2709910ab; fullwiki validation"
+}

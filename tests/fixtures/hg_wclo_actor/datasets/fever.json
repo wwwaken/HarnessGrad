@@ -1,0 +1,213 @@
+{
+  "adapter_and_check_sources": [
+    {
+      "bytes": 4950,
+      "definitions": [
+        {
+          "line": 27,
+          "locator": "def score_prediction(prediction: dict, gold: dict) -> dict:",
+          "symbol": "score_prediction"
+        },
+        {
+          "line": 41,
+          "locator": "def score(prediction: str, gold: dict) -> dict:",
+          "symbol": "score"
+        },
+        {
+          "line": 46,
+          "locator": "def _rows() -> list[dict]:",
+          "symbol": "_rows"
+        },
+        {
+          "line": 104,
+          "locator": "def __getattr__(name: str):",
+          "symbol": "__getattr__"
+        },
+        {
+          "line": 108,
+          "locator": "def load() -> tuple[list[dict], dict[str, str]]:",
+          "symbol": "load"
+        },
+        {
+          "line": 112,
+          "locator": "def downloads() -> list[dict]:",
+          "symbol": "downloads"
+        },
+        {
+          "line": 116,
+          "locator": "def provision_status() -> dict:",
+          "symbol": "provision_status"
+        }
+      ],
+      "exists": true,
+      "imports": [
+        {
+          "line": 9,
+          "locator": "from __future__ import annotations",
+          "statement": "from __future__ import annotations"
+        },
+        {
+          "line": 11,
+          "locator": "from data.scaffolds.qa import base",
+          "statement": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 12,
+          "locator": "from data.scaffolds.qa.evidence_scorers import MissingEvidence, fever_is_strictly_correct",
+          "statement": "from data.scaffolds.qa.evidence_scorers import MissingEvidence, fever_is_strictly_correct"
+        }
+      ],
+      "location": "checkout",
+      "path": "data/datasets/fever.py",
+      "sha256": "7c0cd67c7d82d9c71f2bde4c52e564f279930f6fc7f62aae4cdda5b7c27afcd0"
+    }
+  ],
+  "class_evidence_kind": "source route; no new executed observation",
+  "closure_status": "partial-local-byte-closure; not production offline closure",
+  "dataset": "fever",
+  "declared_dependency_package_keys": [],
+  "directly_observed_imported_packages": {},
+  "entry_points": [
+    {
+      "bytes": 4950,
+      "exists": true,
+      "line": 41,
+      "location": "checkout",
+      "locator": "def score(prediction: str, gold: dict) -> dict:",
+      "path": "data/datasets/fever.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "7c0cd67c7d82d9c71f2bde4c52e564f279930f6fc7f62aae4cdda5b7c27afcd0",
+      "symbol": "score"
+    },
+    {
+      "bytes": 4950,
+      "exists": true,
+      "line": 27,
+      "location": "checkout",
+      "locator": "def score_prediction(prediction: dict, gold: dict) -> dict:",
+      "path": "data/datasets/fever.py",
+      "role": "adapter scorer reached by shared QA check",
+      "sha256": "7c0cd67c7d82d9c71f2bde4c52e564f279930f6fc7f62aae4cdda5b7c27afcd0",
+      "symbol": "score_prediction"
+    },
+    {
+      "bytes": 27530,
+      "exists": true,
+      "line": 322,
+      "location": "checkout",
+      "locator": "    def verifier(self, record: dict) -> dict:",
+      "path": "data/scaffolds/qa/base.py",
+      "role": "QA command/input construction",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e",
+      "symbol": "verifier"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 137,
+      "location": "checkout",
+      "locator": "def main(argv) -> int:",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "shared QA check entry",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220",
+      "symbol": "main"
+    }
+  ],
+  "executed_isolation_class_from_survey": "actor-workdir",
+  "execution_edges": [
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 166,
+      "location": "checkout",
+      "locator": "        gold = json.loads(gold_path.read_text(encoding=\"utf-8\"))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "read trusted gold.json",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 217,
+      "location": "checkout",
+      "locator": "        adapter = __import__(module_name, fromlist=[\"score\"])",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "import staged adapter",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 238,
+      "location": "checkout",
+      "locator": "        result = (evidence_scorer(structured, gold, **score_options)",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "structured evidence branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    },
+    {
+      "bytes": 13734,
+      "exists": true,
+      "line": 242,
+      "location": "checkout",
+      "locator": "                  else scorer(prediction, gold, **score_options))",
+      "path": "data/scaffolds/qa/verify/check.py",
+      "role": "answer branch",
+      "sha256": "0840a2136787abf92d200944c94bc18060428d1be285b228695ce728b1b7b220"
+    }
+  ],
+  "gold_expected_data": {
+    "bytes": 1126,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/gold/fever.json",
+    "sha256": "a25973ac2af3c5621d2c26c08de7f01d9609b835da754a7befe5a3355d83e9fe"
+  },
+  "import_receipts": [],
+  "interpreter": {
+    "bytes": 1029,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/interpreter.json",
+    "sha256": "88838e94263ab816238205f926f0da6aeb7053f1e07d587d9844c585c9107b39"
+  },
+  "native_abi_inventory": {
+    "bytes": 144204,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/native-files.json",
+    "sha256": "104b7791ebd9ddb9ebecbc5d3fa1337edee18b0d6da070cfb5d6c9cc5a615afc"
+  },
+  "not_pinned_or_not_established": [
+    "Provisioning leaves JSONL SHA-256 null; this inspection pins current valid.jsonl bytes but does not establish immutable Hub export reconstruction.",
+    "Gold labels/evidence are mirror validation data; official strict metric execution is not performed here.",
+    "No adapter-enforced interpreter/stdlib/complete ABI lock or offline-installable runtime bundle is provisioned by this manifest.",
+    "No per-task staged gold/answer/prediction binding is produced; no score or benchmark task is executed.",
+    "Actor-workdir import precedence, trusted resource/lifecycle/cleanup observations and live offline controls are not established by byte inspection."
+  ],
+  "provenance_declarations": [
+    {
+      "line": 17,
+      "source": "REVISION = \"a6b8d891d393e97a4efac791afffb2d7de5e57c6\"",
+      "symbol": "REVISION"
+    }
+  ],
+  "qa_check_path": "data/scaffolds/qa/verify/check.py:137",
+  "route": "Q: shared QA command",
+  "shared_sources": {
+    "bytes": 39552,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/common-sources.json",
+    "sha256": "288b5bf1eed7b74a62232030659e37cb5e0f15cb16a79092e4065201fb001edb"
+  },
+  "startup_or_inspection_packages": {},
+  "survey_row": "| `fever` | Q: `actor-workdir` | `data/datasets/fever.py:53` QASpec binding; `data/datasets/fever.py:97` scaffold files environment | `data/datasets/fever.py:31` strict label/evidence check; `data/datasets/fever.py:43` legacy answer delegates to it | No |",
+  "transitive_installed_requirements": {
+    "bytes": 447002,
+    "exists": true,
+    "location": "checkout",
+    "path": "tests/fixtures/hg_wclo_actor/packages.json",
+    "sha256": "969c4f24c78ea7e6418e18749d7b4dc13442b58de04367f56afaafc98f3e5d21"
+  }
+}
