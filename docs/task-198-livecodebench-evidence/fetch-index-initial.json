@@ -1,0 +1,78 @@
+[
+  {
+    "file": "hf-pinned-metadata.json",
+    "url": "https://huggingface.co/api/datasets/livecodebench/code_generation_lite/revision/0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+    "retrieved_at_utc": "2026-10-14T02:03:36.084740+00:00",
+    "scope": "public repository metadata only",
+    "error": "<urlopen error [Errno 101] Network is unreachable>"
+  },
+  {
+    "file": "hf-pinned-tree.json",
+    "url": "https://huggingface.co/api/datasets/livecodebench/code_generation_lite/tree/0fe84c3912ea0c4d4a78037083943e8f0c4dd505?recursive=true&expand=false",
+    "retrieved_at_utc": "2026-10-14T02:03:36.087153+00:00",
+    "scope": "public repository metadata only",
+    "error": "<urlopen error [Errno 101] Network is unreachable>"
+  },
+  {
+    "file": "github-pinned-tree.json",
+    "url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/git/trees/28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24?recursive=1",
+    "retrieved_at_utc": "2026-10-14T02:03:36.088199+00:00",
+    "scope": "public repository metadata only",
+    "status": 200,
+    "final_url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/git/trees/28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24?recursive=1",
+    "bytes": 16568,
+    "sha256": "5b4a59f1f43fe2b427a7def8e7df7aa0d0418053b7e20c45c6f273091aeae976",
+    "summary": {
+      "truncated": false,
+      "paths": [
+        "README.md",
+        "lcb_runner/benchmarks/code_generation.py",
+        "lcb_runner/evaluation/compute_code_generation_metrics.py",
+        "lcb_runner/prompts/code_generation.py"
+      ]
+    }
+  },
+  {
+    "file": "github-pinned-commit.json",
+    "url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/commits/28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+    "retrieved_at_utc": "2026-10-14T02:03:36.089063+00:00",
+    "scope": "public repository metadata only",
+    "status": 200,
+    "final_url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/commits/28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+    "bytes": 5665,
+    "sha256": "1adad165e0702a9829c7319629be452b97691518b5195de51cbab9312045d343",
+    "summary": {
+      "sha": "28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJodvk+CRC1aQ7uu5UhlAAAAekQAIgBIGhBpeN5VYAg6aJDfMQv\n64jf0I08iwZqy/ClPVHQIargdNa/5i0eI/KC0xusT3Sjfg+/lcp21mFThEOz8WMR\n1Y4FNlaByoaPiHKHhKsOJQSU3hoPvmlAvCnMc5HOxVEPB0iiWUnendQg9rxnqrSq\n+lGs0vO1yl6vsbFBBM7HvR309zJTg4kSAvCU5/kKj0I2I6/A9nXvwQrWpkNokLcM\nNWJtx+3SyRaqBMhsKQK6YzZBQjCKUp37vPpNSAXFUWJrrx/bIRueiZAcH60td4sj\nLDmM6rKOTtH5ZHaT8B8HMDG3994UaNxueQPEuv2P2sfwXTgMAzyZpUhCPq9PEFI9\n57yBTghbU85GJxHBJbwCoGGaMKQG54CFCuEufQaWeSzMLyO+ZoqGJRKbZZCARObJ\nbp+sROD3KFqbzHdjPCRGfWmOA+oaroNdYboLIGIK6i1be7+Z1Rh+FM5Zy59Cux/s\n8aHGF15mcmWV9ipBrSGXucvdbuGM+nt0hDilJS2Rx2yIeJm3MbN8KMLrwpgR611h\n+rc5jCkAG3O8LHUCj5jrjpbkw/trR5zMqmA4ZsNfW1kEl8HYTYVLqobAW7TtXTEv\n/LMOw3GN/vOw2klMcNBlb9IUej8iKrVVaEgGjNbsP7J1pTgp38rTJQedkMpeUKko\nocjxlFWPBk9aZ3sUtkSm\n=YfRa\n-----END PGP SIGNATURE-----\n",
+        "payload": "tree 65790b9fc909976194ff54c84f673395c2a6c85d\nparent b0fc86b1e20daa66d255574bc2bece8ff19de90d\nauthor blakkd <blakkd@proton.me> 1752627518 +0200\ncommitter GitHub <noreply@github.com> 1752627518 -0700\n\nfix: typo in the Explorer URL top README (#109)\n\nCo-authored-by: blakkd <blakkd@protonmail.com>",
+        "verified_at": "2025-07-16T00:58:38Z"
+      },
+      "message": "fix: typo in the Explorer URL top README (#109)\n\nCo-authored-by: blakkd <blakkd@protonmail.com>"
+    }
+  },
+  {
+    "file": "github-releases.json",
+    "url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/releases?per_page=100",
+    "retrieved_at_utc": "2026-10-14T02:03:36.090476+00:00",
+    "scope": "public repository metadata only",
+    "status": 200,
+    "final_url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/releases?per_page=100",
+    "bytes": 2,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "summary": []
+  },
+  {
+    "file": "github-tags.json",
+    "url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/tags?per_page=100",
+    "retrieved_at_utc": "2026-10-14T02:03:36.091461+00:00",
+    "scope": "public repository metadata only",
+    "status": 200,
+    "final_url": "https://api.github.com/repos/LiveCodeBench/LiveCodeBench/tags?per_page=100",
+    "bytes": 2,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "summary": []
+  }
+]
