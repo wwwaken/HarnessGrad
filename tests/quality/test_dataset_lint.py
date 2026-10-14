@@ -80,18 +80,33 @@ def downloads():
 '''
 
 
-def test_lint_rejects_a_deliberately_broken_copy(schema):
-    """Every rule fires on the copy that breaks it, and the failure says which one."""
+def test_lint_rejects_a_deliberately_broken_copy(schema, tmp_path):
+    """Every rule fires on the copy that breaks it, and the failure says which one.
+
+    The broken copy is imported as `data._lint_broken_copy` without ever being written
+    into `data/`: its directory is appended to the package's `__path__` instead, so
+    `importlib` resolves the name exactly as it would for a real adapter while nothing
+    appears in the checkout. Writing it there and unlinking it again -- which this test
+    used to do -- put a file into a tree the platform hashes around every run and every
+    concurrent test process walks, so for a moment another file could see a module that
+    was about to vanish (`FileNotFoundError`), or the integrity check could report a
+    change nobody made.
+    """
     name = "_lint_broken_copy"
-    path = ROOT / "data" / f"{name}.py"
+    path = tmp_path / f"{name}.py"
     path.write_text(BROKEN_SOURCE.format(platform_root=str(ROOT)))
+    package = importlib.import_module("data")
+    package.__path__.append(str(tmp_path))
     importlib.invalidate_caches()
     try:
         result = dataset_lint.lint_dataset(name, schema)
     finally:
-        path.unlink(missing_ok=True)
+        package.__path__.remove(str(tmp_path))
         sys.modules.pop(f"data.{name}", None)
         importlib.invalidate_caches()
+
+    assert not (ROOT / "data" / f"{name}.py").exists(), \
+        "the fixture must not touch the checkout"
 
     assert not result.ok, "the broken copy passed the lint"
     joined = "\n".join(result.errors)
@@ -146,7 +161,12 @@ def test_the_oracle_rule_refuses_silence_and_an_unvalidated_authorship(schema):
 
 
 def test_the_broken_copy_is_gone_and_the_real_datasets_still_pass(schema):
-    """The write-and-delete must not have left a module behind for `published()`."""
+    """The synthetic copy must not have left a module behind for `published()`.
+
+    Kept as a separate assertion now that the copy never enters the checkout: it pins
+    that extending `data.__path__` for the fixture left no residue in the package, which
+    is the way this test could still go wrong.
+    """
     assert not (ROOT / "data" / "_lint_broken_copy.py").exists()
     assert "_lint_broken_copy" not in registry.published()
     assert dataset_lint.lint_dataset("alfworld", schema).ok

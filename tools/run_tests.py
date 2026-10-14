@@ -76,8 +76,6 @@ EXCLUSIVE = (
     "test_container.py",
     "test_container_state.py",
     "test_harness_runtime.py",
-    "test_dataset_lint.py",
-    "test_cli_harness.py",
 )
 
 #: Costly files skipped by --fast. These are not broken; they are simply the ones

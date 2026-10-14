@@ -76,11 +76,10 @@ file that starts tripping a signal is caught by `test_slow_entries_without_a_sig
 | `test_bfcl_ast_source_contract.py` | f |
 | `test_cached_pilot_admission.py` | d |
 | `test_candidate_apply.py` | c, d |
-| `test_cli_harness.py` | c, f |
+| `test_cli_harness.py` | c (false positive) |
 | `test_config.py` | c |
 | `test_container.py` | d |
 | `test_container_state.py` | c, d† |
-| `test_dataset_lint.py` | f |
 | `test_diagnostic_policy.py` | c |
 | `test_gpu_entrypoint_contract_codex242.py` | a |
 | `test_harness_contract.py` | c |
@@ -126,8 +125,17 @@ the daemon; the letter is kept in the table because the reason is real.
 | `test_container.py` | d | real `docker` subprocesses; image builds and `docker image rm` on the shared daemon. Kept. |
 | `test_container_state.py` | c, d† | real `docker` container-state runs whose cleanup scans `hg-snapshot*` images on the daemon; the file's own comments record a leaked `hg-…` network breaking the next run. Kept. |
 | `test_harness_runtime.py` | c, d | **added.** Real `docker rm/create/start/commit/rmi` with the literal container name `hg-test-overlay-commit` and image `hg-test-overlay-snap`; two copies of the file collide (measured below). |
-| `test_dataset_lint.py` | f | **added.** Writes `ROOT / "data" / "_lint_broken_copy.py"` inside the checkout and unlinks it. The parallel lane is walking `data/`; this is the class that cannot be made safe by any lane. |
-| `test_cli_harness.py` | c, f | **added.** `WORK_ROOT = ROOT.parent / "harnessgrad_work" / "pytest-cli"` and `CLI_DIR = ROOT.parent / "harnessgrad_cli"` are fixed shared directories beside the checkout, created and populated by every test; a second copy fails (measured below). |
+
+### Added on evidence, then fixed at the source (amendment)
+
+Two files were added to the lane by the derivation below and have since had the
+defect itself removed, so they are back in the parallel lane. The history is kept
+because the measurements are the evidence that the fix worked:
+
+| file | was | now | why it moved back |
+|------|-----|-----|-------------------|
+| `test_dataset_lint.py` | added for signal (f) | parallel, no signal | It wrote `ROOT / "data" / "_lint_broken_copy.py"` into the checkout and unlinked it. It now writes the module under `tmp_path` and appends that directory to the `data` package's `__path__`, so `importlib` still resolves `data._lint_broken_copy` while nothing ever appears in `data/`. Nothing to collide over, so no lane is needed and the guard no longer sees a signal. |
+| `test_cli_harness.py` | added for signals (c), (f) | parallel | The fixed shared directories `ROOT.parent / "harnessgrad_work" / "pytest-cli"` and `ROOT.parent / "harnessgrad_cli"` were replaced by per-test fixtures. Re-measured after the fix: serial **6 passed**, and two concurrent copies **6 passed each** — the extra failure recorded below is gone. The remaining signal (c) is a false positive: the regex matches the literal `"hg-task"` inside an assertion about the sandbox's HOME naming, not a fixed path. |
 
 ### Removed from the exclusive lane
 
@@ -193,8 +201,8 @@ identically, so they are environmental, not lane-related.
 | file | serial | concurrent with | result |
 |------|--------|-----------------|--------|
 | `test_harness_runtime.py` | 15 passed | a **second copy of itself** | 1 failed, 13 passed, 1 error in **both** copies. The failure is `test_the_overlay_cannot_reach_the_graded_snapshot` (two processes race on the container `hg-test-overlay-commit` / image `hg-test-overlay-snap`). Confirmed by the fact that the same file passes when the daemon companion is a *different* file. |
-| `test_cli_harness.py` | 2 failed, 4 passed | a **second copy of itself** | 3 failed, 3 passed in both copies. The extra failure (`test_a_harness_that_cannot_operate_on_this_environment_is_refused`) is caused by both processes sharing `ROOT.parent / "harnessgrad_cli"` and `ROOT.parent / "harnessgrad_work"`. The 2 baseline failures are pre-existing at the original commit. |
-| `test_dataset_lint.py` | 4 passed alone (27.3 s) | a second copy (targeted) | both passed in this window — a sub-second create/unlink race did **not** fire. Kept on the static signal (f) alone; see "What is static-only". |
+| `test_cli_harness.py` | 2 failed, 4 passed | a **second copy of itself** | 3 failed, 3 passed in both copies. The extra failure (`test_a_harness_that_cannot_operate_on_this_environment_is_refused`) was caused by both processes sharing `ROOT.parent / "harnessgrad_cli"` and `ROOT.parent / "harnessgrad_work"`. **Re-measured after the fixture fix: 6 passed serial, 6 passed in each of two concurrent copies.** |
+| `test_dataset_lint.py` | 4 passed alone (27.3 s) | a second copy (targeted) | both passed in this window — a sub-second create/unlink race did **not** fire. Kept on the static signal (f) alone at the time; the write was then removed entirely (see the amendment above), so the file is back in the parallel lane. |
 
 Also confirmed: `test_container.py` (6 failed, 20 passed) and
 `test_container_state.py` (1 failed, 18 passed) show **the same failure sets**
@@ -208,8 +216,8 @@ local images), not contention — but both keep the lane on signals (c)/(d).
 * Falsification of the guard: a bogus `EXCLUSIVE` entry with no signal, a stale
   name, a duplicate, and an undocumented `SLOW`/`EXCLUSIVE` overlap were each
   injected and each was rejected.
-* `python3 tools/run_tests.py --list` after the change: **141 parallel files,
-  9 exclusive files**.
+* `python3 tools/run_tests.py --list` after the original change: **141 parallel files,
+  9 exclusive files**; after the two source fixes above: **143 parallel, 7 exclusive**.
 
 ## What is static-only
 
@@ -217,12 +225,12 @@ Stated plainly, so the strength of each entry is visible:
 
 * **Static signal only, no experiment**: `test_services.py`,
   `test_service_commands.py`, `test_web_gateway.py`, `test_container.py`,
-  `test_container_state.py`, `test_dataset_lint.py` (the collision did not fire in
-  the window tested), and `test_appworld_official_scorer.py` (whose replay is too
-  expensive to run twice; one concurrent run was not attempted).
-* **Confirmed by experiment**: the removal of the eight files listed above
-  (`test_web_gateway.py` was the kept control), and the addition of
-  `test_harness_runtime.py` and `test_cli_harness.py`.
+  `test_container_state.py`, and `test_appworld_official_scorer.py` (whose replay is
+  too expensive to run twice; one concurrent run was not attempted).
+* **Confirmed by experiment**: the removal of the nine files listed above
+  (`test_web_gateway.py` was the kept control), the addition of
+  `test_harness_runtime.py`, and the two files that were added and then fixed at the
+  source (`test_dataset_lint.py`, `test_cli_harness.py` — see the amendment).
 
 ## Could not determine
 
