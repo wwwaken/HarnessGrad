@@ -9,11 +9,16 @@
 
 ## Working copies
 
-There is exactly **one writer**: the main checkout `/mnt/20t/xubuqiang/Study/HarnessGrad`. Every
-other copy of this repository on this machine is read-only or disposable.
+There are exactly **two writers**, and the rule is about who yields to whom:
 
-- Codex agents work in registered `git worktree` checkouts under `/tmp/hg-*` and commit there;
-  the parent merges. Nothing else writes to `main`.
+- **The operator writes directly to the main checkout** `/mnt/20t/xubuqiang/Study/HarnessGrad`
+  whenever they want. That is supported, not a conflict. An agent merges **on top of** whatever
+  it finds there and never rewrites, rebases away, reverts or moves an operator commit. When a
+  merge conflicts because the operator changed the same file, the operator's change is the
+  starting point and the agent's is the one that has to fit around it.
+- **Agents never commit to `main`.** They work in registered `git worktree` checkouts under
+  `/tmp/hg-*`, commit there, and the parent reviews the diff and merges.
+- Every *other* copy of this repository on this machine is read-only or disposable.
 - **Never create a full clone of this repository inside `Study/`.** Two were made on 2026-11-17
   (`HarnessGrad-appworld-controls-20261117`, `HarnessGrad-gaia-controls-20261117`). Both are now
   stranded on pre-rewrite commits that do not exist in `main`'s object store, and both still
