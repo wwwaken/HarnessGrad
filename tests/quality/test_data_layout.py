@@ -164,12 +164,21 @@ def test_flat_paths_and_migration_shims_are_gone():
 
 
 def test_adapter_imports_only_use_scaffolds_stdlib_or_third_party():
+    """An adapter may reach `data.scaffolds.*`; it may not reach another adapter.
+
+    Deliberately narrower than "any import whose root is a local name", which is what
+    this check first did and why it reported four false violations. Three of them were
+    **third-party packages that happen to share a dataset's name** -- `jericho`,
+    `reasoning_gym` and `tau_bench` are upstream distributions the adapters legitimately
+    import -- and the fourth was `eval.policy.appworld_reporting`, a `data -> eval` edge
+    that `tests/quality/test_import_direction.py` governs with a reviewed exception list.
+    A root-name rule cannot tell those apart from an adapter importing a sibling
+    adapter, so it tested the wrong thing.
+
+    What this pins is the boundary the split exists to create: no adapter imports
+    another adapter, and an adapter's only `data.*` dependency is `data.scaffolds.*`.
+    """
     errors = []
-    local_roots = {path.stem if path.is_file() else path.name
-                   for path in ROOT.iterdir()
-                   if not path.name.startswith(".")
-                   and (path.is_dir() or path.suffix == ".py")}
-    local_roots.update(EXPECTED_DATASETS)
     for name in EXPECTED_DATASETS:
         path = DATASETS / f"{name}.py"
         if not path.is_file():
@@ -191,16 +200,16 @@ def test_adapter_imports_only_use_scaffolds_stdlib_or_third_party():
             else:
                 continue
             for target in targets:
-                root = target.split(".")[0]
-                if target == "data.scaffolds" or target.startswith("data.scaffolds."):
-                    continue
-                if root in sys.stdlib_module_names:
-                    continue
-                if root not in local_roots and not root.startswith("<"):
-                    continue  # Third-party import; no dependency needs installing.
                 statement = ast.get_source_segment(text, node)
-                errors.append(f"{_relative(path)}:{node.lineno}: {statement} "
-                              f"[forbidden dependency: {target}]")
+                if target.startswith("data.datasets."):
+                    other = target.split(".")[2]
+                    errors.append(
+                        f"{_relative(path)}:{node.lineno}: {statement} "
+                        f"[forbidden dependency: adapter {name!r} imports adapter {other!r}]")
+                elif target.startswith("data.") and not target.startswith("data.scaffolds."):
+                    errors.append(
+                        f"{_relative(path)}:{node.lineno}: {statement} "
+                        f"[forbidden dependency: {target} is not data.scaffolds.*]")
     _check(errors)
 
 
