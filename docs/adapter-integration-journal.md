@@ -1220,3 +1220,56 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Registry: the active-only schema removes only the completed `pristine-verifier` object and its 23 references; the other three shared objects, all dataset-own blockers, taxonomy, histories and false production authorization are preserved. The 2Wiki pinned remaining set is updated in the same commit with the closure rationale; validator rules are unchanged.
 - Topology: independently delegated report-only work in registered `/tmp/hg-w-shared-topology`, reviewed in the parent against all cited source lines and merged as `d26e54c` (worker `27166e9`). The exact original 23 datasets comprise 19 native `actor-workdir` and four `snapshot-service` routes. QA functions execute in a separately launched verifier child; none satisfies the actor-process-only condition for declaring shared blockers irrelevant. ChessBench's additional trusted runner-process branch currently records `unknown`.
 - Evidence: [file/line review and closure limits](w-shared-verifier-review.md), [23-dataset topology survey](../reports/w-shared-topology-survey.md), [scorer controls and exact command](../reports/w-shared-focused-tests.txt), [unknown-only source probes and exact command](../reports/w-shared-source-probes.txt), [comparison controls and exact command](../reports/w-shared-web-tests.txt), [registry/policy controls and exact commands](../reports/w-shared-registry-policy-tests.txt). Fresh results: 148 scorer controls + 351 registry/policy controls = **499 Python tests passed**; **15 web comparison tests passed**. Checker: `valid=true`, 28 datasets / three shared blockers / 11 historical records, `production_authorized=false`. Parent scope audit confirms unrelated objects/history are unchanged; no whole-suite run. Higher-level parent review and merge to main remain separate.
+## Installed artifact and pool custody — 2026-10-15 - w-prov
+
+- Scope: registered `/tmp/hg-prov` on base `0b470b6`; independent package and
+  ReWOO acquisition used registered disposable worktrees. Parent reviewed their
+  code/diffs and independently verified the integrated receipts. No
+  dataset-root writes, model/GPU/endpoint calls, diagnostic, pilot or scoring.
+- Physics Questions / StrategyQA / Sports Understanding: actual installed CSV
+  bytes match the declared ReWOO archive members and the exact commit's Git
+  tree/content objects at `9cd0283043ff4be0c9d614fda2789d143ca6ffd1`.
+  The adapters use inline local scorers, not an installed ReWOO evaluator or
+  BIG-bench package; the exact ReWOO evaluator is preserved as comparison source.
+  Physics retains 53 ordered accepted-list pairs matching pinned BIG-bench;
+  sports adds 1,000 ordered task-prefix/question/winning-label pairs at
+  `092b196c1f8f14a54bbc62f24759d43bde46dd3b`.
+- Metric limits: StrategyQA normalizer AST/equality identity is established for
+  string inputs, not runtime equivalence. Physics normalization/protocol
+  divergence remains. Authenticated BIG-bench sports multiple-choice grading
+  uses candidate log-probability argmax, unlike the adapter's generated-text
+  word-label and dual-label-rejection rule. No equivalence is promoted.
+- Reasoning Gym: preserved PyPI 0.1.25 wheel/sdist and exact tagged source bind
+  the installed package members (except pip-rewritten RECORD). The installed
+  pool matches declared SHA-256
+  `c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177`:
+  1,780 rows, 89 declared families x 20, correct family-major coordinates and
+  nonempty references. Behavioral reference=1/empty=0 family eligibility,
+  deterministic transitive dependency closure and pristine scoring remain open.
+- A bounded CPU-only provenance regeneration completed at seed 20261008, with
+  scratch cleanup, but did not reproduce the declared pool: generated SHA-256
+  `d00b2b1cb8134ee37c7b76fce5547cb3e2c44a247dfa07beaa984385532cffd1`,
+  differing in six families. All constrained failures and exact attempt scripts
+  are retained. No seed/family/value tuning, scorer execution or installed-pool
+  overwrite; missing generation environment/order pins remain a provenance gap.
+- Custody/selection limits: preserved row/task/structural-eligibility manifests
+  and imposed train/eval inventories are 37/16, 1520/770, 663/337 and 1216/564,
+  respectively. No run-specific selected manifest, run ID or coverage receipt
+  was supplied; these fields remain null. No independent seed-specific pool
+  release or selected run manifest was authenticated from the acquired public
+  sources. E1's Hub
+  revision/tree evidence belongs to FEVER and cannot authenticate these exports.
+- Disposition: all four original `dataset-journal-gap` records remain
+  `measurement`; zero blockers closed, no production authorization. Only their
+  observed/next_action/evidence fields change; every other dataset, status,
+  shared blocker and historical record is preserved. Next work is selected
+  manifest/export custody, the named eligibility/comparability gaps, scorer
+  offline closure and actual pristine verifier/lifecycle evidence.
+- Evidence: [raw bytes, response receipts and SHA-256 manifest](../tests/fixtures/hg_wprov/README.md),
+  [exact commands and validation output](../reports/w-prov-validation.txt).
+  Parent validation checks 114 checksummed fixture files; focused registry tests
+  **54 passed in 2.88s**. Registry checker: `valid=true`, 28 datasets, four shared
+  blockers, 11 historical records, `production_authorized=false`. The completed
+  generation mismatch is retained as a gap, not a failed-zero measurement.
+  No pinned test sets were changed. Parent review/merge into main remains
+  separate from this worktree-only commit.

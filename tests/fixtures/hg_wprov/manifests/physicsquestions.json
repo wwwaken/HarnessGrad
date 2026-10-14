@@ -1,0 +1,503 @@
+{
+  "dataset": "physicsquestions",
+  "source_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+  "source_bytes": 17953,
+  "source_pool_split": "test",
+  "row_hash_encoding": "UTF-8 json.dumps(ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False)",
+  "loaded_rows": [
+    {
+      "task_id": "physicsquestions/test/0",
+      "loaded_position": 0,
+      "parsed_row_sha256": "b124901b8715b9fa496e96665dde7d21055f26a2edb4f8f9c3db401b4c47fe69",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/1",
+      "loaded_position": 1,
+      "parsed_row_sha256": "3d98b6f72c888761e149524a2c7d9b938ddcea60e8785d2988c32eeac1696f5a",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/2",
+      "loaded_position": 2,
+      "parsed_row_sha256": "0c561bc62feee1e68f0c14f9916d8c1c996ea6ba3fb9deb85cef35063e3d87ae",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/3",
+      "loaded_position": 3,
+      "parsed_row_sha256": "e4faff03f85f123222c2df62227bf3eaabdae57a5e6f95aff0742c02e5e04647",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/4",
+      "loaded_position": 4,
+      "parsed_row_sha256": "f7dc58cad1fd0166e3239a2a986bb96ee1807296c7550329d5aacecb3e0e8a7c",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/5",
+      "loaded_position": 5,
+      "parsed_row_sha256": "c0bd750de3e7b09b862e849e07dffcabd3f3745b9d166c572b8587fdfd25de53",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/6",
+      "loaded_position": 6,
+      "parsed_row_sha256": "493a1d7274eee351d8f55c2c091f804bce99a48faeef6d8c8e6d985bc659b5da",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/7",
+      "loaded_position": 7,
+      "parsed_row_sha256": "4dff59eed00c3c8d7a6547f155c0fb919b00658a90ff8ddc07e5ab241a4a629d",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/8",
+      "loaded_position": 8,
+      "parsed_row_sha256": "695d2ae193503abfbb1877e02d00499e9230709dde1861e9501c81478406a34f",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/9",
+      "loaded_position": 9,
+      "parsed_row_sha256": "952d7b5c412de76e8f6647e0ddfdd7b004006573f4a11f58aed2f3058c005890",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/10",
+      "loaded_position": 10,
+      "parsed_row_sha256": "76d4c703ee17b99399dd8e151b69823b0d08a5c856ca13f7159d3785b1cf9c70",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/11",
+      "loaded_position": 11,
+      "parsed_row_sha256": "b6ae1cc85b3e0db20cf4622789f07aedd4ffb01e1a295a89eb80dd1486c9a1fd",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/12",
+      "loaded_position": 12,
+      "parsed_row_sha256": "3a670603d6c3ea2abebfc2fd8b1cb8c8fa5540f6a1985e22963214b2f14a1947",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/13",
+      "loaded_position": 13,
+      "parsed_row_sha256": "1b9642bf9a9d9ea6c7525f0801b617acbeacc1634ad63da40ce08dd925c9873f",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/14",
+      "loaded_position": 14,
+      "parsed_row_sha256": "098535b81e75acf4f6c60143ab69e2bb7db0d88507433be6fb3935f4e4cde62f",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/15",
+      "loaded_position": 15,
+      "parsed_row_sha256": "143f376ec72494b3a213f684e925fedf189e4e07eec3f090b80aaca2f57ae5cb",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/16",
+      "loaded_position": 16,
+      "parsed_row_sha256": "ae7c09b1e4abcba6ee8bc29e98b4070a0aadf18ee36e4ef6637a48e52bbf77d3",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/17",
+      "loaded_position": 17,
+      "parsed_row_sha256": "fc165c3853a221d5fd637f3b9d775e7e0740fe124f4c802b44a68c50a7097dbe",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/18",
+      "loaded_position": 18,
+      "parsed_row_sha256": "8ca8fa3ced1a65adb945243c6d4ba41d5a455f16d73cdc35f88f879b7efa380e",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/19",
+      "loaded_position": 19,
+      "parsed_row_sha256": "1186ae08a26cd0ec37744267a3936cbade71e2148c8089c1fb2f106817e49b06",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/20",
+      "loaded_position": 20,
+      "parsed_row_sha256": "bf24ad23124a542e971d7ead6218210eef38b8829a8bea146bad65b7b73a9716",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/21",
+      "loaded_position": 21,
+      "parsed_row_sha256": "c9e9e21023af79a53e2f9b215a0cc9316065dfc88e571889f01a59e379646e61",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/22",
+      "loaded_position": 22,
+      "parsed_row_sha256": "1e66f95b125f3e0f27811fbca3e80969ba16047ac3484af3487d933c123512b6",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/23",
+      "loaded_position": 23,
+      "parsed_row_sha256": "dba880ecfe05e2834e5a5d740c4fb0ec99b2e4c002093ae5ab6c7bf91bbd5cfe",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/24",
+      "loaded_position": 24,
+      "parsed_row_sha256": "b64367ff0c9c3f57c0c67f678828715b99e6451ff2c3ce18f7c459fe9c6bd2f9",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/25",
+      "loaded_position": 25,
+      "parsed_row_sha256": "26eaaa7eb1224520abb1055ed1914b85378c49b8ded69f22a2101e3b6fdecec8",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/26",
+      "loaded_position": 26,
+      "parsed_row_sha256": "d0abdaa38ac88f269c88f58b50eb45f4ada5da4bc01d23c79a5aa21ef2f55933",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/27",
+      "loaded_position": 27,
+      "parsed_row_sha256": "1932c9ce766e8f8a72f974bb82b1434ac363a98dccfd6f226dc1cf568f287171",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/28",
+      "loaded_position": 28,
+      "parsed_row_sha256": "9c67fc1c2fae25ca090ca7e324012d4d36cbb6bc2b45737f18dc877683cbb354",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/29",
+      "loaded_position": 29,
+      "parsed_row_sha256": "851ffc5dd3e26ff559f15d039cd27ad99c3de12ba0d461ff86cfbbbd494fd935",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/30",
+      "loaded_position": 30,
+      "parsed_row_sha256": "4f20599424d10c2da1d4549bf96822de0dfda51db3494e51be0be9b23659198e",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/31",
+      "loaded_position": 31,
+      "parsed_row_sha256": "12d694a6854fb650be13963c33dd7529f21ac32c4ace64cdc78e23e2c2c72b49",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/32",
+      "loaded_position": 32,
+      "parsed_row_sha256": "3131d4adcd56aa7fd6487445118b9273920c9df857bf11299964adeffc9b3406",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/33",
+      "loaded_position": 33,
+      "parsed_row_sha256": "2b76db9c1b74eb3bd2edeb15760229c590614e9ba18f8e6d1fe2c5a061e3d442",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/34",
+      "loaded_position": 34,
+      "parsed_row_sha256": "46e9903c270cc852f29a9157105c9f7b5a78619368b24a258abfb68698484a86",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/35",
+      "loaded_position": 35,
+      "parsed_row_sha256": "4846d3ca3ea80adf2aa036679d5d71a4d26d641f3615463765b3c2c38bd1f418",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/36",
+      "loaded_position": 36,
+      "parsed_row_sha256": "abbe0d146c667e270f2cc151df151a4dbbdf118435eb1d4f523f4b152a462502",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/37",
+      "loaded_position": 37,
+      "parsed_row_sha256": "4fd1df000ac4b7c19be0c9d8ede1f1efce8add1b41600ed2be1612ba7d6d0a4b",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/38",
+      "loaded_position": 38,
+      "parsed_row_sha256": "efeaea032c5c116f6931e4afd02caa10c2e2021caa447406448a31704075b711",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/39",
+      "loaded_position": 39,
+      "parsed_row_sha256": "3c719898d811a8050288e9b36f59e67474375f6280ec49f2cd6474008795c2f8",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/40",
+      "loaded_position": 40,
+      "parsed_row_sha256": "b644acf2ab55a169109b89e83ab31bc0356c9108cfca6ee27adf46be21b857e9",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/41",
+      "loaded_position": 41,
+      "parsed_row_sha256": "00a9ec2038228d32db0e5038680ed242035b3cdc98c3f140de3b64b3e9746735",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/42",
+      "loaded_position": 42,
+      "parsed_row_sha256": "03d11f34345ab771d065f7c0f93b26c0482faef4655971557ee8e81d965d453a",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/43",
+      "loaded_position": 43,
+      "parsed_row_sha256": "3e7f884628d3a56991d7641fe51d3a0690234a5f2c295783394ed822f8ebe551",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/44",
+      "loaded_position": 44,
+      "parsed_row_sha256": "4793b15c4a1a67263b651751a5826eeed5480f51cae0f40f98874adeb7171137",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/45",
+      "loaded_position": 45,
+      "parsed_row_sha256": "bc4fbd21ce9bc6b1797f69f96a325b8c7211dd482980bbe13114d6d13e3d8675",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/46",
+      "loaded_position": 46,
+      "parsed_row_sha256": "fb88aa193d6947a2d7cffd07e2ed2ebf07dc9708968dae9c2497ce27d710d8b9",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/47",
+      "loaded_position": 47,
+      "parsed_row_sha256": "afcfeb1aaab32465e88f76f55fc7890be104f5ef085bdcacda1cf03dc612e71f",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/48",
+      "loaded_position": 48,
+      "parsed_row_sha256": "871ec8d47f3387f8a7c740d365051a22b947164fb1748d9594a3e08a580362d6",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/49",
+      "loaded_position": 49,
+      "parsed_row_sha256": "2fb63d6c4027716f59f534669e8ff62e2c0d8e349833fe90bb5bf3784ec21e2b",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/50",
+      "loaded_position": 50,
+      "parsed_row_sha256": "51bdaa521ccae70d10424f26c82829620fbe9e0c078d82fcbccc881f9c4e8bdd",
+      "declared_side": "eval"
+    },
+    {
+      "task_id": "physicsquestions/test/51",
+      "loaded_position": 51,
+      "parsed_row_sha256": "28ea6bbbb9f878f64921b893e1e474d780ec3f183266bfa99136c95774cf8b54",
+      "declared_side": "train"
+    },
+    {
+      "task_id": "physicsquestions/test/52",
+      "loaded_position": 52,
+      "parsed_row_sha256": "36d27001a1703b096c52fe9d112322e8133713c937ebbba38409fb89a6c7faab",
+      "declared_side": "eval"
+    }
+  ],
+  "structurally_eligible_ids": [
+    "physicsquestions/test/0",
+    "physicsquestions/test/1",
+    "physicsquestions/test/2",
+    "physicsquestions/test/3",
+    "physicsquestions/test/4",
+    "physicsquestions/test/5",
+    "physicsquestions/test/6",
+    "physicsquestions/test/7",
+    "physicsquestions/test/8",
+    "physicsquestions/test/9",
+    "physicsquestions/test/10",
+    "physicsquestions/test/11",
+    "physicsquestions/test/12",
+    "physicsquestions/test/13",
+    "physicsquestions/test/14",
+    "physicsquestions/test/15",
+    "physicsquestions/test/16",
+    "physicsquestions/test/17",
+    "physicsquestions/test/18",
+    "physicsquestions/test/19",
+    "physicsquestions/test/20",
+    "physicsquestions/test/21",
+    "physicsquestions/test/22",
+    "physicsquestions/test/23",
+    "physicsquestions/test/24",
+    "physicsquestions/test/25",
+    "physicsquestions/test/26",
+    "physicsquestions/test/27",
+    "physicsquestions/test/28",
+    "physicsquestions/test/29",
+    "physicsquestions/test/30",
+    "physicsquestions/test/31",
+    "physicsquestions/test/32",
+    "physicsquestions/test/33",
+    "physicsquestions/test/34",
+    "physicsquestions/test/35",
+    "physicsquestions/test/36",
+    "physicsquestions/test/37",
+    "physicsquestions/test/38",
+    "physicsquestions/test/39",
+    "physicsquestions/test/40",
+    "physicsquestions/test/41",
+    "physicsquestions/test/42",
+    "physicsquestions/test/43",
+    "physicsquestions/test/44",
+    "physicsquestions/test/45",
+    "physicsquestions/test/46",
+    "physicsquestions/test/47",
+    "physicsquestions/test/48",
+    "physicsquestions/test/49",
+    "physicsquestions/test/50",
+    "physicsquestions/test/51",
+    "physicsquestions/test/52"
+  ],
+  "eligibility_limit": "Loader/gold shape and nonempty content only; no scoring, offline or admission gates tested.",
+  "declared_split": {
+    "source": "hash",
+    "train": [
+      "physicsquestions/test/0",
+      "physicsquestions/test/1",
+      "physicsquestions/test/2",
+      "physicsquestions/test/4",
+      "physicsquestions/test/5",
+      "physicsquestions/test/7",
+      "physicsquestions/test/8",
+      "physicsquestions/test/9",
+      "physicsquestions/test/12",
+      "physicsquestions/test/14",
+      "physicsquestions/test/15",
+      "physicsquestions/test/16",
+      "physicsquestions/test/17",
+      "physicsquestions/test/18",
+      "physicsquestions/test/20",
+      "physicsquestions/test/21",
+      "physicsquestions/test/24",
+      "physicsquestions/test/25",
+      "physicsquestions/test/26",
+      "physicsquestions/test/27",
+      "physicsquestions/test/28",
+      "physicsquestions/test/30",
+      "physicsquestions/test/31",
+      "physicsquestions/test/32",
+      "physicsquestions/test/33",
+      "physicsquestions/test/34",
+      "physicsquestions/test/35",
+      "physicsquestions/test/36",
+      "physicsquestions/test/38",
+      "physicsquestions/test/39",
+      "physicsquestions/test/40",
+      "physicsquestions/test/43",
+      "physicsquestions/test/45",
+      "physicsquestions/test/46",
+      "physicsquestions/test/48",
+      "physicsquestions/test/49",
+      "physicsquestions/test/51"
+    ],
+    "eval": [
+      "physicsquestions/test/3",
+      "physicsquestions/test/6",
+      "physicsquestions/test/10",
+      "physicsquestions/test/11",
+      "physicsquestions/test/13",
+      "physicsquestions/test/19",
+      "physicsquestions/test/22",
+      "physicsquestions/test/23",
+      "physicsquestions/test/29",
+      "physicsquestions/test/37",
+      "physicsquestions/test/41",
+      "physicsquestions/test/42",
+      "physicsquestions/test/44",
+      "physicsquestions/test/47",
+      "physicsquestions/test/50",
+      "physicsquestions/test/52"
+    ],
+    "official_eval": null,
+    "split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212"
+  },
+  "official_mode_eval_ids": [
+    "physicsquestions/test/0",
+    "physicsquestions/test/1",
+    "physicsquestions/test/2",
+    "physicsquestions/test/3",
+    "physicsquestions/test/4",
+    "physicsquestions/test/5",
+    "physicsquestions/test/6",
+    "physicsquestions/test/7",
+    "physicsquestions/test/8",
+    "physicsquestions/test/9",
+    "physicsquestions/test/10",
+    "physicsquestions/test/11",
+    "physicsquestions/test/12",
+    "physicsquestions/test/13",
+    "physicsquestions/test/14",
+    "physicsquestions/test/15",
+    "physicsquestions/test/16",
+    "physicsquestions/test/17",
+    "physicsquestions/test/18",
+    "physicsquestions/test/19",
+    "physicsquestions/test/20",
+    "physicsquestions/test/21",
+    "physicsquestions/test/22",
+    "physicsquestions/test/23",
+    "physicsquestions/test/24",
+    "physicsquestions/test/25",
+    "physicsquestions/test/26",
+    "physicsquestions/test/27",
+    "physicsquestions/test/28",
+    "physicsquestions/test/29",
+    "physicsquestions/test/30",
+    "physicsquestions/test/31",
+    "physicsquestions/test/32",
+    "physicsquestions/test/33",
+    "physicsquestions/test/34",
+    "physicsquestions/test/35",
+    "physicsquestions/test/36",
+    "physicsquestions/test/37",
+    "physicsquestions/test/38",
+    "physicsquestions/test/39",
+    "physicsquestions/test/40",
+    "physicsquestions/test/41",
+    "physicsquestions/test/42",
+    "physicsquestions/test/43",
+    "physicsquestions/test/44",
+    "physicsquestions/test/45",
+    "physicsquestions/test/46",
+    "physicsquestions/test/47",
+    "physicsquestions/test/48",
+    "physicsquestions/test/49",
+    "physicsquestions/test/50",
+    "physicsquestions/test/51",
+    "physicsquestions/test/52"
+  ],
+  "official_mode_limit": "Whole adapter pool; not evidence of original benchmark completeness or heldout split.",
+  "selected_manifest": null,
+  "selected_manifest_limit": "No run-specific selected manifest or run ID supplied for these blockers. Pool/eligible/split inventories do not attest selection or selected-only runtime export."
+}

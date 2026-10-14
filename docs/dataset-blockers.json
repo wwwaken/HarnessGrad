@@ -914,7 +914,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Acquired ReWOO archive matches declared SHA-256 7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136; its declared CSV member has 53 ordered input/accepted-target-list pairs identical to the nonblank examples of authenticated BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b. Exact task/evaluator sources and raw responses are checked in. Upstream exact_str_match uses unnormalized membership and the task passes output_regex to model generation; the local adapter uses asymmetric whitespace/reference-period normalization, so full metric/protocol equivalence is not established. Source content linkage and evaluator acquisition close; installed/selected custody, runtime and measurement remain open.",
+          "observed": "Installed CSV custody now established at the observed host path: 17953 bytes, SHA-256 7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa, identical to the declared member of authenticated ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1 and its Git tree/content bytes. All 53 ordered pairs retain E1 linkage to nonblank BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b examples. Source-derived row/task/structural-eligibility manifests and imposed 37-train/16-eval division are preserved. Runtime reads CSV with an inline local scorer, not an installed ReWOO/BIG-bench evaluator. No selected run manifest or pristine runtime is authenticated. Local asymmetric normalization/full BIG-bench response protocol divergence remains; all shared gates remain open.",
           "evidence": [
             {
               "kind": "repository",
@@ -940,9 +940,14 @@
               "kind": "repository",
               "path": "reports/e1-fever-physics-bird-review.md",
               "locator": "## Physics Questions: content linkage established; metric differs; runtime open"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/hg_wprov/README.md",
+              "locator": "## physicsquestions installed custody"
             }
           ],
-          "next_action": "NEXT gate: installed source/split/eligibility/selected-manifest custody, then scorer-offline-closure and pristine verifier evidence. Retain checked-in archive/member-to-pinned-BIG-bench accepted-target linkage and exact evaluator source. Report local accepted-spelling EM with asymmetric normalization separately from a matched full BIG-bench response-processing/aggregation protocol. Do not infer the historical converter revision or an installed runtime from acquired sources. Keep remaining shared gates, unmeasured coverage and withdrawn official-scorer-identity proof decision; no diagnostic is authorized."
+          "next_action": "NEXT gate: bind an independently supplied run-specific selected manifest and selected-only export to the preserved installed CSV, row/task inventory and chosen split/side; no selection or run ID is supplied here. Then establish scorer-offline-closure, pristine verifier execution and remaining shared evidence. Retain the installed-to-ReWOO and ordered pinned-BIG-bench linkage, report local normalized accepted-spelling EM separately from matched BIG-bench processing/aggregation, and do not infer a historical converter revision or runtime execution. Preserve invalid/unmeasured coverage and withdrawn official-scorer-identity proof decision; no diagnostic is authorized."
         }
       ],
       "historical_runs": []
@@ -965,7 +970,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal review complete: the adapter calls each installed family library score_answer and retains float reward; the declared generated-pool pin is reasoning-gym 0.1.25, seed 20261008, 89 families x 20 and a pool SHA-256, with platform hash division and a files/command verifier using inline entry gold. Loader digest and scorer installed-version enforcement are absent; family/offline claims are inherited and unexecuted. Documentation coverage is closed; authenticated pool/package provenance, runtime measurement and all shared gates remain open.",
+          "observed": "Installed pool custody now established: 3315981 bytes, SHA-256 c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177 matches the declared pin; preserved rows have all 89 declared families x 20 indices in family-major order, nonempty references and matching entry questions. PyPI reasoning-gym 0.1.25 wheel SHA-256 7f17a3eddb13c015d7d4a755ed576a061df889faf9468bcc2cca334ebe9e0435 and sdist bytes bind all 200 package/data members to GitHub v0.1.25 commit 21e6d2a9a581b3e11aafe711abfd37402f8482d5; 204/205 installed wheel members match, with only pip-rewritten RECORD differing. Source-derived row/task/structural-eligibility manifests and imposed 1216-train/564-eval split are preserved. A bounded CPU-only provenance regeneration at seed 20261008 completed but differs in 84 rows across six families (preserved generated SHA-256 d00b2b1cb8134ee37c7b76fce5547cb3e2c44a247dfa07beaa984385532cffd1); seed-only whole-pool reproduction is not established. Runtime still lacks pool-digest/installed-version enforcement. Behavioral family eligibility, selected run manifest/export binding, transitive dependency/offline closure and pristine execution remain open; structural custody does not establish family scorer/offline claims or measurement.",
           "evidence": [
             {
               "kind": "repository",
@@ -986,9 +991,14 @@
               "kind": "repository",
               "path": "docs/enforcement-proof-decision.md",
               "locator": "Snapshot/cleanup uncertainty alone is not a new"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/hg_wprov/README.md",
+              "locator": "## reasoning_gym installed custody"
             }
           ],
-          "next_action": "NEXT gate: source-provenance, then scorer-offline-closure. Independently authenticate the package/generator artifacts and declared pool digest/family/eligibility/selected manifest; establish deterministic transitive dependencies without scoring extras in the actual pristine verifier. Document metric identity; the official-scorer-identity proof obligation is withdrawn. Retain the remaining shared gates; no diagnostic is authorized."
+          "next_action": "Retain authenticated distribution/source/installed-member custody and declared pool hash/family/order evidence; recover original generation environment/date/order metadata and reproduce the declared pool with recorded inputs, without changing its seed/families or overwriting original bytes; independently establish behavioral reference=1/empty=0 family eligibility and bind an independently supplied run-specific selected manifest and selected-only export to exact pool rows and chosen split/side. No independent seed-specific pool release or selected run manifest was authenticated from the acquired public sources. Establish deterministic transitive dependencies without scoring extras in the actual pristine verifier, metric identity, scorer-offline-closure and all remaining shared evidence; the official-scorer-identity proof obligation stays withdrawn. No diagnostic is authorized."
         }
       ],
       "historical_runs": []
@@ -1071,7 +1081,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal gap closed: cited review identifies the local binary word-label/dual-label-rejection rule attributed to BIG-bench multiple_choice_grade, pinned ReWOO CSV and imposed hash split, and declared QA runtime. Independent scorer equivalence, installed/selected-only provenance, comparability and measured coverage remain unestablished; all shared gates remain open. This retained record tracks measurement follow-up, not readiness.",
+          "observed": "Installed CSV custody now established: 137846 bytes, SHA-256 5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e, identical to the declared member and Git tree/content bytes of ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1. All 1000 rows link to authenticated BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b sports examples; preserved row/task/structural-eligibility mappings yield imposed 663-train/337-eval division. Runtime uses an inline local scorer, not an installed evaluator package. Upstream multiple_choice_grade uses candidate log-probability argmax/target_scores, unlike local generated-text word-label/dual-label-rejection scoring; equivalence is not established. Selected run manifest/export custody, offline/pristine runtime and measured coverage remain open with every shared gate.",
           "evidence": [
             {
               "kind": "repository",
@@ -1087,9 +1097,14 @@
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## sportsunderstanding source-only review — 2026-10-15 — b2"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/hg_wprov/README.md",
+              "locator": "## sportsunderstanding installed custody"
             }
           ],
-          "next_action": "Independently authenticate upstream scorer/metric equivalence and installed source/split/selected manifest custody; establish offline runtime and every shared admission gate before any separately authorized diagnostic. Preserve the documented local metric divergence and report invalid/unmeasured coverage explicitly."
+          "next_action": "Retain authenticated installed-to-ReWOO and pinned BIG-bench sports row linkage. Resolve the measured source-level metric/protocol mismatch or report the local text-label metric separately; do not call it equivalent to candidate-log-probability multiple_choice_grade. Bind an independently supplied run-specific selected manifest and selected-only export to exact source rows and chosen split/side, then establish scorer-offline-closure, pristine runtime and all shared admission evidence before any separately authorized diagnostic. Report invalid/unmeasured coverage explicitly."
         }
       ],
       "historical_runs": []
@@ -1160,7 +1175,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal gap closed: cited review identifies local normalized whole-string ReWOO EM, the pinned strategy_qa CSV/test pool, imposed hash split and declared QA runtime; F1 and judge accuracy are excluded. Independent scorer/original-benchmark comparability, installed/selected-only and split custody, offline runtime and measured coverage remain unestablished with every shared gate open. The original blocker remains as the measurement follow-up record, not a passing status.",
+          "observed": "Installed CSV custody now established: 200453 bytes, SHA-256 c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055, identical to the declared member and Git tree/content bytes of ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1. Exact ReWOO evaluator identity is authenticated at that revision; runtime uses the inline normalized whole-answer EM and does not import an evaluator package. All 2290 rows have preserved row/task/structural-eligibility mappings and a 1520-train/770-eval imposed hash split. Original-benchmark metric/split comparability, selected run manifest/export binding, offline execution and measured coverage remain unestablished with every shared gate open; F1 and judge accuracy remain excluded.",
           "evidence": [
             {
               "kind": "repository",
@@ -1176,9 +1191,14 @@
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## strategyqa source-only review — 2026-10-15 — b2"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/hg_wprov/README.md",
+              "locator": "## strategyqa installed custody"
             }
           ],
-          "next_action": "Independently authenticate ReWOO evaluator identity, original-benchmark metric/split comparability and installed/selected manifest provenance; establish offline runtime and all shared admission gates before any separately authorized diagnostic. Retain EM identity and explicit invalid/unmeasured task/trial coverage."
+          "next_action": "Retain authenticated installed CSV/member/revision and ReWOO evaluator identity; next bind an independently supplied run-specific selected manifest and selected-only export to exact source rows and chosen split/side, and resolve original-benchmark metric/split comparability beyond the vendored table. Establish deterministic offline dependencies, pristine verifier/runtime and all shared admission evidence before any separately authorized diagnostic. Acquired evaluator bytes are not an execution-equivalence receipt; retain EM identity and explicit invalid/unmeasured task/trial coverage."
         }
       ],
       "historical_runs": []

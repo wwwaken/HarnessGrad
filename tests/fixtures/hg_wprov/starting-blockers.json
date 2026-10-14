@@ -1,0 +1,185 @@
+[
+  {
+    "dataset": "physicsquestions",
+    "demand": "reasoning",
+    "surface": "reasoning",
+    "exercises": [
+      "context",
+      "verification"
+    ],
+    "shared_blockers": [
+      "runtime-observations",
+      "scorer-offline-closure",
+      "pristine-verifier",
+      "artifact-only-state-export"
+    ],
+    "blockers": [
+      {
+        "id": "dataset-journal-gap",
+        "family": "journal-coverage",
+        "status": "measurement",
+        "observed": "Acquired ReWOO archive matches declared SHA-256 7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136; its declared CSV member has 53 ordered input/accepted-target-list pairs identical to the nonblank examples of authenticated BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b. Exact task/evaluator sources and raw responses are checked in. Upstream exact_str_match uses unnormalized membership and the task passes output_regex to model generation; the local adapter uses asymmetric whitespace/reference-period normalization, so full metric/protocol equivalence is not established. Source content linkage and evaluator acquisition close; installed/selected custody, runtime and measurement remain open.",
+        "evidence": [
+          {
+            "kind": "repository",
+            "path": "data/datasets/physicsquestions.py",
+            "locator": "KIND = \"dataset\""
+          },
+          {
+            "kind": "repository",
+            "path": "docs/dataset-reviews/physicsquestions.md",
+            "locator": "# Physics Questions source-only journal review"
+          },
+          {
+            "kind": "repository",
+            "path": "docs/adapter-integration-journal.md",
+            "locator": "## Physics Questions — source-only journal coverage — b1"
+          },
+          {
+            "kind": "repository",
+            "path": "docs/enforcement-proof-decision.md",
+            "locator": "Snapshot/cleanup uncertainty alone is not a new"
+          },
+          {
+            "kind": "repository",
+            "path": "reports/e1-fever-physics-bird-review.md",
+            "locator": "## Physics Questions: content linkage established; metric differs; runtime open"
+          }
+        ],
+        "next_action": "NEXT gate: installed source/split/eligibility/selected-manifest custody, then scorer-offline-closure and pristine verifier evidence. Retain checked-in archive/member-to-pinned-BIG-bench accepted-target linkage and exact evaluator source. Report local accepted-spelling EM with asymmetric normalization separately from a matched full BIG-bench response-processing/aggregation protocol. Do not infer the historical converter revision or an installed runtime from acquired sources. Keep remaining shared gates, unmeasured coverage and withdrawn official-scorer-identity proof decision; no diagnostic is authorized."
+      }
+    ],
+    "historical_runs": []
+  },
+  {
+    "dataset": "reasoning_gym",
+    "demand": "reasoning",
+    "surface": "reasoning",
+    "exercises": [
+      "context",
+      "verification"
+    ],
+    "shared_blockers": [
+      "runtime-observations",
+      "scorer-offline-closure",
+      "pristine-verifier",
+      "artifact-only-state-export"
+    ],
+    "blockers": [
+      {
+        "id": "dataset-journal-gap",
+        "family": "journal-coverage",
+        "status": "measurement",
+        "observed": "Source-only journal review complete: the adapter calls each installed family library score_answer and retains float reward; the declared generated-pool pin is reasoning-gym 0.1.25, seed 20261008, 89 families x 20 and a pool SHA-256, with platform hash division and a files/command verifier using inline entry gold. Loader digest and scorer installed-version enforcement are absent; family/offline claims are inherited and unexecuted. Documentation coverage is closed; authenticated pool/package provenance, runtime measurement and all shared gates remain open.",
+        "evidence": [
+          {
+            "kind": "repository",
+            "path": "data/datasets/reasoning_gym.py",
+            "locator": "KIND = \"dataset\""
+          },
+          {
+            "kind": "repository",
+            "path": "docs/dataset-reviews/reasoning_gym.md",
+            "locator": "# Reasoning Gym source-only journal review"
+          },
+          {
+            "kind": "repository",
+            "path": "docs/adapter-integration-journal.md",
+            "locator": "## Reasoning Gym — source-only journal coverage — b1"
+          },
+          {
+            "kind": "repository",
+            "path": "docs/enforcement-proof-decision.md",
+            "locator": "Snapshot/cleanup uncertainty alone is not a new"
+          }
+        ],
+        "next_action": "NEXT gate: source-provenance, then scorer-offline-closure. Independently authenticate the package/generator artifacts and declared pool digest/family/eligibility/selected manifest; establish deterministic transitive dependencies without scoring extras in the actual pristine verifier. Document metric identity; the official-scorer-identity proof obligation is withdrawn. Retain the remaining shared gates; no diagnostic is authorized."
+      }
+    ],
+    "historical_runs": []
+  },
+  {
+    "dataset": "sportsunderstanding",
+    "demand": "reasoning",
+    "surface": "reasoning",
+    "exercises": [
+      "context",
+      "verification"
+    ],
+    "shared_blockers": [
+      "runtime-observations",
+      "scorer-offline-closure",
+      "pristine-verifier",
+      "artifact-only-state-export"
+    ],
+    "blockers": [
+      {
+        "id": "dataset-journal-gap",
+        "family": "journal-coverage",
+        "status": "measurement",
+        "observed": "Source-only journal gap closed: cited review identifies the local binary word-label/dual-label-rejection rule attributed to BIG-bench multiple_choice_grade, pinned ReWOO CSV and imposed hash split, and declared QA runtime. Independent scorer equivalence, installed/selected-only provenance, comparability and measured coverage remain unestablished; all shared gates remain open. This retained record tracks measurement follow-up, not readiness.",
+        "evidence": [
+          {
+            "kind": "repository",
+            "path": "data/datasets/sportsunderstanding.py",
+            "locator": "KIND = \"dataset\""
+          },
+          {
+            "kind": "repository",
+            "path": "docs/dataset-source-reviews-b2.md",
+            "locator": "## sportsunderstanding source-only review"
+          },
+          {
+            "kind": "repository",
+            "path": "docs/adapter-integration-journal.md",
+            "locator": "## sportsunderstanding source-only review — 2026-10-15 — b2"
+          }
+        ],
+        "next_action": "Independently authenticate upstream scorer/metric equivalence and installed source/split/selected manifest custody; establish offline runtime and every shared admission gate before any separately authorized diagnostic. Preserve the documented local metric divergence and report invalid/unmeasured coverage explicitly."
+      }
+    ],
+    "historical_runs": []
+  },
+  {
+    "dataset": "strategyqa",
+    "demand": "reasoning",
+    "surface": "reasoning",
+    "exercises": [
+      "context",
+      "verification"
+    ],
+    "shared_blockers": [
+      "runtime-observations",
+      "scorer-offline-closure",
+      "pristine-verifier",
+      "artifact-only-state-export"
+    ],
+    "blockers": [
+      {
+        "id": "dataset-journal-gap",
+        "family": "journal-coverage",
+        "status": "measurement",
+        "observed": "Source-only journal gap closed: cited review identifies local normalized whole-string ReWOO EM, the pinned strategy_qa CSV/test pool, imposed hash split and declared QA runtime; F1 and judge accuracy are excluded. Independent scorer/original-benchmark comparability, installed/selected-only and split custody, offline runtime and measured coverage remain unestablished with every shared gate open. The original blocker remains as the measurement follow-up record, not a passing status.",
+        "evidence": [
+          {
+            "kind": "repository",
+            "path": "data/datasets/strategyqa.py",
+            "locator": "KIND = \"dataset\""
+          },
+          {
+            "kind": "repository",
+            "path": "docs/dataset-source-reviews-b2.md",
+            "locator": "## strategyqa source-only review"
+          },
+          {
+            "kind": "repository",
+            "path": "docs/adapter-integration-journal.md",
+            "locator": "## strategyqa source-only review — 2026-10-15 — b2"
+          }
+        ],
+        "next_action": "Independently authenticate ReWOO evaluator identity, original-benchmark metric/split comparability and installed/selected manifest provenance; establish offline runtime and all shared admission gates before any separately authorized diagnostic. Retain EM identity and explicit invalid/unmeasured task/trial coverage."
+      }
+    ],
+    "historical_runs": []
+  }
+]
