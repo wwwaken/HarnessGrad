@@ -163,7 +163,7 @@ A task that was never scored returns HTTP 200 with `"verdict": null` and a
 Every `env_derived` entry is `{flag, env_var, value|null, set, secret, note}`.
 
 * harnesses ← directories under `base_harness/` holding a `harness.json`;
-* datasets ← `data/*.py` modules declaring a top-level, zero-argument `load()`
+* datasets ← `data/datasets/*.py` plus top-level fixture modules modules declaring a top-level, zero-argument `load()`
   (`data/scaffolds/registry.py` declares `load(name)` and is the loader, so it is not a
   dataset);
 * improvers / `default_improver` ← `improvers/improvers.json`;
@@ -177,7 +177,7 @@ secret: true` so the form can say "a credential is present" without seeing it.
 The response also carries the extra keys the SPA's `LaunchOptions` type reads —
 `modes`, `sides`, `improver_names`, `flag_help`.
 
-**Reads:** `base_harness/*/harness.json`, `data/*.py` (parsed with `ast`, never
+**Reads:** `base_harness/*/harness.json`, `data/datasets/*.py` plus top-level fixture modules (parsed with `ast`, never
 imported), `improvers/improvers.json`, `driver.py --help` (subprocess),
 `.env` and the process environment.
 
@@ -191,7 +191,7 @@ $ curl -s http://127.0.0.1:8791/api/launch/options | python3 -c 'import json,sys
 ```
 
 `verify_demo`, `verify_exec` and `verify_service` are listed because they are
-`data/*.py` datasets like any other; the fixtures in `web/src/fixtures/` ship a
+`data/datasets/*.py` plus top-level fixture modules datasets like any other; the fixtures in `web/src/fixtures/` ship a
 smaller curated set, which is a fixture choice, not an API rule.
 
 ### 6. `GET /api/health`

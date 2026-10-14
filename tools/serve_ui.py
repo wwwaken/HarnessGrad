@@ -244,11 +244,11 @@ def scan_options() -> dict:
     # same list, with no way to tell that three of them are scaffolding. The files stay
     # (`demo` alone is used by 21 test modules); they are simply not choices. The
     # declaration is `KIND` in the module; see `data/scaffolds/registry.py`.
-    for f in (ROOT / "data" / f"{n}.py" for n in registry.published()):
+    for f in (ROOT / "data" / "datasets" / f"{n}.py" for n in registry.published()):
         try:
             sys.path.insert(0, str(ROOT))
             import importlib
-            mod = importlib.import_module(f"data.{f.stem}")
+            mod = importlib.import_module(f"data.datasets.{f.stem}")
             tasks, scorable = mod.load()
             # What this dataset needs from an environment, so the form can say which
             # harnesses can run it instead of letting the driver refuse after the click.

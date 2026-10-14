@@ -128,7 +128,7 @@ def no_network(monkeypatch):
 @pytest.fixture
 def triviaqa(monkeypatch):
     # Suppress import-time pool construction BEFORE loading a private module instance.
-    # Neither provisioned payloads nor globally cached data.triviaqa state enter tests.
+    # Neither provisioned payloads nor globally cached data.datasets.triviaqa state enter tests.
     from data.scaffolds.qa import base
 
     def forbidden(*args, **kwargs):
@@ -137,7 +137,7 @@ def triviaqa(monkeypatch):
     monkeypatch.setattr(base, "parquet_rows", forbidden)
     monkeypatch.setattr(base.QASpec, "records", lambda self: [])
     spec = importlib.util.spec_from_file_location(
-        "data._triviaqa_provenance_test", ROOT / "data/triviaqa.py")
+        "data._triviaqa_provenance_test", ROOT / "data/datasets/triviaqa.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     monkeypatch.setattr(module, "_rows", forbidden)
@@ -274,7 +274,7 @@ def test_contract_changed_bytes_fail(integrity_fixture, name):
     ("commit", "0" * 40, "immutable scorer commit"),
     ("commit", DATASET_REVISION, "dataset pin is not a scorer pin"),
     ("repository", "https://huggingface.co/datasets/mandarjoshi/trivia_qa", "repository"),
-    ("source_path", "data/triviaqa.py", "source path"),
+    ("source_path", "data/datasets/triviaqa.py", "source path"),
     ("license_path", SOURCE_PATH, "license pin"),
     ("acquisition", None, "acquisition attestation"),
 ])

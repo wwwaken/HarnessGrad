@@ -349,7 +349,7 @@ def test_every_closed_loop_dataset_ships_a_program_or_is_a_container():
 def test_every_shipped_program_declares_a_readable_verb_set():
     """The failure mode this replaced: a new spelling silently yielding `single_shot`."""
     for name in registry.published():
-        module = registry.importlib.import_module(f"data.{name}")
+        module = registry.importlib.import_module(f"data.datasets.{name}")
         if getattr(module, "REFUSED", None):
             continue
         task_id = module.load()[0][0]["task_id"]

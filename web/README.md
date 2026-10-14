@@ -192,7 +192,7 @@ with the environment variable named and only whether it is set (never a secret's
 `--mode` is never emitted: `driver.py --help` says it is "DEPRECATED and ignored: there is one
 engine", and emitting it would imply a choice that does not exist.
 
-**Reads:** `base_harness/*/harness.json` (harness names), `data/*.py` (dataset names),
+**Reads:** `base_harness/*/harness.json` (harness names), `data/datasets/*.py` plus top-level fixture modules (dataset names),
 `improvers/improvers.json` (improver names and the default), `driver.py --help` (flag text),
 `.env` (variable names and whether they are set). It reads no part of the record schema; it
 produces the fields that later appear in `run_meta` and the curve points.

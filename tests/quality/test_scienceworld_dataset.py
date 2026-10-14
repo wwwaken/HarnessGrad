@@ -3,7 +3,7 @@
 The judgement lessons live in `docs/dataset-onboarding-skill.md` §12 and §15; this file is
 the part a program can decide. Three of these carry most of the weight:
 
-* `test_the_test_fold_file_is_the_archive` rebuilds `data/scienceworld/test_fold.json` from
+* `test_the_test_fold_file_is_the_archive` rebuilds `data/datasets/scienceworld/test_fold.json` from
   the official archive and fails if the two disagree. The file is in git because the archive
   is not fetchable reproducibly here, and a transcription nobody can check is a claim.
 * `test_the_environment_regenerates_the_fold_s_own_gold` asks the JVM for the gold path of a
@@ -42,7 +42,7 @@ def _load_control(dataset: str):
     """
     import importlib.util
 
-    path = ROOT / "data" / dataset / "control.py"
+    path = ROOT / "data" / "datasets" / dataset / "control.py"
     spec = importlib.util.spec_from_file_location(f"{dataset}_control_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -59,7 +59,7 @@ ARCHIVE_CANDIDATES = [
 
 @pytest.fixture(scope="module")
 def scienceworld():
-    import data.scienceworld as module
+    import data.datasets.scienceworld as module
     return module
 
 
@@ -129,7 +129,7 @@ def test_the_test_fold_file_is_the_archive():
     Skipped when the archive is not on this machine: the comparison is the evidence, and
     without the archive there is nothing to compare against.
     """
-    import data.scienceworld as scienceworld
+    import data.datasets.scienceworld as scienceworld
 
     archive_path = next((p for p in ARCHIVE_CANDIDATES if p.is_file()), None)
     if archive_path is None:
@@ -249,7 +249,7 @@ def _write_task(workdir: Path, record: dict) -> None:
 
 
 def scienceworld_task_file() -> str:
-    import data.scienceworld as scienceworld
+    import data.datasets.scienceworld as scienceworld
     return scienceworld.TASK_IN_WORKDIR
 
 

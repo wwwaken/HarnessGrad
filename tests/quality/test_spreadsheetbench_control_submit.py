@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def control_record(tmp_path, monkeypatch):
     spec = importlib.util.spec_from_file_location(
         "spreadsheetbench_submit_control",
-        ROOT / "data" / "spreadsheetbench" / "control.py",
+        ROOT / "data" / "datasets" / "spreadsheetbench" / "control.py",
     )
     control = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(control)

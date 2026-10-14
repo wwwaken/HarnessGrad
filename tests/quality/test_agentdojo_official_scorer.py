@@ -12,7 +12,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-import data.agentdojo as dataset
+import data.datasets.agentdojo as dataset
 
 SOURCE = dataset.DATASET_ROOT / '_src' / f'agentdojo-{dataset.COMMIT}' / 'src/agentdojo/task_suite/task_suite.py'
 PYTHON = dataset.DATASET_ROOT / 'runtime/bin/python'
@@ -115,7 +115,7 @@ def test_subject_package_contains_tools_but_no_gold_or_scorer():
 
 @pytest.mark.parametrize('arm,score',[('--oracle','1.0'),('--noop','0.0')])
 def test_platform_controls(arm,score):
-    proc=subprocess.run(['python3','data/agentdojo/control.py',arm,'--platform','--task-id','agentdojo/0'],
+    proc=subprocess.run(['python3','data/datasets/agentdojo/control.py',arm,'--platform','--task-id','agentdojo/0'],
                         capture_output=True,text=True,timeout=120)
     assert proc.returncode==0,proc.stdout+proc.stderr
     assert f'score    {score}' in proc.stdout and 'sandbox=True' in proc.stdout

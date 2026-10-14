@@ -28,9 +28,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.gaia as dataset  # noqa: E402
+import data.datasets.gaia as dataset  # noqa: E402
 
-CHECK = ROOT / "data" / "gaia" / "verify" / "check.py"
+CHECK = ROOT / "data" / "datasets" / "gaia" / "verify" / "check.py"
 CONTROL_TASK = "gaia/0"
 
 
@@ -40,7 +40,7 @@ CONTROL_TASK = "gaia/0"
 def test_the_pool_is_the_pinned_one():
     pool = dataset.DATASET_ROOT / dataset.POOL
     if not pool.is_file():
-        pytest.skip("gaia: run `python3 data/gaia/prepare.py` (needs HF_TOKEN)")
+        pytest.skip("gaia: run `python3 data/datasets/gaia/prepare.py` (needs HF_TOKEN)")
     assert hashlib.sha256(pool.read_bytes()).hexdigest() == dataset.POOL_SHA256
     header = json.loads(pool.open(encoding="utf-8").readline())
     assert header["rows"] == dataset.ROWS == 165
@@ -218,7 +218,7 @@ def test_platform_control_refuses_regardless_of_arm():
         assert {"env.exec_defaults", "env.state=container"} <= set(receipt["policy_fields"])
 
     for arm in ("--oracle", "--noop"):
-        proc = subprocess.run([sys.executable, "data/gaia/control.py", "--platform", arm,
+        proc = subprocess.run([sys.executable, "data/datasets/gaia/control.py", "--platform", arm,
                                "--task-id", CONTROL_TASK],
                               cwd=ROOT, capture_output=True, text=True, timeout=900)
         combined = proc.stdout + proc.stderr

@@ -1,4 +1,4 @@
-"""Reading a staged QA table, shared by every adapter in `data/qa*`.
+"""Reading a staged QA table, shared by QA adapters in `data/datasets/`.
 
 Why a shared reader and not `datasets.load_dataset`
 ---------------------------------------------------

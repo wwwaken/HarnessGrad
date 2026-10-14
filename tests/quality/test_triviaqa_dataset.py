@@ -29,7 +29,7 @@ import data.scaffolds.registry as registry  # noqa: E402
 
 @pytest.fixture(scope="module")
 def triviaqa():
-    import data.triviaqa as module
+    import data.datasets.triviaqa as module
     if not module._RECORDS:
         pytest.skip("triviaqa: not provisioned")
     return module

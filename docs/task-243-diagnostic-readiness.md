@@ -40,7 +40,7 @@ turn a declaration into proof or supply an implemented ordinary-user admission p
    for future cleanup facts before launch. It remains independent of quota policy.
 
 2. **The simplest QA candidates also encounter a concrete non-quota refusal.**
-   [`QASpec.verifier`](../data/scaffolds/qa/base.py#L317) declares a verifier timeout;
+   [`QASpec.verifier`](../data/qa/base.py#L317) declares a verifier timeout;
    [`_refuse_unobserved_policies`](../eval/run/runner.py#L33) refuses that declaration
    without trusted observations, before execution and cache lookup. A `files`
    environment therefore does not establish that GSM8K, Reasoning Gym, Physics

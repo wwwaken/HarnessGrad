@@ -118,12 +118,12 @@ def test_failed_explicit_launcher_cleans_up_network(tmp_path, monkeypatch):
 
 
 def test_appworld_declares_absolute_launcher_without_reading_task_pool():
-    # Importing data.appworld reads the full pool; parse only the static declaration.
-    tree = ast.parse((ROOT / "data/appworld.py").read_text())
+    # Importing data.datasets.appworld reads the full pool; parse only the static declaration.
+    tree = ast.parse((ROOT / "data/datasets/appworld.py").read_text())
     node = next(node.value for node in tree.body if isinstance(node, ast.Assign)
                 and any(isinstance(target, ast.Name) and target.id == "DEFAULT_ENV"
                         for target in node.targets))
-    spec = eval(compile(ast.Expression(node), "data/appworld.py", "eval"),
+    spec = eval(compile(ast.Expression(node), "data/datasets/appworld.py", "eval"),
                 {"__builtins__": {}, "IMAGE": PIN, "SERVICE_IMAGE": PIN, "WORKDIR": "/app"})
     registry._check_env(spec, "train-smoke", "appworld")
     svc = registry._normalize_env(spec)["services"][0]

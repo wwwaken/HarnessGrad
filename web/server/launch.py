@@ -3,7 +3,7 @@
 Five sources, each read as the driver would read it:
 
 * harnesses -- ``base_harness/*/harness.json``;
-* datasets  -- ``data/*.py`` modules that declare a top-level ``load()``;
+* datasets  -- ``data/datasets/*.py (plus top-level fixtures)`` modules that declare a top-level ``load()``;
 * improvers -- ``improvers/improvers.json`` (names plus the default);
 * flags     -- ``driver.py --help``;
 * environment -- ``.env`` plus the process environment.
@@ -216,10 +216,11 @@ def declares_load(path: Path) -> bool:
 
 
 def dataset_names(repo: Path) -> list[str]:
-    """``data/*.py`` modules that declare a top-level ``load()``."""
+    """``data/datasets/*.py (plus top-level fixtures)`` modules that declare a top-level ``load()``."""
     root = repo / "data"
     try:
-        return sorted(p.stem for p in root.glob("*.py") if declares_load(p))
+        return sorted(p.stem for directory in (root, root / "datasets")
+                      for p in directory.glob("*.py") if declares_load(p))
     except OSError:
         return []
 

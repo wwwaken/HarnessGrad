@@ -154,8 +154,8 @@ def test_saved_invalid_verdict_is_preserved_without_inventing_a_zero(tmp_path):
 
 
 def test_trusted_adapter_exports_only_selected_public_facts_and_verify_split():
-    # Never import data.appworld: it loads a mixed train/eval pool on import.
-    tree = ast.parse((ROOT / "data/appworld.py").read_text())
+    # Never import data.datasets.appworld: it loads a mixed train/eval pool on import.
+    tree = ast.parse((ROOT / "data/datasets/appworld.py").read_text())
     function = next(n for n in tree.body if isinstance(n, ast.FunctionDef)
                     and n.name == "reporting_manifest")
     selected = rows("selected", "dev", (1,))
@@ -167,17 +167,17 @@ def test_trusted_adapter_exports_only_selected_public_facts_and_verify_split():
     assert "PRIVATE" not in json.dumps(exported) and "unused" not in json.dumps(exported)
     declaration = next(n.value for n in tree.body if isinstance(n, ast.Assign)
                        and any(isinstance(t, ast.Name) and t.id == "VERIFY" for t in n.targets))
-    namespace.update(ASSETS=ROOT / "data/appworld", VERIFIER_IMAGE="fabricated-image")
+    namespace.update(ASSETS=ROOT / "data/datasets/appworld", VERIFIER_IMAGE="fabricated-image")
     specs = eval(compile(ast.Expression(declaration), "fabricated_verify", "eval"), namespace)
     argv = specs["selected_1"]["argv"]
     assert argv[argv.index("--source-split") + 1] == "dev"
     assert "reporting_manifest" not in ast.get_source_segment(
-        (ROOT / "data/appworld.py").read_text(), next(
+        (ROOT / "data/datasets/appworld.py").read_text(), next(
             n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "load"))
 
 
 def load_check():
-    spec = importlib.util.spec_from_file_location("fabricated_check", ROOT / "data/appworld/verify/check.py")
+    spec = importlib.util.spec_from_file_location("fabricated_check", ROOT / "data/datasets/appworld/verify/check.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

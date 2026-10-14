@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT))
 
 @pytest.fixture(scope="module")
 def bfcl():
-    import data.bfcl_v3 as module
+    import data.datasets.bfcl_v3 as module
     if not module._RECORDS:
         pytest.skip(f"no BFCL data under {module.DATASET_ROOT}; run "
                     f"`python3 tools/datasets.py --fetch --dataset bfcl_v3`")

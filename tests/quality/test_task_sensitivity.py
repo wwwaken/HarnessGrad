@@ -4,7 +4,7 @@
 sensitive to framework improvements, followed by sensitivity-aware stratified splitting to
 ensure robust cross-suite generalization."*
 
-**我们为什么要抄。** 我们的 train/eval 切分只是 `data/terminal_bench.py` 里声明的一行
+**我们为什么要抄。** 我们的 train/eval 切分只是 `data/datasets/terminal_bench.py` 里声明的一行
 (52/37),没有任何证据说明两边都分得出"好 harness"和"坏 harness"。一道所有 harness 都做对
 (或都做错)的题,对比较毫无贡献,却贡献噪声 —— 而这个平台的整个主张就是它的数字有意义。
 

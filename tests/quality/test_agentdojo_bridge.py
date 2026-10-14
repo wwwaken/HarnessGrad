@@ -14,7 +14,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 DATA = Path('/mnt/20t/xubuqiang/datasets/agentdojo')
 PYTHON = DATA / 'runtime/bin/python'
-BRIDGE = ROOT / 'data/agentdojo/bridge.py'
+BRIDGE = ROOT / 'data/datasets/agentdojo/bridge.py'
 
 
 def run_bridge(mode, case_file=None, action_file=None):
@@ -46,7 +46,7 @@ def test_tool_only_cli_replays_gold_with_real_observations(tmp_path):
     case_path = tmp_path / 'case.json'
     case_path.write_text(json.dumps(case))
     oracle = run_bridge('oracle', case_path)
-    cli = ROOT / 'data/agentdojo/cli/dojo'
+    cli = ROOT / 'data/datasets/agentdojo/cli/dojo'
     python = DATA / 'agent_runtime/bin/python'
     tools = subprocess.run([str(python), str(cli), 'tools'], cwd=tmp_path,
                            capture_output=True, text=True, timeout=30)

@@ -19,7 +19,7 @@ import chess
 import chess.pgn
 import pytest
 
-import data.chessbench_puzzles as dataset
+import data.datasets.chessbench_puzzles as dataset
 
 engine_lib = SimpleNamespace(Engine=object)
 SOURCE = (dataset.DATASET_ROOT / "_src" /

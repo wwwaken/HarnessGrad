@@ -31,14 +31,14 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "data" / "alfworld" / "lib"))
+sys.path.insert(0, str(ROOT / "data" / "datasets" / "alfworld" / "lib"))
 
 DATA_ROOT = Path(os.environ.get("HG_ALFWORLD_DATA",
                                 "/mnt/20t/xubuqiang/datasets/alfworld"))
 UPSTREAM = (DATA_ROOT / "_src" / "repo" / "alfworld" / "agents" / "eval"
             / "evaluate_dagger.py")
-LIB = ROOT / "data" / "alfworld" / "lib"
-CHECK = ROOT / "data" / "alfworld" / "verify" / "check.py"
+LIB = ROOT / "data" / "datasets" / "alfworld" / "lib"
+CHECK = ROOT / "data" / "datasets" / "alfworld" / "verify" / "check.py"
 
 pytest.importorskip("textworld", reason="ALFWorld needs textworld")
 pytest.importorskip("alfworld", reason="ALFWorld needs the alfworld package")
@@ -81,7 +81,7 @@ def _check_module():
 
 def _data_available() -> bool:
     try:
-        import data.alfworld as alfworld  # noqa: F401
+        import data.datasets.alfworld as alfworld  # noqa: F401
         return bool(alfworld._RECORDS)
     except Exception:  # noqa: BLE001
         return False
@@ -91,13 +91,13 @@ def _data_available() -> bool:
 def alfworld():
     if not _data_available():
         pytest.skip(f"no extracted ALFWorld data under {DATA_ROOT}")
-    import data.alfworld as module
+    import data.datasets.alfworld as module
     return module
 
 
 @pytest.fixture(scope="module")
 def control():
-    path = ROOT / "data" / "alfworld" / "control.py"
+    path = ROOT / "data" / "datasets" / "alfworld" / "control.py"
     spec = importlib.util.spec_from_file_location("alfworld_control", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -105,7 +105,7 @@ def control():
 
 
 def _record(task_type: str):
-    import data.alfworld as alfworld
+    import data.datasets.alfworld as alfworld
     wanted = [r for r in alfworld._RECORDS if r["task_type"] == task_type]
     assert wanted, f"no task of type {task_type}"
     # Shortest walkthrough of the type, so the differential test stays cheap while still

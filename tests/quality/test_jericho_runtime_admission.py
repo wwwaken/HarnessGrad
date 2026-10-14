@@ -19,7 +19,7 @@ from eval.policy.runtime_policy import admit_native_network, stage_agent_runtime
 
 def control_module():
     import importlib.util
-    spec = importlib.util.spec_from_file_location("jericho_control_review", ROOT / "data/jericho/control.py")
+    spec = importlib.util.spec_from_file_location("jericho_control_review", ROOT / "data/datasets/jericho/control.py")
     control = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(control)
     return control
@@ -27,7 +27,7 @@ def control_module():
 
 def test_lazy_missing_provisioning_retains_the_actionable_load_error(monkeypatch):
     import importlib.util
-    spec = importlib.util.spec_from_file_location("jericho_missing_review", ROOT / "data/jericho.py")
+    spec = importlib.util.spec_from_file_location("jericho_missing_review", ROOT / "data/datasets/jericho.py")
     adapter = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(adapter)
 
@@ -92,7 +92,7 @@ def test_projection_rejects_bulk_copies_symlinks_and_leftover_data(tmp_path):
 
 
 def test_control_resets_a_previous_log_symlink_without_touching_its_target(tmp_path, monkeypatch):
-    import data.jericho as adapter
+    import data.datasets.jericho as adapter
     control = control_module()
     record = {"task_id": "synthetic"}
     monkeypatch.setitem(adapter.__dict__, "SETUP", {"synthetic": {"files": [
@@ -129,7 +129,7 @@ def test_installed_jericho_projection_imports_without_reference_payload(tmp_path
     import importlib.util
     if importlib.util.find_spec("jericho") is None:
         pytest.skip("Jericho not installed")
-    import data.jericho as adapter
+    import data.datasets.jericho as adapter
 
     spec = adapter._env()["agent_runtime"]
     overlay = stage_agent_runtime(spec, tmp_path / "projection")

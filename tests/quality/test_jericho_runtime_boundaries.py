@@ -23,7 +23,7 @@ from eval.verification.verifier import _verify, _verify_container_state
 
 
 def load_asset(name):
-    spec = importlib.util.spec_from_file_location(f"jericho_{name}_test", ROOT / "data/jericho" / f"{name}.py")
+    spec = importlib.util.spec_from_file_location(f"jericho_{name}_test", ROOT / "data/datasets/jericho" / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -37,7 +37,7 @@ def test_adapter_import_does_not_read_release_payload(monkeypatch):
         return original(name, *args, **kwargs)
 
     monkeypatch.setattr("builtins.__import__", guarded)
-    spec = importlib.util.spec_from_file_location("jericho_lazy_test", ROOT / "data/jericho.py")
+    spec = importlib.util.spec_from_file_location("jericho_lazy_test", ROOT / "data/datasets/jericho.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     assert "_RECORDS" not in vars(module)
@@ -222,7 +222,7 @@ pathlib.Path(a.workdir, 'answer.txt').write_text(json.dumps(seen))
 
 
 def test_control_materialization_resets_actions_and_requires_explicit_id(tmp_path, monkeypatch):
-    import data.jericho as adapter
+    import data.datasets.jericho as adapter
     control = load_asset("control")
     rom = tmp_path / "synthetic.z5"
     rom.write_bytes(b"synthetic ROM")

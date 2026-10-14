@@ -77,7 +77,7 @@ def test_every_published_dataset_declares_aggregation_without_importing_it(monke
 
     monkeypatch.setattr(Path, "read_text", scoped_read)
     declarations = json.loads(aggregation.POLICIES.read_text())
-    sources = _guard(ROOT / "data", declarations)
+    sources = _guard(ROOT / "data" / "datasets", declarations)
     assert SOURCE_EXCLUDED <= set(sources)
 
 
@@ -111,8 +111,8 @@ def test_both_run_entrypoints_pass_dataset_to_reward_computation():
 def adapters():
     # Block import-time pool construction before importing either scorer.
     with patch.object(base.QASpec, "records", return_value=[]):
-        musique = importlib.import_module("data.musique")
-        twowiki = importlib.import_module("data.twowikimultihopqa")
+        musique = importlib.import_module("data.datasets.musique")
+        twowiki = importlib.import_module("data.datasets.twowikimultihopqa")
     with patch.object(musique, "_rows", side_effect=AssertionError("released data")), \
             patch.object(twowiki, "_rows", side_effect=AssertionError("released data")), \
             patch.object(twowiki, "_aliases", side_effect=AssertionError("released aliases")):
@@ -141,7 +141,7 @@ def test_before_after_all_numbers_and_verdicts_are_identical(adapters):
                       for name in expected["run_means"]},
     }
     assert actual == expected
-    assert set(actual["run_means"]) == set(_published_sources(ROOT / "data"))
+    assert set(actual["run_means"]) == set(_published_sources(ROOT / "data" / "datasets"))
 
 
 def _replace_policy(monkeypatch, tmp_path, dataset, scope, **changes):

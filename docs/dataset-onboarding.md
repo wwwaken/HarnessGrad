@@ -35,8 +35,8 @@ unreachable check from a weak harness, and these are what separate them.
 
 | # | gate | how you prove it |
 | --- | --- | --- |
-| 1 | **oracle control scores 1** | `python3 data/<name>/control.py --oracle` |
-| 2 | **do-nothing control scores 0** | `python3 data/<name>/control.py --noop` |
+| 1 | **oracle control scores 1** | `python3 data/datasets/<name>/control.py --oracle` |
+| 2 | **do-nothing control scores 0** | `python3 data/datasets/<name>/control.py --noop` |
 | 3 | **the official scorer is copied verbatim into a test, with a differential test** | `tests/quality/test_<name>_official_scorer.py` |
 | 4 | **`KIND = "dataset"`** | `python3 tools/dataset_lint.py` |
 | 5 | **it runs** | `python3 tools/task_difficulty.py --dataset <name>` returns 0 |
@@ -78,10 +78,10 @@ onboarded without a way to show its grade is reachable.
 
 | what | where |
 | --- | --- |
-| the dataset declaration | `data/<name>.py` — `KIND`, `load()`, `downloads()`, and optionally `provision_status()`, `SPLIT`, `ENV`, `VERIFY`, `SETUP` |
+| the dataset declaration | `data/datasets/<name>.py` — `KIND`, `load()`, `downloads()`, and optionally `provision_status()`, `SPLIT`, `ENV`, `VERIFY`, `SETUP` |
 | **which tasks are study material** | `SPLIT` (the dataset's default division) and `OFFICIAL_EVAL` (the ids of the benchmark's own evaluation set, or `None` when the pool holds no study material). A run may replace the division with `--split default\|official\|<file.json>`; it records `split_source` and `split_sha`, and two curve points belong on one axis only when the sha agrees — INTERFACE.md §2.3 |
 | the data bytes | `/mnt/20t/xubuqiang/datasets/<name>/` — **never in git**; `DATASET_ROOT` must point outside the platform tree (lint rule: `lint_paths`) |
-| dataset-private code | `data/<name>/{lib,cli,verify,control,oracle_harness}/` |
+| dataset-private code | `data/datasets/<name>/{lib,cli,verify,control,oracle_harness}/` |
 | the machine-checkable contract | `data/dataset.schema.json` |
 | the checker | `tools/dataset_lint.py` |
 | the generator | `tools/new_dataset.py --kind qa\|command\|files` — see §3 |
@@ -179,11 +179,11 @@ place to write an answer. The shared scaffold is `data/scaffolds/qa/`; seven dat
 `reasoning_gym`, `twowikimultihopqa`, plus `bfcl_v3` with its own `records()`).
 
 ```
-data/<name>.py     declares a base.QASpec(...): root, rows, question, gold, goal, score,
+data/datasets/<name>.py     declares a base.QASpec(...): root, rows, question, gold, goal, score,
                    downloads, split, source — and `study=("train",)` when the benchmark
                    publishes a study split too — then _SPEC.build() and thin wrappers.
-data/scaffolds/qa/bin/qa     the agent's command (submit / show)
-data/scaffolds/qa/lib/verify/check.py   the check, shared by every QA dataset
+data/scaffolds/qa/cli/qa     the agent's command (submit / show)
+data/scaffolds/qa/verify/check.py   the check, shared by every QA dataset
 data/scaffolds/qa/control.py --dataset <name> --oracle|--noop [--platform]
 ```
 
@@ -197,9 +197,10 @@ tags each kept row with its position in the file so the task id does not move wh
 sample size does.
 
 The adapter is materialised *by itself* inside the verification namespace, together with
-`data/__init__.py`, `data/scaffolds/qa/{__init__,read,base}.py`. Two consequences:
+`data/{__init__,datasets/__init__,scaffolds/__init__}.py`,
+`data/scaffolds/qa/{__init__,read,base}.py`. Two consequences:
 
-* an adapter that imports another dataset's module (e.g. a shared `data.scaffolds.qa.rewoo`) fails
+* an adapter that imports another dataset's module (e.g. `data.datasets.another_adapter`) fails
   inside the namespace — declare shared constants inline, three lines are cheaper than a
   fourth file in every `VERIFY.inputs`;
 * `data/scaffolds/qa/verify/check.py` may not import a name that arrived in `argv` — validate the
@@ -211,13 +212,13 @@ The adapter is materialised *by itself* inside the verification namespace, toget
 Use it when the agent needs a runtime: an interpreter, a game, a database, a CLI of its own.
 
 ```
-data/<name>.py             ENV = {"kind": "files"}; SETUP, VERIFY (one entry per task)
-data/<name>/lib/*.py       shared by the agent's world and the scored world — one library,
+data/datasets/<name>.py             ENV = {"kind": "files"}; SETUP, VERIFY (one entry per task)
+data/datasets/<name>/lib/*.py       shared by the agent's world and the scored world — one library,
                            two thin programs, so both build the same world
-data/<name>/cli/<cmd>      the command the agent runs
-data/<name>/verify/check.py  reads the workdir, writes the reward file, exits 0
-data/<name>/control.py     --oracle / --noop / --platform
-data/<name>/oracle_harness/{agent.py,harness.json}   the scripted oracle as a real harness
+data/datasets/<name>/cli/<cmd>      the command the agent runs
+data/datasets/<name>/verify/check.py  reads the workdir, writes the reward file, exits 0
+data/datasets/<name>/control.py     --oracle / --noop / --platform
+data/datasets/<name>/oracle_harness/{agent.py,harness.json}   the scripted oracle as a real harness
 ```
 
 Three measured traps:
@@ -287,10 +288,10 @@ refusal.
 ## 6. Definition of done
 
 ```sh
-python3 data/<name>/control.py --oracle              # expect reward 1
-python3 data/<name>/control.py --noop                # expect reward 0
-python3 data/<name>/control.py --oracle --platform   # expect reward 1 again
-python3 data/<name>/control.py --noop   --platform   # expect reward 0 again
+python3 data/datasets/<name>/control.py --oracle              # expect reward 1
+python3 data/datasets/<name>/control.py --noop                # expect reward 0
+python3 data/datasets/<name>/control.py --oracle --platform   # expect reward 1 again
+python3 data/datasets/<name>/control.py --noop   --platform   # expect reward 0 again
 python3 tools/dataset_lint.py                        # expect: ok <name>, rc 0
 python3 tools/datasets.py --write                    # DOWNLOADS.md, generated
 python3 tools/task_difficulty.py --dataset <name>    # expect rc 0

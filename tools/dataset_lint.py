@@ -80,7 +80,7 @@ def _is_top_level(dst: str) -> bool:
 
     The platform copies a verifier's inputs in **before** it creates the reward file's
     directory, so a nested `dst` has no parent to be copied into -- measured, and it
-    cost a whole run (see `data/tau_bench.py:_verifier`). A top-level destination has
+    cost a whole run (see `data/datasets/tau_bench.py:_verifier`). A top-level destination has
     `/` for a parent, which always exists.
     """
     return PurePosixPath(str(dst)).parent == PurePosixPath("/")
@@ -311,7 +311,7 @@ def lint_oracle(module, schema: dict, result: Result) -> None:
 def lint_dataset(name: str, schema: dict, *, require_data: bool = True) -> Result:
     result = Result(name)
     try:
-        module = importlib.import_module(f"data.{name}")
+        module = importlib.import_module(registry.module_name(name))
     except Exception as exc:  # noqa: BLE001 - a module that will not import is a finding
         result.error(f"will not import: {type(exc).__name__}: {exc}")
         return result

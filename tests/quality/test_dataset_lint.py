@@ -50,7 +50,7 @@ def test_lint_accepts_every_published_dataset(schema):
 
 #: A module that breaks one rule per line, so a failure names its own cause. It is
 #: written into `data/` only for the duration of the test: `lint_dataset` imports
-#: `data.<name>`, and a copy that is not imported as a dataset is not a copy.
+#: `data.datasets.<name>`, and a copy that is not imported as a dataset is not a copy.
 BROKEN_SOURCE = '''\
 """Deliberately broken dataset, written by tests/quality/test_dataset_lint.py."""
 KIND = "datset"                       # not a known kind
@@ -95,17 +95,17 @@ def test_lint_rejects_a_deliberately_broken_copy(schema, tmp_path):
     name = "_lint_broken_copy"
     path = tmp_path / f"{name}.py"
     path.write_text(BROKEN_SOURCE.format(platform_root=str(ROOT)))
-    package = importlib.import_module("data")
+    package = importlib.import_module("data.datasets")
     package.__path__.append(str(tmp_path))
     importlib.invalidate_caches()
     try:
         result = dataset_lint.lint_dataset(name, schema)
     finally:
         package.__path__.remove(str(tmp_path))
-        sys.modules.pop(f"data.{name}", None)
+        sys.modules.pop(f"data.datasets.{name}", None)
         importlib.invalidate_caches()
 
-    assert not (ROOT / "data" / f"{name}.py").exists(), \
+    assert not (ROOT / "data" / "datasets" / f"{name}.py").exists(), \
         "the fixture must not touch the checkout"
 
     assert not result.ok, "the broken copy passed the lint"
@@ -164,9 +164,9 @@ def test_the_broken_copy_is_gone_and_the_real_datasets_still_pass(schema):
     """The synthetic copy must not have left a module behind for `published()`.
 
     Kept as a separate assertion now that the copy never enters the checkout: it pins
-    that extending `data.__path__` for the fixture left no residue in the package, which
+    that extending `data.datasets.__path__` for the fixture left no residue in the package, which
     is the way this test could still go wrong.
     """
-    assert not (ROOT / "data" / "_lint_broken_copy.py").exists()
+    assert not (ROOT / "data" / "datasets" / "_lint_broken_copy.py").exists()
     assert "_lint_broken_copy" not in registry.published()
     assert dataset_lint.lint_dataset("alfworld", schema).ok

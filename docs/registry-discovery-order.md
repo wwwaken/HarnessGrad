@@ -1,9 +1,15 @@
 # Registry discovery order is observable
 
+Current-layout note: this is a historical audit of the named baseline. After
+Stages C/D, shared paths map to `data/scaffolds/` and adapter/asset paths map to
+`data/datasets/`; baseline spellings below are retained as audit evidence.
+The split report records the current verification.
+
+
 Audit of checkout `b9ed453`, answering `docs/data-split-plan.md` section 7.
 No files were moved and the split plan was not edited.
 
-**Verdict: the sequence returned by `data.scaffolds.registry.published()` is externally
+**Verdict: the sequence returned by `data.registry.published()` is externally
 observable.** Several consumers preserve it when printing or serializing lists.
 The filesystem's *raw enumeration order* is not observable through those lists:
 the registry sorts paths **before importing**, rather than sorting a completed
@@ -13,7 +19,7 @@ not. Sorting JSON object keys does not sort JSON arrays.
 
 ## Discovery, exactly
 
-`data/scaffolds/registry.py:43-60`, `published()`:
+`data/registry.py:43-60`, `published()`:
 
 ```text
 Path(__file__).resolve().parent.glob("*.py")   # direct siblings, not recursive
@@ -101,7 +107,7 @@ The operations task picker is also name-based:
 `load_envs` -> list comprehension over that dataset's tasks. Its `start_job():296`
 defaults to literal `"demo"`; the SPA initializes its dataset to `"demo"`
 (`web/src/pages/launch.tsx:44`). Neither selects `published()[0]`.
-`data/scaffolds/command_control.py:63 pick()` can select the first eval task or first task
+`data/command_control.py:63 pick()` can select the first eval task or first task
 of a supplied module; that is adapter task/split order, not catalog order.
 
 Record and receipt inputs visible in the driver are:

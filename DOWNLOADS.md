@@ -20,7 +20,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/agentdojo.tar.gz`
 - **sha256:** `d7e0ee021be27a69e7e66647979b5a5e0dd10030d38d04ce4102e18a76a228d8`
 
-> Package 0.1.35 and suite v1.2.2 are different version axes. Provision isolated runtime and tool-only runtime using data/agentdojo/prepare.py; never expose full task/ground_truth modules to the agent. Fixed-template attack only, 949 pairs.
+> Package 0.1.35 and suite v1.2.2 are different version axes. Provision isolated runtime and tool-only runtime using data/datasets/agentdojo/prepare.py; never expose full task/ground_truth modules to the agent. Fixed-template attack only, 949 pairs.
 
 ### AgentDojo isolated runtime (pip, 0.1.35)
 
@@ -170,7 +170,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/evaluation.tar.gz`
 - **sha256:** `e70bcf57ed7dcc1ab4a55e38a14fa12d8bf7ff0cc2e66db673e4d55b16f5050b`
 
-> Pins evaluation/evaluation_ex.py, whose `calculate_ex` is transcribed verbatim in data/bird_minidev/verify/check.py, plus evaluation_f1.py (Soft-F1) and evaluation_ves.py (R-VES) -- the benchmark's other two official columns, named in the evidence and not reported. The tests read this archive and compare bytes; no run imports it.
+> Pins evaluation/evaluation_ex.py, whose `calculate_ex` is transcribed verbatim in data/datasets/bird_minidev/verify/check.py, plus evaluation_f1.py (Soft-F1) and evaluation_ves.py (R-VES) -- the benchmark's other two official columns, named in the evidence and not reported. The tests read this archive and compare bytes; no run imports it.
 
 ## `chessbench_puzzles`
 
@@ -213,7 +213,7 @@ loads and scores it stays in git.
 - **Destination:** `_src`
 - **sha256:** `{'test.jsonl': '26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363'}`
 
-> Canonical HF simplified format. Trap: the tests live inside code_context and reference_code is gold. 926 of the 1000 rows are offered here; the 74 exclusions are measured and named in data/ds1000.py.
+> Canonical HF simplified format. Trap: the tests live inside code_context and reference_code is gold. 926 of the 1000 rows are offered here; the 74 exclusions are measured and named in data/datasets/ds1000.py.
 
 ### DS-1000 official source archive (http, b39aab71)
 
@@ -403,7 +403,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/upstream.tar.gz`
 - **sha256:** `56c7c42aee979def86b69547ecd6d5a877a0e4940af8923bf4325ca0defecbaf`
 
-> Pins `lcb_runner/evaluation/testing_util.py` (the executor, including the reliability_guard upstream warns is not a sandbox -- the platform's verification namespace is) and `pass_k_utils.py` (the aggregation). Both are copied into the verification namespace as VERIFY.inputs, so the metric runs upstream's bytes; `data/livecodebench.py` also transcribes pass_k_utils.py lines 4-53 verbatim. Never enters an agent SETUP.
+> Pins `lcb_runner/evaluation/testing_util.py` (the executor, including the reliability_guard upstream warns is not a sandbox -- the platform's verification namespace is) and `pass_k_utils.py` (the aggregation). Both are copied into the verification namespace as VERIFY.inputs, so the metric runs upstream's bytes; `data/datasets/livecodebench.py` also transcribes pass_k_utils.py lines 4-53 verbatim. Never enters an agent SETUP.
 
 ## `musique`
 
@@ -438,7 +438,7 @@ loads and scores it stays in git.
 - **Destination:** `_src/nestful.tar.gz`
 - **sha256:** `ea8ad67cbd3680b4b85e3b60d219898fda9643240636ef8ac3b020c46fb95d1b`
 
-> Canonical commit verified via GitHub API and codeload. HF rows alone omit the 4349 Python tool files needed for Win Rate. Gold execution itself fails due to host/process-dependent state and basic_functions overrides; see data/nestful/audit.py. No gold/function tree is offered as agent SETUP.
+> Canonical commit verified via GitHub API and codeload. HF rows alone omit the 4349 Python tool files needed for Win Rate. Gold execution itself fails due to host/process-dependent state and basic_functions overrides; see data/datasets/nestful/audit.py. No gold/function tree is offered as agent SETUP.
 
 ## `physicsquestions`
 
@@ -468,7 +468,7 @@ loads and scores it stays in git.
 - **Size:** ~1 MB, with its own dependency tree
 - **Package:** `reasoning-gym==0.1.25`
 
-> The tasks are **generated**, so there is no dataset file to fetch: the pin is this package version plus the seed and the item count in `data/reasoning_gym/prepare.py`. Install it into the platform interpreter -- the check imports it inside the verification namespace. The pool itself is not a download either: `prepare.py` writes it from this version plus the seed, and `POOL_SHA256` in `data/reasoning_gym.py` pins the result, so the only declared dependency is this package. Trap 1: the extras (`reasoning-gym[scoring]`) pull an LLM-judge cascade; the 89 families used here are exactly the ones whose scorer is deterministic and offline in this version, measured rather than assumed (see `prepare.py`). Trap 2: installing it pins `click>=8.3`, while a `ray 2.52.1` in this interpreter wants `click!=8.3.*` -- a warning only, and nothing this platform imports uses either.
+> The tasks are **generated**, so there is no dataset file to fetch: the pin is this package version plus the seed and the item count in `data/datasets/reasoning_gym/prepare.py`. Install it into the platform interpreter -- the check imports it inside the verification namespace. The pool itself is not a download either: `prepare.py` writes it from this version plus the seed, and `POOL_SHA256` in `data/datasets/reasoning_gym.py` pins the result, so the only declared dependency is this package. Trap 1: the extras (`reasoning-gym[scoring]`) pull an LLM-judge cascade; the 89 families used here are exactly the ones whose scorer is deterministic and offline in this version, measured rather than assumed (see `prepare.py`). Trap 2: installing it pins `click>=8.3`, while a `ray 2.52.1` in this interpreter wants `click!=8.3.*` -- a warning only, and nothing this platform imports uses either.
 
 ## `scienceworld`
 
@@ -591,7 +591,7 @@ loads and scores it stays in git.
 - **URL:** https://github.com/sierra-research/tau-bench/archive/59a200c6d575d595120f1cb70fea53cef0632f6b.tar.gz
 - **Destination:** `/mnt/20t/xubuqiang/datasets/tau-bench`
 
-> Only needed to REGENERATE `data/tau_bench/`: the adapter reads the committed assets, which are already in git. Pinned to the commit in PROVENANCE.json -- never a branch.
+> Only needed to REGENERATE `data/datasets/tau_bench/`: the adapter reads the committed assets, which are already in git. Pinned to the commit in PROVENANCE.json -- never a branch.
 
 ## `terminal_bench`
 

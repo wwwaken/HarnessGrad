@@ -39,7 +39,7 @@ QA_DATASETS = ["gsm8k", "triviaqa", "strategyqa", "sportsunderstanding",
 
 def _adapter(name: str):
     import importlib
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(f"data.datasets.{name}")
     try:
         records = module._RECORDS
     except Exception as exc:  # noqa: BLE001 - unprovisioned is a skip, not a failure
@@ -67,7 +67,7 @@ def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
         if getattr(module, "EVIDENCE_AWARE", False):
             gold = record["gold"]
             evidence = gold.get("evidence")
-            if module.__name__ == "data.fever":
+            if module.__name__ == "data.datasets.fever":
                 if evidence and evidence[0] and isinstance(evidence[0][0], str):
                     evidence = [[item[0], int(item[1])] for item in evidence]
                 else:
@@ -163,7 +163,7 @@ def test_the_gold_is_inside_the_package_that_travels(qa):
     assert "gold.json" in paths
     assert "data/__init__.py" in paths
     assert "data/scaffolds/qa/base.py" in paths
-    assert f"data/{qa.__name__.split('.')[-1]}.py" in paths
+    assert f"data/datasets/{qa.__name__.split('.')[-1]}.py" in paths
 
 
 def test_the_check_grades_the_reference_answer_as_one(qa, tmp_path):
@@ -249,7 +249,7 @@ def test_dataset_private_modules_do_not_collide_by_bare_name():
     ROOT = Path(__file__).resolve().parents[2]
     names = {}
     for dataset in ("scienceworld", "jericho"):
-        path = ROOT / "data" / dataset / "control.py"
+        path = ROOT / "data" / "datasets" / dataset / "control.py"
         if not path.is_file():
             continue
         name = f"{dataset}_control_contract_probe"

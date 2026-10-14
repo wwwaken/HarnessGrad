@@ -58,7 +58,7 @@ NORMALIZE_CASES = ["Yes", "yes.", "YES", " No ", "a Yes!", "", "The Answer",
 
 @pytest.fixture(scope="module")
 def strategyqa():
-    import data.strategyqa as module
+    import data.datasets.strategyqa as module
     if not module._RECORDS:
         pytest.skip("strategyqa is not provisioned")
     return module
@@ -66,7 +66,7 @@ def strategyqa():
 
 @pytest.fixture(scope="module")
 def sports():
-    import data.sportsunderstanding as module
+    import data.datasets.sportsunderstanding as module
     if not module._RECORDS:
         pytest.skip("sportsunderstanding is not provisioned")
     return module
@@ -74,7 +74,7 @@ def sports():
 
 @pytest.fixture(scope="module")
 def physics():
-    import data.physicsquestions as module
+    import data.datasets.physicsquestions as module
     if not module._RECORDS:
         pytest.skip("physicsquestions is not provisioned")
     return module

@@ -77,8 +77,8 @@ runpy.run_path(sys.argv[0], run_name="__main__")
     assert evidence["official"]["scorer_identity"] == triviaqa.SCORER_IDENTITY == (
         "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2")
     assert evidence["official"]["reference"] == triviaqa.SCORER_REFERENCE
-    assert evidence["scorer_module"] == "data.triviaqa"
-    adapter = tmp_path / "data/triviaqa.py"
-    assert adapter.read_bytes() == (ROOT / "data/triviaqa.py").read_bytes()
+    assert evidence["scorer_module"] == "data.datasets.triviaqa"
+    adapter = tmp_path / "data/datasets/triviaqa.py"
+    assert adapter.read_bytes() == (ROOT / "data/datasets/triviaqa.py").read_bytes()
     assert hashlib.sha256(adapter.read_bytes()).hexdigest() != (
         evidence["official"]["reference"]["source_sha256"])

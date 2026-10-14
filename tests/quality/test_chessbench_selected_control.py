@@ -12,7 +12,7 @@ from types import SimpleNamespace
 import chess
 import pytest
 
-import data.chessbench_puzzles as dataset
+import data.datasets.chessbench_puzzles as dataset
 from data.scaffolds.qa import control
 
 
@@ -225,8 +225,8 @@ def test_malformed_prediction_evidence_redacts_private_reference(
 def test_import_failure_evidence_redacts_private_reference(staged_verifier, failure):
     workdir = staged_verifier[0]
     if failure == "missing_adapter":
-        (workdir / "data/chessbench_puzzles.py").unlink()
+        (workdir / "data/datasets/chessbench_puzzles.py").unlink()
     else:
         (workdir / "chess.py").write_text(
             'raise ImportError("synthetic unavailable chess dependency")\n')
-    assert_redacted_failure(staged_verifier, "could not import data.chessbench_puzzles")
+    assert_redacted_failure(staged_verifier, "could not import data.datasets.chessbench_puzzles")

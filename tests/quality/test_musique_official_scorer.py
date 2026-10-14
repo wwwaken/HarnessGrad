@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-import data.musique as dataset
+import data.datasets.musique as dataset
 from data.scaffolds.qa import base
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -299,7 +299,7 @@ def guarded_open(path, *args, **kwargs):
         raise AssertionError("released payload access is forbidden")
     return original_open(path, *args, **kwargs)
 pathlib.Path.open = guarded_open
-import data.musique as dataset
+import data.datasets.musique as dataset
 assert dataset._SPEC._records == []
 assert dataset._SPEC.load_error is None
 gold = {"id":"synthetic-train", "answer":"red", "aliases":[],

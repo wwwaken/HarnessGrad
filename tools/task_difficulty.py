@@ -34,7 +34,7 @@ Three honest limits
 
 Where the answer goes
 ---------------------
-`data/<dataset>_difficulty.json`, beside the dataset it describes, so a new dataset brings its
+`data/datasets/<dataset>_difficulty.json`, beside the dataset it describes, so a new dataset brings its
 own table and the platform does not need a registry of difficulty files. Regenerate with:
 
     python3 tools/task_difficulty.py
@@ -50,7 +50,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs"
-DATA = ROOT / "data"
+DATA = ROOT / "data" / "datasets"
 
 sys.path.insert(0, str(ROOT))
 import data.scaffolds.registry as registry   # noqa: E402

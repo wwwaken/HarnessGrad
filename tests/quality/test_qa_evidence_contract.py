@@ -91,7 +91,7 @@ def test_verifier_marks_malformed_structured_json_unmeasured(tmp_path):
 
 
 def test_fever_prediction_uses_strict_evidence_and_nei_exemption():
-    from data.fever import score, score_prediction
+    from data.datasets.fever import score, score_prediction
 
     gold = {"answer": "SUPPORTS", "evidence": [[[None, None, "P", 0]] ]}
     missing = score("SUPPORTS", gold)
@@ -106,7 +106,7 @@ def test_fever_prediction_uses_strict_evidence_and_nei_exemption():
 
 
 def test_hotpot_uses_answer_metrics_and_joint_exact_set():
-    from data.hotpotqa import score, score_prediction
+    from data.datasets.hotpotqa import score, score_prediction
 
     gold = {"answer": "The answer", "supporting_facts": [["A", 0], ["B", 1]]}
     missing = score("answer", gold)
@@ -119,8 +119,8 @@ def test_hotpot_uses_answer_metrics_and_joint_exact_set():
 
 
 def test_evidence_is_in_verifier_gold_only_and_adapters_are_loadable():
-    import data.fever as fever
-    import data.hotpotqa as hotpot
+    import data.datasets.fever as fever
+    import data.datasets.hotpotqa as hotpot
 
     for module, field in ((fever, "evidence"), (hotpot, "supporting_facts")):
         spec = module.VERIFY[next(iter(module.VERIFY))]
@@ -133,7 +133,7 @@ def test_evidence_is_in_verifier_gold_only_and_adapters_are_loadable():
 
 def test_oracle_prediction_has_gold_evidence_only_in_control_path():
     from data.scaffolds.qa.control import _oracle_prediction
-    import data.fever as fever
+    import data.datasets.fever as fever
     record = {"gold": {"answer": "SUPPORTS",
                        "evidence": [[[None, None, "P", 0]]]}}
     assert _oracle_prediction(fever, record) == {
@@ -141,8 +141,8 @@ def test_oracle_prediction_has_gold_evidence_only_in_control_path():
 
 
 def test_legacy_adapter_scores_still_take_strings():
-    from data.gsm8k import score as gsm_score
-    from data.triviaqa import score as trivia_score
+    from data.datasets.gsm8k import score as gsm_score
+    from data.datasets.triviaqa import score as trivia_score
 
     assert gsm_score("#### 42", {"answer": "42"})["reward"] == 1.0
     assert trivia_score("Paris", {"accepted": ["paris"]})["reward"] == 1.0

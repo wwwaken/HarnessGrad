@@ -50,7 +50,7 @@ with (work / 'trace.jsonl').open('w', buffering=1) as trace:
 def image_defaults() -> dict[str, str]:
     """Read image constants without importing the adapter or loading its full pool."""
     values = {}
-    for node in ast.parse((ROOT / "data/appworld.py").read_text()).body:
+    for node in ast.parse((ROOT / "data/datasets/appworld.py").read_text()).body:
         if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call):
             for target in node.targets:
                 if isinstance(target, ast.Name) and target.id in {
@@ -65,7 +65,7 @@ def main() -> int:
     parser.add_argument("--task", default="07b42fd_1")
     parser.add_argument("--train-file", type=Path, default=Path(
         "/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/datasets/train.txt"))
-    parser.add_argument("--client", type=Path, default=ROOT / "data/appworld/cli/aw")
+    parser.add_argument("--client", type=Path, default=ROOT / "data/datasets/appworld/cli/aw")
     args = parser.parse_args()
     if args.task not in args.train_file.read_text().splitlines():
         parser.error("task must belong to the released train split")

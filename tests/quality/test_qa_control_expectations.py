@@ -11,7 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from data import bfcl_v3
+from data.datasets import bfcl_v3
 from data.scaffolds import registry  # noqa: E402
 from data.scaffolds.qa import control  # noqa: E402
 
@@ -71,7 +71,7 @@ def test_noop_expected_declaration(path, declaration, gold, expected, tmp_path, 
 
 def test_shared_control_has_no_adapter_module_literals():
     source = Path(control.__file__).read_text(encoding="utf-8")
-    adapter_names = {f"data.{name}" for name in registry.published()}
+    adapter_names = {f"data.datasets.{name}" for name in registry.published()}
     offenders = [
         (node.lineno, node.value)
         for node in ast.walk(ast.parse(source))

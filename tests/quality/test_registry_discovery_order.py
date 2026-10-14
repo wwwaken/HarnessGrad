@@ -65,7 +65,7 @@ def declared_catalog(monkeypatch):
     def declared_kind(name):
         if name == "agentdojo":
             return registry.KIND_DATASET
-        source = ROOT / "data" / f"{name}.py"
+        source = ROOT / "data" / "datasets" / f"{name}.py"
         for node in ast.parse(source.read_text(encoding="utf-8")).body:
             if isinstance(node, ast.Assign) and any(
                     isinstance(target, ast.Name) and target.id == "KIND"
@@ -99,14 +99,14 @@ def test_discovery_sorts_before_import_and_filters_without_reordering(monkeypatc
 
     def import_module(name):
         imported.append(name)
-        if name == "data.broken":
+        if name == "data.datasets.broken":
             raise ImportError("synthetic unavailable adapter")
-        return SimpleNamespace(KIND=(registry.KIND_FIXTURE if name == "data.fixture"
+        return SimpleNamespace(KIND=(registry.KIND_FIXTURE if name == "data.datasets.fixture"
                                      else registry.KIND_DATASET))
 
     monkeypatch.setattr(registry, "importlib", SimpleNamespace(import_module=import_module))
     assert registry.published() == ("a_order", "z_order")
-    assert imported == ["data.a_order", "data.broken", "data.fixture", "data.z_order"]
+    assert imported == ["data.datasets.a_order", "data.datasets.broken", "data.datasets.fixture", "data.datasets.z_order"]
 
 
 @pytest.mark.parametrize("json_output", [False, True])

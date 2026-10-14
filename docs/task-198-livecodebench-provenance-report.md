@@ -87,7 +87,7 @@ Local code/documentation used only to define the requested claim:
 - `data/livecodebench.py`: pins/constants at lines 74–96, pool header/body handling
   at 185–205, indexing/split declarations at 285–298.
 - `data/livecodebench/prepare.py`: declared shards and `build()` transformation.
-- `data/scaffolds/registry.py`: `split_sha`, `is_eval_id`, `default_split`.
+- `data/registry.py`: `split_sha`, `is_eval_id`, `default_split`.
 - `tools/lcb740_identity.py`: strict metadata schema and independently supplied
   approval-digest requirement.
 - `reports/LCB_GATE.md`, `DOWNLOADS.md` and the existing journal/blocker entries:

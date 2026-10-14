@@ -1,6 +1,6 @@
 """The datasets that refuse, and why a refusal has to be provable.
 
-`data/sotuqa.py`, `data/api_bank.py`, `data/nestful.py` and `data/tau2_bench.py` do not load.
+`data/datasets/sotuqa.py`, `data/datasets/api_bank.py`, `data/datasets/nestful.py` and `data/datasets/tau2_bench.py` do not load.
 Each refuses because its official metric or interaction contract is not reproducible on the
 current platform. FEVER and HotpotQA now have a structured evidence answer contract and are
 no longer refusal cases.
@@ -21,7 +21,7 @@ REFUSING = ["sotuqa", "api_bank", "tau2_bench", "nestful"]
 @pytest.fixture(params=REFUSING)
 def refused(request):
     import importlib
-    return importlib.import_module(f"data.{request.param}")
+    return importlib.import_module(f"data.datasets.{request.param}")
 
 
 def test_the_refusal_is_declared_and_load_raises_it(refused):

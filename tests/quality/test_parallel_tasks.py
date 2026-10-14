@@ -246,9 +246,11 @@ def test_jobs_reaches_the_run_through_the_driver(tmp_path, isolated_platform):
     # the dataset's declared aggregation policy when it turns per-task rewards into the
     # curve point, and it fails closed for an undeclared dataset. Staging `demo.py`
     # without them made the staged platform incomplete rather than minimal.
-    for name in ("__init__.py", "registry.py", "demo.py",
-                 "aggregation.py", "aggregation_policies.json"):
+    for name in ("__init__.py", "demo.py", "aggregation_policies.json"):
         shutil.copy2(ROOT / "data" / name, platform / "data" / name)
+    (platform / "data" / "scaffolds").mkdir()
+    for name in ("__init__.py", "registry.py", "aggregation.py"):
+        shutil.copy2(ROOT / "data/scaffolds" / name, platform / "data/scaffolds" / name)
     shutil.copytree(ROOT / "base_harness" / "loop_plain",
                     platform / "base_harness" / "loop_plain", symlinks=True,
                     ignore=shutil.ignore_patterns("__pycache__"))

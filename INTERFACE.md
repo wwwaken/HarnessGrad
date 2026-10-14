@@ -2124,7 +2124,7 @@ a sandbox, not by convention:
 | --- | --- |
 | its own program (`methods/`) | — |
 | `base_harness`, read-only | the whole platform |
-| its `workspace`, writable | `data/*.py` — **the expected answer for every task, eval side included** |
+| its `workspace`, writable | `data/datasets/*.py` — **the expected answer for every task, eval side included** |
 | the channel above | `.env`, `eval/run/runner.py`, `driver.py`, `harnessgrad/` |
 | its own model credentials | the agent's credentials |
 

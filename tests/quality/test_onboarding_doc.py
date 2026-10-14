@@ -151,10 +151,10 @@ def test_every_flag_on_the_pages_is_a_flag_of_the_file_it_is_passed_to():
 
 
 def test_the_generic_control_commands_use_real_flags():
-    """The page's `data/<name>/control.py --oracle …` lines carry a placeholder, so the
+    """The page's `data/datasets/<name>/control.py --oracle …` lines carry a placeholder, so the
     flags are checked against the two control entry points that exist."""
     text = _page()
-    for script in ("data/scaffolds/qa/control.py", "data/jericho/control.py"):
+    for script in ("data/scaffolds/qa/control.py", "data/datasets/jericho/control.py"):
         source = (ROOT / script).read_text(encoding="utf-8")
         for flag in ("--oracle", "--noop", "--platform"):
             assert f'"{flag}"' in source, f"{script} does not define {flag}"
@@ -182,7 +182,7 @@ def test_the_page_defers_to_the_programs():
 def test_the_first_day_page_keeps_the_measure_before_writing_rule():
     """The whole reason the page exists: no adapter until the gold has been scored."""
     text = _first_day().lower()
-    assert "do not write `data/<name>.py` until" in text
+    assert "do not write `data/datasets/<name>.py` until" in text
     assert "run the gold through the official scorer" in text
     # It must say why, with the two datasets that went opposite ways.
     assert "nestful" in text and "ds1000" in text

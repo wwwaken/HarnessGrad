@@ -45,7 +45,7 @@ An adapter is not complete when it loads. It is complete when its scorer, runtim
 - Utilization, stated plainly: **both GPUs measured 0 % utilization while loaded.** No dataset has `production_authorized=true` (all 28 carry an open shared blocker), so there is no approved diagnostic or pilot to run. The endpoint is left loaded and idle and no work was invented for it; `AGENTS.md` now records that idle is the correct state in this situation.
 - Working-copy topology: an external scan found that two full clones inside `Study/` (`HarnessGrad-appworld-controls-20261117`, `HarnessGrad-gaia-controls-20261117`) are stranded on pre-rewrite commits whose objects do not exist in `main`'s store, still carry the old layout, and had `origin` pointing at the main checkout for fetch **and push**. Their remotes were removed; the checkouts were deliberately **not** deleted or reset, because they hold receipts and evidence (`gaia-evidence/`, `gaia-evidence-all17/`, `GAIA_FINAL_LAUNCH_RECEIPT.json`, the appworld `deliverables/` and `runtime/`) that exist nowhere else and rule 5 preserves old receipts. 10 of 20 local branches also point at pre-rewrite commits; they are refs, not writers, and were left for an explicit decision.
 - `eval/trace.py` now carries an expiry of **2026-11-14** and says what to do then. The previous shim batch was removed only after outliving its callers and had no deadline; a shim without one outlives its reason.
-- Regression found by the post-merge suite, and fixed: the aggregation-declaration merge broke three files that its own focused set did not cover — `test_parallel_tasks` staged a minimal platform without `data/scaffolds/aggregation.py`, and `test_cli_harness` / `test_verifier` run the undeclared `verify_demo` fixture through the driver. The fail-closed accessor is correct and kept; the three `verify_*` fixtures are now declared and the guard's `FIXTURES` set matches. `POLICY_REFUSED` narrowed to `gaia`, the only declared control that runs through `--platform` and is therefore stopped by the hook.
+- Regression found by the post-merge suite, and fixed: the aggregation-declaration merge broke three files that its own focused set did not cover — `test_parallel_tasks` staged a minimal platform without `data/aggregation.py`, and `test_cli_harness` / `test_verifier` run the undeclared `verify_demo` fixture through the driver. The fail-closed accessor is correct and kept; the three `verify_*` fixtures are now declared and the guard's `FIXTURES` set matches. `POLICY_REFUSED` narrowed to `gaia`, the only declared control that runs through `--platform` and is therefore stopped by the hook.
 - Validation: `test_aggregation_policies.py`, `test_parallel_tasks.py`, `test_cli_harness.py`, `test_verifier.py` — **81 passed**; `test_dataset_controls.py` — **25 passed, 1 skipped**; `test_diagnostic_policy.py`, `test_trace_reader.py`, `test_staged_receipt_audit_codex193.py`, `test_lifecycle_receipt_codex177.py` — **224 passed**. Full suite on the merged tree classified 12 files failing alone and 8 failing only under 12-way concurrency.
 - Commits: `01d419b` (regression repair) and `a62e163` (endpoint retirement, shim expiry, working-copy rule).
 
@@ -842,3 +842,31 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Validation: **275 focused tests passed**. Requested full run: 147 files, exit 1; final classification is 15 persistent assertion-failure files, one skip-only file, eight contention-sensitive files and one corrected live-index reference regression. Fourteen persistent failure files also fail on untouched `9c928ed`; independent baseline attribution for the expensive AppWorld scorer file remains unverified. The final isolated trials retry passes 15/15.
 - Registry-only run: four of five files pass; `test_dataset_controls.py` has the same two failures / 23 passes / one skip on current and untouched baseline, including serial retry. A pre-existing orphaned 16-job runner shared this checkout with the requested 12-job run, so initial failures and even some serial rechecks were contention-sensitive. The runner's final failure summaries retain first-pass counts; the audit uses actual serial results.
 - Evidence: [e1 refactor audit](../reports/eval-package-refactor-e1.md); local command transcripts and per-file baseline comparisons in `.scratch/eval-refactor/`. Existing container/services/isolation, fixture/configuration and stale-assertion failures are reported without changing their behavior.
+
+
+## Data namespace split — 2026-10-15 — ds
+
+- Scope: `/tmp/hg-ds` only, based on `fdef36a`; Stages A → C → D in separate commits.
+  Stage B (`ad25c7d`, `5cb804e`) was already present. No main-branch commit or merge.
+- A (`b4e2e96`): moved QA, registry, command control and command oracle harness into
+  `data/scaffolds/`, with documented temporary module/script/standalone-asset shims.
+  Focused gate: **92 passed**; adapters unchanged.
+- C (`2e50b52`): rewired all scaffold consumers, including generator templates,
+  verifier package copies and the supported harnessgrad-domain bridge; deleted
+  all A shims. Moved Stage B's aggregation helper into scaffolds with unchanged
+  policy JSON/rules. Added cross-adapter import guards. Gate: **126 passed,
+  9 skipped**; bridge follow-up: **3 passed, 9 skipped**.
+- D (accompanying commit): moved 28 adapters and 14 reviewed asset directories to
+  `data/datasets/`, plus two explicitly owned difficulty sidecars; no adapter shims.
+  Updated discovery, imports, dynamic names, asset paths, schema, tools, tests and
+  current docs. The ordered 28-name catalog and explicit control/aggregation
+  declarations are preserved. Fixtures stay top-level.
+- Review: tau-bench's 210-file inventory has no unclear entries. Its 206 pinned
+  vendored/generated files retain byte identity and provenance. PinchBench's
+  inventory stays untouched/unclassified at `data/pinchbench/inventory.json`.
+  Historical evidence retains baseline bytes and paths; no frozen receipt ran.
+- D validation: blocker checker reports **valid:true, 28 datasets**; the ten
+  requested focused files report **214 passed, 10 skipped**; registry-only runner
+  reports **all 5 files passed**. No whole-suite, model, pilot or endpoint work.
+- Exact commands, outputs, scope and remaining uncertainty:
+  [split report](../reports/data-split-stages.md).

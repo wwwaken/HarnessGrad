@@ -43,7 +43,7 @@ import data.scaffolds.qa.base as base  # noqa: E402
 
 
 def _adapter(name: str):
-    return importlib.import_module(f"data.{name}")
+    return importlib.import_module(f"data.datasets.{name}")
 
 
 def _record(module, task_id: str | None) -> dict:

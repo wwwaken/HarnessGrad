@@ -12,7 +12,7 @@ import chess
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-import data.chessbench_puzzles as dataset
+import data.datasets.chessbench_puzzles as dataset
 from eval.service.stepwise_transport import StepwiseTransportError, transport_stepwise
 
 

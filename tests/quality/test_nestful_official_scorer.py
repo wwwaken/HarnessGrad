@@ -9,10 +9,10 @@ from pathlib import Path
 
 import pytest
 
-import data.nestful as dataset
+import data.datasets.nestful as dataset
 
 SCORER = dataset.ROOT / "src/scorer.py"
-AUDIT = Path(__file__).resolve().parents[2] / "data/nestful/audit.py"
+AUDIT = Path(__file__).resolve().parents[2] / "data/datasets/nestful/audit.py"
 
 
 def listit(t):

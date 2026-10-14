@@ -74,9 +74,9 @@ def test_exact_review_only_addition_is_recorded_without_changing_runtime(path):
 
 
 @pytest.mark.parametrize("path", [
-    "eval/container.py", "eval/container_state.py", "data/gaia/verify/check.py",
+    "eval/container.py", "eval/container_state.py", "data/datasets/gaia/verify/check.py",
     "eval/gaia_snapshot_attestation.py", "docs/runtime-input.md",
-    "tests/runtime_control.py", "data/gaia/cli/ask", "unknown-runtime.txt",
+    "tests/runtime_control.py", "data/datasets/gaia/cli/ask", "unknown-runtime.txt",
 ])
 def test_any_nonexempt_changed_or_added_path_requires_fresh_controls(path):
     candidate = source()

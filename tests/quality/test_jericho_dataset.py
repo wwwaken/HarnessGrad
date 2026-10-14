@@ -39,7 +39,7 @@ def _load_control(dataset: str):
     """
     import importlib.util
 
-    path = ROOT / "data" / dataset / "control.py"
+    path = ROOT / "data" / "datasets" / dataset / "control.py"
     spec = importlib.util.spec_from_file_location(f"{dataset}_control_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -48,7 +48,7 @@ def _load_control(dataset: str):
 
 @pytest.fixture(scope="module")
 def jericho():
-    import data.jericho as module
+    import data.datasets.jericho as module
     if not module._RECORDS:
         pytest.skip(f"no Jericho games under {module.games_dir()}; run "
                     f"`python3 tools/datasets.py --fetch --dataset jericho`")
@@ -155,7 +155,7 @@ def test_the_reduction_is_the_one_the_documentation_prints(jericho):
 
 def jericho_lib():
     import importlib.util
-    path = ROOT / "data" / "jericho" / "lib" / "jer_env.py"
+    path = ROOT / "data" / "datasets" / "jericho" / "lib" / "jer_env.py"
     spec = importlib.util.spec_from_file_location("jer_env_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

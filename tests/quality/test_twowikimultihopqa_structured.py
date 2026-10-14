@@ -20,7 +20,7 @@ from data.scaffolds.qa import base  # noqa: E402
 # QASpec.build normally constructs the provisioned pool even during import. Block that
 # loader before importing, rather than assuming release files are absent on this host.
 with patch.object(base.QASpec, "records", return_value=[]):
-    dataset = importlib.import_module("data.twowikimultihopqa")
+    dataset = importlib.import_module("data.datasets.twowikimultihopqa")
 
 ALIASES = {
     "Q_answer": ["Crimson City", "Crimson Citizens"],
@@ -93,7 +93,7 @@ def differential(rows, predictions, tmp_path, capsys):
 def test_verbatim_upstream_region_is_unchanged():
     # Pin the evaluator region independently of the adapter wrapper. A drift cannot be
     # hidden by making both differential paths call a newly edited upstream function.
-    source = (ROOT / "data/twowikimultihopqa.py").read_text()
+    source = (ROOT / "data/datasets/twowikimultihopqa.py").read_text()
     region = source[source.index("def normalize_answer(s):"):
                     source.index("# ------------------------------------------------------------------- the platform")]
     assert hashlib.sha256(region.encode()).hexdigest() == "e18ccdf4b87d16c30e03a62b1dc9d0906c0b0130ae5eace17885d2a9ea1b13c9"

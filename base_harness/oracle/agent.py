@@ -15,7 +15,7 @@ not reachable and no harness's score on it means anything yet.
 How it finds the solution
 -------------------------
 The environment puts it at `.oracle/` inside the workdir (`HG_TB_ORACLE=1` in
-`data/terminal_bench.py`). It is a plain directory of scripts plus whatever else the
+`data/datasets/terminal_bench.py`). It is a plain directory of scripts plus whatever else the
 reference solution ships, so this runs `solve.sh` if there is one and otherwise runs the
 first executable it finds.
 

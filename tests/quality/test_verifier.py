@@ -258,8 +258,8 @@ def test_the_task_dict_never_carries_the_grade():
 
 def test_a_dataset_that_leaks_into_the_task_dict_is_refused(tmp_path, monkeypatch):
     """反向验证上面那条:真的放进去,注册表必须当场拒。"""
-    bad = tmp_path / "data"
-    bad.mkdir()
+    bad = tmp_path / "data" / "datasets"
+    bad.mkdir(parents=True)
     (bad / "__init__.py").write_text("")
     (bad / "leaky.py").write_text(
         "TASKS = [{'task_id': 'x', 'goal': 'g', 'expected': 'secret'}]\n"
@@ -268,10 +268,10 @@ def test_a_dataset_that_leaks_into_the_task_dict_is_refused(tmp_path, monkeypatc
     # `data` is already imported as the real package, so the temp module has to be
     # reachable *through it* -- a sys.path entry would not be consulted for a
     # submodule of an already-imported package.
-    import data as data_pkg
+    import data.datasets as data_pkg
     monkeypatch.setattr(data_pkg, "__path__",
-                        [str(tmp_path / "data"), *list(data_pkg.__path__)])
-    monkeypatch.delitem(sys.modules, "data.leaky", raising=False)
+                        [str(tmp_path / "data" / "datasets"), *list(data_pkg.__path__)])
+    monkeypatch.delitem(sys.modules, "data.datasets.leaky", raising=False)
     with pytest.raises(ValueError) as exc:
         registry.load_tasks("leaky")
     assert "expected" in str(exc.value), exc.value
@@ -405,7 +405,7 @@ def test_both_of_a_check_s_streams_reach_the_verdict():
 
 def test_the_terminal_bench_tasks_declare_where_their_report_lands():
     """判分报告是任务的 `test.sh` 写的,所以由数据集声明,平台不能猜。"""
-    import data.terminal_bench as tb
+    import data.datasets.terminal_bench as tb
     spec = tb.VERIFY["cancel-async-tasks"]
     assert spec["evidence_file"] == tb.CHECK_REPORT
     assert spec["reward_file"] == tb.REWARD_FILE

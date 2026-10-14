@@ -41,7 +41,7 @@ def synthetic_gsm8k():
         return tables[split]
 
     spec = importlib.util.spec_from_file_location(
-        "gsm8k_synthetic_contract", ROOT / "data" / "gsm8k.py")
+        "gsm8k_synthetic_contract", ROOT / "data" / "datasets" / "gsm8k.py")
     module = importlib.util.module_from_spec(spec)
     with pytest.MonkeyPatch.context() as patch:
         patch.setattr(base, "parquet_rows", synthetic_rows)

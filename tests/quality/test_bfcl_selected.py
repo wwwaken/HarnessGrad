@@ -13,7 +13,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from data import bfcl_v3 as dataset
+from data.datasets import bfcl_v3 as dataset
 from data.scaffolds.qa import control
 from data.scaffolds.qa.verify import check
 
@@ -125,7 +125,7 @@ def guarded_open(path, *args, **kwargs):
     assert "/datasets/" not in str(path), "release read during import/scoring"
     return original_open(path, *args, **kwargs)
 pathlib.Path.open = guarded_open
-from data import bfcl_v3
+from data.datasets import bfcl_v3
 assert bfcl_v3._RECORDS == []
 assert bfcl_v3.score("other", {"functions":["fabricated_private_reference"]})["reward"] == 0
 assert bfcl_v3._RECORDS == []
@@ -497,7 +497,7 @@ def test_unmeasured_paths_redact_gold_and_private_diagnostics(monkeypatch, tmp_p
     def synthetic_import(name, *args, **kwargs):
         if name == "data.scaffolds.qa.prediction" and failure == "validator_import":
             raise ImportError(PRIVATE_NAME)
-        if name == "data.bfcl_v3":
+        if name == "data.datasets.bfcl_v3":
             if failure == "import":
                 raise ImportError(PRIVATE_NAME)
             if failure == "missing_score":

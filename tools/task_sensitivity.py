@@ -10,7 +10,7 @@ auxiliary-task evolution to identify tasks genuinely sensitive to framework
 improvements, followed by sensitivity-aware stratified splitting to ensure robust
 cross-suite generalization."*
 
-Our own split was whatever `data/terminal_bench.py` declared -- 52 train / 37 eval, one
+Our own split was whatever `data/datasets/terminal_bench.py` declared -- 52 train / 37 eval, one
 line of a comment and no evidence that either side can tell a better harness from a
 worse one. A task that every harness solves (or none does) contributes nothing to a
 comparison and quite a lot of noise, and this platform's whole claim is that its numbers

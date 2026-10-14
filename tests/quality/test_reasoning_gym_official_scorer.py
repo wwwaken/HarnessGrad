@@ -2,9 +2,9 @@
 
 Most datasets in this repository need a scorer transcribed verbatim from upstream, because the
 only released form of the metric is source code that has to be copied into
-`data/<name>/verify/`. Reasoning Gym is the other case and it is worth naming: the metric **is**
+`data/datasets/<name>/verify/`. Reasoning Gym is the other case and it is worth naming: the metric **is**
 a method on the library's own dataset object (`Dataset.score_answer(answer, entry) -> float`),
-so the faithful port is not a copy but a call -- which is what `data/chessbench_puzzles.py`
+so the faithful port is not a copy but a call -- which is what `data/datasets/chessbench_puzzles.py`
 does with the official replay loop, and for the same reason: a copy can drift from the source,
 and this repository has already paid for one drift (skill doc §15.5, the two GSM8K filters).
 
@@ -33,10 +33,10 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "data" / "reasoning_gym"))
+sys.path.insert(0, str(ROOT / "data" / "datasets" / "reasoning_gym"))
 
 import prepare  # noqa: E402
-from data import reasoning_gym as rg  # noqa: E402
+from data.datasets import reasoning_gym as rg  # noqa: E402
 
 
 @pytest.fixture(scope="module")
@@ -57,7 +57,7 @@ def rows() -> dict[tuple[str, int], dict]:
     against the inner row.
     """
     if not (rg.DATASET_ROOT / rg.POOL).is_file():
-        pytest.skip("reasoning_gym: no pool; run `python3 data/reasoning_gym/prepare.py`")
+        pytest.skip("reasoning_gym: no pool; run `python3 data/datasets/reasoning_gym/prepare.py`")
     return {(r["row"]["family"], r["row"]["index"]): r["row"] for r in rg._SPEC.ensure()}
 
 

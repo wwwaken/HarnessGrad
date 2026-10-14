@@ -183,7 +183,7 @@ def test_dependency_import_closure():
 def test_existing_transcription_region_matches_without_importing_adapter():
     source = read_fixture()[SOURCES[1]].decode()
     region = source[source.index("def normalize_answer(s):"):source.index("if __name__ == '__main__':")]
-    adapter = (ROOT / "data/twowikimultihopqa.py").read_text(encoding="utf-8")
+    adapter = (ROOT / "data/datasets/twowikimultihopqa.py").read_text(encoding="utf-8")
     assert adapter.count(region) == 1
     # This proves only the transcribed region, not wrapper behavior or any dataset identity.
 

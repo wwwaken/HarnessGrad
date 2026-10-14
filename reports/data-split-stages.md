@@ -80,3 +80,110 @@ python3 -m pytest -q -p no:cacheprovider --basetemp=/mnt/20t/xubuqiang/.hg-pytes
 ...sssssssss                                                             [100%]
 3 passed, 9 skipped in 0.74s
 ```
+
+## Stage D
+
+Pre-D review used the registered `/tmp/hg-ds` worktree only. Stage C's final
+commit is `2e50b5217dae8cbd6d53b84366e46250e792e600`; the integration ref and common
+base were `fdef36a7dfe2d219136fbfc76024477c82f77fd5`. Registered worktree heads were
+inspected via `git worktree list`; no other worktree, frozen copy, or receipt was
+used as a run or merge source. No integration merge was performed.
+
+Moved all 28 adapter modules into `data/datasets/`, plus these 14 reviewed
+same-stem asset directories: agentdojo, alfworld, api_bank, appworld,
+bird_minidev, ds1000, gaia, jericho, livecodebench, nestful, reasoning_gym,
+scienceworld, spreadsheetbench, tau_bench. Added the ordinary datasets package
+initializer. There are **zero adapter compatibility shims**. Top-level fixtures
+`demo.py`, `probe_set.py`, `broken_service.py`, and `verify_*.py` remain unchanged
+in location; the registry resolves those six fixture names explicitly.
+
+Moved `tau_bench_difficulty.json` and `terminal_bench_difficulty.json` beside their
+adapters, following the explicit per-dataset sidecar contract in
+`tools/task_difficulty.py`. Both are byte-identical; its output path now follows
+the new location. Shared schema and aggregation declarations stay at top level.
+
+Updated discovery, registry loaders, taxonomy/lint/blocker tools, schema metadata,
+new-dataset generation/templates, UI discovery, dynamic module strings, asset
+root calculations, source-attestation paths, tests and current layout docs.
+The new guard pins the unchanged **ordered** 28-name publication tuple and checks
+canonical imported module identities. Private asset imports cannot cross adapter
+boundaries. QA verification copies both package initializers and the canonical
+adapter/scaffold hierarchy into the workdir. Stage B's explicit noop and
+aggregation contracts are unchanged; no module-name rule was widened.
+
+Asset review used `docs/tau-bench-vendoring.md`: all 210 present files match its
+inventory (4 handwritten assets, 33 pinned vendored files, 173 generated files,
+0 unclear). The vendored/generated dependency moves together with provenance
+and relative paths intact. All **206 vendored/generated files are byte-identical**;
+only the handwritten Dockerfile provenance label and verifier documentation
+received path spelling updates. No upstream code was reclassified as first-party.
+
+`data/pinchbench/inventory.json` stays untouched at its original path. Its intended
+future ownership is still undetermined; it has no published adapter and is an
+explicit unclassified exception in the directory guard. Nothing uncertain was
+silently moved. Historical `docs/evidence/`, reports, and test fixtures retain
+their baseline bytes; historical audits retain baseline paths with a current-layout
+note. Old/incomplete run receipts were neither edited nor executed.
+
+Additional review: after normalizing namespace/path spellings and removing
+module/function docstrings, 27 adapter executable ASTs match the pre-D sources.
+SpreadsheetBench differs only in the parent path needed to locate shared QA
+assets. All tracked Python sources parse. The web's AST `load()` discovery has
+the same ordered 33-name adapter/fixture result as before D. `git diff --check`
+passes. The initial focused run found eight old generated-control paths; after
+repair the exact final verification follows.
+
+Blocker command:
+
+```sh
+python3 tools/check_dataset_blockers.py
+```
+
+Exact output:
+
+```text
+{"valid": true, "datasets": 28, "shared_blockers": 8, "historical_records": 11, "production_authorized": false}
+```
+
+Focused command:
+
+```sh
+python3 -m pytest -q -p no:cacheprovider --basetemp=/mnt/20t/xubuqiang/.hg-pytest/ds/d tests/quality/test_import_direction.py tests/quality/test_dataset_lint.py tests/quality/test_dataset_blockers.py tests/quality/test_new_dataset.py tests/quality/test_adapters.py tests/quality/test_dataset_classes.py tests/quality/test_dataset_controls.py tests/quality/test_test_scope.py tests/quality/test_qa_control_expectations.py tests/quality/test_aggregation_policies.py
+```
+
+Exact output:
+
+```text
+........................................................................ [ 32%]
+.........................sssssssss...................................... [ 64%]
+.s...................................................................... [ 96%]
+........                                                                 [100%]
+214 passed, 10 skipped in 306.75s (0:05:06)
+```
+
+Registry command:
+
+```sh
+python3 tools/run_tests.py --registry-only
+```
+
+This selects only five cross-dataset files, never the whole suite. Exact output:
+
+```text
+scope: registry-wide only; 5/154 files
+basetemp: /mnt/20t/xubuqiang/.hg-pytest/harnessgrad-pytest-3vphxry0
+parallel lane: 5 files at 32 jobs
+exclusive lane: 0 files at 1 job
+  ok   test_dataset_blockers.py                                       3.7s  52 passed in 3.45s
+  ok   test_dataset_lint.py                                          38.2s  4 passed in 36.29s
+  ok   test_dataset_controls.py                                     129.6s  25 passed, 1 skipped in 127.58s (0:02:07)
+  ok   test_qa_dataset_contract.py                                  145.6s  133 passed, 12 skipped in 143.75s (0:02:23)
+  ok   test_dataset_classes.py                                      156.4s  30 passed in 154.64s (0:02:34)
+
+5 files in 156.4s wall clock (serial measured total 455s)
+all files passed
+```
+
+No model endpoint or benchmark pilot was launched. All three stage gates pass.
+The skipped tests are reported as skips, not counted as passes. Parent review
+and integration merging remain outside this worktree-only task.

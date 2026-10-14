@@ -14,7 +14,7 @@ declaring one function:
     def oracle_files(task: dict) -> dict[str, str]:
         \"\"\"{relative path: content} that a correct agent would leave in the workdir.\"\"\"
 
-`data/<name>/control.py` is then a twelve-line shim over `control_main(<name>, argv)`, and
+`data/datasets/<name>/control.py` is then a twelve-line shim over `control_main(<name>, argv)`, and
 `--oracle` / `--noop` / `--platform` mean the same thing for every `command` dataset. The
 generated shim is `tools/new_dataset.py --kind command`.
 
@@ -57,7 +57,7 @@ EXPECTED = {True: 1.0, False: 0.0}
 def adapter(name: str):
     """The dataset module. A literal-templated name, not an opaque argument: the
     boundary check reads what `import_module` is handed (tests/quality/test_boundaries.py)."""
-    return importlib.import_module(f"data.{name}")
+    return importlib.import_module(f"data.datasets.{name}")
 
 
 def pick(module, task_id: str | None) -> dict:

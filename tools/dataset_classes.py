@@ -356,7 +356,7 @@ def _cli_scripts(module, task_id: str) -> list[Path]:
 
     The rule is the layout convention this repository actually follows, not a file extension
     and not the executable bit -- measured: `data/scaffolds/qa/cli/qa` is mode 0600 while
-    `data/alfworld/cli/alf` is 0711, so the bit cannot decide, and `dojo.py` carries a `.py`
+    `data/datasets/alfworld/cli/alf` is 0711, so the bit cannot decide, and `dojo.py` carries a `.py`
     extension while `alf` does not, so neither can a suffix. Every agent-facing program here
     lives under a `cli/` directory or is materialized under a `bin/` directory.
     """
@@ -374,7 +374,7 @@ def _cli_scripts(module, task_id: str) -> list[Path]:
 
 
 def classify(name: str) -> dict:
-    module = registry.importlib.import_module(f"data.{name}")
+    module = registry.importlib.import_module(registry.module_name(name))
     refused = getattr(module, "REFUSED", None)
     demand, surface = CAPABILITY.get(name, (None, None))
     row = {

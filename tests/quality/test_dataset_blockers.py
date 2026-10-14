@@ -64,10 +64,10 @@ def test_source_inventory_and_taxonomy_cover_every_publishable_dataset(document)
 
 
 def test_new_declared_dataset_fails_coverage_even_when_its_import_would_fail(document, tmp_path):
-    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "datasets").mkdir(parents=True)
     for name in checker.published_declarations():
-        (tmp_path / "data" / f"{name}.py").write_text('KIND = "dataset"\n')
-    (tmp_path / "data" / "new_dataset.py").write_text(
+        (tmp_path / "data" / "datasets" / f"{name}.py").write_text('KIND = "dataset"\n')
+    (tmp_path / "data" / "datasets" / "new_dataset.py").write_text(
         'KIND = "dataset"\nraise RuntimeError("cannot import")\n')
     (tmp_path / "tools").mkdir()
     original = (ROOT / "tools/dataset_classes.py").read_text()
@@ -77,10 +77,10 @@ def test_new_declared_dataset_fails_coverage_even_when_its_import_would_fail(doc
 
 
 def test_fixtures_are_not_published_and_metadata_is_never_executed(tmp_path):
-    (tmp_path / "data").mkdir()
-    (tmp_path / "data" / "fixture.py").write_text('KIND = "fixture"\nraise AssertionError\n')
-    (tmp_path / "data" / "default.py").write_text('raise AssertionError\n')
-    (tmp_path / "data" / "published.py").write_text('KIND: str = "dataset"\nraise AssertionError\n')
+    (tmp_path / "data" / "datasets").mkdir(parents=True)
+    (tmp_path / "data" / "datasets" / "fixture.py").write_text('KIND = "fixture"\nraise AssertionError\n')
+    (tmp_path / "data" / "datasets" / "default.py").write_text('raise AssertionError\n')
+    (tmp_path / "data" / "datasets" / "published.py").write_text('KIND: str = "dataset"\nraise AssertionError\n')
     assert checker.published_declarations(tmp_path) == ("published",)
 
 

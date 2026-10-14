@@ -55,7 +55,7 @@ def test_verifier_records_new_adapter_identity_and_pinned_reference(
 
     read_upstream_fixture()
     receipt = json.loads((FIXTURE / "provenance.json").read_text())
-    monkeypatch.setitem(sys.modules, "data.triviaqa", triviaqa)
+    monkeypatch.setitem(sys.modules, "data.datasets.triviaqa", triviaqa)
     monkeypatch.chdir(tmp_path)
     (tmp_path / "answer.txt").write_text(prediction)
     gold = triviaqa._gold({"answer": {

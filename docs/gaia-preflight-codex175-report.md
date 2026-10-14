@@ -55,7 +55,7 @@ axis. This review creates no flattened dataset category or coverage claims.
 
 `data.gaia.__getattr__` builds all ENV/SPLIT/SETUP/VERIFY entries through `rows()`;
 `load()` and `_row_for()` also use the full pool. GAIA has no selected-only
-`control_task` hook. `data.scaffolds.command_control.pick` calls `load()` even with an
+`control_task` hook. `data.command_control.pick` calls `load()` even with an
 explicit task ID. Its platform arm also uses a fixed `<dataset>-control` run ID
 and defaults a missing verdict to zero for its exit decision. Therefore neither
 `--task-id` nor a successful noop exit establishes selected-only measured control.

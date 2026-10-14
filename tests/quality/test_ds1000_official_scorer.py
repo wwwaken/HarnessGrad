@@ -27,7 +27,7 @@ from pathlib import Path
 
 import pytest
 
-import data.ds1000 as dataset
+import data.datasets.ds1000 as dataset
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = dataset.SOURCE_DIR / "test_ds1000.py"
@@ -61,7 +61,7 @@ def official_program(row: dict, candidate: str) -> str:
 def _control(index: int, arm: str) -> subprocess.CompletedProcess:
     """The sanctioned by-hand arm, for rows `load()` offers."""
     return subprocess.run(
-        [sys.executable, "data/ds1000/control.py", arm, "--task-id", dataset.task_id(index)],
+        [sys.executable, "data/datasets/ds1000/control.py", arm, "--task-id", dataset.task_id(index)],
         cwd=ROOT, capture_output=True, text=True, timeout=300)
 
 

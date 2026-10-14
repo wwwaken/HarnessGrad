@@ -70,7 +70,7 @@ def test_r1_platform_does_not_import_a_method():
         # the argument of each `importlib.import_module(...)` rather than looking for
         # the word "harness" anywhere in the file. The loose version flagged
         # `data/scaffolds/registry.py` the moment a comment there used the word -- the file
-        # imports `data.<name>`, which is a dataset, and always has. A check whose
+        # imports `data.datasets.<name>`, which is a dataset, and always has. A check whose
         # false positives are fixed by rewording comments is a check that gets deleted
         # rather than trusted.
         for call in re.finditer(r"importlib\.import_module\(([^)]*)\)", src):

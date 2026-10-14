@@ -41,15 +41,15 @@ SOURCE = {
 KINDS = {
     "qa": {"module": "scaffold_probe_qa", "control": ["data/scaffolds/qa/control.py"],
            "control_args": ["--dataset", "scaffold_probe_qa"]},
-    "command": {"module": "scaffold_probe_cmd", "control": ["data/scaffold_probe_cmd/control.py"],
+    "command": {"module": "scaffold_probe_cmd", "control": ["data/datasets/scaffold_probe_cmd/control.py"],
                 "control_args": []},
     "files": {"module": "scaffold_probe_files",
-              "control": ["data/scaffold_probe_files/control.py"], "control_args": []},
+              "control": ["data/datasets/scaffold_probe_files/control.py"], "control_args": []},
 }
 
 
 def _artifacts(name: str) -> list[Path]:
-    return [ROOT / "data" / f"{name}.py", ROOT / "data" / name]
+    return [ROOT / "data" / "datasets" / f"{name}.py", ROOT / "data" / "datasets" / name]
 
 
 def _clean(name: str) -> None:
@@ -63,7 +63,7 @@ def _clean(name: str) -> None:
             shutil.rmtree(path)
         elif path.exists():
             path.unlink()
-    sys.modules.pop(f"data.{name}", None)
+    sys.modules.pop(f"data.datasets.{name}", None)
 
 
 @pytest.fixture(params=sorted(KINDS))
@@ -112,7 +112,7 @@ def test_the_scaffold_passes_the_lint(scaffold):
 def test_the_scaffold_declares_pinned_provenance(scaffold):
     """A dataset must name where its bytes came from -- the lint refuses an empty list."""
     _, name = scaffold
-    module = registry.importlib.import_module(f"data.{name}")
+    module = registry.importlib.import_module(f"data.datasets.{name}")
     entries = module.downloads()
     assert entries, "downloads() is empty; the contract requires provenance"
     for entry in entries:
@@ -158,14 +158,14 @@ def test_the_generator_refuses_an_unpinned_source(tmp_path):
         new_dataset.generate("scaffold_probe_unpinned", "qa",
                              {**SOURCE, "version": "main"})
     assert "branch, not a pin" in str(excinfo.value)
-    assert not (ROOT / "data" / "scaffold_probe_unpinned.py").exists()
+    assert not (ROOT / "data" / "datasets" / "scaffold_probe_unpinned.py").exists()
 
 
 def test_the_generator_refuses_a_source_with_no_trap_recorded():
     with pytest.raises(SystemExit) as excinfo:
         new_dataset.generate("scaffold_probe_bare", "qa", {**SOURCE, "note": "todo"})
     assert "at least 20 characters" in str(excinfo.value)
-    assert not (ROOT / "data" / "scaffold_probe_bare.py").exists()
+    assert not (ROOT / "data" / "datasets" / "scaffold_probe_bare.py").exists()
 
 
 def test_the_files_check_separates_unmeasurable_from_failed(files_scaffold):
@@ -177,7 +177,7 @@ def test_the_files_check_separates_unmeasurable_from_failed(files_scaffold):
     the evidence says `measured: false`, which `eval/verification/verifier.py` reports as unmeasured
     rather than as a zero the agent earned.
     """
-    module = registry.importlib.import_module(f"data.{files_scaffold}")
+    module = registry.importlib.import_module(f"data.datasets.{files_scaffold}")
     task = module.TASKS[0]
     workdir = Path(tempfile.mkdtemp(prefix="hg-files-probe-"))
     try:
@@ -216,7 +216,7 @@ def test_the_files_oracle_changes_the_state_it_claims_to(files_scaffold):
     state comparison** -- it still scored 0 only because the audit was missing. The tell was
     in the evidence (`state_matches=True` on a no-op), which is why the evidence line exists.
     """
-    module = registry.importlib.import_module(f"data.{files_scaffold}")
+    module = registry.importlib.import_module(f"data.datasets.{files_scaffold}")
     for record in module._RECORDS:
         initial = record["state"]
         gold = module._closed_state(record)

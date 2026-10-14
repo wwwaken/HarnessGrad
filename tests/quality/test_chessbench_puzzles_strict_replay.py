@@ -12,7 +12,7 @@ import sys
 import chess
 import pytest
 
-import data.chessbench_puzzles as dataset
+import data.datasets.chessbench_puzzles as dataset
 
 
 @pytest.fixture(autouse=True)
@@ -192,7 +192,7 @@ def guarded(path, *args, **kwargs):
         raise AssertionError('no puzzle payload reads')
     return original(path, *args, **kwargs)
 Path.open = guarded
-import data.chessbench_puzzles as dataset
+import data.datasets.chessbench_puzzles as dataset
 assert attempted == [], attempted
 assert dataset._SPEC._records == []
 assert dataset._SPEC.load_error is None

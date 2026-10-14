@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 def _control():
     spec = importlib.util.spec_from_file_location(
-        "jericho_control_tempdir_test", ROOT / "data/jericho/control.py")
+        "jericho_control_tempdir_test", ROOT / "data/datasets/jericho/control.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

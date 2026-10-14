@@ -1,5 +1,11 @@
 # Tau-bench assets and vendored-source inventory
 
+Current-layout note: this is a historical audit of the named baseline. After
+Stages C/D, shared paths map to `data/scaffolds/` and adapter/asset paths map to
+`data/datasets/`; baseline spellings below are retained as audit evidence.
+The split report records the current verification.
+
+
 This audit answers the tau-bench question in `docs/data-split-plan.md` §7. It
 covers every regular file under `data/tau_bench/` at HarnessGrad commit
 `b9ed453f67d93c1d3f7ea9c072392f42406891e1`, including `.dockerignore` and empty

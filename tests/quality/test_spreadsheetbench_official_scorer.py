@@ -6,7 +6,7 @@ The mark is decided by `evaluation/evaluation.py` in `RUCKBReasoning/Spreadsheet
 is **not** "does the workbook look right": it loads the golden and the produced workbook with
 `openpyxl.load_workbook(..., data_only=True)` and compares the values in the cells named by the
 task's `answer_position`, after `transform_value` has been applied to both sides. Every piece of
-that is transcribed below and compared with `data/spreadsheetbench/verify/check.py` on real
+that is transcribed below and compared with `data/datasets/spreadsheetbench/verify/check.py` on real
 workbooks and on the edge cases the transform exists for.
 
 The two facts this file is built around
@@ -43,7 +43,7 @@ DATA_ROOT = Path("/mnt/20t/xubuqiang/datasets/spreadsheetbench")
 def _check():
     """The dataset's check module, loaded by path (its name is not unique across datasets)."""
     import importlib.util
-    path = ROOT / "data" / "spreadsheetbench" / "verify" / "check.py"
+    path = ROOT / "data" / "datasets" / "spreadsheetbench" / "verify" / "check.py"
     spec = importlib.util.spec_from_file_location("spreadsheetbench_check_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -57,7 +57,7 @@ def check():
 
 @pytest.fixture(scope="module")
 def bench():
-    import data.spreadsheetbench as module
+    import data.datasets.spreadsheetbench as module
     if not module._RECORDS:
         pytest.skip(f"no SpreadsheetBench data under {module.DATASET_ROOT}")
     return module

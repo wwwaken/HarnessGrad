@@ -16,7 +16,7 @@ from tools import lcb740_identity as gate
 
 @pytest.fixture
 def statement():
-    return (ROOT / "data/livecodebench/abc360_a.public.md").read_bytes()
+    return (ROOT / "data/datasets/livecodebench/abc360_a.public.md").read_bytes()
 
 
 def record_bytes(**changes):

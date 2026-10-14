@@ -31,10 +31,10 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.livecodebench as dataset  # noqa: E402
+import data.datasets.livecodebench as dataset  # noqa: E402
 
-ADAPTER = ROOT / "data" / "livecodebench.py"
-CHECK = ROOT / "data" / "livecodebench" / "verify" / "check.py"
+ADAPTER = ROOT / "data" / "datasets" / "livecodebench.py"
+CHECK = ROOT / "data" / "datasets" / "livecodebench" / "verify" / "check.py"
 ARCHIVE = dataset.DATASET_ROOT / "_src" / "upstream.tar.gz"
 ARCHIVE_ROOT = f"LiveCodeBench-{dataset.UPSTREAM_COMMIT}"
 #: The task the control registration uses: a covered one, pinned so the registration and this
@@ -45,7 +45,7 @@ CONTROL_TASK = "livecodebench/800"
 def test_the_pool_is_the_pinned_one():
     pool = dataset.DATASET_ROOT / dataset.POOL
     if not pool.is_file():
-        pytest.skip("livecodebench: run `python3 data/livecodebench/prepare.py`")
+        pytest.skip("livecodebench: run `python3 data/datasets/livecodebench/prepare.py`")
     assert hashlib.sha256(pool.read_bytes()).hexdigest() == dataset.POOL_SHA256
     header = json.loads(pool.open(encoding="utf-8").readline())
     assert header["problems"] == dataset.PROBLEMS == 1055
@@ -146,7 +146,7 @@ def test_every_authored_reference_passes_its_own_problems_released_tests():
         task_id = dataset.task_id(
             next(row["index"] for row in dataset._INDEXED if row["question_id"] == question_id))
         proc = subprocess.run(
-            [sys.executable, "data/livecodebench/control.py", "--oracle", "--task-id", task_id],
+            [sys.executable, "data/datasets/livecodebench/control.py", "--oracle", "--task-id", task_id],
             cwd=ROOT, capture_output=True, text=True, timeout=600)
         assert proc.returncode == 0, proc.stdout + proc.stderr
         assert '"reward": 1.0' in proc.stdout, f"{question_id} ({task_id}): {proc.stdout[-400:]}"
@@ -243,7 +243,7 @@ def test_a_missing_answer_is_a_measured_zero_and_a_missing_test_file_is_not(tmp_
 
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
 def test_platform_control(arm, expected):
-    proc = subprocess.run([sys.executable, "data/livecodebench/control.py", arm,
+    proc = subprocess.run([sys.executable, "data/datasets/livecodebench/control.py", arm,
                            "--task-id", CONTROL_TASK, "--platform"],
                           cwd=ROOT, capture_output=True, text=True, timeout=900)
     assert proc.returncode == 0, proc.stdout + proc.stderr

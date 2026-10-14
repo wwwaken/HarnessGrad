@@ -35,11 +35,11 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.bird_minidev as dataset  # noqa: E402
+import data.datasets.bird_minidev as dataset  # noqa: E402
 
-ADAPTER = ROOT / "data" / "bird_minidev.py"
-CHECK = ROOT / "data" / "bird_minidev" / "verify" / "check.py"
-CLI = ROOT / "data" / "bird_minidev" / "cli" / "bird"
+ADAPTER = ROOT / "data" / "datasets" / "bird_minidev.py"
+CHECK = ROOT / "data" / "datasets" / "bird_minidev" / "verify" / "check.py"
+CLI = ROOT / "data" / "datasets" / "bird_minidev" / "cli" / "bird"
 ARCHIVE = dataset.DATASET_ROOT / "_src" / "evaluation.tar.gz"
 MEMBER = f"mini_dev-{dataset.EVALUATION_COMMIT}/evaluation/evaluation_ex.py"
 
@@ -254,7 +254,7 @@ def test_the_module_imports_without_its_data(tmp_path):
 def test_platform_control(arm, expected):
     """Gates 1 and 2 through `eval.run.runner.run_one` with the sandbox on, which is where a
     `VERIFY.inputs` path error would show up."""
-    proc = subprocess.run([sys.executable, "data/bird_minidev/control.py", arm, "--platform"],
+    proc = subprocess.run([sys.executable, "data/datasets/bird_minidev/control.py", arm, "--platform"],
                           capture_output=True, text=True, timeout=600)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert f"score    {expected}" in proc.stdout

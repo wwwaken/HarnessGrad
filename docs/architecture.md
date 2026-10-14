@@ -33,7 +33,7 @@ with an automated guard in `tests/quality/test_import_direction.py`.
 | [harnessgrad/loops/](../harnessgrad/loops/) | Scheduling in [mode_a.py](../harnessgrad/loops/mode_a.py) and [eval_side.py](../harnessgrad/loops/eval_side.py); Mode B coordination also lives in `driver.py`. There is no `loops/mode_b.py`. | Consumers. | Driver -> loops -> orchestration helpers, `eval.run.runner`, candidate validation and `ckpt`. Runtime primitives must not import schedules. |
 | [harnessgrad/store/](../harnessgrad/store/) | Run-record validation, reading and certification in [schema.py](../harnessgrad/store/schema.py). | Leaf/record contract and reader. | Record consumers, validators and web read API -> store; store -> standard library, not execution/scheduling code. |
 | [eval/](../eval/) | **Platform execution runtime, despite the name**: task execution, environments, model gateway, verification/scoring, admission, progress and traces. Start at [runner.py](../eval/run/runner.py). | Consumer of low-level contracts/helpers; provider to orchestration. Not a test suite. | Orchestration -> `eval`; `eval` -> runtime peers, config, `ckpt` and external execution backends. Keep method algorithms and scheduling above it. Existing imports from `tools` are listed below. |
-| [data/](../data/) | **28 dataset adapters** with private assets, platform fixtures, and a separate **scaffolds/** directory for shared platform code. Start at [registry.py](../data/scaffolds/registry.py) and [qa/](../data/scaffolds/qa/). | Mixed: scaffold/contracts, adapter consumers and runtime-consuming controls. **Not a leaf directory.** | Driver/tools -> registry -> selected `data.<name>` adapter; adapters -> shared scaffolding. Controls may call `eval`; existing adapter/reporting coupling is listed below. Runtime should consume task/verifier declarations instead of discovering datasets itself. |
+| [data/](../data/) | **28 dataset adapters** with private assets, platform fixtures, and a separate **scaffolds/** directory for shared platform code. Start at [registry.py](../data/scaffolds/registry.py) and [qa/](../data/scaffolds/qa/). | Mixed: scaffold/contracts, adapter consumers and runtime-consuming controls. **Not a leaf directory.** | Driver/tools -> registry -> selected `data.datasets.<name>` adapter; adapters -> shared scaffolding. Controls may call `eval`; existing adapter/reporting coupling is listed below. Runtime should consume task/verifier declarations instead of discovering datasets itself. |
 | [methods/](../methods/) | External improvement methods and controls, plus shared [protocol.py](../methods/protocol.py), editor/application helpers and per-method `run.py` entry points. | Consumers of method/harness exchange contracts; supplies candidates, not platform scores. | Platform invokes methods through subprocess entry points and JSON/artifacts. Methods -> their own helpers, supplied workspace/channel and declared model/tool dependencies; shared runtime compatibility contracts are available. Do not import method algorithms into the referee. |
 | [base_harness/](../base_harness/) | Runnable starting artifacts: `loop`, `loop_plain`, `loop_rrsi_parse`, CLI/Codex/DSH wrappers, and `oracle` control. Each has `harness.json` and `agent.py`. See [writing a harness](writing_a_harness.md). | Consumers of task/model/file contracts; measured artifacts, not platform libraries. | Platform stages and executes manifest entry points; harnesses use their own code/dependencies and supplied task/environment contracts. No platform imports of harness implementation code. |
 | [ckpt/](../ckpt/) | [git_state.py](../ckpt/git_state.py) stages, commits, restores and materializes harness states and manifests. | Low-level helper leaf. | Driver, orchestration and execution -> `ckpt` -> standard library/external Git. No reverse imports into runtime or orchestration. |
@@ -103,7 +103,7 @@ distinct from the execution engine in `eval/`.
 
 ## Dataset navigation
 
-The count **28** comes from top-level `data/*.py` modules declaring
+The count **28** comes from `data/datasets/*.py` modules declaring
 `KIND = "dataset"`, not from counting directories or assuming every Python file
 is an adapter. It includes refused/unavailable integrations; it is not a claim
 that 28 datasets are ready to run. [registry.published()](../data/scaffolds/registry.py)
@@ -115,21 +115,21 @@ The dataset adapter modules are:
 
 | Dataset adapter | Dataset adapter | Dataset adapter | Dataset adapter |
 | --- | --- | --- | --- |
-| [agentdojo](../data/agentdojo.py) | [alfworld](../data/alfworld.py) | [api_bank](../data/api_bank.py) | [appworld](../data/appworld.py) |
-| [bfcl_v3](../data/bfcl_v3.py) | [bird_minidev](../data/bird_minidev.py) | [chessbench_puzzles](../data/chessbench_puzzles.py) | [ds1000](../data/ds1000.py) |
-| [fever](../data/fever.py) | [gaia](../data/gaia.py) | [gsm8k](../data/gsm8k.py) | [hotpotqa](../data/hotpotqa.py) |
-| [jericho](../data/jericho.py) | [livecodebench](../data/livecodebench.py) | [musique](../data/musique.py) | [nestful](../data/nestful.py) |
-| [physicsquestions](../data/physicsquestions.py) | [reasoning_gym](../data/reasoning_gym.py) | [scienceworld](../data/scienceworld.py) | [sotuqa](../data/sotuqa.py) |
-| [sportsunderstanding](../data/sportsunderstanding.py) | [spreadsheetbench](../data/spreadsheetbench.py) | [strategyqa](../data/strategyqa.py) | [tau2_bench](../data/tau2_bench.py) |
-| [tau_bench](../data/tau_bench.py) | [terminal_bench](../data/terminal_bench.py) | [triviaqa](../data/triviaqa.py) | [twowikimultihopqa](../data/twowikimultihopqa.py) |
+| [agentdojo](../data/datasets/agentdojo.py) | [alfworld](../data/datasets/alfworld.py) | [api_bank](../data/datasets/api_bank.py) | [appworld](../data/datasets/appworld.py) |
+| [bfcl_v3](../data/datasets/bfcl_v3.py) | [bird_minidev](../data/datasets/bird_minidev.py) | [chessbench_puzzles](../data/datasets/chessbench_puzzles.py) | [ds1000](../data/datasets/ds1000.py) |
+| [fever](../data/datasets/fever.py) | [gaia](../data/datasets/gaia.py) | [gsm8k](../data/datasets/gsm8k.py) | [hotpotqa](../data/datasets/hotpotqa.py) |
+| [jericho](../data/datasets/jericho.py) | [livecodebench](../data/datasets/livecodebench.py) | [musique](../data/datasets/musique.py) | [nestful](../data/datasets/nestful.py) |
+| [physicsquestions](../data/datasets/physicsquestions.py) | [reasoning_gym](../data/datasets/reasoning_gym.py) | [scienceworld](../data/datasets/scienceworld.py) | [sotuqa](../data/datasets/sotuqa.py) |
+| [sportsunderstanding](../data/datasets/sportsunderstanding.py) | [spreadsheetbench](../data/datasets/spreadsheetbench.py) | [strategyqa](../data/datasets/strategyqa.py) | [tau2_bench](../data/datasets/tau2_bench.py) |
+| [tau_bench](../data/datasets/tau_bench.py) | [terminal_bench](../data/datasets/terminal_bench.py) | [triviaqa](../data/datasets/triviaqa.py) | [twowikimultihopqa](../data/datasets/twowikimultihopqa.py) |
 
-Shared infrastructure sits beside those adapters: registry/split handling,
+Shared infrastructure is separated under `data/scaffolds/`: registry/split handling,
 [dataset.schema.json](../data/dataset.schema.json), [qa/base.py](../data/scaffolds/qa/base.py)
 and QA verification/prediction helpers, [command_control.py](../data/scaffolds/command_control.py),
 and the [command oracle harness](../data/scaffolds/command_oracle_harness/).
 [demo.py](../data/demo.py), [probe_set.py](../data/probe_set.py) and
 [broken_service.py](../data/broken_service.py) explicitly declare fixtures.
-Shared code belongs only in `data/scaffolds/`; adapters may import it and their own assets, never another adapter. Same-stem directories such as `data/gaia/` contain supporting assets/scripts;
+Shared code belongs only in `data/scaffolds/`; adapters may import it and their own assets, never another adapter. Same-stem directories such as `data/datasets/gaia/` contain supporting assets/scripts;
 their presence does not add another dataset to the module count.
 
 ## Observed import edges and exceptions
@@ -157,9 +157,9 @@ single directory-level dependency DAG would be misleading:
   `eval.run.runner -> tools.improver`, and `eval.run.runner`/`container_state ->
   tools.web_gateway`. Tools also import runtime APIs. These reusable helpers
   currently live in the CLI directory.
-- **Dataset/runtime coupling:** `data/appworld.py -> eval.policy.appworld_reporting`;
+- **Dataset/runtime coupling:** `data/datasets/appworld.py -> eval.policy.appworld_reporting`;
   `data/scaffolds/command_control.py` and several dataset `control.py` scripts call
-  `eval.run.runner`. The registry dynamically imports `data.<name>`. Thus neither
+  `eval.run.runner`. The registry dynamically imports `data.datasets.<name>`. Thus neither
   all of `data/` nor the whole adapter/control surface is a leaf.
 - **Methods and tests:** method scripts use shared local modules via their
   script search paths; `methods/compatibility.py` imports the runtime contract
@@ -184,7 +184,7 @@ not establish every architectural direction in this map.
   integration. The name also collides conceptually with dataset adapters in
   `data/`.
 - **`data/` separation:** shared registry/QA/control code lives in `data/scaffolds/`;
-  fixtures, 28 adapter modules and dataset-specific scripts share one area.
+  fixtures stay at the top level; 28 adapters and their private assets live in `data/datasets/`.
   Moving or classifying the directory as a unit obscures their different roles
   and the existing control/reporting dependencies on runtime.
 - **`eval/` naming and cross-concern dependencies:** seven subpackages now

@@ -239,7 +239,7 @@ def test_retained_candidate_is_blocked_even_with_its_integrity_digest(monkeypatc
 
 
 def test_contract_pin_matches_adapter_declarations_without_importing_or_loading_data():
-    tree = ast.parse((ROOT / "data/bfcl_v3.py").read_text())
+    tree = ast.parse((ROOT / "data/datasets/bfcl_v3.py").read_text())
     declarations = {node.targets[0].id: ast.literal_eval(node.value)
                     for node in tree.body if isinstance(node, ast.Assign)
                     and isinstance(node.targets[0], ast.Name)

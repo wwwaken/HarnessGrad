@@ -34,7 +34,7 @@ What this module deliberately does not do
 -----------------------------------------
 It does not decide whether a dataset's official metric is *reachable*. Some in this
 batch are not, and a dataset whose contract cannot carry the official number raises
-instead of reporting a nearby one -- see `data/fever.py` and `data/hotpotqa.py`, and
+instead of reporting a nearby one -- see `data/datasets/fever.py` and `data/datasets/hotpotqa.py`, and
 `docs/dataset-onboarding-sketch` §2 for why dropping a requirement is the dangerous
 direction.
 """
@@ -107,12 +107,12 @@ CHECK_NAME = "check.py"
 CLI_REL = "qa/bin"
 
 #: The package the adapter is materialized into, and the name prefix the check imports.
-#: **The adapter keeps its real module name** (`data/<name>.py` -> `data.<name>`): a
+#: **The adapter keeps its real module name** (`data/datasets/<name>.py` -> `data.datasets.<name>`): a
 #: synthetic name would force the adapter to be importable under two different names,
 #: and "the check runs a different copy of the scorer" is the exact ambiguity §1 of the
 #: skill warns about. What the check may not do is import a name that arrived in `argv`
 #: -- `tests/quality/test_boundaries.py::R1` caught that -- so it validates the dataset
-#: name and imports `data.<name>` literally, the same spelling `data/scaffolds/registry.py` uses.
+#: name and imports `data.datasets.<name>` literally, the same spelling `data/scaffolds/registry.py` uses.
 DATASET_PACKAGE = "data"
 
 #: `task_id` is `<dataset>/<split>/<n>`; a slash is fine in a platform task id (it is a
@@ -126,7 +126,7 @@ def is_eval(task_id: str) -> bool:
     Hashed rather than sliced off the sorted list so that adding or removing a task does
     not reshuffle which side every other task is on -- a split that moves under the
     benchmark is a split whose past scores cannot be compared with its future ones. The
-    same rule `data/alfworld.py` and `data/terminal_bench.py` use.
+    same rule `data/datasets/alfworld.py` and `data/datasets/terminal_bench.py` use.
     """
     return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
 
@@ -375,9 +375,11 @@ class QASpec:
                  "from": str(QA_DIR / "evidence_scorers.py")},
                 {"path": f"{DATASET_PACKAGE}/scaffolds/qa/prediction.py",
                  "from": str(QA_DIR / "prediction.py")},
+                {"path": f"{DATASET_PACKAGE}/datasets/__init__.py",
+                 "from": str(ROOT / "data/datasets/__init__.py")},
                 # The dataset's own adapter, under its real module name.
-                {"path": f"{DATASET_PACKAGE}/{self.name}.py",
-                 "from": str(ROOT / DATASET_PACKAGE / f"{self.name}.py")},
+                {"path": f"{DATASET_PACKAGE}/datasets/{self.name}.py",
+                 "from": str(ROOT / DATASET_PACKAGE / "datasets" / f"{self.name}.py")},
             ],
             "reward_file": REWARD_FILE,
             "evidence_file": EVIDENCE_FILE,
@@ -419,7 +421,7 @@ class QASpec:
         return self._downloads()
 
     def build(self) -> dict:
-        """Everything a `data/<name>.py` module exports, as one dict.
+        """Everything a `data/datasets/<name>.py` module exports, as one dict.
 
         Returned rather than copied into the caller's globals because the caller has to
         spell each name anyway (`KIND = built["KIND"]`), and a `globals().update(...)`
@@ -431,7 +433,7 @@ class QASpec:
         `tools/dataset_lint.py` imports one to lint it -- both must work on a machine
         where `--fetch` has not run. So a table that cannot be read is recorded in
         `load_error` and re-raised by `load()`, which is the call that actually needs the
-        bytes. This is the same split `data/alfworld.py` makes with `_LOAD_ERROR`.
+        bytes. This is the same split `data/datasets/alfworld.py` makes with `_LOAD_ERROR`.
         """
         records = self.ensure()
         ids = [r["task_id"] for r in records]

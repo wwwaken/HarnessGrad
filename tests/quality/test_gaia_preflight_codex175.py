@@ -152,7 +152,7 @@ def test_source_failure_or_changed_hook_cannot_fall_through(monkeypatch, capsys,
 
 def test_fixed_probe_matches_gaia_source_policy_presence():
     # Read only committed adapter source; never import its lazy data attributes.
-    tree = ast.parse((ROOT / "data/gaia.py").read_text())
+    tree = ast.parse((ROOT / "data/datasets/gaia.py").read_text())
     env = next(node.value for node in tree.body if isinstance(node, ast.AnnAssign)
                and isinstance(node.target, ast.Name) and node.target.id == "ENV_BASE")
     keys = {key.value for key in env.keys}

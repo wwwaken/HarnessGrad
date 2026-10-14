@@ -107,7 +107,7 @@ def test_no_refused_dataset_pretends_to_have_an_evaluation_set():
     """
     refused = []
     for name in registry.published():
-        module = importlib.import_module(f"data.{name}")
+        module = importlib.import_module(f"data.datasets.{name}")
         if getattr(module, "REFUSED", None):
             refused.append(name)
             assert not hasattr(module, registry.OFFICIAL_EVAL_ATTR), name
@@ -123,10 +123,10 @@ def test_every_runnable_dataset_answers_the_official_question():
     material in the pool"), and the failure this catches is silence.
     """
     answered = [name for name in registry.published()
-                if hasattr(importlib.import_module(f"data.{name}"),
+                if hasattr(importlib.import_module(f"data.datasets.{name}"),
                            registry.OFFICIAL_EVAL_ATTR)]
     refused = [name for name in registry.published()
-               if getattr(importlib.import_module(f"data.{name}"), "REFUSED", None)]
+               if getattr(importlib.import_module(f"data.datasets.{name}"), "REFUSED", None)]
     assert len(answered) == len(registry.published()) - len(refused), sorted(
         set(registry.published()) - set(answered))
 

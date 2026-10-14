@@ -11,7 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-import data.appworld as dataset  # noqa: E402
+import data.datasets.appworld as dataset  # noqa: E402
 
 BUNDLE = dataset.DATASET_ROOT / "_src" / "data-0.1.0.bundle"
 CONTROL_TASK = "e85d92a_1"
@@ -42,7 +42,7 @@ def test_the_paper_count_is_an_earlier_build():
     assert sum(paper.values()) - sum(release.values()) == 18
     assert (paper["train"] - release["train"]) + (paper["dev"] - release["dev"]) == 18
     assert 18 % 3 == 0 and 18 // 3 == 6
-    assert "2407.18901" in (ROOT / "data/appworld.py").read_text()
+    assert "2407.18901" in (ROOT / "data/datasets/appworld.py").read_text()
 
 
 def test_pool_contains_compact_metadata_and_db_digests():
@@ -175,7 +175,7 @@ def test_agent_image_has_no_gold_and_service_rejects_direct_grade_access(tmp_pat
 
 
 def test_check_separates_measured_zero_from_unmeasured(tmp_path):
-    check = ROOT / "data/appworld/verify/check.py"
+    check = ROOT / "data/datasets/appworld/verify/check.py"
     missing = tmp_path / "missing.jsonl"
     reward = tmp_path / "reward"
     evidence = tmp_path / "evidence"
@@ -194,7 +194,7 @@ def test_check_separates_measured_zero_from_unmeasured(tmp_path):
 
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
 def test_by_hand_control_arms(arm, expected):
-    proc = subprocess.run([sys.executable, "data/appworld/control.py", arm, "--task-id", CONTROL_TASK], cwd=ROOT, capture_output=True, text=True, timeout=300)
+    proc = subprocess.run([sys.executable, "data/datasets/appworld/control.py", arm, "--task-id", CONTROL_TASK], cwd=ROOT, capture_output=True, text=True, timeout=300)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert f"reward  {expected}" in proc.stdout
     assert '"measured": true' in proc.stdout
@@ -203,7 +203,7 @@ def test_by_hand_control_arms(arm, expected):
 
 @pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
 def test_platform_control_arms(arm, expected):
-    proc = subprocess.run([sys.executable, "data/appworld/control.py", arm, "--task-id", CONTROL_TASK, "--platform", "--no-sandbox"], cwd=ROOT, capture_output=True, text=True, timeout=900)
+    proc = subprocess.run([sys.executable, "data/datasets/appworld/control.py", arm, "--task-id", CONTROL_TASK, "--platform", "--no-sandbox"], cwd=ROOT, capture_output=True, text=True, timeout=900)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert f"score    {expected}" in proc.stdout
     assert "measured': True" in proc.stdout

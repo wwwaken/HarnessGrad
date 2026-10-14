@@ -6,13 +6,13 @@ naming: the upstream file is a **self-contained, standard-library script** (one 
 import aside), so the test can run the upstream file itself, as a subprocess, on the same
 rows and the same predictions, and require the two aggregates to be equal. That is the
 strongest form of the gate -- not "a second transcription agrees" but "the original
-program agrees" -- and it is affordable here for the reason `data/musique.py` gives: the
+program agrees" -- and it is affordable here for the reason `data/datasets/musique.py` gives: the
 metric is a function of two text files.
 
 What the pins are, and what each one catches
 --------------------------------------------
 * **the transcription** -- the whole `def normalize_answer` .. `def eval` region is present
-  in `data/twowikimultihopqa.py` **verbatim**, asserted as a substring of the adapter's
+  in `data/datasets/twowikimultihopqa.py` **verbatim**, asserted as a substring of the adapter's
   source. A single edited character fails it, including edits that look harmless.
 * **the source** -- `_src/2wikimultihop-<commit>/2wikimultihop_evaluate_v1.1.py`, pinned by
   digest, so "verbatim" is a claim about a specific file and not about whatever a URL
@@ -41,9 +41,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-import data.twowikimultihopqa as dataset  # noqa: E402
+import data.datasets.twowikimultihopqa as dataset  # noqa: E402
 
-ADAPTER = ROOT / "data" / "twowikimultihopqa.py"
+ADAPTER = ROOT / "data" / "datasets" / "twowikimultihopqa.py"
 SOURCE = (dataset.DATASET_ROOT / "_src" / f"2wikimultihop-{dataset.OFFICIAL_COMMIT}"
           / "2wikimultihop_evaluate_v1.1.py")
 

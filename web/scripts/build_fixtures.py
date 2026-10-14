@@ -412,8 +412,10 @@ def build_launch_options() -> dict:
         if (d / "harness.json").is_file()
     )
     datasets = sorted(
-        p.stem for p in (REPO / "data").glob("*.py")
+        p.stem for directory in (REPO / "data", REPO / "data/datasets")
+        for p in directory.glob("*.py")
         if not p.stem.startswith(("registry", "verify_"))
+        and not (directory.name == "datasets" and p.stem == "__init__")
     )
     improvers_raw = read_json(REPO / "improvers" / "improvers.json") or {}
     improver_names = sorted((improvers_raw.get("improvers") or {}).keys())

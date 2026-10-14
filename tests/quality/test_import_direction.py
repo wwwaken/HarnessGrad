@@ -30,27 +30,27 @@ ALLOWED_EVAL_CONFIG_EDGES = {
 # neither a whole control directory nor other imports from these files are exempt.
 # Remove an entry when its dependency is moved; stale entries fail the guard.
 EXCEPTIONS = {
-    ("data-eval", "data/alfworld/control.py", "eval.run.runner"):
+    ("data-eval", "data/datasets/alfworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one to validate adapter wiring.",
-    ("data-eval", "data/appworld/control.py", "eval.run.runner"):
+    ("data-eval", "data/datasets/appworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the AppWorld verifier.",
-    ("data-eval", "data/appworld.py", "eval.policy.appworld_reporting"):
+    ("data-eval", "data/datasets/appworld.py", "eval.policy.appworld_reporting"):
         "The adapter shares make_manifest with reporting; moving it needs a separate refactor.",
     ("data-eval", "data/scaffolds/command_control.py", "eval.run.runner"):
         "The shared command control invokes run_one for platform verification.",
-    ("data-eval", "data/jericho/control.py", "eval.policy.runtime_policy"):
+    ("data-eval", "data/datasets/jericho/control.py", "eval.policy.runtime_policy"):
         "The local control stages the declared runtime and applies the platform timeout.",
-    ("data-eval", "data/jericho/control.py", "eval.containers.sandbox"):
+    ("data-eval", "data/datasets/jericho/control.py", "eval.containers.sandbox"):
         "The local control executes the game CLI in the platform sandbox.",
-    ("data-eval", "data/jericho/control.py", "eval.verification.verifier"):
+    ("data-eval", "data/datasets/jericho/control.py", "eval.verification.verifier"):
         "The local control uses the platform verifier to interpret measured evidence.",
-    ("data-eval", "data/jericho/control.py", "eval.run.runner"):
+    ("data-eval", "data/datasets/jericho/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the Jericho verifier.",
     ("data-eval", "data/scaffolds/qa/control.py", "eval.run.runner"):
         "The shared QA control invokes run_one to validate adapter wiring.",
-    ("data-eval", "data/scienceworld/control.py", "eval.run.runner"):
+    ("data-eval", "data/datasets/scienceworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the ScienceWorld verifier.",
-    ("data-eval", "data/spreadsheetbench/control.py", "eval.run.runner"):
+    ("data-eval", "data/datasets/spreadsheetbench/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the spreadsheet verifier.",
 }
 
@@ -128,20 +128,10 @@ def _source_imports(root: Path) -> list[ImportEdge]:
     return edges
 
 
-# Stage C still has top-level adapters; Stage D removes this transitional branch.
-# Fixtures have a different contract and remain importable at data.<name>.
-_FIXTURE_MODULES = {"__init__", "demo", "probe_set", "broken_service",
-                    "verify_demo", "verify_exec", "verify_service"}
-_LEGACY_ADAPTERS = {p.stem for p in (ROOT / "data").glob("*.py")
-                    if p.stem not in _FIXTURE_MODULES}
-
-
 def _adapter_namespace(module: str) -> str | None:
     parts = module.split(".")
     if len(parts) >= 3 and parts[:2] == ["data", "datasets"]:
         return ".".join(parts[:3])
-    if len(parts) >= 2 and parts[0] == "data" and parts[1] in _LEGACY_ADAPTERS:
-        return ".".join(parts[:2])
     return None
 
 
@@ -209,27 +199,40 @@ class ImportDirectionTests(unittest.TestCase):
                     targets = node.targets if isinstance(node, ast.Assign) else [node.target]
                     if any(isinstance(t, ast.Name) and t.id == "KIND" for t in targets):
                         self.assertNotEqual(ast.literal_eval(node.value), "dataset", str(path))
-        # pinchbench is unclassified inventory, deliberately not called adapter assets.
+        # pinchbench is unclassified inventory, deliberately not adapter assets.
         infrastructure = {"scaffolds", "datasets", "__pycache__", "pinchbench"}
-        edges = _source_imports(ROOT)
         for directory in (ROOT / "data").iterdir():
-            if not directory.is_dir() or directory.name in infrastructure:
+            if directory.is_dir():
+                self.assertIn(directory.name, infrastructure, f"unclassified data directory: {directory}")
+        adapters = ROOT / "data/datasets"
+        for directory in adapters.iterdir():
+            if not directory.is_dir() or directory.name == "__pycache__":
                 continue
-            adapter = directory.with_suffix(".py")
-            self.assertTrue(adapter.is_file(), f"unclassified data directory: {directory}")
-            # A private asset directory must not host another dataset declaration.
+            self.assertTrue(directory.with_suffix(".py").is_file(),
+                            f"assets lack their own adapter: {directory}")
             for path in directory.rglob("*.py"):
                 for node in ast.parse(path.read_text(), filename=str(path)).body:
-                    if isinstance(node, ast.Assign):
-                        if any(isinstance(t, ast.Name) and t.id == "KIND" for t in node.targets):
+                    if isinstance(node, (ast.Assign, ast.AnnAssign)):
+                        targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+                        if any(isinstance(t, ast.Name) and t.id == "KIND" for t in targets):
                             self.assertNotEqual(ast.literal_eval(node.value), "dataset", str(path))
-            for edge in edges:
-                if edge.file.startswith(directory.relative_to(ROOT).as_posix() + "/"):
-                    if edge.target.startswith("data."):
-                        target = edge.target.split(".")[1]
-                        if (ROOT / "data" / f"{target}.py").is_file():
-                            self.assertIn(target, {directory.name},
-                                          f"another adapter's assets: {edge}")
+        # A top-level adapter (including a compatibility shim) defeats the split.
+        fixtures = {"__init__", "demo", "probe_set", "broken_service",
+                    "verify_demo", "verify_exec", "verify_service"}
+        self.assertEqual({p.stem for p in (ROOT / "data").glob("*.py")}, fixtures)
+        for old in ("qa", "registry.py", "command_control.py", "command_oracle_harness"):
+            self.assertFalse((ROOT / "data" / old).exists(), f"old scaffold shim: {old}")
+
+    def test_publication_preserves_the_ordered_28_adapter_names(self):
+        from data.scaffolds import registry
+        expected = ('agentdojo', 'alfworld', 'api_bank', 'appworld', 'bfcl_v3', 'bird_minidev', 'chessbench_puzzles', 'ds1000', 'fever', 'gaia', 'gsm8k', 'hotpotqa', 'jericho', 'livecodebench', 'musique', 'nestful', 'physicsquestions', 'reasoning_gym', 'scienceworld', 'sotuqa', 'sportsunderstanding', 'spreadsheetbench', 'strategyqa', 'tau2_bench', 'tau_bench', 'terminal_bench', 'triviaqa', 'twowikimultihopqa')
+        self.assertEqual(registry.published(), expected)
+        for name in expected:
+            module = registry.importlib.import_module(registry.module_name(name))
+            self.assertEqual(module.__name__, f"data.datasets.{name}")
+            self.assertEqual(Path(module.__file__).resolve(), ROOT / "data/datasets" / f"{name}.py")
+            self.assertFalse((ROOT / "data" / f"{name}.py").exists())
+        self.assertEqual(registry.module_name("demo"), "data.demo")
 
     def test_current_source_layering(self):
         for directory in SOURCE_DIRS:

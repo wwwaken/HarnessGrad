@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The check every plain-text QA dataset in this repository shares.
 
-    python3 -m data.scaffolds.qa.verify.check --dataset gsm8k --module data.gsm8k \
+    python3 -m data.scaffolds.qa.verify.check --dataset gsm8k --module data.datasets.gsm8k \
         --answer answer.txt --gold gold.json \
         --reward-file verifier/reward.txt --evidence-file verifier/evidence.json
 
@@ -66,10 +66,10 @@ DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
 #: which is what the adapter is.
 DATASET_NAME_RE = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 
-#: The package the adapter is materialized into. The check imports `data.<name>` -- the
+#: The package the adapter is materialized into. The check imports `data.datasets.<name>` -- the
 #: adapter's real module name, so the scorer that grades is the same file the platform
 #: loaded, re-materialized into the workdir by `VERIFY.inputs`.
-DATASET_PACKAGE = "data"
+DATASET_PACKAGE = "data.datasets"
 
 
 def parse_args(argv):
@@ -204,7 +204,7 @@ def main(argv) -> int:
     if not DATASET_NAME_RE.match(args.dataset):
         return unmeasured(args, evidence,
                           f"{args.dataset!r} is not a dataset name; this check imports "
-                          f"`data.<name>` and will not be handed an arbitrary module")
+                          f"`data.datasets.<name>` and will not be handed an arbitrary module")
     module_name = f"{DATASET_PACKAGE}.{args.dataset}"
     evidence["scorer_module"] = module_name
     try:
@@ -212,7 +212,7 @@ def main(argv) -> int:
         # boundary rule (`tests/quality/test_boundaries.py::R1`) reads the argument of
         # every dynamic import call and refuses one that is not a literal, because a
         # non-literal is how the platform would reach an arbitrary module. The name is
-        # already validated to `data.<name>` above, and the rule this file must not break
+        # already validated to `data.datasets.<name>` above, and the rule this file must not break
         # is about *reaching an arbitrary module*, not about which builtin does it.
         adapter = __import__(module_name, fromlist=["score"])
         if getattr(adapter, "REDACT_EVIDENCE", False) and not args.redact_gold:

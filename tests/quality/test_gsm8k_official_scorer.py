@@ -23,7 +23,7 @@ REF_FLEXIBLE = re.compile(ORIGINAL["regex_pattern"])
 
 
 def ref_flexible_extract(text: str) -> str:
-    """Apply the immutable original integer-only reference, independently of data.gsm8k."""
+    """Apply the immutable original integer-only reference, independently of data.datasets.gsm8k."""
     matches = REF_FLEXIBLE.findall(text)
     if not matches:
         return ""

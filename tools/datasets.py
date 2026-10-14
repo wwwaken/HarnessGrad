@@ -79,7 +79,7 @@ def datasets_with_downloads() -> list[tuple[str, list[dict]]]:
     """Every published dataset that declares `downloads()`, in name order."""
     out = []
     for name in registry.published():
-        module = importlib.import_module(f"data.{name}")
+        module = importlib.import_module(registry.module_name(name))
         fn = getattr(module, "downloads", None)
         if callable(fn):
             out.append((name, list(fn() or [])))
@@ -170,7 +170,7 @@ def check_entry(entry: dict, base: Path) -> dict:
 
 
 def check_dataset(name: str, downloads: list[dict]) -> dict:
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(registry.module_name(name))
     base = dataset_root(module)
     entries = [check_entry(entry, base) for entry in downloads]
     status = {}
@@ -415,7 +415,7 @@ def main(argv=None) -> int:
     if args.fetch:
         failed = 0
         for name, entries in rows:
-            module = importlib.import_module(f"data.{name}")
+            module = importlib.import_module(registry.module_name(name))
             base = dataset_root(module)
             print(f"== {name}  (root {base})")
             for entry in entries:

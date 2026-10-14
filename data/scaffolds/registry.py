@@ -33,9 +33,19 @@ KIND_DATASET = "dataset"
 KIND_FIXTURE = "fixture"
 
 
+# Fixtures keep their historical module names; adapters have no old-path shims.
+_FIXTURE_NAMES = frozenset({"demo", "probe_set", "broken_service",
+                            "verify_demo", "verify_exec", "verify_service"})
+
+
+def module_name(name: str) -> str:
+    """Canonical adapter module, or the explicitly retained top-level fixture."""
+    return f"data.{name}" if name in _FIXTURE_NAMES else f"data.datasets.{name}"
+
+
 def kind_of(name: str) -> str:
     """`"dataset"` or `"fixture"`, from the module's own declaration."""
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     kind = getattr(module, "KIND", KIND_FIXTURE)
     return kind if kind in (KIND_DATASET, KIND_FIXTURE) else KIND_FIXTURE
 
@@ -47,7 +57,7 @@ def published() -> tuple[str, ...]:
     rather than globbing `data/`, so "which datasets exist" has one answer.
     """
     out = []
-    for path in sorted(Path(__file__).resolve().parents[1].glob("*.py")):
+    for path in sorted((Path(__file__).resolve().parents[1] / "datasets").glob("*.py")):
         if path.stem in ("registry", "__init__"):
             continue
         try:
@@ -65,7 +75,7 @@ _VALID = ("train", "eval")
 
 def load(name: str) -> tuple[list[dict], dict[str, str]]:
     """Return (tasks, scorable) for a dataset name."""
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     return module.load()
 
 
@@ -82,7 +92,7 @@ def load_split(name: str) -> tuple[list[dict], dict[str, str], dict | None]:
     with only the run's own side required; see that function for why.
     """
     tasks, scorable = load(name)
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     split = getattr(module, "SPLIT", None)
     if split is None:
         return tasks, scorable, None
@@ -200,7 +210,7 @@ def oracle_source(name: str) -> tuple[str | None, str | None]:
     authored oracle that exists for three tasks proves the check is reachable on three tasks,
     and a reader who cannot see that would read the control as covering the whole pool.
     """
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     return (getattr(module, ORACLE_SOURCE_ATTR, None),
             getattr(module, "ORACLE_COVERAGE", None))
 
@@ -221,7 +231,7 @@ def official_split(name: str, tasks: list[dict]) -> dict:
     and is refused rather than guessed, because a guessed evaluation set produces a number
     that looks official and is not.
     """
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     if not hasattr(module, OFFICIAL_EVAL_ATTR):
         raise ValueError(
             f"dataset {name!r} does not declare {OFFICIAL_EVAL_ATTR}, so `--split official` "
@@ -556,7 +566,7 @@ def load_envs(name: str) -> dict[str, dict]:
     existing, and the cheapest proof of that is that none of them changed.
     """
     tasks, _ = load(name)
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     default = getattr(module, "DEFAULT_ENV", None) or {"kind": "files"}
     declared = dict(getattr(module, "ENV", None) or {})
 
@@ -714,7 +724,7 @@ def load_tasks(name: str) -> tuple[list[dict], dict[str, dict], dict[str, dict]]
     adding this layer changed nothing for the datasets that already worked.
     """
     tasks, scorable = load(name)
-    module = importlib.import_module(f"data.{name}")
+    module = importlib.import_module(module_name(name))
     setups = dict(getattr(module, "SETUP", None) or {})
     declared = getattr(module, "VERIFY", None)
 

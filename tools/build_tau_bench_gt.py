@@ -7,7 +7,7 @@
 
 It reads a checkout of `sierra-research/tau-bench` (default
 `/mnt/20t/xubuqiang/datasets/tau-bench`, override with `--checkout` or
-`HG_TAU_BENCH`) and writes, under `data/tau_bench/`:
+`HG_TAU_BENCH`) and writes, under `data/datasets/tau_bench/`:
 
     gt/<task_id>.json     one task's ground truth: domain, user id, instruction
                           and the action sequence. This is the answer, and it is
@@ -62,7 +62,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-OUT = ROOT / "data" / "tau_bench"
+OUT = ROOT / "data" / "datasets" / "tau_bench"
 GT_DIR = OUT / "gt"
 DB_DIR = OUT / "db"
 POLICY_DIR = OUT / "policy"

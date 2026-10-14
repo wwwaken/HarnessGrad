@@ -27,11 +27,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def adapter_contract():
-    # Extract public helpers only: importing data.appworld would read the mixed pool.
-    tree = ast.parse((ROOT / "data/appworld.py").read_text())
+    # Extract public helpers only: importing data.datasets.appworld would read the mixed pool.
+    tree = ast.parse((ROOT / "data/datasets/appworld.py").read_text())
     nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef)
              and n.name in {"_goal", "_runtime_prompt", "_setup"}]
-    namespace = {"shlex": shlex, "ASSETS": ROOT / "data/appworld"}
+    namespace = {"shlex": shlex, "ASSETS": ROOT / "data/datasets/appworld"}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "adapter_contract", "exec"),
          namespace)
     return namespace
@@ -244,7 +244,7 @@ def test_unchanged_loop_discovers_cli_and_executes_api_with_persistent_state(
 
 @pytest.mark.parametrize("args", [["--help"], ["action", "--help"]])
 def test_cli_help_explains_remote_namespace_without_initializing_world(args, synthetic_service):
-    result = subprocess.run([sys.executable, str(ROOT / "data/appworld/cli/aw"), *args],
+    result = subprocess.run([sys.executable, str(ROOT / "data/datasets/appworld/cli/aw"), *args],
                             text=True, capture_output=True, timeout=10)
     assert result.returncode == 0
     assert "apis" in result.stdout and "service" in result.stdout
@@ -253,7 +253,7 @@ def test_cli_help_explains_remote_namespace_without_initializing_world(args, syn
 
 def test_one_action_forwards_multiple_api_calls_and_control_flow(
         tmp_path, synthetic_service):
-    cli = ROOT / "data/appworld/cli/aw"
+    cli = ROOT / "data/datasets/appworld/cli/aw"
     code = ('for value in ["first", "second"]:\n'
             '    if value:\n'
             '        print(apis.synthetic.set_value(value=value))\n'

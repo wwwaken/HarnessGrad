@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.mark.parametrize("action", [False, True])
 def test_aw_dispatches_init_and_action(tmp_path, monkeypatch, action, capsys):
-    loader = importlib.machinery.SourceFileLoader("aw_probe", str(ROOT / "data/appworld/cli/aw"))
+    loader = importlib.machinery.SourceFileLoader("aw_probe", str(ROOT / "data/datasets/appworld/cli/aw"))
     spec = importlib.util.spec_from_loader(loader.name, loader)
     aw = importlib.util.module_from_spec(spec)
     loader.exec_module(aw)

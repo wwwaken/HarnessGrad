@@ -16,7 +16,7 @@ refusal. `ds1000` looked like a refusal — the official tests need a package th
 one group of them fetches data over the network — and measuring showed it was two different
 things, neither of them a metric problem, leaving 926 of 1000 rows runnable.
 
-So: **do not write `data/<name>.py` until §1.3 is done.**
+So: **do not write `data/datasets/<name>.py` until §1.3 is done.**
 
 ---
 
@@ -127,7 +127,7 @@ been executed, you do not have a refusal; you have a suspicion.
 ### 3.3 Runnable, with a measured exclusion
 
 Dropping rows is allowed. Dropping them **silently** is not. The batch's worked example is
-`data/ds1000.py`, and the shape it arrived at is the one to copy:
+`data/datasets/ds1000.py`, and the shape it arrived at is the one to copy:
 
 * the excluded rows are enumerated, per row, with the **cause that row actually reported**;
 * the largest group is a *criterion* recomputed from the released data (rows whose official

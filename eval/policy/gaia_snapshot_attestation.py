@@ -23,8 +23,8 @@ REVIEW_ONLY = frozenset({
     "reports/GAIA_GATE.md", "tests/quality/test_gaia_snapshot_attestation.py",
 })
 REQUIRED_SOURCE = frozenset({
-    "data/gaia.py", "data/gaia/control.py", "data/scaffolds/command_control.py",
-    "data/gaia/verify/check.py", "data/gaia/Dockerfile",
+    "data/datasets/gaia.py", "data/datasets/gaia/control.py", "data/scaffolds/command_control.py",
+    "data/datasets/gaia/verify/check.py", "data/datasets/gaia/Dockerfile",
     "eval/container.py", "eval/container_state.py", "eval/runner.py",
     "eval/verifier.py",
 })

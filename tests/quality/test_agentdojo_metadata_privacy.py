@@ -32,7 +32,7 @@ class MetadataReadDetected(AssertionError):
 def adapter_code():
     # Only Python source is read, before the request boundary. Execute a fresh
     # module body in every control so a cached adapter cannot mask eager reads.
-    path = ROOT / "data/agentdojo.py"
+    path = ROOT / "data/datasets/agentdojo.py"
     return compile(path.read_text(encoding="utf-8"), str(path), "exec"), path
 
 

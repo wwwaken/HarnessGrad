@@ -93,7 +93,7 @@ def main(argv=None):
         tests = read_regular(workspace_path(args.public_tests))
         if hashlib.sha256(tests).hexdigest() != args.public_tests_sha256:
             raise ValueError("public tests approval hash mismatch")
-        statement = read_regular(ROOT / "data/livecodebench/abc360_a.public.md")
+        statement = read_regular(ROOT / "data/datasets/livecodebench/abc360_a.public.md")
         metadata = read_regular(workspace_path(args.index_record)) if args.index_record else None
         result = launch(agent=read_regular(workspace_path(args.agent)), statement=statement,
                         tests=tests, work_root=work_root, model=args.model,

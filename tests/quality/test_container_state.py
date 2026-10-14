@@ -112,7 +112,7 @@ def test_the_adapter_reads_the_real_task_set():
     """The mapping, checked against the checkout rather than against a fixture."""
     _require_tb()
     import importlib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
     tasks, _ = tb.load()
     if not tasks:
         pytest.skip("no Terminal-Bench tasks selected")
@@ -145,7 +145,7 @@ def test_no_task_is_excluded_by_a_stale_metadata_flag():
     _require_tb()
     import importlib
     import tomllib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
 
     on_disk = {d.name for d in TB_ROOT.iterdir()
                if d.is_dir() and (d / "task.toml").is_file()}
@@ -199,7 +199,7 @@ def test_both_checkout_layouts_are_found(tmp_path):
     """
     import importlib
     import tomllib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
 
     for layout, sub in (("root", ""), ("tasks/", "tasks")):
         root = tmp_path / layout.replace("/", "_")
@@ -234,7 +234,7 @@ def test_a_checkout_with_no_tasks_says_where_it_looked(tmp_path):
     """A wrong path is the most likely way to use this adapter, so the error has to name
     both places rather than only the one that was assumed."""
     import importlib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
     old = tb.ROOT
     try:
         tb.ROOT = tmp_path / "empty"
@@ -252,7 +252,7 @@ def test_the_split_is_derived_and_stable():
     task set changes."""
     _require_tb()
     import importlib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
     if tb.SPLIT is None:
         pytest.skip("HG_TB_SPLIT=none")
     assert tb._is_eval("abc") == tb._is_eval("abc")
@@ -332,7 +332,7 @@ def _one_ready_task():
     """
     _require_tb()
     import importlib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
     by_id = {t["task_id"]: t for t in tb.load()[0]}
     for tid in ORACLE_VERIFIED:
         if tid not in by_id:
@@ -374,7 +374,7 @@ def test_a_refused_container_state_run_leaves_nothing_behind(tmp_path):
 
     task, setup, verifier, env = _one_ready_task()
     import importlib
-    tb = importlib.import_module("data.terminal_bench")
+    tb = importlib.import_module("data.datasets.terminal_bench")
     if not (TB_ROOT / task["task_id"] / "solution").is_dir():
         pytest.skip("no solution to run")
 

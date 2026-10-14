@@ -8,7 +8,7 @@ that already existed (measured 2026-10-07: `tau_bench`, `terminal_bench`) had ne
 oracle arm run at all.
 
 **Why a table and not a name-matching heuristic.** The obvious implementation -- glob
-`tests/quality/test_<name>_official_scorer.py` and `data/<name>/control.py` -- is wrong in
+`tests/quality/test_<name>_official_scorer.py` and `data/datasets/<name>/control.py` -- is wrong in
 both directions here, and measurably so. `test_bigbench_official_scorers.py` pins three
 datasets; `test_qa_dataset_contract.py` is parametrised over six; the shared QA control is
 `data/scaffolds/qa/control.py --dataset <name>` rather than a per-dataset script; and a refusal has no
@@ -45,11 +45,11 @@ QUALITY = ROOT / "tests" / "quality"
 #: and the sentence has to say why and what writing one would take.
 ROWS: dict[str, dict] = {
     "agentdojo": {
-        "control": ["data/agentdojo/control.py", "--task-id", "agentdojo/0"],
+        "control": ["data/datasets/agentdojo/control.py", "--task-id", "agentdojo/0"],
         "metric_tests": ["test_agentdojo_official_scorer.py", "test_agentdojo_bridge.py"],
     },
     "alfworld": {
-        "control": ["data/alfworld/control.py"],
+        "control": ["data/datasets/alfworld/control.py"],
         "metric_tests": ["test_alfworld_official_scorer.py", "test_alfworld_dataset.py"],
     },
     "bfcl_v3": {
@@ -69,7 +69,7 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_gsm8k_official_scorer.py", "test_gsm8k_dataset.py"],
     },
     "ds1000": {
-        "control": ["data/ds1000/control.py", "--task-id", "ds1000/333"],
+        "control": ["data/datasets/ds1000/control.py", "--task-id", "ds1000/333"],
         "metric_tests": ["test_ds1000_official_scorer.py"],
     },
     "nestful": {
@@ -80,7 +80,7 @@ ROWS: dict[str, dict] = {
         # `--task-id` is required by this control (unlike the QA scaffold, it has no
         # default), so it has to be part of the declaration: a declared control
         # that cannot be invoked as declared is not a control.
-        "control": ["data/jericho/control.py", "--task-id", "acorncourt"],
+        "control": ["data/datasets/jericho/control.py", "--task-id", "acorncourt"],
         # Jericho's metric is the package's own normalised score, so there is nothing to
         # transcribe; what has to be pinned is the maximum-score table and the game set.
         "metric_tests": ["test_jericho_dataset.py"],
@@ -90,11 +90,11 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_bigbench_official_scorers.py", "test_qa_dataset_contract.py"],
     },
     "scienceworld": {
-        "control": ["data/scienceworld/control.py"],
+        "control": ["data/datasets/scienceworld/control.py"],
         "metric_tests": ["test_scienceworld_dataset.py"],
     },
     "spreadsheetbench": {
-        "control": ["data/spreadsheetbench/control.py"],
+        "control": ["data/datasets/spreadsheetbench/control.py"],
         "metric_tests": ["test_spreadsheetbench_official_scorer.py"],
     },
     "sportsunderstanding": {
@@ -119,14 +119,14 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_twowikimultihopqa_official_scorer.py",
                          "test_qa_dataset_contract.py"],
     },
-    "bird_minidev": {"control": ["data/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
-    "appworld": {"control": ["data/appworld/control.py", "--task-id", "e85d92a_1"], "metric_tests": ["test_appworld_official_scorer.py"]},
+    "bird_minidev": {"control": ["data/datasets/bird_minidev/control.py"], "metric_tests": ["test_bird_minidev_official_scorer.py"]},
+    "appworld": {"control": ["data/datasets/appworld/control.py", "--task-id", "e85d92a_1"], "metric_tests": ["test_appworld_official_scorer.py"]},
     "gaia": {
         # `--platform` because this dataset is an `exec` env: the verifier's paths are
         # container-absolute (`/check.py`, `/app/answer.txt`), so the by-hand arm has no
         # meaningful form. The arm that proves gates 1 and 2 is `run_one` in a real container --
         # 13 s per arm, and the arm that would catch an image or network mistake.
-        "control": ["data/gaia/control.py", "--platform"],
+        "control": ["data/datasets/gaia/control.py", "--platform"],
         "metric_tests": ["test_gaia_official_scorer.py"],
     },
     "livecodebench": {
@@ -135,7 +135,7 @@ ROWS: dict[str, dict] = {
         # replaced a refusal row, and the first attempt left **both** in the dict literal --
         # where a duplicate key is legal and the last one wins, so the tests read `control: []`
         # and reported a dataset with no control that plainly had one.
-        "control": ["data/livecodebench/control.py", "--task-id", "livecodebench/800"],
+        "control": ["data/datasets/livecodebench/control.py", "--task-id", "livecodebench/800"],
         "metric_tests": ["test_livecodebench_official_scorer.py"],
     },
     "tau_bench": {
@@ -143,8 +143,8 @@ ROWS: dict[str, dict] = {
         "metric_tests": [],
         "exempt": (
             "Predates the convention and has never had an oracle arm run. It was onboarded "
-            "before the gate existed, and there is no `data/tau_bench/control.py` to run. "
-            "Writing one is bounded and the data supports it: `data/tau_bench.py` already "
+            "before the gate existed, and there is no `data/datasets/tau_bench/control.py` to run. "
+            "Writing one is bounded and the data supports it: `data/datasets/tau_bench.py` already "
             "replays each task's ground-truth actions to build the gold database (line ~293, "
             "`for action in record['actions']`), so the oracle arm needs an agent that "
             "replays the same actions through the same tool classes and then stops. Until "
@@ -156,9 +156,9 @@ ROWS: dict[str, dict] = {
         "metric_tests": [],
         "exempt": (
             "Predates the convention, and its oracle is driven by the platform rather than "
-            "by a dataset control: with `HG_TB_ORACLE=1`, `data/terminal_bench.py` stages the "
+            "by a dataset control: with `HG_TB_ORACLE=1`, `data/datasets/terminal_bench.py` stages the "
             "task's own `solution/` directory at `.oracle` so `base_harness/oracle` can run "
-            "it (data/terminal_bench.py, the `setup` branch). That is a real oracle path, but "
+            "it (data/datasets/terminal_bench.py, the `setup` branch). That is a real oracle path, but "
             "it is reachable only through the platform's own harness and only for tasks that "
             "ship `solution/`; nothing in the suite asserts that it reaches 1. A dataset "
             "control that sets the flag, runs `base_harness/oracle`, and asserts the score "
@@ -187,7 +187,7 @@ REFUSED = ("api_bank", "sotuqa", "tau2_bench", "nestful")
 #: **Only `gaia` belongs here, and the reason is the control's form, not the dataset's
 #: blockers.** This tuple is about a control that runs through `--platform` and is
 #: therefore stopped by the fail-closed runner hook; `gaia` is the only declared control
-#: that does (`data/gaia/control.py --platform`). `jericho` and `spreadsheetbench` were
+#: that does (`data/datasets/gaia/control.py --platform`). `jericho` and `spreadsheetbench` were
 #: listed here while their by-hand controls were broken -- one could not start the game
 #: for want of a writable temp directory, the other could not submit for want of a
 #: module in its `SETUP`. Both were repaired, and their by-hand arms now genuinely
@@ -199,7 +199,7 @@ POLICY_REFUSED = ("gaia",)
 
 def _provisioned(name: str) -> bool:
     """The dataset's own answer to "are my bytes here", as the lint asks it."""
-    module = registry.importlib.import_module(f"data.{name}")
+    module = registry.importlib.import_module(f"data.datasets.{name}")
     status = getattr(module, "provision_status", None)
     if not callable(status):
         return True

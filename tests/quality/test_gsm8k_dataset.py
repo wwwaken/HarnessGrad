@@ -168,7 +168,7 @@ def test_the_verifier_declares_the_contract_paths(gsm8k, record):
     assert verifier["evidence_file"] == "/verifier/evidence.json"
     assert verifier["argv"][0] == "python3"
     paths = {entry["path"] for entry in verifier["inputs"]}
-    assert {"gold.json", "qa/lib/verify/check.py", "data/gsm8k.py"} <= paths
+    assert {"gold.json", "qa/lib/verify/check.py", "data/datasets/gsm8k.py"} <= paths
 
 
 def test_every_verifier_input_is_re_materializable(gsm8k):
@@ -273,7 +273,7 @@ def test_a_quoted_answer_is_unwrapped_before_scoring(gsm8k):
 
 def _load_check():
     import importlib.util
-    path = ROOT / "data" / "qa" / "verify" / "check.py"
+    path = ROOT / "data" / "scaffolds" / "qa" / "verify" / "check.py"
     spec = importlib.util.spec_from_file_location("qa_check_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
