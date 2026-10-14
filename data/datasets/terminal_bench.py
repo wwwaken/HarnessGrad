@@ -230,6 +230,7 @@ def _load_one(task_dir: Path) -> tuple[dict, dict, dict, dict]:
 
     verifier = {
         "kind": "command",
+        "scorer_bundle": {"isolation_class": "snapshot-service"},
         "argv": ["bash", "/tests/test.sh"],
         # A real path in the checkout, copied in after the harness stops. `dst` because
         # the check expects its tests at `/tests`, which a path relative to the workdir

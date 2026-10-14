@@ -653,6 +653,8 @@ def _check_setup(spec, tid: str, name: str) -> None:
 def _check_verifier(spec, tid: str, name: str) -> None:
     if not isinstance(spec, dict):
         raise ValueError(f"dataset {name!r}: VERIFY[{tid!r}] must be a dict")
+    from data.scaffolds.scorer_isolation import declared_class
+    declared_class(spec)
     kind = spec.get("kind")
     if kind not in VERIFIER_KINDS:
         raise ValueError(

@@ -20,16 +20,25 @@ from eval.admission.artifact_admission import (
 from eval.admission.pilot_admission import AdmissionError
 
 SCHEMA = "harnessgrad.scorer-bundle.v1"
+ISOLATION_SCHEMA = "harnessgrad.scorer-bundle.v2"
 
 
 def _validate(manifest: dict) -> None:
+    versioned = isinstance(manifest, dict) and manifest.get("schema") == ISOLATION_SCHEMA
+    fields = {"schema", "source_sha256", "runtime_image_id", "network", "scorer"}
+    if versioned:
+        fields.add("isolation_class")
     if (not isinstance(manifest, dict)
-            or set(manifest) != {"schema", "source_sha256", "runtime_image_id", "network", "scorer"}
-            or manifest["schema"] != SCHEMA
+            or set(manifest) != fields
+            or manifest["schema"] not in (SCHEMA, ISOLATION_SCHEMA)
             or not _digest(manifest["source_sha256"])
             or not isinstance(manifest["runtime_image_id"], str)
             or not re.fullmatch(r"sha256:[a-f0-9]{64}", manifest["runtime_image_id"])
-            or manifest["network"] != "none"):
+            or (versioned and (not isinstance(manifest["isolation_class"], str)
+                or manifest["isolation_class"] not in ("pristine-offline", "snapshot-service")))
+            or not isinstance(manifest["network"], str) or not manifest["network"]
+            or ((not versioned or manifest["isolation_class"] == "pristine-offline")
+                and manifest["network"] != "none")):
         raise AdmissionError("invalid offline scorer bundle identity")
     validate_scorer_spec(manifest["scorer"])
 
@@ -61,7 +70,8 @@ def verify_bundle(root: Path, raw: bytes, expected_sha256: str) -> dict:
     return dict(schema="harnessgrad.scorer-bundle-receipt.v1",
                 bundle_sha256=expected_sha256, source_sha256=manifest["source_sha256"],
                 runtime_image_id=manifest["runtime_image_id"],
-                declared_network=manifest["network"], **counts)
+                declared_network=manifest["network"], **counts,
+                **({"isolation_class": manifest["isolation_class"]} if "isolation_class" in manifest else {}))
 
 
 def require_contract_bundle(contract_raw: bytes, contract_sha256: str,
@@ -74,6 +84,8 @@ def require_contract_bundle(contract_raw: bytes, contract_sha256: str,
     """
     contract = load_contract(contract_raw, contract_sha256)
     bundle = load_bundle(bundle_raw, bundle_sha256)
+    if bundle.get("isolation_class") not in (None, "pristine-offline"):
+        raise AdmissionError("artifact-only runtime requires a pristine-offline bundle")
     if any(contract[key] != bundle[key] for key in
            ("source_sha256", "runtime_image_id", "scorer")):
         raise AdmissionError("artifact contract does not match pinned scorer bundle")

@@ -75,6 +75,8 @@ export interface ComparisonSummary {
 }
 
 export interface RunComparison {
+  valid: boolean;
+  invalidReason: string | null;
   leftRunId: string;
   rightRunId: string;
   leftRound: number | null;
@@ -112,7 +114,23 @@ export function compareRuns(
   const right = rightRaw ? toPointView(rightRaw) : null;
 
   const tasks = compareTasks(leftBundle, rightBundle, leftRaw, rightRaw);
+  const invalidReason = isolationProblem(leftRaw, rightRaw);
+  if (invalidReason) {
+    for (const task of tasks) {
+      task.move = "unmeasured";
+      task.testRateDelta = null;
+    }
+  }
+  const summary = summarise(tasks, left, right);
+  if (invalidReason) {
+    summary.scoreDelta = null;
+    summary.testRateDelta = null;
+    summary.maskedByScore = false;
+    summary.headline = `Comparison invalid: ${invalidReason}`;
+  }
   return {
+    valid: invalidReason === null,
+    invalidReason,
     leftRunId: leftBundle.run_id,
     rightRunId: rightBundle.run_id,
     leftRound: leftRaw?.round ?? null,
@@ -120,9 +138,23 @@ export function compareRuns(
     left,
     right,
     tasks,
-    summary: summarise(tasks, left, right),
+    summary,
     fields: diffFields(leftBundle, rightBundle, leftRaw, rightRaw),
   };
+}
+
+const ISOLATION_CLASSES = new Set(["pristine-offline", "snapshot-service", "actor-workdir", "in-process"]);
+
+function isolationProblem(left: CurvePoint | null, right: CurvePoint | null): string | null {
+  const classesFor = (point: CurvePoint | null): string[] => {
+    const classes = [point?.scorer_isolation_class ?? "unknown",
+      ...Object.values(point?.per_task_scorer_isolation ?? {})];
+    return classes.map((value) => ISOLATION_CLASSES.has(value) ? value : "unknown");
+  };
+  const classes = [...new Set([...classesFor(left), ...classesFor(right)])].sort();
+  if (classes.length > 1) return `scorer isolation class mismatch: ${classes.join(", ")}`;
+  if (classes[0] === "unknown") return "scorer isolation class unknown";
+  return null;
 }
 
 export function classifyScore(score: number | null | undefined): ScoreClass {
@@ -288,6 +320,8 @@ export function diffFields(
       numOrAbsent(rightPoint, "test_rate"),
     ],
     ["record.scoreKind", "score_kind", str(leftPoint?.score_kind), str(rightPoint?.score_kind)],
+    ["record.scoreKind", "scorer_isolation_class", leftPoint?.scorer_isolation_class ?? "unknown",
+      rightPoint?.scorer_isolation_class ?? "unknown"],
     ["record.side", "side", str(leftPoint?.side), str(rightPoint?.side)],
     [
       "record.harnessSha",

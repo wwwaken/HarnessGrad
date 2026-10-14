@@ -1,0 +1,43 @@
+unchanged HEAD 9e62198
+Command: tsc --noEmit
+Exit: 2
+src/components/run/curve-chart.tsx(199,17): error TS2469: The '+' operator cannot be applied to type 'symbol'.
+src/i18n/en.ts(1,78): error TS2307: Cannot find module './parts' or its corresponding type declarations.
+src/i18n/i18n.test.tsx(31,59): error TS2731: Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.
+src/i18n/i18n.test.tsx(44,23): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(actual: any, message?: string | undefined): Assertion<any>', gave the following error.
+    Argument of type 'string | number | symbol' is not assignable to parameter of type 'string | undefined'.
+      Type 'number' is not assignable to type 'string'.
+  Overload 2 of 2, '(val: any, message?: string | undefined): Assertion', gave the following error.
+    Argument of type 'string | number | symbol' is not assignable to parameter of type 'string | undefined'.
+      Type 'number' is not assignable to type 'string'.
+src/i18n/i18n.test.tsx(51,36): error TS2731: Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.
+src/i18n/zh.ts(1,78): error TS2307: Cannot find module './parts' or its corresponding type declarations.
+src/pages/launch.tsx(347,27): error TS2322: Type 'string | number | symbol' is not assignable to type 'Key | null | undefined'.
+  Type 'symbol' is not assignable to type 'Key | null | undefined'.
+src/pages/launch.tsx(356,26): error TS2322: Type 'string | number | symbol' is not assignable to type 'Key | null | undefined'.
+  Type 'symbol' is not assignable to type 'Key | null | undefined'.
+
+
+option B working tree
+Command: tsc --noEmit
+Exit: 2
+src/components/run/curve-chart.tsx(199,17): error TS2469: The '+' operator cannot be applied to type 'symbol'.
+src/i18n/en.ts(1,78): error TS2307: Cannot find module './parts' or its corresponding type declarations.
+src/i18n/i18n.test.tsx(31,59): error TS2731: Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.
+src/i18n/i18n.test.tsx(44,23): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(actual: any, message?: string | undefined): Assertion<any>', gave the following error.
+    Argument of type 'string | number | symbol' is not assignable to parameter of type 'string | undefined'.
+      Type 'number' is not assignable to type 'string'.
+  Overload 2 of 2, '(val: any, message?: string | undefined): Assertion', gave the following error.
+    Argument of type 'string | number | symbol' is not assignable to parameter of type 'string | undefined'.
+      Type 'number' is not assignable to type 'string'.
+src/i18n/i18n.test.tsx(51,36): error TS2731: Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.
+src/i18n/zh.ts(1,78): error TS2307: Cannot find module './parts' or its corresponding type declarations.
+src/pages/launch.tsx(347,27): error TS2322: Type 'string | number | symbol' is not assignable to type 'Key | null | undefined'.
+  Type 'symbol' is not assignable to type 'Key | null | undefined'.
+src/pages/launch.tsx(356,26): error TS2322: Type 'string | number | symbol' is not assignable to type 'Key | null | undefined'.
+  Type 'symbol' is not assignable to type 'Key | null | undefined'.
+
+
+Identical exit status and diagnostics: True

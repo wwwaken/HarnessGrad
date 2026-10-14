@@ -153,6 +153,8 @@ export interface Cumulative {
  * field's comment says when it was added, because its absence is a *note*, not a defect.
  */
 export interface CurvePoint {
+  scorer_isolation_class?: string;
+  per_task_scorer_isolation?: Record<string, string>;
   // ---- required by schema.py ----
   run_id: string;
   round: number;
@@ -360,6 +362,7 @@ export interface TestTally {
 
 /** `verdicts/round-<n>/<task_id>.json`. */
 export interface Verdict {
+  scorer_isolation_class?: string;
   task_id: string;
   round: number;
   score: number | null;

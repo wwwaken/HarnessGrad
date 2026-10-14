@@ -1170,6 +1170,24 @@ anything, so with nothing to measure there is nothing to do.
 **Everything downstream (the UI, cross-method comparison, resumption, export)
 reads this and only this.** Get it wrong and everything above it is wrong.
 
+Scorer isolation is declared per bundle, not imposed globally. A verifier's
+`scorer_bundle.isolation_class` selects its contract. `pristine-offline` requires
+a pinned pristine image, `network=none` and exactly two read-only platform
+projections. `snapshot-service` retains actor snapshots and/or the task service
+network and recording mounts; Terminal-Bench and AppWorld declare this class.
+The [scorer contract](docs/scorer-admission-contract.md#per-bundle-isolation-option-b)
+defines the opt-in pristine execution fields and the remaining trust obligations.
+
+Every new verdict and curve point carries `scorer_isolation_class` for the class
+that actually ran, with `per_task_scorer_isolation` beside task scores. The
+additional classes `actor-workdir` and `in-process` describe existing command and
+answer checks. Unobserved or historical classes are `unknown`, never presumed
+pristine. Mixed classes are refused across trials, task aggregation and curve
+history. Comparisons require matching known classes; the comparison UI marks
+mixed or unknown classes invalid and suppresses score and test-rate deltas.
+Matching classes are necessary for comparison, not proof that every other
+metric, split, image, provenance or measurement requirement agrees.
+
 ```json
 {
   "run_id": "…",

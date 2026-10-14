@@ -392,6 +392,8 @@ def _write_progress(progress_dir, round_no: int, tid: str,
                 record,
                 indent=1, ensure_ascii=False), encoding="utf-8")
             return
+        from eval.verification.isolation import common_class, observed_class
+        isolation = common_class(observed_class(r.get("verdict")) for r in measured)
         scores = [float((r.get("verdict") or {}).get(
             "score", 1.0 if (r.get("verdict") or {}).get("passed") else 0.0))
             for r in measured]
@@ -406,6 +408,8 @@ def _write_progress(progress_dir, round_no: int, tid: str,
         task_file(dest, f"{tid}.json").write_text(json.dumps({
             "task_id": tid, "round": round_no,
             "score": sum(scores) / len(scores) if scores else None,
+            "scorer_isolation_class": isolation,
+            "trial_scorer_isolation": [observed_class(r.get("verdict")) for r in measured],
             "trial_scores": scores, "n_trials": len(scores),
             "passed": last.get("passed"), "kind": last.get("kind"),
             "detail": last.get("detail"),

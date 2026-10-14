@@ -24,6 +24,7 @@ from eval.run.metrics import mean
 from harnessgrad.environments import _env_record
 from eval.observe.tracing import task_file
 from harnessgrad.methods import PlatformTampered
+from eval.verification.isolation import common_class, observed_class
 
 def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
              method_claimed: int | dict | None = None) -> dict:
@@ -134,6 +135,7 @@ def test_rate_fields(res: dict | None) -> dict:
     """
     res = res or {}
     return {
+        "per_task_scorer_isolation": res.get("per_task_scorer_isolation"),
         "per_task_test_rate": res.get("per_task_test_rate"),
         "test_rate": res.get("test_rate"),
         "test_rate_n_tasks": res.get("test_rate_n_tasks"),
@@ -148,7 +150,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  method_reported=None, train_scores=None, train_ids=None,
                  split=None, env_record=None, invalid=None, harness_failed=None,
                  model_gateway=None, harness_runtime=None, hypothesis=None,
-                 evaluation_protocols=None,
+                 evaluation_protocols=None, per_task_scorer_isolation=None,
                  edits_applied=None, files_claimed=None, candidate_problems=None,
                  side="train", evaluated_from=None,
                  n_trials=None, score_std=None, per_task_std=None,
@@ -156,6 +158,9 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  per_task_test_rate=None, test_rate=None, test_rate_n_tasks=0,
                  tests_passed=0, tests_total=0,
                  per_task_test_rate_trials=None) -> dict:
+    isolation_by_task = {tid: (per_task_scorer_isolation or {}).get(tid, "unknown")
+                         for tid in task_ids}
+    isolation = common_class(isolation_by_task.values())
     lo, hi = ci95(scores)
     return {
         "run_id": run_id, "round": round_index, "label": label,
@@ -204,6 +209,8 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         # template.
         "edit_kind": None,
         "score": mean(scores, dataset=sampling.get("dataset")), "score_ci95": [lo, hi],
+        "scorer_isolation_class": isolation,
+        "per_task_scorer_isolation": isolation_by_task,
         # **How noisy this number is.** One evaluation per (harness, task) is one sample,
         # and measured on this platform the *same* unmodified harness scored 0.333 in one
         # run and 0.000 in the next -- the agent model intermittently emits a tool call the
@@ -519,6 +526,9 @@ def _saved_verdict(verdict: dict) -> dict:
     it as absent. Generic score/passed fields never supply measurement evidence.
     """
     entry = {key: verdict.get(key) for key in ("kind", "passed", "detail")}
+    entry["scorer_isolation_class"] = observed_class(verdict)
+    entry.update({key: verdict[key] for key in
+                  ("scorer_isolation_declared", "scorer_isolation_evidence") if key in verdict})
     entry.update({key: verdict[key] for key in ("trial", "invalid", "unmeasured", "evidence", "protocol")
                   if key in verdict})
     evidence = verdict.get("evidence")
@@ -605,6 +615,7 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
                     level="error" if not scores.get(tid) else "info")
 
 def _write_curve(path: Path, curve: list[dict]) -> None:
+    common_class(observed_class(point) for point in curve)
     with path.open("w") as fh:
         for point in curve:
             fh.write(json.dumps(point) + "\n")

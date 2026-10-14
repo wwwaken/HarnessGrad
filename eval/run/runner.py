@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import concurrent.futures as futures
+import hashlib
 import json
 import os
 import shutil
@@ -30,6 +31,7 @@ from eval.run.task_contract import runtime_task
 from eval.policy.runtime_policy import admit_native_network, phase_timeout, stage_agent_runtime
 from eval.observe.tracing import _last_identity, _last_usage, _materialize, _write_progress
 from eval.verification.verifier import _verify, test_rate_of
+from eval.verification.isolation import common_class, observed_class
 from eval.policy.unobserved_diagnostic import Authorization
 
 
@@ -161,6 +163,8 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
     result = refusal if refusal is not None else _run_one(
         repo, task, timeout_s, sandbox, setup, verifier, verify_timeout_s,
         env, run_id, run_seed, recordings_root)
+    if result.get("verdict") is not None:
+        result["verdict"].setdefault("scorer_isolation_class", "unknown")
     if diagnostic_authorization is not None:
         result["enforcement"] = diagnostic_authorization.record()
     return result
@@ -518,7 +522,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
             if stepwise_relay is not None:
                 verdict = chess_stepwise.finish(stepwise_relay, exit_code)
             else:
-                verdict = _verify(workdir, verifier, answer, sandbox=sandbox,
+                verdict = _verify(workdir, verifier, answer, sandbox=sandbox, task_id=task["task_id"],
                                   timeout_s=verify_timeout_s, env=env_spec,
                                   service_specs=service_specs, running=running)
                 if protocol is not None:
@@ -897,12 +901,18 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
 
     def measurement_key(task):
         key = f"{harness_sha}:{task['task_id']}:{trials}"
+        # A changed scorer declaration must not reuse another runtime's score.
+        bundle = ((verifiers or {}).get(task["task_id"]) or {}).get("scorer_bundle")
+        if bundle is not None:
+            key += ":scorer:" + hashlib.sha256(json.dumps(
+                bundle, sort_keys=True, default=str).encode()).hexdigest()
         if evaluation_protocols.get(task["task_id"]) == chess_stepwise.STEPWISE:
             key += ":" + chess_stepwise.STEPWISE
         return key
 
     cache = cache if cache is not None else {}
     per_task, traces, verdicts = {}, {}, {}
+    per_task_scorer_isolation = {}
     #: One score per trial, per task, kept so a reader can see the spread rather than
     #: only its mean. Absent when `trials == 1`.
     per_task_trials: dict[str, list[float]] = {}
@@ -1138,6 +1148,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             entry = outcome["cached"]
             cached_tasks.append(tid)
             per_task[tid] = entry["score"]
+            cached_verdicts = entry.get("trial_verdicts") or [entry.get("verdict") or {}]
+            per_task_scorer_isolation[tid] = common_class(observed_class(v) for v in cached_verdicts)
             if entry.get("per_task_trials"):
                 per_task_trials[tid] = list(entry["per_task_trials"])
                 per_task_std[tid] = float(entry.get("per_task_std") or 0.0)
@@ -1145,6 +1157,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                 trial_traces[tid] = list(entry["trial_traces"])
             if entry.get("trial_verdicts"):
                 trial_verdicts[tid] = [dict(v) for v in entry["trial_verdicts"]]
+                for v in trial_verdicts[tid]:
+                    v.setdefault("scorer_isolation_class", "unknown")
             traces[tid] = entry["trace"]
             if entry.get("harness_failed"):
                 harness_failed[tid] = entry["harness_failed"]
@@ -1155,6 +1169,7 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                 harness_output[tid] = entry["harness_output"]
             if entry.get("verdict"):
                 verdicts[tid] = dict(entry["verdict"])
+                verdicts[tid].setdefault("scorer_isolation_class", "unknown")
                 if tid in evaluation_protocols:
                     verdicts[tid]["protocol"] = evaluation_protocols[tid]
             continue
@@ -1182,6 +1197,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             return float(v.get("score", 1.0 if v.get("passed") else 0.0))
 
         scores = [_score_of(res) for res in measured]
+        per_task_scorer_isolation[tid] = common_class(
+            observed_class(res.get("verdict")) for res in measured)
         score = sum(scores) / len(scores)
         if trials > 1:
             per_task_trials[tid] = scores
@@ -1307,6 +1324,7 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     #: The spread of the *run-level* score across trials: per trial, the mean over the
     #: tasks measured in it. A reader comparing two harnesses needs this number, not the
     #: per-task one, because the curve is drawn from run-level scores.
+    scorer_isolation_class = common_class(per_task_scorer_isolation.values())
     score_std = 0.0
     if trials > 1 and per_task_trials:
         width = min(len(v) for v in per_task_trials.values())
@@ -1339,6 +1357,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             "not_run": sorted(not_run),
         }
     return {"per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
+            "scorer_isolation_class": scorer_isolation_class,
+            "per_task_scorer_isolation": per_task_scorer_isolation,
             "per_task_trials": per_task_trials, "trials": trials,
             # The same measurement at the check's own resolution. `test_rate` averages only
             # the tasks whose check reports a tally, so `test_rate_n_tasks` travels with it.

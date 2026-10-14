@@ -98,6 +98,8 @@ CURVE_POINT: tuple[Field, ...] = (
 #: Fields added at a known time. Absence is a note, not a problem: the point predates the
 #: field. This is the list that makes an old record readable rather than suspect.
 ADDED_LATER: dict[str, str] = {
+    "scorer_isolation_class": "2026-10-15: executed scorer class; missing means unknown",
+    "per_task_scorer_isolation": "2026-10-15: class next to each task's score",
     "test_rate": "2026-10-05 (stage 0): the check's own test tally, as a number",
     "test_rate_n_tasks": "2026-10-05 (stage 0): how many tasks reported a tally",
     "per_task_test_rate": "2026-10-05 (stage 0)",

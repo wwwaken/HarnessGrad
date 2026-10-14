@@ -27,6 +27,7 @@ from eval.service.services import label
 from eval.run.integrity import PLATFORM_ROOT
 from eval.observe.tracing import _materialize
 from eval.policy.runtime_policy import phase_timeout
+from eval.verification.isolation import declared_class, record_class
 
 def _verifier_env(workdir: Path) -> dict:
     """A minimal environment for the check.
@@ -238,6 +239,20 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
                             staging: Path, timeout_s: int, run_id: str,
                             task_id: str, network: str = "none",
                             limits: dict | None = None) -> dict:
+    if declared_class(verifier) not in ("unknown", "snapshot-service"):
+        return record_class({"kind": "command", "passed": False, "score": None,
+                             "unmeasured": "scorer declaration cannot run on actor snapshot"},
+                            verifier, "unknown")
+    verdict = _verify_container_state_inner(
+        snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,
+        run_id=run_id, task_id=task_id, network=network, limits=limits)
+    return record_class(verdict, verifier, "snapshot-service")
+
+
+def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
+                                  staging: Path, timeout_s: int, run_id: str,
+                                  task_id: str, network: str = "none",
+                                  limits: dict | None = None) -> dict:
     """Steps 5-9: a fresh container from the snapshot, the check's inputs copied in
     afterwards, and the score read from the file the check writes.
 
@@ -431,22 +446,38 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             *, sandbox: bool, timeout_s: int,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
-            running=None) -> dict:
+            running=None, task_id: str | None = None) -> dict:
     """Run a verifier with platform-owned output storage for exec reward checks."""
     spec = verifier or {"kind": "answer", "expected": None}
     env_spec = env or {"kind": "files"}
     timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"), env_spec.get("verify_timeout_s"))
+    declared = declared_class(spec)
+    actual = ("in-process" if spec.get("kind", "answer") == "answer" else
+              "snapshot-service" if running is not None or service_specs else "actor-workdir")
+    if declared == "pristine-offline":
+        if actual != "actor-workdir" or spec.get("reward_file") or spec.get("pass_when", "exit0") != "exit0":
+            return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+                                 "unmeasured": "pristine scorer requires artifact command with exit0 protocol"},
+                                spec, "unknown")
+        from eval.verification.pristine import verify
+        return verify(workdir, spec, timeout_s=timeout_s, task_id=task_id)
+    if declared not in ("unknown", actual):
+        return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+                             "unmeasured": "scorer declaration incompatible with runtime route"},
+                            spec, "unknown")
     if spec.get("kind") == "command" and spec.get("reward_file") \
             and env_spec.get("kind") == "exec":
         with tempfile.TemporaryDirectory(prefix="hg-verdict-",
                                           dir=str(workdir.parent)) as verdict_dir:
-            return _verify_inner(workdir, verifier, answer, sandbox=sandbox,
+            verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                                  timeout_s=timeout_s, env=env,
                                  service_specs=service_specs, running=running,
                                  verdict_dir=Path(verdict_dir))
-    return _verify_inner(workdir, verifier, answer, sandbox=sandbox,
+            return record_class(verdict, spec, actual)
+    verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                          timeout_s=timeout_s, env=env,
                          service_specs=service_specs, running=running)
+    return record_class(verdict, spec, actual)
 
 
 def _verify_inner(workdir: Path, verifier: dict | None, answer: str,

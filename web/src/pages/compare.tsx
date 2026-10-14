@@ -194,6 +194,9 @@ export function ComparePage() {
         title={t("compare.whatMoved")}
         description={t("compare.whatMovedHint")}
       >
+        {comparison.invalidReason ? (
+          <Alert variant="warn"><AlertDescription>{comparison.summary.headline}</AlertDescription></Alert>
+        ) : null}
         <FlipSummary comparison={comparison} />
       </Section>
 

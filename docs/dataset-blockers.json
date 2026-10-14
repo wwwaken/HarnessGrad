@@ -35,7 +35,7 @@
       "id": "scorer-offline-closure",
       "family": "scorer-dependency-network",
       "status": "code-solvable",
-      "observed": "The local scorer bundle validator is not wired into production and does not attest transitive runtime/network closure.",
+      "observed": "Option B is implemented: bundles declare isolation_class; production verification records scorer_isolation_class and refuses mixed-class aggregation/comparison. The opt-in pristine-offline path verifies pinned local bundle bytes and inspects the stopped offline two-projection runtime before execution; snapshot-service preserves dependency/service networking. Synthetic controls establish integration and refusals, not complete transitive image/ABI closure or live dataset runtime evidence.",
       "evidence": [
         {
           "kind": "repository",
@@ -51,9 +51,19 @@
           "kind": "repository",
           "path": "reports/b10-shared-boundaries-focused-tests.txt",
           "locator": "test_unclosed_or_unsupported_declarations_fail_before_file_access[missing_dependency] PASSED"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/sb-option-b-review.md",
+          "locator": "## scorer-offline-closure"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/sb-option-b-focused-tests.txt",
+          "locator": "test_comparison_across_two_classes_is_refused_with_reason REFUSED: scorer isolation class mismatch: pristine-offline, snapshot-service"
         }
       ],
-      "next_action": "Review generic integration of local closure checks and a dedicated offline scorer boundary using synthetic fixtures."
+      "next_action": "Provision dataset-specific pinned scorer closures and class-specific runtime evidence, including complete transitive image/ABI dependencies, official provenance/execution and trusted lifecycle/resource/cleanup observations; validate live controls before pilots, preserve snapshot/service connectivity and compare only matching known classes."
     },
     {
       "id": "pristine-verifier",
@@ -73,7 +83,7 @@
       "id": "artifact-only-state-export",
       "family": "artifact-only-export",
       "status": "code-solvable",
-      "observed": "Artifact admission helpers have no production integration; complete actor trees or snapshots still reach verification.",
+      "observed": "Option B integrates bounded allowlisted data-only export and exact two-projection runtime checks for opt-in pristine-offline scorers. Scores and points record the executed class and mixed classes are refused. Snapshot-service intentionally retains actor snapshots/service recordings. Synthetic export/scoring/refusal controls do not establish dataset-specific private-input safety, quiescence/ownership, state equivalence or live cleanup.",
       "evidence": [
         {
           "kind": "repository",
@@ -89,9 +99,19 @@
           "kind": "repository",
           "path": "reports/b10-shared-boundaries-focused-tests.txt",
           "locator": "test_state_export_refuses_toolchain_links_special_or_missing_files[executable] PASSED"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/sb-option-b-review.md",
+          "locator": "## artifact-only-state-export"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/sb-option-b-focused-tests.txt",
+          "locator": "test_comparison_across_two_classes_is_refused_with_reason REFUSED: scorer isolation class mismatch: pristine-offline, snapshot-service"
         }
       ],
-      "next_action": "Review allowlisted data-only export integration and bounded synthetic export controls."
+      "next_action": "Provision authoritative per-task export and private-input contracts for pristine scorers; validate ownership, quiescence/trial binding, scoring equivalence and live lifecycle/cleanup. Review snapshot/service state and recording surfaces under their declared class without forcing an inferred artifact allowlist."
     }
   ],
   "datasets": [

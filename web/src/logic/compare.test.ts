@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { classifyMove, classifyScore, compareRuns, diffStatRows } from "./compare";
-import { bundle, point } from "./test-support";
+import { bundle, point as rawPoint } from "./test-support";
 import type { RoundDiff } from "@/types";
+
+// Existing task-movement fixtures explicitly model one matching runtime class.
+const point = (overrides: Parameters<typeof rawPoint>[0]) =>
+  rawPoint({ scorer_isolation_class: "snapshot-service", ...overrides });
 
 /**
  * The task-flip diff — the core of the Compare screen.
@@ -51,6 +55,27 @@ describe("classifyScore / classifyMove", () => {
 });
 
 describe("compareRuns", () => {
+  it("refuses comparison across scorer isolation classes and names the reason", () => {
+    const left = bundle("offline", [point({ round: 0, score: 1,
+      scorer_isolation_class: "pristine-offline", per_task: { a: 1 } })]);
+    const right = bundle("snapshot", [point({ round: 0, score: 0,
+      scorer_isolation_class: "snapshot-service", per_task: { a: 0 } })]);
+    const result = compareRuns(left, right);
+    expect(result.valid).toBe(false);
+    expect(result.invalidReason).toBe("scorer isolation class mismatch: pristine-offline, snapshot-service");
+    expect(result.summary.scoreDelta).toBeNull();
+    expect(result.summary.testRateDelta).toBeNull();
+    expect(result.tasks[0].move).toBe("unmeasured");
+    expect(result.summary.headline).toContain("Comparison invalid");
+  });
+
+  it("refuses unknown legacy classes and internally mixed points", () => {
+    const legacy = bundle("legacy", [point({ round: 0, scorer_isolation_class: undefined })]);
+    expect(compareRuns(legacy, legacy).invalidReason).toContain("unknown");
+    const mixed = bundle("mixed", [point({ round: 0, scorer_isolation_class: "pristine-offline",
+      per_task_scorer_isolation: { a: "snapshot-service" } })]);
+    expect(compareRuns(mixed, mixed).valid).toBe(false);
+  });
   const left = bundle("ds-dgm", [
     point({ ...DS_DGM_R0, run_id: "ds-dgm" }),
     point({ ...DS_DGM_R2, run_id: "ds-dgm" }),

@@ -267,6 +267,7 @@ SETUP = {
 VERIFY = {
     task_id: {
         "kind": "command",
+        "scorer_bundle": {"isolation_class": "snapshot-service"},
         "argv": [
             "python3",
             "verify/check.py",
