@@ -1026,3 +1026,26 @@ close. The three coverage-only entries above remain explicitly pending.
   28 datasets, 8 shared blockers and 11 unchanged historical records, production
   unauthorized. Commands and results are recorded in the unique review; no
   whole-suite tests were run.
+## Preserved lifecycle metadata review — 2026-10-15 — B8
+
+- Scope: `/tmp/hg-b8` only, base `906607202fe6d7674695a410a72eb7379b869e75`;
+  GAIA `frozen-lifecycle-receipt`, tau-bench `local-state-lifecycle`, ChessBench
+  `interruption-closure` and `trusted-stepwise-transport` only. Original observed/
+  next-action text and file/line evidence are in the [unique review](../reports/preserved-lifecycle-review-b8.md).
+- Findings: GAIA source/runtime identity comparison is not receipt validation;
+  policy refusal remains and no aggregate is valid. Tau-bench declares task-specific
+  setup/late verifier inputs but imports the full gold pool, lacks both clean
+  databases here and supplies no independent selected lifecycle evidence in the
+  reviewed metadata. Chess's cited audit leaves termination authority/cleanup
+  unresolved; its pure public session remains offline-only without trusted runner
+  integration or measured interactive official execution.
+- Disposition: metadata review recorded; all four blockers remain `runtime`.
+  Both GAIA and both Chess IDs, incomplete statuses, null effects, evidence pointers
+  and the pinned history fixture are unchanged. External receipt/audit bytes were
+  not accessed or authenticated. No provisioning, adapter/payload read, backend,
+  model/control/scorer or pilot execution; unknowns remain unmeasured.
+- Validation: blocker checker valid (28 datasets, 8 shared blockers, 11 historical
+  records, production authorization false); focused source-only registry tests
+  **52 passed in 2.95s**. An initial in-tree basetemp was refused before collection,
+  then corrected to the required external directory. Structural scope/history
+  comparison and `git diff --check` passed. No whole-suite run or readiness claim.

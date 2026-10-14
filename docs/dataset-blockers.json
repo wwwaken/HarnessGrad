@@ -460,29 +460,54 @@
           "id": "trusted-stepwise-transport",
           "family": "official-scorer-execution",
           "status": "runtime",
-          "observed": "A pure public-observation transport contract now exists and is covered by fabricated tests, but it is not wired into the shared runner or an interactive official scorer; successive real observations and actor isolation remain unverified.",
+          "observed": "Source review confirms the public StepwisePuzzle session contract, but no trusted shared-runner integration or fresh interactive lifecycle evidence was found. Retain offline-only ChessBench strict legal puzzle replay v1 with upstream unchecked-push replay diagnostic-only. Fabricated contract tests do not attest real observation ordering, actor isolation or interactive official accuracy.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## ChessBench Puzzles — strict replay"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/preserved-lifecycle-review-b8.md",
+              "locator": "## chessbench_puzzles / trusted-stepwise-transport"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/chessbench-puzzles-evaluation.md",
+              "locator": "## Current boundary and validation"
+            },
+            {
+              "kind": "repository",
+              "path": "data/datasets/chessbench_puzzles.py",
+              "locator": "class StepwisePuzzle:"
             }
           ],
-          "next_action": "Integrate the public transport with a trusted shared runner and fresh lifecycle receipts, or retain offline-only status; never claim interactive official accuracy from fabricated transport tests."
+          "next_action": "Retain offline-only status and keep the runtime gate open. Any future interactive official claim requires separately reviewed trusted shared-runner transport, controller-owned observation/submission/termination records, actor/gold isolation and fresh identity-bound lifecycle/cleanup receipts. Never infer interactive official execution from fabricated transport tests or reuse either interrupted run ID."
         },
         {
           "id": "interruption-closure",
           "family": "termination-audit",
           "status": "runtime",
-          "observed": "Both interrupted pilots lack terminal verdict/cleanup closure; termination authority remains undetermined.",
+          "observed": "Repository audit and receipt-identity citations reviewed: the original and recovery IDs remain incomplete at reported 19 and 149/150 completed task-trials, with no terminal verdict/aggregate or cleanup closure. Termination authority remains undetermined on the native bwrap/files path. The cited audit digest is not authentication of either external run receipt; unknown final outcomes remain unmeasured.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "- Interruption audit: termination authority is undetermined"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/preserved-lifecycle-review-b8.md",
+              "locator": "## chessbench_puzzles / interruption-closure"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/chess-recovery-id-conflict-codex182-report.md",
+              "locator": "Both historical IDs"
             }
           ],
-          "next_action": "Review the existing audit and receipt identities without resuming or overwriting either run ID."
+          "next_action": "Preserve chess-pilot-h0-20261013 and chess-pilot-h0-20261013-recovery-01, their original receipts and null effects; never resume, re-run or overwrite either ID. Keep the runtime gate open pending independent audit/receipt authentication, termination/quiescence and owned cleanup closure. Do not turn missing outcomes or zero failed envelopes into measured zeros or complete coverage."
         }
       ],
       "historical_runs": [
@@ -658,15 +683,30 @@
           "id": "frozen-lifecycle-receipt",
           "family": "snapshot-cleanup",
           "status": "runtime",
-          "observed": "Compatibility checks do not establish coherent source lock, snapshot bounds, trusted verification or fresh cleanup; V2/V3 remain incomplete.",
+          "observed": "Metadata-only source/runtime/lifecycle requirements reviewed; GAIA remains policy-refused. Compatibility compares supplied identities without validating receipts or authorizing reuse. Both V2/V3 IDs remain incomplete with null effects; V2 coverage/timeout usage and V3 pre-verification exit 137 remain unresolved. No aggregate score is valid.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## GAIA lifecycle wiring audit — Codex 165"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/preserved-lifecycle-review-b8.md",
+              "locator": "## GAIA / frozen-lifecycle-receipt"
+            },
+            {
+              "kind": "repository",
+              "path": "eval/policy/gaia_snapshot_attestation.py",
+              "locator": "\"receipt_validation\": \"not-performed\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/gaia-operator-packet-codex210.md",
+              "locator": "## Required operator deliveries, in dependency order"
             }
           ],
-          "next_action": "Review the metadata-only source/runtime/lifecycle identity requirements and preserve both interrupted run IDs; no aggregate score is valid."
+          "next_action": "Retain policy refusal: do not provision or run GAIA. Preserve gaia-validation-pilot-h0-20261117-v2 and gaia-validation-pilot-h0-20261117-v3 without resuming or overwriting them. Keep the runtime gate open for independently authenticated selected-only/source-lock, verifier/dependency, bounded snapshot/export and fresh cleanup evidence; retain unknown outcomes as unmeasured and publish no aggregate score."
         }
       ],
       "historical_runs": [
@@ -1358,15 +1398,35 @@
           "id": "local-state-lifecycle",
           "family": "snapshot-cleanup",
           "status": "runtime",
-          "observed": "Returned local pool loadability does not attest service reset, database state or evaluator secrecy.",
+          "observed": "Source metadata review establishes task-specific database setup and late verifier-input declarations, not selected-only custody or observed reset/secrecy: import reads the full ground-truth pool, both clean databases are absent in this worktree, and no independent selected runtime/lifecycle receipt was located in the reviewed repository metadata. Loadability and historical image inventory do not establish readiness.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## AppWorld / GAIA / tau-bench — local state boundaries"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/preserved-lifecycle-review-b8.md",
+              "locator": "## tau_bench / local-state-lifecycle"
+            },
+            {
+              "kind": "repository",
+              "path": "data/datasets/tau_bench.py",
+              "locator": "_ALL_GT: list[dict] = _read_gt()"
+            },
+            {
+              "kind": "repository",
+              "path": "data/datasets/tau_bench.py",
+              "locator": "def _verifier(record: dict) -> dict:"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/tau-bench-vendoring.md",
+              "locator": "3. **Two recorded generated databases are absent, intentionally ignored by git.**"
             }
           ],
-          "next_action": "Review selected-only state and lifecycle contracts using source metadata; require independent runtime evidence before readiness claims."
+          "next_action": "Keep the runtime gate open. Require selected-only custody plus independent run/trial/manifest-bound clean-state restoration, database/image identity, evaluator secrecy, effective backend limits, bounded state export/snapshot and owned cleanup evidence before any readiness claim. Do not infer a runtime pass from source declarations, inventory or synthetic contracts; evidence outside this review remains unknown."
         }
       ],
       "historical_runs": []
