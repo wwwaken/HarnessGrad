@@ -2064,3 +2064,36 @@ Validation in `reports/w-ujson-validation.txt`: blocker checker valid
 - Resource state: w-bfcl performed public-source acquisition and local code review only - no
   benchmark task, model, GPU, endpoint or container. Both GPUs stayed idle and no utilisation is
   claimed. Historical runs, frozen receipts and archives were untouched.
+
+## 2026-10-15 LiveCodeBench metadata catalog and custody review - w-lcb
+
+- Target: `livecodebench / row-attestation`; remains `external`, family
+  `source-provenance`. The operator's withdrawn independent approval requirement
+  is removed from this target's registry text; no approval or reviewer sign-off
+  is demanded. Actual catalog and custody requirements remain.
+- Read task-198/task-207 and B6/E2 prior work; rehashed task-207 and inert
+  metadata and pinned Hub revision/tree/builder response chains; recomputed the
+  builder Git blob and matched all six advertised shard identities against
+  adapter literals. No shard
+  payload was fetched or hashed. Local linkage and exact source lines are in
+  [reports/w-lcb-review.md](../reports/w-lcb-review.md).
+- New public metadata receipts in `tests/fixtures/hg_lcb/`: official viewer
+  OpenAPI redirect and contract, `/splits` HTTP 501 (arbitrary-Python loader
+  unsupported), `/size` and `/info` HTTP 404. Raw response bodies/headers,
+  request URLs/times and recomputed SHA-256 manifest are preserved. The contract
+  does not document revision pinning or row column projection; the availability
+  errors do not authenticate a pinned release and no row endpoint was requested.
+- Catalog coverage: zero authoritative upstream problem IDs, upstream total and
+  ranks unavailable; six of six pinned shard identities are linked. The 1,055
+  count is a local declaration. Three inert candidate pairs remain inferred,
+  not attested. Recomputed original-ID conditional split gives 663 train / 392
+  eval and the existing split digest; preserved candidate ranking still selects
+  `/740` → `abc360_a` at declaration level only. Inert selection is unchanged.
+- Missing: complete ID catalog/shard membership/order/rank and authenticated
+  catalog-to-actual-pool, full split and statement provenance. No positive
+  attestation was manufactured. `row_attested=false`;
+  `pool_freshly_verified_here=false`; no production or benchmark authorization.
+- Deliverables: `reports/w-lcb-review.md`, `reports/w-lcb-validation.txt`, raw
+  fixtures/manifest and offline metadata verifier under `tests/fixtures/hg_lcb/`.
+  No adapter/runtime/gate edits, payload/reference reads, benchmark/model/GPU/
+  endpoint/container calls, or changes to `runs/` or frozen receipts.

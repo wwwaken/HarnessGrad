@@ -1,0 +1,61 @@
+w-lcb metadata-only validation
+UTC: 2026-10-14T21:35:54.520151+00:00
+Worktree: /tmp/hg-lcb; branch: wg-lcb
+Base: 6b41bd6068326050a745e91c19c2902f86d05414
+
+Acquisition commands actually executed before offline validation:
+$ HG_EGRESS_PROXY=http://172.17.0.1:17890 python3 -B tests/fixtures/hg_lcb/acquire.py
+  At that time REQUESTS contained viewer-openapi, viewer-splits, viewer-size, viewer-info.
+$ HG_EGRESS_PROXY=http://172.17.0.1:17890 python3 -B tests/fixtures/hg_lcb/acquire.py viewer-openapi-contract
+  Public documentation target added after examining the preserved HTTP 302.
+  Exact request URLs, times, response statuses and hashes: */receipt.json in tests/fixtures/hg_lcb/.
+  No automatic redirects, benchmark payloads, models, GPU, endpoint or container calls.
+
+Fixture derivation command actually executed after metadata review:
+$ python3 -B tests/fixtures/hg_lcb/verify.py --write
+  Produces review.json and SHA256SUMS; not a custody attestation or approval.
+
+$ (cd /tmp/hg-lcb && python3 -B tests/fixtures/hg_lcb/verify.py)
+PASS: raw response/body/header hashes, inherited pins, six shard metadata bindings, builder Git blob, local declarations, conditional 1055-ID split, and inert selection
+Coverage: 6/6 upstream shard identities; 0 upstream row IDs; upstream problem count/rank unavailable; 3 local inferred candidates only
+row_attested=false; pool_freshly_verified_here=false; blocker_closed=false; independent_approval_required=false
+[exit 0]
+
+$ (cd /tmp/hg-lcb/tests/fixtures/hg_lcb && sha256sum -c SHA256SUMS)
+README.md: 成功
+acquire.py: 成功
+review.json: 成功
+verify.py: 成功
+viewer-info/receipt.json: 成功
+viewer-info/response.body: 成功
+viewer-info/response.headers: 成功
+viewer-openapi/receipt.json: 成功
+viewer-openapi/response.body: 成功
+viewer-openapi/response.headers: 成功
+viewer-openapi-contract/receipt.json: 成功
+viewer-openapi-contract/response.body: 成功
+viewer-openapi-contract/response.headers: 成功
+viewer-size/receipt.json: 成功
+viewer-size/response.body: 成功
+viewer-size/response.headers: 成功
+viewer-splits/receipt.json: 成功
+viewer-splits/response.body: 成功
+viewer-splits/response.headers: 成功
+[exit 0]
+
+$ (cd /tmp/hg-lcb && python3 tools/check_dataset_blockers.py)
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+[exit 0]
+
+$ (cd /tmp/hg-lcb && git diff --cached --check)
+Output encoded as a JSON string to preserve whitespace without adding it to this text report:
+"tests/fixtures/hg_lcb/viewer-info/response.headers:13: new blank line at EOF.\ntests/fixtures/hg_lcb/viewer-openapi-contract/response.headers:27: new blank line at EOF.\ntests/fixtures/hg_lcb/viewer-openapi/response.body:1: trailing whitespace.\n+<html>\ntests/fixtures/hg_lcb/viewer-openapi/response.body:2: trailing whitespace.\n+<head><title>302 Found</title></head>\ntests/fixtures/hg_lcb/viewer-openapi/response.body:3: trailing whitespace.\n+<body>\ntests/fixtures/hg_lcb/viewer-openapi/response.body:4: trailing whitespace.\n+<center><h1>302 Found</h1></center>\ntests/fixtures/hg_lcb/viewer-openapi/response.body:5: trailing whitespace.\n+</body>\ntests/fixtures/hg_lcb/viewer-openapi/response.body:6: trailing whitespace.\n+</html>\ntests/fixtures/hg_lcb/viewer-openapi/response.headers:6: trailing whitespace.\n+Location: \ntests/fixtures/hg_lcb/viewer-openapi/response.headers:12: new blank line at EOF.\ntests/fixtures/hg_lcb/viewer-size/response.headers:13: new blank line at EOF.\ntests/fixtures/hg_lcb/viewer-splits/response.headers:14: new blank line at EOF.\n"
+[exit 2; expected raw HTTP whitespace warnings]
+
+$ (cd /tmp/hg-lcb && git diff --cached --check -- . ':(exclude)tests/fixtures/hg_lcb/*/response.body' ':(exclude)tests/fixtures/hg_lcb/*/response.headers')
+[exit 0]
+
+Metadata/manifest/registry and scoped source/docs whitespace checks passed. The full staged whitespace check flags only preserved raw HTTP entities/headers; those bytes are intentionally unchanged. No pytest suite is needed for documentation/raw-metadata fixtures.
+Catalog coverage: 0 authoritative upstream IDs; upstream total/rank unknown; 1055 is local declared count.
+Six shard metadata identities match; three inferred local candidates; inert selection still /740.
+Complete catalog and authenticated row/pool/full-split/statement linkage remain external. Blocker remains open.

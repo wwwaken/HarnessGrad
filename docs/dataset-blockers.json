@@ -832,7 +832,7 @@
           "id": "row-attestation",
           "family": "source-provenance",
           "status": "external",
-          "observed": "B6 acquired canonical HTTPS metadata/tree and builder at 0fe84c3912ea0c4d4a78037083943e8f0c4dd505, matching all six declared shard LFS hashes. The builder maps release_v6 to six files in upstream test order; the source loader passes version_tag and optional date filters. Local prepare.py instead sorts unique question_id values and imposes a platform hash split. No complete ID-only rank catalog, externally custodied local row/pool/split/statement record or independent approval was obtained. Task 207 remains an unsent procedure, not an issued attestation; self-hashes and upstream ordinals do not bind local row 740 to abc360_a. E2 acquired canonical pinned card, refs and commit history (including add-v6 commits); no complete ID-only catalog or authenticated local custody record is supplied. Task-207 target fields and original-ID train/ranking rules match the unchanged inert selection at local-metadata level only. Independent custodian/key authentication, row/pool/split/statement evidence and separate reviewer approval remain absent; row_attested=false and no fresh pool verification.",
+          "observed": "B6/E2 acquired canonical pinned release/tree/builder/card/history metadata for livecodebench/code_generation_lite@0fe84c3912ea0c4d4a78037083943e8f0c4dd505. W-lcb rehashed inherited raw response chains, matched the builder Git blob and all six advertised shard LFS identities to local adapter declarations without reading shards. Upstream release_v6 emits test rows in shard/line order; local prepare.py rejects duplicate question IDs, sorts the union and writes a header before zero-based body indices. No authoritative metadata-only problem IDs, complete catalog, upstream problem count or sorted row ranks were obtained (zero upstream IDs against 1055 locally declared problems). New preserved public viewer metadata returns /splits HTTP 501 for unsupported arbitrary-Python loading and /size and /info HTTP 404; its preserved OpenAPI documents neither revision pinning nor row column projection, so these are current availability observations, not authenticated pinned-release results. Task-207 targets and the unchanged three-candidate inert selection agree locally, selecting /740 -> abc360_a in imposed train. Applying the existing hash split to the declared original 0..1054 ordinal namespace reproduces 663 train / 392 eval and the declared split digest, conditional on that namespace only. No acquired evidence authenticates actual row/pool/full-split/statement linkage; row_attested=false and no fresh pool verification. Independent reviewer/approver gates are withdrawn by operator instruction and docs/independent-review-deferred.md; missing sign-off is not an outstanding requirement. The remaining gap is real catalog completeness and reproducible source/local transformation custody.",
           "evidence": [
             {
               "kind": "repository",
@@ -848,9 +848,14 @@
               "kind": "repository",
               "path": "reports/e2-upstream-provenance-review.md",
               "locator": "## LiveCodeBench: acquired evidence and limits"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-lcb-review.md",
+              "locator": "## Finding: requirements still unmet"
             }
           ],
-          "next_action": "Use the existing task-207 custody/reviewer procedure to obtain a genuine metadata-only complete catalog/rank and authenticated row/pool/split/statement linkage, plus separate independent approval. Compare against the preserved inert selection without payload reads. Exact upstream release/builder/shard metadata is now acquired; it cannot establish the local sorted-row mapping or manufacture reviewer approval."
+          "next_action": "Use the substantive metadata custody procedure in task-207 (its independent approval clauses are superseded by operator instruction) to acquire a genuine complete ID-only catalog for the pinned release, with authoritative total, per-shard membership/order, uniqueness and sorted rank. Obtain reproducible authenticated provenance binding specific rows, especially /740 -> abc360_a, to the actual frozen pool digest, full imposed split and public statement identity/transformation. Compare that evidence with the preserved inert selection without payload reads. Existing release/builder/shard metadata and conditional local split/selection calculations do not establish those bindings. Current public viewer metadata is unavailable and does not authenticate revision pinning; obtain an authoritative metadata-only catalog/custody source if available. No separate reviewer, human approval or sign-off is required. Leave this blocker external while any catalog or row/pool/split/statement evidence remains missing."
         }
       ],
       "historical_runs": []
