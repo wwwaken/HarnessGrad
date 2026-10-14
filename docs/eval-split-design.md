@@ -118,6 +118,94 @@ The split mechanism already supports this: `--split declared|default|official|<f
 records `split_source` and `split_sha`, so a committed `groups.json` is the only new
 artifact required.
 
+## 5b. Sizing: a floor, not a ratio
+
+A fixed ratio cannot work here, because the eligible counts are bimodal. Measured by
+enumerating each adapter's rows:
+
+| Dataset | Eligible | 10% eval | Resolvable at 10% |
+| --- | ---: | ---: | ---: |
+| fever | 15 935 | 1 594 | 2.2 pp |
+| twowikimultihopqa | 12 576 | 1 258 | 2.4 pp |
+| chessbench_puzzles | 10 000 | 1 000 | 2.7 pp |
+| gsm8k | 8 792 | 879 | 2.9 pp |
+| hotpotqa | 7 405 | 740 | 3.2 pp |
+| musique | 2 417 | 242 | 5.2 pp |
+| strategyqa | 2 290 | 229 | 5.4 pp |
+| reasoning_gym | 1 780 | 178 | 6.1 pp |
+| scienceworld | 1 666 | 167 | 6.3 pp |
+| bfcl_v3 | 1 040 | 104 | 8.0 pp |
+| sportsunderstanding | 1 000 | 100 | 8.2 pp |
+| appworld | 750 | 75 | 9.4 pp |
+| bird_minidev | 500 | 50 | 11.6 pp |
+| spreadsheetbench | 400 | 40 | 12.9 pp |
+| tau2_bench | 278 | 28 | 15.4 pp |
+| sotuqa | 74 | 7 | 30.8 pp |
+| jericho | 56 | 6 | 33.3 pp |
+| physicsquestions | 53 | 5 | 36.4 pp |
+
+(Counts are unverified for `chessbench_puzzles`, whose eligible split is `test`, and
+for `gsm8k`, where `train:7473 + test:1319` were summed; `bfcl_v3`'s 1040 is
+`simple:400 + _answers:400 + irrelevance:240` and may overlap. `triviaqa` is large but
+was not enumerated.)
+
+### Required eval size
+
+Per-task score sd `sigma ~= 0.291`, back-solved from the M2 measurement (sd 1.30
+tasks over 20 tasks = 6.5 pp). Required `n` for a two-sided test at alpha 0.05 and
+power 0.8 is `n = (2.802 * sigma / d)^2`:
+
+| Step to resolve | Eval tasks needed |
+| --- | ---: |
+| 20 pp | 17 |
+| 15 pp | 29 |
+| 10 pp | 66 |
+| 8 pp | 104 |
+| 5 pp | 265 |
+| 3 pp | 737 |
+
+### The rule
+
+```
+eval  = clamp(ceil(0.10 * eligible),  EVAL_FLOOR = 150, EVAL_CAP = 500)
+valid = clamp(ceil(0.10 * eligible),  VALID_FLOOR = 50,  VALID_CAP = 150)
+train = eligible - eval - valid          # and whole groups only
+```
+
+* **Floor 150** — 10 pp needs 66 tasks and 8 pp needs 104, so 150 leaves margin and
+  resolves about 6.7 pp. Below it, do not emit a point.
+* **Cap 500** — 500 tasks already resolves 3.6 pp, and the sweep is about 12 `N`
+  points x 3 trials x 2 harnesses, so 500 already means ~36k task-runs per dataset.
+  Taking 10% of `fever` would be 3.2x that for no gain.
+* **Valid 50–150** — valid only selects checkpoints and does not need a tenth of the
+  corpus. What it does not take, train keeps.
+
+Note that the current mechanism is not 10%: `data/qa/base.py::is_eval` takes a
+deterministic **third** (`sha256(id)[0] % 3 == 0`). Moving to this rule cuts eval by
+3.3x and raises MuSiQue's floor from 2.9 pp to 5.2 pp, in exchange for 23 pp more
+train for the `N`-sweep. That is a deliberate trade of resolution for train range,
+not a strict improvement.
+
+### The declaration this forces: `curve_eligible`
+
+A dataset below the floor must not silently emit a noisy point. It should declare
+that it does not carry the R1/R2 curve, exactly as `UNCOVERED_DEMANDS` and
+`UNCOVERED_FUNCTIONS` declare gaps, while remaining usable for other claims
+(transfer, coverage). Two independent conditions:
+
+1. `eligible - eval - valid >= MIN_TRAIN` (about 300), so the curve has range.
+2. `largest_component_ratio` is small enough that the floor is reachable without one
+   group dominating the corpus.
+
+Under those conditions the curve is carried by 13 datasets (`fever` through
+`bird_minidev`). `spreadsheetbench` (400) and `tau2_bench` (278) can support a
+single-point harness comparison (resolving ~13 pp) but not a sweep. `jericho` (56)
+and `physicsquestions` (53) cannot support either.
+
+Finally, eval size and `--trials` reduce different noises — eval size reduces
+task-sampling noise, trials reduce run-to-run noise. Neither substitutes for the
+other, and `--trials >= 3` remains required.
+
 ## 6. Open items
 
 * The same measurement has not been run for the other multi-hop adapters
