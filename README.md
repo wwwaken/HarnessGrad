@@ -247,42 +247,13 @@ non-production labels. It is a docs/test contract; runtime integration is pendin
 
 ## Layout
 
-```
-install.sh            install + verify (bubblewrap, git, python3 >= 3.10)
-docs/writing_a_harness.md  how to contribute a harness (start here if that is you)
-INTERFACE.md          the frozen contract -- read this first
-driver.py             the entrypoint: argparse, wiring, the order refusals happen in
-harnessgrad/           the platform's implementation, one responsibility per module
-                      (not `_harnessgrad/`: that is the runtime channel inside a
-                      workspace; this is the referee's own code)
-  identity.py             what a measurement says it is (harness hash, models, improver)
-  environments.py         what a task needs to run in, and what could not be measured
-  records.py              curve points, diffs, states, traces, verdicts, run_meta
-  channel.py              what a method is shown, and where
-  methods.py              calling an external method, and keeping it out of the platform
-  loops/                  the three schedules: eval_side, mode_a, mode_b
-base_harness/loop/       reference base harness: a minimal ReAct loop
-methods/noop/         control method: returns the base harness unchanged
-methods/echo_base/    reference method: makes one real edit
-data/demo.py          local dataset, no network
-eval/                 scoring and execution (platform-owned)
-ckpt/git_state.py     harness state, backed by git
-tools/plot_curve.py   text rendering of a curve
-tools/validate_harness.py  checks a harness against the contributor spec
-tests/quality/        boundary rules R1-R4, enforced by AST
-```
+See the [repository architecture map](docs/architecture.md) for every top-level
+area, its purpose, leaf/contract or consumer role, allowed dependency direction,
+and known structural problems. It also maps the execution runtime in `eval/`
+and the shared scaffolding and 28 dataset adapters mixed together in `data/`.
 
-Each harness owns its own `method/`:
-
-```
-base_harness/loop/
-├── harness.json          declares the entrypoints
-├── agent.py              the artifact under improvement
-└── method/
-    ├── protocol.py       the stdin/stdout contract
-    ├── improve.py        <- what to try next (a method rewrites THIS)
-    └── accept.py         <- what counts as better
-```
+Read [INTERFACE.md](INTERFACE.md) for the measurement contract and
+[writing a harness](docs/writing_a_harness.md) for the harness contribution contract.
 
 ## Discovered by building it
 
