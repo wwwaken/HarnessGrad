@@ -2526,3 +2526,40 @@ Re-derived the merged numbers without model/GPU/endpoint execution. All nine con
 Independent configuration enumeration and fresh Docker inspect reproduce 94 references, 91 present with RepoDigests, 89 Terminal-Bench tags with three missing images, GAIA/Tau movable tags, and three AppWorld digest pins. All 101 preserved raw OCI blobs independently rehash; all 91 current RepoDigest roots/image identities bind to those bytes. Direct fresh manifest-store access is denied, so no fresh privileged byte capture or capture-authenticity claim is made. The frozen Terminal-Bench archive reproduces six tests/five passes/one failure, raw reward 0.0 and 32 model replies; all 218 archived inventory files match. Its receipt is internally consistent: snapshot-service, invalid=0, unmeasured=1, measured=0, publication score=null because enforcement was not observed. No numerical refutation was found.
 
 The verification checkout lacks several cited original scorer packet sources/scripts; read-only recovery from the existing registered /tmp/hg-offscorer worktree enabled execution, and needed source bytes/hashes are retained only in the new verification packet. No merged artifact, adapter, registry or frozen receipt was repaired or changed. This journal entry is append-only. Independent subtask diffs were reviewed before integration; reports/w-verify-adversarial.md contains verdicts and exact replay commands, tests/fixtures/hg_wverify/ contains raw outputs and its SHA-256 manifest, and reports/w-verify-validation.txt records the registry checker and immutability checks. No blocker was closed and no production run was authorized.
+## Parent review and merge — w-verify (adversarial) — 2026-10-15
+
+- Merged the four non-merge commits of `wg-verify` (`0eb6379`, `8dc0061`, `67a6ff3`, `5f76247`)
+  from its merge base. Registry valid and **unchanged by this work**: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`; `chessbench_puzzles` still
+  carries only `interruption-closure`.
+- **No merged numerical claim was refuted.** This is the first time the phase has re-derived its
+  own consequential numbers adversarially, and the result is that they hold:
+  all nine scorer divergences reproduce (GSM8K 10/16, Physics 4/12, StrategyQA 7 raw-contract with
+  Boolean projection 4/4, Sports 5, FEVER one conjunction plus three exceptions, HotpotQA 1,
+  MuSiQue four reward-policy, TriviaQA 1, 2Wiki `208/208` and all 16 aggregate metrics); the image
+  custody reproduces exactly (94 configured references, 91 present, **91/91** RepoDigests
+  recomputed, **101/101** preserved manifest blobs hashed, GAIA/Tau-bench movable tags, AppWorld
+  three digest pins, Terminal-Bench 89 tags / 86 present / 3 missing); and the frozen
+  Terminal-Bench receipt reproduces (CTRF `tests=6, passed=5, failed=1`, reward bytes exactly
+  `b'0\n'`, 32 counted model calls, isolation classes internally consistent, invalid 0 /
+  unmeasured 1 / measured 0, publication withheld).
+- **The most valuable output is a distinction, not a number.** w-verify states plainly that "the
+  term 'measured run' can truthfully refer to raw scorer execution here; it cannot describe a
+  measured diagnostic publication, and that count is exactly zero". That is the same line the
+  parent has been drawing around the Terminal-Bench and ChessBench closures, and it is worth
+  having an independent worker land on it from the evidence rather than repeating it.
+- It also refused to overclaim in the other direction, marking three things **NOT CHECKABLE HERE**
+  rather than guessing: a fresh privileged read of the live containerd/docker manifest store
+  (`权限不够`, and `sudo` requires a password), the authenticity of the original capture, and any
+  live enforcement/lifecycle attestation. Replaying frozen bytes cannot establish live
+  enforcement, and it said so.
+- Process note, because the merge nearly went wrong in a new way: cherry-picking the commit
+  *range* silently skipped the worker's internal merge commits, landing only two of the four
+  substantive commits and leaving `reports/w-verify-adversarial.md` and the fixture manifest
+  behind. The parent caught it by checking that the report the worker's summary linked to actually
+  existed after the merge, then applied the two missing commits explicitly. **A green checker is
+  not evidence that a merge carried everything** - the check has to be that the named deliverables
+  are present on `main`.
+- Resource state: verification only - no model, GPU, endpoint, container, pull or registry
+  mutation; local scorer runs and read-only `docker image inspect` on already-present images.
+  Historical runs, frozen receipts and archives were untouched.
