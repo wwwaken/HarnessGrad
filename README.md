@@ -257,6 +257,18 @@ how local results can record missing or unknown filesystem quotas without quota
 administration, while retaining sandbox facts, metric identity and explicit
 non-production labels. It is a docs/test contract; runtime integration is pending.
 
+## Test the part you changed
+
+The full suite is large. Run the tests for the dataset you are editing instead:
+
+```bash
+python3 tools/run_tests.py --dataset gsm8k
+```
+
+It runs that dataset's tests plus the core platform tests, and skips every other
+dataset's. See [running the tests](docs/test-suite.md) for the two-lane runner, the
+registry-wide tests, and the `--basetemp` rule.
+
 ## Layout
 
 See the [repository architecture map](docs/architecture.md) for every top-level

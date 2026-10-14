@@ -142,6 +142,8 @@ def main() -> int:
     ap.add_argument("--dataset", action="append", default=[],
                     help="run only the tests for this dataset, plus the core platform "
                          "tests. Repeatable. Use --list to see the selection.")
+    ap.add_argument("--registry-only", action="store_true",
+                    help="run ONLY the cross-dataset contract tests, with no core tests")
     ap.add_argument("--with-registry", action="store_true",
                     help="also run the cross-dataset contract tests (slow: they check "
                          "all datasets, so they belong to dataset-layer work)")
@@ -156,7 +158,13 @@ def main() -> int:
     costs = load_costs()
     files = discover(args.file)
     selection_note = ""
-    if args.dataset:
+    if args.registry_only:
+        names = test_scope.published()
+        wanted = set(test_scope.REGISTRY_WIDE)
+        before = len(files)
+        files = [f for f in files if f.name in wanted]
+        selection_note = f"scope: registry-wide only; {len(files)}/{before} files"
+    elif args.dataset:
         try:
             names = test_scope.published()
             wanted = set(test_scope.select(names, args.dataset,
@@ -204,7 +212,12 @@ def main() -> int:
               f"{args.jobs} jobs -> ~{plan_parallel / max(args.jobs, 1):.0f}s")
         print(f"exclusive lane: {len(exclusive)} files, measured cost {plan_exclusive:.0f}s, "
               f"1 job")
-        print(f"estimated wall clock: ~{max(plan_parallel / max(args.jobs, 1), plan_exclusive):.0f}s")
+        # A selection is bounded below by its single slowest file: with five files
+        # and 32 jobs, the cost is one file, not the sum divided by 32.
+        longest = max((cost_of(f, costs) for f in files), default=0.0)
+        estimate = max(plan_parallel / max(args.jobs, 1), plan_exclusive, longest)
+        print(f"estimated wall clock: ~{estimate:.0f}s "
+              f"(bounded by the slowest single file, ~{longest:.0f}s)")
         for f in exclusive:
             print(f"  [exclusive] {f.relative_to(ROOT)}  ~{cost_of(f, costs):.0f}s")
         return 0
