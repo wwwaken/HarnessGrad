@@ -327,7 +327,7 @@
           "id": "simple-ast-contract",
           "family": "official-scorer-execution",
           "status": "external",
-          "observed": "Current function-name multiset scoring drops arguments/reference alternatives and remains diagnostic-only. Official parser/checker/dispatch symbols and semantics require independently acquired, archive-bound code-only source; the synthetic acquisition contract does not close that dependency.",
+          "observed": "The pinned v1.3/V3 source and Apache-2.0 license are partially acquired with Git blob checks. ast_checker.py and type_mappings.py are present, but direct model_config, Java converter and JS converter helpers lack pinned blob identities/source; no archive binding or independent custodian receipt exists. Production remains function-name diagnostic-only.",
           "evidence": [
             {
               "kind": "repository",
@@ -338,6 +338,16 @@
               "kind": "repository",
               "path": "tests/fixtures/bfcl_ast_source/README.md",
               "locator": "external source/provenance blocker remains open"
+            },
+            {
+              "kind": "repository",
+              "path": "bfcl-blob-retry-codex227-report.md",
+              "locator": "checker acquired; complete checker closure remains blocked"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json",
+              "locator": "not_attempted_missing_pinned_blob_sha"
             }
           ],
           "next_action": "Obtain independently approved v1.3 archive/tag/commit and original-file custody evidence, a code-only parser/checker/dispatch/helper/license projection and a separate exact receipt pin. Pass the explicit source gate, then derive the full-call contract from original symbols using fabricated differential calls; preserve the name diagnostic and selected/privacy boundaries. No production H0."

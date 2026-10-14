@@ -461,6 +461,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Evidence: `GAIA_LIFECYCLE_WIRING.md`
 - Required before diagnostic: metadata-only selected manifest, coherent source lock before adapter import, fresh verifier/dependency/image identity, bounded snapshot and artifact export, observed backend limits/network, and verified owned cleanup, all bound in an immutable lifecycle receipt.
 
+## BFCL v1.3 checker blob retry — 2026-10-14 — Codex 227
+
+- Status: partial official code acquisition; full-call scorer, archive custody and production route remain blocked.
+- Scope: fixed v1.3 commit Git-blob API only; code/license/spec metadata. No task, answer, reference, archive, heldout or external dataset-root access; no H0/model.
+- Finding: `ast_checker.py`, `type_mappings.py`, LICENSE and `pyproject.toml` were acquired and their Git blob SHA-1/byte counts verified. The checker itself is 24,916 bytes. Static imports still require missing `model_config.py`, Java type converter and JavaScript type converter; their pinned blob SHAs were absent from allowed path metadata, so requests were not guessed.
+- Evidence: `bfcl-blob-retry-codex227-report.md`, `tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json`, and exact request/response receipts in that fixture. Candidate remains `status=blocked`, `measured=false`, `custodian_approved=false`, `production_authorized=false`.
+- Remaining gate: obtain independently pinned helper path/blob identities and licenses; bind the complete source projection to v1.3/V3 and the declared archive/index through independent approval; then derive/test full-call semantics on fabricated inputs only. Current function-name metric remains diagnostic-only.
+
 ## BFCL official call scorer review — Codex 166
 
 - Status: selected-read/privacy hardening complete; official Simple AST metric and index custody blocked
