@@ -1103,7 +1103,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal gap closed: cited review identifies single-variant named-cell comparison, the pinned verified_400 Hub mirror, hash/all-eval options and declared openpyxl/LibreOffice runtime. Repair 8c323e6 establishes submission-helper provisioning and error-output visibility, with inherited local-control evidence only. Unparseable ranges and workbook-load failures can become measured zero in current source. Independent provenance, scorer/runtime identity, comparability, classification and coverage remain open with all shared gates; this record is retained for follow-up.",
+          "observed": "Source-only journal gap closed: cited review identifies single-variant named-cell comparison, the pinned verified_400 Hub mirror, hash/all-eval options and declared openpyxl/LibreOffice runtime. Repair 8c323e6 establishes submission-helper provisioning and error-output visibility, with inherited local-control evidence only. Reconciliation w-spread2 deliberately chooses option (a): official-parser range rejection retains an explicitly named official-equivalent measured zero, while workbook-load, formula-probe, unexpected comparator/parser and LibreOffice lifecycle failures are explicit unmeasured evidence without score publication/cache admission. Absent artifacts and completed value/result-sheet mismatches remain measured zero. Canonical upstream source plus synthetic caller reproduction show the range ValueError escapes compare_workbooks and evaluation catches it as int(False). A parser audit of all 400 installed verified_400 metadata rows finds one affected task, 283-32, with two A:G components; metadata matches the local archive member and declared archive hash. This preserves the selected malformed-task denominator, not semantic gradability; single-variant scores remain distinct from paper soft/hard aggregates. Authenticated row-level gradable eligibility/coverage, complete installed workbook/mirror and scorer custody/execution, formula/LibreOffice offline runtime and both shared gates remain open; partial byte/source receipts and synthetic controls do not authorize production.",
           "evidence": [
             {
               "kind": "repository",
@@ -1124,9 +1124,29 @@
               "kind": "repository",
               "path": "tests/quality/test_spreadsheetbench_control_submit.py",
               "locator": "def test_materialized_oracle_submits_and_scores_one"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-spread2-reconciliation.md",
+              "locator": "## Decision: option (a), official-equivalent measured zero"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-spread2-evidence/audit-output.txt",
+              "locator": "parse_failing_tasks: 1"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_spreadsheetbench_classification_w_spread2.py",
+              "locator": "def test_classification_survives_verifier_persistence_and_aggregation"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## SpreadsheetBench official-range reconciliation — 2026-10-15 - w-spread2"
             }
           ],
-          "next_action": "Resolve comparator-failure versus measured-zero classification and establish gradable eligibility; independently authenticate installed/mirror and scorer custody, formula/LibreOffice offline runtime and all shared gates before a separately authorized diagnostic. Keep one-variant scores distinct from paper soft/hard aggregates and do not promote the repaired local control to production evidence."
+          "next_action": "Establish authenticated row-level gradable eligibility and eligible/selected/task/trial/invalid/unmeasured coverage under the explicit official-range-zero compatibility policy; independently authenticate complete installed workbook/mirror and scorer custody/execution, formula/LibreOffice offline runtime and both shared gates (scorer-offline-closure and artifact-only-state-export) before a separately authorized diagnostic. Retain the official-equivalent measured-zero denominator for released parser-rejected ranges, distinguish it from completed comparisons, and never publish infrastructure failures as scores. Keep one-variant scores distinct from paper soft/hard aggregates and do not promote repaired synthetic/local controls to production evidence."
         }
       ],
       "historical_runs": []

@@ -149,13 +149,14 @@ def test_the_comparison_reads_only_the_named_cells(check, tmp_path):
     assert ok is False and "A2" in msg, msg
 
 
-def test_a_missing_sheet_or_file_is_a_miss_not_an_error(check, tmp_path):
+def test_a_missing_result_sheet_is_a_miss_but_comparison_file_loss_is_an_error(check, tmp_path):
     golden = _write(tmp_path / "g.xlsx", {"A1": 1}, sheet="Wanted")
     other = _write(tmp_path / "o.xlsx", {"A1": 1}, sheet="Something")
     ok, msg = check.compare_workbooks(str(golden), str(other), "", "Wanted!A1:A1")
     assert ok is False and "not found" in msg, msg
-    ok, msg = check.compare_workbooks(str(golden), str(tmp_path / "nope.xlsx"), "", "A1")
-    assert ok is False and msg == "File not exist"
+    # main() scores an absent submission zero; later file loss is infrastructure failure.
+    with pytest.raises(FileNotFoundError, match="unavailable for comparison"):
+        check.compare_workbooks(str(golden), str(tmp_path / "nope.xlsx"), "", "A1")
 
 
 def test_multiple_ranges_are_all_required(check, tmp_path):
@@ -207,8 +208,8 @@ def test_the_golden_workbook_scores_one_against_itself(check, bench):
 
     `283-32` is excluded and named: its `answer_position` is `Sheet3'!A:G`, which has no row
     numbers, so the official parser cannot read it -- the official `evaluation` turns that into
-    a 0 for every submission, and this dataset reports it as *unmeasured* instead. There is no
-    fixed point to assert for a task whose answer range does not parse.
+    a 0 for every submission. Option (a) deliberately keeps that official-equivalent measured
+    zero locally. There is no fixed point to assert for a task whose range does not parse.
     """
     # `283-32` is excluded, not skipped silently: its answer range cannot be parsed at all,
     # which is asserted by name in `test_the_one_unparseable_answer_range_is_named`.
@@ -233,6 +234,7 @@ def test_the_one_unparseable_answer_range_is_named(check, bench):
     ok, msg = check.compare_workbooks(str(bad[0]["golden_path"]), str(bad[0]["golden_path"]),
                                       "", bad[0]["answer_position"])
     assert ok is False and "not a cell range" in msg, msg
+    assert "official-equivalent measured zero" in msg  # Deliberate option (a) compatibility.
 
 
 def test_the_initial_workbook_does_not_score_one(check, bench):

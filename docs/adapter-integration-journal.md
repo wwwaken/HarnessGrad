@@ -1874,3 +1874,61 @@ passed. Exact commands and focused source-only registry tests are recorded in
 - Resource state: w-spread ran only local synthetic tests; no benchmark task, model, GPU,
   endpoint or container was used, so both GPUs stayed idle and no utilisation is claimed.
   Historical runs, frozen receipts and archives were left untouched.
+
+## SpreadsheetBench official-range reconciliation — 2026-10-15 - w-spread2
+
+CLOSED: the local classification repair, with explicit option **(a)**. Read the
+reverted `5202b62` report and round-33 parent review (`87b4254` / `4b7b1d0`) first.
+Genuine workbook-load, formula-probe, unexpected parser/comparator and LibreOffice
+setup/launch/conversion/cleanup failures now produce `measured=false` evidence,
+exit 3 and no reward. The adapter/verifier/runner synthetic integration verifies
+no score publication, progress completion or cache admission for those outcomes.
+An absent result artifact and a completed value/result-sheet mismatch stay
+measured zero. The initial-workbook pinned test assertion is unchanged.
+
+**Decision and consequence:** official parser rejection of a released answer
+range retains an explicitly named official-equivalent **measured zero**. Canonical
+upstream `evaluation/evaluation.py` at
+`e2758ac01c6c52efc746bf0d53b2fd01dbc42dd2` raises `ValueError` on `A:G` at line 110;
+its comparator does not catch that exception, but `evaluation()` catches it at
+lines 216–220 and appends `int(False)`. Preserved source and an authored in-memory
+workbook reproduction show three variant zeros, soft 0.0 and hard 0. The actual
+metadata at installed dataset.json:160 has full value
+`Sheet3'!A:G,'Sheet4'!A:G`, two failing range components. The official parser audit
+of all 400 verified_400 rows (371 colon ranges and 45 single cells that bypass the
+parser) finds **one affected task, 283-32**. Local metadata matches the local
+archive member and declared tarball hash; full workbook/mirror/scorer custody is
+not established. No larger upstream-pool count or 399-gradables claim is made.
+
+This policy preserves the official denominator if that task is selected; it does
+not certify a completed cell comparison. Its ID is outside default hash eval but
+inside hash train/all-eval choices. Infrastructure failures remain explicitly
+unmeasured and must retain invalid/unmeasured coverage. One supplied variant
+remains distinct from the paper's three-variant soft/hard aggregate metric.
+
+Validation: initial new tests **20 failed, 22 passed** before the repair. Replaying
+the final 42-case file, with its stronger released-reason assertion, against the
+base gives **21 failed, 21 passed**; the fix gives **42 passed**. The mandatory
+owning-file-plus-registry command gives **65 passed**; owning dataset file alone
+**11 passed**, with no skips/deselections. All six other existing test files found
+by the SpreadsheetBench search give **34 passed, 3 xfailed, 20 deselected**. The
+20 deselected cases invoke benchmark oracle/noop controls and are forbidden by
+this task's no-run rule; the strict xfails are inherited journal review-path debts.
+Raw commands/outputs are in `reports/w-spread2-validation.txt`; rationale,
+file+line evidence, count method and limits are in
+`reports/w-spread2-reconciliation.md` and `reports/w-spread2-evidence/`.
+
+OPEN: `spreadsheetbench / dataset-journal-gap` stays `measurement`. Its observation
+and next action now record this deliberate policy and local evidence, with no
+gate/status downgrade. Remaining clauses are authenticated row-level gradable
+eligibility and eligible/selected/task/trial/invalid/unmeasured coverage; complete
+installed workbook/mirror and scorer custody/execution; formula/LibreOffice
+transitive offline runtime/ABI and formula/cache behavior; both shared gates
+(`scorer-offline-closure` pinned official runtime, resources/lifecycle/cleanup/live
+controls, and `artifact-only-state-export` per-task private-input/export contracts,
+ownership/quiescence/trial binding/equivalence/live cleanup); then separate
+diagnostic authorization. Synthetic controls do not authorize H0.
+
+No benchmark task, model, GPU, endpoint, container or paid service ran. Historical
+runs, receipts, archives and `runs/` are untouched. Changes are committed only in
+the registered `/tmp/hg-spread2` worktree for parent review; no main merge is claimed.
