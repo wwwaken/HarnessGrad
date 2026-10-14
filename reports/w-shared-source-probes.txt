@@ -1,0 +1,57 @@
+$ python3 -c 'import json
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
+from eval.run import runner
+from eval.verification.isolation import common_class, require_comparable, IsolationMismatch
+from harnessgrad.records import _curve_point, _write_curve, test_rate_fields
+
+with tempfile.TemporaryDirectory(prefix="hg-w-shared-source-probe-", dir="/tmp") as directory:
+    root = Path(directory)
+    scores = iter([1.0, 0.0, 1.0, 0.0])
+    def synthetic_result(*args, **kwargs):
+        value = next(scores)
+        return dict(verdict=dict(score=value, passed=bool(value)), trace="", exit_code=0, stderr="")
+    tasks = [dict(task_id="synthetic-a"), dict(task_id="synthetic-b")]
+    cache = {}
+    with patch.object(runner, "run_one", side_effect=synthetic_result):
+        result = runner._evaluate(root, tasks, {}, sandbox=False, trials=2, cache=cache, progress_dir=root)
+    assert result["per_task"] == {"synthetic-a": 0.5, "synthetic-b": 0.5}
+    assert result["scorer_isolation_class"] == "unknown"
+    print("fresh unknown trials/tasks aggregate:", result["per_task"], result["scorer_isolation_class"])
+    progress = json.loads((root / "progress/round-0/synthetic-a.json").read_text())
+    assert progress["score"] == 0.5 and progress["scorer_isolation_class"] == "unknown"
+    print("unknown progress score:", progress["score"], progress["scorer_isolation_class"])
+    with patch.object(runner, "run_one", side_effect=AssertionError("cache probe must not run actor")):
+        cached = runner._evaluate(root, tasks, {}, sandbox=False, trials=2, cache=cache)
+    assert len(cached["cached_tasks"]) == 2 and cached["scorer_isolation_class"] == "unknown"
+    print("unknown cache scores accepted:", cached["per_task"], cached["scorer_isolation_class"])
+    point = _curve_point(run_id="synthetic-source-probe", round_index=0,
+        identity={"harness_sha": "synthetic"}, sampling={}, scores=[0.5, 0.5],
+        task_ids=[t["task_id"] for t in tasks], cost={}, cumulative={}, **test_rate_fields(result))
+    assert point["score"] == 0.5 and point["scorer_isolation_class"] == "unknown"
+    _write_curve(root / "synthetic-curve.jsonl", [point, dict(point, round=1)])
+    assert len((root / "synthetic-curve.jsonl").read_text().splitlines()) == 2
+    print("unknown curve score/history accepted:", point["score"], point["scorer_isolation_class"])
+    for label, check in [
+        ("unknown comparison", lambda: require_comparable({}, {})),
+        ("known+unknown aggregation", lambda: common_class(["in-process", "unknown"])),
+    ]:
+        try:
+            check()
+        except IsolationMismatch as exc:
+            print(label + " refused:", exc)
+        else:
+            raise AssertionError(label + " should refuse")
+print("Only fabricated results and temporary files; no actor, dataset scorer, Docker, model, GPU or endpoint executed.")
+'
+
+fresh unknown trials/tasks aggregate: {'synthetic-a': 0.5, 'synthetic-b': 0.5} unknown
+unknown progress score: 0.5 unknown
+unknown cache scores accepted: {'synthetic-a': 0.5, 'synthetic-b': 0.5} unknown
+unknown curve score/history accepted: 0.5 unknown
+unknown comparison refused: scorer isolation class unknown: comparison invalid
+known+unknown aggregation refused: scorer isolation class mismatch: in-process, unknown
+Only fabricated results and temporary files; no actor, dataset scorer, Docker, model, GPU or endpoint executed.
+
+exit_code=0

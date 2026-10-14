@@ -341,7 +341,7 @@ def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(documen
 
 def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
     target = row(document, "twowikimultihopqa")
-    # Four shared blockers have left this set, all deliberately and visibly rather than by
+    # Four earlier shared blockers left this set deliberately and visibly, without
     # loosening the assertion:
     #   `paired-filesystem-quotas` was *withdrawn* -- enforcement still does not exist, the
     #     operator decided the platform does not require it
@@ -352,10 +352,18 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     #   `official-scorer-identity` and `snapshot-owned-cleanup` were *withdrawn* with it --
     #     both demanded proof that a mechanism cannot fail
     #     (`docs/enforcement-proof-decision.md`).
+    # The `pristine-verifier` source-review action is now completed by the opt-in
+    # pinned offline runtime/inspection path (`docs/w-shared-verifier-review.md`).
+    # Remove exactly that completed gate from this pinned set; unknown-only score
+    # aggregation still leaves `runtime-observations` open. No validator rule changes.
     assert set(target["shared_blockers"]) == {
         "runtime-observations", "scorer-offline-closure",
-        "pristine-verifier", "artifact-only-state-export",
+        "artifact-only-state-export",
     }
+    assert "pristine-verifier" not in {b["id"] for b in document["shared_blockers"]}
+    review = (ROOT / "docs/w-shared-verifier-review.md").read_text(encoding="utf-8")
+    assert "## CLOSED: pristine-verifier - opt-in runtime identity review completed" in review
+    assert "## OPEN: runtime-observations - unknown-only aggregation is allowed" in review
     for gone in ("paired-filesystem-quotas", "pilot-guidance-conflict",
                  "official-scorer-identity", "snapshot-owned-cleanup"):
         assert gone not in target["shared_blockers"]

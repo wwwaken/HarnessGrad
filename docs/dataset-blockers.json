@@ -13,7 +13,8 @@
       "Missing dataset-specific journal evidence is an explicit measurement/review gap, never a passing status.",
       "Unknown historical run IDs remain null; historical date strings and coverage discrepancies are preserved as written.",
       "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization.",
-      "Operator decision 2026-10-15: snapshot and cleanup admission are best-effort with uncertainty retained; incomplete observations alone do not block, known failures and integrity mismatches still refuse. See docs/enforcement-proof-decision.md."
+      "Operator decision 2026-10-15: snapshot and cleanup admission are best-effort with uncertainty retained; incomplete observations alone do not block, known failures and integrity mismatches still refuse. See docs/enforcement-proof-decision.md.",
+      "Source review 2026-10-15 - w-shared: pristine-verifier review action closed by the opt-in pinned offline runtime identity, stopped-instance inspection and two-projection recheck mechanism; see docs/w-shared-verifier-review.md. This is not live dataset evidence or production authorization. runtime-observations remains open: unknown-only aggregation is allowed; both code-solvable shared blockers remain unchanged."
     ]
   },
   "shared_blockers": [
@@ -64,20 +65,6 @@
         }
       ],
       "next_action": "Provision dataset-specific pinned scorer closures and class-specific runtime evidence, including complete transitive image/ABI dependencies, official provenance/execution and trusted lifecycle/resource/cleanup observations; validate live controls before pilots, preserve snapshot/service connectivity and compare only matching known classes."
-    },
-    {
-      "id": "pristine-verifier",
-      "family": "trusted-verifier-runtime",
-      "status": "runtime",
-      "observed": "Image/input rematerialization does not establish a fresh independently identified trusted scoring runtime.",
-      "evidence": [
-        {
-          "kind": "repository",
-          "path": "reports/scorer-closure-codex170-report.md",
-          "locator": "Trusted verifier isolation"
-        }
-      ],
-      "next_action": "Review pristine verifier identity and isolation requirements independently of actor-produced state."
     },
     {
       "id": "artifact-only-state-export",
@@ -142,7 +129,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -212,7 +198,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -268,7 +253,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -331,7 +315,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -417,7 +400,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -542,7 +524,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -608,7 +589,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -661,7 +641,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -752,7 +731,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [],
@@ -768,7 +746,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -832,7 +809,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [],
@@ -849,7 +825,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -890,7 +865,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [],
@@ -933,7 +907,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -985,7 +958,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1035,7 +1007,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [],
@@ -1093,7 +1064,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1137,7 +1107,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1184,7 +1153,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1256,7 +1224,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1316,7 +1283,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1357,7 +1323,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
@@ -1413,7 +1378,6 @@
       "shared_blockers": [
         "runtime-observations",
         "scorer-offline-closure",
-        "pristine-verifier",
         "artifact-only-state-export"
       ],
       "blockers": [
