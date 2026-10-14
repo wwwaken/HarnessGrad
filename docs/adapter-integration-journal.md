@@ -885,3 +885,65 @@ Before launching any new adapter, add or update its entry here and add the corre
   reports **all 5 files passed**. No whole-suite, model, pilot or endpoint work.
 - Exact commands, outputs, scope and remaining uncertainty:
   [split report](../reports/data-split-stages.md).
+
+## FEVER — source-only journal coverage — b1 — 2026-10-15
+
+- Review: [FEVER source-only journal review](dataset-reviews/fever.md), with
+  file/line citations for the strict-score transcription, pinned validation
+  mirror, platform hash split and files/command verifier contract.
+- Closed: `dataset-journal-gap` documentation coverage only. The retained
+  `measurement` record now names the established source facts and next gate.
+- Next: authenticate Hub conversion/evidence-group provenance and independently
+  pin the upstream FEVER scorer; singleton conversion prevents inferring original
+  strict-score comparability (`data/scaffolds/qa/evidence_scorers.py:157–165`).
+  All eight shared gates and the review's named provenance/privacy,
+  comparability and measurement gates remain open.
+- Boundary: repository inspection only; no payloads, adapter/scorer execution,
+  controls, models, network or production/H0 authorization.
+
+## Physics Questions — source-only journal coverage — b1 — 2026-10-15
+
+- Review: [Physics Questions source-only journal review](dataset-reviews/physicsquestions.md),
+  with file/line citations for accepted-spelling exact matching, the pinned
+  ReWOO CSV declaration, asserted 53-row pool and files/command verifier contract.
+- Closed: `dataset-journal-gap` documentation coverage only; the retained
+  `measurement` record carries next-gate evidence requirements.
+- Next: authenticate ReWOO-to-BIG-bench task/target linkage and original metric
+  source. The reference-only period stripping is the implemented rule, despite
+  broader prompt wording (`data/datasets/physicsquestions.py:93–100,155–161`).
+  All eight shared gates and the review's named provenance/privacy,
+  comparability and measurement gates remain open.
+- Boundary: repository inspection only; no payloads, adapter/scorer execution,
+  controls, models, network or production/H0 authorization.
+
+## Reasoning Gym — source-only journal coverage — b1 — 2026-10-15
+
+- Review: [Reasoning Gym source-only journal review](dataset-reviews/reasoning_gym.md),
+  with file/line citations for the library `score_answer` call, declared
+  version/seed/family/count/digest pin, generated pool and verifier dependency.
+- Closed: `dataset-journal-gap` documentation coverage only; the retained
+  `measurement` record carries next-gate evidence requirements.
+- Next: authenticate the package/generator and pool manifest, then establish
+  offline dependencies in the actual verifier. The loader does not enforce the
+  pool digest and `score()` does not enforce the installed version
+  (`data/datasets/reasoning_gym.py:75–87,106–124`). All eight shared gates and the
+  review's named provenance/privacy, comparability and measurement gates remain open.
+- Boundary: repository inspection only; no payloads, generation, adapter/scorer
+  execution, controls, models, network or production/H0 authorization.
+
+### Journal coverage regression boundary — b1
+
+The source-only coverage guard discovers every `journal-coverage` entry from the
+registry and requires a tracked Markdown review reference with a live locator.
+The three pre-existing omissions outside this change's scope—sportsunderstanding,
+spreadsheetbench and strategyqa—are explicit strict expected failures. New gaps
+fail normally; resolved gaps fail as unexpected passes until their exception is
+removed (`tests/quality/test_dataset_journal_coverage.py`). These exceptions do
+not close those datasets' journal gates.
+
+Validation: `python3 tools/check_dataset_blockers.py` reports `valid:true`, 28
+datasets, eight shared blockers, 11 preserved historical records and
+`production_authorized:false`. Focused source-only tests
+(`python3 -m pytest -q -rx tests/quality/test_dataset_journal_coverage.py tests/quality/test_dataset_blockers.py`)
+report **55 passed, 3 xfailed**; the three expected failures are exactly the
+out-of-scope omissions named above. No whole-suite or dataset-runtime tests ran.

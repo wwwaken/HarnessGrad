@@ -304,6 +304,8 @@ harnessgrad_work/
 # its EXCLUSIVE tuple looks the way it does, and `tests/quality/test_test_lanes.py`
 # fails without it.
 !/docs/test-lanes.md
+# Registry-linked source reviews are checked-in evidence, not private notes.
+!/docs/dataset-reviews/
 # The three below are evidence a reader has to be able to reach without this
 # machine: an inventory that Stage D depends on, the discovery-order finding that
 # decides whether the split is a pure move, and the split construction for the

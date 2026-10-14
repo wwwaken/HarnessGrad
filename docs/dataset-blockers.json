@@ -582,15 +582,25 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "observed": "Source-only journal review complete: the adapter claims FEVER strict_score via a local sheffieldnlp/fever-scorer transcription, loads only the declared pinned copenlu validation JSONL, and inherits a files/command verifier with no image. Mirror-specific singleton evidence conversion and stale refusal prose are recorded; original evidence-group preservation, acquired scorer identity, local bytes and offline/pristine runtime remain unverified. Documentation coverage is closed; measurement and all shared gates remain open.",
           "evidence": [
             {
               "kind": "repository",
               "path": "data/datasets/fever.py",
               "locator": "KIND = \"dataset\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/dataset-reviews/fever.md",
+              "locator": "# FEVER source-only journal review"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## FEVER — source-only journal coverage — b1"
             }
           ],
-          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+          "next_action": "NEXT gate: source-provenance and metric-comparability. Independently authenticate the pinned Hub export/conversion and original FEVER evidence-group preservation, with an exact upstream scorer release; then establish official-scorer-identity and offline/pristine runtime evidence before any diagnostic. Retain all shared gates; this source review authorizes no execution."
         }
       ],
       "historical_runs": []
@@ -927,15 +937,25 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "observed": "Source-only journal review complete: exact_str_match is locally implemented over parsed accepted spellings (reference-only period stripping), with an unpinned BIG-bench metric citation; tasks are declared as the pinned and checksum-specified ReWOO CSV, count-guarded at 53, with platform hash division and a files/command verifier. Archive/member-to-BIG-bench lineage, independent evaluator custody, actual bytes/count and offline/pristine runtime remain unverified. Documentation coverage is closed; measurement and all shared gates remain open.",
           "evidence": [
             {
               "kind": "repository",
               "path": "data/datasets/physicsquestions.py",
               "locator": "KIND = \"dataset\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/dataset-reviews/physicsquestions.md",
+              "locator": "# Physics Questions source-only journal review"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## Physics Questions — source-only journal coverage — b1"
             }
           ],
-          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+          "next_action": "NEXT gate: source-provenance and official-scorer-identity. Authenticate the ReWOO archive/member-to-BIG-bench task/release and accepted-target linkage, and independently pin the original exact_str_match evaluator; then establish scorer-offline-closure and pristine verifier evidence. Retain all shared gates and unmeasured coverage; no diagnostic is authorized."
         }
       ],
       "historical_runs": []
@@ -962,15 +982,25 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "No dataset-specific current blocker/receipt entry was found in the reviewed adapter journal; source declaration is not readiness evidence.",
+          "observed": "Source-only journal review complete: the adapter calls each installed family library score_answer and retains float reward; the declared generated-pool pin is reasoning-gym 0.1.25, seed 20261008, 89 families x 20 and a pool SHA-256, with platform hash division and a files/command verifier using inline entry gold. Loader digest and scorer installed-version enforcement are absent; family/offline claims are inherited and unexecuted. Documentation coverage is closed; authenticated pool/package provenance, runtime measurement and all shared gates remain open.",
           "evidence": [
             {
               "kind": "repository",
               "path": "data/datasets/reasoning_gym.py",
               "locator": "KIND = \"dataset\""
+            },
+            {
+              "kind": "repository",
+              "path": "docs/dataset-reviews/reasoning_gym.md",
+              "locator": "# Reasoning Gym source-only journal review"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## Reasoning Gym — source-only journal coverage — b1"
             }
           ],
-          "next_action": "Add a source-only journal review of scorer/provenance/runtime requirements; do not infer a passing gate from the missing entry."
+          "next_action": "NEXT gate: source-provenance, then scorer-offline-closure. Independently authenticate the package/generator artifacts and declared pool digest/family/eligibility/selected manifest; establish deterministic transitive dependencies without scoring extras in the actual pristine verifier. Retain official-scorer-identity and all other shared gates; no diagnostic is authorized."
         }
       ],
       "historical_runs": []
