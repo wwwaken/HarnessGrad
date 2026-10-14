@@ -7,6 +7,9 @@ seven commit-pinned original code/license/specification files and partial source
 semantics. Its separate candidate record is deliberately inadmissible; checker
 and helper closure, independent archive/member custody and approval remain open.
 There is no benchmark data in this directory.
+The [Task 208 operator packet](../../../docs/bfcl-codex208-operator-packet.md)
+consolidates exact missing files, independent approval, runtime/license and
+separate selected-index custody requirements with an ordered offline check sequence.
 The registry's `simple-ast-contract` implementation depends on independent
 source acquisition. Its current blocking status is therefore `external`.
 

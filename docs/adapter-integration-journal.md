@@ -455,6 +455,14 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Artifacts: [unique report](../bfcl-source-provenance-codex195-report.md), [source review](../tests/fixtures/bfcl_ast_source/candidate-codex195/README.md), candidate provenance and exact code-only custodian request alongside unchanged original files. Candidate schema is deliberately inadmissible; no approved receipt pin was generated.
 - Validation: 37 existing source-contract tests passed; static source/size/SHA-256/Git-blob/license/symbol audit passed; explicit gate remains blocked (exit 2); candidate schema refusal precedes any projected source read. No upstream evaluator code was imported or executed. Registry, adapter and scorer remain unchanged.
 
+## BFCL custody operator packet — Codex 208 — 2026-10-14
+
+- Status: documentation-only; official full-call source/runtime and archive/index custody remain blocked. No production authorization or new approval pin.
+- Artifact: [operator packet](bfcl-codex208-operator-packet.md), linked from the source acquisition contract. It enumerates retained/missing original paths, unknown transitive discovery, approved receipt delivery and independent trusted-channel pin, license/offline runtime closure, separate exact-index/storage/split approval and ordered verification/stop conditions.
+- Finding retained: the current source gate checks approved projection integrity only; the selected reader has no independent index-pin admission. Neither source acquisition nor passing synthetic controls closes the remaining runtime/export/quota/snapshot/cleanup and diagnostic-review gates.
+- Validation: **165 passed** across source-contract, selected/privacy and registry regressions; unpinned source gate exits **2**, `measured=false`, `production_authorized=false`. Rechecked all seven retained size/SHA-256/Git blob identities (126,311 bytes) and local document links.
+- Scope: `/tmp/hg-codex-208` only; no benchmark files, archives, external dataset roots, network fetch, package install, upstream evaluator execution or model/GPU run. Candidate bytes, provenance, adapter, scorer and registry are unchanged.
+
 ## TriviaQA adapter impact review — Codex 167
 
 - Status: production scorer unchanged; upstream source provenance blocked
