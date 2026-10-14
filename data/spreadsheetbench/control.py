@@ -91,8 +91,9 @@ def materialize(record: dict, workdir: Path) -> None:
 def solve(record: dict, workdir: Path) -> None:
     """The oracle: leave the reference workbook where the contract says to leave it."""
     shutil.copy2(record["golden_path"], workdir / sb.RESULT_WORKBOOK)
+    # Inherit both streams so a failed submission reports the CLI's actual error.
     subprocess.run([sys.executable, "qa/bin/qa", "submit", sb.RESULT_WORKBOOK],
-                   cwd=workdir, check=True, capture_output=True, text=True)
+                   cwd=workdir, check=True)
 
 
 def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
