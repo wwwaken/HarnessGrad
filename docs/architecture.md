@@ -18,6 +18,10 @@ establish a boundary. The allowed directions below are maintenance rules;
 [observed exceptions](#observed-import-edges-and-exceptions) are called out
 explicitly rather than presented as a clean, enforced layering.
 
+The enforced dependency directions, the observed import edges and their reviewed
+exceptions are recorded separately in [import direction](import-direction.md),
+with an automated guard in `tests/quality/test_import_direction.py`.
+
 ## Area map
 
 | Area | Purpose and entry points | Role | Allowed dependency direction |
