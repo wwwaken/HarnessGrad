@@ -390,7 +390,7 @@
           "id": "trusted-stepwise-transport",
           "family": "official-scorer-execution",
           "status": "runtime",
-          "observed": "Source review confirms the public StepwisePuzzle session contract, but no trusted shared-runner integration or fresh interactive lifecycle evidence was found. Retain offline-only ChessBench strict legal puzzle replay v1 with upstream unchecked-push replay diagnostic-only. Fabricated contract tests do not attest real observation ordering, actor isolation or interactive official accuracy.",
+          "observed": "The trusted stepwise transport is now wired: `run_one` starts a live Unix relay when a task declares `\"interaction\": \"chessbench_puzzles.stepwise.v1\"`, the controller keeps the reference line, and the protocol is recorded per point (`verdict.protocol`, curve `evaluation_protocols[task_id]`) with mixed protocols refused. What is NOT established is a real interactive run: no harness has been driven through the stepwise loop against the live controller, so model-driven official puzzle accuracy remains unmeasured and the offline strict-replay protocol is still the only one with evidence behind it.",
           "evidence": [
             {
               "kind": "repository",
@@ -405,15 +405,25 @@
             {
               "kind": "repository",
               "path": "docs/chessbench-puzzles-evaluation.md",
-              "locator": "## Current boundary and validation"
+              "locator": "## Opt-in runner wiring"
             },
             {
               "kind": "repository",
               "path": "data/datasets/chessbench_puzzles.py",
               "locator": "class StepwisePuzzle:"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/chessbench-stepwise-c1-report.md",
+              "locator": "# ChessBench live stepwise runner wiring (c1)"
+            },
+            {
+              "kind": "repository",
+              "path": "eval/run/runner.py",
+              "locator": "from eval.run import chess_stepwise"
             }
           ],
-          "next_action": "Retain offline-only status and keep the runtime gate open. Any future interactive official claim requires separately reviewed trusted shared-runner transport, controller-owned observation/submission/termination records, actor/gold isolation and fresh identity-bound lifecycle/cleanup receipts. Never infer interactive official execution from fabricated transport tests or reuse either interrupted run ID."
+          "next_action": "Run one authorized gated interactive chessbench task through the live stepwise relay and record its receipt, so the stepwise protocol has execution evidence rather than only wiring. Keep the offline-only claim until then: a wired transport is not a measurement. Reject any point that mixes the stepwise and strict-replay protocols in one comparison."
         },
         {
           "id": "interruption-closure",
