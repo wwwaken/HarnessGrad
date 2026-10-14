@@ -168,16 +168,25 @@ def test_workspace_inside_the_platform_is_refused():
 
 
 def test_the_driver_refuses_a_workspace_inside_the_platform():
-    """The guard is wired in, not just available as a function."""
+    """The guard is wired in, not just available as a function.
+
+    `--sampling all` is load-bearing and was missing. The driver's default sampling
+    is now `diagnostic`, which is a **staged** run: it forces `rounds=0` and demands
+    `--policy-evidence`, so without this flag the staged-policy refusal fires first
+    and the workspace guard is never reached. The test then passed for the wrong
+    reason -- it asserted "refusing to run" against a different refusal. Measured:
+    the run below reaches the guard and the run directory is never created.
+    """
     proc = subprocess.run(
         [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
-         "--rounds", "1", "--run-id", "guard-probe",
+         "--rounds", "1", "--run-id", "guard-probe", "--sampling", "all",
          "--work-root", ".", "--dataset", "demo", "--method-entrypoint",
          "python methods/noop/run.py"],
         cwd=ROOT, capture_output=True, text=True, timeout=120,
     )
     assert proc.returncode != 0, proc.stdout
     assert "refusing to run" in proc.stderr.lower(), proc.stderr[-800:]
+    assert "inside the platform" in proc.stderr, proc.stderr[-800:]
     assert not (ROOT / "guard-probe").exists(), \
         "the refusal must happen before anything is staged"
 
@@ -290,7 +299,13 @@ def test_the_driver_exits_nonzero_when_a_harness_tampers(tmp_path):
     assert proc.returncode == 3, f"{proc.returncode}: {proc.stdout[-500:]}"
     assert "FAILING RUN" in proc.stderr, proc.stderr[-600:]
     assert "eval/runner.py" in proc.stderr, proc.stderr[-600:]
-    assert "not a measurement" in proc.stderr
+    # The refusal has to say the number is unusable, not merely that something moved.
+    # This asserted the literal phrase "not a measurement" until it stopped existing;
+    # `harnessgrad/records.py::_require_untampered` now says the run's integrity is
+    # unverified and that the changed paths must be inspected first. Asserted on that
+    # claim rather than on the sentence, so a rewording does not silently delete the
+    # property while a missing claim still fails.
+    assert "integrity is unverified" in proc.stderr, proc.stderr[-600:]
     assert not (runs / "probe-evil" / "curve.jsonl").exists(), \
         "a tampered run must not leave a curve behind"
     # But it does say where it was working, so the failed run is inspectable.
