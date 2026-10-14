@@ -4,6 +4,16 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Explicit aggregation denominators — 2026-10-14 — s9
+
+- Scope: Stage B part 2 only, isolated `/tmp/hg-s9`, base `80c3707`; fabricated scorer inputs and pinned upstream source only.
+- Finding: **(c), undocumented platform helper contract mismatch**. MuSiQue's `aggregate` divides by provided results, but upstream requires equal row counts and aligned IDs. 2Wiki's `evaluate_predictions` divides by all gold rows, matching upstream's missing-prediction behavior. Neither helper is the driver's run aggregation path.
+- Change: explicit per-adapter aggregation manifests and a fail-closed shared denominator accessor, read by both corpus helpers and recorded run rewards. All 28 published adapters declare the existing measured-task run mean; excluded/locked adapter sources remain untouched.
+- Evidence: [s9 report](../reports/s9-aggregation-denominator-report.md); `tests/fixtures/aggregation_s9_before.json`; `tests/quality/test_aggregation_policies.py` inventories source with AST and proves declarations are live.
+- Numeric preservation: full synthetic before/after captures identical, SHA-256 `d7ab601e446d0a4eb24fde6bffe97fbc026669c43b84b7407224106e0040ee55`; MuSiQue reward `0.48148148148148145`, omitted-item helper reward `1.0`; 2Wiki complete/missing-row Joint F1 `100.0`/`50.0` percent remain identical.
+- Validation: only aggregation-policy (**41 passed**), MuSiQue official-scorer (**106 passed**) and 2Wiki structured (**43 passed**) files; external basetemps under `/mnt/20t/xubuqiang/.hg-pytest/s9/`. No benchmark pilot/model execution.
+- Commit: carried by `Declare per-adapter aggregation denominators without changing rewards`; parent integration in this round merged it as the aggregation-policy commit with the journal conflict resolved by keeping both entries.
+
 ## SpreadsheetBench QA submission provisioning — 2026-10-14 — S3
 
 - Scope: isolated `/tmp/hg-s3`; only the requested SpreadsheetBench oracle control and one new focused regression file. No model or GPU execution.

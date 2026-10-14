@@ -1151,7 +1151,7 @@ def main() -> int:
     # this is only ever populated for `train`.
     train_ids = list(task_ids) if args.side == "train" else []
     tasks = [t for t in tasks_all if t["task_id"] in set(task_ids + train_ids)]
-    sampling = {"policy": args.sampling, "task_ids": task_ids,
+    sampling = {"dataset": args.dataset, "policy": args.sampling, "task_ids": task_ids,
                 "selection_basis_round": 0,
                 "selected_within": args.side if split else "all"}
     if split and len(task_ids) < 8:

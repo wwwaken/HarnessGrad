@@ -196,7 +196,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         # which is why the field is recorded here rather than asked for in a
         # template.
         "edit_kind": None,
-        "score": mean(scores), "score_ci95": [lo, hi],
+        "score": mean(scores, dataset=sampling.get("dataset")), "score_ci95": [lo, hi],
         # **How noisy this number is.** One evaluation per (harness, task) is one sample,
         # and measured on this platform the *same* unmodified harness scored 0.333 in one
         # run and 0.000 in the next -- the agent model intermittently emits a tool call the
@@ -309,7 +309,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         # because curves recorded before the split exist and a reader must be able to
         # tell "no second side" from "this field was never written".
         "train_score": None if (side != "eval" or train_scores is None)
-                       else mean(train_scores),
+                       else mean(train_scores, dataset=sampling.get("dataset")),
         "train_per_task": (dict(zip(train_ids or [], train_scores or []))
                            if side == "eval" else {}),
         # Which tasks were which. Stored per point rather than only in run_meta

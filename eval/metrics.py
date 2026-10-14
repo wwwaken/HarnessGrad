@@ -26,8 +26,13 @@ def diagnostic_task_set(task_ids: list[str]) -> list[str]:
     return pilot_task_set(task_ids, cap=1)
 
 
-def mean(xs: list[float]) -> float:
-    return sum(xs) / len(xs) if xs else 0.0
+def mean(xs: list[float], *, dataset: str | None = None) -> float:
+    if dataset is None:
+        return sum(xs) / len(xs) if xs else 0.0
+    from data.aggregation import aggregation_denominator
+
+    denominator = aggregation_denominator(dataset, "run_reward", measured_tasks=len(xs))
+    return sum(xs) / denominator if denominator else 0.0
 
 
 def ci95(xs: list[float]) -> tuple[float, float]:

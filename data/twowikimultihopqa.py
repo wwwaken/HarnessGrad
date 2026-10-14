@@ -504,13 +504,17 @@ def evaluate_predictions(predictions: dict[str, dict], golds: list[dict]) -> dic
     """
     if not golds:
         raise ValueError("cannot evaluate an empty gold pool")
+    from data.aggregation import aggregation_denominator
+
+    denominator = aggregation_denominator("twowikimultihopqa", "corpus_metrics",
+                                          gold_rows=len(golds))
     totals = dict.fromkeys(METRIC_KEYS, 0.0)
     for gold in golds:
         metrics = _prediction_metrics(
             predictions.get(gold["id"], {"schema_version": 1}), gold)
         for key in totals:
             totals[key] += metrics[key]
-    return {key: round(value / len(golds) * 100, 2) for key, value in totals.items()}
+    return {key: round(value / denominator * 100, 2) for key, value in totals.items()}
 
 
 _ALIASES: dict[str, list[str]] | None = None

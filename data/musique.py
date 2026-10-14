@@ -132,9 +132,15 @@ def aggregate(results: list[dict]) -> dict:
 
     The platform reward is the unrounded mean of per-item rewards, never the product
     of corpus means. Mixing legacy and default results is refused.
+    The declared denominator is the provided results: this helper has no gold pool
+    to detect absent rows. Upstream requires complete, identically ordered IDs.
     """
     if not results:
         raise ValueError("cannot aggregate an empty MuSiQue result list")
+    from data.aggregation import aggregation_denominator
+
+    denominator = aggregation_denominator("musique", "corpus_metrics",
+                                          provided_results=len(results))
     modes = {result["official"]["mode"] for result in results}
     if len(modes) != 1:
         raise ValueError("cannot mix MuSiQue scoring modes")
@@ -152,7 +158,7 @@ def aggregate(results: list[dict]) -> dict:
         total = 0.0
         for result in results:
             total += result["reward"] if field == "reward" else result["official"][field]
-        mean = total / len(results)
+        mean = total / denominator
         output[field] = round(mean, 3) if field in ("answer_f1", "answer_em", "support_f1") else mean
     return output
 
