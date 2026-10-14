@@ -1,0 +1,79 @@
+.EEEEE                                                                   [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_ordinary_model_identity_reaches_metadata_without_strict_backend_prerequisite[True] _
+
+self = PosixPath('/tmp/hg-codex-242/.scratch/task242-initial'), mode = 448
+parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-codex-242/.scratch/task242-initial'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_ordinary_model_identity_reaches_metadata_without_strict_backend_prerequisite[False] _
+
+self = PosixPath('/tmp/hg-codex-242/.scratch/task242-initial'), mode = 448
+parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-codex-242/.scratch/task242-initial'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_requested_sandbox_failure_refuses_before_metadata_or_execution _
+
+self = PosixPath('/tmp/hg-codex-242/.scratch/task242-initial'), mode = 448
+parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-codex-242/.scratch/task242-initial'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_ui_preserves_ordinary_sampling_and_explicit_sandbox_choice[False] _
+
+self = PosixPath('/tmp/hg-codex-242/.scratch/task242-initial'), mode = 448
+parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-codex-242/.scratch/task242-initial'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_ui_preserves_ordinary_sampling_and_explicit_sandbox_choice[True] _
+
+self = PosixPath('/tmp/hg-codex-242/.scratch/task242-initial'), mode = 448
+parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-codex-242/.scratch/task242-initial'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1311: FileNotFoundError
+=========================== short test summary info ============================
+ERROR tests/quality/test_gpu_entrypoint_contract_codex242.py::test_ordinary_model_identity_reaches_metadata_without_strict_backend_prerequisite[True]
+ERROR tests/quality/test_gpu_entrypoint_contract_codex242.py::test_ordinary_model_identity_reaches_metadata_without_strict_backend_prerequisite[False]
+ERROR tests/quality/test_gpu_entrypoint_contract_codex242.py::test_requested_sandbox_failure_refuses_before_metadata_or_execution
+ERROR tests/quality/test_gpu_entrypoint_contract_codex242.py::test_ui_preserves_ordinary_sampling_and_explicit_sandbox_choice[False]
+ERROR tests/quality/test_gpu_entrypoint_contract_codex242.py::test_ui_preserves_ordinary_sampling_and_explicit_sandbox_choice[True]
+1 passed, 5 errors in 0.30s

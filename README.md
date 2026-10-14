@@ -188,6 +188,7 @@ python3 driver.py --dataset demo --sampling all --harness loop --mode A --rounds
     --method-entrypoint "$M"
 python3 driver.py --dataset demo --sampling all --harness loop --mode B --rounds 2 --run-id treat-B \
     --method-entrypoint "$M"
+    --method-entrypoint "$M"
 python3 tools/plot_curve.py runs/control runs/treat-A runs/treat-B
 ```
 
@@ -204,7 +205,11 @@ cost accounting are exercised end to end.
 
 Declaring runtime policies still requires trusted backend observations. Missing enforcement
 evidence remains blocked and invalid/unmeasured, never an ordinary zero score; changing
-sampling or using `--no-sandbox` does not satisfy those gates. See the
+sampling or using `--no-sandbox` does not satisfy those gates. These local demo examples
+explicitly use general sampling (`all`); the CLI default is staged `diagnostic`, which
+requires `--policy-evidence`, one task, one trial, one job and zero improvement rounds.
+Production diagnostics and pilots remain subject to [the staged policy](DIAGNOSTIC_POLICY.md)
+and dataset gates; general sampling is not production authorization. See the
 [runner admission contract](docs/runner-admission-contract.md) and the
 [operator/backend quota checklist](docs/filesystem-quota-backends.md).
 
@@ -226,6 +231,14 @@ all. `--no-sandbox` turns that off for debugging; the two modes are not comparab
 and `run_meta.json` records which one a run used. `bwrap` must be installed
 (`apt install bubblewrap`), or the driver refuses to start rather than quietly
 running without it.
+
+Ordinary entrypoints add no universal filesystem-quota or backend-observer
+prerequisite. Existing declared resource/network policy refusals still apply,
+including to `exec` tasks; a local GPU endpoint does not satisfy those gates.
+`--no-sandbox` is an explicit debugging decision, never an automatic fallback,
+and retains an `exec` task's container boundary. Source review and mocked tests
+establish neither effective sandbox/quota enforcement nor production readiness.
+See [the entrypoint audit](docs/task-242-gpu-entrypoint-audit.md) for scope and evidence.
 
 ## Layout
 

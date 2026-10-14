@@ -239,7 +239,6 @@ def _config_help() -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
             "Ordinary local development runs as your user. Native/files demos and --help\n"
             "require no sudo, dedicated quota volume, root Docker access, or strict runtime mode.\n"
@@ -258,9 +257,9 @@ def main() -> int:
                          "For the local demo, explicitly select all; this grants no "
                          "production/H0 authorization")
     ap.add_argument("--policy-evidence", default=None,
-                    help="staged policy JSON: context with passing dataset gates; "
-                         "required for diagnostic/pilot_10pct. pilot_10pct also requires "
-                         "receipt and separate hash-bound review")
+                    help="required for diagnostic/pilot_10pct sampling: staged policy "
+                         "JSON with context and passing dataset gates; "
+                         "pilot_10pct also requires receipt and separate hash-bound review")
     ap.add_argument("--rounds", type=int, default=None,
                     help="improvement rounds (default 0 for staged runs, 3 otherwise)")
     #: How many times each (harness, task) pair is measured. One is one sample, and one
@@ -354,7 +353,9 @@ def main() -> int:
                          "harness cannot see the platform at all; without one it "
                          "can read the driver and .env, and only the hash check in "
                          "eval/integrity.py stands between it and the scorer. "
-                         "Numbers are not comparable across the two modes.")
+                         "Explicit debugging opt-out, never an automatic fallback. "
+                         "Exec tasks retain their container boundary and declared-policy "
+                         "refusals still apply. Numbers are not comparable across the two modes.")
     ap.add_argument("--work-root", default="../harnessgrad_work",
                     help="where harness working trees live; must be OUTSIDE the "
                          "platform tree, or a harness can reach the platform")

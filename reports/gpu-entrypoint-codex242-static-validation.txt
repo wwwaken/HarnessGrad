@@ -1,0 +1,9 @@
+Task 242 static validation
+Driver AST unchanged after removing argparse description/help text: PASS
+Changed Python files parse: PASS
+Generated HTML contains the audit summary and embedded source: PASS
+Shell syntax: bash -n tools/harnessgrad.sh tools/serve_local_model.sh tools/keep_local_models.sh
+Shell syntax exit 0: PASS
+Final focused suites with internal TMPDIR: 156 passed, no failures/skips
+Audit Markdown links resolve: PASS
+Task-owned scratch removed: PASS (test housekeeping only)
