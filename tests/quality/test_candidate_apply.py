@@ -79,25 +79,25 @@ def test_an_empty_sequence_is_not_a_change(tmp_path):
 
 # ------------------------------------------------------------ 拒绝的理由 ---
 
-def test_a_path_outside_the_harness_is_refused():
-    base = _harness(Path("/tmp") / "hg-cand-base")
-    _, problems = apply(base, Path("/tmp") / "hg-cand-dest",
+def test_a_path_outside_the_harness_is_refused(tmp_path):
+    base = _harness(tmp_path / "base")
+    _, problems = apply(base, tmp_path / "dest",
                                   [{"path": "../../agent.py", "content": "x"}])
     assert any("outside the harness" in p for p in problems), problems
 
 
-def test_the_manifest_cannot_be_rewritten():
+def test_the_manifest_cannot_be_rewritten(tmp_path):
     """`harness.json` 命名了这只 harness;能改它就能改自己被测量的身份。"""
-    base = _harness(Path("/tmp") / "hg-cand-base2")
-    _, problems = apply(base, Path("/tmp") / "hg-cand-dest2",
+    base = _harness(tmp_path / "base")
+    _, problems = apply(base, tmp_path / "dest",
                                   [{"path": "harness.json", "content": "{}"}])
     assert any("protected" in p for p in problems), problems
 
 
-def test_every_rejection_is_reported_with_its_index():
+def test_every_rejection_is_reported_with_its_index(tmp_path):
     """哪一条被拒、为什么 —— 重试要听到的就是这个。"""
-    base = _harness(Path("/tmp") / "hg-cand-base3")
-    _, problems = apply(base, Path("/tmp") / "hg-cand-dest3", [
+    base = _harness(tmp_path / "base")
+    _, problems = apply(base, tmp_path / "dest", [
         {"path": "ok.py", "content": "x=1\n"},
         {"path": "bad.py"},                                   # 没有 content
         "not-an-object",
