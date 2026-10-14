@@ -43,5 +43,6 @@ def record_class(verdict: dict, spec: dict | None, actual: str) -> dict:
                "scorer_isolation_declared": declared}
     if declared not in ("unknown", actual):
         verdict.update(passed=False, score=None,
-                       unmeasured=f"scorer isolation class mismatch: declared {declared}, ran {actual}")
+                       unmeasured=" | ".join(filter(None, (verdict.get("unmeasured"),
+                           f"scorer isolation class mismatch: declared {declared}, ran {actual}"))))
     return verdict

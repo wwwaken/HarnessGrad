@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "docker",
+    "start",
+    "--attach",
+    "hg-pristine-56879020d6c247939f65844ee0f2635a"
+  ],
+  "index": 2,
+  "monotonic_ns": 6542271775580353,
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "control_kind=synthetic-diagnostic\nexpected=42\nactual=41\ncgroup.cpu.max=100000 100000\ncgroup.memory.max=536870912\ncgroup.pids.max=128\ncgroup.memory.current=2465792\ncgroup.pids.current=1\nmountinfo=7605 7596 0:437 / /control-output rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=64k,nr_inodes=16,inode64\nmountinfo=7606 7596 0:438 / /tmp rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=1024k,nr_inodes=64,inode64\nmountinfo=7607 7596 259:2 /tmp/hg-pristine-ycz60sx4/input /control-input ro,relatime - ext4 /dev/nvme0n1p2 rw,errors=remount-ro\nmountinfo=7608 7596 259:2 /tmp/hg-wprifix-runtime/w-prifix-control-20261014T230846Z-29e481b7/platform/scorer/closure /control-scorer ro,relatime - ext4 /dev/nvme0n1p2 rw,errors=remount-ro\ncompleted_check=fail\n"
+}

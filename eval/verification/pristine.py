@@ -19,6 +19,11 @@ from eval.containers import container
 from eval.verification.isolation import record_class
 
 
+def _command_result(result: subprocess.CompletedProcess) -> dict:
+    return dict(argv=list(result.args), returncode=result.returncode,
+                stdout=result.stdout, stderr=result.stderr)
+
+
 def _platform_path(value, actor: Path) -> Path:
     path = Path(value)
     artifacts._root(path)
@@ -65,7 +70,7 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
             evidence["export"] = exported
             argv = manifest["scorer"]["argv"]
             cmd = ["create", "--pull=never", "--name", name, "--network", "none",
-                   "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
+                   "--user", artifacts.scorer_user(), "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
                    "--ipc", "private", "--log-driver", LOG_CONFIG["Type"], "--pids-limit", "128",
                    "--memory", "512m", "--cpus", "1", "--workdir", "/tmp",
                    "--entrypoint", argv[0]]
@@ -91,32 +96,48 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
             evidence["runtime"] = artifacts.require_artifact_runtime(
                 info, contract_raw, contract_pin, artifact_root=artifact_root, closure_root=root,
                 export_receipt=exported, run_id=name)
-            # The client may forward a failing check's exit code. The stopped
-            # container's state distinguishes that measured zero from a launch error.
-            docker("start", "--attach", name)
+            # Exit status alone cannot distinguish initialization from a measured
+            # failing predicate. The sealed scorer must explicitly attest completion.
+            started = docker("start", "--attach", name)
+            evidence["start_result"] = _command_result(started)
             stopped = docker("inspect", name)
+            evidence["stopped_result"] = _command_result(stopped)
             if stopped.returncode:
                 raise AdmissionError("pristine scorer result inspection failed")
             state = json.loads(stopped.stdout)[0]["State"]
+            evidence["stopped_result"]["state"] = state
             if (state["Running"] is not False or state["Status"] != "exited"
                     or state.get("OOMKilled") or state.get("Error")):
-                raise AdmissionError("pristine scorer did not finish normally")
+                raise AdmissionError(f"pristine scorer did not finish normally: {state}")
             actual = "pristine-offline"
-            # This backend's output protocol is the sealed command's exit status.
-            # Reward-file and service semantics remain on their existing backend.
-            verdict.update(passed=state["ExitCode"] == 0, score=float(state["ExitCode"] == 0),
-                           detail=f"sealed scorer exit {state['ExitCode']}")
+            code = state["ExitCode"]
+            diagnostic = f"exit {code}; stderr: {started.stderr[-2048:]}"
+            markers = [line for line in started.stdout.splitlines()
+                       if line.startswith("completed_check=")]
+            if len(markers) != 1 or markers[0] not in ("completed_check=pass", "completed_check=fail"):
+                raise AdmissionError(f"scorer completion marker missing, malformed or ambiguous; {diagnostic}")
+            expected_code = 0 if markers[0] == "completed_check=pass" else 1
+            if type(code) is not int or code != expected_code or started.returncode != code:
+                raise AdmissionError(f"scorer completion marker/exit mismatch (attach {started.returncode}); "
+                                     f"{diagnostic}")
+            verdict.update(passed=code == 0, score=float(code == 0), outcome="measured",
+                           detail=f"sealed scorer {markers[0]}, exit {code}")
         except (AdmissionError, OSError, ValueError, KeyError, TypeError, IndexError,
                 subprocess.TimeoutExpired) as exc:
-            verdict["unmeasured"] = f"pristine scorer unavailable: {exc}"
+            verdict.update(score=None, passed=False,
+                           outcome="timeout" if isinstance(exc, subprocess.TimeoutExpired) else "unmeasured",
+                           unmeasured=f"pristine scorer unavailable: {exc}")
         finally:
             if attempted:
                 try:
                     removed = container.docker("rm", "--force", name, timeout=30)
-                    evidence["cleanup"] = {"container": name, "removed": removed.returncode == 0}
-                except (OSError, subprocess.TimeoutExpired):
-                    evidence["cleanup"] = {"container": name, "removed": False}
+                    evidence["cleanup"] = {"container": name, "removed": removed.returncode == 0,
+                                           **_command_result(removed)}
+                except (OSError, subprocess.TimeoutExpired) as exc:
+                    evidence["cleanup"] = {"container": name, "removed": False,
+                                           "error": f"{type(exc).__name__}: {exc}"}
                 if not evidence["cleanup"]["removed"]:
-                    verdict.update(passed=False, score=None, unmeasured="pristine scorer cleanup failed")
+                    verdict.update(passed=False, score=None, outcome="unmeasured",
+                                   unmeasured="pristine scorer cleanup failed")
     verdict["scorer_isolation_evidence"] = evidence
     return record_class(verdict, spec, actual)

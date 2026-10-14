@@ -1,0 +1,15 @@
+{
+  "command": "python3 -m pytest -q tests/quality/test_prifix_regressions.py",
+  "head": "3616713733b3e9bcb9a284f6af9d13e081841214",
+  "output": "focused-before-exact-final.txt",
+  "production_bytes_equal_baseline_head": true,
+  "source_hashes": {
+    "eval/admission/artifact_admission.py": "832f79172b859c62068c62e7d0507552ea566f2658cdf423c415053984e7e38e",
+    "eval/verification/isolation.py": "33c0c6719015ff36fc4b01cfa24152df16ca948664fd41cdfae57b55aa3096c8",
+    "eval/verification/pristine.py": "af7ef06d9502faf1ec84077064936a516973817c445debb665c1c0871bffe91a",
+    "tests/quality/test_prifix_regressions.py": "9e8fc6c8198e77fe2078d6d2cbc53002a3623ac9a6d7bd03fc9e48ebace3ff80",
+    "tests/quality/test_scorer_isolation_option_b.py": "18ec97806796278e53e7e694af9c7c153f420bc6ad48fb80d512bc82bc16f901"
+  },
+  "test_bytes_equal_final_worktree": true,
+  "worktree": "/tmp/hg-prifix-review"
+}

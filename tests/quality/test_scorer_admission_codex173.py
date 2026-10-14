@@ -45,6 +45,8 @@ def example(tmp_path):
                                  ("runtime.txt", "runtime", [])):
         data = f"inert synthetic {role} bytes\n".encode()
         (closure / name).write_bytes(data)
+        if role == "runtime":
+            (closure / name).chmod(0o755)
         rows.append(dict(path=name, role=role, requires=requires, bytes=len(data),
                          sha256=hashlib.sha256(data).hexdigest()))
     (source / "answer.txt").write_bytes(b"answer")
@@ -64,7 +66,7 @@ def example(tmp_path):
     exported = admission.export_state(source, artifact, contract_raw, contract_pin,
                                       run_id="synthetic-run-173")
     info = dict(Image=contract["runtime_image_id"], State=dict(Status="created", Running=False),
-                Config=dict(Volumes={}, Entrypoint=contract["scorer"]["argv"][:1],
+                Config=dict(Volumes={}, User=artifacts.scorer_user(), Entrypoint=contract["scorer"]["argv"][:1],
                             Cmd=contract["scorer"]["argv"][1:], Env=list(artifacts.SCORER_ENV),
                             WorkingDir="/tmp"), NetworkSettings=dict(Networks={"none": {}}),
                 HostConfig=dict(NetworkMode="none", ReadonlyRootfs=True, Privileged=False,

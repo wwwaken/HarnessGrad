@@ -18,6 +18,16 @@ import stat
 
 from eval.admission.pilot_admission import AdmissionError, LOG_CONFIG
 
+# A distinct unprivileged scorer reads only the two bounded read-only mounts.
+SCORER_UID = 65534
+
+
+def scorer_user() -> str:
+    if os.geteuid() == SCORER_UID:
+        raise AdmissionError("reserved scorer UID must differ from platform UID")
+    return f"{SCORER_UID}:{os.getegid()}"
+
+
 SCORER_ENV = ["PATH=/control-scorer", "HOME=/tmp", "TMPDIR=/tmp"]
 
 
@@ -265,6 +275,8 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
     must be platform-owned; its files cannot supply a grader toolchain. Unselected
     actor files are never traversed. No old destination is reused or overwritten.
     Metadata checks detect observable source changes; they cannot establish quiescence.
+    The platform primary group grants the separate scorer UID read/search access;
+    host custody still rests on the exclusive platform-owned parent and RO mounts.
     """
     contract = load_contract(raw, expected_sha256)
     if not isinstance(run_id, str) or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", run_id):
@@ -279,6 +291,8 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
             raise AdmissionError("state source and platform projection must be separate")
         destination.mkdir(mode=0o700)
         created = True
+        os.chown(destination, -1, os.getegid())
+        destination.chmod(0o750)
         total, records = 0, []
         for row in export["files"]:
             with _regular(source, row["path"], data_only=True) as (stream, info):
@@ -286,10 +300,19 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
                 if info.st_size > limit:
                     raise AdmissionError("state export byte quota exceeded")
                 target = destination / row["path"]
-                target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                # Create each directory explicitly: parents=True does not apply
+                # the requested mode to intermediate parents, and umask may mask it.
+                parent = destination
+                for part in PurePosixPath(row["path"]).parts[:-1]:
+                    parent = parent / part
+                    if not parent.exists():
+                        parent.mkdir(mode=0o700)
+                        os.chown(parent, -1, os.getegid())
+                        parent.chmod(0o750)
                 digest, size = hashlib.sha256(), 0
                 with target.open("xb") as output:
-                    os.chmod(target, 0o600)
+                    os.chown(target, -1, os.getegid())
+                    os.chmod(target, 0o640)
                     while True:
                         chunk = stream.read(min(65536, limit - size + 1))
                         if not chunk:
@@ -391,15 +414,36 @@ def require_artifact_runtime(info: dict, raw: bytes, expected_sha256: str,
                                     artifact_root=artifact_root, closure_root=closure_root)
 
 
+def _require_scorer_access(root: Path, rows: list[dict], *, executable: str | None = None) -> None:
+    """Check DAC access inside each bind root, not private host-side ancestors.
+
+    The scorer uses one explicit UID/GID, without supplemental groups or DAC caps.
+    POSIX owner/group/other precedence matters even when another class has access.
+    """
+    scorer_user()  # Fail closed if the reserved identity is the platform writer.
+    files = {row["path"] for row in rows}
+    directories = {"."} | {str(p) for name in files for p in PurePosixPath(name).parents}
+    for name in files | directories:
+        info = (root / name).stat()
+        shift = 6 if info.st_uid == SCORER_UID else 3 if info.st_gid == os.getegid() else 0
+        required = 5 if name in directories else 5 if name == executable else 4
+        if ((stat.S_IMODE(info.st_mode) >> shift) & required) != required:
+            raise AdmissionError("platform projection is not readable/searchable by scorer identity")
+
+
 def _verify_artifact_runtime(info: dict, contract: dict, expected_sha256: str,
                              *, artifact_root: Path, closure_root: Path) -> dict:
     """Shared observation check; callers must first authenticate and verify both trees."""
     try:
+        _require_scorer_access(artifact_root, contract["export"]["files"])
+        _require_scorer_access(closure_root, contract["scorer"]["files"],
+                               executable=contract["scorer"]["argv"][0][len("/control-scorer/"):])
         host, config = info["HostConfig"], info["Config"]
         if (info["Image"] != contract["runtime_image_id"]
                 or config["Entrypoint"] != contract["scorer"]["argv"][:1]
                 or config["Cmd"] != contract["scorer"]["argv"][1:]
                 or config["Env"] != SCORER_ENV or config["WorkingDir"] != "/tmp"
+                or config["User"] != scorer_user() or host.get("GroupAdd")
                 or info["State"]["Status"] != "created" or info["State"]["Running"] is not False
                 or host["NetworkMode"] != "none" or host["ReadonlyRootfs"] is not True
                 or host["Privileged"] is not False or host["CapDrop"] != ["ALL"]
@@ -438,4 +482,4 @@ def _verify_artifact_runtime(info: dict, contract: dict, expected_sha256: str,
         raise EvidenceUnavailable("incomplete artifact runtime observation") from exc
     return dict(schema="harnessgrad.artifact-runtime-receipt.v1", contract_sha256=expected_sha256,
                 task_id=contract["task_id"], runtime_image_id=contract["runtime_image_id"],
-                tmpfs=expected, scope="inspected_runtime_contract")
+                tmpfs=expected, scorer_user=scorer_user(), scope="inspected_runtime_contract")

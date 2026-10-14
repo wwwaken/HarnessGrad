@@ -1,0 +1,81 @@
+Worktree: /tmp/hg-prifix (branch wg-prifix); baseline production HEAD 3616713733b3e9bcb9a284f6af9d13e081841214
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+
+Baseline command (registered /tmp/hg-prifix-review):
+$ python3 -m pytest -q tests/quality/test_prifix_regressions.py
+Expected exit 1. Full output: reports/w-prifix-evidence/focused-before-exact-final.txt
+
+FAILED tests/quality/test_prifix_regressions.py::test_d1_projection_is_readable_by_separate_scorer_identity
+FAILED tests/quality/test_prifix_regressions.py::test_d1_unexpected_scorer_identity_refuses[]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_unexpected_scorer_identity_refuses[0:0]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_unexpected_scorer_identity_refuses[65534:1027]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_private_closure_cannot_start_unreadable
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('Permission denied', file=sys.stderr); sys.exit(1)-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; sys.exit(0)-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('completed_check=fail'); sys.exit(2)-exit]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('completed_check=pass'); sys.exit(1)-exit]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=fail')-exit]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=pass\\ncompleted_check=pass')-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=pass\\ncompleted_check=fail')-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=unknown')-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_completed_checks_remain_measurements[correct-1.0]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_completed_checks_remain_measurements[wrong-0.0]
+FAILED tests/quality/test_prifix_regressions.py::test_d3_native_verdict_retains_stopped_and_cleanup_results[False]
+FAILED tests/quality/test_prifix_regressions.py::test_d3_native_verdict_retains_stopped_and_cleanup_results[True]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_nested_projection_modes_survive_restrictive_umask
+FAILED tests/quality/test_prifix_regressions.py::test_d2_infrastructure_failure_with_marker_is_unmeasured_and_retained[oom]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_infrastructure_failure_with_marker_is_unmeasured_and_retained[runtime-error]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_infrastructure_failure_with_marker_is_unmeasured_and_retained[attach-error]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_infrastructure_failure_with_marker_is_unmeasured_and_retained[timeout]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_infrastructure_failure_with_marker_is_unmeasured_and_retained[inspect-error]
+FAILED tests/quality/test_prifix_regressions.py::test_d3_cleanup_exception_retains_native_error
+24 failed in 4.27s
+
+
+Final production source, focused command:
+$ python3 -m pytest -q tests/quality/test_prifix_regressions.py
+........................                                                 [100%]
+24 passed in 3.70s
+
+
+Final production source, broader focused command:
+$ python3 -m pytest -q tests/quality/test_prifix_regressions.py tests/quality/test_scorer_isolation_option_b.py tests/quality/test_terminal_artifact_admission.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_spreadsheetbench_classification_w_spread2.py tests/quality/test_hotpot_timeout_admission_w_hotpot.py
+........................................................................ [ 37%]
+........................................................................ [ 74%]
+..................................................                       [100%]
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 170 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 82 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+194 passed, 252 warnings in 65.88s (0:01:05)
+
+
+Independent final packet audit:
+$ python3 reports/w-prifix-evidence/audit_packet.py reports/w-prifix-evidence/final-control reports/w-prifix-evidence/final-network-followup reports/w-prifix-evidence/final-audit.json
+{"counts": {"eligible_tasks": 1, "expected_trials": 1, "invalid_trials": 0, "measured_trials": 1, "selected_tasks": 1, "unmeasured_trials": 0}, "fixture_files_verified": 55, "network_attribution": {"first_mismatching_clause": "host[\"NetworkMode\"] != \"none\"", "preceding_boundary_conditions": {"cmd": true, "created": true, "entrypoint": true, "env": true, "image": true, "no_added_groups": true, "not_running": true, "user": true, "workdir": true}, "raw_value": "bridge", "source": "eval/admission/artifact_admission.py:_verify_artifact_runtime"}, "run_id": "w-prifix-final-20261014T231720Z-483ac92d", "score": 0.0, "valid": true}
+
+
+Copied runtime packets: copy-provenance.json verifies all 89 copied files byte-for-byte against external originals.
+
+Historical fixture integrity: auditor verifies all 55 SHA256SUMS entries; no fixture source or receipt changed.
+
+Intermediate failures are preserved at reports/w-prifix-evidence/intermediate-after.txt (2 failed, 89 passed) and intermediate-facade-tests.txt (8 failed, 174 passed). Final broader suite passes.
+
+Final staged diff check:
+$ git diff --cached --check -- . ':(exclude)reports/w-prifix-evidence/focused-before*.txt' ':(exclude)reports/w-prifix-evidence/intermediate*.txt'
+Exit 0, no output. Raw pytest failure transcripts retain their original trailing
+spaces; those immutable transcripts are excluded from this whitespace-only check.
+Production code, tests, documentation and other artifacts pass it.
+
+Independent parent-requested read-only review verified all 89 copied runtime files,
+55 original fixture entries, 105 new packet hashes and all 11 refusal results;
+no remaining correctness or receipt-consistency finding.

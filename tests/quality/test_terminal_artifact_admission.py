@@ -44,6 +44,8 @@ def example(tmp_path):
                                  ("package.txt", "dependency", [])):
         raw = f"synthetic {role} metadata; never executed\n".encode()
         (closure / name).write_bytes(raw)
+        if role == "runtime":
+            (closure / name).chmod(0o755)
         rows.append(dict(path=name, role=role, requires=requires,
                          bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest()))
     (source / "results").mkdir()
@@ -73,7 +75,7 @@ def observation(example):
     contract, closure, _, destination = example
     raw, pin = seal(contract)
     return dict(Image=contract["runtime_image_id"], State=dict(Status="created", Running=False),
-                Config=dict(Volumes={}, Entrypoint=contract["scorer"]["argv"][:1],
+                Config=dict(Volumes={}, User=artifacts.scorer_user(), Entrypoint=contract["scorer"]["argv"][:1],
                             Cmd=contract["scorer"]["argv"][1:], Env=list(artifacts.SCORER_ENV),
                             WorkingDir="/tmp"), NetworkSettings=dict(Networks={"none": {}}),
                 HostConfig=dict(NetworkMode="none", ReadonlyRootfs=True, Privileged=False,

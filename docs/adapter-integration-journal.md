@@ -2854,3 +2854,41 @@ isolated worktree; parent review/merge remains separate.
 - Resource state: w-caps started no containers and ran no benchmark, model, GPU or endpoint call -
   source inspection, mock-verified Docker arguments and local tests only. Both GPUs stayed idle and
   no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
+## Pristine export, completion and native result repairs — 2026-10-15 - w-prifix
+
+Repaired the three production defects audited by w-pristine: bounded exports now
+have explicit group read/search access for a separate numeric scorer UID, with
+actual user/permission checks; a completion marker consistent with Docker attach
+and stopped exit is mandatory before emitting a score; native verdict evidence
+retains stopped State and full removal results. Initialization/infrastructure,
+marker, timeout and cleanup failures remain unmeasured with a reason, while a
+completed failing predicate remains measured 0.0. Neither capability drop nor
+bounded two-projection admission was weakened. Bundle requirements and limits are
+in `docs/pristine-scorer-protocol.md`.
+
+The unchanged sealed fixture was exercised twice with fresh external IDs, once
+before and once after moving access validation into the shared admission core.
+Final run `w-prifix-final-20261014T231720Z-483ac92d` read answer41/expected42,
+emitted completed_check=fail, and returned genuine measured score0.0:
+eligible1/selected1/trials1, measured1/invalid0/unmeasured0. Its native stopped State
+is exited/ExitCode1/OOMfalse/Error-empty; native removal returned0, and external
+inspection found the container and temporary projection absent. Actual cgroup and
+tmpfs samples are retained. Every one of the fixture's 55 manifest entries still
+matches. No model, GPU, paid endpoint, dataset pilot or snapshot was used.
+
+Image, bridge and extra-mount probes still refuse. Reordered environments are
+preserved as confounders wherever observed. Final bridge inspection has exact
+required environment order; separate final extra-mount attempt3 also has exact
+order and reaches the explicit mount refusal. All 11 stopped probes across both
+controls/follow-ups refused and were removed, with none started/scored. Both
+separate task trials measured zeros; they are not pooled into a benchmark score.
+
+The exact final 24 regressions fail against baseline production and pass after
+repair (D1=6/D2=15/D3=3); broader focused validation passes194, including both
+admission entry points and the HotpotQA/SpreadsheetBench precedents. Full commands,
+raw values, provenance, initial/intermediate outputs and attribution limits are in
+`reports/w-prifix-receipts.md`, `reports/w-prifix-evidence/`, and
+`reports/w-prifix-validation.txt`. Registry checker remains valid; both shared
+blockers, all dataset records, historical evidence and archives stay unchanged.
+No `runs/` path was used. Commit is confined to the isolated worktree for parent
+review and merge.

@@ -37,10 +37,12 @@ def scorer(tmp_path):
     root = tmp_path / "closure"
     root.mkdir()
     shutil.copyfile(sys.executable, root / "python")
-    (root / "python").chmod(0o700)
+    (root / "python").chmod(0o755)
     (root / "check.py").write_text(
         "import pathlib,sys\n"
-        "sys.exit(0 if pathlib.Path(sys.argv[1]).read_text() == 'correct' else 1)\n")
+        "passed = pathlib.Path(sys.argv[1]).read_text() == 'correct'\n"
+        "print('completed_check=' + ('pass' if passed else 'fail'))\n"
+        "sys.exit(0 if passed else 1)\n")
     rows = []
     for name, role, requires in [("python", "runtime", []), ("check.py", "scorer", ["python"])]:
         raw = (root / name).read_bytes()
@@ -87,7 +89,8 @@ def docker_double(monkeypatch):
                     env.append(cmd[i + 1])
             image_index = next(i for i, arg in enumerate(cmd) if arg.startswith("sha256:"))
             state.info = dict(Image=cmd[image_index], State=dict(Status="created", Running=False),
-                Config=dict(Volumes={}, Entrypoint=[cmd[cmd.index("--entrypoint") + 1]],
+                Config=dict(Volumes={}, User=cmd[cmd.index("--user") + 1] if "--user" in cmd else "",
+                            Entrypoint=[cmd[cmd.index("--entrypoint") + 1]],
                             Cmd=cmd[image_index + 1:], Env=env, WorkingDir=cmd[cmd.index("--workdir") + 1]),
                 NetworkSettings=dict(Networks={"none": {}}),
                 HostConfig=dict(NetworkMode=cmd[cmd.index("--network") + 1],

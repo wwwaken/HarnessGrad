@@ -1,0 +1,378 @@
+FFFFFFFFFFFFFFFFF                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_d1_projection_is_readable_by_separate_scorer_identity __________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d1_projection_is_readable0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d1_projection_is_readable0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-d4f7bf62a5cd46808ff02ba1f176caa4', '--network', 'no...able_by_separate_scorer_identity.<locals>.observe at 0x718e027a9f80>, started=True, exit_code=1, cleanup_failure=False)
+
+    def test_d1_projection_is_readable_by_separate_scorer_identity(tmp_path, scorer, docker_double):
+        observed = {}
+    
+        def observe(info):
+            observed["user"] = info["Config"]["User"]
+            root = Path(next(m["Source"] for m in info["Mounts"]
+                             if m["Destination"] == "/control-input"))
+            observed["metadata"] = [(stat.S_IMODE(p.stat().st_mode), p.stat().st_gid)
+                                    for p in (root, root / "answer.txt")]
+        docker_double.mutate = observe
+        verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5)
+>       assert observed["user"] == f"65534:{os.getegid()}"
+E       AssertionError: assert '' == '65534:1026'
+E         - 65534:1026
+
+tests/quality/test_prifix_regressions.py:50: AssertionError
+_________________ test_d1_unexpected_scorer_identity_refuses[] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d1_unexpected_scorer_iden0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d1_unexpected_scorer_iden0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-2c446d93ecb4400181a3ad6776cb43e6', '--network', 'no...xpected_scorer_identity_refuses.<locals>.<lambda> at 0x718e027aa5c0>, started=True, exit_code=0, cleanup_failure=False)
+user = ''
+
+    @pytest.mark.parametrize("user", ["", "0:0", "65534:0"])
+    def test_d1_unexpected_scorer_identity_refuses(tmp_path, scorer, docker_double, user):
+        docker_double.mutate = lambda info: info["Config"].update(User=user)
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+>       assert verdict["score"] is None and verdict.get("unmeasured")
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:60: AssertionError
+_______________ test_d1_unexpected_scorer_identity_refuses[0:0] ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d1_unexpected_scorer_iden1')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d1_unexpected_scorer_iden1/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-5e5b211c76d94cb28f8a8ec6989fb487', '--network', 'no...xpected_scorer_identity_refuses.<locals>.<lambda> at 0x718e027aa980>, started=True, exit_code=0, cleanup_failure=False)
+user = '0:0'
+
+    @pytest.mark.parametrize("user", ["", "0:0", "65534:0"])
+    def test_d1_unexpected_scorer_identity_refuses(tmp_path, scorer, docker_double, user):
+        docker_double.mutate = lambda info: info["Config"].update(User=user)
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+>       assert verdict["score"] is None and verdict.get("unmeasured")
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:60: AssertionError
+_____________ test_d1_unexpected_scorer_identity_refuses[65534:0] ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d1_unexpected_scorer_iden2')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d1_unexpected_scorer_iden2/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-ce531910d8a649a4a568eff1514e4da2', '--network', 'no...xpected_scorer_identity_refuses.<locals>.<lambda> at 0x718e027aac00>, started=True, exit_code=0, cleanup_failure=False)
+user = '65534:0'
+
+    @pytest.mark.parametrize("user", ["", "0:0", "65534:0"])
+    def test_d1_unexpected_scorer_identity_refuses(tmp_path, scorer, docker_double, user):
+        docker_double.mutate = lambda info: info["Config"].update(User=user)
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+>       assert verdict["score"] is None and verdict.get("unmeasured")
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:60: AssertionError
+_______________ test_d1_private_closure_cannot_start_unreadable ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d1_private_closure_cannot0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d1_private_closure_cannot0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-036df5bc11f442b0a1449fe9a4bc8d1b', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027aa2a0>, started=True, exit_code=0, cleanup_failure=False)
+
+    def test_d1_private_closure_cannot_start_unreadable(tmp_path, scorer, docker_double):
+        Path(scorer["scorer_bundle"]["root"], "check.py").chmod(0o600)
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+>       assert verdict["score"] is None and "readable" in verdict["unmeasured"]
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:67: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('Permission denied', file=sys.stderr); sys.exit(1)-completion] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-d0542f90d40a425b831752d9ce16dc49', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027a9da0>, started=True, exit_code=1, cleanup_failure=False)
+body = "import sys; print('Permission denied', file=sys.stderr); sys.exit(1)"
+reason = 'completion'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (0.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; sys.exit(0)-completion] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis1')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis1/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-55828d3278e54634b40f29904bb31c8a', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027a9f80>, started=True, exit_code=0, cleanup_failure=False)
+body = 'import sys; sys.exit(0)', reason = 'completion'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('completed_check=fail'); sys.exit(2)-exit] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis2')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis2/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-f041f08035a64755b7a64e7f543ad9bb', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027ab060>, started=True, exit_code=2, cleanup_failure=False)
+body = "import sys; print('completed_check=fail'); sys.exit(2)", reason = 'exit'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (0.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('completed_check=pass'); sys.exit(1)-exit] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis3')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis3/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-2daadf2ce4924c85a2aa59f5267939ac', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027ab4c0>, started=True, exit_code=1, cleanup_failure=False)
+body = "import sys; print('completed_check=pass'); sys.exit(1)", reason = 'exit'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (0.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=fail')-exit] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis4')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis4/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-c5efab022c834686a3bee9b970c5e66a', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027ab880>, started=True, exit_code=0, cleanup_failure=False)
+body = "print('completed_check=fail')", reason = 'exit'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=pass\\ncompleted_check=pass')-completion] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis5')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis5/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-eedc4c45e8c3416ea464918d3c834c83', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027abc40>, started=True, exit_code=0, cleanup_failure=False)
+body = "print('completed_check=pass\\ncompleted_check=pass')"
+reason = 'completion'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=pass\\ncompleted_check=fail')-completion] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis6')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis6/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-7c3bd109c407427e98e7cb3baf467d7e', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027d40e0>, started=True, exit_code=0, cleanup_failure=False)
+body = "print('completed_check=pass\\ncompleted_check=fail')"
+reason = 'completion'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+_ test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=unknown')-completion] _
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis7')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_incomplete_or_inconsis7/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-eb0acb8403ce411e87a62ae63332e386', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027d42c0>, started=True, exit_code=0, cleanup_failure=False)
+body = "print('completed_check=unknown')", reason = 'completion'
+
+    @pytest.mark.parametrize("body,reason", [
+        ("import sys; print('Permission denied', file=sys.stderr); sys.exit(1)", "completion"),
+        ("import sys; sys.exit(0)", "completion"),
+        ("import sys; print('completed_check=fail'); sys.exit(2)", "exit"),
+        ("import sys; print('completed_check=pass'); sys.exit(1)", "exit"),
+        ("print('completed_check=fail')", "exit"),
+        ("print('completed_check=pass\\ncompleted_check=pass')", "completion"),
+        ("print('completed_check=pass\\ncompleted_check=fail')", "completion"),
+        ("print('completed_check=unknown')", "completion"),
+    ])
+    def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
+            tmp_path, scorer, docker_double, body, reason):
+        replace_script(scorer, body + "\n")
+        verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+        assert docker_double.started
+>       assert verdict["score"] is None and verdict["passed"] is False
+E       assert (1.0 is None)
+
+tests/quality/test_prifix_regressions.py:86: AssertionError
+__________ test_d2_completed_checks_remain_measurements[correct-1.0] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_completed_checks_remai0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_completed_checks_remai0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-9ae7b646248c4e6fb03da341e6b5da49', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027d45e0>, started=True, exit_code=0, cleanup_failure=False)
+answer = 'correct', score = 1.0
+
+    @pytest.mark.parametrize("answer,score", [("correct", 1.0), ("wrong", 0.0)])
+    def test_d2_completed_checks_remain_measurements(tmp_path, scorer, docker_double, answer, score):
+        verdict = verifier._verify(actor(tmp_path, answer), scorer, "", sandbox=False, timeout_s=5)
+        assert verdict["score"] == score
+>       assert verdict["outcome"] == "measured"
+E       KeyError: 'outcome'
+
+tests/quality/test_prifix_regressions.py:97: KeyError
+___________ test_d2_completed_checks_remain_measurements[wrong-0.0] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d2_completed_checks_remai1')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d2_completed_checks_remai1/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-a23ed036806b4964b4be23b1bcbb428d', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027d4c20>, started=True, exit_code=1, cleanup_failure=False)
+answer = 'wrong', score = 0.0
+
+    @pytest.mark.parametrize("answer,score", [("correct", 1.0), ("wrong", 0.0)])
+    def test_d2_completed_checks_remain_measurements(tmp_path, scorer, docker_double, answer, score):
+        verdict = verifier._verify(actor(tmp_path, answer), scorer, "", sandbox=False, timeout_s=5)
+        assert verdict["score"] == score
+>       assert verdict["outcome"] == "measured"
+E       KeyError: 'outcome'
+
+tests/quality/test_prifix_regressions.py:97: KeyError
+______ test_d3_native_verdict_retains_stopped_and_cleanup_results[False] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d3_native_verdict_retains0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d3_native_verdict_retains0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-a86c48671e954efb96544f667867262d', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x718e027d5300>, started=True, exit_code=1, cleanup_failure=False)
+cleanup_failure = False
+
+    @pytest.mark.parametrize("cleanup_failure", [False, True])
+    def test_d3_native_verdict_retains_stopped_and_cleanup_results(
+            tmp_path, scorer, docker_double, cleanup_failure):
+        docker_double.cleanup_failure = cleanup_failure
+        verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5)
+        # Round-trip the native verdict; no external observer supplies these facts.
+        evidence = json.loads(json.dumps(verdict))["scorer_isolation_evidence"]
+>       assert evidence["stopped_result"]["state"] == docker_double.info["State"]
+E       KeyError: 'stopped_result'
+
+tests/quality/test_prifix_regressions.py:108: KeyError
+_______ test_d3_native_verdict_retains_stopped_and_cleanup_results[True] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-xubuqiang/pytest-82/test_d3_native_verdict_retains1')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...'pristine-offline', 'manifest': '/tmp/pytest-of-xubuqiang/pytest-82/test_d3_native_verdict_retains1/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-07653a43fffc4c0385a9d60067524a3f', '--network', 'no..., mutate=<function docker_double.<locals>.<lambda> at 0x718e027ab880>, started=True, exit_code=1, cleanup_failure=True)
+cleanup_failure = True
+
+    @pytest.mark.parametrize("cleanup_failure", [False, True])
+    def test_d3_native_verdict_retains_stopped_and_cleanup_results(
+            tmp_path, scorer, docker_double, cleanup_failure):
+        docker_double.cleanup_failure = cleanup_failure
+        verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5)
+        # Round-trip the native verdict; no external observer supplies these facts.
+        evidence = json.loads(json.dumps(verdict))["scorer_isolation_evidence"]
+>       assert evidence["stopped_result"]["state"] == docker_double.info["State"]
+E       KeyError: 'stopped_result'
+
+tests/quality/test_prifix_regressions.py:108: KeyError
+=========================== short test summary info ============================
+FAILED tests/quality/test_prifix_regressions.py::test_d1_projection_is_readable_by_separate_scorer_identity
+FAILED tests/quality/test_prifix_regressions.py::test_d1_unexpected_scorer_identity_refuses[]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_unexpected_scorer_identity_refuses[0:0]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_unexpected_scorer_identity_refuses[65534:0]
+FAILED tests/quality/test_prifix_regressions.py::test_d1_private_closure_cannot_start_unreadable
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('Permission denied', file=sys.stderr); sys.exit(1)-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; sys.exit(0)-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('completed_check=fail'); sys.exit(2)-exit]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[import sys; print('completed_check=pass'); sys.exit(1)-exit]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=fail')-exit]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=pass\\ncompleted_check=pass')-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=pass\\ncompleted_check=fail')-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_incomplete_or_inconsistent_check_is_unmeasured[print('completed_check=unknown')-completion]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_completed_checks_remain_measurements[correct-1.0]
+FAILED tests/quality/test_prifix_regressions.py::test_d2_completed_checks_remain_measurements[wrong-0.0]
+FAILED tests/quality/test_prifix_regressions.py::test_d3_native_verdict_retains_stopped_and_cleanup_results[False]
+FAILED tests/quality/test_prifix_regressions.py::test_d3_native_verdict_retains_stopped_and_cleanup_results[True]
+17 failed in 2.64s
