@@ -14,7 +14,7 @@ authored by Xanh Ho on 2020-12-08. Its root tree is
 `545a956af257f0c79c68c39a358086de7cbf243b`.
 
 Exact original files and metadata are in
-[`tests/fixtures/twowikimultihopqa_upstream_codex197`](tests/fixtures/twowikimultihopqa_upstream_codex197/README.md):
+[`tests/fixtures/twowikimultihopqa_upstream_codex197`](../tests/fixtures/twowikimultihopqa_upstream_codex197/README.md):
 
 - `2wikimultihop_evaluate.py`, the original canonical-answer evaluator:
   SHA-256 `854b03c487608286d6381379eb32e46d9b845493527d1fe1951d0bf4ec923a40`.
@@ -98,7 +98,7 @@ source no longer requires custodian acquisition.
 
 ## Verification and limits
 
-[`tests/quality/test_twowikimultihopqa_provenance_codex197.py`](tests/quality/test_twowikimultihopqa_provenance_codex197.py)
+[`tests/quality/test_twowikimultihopqa_provenance_codex197.py`](../tests/quality/test_twowikimultihopqa_provenance_codex197.py)
 passed **38 tests** on fabricated inputs in 0.24 seconds. Exact command and
 output are in
 [`twowikimultihopqa-provenance-codex197-test-result.txt`](twowikimultihopqa-provenance-codex197-test-result.txt).

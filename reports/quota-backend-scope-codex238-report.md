@@ -11,18 +11,18 @@ deployment scope. The Terminal packet's “Required quota filesystem” section 
 administrator checklist's preference for dedicated empty storage could therefore
 read as prerequisites for every user.
 
-- [Installation documentation](README.md) and the
-  [backend checklist](docs/filesystem-quota-backends.md) now explicitly permit
+- [Installation documentation](../README.md) and the
+  [backend checklist](../docs/filesystem-quota-backends.md) now explicitly permit
   ordinary local execution on existing storage, subject to workload requirements.
   Project quotas and dedicated volumes are not universal prerequisites.
 - The strict per-run byte/inode enforcement profile is an optional enhancement
   for formal deployments. Its acceptance requirements remain binding when claiming
   those guarantees. XFS and ext4 are alternatives; a per-run allocation does not
   require a separate physical device or volume.
-- Scoped the [Terminal packet](docs/task-211-terminal-operator-backend-packet.md),
-  [administrator checklist](docs/task-222-quota-administrator-checklist.md),
-  [runner contract](docs/runner-admission-contract.md) and
-  [authentication proposal](docs/task-233-quota-readback-authentication.md).
+- Scoped the [Terminal packet](../docs/task-211-terminal-operator-backend-packet.md),
+  [administrator checklist](../docs/task-222-quota-administrator-checklist.md),
+  [runner contract](../docs/runner-admission-contract.md) and
+  [authentication proposal](../docs/task-233-quota-readback-authentication.md).
   Updated both existing HTML summaries and the Terminal Markdown source.
 
 Unknown enforcement, cleanup and snapshot evidence stays unknown. Local execution
@@ -40,9 +40,9 @@ at their original review revisions; this task adds no fresh host evidence.
 - Compared evidence/acceptance sections with the reviewed base: the backend
   evidence contract and appendix, runner API onward, authentication findings onward,
   and Terminal snapshotter section onward are unchanged.
-- Regenerated the [Terminal overview](docs/task-211-terminal-operator-backend-overview.html)
+- Regenerated the [Terminal overview](../docs/task-211-terminal-operator-backend-overview.html)
   and patched the scope panel in the
-  [quota authentication overview](docs/task-233-quota-readback-overview.html)
+  [quota authentication overview](../docs/task-233-quota-readback-overview.html)
   with `answer-me-with-html`: six and four panels respectively, zero prose
   warnings. Checked embedded source, local links and absence of remote active
   assets; authentication panels B–D are unchanged.

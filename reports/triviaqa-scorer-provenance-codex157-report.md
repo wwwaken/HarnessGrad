@@ -11,7 +11,7 @@ pin, reviewed acquisition evidence, and SHA-256/Git blob hashes. There is no fak
 upstream implementation, installed placeholder receipt, F1 addition, skip or
 local-reference fallback.
 
-The [acquisition contract](tests/fixtures/triviaqa_upstream/README.md) records
+The [acquisition contract](../tests/fixtures/triviaqa_upstream/README.md) records
 `rc.nocontext`, validation, EM-only and row/question/document grouping comparison
 boundaries. Exact full-evaluator grouping and denominator rules remain unverified.
 Source-file identity and finite EM component checks cannot certify a complete

@@ -21,13 +21,13 @@ was implemented or claimed by this review.
 
 ## Observed scorer behavior
 
-1. [`score()`](data/bfcl_v3.py#L205) computes
+1. [`score()`](../data/bfcl_v3.py#L205) computes
    `sorted(bare_name(predicted)) == sorted(bare_name(expected))`. This is actually
    **multiset equality**, despite the evidence label saying “set equality”:
    duplicates change the result. `bare_name()` drops namespace prefixes.
-2. [`parse_prediction()`](data/bfcl_v3.py#L187) reads one name per line and accepts
+2. [`parse_prediction()`](../data/bfcl_v3.py#L187) reads one name per line and accepts
    empty/no-tool markers. It does not parse call syntax or argument ASTs.
-3. [`_record_from_row()`](data/bfcl_v3.py#L446) extracts only gold function names
+3. [`_record_from_row()`](../data/bfcl_v3.py#L446) extracts only gold function names
    and discards reference argument alternatives. Trusted verifier gold therefore
    lacks the information needed to check full calls. The goal and released
    reference submission are likewise name-only.

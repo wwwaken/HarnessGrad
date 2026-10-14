@@ -19,7 +19,7 @@ contents API at that commit: root LICENSE, BFCL pyproject.toml, type_mappings.py
 eval_runner.py, eval_runner_helper.py, base_handler.py and model_handler/utils.py.
 Each SHA-256, byte count, original path, URL, commit-qualified raw URL and Git blob
 SHA-1 is preserved in the
-[candidate provenance record](tests/fixtures/bfcl_ast_source/candidate-codex195/provenance.json).
+[candidate provenance record](../tests/fixtures/bfcl_ast_source/candidate-codex195/provenance.json).
 Returned code bytes match the upstream Git blob hashes. The original Apache-2.0
 license is preserved, with the pinned package's matching license declaration.
 Original source/license bytes are unchanged.
@@ -32,7 +32,7 @@ The leaderboard's non-live Simple AST score averages Python `simple`, `java` and
 `javascript` category accuracies equally; a Python-only selected subset is a
 different metric scope. Internal scores are fractions, rendered as percentages.
 All source symbols, line citations, exception behavior and limits are documented
-in the [candidate source review](tests/fixtures/bfcl_ast_source/candidate-codex195/README.md).
+in the [candidate source review](../tests/fixtures/bfcl_ast_source/candidate-codex195/README.md).
 
 ## Unresolved findings and exact handoff
 
@@ -53,7 +53,7 @@ The locally declared tar.gz digest
 `57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe` and
 archive-member bindings are **unverified**. No archive was requested or opened.
 
-The [exact custodian request](tests/fixtures/bfcl_ast_source/candidate-codex195/CUSTODIAN_REQUEST.md)
+The [exact custodian request](../tests/fixtures/bfcl_ast_source/candidate-codex195/CUSTODIAN_REQUEST.md)
 specifies missing original source, dependency discovery, independent historical
 tag/archive/member custody, offline/runtime/license closure and a separately
 approved exact receipt pin. It requests code and metadata only. No confirmation,

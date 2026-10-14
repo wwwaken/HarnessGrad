@@ -25,7 +25,7 @@ The package's pinned `pyproject.toml:1–5` and `__init__.py:9` both declare
 This is the release matching the build declaration, not a claim about whichever
 code a mutable branch or a deployed container currently contains.
 
-[Preserved evidence](docs/evidence/appworld-codex229/source-provenance.json)
+[Preserved evidence](../docs/evidence/appworld-codex229/source-provenance.json)
 includes exact public source/license bytes, original GitHub contents-API
 responses, release/tag/commit and nonrecursive tree metadata, acquisition URLs,
 HTTP response dates, SHA-256 digests and Git blob identities. Raw-host requests
@@ -57,7 +57,7 @@ acquired; no upstream source was imported or executed.
 | Per-task scorer | `evaluator.py:501–516` obtains the task's evaluation module and invokes its `evaluate` using task-specific inputs | Public generic evaluator source is acquired; protected `ground_truth/evaluation.py`, supporting artifacts, release custody and installed dependency/runtime closure remain outside this review. |
 
 All upstream paths/lines in this report refer to exact files in
-[the evidence directory](docs/evidence/appworld-codex229/). Source files are
+[the evidence directory](../docs/evidence/appworld-codex229/). Source files are
 stored as `.py.txt` to distinguish inert evidence from runnable local code.
 No task-specific evaluator is transcribed, inferred or replaced.
 
@@ -107,7 +107,7 @@ full official Test-N/Test-C result, even if its measured fraction is defined.
 
 ## Exact production writer evidence gap
 
-The [local source audit](docs/appworld-local-adapter-audit-codex229.md) gives
+The [local source audit](../docs/appworld-local-adapter-audit-codex229.md) gives
 line-level producer, writer and reporter evidence. Parent inspection confirmed:
 
 1. The AppWorld checker supplies metric/measured/Boolean success/task/split

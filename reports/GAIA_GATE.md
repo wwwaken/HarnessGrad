@@ -64,7 +64,7 @@ named commit; it cannot reconstruct the checkout used by a historical run.
 candidate_runtime, reference_receipt_sha256=...)` produces canonical source and
 runtime hashes, all changed paths, runtime-affecting paths and changed binding
 fields. It compares every tracked entry, including file modes, additions and
-deletions. Only the exact nonexecutable regular files `GAIA_GATE.md` and
+deletions. Only the exact nonexecutable regular files `reports/GAIA_GATE.md` and
 `tests/quality/test_gaia_snapshot_attestation.py` are review-only exceptions.
 Other docs, tests, unknown paths and the attestation implementation itself
 require fresh controls when changed. No caller-supplied exemptions are accepted.

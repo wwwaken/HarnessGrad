@@ -4,7 +4,7 @@
 confined to `/tmp/hg-codex-227`. Four unauthenticated official GitHub Git blob API
 requests returned HTTP 200. Original source/license/specification bytes and full
 request/response evidence are retained separately under
-[retry-codex227](tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json).
+[retry-codex227](../tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json).
 The Task 195 candidate and all earlier receipts remain unchanged.
 
 ## Acquired and verified
@@ -90,7 +90,7 @@ authorization.
 - New retry negative admission: refused even with its locally computed integrity
   digest, before source inventory or projected-source reads. The digest supplies
   no independent approval. Results are in
-  [verification.json](tests/fixtures/bfcl_ast_source/retry-codex227/verification.json).
+  [verification.json](../tests/fixtures/bfcl_ast_source/retry-codex227/verification.json).
 - Authored report/metadata/request receipts pass whitespace checks. The original
   checker retains seven upstream trailing-whitespace lines (37, 42, 244, 257,
   276, 284, 529), which produce the expected full-diff whitespace warnings.

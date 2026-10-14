@@ -17,7 +17,7 @@ facts and mocked passes cannot establish kernel enforcement. `statvfs`,
 `disk_usage`, reservation ledgers and snapshot preflight remain observations or
 accounting, not quotas.
 
-Added [the backend audit and OS implementation requirements](docs/filesystem-quota-backends.md)
+Added [the backend audit and OS implementation requirements](../docs/filesystem-quota-backends.md)
 and [source SHA-256 inventory](filesystem-quota-codex168-source-evidence.json).
 The requirements identify XFS/ext4 project-quota provisioning, paired block/inode
 hard limits, pre-staging scope allocation/inheritance, bounded tmpfs, actual

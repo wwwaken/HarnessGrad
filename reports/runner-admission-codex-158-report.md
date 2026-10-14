@@ -20,7 +20,7 @@ is implied by this change or by the synthetic passing receipts.
 - Cleanup gate: exact inventory and absence evidence for containers, networks, snapshots, volumes and workspaces; all five owned namespaces must be checked, even with no expected allocations. Any uncertainty requests quarantine; a verified receipt requests release. This module performs no deletion or ledger mutation.
 - Receipts bind adapter/run/trial/manifest, hash policy and observations, are capped at 16 KiB under standard single-line JSON serialization, reject extra/private payload fields, and contain no score. They always say `measured=false`, `production_authorized=false`.
 - `eval/container.py`: fail-closed repair for invalid limits/sizes/roots and query exceptions, explicit byte bounds and inspection/commit deadlines, and `preflight_only=true`, `quota_enforced=false`. Valid defaults and the existing commit deadline are retained.
-- Contract documentation: [docs/runner-admission-contract.md](docs/runner-admission-contract.md). Platform log and adapter journal contain isolated-status follow-up entries.
+- Contract documentation: [docs/runner-admission-contract.md](../docs/runner-admission-contract.md). Platform log and adapter journal contain isolated-status follow-up entries.
 
 ## Validation and review
 
