@@ -193,6 +193,57 @@ def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(d
     assert document["review"]["production_authorized"] is False
 
 
+def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(document):
+    target = row(document, "twowikimultihopqa")
+    blockers = {item["id"]: item for item in target["blockers"]}
+    assert "independent-evaluator-source" not in blockers
+    assert "independent-evaluator-source" not in target["shared_blockers"]
+    for blocker_id, family in (
+        ("ujson-native-offline-closure", "scorer-dependency-network"),
+        ("hub-data-provenance", "source-provenance"),
+    ):
+        blocker = blockers[blocker_id]
+        assert blocker["status"] == "external"
+        assert blocker["family"] == family
+        assert "docs/task-206-twowiki-provenance-review.md" in {
+            item["path"] for item in blocker["evidence"]
+        }
+
+
+def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
+    target = row(document, "twowikimultihopqa")
+    assert set(target["shared_blockers"]) == {
+        "runtime-observations", "paired-filesystem-quotas", "scorer-offline-closure",
+        "pristine-verifier", "artifact-only-state-export", "official-scorer-identity",
+        "snapshot-owned-cleanup", "pilot-guidance-conflict",
+    }
+    comparability = next(item for item in target["blockers"]
+                         if item["id"] == "recovery-comparability")
+    assert comparability["status"] == "measurement"
+    assert comparability["family"] == "metric-comparability"
+    baseline = checker.read_json(checker.HISTORY)
+    assert target["historical_runs"] == [
+        item["record"] for item in baseline["records"]
+        if item["dataset"] == "twowikimultihopqa"
+    ]
+    original, = target["historical_runs"]
+    assert original["record_id"] == "twowiki-original-invalid-pilot"
+    assert original["run_id"] is None
+    assert original["status"] == "partial-measurement"
+    assert original["effect"] is None
+    for fact in ("48 scored tasks", "two malformed-output invalids",
+                 "mixed legacy Answer F1/structured Joint F1"):
+        assert fact in original["observation"]
+    assert document["review"]["production_authorized"] is False
+
+
+def test_twowiki_task_capability_is_separate_from_harness_exercises(document):
+    target = row(document, "twowikimultihopqa")
+    assert (target["demand"], target["surface"]) == ("evidence", "information_seeking")
+    assert target["exercises"] == ["context"]
+    assert "category" not in target
+
+
 
 @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
 def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
