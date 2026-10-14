@@ -36,7 +36,7 @@ EXCEPTIONS = {
         "The existing platform control invokes run_one with the AppWorld verifier.",
     ("data-eval", "data/appworld.py", "eval.policy.appworld_reporting"):
         "The adapter shares make_manifest with reporting; moving it needs a separate refactor.",
-    ("data-eval", "data/command_control.py", "eval.run.runner"):
+    ("data-eval", "data/scaffolds/command_control.py", "eval.run.runner"):
         "The shared command control invokes run_one for platform verification.",
     ("data-eval", "data/jericho/control.py", "eval.policy.runtime_policy"):
         "The local control stages the declared runtime and applies the platform timeout.",
@@ -46,7 +46,7 @@ EXCEPTIONS = {
         "The local control uses the platform verifier to interpret measured evidence.",
     ("data-eval", "data/jericho/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the Jericho verifier.",
-    ("data-eval", "data/qa/control.py", "eval.run.runner"):
+    ("data-eval", "data/scaffolds/qa/control.py", "eval.run.runner"):
         "The shared QA control invokes run_one to validate adapter wiring.",
     ("data-eval", "data/scienceworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the ScienceWorld verifier.",
@@ -178,6 +178,38 @@ class ImportDirectionTests(unittest.TestCase):
         self.assertFalse(stale, "Import the canonical eval implementation:\n" + "\n".join(
             f"{edge.file}:{edge.line}: {edge.statement}" for edge in stale))
 
+    def test_scaffolds_and_adapter_asset_directories_are_distinct(self):
+        # KIND is the publication declaration, so a scaffold must never declare it.
+        for path in (ROOT / "data/scaffolds").rglob("*.py"):
+            tree = ast.parse(path.read_text(), filename=str(path))
+            for node in tree.body:
+                if isinstance(node, (ast.Assign, ast.AnnAssign)):
+                    targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+                    if any(isinstance(t, ast.Name) and t.id == "KIND" for t in targets):
+                        self.assertNotEqual(ast.literal_eval(node.value), "dataset", str(path))
+        # The only temporary shared directory is Stage A's documented QA shim.
+        # pinchbench is unclassified inventory, deliberately not called adapter assets.
+        infrastructure = {"scaffolds", "datasets", "qa", "__pycache__", "pinchbench"}
+        edges = _source_imports(ROOT)
+        for directory in (ROOT / "data").iterdir():
+            if not directory.is_dir() or directory.name in infrastructure:
+                continue
+            adapter = directory.with_suffix(".py")
+            self.assertTrue(adapter.is_file(), f"unclassified data directory: {directory}")
+            # A private asset directory must not host another dataset declaration.
+            for path in directory.rglob("*.py"):
+                for node in ast.parse(path.read_text(), filename=str(path)).body:
+                    if isinstance(node, ast.Assign):
+                        if any(isinstance(t, ast.Name) and t.id == "KIND" for t in node.targets):
+                            self.assertNotEqual(ast.literal_eval(node.value), "dataset", str(path))
+            for edge in edges:
+                if edge.file.startswith(directory.relative_to(ROOT).as_posix() + "/"):
+                    if edge.target.startswith("data."):
+                        target = edge.target.split(".")[1]
+                        if (ROOT / "data" / f"{target}.py").is_file():
+                            self.assertIn(target, {directory.name, "registry", "command_control"},
+                                          f"another adapter's assets: {edge}")
+
     def test_current_source_layering(self):
         for directory in SOURCE_DIRS:
             self.assertTrue((ROOT / directory).is_dir(), f"missing source directory: {directory}")
@@ -203,7 +235,7 @@ class ImportDirectionTests(unittest.TestCase):
             # An approved file cannot add a dependency on a config submodule.
             ("eval/service/services.py", "from harnessgrad.config import loader"),
             # A directory/file exception cannot admit a different eval module.
-            ("data/qa/control.py", "from eval.service.services import start"),
+            ("data/scaffolds/qa/control.py", "from eval.service.services import start"),
         ]
         modules = {"eval.run.runner", "data.registry", "harnessgrad.config",
                    "harnessgrad.config.loader"}
