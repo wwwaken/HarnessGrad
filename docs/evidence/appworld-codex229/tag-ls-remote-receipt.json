@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "command": [
+    "git",
+    "-c",
+    "credential.helper=",
+    "ls-remote",
+    "https://github.com/StonyBrookNLP/appworld.git",
+    "refs/tags/v0.1.3.post1",
+    "refs/tags/v0.1.3.post1^{}"
+  ],
+  "scope": "Public ref and peeled-tag metadata only; no clone, checkout or source/task objects acquired",
+  "exit_code": 0,
+  "stdout_path": "tag-ls-remote.txt",
+  "stdout_sha256": "88aef171a6610269d906918dd17ad2732964ec6795b5004a45bd6839fdca658f",
+  "stderr": ""
+}
