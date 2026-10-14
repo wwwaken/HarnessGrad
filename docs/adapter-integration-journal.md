@@ -1836,3 +1836,47 @@ passed. Exact commands and focused source-only registry tests are recorded in
 - Resource state: neither worker ran a benchmark task, model, GPU, endpoint or container - both
   were source/bytes inspections, so GPU0 and GPU1 stayed idle and no utilisation is claimed.
   Historical runs, frozen receipts and archives were left untouched.
+
+## 2026-10-15 SpreadsheetBench comparator failure classification - w-spread
+
+Read `AGENTS.md` and the HotpotQA timeout-admission precedent `2a456b7` and its
+synthetic regression. In isolated `/tmp/hg-spread` (`wg-spread`), repaired
+`data/datasets/spreadsheetbench/verify/check.py`: unreadable golden/result
+workbooks and unparseable answer ranges now raise into explicit unmeasured
+evidence rather than returning the same false result as a completed mismatch.
+Formula-probe load errors no longer masquerade as formula-free workbooks; the
+guard now covers formula detection and the complete LibreOffice operation,
+including unexpected launch, move and cleanup errors. Reference-sheet lookup
+precedes result-sheet mismatch; a disappearing comparison file raises. Genuine
+value/result-sheet mismatches and the existing absent-submission contract remain
+measured zero. Adapter/verifier/runner admission rules are unchanged.
+
+The new `tests/quality/test_spreadsheetbench_classification_w_spread.py` uses
+authored workbooks, an empty synthetic adapter root and intercepted subprocesses.
+It tests 16 cases at checker and persisted aggregation/cache levels: **14 failed,
+18 passed before; 32 passed after**. Combined synthetic comparator, submission,
+Hotpot timeout and new regressions: **53 passed, 4 released-workbook tests
+deselected**. Updated inherited comparator assertions for the intentional error
+classification; no released workbook test was run. Registry tests and exact
+commands/checker output are in `reports/w-spread-validation.txt`.
+
+`reports/w-spread-classification.md` cites each site and defines the source
+eligibility/split conditions without certifying an authenticated gradable row
+set. The source-known bad range `283-32` is outside hash eval (SHA-256 first byte
+191), but included in either all-eval option. Neither 400 loadable metadata rows
+nor this exclusion establishes 399 gradable tasks. One supplied workbook
+variant remains distinct from the paper's soft/hard three-variant aggregates.
+
+**`spreadsheetbench / dataset-journal-gap` remains OPEN, status measurement.**
+Updated only its observation/evidence/next action. Still required: authenticated
+row-level gradable eligibility and coverage; independent installed/mirror and
+scorer custody; formula/LibreOffice offline runtime; both shared gates
+(`scorer-offline-closure` and `artifact-only-state-export`) with their full
+dependency, private-input/export, class-specific execution/resource/lifecycle/
+cleanup requirements; and separate authorization before a diagnostic. The
+single-variant metric distinction and prohibition on promoting a local control
+to production evidence remain explicit. No gate, refusal or admission was
+weakened, no blocker was deleted or downgraded, and production authorization
+remains false. No benchmark task, model, GPU, endpoint or paid service was used;
+no run, frozen receipt or archive was edited or rerun. Work is for parent review
+and commit in this registered worktree only, with no main commit or merge.

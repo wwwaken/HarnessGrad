@@ -1103,7 +1103,7 @@
           "id": "dataset-journal-gap",
           "family": "journal-coverage",
           "status": "measurement",
-          "observed": "Source-only journal gap closed: cited review identifies single-variant named-cell comparison, the pinned verified_400 Hub mirror, hash/all-eval options and declared openpyxl/LibreOffice runtime. Repair 8c323e6 establishes submission-helper provisioning and error-output visibility, with inherited local-control evidence only. Unparseable ranges and workbook-load failures can become measured zero in current source. Independent provenance, scorer/runtime identity, comparability, classification and coverage remain open with all shared gates; this record is retained for follow-up.",
+          "observed": "Source-only journal gap closed: cited review identifies single-variant named-cell comparison, the pinned verified_400 Hub mirror, hash/all-eval options and declared openpyxl/LibreOffice runtime. Repair 8c323e6 establishes submission-helper provisioning and error-output visibility, with inherited local-control evidence only. Classification repair - w-spread now makes unparseable ranges, comparator workbook-load failures, formula-probe failures, invalid reference sheets and unexpected LibreOffice/tool failures explicitly unmeasured with named reasons; completed mismatches remain measured zero. Synthetic checker plus verifier/runner persistence regressions failed 14/32 before the fix (18 passed) and pass 32/32 after; combined local synthetic validation passes 53 with four released-workbook tests deselected. Source eligibility conditions and hash/all-eval membership are documented, but no authenticated row-level gradable set or installed-data audit is established. Independent installed/mirror provenance, scorer custody, formula/LibreOffice offline runtime, gradable eligibility/coverage and all referenced shared gates remain open. One-variant scores remain distinct from paper soft/hard aggregates; synthetic controls are not production evidence.",
           "evidence": [
             {
               "kind": "repository",
@@ -1124,9 +1124,19 @@
               "kind": "repository",
               "path": "tests/quality/test_spreadsheetbench_control_submit.py",
               "locator": "def test_materialized_oracle_submits_and_scores_one"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-spread-classification.md",
+              "locator": "## Classification repaired; blocker remains open"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_spreadsheetbench_classification_w_spread.py",
+              "locator": "def test_classification_survives_verifier_persistence_and_aggregation"
             }
           ],
-          "next_action": "Resolve comparator-failure versus measured-zero classification and establish gradable eligibility; independently authenticate installed/mirror and scorer custody, formula/LibreOffice offline runtime and all shared gates before a separately authorized diagnostic. Keep one-variant scores distinct from paper soft/hard aggregates and do not promote the repaired local control to production evidence."
+          "next_action": "Preserve explicit comparator/tool-failure versus measured-zero classification and establish authenticated row-level gradable eligibility and coverage; independently authenticate installed/mirror and scorer custody, formula/LibreOffice offline runtime and all shared gates before a separately authorized diagnostic. Keep one-variant scores distinct from paper soft/hard aggregates and do not promote the repaired local control to production evidence."
         }
       ],
       "historical_runs": []
