@@ -1507,3 +1507,54 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - The real run created snapshot `sha256:d6ec4c51ac3b8ffc5cae5c7a48b8b33e331e8a27e6fb6f214f8c6707d0ddcdb5` and executed `bash /tests/test.sh`. The observer preserved actual reward bytes `0\n`, but `/logs/verifier/ctrf.json` was absent. The driver retained `invalid_trials=1`, `measured_trials=0`, `unmeasured_trials=0`, `score=null`; this is a scorer nonmeasurement, not a measured zero. The underlying verifier failure is unknown because its stdout/stderr and full verdict are not retained on the invalid aggregation path. No second real task was launched.
 - Original artifacts remain at `/tmp/hg-tbrun3/runs/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b` and `/tmp/hg-tbrun3/runs/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b-launch-evidence`; external work root is `/tmp/w-tbrun3-terminal-bench-20261014T194115Z-7eab177b-work`. The report [w-tbrun3-receipts.md](../reports/w-tbrun3-receipts.md), complete artifact inventory and byte-for-byte review archive preserve commands, endpoint binding, source/harness/image identities, Docker resource samples, snapshot observations, and cleanup absence probes. The driver snapshot/cleanup fields remain unknown and its run-manifest hash null; observations are not relabelled as admission or lease-release attestations.
 - `terminal_bench / cached-runtime-admission` remains open with its observation updated to this actual run. Shared scorer/export gates remain attached. Production and test code are unchanged. Initial focused validation: `231 passed, 2 failed`; both unchanged synthetic unobserved-diagnostic fixtures omit the now-required scorer isolation class. Complete checker/test output and post-edit registry validation: [w-tbrun3-validation.txt](../reports/w-tbrun3-validation.txt). Commit only in this isolated worktree; no main merge performed.
+## Parent review and merge — w-fix, w-tbdep, w-tbrun3 — 2026-10-15
+
+- Merged `36af2b2` (w-fix), `3eef57d`/`7b981fd`/`0f71569` (w-tbdep) and `fc5f812` (w-tbrun3) on
+  top of `1d31ea8`. Only `docs/adapter-integration-journal.md` conflicted, each time resolved by
+  keeping both sides. Registry remains valid: 28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`.
+- **A real Terminal-Bench task executed on this host for the first time.**
+  `openssl-selfsigned-cert` was selected from the locally cached `jevloop-tb:*` images and run
+  by the local model. Getting there took three separate invocation blockers, each diagnosed
+  rather than worked around: (1) `--rounds 1` violates the diagnostic policy's `rounds=0`
+  (`eval/policy/diagnostic_policy.py:103`); (2) with `rounds=0`, selecting one train task left
+  the declared eval side empty and `data/scaffolds/registry.py:150` refused; (3) the answer to
+  (2) is in the adapter's own comment, `data/datasets/terminal_bench.py:70-75` - Terminal-Bench
+  declares no train/eval split and `HG_TB_SPLIT=none` runs everything as eval. Two of those
+  three were my errors in the task brief, not platform defects, and the record should say so.
+- **The run produced no valid score and the blocker correctly stayed open.** The verifier wrote
+  `0\n` but omitted the required `ctrf.json`, so the diagnostic receipt records
+  `invalid_trials=1` with `score=null`. Run metadata, the raw reward, image/resource/snapshot
+  observations and the cleanup absence checks are preserved under
+  `reports/w-tbrun3-evidence/`. This is now the last precise, code-level gap between this
+  dataset and a measured run, and it is a defect in what the verifier emits, not a missing
+  authorisation.
+- **A real regression that I merged is repaired (w-fix), and the parent failure is mine.**
+  Commit `72f5c37` (w-obs) closed `runtime-observations` partly by making `common_class` raise
+  on an all-unknown input. `common_class` is on the **write** path, so an authorised diagnostic
+  run silently lost its progress record - `warning: could not write the progress record ...
+  scorer isolation class unknown: aggregation invalid` - and two
+  `test_unobserved_diagnostic_c2.py` tests failed on `main`. I merged w-obs having run only six
+  test files; the breakage lived in a seventh. The rule this reinforces: **after touching a
+  shared refusal boundary, run the whole affected set, not a sample of it.**
+  The repair keeps the intent and moves it to the right boundary: records survive with
+  `scorer_isolation_class=unknown`, `scorer_isolation_comparable` is **derived from the
+  observations and never from a caller's claim**, comparison still refuses unknown, mixed
+  classes still raise, and `ADDED_LATER` keeps old records readable. `test_unobserved_diagnostic_c2.py`
+  is back to 18 passed; the twelve-file focused set is 318 passed with one failure proven by a
+  control worktree at pre-`w-fix` `1d31ea8` to be the known linked-worktree artifact. The
+  `runtime-observations` closure stands, but it now rests on the corrected mechanism, and the
+  registry line was rewritten to describe the corrected semantics rather than the broken one.
+- w-tbdep produced the per-dataset transitive verifier dependency inventory required by
+  `scorer-offline-closure`, changed **no** registry entry, and says so. Its fixtures do copy
+  third-party package metadata and source excerpts (for example `appworld/*.py.txt` and several
+  `*.dist-info/METADATA.txt`) into `tests/fixtures/hg_wtbdep/`; that follows the existing
+  `hg_wprov/installed/` and `upstream_provenance_e2/` convention, so it is accepted here, but it
+  is vendored third-party text and a future round should prefer hashes plus metadata if the
+  inventory is ever regenerated.
+- Reference-state note: no approved production pilot exists, so the endpoint on GPU1 was idle
+  in every sample taken (0 % utilisation, GPU0 idle). The Terminal-Bench task did run against
+  the local endpoint, so the honest statement is that the endpoint served one diagnostic task
+  while sampled utilisation stayed at 0 % - no utilisation figure is claimed beyond that, and
+  none is inferred or rounded up. All broker/`runs/` history and frozen receipts were left
+  untouched by every worker.
