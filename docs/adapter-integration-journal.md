@@ -2757,3 +2757,47 @@ pytest output is 82 passed / 1 failed: unchanged
 its original failure output is preserved. Registry checker remains valid; final
 source-only registry tests passed (54 passed). This work commits only in the
 isolated worktree; parent review/merge remains separate.
+## Parent review and merge — w-pristine, w-appworld — 2026-10-15
+
+- Merged `c61f174` (w-pristine) and `18379f4` (w-appworld). Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`. 54 passed on the registry file.
+- **The two runtime classes the assessment said had no live evidence at all now each have a real
+  control.** `reports/w-assess-shared-closures.md` named exactly two such holes - S2/S5's "no
+  production `pristine-offline` runtime control" and "no AppWorld mounted-service control" - and
+  this round closed both holes:
+  - w-pristine drove the **real production pristine path** (not a Docker double) with a sealed
+    `harnessgrad.scorer-bundle.v2` fixture and its task contract, rechecked both projections,
+    confirmed that unexpected-image and extra-mount probes refuse, captured the stopped result
+    and a successful removal receipt, and recorded the executed class plus observed Docker
+    resource configuration.
+  - w-appworld ran one archived task (`cf6abd2_2`) where a **separate verifier container mounted
+    the service recording read-only and joined the service's internal network**, and observed all
+    three containers, the owned network and the temporary directories absent afterwards.
+- **A real defect was surfaced, and it is the same family as the hotpotqa timeout bug.** The
+  pristine control's scoring failed because the exported answer was unreadable, and **production
+  returned `0.0` while the audit records `invalid=1, measured=0, unmeasured=0, score=null`**. An
+  unreadable/absent exported artifact must not become a measured zero. That is precisely the
+  class of error fixed for verifier timeouts in round 26 and for SpreadsheetBench comparator
+  failures in round 34, and it is now the concrete next target for the pristine path.
+- Both controls also reported findings instead of only successes: w-appworld observed that the
+  **service had no explicit resource caps**, and w-pristine flagged that its bridge-network probe
+  refused **but with reordered environment fields confounding network-specific attribution**, so
+  it declined to claim the refusal was network-specific. It also left effective kernel limits
+  recorded as unknown rather than inferred. Neither shared blocker closed, and neither worker
+  claimed otherwise.
+- Merge handling, twice over. The registry conflicted again, and this time the resolution script
+  itself produced invalid JSON: it emitted a duplicated opening `{`/`"kind"` and an extra closing
+  brace. The checker caught that immediately (`valid=false` with a parse position), and the parent
+  removed exactly the two spurious lines, restoring 11 evidence entries and a valid registry. The
+  `observed` string was merged by common prefix (8422 + 8760 -> 9579 chars) and **both** new
+  evidence objects were kept, per the standing rule that a JSON merge conflict is never resolved
+  by concatenation.
+- One more instance of "check the named deliverable, do not trust the summary": the fixture
+  directory the brief asked for (`tests/fixtures/hg_wappworld`) does not exist, which looked like
+  the round-40 loss again. It was not - the worker stored its evidence under
+  `reports/w-appworld-evidence/`, and every path its report cites exists on `main`. The check is
+  still the right one; the conclusion here is that the brief's path was not the path used.
+- Resource state: these were real container diagnostics, not model runs - w-pristine used the
+  production pristine path and w-appworld ran one archived task with a mock/local actor, so no
+  model endpoint call is claimed and no utilisation figure is given beyond the sampled 0 %.
+  Historical runs, frozen receipts and archives were untouched; no existing run id was resumed.
