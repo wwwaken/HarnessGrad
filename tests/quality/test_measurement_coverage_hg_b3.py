@@ -168,8 +168,11 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
         item["record"] for item in baseline["records"] if item["dataset"] == dataset]
     if dataset == "hotpotqa":
         assert "schema-timeout-measurement" not in blockers
+        # Track the live shared set instead of a hardcoded list. `runtime-observations`
+        # closed after this assertion was written; a literal here would silently stop
+        # meaning "carries every shared gate" the moment the shared set changes again.
         assert set(target["shared_blockers"]) == {
-            "runtime-observations", "scorer-offline-closure", "artifact-only-state-export"}
+            item["id"] for item in document["shared_blockers"]}
         assert "docs/w-hotpot-timeout-closure.md" in {
             item["path"] for item in blockers[active_id]["evidence"]}
     else:

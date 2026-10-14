@@ -1374,3 +1374,64 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - No live dataset, Docker daemon, model, GPU or endpoint execution; no existing
   runs or frozen receipts touched. No pilot or production authorization. Commit
   only in this worktree; parent review and merge remain separate.
+## Parent review and merge — w-hotpot, w-obs — 2026-10-15
+
+- Merged `b987b03` (w-hotpot), `72f5c37` (w-obs) and one parent integration fix on top of
+  `bd25f5a`. Only `docs/adapter-integration-journal.md` conflicted textually, resolved by
+  keeping both sides. Result `ff398fe` plus the integration fix below.
+- **Shared blockers 3 -> 2**: `runtime-observations` closed. `scorer-offline-closure` and
+  `artifact-only-state-export` remain. Checker `valid=true`, 28 datasets, 11 historical
+  records, `production_authorized=false`.
+- **`hotpotqa / timeout-aggregation-admission` genuinely closed**, and this is the strongest
+  closure recorded so far because it was verified in both directions. The gap was that both
+  verifier timeout paths returned `passed: False` with only a `detail`, no `unmeasured`, so a
+  verifier timeout was persisted and aggregated as an ordinary `0.0`
+  (`eval/verification/verifier.py:311`, `:608`). They now return `outcome="timeout"` and
+  `unmeasured`, and `eval/run/runner.py:1105` carries the outcome into the persisted record.
+  The parent ran the new suite on unmodified `main`: **12 of 12 failed before**, and 28 passed
+  in the worker tree after. The pre-existing test that pinned the buggy behaviour was written
+  as an explicit characterisation test ("never interpret this fallback as a valid score") and
+  now asserts the repaired behaviour; no assertion was removed or loosened. The retired ID is
+  kept visible and the residual historical-comparison need is recorded as a separate
+  `measurement` blocker, so hotpotqa is narrowed, not cleared.
+- **`runtime-observations` closed** on its own review-type next_action. Two defects were fixed
+  and both were reproduced by the parent before merging: `eval/run/chess_stepwise.py` built its
+  verdicts without a `scorer_isolation_class`, so the trusted-platform controller branch was
+  recorded as `unknown` even though the survey shows the actor runs separately; and
+  `common_class` returned `"unknown"` for an all-unknown input, so a run in which nothing was
+  ever observed still aggregated and persisted a comparable score. The class is now recorded,
+  and all-unknown aggregation raises while empty input still yields the `unknown` sentinel and
+  legacy records stay readable through `observed_class`. The nine existing test files w-obs
+  touched were changed **additively only** - synthetic doubles gained an explicit
+  `scorer_isolation_class` so they model an observed route - which the parent checked
+  line by line rather than taking on report.
+- **Parent integration fix.** Merging both workers produced a real failure that neither worker
+  caused alone: w-hotpot had hardcoded the three-element shared set in
+  `tests/quality/test_measurement_coverage_hg_b3.py:171`, which w-obs's later closure
+  invalidated. It now compares against the live registry, matching the other datasets' branch,
+  so it still means "carries every shared gate" without pinning a literal. This is a repair of
+  a stale assertion, not a loosened one.
+- **A worker's self-report was again incomplete.** w-obs reported 471 focused tests passing, but
+  `test_identity_and_verdicts.py::test_the_default_improver_is_still_resolved_when_none_is_not_asked_for`
+  fails deterministically in its tree. The parent did not accept the report and did not accept
+  the failure as a regression either: the same test fails identically in a pristine control
+  worktree at unmodified `main`, so it is a **linked-worktree artifact** - any test that runs
+  `driver.py` end to end from the worktree root resolves the improver identity to `None`.
+  This is the second instance of that trap (the first was
+  `test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate`), and it now has a
+  general shape worth remembering: **every Codex worker works in a linked worktree, so
+  driver-level end-to-end identity tests fail for all of them and must never be reported as
+  regressions.**
+- **A design idea was retired by evidence.** The w-shared topology survey asked whether either
+  remaining code-solvable blocker could be detached from datasets whose scoring never leaves the
+  actor process. Its answer is no: the 23 datasets route through 19 `actor-workdir` and 4
+  `snapshot-service` topologies and none is `pristine-offline`, so **no dataset meets the
+  actor-process-only condition**. A Python scorer invoked inside the verifier child is not actor
+  in-process scoring. Both blockers therefore stay attached, and the scoping shortcut is closed
+  off rather than left as a tempting future move.
+- Resource state unchanged: no approved diagnostic or pilot, so the endpoint on GPU1 stays
+  loaded and idle (0 % utilisation) and GPU0 idle; no utilisation claimed. No worker performed
+  dataset, Docker, model, GPU or endpoint execution. The lane runner completed its parallel
+  files and is still replaying the 147-task AppWorld release (`SLOW` files run unless `--fast`);
+  every failure it has shown matches the pre-existing docker/host and load-sensitive sets
+  already recorded here.
