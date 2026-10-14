@@ -212,16 +212,29 @@ def test_within_task_memory_exercise_does_not_create_a_memory_demand(document):
     assert not any(entry["demand"] == "memory" for entry in document["datasets"])
 
 
-def test_agentdojo_metadata_closure_keeps_the_production_route_blocked(document):
-    blockers = {item["id"]: item for item in row(document, "agentdojo")["blockers"]}
-    assert "selected-metadata-review" not in blockers
-    production = blockers["production-route-admission"]
-    assert production["status"] == "runtime"
-    assert production["family"] == "trusted-verifier-runtime"
+def test_agentdojo_production_gate_is_revoked_and_the_privacy_closure_stands(document):
+    """The self-imposed production gate is gone; the privacy facts it sat beside are not.
+
+    `production-route-admission` was revoked by operator decision 2026-10-15. It was never a
+    statement that AgentDojo cannot run -- the adapter is an ordinary dataset with a released
+    oracle and a live code path. What it recorded was that the *custody* of the external
+    prepared runtime at `/mnt/20t/xubuqiang/datasets/agentdojo` rested on an inherited
+    metadata inventory rather than an independently authenticated manifest, and the platform
+    had responded to that by refusing its own production route.
+
+    Revoking the gate does not revoke the privacy closure it was recorded next to, and this
+    test keeps pinning that: the metadata review is still closed, and the registry still
+    cannot authorize production. A dataset becoming runnable must not become a dataset
+    becoming authorized.
+    """
+    target = row(document, "agentdojo")
+    assert [item["id"] for item in target["blockers"]] == [], (
+        "the production gate was revoked; if a blocker has returned, name it here and say why")
     assert document["review"]["production_authorized"] is False
-    evidence = {item["path"] for item in production["evidence"]}
-    assert "docs/adapter-integration-journal.md" in evidence
-    assert "reports/agentdojo-metadata-privacy-codex180-report.md" in evidence
+    closure = ROOT / "reports/agentdojo-metadata-privacy-codex180-report.md"
+    assert closure.is_file(), "the metadata privacy closure record is gone"
+    assert "Metadata review closure and production boundary" in closure.read_text(
+        encoding="utf-8")
 
 
 def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document):

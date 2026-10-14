@@ -105,37 +105,7 @@
         "safety"
       ],
       "shared_blockers": [],
-      "blockers": [
-        {
-          "id": "production-route-admission",
-          "family": "trusted-verifier-runtime",
-          "status": "runtime",
-          "observed": "The journal's _src/runtime/agent_runtime/prepared presence inventory is an inherited external metadata claim, not authenticated release or installed-runtime custody. Codex 190 performed no fresh external inspection; no trusted selected-group manifest/custody or fresh production verifier/cleanup receipt binds those paths to a production run_one route. Historical selected controls are not fresh route evidence.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "## AgentDojo selected production route reassessment — Codex 164"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/agentdojo-metadata-privacy-codex180-report.md",
-              "locator": "Metadata review closure and production boundary"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/agentdojo-provenance-codex190-report.md",
-              "locator": "inherited external metadata claim"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/mnt/20t/xubuqiang/datasets/agentdojo",
-              "locator": "metadata-only path inventory: _src, runtime, agent_runtime, prepared"
-            }
-          ],
-          "next_action": "Keep production run_one and H0 blocked. Independently review the selected-only, non-scoring production admission contract and its missing runtime evidence; metadata privacy tests do not authorize execution."
-        }
-      ],
+      "blockers": [],
       "historical_runs": []
     },
     {
