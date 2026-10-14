@@ -1273,3 +1273,45 @@ is supplied. Parent review and merge remain separate. Validation transcript:
   generation mismatch is retained as a gap, not a failed-zero measurement.
   No pinned test sets were changed. Parent review/merge into main remains
   separate from this worktree-only commit.
+## Parent review and merge — w-shared, w-prov — 2026-10-15
+
+- Merged `3ef046b`/`db9b44b` (w-shared) and `f73c8c6`/`60099b7`/`f0efc5d` (w-prov) on top of
+  `0b470b6`. Only `docs/adapter-integration-journal.md` conflicted (both workers appended at
+  the same point) and was resolved by keeping both sides. Result `f0efc5d`.
+- `pristine-verifier` is closed; shared blockers go 4 -> 3
+  (`runtime-observations`, `scorer-offline-closure`, `artifact-only-state-export`). Verified by
+  the parent, not by report: `tools/check_dataset_blockers.py` returns `valid=true` with 28
+  datasets, 3 shared blockers, 11 historical records, `production_authorized=false`;
+  `test_dataset_blockers.py` + `test_scorer_isolation_option_b.py` 76 passed. The closure is
+  visible in the diff (the gate leaves the pinned shared set in
+  `tests/quality/test_dataset_blockers.py` with a comment) and the validator was not loosened.
+- `runtime-observations` was deliberately **left open**, and the parent reproduced the reason:
+  `common_class(["unknown","unknown","unknown"])` returns `"unknown"` instead of raising, so a
+  run in which nothing was ever observed still aggregates and persists a score. Mixed
+  `unknown + pristine-offline` *is* refused. The refusal is therefore real at comparison time
+  and absent at aggregation time; that asymmetry is the open gap, not a missing mechanism.
+- **`agentdojo` is already a fully cleared dataset** (0 own blockers, 0 shared blockers). The
+  other four zero-own-blocker datasets (`gsm8k`, `jericho`, `musique`, `scienceworld`) carry all
+  remaining shared blockers, so the shared set — not the 25 dataset-own entries — is the whole
+  binding constraint.
+- w-prov closed zero blockers and says so. Its value is custody: real SHA-256 pins binding the
+  installed CSVs to authenticated ReWOO@9cd0283 (`physicsquestions` 17953 B /
+  `7747cf18...`, `strategyqa` 200453 B / `c1fd0c27...`, `sportsunderstanding` 137846 B /
+  `5cfc2470...`), and reasoning-gym 0.1.25 wheel/sdist bytes binding 204/205 installed members
+  (only pip's rewritten RECORD differs). Two substantive negative findings are recorded rather
+  than smoothed over: the declared reasoning-gym pool does **not** reproduce from its recorded
+  seed (84 rows differ across six families; the divergent digest is preserved), and upstream
+  `sportsunderstanding` grades by candidate log-probability while the adapter scores generated
+  text labels, so equivalence is not established.
+- Tooling corrections worth keeping, both established by control experiments here:
+  raw `pytest tests/` is the **wrong** entry point and appears to hang on
+  `test_appworld_official_scorer.py`, which really does launch 147 AppWorld subprocesses; the
+  sanctioned runner is `tools/run_tests.py`, which excludes that file in `SLOW` and re-runs
+  failures alone to classify them. And `test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate`
+  fails inside **any** linked git worktree - reproduced in a pristine control worktree at
+  unmodified `main` - so every Codex worker will see it fail and must not report it as a
+  regression. The seven files failing under `--jobs 12` are the load-sensitive set already
+  recorded in this journal, not new breakage.
+- Resource state: no approved diagnostic or pilot exists, so the model endpoint on GPU1 was left
+  loaded and idle (0 % utilisation) and GPU0 idle; no utilisation is claimed. No Docker, dataset,
+  model, GPU or endpoint execution was performed by either worker.
