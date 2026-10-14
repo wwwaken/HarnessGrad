@@ -20,7 +20,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 FIXTURE = ROOT / "tests/fixtures/triviaqa_upstream"
-REPOSITORY = "https://github.com/mandarjoshi/TriviaQA"
+REPOSITORY = "https://github.com/mandarjoshi90/triviaqa"
 SOURCE_PATH = "evaluation/triviaqa_evaluation.py"
 DATASET_REVISION = "0f7faf33a3908546c6fd5b73a660e0f8ff173c2f"
 EM_FUNCTIONS = ("normalize_answer", "get_ground_truths", "exact_match_score",
@@ -61,7 +61,8 @@ def read_upstream_fixture(directory=FIXTURE):
     require(receipt.get("source_path") == SOURCE_PATH, "wrong source path")
     acquisition = receipt.get("acquisition")
     require(isinstance(acquisition, dict), "missing acquisition attestation")
-    require(acquisition.get("method") in ("local_git_checkout", "upstream_archive"),
+    require(acquisition.get("method") in (
+        "local_git_checkout", "upstream_archive", "github_git_objects"),
             "unsupported acquisition method")
     for field in ("origin", "acquired_at_utc", "reviewed_by", "commit_link_evidence"):
         require(isinstance(acquisition.get(field), str) and acquisition[field].strip(),
@@ -146,10 +147,7 @@ def triviaqa(monkeypatch):
 
 def test_em_components_match_pinned_upstream_fixture(triviaqa):
     """Compare only when an acquired fixture exists; the separate gate remains explicit."""
-    try:
-        source = read_upstream_fixture()
-    except FixtureContractError as exc:
-        pytest.skip(str(exc))
+    source = read_upstream_fixture()
     upstream = upstream_em_namespace(source)
     for text in NORMALIZE_CASES:
         assert triviaqa.normalize_answer(text) == upstream["normalize_answer"](text), text

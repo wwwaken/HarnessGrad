@@ -1,152 +1,160 @@
-# TriviaQA upstream-fixture acquisition contract
+# TriviaQA original evaluator fixture — Task 196
 
-Status: **unacquired / provenance blocked**. This directory contains no upstream
-scorer, scorer commit pin, source digest, or acquisition receipt. No network
-acquisition was attempted. The former test reference was a second local
-transcription, which cannot establish upstream identity. Claims of “verbatim” in
-`data/triviaqa.py` remain unverified; this docs/tests change does not repair or
-certify the production scorer.
+Status: **source acquired and pinned; production equivalence fails**. Only public
+code, license, dependency declarations, and GitHub/Git metadata were acquired.
+No TriviaQA questions, answers, documents, dataset archives, parquet, or heldout
+payloads were fetched or opened. No model or H0 run was performed.
 
-The dataset pin `mandarjoshi/trivia_qa` on HuggingFace at
-`0f7faf33a3908546c6fd5b73a660e0f8ff173c2f` pins the parquet export, **not** the
-GitHub evaluator. An adapter hash or a hash of the former test transcription is
-also not an upstream source pin.
+## Original source and immutable identity
 
-## Material required to close the source gate
+The original author repository is
+<https://github.com/mandarjoshi90/triviaqa>. Its description identifies the
+TriviaQA reading-comprehension dataset and its homepage points to the University
+of Washington TriviaQA project. The previously recorded
+`https://github.com/mandarjoshi/TriviaQA` returns HTTP 404; it was an incorrect
+source address, not evidence that the original evaluator is unavailable.
 
-An acquisition owner must supply independently obtained material from
-`https://github.com/mandarjoshi/TriviaQA`, with an immutable full Git commit ID.
-For an offline acquisition, use an already supplied checkout or archive; the tests
-never fetch missing files. Keep the following under this directory:
+Pinned commit: `ca43b5820b107f3970cf4b7d67f7db7a98117b79` (2023-11-13,
+“Add license note.”).
 
-1. `evaluation/triviaqa_evaluation.py`: the entire original file at that commit,
-   with its original bytes, encoding, line endings, comments and imports. Do not
-   copy functions out of the adapter, reconstruct code from memory, or apply
-   formatting, Python-version conversion or normalization fixes to the fixture.
-2. The original license/notice file(s) from the same source revision, preserving
-   upstream relative paths. Record the actual license path; its name and licensing
-   terms have not been verified here. If redistribution cannot be established,
-   stop rather than adding an invented license or a substituted implementation.
-3. `provenance.json`, using the schema below. Compute SHA-256 from every original
-   file's raw bytes and its Git blob SHA-1 from `blob <byte-length>\0<bytes>`.
-   Review the commit-to-file linkage against the supplied checkout's commit tree,
-   or an independently verified commit-specific archive. Record that evidence
-   and the reviewer, rather than treating a matching self-declared hash as proof
-   of origin. Preserve the acquisition material's identity in `origin`.
-4. If later full-evaluator work needs helper modules, acquire their exact bytes,
-   license coverage and pins at the same revision too. Record every helper in
-   `files`; do not fill dependency gaps with stubs or unrelated packages. This
-   component gate supplies only standard-library `re` and `string` and does not
-   import the full script.
+Original evaluator:
+<https://github.com/mandarjoshi90/triviaqa/blob/ca43b5820b107f3970cf4b7d67f7db7a98117b79/evaluation/triviaqa_evaluation.py>
 
-Receipt schema (deliberately invalid until populated from acquired material;
-**do not install this example as a completed receipt**):
+Source SHA-256:
+`51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682`.
+Source Git blob: `b67ffcda2fc1af0616a427dc3280aa4189aef7db`.
 
-```json
-{
-  "schema_version": 1,
-  "repository": "https://github.com/mandarjoshi/TriviaQA",
-  "commit": null,
-  "source_path": "evaluation/triviaqa_evaluation.py",
-  "license_path": null,
-  "acquisition": {
-    "method": "local_git_checkout",
-    "origin": null,
-    "acquired_at_utc": null,
-    "reviewed_by": null,
-    "commit_link_evidence": null
-  },
-  "files": {
-    "evaluation/triviaqa_evaluation.py": {
-      "sha256": null,
-      "git_blob_sha1": null
-    }
-  }
-}
-```
+The file identifies itself as the official TriviaQA v1.0 evaluator, extended
+from SQuAD v1.1. GitHub's path history reports its last change at
+`51b53595131828a00a1fed09cca9c87f512090e2` (2017-05-05, “refactor”);
+that history response is corroborating metadata, not the fixture's commit pin.
+This is the original published evaluator. It does not prove that an unrelated
+later benchmark, export, or adapter used identical scoring semantics.
 
-`method` is `local_git_checkout` or `upstream_archive`. `commit` is a lowercase
-40-hex GitHub commit ID, separate from the Hub dataset revision. Acquisition
-fields are nonempty strings; record time in UTC. Each `files` entry contains a
-64-hex SHA-256 and a 40-hex Git blob SHA-1. Add the acquired license path to
-`files` and set `license_path` to it. Paths must be canonical, relative, and stay
-within this directory. Missing files, pins, attestation or license fail the gate;
-any source/license/helper digest mismatch fails before evaluator code executes.
-Mechanical validation cannot authenticate an acquisition attestation. A reviewer
-must establish the claimed origin and commit linkage before accepting the fixture.
+## Acquisition, license, and dependencies
 
-## What the tests establish
+`provenance.json` records URLs, UTC acquisition time, reviewer scope, SHA-256 and
+Git blob SHA-1 for every acquired source/license/requirements file. Acquisition
+method `github_git_objects` means GitHub Git API responses and base64-decoded
+original blobs, not a checkout or an archive. Files retain their original bytes;
+no formatting, Python conversion, function reconstruction, or implementation
+substitution was applied.
 
-`tests/quality/test_triviaqa_official_scorer.py` has one mandatory gate,
-`test_em_components_match_pinned_upstream_fixture`. It validates the receipt and
-all file hashes, then extracts the four EM-related function definitions from the
-original source AST without rewriting their bodies. It compares normalization,
-capitalized JSON keys, the Hub lowercase-key translation, alias reduction and
-scalar rewards on fabricated inputs. Underscores, punctuation, articles, Unicode
-and empty predictions are included to expose possible transcription drift.
-Missing functions, incompatible syntax or unresolved dependencies fail; they do
-not trigger a local reference fallback. Agreement is a finite component check,
-not byte identity of the adapter or an end-to-end official evaluation.
+`evidence/commit.git` reconstructs the signed commit's exact raw bytes from the
+GitHub signature and payload. Its Git commit SHA-1 equals the pin. The root,
+evaluation, and utils tree bytes likewise reproduce their Git identities and
+connect that commit to all five acquired files. The offline source provenance
+test validates this chain independently of the receipt's self-declared file
+hashes. Full GitHub commit/repository/history responses are retained with
+SHA-256 pins. GitHub reports a valid commit signature; this work does not
+independently verify PGP or establish a separate human reviewer.
 
-All other tests are explicitly local regressions or acquisition-contract tests.
-Integrity-test files are inert text marked `SYNTHETIC`, and contain no invented
-upstream function bodies. Their simulated receipt tests hash enforcement only.
-The adapter's import-time pool construction is suppressed before import, released
-payload reads are forbidden, and socket connection attempts fail. No train,
-validation, test, heldout, model, GPU endpoint or H0 run is accessed.
+The original `LICENSE` is **Apache-2.0**, with its existing Kenton Lee copyright
+notice preserved. The pinned commit's README change explicitly states: “The
+Apache 2.0 License applies to both the code and the data.” This license-only
+patch is retained in `evidence/commit_response.json`; the README and dataset
+were not fetched. The root Git tree contains no NOTICE file.
 
-Run the full gate from the repository root, keeping temporary output here:
+The evaluator imports only standard-library `__future__`, `collections.Counter`,
+`string`, `re`, `sys`, `argparse`, and the acquired `utils.dataset_utils` and
+`utils.utils` helpers. The helpers add standard-library `json`. No third-party
+package is required for this evaluator closure. The original repository-wide
+`requirements.txt` declares `tensorflow>=0.11`, `nltk`, `tqdm`, and `jinja2`;
+these are preserved as declarations, not installed or asserted necessary for
+scoring. The source-only test executes the unchanged files with Python 3 using
+namespace packages. Tree metadata identifies both original package initializers
+as empty Git blobs; they were not downloaded or fabricated.
+
+## Observed evaluator behavior
+
+- **EM and F1:** normalize prediction and each accepted alias, take each metric's
+  maximum independently over `NormalizedAliases` plus normalized optional
+  `HumanAnswers`, then average over the requested ID list and multiply by 100.
+  F1 uses token multiplicities via `Counter`. No common tokens gives F1 zero,
+  including two empty strings. An empty alias list raises `ValueError` in `max`;
+  an empty evaluation domain produces division by zero.
+- **Normalization:** lowercase; replace underscores with spaces; replace ASCII
+  punctuation and additional quote characters with spaces; remove English
+  articles; collapse whitespace and strip. This differs from deleting punctuation.
+- **Grouping:** Wikipedia uses `QuestionId`; every other domain takes the
+  question/document path. That path uses the literal string
+  `QuestionId--Filename` for every EntityPages/SearchResults document. Repeated
+  keys collapse by dictionary assignment, with later values replacing earlier
+  ones; there is no invented row-average or question-level max aggregation.
+- **Verified subset:** the file reader filters questions on
+  `QuestionPartOfVerifiedEval` when top-level `VerifiedEval` is true. For Web it
+  also retains only `DocPartOfVerifiedEval` documents and asserts at least one
+  remains. Wikipedia keeps question filtering without document filtering.
+- **Denominator:** defaults to the constructed gold dictionary's keys. Missing
+  predictions remain in the denominator and contribute zero. Extra prediction
+  keys are not traversed, but count in `pred_len`. The returned receipt includes
+  `common`, `denominator`, `pred_len`, and `gold_len`. An explicit `qid_list`
+  changes the denominator to its length, including missing IDs or repeats.
+- **No-context/validation:** the original CLI accepts only a dataset file and a
+  prediction file. It has no Hub config, split, validation, or no-context branch.
+  The supplied file's Domain and VerifiedEval fields drive selection. Removing
+  all documents still permits Wikipedia question keys; it produces no Web keys.
+  Therefore a Hub `rc.nocontext` row mean cannot be identified with the original
+  Web evaluator merely by sharing EM components. Version mismatches print a
+  warning and do not themselves stop scoring.
+
+These rules are observations of pinned source and fabricated source-only tests.
+They are not observations of released TriviaQA payloads. The original scorer
+has no standalone mapping from Hub `rc.nocontext`/`validation` rows to its domain
+or question/document keys. The adapter's historical validation counts and test
+blinding claims were not remeasured here; validation is not a test leaderboard
+score.
+
+## Current adapter mismatch and gates
+
+The adapter remains unchanged and computes EM only. The existing differential
+test now compares against acquired source and **fails** on `A-Team`: upstream
+normalizes it to `team`; the adapter normalizes it to `ateam`. Other punctuation,
+underscore, and quote cases also have different semantics. Source acquisition
+closes the missing-source gate; it does not close the scorer-equivalence gate.
+The previous missing-source skip was removed so lost/corrupt fixtures fail.
+
+`test_triviaqa_source_provenance_codex196.py` verifies the source identity chain,
+license linkage, dependency closure, and unchanged full evaluator/CLI on
+fabricated inputs, including F1, EM, missing/extra predictions, grouping,
+duplicate document keys, verified filtering, and no-document behavior. It
+imports no production adapter. A separate interpreter disables site/environment
+imports and bytecode writes and rejects network connections. The existing
+adapter differential suite suppresses pool construction and forbids payload
+reads before importing its private adapter instance.
+
+Run from the repository root, with temporary output inside this worktree:
 
 ```sh
-mkdir -p .scratch/triviaqa-provenance
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py --basetemp=.scratch/triviaqa-provenance/pytest
+mkdir -p .scratch/triviaqa-codex196
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py --basetemp=.scratch/triviaqa-codex196/source-only
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_official_scorer.py --basetemp=.scratch/triviaqa-codex196/combined
+PYTHONDONTWRITEBYTECODE=1 python tools/check_triviaqa_provenance.py
 ```
 
-Until acquisition, this command must exit nonzero with the missing-fixture
-failure. To check contract enforcement and current local behavior separately:
+The source-only checks and integrity tool pass. The combined command must remain
+nonzero until the adapter mismatch is resolved in a separately authorized task.
+No H0/model admission follows from any of these checks.
 
-```sh
-mkdir -p .scratch/triviaqa-provenance
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py -k 'not test_em_components_match_pinned_upstream_fixture' --basetemp=.scratch/triviaqa-provenance/pytest-local
-```
+## Exact remaining acquisition request for Hub mapping
 
-The second command excludes the provenance gate and cannot certify upstream
-equivalence or authorize production H0. A passing acquired-fixture gate still
-requires separate review of the following comparison boundaries.
+If full Hub export equivalence is required, supply **code and metadata only**:
 
-## Evaluation scope and comparison boundaries
+1. The original loader/conversion source that produced
+   `mandarjoshi/trivia_qa` revision
+   `0f7faf33a3908546c6fd5b73a660e0f8ff173c2f`, including the `rc.nocontext` builder
+   and validation split declaration, at an immutable source commit with source
+   URL, original license, and file SHA-256. Identify the source revision actually
+   used by the export rather than assuming a similarly named current loader.
+2. Public config/split/conversion provenance metadata binding that export
+   revision to the loader, identifying Domain/VerifiedEval selection and
+   duplicate question/document handling, with no question, answer, document,
+   sample-row, or heldout bytes.
 
-- **`rc.nocontext`**: the adapter reads question/answer columns from this Hub
-  configuration and supplies no retrieved documents. It is not the full `rc`
-  reading-comprehension setting. Tool use by a harness is a separate variable;
-  the absence of supplied context alone does not prove a model-only experiment.
-- **`validation`**: the adapter declares validation as its scored split and an
-  even-stride 2,000-row train sample as its study side. The repository reports
-  17,944 validation rows and blinded test gold at the dataset revision; these are
-  inherited dataset claims, not measurements made by these synthetic tests. A
-  validation number is not a test leaderboard number. No test/heldout payload is
-  opened to confirm the claim; fabricated empty aliases test rejection instead.
-- **EM only**: current reward is a 0/1 exact match maximized over accepted aliases,
-  with no token F1. Comparing just the canonical `value` is a different rule.
-  The adapter reads both key spellings, coerces values to strings, permits an
-  empty reduction to return zero, and caps accepted aliases at 200; `_gold`
-  rejects empty aliases. These adaptations are not established as verbatim
-  upstream behavior. The file's `official` result key is a legacy label, not
-  provenance evidence. Do not add F1 or claim a complete official score without
-  independently pinned source, dependencies and differential evidence.
-- **Grouping and denominator**: task identity is a split/file-row position
-  (`triviaqa/validation/<index>`), not a `QuestionId`/document key. The adapter's
-  `COLUMNS` omit question/document IDs and its gold drops grouping metadata. EM
-  components alone cannot prove equivalence to an upstream file evaluator's ID
-  construction, question/document grouping, duplicate handling, domain or
-  verified-subset selection, missing-prediction policy, denominator, or scale.
-  Those upstream rules remain **unverified pending source acquisition**. For an
-  illustrative policy difference, two correct rows for question A and one wrong
-  row for question B give a row mean of 2/3, but a unique-question mean of 1/2.
-  That example is not an assertion about the missing upstream algorithm.
-
-Any future comparison must identify the dataset config/revision/split, selected
-row and trial coverage, grouping unit, denominator/scale, EM metric, source and
-adapter hashes, and invalid/unmeasured counts. Source acquisition and synthetic
-agreement are preflight evidence only; this change creates no benchmark score
-and grants no model/H0 authorization.
+The exact candidate code URL attempted was
+`https://huggingface.co/datasets/mandarjoshi/trivia_qa/raw/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/trivia_qa.py`;
+network access failed, so file existence and relevance at that pin are unverified.
+An attempted GitHub historical loader lookup hit the anonymous API rate limit
+before source or commit metadata was acquired. Neither attempt grants authority
+to reconstruct a loader or infer export semantics. This remaining request does
+not block the original evaluator fixture's acquisition.
