@@ -2945,7 +2945,7 @@ review and merge.
 ## Parent review and merge — w-pin — 2026-10-15
 
 - Merged `8b5c545` (w-pin). Result `e2e0c48`. Registry valid: 28 datasets, 2 shared blockers,
-  11 historical records, `production_authorized=False`. 94 passed on the registry plus the GAIA
+  11 historical records, `production_authorized=false`. 94 passed on the registry plus the GAIA
   scorer and dataset-classes test files.
 - **The two movable-tag image references the assessment named are now digest-pinned.** The GAIA
   and Tau-bench adapter defaults change from `harnessgrad/gaia:20261008` and
