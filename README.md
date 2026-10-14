@@ -116,6 +116,12 @@ itself has **no third-party Python packages** — everything it uses is in the s
 library. `openai` is imported lazily by the reference harness's model call only, so a
 harness written in another language or against another provider never needs it.
 
+Ordinary local development runs as your user. Once these dependencies are available,
+native/files demos and CLI help require no `sudo`, dedicated quota volume, root Docker
+access, or strict runtime mode. Installing missing system packages or changing host
+policy is administrator provisioning. Docker access is needed only for container-backed
+tasks and image/overlay builds, whose backend prerequisites and admission gates still apply.
+
 The script does not stop at "bwrap is installed", because that is not the same as the
 sandbox working: a kernel with unprivileged user namespaces disabled, or an AppArmor
 policy restricting them (the default on newer Ubuntu), leaves `bwrap` present and failing
@@ -153,13 +159,19 @@ configured says so at the door and names the command above — it does not quiet
 
 ## Run it
 
+These commands exercise the local demo with the mock backend. `--sampling all` explicitly
+selects the ordinary demo path; the default `diagnostic` and `pilot_10pct` paths require
+`--policy-evidence` and their staged gates. This demo grants no production/H0 authorization
+and is not evidence that production runtime, quota, snapshot or cleanup gates have passed.
+
 ```bash
+export HG_AGENT_BACKEND=mock
 M="python $PWD/methods/echo_base/run.py"
-python3 driver.py --harness loop --mode A --rounds 2 --run-id control \
+python3 driver.py --dataset demo --sampling all --harness loop --mode A --rounds 2 --run-id control \
     --method-entrypoint "python $PWD/methods/noop/run.py"
-python3 driver.py --harness loop --mode A --rounds 2 --run-id treat-A \
+python3 driver.py --dataset demo --sampling all --harness loop --mode A --rounds 2 --run-id treat-A \
     --method-entrypoint "$M"
-python3 driver.py --harness loop --mode B --rounds 2 --run-id treat-B \
+python3 driver.py --dataset demo --sampling all --harness loop --mode B --rounds 2 --run-id treat-B \
     --method-entrypoint "$M"
 python3 tools/plot_curve.py runs/control runs/treat-A runs/treat-B
 ```
@@ -174,6 +186,12 @@ loop-demo-all-mA                   all          ▁███  0.00..1.00
 Runs with zero network and zero cost, against a local 8-task dataset. The point
 is not the scores — it is that the loop, the curve points, the ckpts and the
 cost accounting are exercised end to end.
+
+Declaring runtime policies still requires trusted backend observations. Missing enforcement
+evidence remains blocked and invalid/unmeasured, never an ordinary zero score; changing
+sampling or using `--no-sandbox` does not satisfy those gates. See the
+[runner admission contract](docs/runner-admission-contract.md) and the
+[operator/backend quota checklist](docs/filesystem-quota-backends.md).
 
 Two locations, deliberately not the same one:
 

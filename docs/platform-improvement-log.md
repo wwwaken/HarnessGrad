@@ -125,6 +125,15 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Status: `isolated`; docs/index validation only. No production gate or execution authorization follows; external receipts remain unverified journal citations.
 - Commit: accompanying focused blocker-registry docs/code/tests commit; parent review/merge pending.
 
+### C-011 — Ordinary local entrypoint guidance — Codex 235
+
+- Trigger: README and installer demo commands inherited the staged diagnostic default, and user-facing guidance did not clearly separate ordinary development prerequisites from production evidence requirements.
+- Contract: clarify ordinary-user native/files demos and help; explicitly select demo/mock/all in local examples; local success grants no production/H0 authorization. Working sandbox prerequisites, staged gates and declared-policy fail-closed refusals remain unchanged.
+- Evidence: [task-235 audit](task-235-local-entrypoint-audit.md), [focused tests](../tests/quality/test_local_entrypoint_docs_codex235.py), [final output](../local-entrypoint-codex235-final-test-result.txt).
+- Validation: **255 passed in 0.57s**; guarded help/command parsing and report-only installer rendering plus existing synthetic admission regressions. Driver AST is unchanged excluding argparse description/help strings; runner/admission/runtime source is unchanged. No H0, model, payload, Docker or host administration.
+- Status: `isolated`; documentation/help/output-text clarification only. No runtime readiness, gate closure or production authorization; parent review/integration remains separate.
+- Commit: accompanying focused task-235 documentation/help/tests commit.
+
 ## Commit discipline
 
 Use small commits with a capability-oriented subject, for example:

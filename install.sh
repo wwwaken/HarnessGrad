@@ -270,8 +270,9 @@ step "Summary"
 
 if [ "$FAILED" = 0 ]; then
     printf '  %sready.%s Next:\n\n' "$GREEN$BOLD" "$OFF"
-    printf '      cp .env.example .env     # add your model credentials\n'
-    printf '      python3 driver.py --harness loop --mode A --rounds 2 \\\n'
+    printf '  Local demo only; no model credentials needed. No production/H0 authorization.\n\n'
+    printf '      HG_AGENT_BACKEND=mock python3 driver.py --dataset demo --sampling all \\\n'
+    printf '          --harness loop --mode A --rounds 2 \\\n'
     printf '          --run-id control --method-entrypoint "python %s/methods/noop/run.py"\n\n' "$ROOT"
     exit 0
 fi

@@ -240,16 +240,27 @@ def _config_help() -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Ordinary local development runs as your user. Native/files demos and --help\n"
+            "require no sudo, dedicated quota volume, root Docker access, or strict runtime mode.\n"
+            "Sandboxed runs still require working bubblewrap/user namespaces; container-backed\n"
+            "tasks and image/overlay builds have separate Docker prerequisites.\n"
+            "Local/demo success grants no production/H0 authorization. Declared runtime policies\n"
+            "still fail closed without trusted backend observations: missing evidence remains\n"
+            "blocked and invalid/unmeasured, never an ordinary zero score."),
         epilog=_config_help())
     ap.add_argument("--harness", default="loop")
     ap.add_argument("--dataset", default="demo")
     ap.add_argument("--sampling", default="diagnostic",
                     help="diagnostic (one task, default) | pilot_10pct (temporary rerun: "
                          "ceil(10%%), capped at 30; reviewed diagnostic required) | "
-                         "all | below_X | above_X | random_N")
+                         "all | below_X | above_X | random_N. "
+                         "For the local demo, explicitly select all; this grants no "
+                         "production/H0 authorization")
     ap.add_argument("--policy-evidence", default=None,
                     help="staged policy JSON: context with passing dataset gates; "
-                         "pilot_10pct also requires receipt and separate hash-bound review")
+                         "required for diagnostic/pilot_10pct. pilot_10pct also requires "
+                         "receipt and separate hash-bound review")
     ap.add_argument("--rounds", type=int, default=None,
                     help="improvement rounds (default 0 for staged runs, 3 otherwise)")
     #: How many times each (harness, task) pair is measured. One is one sample, and one
