@@ -2892,3 +2892,44 @@ raw values, provenance, initial/intermediate outputs and attribution limits are 
 blockers, all dataset records, historical evidence and archives stay unchanged.
 No `runs/` path was used. Commit is confined to the isolated worktree for parent
 review and merge.
+## Parent review and merge — w-prifix — 2026-10-15
+
+- Merged `938a581` (w-prifix). Result `dfa666a`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`. 209 focused tests passed on `main`; the
+  single failure is `test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers`,
+  the known pre-existing environment failure (`platform_listing is None`) reproduced unchanged
+  since round 25, and unrelated to this merge.
+- **The pristine-offline class now has a genuine measurement where it previously had only an
+  invalid trial.** Re-running the **unchanged** sealed fixture after the fixes produced a real
+  measured `0.0` - `answer=41` against `expected=42` with `completed_check=fail` - and the counts
+  moved from `invalid=1 / measured=0 / unmeasured=0` to **`measured=1 / invalid=0 /
+  unmeasured=0`**. Keeping the fixture unchanged is what makes this a re-run of the same control
+  rather than a new one, and the worker did keep it unchanged.
+- The three defects are fixed as their own clauses required, and I checked each diff for
+  weakening rather than trusting the summary:
+  - **D1** introduces a distinct unprivileged scorer UID (`SCORER_UID = 65534`, with a guard that
+    refuses if the platform itself runs as that UID) and makes the bounded projections
+    group-readable (directories `0700 -> 0750`, files `0600 -> 0640`, chowned to the platform
+    group). Crucially this changes **who can read inside the container** and not **what is
+    exported**: the allowlisted row set, the read-only mounts and the capability drops are
+    untouched, which is the distinction that would have made this a gate weakening. It also fixed
+    a real subtle bug on the way - `parents=True` does not apply the requested mode to
+    intermediate parents, so directory modes were being created inconsistently.
+  - **D2** makes an initialisation/infrastructure failure **unmeasured** while a genuinely
+    completed failing check stays a measured `0.0`, using an explicit completion marker. This is
+    the third instance of this bug family in the phase (verifier timeouts in round 26,
+    SpreadsheetBench comparator failures in round 34, and now the pristine exit path), and the
+    first where the fix had to introduce a contract rather than reuse one.
+  - **D3** puts the stopped State and the cleanup results into the native verdict instead of
+    leaving the only copy with an external observer.
+- The `eval/verification/isolation.py` change is **not** a loosening: it now *joins* any existing
+  `unmeasured` text with the class-mismatch reason instead of replacing it, so more information
+  survives. The three modified existing test files are fixture updates that model the new
+  contract (scorer UID in the fake Docker config, group-readable closure files, a scorer script
+  emitting `completed_check=pass|fail`) - no assertion was deleted or relaxed.
+- Refusal behaviour is intact: image, network and extra-mount probes still refuse, and the
+  previously confounded network-attribution attempts are preserved rather than discarded. Both
+  shared blockers remain open, and the worker claims no closure for either.
+- Resource state: local container control runs for the pristine path only - no model, GPU or
+  endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
+  receipts and archives were untouched; no existing run id was resumed.
