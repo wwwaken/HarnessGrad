@@ -189,7 +189,7 @@ def test_each_resource_limit_is_reconciled_with_policy(runtime, key):
 
 
 @pytest.mark.parametrize("key", ["writable_bytes", "writable_inodes", "free_bytes", "free_inodes"])
-@pytest.mark.parametrize("bad", [-1, True, float("nan"), "4", None])
+@pytest.mark.parametrize("bad", [-1, True, float("nan"), "4"])
 def test_snapshot_quantities_cannot_fake_headroom(snapshot, key, bad):
     policy, actual = snapshot
     actual[key] = bad
@@ -235,7 +235,7 @@ def test_missing_evidence_hash_is_not_trusted_evidence(request, stage):
     refused(getattr(admission, "admit_" + stage), policy, actual, "invalid_evidence_hash")
 
 
-@pytest.mark.parametrize("bad", [0, True, 30001, None])
+@pytest.mark.parametrize("bad", [0, True, 30001])
 def test_cleanup_requires_the_bound_deadline(cleanup, bad):
     policy, actual = cleanup
     actual["timeout_ms"] = bad
@@ -244,28 +244,135 @@ def test_cleanup_requires_the_bound_deadline(cleanup, bad):
 
 
 @pytest.mark.parametrize("kind", sorted(admission.KINDS))
-@pytest.mark.parametrize("change", ["present", "missing", "namespace", "namespace_missing", "identity", "duplicate"])
-def test_any_cleanup_uncertainty_retains_capacity(cleanup, kind, change):
+@pytest.mark.parametrize("change", ["present", "namespace", "identity", "duplicate"])
+def test_known_bad_cleanup_observations_retain_capacity(cleanup, kind, change):
     policy, actual = cleanup
     row = next(row for row in actual["objects"] if row["kind"] == kind)
-    reasons = dict(present="owned_absence_unproven", missing="cleanup_inventory_mismatch",
-                   namespace="owned_namespace_absence_unproven",
-                   namespace_missing="cleanup_namespace_coverage_incomplete",
+    reasons = dict(present="owned_absence_unproven", namespace="owned_namespace_absence_unproven",
                    identity="cleanup_inventory_mismatch", duplicate="duplicate_owned_resource")
     if change == "present":
         row["absent"] = False
-    elif change == "missing":
-        actual["objects"].remove(row)
     elif change == "namespace":
         actual["namespaces"][kind]["remaining"] = ["synthetic-unrecorded-object"]
-    elif change == "namespace_missing":
-        del actual["namespaces"][kind]
     elif change == "identity":
         row["id"] = "synthetic-other-object"
     else:
         actual["objects"].append(deepcopy(row))
     receipt = refused(admission.admit_cleanup, policy, actual, reasons[change])
     assert receipt["lease_action"] == "quarantine"
+
+
+@pytest.mark.parametrize("stage,change,reason", [
+    ("snapshot", "running", "snapshot_quiescence_unproven"),
+    ("snapshot", "exit_code", "snapshot_quiescence_unproven"),
+    ("snapshot", "oom_killed", "snapshot_quiescence_unproven"),
+    ("snapshot", "timeout_ms", "snapshot_deadline_mismatch"),
+    ("snapshot", "writable_bytes", "snapshot_size_exceeded"),
+    ("snapshot", "writable_inodes", "snapshot_size_exceeded"),
+    ("snapshot", "free_bytes", "snapshot_headroom_insufficient"),
+    ("snapshot", "free_inodes", "snapshot_headroom_insufficient"),
+    ("cleanup", "present", "owned_absence_unproven"),
+    ("cleanup", "unidentified_present", "owned_absence_unproven"),
+    ("cleanup", "namespace", "owned_namespace_absence_unproven"),
+    ("cleanup", "identity", "cleanup_inventory_mismatch"),
+    ("cleanup", "partial_identity", "cleanup_inventory_mismatch"),
+    ("cleanup", "duplicate", "duplicate_owned_resource"),
+    ("cleanup", "timeout_ms", "cleanup_deadline_mismatch"),
+])
+def test_known_bad_lifecycle_observation_is_refused_despite_incomplete_evidence(
+        request, stage, change, reason):
+    policy, complete = request.getfixturevalue(stage)
+    # Start with *only* the binding. Coverage gaps must never hide a real failure.
+    actual = dict(binding=BINDING.copy())
+    if stage == "snapshot":
+        if change in ("running", "oom_killed"):
+            actual[change] = True
+        elif change == "exit_code":
+            actual[change] = 137
+        elif change == "timeout_ms":
+            actual[change] = policy[change] + 1
+        elif change.startswith("writable_"):
+            actual[change] = policy[change.replace("writable_", "max_")] + 1
+        else:
+            # An observed reserve shortfall is bad even with size unknown.
+            actual[change] = policy[change.replace("free_", "reserve_")] - 1
+    elif change == "timeout_ms":
+        actual[change] = policy[change] + 1
+    elif change == "namespace":
+        actual["namespaces"] = dict(container=dict(remaining=["synthetic-survivor"]))
+    else:
+        row = deepcopy(complete["objects"][0])
+        row.pop("evidence_sha256")
+        actual["objects"] = [row]
+        if change in ("present", "unidentified_present"):
+            row["absent"] = False
+            if change == "unidentified_present":
+                del row["kind"], row["id"]
+        elif change in ("identity", "partial_identity"):
+            row["id"] = "synthetic-other-owner"
+            if change == "partial_identity":
+                del row["kind"]
+        else:
+            actual["objects"].append(deepcopy(row))
+    receipt = refused(getattr(admission, "admit_" + stage), policy, actual, reason)
+    assert receipt["reason"] == reason
+    if stage == "cleanup":
+        assert receipt["lease_action"] == "quarantine"
+
+
+@pytest.mark.parametrize("stage,key", [
+    ("snapshot", key) for key in (
+        "writable_bytes", "writable_inodes", "free_bytes", "free_inodes", "running",
+        "exit_code", "oom_killed", "timeout_ms", "device_id", "evidence_sha256", "all")
+] + [
+    ("cleanup", key) for key in (
+        "objects", "namespaces", "timeout_ms", "evidence_sha256", "all", "owned[0]",
+        "objects[0].kind", "objects[0].id", "objects[0].absent",
+        "objects[0].evidence_sha256", "namespaces.container",
+        "namespaces.container.remaining", "namespaces.container.evidence_sha256")
+])
+@pytest.mark.parametrize("unknown", ["missing", "null"])
+def test_incomplete_lifecycle_observation_proceeds_with_uncertainty(request, stage, key, unknown):
+    policy, actual = request.getfixturevalue(stage)
+    target, field = actual, key
+    if key == "all":
+        actual = dict(binding=BINDING.copy())
+        if unknown == "null":
+            actual.update({name: None for name in target if name != "binding"})
+    elif key == "owned[0]":
+        actual["objects"].pop(0)
+    else:
+        if key.startswith("objects[0]."):
+            target, field = actual["objects"][0], key.split(".", 1)[1]
+        elif key.startswith("namespaces.container."):
+            target, field = actual["namespaces"]["container"], key.rsplit(".", 1)[1]
+        elif key == "namespaces.container":
+            target, field = actual["namespaces"], "container"
+        if unknown == "missing":
+            del target[field]
+        else:
+            target[field] = None
+    before = deepcopy((policy, actual))
+    gate = getattr(admission, "admit_" + stage)
+    receipt = gate(BINDING, policy, actual)
+    assert receipt == gate(BINDING, policy, actual)
+    assert (policy, actual) == before
+    assert receipt["status"] == "passed"
+    assert receipt["measured"] is False and receipt["production_authorized"] is False
+    evidence = receipt["evidence"]
+    assert evidence["best_effort"] is True
+    assert evidence["uncertainties"]
+    assert (key if key != "all" else "evidence_sha256") in evidence["uncertainties"]
+    assert len(json.dumps(receipt).encode()) <= admission.MAX_RECEIPT_BYTES
+    if stage == "cleanup":
+        assert receipt["lease_action"] == "release"
+        if key in ("namespaces", "namespaces.container", "namespaces.container.remaining", "all"):
+            assert "container" not in evidence["checked_kinds"]
+        if key in ("timeout_ms", "all"):
+            assert evidence["timeout_ms"] is None  # Do not echo policy as an observation.
+    elif key in ("writable_bytes", "writable_inodes", "all"):
+        unit = "inodes" if key.endswith("inodes") else "bytes"
+        assert evidence["required_" + unit] is None
 
 
 @pytest.mark.parametrize("stage", ["runtime", "snapshot", "cleanup"])

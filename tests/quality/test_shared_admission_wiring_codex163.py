@@ -181,7 +181,7 @@ def test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved(tmp_path,
     ("cleanup", {"owned": [], "timeout_ms": 1}),
 ])
 @pytest.mark.parametrize("observation", [None, {}, "unknown"])
-def test_shared_contracts_refuse_unknown_observations(stage, policy, observation):
+def test_shared_contracts_refuse_malformed_or_unbound_observations(stage, policy, observation):
     binding = {"adapter_id": "synthetic-163", "run_id": "synthetic-run-163",
                "trial_id": "synthetic-trial-1", "manifest_sha256": "a" * 64}
     with pytest.raises(runner_admission.AdmissionError) as error:

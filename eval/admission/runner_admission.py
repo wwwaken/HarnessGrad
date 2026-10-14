@@ -2,7 +2,9 @@
 
 These functions inspect supplied facts only. They install no quotas, execute no
 probes and grant no production authorization. A backend must independently collect
-complete, fresh observations and enforce the declared bounds before using them.
+fresh observations and apply the declared bounds. Snapshot and cleanup checks are
+best-effort: missing facts retain uncertainty, not an infallibility proof gate
+(operator ruling, 2026-10-15; docs/enforcement-proof-decision.md).
 """
 from __future__ import annotations
 
@@ -100,6 +102,33 @@ def _observation(binding, observed, keys):
     _sha(observed["evidence_sha256"], "invalid_evidence_hash")
 
 
+def _partial_object(value, keys, code):
+    _require(isinstance(value, dict) and set(value) <= keys, code)
+
+
+def _fact(observed, key, uncertainties, prefix=""):
+    """Omitted/null lifecycle facts are unknown; present facts still get checked."""
+    value = observed.get(key)
+    if value is None:
+        uncertainties.append(prefix + key)
+    return value
+
+
+def _optional_hash(observed, uncertainties, prefix=""):
+    value = _fact(observed, "evidence_sha256", uncertainties, prefix)
+    if value is not None:
+        _sha(value, "invalid_evidence_hash")
+
+
+def _lifecycle_observation(binding, observed, keys, uncertainties):
+    # Identity and schema integrity remain mandatory. Only lifecycle observation
+    # coverage is best-effort; stale facts and unchecked payloads are not accepted.
+    _partial_object(observed, keys | {"binding", "evidence_sha256"}, "invalid_observation")
+    _require("binding" in observed, "invalid_observation")
+    _require(_binding(observed["binding"]) == binding, "stale_observation")
+    _optional_hash(observed, uncertainties)
+
+
 def _resources(values, code):
     _object(values, RESOURCE_KEYS, code)
     for key, value in values.items():
@@ -158,36 +187,48 @@ def admit_runtime(binding: dict, policy: dict, observed: dict) -> dict:
 
 @_gate("snapshot")
 def admit_snapshot(binding: dict, policy: dict, observed: dict) -> dict:
-    """Validate quiescence, disk/inode headroom and a finite snapshot deadline.
+    """Check available quiescence, headroom and deadline facts best-effort.
 
     This is preflight capacity evidence, not writable-layer quota enforcement.
     The snapshot worker's CPU/memory/PID limits need a separate runtime admission.
+    Missing/null facts are retained as uncertainty; known failures still refuse.
+    Admission does not attest snapshot completion or prove bounded peak usage.
     """
     _object(policy, {"max_bytes", "max_inodes", "reserve_bytes", "reserve_inodes", "timeout_ms"},
             "invalid_snapshot_policy")
     for value in policy.values():
         _integer(value, "invalid_snapshot_policy", positive=True)
-    _observation(binding, observed, {"writable_bytes", "writable_inodes", "free_bytes",
-                                   "free_inodes", "running", "exit_code", "oom_killed",
-                                   "timeout_ms", "device_id"})
-    _require(observed["running"] is False and type(observed["exit_code"]) is int
-             and observed["exit_code"] == 0 and observed["oom_killed"] is False,
-             "snapshot_quiescence_unproven")
-    _text(observed["device_id"], "invalid_snapshot_device")
+    uncertainties = []
+    keys = {"writable_bytes", "writable_inodes", "free_bytes", "free_inodes",
+            "running", "exit_code", "oom_killed", "timeout_ms", "device_id"}
+    _lifecycle_observation(binding, observed, keys, uncertainties)
+    facts = {key: _fact(observed, key, uncertainties) for key in sorted(keys)}
+    for key in ("running", "oom_killed"):
+        if facts[key] is not None:
+            _require(facts[key] is False, "snapshot_quiescence_unproven")
+    if facts["exit_code"] is not None:
+        _require(type(facts["exit_code"]) is int and facts["exit_code"] == 0,
+                 "snapshot_quiescence_unproven")
+    if facts["device_id"] is not None:
+        _text(facts["device_id"], "invalid_snapshot_device")
     for key in ("writable_bytes", "writable_inodes", "free_bytes", "free_inodes"):
-        _integer(observed[key], "invalid_snapshot_observation")
-    _integer(observed["timeout_ms"], "invalid_snapshot_deadline", positive=True)
-    _require(observed["timeout_ms"] == policy["timeout_ms"], "snapshot_deadline_mismatch")
+        if facts[key] is not None:
+            _integer(facts[key], "invalid_snapshot_observation")
+    if facts["timeout_ms"] is not None:
+        _integer(facts["timeout_ms"], "invalid_snapshot_deadline", positive=True)
+        _require(facts["timeout_ms"] == policy["timeout_ms"], "snapshot_deadline_mismatch")
     for unit in ("bytes", "inodes"):
-        _require(observed["writable_" + unit] <= policy["max_" + unit],
-                 "snapshot_size_exceeded")
-        _require(observed["free_" + unit] >= observed["writable_" + unit] + policy["reserve_" + unit],
-                 "snapshot_headroom_insufficient")
-    evidence = {key: observed[key] for key in observed if key not in {"binding", "evidence_sha256"}}
-    evidence.update(limits=dict(policy),
-                    required_bytes=observed["writable_bytes"] + policy["reserve_bytes"],
-                    required_inodes=observed["writable_inodes"] + policy["reserve_inodes"])
-    return evidence
+        writable, free = facts["writable_" + unit], facts["free_" + unit]
+        if writable is not None:
+            _require(writable <= policy["max_" + unit], "snapshot_size_exceeded")
+        # Even without a size observation, free space below the reserve is bad.
+        if free is not None:
+            _require(free >= (writable or 0) + policy["reserve_" + unit],
+                     "snapshot_headroom_insufficient")
+        facts["required_" + unit] = (None if writable is None
+                                     else writable + policy["reserve_" + unit])
+    return dict(facts, limits=dict(policy), best_effort=True,
+                uncertainties=sorted(uncertainties))
 
 
 def _inventory(value):
@@ -205,26 +246,68 @@ def _inventory(value):
 
 @_gate("cleanup")
 def admit_cleanup(binding: dict, policy: dict, observed: dict) -> dict:
-    """Release only after exact owned-object and complete namespace absence checks."""
+    """Check available owned-object/namespace facts, retaining coverage gaps.
+
+    Missing absence evidence no longer quarantines a lease by itself. Known
+    remaining resources, wrong identities and failures still refuse release.
+    This check neither performs cleanup nor proves an atomic ledger update.
+    """
     _object(policy, {"owned", "timeout_ms"}, "invalid_cleanup_policy")
     owned = _inventory(policy["owned"])
     _integer(policy["timeout_ms"], "invalid_cleanup_policy", positive=True)
-    _observation(binding, observed, {"objects", "namespaces", "timeout_ms"})
-    _require(observed["timeout_ms"] == policy["timeout_ms"]
-             and type(observed["timeout_ms"]) is int, "cleanup_deadline_mismatch")
-    objects = observed["objects"]
+    uncertainties = []
+    _lifecycle_observation(binding, observed, {"objects", "namespaces", "timeout_ms"},
+                           uncertainties)
+    timeout = _fact(observed, "timeout_ms", uncertainties)
+    if timeout is not None:
+        _require(timeout == policy["timeout_ms"] and type(timeout) is int,
+                 "cleanup_deadline_mismatch")
+    objects = _fact(observed, "objects", uncertainties)
+    if objects is None:
+        objects = []
     _require(isinstance(objects, list) and len(objects) <= MAX_OWNED, "invalid_cleanup_objects")
     identities = []
-    for item in objects:
-        _object(item, {"kind", "id", "absent", "evidence_sha256"}, "invalid_cleanup_object")
-        identities.append({key: item[key] for key in ("kind", "id")})
-        _require(item["absent"] is True, "owned_absence_unproven")
-        _sha(item["evidence_sha256"], "invalid_evidence_hash")
-    _require(_inventory(identities) == owned, "cleanup_inventory_mismatch")
-    namespaces = observed["namespaces"]
-    _object(namespaces, KINDS, "cleanup_namespace_coverage_incomplete")
-    for row in namespaces.values():
-        _object(row, {"remaining", "evidence_sha256"}, "invalid_cleanup_namespace")
-        _require(row["remaining"] == [], "owned_namespace_absence_unproven")
-        _sha(row["evidence_sha256"], "invalid_evidence_hash")
-    return dict(owned_count=len(owned), checked_kinds=sorted(KINDS), timeout_ms=policy["timeout_ms"])
+    for index, item in enumerate(objects):
+        _partial_object(item, {"kind", "id", "absent", "evidence_sha256"}, "invalid_cleanup_object")
+        prefix = f"objects[{index}]."
+        kind = _fact(item, "kind", uncertainties, prefix)
+        resource_id = _fact(item, "id", uncertainties, prefix)
+        if kind is not None:
+            _require(isinstance(kind, str) and kind in KINDS, "invalid_owned_kind")
+        if resource_id is not None:
+            _text(resource_id, "invalid_owned_id")
+        if kind is not None or resource_id is not None:
+            _require(any((kind is None or kind == expected_kind)
+                         and (resource_id is None or resource_id == expected_id)
+                         for expected_kind, expected_id in owned), "cleanup_inventory_mismatch")
+        if kind is not None and resource_id is not None:
+            identities.append(dict(kind=kind, id=resource_id))
+        absent = _fact(item, "absent", uncertainties, prefix)
+        if absent is not None:
+            _require(absent is True, "owned_absence_unproven")
+        _optional_hash(item, uncertainties, prefix)
+    checked = _inventory(identities)
+    _require(checked <= owned, "cleanup_inventory_mismatch")
+    for index, item in enumerate(policy["owned"]):
+        if (item["kind"], item["id"]) not in checked:
+            uncertainties.append(f"owned[{index}]")
+    namespaces = _fact(observed, "namespaces", uncertainties)
+    if namespaces is None:
+        namespaces = {}
+    _partial_object(namespaces, KINDS, "cleanup_namespace_coverage_incomplete")
+    checked_kinds = []
+    for kind in sorted(KINDS):
+        row = _fact(namespaces, kind, uncertainties, "namespaces.")
+        if row is None:
+            continue
+        _partial_object(row, {"remaining", "evidence_sha256"}, "invalid_cleanup_namespace")
+        prefix = f"namespaces.{kind}."
+        remaining = _fact(row, "remaining", uncertainties, prefix)
+        if remaining is not None:
+            _require(remaining == [], "owned_namespace_absence_unproven")
+            checked_kinds.append(kind)
+        _optional_hash(row, uncertainties, prefix)
+    return dict(owned_count=len(owned), observed_owned_count=len(checked),
+                checked_kinds=checked_kinds, timeout_ms=timeout,
+                limits=dict(timeout_ms=policy["timeout_ms"]), best_effort=True,
+                uncertainties=sorted(uncertainties))

@@ -12,7 +12,8 @@
       "Shared blocker references are cumulative requirements, not a claim that every runtime mode needs a container snapshot.",
       "Missing dataset-specific journal evidence is an explicit measurement/review gap, never a passing status.",
       "Unknown historical run IDs remain null; historical date strings and coverage discrepancies are preserved as written.",
-      "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization."
+      "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization.",
+      "Operator decision 2026-10-15: snapshot and cleanup admission are best-effort with uncertainty retained; incomplete observations alone do not block, known failures and integrity mismatches still refuse. See docs/enforcement-proof-decision.md."
     ]
   },
   "shared_blockers": [
@@ -453,9 +454,14 @@
               "kind": "repository",
               "path": "reports/chess-recovery-id-conflict-codex182-report.md",
               "locator": "Both historical IDs"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
-          "next_action": "Preserve chess-pilot-h0-20261013 and chess-pilot-h0-20261013-recovery-01, their original receipts and null effects; never resume, re-run or overwrite either ID. Keep the runtime gate open pending independent audit/receipt authentication, termination/quiescence and owned cleanup closure. Do not turn missing outcomes or zero failed envelopes into measured zeros or complete coverage."
+          "next_action": "Preserve chess-pilot-h0-20261013 and chess-pilot-h0-20261013-recovery-01, their original receipts and null effects; never resume, re-run or overwrite either ID. Keep the runtime gate open pending independent audit/receipt authentication and termination/quiescence review. Continue best-effort cleanup with uncertainty retained; proof of exact owned absence or atomic lease closure is not a prerequisite. Do not turn missing outcomes or zero failed envelopes into measured zeros or complete coverage."
         }
       ],
       "historical_runs": [
@@ -595,9 +601,14 @@
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## FEVER — source-only journal coverage — b1"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
-          "next_action": "NEXT gate: source-provenance and metric-comparability. Independently authenticate the pinned Hub export/conversion and original FEVER evidence-group preservation, with an exact upstream scorer release; then establish official-scorer-identity and offline/pristine runtime evidence before any diagnostic. Retain all shared gates; this source review authorizes no execution."
+          "next_action": "NEXT gate: source-provenance and metric-comparability. Independently authenticate the pinned Hub export/conversion and original FEVER evidence-group preservation, with an exact upstream scorer release; document metric identity and establish offline/pristine runtime evidence before any diagnostic. The official-scorer-identity proof obligation is withdrawn; retain the remaining shared gates. This source review authorizes no execution."
         }
       ],
       "historical_runs": []
@@ -643,9 +654,14 @@
               "kind": "repository",
               "path": "docs/gaia-operator-packet-codex210.md",
               "locator": "## Required operator deliveries, in dependency order"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
-          "next_action": "Retain policy refusal: do not provision or run GAIA. Preserve gaia-validation-pilot-h0-20261117-v2 and gaia-validation-pilot-h0-20261117-v3 without resuming or overwriting them. Keep the runtime gate open for independently authenticated selected-only/source-lock, verifier/dependency, bounded snapshot/export and fresh cleanup evidence; retain unknown outcomes as unmeasured and publish no aggregate score."
+          "next_action": "Retain policy refusal: do not provision or run GAIA. Preserve gaia-validation-pilot-h0-20261117-v2 and gaia-validation-pilot-h0-20261117-v3 without resuming or overwriting them. Keep the runtime gate open for independently authenticated selected-only/source-lock, verifier/dependency and artifact-only export. Continue best-effort snapshots and cleanup with uncertainty retained; incomplete observations alone are not a gate and known failures remain recorded. Retain unknown outcomes as unmeasured and publish no aggregate score."
         }
       ],
       "historical_runs": [
@@ -940,9 +956,14 @@
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## Physics Questions — source-only journal coverage — b1"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
-          "next_action": "NEXT gate: source-provenance and official-scorer-identity. Authenticate the ReWOO archive/member-to-BIG-bench task/release and accepted-target linkage, and independently pin the original exact_str_match evaluator; then establish scorer-offline-closure and pristine verifier evidence. Retain all shared gates and unmeasured coverage; no diagnostic is authorized."
+          "next_action": "NEXT gate: source-provenance and metric identity. Authenticate the ReWOO archive/member-to-BIG-bench task/release and accepted-target linkage, and independently pin the original exact_str_match evaluator; then establish scorer-offline-closure and pristine verifier evidence. The official-scorer-identity proof obligation is withdrawn; retain the remaining shared gates and unmeasured coverage. No diagnostic is authorized."
         }
       ],
       "historical_runs": []
@@ -982,9 +1003,14 @@
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## Reasoning Gym — source-only journal coverage — b1"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
-          "next_action": "NEXT gate: source-provenance, then scorer-offline-closure. Independently authenticate the package/generator artifacts and declared pool digest/family/eligibility/selected manifest; establish deterministic transitive dependencies without scoring extras in the actual pristine verifier. Retain official-scorer-identity and all other shared gates; no diagnostic is authorized."
+          "next_action": "NEXT gate: source-provenance, then scorer-offline-closure. Independently authenticate the package/generator artifacts and declared pool digest/family/eligibility/selected manifest; establish deterministic transitive dependencies without scoring extras in the actual pristine verifier. Document metric identity; the official-scorer-identity proof obligation is withdrawn. Retain the remaining shared gates; no diagnostic is authorized."
         }
       ],
       "historical_runs": []
@@ -1258,9 +1284,14 @@
               "kind": "repository",
               "path": "docs/tau-bench-vendoring.md",
               "locator": "3. **Two recorded generated databases are absent, intentionally ignored by git.**"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
-          "next_action": "Keep the runtime gate open. Require selected-only custody plus independent run/trial/manifest-bound clean-state restoration, database/image identity, evaluator secrecy, effective backend limits, bounded state export/snapshot and owned cleanup evidence before any readiness claim. Do not infer a runtime pass from source declarations, inventory or synthetic contracts; evidence outside this review remains unknown."
+          "next_action": "Keep the runtime gate open. Require selected-only custody plus independent run/trial/manifest-bound clean-state restoration, database/image identity, evaluator secrecy, effective backend limits and artifact-only state export before any readiness claim. Continue best-effort snapshots and owned cleanup with uncertainty retained; incomplete observations alone are not a gate and known failures still refuse. Do not infer a runtime pass from source declarations, inventory or synthetic contracts; evidence outside this review remains unknown."
         }
       ],
       "historical_runs": []
@@ -1287,7 +1318,7 @@
           "id": "cached-runtime-admission",
           "family": "trusted-verifier-runtime",
           "status": "runtime",
-          "observed": "Reviewed 2026-10-15: the identity requirements are enforced in code and verifiable -- the image is resolved to a digest before launch and a run refuses to start without one (eval/containers/container.py:603,672), the resolved digest is recorded (eval/run/runner.py:296), a produced snapshot must look pinned (eval/containers/container.py:889-894), the admission binding must carry a manifest_sha256 (eval/admission/runner_admission.py:62-65) and uncertainty quarantines rather than releases (same file, :76,:91). What is still absent is execution evidence: the cached images are cached artifacts, and no terminal-bench task has been run with a verifier producing a score. The full 89-image set (~104 GB) is not required -- the operator decided a subset run selected via HG_TB_TASKS from the locally cached jevloop-tb images is sufficient.",
+          "observed": "Reviewed 2026-10-15: the identity requirements are enforced in code and verifiable -- the image is resolved to a digest before launch and a run refuses to start without one (eval/containers/container.py:603,672), the resolved digest is recorded (eval/run/runner.py:296), a produced snapshot must look pinned (eval/containers/container.py:889-894), and the admission binding must carry a manifest_sha256 (eval/admission/runner_admission.py::_binding). Under docs/enforcement-proof-decision.md, snapshot/cleanup observations are best-effort with uncertainty retained: incomplete evidence alone permits admission and lease release; known failures or integrity mismatches still refuse, with cleanup refusals quarantined. What is still absent is execution evidence: the cached images are cached artifacts, and no terminal-bench task has been run with a verifier producing a score. The full 89-image set (~104 GB) is not required -- the operator decided a subset run selected via HG_TB_TASKS from the locally cached jevloop-tb images is sufficient.",
           "evidence": [
             {
               "kind": "repository",
@@ -1298,6 +1329,11 @@
               "kind": "repository",
               "path": "docs/terminal-bench-runtime-admission.md",
               "locator": "The dataset-specific blocker stays open, with its `observed` sharpened."
+            },
+            {
+              "kind": "repository",
+              "path": "docs/enforcement-proof-decision.md",
+              "locator": "Snapshot/cleanup uncertainty alone is not a new"
             }
           ],
           "next_action": "The review its previous next_action asked for is complete. What remains is execution: run one cached terminal-bench task selected via HG_TB_TASKS, with its verifier producing a score and the manifest/image/resource/cleanup receipts, and close the shared scorer-offline-closure, pristine-verifier and runtime-observations reviews. Do not count a cached image, or this review, as a measurement."
