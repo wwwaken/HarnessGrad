@@ -1973,3 +1973,37 @@ archives and platform images are unchanged.
 Validation in `reports/w-ujson-validation.txt`: blocker checker valid
 (28 datasets, 2 shared blockers, 11 historical records; production_authorized=false),
 117 focused receipt/package/source/registry tests passed in 3.01s.
+## Parent review and merge — w-spread2, w-ujson — 2026-10-15
+
+- Merged `8b3b25d` (w-spread2) and `c9af248` (w-ujson) on top of `83cad84`. Only the journal
+  conflicted, resolved by keeping both sides. Result `cac8b8a`. Registry valid: 28 datasets,
+  2 shared blockers, 11 historical records, `production_authorized=false`.
+- **The round-33 revert is now closed out properly.** w-spread2 chose option (a) explicitly and
+  said why: upstream catches the range-parser exception and records a zero, so task `283-32`
+  keeps an **official-equivalent measured zero** rather than becoming locally unmeasured. Real
+  comparator/workbook-load/LibreOffice failures still become unmeasured, and an absent artifact
+  or a genuine mismatch still stays a measured zero. The parent re-ran the file that broke last
+  time, `tests/quality/test_spreadsheetbench_official_scorer.py`, and it is **11 passed with the
+  initial-workbook assertion unchanged**; owning file plus registry is 65 passed. The audit also
+  bounded the problem instead of gesturing at it: **1 affected task among 400**, with two failing
+  ranges, and a stated method. `spreadsheetbench` correctly stays open for authenticated
+  eligibility/coverage, data/scorer custody, LibreOffice offline runtime and both shared gates.
+  This is what the revert was for: the same fix, landed deliberately, with the comparability
+  question answered in the open rather than settled by editing an assertion.
+- **w-ujson produced the image-bound closure the blocker asked for, and still refused to close
+  it.** Pinned base `python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b`
+  (CPython 3.12.15, glibc 2.36), with **network-denied** receipts for native import, recursive
+  symbol providers and synthetic evaluator runs, and both license notices carried into the built
+  image. It stays `external` because authenticated linkage from the original wheel to its actual
+  source/build inputs and the double-conversion build selection is still unmet - and it recorded
+  that PyPI build attestation for the wheel returns 404 ("No provenance available") rather than
+  implying the custody exists. Checker valid, 117 tests passed.
+- Independent verification done by the parent this round: the checker on both trees before
+  merging, the owning spreadsheetbench test file after merging, and the registry JSON inspected
+  for conflict markers before completing each cherry-pick. The round-32 lesson about never
+  resolving a registry merge by concatenation was applied: the merge helper now aborts the
+  automatic path if `docs/dataset-blockers.json` itself conflicts, instead of splicing it.
+- Resource state: w-spread2 ran only local synthetic tests. w-ujson built and ran a local
+  network-denied container for its receipts, which is the authorised diagnostic work its blocker
+  requires; no benchmark task, model or endpoint call was made, so the model endpoint stayed idle
+  and no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
