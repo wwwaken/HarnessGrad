@@ -2222,3 +2222,24 @@ Final w-2wiki validation: 54 source-only registry tests passed in 3.17s. All
 fixture SHA-256, response/header, decoded-license/card Git blob, PDF extraction
 and scope checks passed. Registry checker returned valid=true: 28 datasets,
 2 shared blockers, 11 historical records, production_authorized=false.
+## Parent review and merge — w-2wiki — 2026-10-15
+
+- Merged `6af7fef` (w-2wiki) on top of `2c82417`. Result `0236ba7`. Registry valid: 28 datasets,
+  2 shared blockers, 11 historical records, `production_authorized=false`. 66 passed on the
+  registry plus `test_twowikimultihopqa_official_scorer.py`.
+- `twowikimultihopqa / hub-data-provenance` **stays `external` and open**. w-2wiki established
+  SHA-256 custody of five documentation responses and verified the Apache-2.0 license bytes, and
+  it recorded a genuine inconsistency rather than smoothing it over: the paper claims **192,606
+  examples while the witness card carries conflicting counts**. Original-release content
+  digest/member mapping, explicit dataset/alias rights, authenticated ID coverage and
+  selected-manifest linkage all remain missing, and all four are named.
+- The worker also confirmed it imposed no human approval gate, per the operator's withdrawal of
+  those gates; the blocker stays open on substantive grounds only. That distinction has now held
+  for every member of this family across `bfcl_v3`, `triviaqa`, `livecodebench` and
+  `twowikimultihopqa`: the withdrawn approval requirement is not what is keeping any of them shut.
+- Still in flight at the end of this round and NOT merged: `w-img`
+  (`scorer-offline-closure` image/ABI custody), which had committed `01b4c50` but had not
+  finished. Nothing about its result is claimed here.
+- Resource state: public-source acquisition and local review only - no benchmark task, model, GPU,
+  endpoint or container. Both GPUs stayed idle and no utilisation is claimed. Historical runs,
+  frozen receipts and archives were untouched.
