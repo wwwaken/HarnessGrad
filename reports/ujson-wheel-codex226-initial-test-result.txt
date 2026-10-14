@@ -1,0 +1,1507 @@
+.......F.F..FF......................F..FFFFFFFFFFFFFFFFF....F            [100%]
+=================================== FAILURES ===================================
+__________ test_actual_wheel_elf_dependency_contract_without_loading ___________
+
+tmp_path = PosixPath('/tmp/hg-codex-226/.scratch/ujson-codex226-tests/pytest/test_actual_wheel_elf_dependen0')
+
+    def test_actual_wheel_elf_dependency_contract_without_loading(tmp_path):
+        readelf = shutil.which("readelf")
+        assert readelf, "GNU readelf is required for the static native dependency check"
+        target = tmp_path / MODULE
+        target.write_bytes(wheel_contents()[MODULE])
+        output = subprocess.check_output(
+            [readelf, "-h", "-d", "-V", "--dyn-syms", "-W", str(target)],
+            text=True, env={**os.environ, "LC_ALL": "C"}, timeout=10,
+        )
+        assert "ELF64" in output and "Advanced Micro Devices X86-64" in output
+        assert re.findall(r"\(NEEDED\).*\[(.*?)\]", output) == NEEDED
+        assert "(RPATH)" not in output and "(RUNPATH)" not in output
+        requirements = {}
+        library = None
+        for line in output.splitlines():
+            match = re.search(r"File: (\S+)\s+Cnt:", line)
+            if match:
+                library = match[1]
+                requirements[library] = []
+            match = re.search(r"Name: (\S+)\s+Flags:", line)
+            if match:
+                assert library is not None
+                requirements[library].append(match[1])
+>       assert {name: sorted(versions) for name, versions in requirements.items()} == VERSIONS
+E       AssertionError: assert {'libc.so.6':...GLIBCXX_3.4']} == {'libc.so.6':...GLIBCXX_3.4']}
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'libc.so.6': ['GLIBC_2.14', 'GLIBC_2.2.5']} != {'libc.so.6': ['GLIBC_2.2.5', 'GLIBC_2.14']}
+E         Use -v to get more diff
+
+tests/quality/test_ujson_pypi_codex226.py:167: AssertionError
+______ test_source_inventory_and_taxonomy_cover_every_publishable_dataset ______
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+
+    def test_source_inventory_and_taxonomy_cover_every_publishable_dataset(document):
+>       counts = checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+_ test_registry_refuses_incomplete_or_misleading_entries[missing-missing published datasets] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'missing', message = 'missing published datasets'
+
+    @pytest.mark.parametrize("mutation, message", [
+        ("missing", "missing published datasets"),
+        ("duplicate", "duplicate dataset"),
+        ("fixture", "unpublished dataset"),
+        ("demand", "demand x surface drift"),
+        ("surface", "demand x surface drift"),
+        ("exercises", "exercise drift"),
+        ("flat-category", "fields must be"),
+        ("unknown-status", "unknown status"),
+        ("unknown-family", "unknown blocker family"),
+        ("unknown-shared", "unknown shared blocker"),
+        ("duplicate-blocker", "duplicate blocker"),
+        ("missing-action", "empty text"),
+        ("missing-evidence", "evidence required"),
+        ("stale-anchor", "stale evidence locator"),
+        ("missing-path", "missing evidence"),
+        ("escape-path", "must stay inside root"),
+        ("authorize", "cannot authorize production"),
+    ])
+    def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message):
+        target = row(document, "jericho")
+        blocker = target["blockers"][0]
+        if mutation == "missing":
+            document["datasets"].remove(target)
+        elif mutation == "duplicate":
+            document["datasets"].append(copy.deepcopy(target))
+        elif mutation == "fixture":
+            target["dataset"] = "demo"
+        elif mutation in {"demand", "surface"}:
+            target[mutation] = "memory"
+        elif mutation == "exercises":
+            target["exercises"] = [target["surface"]]
+        elif mutation == "flat-category":
+            target["category"] = "interactive_fiction"
+        elif mutation == "unknown-status":
+            blocker["status"] = "ready"
+        elif mutation == "unknown-family":
+            blocker["family"] = "all-clear"
+        elif mutation == "unknown-shared":
+            target["shared_blockers"].append("imaginary")
+        elif mutation == "duplicate-blocker":
+            target["blockers"].append(copy.deepcopy(blocker))
+        elif mutation == "missing-action":
+            blocker["next_action"] = ""
+        elif mutation == "missing-evidence":
+            blocker["evidence"] = []
+        elif mutation == "stale-anchor":
+            blocker["evidence"][0]["locator"] = "fabricated absent journal entry"
+        elif mutation == "missing-path":
+            blocker["evidence"][0]["path"] = "docs/does-not-exist.txt"
+        elif mutation == "escape-path":
+            blocker["evidence"][0]["path"] = "../external-receipt.json"
+        elif mutation == "authorize":
+            document["review"]["production_authorized"] = True
+        with pytest.raises(checker.RegistryError, match=message):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'missing', message = 'missing published datasets'
+
+    @pytest.mark.parametrize("mutation, message", [
+        ("missing", "missing published datasets"),
+        ("duplicate", "duplicate dataset"),
+        ("fixture", "unpublished dataset"),
+        ("demand", "demand x surface drift"),
+        ("surface", "demand x surface drift"),
+        ("exercises", "exercise drift"),
+        ("flat-category", "fields must be"),
+        ("unknown-status", "unknown status"),
+        ("unknown-family", "unknown blocker family"),
+        ("unknown-shared", "unknown shared blocker"),
+        ("duplicate-blocker", "duplicate blocker"),
+        ("missing-action", "empty text"),
+        ("missing-evidence", "evidence required"),
+        ("stale-anchor", "stale evidence locator"),
+        ("missing-path", "missing evidence"),
+        ("escape-path", "must stay inside root"),
+        ("authorize", "cannot authorize production"),
+    ])
+    def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message):
+        target = row(document, "jericho")
+        blocker = target["blockers"][0]
+        if mutation == "missing":
+            document["datasets"].remove(target)
+        elif mutation == "duplicate":
+            document["datasets"].append(copy.deepcopy(target))
+        elif mutation == "fixture":
+            target["dataset"] = "demo"
+        elif mutation in {"demand", "surface"}:
+            target[mutation] = "memory"
+        elif mutation == "exercises":
+            target["exercises"] = [target["surface"]]
+        elif mutation == "flat-category":
+            target["category"] = "interactive_fiction"
+        elif mutation == "unknown-status":
+            blocker["status"] = "ready"
+        elif mutation == "unknown-family":
+            blocker["family"] = "all-clear"
+        elif mutation == "unknown-shared":
+            target["shared_blockers"].append("imaginary")
+        elif mutation == "duplicate-blocker":
+            target["blockers"].append(copy.deepcopy(blocker))
+        elif mutation == "missing-action":
+            blocker["next_action"] = ""
+        elif mutation == "missing-evidence":
+            blocker["evidence"] = []
+        elif mutation == "stale-anchor":
+            blocker["evidence"][0]["locator"] = "fabricated absent journal entry"
+        elif mutation == "missing-path":
+            blocker["evidence"][0]["path"] = "docs/does-not-exist.txt"
+        elif mutation == "escape-path":
+            blocker["evidence"][0]["path"] = "../external-receipt.json"
+        elif mutation == "authorize":
+            document["review"]["production_authorized"] = True
+>       with pytest.raises(checker.RegistryError, match=message):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'missing published datasets'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:141: AssertionError
+_ test_registry_refuses_incomplete_or_misleading_entries[duplicate-duplicate dataset] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'duplicate', message = 'duplicate dataset'
+
+    @pytest.mark.parametrize("mutation, message", [
+        ("missing", "missing published datasets"),
+        ("duplicate", "duplicate dataset"),
+        ("fixture", "unpublished dataset"),
+        ("demand", "demand x surface drift"),
+        ("surface", "demand x surface drift"),
+        ("exercises", "exercise drift"),
+        ("flat-category", "fields must be"),
+        ("unknown-status", "unknown status"),
+        ("unknown-family", "unknown blocker family"),
+        ("unknown-shared", "unknown shared blocker"),
+        ("duplicate-blocker", "duplicate blocker"),
+        ("missing-action", "empty text"),
+        ("missing-evidence", "evidence required"),
+        ("stale-anchor", "stale evidence locator"),
+        ("missing-path", "missing evidence"),
+        ("escape-path", "must stay inside root"),
+        ("authorize", "cannot authorize production"),
+    ])
+    def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message):
+        target = row(document, "jericho")
+        blocker = target["blockers"][0]
+        if mutation == "missing":
+            document["datasets"].remove(target)
+        elif mutation == "duplicate":
+            document["datasets"].append(copy.deepcopy(target))
+        elif mutation == "fixture":
+            target["dataset"] = "demo"
+        elif mutation in {"demand", "surface"}:
+            target[mutation] = "memory"
+        elif mutation == "exercises":
+            target["exercises"] = [target["surface"]]
+        elif mutation == "flat-category":
+            target["category"] = "interactive_fiction"
+        elif mutation == "unknown-status":
+            blocker["status"] = "ready"
+        elif mutation == "unknown-family":
+            blocker["family"] = "all-clear"
+        elif mutation == "unknown-shared":
+            target["shared_blockers"].append("imaginary")
+        elif mutation == "duplicate-blocker":
+            target["blockers"].append(copy.deepcopy(blocker))
+        elif mutation == "missing-action":
+            blocker["next_action"] = ""
+        elif mutation == "missing-evidence":
+            blocker["evidence"] = []
+        elif mutation == "stale-anchor":
+            blocker["evidence"][0]["locator"] = "fabricated absent journal entry"
+        elif mutation == "missing-path":
+            blocker["evidence"][0]["path"] = "docs/does-not-exist.txt"
+        elif mutation == "escape-path":
+            blocker["evidence"][0]["path"] = "../external-receipt.json"
+        elif mutation == "authorize":
+            document["review"]["production_authorized"] = True
+        with pytest.raises(checker.RegistryError, match=message):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'duplicate', message = 'duplicate dataset'
+
+    @pytest.mark.parametrize("mutation, message", [
+        ("missing", "missing published datasets"),
+        ("duplicate", "duplicate dataset"),
+        ("fixture", "unpublished dataset"),
+        ("demand", "demand x surface drift"),
+        ("surface", "demand x surface drift"),
+        ("exercises", "exercise drift"),
+        ("flat-category", "fields must be"),
+        ("unknown-status", "unknown status"),
+        ("unknown-family", "unknown blocker family"),
+        ("unknown-shared", "unknown shared blocker"),
+        ("duplicate-blocker", "duplicate blocker"),
+        ("missing-action", "empty text"),
+        ("missing-evidence", "evidence required"),
+        ("stale-anchor", "stale evidence locator"),
+        ("missing-path", "missing evidence"),
+        ("escape-path", "must stay inside root"),
+        ("authorize", "cannot authorize production"),
+    ])
+    def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message):
+        target = row(document, "jericho")
+        blocker = target["blockers"][0]
+        if mutation == "missing":
+            document["datasets"].remove(target)
+        elif mutation == "duplicate":
+            document["datasets"].append(copy.deepcopy(target))
+        elif mutation == "fixture":
+            target["dataset"] = "demo"
+        elif mutation in {"demand", "surface"}:
+            target[mutation] = "memory"
+        elif mutation == "exercises":
+            target["exercises"] = [target["surface"]]
+        elif mutation == "flat-category":
+            target["category"] = "interactive_fiction"
+        elif mutation == "unknown-status":
+            blocker["status"] = "ready"
+        elif mutation == "unknown-family":
+            blocker["family"] = "all-clear"
+        elif mutation == "unknown-shared":
+            target["shared_blockers"].append("imaginary")
+        elif mutation == "duplicate-blocker":
+            target["blockers"].append(copy.deepcopy(blocker))
+        elif mutation == "missing-action":
+            blocker["next_action"] = ""
+        elif mutation == "missing-evidence":
+            blocker["evidence"] = []
+        elif mutation == "stale-anchor":
+            blocker["evidence"][0]["locator"] = "fabricated absent journal entry"
+        elif mutation == "missing-path":
+            blocker["evidence"][0]["path"] = "docs/does-not-exist.txt"
+        elif mutation == "escape-path":
+            blocker["evidence"][0]["path"] = "../external-receipt.json"
+        elif mutation == "authorize":
+            document["review"]["production_authorized"] = True
+>       with pytest.raises(checker.RegistryError, match=message):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'duplicate dataset'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:141: AssertionError
+_ test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[remove] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'remove'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+        with pytest.raises(checker.RegistryError, match="historical"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'remove'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+>       with pytest.raises(checker.RegistryError, match="historical"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'historical'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:267: AssertionError
+_ test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[coverage] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'coverage'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+        with pytest.raises(checker.RegistryError, match="historical"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'coverage'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+>       with pytest.raises(checker.RegistryError, match="historical"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'historical'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:267: AssertionError
+_ test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[path] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'path'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+        with pytest.raises(checker.RegistryError, match="historical"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'path'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+>       with pytest.raises(checker.RegistryError, match="historical"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'historical'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:267: AssertionError
+__ test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[id] __
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'id'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+        with pytest.raises(checker.RegistryError, match="historical"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'id'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+>       with pytest.raises(checker.RegistryError, match="historical"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'historical'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:267: AssertionError
+_ test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[move] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'move'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+        with pytest.raises(checker.RegistryError, match="historical"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+mutation = 'move'
+
+    @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
+    def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+        target = row(document, "chessbench_puzzles")
+        history = target["historical_runs"][-1]
+        if mutation == "remove":
+            target["historical_runs"].remove(history)
+        elif mutation == "complete":
+            history["status"] = "complete"
+        elif mutation == "zero":
+            history["effect"] = 0.0
+        elif mutation == "coverage":
+            history["observation"] = "150/150 scored"
+        elif mutation == "path":
+            history["evidence"][-1]["path"] += ".rewritten"
+        elif mutation == "id":
+            history["run_id"] = "reused-id"
+        elif mutation == "move":
+            target["historical_runs"].remove(history)
+            row(document, "gsm8k")["historical_runs"].append(history)
+>       with pytest.raises(checker.RegistryError, match="historical"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'historical'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:267: AssertionError
+_____________ test_history_baseline_pin_is_independent_and_checked _____________
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x721a39844f80>
+
+    def test_history_baseline_pin_is_independent_and_checked(document, monkeypatch):
+        assert hashlib.sha256(checker.HISTORY.read_bytes()).hexdigest() == checker.HISTORY_SHA256
+        monkeypatch.setattr(checker, "HISTORY_SHA256", "0" * 64)
+        with pytest.raises(checker.RegistryError, match="baseline pin changed"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:275: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x721a39844f80>
+
+    def test_history_baseline_pin_is_independent_and_checked(document, monkeypatch):
+        assert hashlib.sha256(checker.HISTORY.read_bytes()).hexdigest() == checker.HISTORY_SHA256
+        monkeypatch.setattr(checker, "HISTORY_SHA256", "0" * 64)
+>       with pytest.raises(checker.RegistryError, match="baseline pin changed"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'baseline pin changed'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:274: AssertionError
+_ test_every_reviewed_historical_record_is_required[appworld-initial-infrastructure-smoke] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'appworld-initial-infrastructure-smoke'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'appworld-initial-infrastructure-smoke'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: appworld-initial-infrastructure-smoke'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+____ test_every_reviewed_historical_record_is_required[bird-v4-incomplete] _____
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'bird-v4-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'bird-v4-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: bird-v4-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+_ test_every_reviewed_historical_record_is_required[bird-v5-partial-coverage] __
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'bird-v5-partial-coverage'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'bird-v5-partial-coverage'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: bird-v5-partial-coverage'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+_ test_every_reviewed_historical_record_is_required[chess-original-incomplete] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'chess-original-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'chess-original-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: chess-original-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+_ test_every_reviewed_historical_record_is_required[chess-recovery-incomplete] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'chess-recovery-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'chess-recovery-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: chess-recovery-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+_ test_every_reviewed_historical_record_is_required[ds1000-v4-pending-review] __
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'ds1000-v4-pending-review'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'ds1000-v4-pending-review'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: ds1000-v4-pending-review'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+____ test_every_reviewed_historical_record_is_required[gaia-v2-incomplete] _____
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'gaia-v2-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'gaia-v2-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: gaia-v2-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+____ test_every_reviewed_historical_record_is_required[gaia-v3-incomplete] _____
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'gaia-v3-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'gaia-v3-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: gaia-v3-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+___ test_every_reviewed_historical_record_is_required[hotpot-v4-incomplete] ____
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'hotpot-v4-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'hotpot-v4-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: hotpot-v4-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+_ test_every_reviewed_historical_record_is_required[scienceworld-v4-incomplete] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'scienceworld-v4-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'scienceworld-v4-incomplete'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: scienceworld-v4-incomplete'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+_ test_every_reviewed_historical_record_is_required[twowiki-original-invalid-pilot] _
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'twowiki-original-invalid-pilot'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+        with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+>           checker.validate(document)
+
+tests/quality/test_dataset_blockers.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+
+During handling of the above exception, another exception occurred:
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+record_id = 'twowiki-original-invalid-pilot'
+
+    @pytest.mark.parametrize("record_id", [
+        "appworld-initial-infrastructure-smoke", "bird-v4-incomplete", "bird-v5-partial-coverage",
+        "chess-original-incomplete", "chess-recovery-incomplete", "ds1000-v4-pending-review",
+        "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
+        "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
+    ])
+    def test_every_reviewed_historical_record_is_required(document, record_id):
+        for entry in document["datasets"]:
+            entry["historical_runs"] = [record for record in entry["historical_runs"]
+                                        if record["record_id"] != record_id]
+>       with pytest.raises(checker.RegistryError, match=f"removed or changed: {record_id}"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'removed or changed: twowiki-original-invalid-pilot'
+E        Input: 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+tests/quality/test_dataset_blockers.py:288: AssertionError
+___________ test_history_can_append_without_overwriting_old_records ____________
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+
+    def test_history_can_append_without_overwriting_old_records(document):
+        target = row(document, "chessbench_puzzles")
+        new = copy.deepcopy(target["historical_runs"][-1])
+        new["record_id"] = "new-independent-interruption"
+        new["run_id"] = "new-run-id"
+        target["historical_runs"].append(new)
+>       assert checker.validate(document)["historical_records"] == 12
+
+tests/quality/test_dataset_blockers.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/check_dataset_blockers.py:174: in validate
+    _blocker(blocker, root, name)
+tools/check_dataset_blockers.py:130: in _blocker
+    _evidence(blocker["evidence"], root, label)
+tools/check_dataset_blockers.py:119: in _evidence
+    _require(item["locator"] in source.read_text(encoding="utf-8"),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json'
+
+    def _require(condition, message: str) -> None:
+        if not condition:
+>           raise RegistryError(message)
+E           check_dataset_blockers.RegistryError: twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json
+
+tools/check_dataset_blockers.py:32: RegistryError
+_____________ test_cli_produces_counts_and_nonzero_invalid_result ______________
+
+document = {'datasets': [{'blockers': [{'evidence': [{...}, {...}, {...}], 'family': 'trusted-verifier-runtime', 'id': 'productio...ric identity and required independent source/runtime evidence for each adapter; retain unmeasured status.', ...}, ...]}
+tmp_path = PosixPath('/tmp/hg-codex-226/.scratch/ujson-codex226-tests/pytest/test_cli_produces_counts_and_n0')
+capsys = <_pytest.capture.CaptureFixture object at 0x721a39a98b30>
+
+    def test_cli_produces_counts_and_nonzero_invalid_result(document, tmp_path, capsys):
+>       assert checker.main([]) == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x721a39a76700>([])
+E        +    where <function main at 0x721a39a76700> = checker.main
+
+tests/quality/test_dataset_blockers.py:341: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"valid": false, "error": "twowikimultihopqa: stale evidence locator in tests/fixtures/ujson_pypi_codex226/provenance.json"}
+=========================== short test summary info ============================
+FAILED tests/quality/test_ujson_pypi_codex226.py::test_actual_wheel_elf_dependency_contract_without_loading
+FAILED tests/quality/test_dataset_blockers.py::test_source_inventory_and_taxonomy_cover_every_publishable_dataset
+FAILED tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[missing-missing published datasets]
+FAILED tests/quality/test_dataset_blockers.py::test_registry_refuses_incomplete_or_misleading_entries[duplicate-duplicate dataset]
+FAILED tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[remove]
+FAILED tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[coverage]
+FAILED tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[path]
+FAILED tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[id]
+FAILED tests/quality/test_dataset_blockers.py::test_historical_incompletes_cannot_be_removed_reclassified_or_rescored[move]
+FAILED tests/quality/test_dataset_blockers.py::test_history_baseline_pin_is_independent_and_checked
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[appworld-initial-infrastructure-smoke]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[bird-v4-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[bird-v5-partial-coverage]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[chess-original-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[chess-recovery-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[ds1000-v4-pending-review]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[gaia-v2-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[gaia-v3-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[hotpot-v4-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[scienceworld-v4-incomplete]
+FAILED tests/quality/test_dataset_blockers.py::test_every_reviewed_historical_record_is_required[twowiki-original-invalid-pilot]
+FAILED tests/quality/test_dataset_blockers.py::test_history_can_append_without_overwriting_old_records
+FAILED tests/quality/test_dataset_blockers.py::test_cli_produces_counts_and_nonzero_invalid_result
+23 failed, 38 passed in 3.40s

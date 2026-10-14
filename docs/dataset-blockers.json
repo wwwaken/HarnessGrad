@@ -1391,7 +1391,7 @@
           "id": "ujson-native-offline-closure",
           "family": "scorer-dependency-network",
           "status": "external",
-          "observed": "The original v1.0/v1.1 evaluator source gate is closed by the reviewed code-only Codex 197 fixture at commit 209e761834d1ce055856fc11072c0a5aab47601d. Both unchanged programs pass synthetic tests with real installed ujson==5.10.0, but wheel/sdist payloads were not acquired, installed-extension origin is unattested, and native loader/transitive closure and fresh offline installation remain open.",
+          "observed": "The original v1.0/v1.1 evaluator source gate is closed by the reviewed code-only Codex 197 fixture at commit 209e761834d1ce055856fc11072c0a5aab47601d. Codex 226 acquired the exact cp312 Linux x86_64 ujson==5.10.0 wheel using official PyPI JSON URL/hash, verified archive RECORD and a fresh offline venv installation without loading the extension. Its native bytes differ from the older installed module and declare five direct system libraries. Bundled-component notice completeness, supported-image identity, loader/transitive native closure and fresh image-bound native import/synthetic execution remain open.",
           "evidence": [
             {
               "kind": "repository",
@@ -1407,9 +1407,19 @@
               "kind": "repository",
               "path": "docs/task-206-twowiki-provenance-review.md",
               "locator": "38 passed in 0.24s"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/task-226-ujson-wheel-report.md",
+              "locator": "Precise remaining blocker"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/ujson_pypi_codex226/provenance.json",
+              "locator": "\"runtime_closed\": false"
             }
           ],
-          "next_action": "Obtain the pinned compatible ujson wheel with licenses and an installation-origin receipt plus a supported Python/native-runtime image receipt; attest loader/transitive closure and verify fresh offline imports/synthetic execution. An sdist build additionally requires build closure."
+          "next_action": "Review the bundled double_conversion source revision/license and carry required notices; bind the acquired wheel hash to a supported immutable CPython 3.12/Linux x86_64/glibc image, resolved native-loader providers and recursive dependency identities. Replay a fresh network-denied install and native import/synthetic check with image-bound receipts. Keep this blocker external until these runtime and notice requirements pass; the package-only installation receipt does not authorize H0."
         },
         {
           "id": "hub-data-provenance",
