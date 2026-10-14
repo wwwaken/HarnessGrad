@@ -47,6 +47,7 @@ def _tasks(n: int) -> list[dict]:
 
 def _fake(seen: dict, lock: threading.Lock, delay: float = 0.05):
     """一次"测量":记下同时在跑的题数,然后返回一份带着自己 task_id 的 trace。"""
+    # This double models an observed command scorer; w-obs refuses missing classes.
     def run(repo, task, **_kw):
         with lock:
             seen["live"] += 1
@@ -57,6 +58,7 @@ def _fake(seen: dict, lock: threading.Lock, delay: float = 0.05):
         tid = task["task_id"]
         return {"task_id": tid, "answer": "", "trace": f"trace-{tid}", "exit_code": 0,
                 "stderr": "", "verdict": {"kind": "command", "passed": True, "score": 1.0,
+                                          "scorer_isolation_class": "actor-workdir",
                                           "detail": "ok"},
                 "env_usage": {}, "model_gateway": None, "identity": None}
     return run
@@ -170,7 +172,9 @@ def _unstarted(seen: dict, lock: threading.Lock, *, broken: set[str] | None = No
         if broken is not None and tid not in broken:
             return _fake(_seen(), threading.Lock())(repo, {"task_id": tid}, **_kw)
         return {"task_id": tid, "answer": "", "trace": "", "exit_code": 1,
-                "stderr": "FileNotFoundError: [Errno 2] '--task'", "verdict": {},
+                # Model the separate verifier inspecting the failed actor's workdir.
+                "stderr": "FileNotFoundError: [Errno 2] '--task'",
+                "verdict": {"scorer_isolation_class": "actor-workdir"},
                 "env_usage": {}, "model_gateway": None, "identity": None}
     return run
 

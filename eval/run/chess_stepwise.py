@@ -61,7 +61,10 @@ def finish(relay, exit_code: int) -> dict:
         reason = "invalid_reference"
     elif not all(receipt["cleanup"].values()):
         reason = "cleanup_incomplete"
-    verdict = {"kind": "stepwise", "protocol": STEPWISE, "evidence": receipt}
+    # The trusted platform controller scores its relay receipt in this process;
+    # the actor runs separately. This is in-process, never actor-workdir/pristine.
+    verdict = {"kind": "stepwise", "protocol": STEPWISE, "evidence": receipt,
+               "scorer_isolation_class": "in-process"}
     if reason:
         receipt.update(status="incomplete", measured=False, reason=reason)
         verdict.update(unmeasured=reason, detail=reason)

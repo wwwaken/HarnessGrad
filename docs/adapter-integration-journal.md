@@ -1336,3 +1336,41 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Preserve the old 492×3 protocol as incomplete, unknown run ID, `effect=null`;
   reported 94/1476 completion is uncertified. No receipt or `runs/` path changed,
   no historical run resumed/rerun, and no HotpotQA run, model, GPU or endpoint used.
+## Runtime observation aggregation closure - 2026-10-15 - w-obs
+
+- Scope: repair/review from `bd25f5a` in registered worktree `/tmp/hg-obs`, branch
+  `wg-obs`. Read the blocker's own observed/next_action first, plus the authoritative
+  w-shared unknown-only aggregation finding and the ChessBench controller survey.
+- Fixed the missing producer observation at `eval/run/chess_stepwise.py:64`:
+  the trusted platform controller scores its relay receipt in the platform process
+  after a separate actor exits, so measured and incomplete verdicts now carry the
+  existing `in-process` class. This is not actor-process or pristine execution.
+- Fixed the aggregation/comparison asymmetry at `eval/verification/isolation.py:29`:
+  nonempty all-unknown inputs now raise `IsolationMismatch`, including missing or
+  unsupported observations. Mixed classes still refuse, uniform observed classes
+  still aggregate, and declarations never fill a missing observation. Existing
+  trial/cache/task/progress/curve guards share this rule; progress warns without
+  writing a scored record, curve history refuses before opening its destination.
+- Historical JSON and caches remain readable and unchanged; absent observations
+  stay unknown and cannot supply comparable aggregates. Empty runner inputs retain
+  an unknown sentinel with no scored tasks. Unsupported policy-bearing execution
+  still refuses before dispatch/cache; no admission or blocker validator changes.
+- Disposition: the `runtime-observations` source-review action is completed;
+  remove only that object and its 23 dataset references from the active registry.
+  Two code-solvable shared blockers remain. Dataset-local requirements, taxonomy,
+  all 11 historical records and `production_authorized=false` are unchanged.
+  [Closure rationale and file/line citations](w-obs-runtime-review.md) distinguish
+  this mechanism repair from live runtime validation and dataset readiness.
+- Tests retain their real assertions. Pinned unknown score/cache expectations now
+  require refusal, registry sets remove only completed review actions (including
+  AppWorld's stale pre-w-shared pristine pin), and authored synthetic fixtures
+  explicitly model their command-scorer route. No historical observation is inferred.
+- Fresh validation: 68 runtime/ChessBench controls + 376 registry/admission/writer
+  controls + 27 existing synthetic aggregation controls = **471 passed**. Six
+  driver-based tests were outside the focused selections; no full-suite claim.
+  Checker: `valid=true`, 28 datasets, two shared blockers, 11 historical records,
+  `production_authorized=false`. Exact commands and complete outputs:
+  [reports/w-obs-validation.txt](../reports/w-obs-validation.txt).
+- No live dataset, Docker daemon, model, GPU or endpoint execution; no existing
+  runs or frozen receipts touched. No pilot or production authorization. Commit
+  only in this worktree; parent review and merge remain separate.

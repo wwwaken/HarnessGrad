@@ -14,24 +14,11 @@
       "Unknown historical run IDs remain null; historical date strings and coverage discrepancies are preserved as written.",
       "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization.",
       "Operator decision 2026-10-15: snapshot and cleanup admission are best-effort with uncertainty retained; incomplete observations alone do not block, known failures and integrity mismatches still refuse. See docs/enforcement-proof-decision.md.",
-      "Source review 2026-10-15 - w-shared: pristine-verifier review action closed by the opt-in pinned offline runtime identity, stopped-instance inspection and two-projection recheck mechanism; see docs/w-shared-verifier-review.md. This is not live dataset evidence or production authorization. runtime-observations remains open: unknown-only aggregation is allowed; both code-solvable shared blockers remain unchanged."
+      "Source review 2026-10-15 - w-shared: pristine-verifier review action closed by the opt-in pinned offline runtime identity, stopped-instance inspection and two-projection recheck mechanism; see docs/w-shared-verifier-review.md. This is not live dataset evidence or production authorization. runtime-observations remains open: unknown-only aggregation is allowed; both code-solvable shared blockers remain unchanged.",
+      "Source/test review 2026-10-15 - w-obs: runtime-observations source-review action closed; stepwise ChessBench records the trusted platform in-process controller class, and nonempty all-unknown score aggregation now refuses at trial/cache/task/progress/curve boundaries while historical records remain readable. See docs/w-obs-runtime-review.md, section CLOSED: runtime-observations - observed topology required before aggregation, and reports/w-obs-validation.txt. Unsupported policy-bearing paths remain blocked; both code-solvable shared blockers, dataset-local requirements and historical receipts remain unchanged. No live dataset evidence or production authorization."
     ]
   },
   "shared_blockers": [
-    {
-      "id": "runtime-observations",
-      "family": "trusted-verifier-runtime",
-      "status": "runtime",
-      "observed": "The runner refusal hook blocks declared-policy paths; trusted effective backend observations are still absent.",
-      "evidence": [
-        {
-          "kind": "repository",
-          "path": "reports/SHARED_ADMISSION_WIRING.md",
-          "locator": "These APIs validate supplied dictionaries"
-        }
-      ],
-      "next_action": "Review backend observation integration against the existing refusal contract; keep unsupported modes blocked."
-    },
     {
       "id": "scorer-offline-closure",
       "family": "scorer-dependency-network",
@@ -127,7 +114,6 @@
         "recovery"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -196,7 +182,6 @@
         "recovery"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -251,7 +236,6 @@
         "tools"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -313,7 +297,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -398,7 +381,6 @@
         "control"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -522,7 +504,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -587,7 +568,6 @@
         "context"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -639,7 +619,6 @@
         "control"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -729,7 +708,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -744,7 +722,6 @@
         "context"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -822,7 +799,6 @@
         "memory"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -838,7 +814,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -878,7 +853,6 @@
         "context"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -920,7 +894,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -976,7 +949,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1030,7 +1002,6 @@
         "recovery"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1087,7 +1058,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1135,7 +1105,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1181,7 +1150,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1257,7 +1225,6 @@
         "recovery"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1316,7 +1283,6 @@
         "verification"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1356,7 +1322,6 @@
         "context"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
@@ -1411,7 +1376,6 @@
         "context"
       ],
       "shared_blockers": [
-        "runtime-observations",
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],

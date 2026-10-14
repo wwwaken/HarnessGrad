@@ -254,7 +254,11 @@ def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document)
     assert [item["id"] for item in target["blockers"]] == [], (
         "prevent-platform-writes was withdrawn; if a blocker has returned, this test should "
         "name it and say why it is back")
-    assert "runtime-observations" in target["shared_blockers"]
+    # w-obs completes the observation/refusal source review; dataset runtime
+    # dependencies/export gates and incomplete historical evidence still stand.
+    assert set(target["shared_blockers"]) == {
+        "scorer-offline-closure", "artifact-only-state-export",
+    }
     assert document["review"]["production_authorized"] is False
     baseline = checker.read_json(checker.HISTORY)
     assert target["historical_runs"] == [
@@ -354,16 +358,19 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     #     (`docs/enforcement-proof-decision.md`).
     # The `pristine-verifier` source-review action is now completed by the opt-in
     # pinned offline runtime/inspection path (`docs/w-shared-verifier-review.md`).
-    # Remove exactly that completed gate from this pinned set; unknown-only score
-    # aggregation still leaves `runtime-observations` open. No validator rule changes.
+    # w-obs also completes `runtime-observations`: ChessBench records its real
+    # controller class, and all-unknown score aggregation now refuses at every
+    # shared boundary (docs/w-obs-runtime-review.md). Remove exactly these two
+    # completed review gates; keep the real dependency/export gates pinned.
     assert set(target["shared_blockers"]) == {
-        "runtime-observations", "scorer-offline-closure",
-        "artifact-only-state-export",
+        "scorer-offline-closure", "artifact-only-state-export",
     }
     assert "pristine-verifier" not in {b["id"] for b in document["shared_blockers"]}
+    assert "runtime-observations" not in {b["id"] for b in document["shared_blockers"]}
     review = (ROOT / "docs/w-shared-verifier-review.md").read_text(encoding="utf-8")
     assert "## CLOSED: pristine-verifier - opt-in runtime identity review completed" in review
-    assert "## OPEN: runtime-observations - unknown-only aggregation is allowed" in review
+    review = (ROOT / "docs/w-obs-runtime-review.md").read_text(encoding="utf-8")
+    assert "## CLOSED: runtime-observations - observed topology required before aggregation" in review
     for gone in ("paired-filesystem-quotas", "pilot-guidance-conflict",
                  "official-scorer-identity", "snapshot-owned-cleanup"):
         assert gone not in target["shared_blockers"]

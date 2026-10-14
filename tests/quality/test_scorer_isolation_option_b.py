@@ -288,7 +288,10 @@ def test_curve_writer_refuses_mixed_classes_even_for_external_results():
 
 
 def test_missing_classes_stay_unknown_and_unknown_comparison_is_invalid():
-    assert point(dict(per_task=dict(a=1)))["scorer_isolation_class"] == "unknown"
+    # Unknown remains readable, but a scored unknown curve is no longer permitted:
+    # absence of an observation cannot establish a uniform executed topology.
+    with pytest.raises(IsolationMismatch, match="unknown"):
+        point(dict(per_task=dict(a=1)))
     with pytest.raises(IsolationMismatch, match="unknown"):
         require_comparable({}, {})
 

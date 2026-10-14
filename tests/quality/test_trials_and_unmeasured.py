@@ -24,6 +24,9 @@ sys.path.insert(0, str(ROOT))
 
 import eval.run.runner as runner  # noqa: E402
 
+# Scored doubles below model an observed command verifier. w-obs requires that
+# fact explicitly; unmeasured/invalid doubles and saved legacy evidence stay as-is.
+
 
 # --------------------------------------------------------------- 方差 ---
 
@@ -42,6 +45,7 @@ def test_trials_average_and_record_their_spread(tmp_path, monkeypatch):
 
     def fake(*_a, **_k):
         return {"verdict": {"kind": "command", "passed": True, "score": next(seq),
+                            "scorer_isolation_class": "actor-workdir",
                             "detail": "d"},
                 "trace": "x", "exit_code": 0, "stderr": ""}
 
@@ -57,7 +61,8 @@ def test_trials_average_and_record_their_spread(tmp_path, monkeypatch):
 def test_one_trial_records_no_spread_at_all(tmp_path, monkeypatch):
     """"缺字段"必须读成"只测了一次",不能读成"方差为零"。"""
     monkeypatch.setattr(runner, "run_one", lambda *_a, **_k: {
-        "verdict": {"kind": "command", "passed": True, "score": 1.0, "detail": "d"},
+        "verdict": {"kind": "command", "passed": True, "score": 1.0, "detail": "d",
+                    "scorer_isolation_class": "actor-workdir"},
         "trace": "x", "exit_code": 0, "stderr": ""})
     res = runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=1)
     assert res["per_task_std"] == {} and res["per_task_trials"] == {}
@@ -117,6 +122,7 @@ def test_the_runner_keeps_every_trial_s_trace_and_verdict(tmp_path, monkeypatch)
     def fake(*_a, **_k):
         score = next(seq)
         return {"verdict": {"kind": "command", "passed": score == 1.0, "score": score,
+                            "scorer_isolation_class": "actor-workdir",
                             "detail": f"trial score {score}"},
                 "trace": f"trace for {score}", "exit_code": 0, "stderr": ""}
 
@@ -183,6 +189,7 @@ def test_a_measured_zero_is_still_a_zero(tmp_path, monkeypatch):
     """没有 `unmeasured` 标记的 0 仍然是 0——这条不能因为上一条而变宽。"""
     monkeypatch.setattr(runner, "run_one", lambda *_a, **_k: {
         "verdict": {"kind": "command", "passed": False, "score": 0.0,
+                    "scorer_isolation_class": "actor-workdir",
                     "detail": "reward 0 from /logs/verifier/reward.txt (exit 0)"},
         "trace": "x", "exit_code": 0, "stderr": ""})
     res = runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=1)
@@ -273,6 +280,7 @@ def test_a_task_is_written_down_the_moment_it_is_measured(tmp_path, monkeypatch)
     def fake(*_a, **_k):
         score = next(seq)
         return {"verdict": {"kind": "command", "passed": score == 1.0, "score": score,
+                            "scorer_isolation_class": "actor-workdir",
                             "detail": "d", "tests": {"passed": 2, "failed": 1}},
                 "trace": '{"wall_clock_s": {"model": 1.0, "commands": 2.0, "total": 3.5}}\n',
                 "exit_code": 0, "stderr": ""}
@@ -313,7 +321,8 @@ def test_what_survives_a_kill_is_what_was_already_measured(tmp_path, monkeypatch
     def fake(_repo, task, **_kwargs):
         if task["task_id"] == "t2":
             raise RuntimeError("simulated hard kill of this task")
-        return {"verdict": {"kind": "command", "passed": True, "score": 1.0, "detail": "ok"},
+        return {"verdict": {"kind": "command", "passed": True, "score": 1.0, "detail": "ok",
+                            "scorer_isolation_class": "actor-workdir"},
                 "trace": "TRACE-OF-T1\n", "exit_code": 0, "stderr": ""}
 
     monkeypatch.setattr(runner, "run_one", fake)

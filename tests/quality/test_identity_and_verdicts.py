@@ -362,7 +362,10 @@ def test_the_curve_point_always_says_whether_a_tally_existed(tmp_path):
     from harnessgrad.records import _curve_point, test_rate_fields
 
     # 没有任何检查报测试数
-    none_res = {"per_task": {"a": 0.0}, "verdicts": {}}
+    # No test tally does not mean no topology observation. These synthetic points
+    # model a command scorer; w-obs refuses scores whose route is unknown.
+    none_res = {"per_task": {"a": 0.0}, "verdicts": {},
+                "per_task_scorer_isolation": {"a": "actor-workdir"}}
     point = _curve_point(run_id="r", round_index=0, identity={}, sampling={},
                          scores=[0.0], task_ids=["a"], cost={}, cumulative={},
                          **test_rate_fields(none_res))
@@ -373,6 +376,7 @@ def test_the_curve_point_always_says_whether_a_tally_existed(tmp_path):
 
     # 一个检查报 4/5
     some_res = {"per_task_test_rate": {"a": 0.8}, "test_rate": 0.8,
+                "per_task_scorer_isolation": {"a": "actor-workdir"},
                 "test_rate_n_tasks": 1, "tests_passed": 4, "tests_total": 5}
     point = _curve_point(run_id="r", round_index=0, identity={}, sampling={},
                          scores=[0.0], task_ids=["a"], cost={}, cumulative={},

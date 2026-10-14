@@ -36,6 +36,10 @@ actions remain in `docs/dataset-blockers.json`.
 
 ## OPEN: runtime-observations - unknown-only aggregation is allowed
 
+Follow-up 2026-10-15: [w-obs](w-obs-runtime-review.md) repairs both defects and
+closes this source-review action. The original findings below are retained as
+the record of the reviewed source, rather than rewritten as passing evidence.
+
 There is a platform-written topology channel, but the requested refusal across
 unknown observations is incomplete. The blocker stays open, with its original
 registry object and references intact.

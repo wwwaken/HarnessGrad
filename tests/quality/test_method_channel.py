@@ -227,6 +227,8 @@ def test_the_methods_own_reason_is_recorded():
     """
     point = _curve_point(
         run_id="r", round_index=1,
+        # Synthetic measured point: w-obs requires a modeled observed route.
+        per_task_scorer_isolation={"t01": "actor-workdir"},
         identity={}, sampling={}, scores=[0.0], task_ids=["t01"], cost={},
         cumulative={}, hypothesis="the evidence does not support a change")
     assert point["method_hypothesis"] == "the evidence does not support a change"
@@ -236,6 +238,8 @@ def test_a_round_with_no_method_records_no_hypothesis():
     """round 0 与 eval 点没有方法,所以是 `None` 而不是一个编出来的理由。"""
     point = _curve_point(
         run_id="r", round_index=0, identity={}, sampling={}, scores=[0.0],
+        # Keep this hypothesis test on a valid observed synthetic measurement.
+        per_task_scorer_isolation={"t01": "actor-workdir"},
         task_ids=["t01"], cost={}, cumulative={})
     assert point["method_hypothesis"] is None
 

@@ -12,6 +12,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from eval.run import runner
 from eval.admission import runner_admission
+from eval.verification.isolation import IsolationMismatch
 
 TASK = {"task_id": "synthetic-admission-163"}
 
@@ -156,20 +157,33 @@ def test_legacy_files_path_without_policy_declarations_still_scores(tmp_path, mo
     assert result["verdict"]["passed"] is True
 
 
-def test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved(tmp_path, monkeypatch):
+@pytest.mark.parametrize("class_", [None, "in-process"])
+def test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved(tmp_path, monkeypatch, class_):
     cache = {f"synthetic-sha:{TASK['task_id']}:1": {
         "score": 1.0, "trace": "synthetic trace", "verdict": {"passed": True},
     }}
+    if class_ is not None:
+        next(iter(cache.values()))["verdict"]["scorer_isolation_class"] = class_
+    before = deepcopy(cache)
 
     def refuse(*args, **kwargs):
         raise AssertionError("legacy cache hit must not execute")
 
     monkeypatch.setattr(runner, "run_one", refuse)
+    if class_ is None:
+        # Legacy cache bytes remain valid evidence, but absent observations can
+        # no longer supply comparable scores (docs/w-obs-runtime-review.md).
+        with pytest.raises(IsolationMismatch, match="unknown"):
+            runner._evaluate(tmp_path, [TASK], {}, cache=cache, harness_sha="synthetic-sha",
+                             envs={"unselected": {"network": "none"}})
+        assert cache == before
+        return
     result = runner._evaluate(tmp_path, [TASK], {}, cache=cache, harness_sha="synthetic-sha",
                               envs={"unselected": {"network": "none"}})
     assert result["per_task"] == {TASK["task_id"]: 1.0}
     assert result["cached_tasks"] == [TASK["task_id"]]
     assert result["invalid"] == {}
+    assert cache == before
 
 
 @pytest.mark.parametrize("stage,policy", [

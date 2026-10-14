@@ -100,6 +100,7 @@ def assert_clean(receipt):
 def assert_incomplete(result):
     v = result["verdict"]
     assert v["unmeasured"]
+    assert v["scorer_isolation_class"] == "in-process"
     assert "score" not in v and "passed" not in v
     receipt = v["evidence"]
     assert receipt["status"] == "incomplete" and receipt["measured"] is False
@@ -114,6 +115,7 @@ def test_live_runner_delivers_opponent_updates_and_scores_controller_receipt(cas
     assert result["exit_code"] == 0, result["stderr"]
     verdict = result["verdict"]
     assert verdict["score"] == 1.0 and verdict["passed"] is True
+    assert verdict["scorer_isolation_class"] == "in-process"
     assert verdict["protocol"] == dataset.STEPWISE_CONTRACT
     receipt = verdict["evidence"]
     assert receipt["status"] == "complete" and receipt["measured"] is True
@@ -165,6 +167,7 @@ trace({{'initial': initial, 'terminal': terminal}})
     result = execute(case, script)
     assert result["exit_code"] == 0, result["stderr"]
     assert result["verdict"]["score"] == 0.0
+    assert result["verdict"]["scorer_isolation_class"] == "in-process"
     for board in json.loads(result["trace"]).values():
         wire = json.dumps(board)
         assert all(move not in wire for move in case[2]["moves"])
@@ -301,6 +304,7 @@ else:
     _save_verdicts(tmp_path, 0, live, [TASK_ID])
     saved = json.loads((tmp_path / "verdicts/round-0" / f"{TASK_ID}.json").read_text())
     assert saved["protocol"] == saved["evidence"]["protocol"] == dataset.STEPWISE_CONTRACT
+    assert live["scorer_isolation_class"] == saved["scorer_isolation_class"] == "in-process"
     refused = runner.evaluate(repo, [task], {}, cache=cache, sandbox=False,
                               verifiers={TASK_ID: verifier}, harness_sha="same")
     assert refused["cached_tasks"] == [] and refused["per_task"] == {}
@@ -312,7 +316,11 @@ def point(protocol):
         run_id="fabricated", round_index=0, identity={},
         sampling={"dataset": "chessbench_puzzles", "policy": "all", "task_ids": [TASK_ID]},
         scores=[1.0], task_ids=[TASK_ID], cost={}, cumulative={"evaluation_trials": 1},
-        evaluation_protocols={TASK_ID: protocol})
+        evaluation_protocols={TASK_ID: protocol},
+        # These synthetic points model the two known executor routes. Missing
+        # observations must now refuse before the protocol comparison is reached.
+        per_task_scorer_isolation={TASK_ID: (
+            "in-process" if protocol == dataset.STEPWISE_CONTRACT else "actor-workdir")})
 
 
 def test_curve_records_protocol_and_refuses_cross_protocol_comparison(tmp_path, monkeypatch, capsys):

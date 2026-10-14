@@ -238,11 +238,12 @@ def test_registry_closes_only_the_saved_writer_blocker():
     appworld = next(row for row in registry["datasets"] if row["dataset"] == "appworld")
     assert "trusted-trial-evidence-writer" not in {b["id"] for b in appworld["blockers"]}
     assert "successful-task-evidence" in {b["id"] for b in appworld["blockers"]}
-    # The operator withdrew the two enforcement-proof obligations; source-writer
-    # closure still leaves the independent runtime/scorer/export requirements.
+    # w-shared completed pristine-verifier; w-obs completes runtime-observations
+    # with recorded controller topology and unknown-only aggregation refusal.
+    # Those source-review closures leave scorer/export requirements pinned;
+    # see docs/w-shared-verifier-review.md and docs/w-obs-runtime-review.md.
     assert set(appworld["shared_blockers"]) == {
-        "runtime-observations", "scorer-offline-closure", "pristine-verifier",
-        "artifact-only-state-export",
+        "scorer-offline-closure", "artifact-only-state-export",
     }
     assert not {"official-scorer-identity", "snapshot-owned-cleanup"} & \
         set(appworld["shared_blockers"])

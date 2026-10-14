@@ -96,6 +96,8 @@ def _death(**over) -> dict:
     result = {"task_id": "t1", "answer": "", "trace": "", "exit_code": 1,
               "stderr": CONNECTION_TAIL,
               "verdict": {"kind": "command", "passed": False, "score": 0.0,
+                          # Explicit synthetic scorer route for the w-obs guard.
+                          "scorer_isolation_class": "actor-workdir",
                           "detail": "reward 0 from /logs/verifier/reward.txt"},
               "env_usage": {}, "model_gateway": {"published": True,
                                                  "target": "127.0.0.1:8001",
@@ -133,7 +135,9 @@ def test_a_provider_death_reaches_the_curve_as_invalid(tmp_path, monkeypatch):
 def test_a_passing_artifact_survives_the_death_of_its_harness(tmp_path, monkeypatch):
     """写完 artifact 之后才死的 harness 完成了这道题(§2.2):分数保留。"""
     monkeypatch.setattr(runner, "run_one", lambda *_a, **_k: _death(
-        verdict={"kind": "command", "passed": True, "score": 1.0, "detail": "ok"}))
+        # A passed artifact here means the modeled command verifier actually ran.
+        verdict={"kind": "command", "passed": True, "score": 1.0, "detail": "ok",
+                 "scorer_isolation_class": "actor-workdir"}))
     res = runner._evaluate(tmp_path, [{"task_id": "t1"}], {}, trials=1)
     assert res["per_task"] == {"t1": 1.0}
     assert res["invalid"] == {}

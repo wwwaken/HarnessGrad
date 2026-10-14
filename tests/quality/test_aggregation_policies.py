@@ -182,6 +182,8 @@ def test_recorded_reward_uses_the_policy_and_keeps_unmeasured_tasks_out(monkeypa
 
     arguments = dict(run_id="synthetic", round_index=0, identity={},
                      sampling={"dataset": "musique"}, scores=[1.0], task_ids=["measured"],
+                     # Model the observed command route; unknown cannot be scored.
+                     per_task_scorer_isolation={"measured": "actor-workdir"},
                      invalid={"unmeasured": {"reason": "synthetic scorer failure"}},
                      train_scores=[0.0, 1.0], side="eval", cost={}, cumulative={})
     point = _curve_point(**arguments)
