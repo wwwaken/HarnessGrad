@@ -70,6 +70,49 @@ manifest/harness/dependency hashes, finite budgets, observer/reviewer provenance
 cleanup status and comparability notes. Model hash and endpoint binding are
 explicitly N/A for no-model controls. Unobserved counts remain unknown, not zero.
 
+### Current contract clarification — Task 219
+
+This delivery checklist is not an accepted preflight input or a complete receipt
+schema. `eval.gaia_preflight` accepts full source commit identities and optional
+paired inline `harnessgrad.gaia-runtime.v1` declarations only, never receipt files
+or task/attachment paths. Every review returns exit 2 with execution blocked,
+`measured=false`, `production_authorized=false`, `lifecycle_authorized=false`,
+`evidence_reusable=false` and `receipt_validation=not-performed`. Matching
+declarations authenticate no observations and hold no source lock.
+
+For a later separately authorized staged diagnostic/pilot, the enclosing record
+must use `harnessgrad.diagnostic-receipt.v2`, including `eligible_task_ids_sha256`,
+`selected_task_ids`, `context`, every selected outcome, recomputed coverage,
+cleanup/snapshot summaries and explicit `lifecycle` (or null while unavailable).
+Each summary and `context.gates` needs `status`, `receipt_sha256` and `detail`.
+Unknown eligible counts cannot satisfy that schema's positive integer requirement;
+retain this blocked handoff rather than inventing counts or IDs. For no-model
+records, encode N/A as JSON null in `context.hashes.model` and `context.endpoint`,
+with an explanatory comparability note, never the string `"N/A"`. Such records
+cannot satisfy the model diagnostic expansion review's required model hash and
+local endpoint.
+
+The lifecycle binds `adapter_id`, `run_id`, `trial_id`, `manifest_sha256` and a
+pre-execution `scope_sha256`. Its successful sequence is
+`scope -> admit -> execute -> quiesce -> score -> seal -> cleanup`; the seal
+contains the completed snapshot attestation, its preflight and worker-runtime
+evidence, and the same outcomes digest as scoring. Before any aggregate or
+individual measured score is published, require passing gates/snapshot/cleanup
+and replay via `eval.diagnostic_policy.validate_receipt`, which checks scope,
+coverage, outcomes and exact cleanup/snapshot digests. JSON Schema shape validation
+alone does not perform those checks. Failed/unknown lifecycle work remains
+nonpublishable after cleanup; cleanup may still be attempted. `publication_ready`
+is structural only: `production_authorized` remains false even on success. The
+library neither authenticates observers nor removes resources or releases leases.
+GAIA export/pristine-verifier and actor-network integration remain pending.
+
+These documentation changes are not in the compatibility tool's two-file
+`REVIEW_ONLY` exception set. Compare the final committed candidate afresh; this
+clarification grants no historical receipt reuse or gate closure. The task-212
+readiness matrix is unavailable in the task-219 checkout/visible Git history, so
+its reconciliation remains pending; no readiness or execution approval follows.
+See the [task-219 review](gaia-contract-review-codex219.md) for scope and validation.
+
 Later separately authorized selected controls must independently measure official
 oracle=1/noop=0 and preserve scorer/provider/snapshot/cleanup failures as
 invalid/unmeasured rather than ordinary zeros. The metric is upstream
