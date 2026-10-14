@@ -1,0 +1,224 @@
+{
+  "schema": "harnessgrad.gaia-scorer-local-git.codex228.v1",
+  "observed_at_utc": "2026-10-14T04:20:23.175424+00:00",
+  "base_commit": "61e7f82245c76e7c833740216940d1fcaf3b76be",
+  "base_tree": "d74461cdd2e3cd6a06f76d2b5b09160f1883dd20",
+  "local_declarations": {
+    "SPACE_REPO": "gaia-benchmark/leaderboard",
+    "SPACE_REVISION": "9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e",
+    "SCORER_SHA256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2"
+  },
+  "local_source_sha256": {
+    "data/gaia.py": "1d3a2c800fc0e6ab48be574b597dd64f4e42a3d571fdd53c720b02fc98179e35",
+    "data/gaia/prepare.py": "cce193652b6a6c070e84dbd1e05475b1842ecb94bebd11364916862898a0ad10",
+    "data/gaia/verify/check.py": "59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e"
+  },
+  "full_ids_equal": false,
+  "common_prefix": "9f133d71362e",
+  "history_search": {
+    "args": [
+      "log",
+      "--format=%H %s",
+      "-S9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e",
+      "--",
+      "data/gaia.py"
+    ],
+    "returncode": 0,
+    "stdout": "52077a3ccb90e5c2f0e26d52fb3ce99f2e4ab826 data: GAIA, the first dataset whose tasks are about the live web\n",
+    "stderr": ""
+  },
+  "gaia_source_history": {
+    "args": [
+      "log",
+      "--format=%H %s",
+      "--",
+      "data/gaia.py"
+    ],
+    "returncode": 0,
+    "stdout": "e496c29b4a20782ef9753702c542f4d247726f6b Add host web gateway capability\n52077a3ccb90e5c2f0e26d52fb3ce99f2e4ab826 data: GAIA, the first dataset whose tasks are about the live web\n",
+    "stderr": ""
+  },
+  "object_presence_checks": [
+    {
+      "args": [
+        "cat-file",
+        "-t",
+        "9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e"
+      ],
+      "returncode": 128,
+      "stdout": "",
+      "stderr": "fatal: git cat-file: could not get object info\n"
+    },
+    {
+      "args": [
+        "cat-file",
+        "-t",
+        "9f133d71362e77b3539f1514f31b9c101a545fec"
+      ],
+      "returncode": 128,
+      "stdout": "",
+      "stderr": "fatal: git cat-file: could not get object info\n"
+    }
+  ],
+  "original_adapter_commit": "52077a3ccb90e5c2f0e26d52fb3ce99f2e4ab826",
+  "original_adapter_declarations": {
+    "SPACE_REPO": "gaia-benchmark/leaderboard",
+    "SPACE_REVISION": "9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e",
+    "SCORER_SHA256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2"
+  },
+  "historical_task200": {
+    "commit": "3cc2deed72d83b3a873f98f6cc2ec2111cd281a8",
+    "path": "docs/gaia-public-source-research-codex200-metadata.json",
+    "git_blob": "81aa6e1c120a4d5e8975120c305a121a7f798a8a",
+    "sha256": "7811e6f7d5f4caf3f6874e4d3b0d616806362c6cb62e2446a9b23f51b78a3b11",
+    "ancestor_of_base": false,
+    "evidence_status": "historical mirror claims only; not reacquired or independently authenticated",
+    "scorer_artifact": {
+      "authority_status": "official-repository-namespace-observed-via-mirror; independent-custody-unclosed",
+      "bytes": 3212,
+      "canonical_url": "https://huggingface.co/spaces/gaia-benchmark/leaderboard/raw/9f133d71362e77b3539f1514f31b9c101a545fec/scorer.py",
+      "final_url": "https://hf-mirror.com/spaces/gaia-benchmark/leaderboard/raw/9f133d71362e77b3539f1514f31b9c101a545fec/scorer.py",
+      "git_blob_sha1": "ede7ece61d26cc93bf440a86a527163d617e7c12",
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "etag": "W/\"ede7ece61d26cc93bf440a86a527163d617e7c12\"",
+        "x-repo-commit": "9f133d71362e77b3539f1514f31b9c101a545fec"
+      },
+      "name": "space-scorer.py",
+      "observed_at_utc": "2026-10-14T02:07:39.329051+00:00",
+      "sha256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2",
+      "status": 200,
+      "url": "https://hf-mirror.com/spaces/gaia-benchmark/leaderboard/raw/9f133d71362e77b3539f1514f31b9c101a545fec/scorer.py",
+      "vendored": false
+    },
+    "space_api": {
+      "bytes": 1284,
+      "final_url": "https://hf-mirror.com/api/spaces/gaia-benchmark/leaderboard/revision/9f133d71362e77b3539f1514f31b9c101a545fec",
+      "git_blob_sha1": "0fc5b2d3aab8a631cdc4fbcbadb3b98456e563b7",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "etag": "W/\"504-hPphCOUldYIOaAK9y/b1rbqotFI\""
+      },
+      "metadata": {
+        "cardData": {
+          "app_file": "app.py",
+          "colorFrom": "yellow",
+          "colorTo": "indigo",
+          "emoji": "\ud83e\uddbe",
+          "failure_strategy": "rollback",
+          "hf_oauth": true,
+          "license": "apache-2.0",
+          "pinned": true,
+          "sdk": "gradio",
+          "sdk_version": "5.49.1",
+          "tags": [
+            "leaderboard"
+          ],
+          "title": "GAIA Leaderboard"
+        },
+        "id": "gaia-benchmark/leaderboard",
+        "sha": "9f133d71362e77b3539f1514f31b9c101a545fec",
+        "siblings": [
+          {
+            "rfilename": ".gitattributes"
+          },
+          {
+            "rfilename": ".gitignore"
+          },
+          {
+            "rfilename": "README.md"
+          },
+          {
+            "rfilename": "app.py"
+          },
+          {
+            "rfilename": "content.py"
+          },
+          {
+            "rfilename": "requirements.txt"
+          },
+          {
+            "rfilename": "scorer.py"
+          }
+        ]
+      },
+      "name": "space-metadata",
+      "observed_at_utc": "2026-10-14T02:07:39.326736+00:00",
+      "sha256": "8614021fac8642472129c615987a2e5e72fc2ec777f4be522ee1b39ae06471c9",
+      "status": 200,
+      "url": "https://hf-mirror.com/api/spaces/gaia-benchmark/leaderboard/revision/9f133d71362e77b3539f1514f31b9c101a545fec"
+    },
+    "space_tree": {
+      "bytes": 680,
+      "final_url": "https://hf-mirror.com/api/spaces/gaia-benchmark/leaderboard/tree/9f133d71362e77b3539f1514f31b9c101a545fec",
+      "git_blob_sha1": "fd9a2caaa9606c67d0540d90ef5a1e60387eabeb",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "etag": "W/\"2a8-f8DmKQ+Xc0gXmRM3zQhaukxYFr4\""
+      },
+      "metadata": [
+        {
+          "oid": "c7d9f3332a950355d5a77d85000f05e6f45435ea",
+          "path": ".gitattributes",
+          "size": 1477,
+          "type": "file"
+        },
+        {
+          "oid": "de3ddaccfb0a5a5dede6d07f3731237fc148bb12",
+          "path": ".gitignore",
+          "size": 47,
+          "type": "file"
+        },
+        {
+          "oid": "7adc8a7a466327202e982edc20f355c51981030a",
+          "path": "README.md",
+          "size": 322,
+          "type": "file"
+        },
+        {
+          "oid": "0305e2d50d2f1c1c34e5f19c299b67b3a62f0f21",
+          "path": "app.py",
+          "size": 14531,
+          "type": "file"
+        },
+        {
+          "oid": "a07dd1fcd07890d079d591a91561f034047c77e2",
+          "path": "content.py",
+          "size": 4475,
+          "type": "file"
+        },
+        {
+          "oid": "9eaf03afa03c58236e42ca1f4054c31a8cbe054d",
+          "path": "requirements.txt",
+          "size": 38,
+          "type": "file"
+        },
+        {
+          "oid": "ede7ece61d26cc93bf440a86a527163d617e7c12",
+          "path": "scorer.py",
+          "size": 3212,
+          "type": "file"
+        }
+      ],
+      "name": "space-tree",
+      "observed_at_utc": "2026-10-14T02:07:39.327754+00:00",
+      "sha256": "cfead734fe1697387e7c2a0efa078817aa80c30953f7e1e3422ef10f7db9af87",
+      "status": 200,
+      "url": "https://hf-mirror.com/api/spaces/gaia-benchmark/leaderboard/tree/9f133d71362e77b3539f1514f31b9c101a545fec"
+    },
+    "failed_revision_requests": [
+      {
+        "outcome": "Network is unreachable",
+        "source": "https://huggingface.co/api/spaces/gaia-benchmark/leaderboard/revision/9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e"
+      },
+      {
+        "outcome": "HTTP 404; not proof of upstream nonexistence",
+        "source": "https://hf-mirror.com/spaces/gaia-benchmark/leaderboard/resolve/9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e/scorer.py"
+      },
+      {
+        "outcome": "HTTP 404; not proof of upstream nonexistence",
+        "source": "https://hf-mirror.com/api/spaces/gaia-benchmark/leaderboard/revision/9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e"
+      }
+    ]
+  }
+}

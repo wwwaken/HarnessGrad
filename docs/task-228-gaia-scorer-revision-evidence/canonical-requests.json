@@ -1,0 +1,67 @@
+[
+  {
+    "id": "canonical-api-adapter-pin",
+    "url": "https://huggingface.co/api/spaces/gaia-benchmark/leaderboard/revision/9f133d71362ecb0a1c7ff6b4dcfc2a6b9f8ffd1e",
+    "method": "GET",
+    "authorization": "none",
+    "started_at_utc": "2026-10-14T04:18:45.619827+00:00",
+    "timeout_seconds": 15,
+    "max_response_bytes": 1048576,
+    "status": null,
+    "error_type": "URLError",
+    "error": "<urlopen error [Errno 101] Network is unreachable>",
+    "finished_at_utc": "2026-10-14T04:19:00.817253+00:00"
+  },
+  {
+    "id": "canonical-api-candidate",
+    "url": "https://huggingface.co/api/spaces/gaia-benchmark/leaderboard/revision/9f133d71362e77b3539f1514f31b9c101a545fec",
+    "method": "GET",
+    "authorization": "none",
+    "started_at_utc": "2026-10-14T04:18:45.621441+00:00",
+    "timeout_seconds": 15,
+    "max_response_bytes": 1048576,
+    "status": null,
+    "error_type": "URLError",
+    "error": "<urlopen error [Errno 101] Network is unreachable>",
+    "finished_at_utc": "2026-10-14T04:19:00.817865+00:00"
+  },
+  {
+    "id": "canonical-tree-candidate",
+    "url": "https://huggingface.co/api/spaces/gaia-benchmark/leaderboard/tree/9f133d71362e77b3539f1514f31b9c101a545fec?recursive=false&expand=false",
+    "method": "GET",
+    "authorization": "none",
+    "started_at_utc": "2026-10-14T04:18:45.622794+00:00",
+    "timeout_seconds": 15,
+    "max_response_bytes": 1048576,
+    "status": null,
+    "error_type": "URLError",
+    "error": "<urlopen error [Errno 101] Network is unreachable>",
+    "finished_at_utc": "2026-10-14T04:19:00.823030+00:00"
+  },
+  {
+    "id": "canonical-scorer-candidate",
+    "url": "https://huggingface.co/spaces/gaia-benchmark/leaderboard/resolve/9f133d71362e77b3539f1514f31b9c101a545fec/scorer.py",
+    "method": "GET",
+    "authorization": "none",
+    "started_at_utc": "2026-10-14T04:18:45.623601+00:00",
+    "timeout_seconds": 15,
+    "max_response_bytes": 1048576,
+    "status": null,
+    "error_type": "URLError",
+    "error": "<urlopen error [Errno 101] Network is unreachable>",
+    "finished_at_utc": "2026-10-14T04:19:00.821865+00:00"
+  },
+  {
+    "id": "canonical-git-advertisement",
+    "url": "https://huggingface.co/spaces/gaia-benchmark/leaderboard/info/refs?service=git-upload-pack",
+    "method": "GET",
+    "authorization": "none",
+    "started_at_utc": "2026-10-14T04:18:45.625083+00:00",
+    "timeout_seconds": 15,
+    "max_response_bytes": 1048576,
+    "status": null,
+    "error_type": "URLError",
+    "error": "<urlopen error [Errno 101] Network is unreachable>",
+    "finished_at_utc": "2026-10-14T04:19:00.822718+00:00"
+  }
+]
