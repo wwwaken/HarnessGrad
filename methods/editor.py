@@ -719,7 +719,7 @@ def run_facts(base: Path) -> str:
 def loop_facts_block(base: Path) -> str:
     """What the harness did on each task, counted by the platform, one line per task.
 
-    The platform computes this (`eval/trace.py:loop_facts`) and stages it in
+    The platform computes this (`eval/tracing.py:loop_facts`) and stages it in
     `round.json` under `loop_summary.per_task`, and until now nothing put it in front of
     the improver: the endpoint path prepended `run_facts` (configuration only) and the CLI
     path prepended nothing at all. So a method's first job -- "what is wrong with this

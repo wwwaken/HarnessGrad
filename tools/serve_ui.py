@@ -1394,7 +1394,7 @@ def find_trace_dir(run_id: str) -> Path | None:
     return None
 
 
-from eval.trace import first_object as _trace_first_object  # noqa: E402
+from eval.tracing import first_object as _trace_first_object  # noqa: E402
 
 
 def task_detail(run_id: str, task_id: str) -> dict:
@@ -1505,7 +1505,7 @@ def trace_for(run_id: str, task_id: str) -> dict:
             # 一个回复里给两三个 JSON 是实测会发生的事(而且曾经让整个任务在第 0 步死掉),
             # 所以"多余数据"要单独计数并显示 —— 它是 harness 侧的信号,不是噪声。
             action = _trace_first_object(reply)
-            # "多余数据" = 第一个对象之后还有别的对象。和 `eval/trace.loop_facts` 的
+            # "多余数据" = 第一个对象之后还有别的对象。和 `eval/tracing.loop_facts` 的
             # `multi_object_replies` 是同一条规则的同一个判断来源。
             tail = ""
             if action is not None:

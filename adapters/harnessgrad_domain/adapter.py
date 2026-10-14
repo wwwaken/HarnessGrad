@@ -167,7 +167,8 @@ class HarnessGradDomain(Domain):
         Resume-safe by construction: an existing `result.json` is left alone, which is
         what RRSI's contract asks for and what makes a long run restartable.
         """
-        from eval.runner import run_one, _last_usage
+        from eval.runner import run_one
+        from eval.tracing import _last_usage
 
         root, runs_dir = Path(root).resolve(), Path(runs_dir).resolve()
         by_id = self._by_id()

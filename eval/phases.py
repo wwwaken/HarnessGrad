@@ -9,7 +9,7 @@ the run's header instead of keeping one). Adding one phase therefore meant remem
 three or four places, and forgetting one showed up as a raw identifier in the UI.
 
 The vocabulary is small, has no dependencies, and both the writer (`eval/progress.py`) and
-the readers (`eval/trace.py`, the panel) need it. It lives here so that "what phases exist"
+the readers (`eval/tracing.py`, the panel) need it. It lives here so that "what phases exist"
 is answered in one place.
 
 Two label widths on purpose:

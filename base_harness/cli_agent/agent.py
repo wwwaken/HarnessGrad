@@ -95,7 +95,7 @@ def _write_trace(workdir: Path, events: list[dict]) -> None:
     """One JSON object per line, the last one carrying `usage`.
 
     `usage` is required by the contributor spec and read by the platform
-    (`eval/runner.py:_last_usage`). A wrapper that does not translate its CLI's token
+    (`eval/tracing.py:_last_usage`). A wrapper that does not translate its CLI's token
     report leaves the platform reading zero, which does not disable a cost rule -- it
     feeds it a constant zero, and RRSI's rule then admits every candidate.
     """

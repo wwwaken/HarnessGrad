@@ -21,7 +21,7 @@ import shutil
 import subprocess
 
 from ckpt.git_state import materialize
-from eval.trace import loop_facts as _loop_facts
+from eval.tracing import loop_facts as _loop_facts
 from eval.tracing import task_file
 
 from harnessgrad import PLATFORM_ROOT

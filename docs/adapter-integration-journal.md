@@ -4,6 +4,14 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## Canonical trace reader — 2026-10-14 — ref2
+
+- Scope: structural refactor in isolated `/tmp/hg-ref-2`; no model/H0 execution.
+- Finding/change: `eval.trace` handled reply parsing and loop facts while `eval.tracing` handled metadata and task artifacts. `eval.tracing` now owns all existing reader implementations; `eval.trace` only re-exports compatibility names. Callers and source references point to the canonical module.
+- Evidence: `tests/quality/test_trace_reader.py` checks canonical function identity, caller imports, adapter delegation and existing parsing/metadata rules. AST comparison against the base commit confirms all nine pre-existing function implementations are unchanged.
+- Validation: `python -m pytest -q tests/quality/test_trace_reader.py tests/quality/test_harness_submit.py tests/quality/test_task_id_paths.py tests/quality/test_appworld_receipt_integration_codex169.py tests/quality/test_harness_parsing.py tests/quality/test_method_channel.py --basetemp=/tmp/hg-ref-2/.pytest-tmp-trace-reader` — **69 passed**. This includes every test file directly importing either module. `git diff --check` passed.
+- Commit: accompanying focused trace-reader refactor; parent integration remains separate.
+
 ## Ordinary-run receipt semantics — Task 237 — 2026-10-14
 
 - Scope: docs/tests only in isolated `/tmp/hg-codex-237`, base `0930d99cc882c5a049c98f9123e9427470e7e818`; no execution, host inspection, admin change, benchmark, provider, model, GPU, Docker or scorer calls.
