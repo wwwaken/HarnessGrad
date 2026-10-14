@@ -49,9 +49,17 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
         fields.add("env.exec_defaults")
     if env_spec.get("state") == "container":
         fields.add("env.state=container")
-    for key in ("timeout_s", "artifact_policy"):
-        if key in (verifier or {}):
-            fields.add("verifier." + key)
+    # `verifier.timeout_s` is deliberately NOT a trigger. The platform enforces it
+    # itself -- `eval/verifier.py` passes it to `phase_timeout` and to the verifier
+    # subprocess' `timeout=`, and records expiry as its own outcome ("the verifier
+    # timed out after Ns"), which is an unmeasured result rather than a score. There
+    # is no external backend capability to observe, so demanding an observation for it
+    # refused every dataset that declares one (the shared QA scaffold sets 3600s for
+    # all of its adapters) while adding no guarantee. Everything whose enforcement
+    # really does live outside this process -- exec defaults, container state, network,
+    # cpus/memory, filesystems, resource and artifact policy -- still refuses.
+    if "artifact_policy" in (verifier or {}):
+        fields.add("verifier.artifact_policy")
     if not fields:
         return None
     result = _invalid(task, "backend_observation_unavailable", stage="admission", service=None)

@@ -188,13 +188,41 @@ def test_the_environment_is_networked_and_says_so():
 # ------------------------------------------------------------------- the controls ---
 
 
-@pytest.mark.parametrize("arm,expected", [("--oracle", "1.0"), ("--noop", "0.0")])
-def test_platform_control(arm, expected):
-    """Both arms through `run_one` and a real container -- 13 s each. The by-hand arm has no
-    meaning for an `exec` env: the check's paths are container-absolute."""
-    proc = subprocess.run([sys.executable, "data/gaia/control.py", "--platform", arm,
-                           "--task-id", CONTROL_TASK],
-                          cwd=ROOT, capture_output=True, text=True, timeout=900)
-    assert proc.returncode == 0, proc.stdout + proc.stderr
-    assert f"score    {expected}" in proc.stdout
-    assert "sandbox=True" in proc.stdout
+def test_platform_control_refuses_regardless_of_arm():
+    """Both arms are refused before dispatch: GAIA's policy needs an observer it has none of.
+
+    This test used to assert a numeric container score for `--oracle` and `--noop`. That
+    encoded a run the platform no longer calls measured, and the reason is specific
+    rather than cautious: GAIA is an `exec` task on a container with a service network,
+    and nothing in this checkout can observe the container's cpu/memory/pids limits, the
+    service network policy, or writable byte/inode bounds. A number from it would claim
+    enforcement that was never verified.
+
+    The refusal is therefore the guarantee, and it is asserted in two places: the hook
+    directly (which names the policy fields) and the control CLI (which must produce no
+    score for either arm). A real container run belongs to the staged diagnostic path
+    once a trusted backend observer exists; it is not a unit test.
+    """
+    from eval import runner
+
+    task = {"task_id": CONTROL_TASK}
+    for env in (dataset.ENV[CONTROL_TASK], {"kind": "exec", "state": "container",
+                                            "network": "services"}):
+        refusal = runner._refuse_unobserved_policies(task, env,
+                                                     dataset.VERIFY[CONTROL_TASK])
+        assert refusal is not None, "a container/service exec task must be refused"
+        receipt = refusal["invalid"]["receipt"]
+        assert receipt["reason"] == "backend_observation_unavailable"
+        assert receipt["measured"] is False and receipt["production_authorized"] is False
+        assert "score" not in refusal
+        assert {"env.exec_defaults", "env.state=container"} <= set(receipt["policy_fields"])
+
+    for arm in ("--oracle", "--noop"):
+        proc = subprocess.run([sys.executable, "data/gaia/control.py", "--platform", arm,
+                               "--task-id", CONTROL_TASK],
+                              cwd=ROOT, capture_output=True, text=True, timeout=900)
+        combined = proc.stdout + proc.stderr
+        assert "sandbox=True" in combined
+        assert "score    None" in combined, (
+            f"{arm} produced a score for a task the platform refuses: {combined[-400:]}")
+        assert proc.returncode != 0, "a refused control must not report success"

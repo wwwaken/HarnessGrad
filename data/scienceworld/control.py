@@ -230,8 +230,16 @@ def run_platform(module, record: dict, *, oracle: bool, workdir: Path,
     if verdict.get("evidence"):
         print(f"evidence {json.dumps(verdict['evidence'].get('why'), ensure_ascii=False)}")
     expected = 1.0 if oracle else 0.0
-    if float(verdict.get("score") or 0.0) != expected:
-        print(f"CONTROL FAILED: expected score {expected:g}, got {verdict.get('score')}",
+    score = verdict.get("score")
+    if score is None:
+        # No score is not a zero. The platform refused the task, the scorer failed, or
+        # the run produced nothing -- each is unmeasured, and an unmeasured do-nothing
+        # arm must never be counted as a passing control. Treating `None` as 0.0 here
+        # did exactly that: it turned a refusal into "the noop arm behaved".
+        print(f"CONTROL UNMEASURED: no score for {tid}", file=sys.stderr)
+        return 2
+    if float(score) != expected:
+        print(f"CONTROL FAILED: expected score {expected:g}, got {score}",
               file=sys.stderr)
         return 1
     return 0

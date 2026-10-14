@@ -201,14 +201,20 @@ def run_platform(module, task: dict, *, oracle: bool, workdir: Path,
         run_seed="0",
     )
     verdict = result.get("verdict") or {}
-    score = float(verdict.get("score") or 0.0)
+    # A missing score stays missing. `float(... or 0.0)` made a refused or unmeasured
+    # run indistinguishable from a genuine do-nothing zero, so the noop arm passed on
+    # the strength of a run that never produced a verdict.
+    raw_score = verdict.get("score")
     print(f"task     {tid}")
     print(f"mode     {'oracle' if oracle else 'do-nothing'} (platform run_one, "
           f"sandbox={sandbox})")
     print(f"exit     {result.get('exit_code')}   wall {time.time() - started:.1f}s")
     print(f"score    {verdict.get('score')}  passed {verdict.get('passed')}")
     print(f"detail   {verdict.get('detail')}")
-    return _verdict(oracle, score)
+    if raw_score is None:
+        print(f"CONTROL UNMEASURED: no score for {tid}", file=sys.stderr)
+        return 2
+    return _verdict(oracle, float(raw_score))
 
 
 #: The generated oracle harness ships beside this module so that every `command` dataset

@@ -73,9 +73,25 @@ def test_policy_refusal_precedes_manifest_storage_and_backend_dispatch(
     assert env == before
 
 
-@pytest.mark.parametrize("verifier", [{"timeout_s": 5}, {"artifact_policy": None}])
-def test_verifier_policy_refuses_before_scoring(tmp_path, verifier):
+@pytest.mark.parametrize("verifier", [{"artifact_policy": None}])
+def test_verifier_artifact_policy_refuses_before_scoring(tmp_path, verifier):
     assert_refusal(runner.run_one(tmp_path / "absent-harness", TASK, verifier=verifier))
+
+
+def test_a_verifier_timeout_is_not_a_backend_observation_trigger():
+    """The platform enforces a verifier deadline itself, so it is not refused.
+
+    `eval/verifier.py` passes `timeout_s` to `phase_timeout` and to the verifier
+    subprocess' `timeout=`, and records expiry as an explicit unmeasured outcome.
+    Nothing outside this process has to be observed, so demanding an observation
+    refused every adapter that declares a deadline -- the shared QA scaffold sets
+    3600s for all of its datasets -- and made their local controls unusable without
+    making a run any safer. Asserted against the hook directly, because a full
+    `run_one` would fail later for unrelated reasons (absent harness).
+    """
+    assert runner._refuse_unobserved_policies(TASK, {}, {"timeout_s": 5}) is None
+    # The trigger that does remain is asserted above and below.
+    assert runner._refuse_unobserved_policies(TASK, {}, {"artifact_policy": None}) is not None
 
 
 @pytest.mark.parametrize("observation", [None, {}, "unknown", {

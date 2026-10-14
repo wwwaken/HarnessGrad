@@ -77,7 +77,10 @@ ROWS: dict[str, dict] = {
         "metric_tests": ["test_nestful_official_scorer.py", "test_dataset_refusals.py"],
     },
     "jericho": {
-        "control": ["data/jericho/control.py"],
+        # `--task-id` is required by this control (unlike the QA scaffold, it has no
+        # default), so it has to be part of the declaration: a declared control
+        # that cannot be invoked as declared is not a control.
+        "control": ["data/jericho/control.py", "--task-id", "acorncourt"],
         # Jericho's metric is the package's own normalised score, so there is nothing to
         # transcribe; what has to be pinned is the maximum-score table and the game set.
         "metric_tests": ["test_jericho_dataset.py"],
@@ -173,6 +176,15 @@ ROWS: dict[str, dict] = {
 #: the refusal test below applies instead.
 REFUSED = ("api_bank", "sotuqa", "tau2_bench", "nestful")
 
+#: Datasets whose platform control is *refused* rather than run, because their declared
+#: policy needs a trusted backend observation this checkout cannot supply: an `exec`
+#: task on a container, a service network, or a writable-root/interactive environment.
+#:
+#: The refusal is the correct outcome, not a failure, so these are asserted as refusals
+#: rather than skipped. Skipping would hide the guarantee; demanding `reward 1`/`0`
+#: would demand a number that claims enforcement nobody verified.
+POLICY_REFUSED = ("gaia", "jericho", "spreadsheetbench")
+
 
 def _provisioned(name: str) -> bool:
     """The dataset's own answer to "are my bytes here", as the lint asks it."""
@@ -251,6 +263,23 @@ def test_the_control_reaches_one_and_the_noop_reaches_zero(name):
     if not _provisioned(name):
         pytest.skip(f"{name}: not provisioned on this machine")
     argv = ROWS[name]["control"]
+    if name in POLICY_REFUSED:
+        # Both arms must be refused, and a refusal must never look like a score. The
+        # do-nothing arm is the one this guards hardest: `None` compared as `0.0` used
+        # to make a refused run read as "the noop arm behaved", which is a fabricated
+        # control result. The controls now exit 2 with CONTROL UNMEASURED.
+        for arm in ("--oracle", "--noop"):
+            proc = subprocess.run([sys.executable, *argv, arm], cwd=ROOT,
+                                  capture_output=True, text=True, timeout=900)
+            combined = proc.stdout + proc.stderr
+            assert proc.returncode != 0, (
+                f"{name} {arm} reported success for a policy the platform refuses:\n"
+                f"{combined[-1200:]}")
+            assert "UNMEASURED" in combined or "no score" in combined, (
+                f"{name} {arm} was refused without saying so:\n{combined[-1200:]}")
+            assert not re.search(r"reward\s+[01](?![\d.])", proc.stdout), (
+                f"{name} {arm} produced a reward for a refused task:\n{proc.stdout[-800:]}")
+        return
     for arm, expected in (("--oracle", "1"), ("--noop", "0")):
         proc = subprocess.run([sys.executable, *argv, arm], cwd=ROOT,
                               capture_output=True, text=True, timeout=900)

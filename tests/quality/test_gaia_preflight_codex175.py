@@ -160,8 +160,12 @@ def test_fixed_probe_matches_gaia_source_policy_presence():
     fields = {"env." + key for key in keys & {
         "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s", "network",
         "resources", "filesystems", "resource_policy", "network_policy", "artifact_policy"}}
+    # `verifier.timeout_s` is absent on purpose: the platform enforces that deadline
+    # itself and records expiry, so it is not a backend-observation trigger. GAIA is
+    # still refused through its exec defaults, container state and service network.
     assert set(receipt["policy_fields"]) == fields | {
-        "env.exec_defaults", "env.state=container", "verifier.timeout_s"}
+        "env.exec_defaults", "env.state=container"}
+    assert "verifier.timeout_s" not in receipt["policy_fields"]
     values = dict(zip((key.value for key in env.keys), env.values))
     assert ast.literal_eval(values["kind"]) == "exec"
     assert ast.literal_eval(values["state"]) == "container"

@@ -618,7 +618,12 @@ def downloads() -> list[dict]:
 
 def provision_status() -> dict:
     tarball = DATASET_ROOT / "_src" / TARBALL_NAME
-    present = all((DATASET_ROOT / p).is_file() for p in (SIMPLE, IRRELEVANCE, SIMPLE_ANSWERS))
+    # `SELECTED_INDEX` is part of "am I provisioned", not an optional extra: the
+    # selected-only route and the control refuse without it, and a status that said
+    # present while its own control raises "selected index is unavailable" is the
+    # wrong answer to the question the lint asks.
+    present = all((DATASET_ROOT / p).is_file()
+                  for p in (SIMPLE, IRRELEVANCE, SIMPLE_ANSWERS, SELECTED_INDEX))
     return {
         "root": str(DATASET_ROOT),
         "present": present and tarball.is_file(),

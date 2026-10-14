@@ -43,6 +43,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import json
+import shutil
 import os
 import subprocess
 import sys
@@ -93,6 +94,40 @@ SLOW = (
 )
 
 
+#: Where per-file pytest basetemps go. `/tmp` on this class of machine is often on a
+#: small, shared root filesystem; when it fills, tests fail with "No usable temporary
+#: directory found" and a nearly-full disk turns real integration tests into timeouts.
+#: A run must not depend on that filesystem having room, and must not be the thing that
+#: fills it. `HG_TEST_TMPDIR` overrides; otherwise the largest writable scratch root we
+#: can find that is not the platform tree.
+CANDIDATE_TMPDIRS = ("/mnt/20t/xubuqiang/.hg-pytest", "/mnt/8t/xubuqiang/.hg-pytest",
+                     "/var/tmp")
+
+
+def default_basetemp_parent() -> str:
+    override = os.environ.get("HG_TEST_TMPDIR")
+    if override:
+        Path(override).mkdir(parents=True, exist_ok=True)
+        return override
+    for candidate in CANDIDATE_TMPDIRS:
+        try:
+            path = Path(candidate)
+            path.mkdir(parents=True, exist_ok=True)
+            if os.access(path, os.W_OK):
+                return candidate
+        except OSError:
+            continue
+    return tempfile.gettempdir()
+
+
+def free_gb(path: Path) -> float:
+    try:
+        st = os.statvfs(path)
+        return st.f_bavail * st.f_frsize / 1e9
+    except OSError:
+        return float("nan")
+
+
 def discover(pattern: str) -> list[Path]:
     found = sorted((ROOT / "tests").rglob("test_*.py"))
     if pattern:
@@ -114,7 +149,8 @@ def cost_of(path: Path, costs: dict[str, float]) -> float:
     return costs.get(path.name, 8.0)
 
 
-def run_one(path: Path, basetemp_root: Path, extra: list[str]) -> dict:
+def run_one(path: Path, basetemp_root: Path, extra: list[str],
+            keep: bool = False) -> dict:
     rel = path.relative_to(ROOT)
     tmp = basetemp_root / path.stem
     tmp.mkdir(parents=True, exist_ok=True)
@@ -124,6 +160,8 @@ def run_one(path: Path, basetemp_root: Path, extra: list[str]) -> dict:
            "PYTHONDONTWRITEBYTECODE": "1"}
     started = time.time()
     proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, env=env)
+    if not keep:
+        shutil.rmtree(tmp, ignore_errors=True)
     tail = [ln for ln in proc.stdout.splitlines() if ln.strip()]
     return {"file": path.name, "rel": str(rel), "code": proc.returncode,
             "seconds": round(time.time() - started, 1),
@@ -155,6 +193,9 @@ def main() -> int:
                     help="exit 0 when the only failures are files that pass when run "
                          "alone. Off by default: a test that only passes alone is a real "
                          "isolation defect, it is just not the failure it first looked like.")
+    ap.add_argument("--keep-basetemp", action="store_true",
+                    help="keep each file's pytest temporary directory (debugging only; "
+                         "140 files otherwise leave 140 trees behind)")
     ap.add_argument("--no-rerun", action="store_true",
                     help="skip the run-alone recheck of failed files")
     ap.add_argument("--pytest-arg", action="append", default=[],
@@ -206,14 +247,15 @@ def main() -> int:
         root.mkdir(parents=True, exist_ok=True)
         basetemp_root = root
     else:
-        basetemp_root = Path(tempfile.mkdtemp(prefix="harnessgrad-pytest-"))
+        basetemp_root = Path(tempfile.mkdtemp(prefix="harnessgrad-pytest-",
+                                              dir=default_basetemp_parent()))
 
     plan_parallel = sum(cost_of(f, costs) for f in parallel)
     plan_exclusive = sum(cost_of(f, costs) for f in exclusive)
     if selection_note:
         print(selection_note)
     if args.list:
-        print(f"basetemp: {basetemp_root}")
+        print(f"basetemp: {basetemp_root}  ({free_gb(basetemp_root):.1f} GB free)")
         print(f"parallel lane: {len(parallel)} files, measured cost {plan_parallel:.0f}s, "
               f"{args.jobs} jobs -> ~{plan_parallel / max(args.jobs, 1):.0f}s")
         print(f"exclusive lane: {len(exclusive)} files, measured cost {plan_exclusive:.0f}s, "
@@ -235,10 +277,11 @@ def main() -> int:
     results: list[dict] = []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs + 1) as pool:
-        futures = [pool.submit(run_one, f, basetemp_root, args.pytest_arg)
+        futures = [pool.submit(run_one, f, basetemp_root, args.pytest_arg, args.keep_basetemp)
                    for f in parallel]
         future_excl = pool.submit(
-            lambda: [run_one(f, basetemp_root, args.pytest_arg) for f in exclusive])
+            lambda: [run_one(f, basetemp_root, args.pytest_arg, args.keep_basetemp)
+                            for f in exclusive])
         for fut in concurrent.futures.as_completed(futures):
             r = fut.result()
             results.append(r)
@@ -274,7 +317,8 @@ def main() -> int:
               "load contention from real failures...")
         load_sensitive, real = [], []
         for r in failed:
-            alone = run_one(by_name[r["file"]], basetemp_root, args.pytest_arg)
+            alone = run_one(by_name[r["file"]], basetemp_root, args.pytest_arg,
+                            args.keep_basetemp)
             if alone["code"] == 0:
                 load_sensitive.append(r)
                 print(f"  load-sensitive {r['file']} (passes alone: {alone['summary']})")
