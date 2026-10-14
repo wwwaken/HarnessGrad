@@ -313,6 +313,13 @@ harnessgrad_work/
 !/docs/data-layout-open-items.md
 !/docs/registry-discovery-order.md
 !/docs/eval-split-design.md
+# A decision the registry no longer records, because the requirement was withdrawn rather
+# than met: without this file the removal of `paired-filesystem-quotas` would look like a
+# deleted blocker instead of a reviewed decision. Cited from `docs/dataset-blockers.json`.
+!/docs/filesystem-quota-decision.md
+# The review that answers terminal-bench's `cached-runtime-admission`; the registry points
+# at it as the evidence behind that entry's `observed`.
+!/docs/terminal-bench-runtime-admission.md
 
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.

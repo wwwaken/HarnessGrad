@@ -212,11 +212,16 @@ def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(documen
 
 def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
     target = row(document, "twowikimultihopqa")
+    # `paired-filesystem-quotas` was withdrawn by operator decision on 2026-10-15; see
+    # `docs/filesystem-quota-decision.md`. It is removed from this set deliberately and
+    # visibly rather than by loosening the assertion: enforcement still does not exist, the
+    # decision was that the platform does not require it.
     assert set(target["shared_blockers"]) == {
-        "runtime-observations", "paired-filesystem-quotas", "scorer-offline-closure",
+        "runtime-observations", "scorer-offline-closure",
         "pristine-verifier", "artifact-only-state-export", "official-scorer-identity",
         "snapshot-owned-cleanup", "pilot-guidance-conflict",
     }
+    assert "paired-filesystem-quotas" not in target["shared_blockers"]
     comparability = next(item for item in target["blockers"]
                          if item["id"] == "recovery-comparability")
     assert comparability["status"] == "measurement"
