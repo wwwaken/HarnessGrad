@@ -19,7 +19,10 @@ def _cli_only(monkeypatch):
 
     monkeypatch.setattr(subprocess, "run", refuse)
     monkeypatch.setattr(subprocess, "Popen", refuse)
-    monkeypatch.setattr(socket, "socket", refuse)
+    # Patch `connect`, NOT `socket.socket`: replacing the class makes a later
+    # `import ssl` fail while it builds `class SSLSocket(socket)`, which is an
+    # order-dependent failure that has nothing to do with what this guards.
+    monkeypatch.setattr(socket.socket, "connect", refuse)
     import driver
 
     for name in ("load", "load_split", "published", "kind_of"):

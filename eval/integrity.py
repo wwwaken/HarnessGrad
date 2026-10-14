@@ -101,6 +101,13 @@ NOT_PLATFORM = {
            "so hashing it would fail a run for a reason that cannot change a number. "
            "`harnessgrad/api/` -- the server the SPA talks to -- *is* platform, because a "
            "run's reader can be misled by it",
+    "reports": "audit, evidence and review output that used to sit in the repository root "
+               "and was moved here so the root stays navigable. It is written by humans and "
+               "review sessions after a measurement, never read by a run; hashing it would "
+               "fail a certification because someone added a report",
+    "AGENTS.md": "operating rules for the agents and humans who work *on* the platform -- "
+                 "review discipline, pilot policy, prohibited shortcuts. It governs how the "
+                 "platform is changed, not what a number means, and no run reads it",
 }
 
 #: Where those names live, resolved from this file rather than from the working

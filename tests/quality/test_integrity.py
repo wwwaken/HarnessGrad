@@ -27,7 +27,8 @@ from eval.integrity import NOT_PLATFORM, PLATFORM, PLATFORM_ROOT, snapshot  # no
 
 #: 运行产物与缓存:由运行本身生成,不是平台源码。和 `runs/` 同类,所以按前缀放行,
 #: 不逐个登记 —— 它们的名字带日期/编号,登记不完。
-_GENERATED_PREFIXES = ("runs", "__pycache__", ".git", ".pytest_cache")
+_GENERATED_PREFIXES = ("runs", "__pycache__", ".git", ".pytest_cache",
+                      ".scratch", ".ruff_cache", ".overleaf-mcp")
 
 
 def _top_level() -> list[str]:
