@@ -1,0 +1,182 @@
+{
+ "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+ "mode": "unified",
+ "harness": "loop",
+ "dataset": "terminal_bench",
+ "sampling_policy": "diagnostic",
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+  "task_id": "openssl-selfsigned-cert",
+  "operator_authorization": "Operator authorizes one cached openssl-selfsigned-cert diagnostic after the verifier declared-network repair, with HG_TB_SPLIT=none and the documented proxy; existing loop/train CLI is required by unchanged guards. Dataset enforcement observations remain unknown; this requests raw CTRF/scorer evidence only, with no comparable score publication, pilot expansion, or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "diagnostic_policy": {
+  "receipt_schema": "harnessgrad.diagnostic-receipt.v2",
+  "eligible_tasks": 1,
+  "eligible_task_ids_sha256": "ca77390f8587d60e14a1390ede829e32aa62e2d421e8ef249f0bb12c4dd0b539",
+  "selected_tasks": 1,
+  "selected_task_ids": [
+   "openssl-selfsigned-cert"
+  ],
+  "expected_trials": 1,
+  "trials": 1,
+  "jobs": 1,
+  "evidence_sha256": "cf0fe9663432e88116565203180a27a14b1b4c4e9bafd71db38ba978192d55ba",
+  "context": {
+   "dataset": "terminal_bench",
+   "side": "train",
+   "metric": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+   },
+   "hashes": {
+    "source": "54985eac4739288c2fd1d686ae840c16f8fd317bdde0f8fb654e8bcc86df387b",
+    "split": "362537284993db7da273d45c8041331811fad1ad73f17eddc2c8bc8f97895810",
+    "manifest": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366",
+    "model": null,
+    "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+   },
+   "endpoint": "http://127.0.0.1:8002/v1",
+   "limits": {
+    "resource": {
+     "cpus": 1,
+     "memory_mb": 2048,
+     "agent_timeout_s": 900,
+     "verify_timeout_s": 900
+    },
+    "budget": null
+   },
+   "gates": {
+    "status": "unknown",
+    "receipt_sha256": null,
+    "detail": "Operator authorized one diagnostic with backend observations absent; shared scorer-offline-closure and artifact-only-state-export remain open; no enforcement observation is attested."
+   },
+   "comparability_notes": [
+    "Single cached task, HG_TB_SPLIT=none; train CLI flag required by driver.py unobserved-diagnostic guard; no improver and no generalization or production claim.",
+    "All unknown gate, budget and provenance input fields remain null; raw scorer output is distinct from publication permission.",
+    "Scorer hash binds test.sh only, not transitive dependencies. Fresh w-net diagnostic after declared-network parity repair; no historical run resumed. env_usage is distinct from agent usage; model weight hash remains unknown."
+   ]
+  }
+ },
+ "workspace": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/workspace",
+ "work_root": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work",
+ "platform_root": "/tmp/hg-net",
+ "sandbox": {
+  "requested": true,
+  "active": true,
+  "plan_version": 2,
+  "detail": "bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v2; /usr/bin/bwrap"
+ },
+ "config": {
+  "agent": {
+   "backend": "openai",
+   "model": "qwen3.5-9b-local",
+   "base_url": "http://127.0.0.1:8002/v1",
+   "api_key": {
+    "present": true
+   }
+  },
+  "method": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "timeout_s": 180,
+   "parse_retries": 2,
+   "history_rounds": 0,
+   "dump": null,
+   "source_limit": 200000,
+   "source_total": 60000,
+   "skill_limit": 24000
+  },
+  "improver": {
+   "selection": null,
+   "name": null,
+   "model": null,
+   "effort": null,
+   "args": "",
+   "skill": null,
+   "timeout_s": 1800,
+   "skip_tool_gate": null,
+   "codex_home_source": null,
+   "api_key": {
+    "present": false
+   }
+  },
+  "environment": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "seed": null
+  },
+  "sandbox": {
+   "bwrap": null
+  },
+  "egress": {
+   "proxy": "http://172.17.0.1:17890",
+   "bind": "172.17.0.1",
+   "port": 17890,
+   "upstream": "127.0.0.1:17891"
+  },
+  "runtime": {
+   "overlay_root": null,
+   "overlay_builder_image": null,
+   "registry_mirrors": null
+  },
+  "storage": {
+   "run_root": null,
+   "record_dir": "/recordings/orders",
+   "pull_timeout_s": 900
+  },
+  "run": {
+   "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+   "harness": "loop",
+   "dataset": "terminal_bench",
+   "side": "train",
+   "sampling": "diagnostic",
+   "rounds": 0,
+   "trials": 1,
+   "jobs": 1,
+   "sandbox": true,
+   "mode": "unified",
+   "seed": "fbca8b8076fb3ee7",
+   "runs_root": "/tmp/hg-net/runs",
+   "work_root": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work",
+   "method_entrypoint": null,
+   "budget_profile": null,
+   "budget_ledger": null,
+   "budget_arm": "agent",
+   "budget_profile_hash": null
+  }
+ },
+ "env": {
+  "kind": "exec",
+  "image_digest": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+  "network": "bridge",
+  "placement": "inside",
+  "services": [],
+  "model_gateway": null,
+  "model": null,
+  "seed": null
+ },
+ "split_declared": false,
+ "oracle_source": "released",
+ "agent_model": "qwen3.5-9b-local",
+ "agent_backend": "openai",
+ "framework_version": "0.1.0",
+ "trials": 1,
+ "jobs": 1,
+ "platform": {
+  "content_sha": "5154b973e19e7caf67afddb8855dd38e19eb66591799d00bdaa28b74b7a765a6",
+  "git_sha": "919e2b9bf82f4040e87e098fd37cab27d2d4d4d8",
+  "dirty": true
+ }
+}

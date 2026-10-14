@@ -1,0 +1,99 @@
+........................................................................ [ 68%]
+................F................                                        [100%]
+=================================== FAILURES ===================================
+____ test_unobserved_admission_and_synthetic_projection_backend_boundaries _____
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-net-boundaries/test_unobserved_admission_and_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7423affd93d0>
+
+    @pytest.mark.skipif(shutil.which("bwrap") is None, reason="bubblewrap unavailable")
+    def test_unobserved_admission_and_synthetic_projection_backend_boundaries(tmp_path, monkeypatch):
+        # A separate synthetic platform tree preserves the production staging rule.
+        # All test writes remain in the user-authorized worktree.
+        platform = tmp_path / "platform"
+        platform.mkdir()
+        monkeypatch.setattr("eval.run.runner.PLATFORM_ROOT", platform)
+        monkeypatch.setattr("eval.verification.verifier.PLATFORM_ROOT", platform)
+        work = tmp_path / "work"
+        package = work / "packages" / "boundary_fixture"
+        package.mkdir(parents=True)
+        (package / "__init__.py").write_text('REFERENCE = "SYNTHETIC_SECRET"\n')
+        (package / "game_info.py").write_text('REFERENCE = "SYNTHETIC_SECRET"\n')
+        (package / "__pycache__").mkdir()
+        (package / "__pycache__/game_info.pyc").write_bytes(b"SYNTHETIC_SECRET")
+        runtime = {"package_dir": str(package), "files": [{"path": "__init__.py", "content": "PUBLIC = True\n"}]}
+        monkeypatch.setenv("HG_AGENT_BACKEND", "mock")
+        monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(work))
+        with socket.socket() as listener:
+            listener.bind(("127.0.0.1", 0))
+            listener.listen()
+            host_port = listener.getsockname()[1]
+            body = f'''import argparse, json, os, pathlib, socket, sys
+    ap = argparse.ArgumentParser(); ap.add_argument('--task'); ap.add_argument('--workdir'); a = ap.parse_args()
+    assert os.environ['HG_AGENT_DEADLINE_S'] == '3'
+    sys.path.insert(0, {str(package.parent)!r})
+    import boundary_fixture as pkg
+    seen = {{'public': pkg.PUBLIC, 'reference': hasattr(pkg, 'REFERENCE'),
+            'data': pathlib.Path(pkg.__file__).with_name('game_info.py').exists(),
+            'bytecode': pathlib.Path(pkg.__file__).with_name('__pycache__').exists()}}
+    try:
+        pathlib.Path(pkg.__file__).write_text('rewritten'); seen['writable'] = True
+    except OSError:
+        seen['writable'] = False
+    for label, target in [('egress', ('192.0.2.1', 9)), ('host_loopback', ('127.0.0.1', {host_port}))]:
+        with socket.socket() as sock:
+            sock.settimeout(.2)
+            try:
+                sock.connect(target); seen[label] = True
+            except OSError:
+                seen[label] = False
+    pathlib.Path(a.workdir, 'answer.txt').write_text(json.dumps(seen))
+    '''
+            repo = harness(work / "run/workspace", body)
+            verifier = {"kind": "command", "timeout_s": 2, "argv": [sys.executable, "-c",
+                f"import sys; sys.path.insert(0, {str(package.parent)!r}); import boundary_fixture as p; "
+                "assert p.REFERENCE == 'SYNTHETIC_SECRET'; print('trusted package retained')"]}
+            env = {"kind": "files", "network": "none", "agent_timeout_s": 3,
+                   "verify_timeout_s": 5, "agent_runtime": runtime}
+            refused = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+                              env=env, verifier=verifier)
+            assert_policy_refusal(refused, ("env.network", "env.agent_timeout_s", "env.verify_timeout_s"))
+            assert not list(work.glob("task-*"))
+            assert (package / "__init__.py").read_text() == 'REFERENCE = "SYNTHETIC_SECRET"\n'
+            # Synthetic backend regression only: production admission above remains blocked.
+            # This local monkeypatch grants no observer receipt or production authorization.
+            monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a: None)
+>           result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+                             env=env, verifier=verifier)
+
+tests/quality/test_jericho_runtime_boundaries.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repo = PosixPath('/tmp/harnessgrad-pytest-w-net-boundaries/test_unobserved_admission_and_0/work/run/workspace')
+task = {'goal': 'synthetic', 'task_id': 'synthetic'}, timeout_s = None
+sandbox = True, setup = None
+verifier = {'argv': ['/mnt/8t/xubuqiang/anaconda3/bin/python3', '-c', "import sys; sys.path.insert(0, '/tmp/harnessgrad-pytest-w-...as p; assert p.REFERENCE == 'SYNTHETIC_SECRET'; print('trusted package retained')"], 'kind': 'command', 'timeout_s': 2}
+verify_timeout_s = None
+env = {'agent_runtime': {'files': [{'content': 'PUBLIC = True\n', 'path': '__init__.py'}], 'package_dir': '/tmp/harnessgrad-...served_admission_and_0/work/packages/boundary_fixture'}, 'agent_timeout_s': 3, 'kind': 'files', 'network': 'none', ...}
+run_id = '', run_seed = '', recordings_root = None
+diagnostic_authorization = None
+
+    def run_one(repo: Path, task: dict, timeout_s: int | None = None,
+                sandbox: bool = True, setup: dict | None = None,
+                verifier: dict | None = None,
+                verify_timeout_s: int | None = None,
+                env: dict | None = None,
+                run_id: str = "", run_seed: str = "",
+                recordings_root: Path | None = None,
+                diagnostic_authorization: Authorization | None = None) -> dict:
+        if diagnostic_authorization is not None:
+            diagnostic_authorization.require_scope(run_id, [task["task_id"]])
+>       refusal = _refuse_unobserved_policies(
+            task, env, verifier, run_id=run_id,
+            diagnostic_authorization=diagnostic_authorization)
+E       TypeError: test_unobserved_admission_and_synthetic_projection_backend_boundaries.<locals>.<lambda>() got an unexpected keyword argument 'run_id'
+
+eval/run/runner.py:160: TypeError
+=========================== short test summary info ============================
+FAILED tests/quality/test_jericho_runtime_boundaries.py::test_unobserved_admission_and_synthetic_projection_backend_boundaries
+1 failed, 104 passed in 17.03s

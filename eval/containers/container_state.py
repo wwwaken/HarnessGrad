@@ -215,6 +215,7 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
                     timeout_s=verify_timeout_s, run_id=run_id or "run", task_id=tid,
                     network=(network_name if network_name is not None
                              else env_spec.get("network", "none")),
+                    declared_network=env_spec.get("network", "none"),
                     limits=container_mod.limits_from(env_spec))
 
             return {"task_id": tid, "answer": answer, "trace": trace,

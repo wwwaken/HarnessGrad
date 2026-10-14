@@ -1,0 +1,89 @@
+{
+  "cleanup": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "context": {
+    "comparability_notes": [
+      "Single cached task, HG_TB_SPLIT=none; train CLI flag required by driver.py unobserved-diagnostic guard; no improver and no generalization or production claim.",
+      "All unknown gate, budget and provenance input fields remain null; raw scorer output is distinct from publication permission.",
+      "Scorer hash binds test.sh only, not transitive dependencies. Fresh w-net diagnostic after declared-network parity repair; no historical run resumed. env_usage is distinct from agent usage; model weight hash remains unknown."
+    ],
+    "dataset": "terminal_bench",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "gates": {
+      "detail": "Operator authorized one diagnostic with backend observations absent; shared scorer-offline-closure and artifact-only-state-export remain open; no enforcement observation is attested.",
+      "receipt_sha256": null,
+      "status": "unknown"
+    },
+    "hashes": {
+      "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+      "manifest": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366",
+      "model": null,
+      "source": "54985eac4739288c2fd1d686ae840c16f8fd317bdde0f8fb654e8bcc86df387b",
+      "split": "362537284993db7da273d45c8041331811fad1ad73f17eddc2c8bc8f97895810"
+    },
+    "limits": {
+      "budget": null,
+      "resource": {
+        "agent_timeout_s": 900,
+        "cpus": 1,
+        "memory_mb": 2048,
+        "verify_timeout_s": 900
+      }
+    },
+    "metric": {
+      "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+      "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+    },
+    "side": "train"
+  },
+  "coverage": {
+    "eligible_tasks": 1,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "eligible_task_ids_sha256": "ca77390f8587d60e14a1390ede829e32aa62e2d421e8ef249f0bb12c4dd0b539",
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator authorizes one cached openssl-selfsigned-cert diagnostic after the verifier declared-network repair, with HG_TB_SPLIT=none and the documented proxy; existing loop/train CLI is required by unchanged guards. Dataset enforcement observations remain unknown; this requests raw CTRF/scorer evidence only, with no comparable score publication, pilot expansion, or production authorization.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "stage": "diagnostic",
+    "task_id": "openssl-selfsigned-cert"
+  },
+  "jobs": 1,
+  "lifecycle": null,
+  "outcomes": [
+    {
+      "reason": "no outcome recorded",
+      "score": null,
+      "status": "unmeasured",
+      "task_id": "openssl-selfsigned-cert",
+      "trial": 1
+    }
+  ],
+  "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+  "schema": "harnessgrad.diagnostic-receipt.v2",
+  "score": null,
+  "selected_task_ids": [
+    "openssl-selfsigned-cert"
+  ],
+  "snapshot": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "stage": "diagnostic",
+  "trials": 1
+}

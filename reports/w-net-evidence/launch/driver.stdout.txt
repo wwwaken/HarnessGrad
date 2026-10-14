@@ -1,0 +1,12 @@
+  · improver none  ← the method carries its own; nothing recorded
+  · container boundary holds (docker 29.2.1): image sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12: docker_socket=no, harness_readable=yes, harness_writable=no, platform_visible=no, rootfs_writable=no, sibling_visible=no, state_writable=yes, task_writable=yes, tmp_writable=yes, uid=1026
+  ! dataset 'terminal_bench' declares no train/eval split: every task is scored and the method is shown traces for all of them. The run is still measured, but a score from it cannot support a claim about generalisation -- the method studied its own exam. Pass `--split default` for the platform's documented division, `--split official` to score the benchmark's own evaluation set, or `--split <file.json>` to supply one.
+w-net-terminal-bench-20261014T200818Z-fd0c4d1e
+
+  harness   loop 0.2.0
+  mode      unified · method drives its own loop
+  data      terminal_bench · 1 tasks on the train side · no train/eval split — all 1 scored
+  model     qwen3.5-9b-local · openai
+  sandbox   exec — sha256:4c948a4e630af2435ae
+
+  ✓ round 0 · 第 1/1 题 openssl-selfsigned-cert — done (2m35s)

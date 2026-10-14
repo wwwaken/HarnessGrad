@@ -1,0 +1,43 @@
+{
+  "kind": "manifest-bound observer receipt",
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "trial_id": "openssl-selfsigned-cert:1",
+    "manifest_sha256": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366"
+  },
+  "cache_inspection_path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/image-inspect.json",
+  "cache_inspection_sha256": "51f4d9582627b91bff49d98114ee857151c4977ced47f7caf78207525ddcb5b4",
+  "cache_images": [
+    {
+      "id": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "jevloop-tb@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12"
+      ],
+      "repo_tags": [
+        "docker.1panel.live/alexgshaw/openssl-selfsigned-cert:20251031",
+        "alexgshaw/openssl-selfsigned-cert:20251031",
+        "jevloop-tb:openssl-selfsigned-cert"
+      ]
+    },
+    {
+      "id": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "jevloop-tb@sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12"
+      ],
+      "repo_tags": [
+        "docker.1panel.live/alexgshaw/openssl-selfsigned-cert:20251031",
+        "alexgshaw/openssl-selfsigned-cert:20251031",
+        "jevloop-tb:openssl-selfsigned-cert"
+      ]
+    }
+  ],
+  "launched_images": {
+    "agent": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+    "verifier": "sha256:59c94f3462a248e5af5909b2249cba07e2e46574eee4fd362896d7c048eac779"
+  }
+}

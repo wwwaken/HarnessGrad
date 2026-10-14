@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "ls",
+    "--no-trunc",
+    "--filter",
+    "reference=hg-snapshot:*w-net-terminal-bench-20261014T200818Z-fd0c4d1e*",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

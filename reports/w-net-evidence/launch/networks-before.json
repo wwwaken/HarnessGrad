@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "ls",
+    "--no-trunc",
+    "--filter",
+    "label=harnessgrad.run=w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

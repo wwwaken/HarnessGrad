@@ -1,0 +1,643 @@
+{
+  "kind": "manifest-bound observer receipt; not runtime admission or peak usage attestation",
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "trial_id": "openssl-selfsigned-cert:1",
+    "manifest_sha256": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366"
+  },
+  "roles": {
+    "agent": {
+      "first": {
+        "source": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-inspect-00000.json",
+        "source_sha256": "1346b9555a0732f9cb3bc86d6386097f6f48be873caac332f574296161184612",
+        "id": "33b07aa5952a86161ef9d329a92a6e61026ae1df30c5abb5ab01ff6816fe58a3",
+        "name": "/hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+        "image": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 153443,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-14T20:08:23.422578535Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "size_rw": 61440,
+        "limits": {
+          "NanoCpus": 1000000000,
+          "Memory": 2147483648,
+          "MemorySwap": 4294967296,
+          "PidsLimit": 1024,
+          "ReadonlyRootfs": false
+        },
+        "networks": {
+          "bridge": {
+            "IPAMConfig": {},
+            "Links": null,
+            "Aliases": [],
+            "DriverOpts": {},
+            "GwPriority": 0,
+            "NetworkID": "70b7f49f2cf30727ed32d71d463d24ceb29f3febed434962891e537432e02519",
+            "EndpointID": "6219cb745173710c2f54edf9e5e1de81a8b63c93d933e8e07476c4db4b47f30b",
+            "Gateway": "172.17.0.1",
+            "IPAddress": "172.17.0.3",
+            "MacAddress": "d6:67:35:82:eb:7b",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          },
+          "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "5687b8a06ab3c3bede020579130186b626a3f035e1fc32df57536918cb977144",
+            "EndpointID": "f29394f5a16d9307236bffc45fa0416545cf43a7595a31343c0e986e87f8827c",
+            "Gateway": "",
+            "IPAddress": "172.19.0.2",
+            "MacAddress": "b2:9a:d9:73:13:ee",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+              "33b07aa5952a"
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+            "Destination": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/workspace",
+            "Destination": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/workspace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ]
+      },
+      "last": {
+        "source": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-inspect-00072.json",
+        "source_sha256": "9c15fde38cb71fff1e181f0e0132c048286a45b790d80ca279997427300cac1f",
+        "id": "33b07aa5952a86161ef9d329a92a6e61026ae1df30c5abb5ab01ff6816fe58a3",
+        "name": "/hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+        "image": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-10-14T20:08:23.422578535Z",
+          "FinishedAt": "2026-10-14T20:10:36.977045505Z"
+        },
+        "size_rw": 4677632,
+        "limits": {
+          "NanoCpus": 1000000000,
+          "Memory": 2147483648,
+          "MemorySwap": 4294967296,
+          "PidsLimit": 1024,
+          "ReadonlyRootfs": false
+        },
+        "networks": {
+          "bridge": {
+            "IPAMConfig": {},
+            "Links": null,
+            "Aliases": [],
+            "DriverOpts": {},
+            "GwPriority": 0,
+            "NetworkID": "70b7f49f2cf30727ed32d71d463d24ceb29f3febed434962891e537432e02519",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          },
+          "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "5687b8a06ab3c3bede020579130186b626a3f035e1fc32df57536918cb977144",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+              "33b07aa5952a"
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/workspace",
+            "Destination": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/workspace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+            "Destination": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ]
+      }
+    },
+    "verifier": {
+      "first": {
+        "source": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-inspect-00064.json",
+        "source_sha256": "a176fbfed9c23cff310a2d6348c9bdafec149aca22f2b7a6269342a3cf0e9e8a",
+        "id": "65a5383c36f88ae502ebee61c87906c10f4fdf9b2cd78c9b9afd267d43eb7cf3",
+        "name": "/hg-verify-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+        "image": "sha256:59c94f3462a248e5af5909b2249cba07e2e46574eee4fd362896d7c048eac779",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 197512,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-14T20:10:39.486065603Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "size_rw": 28672,
+        "limits": {
+          "NanoCpus": 1000000000,
+          "Memory": 2147483648,
+          "MemorySwap": 4294967296,
+          "PidsLimit": 1024,
+          "ReadonlyRootfs": false
+        },
+        "networks": {
+          "bridge": {
+            "IPAMConfig": {},
+            "Links": null,
+            "Aliases": [],
+            "DriverOpts": {},
+            "GwPriority": 0,
+            "NetworkID": "70b7f49f2cf30727ed32d71d463d24ceb29f3febed434962891e537432e02519",
+            "EndpointID": "445a4c973bbd778fbed9ffd4ef90702d02e7745eb2b4a53d0d6d58d2bdb20e9c",
+            "Gateway": "172.17.0.1",
+            "IPAddress": "172.17.0.3",
+            "MacAddress": "1a:5c:b0:f8:10:60",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          },
+          "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "5687b8a06ab3c3bede020579130186b626a3f035e1fc32df57536918cb977144",
+            "EndpointID": "0cdc0e3e39df6d33df995677245903521c220f79efad55fa67f2f41d5b252112",
+            "Gateway": "",
+            "IPAddress": "172.19.0.2",
+            "MacAddress": "aa:ac:2d:a5:eb:cd",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "hg-verify-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+              "65a5383c36f8"
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/tmp/hg-cstate-lctt6xts/verdict",
+            "Destination": "/logs/verifier",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ]
+      },
+      "last": {
+        "source": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-inspect-00071.json",
+        "source_sha256": "6f441918a334dff5927364a0cde125647286e15b62019c7d562b7106c8defaa3",
+        "id": "65a5383c36f88ae502ebee61c87906c10f4fdf9b2cd78c9b9afd267d43eb7cf3",
+        "name": "/hg-verify-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+        "image": "sha256:59c94f3462a248e5af5909b2249cba07e2e46574eee4fd362896d7c048eac779",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 197512,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-14T20:10:39.486065603Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "size_rw": 90087424,
+        "limits": {
+          "NanoCpus": 1000000000,
+          "Memory": 2147483648,
+          "MemorySwap": 4294967296,
+          "PidsLimit": 1024,
+          "ReadonlyRootfs": false
+        },
+        "networks": {
+          "bridge": {
+            "IPAMConfig": {},
+            "Links": null,
+            "Aliases": [],
+            "DriverOpts": {},
+            "GwPriority": 0,
+            "NetworkID": "70b7f49f2cf30727ed32d71d463d24ceb29f3febed434962891e537432e02519",
+            "EndpointID": "445a4c973bbd778fbed9ffd4ef90702d02e7745eb2b4a53d0d6d58d2bdb20e9c",
+            "Gateway": "172.17.0.1",
+            "IPAddress": "172.17.0.3",
+            "MacAddress": "1a:5c:b0:f8:10:60",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          },
+          "hg-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "5687b8a06ab3c3bede020579130186b626a3f035e1fc32df57536918cb977144",
+            "EndpointID": "0cdc0e3e39df6d33df995677245903521c220f79efad55fa67f2f41d5b252112",
+            "Gateway": "",
+            "IPAddress": "172.19.0.2",
+            "MacAddress": "aa:ac:2d:a5:eb:cd",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "hg-verify-w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert",
+              "65a5383c36f8"
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/tmp/hg-cstate-lctt6xts/verdict",
+            "Destination": "/logs/verifier",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ]
+      }
+    }
+  },
+  "declared": {
+    "budget": null,
+    "resource": {
+      "agent_timeout_s": 900,
+      "cpus": 1,
+      "memory_mb": 2048,
+      "verify_timeout_s": 900
+    }
+  },
+  "statistics": [
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00000.json",
+      "sha256": "c3e1743674374e47ebfd843032fd0a38d43a30dacec32b26608bb17b435da2e9"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00001.json",
+      "sha256": "c3a790a771fd6a44898c06f7d3db4b1b7db95a3ff338d6aa248bb269a88ff00c"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00002.json",
+      "sha256": "97058940cea32207634fcf87ad26e7b6c09a5cac48d2c3343a174d5a36e186ab"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00003.json",
+      "sha256": "6cfd5b09bebfbcde6312735815147822a0028eddde6013373781e707d07c1760"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00004.json",
+      "sha256": "0e74a094b5b23fb9e9fae5c35ad930f2652dd9f03682a65536d4c143041bc8e9"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00005.json",
+      "sha256": "15b63d124752f957d2d93058068ca4e64cc5b72c168e880d9771b307e471c381"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00006.json",
+      "sha256": "69a051d5bb5337f9a5c853dcc545b1b74206e25973859d48b89afbceba300c11"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00007.json",
+      "sha256": "d36c3e054b4b266478a82a3d85ce000e3e8b1a24205b0dbd7f5a122fa9ff10b2"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00008.json",
+      "sha256": "6871ab8ad655d97f81e6725d2ebdf4e2e1df8fd6405bdf7a9d748babea4fc657"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00009.json",
+      "sha256": "f0876abfe74ba061a2e6aeba73da40acb05a750888129262d655e643f662d2ad"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00010.json",
+      "sha256": "f0876abfe74ba061a2e6aeba73da40acb05a750888129262d655e643f662d2ad"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00011.json",
+      "sha256": "f0876abfe74ba061a2e6aeba73da40acb05a750888129262d655e643f662d2ad"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00012.json",
+      "sha256": "5ba6711c9381209ad43f946321e3c9e7326644f8c7d172f179b0e130962f0e2c"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00013.json",
+      "sha256": "8c52525e3942b7894bd7e4ef1f1a75eea39b028c5de5999b5d538cd1b4bb631d"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00014.json",
+      "sha256": "9d47fae967ab277cefbf924616ce41060b39b4fd45e9ecfbdc9ce5b66a2762f5"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00015.json",
+      "sha256": "512aaac2edfd7b450b6a7cbb4fad418a2983c93715458f825ed6f6c49304662d"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00016.json",
+      "sha256": "512aaac2edfd7b450b6a7cbb4fad418a2983c93715458f825ed6f6c49304662d"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00017.json",
+      "sha256": "2bb48c89c1c3b601a3a598d53c3b07437373e6c48ac895ae81e2e8cd7b6e4304"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00018.json",
+      "sha256": "5d8845acdc1e0bd8fb50ff5120b71661066cb362a75be721aeccbfaf7dd4eb88"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00019.json",
+      "sha256": "11fbc87882068134f38024ce341e2d3c0aa36261b5a9cb6393d472f61c132f70"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00020.json",
+      "sha256": "6566763487297593642c8fa705d29f6ac6e2b555f41c834540749ee41856bb07"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00021.json",
+      "sha256": "6566763487297593642c8fa705d29f6ac6e2b555f41c834540749ee41856bb07"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00022.json",
+      "sha256": "e4d68cea2a17be6659af7c233d42b8336bfd3c613f0ac2ef2e8e660cbc52a653"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00023.json",
+      "sha256": "e4d68cea2a17be6659af7c233d42b8336bfd3c613f0ac2ef2e8e660cbc52a653"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00024.json",
+      "sha256": "e4d68cea2a17be6659af7c233d42b8336bfd3c613f0ac2ef2e8e660cbc52a653"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00025.json",
+      "sha256": "e4d68cea2a17be6659af7c233d42b8336bfd3c613f0ac2ef2e8e660cbc52a653"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00026.json",
+      "sha256": "11fe4077a9fdb30a251723df4ce995fd8d77cea0c2144600727bbd98d976b87b"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00027.json",
+      "sha256": "e7a2bb257f28cc85a1ca3f0e96dfb6bdfb588f5d2c67429d85a294efe8b89a4a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00028.json",
+      "sha256": "66e53856760cf284907f96f93637a7b06db78209e119cfa44826f5dc825753b0"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00029.json",
+      "sha256": "eb2592748de30beca65d8aae530c2e9851bf3f7f4426bbc854771de9f86b0f50"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00030.json",
+      "sha256": "7678ba4f29844ba26d0edb6040494818a0437cdea544880196df48340245bb8d"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00031.json",
+      "sha256": "6980bb656e72b72d1f3ed47688c60566c5350b5022badad34db049465e4aabf8"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00032.json",
+      "sha256": "5920480a49216117ead671027091d63c4c9e9b2c32a1d6710608e40d749d29ab"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00033.json",
+      "sha256": "5920480a49216117ead671027091d63c4c9e9b2c32a1d6710608e40d749d29ab"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00034.json",
+      "sha256": "5920480a49216117ead671027091d63c4c9e9b2c32a1d6710608e40d749d29ab"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00035.json",
+      "sha256": "5920480a49216117ead671027091d63c4c9e9b2c32a1d6710608e40d749d29ab"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00036.json",
+      "sha256": "eaec1f1be1ac79b14fac93dc08b2ba98f83586fa5b416be2e163e78ec19e2d26"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00037.json",
+      "sha256": "9562a4a31f51d988481c80de882f16047520ec3431f856b21167a477b3f2a50e"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00038.json",
+      "sha256": "9562a4a31f51d988481c80de882f16047520ec3431f856b21167a477b3f2a50e"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00039.json",
+      "sha256": "9562a4a31f51d988481c80de882f16047520ec3431f856b21167a477b3f2a50e"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00040.json",
+      "sha256": "2337e721d3e4a447691968ca3176d6f9c484407e6ed674ce80c9cb99670cfc73"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00041.json",
+      "sha256": "93ea297f723bf5367c85aad5094e68beb768e31afc3c13efbfed5b76759d488b"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00042.json",
+      "sha256": "93ea297f723bf5367c85aad5094e68beb768e31afc3c13efbfed5b76759d488b"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00043.json",
+      "sha256": "93ea297f723bf5367c85aad5094e68beb768e31afc3c13efbfed5b76759d488b"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00044.json",
+      "sha256": "93ea297f723bf5367c85aad5094e68beb768e31afc3c13efbfed5b76759d488b"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00045.json",
+      "sha256": "2d34f004ee958bb6f5dc9ee3d04fdd0b3bca1cf671ba20c66decb9a7b6629231"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00046.json",
+      "sha256": "1bd35d837336128b8e42cb53aee9f64747702e9f33996399ba7cb382de415d75"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00047.json",
+      "sha256": "de86534cdd868cb7b227f470e122356f9914633ffcfb9e5693ca8146ef8ff865"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00048.json",
+      "sha256": "de86534cdd868cb7b227f470e122356f9914633ffcfb9e5693ca8146ef8ff865"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00049.json",
+      "sha256": "542600ed9046caca8ddda064912f3a0c2a80a672af0500016640f2b175f7038d"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00050.json",
+      "sha256": "738ad2f488540c098e6e0dfcfa0babf68126f0d508be53e9b20e1bf555b28cd5"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00051.json",
+      "sha256": "00ac29c0a11f77e53de5d23b9baf20faaf5efbe8b1e9dc74f9ab3079c7afe503"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00052.json",
+      "sha256": "00ac29c0a11f77e53de5d23b9baf20faaf5efbe8b1e9dc74f9ab3079c7afe503"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00053.json",
+      "sha256": "6ee62ce5bedb98f241a8e7d5de541488cc4316770f3e813bb4060841de8ea4ff"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00054.json",
+      "sha256": "6ee62ce5bedb98f241a8e7d5de541488cc4316770f3e813bb4060841de8ea4ff"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00055.json",
+      "sha256": "070bcea425af74705ecbca2efbcecb0d6254c1ce43d0aac030efc9d450cdf31d"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00056.json",
+      "sha256": "cec1953ec6f4cb80d3fd430e780158f94d011def8b0edb3b019e5bddc6eb4a0a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00057.json",
+      "sha256": "cec1953ec6f4cb80d3fd430e780158f94d011def8b0edb3b019e5bddc6eb4a0a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00058.json",
+      "sha256": "cec1953ec6f4cb80d3fd430e780158f94d011def8b0edb3b019e5bddc6eb4a0a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00059.json",
+      "sha256": "cec1953ec6f4cb80d3fd430e780158f94d011def8b0edb3b019e5bddc6eb4a0a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00060.json",
+      "sha256": "5fd0cdfd3c5fb385ce01562b99b072f516a0f58cdcf3b7c4060760c5954934ea"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00061.json",
+      "sha256": "3257dee41999aeb6528c2254c4951179b08c0781b4761529bc2ff44584aeb317"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00062.json",
+      "sha256": "aecab9af6e5b869ea736c4172e0826aed52b6ccb5d7368bf6bd75a5181bc991a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00063.json",
+      "sha256": "aecab9af6e5b869ea736c4172e0826aed52b6ccb5d7368bf6bd75a5181bc991a"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00064.json",
+      "sha256": "98c365d0c3a373482cc6d0cbcb0fdb73bb105f3cb09046f4cfd16b8f6c7f314e"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00065.json",
+      "sha256": "001b6952f3e0879f0f5e2d6a5c13ed5e9a18c6d5879b1f4b4016c83d6a518803"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00066.json",
+      "sha256": "061422516e4fd51b904d3f7a2673a2ca0d760f84f7af88d676dba45cad3fd962"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00067.json",
+      "sha256": "0b4a5c4d72601994979aa23f7bc1ca1376a7ecb6568ce5b7e259ad84af2a71ba"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00068.json",
+      "sha256": "845166777a41cf1d61b404d97ee5d9715b407662e224470419b73e7793190dc7"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00069.json",
+      "sha256": "1bc7c2e70f6f197b946ce28277668565443e4d87ca2a0d916a0649379425b352"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00070.json",
+      "sha256": "763f7a008bcb08e09df3cad4252e3ae18f93cfaf101311624eefa0c45e05c10b"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00071.json",
+      "sha256": "fa0a0c84490d72e7dd73cca92aa9e6b7466bb2ada5b8a33392d6184a933a8922"
+    },
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/container-stats-00072.json",
+      "sha256": "aecab9af6e5b869ea736c4172e0826aed52b6ccb5d7368bf6bd75a5181bc991a"
+    }
+  ],
+  "runtime_admission_receipt": null
+}

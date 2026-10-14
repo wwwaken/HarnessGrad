@@ -1286,42 +1286,7 @@
         "scorer-offline-closure",
         "artifact-only-state-export"
       ],
-      "blockers": [
-        {
-          "id": "cached-runtime-admission",
-          "family": "trusted-verifier-runtime",
-          "status": "runtime",
-          "observed": "Observed 2026-10-15 - w-tbrun4: real cached openssl-selfsigned-cert executed with loop, HG_TB_SPLIT=none, rounds=0, trials=1, jobs=1, local qwen3.5-9b-local and HG_EGRESS_PROXY=http://172.17.0.1:17890. Host endpoint completion and both proxy curl probes succeeded. The snapshot verifier wrote reward 0 but no required /logs/verifier/ctrf.json; diagnostic_receipt.json records invalid_trials=1, measured_trials=0, unmeasured_trials=0, score=null. A pre-execution manifest is now hash-bound, with genuine image/resource/snapshot/cleanup observer receipts preserved. A concrete runtime defect blocks the configured proxy: eval/containers/container_state.py:216-217 passes the unconditionally created internal task network to the verifier instead of the declared bridge. A separate no-model control on an internal network reproduced Network is unreachable for both dependency hosts. The bridge control reached PyPI but returned HTTP 403 for the Astral installer via urllib; switching networks alone is not established sufficient. Actual invalid verifier stdout/stderr was not retained, so that exact task bootstrap error remains unknown. No measured zero or successful admission is inferred.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "- Scope: inherited six cached train images"
-            },
-            {
-              "kind": "repository",
-              "path": "docs/terminal-bench-runtime-admission.md",
-              "locator": "The dataset-specific blocker stays open, with its `observed` sharpened."
-            },
-            {
-              "kind": "repository",
-              "path": "docs/enforcement-proof-decision.md",
-              "locator": "Snapshot/cleanup uncertainty alone is not a new"
-            },
-            {
-              "kind": "repository",
-              "path": "reports/w-tbrun3-receipts.md",
-              "locator": "OPEN: no valid verifier score."
-            },
-            {
-              "kind": "repository",
-              "path": "reports/w-tbrun4-receipts.md",
-              "locator": "OPEN: no valid verifier score; required `/logs/verifier/ctrf.json` is absent."
-            }
-          ],
-          "next_action": "Repair the verifier network selection defect at eval/containers/container_state.py:216-217 in a separately authorized code change, preserving the actor model network and the declared verifier network contract. Confirm the canonical proxy and Astral installer from the actual verifier network/client, retain failing scorer streams, then use a fresh authorized one-task diagnostic to obtain CTRF and a valid score with the existing manifest-bound observation receipts. Preserve this invalid run and all earlier attempts. Snapshot/cleanup uncertainty alone remains accepted per docs/enforcement-proof-decision.md. Shared scorer-offline-closure and artifact-only-state-export remain open; no pilot expansion or production authorization is granted."
-        }
-      ],
+      "blockers": [],
       "historical_runs": []
     },
     {

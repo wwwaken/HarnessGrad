@@ -1,0 +1,33 @@
+{
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "trial_id": "openssl-selfsigned-cert:1",
+    "manifest_sha256": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366"
+  },
+  "platform": {
+    "content_sha": "5154b973e19e7caf67afddb8855dd38e19eb66591799d00bdaa28b74b7a765a6",
+    "git_sha": "919e2b9bf82f4040e87e098fd37cab27d2d4d4d8",
+    "dirty": true
+  },
+  "dataset": {
+    "argv": [
+      "git",
+      "-C",
+      "/mnt/20t/xubuqiang/datasets/terminal-bench",
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout": "2fd12b88aafdd04a52c298e3940bcb189f9766d6\n",
+    "stderr": ""
+  },
+  "source_sha256": "54985eac4739288c2fd1d686ae840c16f8fd317bdde0f8fb654e8bcc86df387b",
+  "split_sha256": "362537284993db7da273d45c8041331811fad1ad73f17eddc2c8bc8f97895810",
+  "harness_files_sha256": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+  "harness_manifest_path": "/tmp/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-work/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/workspace/harness.json",
+  "harness_manifest_sha256": "50b2cf63dfcbc937e4a47a04c3bda23240771103ab42c2717bfccfb3cb2a3f80",
+  "model_weights_sha256": null,
+  "scorer_script_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334",
+  "note": "Model weights and transitive dependency closure remain unknown; launch manifest is observer-authored and bound before execution."
+}

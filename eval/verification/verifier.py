@@ -239,6 +239,7 @@ def _check_output_detail(out: str, err: str) -> str:
 def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
                             staging: Path, timeout_s: int, run_id: str,
                             task_id: str, network: str = "none",
+                            declared_network: str = "none",
                             limits: dict | None = None) -> dict:
     if declared_class(verifier) not in ("unknown", "snapshot-service"):
         return record_class({"kind": "command", "passed": False, "score": None,
@@ -246,13 +247,15 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
                             verifier, "unknown")
     verdict = _verify_container_state_inner(
         snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,
-        run_id=run_id, task_id=task_id, network=network, limits=limits)
+        run_id=run_id, task_id=task_id, network=network,
+        declared_network=declared_network, limits=limits)
     return record_class(verdict, verifier, "snapshot-service")
 
 
 def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
                                   staging: Path, timeout_s: int, run_id: str,
                                   task_id: str, network: str = "none",
+                                  declared_network: str = "none",
                                   limits: dict | None = None) -> dict:
     """Steps 5-9: a fresh container from the snapshot, the check's inputs copied in
     afterwards, and the score read from the file the check writes.
@@ -288,6 +291,12 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
                             network=network, extra_mounts=extra_mounts,
                             run_id=run_id or "", task_id=task_id or "")
         created = True
+        # Match the actor's declared-network attachment in
+        # eval/containers/container_state.py:111-112: its internal model network alone
+        # hid declared bridge egress from the verifier. Keep that network, adding bridge
+        # only when declared (allow_internet maps to it in data/datasets/terminal_bench.py:35).
+        if declared_network == "bridge" and network != "bridge":
+            container_mod.network_connect(name, "bridge")
 
         _copy_verifier_inputs(name, spec, staging, task_mount)
 

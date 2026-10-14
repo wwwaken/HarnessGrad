@@ -1,0 +1,106 @@
+{
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "trial_id": "openssl-selfsigned-cert:1",
+    "manifest_sha256": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366"
+  },
+  "driver_returncode": 2,
+  "verifier_verdict": {
+    "kind": "command",
+    "passed": false,
+    "score": 0.0,
+    "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (5 passed 1 failed) | FAILED test_outputs.py::test_python_verification_script: + where 1 = CompletedProcess(args=['python', '/app/check_cert.py'], returncode=1, stdout='', stderr='Traceback (most recent call l... ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^\\nIndexError: list index out of rang | stdout _____________________ test_python_verification_script ________________________\n\n    def test_python_verification_script():\n        \"\"\"Test that the Python verification script exists and works correctly.\"\"\"\n        script_path = \"/app/check_cert.py\"\n        assert os.path.exists(script_path), \"Python verification script does not exist\"\n    \n        process = subprocess.run([\"python\", script_path], capture_output=True, text=True)\n    \n>       assert process.returncode == 0, (\n            f\"Verification script failed with error: {process.stderr}\"\n        )\nE       AssertionError: Verification script failed with error: Traceback (most recent call last):\nE           File \"/app/check_cert.py\", line 63, in <module>\nE             main()\nE             ~~~~^^\nE           File \"/app/check_cert.py\", line 40, in main\nE             end_line = [line for line in output.split('\\n') if 'notAfter' in line.lower()][0]\nE                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^\nE         IndexError: list index out of range\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['python', '/app/check_cert.py'], returncode=1, stdout='', stderr='Traceback (most recent call l...        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^\\nIndexError: list index out of range\\n').returncode\n\n/tests/test_outputs.py:146: AssertionError\n==================================== PASSES ====================================\n=========================== short test summary info ============================\nPASSED ../tests/test_outputs.py::test_directory_structure\nPASSED ../tests/test_outputs.py::test_key_file\nPASSED ../tests/test_outputs.py::test_certificate_file\nPASSED ../tests/test_outputs.py::test_combined_pem_file\nPASSED ../tests/test_outputs.py::test_verification_file\nFAILED ../tests/test_outputs.py::test_python_verification_script - AssertionE...\n========================= 1 failed, 5 passed in 0.29s ========================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 6 packages in 17ms",
+    "tests": {
+      "tests": 6,
+      "passed": 5,
+      "failed": 1,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0,
+      "failed_names": [
+        "test_outputs.py::test_python_verification_script"
+      ]
+    },
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "snapshot-service"
+  },
+  "raw_per_task": {
+    "openssl-selfsigned-cert": 0.0
+  },
+  "invalid": {},
+  "raw_reward_files": {
+    "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa": "0\n"
+  },
+  "ctrf_files": [
+    {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/verifier-ctrf.json-67dbb020f78873084b681fa47cbe1f6e5c96f887ae80fab729aa91bb385e88ef",
+      "sha256": "67dbb020f78873084b681fa47cbe1f6e5c96f887ae80fab729aa91bb385e88ef",
+      "summary": {
+        "tests": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1792008655.9319706,
+        "stop": 1792008656.216884
+      }
+    }
+  ],
+  "coverage": {
+    "eligible_tasks": 1,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "driver_score": null,
+  "outcomes": [
+    {
+      "reason": "policy_enforcement_not_observed",
+      "score": null,
+      "status": "unmeasured",
+      "task_id": "openssl-selfsigned-cert",
+      "trial": 1
+    }
+  ],
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator authorizes one cached openssl-selfsigned-cert diagnostic after the verifier declared-network repair, with HG_TB_SPLIT=none and the documented proxy; existing loop/train CLI is required by unchanged guards. Dataset enforcement observations remain unknown; this requests raw CTRF/scorer evidence only, with no comparable score publication, pilot expansion, or production authorization.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "stage": "diagnostic",
+    "task_id": "openssl-selfsigned-cert"
+  },
+  "observation_receipts": {
+    "resource": {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/resource-observation-receipt.json",
+      "sha256": "727d001ba36ac1996e74ba6768381162f143e6fcb7ddadfca961ec9f37e90f58"
+    },
+    "snapshot": {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/snapshot-observation-receipt.json",
+      "sha256": "5b5be155b64846f94c2c22da165bc8f24edf459ed2534bd703ad3774da1fd03b"
+    },
+    "image": {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/image-observation-receipt.json",
+      "sha256": "20ec12c181cf9fea20b4678082ce8df51dbd7e46b2561c29c79f7b631d57ba47"
+    },
+    "cleanup": {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/cleanup-observation-receipt.json",
+      "sha256": "f401ee1d730f4f1b3dd92be6f835d0e00b3f7404a192f4cd50cc7fbb4fa6f3d1"
+    },
+    "provenance": {
+      "path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/provenance.json",
+      "sha256": "39ab730f99a20b0d5f021c9bab9bee3f5f2179ca836e9e3bd34ae8d2e67f08d4"
+    }
+  },
+  "curve_present": false
+}
