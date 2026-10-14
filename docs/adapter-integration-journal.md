@@ -995,3 +995,34 @@ No adapter/scorer/control, dataset payload, model, network or whole-suite execut
 The original blocker IDs/families/statuses, shared requirements and historical
 records are preserved; only the three requested missing substantive reviews
 close. The three coverage-only entries above remain explicitly pending.
+## Four-dataset measurement coverage review — 2026-10-15 — hg-b3
+
+- Scope: only `/tmp/hg-b3`; ALFWorld `current-runtime-review`, Bird MiniDev
+  `sql-coverage-reconciliation`, DS1000 `host-slice-archive-review`, HotpotQA
+  `schema-timeout-measurement`. Original `observed`/`next_action` text is preserved
+  verbatim in the [unique review](../reports/measurement-coverage-hg-b3-review.md),
+  with file/line evidence and per-dataset closed/open gates.
+- ALFWorld: retain journal-complete `alfworld-h0-10pct-v4`, 9 tasks x3, jobs=1;
+  27 is nominal protocol scope, not an independently checked measured count.
+  Historical identity review closes; `current-runtime-identity` remains runtime.
+- Bird: preserve v4 incomplete and v5's complete label/partial-measurement record.
+  Planned 34x3=102, reported 28/34 measured tasks and 90 verify phases do not
+  supply actual trial/error allocation. SQL failure semantics are reviewed and
+  synthetically checked; original metadata reconciliation remains measurement.
+- DS1000: documented 926/1000 host availability is separate from the 61-task,
+  183-planned-trial pilot. Selected IDs, measured trial coverage and timeout
+  records are absent locally; archive acceptance stays pending, effect=null.
+  A synthetic failing timeout result reproduces why measured=true alone is
+  insufficient for classification. Configured 120/130-second deadlines are limits.
+- HotpotQA: malformed schema is unmeasured/no reward; valid missing/partial support
+  is measured joint EM zero. Synthetic expiration reproduces a timeout detail
+  without an unmeasured marker falling back to zero in aggregation. Source review
+  closes; `timeout-aggregation-admission` remains code-solvable. The user-stopped
+  94/1476 protocol remains incomplete, with no inferred unique-task coverage.
+- Preserved: all prior journal sections, receipts, pinned historical records,
+  null effects/unknown run IDs, and all eight shared gates. External citations
+  were not opened; no whole-suite, model, H0, endpoint or benchmark execution.
+- Validation: **68 focused tests passed**, no failures/skips; checker valid for
+  28 datasets, 8 shared blockers and 11 unchanged historical records, production
+  unauthorized. Commands and results are recorded in the unique review; no
+  whole-suite tests were run.

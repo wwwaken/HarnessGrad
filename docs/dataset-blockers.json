@@ -181,18 +181,28 @@
       ],
       "blockers": [
         {
-          "id": "current-runtime-review",
-          "family": "measurement-coverage",
-          "status": "measurement",
-          "observed": "The journal reports a complete historical 9-task/3-trial archive; no fresh current-runtime receipt was inspected.",
+          "id": "current-runtime-identity",
+          "family": "trusted-verifier-runtime",
+          "status": "runtime",
+          "observed": "Historical identity source review is closed: retain alfworld-h0-10pct-v4 as journal-complete, 9 platform train-side tasks x3, jobs=1 (27 planned task-trials). Raw trial/provenance receipts are not in the repository, so measured coverage is not independently recertified. The 134-task valid_unseen pool uses a platform hash split; 30 actions and documented resource defaults are limits, not current runtime results. No current selected control/runtime receipt is established.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## ALFWorld — embodied runtime"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/measurement-coverage-hg-b3-review.md",
+              "locator": "## ALFWorld: historical identity review closed; current runtime remains open"
+            },
+            {
+              "kind": "repository",
+              "path": "data/datasets/alfworld/verify/check.py",
+              "locator": "could not build or replay the environment"
             }
           ],
-          "next_action": "Retain the completed historical generation; review its identity separately from current runtime readiness."
+          "next_action": "Establish current selected oracle/noop, scorer/runtime identity, effective limits and cleanup evidence independently of the completed historical generation and all shared gates. Historical comparison requires original trial/provenance receipts. Do not rerun or overwrite the completed generation."
         }
       ],
       "historical_runs": []
@@ -366,15 +376,25 @@
           "id": "sql-coverage-reconciliation",
           "family": "measurement-coverage",
           "status": "measurement",
-          "observed": "V5 is historically labeled complete, but only 28/34 tasks were measured; v4 remains incomplete.",
+          "observed": "Source review establishes v5's historical complete label is limited to reported 28/34 measured tasks, 90 verify phases, versus 34x3=102 planned task-trials; v4 remains incomplete. Verify phases do not establish measured trial counts, six task gaps are not zeros, and the reported 0.3214285714 cannot be denominator-reconstructed without the missing original metadata. Synthetic SQL cases distinguish gold/schema failures (unmeasured) from prediction/schema failures (measured EX zero); they do not classify historical failures.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## Bird MiniDev — SQL measurement"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/measurement-coverage-hg-b3-review.md",
+              "locator": "## Bird MiniDev: label/semantics review closed; metadata reconciliation open"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_measurement_coverage_hg_b3.py",
+              "locator": "def test_bird_schema_failure_depends_on_which_query_failed"
             }
           ],
-          "next_action": "Reconcile task/trial coverage and SQL engine/schema errors from metadata before comparison; retain both historical labels and limits."
+          "next_action": "Keep this measurement gate open until original selected-ID/phase/trial/error metadata binds the 90 phases to actual measurements, invalid/unmeasured counts, SQLite/schema/scorer identity and the score denominator. Preserve v4 incomplete and v5 partial-measurement/effect=null, including the historical complete label; do not infer 90 or 84 measured trials or compare full-coverage effects."
         }
       ],
       "historical_runs": [
@@ -528,15 +548,25 @@
           "id": "host-slice-archive-review",
           "family": "measurement-coverage",
           "status": "measurement",
-          "observed": "The 61-task pilot covers a 926/1000 host slice; final archive and timeout classification are pending review.",
+          "observed": "Source review separates documented 926/1000 host availability (74 exclusions) from 61 selected platform train-side tasks x3=183 planned task-trials; actual measured coverage, selected IDs and timeout counts are unavailable in repository receipts. The reported 0.2076502732 remains unaccepted and the archive unappended. The 120/130-second checker values are configured limits; a synthetic serialized timeout result still produces measured=true/reward=0, so that flag cannot replace historical timeout classification.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## DS1000 — host slice and timeout evidence"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/measurement-coverage-hg-b3-review.md",
+              "locator": "## DS1000: host-pool interpretation closed; archive acceptance open"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_measurement_coverage_hg_b3.py",
+              "locator": "def test_ds1000_timeout_result_needs_classification_beyond_measured_flag"
             }
           ],
-          "next_action": "Review selected-ID/trial/timeout metadata and pool coverage before accepting any archive effect."
+          "next_action": "Keep archive acceptance blocked pending original selected-ID/split/host-pool provenance, original trial outcomes and timeout/error/lifecycle records; reconcile measured, invalid and unmeasured counts before considering append or comparison. Preserve ds1000-v4-pending-review with effect=null. Neither host oracle-sweep coverage nor timeout limits certify the pilot's 183 planned measurements."
         }
       ],
       "historical_runs": [
@@ -733,18 +763,28 @@
       ],
       "blockers": [
         {
-          "id": "schema-timeout-measurement",
-          "family": "measurement-coverage",
-          "status": "measurement",
-          "observed": "User-stopped v4 measured only 94/1476 task-trials; timeout and malformed evidence are distinct from ordinary wrong answers.",
+          "id": "timeout-aggregation-admission",
+          "family": "trusted-verifier-runtime",
+          "status": "code-solvable",
+          "observed": "Schema/timeout source review is closed: synthetic malformed JSON/evidence is unmeasured with no reward; valid missing/partial support is measured joint EM zero. Synthetic verifier expiration exposes a remaining aggregation gap: timeout detail without unmeasured defaults to zero. Historical user-stopped v4 remains incomplete/effect=null: 492x3=1476 planned, 94 reported completed/measured task-trials, 1382 uncertified; unique-task/trial/error coverage is not independently verified. The 3600-second verifier limit and historical 60-minute note are not measured timeout counts.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## HotpotQA — structured evidence and time budget"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/measurement-coverage-hg-b3-review.md",
+              "locator": "## HotpotQA: schema/timeout review closed; timeout aggregation still blocked"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_measurement_coverage_hg_b3.py",
+              "locator": "def test_timeout_detail_alone_does_not_close_aggregation_gate"
             }
           ],
-          "next_action": "Review repaired schema and timeout classification against synthetic evidence, keeping the historical full-size protocol incomplete."
+          "next_action": "Close the demonstrated timeout outcome/persistence/aggregation gap with focused synthetic validation before current selected scorer/control admission, independently of shared runtime gates. Preserve the old full-size protocol as incomplete, unknown run ID and effect=null; do not resume or rerun it. Historical comparison requires original trial/error/provenance receipts; any separately authorized future diagnostic uses a fresh ID under the current staged policy."
         }
       ],
       "historical_runs": [

@@ -91,6 +91,18 @@ checker. Historical scores and receipt outcomes remain reported claims; this
 review did not authenticate the external artifacts or measure any benchmark.
 The registry never authorizes production execution.
 
+The [hg-b3 four-dataset coverage review](../reports/measurement-coverage-hg-b3-review.md)
+preserves ALFWorld's journal-complete generation and closes its historical identity
+review, leaving `current-runtime-identity` open. Bird's 28/34 measured-task claim
+and 90 verify phases do not reconcile its planned 102 trials; its
+`sql-coverage-reconciliation` gate remains open for original metadata. DS1000's
+926/1000 host pool is distinct from 61 selected tasks and 183 planned trials;
+`host-slice-archive-review` remains open and its effect unaccepted. HotpotQA's
+synthetic schema review closes, but `timeout-aggregation-admission` records a
+reproduced timeout-to-zero aggregation gap. Its stopped 94/1476 historical
+protocol stays incomplete. These source-review closures do not certify missing
+receipts, and all shared gates remain active.
+
 TriviaQA's original evaluator acquisition gate is closed at source/test level by
 the pinned code-only fixture and the [Codex 215 review](../reports/triviaqa-review-codex215-report.md).
 The active `upstream-evaluator-acquisition` entry is retired. Normalization and
