@@ -364,7 +364,7 @@
           "id": "trusted-stepwise-transport",
           "family": "official-scorer-execution",
           "status": "runtime",
-          "observed": "The trusted stepwise transport is now wired: `run_one` starts a live Unix relay when a task declares `\"interaction\": \"chessbench_puzzles.stepwise.v1\"`, the controller keeps the reference line, and the protocol is recorded per point (`verdict.protocol`, curve `evaluation_protocols[task_id]`) with mixed protocols refused. What is NOT established is a real interactive run: no harness has been driven through the stepwise loop against the live controller, so model-driven official puzzle accuracy remains unmeasured and the offline strict-replay protocol is still the only one with evidence behind it.",
+          "observed": "The trusted stepwise relay is wired and a fresh authorized released-task attempt now has live execution evidence: chessbench_puzzles/test/1287 received its initial board under chessbench_puzzles.stepwise.v1, but the actor disconnected without a move. The controller receipt records status=incomplete, measured=false, reason=answer_receive_failed, submissions=0, scorer_isolation_class=in-process and successful relay cleanup; the staged receipt has score=null, invalid_trials=0 and unmeasured_trials=1. No delivered terminal exchange or model-driven interactive puzzle measurement exists. The offline strict-replay protocol remains the only measured path; no mixed-protocol comparison or curve point was produced.",
           "evidence": [
             {
               "kind": "repository",
@@ -395,6 +395,11 @@
               "kind": "repository",
               "path": "eval/run/runner.py",
               "locator": "from eval.run import chess_stepwise"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-chess-receipts.md",
+              "locator": "## Released-task stepwise diagnostic — incomplete"
             }
           ],
           "next_action": "Run one authorized gated interactive chessbench task through the live stepwise relay and record its receipt, so the stepwise protocol has execution evidence rather than only wiring. Keep the offline-only claim until then: a wired transport is not a measurement. Reject any point that mixes the stepwise and strict-replay protocols in one comparison."

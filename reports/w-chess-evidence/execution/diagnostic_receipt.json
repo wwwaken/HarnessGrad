@@ -1,0 +1,87 @@
+{
+  "cleanup": {
+    "detail": "No verified lifecycle admission receipt; not attested by this observer.",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "context": {
+    "comparability_notes": [
+      "Only chessbench_puzzles.stepwise.v1; no offline strict-replay evaluation or mixed point.",
+      "Hash-train side selected before payload decoding; released CSV test slice has no official study split. No method tuning or improvement.",
+      "Raw controller measurement is distinct from policy publication. Unknown model-weight digest, transitive dependency closure, CPU/memory enforcement and spend budget; no comparison, expansion or production authorization."
+    ],
+    "dataset": "chessbench_puzzles",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "gates": {
+      "detail": "Explicit operator authorization for one diagnostic; shared scorer/export gates and backend observations remain unresolved.",
+      "receipt_sha256": null,
+      "status": "unknown"
+    },
+    "hashes": {
+      "harness": "c5cef402f8e5d6250d4b3ed1959713c6594af18f4f6706ad83f152ef3b9c0579",
+      "manifest": "f515282865b2efda8c8f7a38dd0bf195a196db90106aeff6f9dda69e89570206",
+      "model": null,
+      "source": "099d54e681a07b9e82b4462aaf5436a6e833edc6f56b92ea7c2d2413f7efbe48",
+      "split": "26781ee746b22e62e743d7c530778c0e3615027ec75f55ed337634267ff0b25f"
+    },
+    "limits": {
+      "budget": null,
+      "resource": {
+        "agent_timeout_s": 300,
+        "verifier_timeout_s": 3600
+      }
+    },
+    "metric": {
+      "name": "ChessBench puzzle accuracy",
+      "scorer_sha256": "61165a5351b9068ebdac5e66f34cba1b6ed3c658ee1198ebdaf789be4e11b261"
+    },
+    "side": "train"
+  },
+  "coverage": {
+    "eligible_tasks": 6615,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "eligible_task_ids_sha256": "190383f45c4510dc6f1d790b7c11467904004e61c1eef177c4b23d68ddf92ef8",
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator explicitly authorizes one gated released ChessBench task through the live stepwise relay using the existing loop harness and local endpoint to obtain controller execution evidence. Dataset enforcement and shared scorer/export gates remain unknown; raw receipts only, no comparable score publication, strict-replay comparison, method tuning, expansion or production authorization.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-chess-stepwise-20261014T202226Z-11489149",
+    "stage": "diagnostic",
+    "task_id": "chessbench_puzzles/test/1287"
+  },
+  "jobs": 1,
+  "lifecycle": null,
+  "outcomes": [
+    {
+      "reason": "answer_receive_failed",
+      "score": null,
+      "status": "unmeasured",
+      "task_id": "chessbench_puzzles/test/1287",
+      "trial": 1
+    }
+  ],
+  "run_id": "w-chess-stepwise-20261014T202226Z-11489149",
+  "schema": "harnessgrad.diagnostic-receipt.v2",
+  "score": null,
+  "selected_task_ids": [
+    "chessbench_puzzles/test/1287"
+  ],
+  "snapshot": {
+    "detail": "No verified lifecycle admission receipt; not attested by this observer.",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "stage": "diagnostic",
+  "trials": 1
+}

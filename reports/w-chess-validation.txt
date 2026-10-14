@@ -1,0 +1,48 @@
+w-chess validation: preserved raw checker and focused-test output.
+
+$ python3 -m pytest -q tests/quality/test_chessbench_stepwise_runner.py tests/quality/test_chessbench_selected_control.py tests/quality/test_chessbench_puzzles_strict_replay.py tests/quality/test_chessbench_puzzles_official_scorer.py tests/quality/test_unobserved_diagnostic_c2.py tests/quality/test_diagnostic_policy.py --basetemp=/tmp/harnessgrad-pytest-w-chess-focused
+Artifact: reports/w-chess-evidence/focused-tests.txt
+........................................................................ [ 38%]
+........................................................................ [ 76%]
+............................................                             [100%]
+188 passed in 35.27s
+
+$ python3 tools/check_dataset_blockers.py
+Artifact: reports/w-chess-evidence/checker-final.json
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-chess-registry
+Artifact: reports/w-chess-evidence/registry-tests.txt
+......................................................                   [100%]
+54 passed in 2.80s
+
+$ python3 reports/w-chess-evidence/collect.py
+Artifact: reports/w-chess-evidence/integrity-audit.json
+{
+  "original_copy_archive_files_checked": 19,
+  "all_copies_and_archive_match": true,
+  "policy_manifest_matches": true,
+  "production_diff_paths": []
+}
+
+Independent reread: original/copy/archive bytes and digests match; diagnostic_policy.validate_receipt passed; raw unmeasured/class/coverage/cleanup assertions passed.
+
+$ git diff --check
+No whitespace errors in tracked edits. Raw pytest output remains verbatim.
+
+Artifact: reports/w-chess-evidence/report-audit.json
+{
+  "report": "reports/w-chess-receipts.md",
+  "all_quoted_json_matches_raw_artifacts": true,
+  "command_matches_invocation": true,
+  "archive_hash_verified": true,
+  "journal_is_append_only": true,
+  "staged_scope_limited": true,
+  "source_artifacts": [
+    "reports/w-chess-evidence/execution/task-result.json",
+    "reports/w-chess-evidence/execution/diagnostic_receipt.json",
+    "reports/w-chess-evidence/execution/identity.json",
+    "reports/w-chess-evidence/execution/launch/selection.json",
+    "reports/w-chess-evidence/cleanup-observation.json"
+  ]
+}

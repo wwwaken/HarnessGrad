@@ -1,0 +1,12 @@
+{
+  "pool_tasks": 10000,
+  "eligible_tasks": 6615,
+  "eligible_task_ids_sha256": "190383f45c4510dc6f1d790b7c11467904004e61c1eef177c4b23d68ddf92ef8",
+  "selected_task_ids": [
+    "chessbench_puzzles/test/1287"
+  ],
+  "split_rule": "data.scaffolds.qa.base.is_eval: sha256(task_id)[0] % 3 == 0",
+  "split_source": "hash",
+  "official_payload_split": "test",
+  "split_sha256": "26781ee746b22e62e743d7c530778c0e3615027ec75f55ed337634267ff0b25f"
+}

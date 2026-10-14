@@ -1,0 +1,17 @@
+Read-only independent review of staged w-chess changes.
+No substantive findings.
+
+- The launcher follows the documented trusted caller, preserves run_one gates,
+  and scopes authorization to one fresh task/run/trial/job at round zero.
+- All report JSON excerpts match on-disk artifacts. The receipt names
+  chessbench_puzzles.stepwise.v1, contains only the initial observation, and records
+  submissions=0, answer_receive_failed, measured=false, and
+  scorer_isolation_class=in-process. The policy score is null; invalid_trials=0,
+  unmeasured_trials=1.
+- Relay cleanup flags are all true; policy lifecycle remains explicitly unknown.
+- Original, copied, and archived bytes match the artifact inventory.
+- Registry changes affect only the target blocker's observed text and added
+  evidence. Status remains runtime; next_action, interruption-closure, and
+  historical registry records are unchanged.
+
+Safe to retain as an incomplete execution receipt. The blocker correctly remains open.
