@@ -167,8 +167,20 @@ def validate(document: dict, *, root: Path = ROOT) -> dict:
         _require(row["exercises"] == list(taxonomy["EXERCISES"][name]), f"{name}: exercise drift")
         _unique_strings(row["shared_blockers"], f"{name}.shared_blockers")
         _require(set(row["shared_blockers"]) <= shared, f"{name}: unknown shared blocker")
-        _require(isinstance(row["blockers"], list) and bool(row["blockers"]),
-                 f"{name}: explicit blocker/review gap required")
+        # An empty `blockers` list is allowed, and is a statement rather than a blank: it
+        # says every requirement this dataset carried was reviewed and either met or
+        # withdrawn by decision. `_fields` above already requires the key to be present, so
+        # an accidentally-omitted list is still caught; what the old `bool(...)` added was
+        # only the inability to express "cleared".
+        #
+        # This is deliberately NOT the same move as adding a value to `STATUSES` so a
+        # finished blocker can stay parked in the registry with a status meaning "done".
+        # That keeps a closed requirement counted as live and widens a closed vocabulary;
+        # this removes a non-emptiness check so closure has somewhere to land. A dataset
+        # cleared this way must have its decision recorded in a checked-in document, and
+        # `scienceworld` is the case: see `docs/enforcement-proof-decision.md`.
+        _require(isinstance(row["blockers"], list),
+                 f"{name}: blockers must be a list")
         ids = set()
         for blocker in row["blockers"]:
             _blocker(blocker, root, name)

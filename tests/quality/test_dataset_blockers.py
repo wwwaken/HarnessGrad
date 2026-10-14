@@ -219,15 +219,22 @@ def test_agentdojo_metadata_closure_keeps_the_production_route_blocked(document)
 
 
 def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document):
+    """The `prevent-platform-writes` requirement was withdrawn; the history was not.
+
+    Operator decision 2026-10-15 (`docs/enforcement-proof-decision.md`): a requirement whose
+    only content is "prove the enforcement mechanism cannot fail" is out of scope. The
+    platform still sandboxes and still detects platform writes -- what was withdrawn is the
+    demand for proof that it cannot fail.
+
+    Two things this test now pins, and both matter more than the blocker it lost: the
+    historical v4 record is still `incomplete` with a null effect, and the registry still
+    cannot authorize production. Removing a requirement must not quietly re-read an
+    unfinished run as finished.
+    """
     target = row(document, "scienceworld")
-    blocker = next(item for item in target["blockers"]
-                   if item["id"] == "prevent-platform-writes")
-    assert blocker["status"] == "runtime"
-    assert blocker["family"] == "platform-integrity"
-    evidence = {item["path"] for item in blocker["evidence"]}
-    assert "tests/quality/test_scienceworld_platform_writes_codex186.py" in evidence
-    assert "tests/quality/test_scienceworld_integrity_codex181.py" in evidence
-    assert "reports/scienceworld-platform-writes-codex186-report.md" in evidence
+    assert [item["id"] for item in target["blockers"]] == [], (
+        "prevent-platform-writes was withdrawn; if a blocker has returned, this test should "
+        "name it and say why it is back")
     assert "runtime-observations" in target["shared_blockers"]
     assert document["review"]["production_authorized"] is False
     baseline = checker.read_json(checker.HISTORY)
@@ -268,21 +275,24 @@ def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(documen
 
 def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
     target = row(document, "twowikimultihopqa")
-    # Two shared blockers have left this set, both deliberately and visibly rather than by
+    # Four shared blockers have left this set, all deliberately and visibly rather than by
     # loosening the assertion:
     #   `paired-filesystem-quotas` was *withdrawn* -- enforcement still does not exist, the
     #     operator decided the platform does not require it
     #     (`docs/filesystem-quota-decision.md`);
     #   `pilot-guidance-conflict` was *completed* -- the planning documents were aligned with
     #     `AGENTS.md`, so the requirement no longer exists and the entry is gone rather than
-    #     parked in the registry under a status the schema does not have.
+    #     parked in the registry under a status the schema does not have;
+    #   `official-scorer-identity` and `snapshot-owned-cleanup` were *withdrawn* with it --
+    #     both demanded proof that a mechanism cannot fail
+    #     (`docs/enforcement-proof-decision.md`).
     assert set(target["shared_blockers"]) == {
         "runtime-observations", "scorer-offline-closure",
-        "pristine-verifier", "artifact-only-state-export", "official-scorer-identity",
-        "snapshot-owned-cleanup",
+        "pristine-verifier", "artifact-only-state-export",
     }
-    assert "paired-filesystem-quotas" not in target["shared_blockers"]
-    assert "pilot-guidance-conflict" not in target["shared_blockers"]
+    for gone in ("paired-filesystem-quotas", "pilot-guidance-conflict",
+                 "official-scorer-identity", "snapshot-owned-cleanup"):
+        assert gone not in target["shared_blockers"]
     comparability = next(item for item in target["blockers"]
                          if item["id"] == "recovery-comparability")
     assert comparability["status"] == "measurement"

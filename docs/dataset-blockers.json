@@ -91,34 +91,6 @@
         }
       ],
       "next_action": "Review allowlisted data-only export integration and bounded synthetic export controls."
-    },
-    {
-      "id": "official-scorer-identity",
-      "family": "official-scorer-execution",
-      "status": "measurement",
-      "observed": "Source call sites do not prove fresh official evaluator execution or release/runtime identity.",
-      "evidence": [
-        {
-          "kind": "repository",
-          "path": "reports/scorer-closure-codex170-report.md",
-          "locator": "Official scorer invocation"
-        }
-      ],
-      "next_action": "Document the metric identity and required independent source/runtime evidence for each adapter; retain unmeasured status."
-    },
-    {
-      "id": "snapshot-owned-cleanup",
-      "family": "snapshot-cleanup",
-      "status": "runtime",
-      "observed": "Capacity preflight and best-effort removal do not prove bounded snapshots, exact owned absence or atomic lease closure.",
-      "evidence": [
-        {
-          "kind": "repository",
-          "path": "reports/runner-admission-codex-158-report.md",
-          "locator": "snapshot"
-        }
-      ],
-      "next_action": "Review snapshot/cleanup observation and quarantine integration; preserve uncertainty as unmeasured."
     }
   ],
   "datasets": [
@@ -180,9 +152,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -252,9 +222,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -310,9 +278,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -374,9 +340,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -457,9 +421,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -569,9 +531,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -632,9 +592,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -677,9 +635,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -765,9 +721,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -803,9 +757,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -869,9 +821,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -903,9 +853,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -950,9 +898,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1015,9 +961,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1059,9 +1003,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1106,56 +1048,9 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
-      "blockers": [
-        {
-          "id": "prevent-platform-writes",
-          "family": "platform-integrity",
-          "status": "runtime",
-          "observed": "Code-solvable prevention review is closed: existing native sandbox call sites hide protected platform paths and restore required source read-only before execution; synthetic mount/refusal contracts pass. Commit 34a472a preserves fatal mismatch detection with unknown writer attribution. Trusted live enforcement remains unverified; V4 remains incomplete with effect=null.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "docs/adapter-integration-journal.md",
-              "locator": "## ScienceWorld — prevention source review — 2026-10-14 — Codex 186"
-            },
-            {
-              "kind": "repository",
-              "path": "eval/containers/sandbox.py",
-              "locator": "def command("
-            },
-            {
-              "kind": "repository",
-              "path": "eval/run/runner.py",
-              "locator": "return sandbox_mod.run(argv, platform=PLATFORM_ROOT,"
-            },
-            {
-              "kind": "repository",
-              "path": "harnessgrad/methods.py",
-              "locator": "def _method_sandbox_plan("
-            },
-            {
-              "kind": "repository",
-              "path": "tests/quality/test_scienceworld_platform_writes_codex186.py",
-              "locator": "def test_native_plan_hides_platform_and_freezes_source("
-            },
-            {
-              "kind": "repository",
-              "path": "tests/quality/test_scienceworld_integrity_codex181.py",
-              "locator": "def test_mismatches_stop_without_writer_or_tracking_claim("
-            },
-            {
-              "kind": "repository",
-              "path": "reports/scienceworld-platform-writes-codex186-report.md",
-              "locator": "Code-solvable prevention review is closed"
-            }
-          ],
-          "next_action": "Independently establish trusted effective mount enforcement and immutable platform provenance for the intended runtime; retain all shared admission gates. Synthetic closure does not authorize production/H0 or an unsandboxed route. Preserve V4 and its diagnostic-only mean; any future authorized diagnostic requires a fresh run ID and the staged AGENTS.md policy."
-        }
-      ],
+      "blockers": [],
       "historical_runs": [
         {
           "record_id": "scienceworld-v4-incomplete",
@@ -1211,9 +1106,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1257,9 +1150,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1306,9 +1197,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1380,9 +1269,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1437,9 +1324,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1475,9 +1360,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
@@ -1528,9 +1411,7 @@
         "runtime-observations",
         "scorer-offline-closure",
         "pristine-verifier",
-        "artifact-only-state-export",
-        "official-scorer-identity",
-        "snapshot-owned-cleanup"
+        "artifact-only-state-export"
       ],
       "blockers": [
         {
