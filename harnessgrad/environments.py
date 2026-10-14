@@ -130,7 +130,9 @@ def _env_record(envs: dict, task_ids) -> dict:
     services = sorted(
         ({"name": svc["name"], "image_digest": svc.get("image_digest"),
           **({"command": list(svc["command"])} if "command" in svc else {}),
-          **({"entrypoint": svc["entrypoint"]} if "entrypoint" in svc else {})}
+          **({"entrypoint": svc["entrypoint"]} if "entrypoint" in svc else {}),
+          **({"limits": container.limits_from(svc)}
+             if "cpus" in svc or "memory_mb" in svc else {})}
          for svc in (first.get("services") or [])),
         key=lambda s: s["name"])
     # Read from the platform's own environment, the same way `HARNESSGRAD_WORK_ROOT`

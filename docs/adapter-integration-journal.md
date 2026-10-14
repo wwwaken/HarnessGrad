@@ -2801,3 +2801,25 @@ isolated worktree; parent review/merge remains separate.
   production pristine path and w-appworld ran one archived task with a mock/local actor, so no
   model endpoint call is claimed and no utilisation figure is given beyond the sampled 0 %.
   Historical runs, frozen receipts and archives were untouched; no existing run id was resumed.
+
+### 2026-10-15 AppWorld service resource custody - w-caps
+
+- Traced all three AppWorld roles and the direct service Docker launcher from baseline
+  `3616713`. Actor/verifier mount routes use container defaults: 2 CPU, 4 GiB,
+  1024 PIDs, read-only rootfs and 512 MiB `/tmp` tmpfs. AppWorld's declared ENV
+  CPU/memory values match those defaults; that mount route does not forward ENV
+  resource overrides. The service had no resource declaration, inheritance or
+  resource flags; the schema rejected such fields. No deliberate exemption was found.
+- Added optional validated service `cpus`/`memory_mb` plumbing, Docker flags and
+  effective-envelope metadata. AppWorld explicitly declares 2 CPU / 4096 MiB and
+  receives the helper's fixed 1024 PID cap. Services without declarations keep
+  their existing unset behavior. No scoring or admission logic changed.
+- `reports/w-caps-resource-custody.md` records source lines, platform/fixture
+  conventions, other limits and archived raw Docker/cgroup observations. The old
+  service's `NanoCpus=0`, `Memory=0`, `PidsLimit=null`, `cpu.max=max 100000`,
+  `memory.max=max`, `pids.max=308691` are historical facts; no post-change live
+  enforcement is claimed. No benchmark, model, GPU, endpoint or container was run.
+- Focused validation: 104 passed, 1 live Docker test deselected. Commands/output
+  are retained in `reports/w-caps-validation.txt`. Only the shared scorer blocker's
+  observations/evidence are sharpened; both shared blockers and AppWorld's
+  `successful-task-evidence` remain open. Historical runs/receipts/archives are untouched.

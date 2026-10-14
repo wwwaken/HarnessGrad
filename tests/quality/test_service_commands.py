@@ -68,6 +68,50 @@ def test_omission_preserves_existing_normalized_and_record_shapes():
         {"name": "api", "image_digest": None}]
 
 
+@pytest.mark.parametrize("resources, expected", [
+    ({}, None),
+    ({"cpus": 1.5}, {"cpus": 1.5, "memory": "4096m", "pids": 1024}),
+    ({"memory_mb": 256}, {"cpus": 2, "memory": "256m", "pids": 1024}),
+    ({"cpus": 3, "memory_mb": 512}, {"cpus": 3, "memory": "512m", "pids": 1024}),
+])
+def test_service_resources_reach_launch_and_record(tmp_path, monkeypatch, resources, expected):
+    spec = _env(_service(**resources))
+    # Task caps are deliberately different: they must not leak into service caps.
+    spec.update(cpus=8, memory_mb=8192)
+    registry._check_env(spec, "t", "ds")
+    resolved, problem = _resolve_envs({"t": registry._normalize_env(spec)})
+    assert problem is None
+    recorded = _env_record(resolved, ["t"])["services"][0]
+    assert recorded.get("limits") == expected
+    calls = []
+
+    def docker(*args, **kwargs):
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 0, "cid\n" if args[0] == "run" else "", "")
+
+    monkeypatch.setattr(container, "docker", docker)
+    running = services.start(resolved["t"]["services"], recordings_root=tmp_path,
+                             run_id="caps", task_id="t", run_seed="0")
+    cmd = next(call for call in calls if call[0] == "run")
+    for flag, key in (("--cpus", "cpus"), ("--memory", "memory"), ("--pids-limit", "pids")):
+        if expected is None:
+            assert flag not in cmd
+        else:
+            assert cmd.count(flag) == 1
+            assert cmd.index(flag) < cmd.index(PIN)
+            assert cmd[cmd.index(flag) + 1] == str(expected[key])
+    assert running.stop() == []
+
+
+@pytest.mark.parametrize("field, bad", [
+    (field, bad) for field in ("cpus", "memory_mb")
+    for bad in (None, True, 0, -1, "2", float("nan"), float("inf"))
+] + [("cpus", 0.5), ("memory_mb", 32)])
+def test_invalid_service_resources_are_refused(field, bad):
+    with pytest.raises(ValueError, match=field):
+        registry._check_env(_env(_service(**{field: bad})), "t", "ds")
+
+
 @pytest.mark.parametrize("overrides", [{}, {"command": ["/server", "--flag", "a b"]},
                                          {"entrypoint": "/server"},
                                          {"entrypoint": "/server", "command": ["--flag"]}])
@@ -129,6 +173,8 @@ def test_appworld_declares_absolute_launcher_without_reading_task_pool():
     svc = registry._normalize_env(spec)["services"][0]
     assert svc["command"] == ["/usr/local/bin/appworld-server"]
     assert svc["record"] is True and spec["network"] == "services"
+    assert (svc["cpus"], svc["memory_mb"]) == (spec["cpus"], spec["memory_mb"]) == (2, 4096)
+    assert container.limits_from(svc) == container.limits_from(registry.ENV_DEFAULTS)
 
 
 def test_real_docker_exec_overrides_record_and_keep_invoking_owner(tmp_path):

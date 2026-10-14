@@ -640,6 +640,11 @@ is a `command`-shaped check run **inside the service container**. Optional servi
 These use Docker exec semantics, without shell parsing. Omitted fields preserve the
 image defaults; an entrypoint override alone follows Docker's rule of clearing CMD.
 Launch overrides are carried through normalization and recorded in `env.services`.
+Optional service `cpus` (>= 1) and `memory_mb` (>= 64) opt into a separate
+per-container resource envelope. Declaring either uses the container defaults for
+the other (2 CPUs / 4096 MiB) and fixes the PID cap at 1024; the effective envelope
+is recorded as `env.services[].limits`. Without either field, the platform passes
+no service CPU/memory/PID flags. Task environment limits do not cover sidecars.
 `record`, `needs_seed` and `needs_model` are declarations, and each one has a consequence
 below. Every service image is
 pinned to a digest by the same rule as the task image (§2.5.4) and for the same reason.

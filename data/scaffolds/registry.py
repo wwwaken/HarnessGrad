@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import importlib
 import json
+import math
 import re
 from pathlib import Path
 
@@ -279,7 +280,7 @@ ENV_DEFAULTS = {"cpus": 2, "memory_mb": 4096,
 #: A service's fields (INTERFACE.md §2.5.7). Every one has a consequence in
 #: `eval/service/services.py`; none is decoration.
 SERVICE_FIELDS = ("name", "image", "port", "health", "record", "needs_seed",
-                  "needs_model", "command", "entrypoint")
+                  "needs_model", "command", "entrypoint", "cpus", "memory_mb")
 
 #: A service name becomes a hostname on the task's internal network *and* a path
 #: component under `/recordings`, so it is restricted to a DNS label. Refused rather
@@ -456,6 +457,15 @@ def _check_service(svc, tid: str, name: str) -> None:
             f"{where} has unknown field(s) {sorted(unknown)}; known fields are "
             f"{list(SERVICE_FIELDS)}")
 
+    for field, minimum in (("cpus", 1), ("memory_mb", 64)):
+        if field in svc:
+            value = svc[field]
+            if isinstance(value, bool) or not isinstance(value, (int, float)) \
+                    or not math.isfinite(value) or value < minimum:
+                raise ValueError(
+                    f"{where}: service `{field}` must be a number >= {minimum}, "
+                    f"got {value!r}")
+
     svc_name = svc.get("name")
     if not isinstance(svc_name, str) or not SERVICE_NAME_RE.match(svc_name):
         raise ValueError(
@@ -542,6 +552,7 @@ def _normalize_env(spec: dict) -> dict:
             "needs_model": svc.get("needs_model", False),
             **({"command": list(svc["command"])} if "command" in svc else {}),
             **({"entrypoint": svc["entrypoint"]} if "entrypoint" in svc else {}),
+            **{field: svc[field] for field in ("cpus", "memory_mb") if field in svc},
         })
     normalized = {"kind": "exec",
             "image": spec["image"],

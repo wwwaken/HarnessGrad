@@ -393,6 +393,14 @@ def start(services: list[dict], *, recordings_root: Path, run_id: str,
                    "--label", f"harnessgrad.run={run_id}",
                    "--label", f"harnessgrad.task={task_id}",
                    "--label", f"harnessgrad.service={name}"]
+            # Service resources are opt-in; task ENV caps do not cover sidecars.
+            # Reuse the container envelope (including its fixed PID cap) only when
+            # the service declares resources, preserving existing uncapped services.
+            if "cpus" in svc or "memory_mb" in svc:
+                limits = container_mod.limits_from(svc)
+                cmd += ["--cpus", str(limits["cpus"]),
+                        "--memory", limits["memory"],
+                        "--pids-limit", str(limits["pids"])]
             if record_host is not None:
                 cmd += ["--mount",
                         f"type=bind,src={record_host},dst={RECORDINGS_ROOT}/{name}"]
