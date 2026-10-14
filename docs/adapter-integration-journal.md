@@ -4,6 +4,43 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+## SpreadsheetBench QA submission provisioning — 2026-10-14 — S3
+
+- Scope: isolated `/tmp/hg-s3`; only the requested SpreadsheetBench oracle control and one new focused regression file. No model or GPU execution.
+- Cause: `data/spreadsheetbench.py::_setup` materialized `qa/bin/qa` without the module it imports, `qa/prediction.py`, so the submission CLI exited 1 with `ModuleNotFoundError: No module named 'prediction'`. `control.py::solve` ran it with `capture_output=True`, so both streams were discarded and the control reported only `CalledProcessError`. The golden workbook was present and copied correctly, and provisioning reported 400 tasks with LibreOffice available, so nothing about the data or the scorer was wrong.
+- Change: declare `qa/prediction.py` in the dataset's `SETUP`, and drop the output capture so a failed submission prints the CLI's real error instead of a bare exit status. The comparison, the reward rule and the platform verifier are unchanged.
+- Validation: `python3 data/spreadsheetbench/control.py --oracle` reaches reward **1** with `"measured": true`; the new `tests/quality/test_spreadsheetbench_control_submit.py` passes **2/2**, including a deliberately failing CLI that must expose both stdout and stderr. Together with `tests/quality/test_spreadsheetbench_official_scorer.py`: **13 passed**. No whole-suite execution in the worker worktree.
+- Commit: `8c323e6 Fix SpreadsheetBench QA submission provisioning and diagnostics`; parent diff review and the focused re-run on `main` passed.
+
+## Refusal contract without a stale catalog count — 2026-10-14 — S5
+
+- Scope: isolated `/tmp/hg-s5`; one test file.
+- Finding: `tests/quality/test_split_source.py::test_no_refused_dataset_pretends_to_have_an_evaluation_set` ended with `assert len(refused) >= 6`. Measured on the current catalog: exactly **4** adapters set `REFUSED` (`api_bank`, `nestful`, `sotuqa`, `tau2_bench`), so the minimum was a stale snapshot of the catalog rather than a contract. The per-adapter assertions it guards — a refused adapter must not publish `OFFICIAL_EVAL` and must reject `official_split` — were untouched.
+- Change: keep the per-adapter contract and a non-vacuity check (`assert refused`), and drop the count. The docstring now says the number of refusals moves as adapters gain scoring support, and that only the per-adapter contract is fixed.
+- Validation: `python3 -m pytest -q tests/quality/test_split_source.py` — **12 passed** on `main` after the merge.
+- Commit: `80c3707 test: pin refusal contract without a stale catalog minimum`.
+
+## Reports relocation and link repair — ref-8 — 2026-10-14
+
+- Scope: repository layout. Audit, evidence and review output that had accumulated in the repository root was moved into `reports/` so the root stays navigable.
+- Change: 65 tracked audit/evidence files relocated, the 24 relative references they broke were repaired, and `reports/` plus `AGENTS.md` were added to the integrity checker's `NOT_PLATFORM` list with written reasons — they are written by humans and review sessions after a measurement and are never read by a run, so hashing them would fail a certification because someone added a report.
+- Evidence: [reports move verification](../reports/reports-move-verification.md). `reports/` now holds 68 files.
+- Commits: `ad57926 cleanup: move audit and evidence files into reports/` and `8c9bf28 docs: verify reports move and repair relative references`. These carry rewritten identities after the history rewrite; the content is on `main`.
+
+## Architecture map and import-direction guard — ref-6, ref-7 — 2026-10-14
+
+- Scope: documentation and a source-only guard. No runtime, model or GPU execution.
+- Change (ref-6): `docs/architecture.md` records the verified structure of the repository — which layers exist, what each owns, and which way imports are allowed to point.
+- Change (ref-7): `docs/import-direction.md` states the rule, and `tests/quality/test_import_direction.py` enforces it by parsing every source file's imports. The guard records **11** existing `data -> eval` edges as explicit, reviewed exceptions rather than hiding them; a new edge outside that list fails.
+- Validation: the guard test passes on `main` as part of the focused suite.
+- Commits: `3d78cde docs: add verified repository architecture map` and `bee9e3d test: guard architecture import directions` (rewritten identities).
+
+## Removal of unused top-level runtime shims — ref-3 — 2026-10-14
+
+- Scope: dead-code removal in `harnessgrad/`.
+- Change: `harnessgrad/events.py`, `harnessgrad/validator.py` and `harnessgrad/compat.py` were re-export shims with no remaining importers; they were deleted rather than left as a second, silently stale definition of the same names. No caller, schema or behaviour changed.
+- Commit: `4b99bf4 Remove unused top-level runtime re-export shims` (rewritten identity).
+
 ## Jericho standalone verifier temp directory — 2026-10-14 — S2
 
 - Scope: isolated `/tmp/hg-s2`; only the explicitly requested `acorncourt` oracle and a new focused regression file. No model or GPU execution.
