@@ -300,6 +300,14 @@ harnessgrad_work/
 # its EXCLUSIVE tuple looks the way it does, and `tests/quality/test_test_lanes.py`
 # fails without it.
 !/docs/test-lanes.md
+# The three below are evidence a reader has to be able to reach without this
+# machine: an inventory that Stage D depends on, the discovery-order finding that
+# decides whether the split is a pure move, and the split construction for the
+# score(N) study. Each is cited by code or by another document, so a clone without
+# it has a dangling reference rather than a missing note.
+!/docs/tau-bench-vendoring.md
+!/docs/registry-discovery-order.md
+!/docs/eval-split-design.md
 
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
