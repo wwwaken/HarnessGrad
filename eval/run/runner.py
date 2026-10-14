@@ -16,6 +16,8 @@ import eval.service.modelgate as modelgate_mod
 import eval.observe.progress as progress_mod
 import eval.containers.sandbox as sandbox_mod
 import eval.service.services as services_mod
+from eval.service.unix_stepwise_relay import StepwiseRelay
+from eval.run import chess_stepwise
 import tools.web_gateway as web_gateway_mod
 from ckpt.git_state import STATE_DIRNAME
 from eval.run.integrity import PLATFORM_ROOT, diff, snapshot
@@ -194,6 +196,12 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     # absence of a declaration, not a separate code path invented for old datasets.
     env_spec = env or {"kind": "files"}
     is_exec = env_spec.get("kind") == "exec"
+    try:
+        protocol = chess_stepwise.protocol_of(task)
+        stepwise_session = chess_stepwise.session_for(
+            task, verifier, sandbox=sandbox, env=env_spec)
+    except ValueError as exc:
+        return _invalid(task, exc, stage="stepwise admission", service=None)
     # Inside a container the task is mounted at the dataset's `workdir` (default
     # `/app`), so the harness is told the path it can actually see. Outside one the
     # task *is* the host temporary directory. This is the only path translation in
@@ -237,6 +245,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     held = progress_mod.task_of()
     phases = progress_mod.phases_for(held)
     runtime_dir = None
+    stepwise_relay = None
+    stepwise_dir = None
     package_overlays = ()
     workdir = Path(tempfile.mkdtemp(prefix="hg-task-"))
     try:
@@ -251,7 +261,9 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 _materialize(workdir, setup.get("files"), PLATFORM_ROOT)
 
             task_file = workdir / "task.json"
-            task_file.write_text(json.dumps(runtime_task(task, setup)))
+            actor_task = ({**task, "goal": chess_stepwise.GOAL}
+                          if stepwise_session is not None else task)
+            task_file.write_text(json.dumps(runtime_task(actor_task, setup)))
 
         # Services come up before the harness and are health-checked before it starts
         # (INTERFACE.md §2.5.7, steps 1-3). A harness that starts against a service
@@ -427,6 +439,15 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                     + (() if image_python else container_mod.interpreter_paths()))
                    if is_exec else ())
 
+        if stepwise_session is not None:
+            # Project only this read-only socket directory. Neither gold nor session
+            # state is written beneath the actor's writable task directory.
+            stepwise_dir = Path(tempfile.mkdtemp(prefix="hg-stepwise-"))
+            stepwise_relay = StepwiseRelay(
+                stepwise_dir, stepwise_session, contract=chess_stepwise.STEPWISE,
+                public_fields=chess_stepwise.PUBLIC_FIELDS, timeout_s=timeout_s)
+            child_env["HG_STEPWISE_SOCKET"] = str(stepwise_relay.path)
+
         def launch():
             if is_exec:
                 # `runtime_paths` is deliberately not applied: it exists because a
@@ -457,15 +478,26 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                    env=child_env, timeout_s=timeout_s, cwd=workdir,
                                    repo=repo, state_dirs=(state_dir,),
                                    runtime_paths=runtime_paths,
+                                   visible_paths=((stepwise_dir,) if stepwise_dir else ()),
                                    network=env_spec.get("network"),
                                    package_overlays=package_overlays)
 
         try:
             with phases("agent"):
-                proc = launch()
+                if stepwise_relay is not None:
+                    stepwise_relay.start()
+                try:
+                    proc = launch()
+                finally:
+                    if stepwise_relay is not None:
+                        stepwise_relay.stop()
             exit_code, stderr = proc.returncode, proc.stderr[-2000:]
         except subprocess.TimeoutExpired:
             exit_code, stderr = -1, f"timeout after {timeout_s}s"
+        except OSError:
+            if stepwise_relay is None:
+                raise
+            exit_code, stderr = -1, "stepwise harness launch failed"
         except sandbox_mod.SandboxUnavailable as exc:
             # Not swallowed. A run that asked for a sandbox and silently got none
             # produces numbers that mean something other than what they say.
@@ -475,16 +507,22 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
 
         with phases("collect"):
             answer_path = workdir / "answer.txt"
-            answer = answer_path.read_text() if answer_path.exists() else ""
+            answer = (answer_path.read_text()
+                      if stepwise_relay is None and answer_path.exists() else "")
             trace_path = workdir / "trace.jsonl"
             trace = trace_path.read_text() if trace_path.exists() else ""
 
-        # The harness has exited. Everything below grades what it left behind, from
-        # outside, with the artifacts frozen -- see INTERFACE.md §2.2 and §2.4.
+        # The harness has exited. Grade the controller's completed live exchange,
+        # or its frozen artifacts on the existing offline path (§2.2 and §2.4).
         with phases("verify"):
-            verdict = _verify(workdir, verifier, answer, sandbox=sandbox,
-                              timeout_s=verify_timeout_s, env=env_spec,
-                              service_specs=service_specs, running=running)
+            if stepwise_relay is not None:
+                verdict = chess_stepwise.finish(stepwise_relay, exit_code)
+            else:
+                verdict = _verify(workdir, verifier, answer, sandbox=sandbox,
+                                  timeout_s=verify_timeout_s, env=env_spec,
+                                  service_specs=service_specs, running=running)
+                if protocol is not None:
+                    verdict["protocol"] = protocol
 
         # The environment's own spend, read from the recordings **before teardown**:
         # the containers are about to be removed and their evidence with them.
@@ -513,6 +551,10 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                 if web_gateway is not None else None),
                 "identity": _last_identity(trace)}
     finally:
+        if stepwise_relay is not None:
+            stepwise_relay.stop()
+        if stepwise_dir is not None:
+            shutil.rmtree(stepwise_dir, ignore_errors=True)
         # Step 8, and in a `finally` for the reason the table in §2.5.7 gives: a leaked
         # network would be inherited by the next task, where it would look like
         # isolation that is not there. `stop()` never raises.
@@ -848,6 +890,17 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         raise ValueError(f"trials must be at least 1, not {trials}")
     if jobs < 1:
         raise ValueError(f"jobs must be at least 1, not {jobs}")
+    evaluation_protocols = {task["task_id"]: protocol for task in tasks
+                            if (protocol := chess_stepwise.protocol_of(task)) is not None}
+    if len(set(evaluation_protocols.values())) > 1:
+        raise ValueError("cannot aggregate interactive and offline ChessBench protocols")
+
+    def measurement_key(task):
+        key = f"{harness_sha}:{task['task_id']}:{trials}"
+        if evaluation_protocols.get(task["task_id"]) == chess_stepwise.STEPWISE:
+            key += ":" + chess_stepwise.STEPWISE
+        return key
+
     cache = cache if cache is not None else {}
     per_task, traces, verdicts = {}, {}, {}
     #: One score per trial, per task, kept so a reader can see the spread rather than
@@ -946,10 +999,21 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             _write_progress(progress_dir, round_no, tid, [], refusal["invalid"],
                             diagnostic=refusal, enforcement=enforcement)
             return {"task_id": tid, "invalid": refusal["invalid"]}
+        # A cache hit cannot bypass the interactive isolation/input requirements.
+        # Construction is local and lazy; it neither loads the CSV nor launches I/O.
+        if evaluation_protocols.get(tid) == chess_stepwise.STEPWISE:
+            try:
+                chess_stepwise.session_for(task, (verifiers or {}).get(tid),
+                                           sandbox=sandbox, env=(envs or {}).get(tid) or {})
+            except ValueError as exc:
+                refusal = _invalid(task, exc, stage="stepwise admission", service=None)
+                _write_progress(progress_dir, round_no, tid, [], refusal["invalid"],
+                                diagnostic=refusal)
+                return {"task_id": tid, "invalid": refusal["invalid"]}
         # The trial count is part of the key: a cached single measurement is not a
         # cached mean of three, and reusing one for the other would quietly answer a
         # different question than the run asked.
-        key = f"{harness_sha}:{tid}:{trials}"
+        key = measurement_key(task)
         hit = cache.get(key)
         if hit is not None:
             return {"task_id": tid, "cached": hit}
@@ -1005,7 +1069,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                 #   * the gateway's own counts ride along in `detail`, so the record says
                 #     *who* hung up rather than only that a connection failed.
                 provider = _provider_failure(result)
-                if provider is not None and not (result.get("verdict") or {}).get("passed"):
+                if (provider is not None and not (result.get("verdict") or {}).get("passed")
+                        and (result.get("verdict") or {}).get("protocol") != chess_stepwise.STEPWISE):
                     if measured:
                         print(f"warning: {tid}: trial {trial + 1} died reaching the model "
                               f"endpoint ({provider['line']}); keeping the "
@@ -1027,6 +1092,9 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                 if (result.get("verdict") or {}).get("unmeasured"):
                     unmeasured = {"stage": "check",
                                   "detail": (result["verdict"] or {})["unmeasured"]}
+                    if result["verdict"].get("protocol"):
+                        unmeasured.update(protocol=result["verdict"]["protocol"],
+                                          receipt=result["verdict"].get("evidence"))
                     held.failed(str(unmeasured["detail"])[:200])
                     break
 
@@ -1056,7 +1124,7 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     # first would not be.
     for task_index, task in enumerate(tasks, start=1):
         tid = task["task_id"]
-        key = f"{harness_sha}:{tid}:{trials}"
+        key = measurement_key(task)
         outcome = outcomes[tid]
 
         # The round stopped before this task: the harness had already failed to start on
@@ -1086,7 +1154,9 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             if entry.get("harness_output"):
                 harness_output[tid] = entry["harness_output"]
             if entry.get("verdict"):
-                verdicts[tid] = entry["verdict"]
+                verdicts[tid] = dict(entry["verdict"])
+                if tid in evaluation_protocols:
+                    verdicts[tid]["protocol"] = evaluation_protocols[tid]
             continue
 
         if outcome.get("invalid"):
@@ -1283,6 +1353,7 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             "trial_traces": trial_traces, "trial_verdicts": trial_verdicts,
             "cached_tasks": cached_tasks,
             "verdicts": verdicts,
+            "evaluation_protocols": evaluation_protocols,
             "invalid": invalid,
             "not_run": not_run,
             "startup_failure": startup_failure,

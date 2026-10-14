@@ -90,6 +90,16 @@ def env_label(point: dict) -> str:
     return f"exec {digest[:19]}" if digest else "exec UNPINNED"
 
 
+def protocol_label(point: dict) -> str:
+    protocols = point.get("evaluation_protocols") or {}
+    if protocols:
+        return " + ".join(sorted(set(protocols.values())))
+    # Historical ChessBench points used the offline path exclusively.
+    if (point.get("sampling") or {}).get("dataset") == "chessbench_puzzles":
+        return "offline strict sequence; not interactive official accuracy"
+    return "default protocol"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("runs", nargs="+")
@@ -109,7 +119,12 @@ def main() -> int:
         # Isolation and environment in one label, so the grouping below separates both
         # by construction rather than by remembering to check the second one.
         label = (f"{isolation_label(read_meta(path))} / {env_label(points[0])}"
-                 f" / {side_label(points[0])}")
+                 f" / {side_label(points[0])} / {protocol_label(points[0])}")
+        protocols = {protocol_label(point) for point in points}
+        if len(protocols) > 1 or any(len(set((point.get("evaluation_protocols") or {}).values())) > 1
+                                    for point in points):
+            print(f"refusing curve with mixed evaluation protocols: {path}", file=sys.stderr)
+            return 1
         labels.setdefault(label, []).append(path.parent.name)
         print(f"{path.parent.name[:29]:<30} {policy:<10} {label:<34} "
               f"{spark(scores)}  {min(scores):.2f}..{max(scores):.2f}")
@@ -128,7 +143,8 @@ def main() -> int:
               "  particular image digest (§2.5.4). **And a training curve is not an exam\n"
               "  curve** (§2.6): a training score is inflated by construction, because the\n"
               "  method has read the traces of the very tasks it is scored on. Comparing\n"
-              "  or averaging across any of these is not valid.", file=sys.stderr)
+              "  or averaging across any of these is not valid. Interactive and offline\n"
+              "  ChessBench protocols are also not comparable.", file=sys.stderr)
         return 1
     return 0
 

@@ -1223,6 +1223,7 @@ def _main(attempt: dict) -> int:
         harness_failed=base.get("harness_failed"),
         model_gateway=base.get("model_gateway"),
         harness_runtime=base.get("harness_runtime"),
+        evaluation_protocols=base.get("evaluation_protocols"),
         env_record=_env_record(envs, task_ids),
         cost=_cost_of(base, len(tasks_all), cumulative["wall_clock_s"]),
         cumulative=cumulative, label="H0 (base harness)",

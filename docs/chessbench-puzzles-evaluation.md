@@ -76,7 +76,7 @@ an error. Multiple UCI tokens, extra JSON fields and non-string UCI values are r
 The controller calls `session.result()` for the strict score after termination.
 
 The session and its gold must live in a trusted process outside the actor's filesystem
-and import namespace. The actor receives only the six fields shown above: no stored
+and import namespace. The actor receives only the five fields shown above: no stored
 line, expected solver move, future opponent move, line length, source row, puzzle ID,
 gold answer or pre-setup FEN. Previously observed opponent effects are public board
 state; future reference updates remain private. The controller owns the ordered
@@ -88,16 +88,75 @@ Importing the adapter does not read `puzzles.csv`. Accessing pool-backed `ENV`, 
 those operations are not needed for synthetic contract tests. Verifier evidence redacts
 the private gold, while retaining both score diagnostics.
 
-## Current boundary and validation
+## Opt-in runner wiring
 
-The trusted stepwise session and public task/answer contract are implemented. The shared
-QA runner still uses the offline `answer.txt` sequence interface; a future trusted
-controller transport must connect successive observations to actor decisions before
-an interactive official-accuracy claim is possible. This change does not launch a
-model, H0 or release-data control, and does not access heldout puzzle payloads.
+The task must explicitly carry `"interaction": "chessbench_puzzles.stepwise.v1"`.
+For example, a trusted caller that already has a selected public task and its private
+control record can opt in without loading the full pool:
 
-Focused synthetic tests cover legal replay, illegal/null/self-check moves, wrong order,
-missing moves, setup/opponent legality, exact/alternate early mate, public field privacy,
-lazy import and materialized-verifier diagnostics. Synthetic differential tests compare
-the preserved diagnostic against the existing verbatim upstream function. Release-data
-and source-archive tests remain available but are outside this validation scope.
+```python
+interactive_task = {**public_task, "interaction": chessbench.STEPWISE_CONTRACT}
+result = run_one(
+    harness_repo, interactive_task, sandbox=True,
+    setup=chessbench.setup_for(selected_record),
+    verifier=chessbench.verify_for(selected_record),
+)
+```
+
+`eval.run.runner.run_one` constructs `StepwisePuzzle` from the inline `gold.json`
+entry in the trusted verifier spec. It does not materialize verifier inputs for the
+actor. It replaces the offline goal with the interactive socket instructions and
+exports `HG_STEPWISE_SOCKET`. The harness connects once using AF_UNIX/SOCK_STREAM,
+reads a newline-delimited JSON observation, writes one newline-delimited JSON UCI
+answer, and repeats until it reads a terminal observation. A harness must implement
+this live interface to use the mode; an existing answer-file-only harness will leave
+an incomplete exchange.
+
+The controller starts `StepwiseRelay` immediately before the harness launch and stays
+live while the runner waits for the harness. The relay uses the model relay's Unix
+server and its allowance/receipt/cleanup pattern, delegating observations and answers
+to the existing `transport_stepwise`. The reviewed allowlist remains exactly
+`contract`, `fen`, `solver_turn`, `status`, `verdict`. The socket directory is mounted
+read-only, with no session, gold, or private receipt files inside it. One connection,
+256 submissions, 4096 bytes per message and the absolute agent deadline bound an
+exchange. Reconnecting cannot reset the session or allowance. The runner closes the
+connection, joins server/handler threads, removes the socket and removes its temporary
+directory on exit, including actor timeout and launch failure.
+
+Only a delivered terminal exchange, a clean actor exit, and successful channel cleanup
+can yield a score. Invalid trusted references are unmeasured. Disconnection, actor
+termination, timeout, oversized/malformed transport messages and submission-limit
+failure produce incomplete receipts without score/reward. The controller-owned
+terminal verdict determines interactive puzzle accuracy; `answer.txt` and
+actor-authored transcripts do not determine it.
+
+This binding requires the native `files` sandbox. Existing admission and refusal gates
+remain in force, including policy-observation refusals; selecting this mode grants no
+production authorization. Tasks without the explicit interaction marker continue to
+use the unchanged offline strict replay reward and verifier.
+
+## Receipts, caching and comparison
+
+`verdict.protocol` names the protocol and is preserved by the verdict saver. Interactive
+`verdict.evidence.protocol` is `chessbench_puzzles.stepwise.v1`; the receipt includes
+`status`, `measured`, limits, cleanup facts and the controller's bounded transport
+events. An incomplete task reaches `evaluate().invalid[task_id].receipt` and is excluded
+from `per_task` and the cache. Offline evidence retains
+`official.protocol = "offline strict sequence; not interactive official accuracy"`
+and both existing replay diagnostics.
+
+Curve points carry `evaluation_protocols[task_id]` and `protocol_comparability`.
+Interactive measurements use separate cache keys. Evaluation refuses to aggregate
+interactive and offline ChessBench tasks into one point, and `tools/plot_curve.py`
+rejects comparison across those protocols or a protocol change within one curve.
+Historical ChessBench points without this field belong to the existing offline path.
+
+`tests/quality/test_chessbench_stepwise_runner.py` exercises real sandboxed actor
+processes with fabricated puzzles, including private-field requests, polluted public
+observations, interrupted exchanges, partial-message deadlines, oversized messages,
+cache separation, offline evidence, saved incomplete receipts and comparison refusal.
+These tests establish execution wiring and isolation for those probes. They do not
+establish model-driven interactive accuracy on the released slice, compatibility with
+an existing harness's move-selection loop, a real diagnostic receipt, or pilot
+authorization. A diagnostic/pilot still needs its normal dataset, provenance,
+resource, coverage and cleanup gates.

@@ -160,6 +160,7 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
         harness_failed=res.get("harness_failed"),
         model_gateway=res.get("model_gateway"),
         harness_runtime=res.get("harness_runtime"),
+        evaluation_protocols=res.get("evaluation_protocols"),
         cost=_cost_of(res, len(tasks), cumulative["wall_clock_s"]),
         cumulative=cumulative, label="exam", side="eval",
         evaluated_from=eval_from, n_trials=res.get("trials"),

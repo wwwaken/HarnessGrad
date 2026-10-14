@@ -6,9 +6,10 @@ functions. In production those functions must communicate with an isolated actor
 process, enforce I/O deadlines and persist controller-owned receipts. In-process
 test callbacks establish ordering, not process isolation or measured accuracy.
 
-This module has no dataset imports, loaders, scoring, model calls or I/O. It is
-not wired into ``eval.run.runner.run_one``, whose QA path still collects answer.txt
-after the harness exits. Transport receipts never authorize production execution.
+This module has no dataset imports, loaders, scoring, model calls or I/O.
+``unix_stepwise_relay`` supplies bounded live I/O for opt-in runner tasks; ordinary
+QA tasks still collect answer.txt after exit. Transport receipts never authorize
+production execution.
 """
 from __future__ import annotations
 

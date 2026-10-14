@@ -148,6 +148,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  method_reported=None, train_scores=None, train_ids=None,
                  split=None, env_record=None, invalid=None, harness_failed=None,
                  model_gateway=None, harness_runtime=None, hypothesis=None,
+                 evaluation_protocols=None,
                  edits_applied=None, files_claimed=None, candidate_problems=None,
                  side="train", evaluated_from=None,
                  n_trials=None, score_std=None, per_task_std=None,
@@ -183,6 +184,12 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                 # dependencies at all, which is a fact rather than a missing field.
                 "harness_runtime": list(harness_runtime or [])},
         "sampling": dict(sampling),
+        **({"evaluation_protocols": {
+                tid: protocol for tid, protocol in evaluation_protocols.items()
+                if tid in sampling.get("task_ids", task_ids)},
+            "protocol_comparability":
+                "Compare only matching protocols; interactive and offline ChessBench "
+                "are not comparable."} if evaluation_protocols else {}),
         # What the method claimed for this state, kept beside what the platform
         # measured. The gap between the two is itself a reportable finding, so
         # the platform never overwrites one with the other.
@@ -512,7 +519,7 @@ def _saved_verdict(verdict: dict) -> dict:
     it as absent. Generic score/passed fields never supply measurement evidence.
     """
     entry = {key: verdict.get(key) for key in ("kind", "passed", "detail")}
-    entry.update({key: verdict[key] for key in ("trial", "invalid", "unmeasured", "evidence")
+    entry.update({key: verdict[key] for key in ("trial", "invalid", "unmeasured", "evidence", "protocol")
                   if key in verdict})
     evidence = verdict.get("evidence")
     has_identity = "trial" in verdict or (isinstance(evidence, dict) and "trial" in evidence)
