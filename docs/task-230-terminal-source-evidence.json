@@ -1,0 +1,653 @@
+{
+  "schema": "harnessgrad.task230.public-source-audit.v1",
+  "status": "partial_source_audit_not_scorer_closure",
+  "workspace": "/tmp/hg-codex-230",
+  "base_commit": "61e7f82245c76e7c833740216940d1fcaf3b76be",
+  "scope": {
+    "task_or_test_payloads_retrieved": false,
+    "archives_retrieved": false,
+    "packages_installed": false,
+    "upstream_code_executed": false,
+    "dataset_adapter_imported": false,
+    "docker_executed": false,
+    "models_or_H0_executed": false,
+    "main_changed": false,
+    "source_fixture_added": false
+  },
+  "authorization": {
+    "measured": false,
+    "production_authorized": false,
+    "execution_authorized": false,
+    "custodian_approved": false,
+    "publication_ready": false
+  },
+  "identities": {
+    "adapter_dataset": {
+      "repository": "harbor-framework/terminal-bench-2",
+      "commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+      "root_tree": "ec7c02c7f0b59ce8ed2f7c88d1e70cda7427edfa",
+      "root_readme_identifies": "Terminal-Bench 2.0",
+      "runner_reference": "https://github.com/laude-institute/harbor",
+      "runner_version_pinned_by_readme": false,
+      "commit_signature_verified_by_github": false
+    },
+    "audited_runner_reference": {
+      "repository": "harbor-framework/harbor",
+      "tag_observed": "v0.24.0",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "root_tree": "53f5cf4afcf87f9fd53e183e13b06bdfc8c63cb4",
+      "src_tree": "b71f0b6bf2021d966cbdd884a5575f6d31be7cf3",
+      "release_published_at": "2026-10-05T05:04:52Z",
+      "release_target_commitish": "main",
+      "version_from_pyproject": "0.24.0",
+      "selection_basis": "Observed latest public release; comparison reference, not a historical or installed runner attestation.",
+      "historical_or_installed_runner_binding_verified": false,
+      "commit_signature_verified_by_github": false
+    },
+    "legacy_repository_metadata": {
+      "queried_url": "https://api.github.com/repos/laude-institute/terminal-bench",
+      "returned_full_name": "harbor-framework/terminal-bench-1",
+      "note": "Repository metadata only; legacy runner source not acquired or treated as TB2 scorer."
+    }
+  },
+  "source_inventory": [
+    {
+      "repository": "harbor-framework/terminal-bench-2",
+      "commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+      "path": "LICENSE",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "git_blob_sha1": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/terminal-bench-2/blob/2fd12b88aafdd04a52c298e3940bcb189f9766d6/LICENSE",
+      "api_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "tracked_source_fixture": false
+    },
+    {
+      "repository": "harbor-framework/terminal-bench-2",
+      "commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+      "path": "README.md",
+      "bytes": 4574,
+      "sha256": "7dfa9992c45c7e30744cda7ce659ba77309f43120a0990fce033eb8afd972364",
+      "git_blob_sha1": "a46b155b419a15add0aab7fe8e51f0f64a9404d8",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/terminal-bench-2/blob/2fd12b88aafdd04a52c298e3940bcb189f9766d6/README.md",
+      "api_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/blobs/a46b155b419a15add0aab7fe8e51f0f64a9404d8",
+      "tracked_source_fixture": false
+    },
+    {
+      "repository": "harbor-framework/harbor",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "path": "LICENSE",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "git_blob_sha1": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/harbor/blob/b53b8134e1241686dca7759af188f987ecc48e8b/LICENSE",
+      "api_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "tracked_source_fixture": false
+    },
+    {
+      "repository": "harbor-framework/harbor",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "path": "pyproject.toml",
+      "bytes": 6283,
+      "sha256": "d7d5398dfeff698ec1c008a9a122326be6e3e6b69af9dcf7caec8e79efabb43e",
+      "git_blob_sha1": "1bda351d300d50c40477396015da08019a4593a8",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/harbor/blob/b53b8134e1241686dca7759af188f987ecc48e8b/pyproject.toml",
+      "api_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/1bda351d300d50c40477396015da08019a4593a8",
+      "tracked_source_fixture": false
+    },
+    {
+      "repository": "harbor-framework/harbor",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "path": "uv.lock",
+      "bytes": 1086538,
+      "sha256": "cb66cdeba0d70cbaa3b89ef490820003973b4044bb39c0fd9986040f5502ccba",
+      "git_blob_sha1": "8e54691d74773ddfea2a86029e7dd4b686fb3b1f",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/harbor/blob/b53b8134e1241686dca7759af188f987ecc48e8b/uv.lock",
+      "api_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/8e54691d74773ddfea2a86029e7dd4b686fb3b1f",
+      "tracked_source_fixture": false
+    },
+    {
+      "repository": "harbor-framework/harbor",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "path": "src/harbor/verifier/verifier.py",
+      "bytes": 10037,
+      "sha256": "6d3d9ed8882c5e07bae4aa6449732b096166fb9bbabc685b39c0e25f57b20aa9",
+      "git_blob_sha1": "2128b57213fe5edb1ec4d5654ea2fe5b0b2f5bc9",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/harbor/blob/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/verifier/verifier.py",
+      "api_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/2128b57213fe5edb1ec4d5654ea2fe5b0b2f5bc9",
+      "tracked_source_fixture": false
+    },
+    {
+      "repository": "harbor-framework/harbor",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "path": "src/harbor/verifier/base.py",
+      "bytes": 1453,
+      "sha256": "267cbf792ff65c135aa99887c6fc56442a4657de6b9cea39a33be60f4724d041",
+      "git_blob_sha1": "1b58cf96e66f3004b85f5c5a093d7899ce1b026e",
+      "blob_identity_verified": true,
+      "source_url": "https://github.com/harbor-framework/harbor/blob/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/verifier/base.py",
+      "api_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/1b58cf96e66f3004b85f5c5a093d7899ce1b026e",
+      "tracked_source_fixture": false
+    }
+  ],
+  "license": {
+    "dataset_root": "Apache-2.0",
+    "runner_root": "Apache-2.0",
+    "runner_project_declaration": "Apache-2.0",
+    "root_notice_entry_present": {
+      "dataset": false,
+      "runner": false
+    },
+    "scope": "Exact root LICENSE bytes verified. Transitive package, workspace, OS/image and task-specific notices/licenses not closed."
+  },
+  "dependencies": {
+    "python_requirement": ">=3.12",
+    "core_requirements": [
+      "pydantic>=2.12.0",
+      "shortuuid>=1.0.13",
+      "typer>=0.16.0",
+      "requests>=2.32.4",
+      "pyyaml>=6.0.2",
+      "rich>=14.1.0",
+      "toml>=0.10.2",
+      "tenacity>=9.1.2",
+      "python-dotenv>=1.1.1",
+      "litellm>=1.92.0",
+      "jinja2>=3.1.6",
+      "dirhash>=0.5.0",
+      "packaging>=25.0",
+      "semver>=3.0.4",
+      "fastapi>=0.128.0",
+      "uvicorn>=0.38.0",
+      "pathspec>=1.0.3",
+      "supabase>=2.28.2",
+      "httpx>=0.27.0",
+      "filelock>=3.29.4",
+      "platformdirs>=4.10.0",
+      "pyjwt>=2.10.1",
+      "jsonschema>=4.23.0"
+    ],
+    "build_system": {
+      "requires": [
+        "uv_build>=0.8.4,<0.9.0"
+      ],
+      "build-backend": "uv_build"
+    },
+    "lock_format_version": 1,
+    "lock_revision": 3,
+    "lock_requires_python": ">=3.12",
+    "lock_package_records": 345,
+    "lock_source_kinds": [
+      "editable",
+      "registry"
+    ],
+    "editable_lock_records": [
+      {
+        "name": "harbor",
+        "version": "0.24.0",
+        "source": {
+          "editable": "."
+        }
+      },
+      {
+        "name": "harbor-atif2otel",
+        "version": "0.1.1",
+        "source": {
+          "editable": "packages/harbor-atif2otel"
+        }
+      },
+      {
+        "name": "harbor-langsmith",
+        "version": "0.3.1",
+        "source": {
+          "editable": "packages/harbor-langsmith"
+        }
+      },
+      {
+        "name": "harbor-rewardkit",
+        "version": "0.2.1",
+        "source": {
+          "editable": "packages/rewardkit"
+        }
+      }
+    ],
+    "verifier_stdlib_imports_observed": [
+      "__future__",
+      "abc",
+      "json",
+      "logging",
+      "math",
+      "pathlib",
+      "typing"
+    ],
+    "missing_direct_internal_import_bodies": [
+      {
+        "module": "harbor.environments.base",
+        "path": "src/harbor/environments/base.py",
+        "git_blob_sha1": "bc40079b4e4701b8c81cfcd2f09209228e4d6391",
+        "body_acquired": false
+      },
+      {
+        "module": "harbor.models.task.task",
+        "path": "src/harbor/models/task/task.py",
+        "git_blob_sha1": "2560b35344e42633665df080e7265adb199b10c0",
+        "body_acquired": false
+      },
+      {
+        "module": "harbor.models.trial.paths",
+        "path": "src/harbor/models/trial/paths.py",
+        "git_blob_sha1": "e76444df7729f1a6c8cc2f14a982cd373271881f",
+        "body_acquired": false
+      },
+      {
+        "module": "harbor.models.verifier.result",
+        "path": "src/harbor/models/verifier/result.py",
+        "git_blob_sha1": "5812661ff3c4b192a7bab12e9eb6c6f92c6e511d",
+        "body_acquired": false
+      },
+      {
+        "module": "harbor.utils.env",
+        "path": "src/harbor/utils/env.py",
+        "git_blob_sha1": "d2e3f014e2f900665d9ba73dcfd8fb26d5a59371",
+        "body_acquired": false
+      },
+      {
+        "module": "harbor.utils.logger",
+        "path": "src/harbor/utils/logger.py",
+        "git_blob_sha1": "cb78978e2927648d020b9052b70e4f926e5ced3e",
+        "body_acquired": false
+      },
+      {
+        "module": "harbor.utils.scripts",
+        "path": "src/harbor/utils/scripts.py",
+        "git_blob_sha1": "82642975b2c118a74ea56de208293bc252ba79e5",
+        "body_acquired": false
+      }
+    ],
+    "offline_installation_verified": false,
+    "runtime_abi_verified": false,
+    "selected_task_dependency_closure_verified": false,
+    "note": "345 is a whole-workspace lock record count including optional/dev dependencies, not a minimal verifier closure size. No wheels, sdists, workspace source packages, images or license corpus were acquired."
+  },
+  "metric": {
+    "official_task_metric": "Unverified: task-owned script/tests define grading; they were not retrieved.",
+    "runner_output_observed": "Verifier returns VerifierResult(rewards=...) parsed from JSON or numeric text; source review only.",
+    "official_aggregation_verified": false,
+    "adapter_declaration": {
+      "argv": [
+        "bash",
+        "/tests/test.sh"
+      ],
+      "inputs": "selected task checkout tests/ copied to /tests",
+      "reward_file": "/logs/verifier/reward.txt",
+      "evidence_file": "/logs/verifier/ctrf.json"
+    },
+    "adapter_equivalence_verified": false
+  },
+  "coverage": {
+    "eligible_tasks": null,
+    "selected_tasks": 0,
+    "executed_tasks": 0,
+    "executed_trials": 0,
+    "invalid_trials": 0,
+    "unmeasured_trials": 0,
+    "benchmark_measurement_produced": false,
+    "note": "No task selection or execution. Null eligibility means not inspected; zero invalid/unmeasured trials reflects no trials, not successful measurement.",
+    "endpoint_binding": null,
+    "run_id": null,
+    "resource_budget": "Code/metadata HTTP retrieval only; no execution budget or hardware envelope assessed.",
+    "cleanup_receipt": null,
+    "comparability": "No benchmark score, official-scorer execution receipt, selected-source manifest, model/harness-run hash or runtime cleanup evidence produced."
+  },
+  "remaining_independent_obligations": [
+    "Historical/selected runner version and registry-to-dataset binding",
+    "Complete authoritative selected-task scorer/tests and dependency/license closure",
+    "Trusted pristine scorer runtime and ABI compatibility",
+    "Bounded artifact-only state export with selected-only provenance",
+    "Effective filesystem byte/inode quotas and resource ownership observations",
+    "Mandatory production wiring, official scorer execution and valid measurement classification",
+    "Snapshot lifecycle, cleanup and absence receipts"
+  ],
+  "local_source_pins": [
+    {
+      "path": "data/terminal_bench.py",
+      "sha256": "e5d3a49ae1ec4ad99b824f62d3b274434d2beaee7894fd11127a0a5e31f96825"
+    },
+    {
+      "path": "eval/verifier.py",
+      "sha256": "68f090e599d4e18f340c261ed0dc1fec3423b7bfc5b0b322bc40a6bbe4ad254a"
+    },
+    {
+      "path": "eval/container_state.py",
+      "sha256": "ec879b7350ef55b119bccf2d8a352f758457740e2b580c6c9f90188630fba6e7"
+    },
+    {
+      "path": "eval/artifact_admission.py",
+      "sha256": "9a6b8528dd02377bb3ce62afbd430ee7c0c212f8b30ee2f617a0902ffba5f2e2"
+    },
+    {
+      "path": "eval/scorer_bundle.py",
+      "sha256": "f8f61d1affc1960e7561c5f5a2c6a2b655b2535e4968b01e2acf15e8ee4be9df"
+    },
+    {
+      "path": "eval/pilot_admission.py",
+      "sha256": "1bcdb66299fc1db88541e8a517138ae29cb166809deaa1cb6ca665bfc657770a"
+    },
+    {
+      "path": "TERMINAL_INTEGRATION_REVIEW.md",
+      "sha256": "239a3a34292f38eb89fb4f0b56eae2c83c2674f019ba51c898c4e81048d7b75d"
+    },
+    {
+      "path": "docs/task-211-terminal-operator-backend-packet.md",
+      "sha256": "819394fa5c6d568d20d985b21a93646f877713a4d4a953b62d12396d3e9501e3"
+    },
+    {
+      "path": "docs/task-220-terminal-packet-review.md",
+      "sha256": "b972281fcf0dcfda31931f55fa9bdef8bfb43079094e152c5e044c90e0084923"
+    }
+  ],
+  "validation": {
+    "source_git_blob_and_size_checks": true,
+    "python_source_syntax_only": true,
+    "project_and_lock_parsed_as_toml": true,
+    "existing_synthetic_suites": {
+      "paths": [
+        "tests/quality/test_terminal_artifact_admission.py",
+        "tests/quality/test_scorer_bundle_codex170.py"
+      ],
+      "result": "84 passed in 0.33s",
+      "stdout_sha256": "fcbe66000c985040502f2936946e366b2cc1a8713f631c8b6a37de82de59d05f",
+      "official_scorer_execution": false
+    }
+  },
+  "acquisition_requests": [
+    {
+      "url": "https://api.github.com/repos/harbor-framework/terminal-bench-2",
+      "retrieved_at": "2026-10-14T04:20:55.114763+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2",
+      "sha256": "9840ac82a6777befd51f8badb4afa32a8be3522d7270c80262d2941c76df23ea"
+    },
+    {
+      "url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/commits/2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+      "retrieved_at": "2026-10-14T04:20:56.088838+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/commits/2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+      "sha256": "bc49fd8ba85b19d1e9c74ff49c00be9a1b0f8254c42cdcf3301125c9a8ca48b9"
+    },
+    {
+      "url": "https://api.github.com/repos/harbor-framework/harbor",
+      "retrieved_at": "2026-10-14T04:20:56.601764+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor",
+      "sha256": "d1964ce42fc70f053243dc836d95f330d27349e9c578624b07bf983366c6a88f"
+    },
+    {
+      "url": "https://api.github.com/repos/laude-institute/terminal-bench",
+      "retrieved_at": "2026-10-14T04:20:57.135840+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repositories/918420677",
+      "sha256": "79d7aa4a2fd8a4c26d0ea2a0df012cce6636e5d4af59c5da5519ba0d5397d46e"
+    },
+    {
+      "name": "harbor_commit",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/commits/main",
+      "retrieved_at": "2026-10-14T04:21:49.221367+00:00",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "harbor_tags",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/tags?per_page=10",
+      "retrieved_at": "2026-10-14T04:21:50.427813+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/tags?per_page=10",
+      "sha256": "5b83039c3cd26504bd32af7c37c2a939f44a4ceec7c089438179671a217f86f4",
+      "bytes": 4301
+    },
+    {
+      "name": "tb2_root",
+      "url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/trees/ec7c02c7f0b59ce8ed2f7c88d1e70cda7427edfa",
+      "retrieved_at": "2026-10-14T04:21:51.012260+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/trees/ec7c02c7f0b59ce8ed2f7c88d1e70cda7427edfa",
+      "sha256": "bf54e007f6fc55c11d78dfba07957804e53b68a401146dff54e58942cf264754",
+      "bytes": 21417
+    },
+    {
+      "name": "harbor_release",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/releases/latest",
+      "retrieved_at": "2026-10-14T04:21:51.740516+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/releases/latest",
+      "sha256": "01f61dc75ea9ab6966ae51cf4571ace7dfbc67b0f999175d6cd57102fcad3544",
+      "bytes": 20713
+    },
+    {
+      "name": "harbor_pinned_commit",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/commits/b53b8134e1241686dca7759af188f987ecc48e8b",
+      "retrieved_at": "2026-10-14T04:22:54.277465+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/commits/b53b8134e1241686dca7759af188f987ecc48e8b",
+      "sha256": "cb3bcc8d5bdea590896e744a9fc0e51292dc73b0670360426762a59c40169b50",
+      "bytes": 1113
+    },
+    {
+      "name": "tb2_README_md",
+      "url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/blobs/a46b155b419a15add0aab7fe8e51f0f64a9404d8",
+      "retrieved_at": "2026-10-14T04:22:54.281075+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/blobs/a46b155b419a15add0aab7fe8e51f0f64a9404d8",
+      "sha256": "c900ef950913b3754391ae6fb792e23ed5f2ea79eebd2bd9e0cad2cebdb00f7f",
+      "bytes": 6603
+    },
+    {
+      "name": "tb2_LICENSE",
+      "url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "retrieved_at": "2026-10-14T04:22:54.279626+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/terminal-bench-2/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "sha256": "05757b792b0913a5cb93f2a1d8bebd0fa13be6d097a508b5afdf5d06b11b0435",
+      "bytes": 15950
+    },
+    {
+      "name": "harbor_tree",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/trees/53f5cf4afcf87f9fd53e183e13b06bdfc8c63cb4?recursive=1",
+      "retrieved_at": "2026-10-14T04:23:19.877177+00:00",
+      "error": "IncompleteRead(1081344 bytes read)"
+    },
+    {
+      "name": "harbor_root",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/trees/53f5cf4afcf87f9fd53e183e13b06bdfc8c63cb4",
+      "retrieved_at": "2026-10-14T04:25:33.594889+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/trees/53f5cf4afcf87f9fd53e183e13b06bdfc8c63cb4",
+      "sha256": "19d6b7915762a2cde8dcb9bd01137daf2208287580bcc481f5e8dac2d1ac7ede",
+      "bytes": 5857
+    },
+    {
+      "name": "harbor_src_tree",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/trees/b71f0b6bf2021d966cbdd884a5575f6d31be7cf3?recursive=1",
+      "retrieved_at": "2026-10-14T04:25:34.188740+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/trees/b71f0b6bf2021d966cbdd884a5575f6d31be7cf3?recursive=1",
+      "sha256": "fa40dea919c713bca5ad54bb3255dd0f51cc8faeb3c6d0a6b0b3107e97fa95c0",
+      "bytes": 123212
+    },
+    {
+      "name": "harbor_pyproject_toml",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/1bda351d300d50c40477396015da08019a4593a8",
+      "retrieved_at": "2026-10-14T04:26:37.761199+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/1bda351d300d50c40477396015da08019a4593a8",
+      "sha256": "e63451e96aef19b85598d786d23ed4cd0bff3ba803ab30c7a191c418bd464412",
+      "bytes": 8949
+    },
+    {
+      "name": "harbor_LICENSE",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "retrieved_at": "2026-10-14T04:26:37.758792+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "sha256": "f914c8426e2330d49ae0e26c4a159e538089a496791b29c8594af1d28670908e",
+      "bytes": 15940
+    },
+    {
+      "name": "harbor_src__harbor__verifier__verifier_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/2128b57213fe5edb1ec4d5654ea2fe5b0b2f5bc9",
+      "retrieved_at": "2026-10-14T04:26:38.367299+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/2128b57213fe5edb1ec4d5654ea2fe5b0b2f5bc9",
+      "sha256": "7f44573aec04ca3cf9dbfcc932bf2ebdb741dee884dc4218605ee7aa87716d43",
+      "bytes": 14122
+    },
+    {
+      "name": "harbor_src__harbor__verifier__base_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/1b58cf96e66f3004b85f5c5a093d7899ce1b026e",
+      "retrieved_at": "2026-10-14T04:26:38.853364+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/1b58cf96e66f3004b85f5c5a093d7899ce1b026e",
+      "sha256": "f1e019122c6cfbfb9d8e6999b01b3ce42782cfe2049eb211cdd9282704f68472",
+      "bytes": 2295
+    },
+    {
+      "name": "harbor_src__harbor__models__verifier__result_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/5812661ff3c4b192a7bab12e9eb6c6f92c6e511d",
+      "retrieved_at": "2026-10-14T04:26:44.236380+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__verifier__factory_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/135ed0ada777215338963a70f435e0f66acbf15f",
+      "retrieved_at": "2026-10-14T04:26:44.221902+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__models__task__paths_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/aee86d8cc8ebe12f79ec2fd146b720a907939c67",
+      "retrieved_at": "2026-10-14T04:26:44.483188+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__models__task__config_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/73863e59809732ceb2c4c2fb7c9f19e58ae23ede",
+      "retrieved_at": "2026-10-14T04:26:44.484068+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__metrics__mean_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/cb5a67f1bee6b479c76acfb22335bc453bbb7575",
+      "retrieved_at": "2026-10-14T04:26:45.123473+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__metrics__factory_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/4b0ea33935f1611eb4dddb3fb6111becea935574",
+      "retrieved_at": "2026-10-14T04:26:45.755105+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__models__task__verifier_mode_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/cea73f8de77e3b6a110e000d64cfe3edb2c661ee",
+      "retrieved_at": "2026-10-14T04:26:44.743275+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_src__harbor__metrics__base_py",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/f47a034a0afbd71b4e759c1f2684690873ec6794",
+      "retrieved_at": "2026-10-14T04:26:46.044500+00:00",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "name": "harbor_uv_lock",
+      "url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/8e54691d74773ddfea2a86029e7dd4b686fb3b1f",
+      "retrieved_at": "2026-10-14T04:26:37.762179+00:00",
+      "status": 200,
+      "final_url": "https://api.github.com/repos/harbor-framework/harbor/git/blobs/8e54691d74773ddfea2a86029e7dd4b686fb3b1f",
+      "sha256": "8c382912c4dc7e020a929efb7431efcc79633c81627db2ebe134b225ba229eb7",
+      "bytes": 1497304
+    },
+    {
+      "name": "harbor_src__harbor__models__verifier__result_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/models/verifier/result.py",
+      "retrieved_at": "2026-10-14T04:27:13.470845+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__models__task__paths_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/models/task/paths.py",
+      "retrieved_at": "2026-10-14T04:27:13.472312+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__verifier__factory_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/verifier/factory.py",
+      "retrieved_at": "2026-10-14T04:27:13.468345+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__models__task__config_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/models/task/config.py",
+      "retrieved_at": "2026-10-14T04:27:13.650766+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__metrics__mean_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/metrics/mean.py",
+      "retrieved_at": "2026-10-14T04:27:13.664608+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__models__task__verifier_mode_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/models/task/verifier_mode.py",
+      "retrieved_at": "2026-10-14T04:27:13.659508+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__models__trial__paths_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/models/trial/paths.py",
+      "retrieved_at": "2026-10-14T04:27:13.750292+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__metrics__factory_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/metrics/factory.py",
+      "retrieved_at": "2026-10-14T04:27:13.740673+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__metrics__base_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/metrics/base.py",
+      "retrieved_at": "2026-10-14T04:27:13.749628+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__utils__scripts_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/utils/scripts.py",
+      "retrieved_at": "2026-10-14T04:27:13.826984+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__registry__client__harbor__config_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/registry/client/harbor/config.py",
+      "retrieved_at": "2026-10-14T04:27:13.828609+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "harbor_src__harbor__registry__client__harbor__harbor_py",
+      "url": "https://raw.githubusercontent.com/harbor-framework/harbor/b53b8134e1241686dca7759af188f987ecc48e8b/src/harbor/registry/client/harbor/harbor.py",
+      "retrieved_at": "2026-10-14T04:27:13.833369+00:00",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    }
+  ],
+  "evidence_limits": [
+    "This metadata inventory is not an admitted scorer manifest or a complete source fixture.",
+    "Original source and raw HTTP responses remain only in an ignored worktree-local audit cache. The committed inventory does not prove offline custody of those bytes.",
+    "GitHub TLS metadata and Git blob identities do not establish independent custodian approval or cryptographic commit-signature verification."
+  ]
+}
