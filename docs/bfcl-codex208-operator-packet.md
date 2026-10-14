@@ -142,16 +142,16 @@ is permitted here.
    retained file hashes against independent custody; Git blob agreement alone
    does not bind compressed archive bytes.
 2. Check the current fail-closed source gate and fabricated regressions from
-   `/tmp/hg-codex-208` with scratch confined to this worktree:
+   `/tmp/hg-codex-208` with pytest scratch outside the platform. `--basetemp`
+   must be **OUTSIDE** because driver-based tests use `tmp_path` as a harness work root:
 
    ```sh
    PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 \
      tests/quality/test_bfcl_ast_source_contract.py
    # Expected exit 2: blocked, measured=false, production_authorized=false.
-   mkdir -p .scratch/bfcl-codex208
    PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. \
      python3 -m pytest -q -p no:cacheprovider \
-     --basetemp=.scratch/bfcl-codex208/pytest \
+     --basetemp=/tmp/harnessgrad-pytest-bfcl-codex208-pytest \
      tests/quality/test_bfcl_ast_source_contract.py \
      tests/quality/test_bfcl_selected.py tests/quality/test_dataset_blockers.py
    ```

@@ -140,11 +140,11 @@ alias 200 (normalized aliases, human answers and their combination), and actual
 shared-verifier evidence checks on synthetic hit/miss inputs. See
 [`reports/triviaqa-scorer-review-codex205-report.md`](../../../reports/triviaqa-scorer-review-codex205-report.md).
 
-Run the current review from the repository root, with temporary output inside this worktree:
+Run the current review from the repository root. `--basetemp` must be **OUTSIDE**
+the platform because driver-based tests use `tmp_path` as a harness work root:
 
 ```sh
-mkdir -p .scratch/triviaqa-codex205
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_scorer_review_codex205.py --basetemp=.scratch/triviaqa-codex205/review
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_scorer_review_codex205.py --basetemp=/tmp/harnessgrad-pytest-triviaqa-codex205-review
 PYTHONDONTWRITEBYTECODE=1 python tools/check_triviaqa_provenance.py
 ```
 

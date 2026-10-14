@@ -31,7 +31,7 @@ Validation:
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
 TMPDIR=/tmp/hg-codex-182/.scratch/chess-recovery-id-codex182 \
 python3 -m pytest -q -p no:cacheprovider \
-  --basetemp=/tmp/hg-codex-182/.scratch/chess-recovery-id-codex182/pytest \
+  --basetemp=/tmp/harnessgrad-pytest-codex182-chess-recovery-id-codex182-pytest \
   tests/quality/test_dataset_blockers.py
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 git diff --check

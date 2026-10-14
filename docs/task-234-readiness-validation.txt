@@ -5,7 +5,7 @@ Registry checker (exit 0):
 {"valid": true, "datasets": 28, "shared_blockers": 8, "historical_records": 11, "production_authorized": false}
 
 Guarded registry command (exit 0):
-env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp/hg-codex-234/.scratch/task234-readiness python3 -B -m pytest -q -p no:cacheprovider --basetemp=.scratch/task234-readiness/pytest tests/quality/test_dataset_blockers.py
+env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp/hg-codex-234/.scratch/task234-readiness python3 -B -m pytest -q -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-task234-readiness-pytest tests/quality/test_dataset_blockers.py
 ....................................................                     [100%]
 52 passed in 2.65s
 

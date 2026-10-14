@@ -93,7 +93,7 @@ Baseline: **38 passed**, no skips, retained in
 Final combined command:
 
 ```sh
-env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_scorer_review_codex205.py tests/quality/test_triviaqa_identity_codex215.py tests/quality/test_dataset_blockers.py --basetemp=.scratch/triviaqa-codex215/final > triviaqa-review-codex215-test-result.txt 2>&1
+env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_scorer_review_codex205.py tests/quality/test_triviaqa_identity_codex215.py tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-triviaqa-codex215-final > triviaqa-review-codex215-test-result.txt 2>&1
 env PYTHONDONTWRITEBYTECODE=1 python3 tools/check_triviaqa_provenance.py
 env PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 git diff --check

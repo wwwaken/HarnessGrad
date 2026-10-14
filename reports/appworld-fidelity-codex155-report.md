@@ -41,7 +41,7 @@ python -m pytest -q \
   tests/quality/test_trials_and_unmeasured.py::test_a_named_trial_that_failed_is_readable_on_disk \
   tests/quality/test_trials_and_unmeasured.py::test_the_runner_keeps_every_trial_s_trace_and_verdict \
   tests/quality/test_identity_and_verdicts.py::test_a_verdict_file_carries_the_tally_not_only_the_sentence \
-  --basetemp="$PWD/.pytest_cache/appworld-fidelity/pytest"
+  --basetemp="/tmp/harnessgrad-pytest-appworld-fidelity-pytest"
 ```
 
 Result: **44 passed in 3.24s**. `git diff --check` passed.

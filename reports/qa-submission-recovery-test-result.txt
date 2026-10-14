@@ -1,6 +1,6 @@
 Command (working directory: /tmp/hg-codex-118):
 mkdir -p /tmp/hg-codex-118/.pytest-tmp
-python3 -m pytest -q tests/quality/test_qa_submission_recovery.py tests/quality/test_loop_robustness.py tests/quality/test_harness_parsing.py tests/quality/test_harness_parse_retry.py tests/quality/test_harness_submit.py tests/quality/test_twowikimultihopqa_structured.py --basetemp=/tmp/hg-codex-118/.pytest-tmp/submission-recovery
+python3 -m pytest -q tests/quality/test_qa_submission_recovery.py tests/quality/test_loop_robustness.py tests/quality/test_harness_parsing.py tests/quality/test_harness_parse_retry.py tests/quality/test_harness_submit.py tests/quality/test_twowikimultihopqa_structured.py --basetemp=/tmp/harnessgrad-pytest-codex118-pytest-tmp-submission-recovery
 
 Result:
 164 passed in 8.22s

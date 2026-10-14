@@ -203,7 +203,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
   tests/quality/test_gaia_preflight_codex175.py \
   tests/quality/test_gaia_snapshot_attestation.py \
   tests/quality/test_shared_admission_wiring_codex163.py \
-  --basetemp=/tmp/hg-codex-175/.pytest_cache/gaia-codex175/pytest -p no:cacheprovider
+  --basetemp=/tmp/harnessgrad-pytest-codex175-gaia-codex175-pytest -p no:cacheprovider
 ```
 
 **155 passed in 0.60s**, exit 0, no skips. The new tests use authored source/runtime

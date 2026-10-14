@@ -69,7 +69,7 @@ scorer-state cases. The suites guard subprocess/socket execution and use inert
 local files and fabricated runtime facts.
 
 ```sh
-env PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q tests/quality/test_runner_admission.py tests/quality/test_terminal_artifact_admission.py tests/quality/test_scorer_admission_codex173.py --basetemp=/tmp/hg-codex-220/docs/_build/task220-test-tmp -p no:cacheprovider
+env PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q tests/quality/test_runner_admission.py tests/quality/test_terminal_artifact_admission.py tests/quality/test_scorer_admission_codex173.py --basetemp=/tmp/harnessgrad-pytest-codex220-task220-test-tmp -p no:cacheprovider
 ```
 
 The first attempt had 211 passes and 83 fixture setup errors because the chosen

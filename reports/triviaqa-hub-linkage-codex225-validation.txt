@@ -26,7 +26,7 @@ COMMAND: /mnt/8t/xubuqiang/anaconda3/bin/python3 tools/check_dataset_blockers.py
 {"valid": true, "datasets": 28, "shared_blockers": 8, "historical_records": 11, "production_authorized": false}
 EXIT: 0
 
-COMMAND: /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=.scratch/triviaqa-codex225/registry-pytest
+COMMAND: /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-triviaqa-codex225-registry-pytest
 ....................................................                     [100%]
 52 passed in 4.02s
 EXIT: 0

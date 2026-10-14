@@ -136,13 +136,13 @@ this refusal and integrity handling using inert fabricated files; their success
 does not imply that acquisition passed. No gate is skipped because source is absent.
 
 Run the fabricated source-contract, selected/privacy and registry regressions
-with scratch files confined to this worktree:
+with pytest scratch outside the platform. `--basetemp` must be **OUTSIDE** the
+platform because driver-based tests use `tmp_path` as a harness work root:
 
 ```sh
-mkdir -p .scratch/bfcl-codex184
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. \
   python3 -m pytest -q -p no:cacheprovider \
-  --basetemp=.scratch/bfcl-codex184/pytest \
+  --basetemp=/tmp/harnessgrad-pytest-bfcl-codex184-pytest \
   tests/quality/test_bfcl_ast_source_contract.py \
   tests/quality/test_bfcl_selected.py tests/quality/test_dataset_blockers.py
 ```

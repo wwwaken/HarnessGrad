@@ -145,7 +145,7 @@ mkdir -p /tmp/hg-codex-193/.scratch/staged-audit-codex193/tmp
 PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 TMPDIR=/tmp/hg-codex-193/.scratch/staged-audit-codex193/tmp \
 python -m pytest -q -p no:cacheprovider \
-  --basetemp=/tmp/hg-codex-193/.scratch/staged-audit-codex193/final \
+  --basetemp=/tmp/harnessgrad-pytest-codex193-staged-audit-codex193-final \
   tests/quality/test_staged_receipt_audit_codex193.py \
   tests/quality/test_diagnostic_policy.py \
   tests/quality/test_lifecycle_receipt_codex177.py \

@@ -79,7 +79,7 @@ Unicode punctuation that upstream preserves, and whitespace.
 Final command, from this worktree:
 
 ```sh
-env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_scorer_review_codex205.py --basetemp=.scratch/triviaqa-codex205/final > triviaqa-scorer-review-codex205-test-result.txt 2>&1
+env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_scorer_review_codex205.py --basetemp=/tmp/harnessgrad-pytest-triviaqa-codex205-final > triviaqa-scorer-review-codex205-test-result.txt 2>&1
 ```
 
 Exit 0: **38 passed**, no failures/skips. The new suite uses the shared private

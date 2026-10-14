@@ -1,6 +1,6 @@
 """Offline source-integrity and fabricated-input tests; no dataset adapter import.
 
-Run with --basetemp=.scratch/twowikimultihopqa-codex197/pytest. Missing source,
+Run with --basetemp=/tmp/harnessgrad-pytest-twowikimultihopqa-codex197-pytest. Missing source,
 license or real ujson fails the gate; nothing is fetched or substituted at runtime.
 """
 from __future__ import annotations

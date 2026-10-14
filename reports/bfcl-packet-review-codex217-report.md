@@ -37,7 +37,7 @@ against the local source contract and selected-reader source. Work stayed in
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. \
   TMPDIR=/tmp/hg-codex-217/.scratch/bfcl-codex217/tmp \
   python3 -m pytest -q -p no:cacheprovider \
-  --basetemp=.scratch/bfcl-codex217/pytest \
+  --basetemp=/tmp/harnessgrad-pytest-bfcl-codex217-pytest \
   tests/quality/test_bfcl_ast_source_contract.py \
   tests/quality/test_dataset_blockers.py
 ```

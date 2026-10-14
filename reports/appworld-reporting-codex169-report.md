@@ -84,13 +84,14 @@ nonmeasurement overrides, source-split contradictions, selected-only reads,
 private-field omission, existing-output preservation, help text and current
 progress/event limitations. Fixtures do not represent benchmark measurements.
 
-Validation command (temporary files remain inside this worktree):
+Validation command (pytest temporary files must stay outside the platform because
+driver-based tests use `tmp_path` as a harness work root):
 
 ```sh
 python3 -m pytest -q \
   tests/quality/test_appworld_receipt_integration_codex169.py \
   tests/quality/test_appworld_reporting.py \
-  --basetemp=/tmp/hg-codex-169/.pytest-tmp-codex169
+  --basetemp=/tmp/harnessgrad-pytest-codex169-pytest-tmp-codex169
 ```
 
 Result: **30 passed in 0.96s**. `git diff --check` passed. The test scratch directory

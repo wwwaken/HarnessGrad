@@ -300,7 +300,7 @@ harnessgrad_work/
 *.bundle
 
 # ------------------------------------------------------------ local scratch ---
-# pytest basetemp and Codex/review scratch trees: test output, never source.
+# Codex/review scratch trees: never source. Keep pytest basetemp outside the platform.
 .scratch/
 .overleaf-mcp/
 

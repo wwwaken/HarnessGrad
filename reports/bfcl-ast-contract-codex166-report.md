@@ -92,7 +92,7 @@ Executed from the worktree:
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m pytest -q \
   -p no:cacheprovider \
-  --basetemp=/tmp/hg-codex-166/.tmp-bfcl-codex166 \
+  --basetemp=/tmp/harnessgrad-pytest-codex166-tmp-bfcl-codex166 \
   tests/quality/test_bfcl_selected.py
 ```
 

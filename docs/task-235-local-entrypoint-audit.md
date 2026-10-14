@@ -36,7 +36,7 @@ The final focused suite passed **255 tests in 0.57s**, without failures or skips
 env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. \
   TMPDIR=/tmp/hg-codex-235/.scratch/local-entrypoint-codex235 \
   python3 -m pytest -q -p no:cacheprovider \
-  --basetemp /tmp/hg-codex-235/.scratch/local-entrypoint-codex235/pytest-final \
+  --basetemp /tmp/harnessgrad-pytest-codex235-local-entrypoint-codex235-pytest-final \
   tests/quality/test_local_entrypoint_docs_codex235.py \
   tests/quality/test_shared_admission_wiring_codex163.py \
   tests/quality/test_runner_admission.py \

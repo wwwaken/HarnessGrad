@@ -196,7 +196,7 @@ disabled, bytecode/cache disabled, and task-local temporary paths:
 mkdir -p .scratch/ujson-codex226-tests
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
   TMPDIR="$PWD/.scratch/ujson-codex226-tests" python -B -m pytest -q \
-  -p no:cacheprovider --basetemp=.scratch/ujson-codex226-tests/pytest \
+  -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-ujson-codex226-tests-pytest \
   tests/quality/test_ujson_pypi_codex226.py tests/quality/test_dataset_blockers.py
 python -B tools/check_dataset_blockers.py
 ```

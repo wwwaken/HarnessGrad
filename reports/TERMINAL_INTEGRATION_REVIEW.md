@@ -84,7 +84,7 @@ Executed only the existing synthetic artifact contract suite:
 ```text
 PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
   -p no:cacheprovider \
-  --basetemp=/tmp/hg-codex-161/.terminal-integration-pytest-codex161 \
+  --basetemp=/tmp/harnessgrad-pytest-codex161-terminal-integration-pytest-codex161 \
   tests/quality/test_terminal_artifact_admission.py
 52 passed in 0.21s
 ```

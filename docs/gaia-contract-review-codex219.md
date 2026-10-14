@@ -46,7 +46,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
   tests/quality/test_lifecycle_receipt_codex177.py \
   tests/quality/test_diagnostic_policy.py \
   -k 'not driver and not eval_side' \
-  --basetemp=/tmp/hg-codex-219/.pytest_cache/codex219/pytest -p no:cacheprovider
+  --basetemp=/tmp/harnessgrad-pytest-codex219-codex219-pytest -p no:cacheprovider
 ```
 
 Result: **285 passed, 11 deselected in 2.08s**, exit 0, no skips. The deselections

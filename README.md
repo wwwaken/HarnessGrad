@@ -145,6 +145,18 @@ describes an optional enhancement for formal deployments that need verified
 per-run byte/inode bounds. Local runs without that evidence cannot claim those
 guarantees; existing gated diagnostic/pilot requirements still apply.
 
+## Running tests
+
+If you set `--basetemp`, it must be **OUTSIDE the platform tree**. Driver-based
+tests use pytest's `tmp_path` as a harness work root; the runner correctly refuses
+workspaces inside the platform. Use a dedicated external directory under `/tmp`
+(pytest clears it), or omit the option to keep pytest's normal default:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
+    -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-quality tests/quality
+```
+
 ## If your harness has dependencies
 
 A harness that needs a package its task image does not have must say so in `harness.json`:

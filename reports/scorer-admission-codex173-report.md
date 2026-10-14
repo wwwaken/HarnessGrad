@@ -21,7 +21,7 @@ evidence; all are unmeasured and carry `production_authorized=false`.
 Validation completed:
 
 ```text
-python -m pytest -q tests/quality/test_scorer_admission_codex173.py tests/quality/test_scorer_bundle_codex170.py tests/quality/test_terminal_artifact_admission.py --basetemp=/tmp/hg-codex-173/.pytest-tmp-codex173
+python -m pytest -q tests/quality/test_scorer_admission_codex173.py tests/quality/test_scorer_bundle_codex170.py tests/quality/test_terminal_artifact_admission.py --basetemp=/tmp/harnessgrad-pytest-codex173-pytest-tmp-codex173
 123 passed in 0.47s
 git diff --check: passed
 ```

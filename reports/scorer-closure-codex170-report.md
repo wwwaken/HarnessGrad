@@ -112,7 +112,8 @@ closure. The new reusable bundle does not implicitly add or admit such a mount.
 
 ## Validation and review
 
-Command (all artifacts inside the authorized worktree):
+Command (pytest scratch must be outside the platform because driver-based tests
+use `tmp_path` as a harness work root):
 
 ```bash
 mkdir -p .scratch/scorer-bundle-codex170
@@ -121,7 +122,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
   python3 -m pytest -q \
   tests/quality/test_scorer_bundle_codex170.py \
   tests/quality/test_terminal_artifact_admission.py \
-  --basetemp=.scratch/scorer-bundle-codex170/pytest \
+  --basetemp=/tmp/harnessgrad-pytest-scorer-bundle-codex170-pytest \
   -o cache_dir=.scratch/scorer-bundle-codex170/pytest-cache
 ```
 

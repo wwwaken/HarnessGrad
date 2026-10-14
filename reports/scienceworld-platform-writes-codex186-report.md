@@ -54,7 +54,7 @@ mkdir -p .scratch/scienceworld-platform-writes-codex186
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
 TMPDIR=/tmp/hg-codex-186/.scratch/scienceworld-platform-writes-codex186 \
 python3 -m pytest -q -p no:cacheprovider \
-  --basetemp=/tmp/hg-codex-186/.scratch/scienceworld-platform-writes-codex186/pytest \
+  --basetemp=/tmp/harnessgrad-pytest-codex186-scienceworld-platform-writes-codex186-pytest \
   tests/quality/test_scienceworld_platform_writes_codex186.py \
   tests/quality/test_scienceworld_integrity_codex181.py \
   tests/quality/test_dataset_blockers.py

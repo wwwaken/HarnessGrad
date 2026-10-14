@@ -61,11 +61,11 @@ Changes are confined to strict admission in `tools/lcb740_identity.py`, focused
 tests, this gate report, and the integration journal. No external record or
 approval was fabricated. Existing evidence receipts are preserved.
 
-Focused validation: **80 passed** using the following command after creating the
-workspace-local `.scratch` parent:
+Focused validation: **80 passed**. The reusable command now uses an external
+pytest basetemp, required when driver-based tests use `tmp_path` as a harness work root:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q -p no:cacheprovider tests/quality/test_lcb740_identity.py --basetemp=.scratch/lcb740-gate-validation
+PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q -p no:cacheprovider tests/quality/test_lcb740_identity.py --basetemp=/tmp/harnessgrad-pytest-lcb740-gate-validation
 ```
 
 Tests use the public statement and explicitly synthetic metadata. They verify

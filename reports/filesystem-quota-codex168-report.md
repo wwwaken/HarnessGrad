@@ -29,7 +29,7 @@ this finding. Runtime source and existing tests are unchanged.
 Validation command (synthetic contracts only):
 
 ```sh
-env PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q tests/quality/test_runner_admission.py tests/quality/test_terminal_artifact_admission.py --basetemp=/tmp/hg-codex-168/.quota-audit-test-tmp -p no:cacheprovider > filesystem-quota-codex168-test-result.txt 2>&1
+env PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q tests/quality/test_runner_admission.py tests/quality/test_terminal_artifact_admission.py --basetemp=/tmp/harnessgrad-pytest-codex168-quota-audit-test-tmp -p no:cacheprovider > filesystem-quota-codex168-test-result.txt 2>&1
 ```
 
 Result: **252 passed in 0.35s**; [captured output](filesystem-quota-codex168-test-result.txt).

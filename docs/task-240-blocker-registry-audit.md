@@ -45,7 +45,7 @@ mkdir -p .scratch/task240
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 \
   TMPDIR=/tmp/hg-codex-240/.scratch/task240 python3 -B -m pytest -q \
-  -p no:cacheprovider --basetemp=.scratch/task240-registry-final \
+  -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-task240-registry-final \
   tests/quality/test_dataset_blockers.py
 git diff --check
 ```

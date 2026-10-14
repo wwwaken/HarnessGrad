@@ -148,7 +148,7 @@ local source pins. Existing offline synthetic suites passed:
 env PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q \
   tests/quality/test_terminal_artifact_admission.py \
   tests/quality/test_scorer_bundle_codex170.py \
-  --basetemp=/tmp/hg-codex-230/docs/_build/task230-source-audit/pytest-tmp \
+  --basetemp=/tmp/harnessgrad-pytest-codex230-task230-source-audit-pytest-tmp \
   -p no:cacheprovider
 84 passed in 0.33s
 ```

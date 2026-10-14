@@ -114,7 +114,7 @@ tests/quality/test_provider_failure.py::test_a_passing_artifact_survives_the_dea
 tests/quality/test_provider_failure.py::test_a_trial_that_measured_survives_a_later_connection_death
 ```
 
-Pytest used `--basetemp=/tmp/hg-codex-159/.policy-test-tmp`; task-created test
+Pytest used `--basetemp=/tmp/harnessgrad-pytest-codex159-policy-test-tmp`; task-created test
 artifacts were removed after inspection. Existing end-to-end tests that launch
 the driver through an evaluation were deliberately excluded.
 

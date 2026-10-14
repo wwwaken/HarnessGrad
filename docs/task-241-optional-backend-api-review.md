@@ -70,7 +70,7 @@ and staged diagnostic evidence before expansion.
 Fresh validation returned **393 passed in 1.16s**, exit status zero:
 
 ```text
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_optional_backend_api_codex241.py tests/quality/test_scorer_backend_codex213.py tests/quality/test_lifecycle_receipt_codex177.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_runner_admission.py --basetemp=/tmp/hg-codex-241/.pytest-tmp-codex241
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_optional_backend_api_codex241.py tests/quality/test_scorer_backend_codex213.py tests/quality/test_lifecycle_receipt_codex177.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_runner_admission.py --basetemp=/tmp/harnessgrad-pytest-codex241-pytest-tmp-codex241
 ```
 
 `git diff --check` passed. Task-owned test fixture output stayed in the worktree;

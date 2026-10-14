@@ -171,7 +171,7 @@ or authorization to mutate the host. Do not fill idle capacity with duplicates.
   valid, **28 datasets / 8 shared blockers / 11 historical records**,
   `production_authorized=false`.
 - Existing guarded source-only registry suite: **52 passed**, exit 0; no skips.
-  Command: `env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp/hg-codex-234/.scratch/task234-readiness python3 -B -m pytest -q -p no:cacheprovider --basetemp=.scratch/task234-readiness/pytest tests/quality/test_dataset_blockers.py`.
+  Command: `env PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp/hg-codex-234/.scratch/task234-readiness python3 -B -m pytest -q -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-task234-readiness-pytest tests/quality/test_dataset_blockers.py`.
   Its guards refuse adapters, external reads, sockets and subprocesses. No scorer
   differential or dataset/runtime suite was run for this metadata-only task.
 - Companion JSON/report checks verify 28 exact unique rows, 24 blocked/4 excluded,

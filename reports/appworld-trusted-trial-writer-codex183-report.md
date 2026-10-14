@@ -55,7 +55,8 @@ writer tests cover nested task paths and scorer tallies. Synthetic fixtures that
 expect aligned SGC now supply original trial IDs; the generic trial-score fixture
 supplies its explicit diagnostic scores.
 
-Validation command (all scratch files inside this worktree):
+Validation command (pytest scratch must be outside the platform because
+driver-based tests use `tmp_path` as a harness work root):
 
 ```sh
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
@@ -69,7 +70,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q 
   tests/quality/test_task_id_paths.py::test_a_verdict_for_a_nested_id_is_written \
   tests/quality/test_dataset_blockers.py \
   -k 'not trusted_adapter and not verifier_keeps and not missing_log' \
-  --basetemp=/tmp/hg-codex-183/.pytest-tmp-codex183
+  --basetemp=/tmp/harnessgrad-pytest-codex183-pytest-tmp-codex183
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 git diff --check
 ```

@@ -47,7 +47,7 @@ Run from `/tmp/hg-codex-180`:
 ```sh
 mkdir -p .scratch/metadata-codex180
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
-  -p no:cacheprovider --basetemp=.scratch/metadata-codex180/pytest \
+  -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-metadata-codex180-pytest \
   tests/quality/test_agentdojo_metadata_privacy.py \
   tests/quality/test_dataset_blockers.py
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py

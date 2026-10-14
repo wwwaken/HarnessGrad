@@ -108,7 +108,7 @@ python3 -m pytest -q \
   tests/quality/test_diagnostic_policy.py \
   tests/quality/test_runner_admission.py \
   tests/quality/test_shared_admission_wiring_codex163.py \
-  --basetemp=/tmp/hg-codex-177/.scratch/lifecycle-codex177/pytest
+  --basetemp=/tmp/harnessgrad-pytest-codex177-lifecycle-codex177-pytest
 ```
 
 `git diff --check` passed. This change does not provision quota enforcement, build

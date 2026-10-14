@@ -1,0 +1,92 @@
+Before fix: original in-platform failure reproduction
+/mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q --tb=short -p no:cacheprovider --basetemp=.scratch/pytest-basetemp-ref9-before tests/quality/test_trials_and_unmeasured.py::test_trials_average_and_record_their_spread tests/quality/test_trials_and_unmeasured.py::test_a_check_that_never_ran_is_invalid_not_zero tests/quality/test_trials_and_unmeasured.py::test_trials_reach_the_curve_point_end_to_end tests/quality/test_trials_and_unmeasured.py::test_one_trial_puts_no_trial_list_on_the_point tests/quality/test_trials_and_unmeasured.py::test_an_unchanged_tree_is_measured_once_and_says_so tests/quality/test_trials_and_unmeasured.py::test_a_changed_tree_is_not_a_cache_hit tests/quality/test_trials_and_unmeasured.py::test_a_real_run_leaves_a_progress_record tests/quality/test_run_schema.py::test_the_declared_acceptance_rule_reaches_the_run_record
+..FFFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+_________________ test_trials_reach_the_curve_point_end_to_end _________________
+tests/quality/test_trials_and_unmeasured.py:77: in test_trials_reach_the_curve_point_end_to_end
+    assert proc.returncode == 0, f"{proc.stdout[-500:]}\n{proc.stderr[-500:]}"
+E   AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E
+E     refusing to run: the workspace /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-before/test_trials_reach_the_curve_po0/work/trials-check/workspace is inside the platform (/tmp/hg-ref-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.
+E
+E   assert 2 == 0
+E    +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...f-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.\n').returncode
+________________ test_one_trial_puts_no_trial_list_on_the_point ________________
+tests/quality/test_trials_and_unmeasured.py:102: in test_one_trial_puts_no_trial_list_on_the_point
+    assert proc.returncode == 0, f"{proc.stdout[-500:]}\n{proc.stderr[-500:]}"
+E   AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E
+E     refusing to run: the workspace /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-before/test_one_trial_puts_no_trial_l0/work/one-trial/workspace is inside the platform (/tmp/hg-ref-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.
+E
+E   assert 2 == 0
+E    +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...f-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.\n').returncode
+_____________ test_an_unchanged_tree_is_measured_once_and_says_so ______________
+tests/quality/test_trials_and_unmeasured.py:216: in test_an_unchanged_tree_is_measured_once_and_says_so
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+E   AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E
+E     refusing to run: the workspace /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-before/test_an_unchanged_tree_is_meas0/work/cache-content/workspace is inside the platform (/tmp/hg-ref-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.
+E
+E   assert 2 == 0
+E    +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...f-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.\n').returncode
+____________________ test_a_changed_tree_is_not_a_cache_hit ____________________
+tests/quality/test_trials_and_unmeasured.py:246: in test_a_changed_tree_is_not_a_cache_hit
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+E   AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E
+E     refusing to run: the workspace /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-before/test_a_changed_tree_is_not_a_c0/work/cache-changed/workspace is inside the platform (/tmp/hg-ref-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.
+E
+E   assert 2 == 0
+E    +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop', '--mode', 'A', '--...f-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.\n').returncode
+___________________ test_a_real_run_leaves_a_progress_record ___________________
+tests/quality/test_trials_and_unmeasured.py:339: in test_a_real_run_leaves_a_progress_record
+    assert proc.returncode == 0, f"{proc.stdout[-600:]}\n{proc.stderr[-600:]}"
+E   AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E
+E     refusing to run: the workspace /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-before/test_a_real_run_leaves_a_progr0/work/progress-record/workspace is inside the platform (/tmp/hg-ref-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.
+E
+E   assert 2 == 0
+E    +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...f-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.\n').returncode
+___________ test_the_declared_acceptance_rule_reaches_the_run_record ___________
+tests/quality/test_run_schema.py:248: in test_the_declared_acceptance_rule_reaches_the_run_record
+    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+E   AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E
+E     refusing to run: the workspace /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-before/test_the_declared_acceptance_r0/work/rule-record/workspace is inside the platform (/tmp/hg-ref-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.
+E
+E   assert 2 == 0
+E    +  where 2 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...f-9). A harness there can read the driver and .env and write anywhere in the platform. Pass --work-root outside it.\n').returncode
+=========================== short test summary info ============================
+FAILED tests/quality/test_trials_and_unmeasured.py::test_trials_reach_the_curve_point_end_to_end
+FAILED tests/quality/test_trials_and_unmeasured.py::test_one_trial_puts_no_trial_list_on_the_point
+FAILED tests/quality/test_trials_and_unmeasured.py::test_an_unchanged_tree_is_measured_once_and_says_so
+FAILED tests/quality/test_trials_and_unmeasured.py::test_a_changed_tree_is_not_a_cache_hit
+FAILED tests/quality/test_trials_and_unmeasured.py::test_a_real_run_leaves_a_progress_record
+FAILED tests/quality/test_run_schema.py::test_the_declared_acceptance_rule_reaches_the_run_record
+6 failed, 2 passed in 2.35s
+Exit code: 1
+
+Environment: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1; mock/demo test backends only.
+
+After fix: in-platform core invocation aborts before collection
+/mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q --tb=short -p no:cacheprovider --basetemp=.scratch/pytest-basetemp-ref9-after tests/quality/test_trials_and_unmeasured.py::test_trials_average_and_record_their_spread tests/quality/test_trials_and_unmeasured.py::test_a_check_that_never_ran_is_invalid_not_zero tests/quality/test_trials_and_unmeasured.py::test_trials_reach_the_curve_point_end_to_end tests/quality/test_trials_and_unmeasured.py::test_one_trial_puts_no_trial_list_on_the_point tests/quality/test_trials_and_unmeasured.py::test_an_unchanged_tree_is_measured_once_and_says_so tests/quality/test_trials_and_unmeasured.py::test_a_changed_tree_is_not_a_cache_hit tests/quality/test_trials_and_unmeasured.py::test_a_real_run_leaves_a_progress_record tests/quality/test_run_schema.py::test_the_declared_acceptance_rule_reaches_the_run_record
+ERROR: --basetemp must be OUTSIDE the platform tree (/tmp/hg-ref-9); got /tmp/hg-ref-9/.scratch/pytest-basetemp-ref9-after. Driver-based tests use tmp_path as a harness work root, which the runner correctly refuses inside the platform. Use --basetemp=/tmp/harnessgrad-pytest-quality or omit --basetemp.
+
+Exit code: 4; expected: 4
+
+After fix: external basetemp core invocation
+/mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q --tb=short -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-ref9-core tests/quality/test_trials_and_unmeasured.py::test_trials_average_and_record_their_spread tests/quality/test_trials_and_unmeasured.py::test_a_check_that_never_ran_is_invalid_not_zero tests/quality/test_trials_and_unmeasured.py::test_trials_reach_the_curve_point_end_to_end tests/quality/test_trials_and_unmeasured.py::test_one_trial_puts_no_trial_list_on_the_point tests/quality/test_trials_and_unmeasured.py::test_an_unchanged_tree_is_measured_once_and_says_so tests/quality/test_trials_and_unmeasured.py::test_a_changed_tree_is_not_a_cache_hit tests/quality/test_trials_and_unmeasured.py::test_a_real_run_leaves_a_progress_record tests/quality/test_run_schema.py::test_the_declared_acceptance_rule_reaches_the_run_record
+........                                                                 [100%]
+8 passed in 13.95s
+Exit code: 0; expected: 0
+
+After fix: both affected files and pytest startup regressions
+/mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q --tb=short -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-ref9-focused tests/quality/test_trials_and_unmeasured.py tests/quality/test_run_schema.py tests/quality/test_pytest_basetemp.py
+...........................s.......                                      [100%]
+34 passed, 1 skipped in 16.64s
+Exit code: 0; expected: 0
+
+Final static audit:
+PASS: all 59 original basetemp path arguments in 50 tracked files now use dedicated external /tmp/harnessgrad-pytest-* paths.
+PASS: driver.py and eval/runner.py are byte-for-byte unchanged.
+PASS: git diff --check.

@@ -42,7 +42,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 mkdir -p .scratch/registry-provenance-codex216-final
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
   -p no:cacheprovider --tb=short \
-  --basetemp=.scratch/registry-provenance-codex216-final/pytest \
+  --basetemp=/tmp/harnessgrad-pytest-registry-provenance-codex216-final-pytest \
   tests/quality/test_dataset_blockers.py \
   tests/quality/test_twowikimultihopqa_provenance_codex197.py
 ```

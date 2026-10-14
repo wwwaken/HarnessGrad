@@ -70,7 +70,7 @@ filesystem enforcement.
 ```bash
 env PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
   tests/quality/test_cached_pilot_admission.py \
-  --basetemp=/tmp/codex/112/worktree/.admission-tests -p no:cacheprovider
+  --basetemp=/tmp/harnessgrad-pytest-codex112-admission-tests -p no:cacheprovider
 ```
 
 Final result: **199 passed in 5.06s**, exit code 0, no skips or expected failures.

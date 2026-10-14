@@ -77,13 +77,13 @@ freshness, actual enforcement, runtime ownership/association or cleanup.
 Validation commands and results:
 
 ```text
-python -m pytest -q tests/quality/test_scorer_backend_codex213.py --basetemp=/tmp/hg-codex-221/.pytest-tmp-codex221
+python -m pytest -q tests/quality/test_scorer_backend_codex213.py --basetemp=/tmp/harnessgrad-pytest-codex221-pytest-tmp-codex221
 32 passed in 0.27s
 
-python -m pytest -q tests/quality/test_scorer_backend_codex213.py::test_policy_pin_mismatch_stays_blocked_when_runtime_observation_is_missing --basetemp=/tmp/hg-codex-221/.pytest-tmp-codex221-regression
+python -m pytest -q tests/quality/test_scorer_backend_codex213.py::test_policy_pin_mismatch_stays_blocked_when_runtime_observation_is_missing --basetemp=/tmp/harnessgrad-pytest-codex221-pytest-tmp-codex221-regression
 1 failed in 0.04s (before implementation fix; expected regression failure)
 
-python -m pytest -q tests/quality/test_scorer_backend_codex213.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_scorer_bundle_codex170.py --basetemp=/tmp/hg-codex-221/.pytest-tmp-codex221-focused
+python -m pytest -q tests/quality/test_scorer_backend_codex213.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_scorer_bundle_codex170.py --basetemp=/tmp/harnessgrad-pytest-codex221-pytest-tmp-codex221-focused
 104 passed in 0.30s
 
 git diff --check

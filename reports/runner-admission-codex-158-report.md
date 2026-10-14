@@ -33,7 +33,7 @@ PYTHONDONTWRITEBYTECODE=1 python -m pytest -q \
   tests/quality/test_container.py::test_snapshot_admission_rejects_writable_layer_before_commit \
   tests/quality/test_container.py::test_commit_exit_137_is_classified_as_oom \
   tests/quality/test_container.py::test_commit_disk_and_resource_errors_are_classified \
-  --basetemp=/tmp/hg-codex-158/.test-tmp/final-admission --tb=short
+  --basetemp=/tmp/harnessgrad-pytest-codex158-test-tmp-final-admission --tb=short
 ```
 
 Result: **402 passed in 5.36s**, comprising 200 new synthetic tests, 199 existing

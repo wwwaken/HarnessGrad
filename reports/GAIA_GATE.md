@@ -129,7 +129,7 @@ env PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
   tests/quality/test_container.py::test_snapshot_admission_rejects_writable_layer_before_commit \
   tests/quality/test_container.py::test_commit_exit_137_is_classified_as_oom \
   tests/quality/test_container.py::test_commit_disk_and_resource_errors_are_classified \
-  --basetemp=/tmp/hg-codex-151/.pytest_cache/gaia-offline -p no:cacheprovider
+  --basetemp=/tmp/harnessgrad-pytest-codex151-gaia-offline -p no:cacheprovider
 ```
 
 The initial 84-test suite passed. The first expanded run had three fixture setup

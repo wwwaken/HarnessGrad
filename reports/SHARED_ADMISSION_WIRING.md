@@ -103,7 +103,7 @@ admission caller. None supplies an exception to the new runner refusal.
 Focused validation command (the initial fixture-failure run omitted `--tb=short`):
 
 ```text
-PYTHONDONTWRITEBYTECODE=1 python -m pytest -q --tb=short -p no:cacheprovider --basetemp=/tmp/hg-codex-163/.pytest-codex-163-admission tests/quality/test_shared_admission_wiring_codex163.py tests/quality/test_runner_admission.py
+PYTHONDONTWRITEBYTECODE=1 python -m pytest -q --tb=short -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-codex163-pytest-codex-163-admission tests/quality/test_shared_admission_wiring_codex163.py tests/quality/test_runner_admission.py
 249 passed in 0.28s
 ```
 

@@ -100,7 +100,7 @@ env TMPDIR=/tmp/hg-codex-242/.scratch/task242-stdlib-temp \
   tests/quality/test_shared_admission_wiring_codex163.py \
   tests/quality/test_staged_receipt_audit_codex193.py \
   tests/quality/test_diagnostic_policy.py \
-  --basetemp=/tmp/hg-codex-242/.scratch/task242-focused-final
+  --basetemp=/tmp/harnessgrad-pytest-codex242-task242-focused-final
 ```
 
 Focused result: **156 passed**, no failures or skips. The

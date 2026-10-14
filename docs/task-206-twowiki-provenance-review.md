@@ -68,7 +68,7 @@ the unchanged provenance test SHA-256 is
 These are local identity checks, not fresh installation/deployment evidence.
 
 ```sh
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=.scratch/twowikimultihopqa-codex206/pytest tests/quality/test_twowikimultihopqa_provenance_codex197.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-twowikimultihopqa-codex206-pytest tests/quality/test_twowikimultihopqa_provenance_codex197.py
 ```
 
 Exit 0:
@@ -82,7 +82,7 @@ Registry checks:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=.scratch/blocker-registry-codex206/pytest tests/quality/test_dataset_blockers.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-blocker-registry-codex206-pytest tests/quality/test_dataset_blockers.py
 ```
 
 Both exited 0. Checker output:

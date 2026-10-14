@@ -247,7 +247,7 @@ rather than shipping a second transcription.
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
-  -p no:cacheprovider --basetemp=.scratch/blockers/pytest tests/quality/test_dataset_blockers.py
+  -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-blockers-pytest tests/quality/test_dataset_blockers.py
 python3 tools/dataset_classes.py
 python3 -m pytest -q tests/quality/test_dataset_classes.py      # ~14 min, run it anyway
 ```

@@ -7,6 +7,13 @@
 3. Keep up to 10 independent Codex tasks active when work can be parallelized. Every task must have a unique output filename; never trust inherited `reports/report.md` without checking the diff and commit.
 4. Avoid idle rounds: combine waits with concrete receipt inspection, diff review, test execution, journal work or launch preparation. Do not spend a round only polling unchanged status.
 
+## Test execution
+
+Pytest `--basetemp` must be **OUTSIDE the platform tree**, for example
+`--basetemp=/tmp/harnessgrad-pytest-quality`. Driver-based tests use `tmp_path`
+as a harness work root, which the runner correctly refuses inside the platform.
+Omitting the option preserves pytest's normal default.
+
 ## GPU execution
 
 - GPU0: endpoint `http://127.0.0.1:8001/v1`.

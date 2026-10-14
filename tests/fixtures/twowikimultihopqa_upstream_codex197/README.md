@@ -114,8 +114,11 @@ request; authoritative evaluator source has been acquired.
 
 From `/tmp/hg-codex-197`:
 
+`--basetemp` must be **OUTSIDE** the platform because driver-based tests use
+`tmp_path` as a harness work root.
+
 ```sh
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_twowikimultihopqa_provenance_codex197.py --basetemp=.scratch/twowikimultihopqa-codex197/pytest
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_twowikimultihopqa_provenance_codex197.py --basetemp=/tmp/harnessgrad-pytest-twowikimultihopqa-codex197-pytest
 ```
 
 The suite verifies source/license/metadata integrity, fails closed on drift and

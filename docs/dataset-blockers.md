@@ -129,7 +129,7 @@ Validate without importing adapters or loading a task pool:
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q \
-  -p no:cacheprovider --basetemp=.scratch/blocker-registry-codex178/pytest \
+  -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-blocker-registry-codex178-pytest \
   tests/quality/test_dataset_blockers.py
 ```
 
