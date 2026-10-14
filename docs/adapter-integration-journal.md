@@ -1175,3 +1175,39 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Evidence: [review and remaining work](../reports/sb-option-b-review.md), [focused Python output](../reports/sb-option-b-focused-tests.txt), [comparison output](../reports/sb-option-b-web-tests.txt), [baseline TypeScript comparison](../reports/sb-option-b-typecheck.txt), and [registry validation](../reports/sb-option-b-registry-check.txt). Final focused run: 221 passed, one optional absent historical-run test skipped; comparison file: 15 passed. TypeScript has the same missing i18n parts module/derived errors at unchanged HEAD and in this patch.
 - Disposition: both `scorer-offline-closure` and `artifact-only-state-export` remain open with exact status `code-solvable`. Generic opt-in integration and class refusal are established; dataset-specific complete closure, authoritative exports/private inputs, ownership/quiescence/lifecycle and live execution/cleanup/equivalence evidence remain. Observations/actions narrowed; IDs, references and historical receipts preserved. Parent review/merge remains separate.
 - Final import-direction review placed declaration metadata in `data.scaffolds`, shared by registry and verifier. Follow-up focused isolation/import-direction/blocker-registry controls: 86 passed; [output](../reports/sb-option-b-review-tests.txt). Registry remains valid with 28 datasets, four active shared blockers and 11 preserved historical records.
+## Parent review and merge — E1, E2, E3, SB — 2026-10-15
+
+- Merged into `main` after individual diff review and focused-test runs, on top of the
+  operator's own commits: `ff391e6` (E1 FEVER/Physics/Bird), `a13ef82` (E2 upstream
+  provenance), `05ccd81` (E3), `89512c3` (SB scorer isolation classes). Merge result
+  `8da84f8`; only `docs/adapter-integration-journal.md` conflicted and was resolved by
+  keeping both sides.
+- Independent verification of SB, not the worker's report: `tools/check_dataset_blockers.py`
+  returns `valid=true` (28 datasets, 4 shared blockers, 11 historical records,
+  `production_authorized=false`). `tests/quality/test_dataset_blockers.py` 54 passed.
+  `test_isolation.py` + `test_scorer_isolation_option_b.py` 37 passed; web
+  `src/logic/compare.test.ts` 15 passed.
+- Mixed-class refusal is real, not decorative: `common_class` raises `IsolationMismatch`
+  when the observed set is larger than one, and it is called on all four aggregation
+  surfaces (curve point via `tracing.py:396`, cached per-task verdicts `runner.py:1152`,
+  fresh per-task verdicts `runner.py:1200`, run-level `runner.py:1327`). `unknown` is never
+  promoted to pristine; a declared class that disagrees with the executed class makes the
+  verdict unmeasured rather than silently comparable.
+- B10's compatibility objection is resolved by the class split rather than waived:
+  `pristine-offline` still requires a pinned image and `network="none"`, but it is opt-in for
+  sealed bundles, while Terminal-Bench and AppWorld declare `snapshot-service` and keep their
+  snapshot, dependency network, service network and recordings. Native commands and answer
+  checks keep their executed `actor-workdir` / `in-process` classes.
+- One failure attributed to the environment, not to SB:
+  `test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers` fails with
+  `platform_listing is None`. Reproduced identically in a throwaway worktree at pre-SB
+  `HEAD~1` (`7b0c294`), so it predates this merge and is untouched by it. Recorded here so it
+  is not mistaken for a regression introduced by the isolation work.
+- State after the merge: zero blockers closed this round. Both `code-solvable` shared
+  blockers now describe the mechanism as implemented and name only dataset-specific
+  provisioning and live evidence as remaining, which is narrower than before but still open,
+  so they correctly stay open. `runtime-observations` and `pristine-verifier` are unchanged.
+  Five datasets (`agentdojo`, `gsm8k`, `jericho`, `musique`, `scienceworld`) still carry zero
+  own blockers; the four shared blockers, not the 25 dataset-own ones, remain the binding
+  constraint on the first fully cleared dataset.
+- No production authorization, pilot, model, GPU or endpoint call is implied by this entry.
