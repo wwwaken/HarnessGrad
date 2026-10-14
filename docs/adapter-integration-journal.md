@@ -2823,3 +2823,34 @@ isolated worktree; parent review/merge remains separate.
   are retained in `reports/w-caps-validation.txt`. Only the shared scorer blocker's
   observations/evidence are sharpened; both shared blockers and AppWorld's
   `successful-task-evidence` remain open. Historical runs/receipts/archives are untouched.
+## Parent review and merge — w-caps — 2026-10-15
+
+- Merged `afd1f87` (w-caps). Result `ffaa491`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`.
+- **A concrete custody gap is closed and it was real rather than stylistic.** The AppWorld
+  **service** role declared no CPU or memory limits at all, and w-caps established from source
+  that this was not an evidenced deliberate exemption - the actor and verifier roles both run with
+  container defaults (2 CPUs, 4 GiB, 1024 PIDs). The service now declares 2 CPUs / 4096 MiB and
+  receives the fixed 1024-PID cap through new **opt-in** service-resource plumbing. The plumbing
+  is genuinely additive: `eval/service/services.py` only builds the limit flags when the service
+  actually declares `cpus`/`memory_mb`, explicitly "preserving existing uncapped services", and
+  `data/scaffolds/registry.py` validates those fields as finite numbers above a floor. 141 focused
+  tests passed.
+- **A risk I am recording because it is mine to record, not the worker's.** The AppWorld control
+  merged last round ran successfully while the service was **uncapped**. Capping it at 4096 MiB is
+  a behaviour change whose live consequence is unverified - w-caps says plainly that its Docker
+  arguments were verified with mocks and that "post-change live enforcement remains unobserved",
+  and it started no containers. If a future AppWorld run fails with an OOM or a resource refusal,
+  this change is the first thing to suspect. The direction of the change is still right (an
+  uncapped shared service is exactly the kind of missing custody S5 asks about), but the risk is
+  now written down rather than discovered later.
+- The one failing test is pre-existing and was attributed rather than assumed:
+  `test_services.py::test_synthetic_model_gateway_backend_still_isolates_the_internet` fails
+  identically in a pristine control worktree at pre-`w-caps` `3616713`, and `test_services.py` was
+  already classified as an existing failure by the lane runner. It is not a regression from this
+  merge.
+- Still in flight at the end of this round and NOT merged: `w-prifix` (the three pristine-path
+  defect fixes plus a re-run of the control). Nothing about its result is claimed here.
+- Resource state: w-caps started no containers and ran no benchmark, model, GPU or endpoint call -
+  source inspection, mock-verified Docker arguments and local tests only. Both GPUs stayed idle and
+  no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
