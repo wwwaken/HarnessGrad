@@ -1,0 +1,136 @@
+{
+  "identity": {
+    "dataset": "strategyqa",
+    "numpy_source_sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+    "numpy_version": "1.26.4",
+    "sari_source_sha256": "2aaef3836a9d8f3f501efb859c36359c408015f833b4db2e4efeef8aa8e271b4",
+    "scorer": "official",
+    "source": "tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/eval.py",
+    "source_sha256": "68c0edcd2fd26daf2cec368302d9f564cbf351288aa4a2c265f47bdc00704044"
+  },
+  "raw_aggregate_metrics": {
+    "Accuracy": 0.16666666666666666
+  },
+  "results": [
+    {
+      "canonical_gold": true,
+      "correct": true,
+      "id": "s01",
+      "panel": "valid_official_boolean",
+      "prediction": true,
+      "raw_output": {
+        "Accuracy": 1.0
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": true,
+      "id": "s02",
+      "panel": "valid_official_boolean",
+      "prediction": false,
+      "raw_output": {
+        "Accuracy": 1.0
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": false,
+      "id": "s03",
+      "panel": "valid_official_boolean",
+      "prediction": true,
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s04",
+      "panel": "valid_official_boolean",
+      "prediction": false,
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s05",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "Yes",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": false,
+      "id": "s06",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "No",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s07",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "YES!",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": false,
+      "id": "s08",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "  no\n",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s09",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "a yes",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s10",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "Yes, because this is true",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s11",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "No",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": false,
+      "id": "s12",
+      "panel": "adapter_text_official_out_of_contract",
+      "prediction": "",
+      "raw_output": {
+        "Accuracy": 0.0
+      }
+    }
+  ]
+}

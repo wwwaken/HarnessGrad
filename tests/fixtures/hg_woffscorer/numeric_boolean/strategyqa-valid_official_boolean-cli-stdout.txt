@@ -1,0 +1,13 @@
+====Input Arguments====
+{
+  "golds_file": "tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-golds.json",
+  "metrics_output_file": "tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-cli-metrics.json",
+  "predictions_file": "tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-predictions.json",
+  "retrieval_limit": 10
+}
+=======================
+{
+    "Accuracy": 0.5,
+    "SARI": 0.0,
+    "Recall@10": 0.0
+}

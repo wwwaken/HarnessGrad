@@ -1,0 +1,86 @@
+{
+  "identity": {
+    "dataset": "strategyqa",
+    "dataset_load_error": "PermissionError: controlled fixture excludes external dataset payload reads",
+    "fixture_prediction_projection": "canonical Boolean true/false to local Yes/No",
+    "import_only_parquet_reader_override": "refuse before native read; restored before score()",
+    "qa_base_sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e",
+    "scorer": "local",
+    "source": "data/datasets/strategyqa.py",
+    "source_sha256": "eaad45dfb944241fad84eb575882560ffcf7243de40c9d34fd0766a40c16a50a"
+  },
+  "results": [
+    {
+      "canonical_gold": true,
+      "correct": true,
+      "id": "s01",
+      "panel": "valid_official_boolean",
+      "passed_prediction": "Yes",
+      "prediction": true,
+      "raw_output": {
+        "correct": true,
+        "official": {
+          "label": "Yes",
+          "metric": "exact_match after ReWOO's normalize_answer",
+          "normalized_prediction": "yes"
+        },
+        "reward": 1.0,
+        "why": "matches 'yes' vs 'yes'; the whole answer is compared, not its first token"
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": true,
+      "id": "s02",
+      "panel": "valid_official_boolean",
+      "passed_prediction": "No",
+      "prediction": false,
+      "raw_output": {
+        "correct": true,
+        "official": {
+          "label": "No",
+          "metric": "exact_match after ReWOO's normalize_answer",
+          "normalized_prediction": "no"
+        },
+        "reward": 1.0,
+        "why": "matches 'no' vs 'no'; the whole answer is compared, not its first token"
+      }
+    },
+    {
+      "canonical_gold": false,
+      "correct": false,
+      "id": "s03",
+      "panel": "valid_official_boolean",
+      "passed_prediction": "Yes",
+      "prediction": true,
+      "raw_output": {
+        "correct": false,
+        "official": {
+          "label": "No",
+          "metric": "exact_match after ReWOO's normalize_answer",
+          "normalized_prediction": "yes"
+        },
+        "reward": 0.0,
+        "why": "no match for 'yes' vs 'no'; the whole answer is compared, not its first token"
+      }
+    },
+    {
+      "canonical_gold": true,
+      "correct": false,
+      "id": "s04",
+      "panel": "valid_official_boolean",
+      "passed_prediction": "No",
+      "prediction": false,
+      "raw_output": {
+        "correct": false,
+        "official": {
+          "label": "Yes",
+          "metric": "exact_match after ReWOO's normalize_answer",
+          "normalized_prediction": "no"
+        },
+        "reward": 0.0,
+        "why": "no match for 'no' vs 'yes'; the whole answer is compared, not its first token"
+      }
+    }
+  ]
+}
