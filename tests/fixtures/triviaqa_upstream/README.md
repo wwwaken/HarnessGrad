@@ -1,6 +1,7 @@
 # TriviaQA original evaluator fixture — Task 196
 
-Status: **source acquired and pinned; production equivalence fails**. Only public
+Status: **source acquired and pinned; current adapter EM components pass synthetic
+differentials; full export/evaluator equivalence remains unverified**. Only public
 code, license, dependency declarations, and GitHub/Git metadata were acquired.
 No TriviaQA questions, answers, documents, dataset archives, parquet, or heldout
 payloads were fetched or opened. No model or H0 run was performed.
@@ -105,14 +106,25 @@ or question/document keys. The adapter's historical validation counts and test
 blinding claims were not remeasured here; validation is not a test leaderboard
 score.
 
-## Current adapter mismatch and gates
+## Adapter correction and remaining gates
 
-The adapter remains unchanged and computes EM only. The existing differential
-test now compares against acquired source and **fails** on `A-Team`: upstream
-normalizes it to `team`; the adapter normalizes it to `ateam`. Other punctuation,
-underscore, and quote cases also have different semantics. Source acquisition
-closes the missing-source gate; it does not close the scorer-equivalence gate.
-The previous missing-source skip was removed so lost/corrupt fixtures fail.
+At acquisition in task 196, the unchanged adapter differential **failed** on
+`A-Team`: upstream normalized it to `team`; the adapter normalized it to `ateam`.
+Commit `fcbed17368e27d1f065ae334dee53f6b3973d91d` subsequently corrected punctuation,
+underscore, and quote normalization. Task 205 reviewed that correction and removed
+a separate 200-alias scoring cap: a fabricated match against alias 201 scored zero
+locally and one upstream. All aliases now reach the scoring maximum.
+
+New verifier evidence identifies the adapter as
+`triviaqa-alias-max-em-upstream-normalization-all-aliases-v2`, with the pinned
+upstream repository, commit, source path and SHA-256 in `official.reference`.
+That reference hash identifies upstream source, not the deployed adapter bytes;
+new run receipts must also pin the actual adapter/scorer and harness bytes.
+The adapter still computes per-row EM only, and retains local string coercion,
+Hub key support, float rewards and empty-reduction behavior. Full Hub export,
+grouping and denominator equivalence remains open. Historical receipts/results
+and the task-196 acquisition receipt are preserved with their original scope.
+Lost/corrupt fixtures fail rather than skip.
 
 `test_triviaqa_source_provenance_codex196.py` verifies the source identity chain,
 license linkage, dependency closure, and unchanged full evaluator/CLI on
@@ -123,18 +135,22 @@ imports and bytecode writes and rejects network connections. The existing
 adapter differential suite suppresses pool construction and forbids payload
 reads before importing its private adapter instance.
 
-Run from the repository root, with temporary output inside this worktree:
+The task-205 suite adds separator/Unicode differential cases, matches beyond
+alias 200 (normalized aliases, human answers and their combination), and actual
+shared-verifier evidence checks on synthetic hit/miss inputs. See
+[`triviaqa-scorer-review-codex205-report.md`](../../../triviaqa-scorer-review-codex205-report.md).
+
+Run the current review from the repository root, with temporary output inside this worktree:
 
 ```sh
-mkdir -p .scratch/triviaqa-codex196
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py --basetemp=.scratch/triviaqa-codex196/source-only
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_official_scorer.py --basetemp=.scratch/triviaqa-codex196/combined
+mkdir -p .scratch/triviaqa-codex205
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q tests/quality/test_triviaqa_source_provenance_codex196.py tests/quality/test_triviaqa_official_scorer.py tests/quality/test_triviaqa_scorer_review_codex205.py --basetemp=.scratch/triviaqa-codex205/review
 PYTHONDONTWRITEBYTECODE=1 python tools/check_triviaqa_provenance.py
 ```
 
-The source-only checks and integrity tool pass. The combined command must remain
-nonzero until the adapter mismatch is resolved in a separately authorized task.
-No H0/model admission follows from any of these checks.
+The source-only checks, integrity tool and current adapter component differentials
+pass. The acquisition-time combined failure remains recorded in the task-196
+report. No H0/model admission follows from any of these checks.
 
 ## Exact remaining acquisition request for Hub mapping
 

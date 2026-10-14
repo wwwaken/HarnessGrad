@@ -64,6 +64,18 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Validation: synthetic upstream differential and provenance tests are rerun after the correction; no TriviaQA payload or heldout rows were read.
 - Remaining gates: independent parent review of source equivalence, Hub dataset revision-to-scorer mapping, grouping/denominator semantics and fresh diagnostic authorization. This correction alone does not authorize a pilot.
 
+## TriviaQA — scorer correction review — 2026-10-14 — Codex 205
+
+- Status: `preflight`; synthetic EM component review passed, production comparison remains gated
+- Scope: isolated `/tmp/hg-codex-205`, base `65b0f2a`; public scorer/license/Git evidence and fabricated test inputs only; no TriviaQA payload/heldout, model/H0, endpoint or GPU execution
+- Finding: acquired source/license hashes and commit/tree linkage pass; merged normalization correction matches upstream. A remaining 200-alias cap loses a fabricated match at alias 201. Scorer evidence had no new explicit identity; fixture/download docs still described the old acquisition failure.
+- Evidence: [unique review](../triviaqa-scorer-review-codex205-report.md), `tests/quality/test_triviaqa_scorer_review_codex205.py`, [focused result](../triviaqa-scorer-review-codex205-test-result.txt)
+- Platform change: preserve every alias for the max; new verifier evidence records `triviaqa-alias-max-em-upstream-normalization-all-aliases-v2` and the pinned upstream reference. Docstrings distinguish matching EM semantics from local extensions. Original acquired source, acquisition receipt, historical reports/results and identities remain unchanged.
+- Remaining gates: Hub revision-to-loader/scorer mapping, grouping/denominator comparability, actual scorer/harness hashes and all runtime/diagnostic admission requirements; source hashes alone do not establish full evaluator equivalence
+- Validation: three focused offline synthetic suites — **38 passed**, no failures/skips; original full evaluator/CLI, source/license/linkage, normalization edges, alias-201 matches and shared-verifier identity on hit/miss; `git diff --check` passed. Exact command and before/after failures in the unique review.
+- Commit: accompanying `fix: preserve TriviaQA aliases and record corrected scorer identity` commit; exact hash delivered with review
+
+## GSM8K — scorer contract
 
 - Status: `complete` history; scorer correction pending new-run validation
 - Scope: published `train`/`test` split; old H0 records use the scorer identity recorded at their run time

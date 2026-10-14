@@ -1,0 +1,157 @@
+.FFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_ test_match_after_alias_200_survives_gold_materialization[normalized_aliases] _
+
+triviaqa = <module 'data._triviaqa_provenance_test' from '/tmp/hg-codex-205/data/triviaqa.py'>
+kind = 'normalized_aliases'
+
+    @pytest.mark.parametrize("kind", ["normalized_aliases", "human_answers", "mixed"])
+    def test_match_after_alias_200_survives_gold_materialization(triviaqa, kind):
+        upstream = upstream_em_namespace(read_upstream_fixture())
+        aliases = [f"synthetic nonmatching alias {i}" for i in range(200)]
+        target = "The Invented_Blue-Town!"
+        if kind == "normalized_aliases":
+            normalized, human = aliases + [upstream["normalize_answer"](target)], []
+        elif kind == "human_answers":
+            normalized, human = [], aliases + [target]
+        else:
+            normalized, human = aliases, [target]
+        official_gold = upstream["get_ground_truths"]({
+            "NormalizedAliases": normalized, "HumanAnswers": human})
+        gold = triviaqa._gold({"answer": {
+            "value": aliases[0], "normalized_aliases": normalized, "human_answers": human}})
+        expected = upstream["metric_max_over_ground_truths"](
+            upstream["exact_match_score"], target, official_gold)
+        assert expected == 1
+>       assert triviaqa.score(target, gold)["reward"] == float(expected)
+E       assert 0.0 == 1.0
+E        +  where 1.0 = float(True)
+
+tests/quality/test_triviaqa_scorer_review_codex205.py:46: AssertionError
+___ test_match_after_alias_200_survives_gold_materialization[human_answers] ____
+
+triviaqa = <module 'data._triviaqa_provenance_test' from '/tmp/hg-codex-205/data/triviaqa.py'>
+kind = 'human_answers'
+
+    @pytest.mark.parametrize("kind", ["normalized_aliases", "human_answers", "mixed"])
+    def test_match_after_alias_200_survives_gold_materialization(triviaqa, kind):
+        upstream = upstream_em_namespace(read_upstream_fixture())
+        aliases = [f"synthetic nonmatching alias {i}" for i in range(200)]
+        target = "The Invented_Blue-Town!"
+        if kind == "normalized_aliases":
+            normalized, human = aliases + [upstream["normalize_answer"](target)], []
+        elif kind == "human_answers":
+            normalized, human = [], aliases + [target]
+        else:
+            normalized, human = aliases, [target]
+        official_gold = upstream["get_ground_truths"]({
+            "NormalizedAliases": normalized, "HumanAnswers": human})
+        gold = triviaqa._gold({"answer": {
+            "value": aliases[0], "normalized_aliases": normalized, "human_answers": human}})
+        expected = upstream["metric_max_over_ground_truths"](
+            upstream["exact_match_score"], target, official_gold)
+        assert expected == 1
+>       assert triviaqa.score(target, gold)["reward"] == float(expected)
+E       assert 0.0 == 1.0
+E        +  where 1.0 = float(True)
+
+tests/quality/test_triviaqa_scorer_review_codex205.py:46: AssertionError
+_______ test_match_after_alias_200_survives_gold_materialization[mixed] ________
+
+triviaqa = <module 'data._triviaqa_provenance_test' from '/tmp/hg-codex-205/data/triviaqa.py'>
+kind = 'mixed'
+
+    @pytest.mark.parametrize("kind", ["normalized_aliases", "human_answers", "mixed"])
+    def test_match_after_alias_200_survives_gold_materialization(triviaqa, kind):
+        upstream = upstream_em_namespace(read_upstream_fixture())
+        aliases = [f"synthetic nonmatching alias {i}" for i in range(200)]
+        target = "The Invented_Blue-Town!"
+        if kind == "normalized_aliases":
+            normalized, human = aliases + [upstream["normalize_answer"](target)], []
+        elif kind == "human_answers":
+            normalized, human = [], aliases + [target]
+        else:
+            normalized, human = aliases, [target]
+        official_gold = upstream["get_ground_truths"]({
+            "NormalizedAliases": normalized, "HumanAnswers": human})
+        gold = triviaqa._gold({"answer": {
+            "value": aliases[0], "normalized_aliases": normalized, "human_answers": human}})
+        expected = upstream["metric_max_over_ground_truths"](
+            upstream["exact_match_score"], target, official_gold)
+        assert expected == 1
+>       assert triviaqa.score(target, gold)["reward"] == float(expected)
+E       assert 0.0 == 1.0
+E        +  where 1.0 = float(True)
+
+tests/quality/test_triviaqa_scorer_review_codex205.py:46: AssertionError
+_ test_verifier_records_new_adapter_identity_and_pinned_reference[Invented Blue Town] _
+
+triviaqa = <module 'data._triviaqa_provenance_test' from '/tmp/hg-codex-205/data/triviaqa.py'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7788cbd02810>
+tmp_path = PosixPath('/tmp/hg-codex-205/.scratch/triviaqa-codex205/before/test_verifier_records_new_adap0')
+prediction = 'Invented Blue Town'
+
+    @pytest.mark.parametrize("prediction", ["Invented Blue Town", "wrong"])
+    def test_verifier_records_new_adapter_identity_and_pinned_reference(
+            triviaqa, monkeypatch, tmp_path, prediction):
+        from data.qa.verify import check
+
+        read_upstream_fixture()
+        receipt = json.loads((FIXTURE / "provenance.json").read_text())
+        monkeypatch.setitem(sys.modules, "data.triviaqa", triviaqa)
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "answer.txt").write_text(prediction)
+        gold = triviaqa._gold({"answer": {
+            "value": "Invented Blue Town", "normalized_aliases": ["invented blue town"]}})
+        (tmp_path / "gold.json").write_text(json.dumps(gold))
+        assert check.main([
+            "--dataset", "triviaqa", "--reward-file", "reward.txt",
+            "--evidence-file", "evidence.json"]) == (0 if prediction != "wrong" else 1)
+        evidence = json.loads((tmp_path / "evidence.json").read_text())
+        assert evidence["measured"] is True
+>       assert evidence["official"]["scorer_identity"] == (
+            "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2")
+E       KeyError: 'scorer_identity'
+
+/tmp/hg-codex-205/tests/quality/test_triviaqa_scorer_review_codex205.py:69: KeyError
+----------------------------- Captured stdout call -----------------------------
+reward 1: matches 'invented blue town' among 1 alias(es); canonical value 'Invented Blue Town'
+____ test_verifier_records_new_adapter_identity_and_pinned_reference[wrong] ____
+
+triviaqa = <module 'data._triviaqa_provenance_test' from '/tmp/hg-codex-205/data/triviaqa.py'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7788cbd02120>
+tmp_path = PosixPath('/tmp/hg-codex-205/.scratch/triviaqa-codex205/before/test_verifier_records_new_adap1')
+prediction = 'wrong'
+
+    @pytest.mark.parametrize("prediction", ["Invented Blue Town", "wrong"])
+    def test_verifier_records_new_adapter_identity_and_pinned_reference(
+            triviaqa, monkeypatch, tmp_path, prediction):
+        from data.qa.verify import check
+
+        read_upstream_fixture()
+        receipt = json.loads((FIXTURE / "provenance.json").read_text())
+        monkeypatch.setitem(sys.modules, "data.triviaqa", triviaqa)
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "answer.txt").write_text(prediction)
+        gold = triviaqa._gold({"answer": {
+            "value": "Invented Blue Town", "normalized_aliases": ["invented blue town"]}})
+        (tmp_path / "gold.json").write_text(json.dumps(gold))
+        assert check.main([
+            "--dataset", "triviaqa", "--reward-file", "reward.txt",
+            "--evidence-file", "evidence.json"]) == (0 if prediction != "wrong" else 1)
+        evidence = json.loads((tmp_path / "evidence.json").read_text())
+        assert evidence["measured"] is True
+>       assert evidence["official"]["scorer_identity"] == (
+            "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2")
+E       KeyError: 'scorer_identity'
+
+/tmp/hg-codex-205/tests/quality/test_triviaqa_scorer_review_codex205.py:69: KeyError
+----------------------------- Captured stdout call -----------------------------
+reward 0: no match for 'wrong' among 1 alias(es); canonical value 'Invented Blue Town'
+=========================== short test summary info ============================
+FAILED tests/quality/test_triviaqa_scorer_review_codex205.py::test_match_after_alias_200_survives_gold_materialization[normalized_aliases]
+FAILED tests/quality/test_triviaqa_scorer_review_codex205.py::test_match_after_alias_200_survives_gold_materialization[human_answers]
+FAILED tests/quality/test_triviaqa_scorer_review_codex205.py::test_match_after_alias_200_survives_gold_materialization[mixed]
+FAILED tests/quality/test_triviaqa_scorer_review_codex205.py::test_verifier_records_new_adapter_identity_and_pinned_reference[Invented Blue Town]
+FAILED tests/quality/test_triviaqa_scorer_review_codex205.py::test_verifier_records_new_adapter_identity_and_pinned_reference[wrong]
+5 failed, 1 passed in 0.06s

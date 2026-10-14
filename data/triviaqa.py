@@ -30,14 +30,18 @@ a different study set.
    is the one a parameterised agent can be scored on without a retrieval tool. It is also the
    one ReWOO used (`utils/DataLoader.py::load_trivia_qa`). The full `rc` config is 8 GB.
 
-The metric, verbatim
---------------------
+The metric and scorer identity
+------------------------------
 The official scorer is `evaluation/triviaqa_evaluation.py` in the dataset's own repository:
 normalise both sides the same way, and count a hit if the prediction matches **any** alias --
 `metric_max_over_ground_truths` takes the `max` over `get_ground_truths(answer)`.
 
+New evidence records `SCORER_IDENTITY` and the pinned upstream EM reference. This
+adapter reports per-row alias-max EM only; it does not implement upstream F1 or
+question/document grouping. Historical scores keep their recorded scorer identity.
+
 `get_ground_truths` is `answer['NormalizedAliases'] + [normalize_answer(a) for a in
-answer['HumanAnswers']]`. Two things about it matter:
+answer.get('HumanAnswers', [])]`. Two things about it matter:
 
 * the official key names are **capitalised** (`NormalizedAliases`, `HumanAnswers`); the
   HuggingFace copy lower-cases them and ships **no human answers** for this config, so the
@@ -80,18 +84,24 @@ TEST = f"{CONFIG}/test-00000-of-00001.parquet"
 
 # ------------------------------------------------------------------ the scorer ---
 #
-# `evaluation/triviaqa_evaluation.py`, transcribed. The pieces are the function bodies
-# character for character; `tests/quality/test_triviaqa_official_scorer.py` holds the
-# same transcription as the reference and compares the two on a batch of cases.
+# EM semantics are compared with independently acquired, byte-pinned source in
+# `tests/fixtures/triviaqa_upstream`, not a second local transcription. Local
+# extensions are string coercion, Hub key spellings, float rewards and empty max=0.
+
+SCORER_IDENTITY = "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+SCORER_REFERENCE = {
+    "repository": "https://github.com/mandarjoshi90/triviaqa",
+    "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+    "source_path": "evaluation/triviaqa_evaluation.py",
+    "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682",
+}
 
 
 def normalize_answer(s: str) -> str:
-    """`triviaqa_evaluation.py::normalize_answer`, verbatim.
+    """Pinned upstream normalization semantics, with local string coercion.
 
-    Note the order: `lower()` runs **first**, inside `remove_punc`'s input, and
-    `remove_articles` runs before `white_space_fix`. Reordering these two changes the
-    result on `"The A-Team"`, which is why the transcription is quoted rather than
-    paraphrased.
+    Replace underscores, lowercase, replace punctuation with spaces, remove English
+    articles, then collapse whitespace. For example, `"The A-Team"` becomes `"team"`.
     """
 
     def remove_articles(text: str) -> str:
@@ -115,9 +125,9 @@ def normalize_answer(s: str) -> str:
 
 
 def get_ground_truths(answer: dict) -> list[str]:
-    """`triviaqa_evaluation.py::get_ground_truths`, verbatim, with both spellings.
+    """Upstream alias selection with official and Hub key spellings.
 
-        answer['NormalizedAliases'] + [normalize_answer(a) for a in answer['HumanAnswers']]
+        answer['NormalizedAliases'] + [normalize_answer(a) for a in answer.get('HumanAnswers', [])]
 
     The HuggingFace columns are `normalized_aliases` / `human_answers` and this config has
     no human answers at all, so the second term is empty here. Both spellings are read
@@ -131,13 +141,13 @@ def get_ground_truths(answer: dict) -> list[str]:
 
 
 def exact_match_score(prediction: str, ground_truth: str) -> float:
-    """`triviaqa_evaluation.py::exact_match_score`, verbatim."""
+    """Upstream normalized exact match, returned as a float reward."""
     return float(normalize_answer(prediction) == normalize_answer(ground_truth))
 
 
 def metric_max_over_ground_truths(metric_fn, prediction: str,
                                   ground_truths: list[str]) -> float:
-    """`triviaqa_evaluation.py::metric_max_over_ground_truths`, verbatim.
+    """Upstream alias maximum, with a local zero for an empty alias list.
 
     This `max` is the official rule: one alias is enough. Scoring against `answer["value"]`
     alone is a **different, harsher** metric -- the `rewoo` filter, not the official one.
@@ -156,6 +166,8 @@ def score(prediction: str, gold: dict) -> dict:
         "correct": hit,
         "official": {
             "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+            "scorer_identity": SCORER_IDENTITY,
+            "reference": dict(SCORER_REFERENCE),
             "accepted": accepted[:20],
             "normalized_prediction": normalize_answer(prediction or ""),
             "canonical_value": gold.get("value"),
@@ -254,12 +266,8 @@ def _gold(row: dict) -> dict:
             "scoring it would report the fraction of systems answering `<unk>`. Use "
             "`validation`.")
     return {"answer": value or accepted[0], "value": value or accepted[0],
-            # Capped: the official metric takes the max over the whole list, so truncating
-            # changes nothing for 20 aliases and keeps the gold file small. The cap is 200
-            # against a measured maximum of 20 in this config, so it never binds in
-            # practice -- it exists so that a pathological row cannot make every `VERIFY`
-            # entry enormous.
-            "accepted": accepted[:200], "accepted_total": len(accepted)}
+            # The max must consider every alias; a size cap can discard the only hit.
+            "accepted": accepted, "accepted_total": len(accepted)}
 
 
 def _goal(question: str, gold: dict) -> str:
@@ -280,8 +288,8 @@ def _goal(question: str, gold: dict) -> str:
         "## How it is scored\n"
         "\n"
         "- Your answer is compared with every known alias of the answer, after both sides\n"
-        "  are lower-cased, stripped of punctuation and articles, and white-space\n"
-        "  normalised (TriviaQA's own `normalize_answer`).\n"
+        "  are lower-cased, punctuation is replaced with spaces, articles removed, and\n"
+        "  white-space normalised (TriviaQA's own `normalize_answer`).\n"
         "- Matching **any one** alias scores 1; this is the benchmark's\n"
         "  `metric_max_over_ground_truths`, not a comparison with a single string.\n"
         "- Nothing else you print is read.\n"

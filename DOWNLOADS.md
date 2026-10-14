@@ -606,19 +606,23 @@ loads and scores it stays in git.
 
 ## `triviaqa`
 
-### Upstream evaluator source (not acquired; offline provenance blocked)
+### Upstream evaluator source (acquired; full export equivalence remains open)
 
-The Hub revision below pins the dataset export, not the GitHub scorer. No verified
-commit or digest for `evaluation/triviaqa_evaluation.py` is available in this
-checkout. The acquisition contract is
-[`tests/fixtures/triviaqa_upstream/README.md`](tests/fixtures/triviaqa_upstream/README.md):
-independently acquired original source/license bytes, a separate immutable scorer
-commit and reviewed acquisition receipt, and per-file SHA-256/Git blob pins.
-Tests perform no network fetch and fail closed until the fixture exists. A second
-local transcription does not close this gate. The adapter currently measures
-EM-only on `rc.nocontext`/`validation` with row-position task IDs; full evaluator
-grouping/denominator equivalence remains unverified. No F1 source was acquired or
-F1 metric added.
+The Hub revision below pins the dataset export, not the GitHub scorer. The
+code-only fixture pins original `evaluation/triviaqa_evaluation.py`, helpers and
+Apache-2.0 license to `mandarjoshi90/triviaqa` commit
+`ca43b5820b107f3970cf4b7d67f7db7a98117b79`, with source SHA-256
+`51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682`.
+See [`tests/fixtures/triviaqa_upstream/README.md`](tests/fixtures/triviaqa_upstream/README.md)
+for acquired bytes, Git commit/tree/license linkage, dependency closure and limits.
+Tests perform no network fetch and fail closed if fixture integrity is lost.
+New adapter evidence records
+`triviaqa-alias-max-em-upstream-normalization-all-aliases-v2`: upstream normalization
+and all-alias EM, with no 200-alias scoring cap. Historical results retain their
+original identities. The adapter measures EM-only on `rc.nocontext`/`validation`
+with row-position task IDs; export mapping and full evaluator grouping/denominator
+equivalence remain unverified. Original F1 source is acquired and tested on
+fabricated inputs; the production adapter does not report F1.
 
 ### mandarjoshi/trivia_qa (rc.nocontext) (hf-dataset, 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f)
 
