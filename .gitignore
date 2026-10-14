@@ -296,6 +296,10 @@ harnessgrad_work/
 !/docs/import-direction.md
 !/docs/test-suite.md
 !/docs/data-split-plan.md
+# The split design is a decided methodology the report cites, not a note: it carries the
+# measured reuse graph (MuSiQue 2417 -> 544 components) and the sizing rule the study set
+# depends on. Tracked by this exception rather than by `git add -f`.
+!/docs/eval-split-design.md
 # The lane assignment is not a note: `tools/run_tests.py` points at it as the reason
 # its EXCLUSIVE tuple looks the way it does, and `tests/quality/test_test_lanes.py`
 # fails without it.
