@@ -1333,15 +1333,15 @@
       ],
       "blockers": [
         {
-          "id": "upstream-evaluator-acquisition",
+          "id": "hub-export-scorer-linkage",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Original TriviaQA evaluator, helpers, Apache-2.0 license and immutable GitHub commit ca43b5820b107f3970cf4b7d67f7db7a98117b79 are pinned in a code-only fixture. The local adapter had a real normalization mismatch and was corrected; Hub revision-to-scorer mapping, grouping equivalence and fresh diagnostic evidence remain open.",
+          "observed": "Original evaluator acquisition is closed at source/test level: pinned evaluator, helpers, Apache-2.0 license and commit/tree linkage pass offline review. Commits fcbed17 and 4fa8481 correct normalization and preserve all aliases. Materialized verifier evidence retains triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 and the upstream reference. No further adapter EM mismatch was reproduced. Independent code/metadata binding Hub revision 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f to its loader/scorer and question/document grouping remains unavailable; full evaluator comparability and fresh diagnostic evidence remain open.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
-              "locator": "## TriviaQA — upstream evaluator acquired, adapter correction pending new identity — 2026-10-14"
+              "locator": "## TriviaQA — current scorer identity and registry review — Codex 215 — 2026-10-14"
             },
             {
               "kind": "repository",
@@ -1350,11 +1350,11 @@
             },
             {
               "kind": "repository",
-              "path": "triviaqa-source-acquisition-codex196-report.md",
-              "locator": "Original source acquired; adapter equivalence remains blocked"
+              "path": "triviaqa-review-codex215-report.md",
+              "locator": "Only confirmed repository-solvable mismatch: the active registry still named upstream evaluator acquisition as open."
             }
           ],
-          "next_action": "Review the pinned upstream differential and Hub revision-to-scorer mapping; preserve the new scorer identity and run a fresh staged diagnostic only after shared runtime and cleanup gates pass."
+          "next_action": "Acquire independently pinned loader/conversion source, original license and public config/split metadata binding the Hub export revision to its scorer, Domain/VerifiedEval selection and duplicate/grouping rules; no dataset rows are needed for this request. Preserve v2 and all historical identities. Full aggregation review, actual scorer/harness hashes and all shared admission gates remain prerequisites to a separately authorized fresh diagnostic."
         }
       ],
       "historical_runs": []

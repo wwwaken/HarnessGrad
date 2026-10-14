@@ -75,6 +75,17 @@ Do not record a partial score as a complete result. Use `incomplete` when execut
 - Validation: three focused offline synthetic suites — **38 passed**, no failures/skips; original full evaluator/CLI, source/license/linkage, normalization edges, alias-201 matches and shared-verifier identity on hit/miss; `git diff --check` passed. Exact command and before/after failures in the unique review.
 - Commit: accompanying `fix: preserve TriviaQA aliases and record corrected scorer identity` commit; exact hash delivered with review
 
+## TriviaQA — current scorer identity and registry review — Codex 215 — 2026-10-14
+
+- Status: `preflight`; original evaluator source gate reviewed, no further adapter EM mismatch reproduced
+- Scope: isolated `/tmp/hg-codex-215`, base `82459cf`; reviewed `fcbed17`/`4fa8481`, code-only fixture, registry and journal; fabricated inputs only, no dataset payload/heldout, network, model, H0 or GPU execution
+- Finding: source/license/Git linkage and existing source/differential tests pass. The remaining repository-solvable mismatch was the active registry's obsolete upstream-acquisition blocker and pending-identity evidence anchor, despite the acquired source and already merged v2 identity.
+- Evidence: [unique review](../triviaqa-review-codex215-report.md), `tests/quality/test_triviaqa_identity_codex215.py`, [focused results](../triviaqa-review-codex215-test-result.txt)
+- Platform change: retire `upstream-evaluator-acquisition` from the active TriviaQA blocker list and name the actual external gate `hub-export-scorer-linkage`; retain all shared gates. Added fresh-interpreter checks of the actual materialized scorer/check inputs for text/structured hit and miss, empty and absent answers. Production scorer/check code, v2 identity, upstream bytes, acquisition receipt and historical records are unchanged.
+- Remaining gates: independently pinned Hub export-to-loader/scorer mapping, grouping/denominator comparability, actual scorer/harness hashes and all runtime/diagnostic admission requirements; no production readiness or diagnostic authorization follows
+- Validation: baseline source/differential suites **38 passed**; six materialized-verifier cases **6 passed**; final combined source/identity/registry suite **93 passed**, no failures/skips. Exact commands are recorded in the unique review; fixture integrity tool and registry checker exit 0, registry retains `production_authorized=false`, and `git diff --check` passes.
+- Commit: accompanying `docs: align TriviaQA blocker with reviewed scorer identity` commit; exact hash delivered with review
+
 ## GSM8K — scorer contract
 
 - Status: `complete` history; scorer correction pending new-run validation

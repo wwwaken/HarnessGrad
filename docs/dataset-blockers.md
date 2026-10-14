@@ -71,6 +71,18 @@ checker. Historical scores and receipt outcomes remain reported claims; this
 review did not authenticate the external artifacts or measure any benchmark.
 The registry never authorizes production execution.
 
+TriviaQA's original evaluator acquisition gate is closed at source/test level by
+the pinned code-only fixture and the [Codex 215 review](../triviaqa-review-codex215-report.md).
+The active `upstream-evaluator-acquisition` entry is retired. Normalization and
+all-alias EM corrections are already merged; fabricated text, structured,
+empty and absent answers retain the v2 scorer identity and upstream reference
+in evidence written by the materialized verifier. No further adapter EM drift
+was reproduced. The remaining `hub-export-scorer-linkage` blocker is `external`:
+independently pinned export-to-loader/scorer code and metadata are still needed.
+Full grouping/denominator comparability, actual deployed scorer/harness hashes
+and all eight shared gates remain unresolved. Historical identities and
+acquisition-time findings remain unchanged; these checks authorize no diagnostic.
+
 `historical_runs` preserves 11 incomplete, partially measured or pending-review
 records, including both chess interruptions, both GAIA failures, Bird v4 and
 v5's coverage limit, ScienceWorld's integrity failure, HotpotQA's stopped run,
