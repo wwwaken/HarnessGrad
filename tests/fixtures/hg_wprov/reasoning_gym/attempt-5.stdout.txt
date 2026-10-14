@@ -1,0 +1,388 @@
+{
+  "address_space_limit_bytes": 4294967296,
+  "command": "PYTHONDONTWRITEBYTECODE=1 timeout 180s python3 tests/fixtures/hg_wprov/reasoning_gym/regenerate.py --prepare data/datasets/reasoning_gym/prepare.py --pool /mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl",
+  "cpu_limit_seconds": 120,
+  "dependency_versions": {
+    "arckit": "0.1.0",
+    "bfi": "1.0.4",
+    "cellpylib": "2.4.0",
+    "magiccube": "0.3.0",
+    "pycosat": "0.6.6",
+    "pyfiglet": "1.0.2",
+    "pytz": "2024.1",
+    "pyyaml": "6.0.3",
+    "sympy": "1.13.1",
+    "tabulate": "0.9.0",
+    "zss": "1.2.0"
+  },
+  "direct_score_answer_invocations": 0,
+  "direct_score_answer_invocations_basis": "Source-inspected tool has no scorer calls; not transitive instrumentation.",
+  "elapsed_seconds": 32.86145178601146,
+  "family_count": 89,
+  "file_write_audit_policy": "fresh /tmp scratch only",
+  "generated_sha256": "d00b2b1cb8134ee37c7b76fce5547cb3e2c44a247dfa07beaa984385532cffd1",
+  "generated_size": 3315958,
+  "generator_stdout": "....................",
+  "installed_pool_sha256": "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177",
+  "installed_pool_size": 3315981,
+  "interpreter": "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+  "items_per_family": 20,
+  "mismatching_coordinates": [
+    {
+      "family": "isomorphic_strings",
+      "index": 0
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 1
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 2
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 3
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 4
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 5
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 6
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 7
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 8
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 9
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 10
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 11
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 12
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 13
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 14
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 15
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 16
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 17
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 18
+    },
+    {
+      "family": "isomorphic_strings",
+      "index": 19
+    },
+    {
+      "family": "knight_swap",
+      "index": 0
+    },
+    {
+      "family": "knight_swap",
+      "index": 1
+    },
+    {
+      "family": "knight_swap",
+      "index": 2
+    },
+    {
+      "family": "knight_swap",
+      "index": 3
+    },
+    {
+      "family": "knight_swap",
+      "index": 4
+    },
+    {
+      "family": "knight_swap",
+      "index": 5
+    },
+    {
+      "family": "knight_swap",
+      "index": 6
+    },
+    {
+      "family": "knight_swap",
+      "index": 7
+    },
+    {
+      "family": "knight_swap",
+      "index": 9
+    },
+    {
+      "family": "knight_swap",
+      "index": 11
+    },
+    {
+      "family": "knight_swap",
+      "index": 12
+    },
+    {
+      "family": "knight_swap",
+      "index": 13
+    },
+    {
+      "family": "knight_swap",
+      "index": 14
+    },
+    {
+      "family": "knight_swap",
+      "index": 15
+    },
+    {
+      "family": "knight_swap",
+      "index": 16
+    },
+    {
+      "family": "knight_swap",
+      "index": 17
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 1
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 5
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 6
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 7
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 8
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 10
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 11
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 13
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 14
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 16
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 18
+    },
+    {
+      "family": "polynomial_multiplication",
+      "index": 19
+    },
+    {
+      "family": "ransom_note",
+      "index": 0
+    },
+    {
+      "family": "ransom_note",
+      "index": 1
+    },
+    {
+      "family": "ransom_note",
+      "index": 2
+    },
+    {
+      "family": "ransom_note",
+      "index": 3
+    },
+    {
+      "family": "ransom_note",
+      "index": 4
+    },
+    {
+      "family": "ransom_note",
+      "index": 5
+    },
+    {
+      "family": "ransom_note",
+      "index": 6
+    },
+    {
+      "family": "ransom_note",
+      "index": 7
+    },
+    {
+      "family": "ransom_note",
+      "index": 8
+    },
+    {
+      "family": "ransom_note",
+      "index": 9
+    },
+    {
+      "family": "ransom_note",
+      "index": 10
+    },
+    {
+      "family": "ransom_note",
+      "index": 11
+    },
+    {
+      "family": "ransom_note",
+      "index": 12
+    },
+    {
+      "family": "ransom_note",
+      "index": 13
+    },
+    {
+      "family": "ransom_note",
+      "index": 14
+    },
+    {
+      "family": "ransom_note",
+      "index": 15
+    },
+    {
+      "family": "ransom_note",
+      "index": 16
+    },
+    {
+      "family": "ransom_note",
+      "index": 17
+    },
+    {
+      "family": "ransom_note",
+      "index": 18
+    },
+    {
+      "family": "ransom_note",
+      "index": 19
+    },
+    {
+      "family": "time_intervals",
+      "index": 0
+    },
+    {
+      "family": "time_intervals",
+      "index": 2
+    },
+    {
+      "family": "time_intervals",
+      "index": 7
+    },
+    {
+      "family": "time_intervals",
+      "index": 8
+    },
+    {
+      "family": "time_intervals",
+      "index": 9
+    },
+    {
+      "family": "time_intervals",
+      "index": 10
+    },
+    {
+      "family": "time_intervals",
+      "index": 15
+    },
+    {
+      "family": "time_intervals",
+      "index": 18
+    },
+    {
+      "family": "time_intervals",
+      "index": 19
+    },
+    {
+      "family": "word_ladder",
+      "index": 3
+    },
+    {
+      "family": "word_ladder",
+      "index": 5
+    },
+    {
+      "family": "word_ladder",
+      "index": 6
+    },
+    {
+      "family": "word_ladder",
+      "index": 8
+    },
+    {
+      "family": "word_ladder",
+      "index": 9
+    },
+    {
+      "family": "word_ladder",
+      "index": 14
+    },
+    {
+      "family": "word_ladder",
+      "index": 19
+    }
+  ],
+  "network_and_process_audit_denials": true,
+  "package": "reasoning-gym",
+  "prepare_sha256": "0b70953e525e8c4c3f2320f6617b8da7b604fa7f1adc1e3604464cc42db5bde3",
+  "python_version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+  "regenerate_script_sha256": "13839e78d73e870d72f2f280ec045b27bfe2aa1ab1d2240d87ae847217386a5e",
+  "row_count": 1780,
+  "scope": "Observed interpreter and installed dependencies; does not prove behavioral eligibility, scorer offline closure, pristine runtime, or run selection.",
+  "scratch_cleanup_complete": true,
+  "scratch_files": [
+    {
+      "path": "sailor_performance.csv",
+      "sha256": "86e163be8e21b9899586267eafe8d2e47951260e9bc2448e694767a4e80f1f41",
+      "size": 190
+    }
+  ],
+  "scratch_path": "/tmp/hg-wprov-rg-regeneration-0qpbgeko",
+  "seed": 20261008,
+  "tool_actions_exclude_model_gpu_pilot": true,
+  "version": "0.1.25",
+  "whole_pool_byte_equality": false
+}
