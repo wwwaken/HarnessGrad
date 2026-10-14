@@ -2390,3 +2390,46 @@ tests: 54 passed. Checker: valid=true, 28 datasets, 2 shared blockers, 11 histor
 records, production_authorized=false. Authored diff check passes with pinned
 upstream source and raw whitespace diagnostics excluded; the full original
 whitespace warnings remain recorded rather than altering acquired source bytes.
+## Parent review and merge — w-chess2, w-offscorer — 2026-10-15
+
+- Merged `9c2a756` (w-chess2) and `0dbf322`/`cda8952`/`1277d97` (w-offscorer). Result `a12c0b9`.
+  Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`. 72 passed on the registry plus
+  `test_chessbench_stepwise_runner.py`.
+- **`chessbench_puzzles / trusted-stepwise-transport` stays OPEN, and a second, sharper defect
+  was found.** w-chess2 confirmed that the original actor exited after reading the board and
+  closed its own socket, and that **the relay behaved correctly** - so it changed no relay or
+  harness code and added a regression test instead of loosening a limit. It then found that a
+  fresh `codex_agent` attempt **misread `solver_turn=0` as falsy** and timed out without
+  submitting. No measured stepwise receipt exists: 0 invalid / 1 unmeasured, cleanup passed, 147
+  tests passed. The `solver_turn=0` falsy-zero bug is the concrete next target for this blocker -
+  it is an actor-side defect, not a policy refusal, and fixing it is the shortest path to the
+  measurement the blocker asks for.
+- **w-offscorer produced the official-execution evidence the shared blocker wanted, for nine
+  datasets, with measured divergence rather than an assertion of equivalence.** Official scorers
+  were executed offline on bounded controlled inputs and compared per input against the local
+  adapters: GSM8K **10/16** extraction/comparison divergences, Physics Questions **4/12**
+  normalization divergences, StrategyQA **7** raw-contract differences (with explicit
+  Boolean-to-text conversion agreeing 4/4), Sports Understanding **5** paired-channel
+  differences, FEVER one flat-gold conjunction divergence plus three full-API exceptions,
+  HotpotQA one empty-support boundary divergence, MuSiQue common metrics agreeing with four
+  reward-policy differences, TriviaQA one upstream exception, and 2Wiki agreeing on all
+  comparisons. It explicitly claimed **no** new execution evidence for BFCL, ChessBench or
+  Reasoning Gym, and left every blocker open because complete dependency/image/ABI closure and
+  trusted class-specific lifecycle/resource/cleanup evidence remain unmet. That is a large,
+  honest body of negative results and it is exactly what the "official provenance/execution"
+  clause asked for.
+- **The registry conflict was resolved deliberately this time, which is the point.** The merge
+  helper aborted automatically the moment `docs/dataset-blockers.json` itself conflicted, per the
+  round-32 rule. The two conflicting hunks were then resolved by parsing both sides rather than
+  concatenating them: the duplicated `observed` string was merged by trimming the shared prefix
+  (4980 + 2983 -> 7603 chars) so no sentence is duplicated or lost, and the evidence hunk kept
+  **both** objects (`reports/w-img-abi-custody.md` from HEAD and
+  `reports/w-offscorer-equivalence.md` from the incoming commit), giving 9 evidence entries. The
+  first attempt at this failed on a Python quoting error and wrote nothing, and the checker
+  flagged the still-marked file as invalid - which is the safety net working in the right
+  direction.
+- Resource state: w-chess2 attempted a live stepwise diagnostic, which legitimately used the
+  relay and the local endpoint but produced no measurement; w-offscorer ran official scorers
+  offline on controlled inputs only. Both GPUs were idle at the end of the round and no
+  utilisation figure is claimed. Historical runs, frozen receipts and archives were untouched.
