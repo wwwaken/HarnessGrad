@@ -371,6 +371,57 @@
         "production_authorized"
       ],
       "additionalProperties": false
+    },
+    "enforcement": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operator_authorization": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage": {
+          "const": "diagnostic"
+        },
+        "non_comparable_reason": {
+          "const": "policy_enforcement_not_observed"
+        },
+        "policy_enforcement_observed": {
+          "const": false,
+          "type": "boolean"
+        },
+        "measured": {
+          "const": false,
+          "type": "boolean"
+        },
+        "production_authorized": {
+          "const": false,
+          "type": "boolean"
+        },
+        "comparable": {
+          "const": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "run_id",
+        "task_id",
+        "operator_authorization",
+        "stage",
+        "non_comparable_reason",
+        "policy_enforcement_observed",
+        "measured",
+        "production_authorized",
+        "comparable"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -519,6 +570,38 @@
                   "receipt_sha256": {
                     "type": "string"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "enforcement"
+        ]
+      },
+      "then": {
+        "properties": {
+          "stage": {
+            "const": "diagnostic"
+          },
+          "score": {
+            "type": "null"
+          },
+          "outcomes": {
+            "items": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "invalid",
+                    "unmeasured"
+                  ]
+                },
+                "score": {
+                  "type": "null"
                 }
               }
             }

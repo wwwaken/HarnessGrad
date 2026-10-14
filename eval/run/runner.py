@@ -28,15 +28,18 @@ from eval.run.task_contract import runtime_task
 from eval.policy.runtime_policy import admit_native_network, phase_timeout, stage_agent_runtime
 from eval.observe.tracing import _last_identity, _last_usage, _materialize, _write_progress
 from eval.verification.verifier import _verify, test_rate_of
+from eval.policy.unobserved_diagnostic import Authorization
 
 
 def _refuse_unobserved_policies(task: dict, env: dict | None,
-                               verifier: dict | None) -> dict | None:
+                               verifier: dict | None, *, run_id: str = "",
+                               diagnostic_authorization: Authorization | None = None) -> dict | None:
     """Refuse policy-bearing tasks until a trusted backend observer is wired in.
 
     The offline runner_admission checks cannot discover enforcement. Launch flags,
     adapter observations and cached verdicts are not a substitute for that observer.
-    This hook only refuses; it deliberately has no caller-supplied evidence override.
+    An operator may authorize one explicitly unmeasured diagnostic attempt. That
+    permission is never treated as backend observation or production admission.
     """
     env_spec = env or {}
     fields = {"env." + key for key in (
@@ -61,6 +64,12 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
     if "artifact_policy" in (verifier or {}):
         fields.add("verifier.artifact_policy")
     if not fields:
+        return None
+    if diagnostic_authorization is not None:
+        # Still refuse every ordinary run, pilot, unbound task/run and cached
+        # measurement. Only the bound one-task diagnostic may attempt execution;
+        # its caller records non-observation and forbids comparable publication.
+        diagnostic_authorization.require_scope(run_id, [task["task_id"]])
         return None
     result = _invalid(task, "backend_observation_unavailable", stage="admission", service=None)
     result["invalid"]["receipt"] = {
@@ -140,6 +149,27 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
             verify_timeout_s: int | None = None,
             env: dict | None = None,
             run_id: str = "", run_seed: str = "",
+            recordings_root: Path | None = None,
+            diagnostic_authorization: Authorization | None = None) -> dict:
+    if diagnostic_authorization is not None:
+        diagnostic_authorization.require_scope(run_id, [task["task_id"]])
+    refusal = _refuse_unobserved_policies(
+        task, env, verifier, run_id=run_id,
+        diagnostic_authorization=diagnostic_authorization)
+    result = refusal if refusal is not None else _run_one(
+        repo, task, timeout_s, sandbox, setup, verifier, verify_timeout_s,
+        env, run_id, run_seed, recordings_root)
+    if diagnostic_authorization is not None:
+        result["enforcement"] = diagnostic_authorization.record()
+    return result
+
+
+def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
+            sandbox: bool = True, setup: dict | None = None,
+            verifier: dict | None = None,
+            verify_timeout_s: int | None = None,
+            env: dict | None = None,
+            run_id: str = "", run_seed: str = "",
             recordings_root: Path | None = None) -> dict:
     """Run the harness on one task in a throwaway dir, off the platform's disk.
 
@@ -156,9 +186,6 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
     Native tasks can declare network='none'; live model backends are refused for
     those tasks before launch. See `eval/containers/sandbox.py`.
     """
-    refusal = _refuse_unobserved_policies(task, env, verifier)
-    if refusal is not None:
-        return refusal
     # Resolve before the subprocess switches cwd: a relative repo path would
     # otherwise be interpreted against the sandbox directory and the harness
     # would silently fail to launch, scoring zero for the wrong reason.
@@ -682,7 +709,8 @@ def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
              run_id: str = "", run_seed: str = "",
              recordings_root: Path | None = None,
              round_no: int = 0, trials: int = 1, jobs: int = 1,
-             progress_dir: Path | None = None) -> dict:
+             progress_dir: Path | None = None,
+             diagnostic_authorization: Authorization | None = None) -> dict:
     """Run a harness over a task set and score it.
 
     `scorable` maps task_id -> expected answer. Scoring lives here, not in the
@@ -694,11 +722,15 @@ def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     before; only the `with` is new.
     """
     with progress_mod.reporting(_reporter()):
-        return _evaluate(repo, tasks, scorable, cache=cache, harness_sha=harness_sha,
+        result = _evaluate(repo, tasks, scorable, cache=cache, harness_sha=harness_sha,
                          sandbox=sandbox, setups=setups, verifiers=verifiers,
                          envs=envs, run_id=run_id, run_seed=run_seed,
                          recordings_root=recordings_root, round_no=round_no,
-                         trials=trials, jobs=jobs, progress_dir=progress_dir)
+                         trials=trials, jobs=jobs, progress_dir=progress_dir,
+                         diagnostic_authorization=diagnostic_authorization)
+        if diagnostic_authorization is not None:
+            result["enforcement"] = diagnostic_authorization.record()
+        return result
 
 
 def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
@@ -786,7 +818,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
               run_id: str = "", run_seed: str = "",
               progress_dir: Path | None = None,
               recordings_root: Path | None = None,
-              trials: int = 1, jobs: int = 1) -> dict:
+              trials: int = 1, jobs: int = 1,
+              diagnostic_authorization: Authorization | None = None) -> dict:
     """Score a harness on a task set.
 
     `trials` is how many times each `(harness, task)` pair is measured. One is the
@@ -804,6 +837,13 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     that used four containers at once is a different claim about this host than one that
     used one.
     """
+    if diagnostic_authorization is not None:
+        diagnostic_authorization.require_scope(
+            run_id, [t["task_id"] for t in tasks], trials=trials, jobs=jobs, round_no=round_no)
+        if cache:
+            raise ValueError("unobserved diagnostic requires an empty cache; no cached measurements")
+        # A later ordinary caller must not reuse a diagnostic's provisional score.
+        cache = {}
     if trials < 1:
         raise ValueError(f"trials must be at least 1, not {trials}")
     if jobs < 1:
@@ -896,12 +936,15 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     # of number this platform exists to refuse.
     def _measure(task_index: int, task: dict) -> dict:
         tid = task["task_id"]
+        enforcement = (diagnostic_authorization.record()
+                       if diagnostic_authorization is not None else None)
         # Cache entries carry scores, not fresh backend enforcement observations.
         refusal = _refuse_unobserved_policies(task, (envs or {}).get(tid),
-                                              (verifiers or {}).get(tid))
+                                              (verifiers or {}).get(tid), run_id=run_id,
+                                              diagnostic_authorization=diagnostic_authorization)
         if refusal is not None:
             _write_progress(progress_dir, round_no, tid, [], refusal["invalid"],
-                            diagnostic=refusal)
+                            diagnostic=refusal, enforcement=enforcement)
             return {"task_id": tid, "invalid": refusal["invalid"]}
         # The trial count is part of the key: a cached single measurement is not a
         # cached mean of three, and reusing one for the other would quietly answer a
@@ -931,7 +974,9 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                                      verifier=(verifiers or {}).get(tid),
                                      env=(envs or {}).get(tid),
                                      run_id=run_id, run_seed=run_seed,
-                                     recordings_root=recordings_root)
+                                     recordings_root=recordings_root,
+                                     **({"diagnostic_authorization": diagnostic_authorization}
+                                        if diagnostic_authorization is not None else {}))
                 except BaseException as exc:
                     # The record says the task died and why; the exception still travels.
                     held.failed(f"{type(exc).__name__}: {exc}")
@@ -998,9 +1043,9 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             # this task failed was not the harness, so caching it would carry a dataset bug
             # into every later round and hide the round where it was introduced.
             _write_progress(progress_dir, round_no, tid, [], unmeasured,
-                            diagnostic=result)
+                            diagnostic=result, enforcement=enforcement)
             return {"task_id": tid, "invalid": unmeasured}
-        _write_progress(progress_dir, round_no, tid, measured, None)
+        _write_progress(progress_dir, round_no, tid, measured, None, enforcement=enforcement)
         return {"task_id": tid, "measured": measured}
 
     outcomes = _in_parallel(tasks, _measure, jobs)

@@ -35,6 +35,7 @@ from eval.observe.console import CONSOLE as console
 from eval.run.metrics import select_task_set
 from eval.run import metrics
 from eval.policy import diagnostic_policy
+from eval.policy.unobserved_diagnostic import Authorization
 from eval.run.integrity import PLATFORM_ROOT, workspace_is_outside_platform
 from eval.run.runner import evaluate
 import eval.containers.container as container
@@ -237,7 +238,7 @@ def _config_help() -> str:
     return "\n".join(lines)
 
 
-def main() -> int:
+def _main(attempt: dict) -> int:
     ap = argparse.ArgumentParser(
         description=(
             "Ordinary runs have no universal filesystem-quota or backend-observer\n"
@@ -263,6 +264,9 @@ def main() -> int:
                     help="required for diagnostic/pilot_10pct sampling: staged policy "
                          "JSON with context and passing dataset gates; "
                          "pilot_10pct also requires receipt and separate hash-bound review")
+    ap.add_argument("--authorize-unobserved-diagnostic", metavar="OPERATOR_REASON",
+                    help="explicitly authorize one train-side diagnostic attempt with policy "
+                         "enforcement NOT observed; no measured score, curve or production authorization")
     ap.add_argument("--rounds", type=int, default=None,
                     help="improvement rounds (default 0 for staged runs, 3 otherwise)")
     #: How many times each (harness, task) pair is measured. One is one sample, and one
@@ -383,6 +387,13 @@ def main() -> int:
     staged = args.sampling in ("diagnostic", "pilot_10pct")
     if args.rounds is None:
         args.rounds = 0 if staged else 3
+    if args.authorize_unobserved_diagnostic is not None and (
+            args.sampling != "diagnostic" or args.side != "train"
+            or not args.authorize_unobserved_diagnostic.strip()
+            or args.method_entrypoint):
+        print("refusing unobserved diagnostic: explicit operator reason, diagnostic sampling, "
+              "train side and no method entrypoint are required", file=sys.stderr)
+        return 2
     policy_evidence = None
     if staged:
         try:
@@ -396,7 +407,9 @@ def main() -> int:
             context = policy_evidence.get("context")
             diagnostic_policy.validate_context(context)
             if (context["dataset"] != args.dataset or context["side"] != args.side
-                    or context["gates"]["status"] != "passed"):
+                    or (context["gates"]["status"] != "passed" and not (
+                        args.authorize_unobserved_diagnostic
+                        and context["gates"]["status"] == "unknown"))):
                 raise ValueError("passing dataset gates must bind this dataset and side")
         except (OSError, ValueError) as exc:
             print(f"refusing staged policy: {exc}", file=sys.stderr)
@@ -584,6 +597,11 @@ def main() -> int:
               file=sys.stderr)
         return 2
 
+    diagnostic_authorization = (Authorization(run_id, side_ids[0],
+                                args.authorize_unobserved_diagnostic)
+                                if args.authorize_unobserved_diagnostic else None)
+    enforcement = diagnostic_authorization.record() if diagnostic_authorization else None
+
     def save_policy_receipt(res: dict | None = None) -> bool:
         if not staged:
             return True
@@ -593,14 +611,25 @@ def main() -> int:
             run_id=run_id, stage=args.sampling, eligible=eligible_ids, selected=side_ids,
             context=policy_evidence["context"],
             outcomes=(diagnostic_policy.evaluation_outcomes(res, side_ids) if res is not None else []),
-            cleanup=unknown, snapshot=unknown)
+            cleanup=unknown, snapshot=unknown, enforcement=enforcement)
         # Keep the pre-execution plan even if evaluation is interrupted or refused.
         diagnostic_policy.write_receipt(
             run_dir / ("diagnostic_receipt.json" if res is not None else "staged_plan.json"), receipt)
-        return (receipt["lifecycle"] is not None and receipt["lifecycle"]["publication_ready"]
+        return (enforcement is None and receipt["lifecycle"] is not None
+                and receipt["lifecycle"]["publication_ready"]
                 and receipt["coverage"]["measured_tasks"] == len(side_ids))
 
     save_policy_receipt()
+    if diagnostic_authorization is not None:
+        # Persist intent before any runtime preflight; interruption/refusal remains
+        # evidence of an incomplete diagnostic, never an inferred successful run.
+        _write_run_meta(run_dir, run_id=run_id, dataset=args.dataset,
+                        sampling_policy="diagnostic", enforcement=enforcement)
+        def finalize_incomplete(detail):
+            if not (run_dir / "diagnostic_receipt.json").exists():
+                save_policy_receipt({"trials": 1, "invalid": {
+                    side_ids[0]: {"stage": "preflight_or_execution", "detail": detail}}})
+        attempt["finalize"] = finalize_incomplete
 
     # The trusted dispatcher is opt-in for ordinary runs.  An approved Task25
     # run is the one deliberate exception: its profile is part of the approval
@@ -954,6 +983,7 @@ def main() -> int:
     _write_run_meta(
         run_dir, run_id=run_id, mode=mode, harness=args.harness,
         dataset=args.dataset, sampling_policy=args.sampling,
+        enforcement=enforcement,
         diagnostic_policy=({"receipt_schema": diagnostic_policy.SCHEMA,
                             "eligible_tasks": len(set(eligible_ids)),
                             "eligible_task_ids_sha256": diagnostic_policy.eligible_digest(eligible_ids),
@@ -1092,7 +1122,15 @@ def main() -> int:
                     trials=args.trials, jobs=args.jobs, progress_dir=run_dir,
                     sandbox=args.sandbox, setups=setups, verifiers=verifiers,
                     envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
-                    recordings_root=run_dir / "recordings")
+                    recordings_root=run_dir / "recordings",
+                    **({"diagnostic_authorization": diagnostic_authorization}
+                       if diagnostic_authorization is not None else {}))
+    if enforcement is not None:
+        # Preserve raw execution/scorer facts with their comparison prohibition.
+        # No aggregate score is published and the curve path below cannot run.
+        base["enforcement"] = enforcement
+        with (run_dir / "diagnostic_execution.json").open("x") as stream:
+            json.dump(base, stream, indent=2)
     complete_measurement = save_policy_receipt(base)
     _require_untampered(base)
     _report_invalid(base, args.dataset)
@@ -1243,6 +1281,21 @@ def main() -> int:
     console.artifact("workspace", work)
     console.artifact("events", run_dir / "events.jsonl")
     return 0
+
+
+def main() -> int:
+    attempt = {}
+    detail = "driver interrupted before evaluation completed; see command output"
+    try:
+        result = _main(attempt)
+        detail = f"driver exited {result} before evaluation completed; see command output"
+        return result
+    except BaseException as exc:
+        detail = f"{type(exc).__name__}: {exc}"
+        raise
+    finally:
+        if "finalize" in attempt:
+            attempt["finalize"](detail)
 
 
 if __name__ == "__main__":

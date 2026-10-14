@@ -15,6 +15,7 @@ from pathlib import Path
 
 from eval.run.metrics import diagnostic_task_set, pilot_task_set
 from eval.admission import lifecycle_receipt
+from eval.policy import unobserved_diagnostic
 
 SCHEMA = "harnessgrad.diagnostic-receipt.v2"
 HASH_NAMES = ("source", "split", "manifest", "model", "harness")
@@ -169,7 +170,7 @@ def _require_publication(receipt: dict, summary: dict) -> None:
 
 def build_receipt(*, run_id: str, stage: str, eligible: list[str], selected: list[str],
                   context: dict, outcomes: list[dict], cleanup: dict, snapshot: dict,
-                  lifecycle: dict | None = None) -> dict:
+                  lifecycle: dict | None = None, enforcement: dict | None = None) -> dict:
     """Create a receipt from observed evidence, including incomplete runs."""
     _require(_text(run_id), "run_id is required")
     _require(selected == staged_task_set(eligible, stage),
@@ -177,6 +178,12 @@ def build_receipt(*, run_id: str, stage: str, eligible: list[str], selected: lis
     validate_context(context)
     validate_lifecycle(cleanup, "cleanup")
     validate_lifecycle(snapshot, "snapshot")
+    if enforcement is not None:
+        unobserved_diagnostic.validate_record(enforcement, run_id=run_id, selected=selected, stage=stage)
+        # Execution permission is not a measurement contract, even if a scorer ran.
+        outcomes = [dict(row, status="unmeasured", score=None,
+                         reason=unobserved_diagnostic.REASON)
+                    if row.get("status") == "measured" else row for row in outcomes]
     summary = measurement_summary(selected, outcomes)
     summary["coverage"]["eligible_tasks"] = len(set(eligible))
     if lifecycle is not None:
@@ -186,6 +193,8 @@ def build_receipt(*, run_id: str, stage: str, eligible: list[str], selected: lis
                    selected_task_ids=list(selected), context=copy.deepcopy(context),
                    cleanup=copy.deepcopy(cleanup), snapshot=copy.deepcopy(snapshot),
                    lifecycle=copy.deepcopy(lifecycle), **summary)
+    if enforcement is not None:
+        receipt["enforcement"] = copy.deepcopy(enforcement)
     if lifecycle is not None:
         lifecycle_receipt.require_scope(lifecycle, **_scope_binding(receipt))
     if summary["coverage"]["measured_trials"]:
@@ -210,6 +219,13 @@ def validate_receipt(receipt: dict) -> None:
     _require(_sha(receipt.get("eligible_task_ids_sha256")), "eligible ID pool hash is required")
     staged_task_set([], receipt.get("stage"), trials=receipt.get("trials"), jobs=receipt.get("jobs"))
     validate_context(receipt.get("context"))
+    if "enforcement" in receipt:
+        unobserved_diagnostic.validate_record(
+            receipt["enforcement"], run_id=receipt["run_id"],
+            selected=receipt.get("selected_task_ids"), stage=receipt.get("stage"))
+        _require(receipt.get("score") is None and not any(
+            r.get("status") == "measured" for r in receipt.get("outcomes", [])),
+            "unobserved diagnostic cannot publish measured scores")
     for name in ("cleanup", "snapshot"):
         validate_lifecycle(receipt.get(name), name)
     _require("lifecycle" in receipt, "receipt requires explicit lifecycle or null")
@@ -274,6 +290,8 @@ def require_review(bundle: dict, *, context: dict, eligible: list[str], run_id: 
     _require(isinstance(bundle, dict), "diagnostic review must be an object")
     receipt = bundle.get("receipt")
     validate_receipt(receipt)
+    _require("enforcement" not in receipt,
+             "unobserved diagnostic cannot authorize expansion")
     _require(receipt["stage"] == "diagnostic", "expansion requires a diagnostic receipt")
     _require(receipt["coverage"]["eligible_tasks"] == len(set(eligible))
              and receipt["eligible_task_ids_sha256"] == eligible_digest(eligible)

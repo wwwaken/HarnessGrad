@@ -340,7 +340,8 @@ def _materialize(workdir: Path, entries, platform_root: Path,
     return written
 def _write_progress(progress_dir, round_no: int, tid: str,
                     measured: list[dict], unmeasured: dict | None,
-                    *, diagnostic: dict | None = None) -> None:
+                    *, diagnostic: dict | None = None,
+                    enforcement: dict | None = None) -> None:
     """Write one task's result the moment it exists, not at the end of the round.
 
     **Measured, twice, and the second time cost two hours.** A round's results were
@@ -372,6 +373,8 @@ def _write_progress(progress_dir, round_no: int, tid: str,
         dest.mkdir(parents=True, exist_ok=True)
         if unmeasured is not None:
             record = {"task_id": tid, "round": round_no, "invalid": unmeasured}
+            if enforcement is not None:
+                record["enforcement"] = enforcement
             if diagnostic is not None:
                 record["harness_output"] = {
                     "exit_code": diagnostic.get("exit_code"),
@@ -409,6 +412,7 @@ def _write_progress(progress_dir, round_no: int, tid: str,
             "tests": last.get("tests"),
             "wall_clock_s": wall,
             "complete": True,
+            **({"enforcement": enforcement} if enforcement is not None else {}),
         }, indent=1, ensure_ascii=False), encoding="utf-8")
         traces = dest / "traces"
         traces.mkdir(exist_ok=True)
