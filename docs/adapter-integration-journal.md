@@ -1798,3 +1798,41 @@ source/data/native/metadata byte preimages with no skipped external files,
 1,248 literal entrypoint locators, fixture checksums and the registry checker
 passed. Exact commands and focused source-only registry tests are recorded in
 `reports/w-clo-runtime-validation.txt`; no benchmark execution is part of validation.
+## Parent review and merge — w-clo, w-clo2 — 2026-10-15
+
+- Merged `6d9d0d1` (w-clo, actor-workdir scope) and `f7c13d0` (w-clo2, snapshot-service and
+  command/container scope) on top of `19b700d`, plus one parent repair commit. Result `e46b436`.
+  Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`.
+- **Both workers produced per-dataset pinned scorer closures and both correctly refused to close
+  `scorer-offline-closure`.** w-clo recorded 245 fixture files covering all 19 surveyed
+  actor-workdir datasets; w-clo2 recorded the 23 command/container datasets. The parent did not
+  take the hashes on trust: it recomputed one at random
+  (`tests/fixtures/hg_wclo_actor/packages/alfworld.json`,
+  `c263c9dd2fef88c74b33...`) and it matched the recorded value exactly, so the manifests are real
+  byte closures rather than transcribed numbers. Both reports describe their output as
+  **partial** closures with an explicit per-dataset gap list, and the shared blocker's own
+  next_action is still unmet on its other clauses - complete transitive ABI/runtime custody,
+  official provenance/execution, and trusted class-specific lifecycle/resource/cleanup
+  observations. That is why it stays open, and it is the right call.
+- Two genuine negative findings are preserved rather than smoothed over: `tau_bench` still lacks
+  the committed `db/airline.json` and `db/retail.json`, and the prior dependency manifest has
+  **685 absent preimages out of 810**, with historical hashes deliberately not reused.
+- **I broke the registry during the merge and the checker caught it immediately.** Resolving the
+  `docs/dataset-blockers.json` conflict by concatenating both sides produced a duplicate
+  `"observed"` key and two spliced-together `evidence` objects, and I committed that state.
+  `python3 tools/check_dataset_blockers.py` returned `valid=false` with an exact parse error on
+  the very next command, which is the entire reason that checker exists. The repair commit
+  `e46b436` merges the two `observed` texts into one entry, restores the two evidence objects
+  (7 entries now), and the registry is valid again. The lesson is narrow and worth keeping:
+  a JSON array/object merge conflict must never be resolved by concatenating the two sides; the
+  parent should have parsed both sides and merged the parsed values, and the checker is the
+  safety net that turns that mistake into a one-command detection instead of a silent
+  corruption.
+- Verification after all merges: 69 focused tests passed and the single failure is
+  `test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers`, the known
+  pre-existing environment failure (`platform_listing is None`) that has been reproduced
+  unchanged since round 25; it is unrelated to any merge in this round.
+- Resource state: neither worker ran a benchmark task, model, GPU, endpoint or container - both
+  were source/bytes inspections, so GPU0 and GPU1 stayed idle and no utilisation is claimed.
+  Historical runs, frozen receipts and archives were left untouched.
