@@ -3007,3 +3007,30 @@ Final validation: all 236 packet files and 23 production source pins verify;
 registry checker valid; 54 focused registry tests pass. The authored-file whitespace
 check passes while verbatim upstream source whitespace remains intact. Exact
 commands, checker output and retained formatting observations are in the validation log.
+## Parent review and merge — w-offscorer2 — 2026-10-15
+
+- Merged `ed32632`, `b83d7f7` (delivered as `22eea27` and its siblings), `bfa4327` and `7287876`.
+  Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`. Deliverables present on `main`:
+  `reports/w-offscorer2-coverage.md` and `tests/fixtures/hg_woffscorer2/SHA256SUMS`.
+- **Official-execution coverage (S4) rose from 9 datasets to 15.** Added bounded
+  official-execution evidence for `reasoning_gym`, `bird_minidev`, `ds1000`, `spreadsheetbench`,
+  `jericho` and `scienceworld`, on top of the nine QA components already covered.
+- Three measured divergences and several preserved failures, reported as findings rather than
+  smoothed into agreement: **two BIRD numeric divergences**, **one SpreadsheetBench recalculation
+  workflow divergence**, and preserved import, schema, IPC and initial-JVM failures. ScienceWorld
+  coverage is explicitly limited to zero-score traces rather than presented as full coverage.
+- The uncovered list is stated as plainly as the covered one: no new evidence for `alfworld`,
+  `appworld`, `bfcl_v3`, `chessbench_puzzles`, `gaia`, `livecodebench`, `tau_bench` or
+  `terminal_bench`, and Terminal-Bench's single-task evidence is unchanged. So **S1/S3/S4/S6
+  remain partial and no blocker closed**, which is what the worker says.
+- Merge mechanics were clean this time and worth noting only because the earlier failure mode did
+  not recur: all four commits are on `main` (checked with `git cherry -v`, which shows `ab39994`
+  as applied under its replayed id `22eea27`), the sequencer is empty, and the two named
+  deliverables exist. The round-40 lesson is now part of the routine rather than an incident.
+- Also corrected in this round: a capitalisation slip I introduced in the round-45 entry
+  (`production_authorized=False` for `false`). Cosmetic, in prose only, and the registry JSON was
+  never affected.
+- Resource state: offline scorer execution on bounded controlled inputs and local source
+  inspection only - no benchmark task, model, GPU, endpoint or container start. Both GPUs stayed
+  idle and no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
