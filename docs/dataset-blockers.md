@@ -51,6 +51,20 @@ ScienceWorld's platform-integrity prevention review is closed at source/test lev
 but trusted effective mount enforcement and shared runtime gates remain blocked;
 the historical V4 record remains incomplete with `effect=null`.
 
+2WikiMultihopQA's independent evaluator source gate is closed by the merged
+Codex 197 code-only fixture and the [Codex 206 review](task-206-twowiki-provenance-review.md).
+The active `independent-evaluator-source` blocker is retired; the schema has no
+closed status. Both original evaluator versions, Apache-2.0 license and
+commit/tree/blob linkage pass 38 offline provenance/synthetic tests with real
+installed `ujson==5.10.0`. Fresh wheel/installation-origin and native-runtime
+closure remain `external` under `ujson-native-offline-closure`; metadata hashes
+and an installed extension do not establish deployable dependency custody.
+`hub-data-provenance` remains `external`, `recovery-comparability` remains
+`measurement`, and all eight shared gates remain active. Source acquisition
+does not authenticate Hub/data/alias provenance, repair mixed historical metrics
+or establish production scorer/runtime readiness. The original partial pilot
+and its `effect=null` are preserved.
+
 Repository evidence locators are validated against local source text. Absolute
 external paths are citations from the journal and are never opened by the
 checker. Historical scores and receipt outcomes remain reported claims; this

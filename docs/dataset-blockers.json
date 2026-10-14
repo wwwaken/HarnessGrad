@@ -1378,18 +1378,47 @@
       ],
       "blockers": [
         {
-          "id": "independent-evaluator-source",
-          "family": "source-provenance",
+          "id": "ujson-native-offline-closure",
+          "family": "scorer-dependency-network",
           "status": "external",
-          "observed": "Independent upstream fetch failed; synthetic comparison used an existing pinned verbatim region rather than fresh acquired bytes.",
+          "observed": "The original v1.0/v1.1 evaluator source gate is closed by the reviewed code-only Codex 197 fixture at commit 209e761834d1ce055856fc11072c0a5aab47601d. Both unchanged programs pass synthetic tests with real installed ujson==5.10.0, but wheel/sdist payloads were not acquired, installed-extension origin is unattested, and native loader/transitive closure and fresh offline installation remain open.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
-              "locator": "- Remaining gates/blockers: no implementation blocker."
+              "locator": "## 2WikiMultihopQA source-gate review — Codex 206 — 2026-10-14"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/twowikimultihopqa_upstream_codex197/provenance.json",
+              "locator": "Clean-environment offline artifact closure remains open"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/task-206-twowiki-provenance-review.md",
+              "locator": "38 passed in 0.24s"
             }
           ],
-          "next_action": "Acquire and independently review code-only evaluator bytes and linkage; retain original mixed-metric and recovered receipts separately."
+          "next_action": "Obtain the pinned compatible ujson wheel with licenses and an installation-origin receipt plus a supported Python/native-runtime image receipt; attest loader/transitive closure and verify fresh offline imports/synthetic execution. An sdist build additionally requires build closure."
+        },
+        {
+          "id": "hub-data-provenance",
+          "family": "source-provenance",
+          "status": "external",
+          "observed": "Evaluator commit/tree/blob and Apache-2.0 code-license linkage do not authenticate the Hub/data revision, split/selected manifest, alias-table identity/completeness, dataset rights or release-to-scorer mapping. No benchmark payload or external receipt was read in the source-gate review.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "docs/task-206-twowiki-provenance-review.md",
+              "locator": "Hub/data provenance remains blocked"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/twowikimultihopqa_upstream_codex197/README.md",
+              "locator": "this acquisition makes no assertion about dataset redistribution rights"
+            }
+          ],
+          "next_action": "Obtain independently authenticated metadata-only Hub/release revision, split/selected-manifest and alias-artifact custody plus dataset-license and evaluator-version linkage; keep payload access and production execution outside this review."
         },
         {
           "id": "recovery-comparability",
