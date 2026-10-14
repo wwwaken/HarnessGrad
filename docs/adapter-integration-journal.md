@@ -2290,3 +2290,38 @@ unchanged: official provenance/execution, execution-bound transitive dependencie
 trusted class-specific lifecycle/resource/cleanup and valid live controls remain
 required. Zero complete offline scorer closures are certified. Focused receipt,
 source, manifest, scope and blocker-registry checks are recorded in validation.
+## Parent review and merge — w-img — 2026-10-15
+
+- Merged `01b4c50` (w-img). Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`; the shared blocker's evidence grew from 7 to 8 entries (a net
+  addition, checked before merging).
+- **The image/ABI custody now rests on fresh inspection rather than on tags read by eye.** 94
+  configured references were inspected (GAIA, Tau-bench, three AppWorld roles, all 89
+  Terminal-Bench task manifests); 91 are locally present and **all 91 carry RepoDigests**, each
+  read from a fresh `docker image inspect` *and* independently recomputed from the local OCI
+  manifest bytes, with 101 index/child/attestation blobs hashed. That distinction matters: a
+  digest transcribed from an earlier report proves nothing about the bytes present now.
+- **A real unpinned state was found and named instead of smoothed over**: `gaia` and `tau_bench`
+  reference their images by **movable tag**, and all **89** Terminal-Bench task references are
+  movable tags of which **3 images are absent locally**. AppWorld is the counter-example - all
+  three of its roles already default to digest references. The six native-route datasets
+  (chessbench, alfworld, scienceworld, bird_minidev, ds1000, spreadsheetbench) need no image and
+  their host base is recorded as CPython 3.12.4 / glibc 2.35.
+- **w-img corrected an assumption in my own task brief, and the correction matters.** I had
+  briefed it with the `jevloop-tb:*` family as the Terminal-Bench image reference, repeating what
+  an earlier review said. The adapter actually names `alexgshaw/*:20251031`. I then checked
+  whether the accepted Terminal-Bench measurement had run against a substituted image, because
+  that would have undermined the `cached-runtime-admission` closure: it had not. The parent read
+  the run's own `image-observation-receipt.json`, where
+  `alexgshaw/openssl-selfsigned-cert:20251031` and `jevloop-tb:openssl-selfsigned-cert` are the
+  **same image** - one ID `sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12`
+  and one shared repo digest `alexgshaw/openssl-selfsigned-cert@sha256:4c948a4e...`. So the local
+  `jevloop-tb:*` tags are aliases of the declared images, not substitutes, and the measurement's
+  provenance holds. Recorded because it was a plausible integrity failure and is now a
+  verified non-issue rather than an open doubt.
+- Still in flight at the end of this round and NOT merged: `w-chess2`
+  (`chessbench_puzzles / trusted-stepwise-transport` retry) and `w-offscorer` (official-scorer
+  execution and local-vs-official equivalence). Nothing about either is claimed here.
+- Resource state: local image inspection only - no benchmark task, model, GPU, endpoint or
+  container run. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
+  receipts and archives were untouched.
