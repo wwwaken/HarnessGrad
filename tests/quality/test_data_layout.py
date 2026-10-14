@@ -1,0 +1,223 @@
+"""Acceptance contract for the completed data split (Stages A/C/D).
+
+Only source and filesystem metadata are read. Registry discovery receives literal
+KIND declarations in place of adapter imports; task pools are never opened.
+"""
+from __future__ import annotations
+
+import ast
+import importlib
+import importlib.util
+import sys
+from pathlib import Path
+from types import ModuleType, SimpleNamespace
+
+
+ROOT = Path(__file__).resolve().parents[2]
+DATA = ROOT / "data"
+DATASETS = DATA / "datasets"
+SCAFFOLDS = DATA / "scaffolds"
+
+# Independent, reviewed inventory: do not derive this expectation from discovery.
+EXPECTED_DATASETS = (
+    "agentdojo", "alfworld", "api_bank", "appworld", "bfcl_v3",
+    "bird_minidev", "chessbench_puzzles", "ds1000", "fever", "gaia",
+    "gsm8k", "hotpotqa", "jericho", "livecodebench", "musique", "nestful",
+    "physicsquestions", "reasoning_gym", "scienceworld", "sotuqa",
+    "sportsunderstanding", "spreadsheetbench", "strategyqa", "tau2_bench",
+    "tau_bench", "terminal_bench", "triviaqa", "twowikimultihopqa",
+)
+FIXTURES = (
+    "demo.py", "probe_set.py", "broken_service.py", "verify_demo.py",
+    "verify_exec.py", "verify_service.py",
+)
+# Existing published-adapter assets must be moved, rather than simply deleted.
+# pinchbench is not a published adapter and is deliberately not classified here.
+EXPECTED_ASSET_DIRS = (
+    "agentdojo", "alfworld", "api_bank", "appworld", "bird_minidev", "ds1000",
+    "gaia", "jericho", "livecodebench", "nestful", "reasoning_gym",
+    "scienceworld", "spreadsheetbench", "tau_bench",
+)
+
+
+def _relative(path):
+    return path.relative_to(ROOT).as_posix()
+
+
+def _source(path):
+    assert path.is_file(), f"Missing source file: {_relative(path)}"
+    text = path.read_text(encoding="utf-8")
+    return text, ast.parse(text, filename=_relative(path))
+
+
+def _kind(path):
+    """Read declarations for every adapter, including AgentDojo, without imports."""
+    _, tree = _source(path)
+    kind = "fixture"
+    for node in tree.body:
+        targets = (node.targets if isinstance(node, ast.Assign) else
+                   [node.target] if isinstance(node, ast.AnnAssign) else [])
+        if any(isinstance(target, ast.Name) and target.id == "KIND"
+               for target in targets):
+            try:
+                kind = ast.literal_eval(node.value)
+            except (ValueError, TypeError, SyntaxError):
+                raise AssertionError(
+                    f"{_relative(path)}:{node.lineno}: KIND must be literal") from None
+    return kind
+
+
+def _check(errors):
+    assert not errors, "\n" + "\n".join(errors)
+
+
+def test_scaffolds_contain_shared_code_and_no_adapters():
+    errors = []
+    for relative in ("", "qa", "command_oracle_harness"):
+        path = SCAFFOLDS / relative
+        if not path.is_dir():
+            errors.append(f"Missing scaffold directory: {_relative(path)}/")
+    for relative in ("registry.py", "command_control.py", "qa/base.py",
+                     "command_oracle_harness/agent.py",
+                     "command_oracle_harness/harness.json"):
+        path = SCAFFOLDS / relative
+        if not path.is_file():
+            errors.append(f"Missing shared scaffold: {_relative(path)}")
+    for path in sorted(SCAFFOLDS.rglob("*.py")):
+        if path.stem in EXPECTED_DATASETS or _kind(path) == "dataset":
+            errors.append(f"Dataset adapter inside scaffolds: {_relative(path)}")
+    for name in EXPECTED_DATASETS:
+        if (SCAFFOLDS / name).exists():
+            errors.append(f"Adapter assets inside scaffolds: data/scaffolds/{name}/")
+    _check(errors)
+
+
+def test_all_28_adapters_live_in_datasets():
+    errors = []
+    if not DATASETS.is_dir():
+        errors.append("Missing adapter directory: data/datasets/")
+    expected = {f"{name}.py" for name in EXPECTED_DATASETS}
+    actual = {path.name for path in DATASETS.glob("*.py")
+              if path.name != "__init__.py"}
+    for name in sorted(expected - actual):
+        errors.append(f"Missing adapter: data/datasets/{name}")
+    for name in sorted(actual - expected):
+        errors.append(f"Unexpected adapter/module: data/datasets/{name}")
+    for name in sorted(expected & actual):
+        path = DATASETS / name
+        if _kind(path) != "dataset":
+            errors.append(f"{_relative(path)} must declare KIND = 'dataset'")
+    _check(errors)
+
+
+def test_registry_publishes_exactly_the_28_adapters_without_loading_them(monkeypatch):
+    path = SCAFFOLDS / "registry.py"
+    assert path.is_file(), f"Missing registry: {_relative(path)}"
+    errors = []
+    real_import = importlib.import_module
+
+    def declared_module(name, package=None):
+        if name.startswith("."):
+            name = importlib.util.resolve_name(name, package)
+        if name != "data" and not name.startswith("data."):
+            return real_import(name, package)
+        source = ROOT.joinpath(*name.split(".")).with_suffix(".py")
+        if not source.is_file():
+            errors.append(f"{_relative(path)} imports missing module {name!r}: "
+                          f"{_relative(source)}")
+            return SimpleNamespace(KIND="fixture")
+        # Return metadata only, even if discovery asks for a fixture or a shim.
+        return SimpleNamespace(KIND=_kind(source))
+
+    # Load only the registry, in isolation from cached production modules. Patch
+    # before execution so import_module cannot execute an adapter at any point.
+    registry = ModuleType("_data_layout_registry")
+    registry.__file__ = str(path)
+    with monkeypatch.context() as patch:
+        patch.setattr(importlib, "import_module", declared_module)
+        # Compile source directly: a file loader could write __pycache__ in data/.
+        exec(compile(path.read_text(encoding="utf-8"), str(path), "exec"),
+             registry.__dict__)
+        published = tuple(registry.published())
+    _check(errors)
+    assert published == EXPECTED_DATASETS, (
+        f"{_relative(path)} published {published!r}; expected exactly "
+        f"{EXPECTED_DATASETS!r}")
+
+
+def test_fixtures_stay_at_the_data_top_level():
+    errors = []
+    for name in FIXTURES:
+        if not (DATA / name).is_file():
+            errors.append(f"Missing top-level fixture: data/{name}")
+        if (DATASETS / name).exists():
+            errors.append(f"Fixture incorrectly moved to data/datasets/{name}")
+    _check(errors)
+
+
+def test_flat_paths_and_migration_shims_are_gone():
+    old = [DATA / name for name in
+           ("qa", "registry.py", "command_control.py", "command_oracle_harness")]
+    old.extend(DATA / f"{name}.py" for name in EXPECTED_DATASETS)
+    _check([f"Legacy path/shim must be removed: {_relative(path)}"
+            for path in old if path.exists() or path.is_symlink()])
+
+
+def test_adapter_imports_only_use_scaffolds_stdlib_or_third_party():
+    errors = []
+    local_roots = {path.stem if path.is_file() else path.name
+                   for path in ROOT.iterdir()
+                   if not path.name.startswith(".")
+                   and (path.is_dir() or path.suffix == ".py")}
+    local_roots.update(EXPECTED_DATASETS)
+    for name in EXPECTED_DATASETS:
+        path = DATASETS / f"{name}.py"
+        if not path.is_file():
+            errors.append(f"Cannot check adapter imports: missing {_relative(path)}")
+            continue
+        text, tree = _source(path)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                targets = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                base = node.module or ""
+                if node.level:
+                    if node.level > 2:
+                        base = "<relative import beyond data>"
+                    else:
+                        parts = ["data", "datasets"][:3 - node.level]
+                        base = ".".join(parts + ([base] if base else []))
+                targets = [f"{base}.{alias.name}" for alias in node.names]
+            else:
+                continue
+            for target in targets:
+                root = target.split(".")[0]
+                if target == "data.scaffolds" or target.startswith("data.scaffolds."):
+                    continue
+                if root in sys.stdlib_module_names:
+                    continue
+                if root not in local_roots and not root.startswith("<"):
+                    continue  # Third-party import; no dependency needs installing.
+                statement = ast.get_source_segment(text, node)
+                errors.append(f"{_relative(path)}:{node.lineno}: {statement} "
+                              f"[forbidden dependency: {target}]")
+    _check(errors)
+
+
+def test_adapter_asset_directories_move_beside_their_adapters():
+    errors = []
+    for name in EXPECTED_ASSET_DIRS:
+        if not (DATASETS / name).is_dir():
+            errors.append(f"Missing relocated adapter assets: data/datasets/{name}/")
+    for name in EXPECTED_DATASETS:
+        path = DATA / name
+        if path.exists() or path.is_symlink():
+            errors.append(f"Orphaned top-level adapter assets: {_relative(path)}/; "
+                          f"move beside data/datasets/{name}.py")
+    for path in sorted(DATASETS.glob("*")):
+        if path.is_dir() and path.name != "__pycache__":
+            adapter = DATASETS / f"{path.name}.py"
+            if not adapter.is_file():
+                errors.append(f"Orphaned adapter assets: {_relative(path)}/; "
+                              f"missing {_relative(adapter)}")
+    _check(errors)
