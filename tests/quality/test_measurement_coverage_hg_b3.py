@@ -92,14 +92,17 @@ def test_timeout_detail_alone_does_not_close_aggregation_gate(monkeypatch, tmp_p
         sandbox=False, timeout_s=1, env={"kind": "files"},
     )
     assert "timed out" in verdict["detail"]
-    assert "score" not in verdict and "unmeasured" not in verdict
+    assert "score" not in verdict
+    assert verdict["outcome"] == "timeout"
+    assert verdict["unmeasured"] == verdict["detail"]
     monkeypatch.setattr(runner, "run_one", lambda *a, **kw: {
         "verdict": verdict, "trace": "", "exit_code": 0, "stderr": "",
     })
     result = runner._evaluate(tmp_path, [{"task_id": "synthetic-timeout"}], {}, trials=1)
-    # Characterize the unresolved gap, never interpret this fallback as a valid score.
-    assert result["per_task"] == {"synthetic-timeout": 0.0}
-    assert result["invalid"] == {}
+    # The originally demonstrated fallback is now explicitly unmeasured.
+    assert result["per_task"] == {}
+    assert result["invalid"]["synthetic-timeout"] == {
+        "stage": "check", "outcome": "timeout", "detail": verdict["detail"]}
 
 
 @pytest.mark.parametrize("failure, measured", [("prediction", True), ("gold", False)])
@@ -149,7 +152,7 @@ def test_ds1000_timeout_result_needs_classification_beyond_measured_flag(monkeyp
     ("alfworld", "current-runtime-identity", "runtime", "current-runtime-review"),
     ("bird_minidev", "sql-coverage-reconciliation", "measurement", None),
     ("ds1000", "host-slice-archive-review", "measurement", None),
-    ("hotpotqa", "timeout-aggregation-admission", "code-solvable", "schema-timeout-measurement"),
+    ("hotpotqa", "historical-comparison-receipts", "measurement", "timeout-aggregation-admission"),
 ])
 def test_review_preserves_unresolved_gates_and_original_history(dataset, active_id, status, retired):
     document = json.loads((ROOT / "docs/dataset-blockers.json").read_text())
@@ -163,5 +166,12 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
         item["path"] for item in blockers[active_id]["evidence"]}
     assert target["historical_runs"] == [
         item["record"] for item in baseline["records"] if item["dataset"] == dataset]
-    assert set(target["shared_blockers"]) == {item["id"] for item in document["shared_blockers"]}
+    if dataset == "hotpotqa":
+        assert "schema-timeout-measurement" not in blockers
+        assert set(target["shared_blockers"]) == {
+            "runtime-observations", "scorer-offline-closure", "artifact-only-state-export"}
+        assert "docs/w-hotpot-timeout-closure.md" in {
+            item["path"] for item in blockers[active_id]["evidence"]}
+    else:
+        assert set(target["shared_blockers"]) == {item["id"] for item in document["shared_blockers"]}
     assert document["review"]["production_authorized"] is False

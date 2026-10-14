@@ -1102,6 +1102,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                 if (result.get("verdict") or {}).get("unmeasured"):
                     unmeasured = {"stage": "check",
                                   "detail": (result["verdict"] or {})["unmeasured"]}
+                    if result["verdict"].get("outcome"):
+                        unmeasured["outcome"] = result["verdict"]["outcome"]
                     if result["verdict"].get("protocol"):
                         unmeasured.update(protocol=result["verdict"]["protocol"],
                                           receipt=result["verdict"].get("evidence"))

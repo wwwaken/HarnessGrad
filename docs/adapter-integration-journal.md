@@ -1315,3 +1315,24 @@ is supplied. Parent review and merge remain separate. Validation transcript:
 - Resource state: no approved diagnostic or pilot exists, so the model endpoint on GPU1 was left
   loaded and idle (0 % utilisation) and GPU0 idle; no utilisation is claimed. No Docker, dataset,
   model, GPU or endpoint execution was performed by either worker.
+
+## HotpotQA timeout outcome, persistence and aggregation closure — 2026-10-15 - w-hotpot
+
+- Closed `timeout-aggregation-admission` with synthetic evidence only. The final
+  12 regressions fail against baseline `bd25f5a` and pass after the minimal fix:
+  `eval/verification/verifier.py:313` and `:610` mark verifier expiration
+  `outcome=timeout`/`unmeasured`; `eval/run/runner.py:1102` retains it in invalid
+  progress and excludes it from scores, trial aggregation and cache.
+- Evidence: `docs/w-hotpot-timeout-closure.md`,
+  `tests/quality/test_hotpot_timeout_admission_w_hotpot.py`, and exact command/output
+  transcript `reports/w-hotpot-validation.txt`. Focused HotpotQA/registry tests:
+  **76 passed**; related verifier/trial/persistence regressions: **19 passed**.
+  `python3 tools/check_dataset_blockers.py`: `valid=true`, 28 datasets,
+  3 shared blockers, 11 historical records, `production_authorized=false`.
+- The validator has no closed status: retire the repaired ID and retain original
+  trial/error/provenance requirements as `historical-comparison-receipts`
+  (`measurement`). Current selected scorer/control admission and all existing
+  shared gates remain required. No other dataset/shared entry changes.
+- Preserve the old 492×3 protocol as incomplete, unknown run ID, `effect=null`;
+  reported 94/1476 completion is uncertified. No receipt or `runs/` path changed,
+  no historical run resumed/rerun, and no HotpotQA run, model, GPU or endpoint used.

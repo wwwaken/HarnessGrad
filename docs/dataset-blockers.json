@@ -750,10 +750,10 @@
       ],
       "blockers": [
         {
-          "id": "timeout-aggregation-admission",
-          "family": "trusted-verifier-runtime",
-          "status": "code-solvable",
-          "observed": "Schema/timeout source review is closed: synthetic malformed JSON/evidence is unmeasured with no reward; valid missing/partial support is measured joint EM zero. Synthetic verifier expiration exposes a remaining aggregation gap: timeout detail without unmeasured defaults to zero. Historical user-stopped v4 remains incomplete/effect=null: 492x3=1476 planned, 94 reported completed/measured task-trials, 1382 uncertified; unique-task/trial/error coverage is not independently verified. The 3600-second verifier limit and historical 60-minute note are not measured timeout counts.",
+          "id": "historical-comparison-receipts",
+          "family": "measurement-coverage",
+          "status": "measurement",
+          "observed": "Closed timeout-aggregation-admission independently of shared runtime gates by focused synthetic validation: the final 12 regressions fail on baseline bd25f5a and pass after repair. Native/sandbox/exec and snapshot expiration now explicitly returns outcome=timeout and unmeasured with no score; persistence retains the invalid timeout reason/trace, aggregation excludes the task and its trials, and no timeout score enters the cache. A valid measured zero remains zero; a timeout-only round has no measurements. Schema review remains closed: malformed JSON/evidence is unmeasured, valid missing/partial support is measured joint EM zero. No live or measured HotpotQA run or selected scorer/control admission is claimed. Historical user-stopped v4 remains incomplete, unknown run ID and effect=null: 492x3=1476 planned, 94 reported completed/measured task-trials, 1382 uncertified; unique-task/trial/error coverage is not independently verified. The 3600-second verifier limit and historical 60-minute note are not measured timeout counts.",
           "evidence": [
             {
               "kind": "repository",
@@ -769,9 +769,24 @@
               "kind": "repository",
               "path": "tests/quality/test_measurement_coverage_hg_b3.py",
               "locator": "def test_timeout_detail_alone_does_not_close_aggregation_gate"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/w-hotpot-timeout-closure.md",
+              "locator": "# HotpotQA timeout outcome/persistence/aggregation closure - w-hotpot"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_hotpot_timeout_admission_w_hotpot.py",
+              "locator": "def test_timeout_is_unmeasured_through_persistence_and_aggregation"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-hotpot-validation.txt",
+              "locator": "12 passed"
             }
           ],
-          "next_action": "Close the demonstrated timeout outcome/persistence/aggregation gap with focused synthetic validation before current selected scorer/control admission, independently of shared runtime gates. Preserve the old full-size protocol as incomplete, unknown run ID and effect=null; do not resume or rerun it. Historical comparison requires original trial/error/provenance receipts; any separately authorized future diagnostic uses a fresh ID under the current staged policy."
+          "next_action": "Historical comparison requires original selected-ID/trial/error/timeout and source/split/manifest/model/harness provenance receipts, with measured/invalid/unmeasured counts and lifecycle/cleanup reconciliation. Preserve the old full-size protocol as incomplete, unknown run ID and effect=null; do not resume or rerun it. Timeout classification/persistence/aggregation is synthetically closed; current selected scorer/control admission and all existing shared gates remain required. Any separately authorized future diagnostic uses a fresh ID under the current staged policy."
         }
       ],
       "historical_runs": [

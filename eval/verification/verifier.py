@@ -311,8 +311,9 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
                                          timeout_s=timeout_s)
             code, out, err = proc.returncode, proc.stdout, proc.stderr
         except subprocess.TimeoutExpired:
+            detail = f"the verifier timed out after {timeout_s}s"
             return {"kind": kind, "passed": False,
-                    "detail": f"the verifier timed out after {timeout_s}s"}
+                    "outcome": "timeout", "unmeasured": detail, "detail": detail}
 
         # Step 9. `reward_file` first: the real task set writes 1/0 into a file and exits
         # 0 either way, so the exit code is not a fallback, it is noise.
@@ -607,8 +608,9 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
         return {"kind": "command", "passed": False,
                 "detail": f"the verifier command does not exist: {exc}"}
     except subprocess.TimeoutExpired:
+        detail = f"the verifier timed out after {timeout_s}s"
         return {"kind": "command", "passed": False,
-                "detail": f"the verifier timed out after {timeout_s}s"}
+                "outcome": "timeout", "unmeasured": detail, "detail": detail}
 
     # ---- a host (`files`) check's reward and evidence files ------------------
     #
