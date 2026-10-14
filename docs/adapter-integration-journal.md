@@ -4,6 +4,17 @@ This is the repository record of what each dataset taught the platform.
 
 An adapter is not complete when it loads. It is complete when its scorer, runtime, split, evidence, privacy and resource boundaries are understood and recorded. Every new adapter entry must link the evidence artifacts, the platform change, the validation command and the commit that carries the change.
 
+Current planning supersedes historical sizing advice below: follow
+[`AGENTS.md`](../AGENTS.md#staged-pilot-policy), first a one-task/one-trial
+diagnostic after all dataset gates pass, then a separate review of its valid
+measured receipt before any expansion. Temporary reruns of blocked/incomplete
+datasets preselect `min(30, ceil(10% * eligible))` tasks, `trials=1`, `jobs=1`.
+Historical “Remaining gates” and “Future pilots” advice about a capped-pilot
+default, AppWorld 9x3 or Chess 50×3 expansion is superseded for sizing only;
+those entries, run IDs, receipts, scores and incomplete statuses remain intact.
+AppWorld's successful measured task gate remains unresolved; its measured-zero
+smokes are retained, with no task tuning or budget increase authorized here.
+
 ## `data/` split complete: scaffolds and datasets separated — 2026-10-14 — ds, ds2, ds3, ds4
 
 - Scope: the structural split in `docs/data-split-plan.md`, Stages A → C → D (Stage B landed earlier as `ad25c7d` and `5cb804e`). No dataset, model, endpoint or pilot execution. Every historical run and archive untouched.
@@ -1049,3 +1060,11 @@ close. The three coverage-only entries above remain explicitly pending.
   **52 passed in 2.95s**. An initial in-tree basetemp was refused before collection,
   then corrected to the required external directory. Structural scope/history
   comparison and `git diff --check` passed. No whole-suite run or readiness claim.
+## AppWorld protocol review and shared pilot-guidance closure — 2026-10-15 — B9
+
+- Scope: registered `/tmp/hg-b9`, base `9066072`; repository protocol/source and planning-document review only. No external benchmark receipt, selected-task payload, model, endpoint, production service, official scorer or pilot execution; no method or budget change.
+- AppWorld: public init/action, persistent service Python, API discovery, state-change and final-answer instructions exist without task-specific solution logic. Source review DONE; `successful-task-evidence` remains `measurement` with its original next action. Retain the 16/32-step measured zeros, 15/26 API calls and unresolved successful-task gate; external receipt bodies were not reverified. Missing: authentic successful measured actor-task evidence bound to actual actions/completion and official scoring.
+- Shared documentation: `pilot-guidance-conflict` is retained as `done` for documentation only. Repair the current platform reuse rule and onboarding wording; explicitly supersede old journal sizing advice and C-001's original contract without rewriting historical paragraphs, receipts, scores or IDs. All dataset shared references and the other shared gates remain unchanged; no runtime or measurement pass follows.
+- Evidence: [B9 review](../reports/b9-appworld-protocol-and-pilot-guidance-review.md), with file/line references, complete relevant sizing-document inventory and reasons pinned reports remain historical. The registry guide documents bounded `done` scope; the checker accepts it without dropping evidence or historical-preservation requirements.
+- Validation: **68 focused tests passed in 6.77s** (`test_dataset_blockers.py`, `test_appworld_actor_protocol.py`); checker printed `valid:true`, 28 datasets, 8 retained shared records, 11 historical records, `production_authorized:false`; `git diff --check` passed. Protocol controls are synthetic, not benchmark measurements. No whole suite ran.
+- Commit: accompanying `docs: close shared pilot guidance review and retain AppWorld gate` commit, for parent review; no main checkout write or merge.

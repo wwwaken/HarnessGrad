@@ -8,7 +8,8 @@ to a harness component, not an isolated measurement of that component. For
 example, Jericho's `memory` exercise does not make its task demand `memory`.
 
 Each dataset has explicit current `blockers` and references to applicable
-`shared_blockers`. Expand those references to obtain its complete blocker list.
+`shared_blockers`. Expand those references to obtain its complete work-item list;
+retained `done` entries are closed only for their documented scope.
 Every blocker has an ID, family, work status, observed finding, evidence paths
 with text locators, and a next review or repair action. Multiple statuses can
 apply to one dataset; no aggregate category replaces these independent facts.
@@ -19,6 +20,7 @@ apply to one dataset; no aggregate category replaces these independent facts.
 | `external` | Independent provenance, custody, source acquisition or an unavailable benchmark contract prevents closure. |
 | `runtime` | Actual backend enforcement or lifecycle observations are missing; synthetic contracts do not close the gate. |
 | `measurement` | Coverage, metric comparability, receipt review or current dataset-specific evidence remains unresolved. |
+| `done` | The recorded work is closed with checked-in evidence. A source/documentation review closes only that scope; it is not a runtime or measurement pass and grants no execution authorization. Retain the entry and shared references. |
 
 Families cover selected-only privacy/provenance, offline scorer closure, trusted
 verification, artifact export, paired filesystem quotas, official scoring,
@@ -149,7 +151,15 @@ routine blocker-status update.
 
 The review originally flagged two documentation conflicts: historical 50-task
 pilot guidance in the platform log, and a chess audit sentence recommending an
-already used recovery ID. The Chess future-launch guidance is now corrected,
+already used recovery ID. The [B9 review](../reports/b9-appworld-protocol-and-pilot-guidance-review.md)
+closes `pilot-guidance-conflict` as `done` for documentation only: the current
+reuse table and onboarding guidance follow AGENTS.md; original platform contracts
+and journal launch advice remain preserved with explicit supersession notices.
+The shared entry and all dataset references remain in the registry. AppWorld's
+task-facing protocol source review is complete, but `successful-task-evidence`
+remains `measurement`; its 16/32-step measured zeros and unresolved successful-task
+gate are retained. External smoke receipts were not opened or reverified.
+The Chess future-launch guidance was already corrected,
 so `recovery-id-conflict` is removed from the current blocker list. Every future
 attempt must use a genuinely new unique run ID; never resume or overwrite any
 used run ID, including `chess-pilot-h0-20261013` and

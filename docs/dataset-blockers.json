@@ -119,20 +119,6 @@
         }
       ],
       "next_action": "Review snapshot/cleanup observation and quarantine integration; preserve uncertainty as unmeasured."
-    },
-    {
-      "id": "pilot-guidance-conflict",
-      "family": "documentation-conflict",
-      "status": "code-solvable",
-      "observed": "The platform log retains historical 50-task sizing; current AGENTS.md requires a one-task diagnostic before a separately reviewed 30-task/one-trial cap.",
-      "evidence": [
-        {
-          "kind": "repository",
-          "path": "docs/platform-improvement-log.md",
-          "locator": "min(50, ceil(10%"
-        }
-      ],
-      "next_action": "Align current planning documentation with AGENTS.md while preserving the historical protocol descriptions."
     }
   ],
   "datasets": [
@@ -196,8 +182,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -269,20 +254,24 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
           "id": "successful-task-evidence",
           "family": "actor-protocol",
           "status": "measurement",
-          "observed": "Later 16/32-step smokes are measured zeros with healthy runtime; they do not close the journal successful-task gate.",
+          "observed": "Task-facing source review DONE: a generic init/action, persistent service Python/API discovery/state-change/final-answer protocol exists. Retain the journal's 16/32-step measured-zero receipts (15/26 API calls) and unresolved successful-task gate; API activity and synthetic protocol controls are not successful-task evidence. External receipt bodies were not opened or reverified; no authentic successful measured actor-task receipt is established from repository evidence.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "### AppWorld thirty-two-step smoke"
+            },
+            {
+              "kind": "repository",
+              "path": "reports/b9-appworld-protocol-and-pilot-guidance-review.md",
+              "locator": "AppWorld: source review DONE; successful-task gate remains measurement"
             }
           ],
           "next_action": "Retain the measured-zero receipts and unresolved gate; review task-facing protocol evidence without tuning to the selected task or increasing its budget."
@@ -323,8 +312,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -388,8 +376,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -472,8 +459,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -585,8 +571,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -649,8 +634,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -695,8 +679,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -784,8 +767,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -823,8 +805,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -890,8 +871,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -925,8 +905,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -973,8 +952,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1039,8 +1017,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1084,8 +1061,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1132,8 +1108,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1238,8 +1213,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1285,8 +1259,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1335,8 +1308,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1410,8 +1382,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1468,8 +1439,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1507,8 +1477,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {
@@ -1561,8 +1530,7 @@
         "pristine-verifier",
         "artifact-only-state-export",
         "official-scorer-identity",
-        "snapshot-owned-cleanup",
-        "pilot-guidance-conflict"
+        "snapshot-owned-cleanup"
       ],
       "blockers": [
         {

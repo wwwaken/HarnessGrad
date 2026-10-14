@@ -187,7 +187,8 @@ P0 is not a purchase. It is two configuration decisions, both with a measured re
    harness, the benchmark and the model together, and that **without headroom sample efficiency is
    undefined** — so on the current model the paper's headline curves cannot be measured at all.
 2. **Eval-set size.** M2 measured a floor of 1.30 tasks of spread on a twenty-task eval set, and
-   the staircase needs roughly 100 eval tasks to be visible. Current pilots score 50.
+   the staircase needs roughly 100 eval tasks to be visible. Historical pilots scored 50 tasks;
+   that sample-size observation is superseded as launch guidance by the staged policy in §9.
 
 Neither one changes an adapter, so **neither one blocks P1 or P2**. The onboarding gates are gate 1
 and gate 2 — oracle scores 1, noop scores 0 — and those are model-free controls: the control sweeps
@@ -261,8 +262,9 @@ is safe to run anywhere.
 
 - GPU0 is `http://127.0.0.1:8001/v1`; GPU1 is `http://127.0.0.1:8002/v1`. Bind each run to one
   endpoint and one fresh run ID. Total H0 concurrency `<=3`, `jobs=1`.
-- One-task/one-trial diagnostic first, after all gates pass. Temporary reruns of blocked datasets
-  select `min(30, ceil(10% * eligible))` tasks with `trials=1`, `jobs=1`. Do not silently revert to
+- One-task/one-trial diagnostic first, after all gates pass. Expand only after a separate review
+  of its valid measured receipt. Temporary reruns of blocked/incomplete datasets preselect
+  `min(30, ceil(10% * eligible))` tasks with `trials=1`, `jobs=1`. Do not silently revert to
   the historical `min(50, ...) x 3`.
 - Invalid, unmeasured, timeout, scorer, provider, cleanup and snapshot failures **are not ordinary
   zero scores**.

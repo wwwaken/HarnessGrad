@@ -27,7 +27,7 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 | Dataset-specific oracle/noop controls | QA, ALFWorld, Bird, DS1000 | merged | Run oracle and noop before H0; keep measured zero separate from unreachable scorer |
 | Declared split and split digest | GSM8K, QA family | merged | Record `split_source` and `split_sha`; never call imposed splits official |
 | Structured evidence envelope | FEVER, HotpotQA, Bird, GAIA planning | merged/under review | Evidence can say measured, unmeasured or invalid; missing evidence is not score zero |
-| Deterministic capped pilot selection | ScienceWorld integrity failure | merged in `d10b387` | Default new pilot is `min(50, ceil(10% * eligible side))` before task execution |
+| Deterministic capped pilot selection | ScienceWorld integrity failure | merged in `d10b387`; sizing superseded by AGENTS.md | After all dataset gates pass, start with one task/one trial; separately review its valid measured receipt before a temporary rerun preselected as `min(30, ceil(10% * eligible))`, `trials=1`, `jobs=1` |
 | Trial-aware score and spread | H0 QA pilots | merged | Record every trial, mean and spread; do not confuse mean-of-trials with pass@k/Pass^k |
 | Fresh task workspace and stale verdict cleanup | QA, ALFWorld, Terminal planning | merged/under review | Each attempt owns fresh state, verdict paths and cleanup evidence |
 | Platform integrity boundary | ScienceWorld v4 | isolated patch | Hide platform before execution; read-only platform mounts; fail closed on writes |
@@ -43,6 +43,10 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 ## Detailed records
 
 ### C-001 — Deterministic capped pilots
+
+Historical implementation record for `d10b387`: the original contract and checks
+below are preserved. Its sizing is superseded for new planning by the current
+AGENTS.md staged policy in the capability index above.
 
 - Trigger: ScienceWorld completed a large 10% pilot before platform integrity failure was discovered.
 - Contract: select by SHA-256 task ID rank before setup/image admission/H0; choose `min(50, ceil(10% * eligible side))`.

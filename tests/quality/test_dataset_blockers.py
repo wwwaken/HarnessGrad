@@ -268,16 +268,21 @@ def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(documen
 
 def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
     target = row(document, "twowikimultihopqa")
-    # `paired-filesystem-quotas` was withdrawn by operator decision on 2026-10-15; see
-    # `docs/filesystem-quota-decision.md`. It is removed from this set deliberately and
-    # visibly rather than by loosening the assertion: enforcement still does not exist, the
-    # decision was that the platform does not require it.
+    # Two shared blockers have left this set, both deliberately and visibly rather than by
+    # loosening the assertion:
+    #   `paired-filesystem-quotas` was *withdrawn* -- enforcement still does not exist, the
+    #     operator decided the platform does not require it
+    #     (`docs/filesystem-quota-decision.md`);
+    #   `pilot-guidance-conflict` was *completed* -- the planning documents were aligned with
+    #     `AGENTS.md`, so the requirement no longer exists and the entry is gone rather than
+    #     parked in the registry under a status the schema does not have.
     assert set(target["shared_blockers"]) == {
         "runtime-observations", "scorer-offline-closure",
         "pristine-verifier", "artifact-only-state-export", "official-scorer-identity",
-        "snapshot-owned-cleanup", "pilot-guidance-conflict",
+        "snapshot-owned-cleanup",
     }
     assert "paired-filesystem-quotas" not in target["shared_blockers"]
+    assert "pilot-guidance-conflict" not in target["shared_blockers"]
     comparability = next(item for item in target["blockers"]
                          if item["id"] == "recovery-comparability")
     assert comparability["status"] == "measurement"
