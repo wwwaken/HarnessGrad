@@ -36,7 +36,7 @@ _GUARDED = ("driver.py", "harnessgrad", "eval", "data", "tools", "methods",
             "tests", "docs", "improvers", "base_harness")
 
 
-def _platform_stat() -> dict[str, tuple[int, int]]:
+def _platform_stat(root: Path | None = None) -> dict[str, tuple[int, int]]:
     """`path -> (size, mtime_ns)` for every file under the guarded top level.
 
     `stat()` only, deliberately: this runs around *every* test in the file, and
@@ -45,21 +45,29 @@ def _platform_stat() -> dict[str, tuple[int, int]]:
     write, a create, a delete or a truncate -- and a same-length rewrite still
     moves the mtime.
     """
+    root = ROOT if root is None else root
     out: dict[str, tuple[int, int]] = {}
+
+    def walk_error(error):
+        raise error  # A missing source directory must still fail the guard.
+
     for name in _GUARDED:
-        target = ROOT / name
+        target = root / name
         if target.is_file():
             st = target.stat()
             out[name] = (st.st_size, st.st_mtime_ns)
         elif target.is_dir():
-            for path in target.rglob("*"):
-                # Byte-compiled output is a by-product of *reading* the tree,
-                # written by every process that imports the platform.
-                if not path.is_file() or "__pycache__" in path.parts \
-                        or path.name.endswith(".pyc"):
-                    continue
-                st = path.stat()
-                out[str(path.relative_to(ROOT))] = (st.st_size, st.st_mtime_ns)
+            for directory, dirs, files in os.walk(target, onerror=walk_error):
+                # Prune generated directories before descent: other pytest and
+                # import processes may create, update or remove them at any time.
+                dirs[:] = [d for d in dirs if d not in {"__pycache__", ".pytest_cache"}]
+                for filename in files:
+                    if filename.endswith(".pyc"):
+                        continue
+                    path = Path(directory) / filename
+                    if path.is_file():
+                        st = path.stat()
+                        out[str(path.relative_to(root))] = (st.st_size, st.st_mtime_ns)
     return out
 
 
@@ -90,6 +98,48 @@ def _the_shared_checkout_is_never_edited():
         f"this test edited the shared checkout at {ROOT}; the platform is hashed "
         "around every run and another test process may be walking these paths. "
         "Mutate a synthetic platform under `tmp_path` instead -- " + "; ".join(report))
+
+
+def test_checkout_guard_ignores_generated_caches(tmp_path, monkeypatch):
+    tree = tmp_path / "tests"
+    tree.mkdir()
+    source = tree / "test_example.py"
+    source.write_text("# synthetic source\n")
+    before = _platform_stat(tmp_path)
+    assert set(before) == {"tests/test_example.py"}
+    caches = [tree / "__pycache__", tree / ".pytest_cache"]
+    for cache in caches:
+        cache.mkdir()
+        (cache / "generated").write_text("cache output\n")
+    (tree / "example.pyc").write_bytes(b"compiled")
+    scandir = os.scandir
+
+    def source_only_scandir(path):
+        assert Path(path) not in caches, "the guard must prune caches before descent"
+        return scandir(path)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(os, "scandir", source_only_scandir)
+        assert _platform_stat(tmp_path) == before
+    for cache in caches:
+        shutil.rmtree(cache)
+    assert _platform_stat(tmp_path) == before
+
+
+def test_checkout_guard_still_tracks_source_changes(tmp_path):
+    tree = tmp_path / "eval"
+    tree.mkdir()
+    source = tree / "runner.py"
+    source.write_text("# first\n")
+    before = _platform_stat(tmp_path)
+    assert set(before) == {"eval/runner.py"}
+    source.write_text("# longer replacement\n")
+    assert _platform_stat(tmp_path)["eval/runner.py"] != before["eval/runner.py"]
+    added = tree / "new.py"
+    added.write_text("# new\n")
+    assert set(_platform_stat(tmp_path)) == {"eval/runner.py", "eval/new.py"}
+    source.unlink()
+    assert set(_platform_stat(tmp_path)) == {"eval/new.py"}
 
 
 def test_snapshot_covers_the_referee_not_the_candidate():
@@ -541,23 +591,30 @@ out["state_carried"] = (STATE / "marker").read_text() if (STATE / "marker").exis
 
 
 def _run_probe_harness(tmp_path, source_key="probe"):
-    """Build the probe harness outside the platform and run it over probe_set."""
+    """Use a private platform outside /tmp, which the sandbox masks separately."""
+    platform = tmp_path / "platform"
+    shutil.copytree(ROOT, platform, ignore=shutil.ignore_patterns(
+        ".git", "runs", "__pycache__", "current_harness", ".pytest_cache",
+        "reports", "web", ".env"))
+    # The probes need a real dotenv *path*, never the developer's credentials.
+    (platform / ".env").write_text("# synthetic offline test configuration\n")
     repo = tmp_path / "probe_harness"
     repo.mkdir(parents=True, exist_ok=True)
     (repo / "harness.json").write_text(json.dumps(
         {"name": "probe", "version": "1", "entrypoint": "agent.py", "backend": "cli"}))
     (repo / "agent.py").write_text(
-        HARNESS_PROBE.replace("__PLATFORM__", str(ROOT)))
+        HARNESS_PROBE.replace("__PLATFORM__", str(platform)))
 
     runs = tmp_path / "runs"
     proc = subprocess.run(
         [sys.executable, "driver.py", "--harness", str(repo), "--mode", "A",
          "--rounds", "1", "--run-id", "p", "--dataset", "probe_set",
-         "--sampling", "all", "--runs-root", str(runs),
+         "--sampling", "all", "--improver", "none", "--runs-root", str(runs),
          "--work-root", str(tmp_path / "work"),
-         "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"],
-        cwd=ROOT, capture_output=True, text=True, timeout=600,
-        env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+         "--method-entrypoint", f"{sys.executable} {platform / 'methods/noop/run.py'}"],
+        cwd=platform, capture_output=True, text=True, timeout=600,
+        env={**os.environ, "HG_AGENT_BACKEND": "mock",
+             "HG_AGENT_API_KEY": "synthetic-offline-fixture"})
     assert proc.returncode == 0, f"{proc.stdout[-500:]}\n{proc.stderr[-500:]}"
 
     found = []
