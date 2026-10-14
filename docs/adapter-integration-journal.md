@@ -2159,3 +2159,21 @@ Final w-trivia validation: 98 focused tests passed in 4.58s; manifest and all
 provenance/registry checks passed (28 datasets, 2 shared blockers, 11 historical
 records, production_authorized=false). Authored diff is whitespace-clean; raw
 HTTP header whitespace is retained as acquired and documented in validation.
+## Parent review and merge — w-trivia — 2026-10-15
+
+- Merged `a1f324b` (w-trivia) on top of `a808886`, with a parent journal entry. Registry valid:
+  28 datasets, 2 shared blockers, 11 historical records, `production_authorized=false`.
+- `triviaqa / hub-export-scorer-linkage` **stays `external` and open**, correctly. Hub
+  revision/tree/config/split identities and the scorer/license source bytes are now corroborated
+  against the authoritative origin by the worker, but immutable converter execution, the
+  runtime/writer/input provenance and full scorer compatibility remain unestablished. The worker
+  named those gaps instead of reading the partial corroboration as closure.
+- Note on the "independent" wording: three separate blockers in this family
+  (`bfcl_v3/simple-ast-contract`, `triviaqa/hub-export-scorer-linkage`,
+  `twowikimultihopqa/hub-data-provenance`) still phrase their next_action with the word
+  "independent". The operator withdrew the independent-approval gates
+  (`docs/independent-review-deferred.md`), and the workers were briefed not to re-impose a
+  human sign-off; so they acquired and recorded the custody themselves and were judged on whether
+  the custody is real - raw responses preserved, digests recomputed. All three nonetheless stayed
+  open on substantive grounds (missing runtime provenance or missing execution), which is the
+  right reason to stay open and not an artifact of the withdrawn approval gate.
