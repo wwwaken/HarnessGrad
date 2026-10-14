@@ -1,0 +1,44 @@
+{
+  "context": {
+    "dataset": "agentdojo",
+    "side": "train",
+    "metric": {
+      "name": "AgentDojo v1.2.2 fixed-template official utility; diagnostic only",
+      "scorer_sha256": "b04a292c0e3f0f07973b880e7e3b7147384c925e6981944768f03ea2f12b21b0"
+    },
+    "hashes": {
+      "source": "d7e0ee021be27a69e7e66647979b5a5e0dd10030d38d04ce4102e18a76a228d8",
+      "split": "a8357d50ef2e275ee3226dbba421c77556389f5019006b7006bdc277091ceb99",
+      "manifest": "e8d68017dbab127e1042fe0b8026179dfb174c2aee539d4a30ff8c4fdffbea05",
+      "model": null,
+      "harness": "6bdd6b8dd3e02f85ac55d4eb1ff0ac0fad0e5afbd16eeb37f60555c5bd99efeb"
+    },
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "limits": {
+      "resource": null,
+      "budget": {
+        "agent_phase_timeout_s": 3600,
+        "verifier_phase_timeout_s": 3600,
+        "agent_max_steps": 32,
+        "agent_max_output_tokens": 2048,
+        "completion_timeout_s": 180,
+        "completion_attempts": 3,
+        "trials": 1,
+        "jobs": 1,
+        "rounds": 0
+      }
+    },
+    "gates": {
+      "status": "unknown",
+      "receipt_sha256": null,
+      "detail": "Operator-authorized diagnostic to establish execution evidence. Trusted policy-enforcement, lifecycle, selected-only custody and production admission are NOT established."
+    },
+    "comparability_notes": [
+      "policy_enforcement_not_observed: no scientific claim, comparable curve point or production authorization.",
+      "Resource limits are not authenticated; no quota, CPU/memory, network or filesystem enforcement observation is claimed.",
+      "Model weight digest is unknown (model hash null); endpoint/model-name binding is recorded separately.",
+      "Current adapter declares files, not exec. No adapter or selected task was tuned or reclassified.",
+      "Split metadata and selected ID are platform-side; full catalog loading is not a selected-only custody proof."
+    ]
+  }
+}
