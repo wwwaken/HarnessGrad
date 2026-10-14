@@ -1,0 +1,308 @@
+{
+  "aggregate_raw": null,
+  "cases": [
+    {
+      "error": null,
+      "id": "exact",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            "red blue"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "red blue",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches 'red blue' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "later-alias",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            "red blue",
+            "scarlet"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "scarlet",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches 'scarlet' among 2 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "underscore-hyphen-article",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            "red blue team"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "red blue team",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches 'red blue team' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "smart-apostrophe",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            "o neill"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "o neill",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches 'o neill' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "punctuation-becomes-space",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            "red blue"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "red blue",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches 'red blue' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "partial-answer",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "accepted": [
+            "red blue"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "red",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 0.0,
+        "why": "no match for 'red' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "wrong",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "accepted": [
+            "red blue"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "green",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 0.0,
+        "why": "no match for 'green' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "empty-prediction",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "accepted": [
+            "red blue"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 0.0,
+        "why": "no match for '' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "human-answer-alias",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            "red blue",
+            "scarlet team"
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "scarlet team",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches 'scarlet team' among 2 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "empty-normalized-text-boundary",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "accepted": [
+            ""
+          ],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 1.0,
+        "why": "matches '' among 1 alias(es)"
+      }
+    },
+    {
+      "error": null,
+      "id": "empty-alias-set-error-boundary",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "accepted": [],
+          "canonical_value": null,
+          "metric": "exact_match over the alias set (metric_max_over_ground_truths)",
+          "normalized_prediction": "red",
+          "reference": {
+            "commit": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+            "repository": "https://github.com/mandarjoshi90/triviaqa",
+            "source_path": "evaluation/triviaqa_evaluation.py",
+            "source_sha256": "51785a3bc2e02a8f1ebf9db3aa18834c6a5daa5089ee5d435c99e0babf4be682"
+          },
+          "scorer_identity": "triviaqa-alias-max-em-upstream-normalization-all-aliases-v2"
+        },
+        "reward": 0.0,
+        "why": "no match for 'red' among 0 alias(es)"
+      }
+    }
+  ],
+  "complete_upstream_evaluator": false,
+  "dataset": "triviaqa",
+  "fixture_import_row_loading_suppression": {
+    "method": "temporarily refuse QASpec.records during import; restore before scoring",
+    "restored_before_scoring": true,
+    "scorer_functions_changed": false,
+    "spec_cached_records_after_import_and_scoring": 0,
+    "spec_load_error": "PermissionError: fixture-only row loading refusal: synthetic scoring import",
+    "suppressed_row_loads": [
+      "triviaqa"
+    ]
+  },
+  "imported_source_and_extension_files": [
+    {
+      "file": "/tmp/hg-offscorer/data/datasets/triviaqa.py",
+      "module": "data.datasets.triviaqa",
+      "sha256": "c4c9e7121672f482abd5ec5527daa07d893f27bfbdcb7255841782332597413c"
+    },
+    {
+      "file": "/tmp/hg-offscorer/data/scaffolds/qa/__init__.py",
+      "module": "data.scaffolds.qa",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "/tmp/hg-offscorer/data/scaffolds/qa/base.py",
+      "module": "data.scaffolds.qa.base",
+      "sha256": "55346d6e79766250441b10fd3ab23e6adc4425a1a555773ae8a5386f2ba1281e"
+    },
+    {
+      "file": "/tmp/hg-offscorer/data/scaffolds/qa/read.py",
+      "module": "data.scaffolds.qa.read",
+      "sha256": "b28b1150ddf307a1cf037e3e0cb280117d13157687551329b27c24e0526bb383"
+    }
+  ],
+  "invocation": "module.score(prediction, {accepted: module.get_ground_truths(gold)})",
+  "mode": "local",
+  "source": "data/datasets/triviaqa.py",
+  "source_sha256_recomputed": "c4c9e7121672f482abd5ec5527daa07d893f27bfbdcb7255841782332597413c",
+  "synthetic_inputs_only": true
+}

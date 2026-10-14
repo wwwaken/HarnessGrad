@@ -1,0 +1,38 @@
+{
+  "fever": {
+    "official_execution": "complete unmodified module; strict predicate + full API",
+    "controlled_result": "16/17 strict; 1 flat-gold projection difference; 3 full singleton API errors"
+  },
+  "physicsquestions": {
+    "official_execution": "unchanged official functions selected from AST; full import failed",
+    "controlled_result": "8/12 agree; 4 differ; same strings/accepted targets"
+  },
+  "sportsunderstanding": {
+    "official_execution": "unchanged official functions selected from AST; full import failed",
+    "controlled_result": "7/12 agree; 5 differ; paired channel outcomes; not equivalence"
+  },
+  "gsm8k": {
+    "official_execution": "complete unmodified official scorer module",
+    "controlled_result": "6/16 raw outcomes agree; 10 differ"
+  },
+  "strategyqa": {
+    "official_execution": "complete unmodified official scorer module",
+    "controlled_result": "5/12 raw outcomes agree; 7 differ; Boolean semantic projection 4/4 agrees, separate from raw inputs"
+  },
+  "hotpotqa": {
+    "official_execution": "complete unmodified upstream evaluator",
+    "controlled_result": "12/13 numeric input comparisons agree; 1 differ; 0 nonnumeric"
+  },
+  "triviaqa": {
+    "official_execution": "complete unmodified upstream evaluator",
+    "controlled_result": "10/10 numeric input comparisons agree; 0 differ; 1 nonnumeric"
+  },
+  "musique": {
+    "official_execution": "complete unmodified upstream evaluator",
+    "controlled_result": "12/12 numeric input comparisons agree; 0 differ; 0 nonnumeric; platform reward differs from answer-F1 on 4 inputs"
+  },
+  "twowikimultihopqa": {
+    "official_execution": "complete unmodified upstream evaluator",
+    "controlled_result": "13/13 numeric input comparisons agree; 0 differ; 0 nonnumeric"
+  }
+}

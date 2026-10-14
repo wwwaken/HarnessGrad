@@ -2333,3 +2333,60 @@ source, manifest, scope and blocker-registry checks are recorded in validation.
 - That actor kept its first socket client running but gated its send on `if data.get('solver_turn')` (`reports/w-chess2-evidence/actor-command-line-19.sh:25`); the actual initial observation's integer `solver_turn=0` skips the first answer and blocks on another read. It then attempted rejected reconnects. The final trace records `codex timed out`, `timeout_s=210.0`, `deadline_s=300.0`. The controller receipt records `submissions=0`, `connections=1`, `rejected_connections=14`, transport `reason=answer_receive_failed`, outer `unmeasured=actor_exit_before_clean_completion`, actor `exit_code=1`, and `scorer_isolation_class=in-process`. These raw values are in `reports/w-chess2-evidence/execution/task-result.json`; this is another actor error, not a reason to relax admission or transport.
 - `reports/w-chess2-evidence/execution/diagnostic_receipt.json` records `score=null`, `measured_trials=0`, `invalid_trials=0`, `unmeasured_trials=1`. Relay cleanup records `server_closed=true`, `thread_joined=true`, `socket_removed=true`. Independent path and process observations find the sampled task/socket directories and sampled process identities absent; original run/workspace and immutable review/archive copies remain. Formal cleanup/snapshot admission and model usage remain unknown rather than inferred from local teardown.
 - Still missing: an actual solver submission, delivered terminal observation and clean actor completion. Offline-only measurement remains; no mixed strict-replay/stepwise point, score, method tuning, second diagnostic, expansion or production authorization was produced. `interruption-closure`, shared gates and historical runs/receipts were not changed. Added a fabricated-puzzle regression for initial-board close/reconnect without a score. Validation commands and raw output: `reports/w-chess2-validation.txt`.
+
+## Offline official scorer execution and bounded equivalence - 2026-10-15 - w-offscorer
+
+In registered `/tmp/hg-offscorer` (`wg-offscorer`), built on the w-clo-actor
+byte-closure inventory, shared topology survey and E1 FEVER/BIG-bench source
+acquisition. Parent reviewed and integrated separate registered-worktree fixture
+commits for BIG-bench, numeric/Boolean and public-QA scoring; production adapter
+and shared scorer bytes are unchanged. Evidence is confined to
+`tests/fixtures/hg_woffscorer/`, with authored synthetic inputs, acquired official
+source identities/recomputed hashes, raw official/local returns, per-input
+comparisons, exact commands, preserved failed/import-limited attempts and a full
+SHA-256 manifest. No runs/, historical receipt or archive is modified.
+
+Nine QA datasets now have bounded offline official scoring-component execution:
+FEVER, Physics Questions, Sports Understanding, GSM8K, StrategyQA, HotpotQA,
+TriviaQA, MuSiQue-Ans and 2WikiMultiHopQA. FEVER canonical strict predicates agree
+14/14; one of three flat-gold projection controls loses a conjunction. The full
+singleton FEVER API raises three preserved ZeroDivisionErrors. Physics agrees
+8/12, with four measured asymmetric whitespace/reference-period differences.
+Sports agrees on 7/12 paired outcomes, with five differences between synthetic
+candidate log-probability vectors and generated text; those channels are not
+scoring-equivalent. BIG-bench executes unchanged selected official function ASTs;
+its failed full-module import is retained, and no full upstream runner is claimed.
+GSM8K agrees 6/16, with ten extraction/string-versus-numeric differences.
+StrategyQA raw Boolean/text probes agree 5/12 across incompatible contracts;
+explicit Boolean-to-Yes/No projection agrees 4/4 separately. Hotpot agrees 12/13,
+with one empty-support synthetic boundary. Trivia numeric EM agrees 10/10, with
+one separate upstream empty-alias exception. MuSiQue common metrics agree 12/12
+at official rounding, while platform reward differs from answer-F1 on four
+controls; 2Wiki agrees 13/13 across all 16 official columns. No new official
+execution is claimed for BFCL, ChessBench, Reasoning Gym or other route classes.
+
+Kernel seccomp denies all socket APIs/io_uring_setup before scorer imports and
+actively probes IPv4/IPv6/UNIX EPERM. Interpreter/libseccomp byte identities and
+bounded CPU/fd/wall limits are recorded. A Python audit hook does not mediate
+native PyArrow reads: original import-limited attempts are preserved; corrected
+local runs refuse only import-time row loading, restore helpers before unchanged
+score calls and retain empty record caches. This fixture mechanism is not a
+trusted production verifier/lifecycle observation. No benchmark task, model, GPU,
+endpoint or container is executed and no utilization/pilot result is claimed.
+
+Only shared `scorer-offline-closure` observed/evidence wording is sharpened.
+Its status/next_action and every dataset/history record remain unchanged. The
+blocker remains open for complete portable transitive runtime/image/ABI custody,
+full matched processing/comparability, dataset provenance/selected-gold gates,
+trusted class-specific lifecycle/resource/cleanup observations and valid live
+controls. Snapshot/service connectivity and matching known production classes
+remain required. Report: `reports/w-offscorer-equivalence.md`; exact validation
+commands and checker output: `reports/w-offscorer-validation.txt`.
+
+Final parent validation: all bounded scorer replays reproduced the documented
+results; provenance/component verifiers, 274-file fixture manifest, unchanged
+13-source pins and append-only/registry scope checks pass. Source-only registry
+tests: 54 passed. Checker: valid=true, 28 datasets, 2 shared blockers, 11 historical
+records, production_authorized=false. Authored diff check passes with pinned
+upstream source and raw whitespace diagnostics excluded; the full original
+whitespace warnings remain recorded rather than altering acquired source bytes.

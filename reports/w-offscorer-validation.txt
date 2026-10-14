@@ -1,0 +1,949 @@
+w-offscorer parent validation; cwd=/tmp/hg-offscorer; baseline=fdfdbce
+Public-source acquisition commands/receipts remain in component directories; not repeated.
+Parent reviewed isolated-worktree commits b243de5, 28dee6c, dd43fd7 and c795945 before integration.
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/replay.py
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/fever/run.py official > tests/fixtures/hg_woffscorer/fever/official.json 2> tests/fixtures/hg_woffscorer/fever/official-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/fever/run.py local > tests/fixtures/hg_woffscorer/fever/local.json 2> tests/fixtures/hg_woffscorer/fever/local-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/fever/run.py compare > tests/fixtures/hg_woffscorer/fever/comparison.json 2> tests/fixtures/hg_woffscorer/fever/compare-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/bigbench/import_probe.py > tests/fixtures/hg_woffscorer/bigbench/full-module-import-output.json 2> tests/fixtures/hg_woffscorer/bigbench/full-module-import-offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/bigbench/run.py official > tests/fixtures/hg_woffscorer/bigbench/official-output.json 2> tests/fixtures/hg_woffscorer/bigbench/official-offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/bigbench/run.py local > tests/fixtures/hg_woffscorer/bigbench/local-output.json 2> tests/fixtures/hg_woffscorer/bigbench/local-offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/bigbench/run.py compare > tests/fixtures/hg_woffscorer/bigbench/comparison.json 2> tests/fixtures/hg_woffscorer/bigbench/compare-offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/execute.py gsm8k official > tests/fixtures/hg_woffscorer/numeric_boolean/gsm8k-official.json 2> tests/fixtures/hg_woffscorer/numeric_boolean/gsm8k-official-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/execute.py gsm8k local > tests/fixtures/hg_woffscorer/numeric_boolean/gsm8k-local.json 2> tests/fixtures/hg_woffscorer/numeric_boolean/gsm8k-local-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/execute.py strategyqa official > tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-official.json 2> tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-official-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/execute.py strategyqa local > tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-local.json 2> tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-local-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/execute.py strategyqa local --canonical-boolean-projection > tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-local-projected.json 2> tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-local-projected-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/eval.py --golds_file tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-golds.json --predictions_file tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-predictions.json --metrics_output_file tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-cli-metrics.json > tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-cli-stdout.txt 2> tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-valid_official_boolean-cli-offline.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/eval.py --golds_file tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-adapter_text_official_out_of_contract-golds.json --predictions_file tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-adapter_text_official_out_of_contract-predictions.json --metrics_output_file tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-adapter_text_official_out_of_contract-cli-metrics.json > tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-adapter_text_official_out_of_contract-cli-stdout.txt 2> tests/fixtures/hg_woffscorer/numeric_boolean/strategyqa-adapter_text_official_out_of_contract-cli-offline.txt
++ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/numeric_boolean/compare.py > tests/fixtures/hg_woffscorer/numeric_boolean/comparison.json
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py official hotpotqa > tests/fixtures/hg_woffscorer/public_qa/outputs/hotpotqa/official.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/hotpotqa/official.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py local hotpotqa > tests/fixtures/hg_woffscorer/public_qa/outputs/hotpotqa/local.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/hotpotqa/local.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py official triviaqa > tests/fixtures/hg_woffscorer/public_qa/outputs/triviaqa/official.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/triviaqa/official.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py local triviaqa > tests/fixtures/hg_woffscorer/public_qa/outputs/triviaqa/local.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/triviaqa/local.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py official musique > tests/fixtures/hg_woffscorer/public_qa/outputs/musique/official.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/musique/official.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py local musique > tests/fixtures/hg_woffscorer/public_qa/outputs/musique/local.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/musique/local.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py official twowikimultihopqa > tests/fixtures/hg_woffscorer/public_qa/outputs/twowikimultihopqa/official.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/twowikimultihopqa/official.offline-receipt.txt
++ timeout 150s env PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= python3 tests/fixtures/hg_woffscorer/offline_exec.py tests/fixtures/hg_woffscorer/public_qa/execute.py local twowikimultihopqa > tests/fixtures/hg_woffscorer/public_qa/outputs/twowikimultihopqa/local.stdout.json 2> tests/fixtures/hg_woffscorer/public_qa/outputs/twowikimultihopqa/local.offline-receipt.txt
++ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/public_qa/compare.py > tests/fixtures/hg_woffscorer/public_qa/comparison-summary.stdout.json
+PASS: parent replay of bounded scorer controls; no task runner invoked
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/build_report.py
+{
+  "report": "reports/w-offscorer-equivalence.md",
+  "official_component_execution_datasets": [
+    "fever",
+    "physicsquestions",
+    "sportsunderstanding",
+    "gsm8k",
+    "strategyqa",
+    "hotpotqa",
+    "triviaqa",
+    "musique",
+    "twowikimultihopqa"
+  ]
+}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/refresh_manifest.py
+bigbench/SHA256SUMS: 23 files
+./SHA256SUMS: 274 files
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/bigbench/verify.py
+<unknown>:167: SyntaxWarning: invalid escape sequence '\s'
+{
+  "valid": true,
+  "source_revision": "092b196c1f8f14a54bbc62f24759d43bde46dd3b",
+  "source_sha256": "0d210ed501882ee38742f689b5e4bbc363a7481ef39dc8ee9959bfbc39903e73",
+  "physicsquestions": {
+    "input_count": 12,
+    "agreement_count": 8,
+    "divergence_count": 4
+  },
+  "sportsunderstanding": {
+    "input_count": 12,
+    "agreement_count": 7,
+    "divergence_count": 5
+  },
+  "full_module_import": false,
+  "production_authorized": false
+}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/numeric_boolean/validate.py
+PASS: acquired source bytes/revisions, local identities, shared input alignment, comparison counts, official CLI metrics and offline receipts verified
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/public_qa/verify.py
+{"datasets": ["hotpotqa", "musique", "triviaqa", "twowikimultihopqa"], "hotpot_git_commit_recomputed": "fa3a36370899e1d85822de61e58c85ea19993154", "hotpot_git_tree_recomputed": "fc5b8d4a2526d8e3ebce2d51d573df2b931c4a93", "production_authorized": false, "source_files_verified": 15, "successful_kernel_offline_execution_commands": 8, "valid": true}
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer/verify.py
+{
+  "verified_fixture_files": 274,
+  "local_source_pins": 13,
+  "registry_changes": [
+    "scorer-offline-closure"
+  ],
+  "dataset_blocker_changes": 0,
+  "production_source_changes": 0,
+  "journal_append_only": true,
+  "benchmark_tasks_executed": 0,
+  "production_authorized": false
+}
+exit_code=0
+
+$ env PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-offscorer
+......................................................                   [100%]
+54 passed in 2.67s
+exit_code=0
+
+$ git diff --check fdfdbce -- . ':(exclude)tests/fixtures/hg_woffscorer/public_qa/source/**' ':(exclude)tests/fixtures/hg_woffscorer/numeric_boolean/source/**' ':(exclude)tests/fixtures/hg_woffscorer/public_qa/validation.txt' ':(exclude)tests/fixtures/hg_woffscorer/initial-parent-validation.txt' ':(exclude)reports/w-offscorer-validation.txt'
+exit_code=0
+
+Pinned unmodified upstream source whitespace and raw diagnostic copies of it are preserved; the complete check follows.
+$ git diff --check fdfdbce
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/README.md:3: trailing whitespace.
++This repo hosts the evaluator for 
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:27: trailing whitespace.
++*** 
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:42: trailing whitespace.
++The official StrategyQA dataset files with a detailed description of their format can be found on the [dataset page](https://allenai.org/data/strategyqa).  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:43: trailing whitespace.
++To train our baseline models, we created a 90%/10% random split of the official train set to get an *unofficial* train/dev split: `data/strategyqa/[train/dev].json`.  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:46: trailing whitespace.
++### (Optional) Creating an Elasticsearch index of our corpus 
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:74: trailing whitespace.
++The directory `configs/strategy_qa` containes configuration files for the question answering models described in the paper. 
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:79: trailing whitespace.
++A trained model for each configuration can be found in https://storage.googleapis.com/ai2i/strategyqa/models/CONFIG_NAME.tar.gz,  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:87: trailing whitespace.
++* Configurations with "base" in their name are not runnable on their own.  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:91: trailing whitespace.
++* The config `4_STAR_IR-D.jsonnet` is not trainable, but used only for evaluation of `5_STAR_IR-ORA-D.jsonnet` with decompositions generated with `BART-Decomp`.  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:92: trailing whitespace.
++It requires `data/strategyqa/generated/bart_decomp_dev_predictions.jsonl`, see [Question Decomposition Model - BART-Decomp](#question-decomposition-model-bart-decomp) to learn how to generate it. A dependency graph can be found [here](graphs/graph2.png).  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:101: trailing whitespace.
++1. Train the model:  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:108: trailing whitespace.
++2. Output predictions:  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:126: trailing whitespace.
++4. Train a RoBERTa Extractive QA model on SQuAD and BoolQ:  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:140: trailing whitespace.
++    This script allows for different paragraphs sources to be used (IR-Q/ORA-P/IR-ORA-D/IR-D), and can also work on generated decompositions instead of the gold ones (use --generated-decompositions-paths).  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:155: trailing whitespace.
++- Output predictions:  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:163: trailing whitespace.
++1. Outputs the retrieved paragraphs for the configuration.  
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-README.md:169: trailing whitespace.
++2. 
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:1: trailing whitespace.
++import json
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:2: trailing whitespace.
++import logging
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:3: trailing whitespace.
++import os
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:4: trailing whitespace.
++from copy import deepcopy
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:5: trailing whitespace.
++from typing import Optional, List, Dict, Any
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:6: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:7: trailing whitespace.
++from filelock import FileLock
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:8: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:9: trailing whitespace.
++from allennlp.data.fields import MetadataField, LabelField
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:10: trailing whitespace.
++from overrides import overrides
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:11: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:12: trailing whitespace.
++from allennlp.common.file_utils import cached_path, open_compressed
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:13: trailing whitespace.
++from allennlp.data.dataset_readers.dataset_reader import DatasetReader
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:14: trailing whitespace.
++from allennlp.data.instance import Instance
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:15: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:16: trailing whitespace.
++from src.data.dataset_readers.base.base_dataset_reader import BaseDatasetReader
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:17: trailing whitespace.
++from src.data.fields.dictionary_field import DictionaryField
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:18: trailing whitespace.
++from src.data.fields.labels_field import LabelsField
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:19: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:20: trailing whitespace.
++from src.data.dataset_readers.utils.elasticsearch_utils import (
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:21: trailing whitespace.
++    get_elasticsearch_paragraph,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:22: trailing whitespace.
++    get_elasticsearch_results,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:23: trailing whitespace.
++    concatenate_paragraphs,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:24: trailing whitespace.
++    clean_query,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:25: trailing whitespace.
++)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:26: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:27: trailing whitespace.
++logger = logging.getLogger(__name__)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:28: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:29: trailing whitespace.
++QUERIES_CACHE_PATH = "data/strategyqa/queries_cache.json"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:30: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:31: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:32: trailing whitespace.
++@DatasetReader.register("strategy_qa_reader")
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:33: trailing whitespace.
++class StrategyQAReader(BaseDatasetReader):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:34: trailing whitespace.
++    def __init__(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:35: trailing whitespace.
++        self,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:36: trailing whitespace.
++        paragraphs_source: str,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:37: trailing whitespace.
++        answer_last_decomposition_step: bool = False,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:38: trailing whitespace.
++        skip_if_context_missing: bool = True,  # Has an effect only in training
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:39: trailing whitespace.
++        paragraphs_limit: int = 10,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:40: trailing whitespace.
++        generated_decompositions_paths: Optional[List[str]] = None,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:41: trailing whitespace.
++        save_elasticsearch_cache: bool = True,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:42: trailing whitespace.
++        **kwargs,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:43: trailing whitespace.
++    ) -> None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:44: trailing whitespace.
++        super().__init__(**kwargs)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:45: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:46: trailing whitespace.
++        self._paragraphs_source = paragraphs_source
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:47: trailing whitespace.
++        self._paragraphs_limit = paragraphs_limit
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:48: trailing whitespace.
++        self._generated_decompositions_paths = generated_decompositions_paths
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:49: trailing whitespace.
++        self._answer_last_decomposition_step = answer_last_decomposition_step
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:50: trailing whitespace.
++        self._skip_if_context_missing = skip_if_context_missing
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:51: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:52: trailing whitespace.
++        self._generated_decompositions = None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:53: trailing whitespace.
++        if self._generated_decompositions_paths is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:54: trailing whitespace.
++            self._generated_decompositions = {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:55: trailing whitespace.
++            for generated_decompositions_path in self._generated_decompositions_paths:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:56: trailing whitespace.
++                with open(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:57: trailing whitespace.
++                    generated_decompositions_path, mode="r", encoding="utf-8"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:58: trailing whitespace.
++                ) as generated_Decompositions_file:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:59: trailing whitespace.
++                    for line in generated_Decompositions_file:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:60: trailing whitespace.
++                        item = json.loads(line)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:61: trailing whitespace.
++                        self._generated_decompositions[item["qid"]] = [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:62: trailing whitespace.
++                            {"question": question} for question in item["decomposition"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:63: trailing whitespace.
++                        ]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:64: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:65: trailing whitespace.
++        self._save_elasticsearch_cache = save_elasticsearch_cache
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:66: trailing whitespace.
++        with FileLock("cache.lock"):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:67: trailing whitespace.
++            self._paragraphs_cache = {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:68: trailing whitespace.
++            if os.path.exists("data/strategyqa/strategyqa_train_paragraphs.json"):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:69: trailing whitespace.
++                with open(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:70: trailing whitespace.
++                    "data/strategyqa/strategyqa_train_paragraphs.json", "r", encoding="utf8"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:71: trailing whitespace.
++                ) as f:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:72: trailing whitespace.
++                    self._paragraphs_cache.update(json.load(f))
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:73: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:74: trailing whitespace.
++            if os.path.exists("data/strategyqa/strategyqa_test_paragraphs.json"):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:75: trailing whitespace.
++                with open(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:76: trailing whitespace.
++                    "data/strategyqa/strategyqa_test_paragraphs.json", "r", encoding="utf8"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:77: trailing whitespace.
++                ) as f:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:78: trailing whitespace.
++                    self._paragraphs_cache.update(json.load(f))
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:79: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:80: trailing whitespace.
++            if os.path.exists(QUERIES_CACHE_PATH):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:81: trailing whitespace.
++                with open(QUERIES_CACHE_PATH, "r", encoding="utf8") as f:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:82: trailing whitespace.
++                    self._queries_cache = json.load(f)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:83: trailing whitespace.
++            else:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:84: trailing whitespace.
++                self._queries_cache = {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:85: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:86: trailing whitespace.
++    @overrides
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:87: trailing whitespace.
++    def _direct_read(self, file_path: str):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:88: trailing whitespace.
++        # if `file_path` is a URL, redirect to the cache
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:89: trailing whitespace.
++        file_path = cached_path(file_path)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:90: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:91: trailing whitespace.
++        logger.info("Reading the dataset:")
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:92: trailing whitespace.
++        logger.info("Reading file at %s", file_path)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:93: trailing whitespace.
++        with open_compressed(file_path) as dataset_file:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:94: trailing whitespace.
++            dataset = json.load(dataset_file)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:95: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:96: trailing whitespace.
++        for json_obj in dataset:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:97: trailing whitespace.
++            instance = self._item_to_instance(self.json_to_item(json_obj))
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:98: trailing whitespace.
++            if instance is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:99: trailing whitespace.
++                yield instance
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:100: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:101: trailing whitespace.
++        if self._save_elasticsearch_cache:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:102: trailing whitespace.
++            with FileLock("cache.lock"):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:103: trailing whitespace.
++                update_required = False
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:104: trailing whitespace.
++                with open(QUERIES_CACHE_PATH, "r", encoding="utf8") as f:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:105: trailing whitespace.
++                    recent_queries_cache = json.load(f)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:106: trailing whitespace.
++                    if self._queries_cache != recent_queries_cache:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:107: trailing whitespace.
++                        update_required = True
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:108: trailing whitespace.
++                        self._queries_cache.update(recent_queries_cache)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:109: trailing whitespace.
++                if update_required:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:110: trailing whitespace.
++                    with open(QUERIES_CACHE_PATH, "w", encoding="utf8") as f:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:111: trailing whitespace.
++                        json.dump(self._queries_cache, f)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:112: trailing whitespace.
++                        f.flush()
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:113: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:114: trailing whitespace.
++    def json_to_item(self, json_obj):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:115: trailing whitespace.
++        question: str = json_obj["question"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:116: trailing whitespace.
++        answer: Optional[bool] = json_obj["answer"] if "answer" in json_obj else None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:117: trailing whitespace.
++        facts: Optional[List[str]] = json_obj["facts"] if "facts" in json_obj else None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:118: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:119: trailing whitespace.
++        if "decomposition" in json_obj:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:120: trailing whitespace.
++            decomposition_full = [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:121: trailing whitespace.
++                {
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:122: trailing whitespace.
++                    "question": sub_question,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:123: trailing whitespace.
++                    "evidence_per_annotator": [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:124: trailing whitespace.
++                        list(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:125: trailing whitespace.
++                            dict.fromkeys(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:126: trailing whitespace.
++                                [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:127: trailing whitespace.
++                                    evidence_id
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:128: trailing whitespace.
++                                    for evidence_ids in annotator[i]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:129: trailing whitespace.
++                                    if isinstance(evidence_ids, list)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:130: trailing whitespace.
++                                    for evidence_id in evidence_ids
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:131: trailing whitespace.
++                                ]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:132: trailing whitespace.
++                            )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:133: trailing whitespace.
++                        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:134: trailing whitespace.
++                        for annotator in json_obj["evidence"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:135: trailing whitespace.
++                    ],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:136: trailing whitespace.
++                    "is_operation_per_annotator": [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:137: trailing whitespace.
++                        any(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:138: trailing whitespace.
++                            evidence_ids for evidence_ids in annotator[i] if evidence_ids == "operation"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:139: trailing whitespace.
++                        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:140: trailing whitespace.
++                        for annotator in json_obj["evidence"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:141: trailing whitespace.
++                    ],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:142: trailing whitespace.
++                    "no_evidence_per_annotator": [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:143: trailing whitespace.
++                        any(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:144: trailing whitespace.
++                            evidence_ids
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:145: trailing whitespace.
++                            for evidence_ids in annotator[i]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:146: trailing whitespace.
++                            if evidence_ids == "no_evidence"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:147: trailing whitespace.
++                        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:148: trailing whitespace.
++                        for annotator in json_obj["evidence"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:149: trailing whitespace.
++                    ],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:150: trailing whitespace.
++                }
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:151: trailing whitespace.
++                for i, sub_question in enumerate(json_obj["decomposition"])
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:152: trailing whitespace.
++            ]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:153: trailing whitespace.
++        else:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:154: trailing whitespace.
++            decomposition_full = None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:155: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:156: trailing whitespace.
++        generated_decomposition = None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:157: trailing whitespace.
++        if self._generated_decompositions is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:158: trailing whitespace.
++            generated_decomposition = self._generated_decompositions[json_obj["qid"]]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:159: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:160: trailing whitespace.
++        item = deepcopy(json_obj)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:161: trailing whitespace.
++        item.update(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:162: trailing whitespace.
++            {
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:163: trailing whitespace.
++                "question": question,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:164: trailing whitespace.
++                "answer": answer,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:165: trailing whitespace.
++                "decomposition": decomposition_full,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:166: trailing whitespace.
++                "generated_decomposition": generated_decomposition,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:167: trailing whitespace.
++                "facts": facts,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:168: trailing whitespace.
++            }
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:169: trailing whitespace.
++        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:170: trailing whitespace.
++        return item
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:171: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:172: trailing whitespace.
++    def _item_to_instance(self, item):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:173: trailing whitespace.
++        if item is None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:174: trailing whitespace.
++            return None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:175: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:176: trailing whitespace.
++        question = item["question"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:177: trailing whitespace.
++        answer = item["answer"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:178: trailing whitespace.
++        decomposition = item["decomposition"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:179: trailing whitespace.
++        generated_decomposition = item["generated_decomposition"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:180: trailing whitespace.
++        facts = item["facts"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:181: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:182: trailing whitespace.
++        if self._answer_last_decomposition_step:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:183: trailing whitespace.
++            question = decomposition[-1]["question"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:184: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:185: trailing whitespace.
++        if not self._is_training or answer is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:186: trailing whitespace.
++            instance = self.text_to_instance(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:187: trailing whitespace.
++                question, answer, decomposition, generated_decomposition, facts
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:188: trailing whitespace.
++            )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:189: trailing whitespace.
++            if instance is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:190: trailing whitespace.
++                instance["metadata"].metadata["qid"] = item["qid"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:191: trailing whitespace.
++            return instance
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:192: trailing whitespace.
++        return None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:193: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:194: trailing whitespace.
++    @overrides
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:195: trailing whitespace.
++    def text_to_instance(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:196: trailing whitespace.
++        self,  # type: ignore
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:197: trailing whitespace.
++        question: str,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:198: trailing whitespace.
++        answer: Optional[bool] = None,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:199: trailing whitespace.
++        decomposition: Optional[List[Dict[str, Any]]] = None,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:200: trailing whitespace.
++        generated_decomposition: Optional[List[Dict[str, Any]]] = None,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:201: trailing whitespace.
++        facts: Optional[List[str]] = None,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:202: trailing whitespace.
++    ) -> Instance:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:203: trailing whitespace.
++        tokenizer_wrapper = self._tokenizer_wrapper
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:204: trailing whitespace.
++        fields = {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:205: trailing whitespace.
++        pad_token_id = tokenizer_wrapper.tokenizer.pad_token_id
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:206: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:207: trailing whitespace.
++        (context, paragraphs) = self.generate_context_from_paragraphs(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:208: trailing whitespace.
++            question=question,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:209: trailing whitespace.
++            decomposition=decomposition,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:210: trailing whitespace.
++            generated_decomposition=generated_decomposition,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:211: trailing whitespace.
++            facts=facts,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:212: trailing whitespace.
++        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:213: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:214: trailing whitespace.
++        if self._paragraphs_source is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:215: trailing whitespace.
++            if context is None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:216: trailing whitespace.
++                if self._is_training and self._skip_if_context_missing:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:217: trailing whitespace.
++                    return None
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:218: trailing whitespace.
++                context = " "
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:219: trailing whitespace.
++            encoded_input = tokenizer_wrapper.encode(context, question)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:220: trailing whitespace.
++        else:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:221: trailing whitespace.
++            encoded_input = tokenizer_wrapper.encode(question)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:222: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:223: trailing whitespace.
++        excluded_keys = ["offset_mapping", "special_tokens_mask"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:224: trailing whitespace.
++        encoded_input_fields = {
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:225: trailing whitespace.
++            key: LabelsField(value, padding_value=pad_token_id)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:226: trailing whitespace.
++            if key == "input_ids"
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:227: trailing whitespace.
++            else LabelsField(value)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:228: trailing whitespace.
++            for key, value in encoded_input.items()
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:229: trailing whitespace.
++            if key not in excluded_keys
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:230: trailing whitespace.
++        }
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:231: trailing whitespace.
++        fields["tokens"] = DictionaryField(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:232: trailing whitespace.
++            encoded_input_fields, length=len(encoded_input["input_ids"])
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:233: trailing whitespace.
++        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:234: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:235: trailing whitespace.
++        if answer is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:236: trailing whitespace.
++            fields["label"] = LabelField(int(answer), skip_indexing=True)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:237: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:238: trailing whitespace.
++        # make the metadata
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:239: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:240: trailing whitespace.
++        metadata = {
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:241: trailing whitespace.
++            "question": question,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:242: trailing whitespace.
++            "answer": answer,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:243: trailing whitespace.
++            "decomposition": decomposition,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:244: trailing whitespace.
++            "generated_decomposition": generated_decomposition,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:245: trailing whitespace.
++            "paragraphs": paragraphs["unified"],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:246: trailing whitespace.
++            "queries": paragraphs["queries"] if "queries" in paragraphs else [],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:247: trailing whitespace.
++        }
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:248: trailing whitespace.
++        fields["metadata"] = MetadataField(metadata)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:249: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:250: trailing whitespace.
++        return Instance(fields)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:251: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:252: trailing whitespace.
++    def get_paragraphs(self, **kwargs):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:253: trailing whitespace.
++        """
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:254: trailing whitespace.
++        Returns a list of dictionaries with the following keys:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:255: trailing whitespace.
++        "title": str
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:256: trailing whitespace.
++        "section": str
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:257: trailing whitespace.
++        "content": str
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:258: trailing whitespace.
++        "headers": List[str]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:259: trailing whitespace.
++        "para_index": int
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:260: trailing whitespace.
++        """
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:261: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:262: trailing whitespace.
++        paragraphs = {
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:263: trailing whitespace.
++            None: lambda **kwargs: None,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:264: trailing whitespace.
++            "IR-Q": self._ir_q,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:265: trailing whitespace.
++            "ORA-P": self._ora_p,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:266: trailing whitespace.
++            "IR-ORA-D": self._ir_ora_d,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:267: trailing whitespace.
++            "IR-D": self._ir_d,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:268: trailing whitespace.
++        }[self._paragraphs_source](**kwargs)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:269: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:270: trailing whitespace.
++        return paragraphs
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:271: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:272: trailing whitespace.
++    @property
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:273: trailing whitespace.
++    def generate_context_from_paragraphs(self):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:274: trailing whitespace.
++        def f(**kwargs):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:275: trailing whitespace.
++            paragraphs = self.get_paragraphs(**kwargs)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:276: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:277: trailing whitespace.
++            if "unified" not in paragraphs:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:278: trailing whitespace.
++                paragraphs.update({"unified": None})
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:279: trailing whitespace.
++                return None, paragraphs
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:280: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:281: trailing whitespace.
++            if self._paragraphs_limit is not None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:282: trailing whitespace.
++                paragraphs["unified"] = paragraphs["unified"][: self._paragraphs_limit]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:283: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:284: trailing whitespace.
++            context = concatenate_paragraphs(paragraphs["unified"])
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:285: trailing whitespace.
++            return context, paragraphs
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:286: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:287: trailing whitespace.
++        return f
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:288: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:289: trailing whitespace.
++    def _ir_q(self, question, **kwargs):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:290: trailing whitespace.
++        """
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:291: trailing whitespace.
++        Get paragraphs from Elasticsearch based on the question and concatenate them
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:292: trailing whitespace.
++        """
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:293: trailing whitespace.
++        query = clean_query(question)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:294: trailing whitespace.
++        results = get_elasticsearch_results(self._queries_cache, query)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:295: trailing whitespace.
++        if results is None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:296: trailing whitespace.
++            return {"queries": [query]}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:297: trailing whitespace.
++        return {"unified": results, "queries": [query]}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:298: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:299: trailing whitespace.
++    def _ora_p(self, decomposition, **kwargs):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:300: trailing whitespace.
++        if decomposition is None or len(decomposition) == 0:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:301: trailing whitespace.
++            return {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:302: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:303: trailing whitespace.
++        num_of_matchings = len(decomposition[0]["evidence_per_annotator"])
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:304: trailing whitespace.
++        if num_of_matchings == 0:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:305: trailing whitespace.
++            return {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:306: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:307: trailing whitespace.
++        all_evidence_ids = [
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:308: trailing whitespace.
++            [step["evidence_per_annotator"][i] for step in decomposition]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:309: trailing whitespace.
++            for i in range(num_of_matchings)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:310: trailing whitespace.
++        ]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:311: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:312: trailing whitespace.
++        evidence_ids = []
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:313: trailing whitespace.
++        evidence_ids_per_step = [[] for i in range(len(decomposition))]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:314: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:315: trailing whitespace.
++        # keep it ordered by decomposition steps
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:316: trailing whitespace.
++        for i in range(len(decomposition)):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:317: trailing whitespace.
++            if self._answer_last_decomposition_step:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:318: trailing whitespace.
++                # We don't take evidence from the other steps in this setting,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:319: trailing whitespace.
++                # as it shouldn't be necessary (in practice, it might be).
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:320: trailing whitespace.
++                if i < len(decomposition) - 1:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:321: trailing whitespace.
++                    continue
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:322: trailing whitespace.
++            for matching_evidence_ids in all_evidence_ids:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:323: trailing whitespace.
++                for evidence_id in matching_evidence_ids[i]:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:324: trailing whitespace.
++                    if evidence_id not in evidence_ids_per_step[i]:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:325: trailing whitespace.
++                        evidence_ids_per_step[i].append(evidence_id)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:326: trailing whitespace.
++                    if evidence_id not in evidence_ids:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:327: trailing whitespace.
++                        evidence_ids.append(evidence_id)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:328: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:329: trailing whitespace.
++        results = []
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:330: trailing whitespace.
++        for evidence_id in evidence_ids:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:331: trailing whitespace.
++            es_results = get_elasticsearch_paragraph(self._paragraphs_cache, evidence_id)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:332: trailing whitespace.
++            if es_results is None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:333: trailing whitespace.
++                return {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:334: trailing whitespace.
++            results.append(es_results)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:335: trailing whitespace.
++        if len(results) == 0:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:336: trailing whitespace.
++            if self._answer_last_decomposition_step:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:337: trailing whitespace.
++                results = [{"content": " "}]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:338: trailing whitespace.
++                results_per_step = [[] for i in range(len(decomposition))]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:339: trailing whitespace.
++                results_per_step[-1].extend(results)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:340: trailing whitespace.
++                return {"unified": results, "per_step": results_per_step}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:341: trailing whitespace.
++            else:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:342: trailing whitespace.
++                return {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:343: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:344: trailing whitespace.
++        results_per_step = [[] for i in range(len(decomposition))]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:345: trailing whitespace.
++        for i, step_evidence_ids in enumerate(evidence_ids_per_step):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:346: trailing whitespace.
++            for evidence_id in step_evidence_ids:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:347: trailing whitespace.
++                es_results = get_elasticsearch_paragraph(self._paragraphs_cache, evidence_id)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:348: trailing whitespace.
++                if es_results is None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:349: trailing whitespace.
++                    return {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:350: trailing whitespace.
++                results_per_step[i].append(es_results)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:351: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:352: trailing whitespace.
++        return {"unified": results, "per_step": results_per_step}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:353: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:354: trailing whitespace.
++    def _ir_ora_d(self, decomposition, **kwargs):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:355: trailing whitespace.
++        if decomposition is None or len(decomposition) == 0:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:356: trailing whitespace.
++            return {}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:357: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:358: trailing whitespace.
++        all_questions = [step["question"] for i, step in enumerate(decomposition)]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:359: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:360: trailing whitespace.
++        results_per_step = []
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:361: trailing whitespace.
++        queries = []
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:362: trailing whitespace.
++        for q in all_questions:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:363: trailing whitespace.
++            query = clean_query(q)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:364: trailing whitespace.
++            queries.append(query)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:365: trailing whitespace.
++            result = get_elasticsearch_results(self._queries_cache, query)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:366: trailing whitespace.
++            if result is None:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:367: trailing whitespace.
++                return {"queries": queries}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:368: trailing whitespace.
++            results_per_step.append(result)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:369: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:370: trailing whitespace.
++        results = sorted(
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:371: trailing whitespace.
++            [result for step_results in results_per_step for result in step_results],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:372: trailing whitespace.
++            key=lambda item: item["score"],
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:373: trailing whitespace.
++            reverse=True,
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:374: trailing whitespace.
++        )
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:375: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:376: trailing whitespace.
++        # Remove duplicates:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:377: trailing whitespace.
++        original_results = results
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:378: trailing whitespace.
++        results = []
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:379: trailing whitespace.
++        seen_ids = set()
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:380: trailing whitespace.
++        for result in original_results:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:381: trailing whitespace.
++            pid = result["evidence_id"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:382: trailing whitespace.
++            if pid in seen_ids:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:383: trailing whitespace.
++                continue
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:384: trailing whitespace.
++            seen_ids.add(pid)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:385: trailing whitespace.
++            results.append(result)
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:386: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:387: trailing whitespace.
++        return {"unified": results, "per_step": results_per_step, "queries": queries}
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:388: trailing whitespace.
++
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:389: trailing whitespace.
++    def _ir_d(self, generated_decomposition, question=None, **kwargs):
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:390: trailing whitespace.
++        if "decomposition" in kwargs:
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:391: trailing whitespace.
++            del kwargs["decomposition"]
+tests/fixtures/hg_woffscorer/numeric_boolean/source/strategyqa/paper-code-reader.py:392: trailing whitespace.
++        return self._ir_ora_d(question=question, decomposition=generated_decomposition, **kwargs)
+tests/fixtures/hg_woffscorer/public_qa/source/hotpotqa/hotpot_evaluate_v1.py:130: new blank line at EOF.
+tests/fixtures/hg_woffscorer/public_qa/source/musique/LICENSE:52: trailing whitespace.
++     for the public: 
+tests/fixtures/hg_woffscorer/public_qa/source/musique/LICENSE:396: new blank line at EOF.
+tests/fixtures/hg_woffscorer/public_qa/source/twowikimultihopqa/2wikimultihop_evaluate_v1.1.py:162: trailing whitespace.
++    
+tests/fixtures/hg_woffscorer/public_qa/source/twowikimultihopqa/2wikimultihop_evaluate_v1.1.py:226: trailing whitespace.
++                    
+tests/fixtures/hg_woffscorer/public_qa/source/twowikimultihopqa/2wikimultihop_evaluate_v1.1.py:233: trailing whitespace.
++                    
+tests/fixtures/hg_woffscorer/public_qa/source/twowikimultihopqa/2wikimultihop_evaluate_v1.1.py:272: new blank line at EOF.
+tests/fixtures/hg_woffscorer/public_qa/validation.txt:12: trailing whitespace.
+++     for the public: 
+tests/fixtures/hg_woffscorer/public_qa/validation.txt:15: trailing whitespace.
+++    
+tests/fixtures/hg_woffscorer/public_qa/validation.txt:17: trailing whitespace.
+++                    
+tests/fixtures/hg_woffscorer/public_qa/validation.txt:19: trailing whitespace.
+++                    
+exit_code=2; preserved upstream source whitespace and raw diagnostics
