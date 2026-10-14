@@ -1,0 +1,16 @@
+Working directory: /tmp/hg-wtbdep-scope
+Source inspection: read AGENTS.md; rg/nl inspect dataset adapters, QA scaffold/check, registry and installed scorer-package source. No benchmark task, scorer invocation, model, GPU, endpoint, Docker run/pull/build or remote fetch occurred.
+Exact import-only inspection commands:
+python3 tests/fixtures/hg_wtbdep/scope/import-inspection.py reasoning_gym > tests/fixtures/hg_wtbdep/scope/reasoning-gym-import-only.json
+python3 tests/fixtures/hg_wtbdep/scope/import-inspection.py jericho > tests/fixtures/hg_wtbdep/scope/jericho-import-only.json
+/mnt/20t/xubuqiang/datasets/agentdojo/runtime/bin/python tests/fixtures/hg_wtbdep/scope/import-inspection.py hg_dojo_bridge --source data/datasets/agentdojo/bridge.py > tests/fixtures/hg_wtbdep/scope/agentdojo-import-only.json
+Raw installed-source/metadata/readelf capture command:
+python3 tests/fixtures/hg_wtbdep/scope/capture-inspection.py
+The capture script reads source/metadata, summarizes the raw import lists, and invokes readelf -d on listed local native libraries. Its import-library list is not a full ABI closure or production lock.
+Validation commands:
+git diff --check
+python3 tools/check_dataset_blockers.py
+Checker output:
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+SHA manifest verification command (run in fixture directory):
+sha256sum -c SHA256SUMS

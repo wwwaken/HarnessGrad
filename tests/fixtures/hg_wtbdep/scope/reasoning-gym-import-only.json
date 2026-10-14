@@ -1,0 +1,4694 @@
+{
+  "inspection": "import-only; no scorer/task called; network denied",
+  "command": [
+    "tests/fixtures/hg_wtbdep/scope/import-inspection.py",
+    "reasoning_gym"
+  ],
+  "python_version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+  "executable": "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+  "soabi": "cpython-312-x86_64-linux-gnu",
+  "error": null,
+  "modules": [
+    {
+      "module": "PIL",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/__init__.py"
+    },
+    {
+      "module": "PIL.ExifTags",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ExifTags.py"
+    },
+    {
+      "module": "PIL.GimpGradientFile",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/GimpGradientFile.py"
+    },
+    {
+      "module": "PIL.GimpPaletteFile",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/GimpPaletteFile.py"
+    },
+    {
+      "module": "PIL.Image",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/Image.py"
+    },
+    {
+      "module": "PIL.ImageChops",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ImageChops.py"
+    },
+    {
+      "module": "PIL.ImageColor",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ImageColor.py"
+    },
+    {
+      "module": "PIL.ImageFile",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ImageFile.py"
+    },
+    {
+      "module": "PIL.ImageMode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ImageMode.py"
+    },
+    {
+      "module": "PIL.ImagePalette",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ImagePalette.py"
+    },
+    {
+      "module": "PIL.ImageSequence",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/ImageSequence.py"
+    },
+    {
+      "module": "PIL.PaletteFile",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/PaletteFile.py"
+    },
+    {
+      "module": "PIL.PngImagePlugin",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/PngImagePlugin.py"
+    },
+    {
+      "module": "PIL.TiffTags",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/TiffTags.py"
+    },
+    {
+      "module": "PIL._binary",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_binary.py"
+    },
+    {
+      "module": "PIL._deprecate",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_deprecate.py"
+    },
+    {
+      "module": "PIL._imaging",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "PIL._typing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_typing.py"
+    },
+    {
+      "module": "PIL._util",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_util.py"
+    },
+    {
+      "module": "PIL._version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/PIL/_version.py"
+    },
+    {
+      "module": "__future__",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/__future__.py"
+    },
+    {
+      "module": "_blake2",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_compat_pickle",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/_compat_pickle.py"
+    },
+    {
+      "module": "_contextvars",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_ctypes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_cython_3_0_0",
+      "file": null
+    },
+    {
+      "module": "_cython_3_0_8",
+      "file": null
+    },
+    {
+      "module": "_cython_3_1_4",
+      "file": null
+    },
+    {
+      "module": "_decimal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_decimal.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_elementtree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_elementtree.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_hashlib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_heapq",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_heapq.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_pickle",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_posixsubprocess",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_ssl",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_statistics",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_statistics.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "_uuid",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_uuid.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "arckit",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit/__init__.py"
+    },
+    {
+      "module": "arckit.data",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit/data.py"
+    },
+    {
+      "module": "arckit.vis",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit/vis.py"
+    },
+    {
+      "module": "atexit",
+      "file": null
+    },
+    {
+      "module": "bfi",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/bfi/__init__.py"
+    },
+    {
+      "module": "cellpylib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/__init__.py"
+    },
+    {
+      "module": "cellpylib.apen",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/apen.py"
+    },
+    {
+      "module": "cellpylib.bien",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/bien.py"
+    },
+    {
+      "module": "cellpylib.ca_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/ca_functions.py"
+    },
+    {
+      "module": "cellpylib.ca_functions2d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/ca_functions2d.py"
+    },
+    {
+      "module": "cellpylib.ctrbl_rule",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/ctrbl_rule.py"
+    },
+    {
+      "module": "cellpylib.entropy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/entropy.py"
+    },
+    {
+      "module": "cellpylib.evoloop",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/evoloop.py"
+    },
+    {
+      "module": "cellpylib.hopfield_net",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/hopfield_net.py"
+    },
+    {
+      "module": "cellpylib.langtons_loop",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/langtons_loop.py"
+    },
+    {
+      "module": "cellpylib.rule_tables",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/rule_tables.py"
+    },
+    {
+      "module": "cellpylib.sandpile",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/sandpile.py"
+    },
+    {
+      "module": "cellpylib.sdsr_loop",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib/sdsr_loop.py"
+    },
+    {
+      "module": "cffi",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi/__init__.py"
+    },
+    {
+      "module": "cffi.api",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi/api.py"
+    },
+    {
+      "module": "cffi.error",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi/error.py"
+    },
+    {
+      "module": "cffi.lock",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi/lock.py"
+    },
+    {
+      "module": "cffi.model",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi/model.py"
+    },
+    {
+      "module": "cmath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/cmath.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "colorsys",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/colorsys.py"
+    },
+    {
+      "module": "contextvars",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/contextvars.py"
+    },
+    {
+      "module": "copy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/copy.py"
+    },
+    {
+      "module": "ctypes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ctypes/__init__.py"
+    },
+    {
+      "module": "ctypes._endian",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ctypes/_endian.py"
+    },
+    {
+      "module": "cycler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler.py"
+    },
+    {
+      "module": "cython_runtime",
+      "file": null
+    },
+    {
+      "module": "dataclasses",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/dataclasses.py"
+    },
+    {
+      "module": "dateutil",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/__init__.py"
+    },
+    {
+      "module": "dateutil._common",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/_common.py"
+    },
+    {
+      "module": "dateutil._version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/_version.py"
+    },
+    {
+      "module": "dateutil.parser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/parser/__init__.py"
+    },
+    {
+      "module": "dateutil.parser._parser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/parser/_parser.py"
+    },
+    {
+      "module": "dateutil.parser.isoparser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/parser/isoparser.py"
+    },
+    {
+      "module": "dateutil.relativedelta",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/relativedelta.py"
+    },
+    {
+      "module": "dateutil.rrule",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/rrule.py"
+    },
+    {
+      "module": "dateutil.tz",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/tz/__init__.py"
+    },
+    {
+      "module": "dateutil.tz._common",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/tz/_common.py"
+    },
+    {
+      "module": "dateutil.tz._factories",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/tz/_factories.py"
+    },
+    {
+      "module": "dateutil.tz.tz",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/dateutil/tz/tz.py"
+    },
+    {
+      "module": "decimal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/decimal.py"
+    },
+    {
+      "module": "defusedxml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml/__init__.py"
+    },
+    {
+      "module": "defusedxml.ElementTree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml/ElementTree.py"
+    },
+    {
+      "module": "defusedxml.common",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml/common.py"
+    },
+    {
+      "module": "drawsvg",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/__init__.py"
+    },
+    {
+      "module": "drawsvg.defs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/defs.py"
+    },
+    {
+      "module": "drawsvg.drawing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/drawing.py"
+    },
+    {
+      "module": "drawsvg.elements",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/elements.py"
+    },
+    {
+      "module": "drawsvg.font_embed",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/font_embed.py"
+    },
+    {
+      "module": "drawsvg.frame_animation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/frame_animation.py"
+    },
+    {
+      "module": "drawsvg.jupyter",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/jupyter.py"
+    },
+    {
+      "module": "drawsvg.native_animation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/native_animation/__init__.py"
+    },
+    {
+      "module": "drawsvg.native_animation.playback_control_js",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/native_animation/playback_control_js.py"
+    },
+    {
+      "module": "drawsvg.native_animation.playback_control_ui",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/native_animation/playback_control_ui.py"
+    },
+    {
+      "module": "drawsvg.native_animation.synced_animation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/native_animation/synced_animation.py"
+    },
+    {
+      "module": "drawsvg.raster",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/raster.py"
+    },
+    {
+      "module": "drawsvg.types",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/types.py"
+    },
+    {
+      "module": "drawsvg.url_encode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/url_encode.py"
+    },
+    {
+      "module": "drawsvg.video",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg/video.py"
+    },
+    {
+      "module": "email.feedparser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/feedparser.py"
+    },
+    {
+      "module": "email.parser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/parser.py"
+    },
+    {
+      "module": "fcntl",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "fractions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/fractions.py"
+    },
+    {
+      "module": "gc",
+      "file": null
+    },
+    {
+      "module": "gzip",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/gzip.py"
+    },
+    {
+      "module": "hashlib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/hashlib.py"
+    },
+    {
+      "module": "heapq",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/heapq.py"
+    },
+    {
+      "module": "hmac",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/hmac.py"
+    },
+    {
+      "module": "html",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/html/__init__.py"
+    },
+    {
+      "module": "html.entities",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/html/entities.py"
+    },
+    {
+      "module": "http",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/http/__init__.py"
+    },
+    {
+      "module": "http.client",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/http/client.py"
+    },
+    {
+      "module": "importlib.readers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/readers.py"
+    },
+    {
+      "module": "importlib.resources._itertools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/_itertools.py"
+    },
+    {
+      "module": "importlib.resources.readers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/readers.py"
+    },
+    {
+      "module": "kiwisolver",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver/__init__.py"
+    },
+    {
+      "module": "kiwisolver._cext",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver/_cext.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "logging",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/logging/__init__.py"
+    },
+    {
+      "module": "magiccube",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/__init__.py"
+    },
+    {
+      "module": "magiccube.cube",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/cube.py"
+    },
+    {
+      "module": "magiccube.cube_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/cube_base.py"
+    },
+    {
+      "module": "magiccube.cube_move",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/cube_move.py"
+    },
+    {
+      "module": "magiccube.cube_piece",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/cube_piece.py"
+    },
+    {
+      "module": "magiccube.cube_print",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/cube_print.py"
+    },
+    {
+      "module": "magiccube.optimizer",
+      "file": null
+    },
+    {
+      "module": "magiccube.optimizer.move_optimizer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/optimizer/move_optimizer.py"
+    },
+    {
+      "module": "magiccube.solver",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/solver/__init__.py"
+    },
+    {
+      "module": "magiccube.solver.basic",
+      "file": null
+    },
+    {
+      "module": "magiccube.solver.basic.basic_solver",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/solver/basic/basic_solver.py"
+    },
+    {
+      "module": "magiccube.solver.basic.solver_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/solver/basic/solver_base.py"
+    },
+    {
+      "module": "magiccube.solver.basic.solver_stages",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube/solver/basic/solver_stages.py"
+    },
+    {
+      "module": "matplotlib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/__init__.py"
+    },
+    {
+      "module": "matplotlib._afm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_afm.py"
+    },
+    {
+      "module": "matplotlib._animation_data",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_animation_data.py"
+    },
+    {
+      "module": "matplotlib._api",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_api/__init__.py"
+    },
+    {
+      "module": "matplotlib._api.deprecation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_api/deprecation.py"
+    },
+    {
+      "module": "matplotlib._blocking_input",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_blocking_input.py"
+    },
+    {
+      "module": "matplotlib._c_internal_utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_c_internal_utils.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "matplotlib._cm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_cm.py"
+    },
+    {
+      "module": "matplotlib._cm_listed",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_cm_listed.py"
+    },
+    {
+      "module": "matplotlib._color_data",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_color_data.py"
+    },
+    {
+      "module": "matplotlib._constrained_layout",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_constrained_layout.py"
+    },
+    {
+      "module": "matplotlib._docstring",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_docstring.py"
+    },
+    {
+      "module": "matplotlib._enums",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_enums.py"
+    },
+    {
+      "module": "matplotlib._fontconfig_pattern",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_fontconfig_pattern.py"
+    },
+    {
+      "module": "matplotlib._image",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_image.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "matplotlib._layoutgrid",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_layoutgrid.py"
+    },
+    {
+      "module": "matplotlib._mathtext",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_mathtext.py"
+    },
+    {
+      "module": "matplotlib._mathtext_data",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_mathtext_data.py"
+    },
+    {
+      "module": "matplotlib._path",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_path.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "matplotlib._pylab_helpers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_pylab_helpers.py"
+    },
+    {
+      "module": "matplotlib._text_helpers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_text_helpers.py"
+    },
+    {
+      "module": "matplotlib._tight_bbox",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_tight_bbox.py"
+    },
+    {
+      "module": "matplotlib._tight_layout",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_tight_layout.py"
+    },
+    {
+      "module": "matplotlib._version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/_version.py"
+    },
+    {
+      "module": "matplotlib.animation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/animation.py"
+    },
+    {
+      "module": "matplotlib.artist",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/artist.py"
+    },
+    {
+      "module": "matplotlib.axes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/axes/__init__.py"
+    },
+    {
+      "module": "matplotlib.axes._axes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/axes/_axes.py"
+    },
+    {
+      "module": "matplotlib.axes._base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/axes/_base.py"
+    },
+    {
+      "module": "matplotlib.axes._secondary_axes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/axes/_secondary_axes.py"
+    },
+    {
+      "module": "matplotlib.axis",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/axis.py"
+    },
+    {
+      "module": "matplotlib.backend_bases",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/backend_bases.py"
+    },
+    {
+      "module": "matplotlib.backend_managers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/backend_managers.py"
+    },
+    {
+      "module": "matplotlib.backend_tools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/backend_tools.py"
+    },
+    {
+      "module": "matplotlib.bezier",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/bezier.py"
+    },
+    {
+      "module": "matplotlib.category",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/category.py"
+    },
+    {
+      "module": "matplotlib.cbook",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/cbook.py"
+    },
+    {
+      "module": "matplotlib.cm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/cm.py"
+    },
+    {
+      "module": "matplotlib.collections",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/collections.py"
+    },
+    {
+      "module": "matplotlib.colorbar",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/colorbar.py"
+    },
+    {
+      "module": "matplotlib.colors",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/colors.py"
+    },
+    {
+      "module": "matplotlib.container",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/container.py"
+    },
+    {
+      "module": "matplotlib.contour",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/contour.py"
+    },
+    {
+      "module": "matplotlib.dates",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/dates.py"
+    },
+    {
+      "module": "matplotlib.dviread",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/dviread.py"
+    },
+    {
+      "module": "matplotlib.figure",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/figure.py"
+    },
+    {
+      "module": "matplotlib.font_manager",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/font_manager.py"
+    },
+    {
+      "module": "matplotlib.ft2font",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/ft2font.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "matplotlib.gridspec",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/gridspec.py"
+    },
+    {
+      "module": "matplotlib.hatch",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/hatch.py"
+    },
+    {
+      "module": "matplotlib.image",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/image.py"
+    },
+    {
+      "module": "matplotlib.layout_engine",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/layout_engine.py"
+    },
+    {
+      "module": "matplotlib.legend",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/legend.py"
+    },
+    {
+      "module": "matplotlib.legend_handler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/legend_handler.py"
+    },
+    {
+      "module": "matplotlib.lines",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/lines.py"
+    },
+    {
+      "module": "matplotlib.markers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/markers.py"
+    },
+    {
+      "module": "matplotlib.mathtext",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/mathtext.py"
+    },
+    {
+      "module": "matplotlib.mlab",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/mlab.py"
+    },
+    {
+      "module": "matplotlib.offsetbox",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/offsetbox.py"
+    },
+    {
+      "module": "matplotlib.patches",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/patches.py"
+    },
+    {
+      "module": "matplotlib.path",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/path.py"
+    },
+    {
+      "module": "matplotlib.projections",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/projections/__init__.py"
+    },
+    {
+      "module": "matplotlib.projections.geo",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/projections/geo.py"
+    },
+    {
+      "module": "matplotlib.projections.polar",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/projections/polar.py"
+    },
+    {
+      "module": "matplotlib.pyplot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/pyplot.py"
+    },
+    {
+      "module": "matplotlib.quiver",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/quiver.py"
+    },
+    {
+      "module": "matplotlib.rcsetup",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/rcsetup.py"
+    },
+    {
+      "module": "matplotlib.scale",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/scale.py"
+    },
+    {
+      "module": "matplotlib.spines",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/spines.py"
+    },
+    {
+      "module": "matplotlib.stackplot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/stackplot.py"
+    },
+    {
+      "module": "matplotlib.streamplot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/streamplot.py"
+    },
+    {
+      "module": "matplotlib.style",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/style/__init__.py"
+    },
+    {
+      "module": "matplotlib.style.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/style/core.py"
+    },
+    {
+      "module": "matplotlib.table",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/table.py"
+    },
+    {
+      "module": "matplotlib.texmanager",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/texmanager.py"
+    },
+    {
+      "module": "matplotlib.text",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/text.py"
+    },
+    {
+      "module": "matplotlib.textpath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/textpath.py"
+    },
+    {
+      "module": "matplotlib.ticker",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/ticker.py"
+    },
+    {
+      "module": "matplotlib.transforms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/transforms.py"
+    },
+    {
+      "module": "matplotlib.tri",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/__init__.py"
+    },
+    {
+      "module": "matplotlib.tri._triangulation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_triangulation.py"
+    },
+    {
+      "module": "matplotlib.tri._tricontour",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_tricontour.py"
+    },
+    {
+      "module": "matplotlib.tri._trifinder",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_trifinder.py"
+    },
+    {
+      "module": "matplotlib.tri._triinterpolate",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_triinterpolate.py"
+    },
+    {
+      "module": "matplotlib.tri._tripcolor",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_tripcolor.py"
+    },
+    {
+      "module": "matplotlib.tri._triplot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_triplot.py"
+    },
+    {
+      "module": "matplotlib.tri._trirefine",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_trirefine.py"
+    },
+    {
+      "module": "matplotlib.tri._tritools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/tri/_tritools.py"
+    },
+    {
+      "module": "matplotlib.units",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/units.py"
+    },
+    {
+      "module": "matplotlib.widgets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib/widgets.py"
+    },
+    {
+      "module": "mkl",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py"
+    },
+    {
+      "module": "mkl._mklinit",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_mklinit.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "mkl._py_mkl_service",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_py_mkl_service.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "mpl_toolkits",
+      "file": null
+    },
+    {
+      "module": "mpl_toolkits.mplot3d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/__init__.py"
+    },
+    {
+      "module": "mpl_toolkits.mplot3d.art3d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/art3d.py"
+    },
+    {
+      "module": "mpl_toolkits.mplot3d.axes3d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/axes3d.py"
+    },
+    {
+      "module": "mpl_toolkits.mplot3d.axis3d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/axis3d.py"
+    },
+    {
+      "module": "mpl_toolkits.mplot3d.proj3d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/proj3d.py"
+    },
+    {
+      "module": "mpmath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/__init__.py"
+    },
+    {
+      "module": "mpmath.calculus",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/__init__.py"
+    },
+    {
+      "module": "mpmath.calculus.approximation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/approximation.py"
+    },
+    {
+      "module": "mpmath.calculus.calculus",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/calculus.py"
+    },
+    {
+      "module": "mpmath.calculus.differentiation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/differentiation.py"
+    },
+    {
+      "module": "mpmath.calculus.extrapolation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/extrapolation.py"
+    },
+    {
+      "module": "mpmath.calculus.inverselaplace",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/inverselaplace.py"
+    },
+    {
+      "module": "mpmath.calculus.odes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/odes.py"
+    },
+    {
+      "module": "mpmath.calculus.optimization",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/optimization.py"
+    },
+    {
+      "module": "mpmath.calculus.polynomials",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/polynomials.py"
+    },
+    {
+      "module": "mpmath.calculus.quadrature",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/calculus/quadrature.py"
+    },
+    {
+      "module": "mpmath.ctx_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/ctx_base.py"
+    },
+    {
+      "module": "mpmath.ctx_fp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/ctx_fp.py"
+    },
+    {
+      "module": "mpmath.ctx_iv",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/ctx_iv.py"
+    },
+    {
+      "module": "mpmath.ctx_mp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/ctx_mp.py"
+    },
+    {
+      "module": "mpmath.ctx_mp_python",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/ctx_mp_python.py"
+    },
+    {
+      "module": "mpmath.function_docs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/function_docs.py"
+    },
+    {
+      "module": "mpmath.functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/__init__.py"
+    },
+    {
+      "module": "mpmath.functions.bessel",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/bessel.py"
+    },
+    {
+      "module": "mpmath.functions.elliptic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/elliptic.py"
+    },
+    {
+      "module": "mpmath.functions.expintegrals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/expintegrals.py"
+    },
+    {
+      "module": "mpmath.functions.factorials",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/factorials.py"
+    },
+    {
+      "module": "mpmath.functions.functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/functions.py"
+    },
+    {
+      "module": "mpmath.functions.hypergeometric",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/hypergeometric.py"
+    },
+    {
+      "module": "mpmath.functions.orthogonal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/orthogonal.py"
+    },
+    {
+      "module": "mpmath.functions.qfunctions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/qfunctions.py"
+    },
+    {
+      "module": "mpmath.functions.rszeta",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/rszeta.py"
+    },
+    {
+      "module": "mpmath.functions.signals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/signals.py"
+    },
+    {
+      "module": "mpmath.functions.theta",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/theta.py"
+    },
+    {
+      "module": "mpmath.functions.zeta",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/zeta.py"
+    },
+    {
+      "module": "mpmath.functions.zetazeros",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/functions/zetazeros.py"
+    },
+    {
+      "module": "mpmath.identification",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/identification.py"
+    },
+    {
+      "module": "mpmath.libmp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/__init__.py"
+    },
+    {
+      "module": "mpmath.libmp.backend",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/backend.py"
+    },
+    {
+      "module": "mpmath.libmp.gammazeta",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/gammazeta.py"
+    },
+    {
+      "module": "mpmath.libmp.libelefun",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/libelefun.py"
+    },
+    {
+      "module": "mpmath.libmp.libhyper",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/libhyper.py"
+    },
+    {
+      "module": "mpmath.libmp.libintmath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/libintmath.py"
+    },
+    {
+      "module": "mpmath.libmp.libmpc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/libmpc.py"
+    },
+    {
+      "module": "mpmath.libmp.libmpf",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/libmpf.py"
+    },
+    {
+      "module": "mpmath.libmp.libmpi",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/libmp/libmpi.py"
+    },
+    {
+      "module": "mpmath.math2",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/math2.py"
+    },
+    {
+      "module": "mpmath.matrices",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/matrices/__init__.py"
+    },
+    {
+      "module": "mpmath.matrices.calculus",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/matrices/calculus.py"
+    },
+    {
+      "module": "mpmath.matrices.eigen",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/matrices/eigen.py"
+    },
+    {
+      "module": "mpmath.matrices.eigen_symmetric",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/matrices/eigen_symmetric.py"
+    },
+    {
+      "module": "mpmath.matrices.linalg",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/matrices/linalg.py"
+    },
+    {
+      "module": "mpmath.matrices.matrices",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/matrices/matrices.py"
+    },
+    {
+      "module": "mpmath.rational",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/rational.py"
+    },
+    {
+      "module": "mpmath.usertools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/usertools.py"
+    },
+    {
+      "module": "mpmath.visualization",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath/visualization.py"
+    },
+    {
+      "module": "numbers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/numbers.py"
+    },
+    {
+      "module": "numpy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__init__.py"
+    },
+    {
+      "module": "numpy.__config__",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__config__.py"
+    },
+    {
+      "module": "numpy._distributor_init",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_distributor_init.py"
+    },
+    {
+      "module": "numpy._globals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_globals.py"
+    },
+    {
+      "module": "numpy._pytesttester",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_pytesttester.py"
+    },
+    {
+      "module": "numpy._typing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/__init__.py"
+    },
+    {
+      "module": "numpy._typing._array_like",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_array_like.py"
+    },
+    {
+      "module": "numpy._typing._char_codes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_char_codes.py"
+    },
+    {
+      "module": "numpy._typing._dtype_like",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_dtype_like.py"
+    },
+    {
+      "module": "numpy._typing._nbit",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_nbit.py"
+    },
+    {
+      "module": "numpy._typing._nested_sequence",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_nested_sequence.py"
+    },
+    {
+      "module": "numpy._typing._scalars",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_scalars.py"
+    },
+    {
+      "module": "numpy._typing._shape",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_shape.py"
+    },
+    {
+      "module": "numpy._utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_utils/__init__.py"
+    },
+    {
+      "module": "numpy._utils._convertions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_utils/_convertions.py"
+    },
+    {
+      "module": "numpy._utils._inspect",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_utils/_inspect.py"
+    },
+    {
+      "module": "numpy.compat",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/compat/__init__.py"
+    },
+    {
+      "module": "numpy.compat.py3k",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/compat/py3k.py"
+    },
+    {
+      "module": "numpy.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/__init__.py"
+    },
+    {
+      "module": "numpy.core._add_newdocs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_add_newdocs.py"
+    },
+    {
+      "module": "numpy.core._add_newdocs_scalars",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_add_newdocs_scalars.py"
+    },
+    {
+      "module": "numpy.core._asarray",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_asarray.py"
+    },
+    {
+      "module": "numpy.core._dtype",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_dtype.py"
+    },
+    {
+      "module": "numpy.core._dtype_ctypes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_dtype_ctypes.py"
+    },
+    {
+      "module": "numpy.core._exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_exceptions.py"
+    },
+    {
+      "module": "numpy.core._internal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_internal.py"
+    },
+    {
+      "module": "numpy.core._machar",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_machar.py"
+    },
+    {
+      "module": "numpy.core._methods",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_methods.py"
+    },
+    {
+      "module": "numpy.core._multiarray_tests",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.core._multiarray_umath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.core._string_helpers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_string_helpers.py"
+    },
+    {
+      "module": "numpy.core._type_aliases",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_type_aliases.py"
+    },
+    {
+      "module": "numpy.core._ufunc_config",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_ufunc_config.py"
+    },
+    {
+      "module": "numpy.core.arrayprint",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/arrayprint.py"
+    },
+    {
+      "module": "numpy.core.defchararray",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/defchararray.py"
+    },
+    {
+      "module": "numpy.core.einsumfunc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/einsumfunc.py"
+    },
+    {
+      "module": "numpy.core.fromnumeric",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/fromnumeric.py"
+    },
+    {
+      "module": "numpy.core.function_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/function_base.py"
+    },
+    {
+      "module": "numpy.core.getlimits",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/getlimits.py"
+    },
+    {
+      "module": "numpy.core.memmap",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/memmap.py"
+    },
+    {
+      "module": "numpy.core.multiarray",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/multiarray.py"
+    },
+    {
+      "module": "numpy.core.numeric",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/numeric.py"
+    },
+    {
+      "module": "numpy.core.numerictypes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/numerictypes.py"
+    },
+    {
+      "module": "numpy.core.overrides",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/overrides.py"
+    },
+    {
+      "module": "numpy.core.records",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/records.py"
+    },
+    {
+      "module": "numpy.core.shape_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/shape_base.py"
+    },
+    {
+      "module": "numpy.core.umath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/umath.py"
+    },
+    {
+      "module": "numpy.ctypeslib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ctypeslib.py"
+    },
+    {
+      "module": "numpy.dtypes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/dtypes.py"
+    },
+    {
+      "module": "numpy.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/exceptions.py"
+    },
+    {
+      "module": "numpy.fft",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/__init__.py"
+    },
+    {
+      "module": "numpy.fft._pocketfft",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/_pocketfft.py"
+    },
+    {
+      "module": "numpy.fft._pocketfft_internal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.fft.helper",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/helper.py"
+    },
+    {
+      "module": "numpy.lib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/__init__.py"
+    },
+    {
+      "module": "numpy.lib._datasource",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/_datasource.py"
+    },
+    {
+      "module": "numpy.lib._iotools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/_iotools.py"
+    },
+    {
+      "module": "numpy.lib._version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/_version.py"
+    },
+    {
+      "module": "numpy.lib.arraypad",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/arraypad.py"
+    },
+    {
+      "module": "numpy.lib.arraysetops",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/arraysetops.py"
+    },
+    {
+      "module": "numpy.lib.arrayterator",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/arrayterator.py"
+    },
+    {
+      "module": "numpy.lib.format",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/format.py"
+    },
+    {
+      "module": "numpy.lib.function_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/function_base.py"
+    },
+    {
+      "module": "numpy.lib.histograms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/histograms.py"
+    },
+    {
+      "module": "numpy.lib.index_tricks",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/index_tricks.py"
+    },
+    {
+      "module": "numpy.lib.mixins",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/mixins.py"
+    },
+    {
+      "module": "numpy.lib.nanfunctions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/nanfunctions.py"
+    },
+    {
+      "module": "numpy.lib.npyio",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/npyio.py"
+    },
+    {
+      "module": "numpy.lib.polynomial",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/polynomial.py"
+    },
+    {
+      "module": "numpy.lib.scimath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/scimath.py"
+    },
+    {
+      "module": "numpy.lib.shape_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/shape_base.py"
+    },
+    {
+      "module": "numpy.lib.stride_tricks",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/stride_tricks.py"
+    },
+    {
+      "module": "numpy.lib.twodim_base",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/twodim_base.py"
+    },
+    {
+      "module": "numpy.lib.type_check",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/type_check.py"
+    },
+    {
+      "module": "numpy.lib.ufunclike",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/ufunclike.py"
+    },
+    {
+      "module": "numpy.lib.utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/utils.py"
+    },
+    {
+      "module": "numpy.linalg",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/__init__.py"
+    },
+    {
+      "module": "numpy.linalg._umath_linalg",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.linalg.linalg",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/linalg.py"
+    },
+    {
+      "module": "numpy.ma",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ma/__init__.py"
+    },
+    {
+      "module": "numpy.ma.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ma/core.py"
+    },
+    {
+      "module": "numpy.ma.extras",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ma/extras.py"
+    },
+    {
+      "module": "numpy.matrixlib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/matrixlib/__init__.py"
+    },
+    {
+      "module": "numpy.matrixlib.defmatrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/matrixlib/defmatrix.py"
+    },
+    {
+      "module": "numpy.polynomial",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/__init__.py"
+    },
+    {
+      "module": "numpy.polynomial._polybase",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/_polybase.py"
+    },
+    {
+      "module": "numpy.polynomial.chebyshev",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/chebyshev.py"
+    },
+    {
+      "module": "numpy.polynomial.hermite",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/hermite.py"
+    },
+    {
+      "module": "numpy.polynomial.hermite_e",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/hermite_e.py"
+    },
+    {
+      "module": "numpy.polynomial.laguerre",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/laguerre.py"
+    },
+    {
+      "module": "numpy.polynomial.legendre",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/legendre.py"
+    },
+    {
+      "module": "numpy.polynomial.polynomial",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/polynomial.py"
+    },
+    {
+      "module": "numpy.polynomial.polyutils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/polyutils.py"
+    },
+    {
+      "module": "numpy.random",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/__init__.py"
+    },
+    {
+      "module": "numpy.random._bounded_integers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random._common",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random._generator",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random._mt19937",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random._pcg64",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random._philox",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random._pickle",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_pickle.py"
+    },
+    {
+      "module": "numpy.random._sfc64",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random.bit_generator",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.random.mtrand",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "numpy.version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/version.py"
+    },
+    {
+      "module": "optparse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/optparse.py"
+    },
+    {
+      "module": "packaging",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging/__init__.py"
+    },
+    {
+      "module": "packaging._structures",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging/_structures.py"
+    },
+    {
+      "module": "packaging.version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging/version.py"
+    },
+    {
+      "module": "pickle",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pickle.py"
+    },
+    {
+      "module": "platform",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/platform.py"
+    },
+    {
+      "module": "pprint",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pprint.py"
+    },
+    {
+      "module": "pycosat",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pycosat.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "pyexpat",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/pyexpat.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "pyexpat.errors",
+      "file": null
+    },
+    {
+      "module": "pyexpat.model",
+      "file": null
+    },
+    {
+      "module": "pyfiglet",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet/__init__.py"
+    },
+    {
+      "module": "pyfiglet.fonts",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet/fonts/__init__.py"
+    },
+    {
+      "module": "pyfiglet.version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet/version.py"
+    },
+    {
+      "module": "pyparsing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/__init__.py"
+    },
+    {
+      "module": "pyparsing.actions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/actions.py"
+    },
+    {
+      "module": "pyparsing.common",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/common.py"
+    },
+    {
+      "module": "pyparsing.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/core.py"
+    },
+    {
+      "module": "pyparsing.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/exceptions.py"
+    },
+    {
+      "module": "pyparsing.helpers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/helpers.py"
+    },
+    {
+      "module": "pyparsing.results",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/results.py"
+    },
+    {
+      "module": "pyparsing.testing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/testing.py"
+    },
+    {
+      "module": "pyparsing.unicode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/unicode.py"
+    },
+    {
+      "module": "pyparsing.util",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing/util.py"
+    },
+    {
+      "module": "pytz",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz/__init__.py"
+    },
+    {
+      "module": "pytz.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz/exceptions.py"
+    },
+    {
+      "module": "pytz.lazy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz/lazy.py"
+    },
+    {
+      "module": "pytz.tzfile",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz/tzfile.py"
+    },
+    {
+      "module": "pytz.tzinfo",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz/tzinfo.py"
+    },
+    {
+      "module": "reasoning_gym",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.algebra",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.algebra.complex_arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/complex_arithmetic.py"
+    },
+    {
+      "module": "reasoning_gym.algebra.intermediate_integration",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/intermediate_integration.py"
+    },
+    {
+      "module": "reasoning_gym.algebra.polynomial_equations",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/polynomial_equations.py"
+    },
+    {
+      "module": "reasoning_gym.algebra.polynomial_multiplication",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/polynomial_multiplication.py"
+    },
+    {
+      "module": "reasoning_gym.algebra.simple_equations",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/simple_equations.py"
+    },
+    {
+      "module": "reasoning_gym.algebra.simple_integration",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/simple_integration.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.ab",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/ab.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.base_conversion",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/base_conversion.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.binary_alternation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/binary_alternation.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.binary_matrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/binary_matrix.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.caesar_cipher",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/caesar_cipher.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.count_primes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/count_primes.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.cryptarithm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/cryptarithm.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.game_of_life",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/game_of_life.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.game_of_life_halting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/game_of_life_halting.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.graph_color",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/graph_color.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.group_anagrams",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/group_anagrams.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.isomorphic_strings",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/isomorphic_strings.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.jugs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/jugs.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.letter_counting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/letter_counting.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.letter_jumble",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/letter_jumble.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.manipulate_matrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/manipulate_matrix.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.number_filtering",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/number_filtering.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.number_sorting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/number_sorting.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.palindrome_generation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/palindrome_generation.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.palindrome_partitioning",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/palindrome_partitioning.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.pool_matrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/pool_matrix.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.ransom_note",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/ransom_note.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.rotate_matrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/rotate_matrix.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.rotten_oranges",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/rotten_oranges.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.sentence_reordering",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/sentence_reordering.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.spell_backward",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/spell_backward.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.spiral_matrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/spiral_matrix.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.string_insertion",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_insertion.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.string_manipulation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_manipulation.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.string_splitting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_splitting.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.string_synthesis",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_synthesis.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.word_ladder",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/word_ladder.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.word_sequence_reversal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/word_sequence_reversal.py"
+    },
+    {
+      "module": "reasoning_gym.algorithmic.word_sorting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/word_sorting.py"
+    },
+    {
+      "module": "reasoning_gym.arc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.arc.arc_1d",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/arc_1d.py"
+    },
+    {
+      "module": "reasoning_gym.arc.arc_agi",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/arc_agi.py"
+    },
+    {
+      "module": "reasoning_gym.arc.board_format",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/board_format.py"
+    },
+    {
+      "module": "reasoning_gym.arc.rearc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/rearc.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.basic_arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/basic_arithmetic.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.bitwise_arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/bitwise_arithmetic.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.calendar_arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/calendar_arithmetic.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.chain_sum",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/chain_sum.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.count_bits",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/count_bits.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.decimal_arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/decimal_arithmetic.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.decimal_chain_sum",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/decimal_chain_sum.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.dice",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/dice.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.fraction_simplification",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/fraction_simplification.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.gcd",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gcd.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.gsm_symbolic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gsm_symbolic/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.gsm_symbolic.gsm_symbolic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gsm_symbolic/gsm_symbolic.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.lcm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/lcm.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.leg_counting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/leg_counting.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.number_format",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/number_format.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.power_function",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/power_function.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.prime_factorization",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/prime_factorization.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.products",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/products.py"
+    },
+    {
+      "module": "reasoning_gym.arithmetic.time_intervals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/time_intervals.py"
+    },
+    {
+      "module": "reasoning_gym.coaching",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.coaching.attributes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/attributes.py"
+    },
+    {
+      "module": "reasoning_gym.coaching.base_curriculum",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/base_curriculum.py"
+    },
+    {
+      "module": "reasoning_gym.coaching.curriculum_config",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/curriculum_config.py"
+    },
+    {
+      "module": "reasoning_gym.coaching.experiment",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/experiment.py"
+    },
+    {
+      "module": "reasoning_gym.coaching.score_board",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/score_board.py"
+    },
+    {
+      "module": "reasoning_gym.code",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.code.bf",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/bf.py"
+    },
+    {
+      "module": "reasoning_gym.code.codeio",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/codeio.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Compiler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Compiler.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Exceptions.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.FunctionCompiler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/FunctionCompiler.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Functions.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.General",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/General.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Globals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Globals.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Lexical_analyzer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Lexical_analyzer.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.LibraryFunctionCompiler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/LibraryFunctionCompiler.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Minify",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Minify.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Node",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Node.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Optimizer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Optimizer.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Parser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Parser.py"
+    },
+    {
+      "module": "reasoning_gym.code.contrib.bfit.Compiler.Token",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Token.py"
+    },
+    {
+      "module": "reasoning_gym.cognition",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.color_cube_rotation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/color_cube_rotation.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.figlet_fonts",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/figlet_fonts.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.modulo_grid",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/modulo_grid.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.needle_haystack",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/needle_haystack.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.number_sequences",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/number_sequences.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.rectangle_count",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/rectangle_count.py"
+    },
+    {
+      "module": "reasoning_gym.cognition.rubiks_cube",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/rubiks_cube.py"
+    },
+    {
+      "module": "reasoning_gym.composite",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/composite.py"
+    },
+    {
+      "module": "reasoning_gym.data",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.data.wordle_words",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/wordle_words.py"
+    },
+    {
+      "module": "reasoning_gym.dataset",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/dataset.py"
+    },
+    {
+      "module": "reasoning_gym.factory",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/factory.py"
+    },
+    {
+      "module": "reasoning_gym.games",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.games.boxnet",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/boxnet.py"
+    },
+    {
+      "module": "reasoning_gym.games.countdown",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/countdown.py"
+    },
+    {
+      "module": "reasoning_gym.games.emoji_mystery",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/emoji_mystery.py"
+    },
+    {
+      "module": "reasoning_gym.games.futoshiki",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/futoshiki.py"
+    },
+    {
+      "module": "reasoning_gym.games.kakurasu",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/kakurasu.py"
+    },
+    {
+      "module": "reasoning_gym.games.knight_swap",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/knight_swap.py"
+    },
+    {
+      "module": "reasoning_gym.games.mahjong",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/mahjong.py"
+    },
+    {
+      "module": "reasoning_gym.games.maze",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/maze.py"
+    },
+    {
+      "module": "reasoning_gym.games.mini_sudoku",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/mini_sudoku.py"
+    },
+    {
+      "module": "reasoning_gym.games.n_queens",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/n_queens.py"
+    },
+    {
+      "module": "reasoning_gym.games.puzzle24",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/puzzle24.py"
+    },
+    {
+      "module": "reasoning_gym.games.rush_hour",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/rush_hour.py"
+    },
+    {
+      "module": "reasoning_gym.games.sokoban",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/sokoban.py"
+    },
+    {
+      "module": "reasoning_gym.games.sudoku",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/sudoku.py"
+    },
+    {
+      "module": "reasoning_gym.games.survo",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/survo.py"
+    },
+    {
+      "module": "reasoning_gym.games.tower_of_hanoi",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/tower_of_hanoi.py"
+    },
+    {
+      "module": "reasoning_gym.games.tsumego",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/tsumego.py"
+    },
+    {
+      "module": "reasoning_gym.geometry",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.geometry.advanced_geometry",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/advanced_geometry.py"
+    },
+    {
+      "module": "reasoning_gym.geometry.simple_geometry",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/simple_geometry.py"
+    },
+    {
+      "module": "reasoning_gym.graphs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.graphs.course_schedule",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/course_schedule.py"
+    },
+    {
+      "module": "reasoning_gym.graphs.family_relationships",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/family_relationships.py"
+    },
+    {
+      "module": "reasoning_gym.graphs.largest_island",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/largest_island.py"
+    },
+    {
+      "module": "reasoning_gym.graphs.path_star",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/path_star.py"
+    },
+    {
+      "module": "reasoning_gym.graphs.quantum_lock",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/quantum_lock.py"
+    },
+    {
+      "module": "reasoning_gym.graphs.shortest_path",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/shortest_path.py"
+    },
+    {
+      "module": "reasoning_gym.induction",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.induction.acre",
+      "file": null
+    },
+    {
+      "module": "reasoning_gym.induction.acre.acre",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/acre.py"
+    },
+    {
+      "module": "reasoning_gym.induction.acre.blicket",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/blicket.py"
+    },
+    {
+      "module": "reasoning_gym.induction.acre.const",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/const.py"
+    },
+    {
+      "module": "reasoning_gym.induction.list_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/list_functions/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.induction.list_functions.list_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/list_functions/list_functions.py"
+    },
+    {
+      "module": "reasoning_gym.logic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.logic.aiw",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/aiw.py"
+    },
+    {
+      "module": "reasoning_gym.logic.circuit_logic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/circuit_logic.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib.logic_puzzle",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib.logic_puzzle.clues",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/clues.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib.logic_puzzle.generate",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/generate.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib.logic_puzzle.literals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/literals.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib.logic_puzzle.puzzle",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/puzzle.py"
+    },
+    {
+      "module": "reasoning_gym.logic.contrib.logic_puzzle.sat_utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/sat_utils.py"
+    },
+    {
+      "module": "reasoning_gym.logic.knights_knaves",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/knights_knaves.py"
+    },
+    {
+      "module": "reasoning_gym.logic.propositional_logic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/propositional_logic.py"
+    },
+    {
+      "module": "reasoning_gym.logic.self_reference",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/self_reference.py"
+    },
+    {
+      "module": "reasoning_gym.logic.syllogisms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/syllogisms.py"
+    },
+    {
+      "module": "reasoning_gym.logic.zebra_puzzles",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/zebra_puzzles.py"
+    },
+    {
+      "module": "reasoning_gym.probability",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/probability/__init__.py"
+    },
+    {
+      "module": "reasoning_gym.probability.coin_flip",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/probability/coin_flip.py"
+    },
+    {
+      "module": "reasoning_gym.utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/utils.py"
+    },
+    {
+      "module": "reasoning_gym.version_manager",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/version_manager.py"
+    },
+    {
+      "module": "rich",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/__init__.py"
+    },
+    {
+      "module": "rich._emoji_replace",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_emoji_replace.py"
+    },
+    {
+      "module": "rich._extension",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_extension.py"
+    },
+    {
+      "module": "rich._loop",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_loop.py"
+    },
+    {
+      "module": "rich._palettes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_palettes.py"
+    },
+    {
+      "module": "rich._pick",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_pick.py"
+    },
+    {
+      "module": "rich._ratio",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_ratio.py"
+    },
+    {
+      "module": "rich._unicode_data",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_unicode_data/__init__.py"
+    },
+    {
+      "module": "rich._unicode_data._versions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_unicode_data/_versions.py"
+    },
+    {
+      "module": "rich._wrap",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/_wrap.py"
+    },
+    {
+      "module": "rich.align",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/align.py"
+    },
+    {
+      "module": "rich.box",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/box.py"
+    },
+    {
+      "module": "rich.cells",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/cells.py"
+    },
+    {
+      "module": "rich.color",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/color.py"
+    },
+    {
+      "module": "rich.color_triplet",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/color_triplet.py"
+    },
+    {
+      "module": "rich.constrain",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/constrain.py"
+    },
+    {
+      "module": "rich.containers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/containers.py"
+    },
+    {
+      "module": "rich.control",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/control.py"
+    },
+    {
+      "module": "rich.emoji",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/emoji.py"
+    },
+    {
+      "module": "rich.errors",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/errors.py"
+    },
+    {
+      "module": "rich.jupyter",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/jupyter.py"
+    },
+    {
+      "module": "rich.measure",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/measure.py"
+    },
+    {
+      "module": "rich.padding",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/padding.py"
+    },
+    {
+      "module": "rich.palette",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/palette.py"
+    },
+    {
+      "module": "rich.panel",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/panel.py"
+    },
+    {
+      "module": "rich.protocol",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/protocol.py"
+    },
+    {
+      "module": "rich.repr",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/repr.py"
+    },
+    {
+      "module": "rich.segment",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/segment.py"
+    },
+    {
+      "module": "rich.style",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/style.py"
+    },
+    {
+      "module": "rich.table",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/table.py"
+    },
+    {
+      "module": "rich.terminal_theme",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/terminal_theme.py"
+    },
+    {
+      "module": "rich.text",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich/text.py"
+    },
+    {
+      "module": "secrets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/secrets.py"
+    },
+    {
+      "module": "shlex",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/shlex.py"
+    },
+    {
+      "module": "signal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/signal.py"
+    },
+    {
+      "module": "six",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six.py"
+    },
+    {
+      "module": "six.moves",
+      "file": null
+    },
+    {
+      "module": "ssl",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ssl.py"
+    },
+    {
+      "module": "statistics",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/statistics.py"
+    },
+    {
+      "module": "subprocess",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/subprocess.py"
+    },
+    {
+      "module": "sympy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/__init__.py"
+    },
+    {
+      "module": "sympy.algebras",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/algebras/__init__.py"
+    },
+    {
+      "module": "sympy.algebras.quaternion",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/algebras/quaternion.py"
+    },
+    {
+      "module": "sympy.assumptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/__init__.py"
+    },
+    {
+      "module": "sympy.assumptions.ask",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/ask.py"
+    },
+    {
+      "module": "sympy.assumptions.ask_generated",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/ask_generated.py"
+    },
+    {
+      "module": "sympy.assumptions.assume",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/assume.py"
+    },
+    {
+      "module": "sympy.assumptions.cnf",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/cnf.py"
+    },
+    {
+      "module": "sympy.assumptions.refine",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/refine.py"
+    },
+    {
+      "module": "sympy.assumptions.relation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/relation/__init__.py"
+    },
+    {
+      "module": "sympy.assumptions.relation.binrel",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/relation/binrel.py"
+    },
+    {
+      "module": "sympy.assumptions.relation.equality",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/assumptions/relation/equality.py"
+    },
+    {
+      "module": "sympy.calculus",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/calculus/__init__.py"
+    },
+    {
+      "module": "sympy.calculus.accumulationbounds",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/calculus/accumulationbounds.py"
+    },
+    {
+      "module": "sympy.calculus.euler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/calculus/euler.py"
+    },
+    {
+      "module": "sympy.calculus.finite_diff",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/calculus/finite_diff.py"
+    },
+    {
+      "module": "sympy.calculus.singularities",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/calculus/singularities.py"
+    },
+    {
+      "module": "sympy.calculus.util",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/calculus/util.py"
+    },
+    {
+      "module": "sympy.concrete",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/concrete/__init__.py"
+    },
+    {
+      "module": "sympy.concrete.expr_with_intlimits",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/concrete/expr_with_intlimits.py"
+    },
+    {
+      "module": "sympy.concrete.expr_with_limits",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/concrete/expr_with_limits.py"
+    },
+    {
+      "module": "sympy.concrete.gosper",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/concrete/gosper.py"
+    },
+    {
+      "module": "sympy.concrete.products",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/concrete/products.py"
+    },
+    {
+      "module": "sympy.concrete.summations",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/concrete/summations.py"
+    },
+    {
+      "module": "sympy.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/__init__.py"
+    },
+    {
+      "module": "sympy.core._print_helpers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/_print_helpers.py"
+    },
+    {
+      "module": "sympy.core.add",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/add.py"
+    },
+    {
+      "module": "sympy.core.alphabets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/alphabets.py"
+    },
+    {
+      "module": "sympy.core.assumptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/assumptions.py"
+    },
+    {
+      "module": "sympy.core.assumptions_generated",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/assumptions_generated.py"
+    },
+    {
+      "module": "sympy.core.basic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/basic.py"
+    },
+    {
+      "module": "sympy.core.cache",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/cache.py"
+    },
+    {
+      "module": "sympy.core.containers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/containers.py"
+    },
+    {
+      "module": "sympy.core.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/core.py"
+    },
+    {
+      "module": "sympy.core.coreerrors",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/coreerrors.py"
+    },
+    {
+      "module": "sympy.core.decorators",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/decorators.py"
+    },
+    {
+      "module": "sympy.core.evalf",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/evalf.py"
+    },
+    {
+      "module": "sympy.core.expr",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/expr.py"
+    },
+    {
+      "module": "sympy.core.exprtools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/exprtools.py"
+    },
+    {
+      "module": "sympy.core.facts",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/facts.py"
+    },
+    {
+      "module": "sympy.core.function",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/function.py"
+    },
+    {
+      "module": "sympy.core.intfunc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/intfunc.py"
+    },
+    {
+      "module": "sympy.core.kind",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/kind.py"
+    },
+    {
+      "module": "sympy.core.logic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/logic.py"
+    },
+    {
+      "module": "sympy.core.mod",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/mod.py"
+    },
+    {
+      "module": "sympy.core.mul",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/mul.py"
+    },
+    {
+      "module": "sympy.core.multidimensional",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/multidimensional.py"
+    },
+    {
+      "module": "sympy.core.numbers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/numbers.py"
+    },
+    {
+      "module": "sympy.core.operations",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/operations.py"
+    },
+    {
+      "module": "sympy.core.parameters",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/parameters.py"
+    },
+    {
+      "module": "sympy.core.power",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/power.py"
+    },
+    {
+      "module": "sympy.core.random",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/random.py"
+    },
+    {
+      "module": "sympy.core.relational",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/relational.py"
+    },
+    {
+      "module": "sympy.core.rules",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/rules.py"
+    },
+    {
+      "module": "sympy.core.singleton",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/singleton.py"
+    },
+    {
+      "module": "sympy.core.sorting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/sorting.py"
+    },
+    {
+      "module": "sympy.core.symbol",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/symbol.py"
+    },
+    {
+      "module": "sympy.core.sympify",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/sympify.py"
+    },
+    {
+      "module": "sympy.core.traversal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/core/traversal.py"
+    },
+    {
+      "module": "sympy.discrete",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/discrete/__init__.py"
+    },
+    {
+      "module": "sympy.discrete.convolutions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/discrete/convolutions.py"
+    },
+    {
+      "module": "sympy.discrete.transforms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/discrete/transforms.py"
+    },
+    {
+      "module": "sympy.external",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/external/__init__.py"
+    },
+    {
+      "module": "sympy.external.gmpy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/external/gmpy.py"
+    },
+    {
+      "module": "sympy.external.importtools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/external/importtools.py"
+    },
+    {
+      "module": "sympy.external.ntheory",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/external/ntheory.py"
+    },
+    {
+      "module": "sympy.external.pythonmpq",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/external/pythonmpq.py"
+    },
+    {
+      "module": "sympy.functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/__init__.py"
+    },
+    {
+      "module": "sympy.functions.combinatorial",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/combinatorial/__init__.py"
+    },
+    {
+      "module": "sympy.functions.combinatorial.factorials",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/combinatorial/factorials.py"
+    },
+    {
+      "module": "sympy.functions.combinatorial.numbers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/combinatorial/numbers.py"
+    },
+    {
+      "module": "sympy.functions.elementary",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/__init__.py"
+    },
+    {
+      "module": "sympy.functions.elementary._trigonometric_special",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/_trigonometric_special.py"
+    },
+    {
+      "module": "sympy.functions.elementary.complexes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/complexes.py"
+    },
+    {
+      "module": "sympy.functions.elementary.exponential",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/exponential.py"
+    },
+    {
+      "module": "sympy.functions.elementary.hyperbolic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/hyperbolic.py"
+    },
+    {
+      "module": "sympy.functions.elementary.integers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/integers.py"
+    },
+    {
+      "module": "sympy.functions.elementary.miscellaneous",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/miscellaneous.py"
+    },
+    {
+      "module": "sympy.functions.elementary.piecewise",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/piecewise.py"
+    },
+    {
+      "module": "sympy.functions.elementary.trigonometric",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/elementary/trigonometric.py"
+    },
+    {
+      "module": "sympy.functions.special",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/__init__.py"
+    },
+    {
+      "module": "sympy.functions.special.bessel",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/bessel.py"
+    },
+    {
+      "module": "sympy.functions.special.beta_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/beta_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.bsplines",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/bsplines.py"
+    },
+    {
+      "module": "sympy.functions.special.delta_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/delta_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.elliptic_integrals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/elliptic_integrals.py"
+    },
+    {
+      "module": "sympy.functions.special.error_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/error_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.gamma_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/gamma_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.hyper",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/hyper.py"
+    },
+    {
+      "module": "sympy.functions.special.mathieu_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/mathieu_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.polynomials",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/polynomials.py"
+    },
+    {
+      "module": "sympy.functions.special.singularity_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/singularity_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.spherical_harmonics",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/spherical_harmonics.py"
+    },
+    {
+      "module": "sympy.functions.special.tensor_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/tensor_functions.py"
+    },
+    {
+      "module": "sympy.functions.special.zeta_functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/functions/special/zeta_functions.py"
+    },
+    {
+      "module": "sympy.geometry",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/__init__.py"
+    },
+    {
+      "module": "sympy.geometry.curve",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/curve.py"
+    },
+    {
+      "module": "sympy.geometry.ellipse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/ellipse.py"
+    },
+    {
+      "module": "sympy.geometry.entity",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/entity.py"
+    },
+    {
+      "module": "sympy.geometry.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/exceptions.py"
+    },
+    {
+      "module": "sympy.geometry.line",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/line.py"
+    },
+    {
+      "module": "sympy.geometry.parabola",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/parabola.py"
+    },
+    {
+      "module": "sympy.geometry.plane",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/plane.py"
+    },
+    {
+      "module": "sympy.geometry.point",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/point.py"
+    },
+    {
+      "module": "sympy.geometry.polygon",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/polygon.py"
+    },
+    {
+      "module": "sympy.geometry.util",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/geometry/util.py"
+    },
+    {
+      "module": "sympy.integrals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/__init__.py"
+    },
+    {
+      "module": "sympy.integrals.deltafunctions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/deltafunctions.py"
+    },
+    {
+      "module": "sympy.integrals.integrals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/integrals.py"
+    },
+    {
+      "module": "sympy.integrals.laplace",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/laplace.py"
+    },
+    {
+      "module": "sympy.integrals.meijerint",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/meijerint.py"
+    },
+    {
+      "module": "sympy.integrals.rationaltools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/rationaltools.py"
+    },
+    {
+      "module": "sympy.integrals.singularityfunctions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/singularityfunctions.py"
+    },
+    {
+      "module": "sympy.integrals.transforms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/transforms.py"
+    },
+    {
+      "module": "sympy.integrals.trigonometry",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/integrals/trigonometry.py"
+    },
+    {
+      "module": "sympy.interactive",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/interactive/__init__.py"
+    },
+    {
+      "module": "sympy.interactive.printing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/interactive/printing.py"
+    },
+    {
+      "module": "sympy.interactive.session",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/interactive/session.py"
+    },
+    {
+      "module": "sympy.interactive.traversal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/interactive/traversal.py"
+    },
+    {
+      "module": "sympy.logic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/logic/__init__.py"
+    },
+    {
+      "module": "sympy.logic.boolalg",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/logic/boolalg.py"
+    },
+    {
+      "module": "sympy.logic.inference",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/logic/inference.py"
+    },
+    {
+      "module": "sympy.matrices",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/__init__.py"
+    },
+    {
+      "module": "sympy.matrices.decompositions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/decompositions.py"
+    },
+    {
+      "module": "sympy.matrices.dense",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/dense.py"
+    },
+    {
+      "module": "sympy.matrices.determinant",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/determinant.py"
+    },
+    {
+      "module": "sympy.matrices.eigen",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/eigen.py"
+    },
+    {
+      "module": "sympy.matrices.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/exceptions.py"
+    },
+    {
+      "module": "sympy.matrices.expressions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/__init__.py"
+    },
+    {
+      "module": "sympy.matrices.expressions._shape",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/_shape.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.adjoint",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/adjoint.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.blockmatrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/blockmatrix.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.companion",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/companion.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.determinant",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/determinant.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.diagonal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/diagonal.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.dotproduct",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/dotproduct.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.funcmatrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/funcmatrix.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.hadamard",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/hadamard.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.inverse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/inverse.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.kronecker",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/kronecker.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.matadd",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/matadd.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.matexpr",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/matexpr.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.matmul",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/matmul.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.matpow",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/matpow.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.permutation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/permutation.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.sets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/sets.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.slice",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/slice.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.special",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/special.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.trace",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/trace.py"
+    },
+    {
+      "module": "sympy.matrices.expressions.transpose",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/expressions/transpose.py"
+    },
+    {
+      "module": "sympy.matrices.graph",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/graph.py"
+    },
+    {
+      "module": "sympy.matrices.immutable",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/immutable.py"
+    },
+    {
+      "module": "sympy.matrices.inverse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/inverse.py"
+    },
+    {
+      "module": "sympy.matrices.kind",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/kind.py"
+    },
+    {
+      "module": "sympy.matrices.matrixbase",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/matrixbase.py"
+    },
+    {
+      "module": "sympy.matrices.reductions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/reductions.py"
+    },
+    {
+      "module": "sympy.matrices.repmatrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/repmatrix.py"
+    },
+    {
+      "module": "sympy.matrices.solvers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/solvers.py"
+    },
+    {
+      "module": "sympy.matrices.sparse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/sparse.py"
+    },
+    {
+      "module": "sympy.matrices.sparsetools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/sparsetools.py"
+    },
+    {
+      "module": "sympy.matrices.subspaces",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/subspaces.py"
+    },
+    {
+      "module": "sympy.matrices.utilities",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/matrices/utilities.py"
+    },
+    {
+      "module": "sympy.multipledispatch",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/multipledispatch/__init__.py"
+    },
+    {
+      "module": "sympy.multipledispatch.conflict",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/multipledispatch/conflict.py"
+    },
+    {
+      "module": "sympy.multipledispatch.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/multipledispatch/core.py"
+    },
+    {
+      "module": "sympy.multipledispatch.dispatcher",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/multipledispatch/dispatcher.py"
+    },
+    {
+      "module": "sympy.multipledispatch.utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/multipledispatch/utils.py"
+    },
+    {
+      "module": "sympy.ntheory",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/__init__.py"
+    },
+    {
+      "module": "sympy.ntheory.continued_fraction",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/continued_fraction.py"
+    },
+    {
+      "module": "sympy.ntheory.digits",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/digits.py"
+    },
+    {
+      "module": "sympy.ntheory.ecm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/ecm.py"
+    },
+    {
+      "module": "sympy.ntheory.egyptian_fraction",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/egyptian_fraction.py"
+    },
+    {
+      "module": "sympy.ntheory.factor_",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/factor_.py"
+    },
+    {
+      "module": "sympy.ntheory.generate",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/generate.py"
+    },
+    {
+      "module": "sympy.ntheory.modular",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/modular.py"
+    },
+    {
+      "module": "sympy.ntheory.multinomial",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/multinomial.py"
+    },
+    {
+      "module": "sympy.ntheory.partitions_",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/partitions_.py"
+    },
+    {
+      "module": "sympy.ntheory.primetest",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/primetest.py"
+    },
+    {
+      "module": "sympy.ntheory.qs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/qs.py"
+    },
+    {
+      "module": "sympy.ntheory.residue_ntheory",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/ntheory/residue_ntheory.py"
+    },
+    {
+      "module": "sympy.parsing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/parsing/__init__.py"
+    },
+    {
+      "module": "sympy.parsing.sympy_parser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/parsing/sympy_parser.py"
+    },
+    {
+      "module": "sympy.plotting",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/__init__.py"
+    },
+    {
+      "module": "sympy.plotting.backends",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/backends/__init__.py"
+    },
+    {
+      "module": "sympy.plotting.backends.base_backend",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/backends/base_backend.py"
+    },
+    {
+      "module": "sympy.plotting.backends.matplotlibbackend",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/backends/matplotlibbackend/__init__.py"
+    },
+    {
+      "module": "sympy.plotting.backends.matplotlibbackend.matplotlib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/backends/matplotlibbackend/matplotlib.py"
+    },
+    {
+      "module": "sympy.plotting.backends.textbackend",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/backends/textbackend/__init__.py"
+    },
+    {
+      "module": "sympy.plotting.backends.textbackend.text",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/backends/textbackend/text.py"
+    },
+    {
+      "module": "sympy.plotting.intervalmath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/intervalmath/__init__.py"
+    },
+    {
+      "module": "sympy.plotting.intervalmath.interval_arithmetic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/intervalmath/interval_arithmetic.py"
+    },
+    {
+      "module": "sympy.plotting.intervalmath.interval_membership",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/intervalmath/interval_membership.py"
+    },
+    {
+      "module": "sympy.plotting.intervalmath.lib_interval",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/intervalmath/lib_interval.py"
+    },
+    {
+      "module": "sympy.plotting.plot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/plot.py"
+    },
+    {
+      "module": "sympy.plotting.plot_implicit",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/plot_implicit.py"
+    },
+    {
+      "module": "sympy.plotting.plotgrid",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/plotgrid.py"
+    },
+    {
+      "module": "sympy.plotting.pygletplot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/pygletplot/__init__.py"
+    },
+    {
+      "module": "sympy.plotting.series",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/series.py"
+    },
+    {
+      "module": "sympy.plotting.textplot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/textplot.py"
+    },
+    {
+      "module": "sympy.plotting.utils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/plotting/utils.py"
+    },
+    {
+      "module": "sympy.polys",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/__init__.py"
+    },
+    {
+      "module": "sympy.polys.agca",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/agca/__init__.py"
+    },
+    {
+      "module": "sympy.polys.agca.extensions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/agca/extensions.py"
+    },
+    {
+      "module": "sympy.polys.agca.homomorphisms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/agca/homomorphisms.py"
+    },
+    {
+      "module": "sympy.polys.agca.ideals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/agca/ideals.py"
+    },
+    {
+      "module": "sympy.polys.agca.modules",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/agca/modules.py"
+    },
+    {
+      "module": "sympy.polys.appellseqs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/appellseqs.py"
+    },
+    {
+      "module": "sympy.polys.compatibility",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/compatibility.py"
+    },
+    {
+      "module": "sympy.polys.constructor",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/constructor.py"
+    },
+    {
+      "module": "sympy.polys.densearith",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/densearith.py"
+    },
+    {
+      "module": "sympy.polys.densebasic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/densebasic.py"
+    },
+    {
+      "module": "sympy.polys.densetools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/densetools.py"
+    },
+    {
+      "module": "sympy.polys.domainmatrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domainmatrix.py"
+    },
+    {
+      "module": "sympy.polys.domains",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/__init__.py"
+    },
+    {
+      "module": "sympy.polys.domains.algebraicfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/algebraicfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.characteristiczero",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/characteristiczero.py"
+    },
+    {
+      "module": "sympy.polys.domains.complexfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/complexfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.compositedomain",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/compositedomain.py"
+    },
+    {
+      "module": "sympy.polys.domains.domain",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/domain.py"
+    },
+    {
+      "module": "sympy.polys.domains.domainelement",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/domainelement.py"
+    },
+    {
+      "module": "sympy.polys.domains.expressiondomain",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/expressiondomain.py"
+    },
+    {
+      "module": "sympy.polys.domains.expressionrawdomain",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/expressionrawdomain.py"
+    },
+    {
+      "module": "sympy.polys.domains.field",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/field.py"
+    },
+    {
+      "module": "sympy.polys.domains.finitefield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/finitefield.py"
+    },
+    {
+      "module": "sympy.polys.domains.fractionfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/fractionfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.gaussiandomains",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/gaussiandomains.py"
+    },
+    {
+      "module": "sympy.polys.domains.gmpyfinitefield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/gmpyfinitefield.py"
+    },
+    {
+      "module": "sympy.polys.domains.gmpyintegerring",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/gmpyintegerring.py"
+    },
+    {
+      "module": "sympy.polys.domains.gmpyrationalfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/gmpyrationalfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.groundtypes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/groundtypes.py"
+    },
+    {
+      "module": "sympy.polys.domains.integerring",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/integerring.py"
+    },
+    {
+      "module": "sympy.polys.domains.modularinteger",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/modularinteger.py"
+    },
+    {
+      "module": "sympy.polys.domains.mpelements",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/mpelements.py"
+    },
+    {
+      "module": "sympy.polys.domains.polynomialring",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/polynomialring.py"
+    },
+    {
+      "module": "sympy.polys.domains.pythonfinitefield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/pythonfinitefield.py"
+    },
+    {
+      "module": "sympy.polys.domains.pythonintegerring",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/pythonintegerring.py"
+    },
+    {
+      "module": "sympy.polys.domains.pythonrational",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/pythonrational.py"
+    },
+    {
+      "module": "sympy.polys.domains.pythonrationalfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/pythonrationalfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.rationalfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/rationalfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.realfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/realfield.py"
+    },
+    {
+      "module": "sympy.polys.domains.ring",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/ring.py"
+    },
+    {
+      "module": "sympy.polys.domains.simpledomain",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/domains/simpledomain.py"
+    },
+    {
+      "module": "sympy.polys.euclidtools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/euclidtools.py"
+    },
+    {
+      "module": "sympy.polys.factortools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/factortools.py"
+    },
+    {
+      "module": "sympy.polys.fglmtools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/fglmtools.py"
+    },
+    {
+      "module": "sympy.polys.fields",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/fields.py"
+    },
+    {
+      "module": "sympy.polys.galoistools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/galoistools.py"
+    },
+    {
+      "module": "sympy.polys.groebnertools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/groebnertools.py"
+    },
+    {
+      "module": "sympy.polys.heuristicgcd",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/heuristicgcd.py"
+    },
+    {
+      "module": "sympy.polys.matrices",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/__init__.py"
+    },
+    {
+      "module": "sympy.polys.matrices._typing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/_typing.py"
+    },
+    {
+      "module": "sympy.polys.matrices.ddm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/ddm.py"
+    },
+    {
+      "module": "sympy.polys.matrices.dense",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/dense.py"
+    },
+    {
+      "module": "sympy.polys.matrices.dfm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/dfm.py"
+    },
+    {
+      "module": "sympy.polys.matrices.domainmatrix",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/domainmatrix.py"
+    },
+    {
+      "module": "sympy.polys.matrices.domainscalar",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/domainscalar.py"
+    },
+    {
+      "module": "sympy.polys.matrices.eigen",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/eigen.py"
+    },
+    {
+      "module": "sympy.polys.matrices.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/exceptions.py"
+    },
+    {
+      "module": "sympy.polys.matrices.linsolve",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/linsolve.py"
+    },
+    {
+      "module": "sympy.polys.matrices.lll",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/lll.py"
+    },
+    {
+      "module": "sympy.polys.matrices.normalforms",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/normalforms.py"
+    },
+    {
+      "module": "sympy.polys.matrices.rref",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/rref.py"
+    },
+    {
+      "module": "sympy.polys.matrices.sdm",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/matrices/sdm.py"
+    },
+    {
+      "module": "sympy.polys.monomials",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/monomials.py"
+    },
+    {
+      "module": "sympy.polys.numberfields",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/__init__.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.basis",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/basis.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/exceptions.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.galois_resolvents",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/galois_resolvents.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.galoisgroups",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/galoisgroups.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.minpoly",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/minpoly.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.modules",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/modules.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.primes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/primes.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.subfield",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/subfield.py"
+    },
+    {
+      "module": "sympy.polys.numberfields.utilities",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/numberfields/utilities.py"
+    },
+    {
+      "module": "sympy.polys.orderings",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/orderings.py"
+    },
+    {
+      "module": "sympy.polys.orthopolys",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/orthopolys.py"
+    },
+    {
+      "module": "sympy.polys.partfrac",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/partfrac.py"
+    },
+    {
+      "module": "sympy.polys.polyclasses",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyclasses.py"
+    },
+    {
+      "module": "sympy.polys.polyconfig",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyconfig.py"
+    },
+    {
+      "module": "sympy.polys.polyerrors",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyerrors.py"
+    },
+    {
+      "module": "sympy.polys.polyfuncs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyfuncs.py"
+    },
+    {
+      "module": "sympy.polys.polyoptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyoptions.py"
+    },
+    {
+      "module": "sympy.polys.polyquinticconst",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyquinticconst.py"
+    },
+    {
+      "module": "sympy.polys.polyroots",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyroots.py"
+    },
+    {
+      "module": "sympy.polys.polytools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polytools.py"
+    },
+    {
+      "module": "sympy.polys.polyutils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/polyutils.py"
+    },
+    {
+      "module": "sympy.polys.rationaltools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/rationaltools.py"
+    },
+    {
+      "module": "sympy.polys.ring_series",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/ring_series.py"
+    },
+    {
+      "module": "sympy.polys.rings",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/rings.py"
+    },
+    {
+      "module": "sympy.polys.rootisolation",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/rootisolation.py"
+    },
+    {
+      "module": "sympy.polys.rootoftools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/rootoftools.py"
+    },
+    {
+      "module": "sympy.polys.solvers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/solvers.py"
+    },
+    {
+      "module": "sympy.polys.specialpolys",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/specialpolys.py"
+    },
+    {
+      "module": "sympy.polys.sqfreetools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/polys/sqfreetools.py"
+    },
+    {
+      "module": "sympy.printing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/__init__.py"
+    },
+    {
+      "module": "sympy.printing.codeprinter",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/codeprinter.py"
+    },
+    {
+      "module": "sympy.printing.conventions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/conventions.py"
+    },
+    {
+      "module": "sympy.printing.defaults",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/defaults.py"
+    },
+    {
+      "module": "sympy.printing.dot",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/dot.py"
+    },
+    {
+      "module": "sympy.printing.glsl",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/glsl.py"
+    },
+    {
+      "module": "sympy.printing.gtk",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/gtk.py"
+    },
+    {
+      "module": "sympy.printing.jscode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/jscode.py"
+    },
+    {
+      "module": "sympy.printing.julia",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/julia.py"
+    },
+    {
+      "module": "sympy.printing.lambdarepr",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/lambdarepr.py"
+    },
+    {
+      "module": "sympy.printing.latex",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/latex.py"
+    },
+    {
+      "module": "sympy.printing.maple",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/maple.py"
+    },
+    {
+      "module": "sympy.printing.mathematica",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/mathematica.py"
+    },
+    {
+      "module": "sympy.printing.mathml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/mathml.py"
+    },
+    {
+      "module": "sympy.printing.numpy",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/numpy.py"
+    },
+    {
+      "module": "sympy.printing.octave",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/octave.py"
+    },
+    {
+      "module": "sympy.printing.precedence",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/precedence.py"
+    },
+    {
+      "module": "sympy.printing.pretty",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/pretty/__init__.py"
+    },
+    {
+      "module": "sympy.printing.pretty.pretty",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/pretty/pretty.py"
+    },
+    {
+      "module": "sympy.printing.pretty.pretty_symbology",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/pretty/pretty_symbology.py"
+    },
+    {
+      "module": "sympy.printing.pretty.stringpict",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/pretty/stringpict.py"
+    },
+    {
+      "module": "sympy.printing.preview",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/preview.py"
+    },
+    {
+      "module": "sympy.printing.printer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/printer.py"
+    },
+    {
+      "module": "sympy.printing.pycode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/pycode.py"
+    },
+    {
+      "module": "sympy.printing.python",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/python.py"
+    },
+    {
+      "module": "sympy.printing.rcode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/rcode.py"
+    },
+    {
+      "module": "sympy.printing.repr",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/repr.py"
+    },
+    {
+      "module": "sympy.printing.rust",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/rust.py"
+    },
+    {
+      "module": "sympy.printing.smtlib",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/smtlib.py"
+    },
+    {
+      "module": "sympy.printing.str",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/str.py"
+    },
+    {
+      "module": "sympy.printing.tableform",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/tableform.py"
+    },
+    {
+      "module": "sympy.printing.tree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/printing/tree.py"
+    },
+    {
+      "module": "sympy.release",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/release.py"
+    },
+    {
+      "module": "sympy.series",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/__init__.py"
+    },
+    {
+      "module": "sympy.series.approximants",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/approximants.py"
+    },
+    {
+      "module": "sympy.series.formal",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/formal.py"
+    },
+    {
+      "module": "sympy.series.fourier",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/fourier.py"
+    },
+    {
+      "module": "sympy.series.gruntz",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/gruntz.py"
+    },
+    {
+      "module": "sympy.series.limits",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/limits.py"
+    },
+    {
+      "module": "sympy.series.limitseq",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/limitseq.py"
+    },
+    {
+      "module": "sympy.series.order",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/order.py"
+    },
+    {
+      "module": "sympy.series.residues",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/residues.py"
+    },
+    {
+      "module": "sympy.series.sequences",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/sequences.py"
+    },
+    {
+      "module": "sympy.series.series",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/series.py"
+    },
+    {
+      "module": "sympy.series.series_class",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/series/series_class.py"
+    },
+    {
+      "module": "sympy.sets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/__init__.py"
+    },
+    {
+      "module": "sympy.sets.conditionset",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/conditionset.py"
+    },
+    {
+      "module": "sympy.sets.contains",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/contains.py"
+    },
+    {
+      "module": "sympy.sets.fancysets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/fancysets.py"
+    },
+    {
+      "module": "sympy.sets.handlers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/handlers/__init__.py"
+    },
+    {
+      "module": "sympy.sets.handlers.comparison",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/handlers/comparison.py"
+    },
+    {
+      "module": "sympy.sets.handlers.intersection",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/handlers/intersection.py"
+    },
+    {
+      "module": "sympy.sets.handlers.union",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/handlers/union.py"
+    },
+    {
+      "module": "sympy.sets.ordinals",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/ordinals.py"
+    },
+    {
+      "module": "sympy.sets.powerset",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/powerset.py"
+    },
+    {
+      "module": "sympy.sets.sets",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/sets/sets.py"
+    },
+    {
+      "module": "sympy.simplify",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/__init__.py"
+    },
+    {
+      "module": "sympy.simplify.combsimp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/combsimp.py"
+    },
+    {
+      "module": "sympy.simplify.cse_main",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/cse_main.py"
+    },
+    {
+      "module": "sympy.simplify.cse_opts",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/cse_opts.py"
+    },
+    {
+      "module": "sympy.simplify.epathtools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/epathtools.py"
+    },
+    {
+      "module": "sympy.simplify.fu",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/fu.py"
+    },
+    {
+      "module": "sympy.simplify.gammasimp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/gammasimp.py"
+    },
+    {
+      "module": "sympy.simplify.hyperexpand",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/hyperexpand.py"
+    },
+    {
+      "module": "sympy.simplify.powsimp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/powsimp.py"
+    },
+    {
+      "module": "sympy.simplify.radsimp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/radsimp.py"
+    },
+    {
+      "module": "sympy.simplify.ratsimp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/ratsimp.py"
+    },
+    {
+      "module": "sympy.simplify.simplify",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/simplify.py"
+    },
+    {
+      "module": "sympy.simplify.sqrtdenest",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/sqrtdenest.py"
+    },
+    {
+      "module": "sympy.simplify.trigsimp",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/simplify/trigsimp.py"
+    },
+    {
+      "module": "sympy.solvers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/__init__.py"
+    },
+    {
+      "module": "sympy.solvers.bivariate",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/bivariate.py"
+    },
+    {
+      "module": "sympy.solvers.decompogen",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/decompogen.py"
+    },
+    {
+      "module": "sympy.solvers.deutils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/deutils.py"
+    },
+    {
+      "module": "sympy.solvers.diophantine",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/diophantine/__init__.py"
+    },
+    {
+      "module": "sympy.solvers.diophantine.diophantine",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/diophantine/diophantine.py"
+    },
+    {
+      "module": "sympy.solvers.inequalities",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/inequalities.py"
+    },
+    {
+      "module": "sympy.solvers.ode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/__init__.py"
+    },
+    {
+      "module": "sympy.solvers.ode.hypergeometric",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/hypergeometric.py"
+    },
+    {
+      "module": "sympy.solvers.ode.lie_group",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/lie_group.py"
+    },
+    {
+      "module": "sympy.solvers.ode.nonhomogeneous",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/nonhomogeneous.py"
+    },
+    {
+      "module": "sympy.solvers.ode.ode",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/ode.py"
+    },
+    {
+      "module": "sympy.solvers.ode.riccati",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/riccati.py"
+    },
+    {
+      "module": "sympy.solvers.ode.single",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/single.py"
+    },
+    {
+      "module": "sympy.solvers.ode.subscheck",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/subscheck.py"
+    },
+    {
+      "module": "sympy.solvers.ode.systems",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/ode/systems.py"
+    },
+    {
+      "module": "sympy.solvers.pde",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/pde.py"
+    },
+    {
+      "module": "sympy.solvers.polysys",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/polysys.py"
+    },
+    {
+      "module": "sympy.solvers.recurr",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/recurr.py"
+    },
+    {
+      "module": "sympy.solvers.simplex",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/simplex.py"
+    },
+    {
+      "module": "sympy.solvers.solvers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/solvers.py"
+    },
+    {
+      "module": "sympy.solvers.solveset",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/solvers/solveset.py"
+    },
+    {
+      "module": "sympy.strategies",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/__init__.py"
+    },
+    {
+      "module": "sympy.strategies.branch",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/branch/__init__.py"
+    },
+    {
+      "module": "sympy.strategies.branch.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/branch/core.py"
+    },
+    {
+      "module": "sympy.strategies.branch.tools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/branch/tools.py"
+    },
+    {
+      "module": "sympy.strategies.branch.traverse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/branch/traverse.py"
+    },
+    {
+      "module": "sympy.strategies.core",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/core.py"
+    },
+    {
+      "module": "sympy.strategies.rl",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/rl.py"
+    },
+    {
+      "module": "sympy.strategies.tools",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/tools.py"
+    },
+    {
+      "module": "sympy.strategies.traverse",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/traverse.py"
+    },
+    {
+      "module": "sympy.strategies.tree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/tree.py"
+    },
+    {
+      "module": "sympy.strategies.util",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/strategies/util.py"
+    },
+    {
+      "module": "sympy.tensor",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/__init__.py"
+    },
+    {
+      "module": "sympy.tensor.array",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/__init__.py"
+    },
+    {
+      "module": "sympy.tensor.array.array_comprehension",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/array_comprehension.py"
+    },
+    {
+      "module": "sympy.tensor.array.arrayop",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/arrayop.py"
+    },
+    {
+      "module": "sympy.tensor.array.dense_ndim_array",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/dense_ndim_array.py"
+    },
+    {
+      "module": "sympy.tensor.array.mutable_ndim_array",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/mutable_ndim_array.py"
+    },
+    {
+      "module": "sympy.tensor.array.ndim_array",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/ndim_array.py"
+    },
+    {
+      "module": "sympy.tensor.array.sparse_ndim_array",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/array/sparse_ndim_array.py"
+    },
+    {
+      "module": "sympy.tensor.functions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/functions.py"
+    },
+    {
+      "module": "sympy.tensor.index_methods",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/index_methods.py"
+    },
+    {
+      "module": "sympy.tensor.indexed",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/tensor/indexed.py"
+    },
+    {
+      "module": "sympy.utilities",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/__init__.py"
+    },
+    {
+      "module": "sympy.utilities.decorator",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/decorator.py"
+    },
+    {
+      "module": "sympy.utilities.enumerative",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/enumerative.py"
+    },
+    {
+      "module": "sympy.utilities.exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/exceptions.py"
+    },
+    {
+      "module": "sympy.utilities.iterables",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/iterables.py"
+    },
+    {
+      "module": "sympy.utilities.lambdify",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/lambdify.py"
+    },
+    {
+      "module": "sympy.utilities.magic",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/magic.py"
+    },
+    {
+      "module": "sympy.utilities.mathml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/mathml/__init__.py"
+    },
+    {
+      "module": "sympy.utilities.memoization",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/memoization.py"
+    },
+    {
+      "module": "sympy.utilities.misc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/misc.py"
+    },
+    {
+      "module": "sympy.utilities.source",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/source.py"
+    },
+    {
+      "module": "sympy.utilities.timeutils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy/utilities/timeutils.py"
+    },
+    {
+      "module": "tabulate",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tabulate/__init__.py"
+    },
+    {
+      "module": "tabulate.version",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tabulate/version.py"
+    },
+    {
+      "module": "timeit",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/timeit.py"
+    },
+    {
+      "module": "traceback",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/traceback.py"
+    },
+    {
+      "module": "unicodedata",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/unicodedata.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "urllib.error",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/urllib/error.py"
+    },
+    {
+      "module": "urllib.request",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/urllib/request.py"
+    },
+    {
+      "module": "urllib.response",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/urllib/response.py"
+    },
+    {
+      "module": "uuid",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/uuid.py"
+    },
+    {
+      "module": "wcwidth",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/__init__.py"
+    },
+    {
+      "module": "wcwidth._clip",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_clip.py"
+    },
+    {
+      "module": "wcwidth._constants",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_constants.py"
+    },
+    {
+      "module": "wcwidth._wcswidth",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_wcswidth.py"
+    },
+    {
+      "module": "wcwidth._wcwidth",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_wcwidth.py"
+    },
+    {
+      "module": "wcwidth._width",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_width.py"
+    },
+    {
+      "module": "wcwidth.align",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/align.py"
+    },
+    {
+      "module": "wcwidth.bisearch",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/bisearch.py"
+    },
+    {
+      "module": "wcwidth.control_codes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/control_codes.py"
+    },
+    {
+      "module": "wcwidth.escape_sequences",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/escape_sequences.py"
+    },
+    {
+      "module": "wcwidth.grapheme",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/grapheme.py"
+    },
+    {
+      "module": "wcwidth.hyperlink",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/hyperlink.py"
+    },
+    {
+      "module": "wcwidth.sgr_state",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/sgr_state.py"
+    },
+    {
+      "module": "wcwidth.table_ambiguous",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_ambiguous.py"
+    },
+    {
+      "module": "wcwidth.table_grapheme",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_grapheme.py"
+    },
+    {
+      "module": "wcwidth.table_grapheme_overrides",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_grapheme_overrides/__init__.py"
+    },
+    {
+      "module": "wcwidth.table_grapheme_overrides._registry",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_grapheme_overrides/_registry.py"
+    },
+    {
+      "module": "wcwidth.table_mc",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_mc.py"
+    },
+    {
+      "module": "wcwidth.table_overrides",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_overrides.py"
+    },
+    {
+      "module": "wcwidth.table_term_programs",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_term_programs.py"
+    },
+    {
+      "module": "wcwidth.table_vs15",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_vs15.py"
+    },
+    {
+      "module": "wcwidth.table_vs16",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_vs16.py"
+    },
+    {
+      "module": "wcwidth.table_wide",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_wide.py"
+    },
+    {
+      "module": "wcwidth.table_zero",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_zero.py"
+    },
+    {
+      "module": "wcwidth.text_sizing",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/text_sizing.py"
+    },
+    {
+      "module": "wcwidth.textwrap",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/textwrap.py"
+    },
+    {
+      "module": "wcwidth.unicode_versions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/unicode_versions.py"
+    },
+    {
+      "module": "wcwidth.wcwidth",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/wcwidth.py"
+    },
+    {
+      "module": "xml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/__init__.py"
+    },
+    {
+      "module": "xml.etree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/etree/__init__.py"
+    },
+    {
+      "module": "xml.etree.ElementPath",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/etree/ElementPath.py"
+    },
+    {
+      "module": "xml.etree.ElementTree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/etree/ElementTree.py"
+    },
+    {
+      "module": "xml.parsers",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/parsers/__init__.py"
+    },
+    {
+      "module": "xml.parsers.expat",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/parsers/expat.py"
+    },
+    {
+      "module": "xml.parsers.expat.errors",
+      "file": null
+    },
+    {
+      "module": "xml.parsers.expat.model",
+      "file": null
+    },
+    {
+      "module": "xml.sax",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/sax/__init__.py"
+    },
+    {
+      "module": "xml.sax._exceptions",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/sax/_exceptions.py"
+    },
+    {
+      "module": "xml.sax.handler",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/sax/handler.py"
+    },
+    {
+      "module": "xml.sax.saxutils",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/sax/saxutils.py"
+    },
+    {
+      "module": "xml.sax.xmlreader",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/sax/xmlreader.py"
+    },
+    {
+      "module": "yaml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/__init__.py"
+    },
+    {
+      "module": "yaml._yaml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/_yaml.cpython-312-x86_64-linux-gnu.so"
+    },
+    {
+      "module": "yaml.composer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/composer.py"
+    },
+    {
+      "module": "yaml.constructor",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/constructor.py"
+    },
+    {
+      "module": "yaml.cyaml",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/cyaml.py"
+    },
+    {
+      "module": "yaml.dumper",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/dumper.py"
+    },
+    {
+      "module": "yaml.emitter",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/emitter.py"
+    },
+    {
+      "module": "yaml.error",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/error.py"
+    },
+    {
+      "module": "yaml.events",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/events.py"
+    },
+    {
+      "module": "yaml.loader",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/loader.py"
+    },
+    {
+      "module": "yaml.nodes",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/nodes.py"
+    },
+    {
+      "module": "yaml.parser",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/parser.py"
+    },
+    {
+      "module": "yaml.reader",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/reader.py"
+    },
+    {
+      "module": "yaml.representer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/representer.py"
+    },
+    {
+      "module": "yaml.resolver",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/resolver.py"
+    },
+    {
+      "module": "yaml.scanner",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/scanner.py"
+    },
+    {
+      "module": "yaml.serializer",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/serializer.py"
+    },
+    {
+      "module": "yaml.tokens",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/yaml/tokens.py"
+    },
+    {
+      "module": "zss",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss/__init__.py"
+    },
+    {
+      "module": "zss.compare",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss/compare.py"
+    },
+    {
+      "module": "zss.simple_tree",
+      "file": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss/simple_tree.py"
+    }
+  ],
+  "packages": {
+    "pillow": {
+      "version": "10.3.0",
+      "requires_dist": [
+        "furo ; extra == 'docs'",
+        "olefile ; extra == 'docs'",
+        "sphinx >=2.4 ; extra == 'docs'",
+        "sphinx-copybutton ; extra == 'docs'",
+        "sphinx-inline-tabs ; extra == 'docs'",
+        "sphinx-removed-in ; extra == 'docs'",
+        "sphinxext-opengraph ; extra == 'docs'",
+        "olefile ; extra == 'fpx'",
+        "olefile ; extra == 'mic'",
+        "check-manifest ; extra == 'tests'",
+        "coverage ; extra == 'tests'",
+        "defusedxml ; extra == 'tests'",
+        "markdown2 ; extra == 'tests'",
+        "olefile ; extra == 'tests'",
+        "packaging ; extra == 'tests'",
+        "pyroma ; extra == 'tests'",
+        "pytest ; extra == 'tests'",
+        "pytest-cov ; extra == 'tests'",
+        "pytest-timeout ; extra == 'tests'",
+        "typing-extensions ; (python_version < \"3.10\") and extra == 'typing'",
+        "defusedxml ; extra == 'xmp'"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pillow-10.3.0.dist-info/METADATA"
+    },
+    "arckit": {
+      "version": "0.1.0",
+      "requires_dist": [
+        "numpy",
+        "rich",
+        "drawsvg"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/arckit-0.1.0.dist-info/METADATA"
+    },
+    "bfi": {
+      "version": "1.0.4",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/bfi-1.0.4.dist-info/METADATA"
+    },
+    "cellpylib": {
+      "version": "2.4.0",
+      "requires_dist": [
+        "numpy>=1.15.4",
+        "matplotlib>=3.0.2"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cellpylib-2.4.0.dist-info/METADATA"
+    },
+    "cffi": {
+      "version": "1.16.0",
+      "requires_dist": [
+        "pycparser"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cffi-1.16.0.dist-info/METADATA"
+    },
+    "cycler": {
+      "version": "0.11.0",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/cycler-0.11.0.dist-info/METADATA"
+    },
+    "python-dateutil": {
+      "version": "2.9.0.post0",
+      "requires_dist": [
+        "six >=1.5"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/METADATA"
+    },
+    "defusedxml": {
+      "version": "0.7.1",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/defusedxml-0.7.1.dist-info/METADATA"
+    },
+    "drawsvg": {
+      "version": "2.4.2",
+      "requires_dist": [
+        "cairoSVG~=2.3; extra == \"raster\"",
+        "numpy<3,>=1.16; extra == \"raster\"",
+        "imageio~=2.5; extra == \"raster\"",
+        "imageio_ffmpeg~=0.4; extra == \"raster\"",
+        "pwkit~=1.0; extra == \"color\"",
+        "numpy<3,>=1.16; extra == \"color\"",
+        "cairoSVG~=2.3; extra == \"all\"",
+        "numpy<3,>=1.16; extra == \"all\"",
+        "imageio~=2.5; extra == \"all\"",
+        "imageio_ffmpeg~=0.4; extra == \"all\"",
+        "pwkit~=1.0; extra == \"all\""
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/drawsvg-2.4.2.dist-info/METADATA"
+    },
+    "kiwisolver": {
+      "version": "1.4.4",
+      "requires_dist": [
+        "typing-extensions ; python_version < \"3.8\""
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/kiwisolver-1.4.4.dist-info/METADATA"
+    },
+    "magiccube": {
+      "version": "0.3.0",
+      "requires_dist": [
+        "numpy"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/magiccube-0.3.0.dist-info/METADATA"
+    },
+    "matplotlib": {
+      "version": "3.8.4",
+      "requires_dist": [
+        "contourpy >=1.0.1",
+        "cycler >=0.10",
+        "fonttools >=4.22.0",
+        "kiwisolver >=1.3.1",
+        "numpy >=1.21",
+        "packaging >=20.0",
+        "pillow >=8",
+        "pyparsing >=2.3.1",
+        "python-dateutil >=2.7",
+        "importlib-resources >=3.2.0 ; python_version<\"3.10\""
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/matplotlib-3.8.4.dist-info/METADATA"
+    },
+    "mkl-service": {
+      "version": "2.4.0",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl_service-2.4.0-py3.12.egg-info/METADATA"
+    },
+    "mpmath": {
+      "version": "1.3.0",
+      "requires_dist": [
+        "pytest >=4.6 ; extra == 'develop'",
+        "pycodestyle ; extra == 'develop'",
+        "pytest-cov ; extra == 'develop'",
+        "codecov ; extra == 'develop'",
+        "wheel ; extra == 'develop'",
+        "sphinx ; extra == 'docs'",
+        "gmpy2 >=2.1.0a4 ; (platform_python_implementation != \"PyPy\") and extra == 'gmpy'",
+        "pytest >=4.6 ; extra == 'tests'"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/METADATA"
+    },
+    "numpy": {
+      "version": "1.26.4",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy-1.26.4.dist-info/METADATA"
+    },
+    "packaging": {
+      "version": "23.2",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/packaging-23.2.dist-info/METADATA"
+    },
+    "pycosat": {
+      "version": "0.6.6",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pycosat-0.6.6.dist-info/METADATA"
+    },
+    "pyfiglet": {
+      "version": "1.0.2",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyfiglet-1.0.2.dist-info/METADATA"
+    },
+    "pyparsing": {
+      "version": "3.0.9",
+      "requires_dist": [
+        "railroad-diagrams ; extra == \"diagrams\"",
+        "jinja2 ; extra == \"diagrams\""
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyparsing-3.0.9.dist-info/METADATA"
+    },
+    "pytz": {
+      "version": "2024.1",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pytz-2024.1.dist-info/METADATA"
+    },
+    "reasoning_gym": {
+      "version": "0.1.25",
+      "requires_dist": [
+        "arckit==0.1.0",
+        "bfi==1.0.4",
+        "cellpylib==2.4.0",
+        "magiccube==0.3.0",
+        "pycosat==0.6.6",
+        "pyfiglet==1.0.2",
+        "pytz>=2024.1",
+        "pyyaml>=6.0.2",
+        "sympy>=1.13.1",
+        "tabulate==0.9.0",
+        "zss>=1.2.0",
+        "httpx>=0.27.0; extra == 'cli'",
+        "pyyaml>=6.0.1; extra == 'cli'",
+        "rich>=13.7.0; extra == 'cli'",
+        "typer>=0.9.0; extra == 'cli'",
+        "datasets>=3.5.0; extra == 'scripts'",
+        "fastapi>=0.109.0; extra == 'server'",
+        "pydantic-settings>=2.1.0; extra == 'server'",
+        "uvicorn>=0.27.0; extra == 'server'",
+        "httpx>=0.27.0; extra == 'test'",
+        "pytest-cov>=4.0.0; extra == 'test'",
+        "pytest>=7.0.0; extra == 'test'"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym-0.1.25.dist-info/METADATA"
+    },
+    "rich": {
+      "version": "15.0.0",
+      "requires_dist": [
+        "ipywidgets (>=7.5.1,<9) ; extra == \"jupyter\"",
+        "markdown-it-py (>=2.2.0)",
+        "pygments (>=2.13.0,<3.0.0)"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/rich-15.0.0.dist-info/METADATA"
+    },
+    "six": {
+      "version": "1.16.0",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six-1.16.0.dist-info/METADATA"
+    },
+    "sympy": {
+      "version": "1.13.1",
+      "requires_dist": [
+        "mpmath <1.4,>=1.1.0",
+        "pytest >=7.1.0 ; extra == 'dev'",
+        "hypothesis >=6.70.0 ; extra == 'dev'"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/sympy-1.13.1.dist-info/METADATA"
+    },
+    "tabulate": {
+      "version": "0.9.0",
+      "requires_dist": [
+        "wcwidth ; extra == 'widechars'"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tabulate-0.9.0.dist-info/METADATA"
+    },
+    "wcwidth": {
+      "version": "0.8.2",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth-0.8.2.dist-info/METADATA"
+    },
+    "PyYAML": {
+      "version": "6.0.3",
+      "requires_dist": null,
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/METADATA"
+    },
+    "zss": {
+      "version": "1.2.0",
+      "requires_dist": [
+        "six"
+      ],
+      "metadata": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zss-1.2.0.dist-info/METADATA"
+    }
+  }
+}
