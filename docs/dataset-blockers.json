@@ -1346,7 +1346,7 @@
           "id": "hub-export-scorer-linkage",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Original evaluator acquisition is closed at source/test level: pinned evaluator, helpers, Apache-2.0 license and commit/tree linkage pass offline review. Commits fcbed17 and 4fa8481 correct normalization and preserve all aliases. Materialized verifier evidence retains triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 and the upstream reference. No further adapter EM mismatch was reproduced. Independent code/metadata binding Hub revision 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f to its loader/scorer and question/document grouping remains unavailable; full evaluator comparability and fresh diagnostic evidence remain open.",
+          "observed": "Original evaluator acquisition is closed at source/test level; prior reviews retain the corrected triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 identity and upstream reference. Task 225 pins historical HuggingFace loader/config/license at 413205c1a7247a2ff81cf709117ce93624fa6fd3 with reconstructed Git commit/tree/blob linkage. That loader copies and trims normalized aliases, omits HumanAnswers, combines Web/Wikipedia for rc.nocontext, removes documents and omits domain/verified flags. Four exact-revision Hub code/metadata requests failed with network unreachable, so association of that historical loader with Hub revision 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f remains unverified. No dataset rows were read, no metric was changed and full answer-set/selection/grouping/denominator compatibility is not certified.",
           "evidence": [
             {
               "kind": "repository",
@@ -1362,9 +1362,19 @@
               "kind": "repository",
               "path": "triviaqa-review-codex215-report.md",
               "locator": "Only confirmed repository-solvable mismatch: the active registry still named upstream evaluator acquisition as open."
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/triviaqa_hub_codex225/README.md",
+              "locator": "Exact Hub revision linkage remains unverified."
+            },
+            {
+              "kind": "repository",
+              "path": "triviaqa-hub-linkage-codex225-report.md",
+              "locator": "Compatibility for the exact Hub revision is not established."
             }
           ],
-          "next_action": "Acquire independently pinned loader/conversion source, original license and public config/split metadata binding the Hub export revision to its scorer, Domain/VerifiedEval selection and duplicate/grouping rules; no dataset rows are needed for this request. Preserve v2 and all historical identities. Full aggregation review, actual scorer/harness hashes and all shared admission gates remain prerequisites to a separately authorized fresh diagnostic."
+          "next_action": "Obtain public exact-revision Hub commit/tree/config/split metadata and immutable conversion provenance identifying the loader actually used (including predecessor loader plus export receipt if absent at the export revision), original license and file hashes. Establish whether HumanAnswers are preserved, absent or redundant, and document Domain/VerifiedEval/source membership, duplicate handling, scorer-key mapping and denominator/aggregation; no rows or payloads are requested. Historical loader name/schema/count matches alone do not close this gate. Preserve v2 and historical identities; actual deployed hashes and all shared admission gates remain prerequisites to a separately authorized diagnostic."
         }
       ],
       "historical_runs": []

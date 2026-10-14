@@ -79,6 +79,13 @@ empty and absent answers retain the v2 scorer identity and upstream reference
 in evidence written by the materialized verifier. No further adapter EM drift
 was reproduced. The remaining `hub-export-scorer-linkage` blocker is `external`:
 independently pinned export-to-loader/scorer code and metadata are still needed.
+The [Codex 225 metadata review](../triviaqa-hub-linkage-codex225-report.md)
+pins an Apache-2.0 historical loader and manifest at `413205c1`, with Git
+commit/tree/blob checks. That source trims normalized aliases but omits human
+answers and domain/verified flags; no-context removes document lists. Exact Hub
+revision metadata could not be reached, so this candidate does not attest the
+export's lineage or answer-set preservation. The retained request specifies the
+missing immutable conversion association and scorer-key/selection mapping.
 Full grouping/denominator comparability, actual deployed scorer/harness hashes
 and all eight shared gates remain unresolved. Historical identities and
 acquisition-time findings remain unchanged; these checks authorize no diagnostic.

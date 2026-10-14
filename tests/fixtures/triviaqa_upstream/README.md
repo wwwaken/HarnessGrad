@@ -154,6 +154,13 @@ report. No H0/model admission follows from any of these checks.
 
 ## Exact remaining acquisition request for Hub mapping
 
+Task 225 subsequently acquired and pinned a **historical candidate** loader,
+manifest and original license from HuggingFace's GitHub repository; see
+[`../triviaqa_hub_codex225/README.md`](../triviaqa_hub_codex225/README.md).
+Its immutable association with the exact Hub export remains unverified. That
+review records answer-field omission and selection/grouping limits without
+changing scorer metrics or the historical acquisition attempts below.
+
 If full Hub export equivalence is required, supply **code and metadata only**:
 
 1. The original loader/conversion source that produced
