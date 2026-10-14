@@ -1,0 +1,21 @@
+tests/fixtures/dataset_blockers/history-codex178.json:115:     {
+tests/fixtures/dataset_blockers/history-codex178.json:116:       "dataset": "ds1000",
+tests/fixtures/dataset_blockers/history-codex178.json:117:       "record": {
+tests/fixtures/dataset_blockers/history-codex178.json:118:         "record_id": "ds1000-v4-pending-review",
+tests/fixtures/dataset_blockers/history-codex178.json:119:         "run_id": "ds1000-h0-10pct-v4",
+tests/fixtures/dataset_blockers/history-codex178.json:120:         "status": "pending-review",
+tests/fixtures/dataset_blockers/history-codex178.json:121:         "effect": null,
+tests/fixtures/dataset_blockers/history-codex178.json:122:         "observation": "Reported score 0.2076502732 over a 61-task/3-trial pilot on the 926/1000 host slice; sample/trial/timeout audit and archive append remain pending.",
+tests/fixtures/dataset_blockers/history-codex178.json:123:         "evidence": [
+tests/fixtures/dataset_blockers/history-codex178.json:124:           {
+tests/fixtures/dataset_blockers/history-codex178.json:125:             "kind": "repository",
+tests/fixtures/dataset_blockers/history-codex178.json:126:             "path": "docs/adapter-integration-journal.md",
+tests/fixtures/dataset_blockers/history-codex178.json:127:             "locator": "## DS1000 — host slice and timeout evidence"
+tests/fixtures/dataset_blockers/history-codex178.json:128:           },
+tests/fixtures/dataset_blockers/history-codex178.json:129:           {
+tests/fixtures/dataset_blockers/history-codex178.json:130:             "kind": "external-reference",
+tests/fixtures/dataset_blockers/history-codex178.json:131:             "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/61/report.md",
+tests/fixtures/dataset_blockers/history-codex178.json:132:             "locator": "Journal citation only; external receipt not opened during this review."
+tests/fixtures/dataset_blockers/history-codex178.json:133:           }
+tests/fixtures/dataset_blockers/history-codex178.json:134:         ]
+tests/fixtures/dataset_blockers/history-codex178.json:135:       }

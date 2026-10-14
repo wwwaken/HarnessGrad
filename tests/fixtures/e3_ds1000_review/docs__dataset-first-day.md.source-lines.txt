@@ -1,0 +1,8 @@
+docs/dataset-first-day.md:68: Three outcomes, and they route everything that follows (§2). Two habits while doing it:
+docs/dataset-first-day.md:69: 
+docs/dataset-first-day.md:70: * **Record the per-row results outside git**, under the dataset root, with the count and the
+docs/dataset-first-day.md:71:   date. `datasets/ds1000/_src/oracle-sweep.json` and
+docs/dataset-first-day.md:72:   `datasets/nestful/_src/gold-audit-isolated.json` are the two examples from the batch.
+docs/dataset-first-day.md:73: * If the gold does not reach 1, **run it twice**. `nestful` gave 1857/4 on the first sweep and
+docs/dataset-first-day.md:74:   1854/7 on a repeat: a metric that moves under the same code is not reproducible, and one
+docs/dataset-first-day.md:75:   sweep would have hidden that.

@@ -1,0 +1,143 @@
+data/datasets/ds1000.py:1: """DS-1000 code generation: the slice of the simplified test split this host can execute.
+data/datasets/ds1000.py:2: 
+data/datasets/ds1000.py:3: Official source: xlang-ai/DS-1000@b39aab71 (`test_ds1000.py` and `execution.py`).
+data/datasets/ds1000.py:4: Data: `xlangai/DS-1000@4416080ac5cb80bdf7576aefb8f9a0b4d5426a44/test.jsonl`, 1000 rows.
+data/datasets/ds1000.py:5: 
+data/datasets/ds1000.py:6: The official construction is used unchanged: `code_context + code = repr(candidate)`, then
+data/datasets/ds1000.py:7: `test_execution(code)`, plus `test_string(code)` only when the context declares that helper,
+data/datasets/ds1000.py:8: each candidate in its own process with the upstream 120-second timeout and the upstream
+data/datasets/ds1000.py:9: deliberately-disabled `reliability_guard`. `reference_code` is gold and travels only through
+data/datasets/ds1000.py:10: `oracle_files()`; it never enters SETUP.
+data/datasets/ds1000.py:11: 
+data/datasets/ds1000.py:12: **926 of the 1000 released rows are offered; 74 are excluded, and every exclusion is a
+data/datasets/ds1000.py:13: measurement.** This is a coverage fact, reported rather than hidden. No substitute metric is
+data/datasets/ds1000.py:14: published under the benchmark's name.
+data/datasets/ds1000.py:15: 
+data/datasets/ds1000.py:16: * **47 rows: the official test code imports `tensorflow`** (45 labelled `Tensorflow`, plus 2
+data/datasets/ds1000.py:17:   labelled `Numpy` whose prompts are tensorflow conversions). This interpreter has
+data/datasets/ds1000.py:18:   pandas/numpy/scipy/sklearn/matplotlib/seaborn/torch but no `tensorflow`. Measured: under
+data/datasets/ds1000.py:19:   `--platform` the verification namespace starts from an empty root and binds only `/usr`,
+data/datasets/ds1000.py:20:   the interpreter prefix, the work root and the task directory, so a dataset-local Python
+data/datasets/ds1000.py:21:   tree outside the work root is not visible (`FileNotFoundError` on an absolute dataset
+data/datasets/ds1000.py:22:   path, `HOME=/tmp`). TensorFlow is therefore reachable only by mutating the shared platform
+data/datasets/ds1000.py:23:   environment or by copying a multi-gigabyte tree into every task's workdir; neither is
+data/datasets/ds1000.py:24:   acceptable here. This group is recomputed from `code_context`, so it cannot drift.
+data/datasets/ds1000.py:25: * **27 rows: the released gold and test code target an older library stack** than the one
+data/datasets/ds1000.py:26:   installed. Measured by running every offered row's `reference_code` through the official
+data/datasets/ds1000.py:27:   construction on 2026-10-07: **926 passed, 27 failed**, and each failure names its cause in
+data/datasets/ds1000.py:28:   `MEASURED_EXCLUSIONS`. They are pandas 1.x APIs removed in pandas 2.2.2 (`DataFrame.append`,
+data/datasets/ds1000.py:29:   positional `str.split`/`str.rsplit`/`drop`, `set_axis(inplace=)`, date-format inference,
+data/datasets/ds1000.py:30:   dtype comparison, index-insert semantics), scipy 1.13 removals (`dok_matrix._update`,
+data/datasets/ds1000.py:31:   `scipy.linalg.triu`), one absent optional package (`xgboost`), and one row whose official
+data/datasets/ds1000.py:32:   test fetches over the network (`HTTP 403`). DS-1000 ships an `environment.yml` pinning the
+data/datasets/ds1000.py:33:   versions its numbers came from; these rows are where that pin differs from this host.
+data/datasets/ds1000.py:34: 
+data/datasets/ds1000.py:35: Two further notes for whoever picks this up. The official tests' only *network* dependency
+data/datasets/ds1000.py:36: was 14 Matplotlib rows calling `sns.load_dataset(...)`; those are provisioned offline here
+data/datasets/ds1000.py:37: from a pinned copy of `mwaskom/seaborn-data` and are **included**, because caching the same
+data/datasets/ds1000.py:38: fixed data does not change what the metric computes. And an included set is only trustworthy
+data/datasets/ds1000.py:39: because every included row's gold was actually run: `_src/oracle-sweep.json` (outside git)
+data/datasets/ds1000.py:40: holds the per-row result, and `MEASURED_EXCLUSIONS` is derived from it.
+data/datasets/ds1000.py:57: #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+data/datasets/ds1000.py:58: #: to it**. The pool is the official simplified test split **minus** the 74 rows measured as unrunnable on this host; every row that remains is an official evaluation row. The pool is therefore not the whole of the official set, and `None` says only that nothing in it is study material.
+data/datasets/ds1000.py:59: #:
+data/datasets/ds1000.py:60: #: `None` is the accurate value only because nothing in the pool is study material -- it does
+data/datasets/ds1000.py:61: #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+data/datasets/ds1000.py:62: #: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+data/datasets/ds1000.py:63: #: no study material in it. `--split declared` keeps this adapter's own division.
+data/datasets/ds1000.py:64: OFFICIAL_EVAL = None
+data/datasets/ds1000.py:65: 
+data/datasets/ds1000.py:66: DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/ds1000")
+data/datasets/ds1000.py:67: DATA_FILE = DATASET_ROOT / "_src" / "test.jsonl"
+data/datasets/ds1000.py:68: SOURCE_DIR = DATASET_ROOT / "_src" / "DS-1000-b39aab71"
+data/datasets/ds1000.py:69: SEABORN_DIR = DATASET_ROOT / "seaborn-data"
+data/datasets/ds1000.py:70: ASSETS = Path(__file__).resolve().parent / "ds1000"
+data/datasets/ds1000.py:71: CHECK_FILE = ASSETS / "verify" / "check.py"
+data/datasets/ds1000.py:72: EXECUTION_FILE = SOURCE_DIR / "execution.py"
+data/datasets/ds1000.py:73: REVISION = "4416080ac5cb80bdf7576aefb8f9a0b4d5426a44"
+data/datasets/ds1000.py:74: DATA_SHA256 = "26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363"
+data/datasets/ds1000.py:75: SOURCE_COMMIT = "b39aab71"
+data/datasets/ds1000.py:76: SOURCE_TARBALL_SHA256 = "b14f1a2b0fb20ef55f0693019122f22c82b03ef6647faabf0e6e8ae1272a1dc0"
+data/datasets/ds1000.py:77: SEABORN_COMMIT = "71e2436a092d714350de0fc409ca8a8714e7e78f"
+data/datasets/ds1000.py:78: SEABORN_TARBALL_SHA256 = "ac7ed3e81e634c8febecac42975456280b089bd5bcae3d54bc6be11d8cec1532"
+data/datasets/ds1000.py:86: #: Rows whose `reference_code` was *run* through the official construction and failed because
+data/datasets/ds1000.py:87: #: the installed library stack is newer than the one DS-1000 pinned. The value is the cause
+data/datasets/ds1000.py:88: #: as the runner reported it. Frozen from `_src/oracle-sweep.json`; do not edit by hand --
+data/datasets/ds1000.py:89: #: re-run `tools/`-free sweep in `tests/quality/test_ds1000_official_scorer.py` and regenerate.
+data/datasets/ds1000.py:90: MEASURED_EXCLUSIONS: dict[str, tuple[int, ...]] = {
+data/datasets/ds1000.py:91:     "pandas2-append": (47, 48, 49, 228),
+data/datasets/ds1000.py:92:     "pandas2-str-split-positional": (199, 200, 201),
+data/datasets/ds1000.py:93:     "pandas2-str-rsplit-positional": (220, 221, 222),
+data/datasets/ds1000.py:94:     "pandas2-drop-positional": (195, 196),
+data/datasets/ds1000.py:95:     "pandas2-set-axis-inplace": (282, 283),
+data/datasets/ds1000.py:96:     "pandas2-date-format": (209, 210, 211),
+data/datasets/ds1000.py:97:     "pandas2-dtype-compare": (39, 40),
+data/datasets/ds1000.py:98:     "pandas2-index-insert": (924, 925),
+data/datasets/ds1000.py:99:     "scipy-dok-update": (796,),
+data/datasets/ds1000.py:100:     "scipy-triu-moved": (936, 937),
+data/datasets/ds1000.py:101:     "missing-xgboost": (837, 838),
+data/datasets/ds1000.py:102:     "network-fetch-403": (819,),
+data/datasets/ds1000.py:103: }
+data/datasets/ds1000.py:104: 
+data/datasets/ds1000.py:105: #: The largest exclusion group is a *criterion* rather than a frozen table: what the released
+data/datasets/ds1000.py:106: #: test code imports. Recomputing it keeps the frozen table from drifting away from the data.
+data/datasets/ds1000.py:107: _TF_PATTERN = re.compile(r"\b(import tensorflow|from tensorflow|tf\.)")
+data/datasets/ds1000.py:108: 
+data/datasets/ds1000.py:109: 
+data/datasets/ds1000.py:110: def _read() -> list[dict]:
+data/datasets/ds1000.py:111:     with DATA_FILE.open(encoding="utf-8") as handle:
+data/datasets/ds1000.py:112:         rows = [json.loads(line) for line in handle if line.strip()]
+data/datasets/ds1000.py:113:     if len(rows) != 1000:
+data/datasets/ds1000.py:114:         raise ValueError(f"DS-1000 expected 1000 rows, got {len(rows)}")
+data/datasets/ds1000.py:115:     if any(not row.get("reference_code") for row in rows):
+data/datasets/ds1000.py:116:         raise ValueError("DS-1000 row without reference_code")
+data/datasets/ds1000.py:117:     return rows
+data/datasets/ds1000.py:118: 
+data/datasets/ds1000.py:119: 
+data/datasets/ds1000.py:120: _RAW: list[dict] | None = None
+data/datasets/ds1000.py:121: _INCLUDED: list[int] | None = None
+data/datasets/ds1000.py:122: 
+data/datasets/ds1000.py:123: 
+data/datasets/ds1000.py:124: def _raw() -> list[dict]:
+data/datasets/ds1000.py:125:     global _RAW
+data/datasets/ds1000.py:126:     if _RAW is None:
+data/datasets/ds1000.py:127:         _RAW = _read()
+data/datasets/ds1000.py:128:     return _RAW
+data/datasets/ds1000.py:129: 
+data/datasets/ds1000.py:130: 
+data/datasets/ds1000.py:131: def tensorflow_indices() -> set[int]:
+data/datasets/ds1000.py:132:     """Rows whose official test code imports tensorflow, recomputed from the release."""
+data/datasets/ds1000.py:133:     return {i for i, row in enumerate(_raw()) if _TF_PATTERN.search(row["code_context"])}
+data/datasets/ds1000.py:134: 
+data/datasets/ds1000.py:135: 
+data/datasets/ds1000.py:136: def measured_exclusions() -> dict[int, str]:
+data/datasets/ds1000.py:137:     """The frozen per-row version-drift exclusions, as `{row index: cause}`."""
+data/datasets/ds1000.py:138:     return {index: cause
+data/datasets/ds1000.py:139:             for cause, indices in MEASURED_EXCLUSIONS.items()
+data/datasets/ds1000.py:140:             for index in indices}
+data/datasets/ds1000.py:141: 
+data/datasets/ds1000.py:142: 
+data/datasets/ds1000.py:143: def excluded_indices() -> set[int]:
+data/datasets/ds1000.py:144:     """Every row this adapter does not offer, with the reason recorded in the module."""
+data/datasets/ds1000.py:145:     return tensorflow_indices() | set(measured_exclusions())
+data/datasets/ds1000.py:146: 
+data/datasets/ds1000.py:147: 
+data/datasets/ds1000.py:148: def included_indices() -> list[int]:
+data/datasets/ds1000.py:149:     global _INCLUDED
+data/datasets/ds1000.py:150:     if _INCLUDED is None:
+data/datasets/ds1000.py:151:         excluded = excluded_indices()
+data/datasets/ds1000.py:152:         _INCLUDED = [i for i in range(len(_raw())) if i not in excluded]
+data/datasets/ds1000.py:153:     return _INCLUDED
+data/datasets/ds1000.py:154: 
+data/datasets/ds1000.py:155: 
+data/datasets/ds1000.py:156: def task_id(index: int) -> str:
+data/datasets/ds1000.py:157:     return f"ds1000/{index}"
+data/datasets/ds1000.py:158: 
+data/datasets/ds1000.py:159: 
+data/datasets/ds1000.py:160: #: DS-1000 ships no train/eval division -- the released `test.jsonl` is one exam-like pool --
+data/datasets/ds1000.py:161: #: so the platform imposes one with the same rule every other adapter uses: a deterministic
+data/datasets/ds1000.py:162: #: third by hash of the task id. Measured after the change: the two sides carry the same
+data/datasets/ds1000.py:163: #: library mix to within 0.8 percentage points, and a row's side is a pure function of its
+data/datasets/ds1000.py:164: #: released index, so adding an exclusion cannot reshuffle the rows that remain.
+data/datasets/ds1000.py:165: SPLIT = {"train": [task_id(i) for i in included_indices() if not is_eval(task_id(i))],
+data/datasets/ds1000.py:166:          "eval": [task_id(i) for i in included_indices() if is_eval(task_id(i))]}

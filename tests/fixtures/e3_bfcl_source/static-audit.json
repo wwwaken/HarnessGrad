@@ -1,0 +1,3466 @@
+{
+  "schema": "harnessgrad.e3-bfcl-static-audit.v1",
+  "scope": "byte identities, AST syntax and explicit import names only; no upstream execution",
+  "original_files": 83,
+  "python_files": 81,
+  "new_original_files": 33,
+  "initializers": [
+    "berkeley-function-call-leaderboard/bfcl_eval/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/constants/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/model_handler/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/__init__.py",
+    "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/__init__.py"
+  ],
+  "http_requests": 24,
+  "verified_blobs": 24,
+  "unresolved_explicit_imports": [],
+  "imports": [
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py",
+      "line": 2,
+      "module": "pathlib",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 1,
+      "module": "dataclasses",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 2,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.api_inference.claude",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.api_inference.cohere",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.api_inference.databricks",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.api_inference.deepseek",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.api_inference.dm_cito",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 9,
+      "module": "bfcl_eval.model_handler.api_inference.fireworks",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 10,
+      "module": "bfcl_eval.model_handler.api_inference.functionary",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/functionary.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 11,
+      "module": "bfcl_eval.model_handler.api_inference.gemini",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 12,
+      "module": "bfcl_eval.model_handler.api_inference.gogoagent",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gogoagent.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 13,
+      "module": "bfcl_eval.model_handler.api_inference.gorilla",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 14,
+      "module": "bfcl_eval.model_handler.api_inference.grok",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 15,
+      "module": "bfcl_eval.model_handler.api_inference.ling",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 16,
+      "module": "bfcl_eval.model_handler.api_inference.mining",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 17,
+      "module": "bfcl_eval.model_handler.api_inference.mistral",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 18,
+      "module": "bfcl_eval.model_handler.api_inference.nemotron",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 19,
+      "module": "bfcl_eval.model_handler.api_inference.nexus",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 20,
+      "module": "bfcl_eval.model_handler.api_inference.nova",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 21,
+      "module": "bfcl_eval.model_handler.api_inference.novita",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 22,
+      "module": "bfcl_eval.model_handler.api_inference.nvidia",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 23,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 26,
+      "module": "bfcl_eval.model_handler.api_inference.openai_response",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 27,
+      "module": "bfcl_eval.model_handler.api_inference.qwen",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 32,
+      "module": "bfcl_eval.model_handler.api_inference.writer",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 33,
+      "module": "bfcl_eval.model_handler.api_inference.yi",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 34,
+      "module": "bfcl_eval.model_handler.local_inference.arch",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 35,
+      "module": "bfcl_eval.model_handler.local_inference.bielik",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bielik.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 36,
+      "module": "bfcl_eval.model_handler.local_inference.bitagent",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 37,
+      "module": "bfcl_eval.model_handler.local_inference.deepseek",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 38,
+      "module": "bfcl_eval.model_handler.local_inference.deepseek_coder",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 39,
+      "module": "bfcl_eval.model_handler.local_inference.deepseek_reasoning",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 42,
+      "module": "bfcl_eval.model_handler.local_inference.falcon_fc",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 43,
+      "module": "bfcl_eval.model_handler.local_inference.gemma",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/gemma.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 44,
+      "module": "bfcl_eval.model_handler.local_inference.glaive",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 45,
+      "module": "bfcl_eval.model_handler.local_inference.glm",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 46,
+      "module": "bfcl_eval.model_handler.local_inference.granite",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 49,
+      "module": "bfcl_eval.model_handler.local_inference.granite_3",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 50,
+      "module": "bfcl_eval.model_handler.local_inference.hammer",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 51,
+      "module": "bfcl_eval.model_handler.local_inference.hermes",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 52,
+      "module": "bfcl_eval.model_handler.local_inference.llama",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 53,
+      "module": "bfcl_eval.model_handler.local_inference.llama_3_1",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 54,
+      "module": "bfcl_eval.model_handler.local_inference.minicpm",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 55,
+      "module": "bfcl_eval.model_handler.local_inference.minicpm_fc",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 56,
+      "module": "bfcl_eval.model_handler.local_inference.mistral_fc",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 57,
+      "module": "bfcl_eval.model_handler.local_inference.phi",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 58,
+      "module": "bfcl_eval.model_handler.local_inference.phi_fc",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 59,
+      "module": "bfcl_eval.model_handler.local_inference.quick_testing_oss",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/quick_testing_oss.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 62,
+      "module": "bfcl_eval.model_handler.local_inference.qwen",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 63,
+      "module": "bfcl_eval.model_handler.local_inference.qwen_fc",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 64,
+      "module": "bfcl_eval.model_handler.local_inference.salesforce_llama",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 67,
+      "module": "bfcl_eval.model_handler.local_inference.salesforce_qwen",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+      "line": 70,
+      "module": "bfcl_eval.model_handler.local_inference.think_agent",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/think_agent.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+      "line": 1,
+      "module": "bfcl_eval.constants.model_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+      "line": 2,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+      "line": 6,
+      "module": "bfcl_eval.eval_checker.ast_eval.type_convertor.java_type_converter",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+      "line": 7,
+      "module": "bfcl_eval.eval_checker.ast_eval.type_convertor.js_type_converter",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+      "line": 8,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py",
+      "line": 1,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py",
+      "line": 2,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py",
+      "line": 3,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py",
+      "line": 1,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py",
+      "line": 2,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 1,
+      "module": "argparse",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 3,
+      "module": "bfcl_eval.constants.category_mapping",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 8,
+      "module": "bfcl_eval.constants.eval_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 16,
+      "module": "bfcl_eval.eval_checker.ast_eval.ast_checker",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 17,
+      "module": "bfcl_eval.eval_checker.eval_runner_helper",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 18,
+      "module": "bfcl_eval.eval_checker.multi_turn_eval.multi_turn_checker",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_checker.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 22,
+      "module": "bfcl_eval.eval_checker.multi_turn_eval.multi_turn_utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 23,
+      "module": "bfcl_eval.constants.model_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 24,
+      "module": "bfcl_eval.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 25,
+      "module": "dotenv",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+      "line": 26,
+      "module": "tqdm",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 2,
+      "module": "statistics",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 3,
+      "module": "datetime",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 4,
+      "module": "pathlib",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 6,
+      "module": "numpy",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 7,
+      "module": "pandas",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 8,
+      "module": "bfcl_eval.constants.category_mapping",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 9,
+      "module": "bfcl_eval.constants.column_headers",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/column_headers.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 10,
+      "module": "bfcl_eval.constants.eval_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 11,
+      "module": "bfcl_eval.constants.model_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 12,
+      "module": "bfcl_eval.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+      "line": 434,
+      "module": "wandb",
+      "scope": "generate_leaderboard_csv",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_checker.py",
+      "line": 1,
+      "module": "bfcl_eval.eval_checker.multi_turn_eval.multi_turn_utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 1,
+      "module": "importlib",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 2,
+      "module": "inspect",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 3,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 4,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 5,
+      "module": "copy",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 5,
+      "module": "anthropic",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 6,
+      "module": "anthropic.types",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 8,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 9,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 10,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+      "line": 22,
+      "module": "bfcl_eval.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 1,
+      "module": "ast",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 2,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 3,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 4,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 5,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 7,
+      "module": "cohere",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 9,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 10,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 11,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+      "line": 16,
+      "module": "tenacity.stop",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 2,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+      "line": 13,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 4,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 14,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+      "line": 15,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py",
+      "line": 2,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py",
+      "line": 3,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.api_inference.mining",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+      "line": 2,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+      "line": 6,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/functionary.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/functionary.py",
+      "line": 2,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/functionary.py",
+      "line": 3,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 2,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 4,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 17,
+      "module": "google",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 18,
+      "module": "google.genai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+      "line": 19,
+      "module": "google.genai.types",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gogoagent.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gogoagent.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gogoagent.py",
+      "line": 4,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+      "line": 2,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+      "line": 4,
+      "module": "requests",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+      "line": 4,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+      "line": 6,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 13,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+      "line": 14,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 4,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 9,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+      "line": 10,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 6,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+      "line": 16,
+      "module": "mistralai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py",
+      "line": 1,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.api_inference.nvidia",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py",
+      "line": 11,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+      "line": 1,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+      "line": 3,
+      "module": "requests",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 2,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 4,
+      "module": "boto3",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 6,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py",
+      "line": 5,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+      "line": 11,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 4,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 6,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 9,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+      "line": 19,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 5,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 18,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+      "line": 19,
+      "module": "openai.types.responses",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 2,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 6,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 7,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 8,
+      "module": "qwen_agent.llm",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+      "line": 9,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+      "line": 2,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.api_inference.openai_completion",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+      "line": 6,
+      "module": "writerai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 3,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 6,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+      "line": 13,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 2,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 3,
+      "module": "copy",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 5,
+      "module": "bfcl_eval.constants.category_mapping",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 6,
+      "module": "bfcl_eval.constants.default_prompts",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/default_prompts.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 11,
+      "module": "bfcl_eval.constants.eval_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 12,
+      "module": "bfcl_eval.eval_checker.multi_turn_eval.multi_turn_utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 17,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 18,
+      "module": "bfcl_eval.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+      "line": 19,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+      "line": 2,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+      "line": 9,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 1,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 2,
+      "module": "subprocess",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 3,
+      "module": "threading",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 4,
+      "module": "time",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 5,
+      "module": "concurrent.futures",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 6,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 7,
+      "module": "traceback",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 9,
+      "module": "requests",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 10,
+      "module": "bfcl_eval.constants.eval_config",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 11,
+      "module": "bfcl_eval.model_handler.base_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 12,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 13,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 19,
+      "module": "openai",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 20,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 21,
+      "module": "tqdm",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+      "line": 79,
+      "module": "transformers",
+      "scope": "batch_inference",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bielik.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bielik.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+      "line": 2,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+      "line": 11,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py",
+      "line": 2,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py",
+      "line": 8,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/gemma.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/gemma.py",
+      "line": 2,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/gemma.py",
+      "line": 7,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+      "line": 3,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+      "line": 11,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+      "line": 3,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+      "line": 10,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 2,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 3,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 10,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py",
+      "line": 8,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 1,
+      "module": "inspect",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 2,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 4,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+      "line": 11,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 1,
+      "module": "ast",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 2,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 3,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 5,
+      "module": "datamodel_code_generator",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 6,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 7,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 8,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 13,
+      "module": "datamodel_code_generator",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 14,
+      "module": "datamodel_code_generator.model",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 15,
+      "module": "datamodel_code_generator.parser.jsonschema",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 16,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 151,
+      "module": "datamodel_code_generator.format",
+      "scope": "jsonschema_to_code",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+      "line": 158,
+      "module": "datamodel_code_generator.format",
+      "scope": "jsonschema_to_code",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+      "line": 2,
+      "module": "random",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+      "line": 3,
+      "module": "string",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+      "line": 6,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+      "line": 10,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+      "line": 2,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+      "line": 9,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/quick_testing_oss.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/quick_testing_oss.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen.py",
+      "line": 1,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen.py",
+      "line": 2,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+      "line": 2,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+      "line": 5,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+      "line": 9,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py",
+      "line": 4,
+      "module": "bfcl_eval.model_handler.utils",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py",
+      "line": 5,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/think_agent.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/think_agent.py",
+      "line": 3,
+      "module": "bfcl_eval.model_handler.local_inference.base_oss_handler",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/think_agent.py",
+      "line": 4,
+      "module": "overrides",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py",
+      "line": 1,
+      "module": "enum",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/java_parser.py",
+      "line": 1,
+      "module": "tree_sitter",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/java_parser.py",
+      "line": 2,
+      "module": "tree_sitter_java",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/js_parser.py",
+      "line": 1,
+      "module": "tree_sitter",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/js_parser.py",
+      "line": 2,
+      "module": "tree_sitter_javascript",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 1,
+      "module": "ast",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 2,
+      "module": "builtins",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 3,
+      "module": "copy",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 4,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 5,
+      "module": "operator",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 6,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 7,
+      "module": "functools",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 8,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 10,
+      "module": "bfcl_eval.constants.default_prompts",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/default_prompts.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 11,
+      "module": "bfcl_eval.constants.type_mappings",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 12,
+      "module": "bfcl_eval.model_handler.model_style",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 13,
+      "module": "bfcl_eval.model_handler.parser.java_parser",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/java_parser.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 14,
+      "module": "bfcl_eval.model_handler.parser.js_parser",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/js_parser.py"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 15,
+      "module": "tenacity",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+      "line": 1,
+      "module": "json",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+      "line": 2,
+      "module": "os",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+      "line": 3,
+      "module": "re",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+      "line": 4,
+      "module": "pathlib",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+      "line": 5,
+      "module": "typing",
+      "scope": "<module/class>",
+      "repository_local": false,
+      "resolved_original_path": null
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+      "line": 7,
+      "module": "bfcl_eval.constants.category_mapping",
+      "scope": "<module/class>",
+      "repository_local": true,
+      "resolved_original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py"
+    }
+  ],
+  "dynamic_calls": [
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 48,
+      "scope": "execute_multi_turn_func_call",
+      "call": "importlib.import_module"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+      "line": 93,
+      "scope": "execute_multi_turn_func_call",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+      "line": 167,
+      "scope": "_parse_query_response_prompting",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+      "line": 125,
+      "scope": "_extract_tool_calls",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+      "line": 198,
+      "scope": "decode_ast",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+      "line": 218,
+      "scope": "decode_execute",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+      "line": 195,
+      "scope": "_extract_tool_calls",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+      "line": 38,
+      "scope": "decode_execute",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 302,
+      "scope": "resolve_ast_by_type",
+      "call": "eval"
+    },
+    {
+      "path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+      "line": 313,
+      "scope": "resolve_ast_by_type",
+      "call": "eval"
+    }
+  ],
+  "third_party_import_roots": [
+    "anthropic",
+    "boto3",
+    "cohere",
+    "datamodel_code_generator",
+    "dotenv",
+    "google",
+    "mistralai",
+    "numpy",
+    "openai",
+    "overrides",
+    "pandas",
+    "qwen_agent",
+    "requests",
+    "tenacity",
+    "tqdm",
+    "transformers",
+    "tree_sitter",
+    "tree_sitter_java",
+    "tree_sitter_javascript",
+    "wandb",
+    "writerai"
+  ],
+  "independent_review": null,
+  "custodian_approved": false,
+  "source_gate_passed": false,
+  "production_authorized": false,
+  "measured": false
+}

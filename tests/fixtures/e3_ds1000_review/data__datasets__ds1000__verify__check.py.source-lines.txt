@@ -1,0 +1,48 @@
+data/datasets/ds1000/verify/check.py:20: def main() -> int:
+data/datasets/ds1000/verify/check.py:21:     ap = argparse.ArgumentParser()
+data/datasets/ds1000/verify/check.py:22:     ap.add_argument("--reward-file", default="verifier/reward.txt")
+data/datasets/ds1000/verify/check.py:23:     ap.add_argument("--evidence-file", default="verifier/evidence.json")
+data/datasets/ds1000/verify/check.py:24:     args = ap.parse_args()
+data/datasets/ds1000/verify/check.py:25:     work = pathlib.Path.cwd()
+data/datasets/ds1000/verify/check.py:26:     task = json.loads((work / "context.json").read_text(encoding="utf-8"))
+data/datasets/ds1000/verify/check.py:27:     solution = work / "solution.py"
+data/datasets/ds1000/verify/check.py:28:     candidate = solution.read_text(encoding="utf-8") if solution.is_file() else ""
+data/datasets/ds1000/verify/check.py:29:     program = (task["code_context"] + "\n" + f"code = {candidate!r}\n"
+data/datasets/ds1000/verify/check.py:30:                + "test_execution(code)\n"
+data/datasets/ds1000/verify/check.py:31:                + ("test_string(code)\n" if "test_string(" in task["code_context"] else ""))
+data/datasets/ds1000/verify/check.py:32:     # Keep this checker dependency-free: execution.py is a VERIFY input, and the candidate
+data/datasets/ds1000/verify/check.py:33:     # program is passed via a temporary JSON file so the child can import the official runner.
+data/datasets/ds1000/verify/check.py:34:     scratch = pathlib.Path(tempfile.mkdtemp(prefix="ds1000-check-"))
+data/datasets/ds1000/verify/check.py:35:     runner = scratch / "run_ds1000.py"
+data/datasets/ds1000/verify/check.py:36:     (scratch / "execution.py").write_text((work / "execution.py").read_text(encoding="utf-8"), encoding="utf-8")
+data/datasets/ds1000/verify/check.py:37:     runner.write_text(
+data/datasets/ds1000/verify/check.py:38:         "import json, sys\n"
+data/datasets/ds1000/verify/check.py:39:         "from execution import check_correctness\n"
+data/datasets/ds1000/verify/check.py:40:         "program=json.loads(open(sys.argv[1]).read())\n"
+data/datasets/ds1000/verify/check.py:41:         "print(json.dumps(check_correctness(program, timeout=120)))\n",
+data/datasets/ds1000/verify/check.py:42:         encoding="utf-8")
+data/datasets/ds1000/verify/check.py:43:     payload = scratch / "program.json"
+data/datasets/ds1000/verify/check.py:44:     payload.write_text(json.dumps(program), encoding="utf-8")
+data/datasets/ds1000/verify/check.py:45:     # 14 official Matplotlib rows call `sns.load_dataset(...)`. seaborn resolves that from
+data/datasets/ds1000/verify/check.py:46:     # `$SEABORN_DATA/<name>.csv`; the four CSVs are a VERIFY input, so the official code
+data/datasets/ds1000/verify/check.py:47:     # path runs offline instead of fetching from GitHub mid-check.
+data/datasets/ds1000/verify/check.py:48:     import os
+data/datasets/ds1000/verify/check.py:49:     env = dict(os.environ)
+data/datasets/ds1000/verify/check.py:50:     env["SEABORN_DATA"] = str(work / "seaborn-data")
+data/datasets/ds1000/verify/check.py:51:     for noisy in ("MPLBACKEND",):
+data/datasets/ds1000/verify/check.py:52:         env.setdefault(noisy, "Agg")
+data/datasets/ds1000/verify/check.py:53:     proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
+data/datasets/ds1000/verify/check.py:54:                           capture_output=True, text=True, timeout=130, env=env)
+data/datasets/ds1000/verify/check.py:55:     result = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 and proc.stdout.strip() else {"passed": False, "result": proc.stderr[-500:]}
+data/datasets/ds1000/verify/check.py:56:     reward = 1.0 if result.get("passed") else 0.0
+data/datasets/ds1000/verify/check.py:57:     out = work / args.reward_file
+data/datasets/ds1000/verify/check.py:58:     out.parent.mkdir(parents=True, exist_ok=True)
+data/datasets/ds1000/verify/check.py:59:     out.write_text(f"{reward:g}\n")
+data/datasets/ds1000/verify/check.py:60:     ev = work / args.evidence_file
+data/datasets/ds1000/verify/check.py:61:     ev.parent.mkdir(parents=True, exist_ok=True)
+data/datasets/ds1000/verify/check.py:62:     ev.write_text(json.dumps({"measured": True, "reward": reward,
+data/datasets/ds1000/verify/check.py:63:                               "official": {"metric": "DS-1000 test_execution plus conditional test_string",
+data/datasets/ds1000/verify/check.py:64:                                             "result": result.get("result")},
+data/datasets/ds1000/verify/check.py:65:                               "why": result.get("result", "")}, sort_keys=True) + "\n")
+data/datasets/ds1000/verify/check.py:66:     print(f"reward {reward:g}: {result.get('result', '')}")
+data/datasets/ds1000/verify/check.py:67:     return 0

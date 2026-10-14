@@ -1,0 +1,16 @@
+tests/quality/test_measurement_coverage_hg_b3.py:130: def test_ds1000_timeout_result_needs_classification_beyond_measured_flag(monkeypatch, tmp_path):
+tests/quality/test_measurement_coverage_hg_b3.py:131:     check = load_source("hg_b3_ds1000_check", "data/datasets/ds1000/verify/check.py")
+tests/quality/test_measurement_coverage_hg_b3.py:132:     monkeypatch.chdir(tmp_path)
+tests/quality/test_measurement_coverage_hg_b3.py:133:     (tmp_path / "context.json").write_text(json.dumps({"code_context": "# synthetic"}))
+tests/quality/test_measurement_coverage_hg_b3.py:134:     (tmp_path / "execution.py").write_text("# inert synthetic verifier input\n")
+tests/quality/test_measurement_coverage_hg_b3.py:135:     scratch = tmp_path / "scratch"
+tests/quality/test_measurement_coverage_hg_b3.py:136:     scratch.mkdir()
+tests/quality/test_measurement_coverage_hg_b3.py:137:     monkeypatch.setattr(check.tempfile, "mkdtemp", lambda **kw: str(scratch))
+tests/quality/test_measurement_coverage_hg_b3.py:138:     monkeypatch.setattr(check.subprocess, "run", lambda *a, **kw:
+tests/quality/test_measurement_coverage_hg_b3.py:139:                         subprocess.CompletedProcess(a, 0, '{"passed":false,"result":"timed out"}', ""))
+tests/quality/test_measurement_coverage_hg_b3.py:140:     monkeypatch.setattr(sys, "argv", ["check"])
+tests/quality/test_measurement_coverage_hg_b3.py:141:     assert check.main() == 0
+tests/quality/test_measurement_coverage_hg_b3.py:142:     evidence = json.loads((tmp_path / "verifier/evidence.json").read_text())
+tests/quality/test_measurement_coverage_hg_b3.py:143:     assert evidence["measured"] is True
+tests/quality/test_measurement_coverage_hg_b3.py:144:     assert evidence["official"]["result"] == "timed out"
+tests/quality/test_measurement_coverage_hg_b3.py:145:     assert float((tmp_path / "verifier/reward.txt").read_text()) == 0.0

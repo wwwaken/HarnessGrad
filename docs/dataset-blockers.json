@@ -256,7 +256,7 @@
           "id": "simple-ast-contract",
           "family": "official-scorer-execution",
           "status": "external",
-          "observed": "B5 reuses the eight unique task-195/227 files and adds 42 original Git-blob-verified Python files, including model_config, Java/JS converters and parsers, dispatcher constants and handler dependencies. All files now have reconstructed commit/tree/path linkage. Twenty-three further handler bodies returned HTTP 403; initializer bodies, dynamic/runtime/native closure, archive/member custody, independent review and an approved exact receipt pin remain missing. Production remains function-name diagnostic-only.",
+          "observed": "E3 closes the inventoried source-acquisition gaps: 23 original handler bodies and ten empty package initializers acquired in 24 successful public Git-blob requests. Combined tasks 195/227/B5/E3 inventory has 83 original files with retained commit/tree/path/blob linkage, raw responses and SHA-256; no unresolved statically named BFCL imports. The Simple invocation graph is locally reviewed only. Independent archive/tag/member/license custody, code-only handler/parser/checker/dispatch/helper review, third-party offline/native runtime closure and a separate approved exact receipt pin remain absent. No upstream execution or full-call differential result; production remains function-name diagnostic-only.",
           "evidence": [
             {
               "kind": "repository",
@@ -282,9 +282,19 @@
               "kind": "repository",
               "path": "tests/fixtures/external_provenance_b5/README.md",
               "locator": "## bfcl_v3: simple-ast-contract"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/e3-bfcl-simple-source-review.md",
+              "locator": "## Locally reviewed Simple invocation graph"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/e3_bfcl_source/inventory.json",
+              "locator": "\"schema\": \"harnessgrad.e3-bfcl-acquisition-candidate.v1\""
             }
           ],
-          "next_action": "Complete the precisely inventoried missing original import/initializer bodies and reviewed Simple invocation graph. Obtain independent v1.3 archive/tag/commit/member/license custody and code-only parser/checker/dispatch/helper review plus a separate approved exact receipt pin. Only then pass the explicit source gate and derive the full-call contract using fabricated differential calls; preserve name diagnostic and selected/privacy boundaries. No production H0."
+          "next_action": "Obtain independent v1.3 archive/tag/commit/member/license custody and code-only review of the retained Simple handler/parser/checker/dispatch/helper graph, including expression-evaluation branches and offline third-party/native runtime identities. Supply a separate approved exact receipt pin. Only then pass the explicit source gate and derive the full-call contract using fabricated differential calls; preserve name diagnostic and selected/privacy boundaries. No production H0. The inventoried explicit-import/initializer acquisition is complete; this is not independent approval or runtime closure."
         }
       ],
       "historical_runs": []
@@ -515,7 +525,7 @@
           "id": "host-slice-archive-review",
           "family": "measurement-coverage",
           "status": "measurement",
-          "observed": "Source review separates documented 926/1000 host availability (74 exclusions) from 61 selected platform train-side tasks x3=183 planned task-trials; actual measured coverage, selected IDs and timeout counts are unavailable in repository receipts. The reported 0.2076502732 remains unaccepted and the archive unappended. The 120/130-second checker values are configured limits; a synthetic serialized timeout result still produces measured=true/reward=0, so that flag cannot replace historical timeout classification.",
+          "observed": "Source review separates documented 926/1000 host availability (74 exclusions) from 61 selected platform train-side tasks x3=183 planned task-trials; actual measured coverage, selected IDs and timeout counts are unavailable in repository receipts. The reported 0.2076502732 remains unaccepted and the archive unappended. The 120/130-second checker values are configured limits; a synthetic serialized timeout result still produces measured=true/reward=0, so that flag cannot replace historical timeout classification. E3 records a reproducible repository metadata search and source hashes: 27 frozen non-TensorFlow exclusion IDs in 12 cause groups are source metadata; the original 926-ID host manifest, 61-ID selection, trial outcomes and timeout/error/lifecycle receipts were not located in the documented scope. No archive effect is accepted.",
           "evidence": [
             {
               "kind": "repository",
@@ -531,6 +541,11 @@
               "kind": "repository",
               "path": "tests/quality/test_measurement_coverage_hg_b3.py",
               "locator": "def test_ds1000_timeout_result_needs_classification_beyond_measured_flag"
+            },
+            {
+              "kind": "repository",
+              "path": "docs/e3-ds1000-measurement-review.md",
+              "locator": "## What remains and status"
             }
           ],
           "next_action": "Keep archive acceptance blocked pending original selected-ID/split/host-pool provenance, original trial outcomes and timeout/error/lifecycle records; reconcile measured, invalid and unmeasured counts before considering append or comparison. Preserve ds1000-v4-pending-review with effect=null. Neither host oracle-sweep coverage nor timeout limits certify the pilot's 183 planned measurements."

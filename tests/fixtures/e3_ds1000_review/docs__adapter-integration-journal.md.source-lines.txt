@@ -1,0 +1,9 @@
+docs/adapter-integration-journal.md:315: ## DS1000 — host slice and timeout evidence
+docs/adapter-integration-journal.md:316: 
+docs/adapter-integration-journal.md:317: - Status: final curve pending archive review
+docs/adapter-integration-journal.md:318: - Scope: 61-task train-side pilot from the adapter's 926/1000 host slice, 3 trials
+docs/adapter-integration-journal.md:319: - Finding: host availability is not full benchmark coverage; one task timeout cannot be relabeled as an ordinary wrong answer
+docs/adapter-integration-journal.md:320: - Evidence: `/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/61/report.md`; run `ds1000-h0-10pct-v4`; score `0.2076502732`
+docs/adapter-integration-journal.md:321: - Platform change: archive records carry source-pool coverage and task-level timeout evidence
+docs/adapter-integration-journal.md:322: - Remaining gates: append only after verifying all sample IDs, trial coverage and timeout classification
+docs/adapter-integration-journal.md:323: - Commit: archive not yet appended

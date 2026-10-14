@@ -1,0 +1,32 @@
+reports/measurement-coverage-hg-b3-review.md:124: ## DS1000: host-pool interpretation closed; archive acceptance open
+reports/measurement-coverage-hg-b3-review.md:125: 
+reports/measurement-coverage-hg-b3-review.md:126: - **Established history:** `docs/adapter-integration-journal.md:306` says final
+reports/measurement-coverage-hg-b3-review.md:127:   archive review is pending; `:307` records 61 platform train-side tasks ×3
+reports/measurement-coverage-hg-b3-review.md:128:   trials (**183 planned task-trials**), from the **926/1000 host slice**;
+reports/measurement-coverage-hg-b3-review.md:129:   `:309` names `ds1000-h0-10pct-v4` and reported score `0.2076502732`.
+reports/measurement-coverage-hg-b3-review.md:130:   `:311` requires selected-ID/trial/timeout verification; `:312` says archive
+reports/measurement-coverage-hg-b3-review.md:131:   not yet appended. Actual measured tasks/trials and timeout counts are unknown.
+reports/measurement-coverage-hg-b3-review.md:132: - **Pool coverage is not pilot coverage:** `data/datasets/ds1000.py:12` describes
+reports/measurement-coverage-hg-b3-review.md:133:   the documented 926-row host pool and 74 exclusions: 47 TensorFlow-import rows
+reports/measurement-coverage-hg-b3-review.md:134:   plus 27 frozen dependency/library/network failures (`:16`, `:25`, `:90`).
+reports/measurement-coverage-hg-b3-review.md:135:   `:39` places the original oracle sweep outside git. Its reference-code host
+reports/measurement-coverage-hg-b3-review.md:136:   availability claim is separate from this pilot. Nominal 61 selected tasks are
+reports/measurement-coverage-hg-b3-review.md:137:   6.59% of the host pool and 6.1% of the released 1000 rows; neither percentage
+reports/measurement-coverage-hg-b3-review.md:138:   establishes measured coverage or representative sampling. All adapter rows
+reports/measurement-coverage-hg-b3-review.md:139:   originate from the official test pool (`:57`); train/eval is imposed by hash
+reports/measurement-coverage-hg-b3-review.md:140:   (`:160`). The run name `10pct` is a label, not proof of its sampling fraction.
+reports/measurement-coverage-hg-b3-review.md:141: - **Metric and timeout limits:** `data/datasets/ds1000/verify/check.py:29`
+reports/measurement-coverage-hg-b3-review.md:142:   constructs `test_execution` plus conditional `test_string`; `:41` configures
+reports/measurement-coverage-hg-b3-review.md:143:   the 120-second inner timeout and `:54` the 130-second outer timeout. These are
+reports/measurement-coverage-hg-b3-review.md:144:   deadlines, not measured elapsed times. `:55` through `:65` write a zero and
+reports/measurement-coverage-hg-b3-review.md:145:   `measured=true` for a serialized failing result, including a synthetic
+reports/measurement-coverage-hg-b3-review.md:146:   `result="timed out"` (`tests/quality/test_measurement_coverage_hg_b3.py:130`).
+reports/measurement-coverage-hg-b3-review.md:147:   This control supplies no historical timeout count. Inspect the original result
+reports/measurement-coverage-hg-b3-review.md:148:   string and lifecycle/outer-timeout records before calling a zero an ordinary
+reports/measurement-coverage-hg-b3-review.md:149:   wrong answer; `measured=true` alone does not establish validity.
+reports/measurement-coverage-hg-b3-review.md:150: - **Closed:** source review of host-pool versus selection scope, scorer
+reports/measurement-coverage-hg-b3-review.md:151:   construction and configured timeout limits. **Open:** `host-slice-archive-review`
+reports/measurement-coverage-hg-b3-review.md:152:   stays `measurement`: the original selected manifest and original task/trial,
+reports/measurement-coverage-hg-b3-review.md:153:   timeout/error and provenance metadata are missing. Archive acceptance/append
+reports/measurement-coverage-hg-b3-review.md:154:   remains pending; `ds1000-v4-pending-review`, `effect=null`, stays unchanged.
+reports/measurement-coverage-hg-b3-review.md:155:   All shared gates remain open.

@@ -1,0 +1,46 @@
+tests/quality/test_ds1000_official_scorer.py:30: import data.datasets.ds1000 as dataset
+tests/quality/test_ds1000_official_scorer.py:31: 
+tests/quality/test_ds1000_official_scorer.py:32: ROOT = Path(__file__).resolve().parents[2]
+tests/quality/test_ds1000_official_scorer.py:33: SOURCE = dataset.SOURCE_DIR / "test_ds1000.py"
+tests/quality/test_ds1000_official_scorer.py:34: EXECUTION = dataset.SOURCE_DIR / "execution.py"
+tests/quality/test_ds1000_official_scorer.py:35: SWEEP = dataset.DATASET_ROOT / "_src" / "oracle-sweep.json"
+tests/quality/test_ds1000_official_scorer.py:126: def test_the_release_is_covered_exactly_once_by_the_two_exclusion_groups():
+tests/quality/test_ds1000_official_scorer.py:127:     rows = dataset._read()
+tests/quality/test_ds1000_official_scorer.py:128:     excluded = dataset.excluded_indices()
+tests/quality/test_ds1000_official_scorer.py:129:     included = dataset.included_indices()
+tests/quality/test_ds1000_official_scorer.py:130:     assert len(rows) == 1000
+tests/quality/test_ds1000_official_scorer.py:131:     assert len(excluded) == 74
+tests/quality/test_ds1000_official_scorer.py:132:     assert len(included) == 926
+tests/quality/test_ds1000_official_scorer.py:133:     assert set(included) | excluded == set(range(1000))
+tests/quality/test_ds1000_official_scorer.py:134:     assert not (set(included) & excluded)
+tests/quality/test_ds1000_official_scorer.py:135:     assert dataset.tensorflow_indices() == {
+tests/quality/test_ds1000_official_scorer.py:136:         i for i, row in enumerate(rows) if dataset._TF_PATTERN.search(row["code_context"])}
+tests/quality/test_ds1000_official_scorer.py:137:     assert len(dataset.tensorflow_indices()) == 47
+tests/quality/test_ds1000_official_scorer.py:138:     assert len(dataset.measured_exclusions()) == 27
+tests/quality/test_ds1000_official_scorer.py:139:     assert not (dataset.tensorflow_indices() & set(dataset.measured_exclusions()))
+tests/quality/test_ds1000_official_scorer.py:140: 
+tests/quality/test_ds1000_official_scorer.py:141: 
+tests/quality/test_ds1000_official_scorer.py:142: def test_the_tensorflow_group_is_selected_by_the_import_not_the_label():
+tests/quality/test_ds1000_official_scorer.py:143:     rows = dataset._read()
+tests/quality/test_ds1000_official_scorer.py:144:     labels = {rows[i]["metadata"]["library"] for i in dataset.tensorflow_indices()}
+tests/quality/test_ds1000_official_scorer.py:145:     # Two tensorflow-conversion rows are labelled `Numpy`; that is why the criterion is the
+tests/quality/test_ds1000_official_scorer.py:146:     # import. If this ever became a single label, the criterion would have silently changed.
+tests/quality/test_ds1000_official_scorer.py:147:     assert labels == {"Tensorflow", "Numpy"}, labels
+tests/quality/test_ds1000_official_scorer.py:148:     for i in dataset.included_indices():
+tests/quality/test_ds1000_official_scorer.py:149:         assert not dataset._TF_PATTERN.search(rows[i]["code_context"]), i
+tests/quality/test_ds1000_official_scorer.py:150: 
+tests/quality/test_ds1000_official_scorer.py:151: 
+tests/quality/test_ds1000_official_scorer.py:152: def test_the_frozen_table_is_the_recorded_sweep_result():
+tests/quality/test_ds1000_official_scorer.py:153:     """The table must be the sweep's output, not a hand-edited list."""
+tests/quality/test_ds1000_official_scorer.py:154:     if not SWEEP.is_file():
+tests/quality/test_ds1000_official_scorer.py:155:         pytest.skip("full sweep artifact not provisioned")
+tests/quality/test_ds1000_official_scorer.py:156:     sweep = json.loads(SWEEP.read_text())
+tests/quality/test_ds1000_official_scorer.py:157:     assert sweep["included"] == 953 and sweep["done"] == 953
+tests/quality/test_ds1000_official_scorer.py:158:     assert sweep["passed"] == 926
+tests/quality/test_ds1000_official_scorer.py:159:     failed = {int(tid.split("/")[1]) for tid in sweep["failed"]}
+tests/quality/test_ds1000_official_scorer.py:160:     assert len(failed) == 27
+tests/quality/test_ds1000_official_scorer.py:161:     assert failed == set(dataset.measured_exclusions()), (
+tests/quality/test_ds1000_official_scorer.py:162:         "the frozen causes no longer match the rows the sweep failed on")
+tests/quality/test_ds1000_official_scorer.py:163:     for index in failed:
+tests/quality/test_ds1000_official_scorer.py:164:         assert sweep["results"][dataset.task_id(index)]["reward"] == 0
+tests/quality/test_ds1000_official_scorer.py:165:     passed = {int(tid.split("/")[1]) for tid, row in sweep["results"].items()

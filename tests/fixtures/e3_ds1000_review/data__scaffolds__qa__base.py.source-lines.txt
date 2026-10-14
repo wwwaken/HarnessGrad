@@ -1,0 +1,9 @@
+data/scaffolds/qa/base.py:123: def is_eval(task_id: str) -> bool:
+data/scaffolds/qa/base.py:124:     """A deterministic third of the tasks, by hash of the task id.
+data/scaffolds/qa/base.py:125: 
+data/scaffolds/qa/base.py:126:     Hashed rather than sliced off the sorted list so that adding or removing a task does
+data/scaffolds/qa/base.py:127:     not reshuffle which side every other task is on -- a split that moves under the
+data/scaffolds/qa/base.py:128:     benchmark is a split whose past scores cannot be compared with its future ones. The
+data/scaffolds/qa/base.py:129:     same rule `data/datasets/alfworld.py` and `data/datasets/terminal_bench.py` use.
+data/scaffolds/qa/base.py:130:     """
+data/scaffolds/qa/base.py:131:     return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
