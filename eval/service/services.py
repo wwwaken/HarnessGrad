@@ -362,8 +362,10 @@ def start(services: list[dict], *, recordings_root: Path, run_id: str,
 
     containers: dict[str, str] = {}
     recordings: dict[str, Path] = {}
-    env = service_env(services, task_id=task_id, run_seed=run_seed)
     try:
+        # Configuration can fail after network creation; keep it inside the same
+        # cleanup boundary as container startup.
+        env = service_env(services, task_id=task_id, run_seed=run_seed)
         for svc in services:
             name = svc["name"]
             record_host: Path | None = None
