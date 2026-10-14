@@ -555,6 +555,7 @@ Before launching any new adapter, add or update its entry here and add the corre
 - Deliverable: [operator packet](task-207-livecodebench-operator-packet.md) gives the exact 12-key target JSON template, separate authenticated custody/reviewer signature channels, offline OpenPGP commands, bounded metadata-only preflight, failure dispositions and the no-payload boundary. The template is not an issued receipt; no attestation or approval artifact was created.
 - Validation: target keys, values and types match AST-read admission constants; original-ID train calculation matches. Shell syntax and embedded Python compilation pass; all three packet links resolve; `git diff --check` passes. Verification commands were not executed and no payload-reading tests were run.
 - Limit: existing `identity(statement, ...)` cannot run in this scope. Preflight cannot authenticate provenance by itself or set `row_attested`; independent review and later separately authorized production admission remain required. Fresh pool verification stays false, and other execution gates are unchanged. Parent review/integration remains separate.
+
 ## 2WikiMultihopQA source-gate review — Codex 206 — 2026-10-14
 
 - Status: independent evaluator source gate closed for the pinned code-only fixture; fresh dependency, Hub/data provenance, historical metric comparability and shared runtime gates remain blocked. No production authorization.
