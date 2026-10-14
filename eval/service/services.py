@@ -229,12 +229,7 @@ class RunningServices:
                 continue
             if proc.returncode != 0 and "No such container" not in proc.stderr:
                 problems.append(f"service {name!r}: {proc.stderr.strip()[:200]}")
-        try:
-            proc = container_mod.docker("network", "rm", self.network, timeout=60)
-            if proc.returncode != 0 and "No such network" not in proc.stderr:
-                problems.append(f"network {self.network!r}: {proc.stderr.strip()[:200]}")
-        except (subprocess.TimeoutExpired, OSError) as exc:
-            problems.append(f"network {self.network!r}: {exc}")
+        problems.extend(remove_network(self.network))
         return problems
 
 
@@ -263,7 +258,12 @@ def remove_network(network: str) -> list[str]:
         proc = container_mod.docker("network", "rm", network, timeout=60)
     except (subprocess.TimeoutExpired, OSError) as exc:
         return [f"network {network!r}: {exc}"]
-    if proc.returncode != 0 and "No such network" not in proc.stderr:
+    # Docker 29 uses "network NAME not found"; older daemons use "No such
+    # network". Reaping followed by a finally-block stop must remain idempotent.
+    missing = ("No such network" in proc.stderr or
+               f"Error response from daemon: network {network} not found"
+               in proc.stderr.splitlines())
+    if proc.returncode != 0 and not missing:
         return [f"network {network!r}: {proc.stderr.strip()[:200]}"]
     return []
 

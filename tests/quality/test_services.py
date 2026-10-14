@@ -425,6 +425,30 @@ def _leftovers(run_id: str) -> list[str]:
         "--format", "{{.Name}}").stdout.split()
 
 
+@pytest.mark.parametrize("stderr,missing", [
+    ("Error response from daemon: No such network: owned-net\n", True),
+    ("Error response from daemon: network owned-net not found\nexit status 1\n", True),
+    ("Error response from daemon: network owned-net has active endpoints\n", False),
+    ("Error response from daemon: plugin not found\n", False),
+    ("Error response from daemon: network other-net not found\n", False),
+])
+def test_network_cleanup_is_idempotent_but_keeps_real_errors(monkeypatch, stderr, missing):
+    calls = []
+
+    def docker(*args, **kw):
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 1, "", stderr)
+
+    monkeypatch.setattr(container, "docker", docker)
+    direct = services.remove_network("owned-net")
+    running = services.RunningServices(network="owned-net", containers={}, recordings={}, services=[])
+    stopped = running.stop()
+    assert calls == [("network", "rm", "owned-net")] * 2
+    expected = [] if missing else [f"network 'owned-net': {stderr.strip()[:200]}"]
+    assert direct == stopped == expected
+
+
+
 def test_a_leftover_network_from_a_crash_does_not_kill_the_next_run(tmp_path):
     """实测(2026-10-04):`local-floor-5/6`、`local-cap12` 被杀之后各留下一串网络。
 
