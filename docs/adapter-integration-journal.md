@@ -2097,3 +2097,26 @@ Validation in `reports/w-ujson-validation.txt`: blocker checker valid
   fixtures/manifest and offline metadata verifier under `tests/fixtures/hg_lcb/`.
   No adapter/runtime/gate edits, payload/reference reads, benchmark/model/GPU/
   endpoint/container calls, or changes to `runs/` or frozen receipts.
+## Parent review and merge — w-lcb — 2026-10-15
+
+- Merged `cfe80c2` (w-lcb) on top of `fb82e1d`. Only the journal conflicted, resolved by keeping
+  both sides. Result `ca49d4d`. Registry valid: 28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`. 69 passed on the registry plus
+  `test_livecodebench_official_scorer.py`.
+- **`livecodebench / row-attestation` returns an honest negative result and stays `external`.**
+  The worker obtained **0 authoritative upstream row IDs** - the upstream count/rank is simply not
+  available from public sources - so the locally declared 1,055 count remains unverified. What it
+  did establish is narrower and real: all six pinned shard identities are now linked to the
+  adapter's own declarations, and the inert selection and conditional split reproduce. The
+  blocker stays open naming the two missing pieces (complete catalog, authenticated
+  row/pool/split/statement linkage).
+- This is the outcome the brief explicitly asked for and it is worth stating plainly: the worker
+  did **not** invent a catalog, rank or digest to satisfy the wording of its own next_action. An
+  unverifiable number was recorded as unverifiable rather than promoted. That is the correct
+  behaviour for a provenance gate whose whole purpose is to prevent exactly that substitution.
+- Still in flight at the end of this round and NOT merged: `w-trivia`
+  (`triviaqa / hub-export-scorer-linkage`), which had committed `a1f324b` but had not finished.
+  Nothing about its result is claimed here.
+- Resource state: both merged workers performed public-source acquisition and local review only -
+  no benchmark task, model, GPU, endpoint or container. Both GPUs stayed idle and no utilisation is
+  claimed. Historical runs, frozen receipts and archives were untouched.
