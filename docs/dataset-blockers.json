@@ -285,21 +285,26 @@
           "id": "release-index-custody",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Synthetic selected-span checks passed, but index hashes are unauthenticated and official release identity is unproven.",
+          "observed": "B5 retained public v1.3 tag/V3 release/commit/tree responses. Signed commit bytes and all 93 Git trees reconstruct to ea13468e4423454d0c213704fb87cf7cb3990433 / b34aa53a73491f42dc69b8b18c92448d7c311f50, binding retained original source paths/blobs. Archive HEAD identifies gorilla-1.3.tar.gz but does not verify the declared archive digest or member custody. Independent evaluator review and metadata-only release/index/span/split custody remain absent.",
           "evidence": [
             {
               "kind": "repository",
               "path": "docs/adapter-integration-journal.md",
               "locator": "## BFCL official call scorer review — Codex 166"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/external_provenance_b5/README.md",
+              "locator": "## bfcl_v3: release-index-custody"
             }
           ],
-          "next_action": "Obtain independently reviewed code-only evaluator provenance and custodian approval of metadata-only release/index bindings."
+          "next_action": "Obtain independent review of the retained code-only evaluator candidate and human custodian approval of historical tag/archive digest/member bindings and selected release/index/span/split metadata. Public Git integrity and archive HEAD are not custody approval; preserve selected-only/privacy gates."
         },
         {
           "id": "simple-ast-contract",
           "family": "official-scorer-execution",
           "status": "external",
-          "observed": "The pinned v1.3/V3 source and Apache-2.0 license are partially acquired with Git blob checks. ast_checker.py and type_mappings.py are present, but direct model_config, Java converter and JS converter helpers lack pinned blob identities/source; no archive binding or independent custodian receipt exists. Production remains function-name diagnostic-only.",
+          "observed": "B5 reuses the eight unique task-195/227 files and adds 42 original Git-blob-verified Python files, including model_config, Java/JS converters and parsers, dispatcher constants and handler dependencies. All files now have reconstructed commit/tree/path linkage. Twenty-three further handler bodies returned HTTP 403; initializer bodies, dynamic/runtime/native closure, archive/member custody, independent review and an approved exact receipt pin remain missing. Production remains function-name diagnostic-only.",
           "evidence": [
             {
               "kind": "repository",
@@ -320,9 +325,14 @@
               "kind": "repository",
               "path": "tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json",
               "locator": "not_attempted_missing_pinned_blob_sha"
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/external_provenance_b5/README.md",
+              "locator": "## bfcl_v3: simple-ast-contract"
             }
           ],
-          "next_action": "Obtain independently approved v1.3 archive/tag/commit and original-file custody evidence, a code-only parser/checker/dispatch/helper/license projection and a separate exact receipt pin. Pass the explicit source gate, then derive the full-call contract from original symbols using fabricated differential calls; preserve the name diagnostic and selected/privacy boundaries. No production H0."
+          "next_action": "Complete the precisely inventoried missing original import/initializer bodies and reviewed Simple invocation graph. Obtain independent v1.3 archive/tag/commit/member/license custody and code-only parser/checker/dispatch/helper review plus a separate approved exact receipt pin. Only then pass the explicit source gate and derive the full-call contract using fabricated differential calls; preserve name diagnostic and selected/privacy boundaries. No production H0."
         }
       ],
       "historical_runs": []
@@ -1367,7 +1377,7 @@
           "id": "hub-export-scorer-linkage",
           "family": "source-provenance",
           "status": "external",
-          "observed": "Original evaluator acquisition is closed at source/test level; prior reviews retain the corrected triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 identity and upstream reference. Task 225 pins historical HuggingFace loader/config/license at 413205c1a7247a2ff81cf709117ce93624fa6fd3 with reconstructed Git commit/tree/blob linkage. That loader copies and trims normalized aliases, omits HumanAnswers, combines Web/Wikipedia for rc.nocontext, removes documents and omits domain/verified flags. Four exact-revision Hub code/metadata requests failed with network unreachable, so association of that historical loader with Hub revision 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f remains unverified. No dataset rows were read, no metric was changed and full answer-set/selection/grouping/denominator compatibility is not certified.",
+          "observed": "Original scorer fixture and triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 remain unchanged. B5 acquired public hf-mirror.com exact-revision commit/root/config/split/file declarations for 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f and predecessor loader d63a76f01c8226449f76b437dd512cf8b17adf5d (blob a9a6932c23d378b9e5628ecec1f0509496806d77), distinct from task 225 historical source. Conversion PR #8 metadata links that predecessor, rc.nocontext additions and loader deletion. Direct Hub requests still fail; mirror origin and actual converter execution are not independently authenticated. The predecessor omits HumanAnswers/domain/verified fields. No immutable build/export execution receipt or full answer-set/selection/grouping/denominator compatibility is established; no rows were read.",
           "evidence": [
             {
               "kind": "repository",
@@ -1393,9 +1403,14 @@
               "kind": "repository",
               "path": "reports/triviaqa-hub-linkage-codex225-report.md",
               "locator": "Compatibility for the exact Hub revision is not established."
+            },
+            {
+              "kind": "repository",
+              "path": "tests/fixtures/external_provenance_b5/README.md",
+              "locator": "## triviaqa: hub-export-scorer-linkage"
             }
           ],
-          "next_action": "Obtain public exact-revision Hub commit/tree/config/split metadata and immutable conversion provenance identifying the loader actually used (including predecessor loader plus export receipt if absent at the export revision), original license and file hashes. Establish whether HumanAnswers are preserved, absent or redundant, and document Domain/VerifiedEval/source membership, duplicate handling, scorer-key mapping and denominator/aggregation; no rows or payloads are requested. Historical loader name/schema/count matches alone do not close this gate. Preserve v2 and historical identities; actual deployed hashes and all shared admission gates remain prerequisites to a separately authorized diagnostic."
+          "next_action": "Independently corroborate mirror-supplied exact Hub revision/tree/config/split identities against authoritative Hub origin, and obtain immutable build/export provenance identifying the loader/converter actually executed, source/license hashes, runtime/writer versions and input revision/hashes. PR ancestry and identical predecessor blobs do not attest execution. Review HumanAnswers preservation/absence/redundancy, Domain/VerifiedEval/source membership, duplicates, scorer-key mapping and denominator/aggregation without rows. Preserve v2 and historical identities and all shared admission gates; no production authorization."
         }
       ],
       "historical_runs": []

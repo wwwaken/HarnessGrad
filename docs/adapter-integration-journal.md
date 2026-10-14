@@ -1068,3 +1068,37 @@ close. The three coverage-only entries above remain explicitly pending.
 - Evidence: [B9 review](../reports/b9-appworld-protocol-and-pilot-guidance-review.md), with file/line references, complete relevant sizing-document inventory and reasons pinned reports remain historical. The registry guide documents bounded `done` scope; the checker accepts it without dropping evidence or historical-preservation requirements.
 - Validation: **68 focused tests passed in 6.77s** (`test_dataset_blockers.py`, `test_appworld_actor_protocol.py`); checker printed `valid:true`, 28 datasets, 8 retained shared records, 11 historical records, `production_authorized:false`; `git diff --check` passed. Protocol controls are synthetic, not benchmark measurements. No whole suite ran.
 - Commit: accompanying `docs: close shared pilot guidance review and retain AppWorld gate` commit, for parent review; no main checkout write or merge.
+## BFCL and TriviaQA public provenance acquisition — B5 — 2026-10-15
+
+- Scope: registered detached worktree `/tmp/hg-b5`, base `9066072`; only
+  `bfcl_v3` release-index-custody/simple-ast-contract and TriviaQA
+  hub-export-scorer-linkage. Read their original observed/next_action verbatim;
+  preserve those entries in the new bundle. Tasks 195/227/196/225 are reused
+  unchanged. No payloads, archive GET, dataset-root access, upstream BFCL/loader
+  execution, model/GPU/H0 or pilot work.
+- BFCL: fresh upstream v1.3 tag/V3 release/commit/tree responses; signed commit
+  bytes and 93 trees reconstruct to the prior immutable identities. Add 42
+  original blob-verified Python files, including all three previously missing
+  direct checker helpers and parser/dispatch dependencies. Twenty-three
+  transitive handler bodies hit HTTP 403, with raw failure bodies retained.
+  Archive HEAD supplies availability/name only, not archive/member custody.
+- TriviaQA: direct Hub requests remain unsuccessful. Public hf-mirror.com
+  metadata supplies exact export revision/config/splits/file identities,
+  predecessor d63a76f loader bytes and conversion PR #8 parent/addition/deletion
+  history. This predecessor differs from task 225; the PR is not a build/execution
+  receipt. Mirror origin, actual converter execution and full scorer equivalence
+  remain unauthenticated; HumanAnswers/verified/domain omissions are documented.
+- Boundaries: all three blockers remain external. No independent review,
+  custodian approval or separate approved source receipt pin is supplied; no
+  archive digest/member/index binding is self-approved. All raw responses and
+  error receipts have SHA-256 inventories. Only the three owned blocker
+  observations/actions/evidence change; shared and historical records are intact.
+- Validation: blocker checker valid (28 datasets/eight shared/11 historical,
+  production_authorized=false); 99 focused tests pass, no skips. Offline checks
+  cover every retained body/receipt/source hash, BFCL commit/tree/path/blob chain,
+  mirror LFS pointer/directory identities without payload access, and refusal of
+  unapproved BFCL source. Parent diff review and integration remain separate.
+- Evidence: [B5 report](../reports/external-provenance-b5.md),
+  [per-blocker review](../tests/fixtures/external_provenance_b5/README.md),
+  [inventory](../tests/fixtures/external_provenance_b5/inventory.json) and
+  [all evidence digests](../tests/fixtures/external_provenance_b5/SHA256SUMS).
