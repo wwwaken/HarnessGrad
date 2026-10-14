@@ -104,6 +104,9 @@ NOT_PLATFORM = {
                "and was moved here so the root stays navigable. It is written by humans and "
                "review sessions after a measurement, never read by a run; hashing it would "
                "fail a certification because someone added a report",
+    "conftest.py": "root pytest configuration: it guards the test runner's temporary "
+                   "directory placement before collection. It shapes how the tests are "
+                   "run, never what a number means, and no run reads it",
     "AGENTS.md": "operating rules for the agents and humans who work *on* the platform -- "
                  "review discipline, pilot policy, prohibited shortcuts. It governs how the "
                  "platform is changed, not what a number means, and no run reads it",
