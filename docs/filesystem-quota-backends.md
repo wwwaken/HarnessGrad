@@ -7,6 +7,10 @@ provisioning, quota allocation, effective-kernel observers, Docker storage bound
 production runner integration and verified cleanup remain external/runtime work.
 No checklist item below is marked complete by this document or its schema.
 
+For a concise administrator handoff separating read-only inspection, approved
+maintenance and post-change verification, use the
+[safe administrator checklist](task-222-quota-administrator-checklist.md).
+
 The historical source audit at revision
 `10e983fc5fcb006c5afdbce1ef851dad71e953f2` found no complete, connected byte-and-inode
 backend for native bwrap/files tasks, Docker exec or harness/method workspaces.
