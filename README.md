@@ -106,10 +106,19 @@ Both write the same `curve.jsonl`, so curves from either land on one axis.
 
 ## Install
 
+Ordinary use on a supported host needs no sudo or dedicated storage volume. Start
+with the [user setup guide](docs/user-setup.md) for prerequisites, current CLI
+defaults, and what local scores can claim. Administrator-provisioned quota and
+evidence backends are optional infrastructure for stronger formal claims; the
+complete production integration remains pending.
+
 ```bash
-./install.sh              # install what is missing, then verify
 ./install.sh --check      # verify only; change nothing (also useful in CI)
+./install.sh              # optionally install missing dependencies, then verify
 ```
+
+Installing missing system packages or enabling host namespace support may require
+administrator help; ordinary users can use an already supported host.
 
 That is the whole dependency list: `bubblewrap`, `git`, `python3 >= 3.10`. The platform
 itself has **no third-party Python packages** — everything it uses is in the standard

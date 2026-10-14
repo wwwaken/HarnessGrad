@@ -134,6 +134,14 @@ Do not merge a dataset-specific runner when a shared lifecycle, evidence envelop
 - Status: `isolated`; documentation/help/output-text clarification only. No runtime readiness, gate closure or production authorization; parent review/integration remains separate.
 - Commit: accompanying focused task-235 documentation/help/tests commit.
 
+### Task 244 — Ordinary-user setup and score claims
+
+- Trigger: quota provisioning requirements could be mistaken for prerequisites for every user.
+- Contract: [user setup](user-setup.md) distinguishes ordinary account/storage use from optional administrator infrastructure and scopes ordinary score claims; README links the guide.
+- Evidence: current `driver.py` CLI, installer behavior, quota backend/checklist, and task-234 readiness review. The complete quota backend and trusted staged lifecycle producer remain pending.
+- Validation: `python3 driver.py --help` succeeds; five guide links/anchors, eleven documented driver options, installer check flag, README/journal links, and `git diff --check` pass.
+- Status: documentation only; no new mode, host changes, H0/model/benchmark execution, or runtime admission.
+
 ## Commit discipline
 
 Use small commits with a capability-oriented subject, for example:
