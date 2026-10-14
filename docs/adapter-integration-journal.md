@@ -2177,3 +2177,48 @@ HTTP header whitespace is retained as acquired and documented in validation.
   the custody is real - raw responses preserved, digests recomputed. All three nonetheless stayed
   open on substantive grounds (missing runtime provenance or missing execution), which is the
   right reason to stay open and not an artifact of the withdrawn approval gate.
+
+## 2Wiki original-release custody and public-claim limits - 2026-10-15 - w-2wiki
+
+In registered `/tmp/hg-2wiki` (`wg-2wiki`), acquired four public documentation
+requests / five HTTP response hops through canonical
+`HG_EGRESS_PROXY=http://172.17.0.1:17890` with ordinary TLS validation. Raw
+entities, parsed headers and URL/status/time receipts are preserved in
+`tests/fixtures/hg_2wiki/` with recomputed SHA-256 manifest, decoded upstream
+license, publisher-paper text and offline evidence verifier. The original pinned
+Dropbox share GET returns a disabled-link HTML error page, not the archive.
+Its HTML SHA-256 is not represented as a data digest. The later opaque ETag/size
+attachment is not substituted; earlier upload-history/release/tag/license-issue
+requests and historical split checks were not repeated.
+
+The upstream GitHub license response reproduces the exact task-197 Apache-2.0
+blob, without an explicit grant for the external dataset/alias files. The pinned
+witness card explicitly asserts Apache-2.0 redistribution, but supplies no
+original alias-file grant and references a LICENSE absent from its pinned
+inventory. Its prose split counts conflict with its front matter. The publisher
+paper claims 192,606 examples (167,454 total training / 12,576 dev / 12,576 test),
+not a digest-bound unique-ID inventory or December alias-coverage attestation.
+Its CC-BY-4.0 paper notice is not extended to those files by inference.
+
+`twowikimultihopqa / hub-data-provenance` stays `external`. Original data-release
+digest/member mapping, explicit original dataset/alias rights, completeness and
+ID/alias coverage, and authenticated selected ordinal-to-raw-row linkage remain
+unestablished. The two selection lists and raw Hub hashes have separate metadata
+custody; their connecting proof is absent. Human/custodian sign-off is not
+reintroduced: `docs/independent-review-deferred.md` governs the withdrawn approval
+gate. The registry only gains more accurate observed/next_action wording and
+appended evidence for this blocker; no status, gate, taxonomy, history or shared
+blocker changes.
+
+File+line findings: `reports/w-2wiki-review.md`. Exact commands and checker output:
+`reports/w-2wiki-validation.txt`. Validation checks all new/inherited metadata
+bytes, both Git blob identities, PDF extraction, conflicting card counts and
+strict registry/journal scope, plus the existing source-only registry tests.
+No benchmark, model, GPU, endpoint, dataset payload, conversion or scorer was
+run. runs/ and frozen receipts were untouched. This review does not authorize
+production or claim benchmark utilization.
+
+Final w-2wiki validation: 54 source-only registry tests passed in 3.17s. All
+fixture SHA-256, response/header, decoded-license/card Git blob, PDF extraction
+and scope checks passed. Registry checker returned valid=true: 28 datasets,
+2 shared blockers, 11 historical records, production_authorized=false.

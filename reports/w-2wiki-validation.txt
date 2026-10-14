@@ -1,0 +1,85 @@
+w-2wiki validation — 2026-10-15 Asia/Shanghai
+Worktree: /tmp/hg-2wiki; branch: wg-2wiki
+Starting commit: 2c82417955798e6f00474bcbf49a80c4811d8df1
+No benchmark, model, GPU, endpoint, dataset payload or scorer execution.
+No runs/ or frozen originals touched. All prior metadata inputs remain byte-identical.
+
+Acquisition command executed once, not rerun during validation:
+$ HG_EGRESS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_2wiki/acquire.py
+{"name": "original-share-page", "hops": [{"status": 200, "bytes": 92113, "sha256": "e252567be77af87a9bf912845110adb7c5031e691ba0e2172a97a93ab4343789"}]}
+{"name": "publisher-paper", "hops": [{"status": 200, "bytes": 639331, "sha256": "e5e15d11dbf116a2d58437e7435ae4ce118dfc5373e3568e1c7d1cbdf0a0387d"}]}
+{"name": "current-repository-license", "hops": [{"status": 200, "bytes": 16565, "sha256": "6af990b37c81a5ffa57461e080149261733253ee01ea8284e8a55bc36d5cdf18"}]}
+{"name": "witness-card", "hops": [{"status": 307, "bytes": 301, "sha256": "3afbd10244358de0df03f8de8edf98ccbbd26869c5d345f7ae88c6c66f374410"}, {"status": 200, "bytes": 5462, "sha256": "1f5b8791e8fede7128e3245f0fbaf2dc663f24caf27dbe5f87165ff1f8f51450"}]}
+Above acquisition output is reconstructed exactly from the saved receipt fields.
+All attempts completed; every raw body/header is checked below.
+
+Derived text command executed after acquisition:
+$ pdftotext -layout tests/fixtures/hg_2wiki/publisher-paper/hop-0.body tests/fixtures/hg_2wiki/publisher-paper/extracted.txt
+exit=0; extraction reproduced byte-for-byte by verify.py.
+LICENSE.decoded is base64.b64decode(raw GitHub JSON["content"]); verify.py reproduces it byte-for-byte.
+$ python3 tests/fixtures/hg_2wiki/verify.py --write
+Initial offline derivation/manifest creation passed; subsequent verification follows.
+
+$ pdftotext -v
+pdftotext version 22.02.0
+Copyright 2005-2022 The Poppler Developers - http://poppler.freedesktop.org
+Copyright 1996-2011 Glyph & Cog, LLC
+exit=0
+
+$ python3 tests/fixtures/hg_2wiki/verify.py
+{"valid": true, "raw_responses": 5, "inherited_inputs": 11, "paper_claimed_examples": 192606, "witness_counts_conflict": true, "blocker_status": "external", "human_approval_required": false, "dataset_payload_access": false, "registry_scope": "only target observed/next_action and appended evidence", "journal": "append only"}
+exit=0
+
+cwd=tests/fixtures/hg_2wiki
+$ sha256sum -c SHA256SUMS
+README.md: 成功
+acquire.py: 成功
+current-repository-license/LICENSE.decoded: 成功
+current-repository-license/hop-0.body: 成功
+current-repository-license/hop-0.headers: 成功
+current-repository-license/receipt.json: 成功
+evidence.json: 成功
+original-share-page/hop-0.body: 成功
+original-share-page/hop-0.headers: 成功
+original-share-page/receipt.json: 成功
+publisher-paper/extracted.txt: 成功
+publisher-paper/hop-0.body: 成功
+publisher-paper/hop-0.headers: 成功
+publisher-paper/receipt.json: 成功
+verify.py: 成功
+witness-card/hop-0.body: 成功
+witness-card/hop-0.headers: 成功
+witness-card/hop-1.body: 成功
+witness-card/hop-1.headers: 成功
+witness-card/receipt.json: 成功
+exit=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/harnessgrad-pytest-w-2wiki tests/quality/test_dataset_blockers.py
+......................................................                   [100%]
+54 passed in 3.17s
+exit=0
+
+$ git diff --cached --check -- docs/dataset-blockers.json docs/adapter-integration-journal.md reports/w-2wiki-review.md tests/fixtures/hg_2wiki/acquire.py tests/fixtures/hg_2wiki/verify.py tests/fixtures/hg_2wiki/README.md tests/fixtures/hg_2wiki/evidence.json tests/fixtures/hg_2wiki/SHA256SUMS
+exit=0
+
+Raw HTML/PDF/card/API entities, parsed headers and PDF-derived text retain their acquired/extracted whitespace.
+Whitespace lint above covers authored source/docs/JSON/manifest; raw integrity is checked by SHA256SUMS and verify.py.
+Registry checker was also run immediately after the registry edit and returned the same valid=true counts.
+Scope verifier proves only target observed/next_action and appended evidence changed; journal is append-only.
+
+Final verification after recording test results in the report/journal:
+$ python3 tests/fixtures/hg_2wiki/verify.py
+{"valid": true, "raw_responses": 5, "inherited_inputs": 11, "paper_claimed_examples": 192606, "witness_counts_conflict": true, "blocker_status": "external", "human_approval_required": false, "dataset_payload_access": false, "registry_scope": "only target observed/next_action and appended evidence", "journal": "append only"}
+exit=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ git diff --cached --check -- docs/dataset-blockers.json docs/adapter-integration-journal.md reports/w-2wiki-review.md reports/w-2wiki-validation.txt
+exit=0
+
