@@ -1,0 +1,94 @@
+Parent integration validation - apply w-metriccmp's four comparability determinations.
+
+Source
+------
+Worker commit 70876d09 (branch wg-metriccmp), cherry-picked on top of main d1f32783. It adds
+`registry/proposals/w-metriccmp.json` (a bare JSON list, one record per dataset),
+`registry/w-metriccmp-comparability.md`, retained upstream source excerpts under
+`registry/w-metriccmp-sources/`, and its validation file. It edited no registry field.
+
+Applied through the tool, not by hand
+------------------------------------
+Each dataset was applied with `tools/apply_blocker_proposal.py --apply`, which re-runs
+`tools/check_dataset_blockers.py --registry <file>` after writing and restores the original bytes on
+failure. All four reported `"valid": true`.
+
+  physicsquestions/dataset-journal-gap    next_action 1088 -> 1590, observed 4088 -> 5019
+  sportsunderstanding/dataset-journal-gap next_action  950 -> 1243, observed 4196 -> 5005
+  strategyqa/dataset-journal-gap          next_action  991 -> 1615, observed 4016 -> 4963
+  spreadsheetbench/dataset-journal-gap    next_action 1291 -> 1696, observed 5728 -> 6804
+
+`git diff --numstat registry/dataset-blockers.json` is `8 8`: four `observed` values and four
+`next_action` values. No status, family, evidence, history, shared-blocker or permanent-refusal field
+changes.
+
+The worker's drafts were strengthened before applying
+----------------------------------------------------
+The applier refused all four drafts, flagging 5-7 sentences each that the replacement did not carry.
+Reading them showed the same pattern seen with w-fevconv and w-hotpotrec: the rewrites are
+semantically close but drop *specific* constraints. The parent therefore appended to each replacement
+the constraints that were lexically dropped and still load-bearing:
+
+* the explicit fixture path of the bounded first-five custody record
+  (`tests/fixtures/hg_wsel/<dataset>.json`);
+* for physicsquestions, that the reserved selection ID is not a runtime receipt and that a historical
+  converter revision or runtime execution must not be inferred;
+* for all four, that the mixed-side packet is not an accepted single-side diagnostic specification;
+* for physicsquestions, sportsunderstanding and strategyqa, that actual pristine execution applies
+  only to a future explicit pristine opt-in with the retained export/private-input and ownership
+  boundary;
+* for spreadsheetbench, that selected=5 is not eligibility or executed coverage and that the withdrawn
+  `scorer-offline-closure` / `artifact-only-state-export` gates do not condition closure or admission,
+  with their limits and opt-in boundary retained.
+
+Acknowledged drops (every one was read; the merged replacement carries its substance)
+------------------------------------------------------------------------------------
+physicsquestions (3): the first-five custody sentence (carried, fixture path restored); the
+installed-to-ReWOO/pinned-BIG-bench linkage plus separate local metric sentence (carried - "Retain
+authenticated installed-to-ReWOO and ordered pinned-BIG-bench row linkage", "Report the local
+asymmetric normalized accepted-spelling exact-match reward separately", "do not ... infer a historical
+converter revision or runtime execution"); the diagnostic split/side + invalid/unmeasured sentence
+(carried - "reconcile the run-specific selected manifest/export, exact source rows and chosen split
+mode/side", "Record eligible/selected/task/trial/invalid/unmeasured coverage").
+
+sportsunderstanding (5): the separate local text-label reporting sentence and its
+multiple_choice_grade non-equivalence (carried - "Adopt the separate local generated-text
+ASCII-letter-boundary label-accuracy statement", "do not call it equivalent to
+candidate-log-probability multiple_choice_grade"); the bounded first-five custody sentence (carried,
+fixture path restored); the diagnostic split/side sentence (carried); the withdrawn-gates sentence
+(carried as "Preserve the shared-requirement withdrawals in registry/withdrawn-requirements.md").
+
+strategyqa (3): the installed-custody plus first-five sentence (carried, fixture path restored); the
+diagnostic split/side and offline-dependency sentence (carried); the withdrawn-gates sentence (carried
+as the same withdrawal-preservation clause).
+
+spreadsheetbench (4): the workbook/mirror and first-five custody sentence (carried, fixture path
+restored); the scorer-custody/LibreOffice runtime sentence (carried - "Complete dataset-specific
+scorer custody/execution and formula/LibreOffice offline runtime evidence"); the measured-zero
+denominator sentence (carried - "Retain the measured-zero denominator for released colon-range parser
+ValueError"); the one-variant-versus-paper-aggregate sentence (carried - "do not identify it with the
+upstream three-variant soft_restriction mean or hard_restriction all-pass aggregate").
+
+Independent parent spot-check of the load-bearing metric claim
+-------------------------------------------------------------
+physicsquestions asserts local `rstrip('.')` normalization against BIG-bench `exact_str_match`'s
+unchanged target-list membership. Both sides were read directly:
+`data/scaffolds/qa/verify/check.py:249-262` shows the shared QA path taking
+`structured["answer"]` or `unwrap(answer).strip()` into the adapter scorer, and the retained upstream
+source `registry/w-metriccmp-sources/bigbench-task-metrics.py.txt:273-279` shows
+`if response in target: count += 1` with no normalization. The claimed difference is real. Its
+provenance is recorded honestly in `registry/w-metriccmp-sources/provenance.json`, including
+`"raw_api_source_comparison": "not performed; preserved source view and receipt reused; no new upstream
+authentication"` - i.e. the upstream source is a preserved local copy, not a fresh fetch, and the
+proposal says so.
+
+What this does NOT do
+---------------------
+- It closes nothing. All four blockers stay open with every dataset-specific obligation intact
+  (row-level gradability for spreadsheetbench, original-benchmark scorer/split for strategyqa under an
+  explicit `undetermined`, and so on).
+- It records no measured score. Every discriminating example is a constructed synthetic
+  (target, response) pair substituted into readable source; no scorer, adapters or dataset row was
+  executed.
+- It does not claim the retained upstream excerpts were re-authenticated against the live upstream.
+- It edits no historical record, frozen receipt or run ID, and reinstates no withdrawn shared gate.
