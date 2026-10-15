@@ -627,3 +627,31 @@ taken here because choosing between them is a judgement about what the control i
 
 It is left **red and unmodified** on purpose: rewriting a guard to match a refusal would hide the fact that
 the platform can no longer run this control shape at all, and that is the thing a reader needs to see.
+
+## Second definitive sweep, 2026-10-15 - 193 files, and the cap that had been hiding a result
+
+Re-run on frozen `f66cd83f` after the operator's `59cbf662` and the `w-banhung` integration, with
+`--timeout 1800` instead of 400. Result: `discovered 193, selected 193, ran 193, missing [], interrupted
+false`, **5 red**, 89.1 minutes. The per-scope count rose from 191 to 193 because
+`test_signal_termination.py` and `test_timeout_w_banhung.py` are new; both ran green in it (10 and 32
+passed), as did the four files repaired in the first sweep: `test_claims_doc.py` **11 passed** (the restored
+register turned a skip into real assertions), `test_gaia_snapshot_attestation.py` **88 passed** (was 7
+failed), `test_gaia_preflight_codex175.py` and `test_jericho_runtime_admission.py`.
+
+**The cap change is the point.** `test_appworld_official_scorer.py` ran to completion for the first time -
+1538.6 s - and reported `2 failed, 12 passed`. At the old 400 s cap it was `rc=124` with seven dots and no
+result, which is how two genuine failures stayed invisible through an entire per-file pass. **A per-file
+timeout is not a red and must never be counted as one or as a pass; it is a file whose result is unknown.**
+
+The five reds, all previously recorded and none new:
+
+| file | result | standing |
+| --- | --- | --- |
+| `test_appworld_official_scorer.py` | 2 failed, 12 passed (1538.6 s) | the long-standing `test_platform_control_arms` admission conflict, filed above |
+| `test_chessbench_stepwise_runner.py` | 2 failed, 16 passed (28.8 s) | load-induced: **18 passed in 31.8 s** when re-run alone. Both are socket-deadline tests (`test_reconnect_cannot_reset_session_allowance`, `test_trickled_partial_frame_cannot_extend_absolute_socket_deadline`), i.e. wall-clock assertions measured on a machine that was running the operator's 40-job pass |
+| `test_external_provenance_b5.py` | 5 failed, 1 passed | 71 raw bodies still unrestored; the replay is paused because it writes `tests/fixtures/` while a sweep reads it |
+| `test_isolation.py` | 1 failed, 15 passed (184.2 s) | known pre-existing |
+| `test_we5_equivalence.py` | 1 failed, 22 passed | the preserved packet that exists nowhere; enumerated limit |
+
+Zero unexplained reds across 193 files, and `ran == selected == discovered` - which is the only property
+that makes the number mean anything.
