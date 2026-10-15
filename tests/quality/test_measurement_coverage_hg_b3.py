@@ -62,21 +62,46 @@ def test_hotpot_malformed_predictions_are_unmeasured(hotpot_boundary, prediction
     assert not reward.exists()
 
 
-@pytest.mark.parametrize("support, expected", [
-    ({}, 0.0),
-    ({"predicted_evidence": []}, 0.0),
-    ({"predicted_evidence": [["A", 0]]}, 0.0),
-    ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0),
+# Gold facts are A/0 and B/1. Partial support has P=1, R=1/2, F1=2/3;
+# extra support has P=2/3, R=1, F1=4/5. Missing/empty support scores zero.
+# For "answer extra", answer P=1/2, R=1. Joint P/R are products:
+# partial support -> (1/2, 1/2), F1=1/2; complete -> (1/2, 1), F1=2/3;
+# extra support -> (1/3, 1), F1=1/2. Joint EM requires exact answer and support.
+@pytest.mark.parametrize("support, sp_em, sp_f1, partial_answer_joint_f1", [
+    ({}, 0.0, 0.0, 0.0),
+    ({"predicted_evidence": []}, 0.0, 0.0, 0.0),
+    ({"predicted_evidence": [["A", 0]]}, 0.0, 2 / 3, 1 / 2),
+    ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0, 1.0, 2 / 3),
+    ({"predicted_evidence": [["A", 0], ["B", 1], ["C", 2]]}, 0.0, 4 / 5, 1 / 2),
 ])
-def test_hotpot_valid_support_uses_joint_em(hotpot_boundary, support, expected):
+@pytest.mark.parametrize("answer, em, f1", [
+    # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap.
+    ("answer", 1.0, 1.0), ("answer extra", 0.0, 2 / 3), ("wrong", 0.0, 0.0),
+])
+def test_hotpot_answer_reward_retains_diagnostic_joint_metrics(
+        hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):
     code, evidence, reward = hotpot_boundary(json.dumps({
-        "schema_version": 1, "answer": "answer", **support,
+        "schema_version": 1, "answer": answer, **support,
     }))
-    assert code == (0 if expected else 1)
+    assert code == (0 if f1 == 1.0 else 1)
     assert evidence["measured"] is True
-    assert float(reward.read_text()) == expected
-    assert evidence["official"]["em"] == 1.0
-    assert evidence["official"]["joint_em"] == expected
+    # The verifier serializes reward.txt with :g (six significant digits).
+    assert float(reward.read_text()) == pytest.approx(f1)
+    assert evidence["reward"] == pytest.approx(f1)
+    assert evidence["correct"] is bool(em == 1.0)
+    metrics = evidence["official"]
+    assert metrics["metric"] == "HotpotQA answer F1 (not official joint)"
+    assert metrics["reward_metric"] == "answer_f1"
+    assert metrics["joint_metrics_role"] == "diagnostic_only"
+    assert metrics["em"] == em
+    assert metrics["f1"] == pytest.approx(f1)
+    assert metrics["sp_em"] == sp_em
+    assert metrics["sp_f1"] == pytest.approx(sp_f1)
+    assert metrics["joint_em"] == em * sp_em
+    expected_joint_f1 = (sp_f1 if em else partial_answer_joint_f1 if f1 else 0.0)
+    assert metrics["joint_f1"] == pytest.approx(expected_joint_f1)
+    assert "reward=answer_f1=" in evidence["why"]
+    assert "not official joint" in evidence["why"]
 
 
 def test_timeout_detail_alone_does_not_close_aggregation_gate(monkeypatch, tmp_path):

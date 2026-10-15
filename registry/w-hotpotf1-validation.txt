@@ -1,0 +1,773 @@
+w-hotpotf1 validation: scoring-policy correction only; not a dataset measurement.
+All outputs below are observed locally. No historical run receipt was resumed or edited.
+Commands run in /mnt/20t/xubuqiang/hg-wt/w-hotpotf1 unless -C says otherwise.
+Starting worktree: git status --short returned <empty>; git branch --show-current returned wg-w-hotpotf1.
+Read AGENTS.md before editing. Source branch observed at eaf3298e, not an assumed 4c9e30b1-era tip.
+The three code files were reused verbatim from eaf3298e with git show before applying the F1 correction.
+
+TEST LAUNCHES: exact commands, environment overrides, merged stdout/stderr, return codes and cleanup.
+The requested tests/quality/*hotpot* glob expanded to tests/quality/test_hotpot_timeout_admission_w_hotpot.py.
+Totals: baseline 113 passed, 4 skipped; first after attempt 5 failed, 119 passed, 4 skipped;
+final after 124 passed, 4 skipped. There are 11 additional parametrized cases (4 -> 15).
+The first after attempt incorrectly compared :g-serialized reward.txt exactly to full-precision evidence JSON.
+The corrected guard compares each independently to pytest.approx(f1); scorer/verifier code was not changed for precision.
+Serialization source: data/scaffolds/qa/verify/check.py:92 and :94.
+
+COMMAND: python3 -m pytest -q -ra tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py tests/quality/test_hotpot_timeout_admission_w_hotpot.py tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py --basetemp=/tmp/hotpotf1-before-torvb2vr/pytest
+ENV: TMPDIR=/tmp/hotpotf1-before-torvb2vr PYTHONDONTWRITEBYTECODE=1
+...........................s......ss...s................................ [ 61%]
+.............................................                            [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/conftest.py:26: site source packet absent from this clone: /site/w-alf-receipts.md
+SKIPPED [2] tests/quality/test_hotpot_timeout_admission_w_hotpot.py:66: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+SKIPPED [1] tests/quality/test_hotpot_timeout_admission_w_hotpot.py:116: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+113 passed, 4 skipped in 20.22s
+EXIT CODE: 0
+CLEANUP: removed /tmp/hotpotf1-before-torvb2vr; exists=False
+
+COMMAND: python3 -m pytest -q -ra tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py tests/quality/test_hotpot_timeout_admission_w_hotpot.py tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py --basetemp=/tmp/hotpotf1-after-46ea04wh/pytest
+ENV: TMPDIR=/tmp/hotpotf1-after-46ea04wh PYTHONDONTWRITEBYTECODE=1
+....................FFFFF.............s......ss...s..................... [ 56%]
+........................................................                 [100%]
+=================================== FAILURES ===================================
+_ test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support0-0.0-0.0-0.0] _
+
+hotpot_boundary = <function hotpot_boundary.<locals>.run at 0x7173a2b72160>
+support = {}, sp_em = 0.0, sp_f1 = 0.0, partial_answer_joint_f1 = 0.0
+answer = 'answer extra', em = 0.0, f1 = 0.6666666666666666
+
+    @pytest.mark.parametrize("support, sp_em, sp_f1, partial_answer_joint_f1", [
+        ({}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": []}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": [["A", 0]]}, 0.0, 2 / 3, 1 / 2),
+        ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0, 1.0, 2 / 3),
+        ({"predicted_evidence": [["A", 0], ["B", 1], ["C", 2]]}, 0.0, 4 / 5, 1 / 2),
+    ])
+    @pytest.mark.parametrize("answer, em, f1", [
+        # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap.
+        ("answer", 1.0, 1.0), ("answer extra", 0.0, 2 / 3), ("wrong", 0.0, 0.0),
+    ])
+    def test_hotpot_answer_reward_retains_diagnostic_joint_metrics(
+            hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):
+        code, evidence, reward = hotpot_boundary(json.dumps({
+            "schema_version": 1, "answer": answer, **support,
+        }))
+        assert code == (0 if f1 == 1.0 else 1)
+        assert evidence["measured"] is True
+>       assert float(reward.read_text()) == evidence["reward"] == pytest.approx(f1)
+E       AssertionError: assert 0.666667 == 0.6666666666666666
+E        +  where 0.666667 = float('0.666667\n')
+E        +    where '0.666667\n' = <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta5/verifier/reward.txt')>()
+E        +      where <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta5/verifier/reward.txt')> = PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta5/verifier/reward.txt').read_text
+
+/mnt/20t/xubuqiang/hg-wt/w-hotpotf1/tests/quality/test_measurement_coverage_hg_b3.py:88: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 0.666667: reward=answer_f1=0.666667, answer_em=0; not official joint (joint_em=0, joint_f1=0)
+_ test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support1-0.0-0.0-0.0] _
+
+hotpot_boundary = <function hotpot_boundary.<locals>.run at 0x7173a2b73c40>
+support = {'predicted_evidence': []}, sp_em = 0.0, sp_f1 = 0.0
+partial_answer_joint_f1 = 0.0, answer = 'answer extra', em = 0.0
+f1 = 0.6666666666666666
+
+    @pytest.mark.parametrize("support, sp_em, sp_f1, partial_answer_joint_f1", [
+        ({}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": []}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": [["A", 0]]}, 0.0, 2 / 3, 1 / 2),
+        ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0, 1.0, 2 / 3),
+        ({"predicted_evidence": [["A", 0], ["B", 1], ["C", 2]]}, 0.0, 4 / 5, 1 / 2),
+    ])
+    @pytest.mark.parametrize("answer, em, f1", [
+        # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap.
+        ("answer", 1.0, 1.0), ("answer extra", 0.0, 2 / 3), ("wrong", 0.0, 0.0),
+    ])
+    def test_hotpot_answer_reward_retains_diagnostic_joint_metrics(
+            hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):
+        code, evidence, reward = hotpot_boundary(json.dumps({
+            "schema_version": 1, "answer": answer, **support,
+        }))
+        assert code == (0 if f1 == 1.0 else 1)
+        assert evidence["measured"] is True
+>       assert float(reward.read_text()) == evidence["reward"] == pytest.approx(f1)
+E       AssertionError: assert 0.666667 == 0.6666666666666666
+E        +  where 0.666667 = float('0.666667\n')
+E        +    where '0.666667\n' = <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta6/verifier/reward.txt')>()
+E        +      where <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta6/verifier/reward.txt')> = PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta6/verifier/reward.txt').read_text
+
+/mnt/20t/xubuqiang/hg-wt/w-hotpotf1/tests/quality/test_measurement_coverage_hg_b3.py:88: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 0.666667: reward=answer_f1=0.666667, answer_em=0; not official joint (joint_em=0, joint_f1=0)
+_ test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support2-0.0-0.6666666666666666-0.5] _
+
+hotpot_boundary = <function hotpot_boundary.<locals>.run at 0x7173a2bb4d60>
+support = {'predicted_evidence': [['A', 0]]}, sp_em = 0.0
+sp_f1 = 0.6666666666666666, partial_answer_joint_f1 = 0.5
+answer = 'answer extra', em = 0.0, f1 = 0.6666666666666666
+
+    @pytest.mark.parametrize("support, sp_em, sp_f1, partial_answer_joint_f1", [
+        ({}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": []}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": [["A", 0]]}, 0.0, 2 / 3, 1 / 2),
+        ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0, 1.0, 2 / 3),
+        ({"predicted_evidence": [["A", 0], ["B", 1], ["C", 2]]}, 0.0, 4 / 5, 1 / 2),
+    ])
+    @pytest.mark.parametrize("answer, em, f1", [
+        # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap.
+        ("answer", 1.0, 1.0), ("answer extra", 0.0, 2 / 3), ("wrong", 0.0, 0.0),
+    ])
+    def test_hotpot_answer_reward_retains_diagnostic_joint_metrics(
+            hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):
+        code, evidence, reward = hotpot_boundary(json.dumps({
+            "schema_version": 1, "answer": answer, **support,
+        }))
+        assert code == (0 if f1 == 1.0 else 1)
+        assert evidence["measured"] is True
+>       assert float(reward.read_text()) == evidence["reward"] == pytest.approx(f1)
+E       AssertionError: assert 0.666667 == 0.6666666666666666
+E        +  where 0.666667 = float('0.666667\n')
+E        +    where '0.666667\n' = <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta7/verifier/reward.txt')>()
+E        +      where <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta7/verifier/reward.txt')> = PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta7/verifier/reward.txt').read_text
+
+/mnt/20t/xubuqiang/hg-wt/w-hotpotf1/tests/quality/test_measurement_coverage_hg_b3.py:88: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 0.666667: reward=answer_f1=0.666667, answer_em=0; not official joint (joint_em=0, joint_f1=0.5)
+_ test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support3-1.0-1.0-0.6666666666666666] _
+
+hotpot_boundary = <function hotpot_boundary.<locals>.run at 0x7173a2bb5e40>
+support = {'predicted_evidence': [['A', 0], ['B', 1]]}, sp_em = 1.0, sp_f1 = 1.0
+partial_answer_joint_f1 = 0.6666666666666666, answer = 'answer extra', em = 0.0
+f1 = 0.6666666666666666
+
+    @pytest.mark.parametrize("support, sp_em, sp_f1, partial_answer_joint_f1", [
+        ({}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": []}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": [["A", 0]]}, 0.0, 2 / 3, 1 / 2),
+        ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0, 1.0, 2 / 3),
+        ({"predicted_evidence": [["A", 0], ["B", 1], ["C", 2]]}, 0.0, 4 / 5, 1 / 2),
+    ])
+    @pytest.mark.parametrize("answer, em, f1", [
+        # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap.
+        ("answer", 1.0, 1.0), ("answer extra", 0.0, 2 / 3), ("wrong", 0.0, 0.0),
+    ])
+    def test_hotpot_answer_reward_retains_diagnostic_joint_metrics(
+            hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):
+        code, evidence, reward = hotpot_boundary(json.dumps({
+            "schema_version": 1, "answer": answer, **support,
+        }))
+        assert code == (0 if f1 == 1.0 else 1)
+        assert evidence["measured"] is True
+>       assert float(reward.read_text()) == evidence["reward"] == pytest.approx(f1)
+E       AssertionError: assert 0.666667 == 0.6666666666666666
+E        +  where 0.666667 = float('0.666667\n')
+E        +    where '0.666667\n' = <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta8/verifier/reward.txt')>()
+E        +      where <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta8/verifier/reward.txt')> = PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta8/verifier/reward.txt').read_text
+
+/mnt/20t/xubuqiang/hg-wt/w-hotpotf1/tests/quality/test_measurement_coverage_hg_b3.py:88: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 0.666667: reward=answer_f1=0.666667, answer_em=0; not official joint (joint_em=0, joint_f1=0.666667)
+_ test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support4-0.0-0.8-0.5] _
+
+hotpot_boundary = <function hotpot_boundary.<locals>.run at 0x7173a2bb6fc0>
+support = {'predicted_evidence': [['A', 0], ['B', 1], ['C', 2]]}, sp_em = 0.0
+sp_f1 = 0.8, partial_answer_joint_f1 = 0.5, answer = 'answer extra', em = 0.0
+f1 = 0.6666666666666666
+
+    @pytest.mark.parametrize("support, sp_em, sp_f1, partial_answer_joint_f1", [
+        ({}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": []}, 0.0, 0.0, 0.0),
+        ({"predicted_evidence": [["A", 0]]}, 0.0, 2 / 3, 1 / 2),
+        ({"predicted_evidence": [["A", 0], ["B", 1]]}, 1.0, 1.0, 2 / 3),
+        ({"predicted_evidence": [["A", 0], ["B", 1], ["C", 2]]}, 0.0, 4 / 5, 1 / 2),
+    ])
+    @pytest.mark.parametrize("answer, em, f1", [
+        # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap.
+        ("answer", 1.0, 1.0), ("answer extra", 0.0, 2 / 3), ("wrong", 0.0, 0.0),
+    ])
+    def test_hotpot_answer_reward_retains_diagnostic_joint_metrics(
+            hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):
+        code, evidence, reward = hotpot_boundary(json.dumps({
+            "schema_version": 1, "answer": answer, **support,
+        }))
+        assert code == (0 if f1 == 1.0 else 1)
+        assert evidence["measured"] is True
+>       assert float(reward.read_text()) == evidence["reward"] == pytest.approx(f1)
+E       AssertionError: assert 0.666667 == 0.6666666666666666
+E        +  where 0.666667 = float('0.666667\n')
+E        +    where '0.666667\n' = <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta9/verifier/reward.txt')>()
+E        +      where <bound method Path.read_text of PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta9/verifier/reward.txt')> = PosixPath('/tmp/hotpotf1-after-46ea04wh/pytest/test_hotpot_answer_reward_reta9/verifier/reward.txt').read_text
+
+/mnt/20t/xubuqiang/hg-wt/w-hotpotf1/tests/quality/test_measurement_coverage_hg_b3.py:88: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 0.666667: reward=answer_f1=0.666667, answer_em=0; not official joint (joint_em=0, joint_f1=0.5)
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/conftest.py:26: site source packet absent from this clone: /site/w-alf-receipts.md
+SKIPPED [2] tests/quality/test_hotpot_timeout_admission_w_hotpot.py:66: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+SKIPPED [1] tests/quality/test_hotpot_timeout_admission_w_hotpot.py:116: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+FAILED tests/quality/test_measurement_coverage_hg_b3.py::test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support0-0.0-0.0-0.0]
+FAILED tests/quality/test_measurement_coverage_hg_b3.py::test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support1-0.0-0.0-0.0]
+FAILED tests/quality/test_measurement_coverage_hg_b3.py::test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support2-0.0-0.6666666666666666-0.5]
+FAILED tests/quality/test_measurement_coverage_hg_b3.py::test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support3-1.0-1.0-0.6666666666666666]
+FAILED tests/quality/test_measurement_coverage_hg_b3.py::test_hotpot_answer_reward_retains_diagnostic_joint_metrics[answer extra-0.0-0.6666666666666666-support4-0.0-0.8-0.5]
+5 failed, 119 passed, 4 skipped in 20.79s
+EXIT CODE: 1
+CLEANUP: removed /tmp/hotpotf1-after-46ea04wh; exists=False
+
+COMMAND: python3 -m pytest -q -ra tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py tests/quality/test_hotpot_timeout_admission_w_hotpot.py tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py --basetemp=/tmp/hotpotf1-after-i48g9rbq/pytest
+ENV: TMPDIR=/tmp/hotpotf1-after-i48g9rbq PYTHONDONTWRITEBYTECODE=1
+......................................s......ss...s..................... [ 56%]
+........................................................                 [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/conftest.py:26: site source packet absent from this clone: /site/w-alf-receipts.md
+SKIPPED [2] tests/quality/test_hotpot_timeout_admission_w_hotpot.py:66: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+SKIPPED [1] tests/quality/test_hotpot_timeout_admission_w_hotpot.py:116: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+124 passed, 4 skipped in 20.13s
+EXIT CODE: 0
+CLEANUP: removed /tmp/hotpotf1-after-i48g9rbq; exists=False
+
+INSPECTION SCRIPT (verbatim; recreate as verify_hotpotf1.py to reproduce the command below):
+import ast
+import json
+from pathlib import Path
+import subprocess
+import types
+from unittest.mock import patch
+
+from data.scaffolds.qa import base
+from data.scaffolds.qa.evidence_scorers import hotpot_f1_score, hotpot_normalize_answer
+
+path = "data/datasets/hotpotqa.py"
+source = subprocess.check_output(["git", "show", "eaf3298e:" + path], text=True)
+current = Path(path).read_text()
+gold = {"answer": "answer", "supporting_facts": [["A", 0], ["B", 1]]}
+prediction = {"answer": "answer extra", "predicted_evidence": [["A", 0], ["B", 1]]}
+print("SYNTHETIC INPUT: " + json.dumps({"prediction": prediction, "gold": gold}, sort_keys=True))
+for label, code in [("source_branch_answer_em", source), ("corrected_answer_f1", current)]:
+    module = types.ModuleType(label)
+    with patch.object(base.QASpec, "records", return_value=[]), patch.object(
+            base, "parquet_rows", side_effect=AssertionError("no dataset reads")):
+        exec(compile(code, label, "exec"), module.__dict__)
+    result = module.score_prediction(prediction, gold)
+    print(label + ": " + json.dumps(result, sort_keys=True))
+    assert result["reward"] == (0.0 if label == "source_branch_answer_em" else 2 / 3)
+    assert result["correct"] is False
+print("DERIVATION: one overlapping token / two predicted = P=1/2; one / one gold = R=1; F1=2PR/(P+R)=2/3; EM=0.")
+print("ARTICLE NORMALIZATION: " + json.dumps({
+    "prediction": "answer", "gold": "The answer",
+    "normalized_prediction": hotpot_normalize_answer("answer"),
+    "normalized_gold": hotpot_normalize_answer("The answer"),
+    "f1_precision_recall": hotpot_f1_score("answer", "The answer")}, sort_keys=True))
+
+before_text = subprocess.check_output(["git", "show", "HEAD:" + path], text=True)
+before, after = ast.parse(before_text), ast.parse(current)
+def spec_args(tree):
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "_SPEC" for t in node.targets):
+            return {k.arg: ast.dump(k.value, include_attributes=False) for k in node.value.keywords}
+    raise AssertionError("_SPEC missing")
+old, new = spec_args(before), spec_args(after)
+changed = sorted(k for k in old.keys() | new.keys() if old.get(k) != new.get(k))
+assert not changed, changed
+print("QASpec keyword AST changes versus starting HEAD: " + json.dumps(changed))
+def nonscoring_nodes(tree):
+    return [ast.dump(n, include_attributes=False) for i, n in enumerate(tree.body)
+            if i != 0
+            and not (isinstance(n, ast.FunctionDef) and n.name == "score_prediction")
+            and not (isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "METRIC_NAME" for t in n.targets))]
+assert nonscoring_nodes(before) == nonscoring_nodes(after)
+print("Adapter AST outside docstring, METRIC_NAME and score_prediction: UNCHANGED")
+reward_returns = [n for n in ast.walk(after) if isinstance(n, ast.Return) and isinstance(n.value, ast.Dict)
+                  and any(isinstance(k, ast.Constant) and k.value == "reward" for k in n.value.keys)]
+assert len(reward_returns) == 1
+fields = {k.value: v for k, v in zip(reward_returns[0].value.keys, reward_returns[0].value.values)}
+assert isinstance(fields["reward"], ast.Name) and fields["reward"].id == "f1"
+assert ast.dump(fields["correct"]) == ast.dump(ast.parse("bool(em == 1.0)", mode="eval").body)
+print("Published score_prediction reward AST: f1; correct AST: bool(em == 1.0)")
+protected = ["AGENTS.md", "registry/dataset-blockers.json", "registry/blocker-closure-assessment.md",
+             "docs/adapter-integration-journal.md", "data/scaffolds/qa/verify/check.py", "data/scaffolds/qa/evidence_scorers.py"]
+for p in protected:
+    assert Path(p).read_bytes() == subprocess.check_output(["git", "show", "HEAD:" + p]), p
+    print("UNCHANGED versus starting HEAD: " + p)
+
+SOURCE PROVENANCE, SYNTHETIC COMPARISON, JOINT-EM SEARCH, SCOPE AND CHECKER OUTPUTS:
+ENV for inspection commands: PYTHONPATH=/mnt/20t/xubuqiang/hg-wt/w-hotpotf1 PYTHONDONTWRITEBYTECODE=1
+COMMAND: git -C /mnt/20t/xubuqiang/hg-wt/w-hotpotqa log --oneline -1
+eaf3298e w-hotpotqa: report answer EM with explicit non-joint metric identity
+EXIT CODE: 0
+
+COMMAND: git rev-parse wg-w-hotpotqa
+eaf3298e1d4cd17db2c7c60b8d0bd9a4ddec1db2
+EXIT CODE: 0
+
+COMMAND: git merge-base HEAD wg-w-hotpotqa
+38a302e5c5edb9d1b26b0e642a40301f013f5cad
+EXIT CODE: 0
+
+COMMAND: git log -1 '--format=%H %s'
+97becc0031c7accc46391829d0bd9f7d914f4d5e registry: record the spreadsheetbench scorer custody move as a new note
+EXIT CODE: 0
+
+COMMAND: git diff --stat 38a302e5c5edb9d1b26b0e642a40301f013f5cad wg-w-hotpotqa
+ data/datasets/hotpotqa.py                        | 19 +++--
+ registry/w-hotpotqa-validation.txt               | 95 ++++++++++++++++++++++++
+ registry/w-hotpotqa.md                           | 82 ++++++++++++++++++++
+ tests/quality/test_measurement_coverage_hg_b3.py | 38 +++++++---
+ tests/quality/test_qa_evidence_contract.py       |  8 +-
+ 5 files changed, 224 insertions(+), 18 deletions(-)
+EXIT CODE: 0
+
+COMMAND: git diff 38a302e5c5edb9d1b26b0e642a40301f013f5cad HEAD -- data/datasets/hotpotqa.py tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py
+OUTPUT: <empty>
+EXIT CODE: 0
+
+COMMAND: python3 /mnt/20t/xubuqiang/hg-work/hotpotf1/verify_hotpotf1.py
+SYNTHETIC INPUT: {"gold": {"answer": "answer", "supporting_facts": [["A", 0], ["B", 1]]}, "prediction": {"answer": "answer extra", "predicted_evidence": [["A", 0], ["B", 1]]}}
+source_branch_answer_em: {"correct": false, "official": {"em": 0.0, "f1": 0.6666666666666666, "joint_em": 0.0, "joint_f1": 0.6666666666666666, "joint_metrics_role": "diagnostic_only", "metric": "HotpotQA answer EM (not official joint)", "reward_metric": "answer_em", "sp_em": 1.0, "sp_f1": 1.0}, "reward": 0.0, "why": "answer_em=0, answer_f1=0.666667; not official joint (joint_em=0, joint_f1=0.666667)"}
+corrected_answer_f1: {"correct": false, "official": {"em": 0.0, "f1": 0.6666666666666666, "joint_em": 0.0, "joint_f1": 0.6666666666666666, "joint_metrics_role": "diagnostic_only", "metric": "HotpotQA answer F1 (not official joint)", "reward_metric": "answer_f1", "sp_em": 1.0, "sp_f1": 1.0}, "reward": 0.6666666666666666, "why": "reward=answer_f1=0.666667, answer_em=0; not official joint (joint_em=0, joint_f1=0.666667)"}
+DERIVATION: one overlapping token / two predicted = P=1/2; one / one gold = R=1; F1=2PR/(P+R)=2/3; EM=0.
+ARTICLE NORMALIZATION: {"f1_precision_recall": [1.0, 1.0, 1.0], "gold": "The answer", "normalized_gold": "answer", "normalized_prediction": "answer", "prediction": "answer"}
+QASpec keyword AST changes versus starting HEAD: []
+Adapter AST outside docstring, METRIC_NAME and score_prediction: UNCHANGED
+Published score_prediction reward AST: f1; correct AST: bool(em == 1.0)
+UNCHANGED versus starting HEAD: AGENTS.md
+UNCHANGED versus starting HEAD: registry/dataset-blockers.json
+UNCHANGED versus starting HEAD: registry/blocker-closure-assessment.md
+UNCHANGED versus starting HEAD: docs/adapter-integration-journal.md
+UNCHANGED versus starting HEAD: data/scaffolds/qa/verify/check.py
+UNCHANGED versus starting HEAD: data/scaffolds/qa/evidence_scorers.py
+EXIT CODE: 0
+
+COMMAND: rg -n joint_em data/datasets/hotpotqa.py tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py
+tests/quality/test_measurement_coverage_hg_b3.py:100:    assert metrics["joint_em"] == em * sp_em
+tests/quality/test_qa_evidence_contract.py:120:    assert missing["official"]["joint_em"] == 0.0
+tests/quality/test_qa_evidence_contract.py:124:    assert correct["official"]["joint_em"] == 1.0
+tests/quality/test_qa_evidence_contract.py:129:    assert partial["official"]["joint_em"] == 0.0
+tests/quality/test_qa_evidence_contract.py:134:    assert extra["official"]["em"] == extra["official"]["joint_em"] == 0.0
+data/datasets/hotpotqa.py:51:    joint_em, joint_f1 = hotpot_joint(em, precision, recall, sp)
+data/datasets/hotpotqa.py:56:                          "joint_em": joint_em, "joint_f1": joint_f1},
+data/datasets/hotpotqa.py:58:                   f"(joint_em={joint_em:g}, joint_f1={joint_f1:g})"}
+EXIT CODE: 0
+
+COMMAND: git diff --name-only HEAD -- AGENTS.md registry/dataset-blockers.json registry/blocker-closure-assessment.md docs/adapter-integration-journal.md 'data/**/verify/check.py'
+OUTPUT: <empty>
+EXIT CODE: 0
+
+COMMAND: python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT CODE: 0
+
+COMMAND: git diff --check
+OUTPUT: <empty>
+EXIT CODE: 0
+
+JOINT SEARCH INTERPRETATION:
+The enumerated adapter/guard rg output shows joint_em only as a diagnostic calculation,
+inside official/why evidence, or in assertions over those fields. The AST assertion checks
+that the sole published reward expression is f1 and correctness is bool(em == 1.0).
+The guards check reward.txt and evidence reward against answer F1 independently of supporting facts.
+Sources: data/datasets/hotpotqa.py:51, :52, :54, :56, :57;
+tests/quality/test_measurement_coverage_hg_b3.py:89, :90, :100;
+tests/quality/test_qa_evidence_contract.py:120, :124, :129, :134.
+ABSENT scope: modifications to the exact protected paths in the git diff --name-only command above;
+no claim about arbitrary untracked files, other worktrees or historical run trees.
+The checker remains valid; this diff does not edit its registry input or the registry/closure guards.
+
+SOURCE BRANCH DIFF AGAINST ITS OWN MERGE BASE, FOLLOWED BY CORRECTION DIFF: Diff stdout lines are JSON strings; decode each and append LF for exact output.
+COMMAND: git diff 38a302e5c5edb9d1b26b0e642a40301f013f5cad eaf3298e1d4cd17db2c7c60b8d0bd9a4ddec1db2 -- data/datasets/hotpotqa.py tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py
+"diff --git a/data/datasets/hotpotqa.py b/data/datasets/hotpotqa.py"
+"index e33aba96..764a1f08 100644"
+"--- a/data/datasets/hotpotqa.py"
+"+++ b/data/datasets/hotpotqa.py"
+"@@ -1,8 +1,12 @@"
+"-r\"\"\"HotpotQA fullwiki validation adapter using the official joint metric."
+"+r\"\"\"HotpotQA fullwiki validation adapter reporting answer EM, not official joint EM."
+" "
+" `prediction.json` carries the answer and optional `(title, sentence_index)` pairs."
+"-Answer EM/F1 and supporting-fact scores feed the official joint EM/F1; support facts use"
+"-exact set semantics. Missing evidence remains a valid prediction and produces joint zero."
+"+Reward and correctness use answer EM; answer F1 is recorded alongside it. This"
+"+question-only configuration supplies neither context nor a retrieval service, so this"
+"+reward must not be presented as the official HotpotQA joint metric. Supporting-fact"
+"+and joint EM/F1 remain diagnostic scores; support facts use exact set semantics."
+"+Missing evidence remains a valid prediction and produces support/joint zero without"
+"+changing the answer reward. The goal still asks for supporting facts."
+" The adapter reads only the pinned validation split, not test gold."
+" \"\"\""
+" from __future__ import annotations"
+"@@ -12,6 +16,7 @@ from data.scaffolds.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_sc"
+"                                       SpScore, hotpot_joint, hotpot_update_sp, MissingEvidence)"
+" "
+" KIND = \"dataset\""
+"+METRIC_NAME = \"HotpotQA answer EM (not official joint)\""
+" "
+" DATASET_ROOT = base.Path(\"/mnt/20t/xubuqiang/datasets/hotpotqa\")"
+" REVISION = \"1908d6afbbead072334abe2965f91bd2709910ab\""
+"@@ -44,11 +49,13 @@ def score_prediction(prediction: dict, gold: dict) -> dict:"
+"     except MissingEvidence:"
+"         sp = SpScore(em=0.0, f1=0.0, prec=0.0, recall=0.0)"
+"     joint_em, joint_f1 = hotpot_joint(em, precision, recall, sp)"
+"-    return {\"reward\": joint_em, \"correct\": bool(joint_em == 1.0),"
+"-            \"official\": {\"metric\": \"HotpotQA joint\", \"em\": em, \"f1\": f1,"
+"+    return {\"reward\": em, \"correct\": bool(em == 1.0),"
+"+            \"official\": {\"metric\": METRIC_NAME, \"reward_metric\": \"answer_em\","
+"+                          \"joint_metrics_role\": \"diagnostic_only\", \"em\": em, \"f1\": f1,"
+"                           \"sp_em\": sp.em, \"sp_f1\": sp.f1,"
+"                           \"joint_em\": joint_em, \"joint_f1\": joint_f1},"
+"-            \"why\": f\"joint_em={joint_em:g}, joint_f1={joint_f1:g}\"}"
+"+            \"why\": f\"answer_em={em:g}, answer_f1={f1:g}; not official joint \""
+"+                   f\"(joint_em={joint_em:g}, joint_f1={joint_f1:g})\"}"
+" "
+" "
+" def score(prediction: str, gold: dict) -> dict:"
+"diff --git a/tests/quality/test_measurement_coverage_hg_b3.py b/tests/quality/test_measurement_coverage_hg_b3.py"
+"index 9a475277..f360417e 100644"
+"--- a/tests/quality/test_measurement_coverage_hg_b3.py"
+"+++ b/tests/quality/test_measurement_coverage_hg_b3.py"
+"@@ -62,21 +62,37 @@ def test_hotpot_malformed_predictions_are_unmeasured(hotpot_boundary, prediction"
+"     assert not reward.exists()"
+" "
+" "
+"-@pytest.mark.parametrize(\"support, expected\", ["
+"-    ({}, 0.0),"
+"-    ({\"predicted_evidence\": []}, 0.0),"
+"-    ({\"predicted_evidence\": [[\"A\", 0]]}, 0.0),"
+"-    ({\"predicted_evidence\": [[\"A\", 0], [\"B\", 1]]}, 1.0),"
+"+@pytest.mark.parametrize(\"support, sp_em, sp_f1, partial_answer_joint_f1\", ["
+"+    ({}, 0.0, 0.0, 0.0),"
+"+    ({\"predicted_evidence\": []}, 0.0, 0.0, 0.0),"
+"+    ({\"predicted_evidence\": [[\"A\", 0]]}, 0.0, 2 / 3, 1 / 2),"
+"+    ({\"predicted_evidence\": [[\"A\", 0], [\"B\", 1]]}, 1.0, 1.0, 2 / 3),"
+"+    ({\"predicted_evidence\": [[\"A\", 0], [\"B\", 1], [\"C\", 2]]}, 0.0, 4 / 5, 1 / 2),"
+" ])"
+"-def test_hotpot_valid_support_uses_joint_em(hotpot_boundary, support, expected):"
+"+@pytest.mark.parametrize(\"answer, em, f1\", ["
+"+    (\"answer\", 1.0, 1.0), (\"answer extra\", 0.0, 2 / 3), (\"wrong\", 0.0, 0.0),"
+"+])"
+"+def test_hotpot_answer_reward_retains_diagnostic_joint_metrics("
+"+        hotpot_boundary, support, sp_em, sp_f1, partial_answer_joint_f1, answer, em, f1):"
+"     code, evidence, reward = hotpot_boundary(json.dumps({"
+"-        \"schema_version\": 1, \"answer\": \"answer\", **support,"
+"+        \"schema_version\": 1, \"answer\": answer, **support,"
+"     }))"
+"-    assert code == (0 if expected else 1)"
+"+    assert code == (0 if em else 1)"
+"     assert evidence[\"measured\"] is True"
+"-    assert float(reward.read_text()) == expected"
+"-    assert evidence[\"official\"][\"em\"] == 1.0"
+"-    assert evidence[\"official\"][\"joint_em\"] == expected"
+"+    assert float(reward.read_text()) == evidence[\"reward\"] == em"
+"+    assert evidence[\"correct\"] is bool(em)"
+"+    metrics = evidence[\"official\"]"
+"+    assert metrics[\"metric\"] == \"HotpotQA answer EM (not official joint)\""
+"+    assert metrics[\"reward_metric\"] == \"answer_em\""
+"+    assert metrics[\"joint_metrics_role\"] == \"diagnostic_only\""
+"+    assert metrics[\"em\"] == em"
+"+    assert metrics[\"f1\"] == pytest.approx(f1)"
+"+    assert metrics[\"sp_em\"] == sp_em"
+"+    assert metrics[\"sp_f1\"] == pytest.approx(sp_f1)"
+"+    assert metrics[\"joint_em\"] == em * sp_em"
+"+    expected_joint_f1 = (sp_f1 if em else partial_answer_joint_f1 if f1 else 0.0)"
+"+    assert metrics[\"joint_f1\"] == pytest.approx(expected_joint_f1)"
+"+    assert \"not official joint\" in evidence[\"why\"]"
+" "
+" "
+" def test_timeout_detail_alone_does_not_close_aggregation_gate(monkeypatch, tmp_path):"
+"diff --git a/tests/quality/test_qa_evidence_contract.py b/tests/quality/test_qa_evidence_contract.py"
+"index a4facfe9..4f014116 100644"
+"--- a/tests/quality/test_qa_evidence_contract.py"
+"+++ b/tests/quality/test_qa_evidence_contract.py"
+"@@ -110,11 +110,17 @@ def test_hotpot_uses_answer_metrics_and_joint_exact_set():"
+" "
+"     gold = {\"answer\": \"The answer\", \"supporting_facts\": [[\"A\", 0], [\"B\", 1]]}"
+"     missing = score(\"answer\", gold)"
+"-    assert missing[\"reward\"] == 0.0"
+"+    assert missing[\"reward\"] == 1.0"
+"+    assert missing[\"correct\"] is True"
+"+    assert missing[\"official\"][\"metric\"] == \"HotpotQA answer EM (not official joint)\""
+"+    assert missing[\"official\"][\"joint_em\"] == 0.0"
+"+    assert missing[\"official\"][\"sp_f1\"] == 0.0"
+"     correct = score_prediction({\"answer\": \"answer\", \"predicted_evidence\": ["
+"         [\"A\", 0], [\"B\", 1]]}, gold)"
+"     assert correct[\"official\"][\"joint_em\"] == 1.0"
+"     partial = score_prediction({\"answer\": \"answer\", \"predicted_evidence\": [[\"A\", 0]]}, gold)"
+"+    assert partial[\"reward\"] == 1.0"
+"+    assert partial[\"official\"][\"sp_f1\"] == pytest.approx(2 / 3)"
+"     assert partial[\"official\"][\"joint_em\"] == 0.0"
+" "
+" "
+EXIT CODE: 0
+
+COMMAND: git diff eaf3298e1d4cd17db2c7c60b8d0bd9a4ddec1db2 -- data/datasets/hotpotqa.py tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py
+"diff --git a/data/datasets/hotpotqa.py b/data/datasets/hotpotqa.py"
+"index 764a1f08..0009014c 100644"
+"--- a/data/datasets/hotpotqa.py"
+"+++ b/data/datasets/hotpotqa.py"
+"@@ -1,7 +1,7 @@"
+"-r\"\"\"HotpotQA fullwiki validation adapter reporting answer EM, not official joint EM."
+"+r\"\"\"HotpotQA fullwiki validation adapter reporting answer F1, not official joint F1."
+" "
+" `prediction.json` carries the answer and optional `(title, sentence_index)` pairs."
+"-Reward and correctness use answer EM; answer F1 is recorded alongside it. This"
+"+Reward uses answer F1; correctness uses answer EM, recorded alongside it. This"
+" question-only configuration supplies neither context nor a retrieval service, so this"
+" reward must not be presented as the official HotpotQA joint metric. Supporting-fact"
+" and joint EM/F1 remain diagnostic scores; support facts use exact set semantics."
+"@@ -16,7 +16,7 @@ from data.scaffolds.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_sc"
+"                                       SpScore, hotpot_joint, hotpot_update_sp, MissingEvidence)"
+" "
+" KIND = \"dataset\""
+"-METRIC_NAME = \"HotpotQA answer EM (not official joint)\""
+"+METRIC_NAME = \"HotpotQA answer F1 (not official joint)\""
+" "
+" DATASET_ROOT = base.Path(\"/mnt/20t/xubuqiang/datasets/hotpotqa\")"
+" REVISION = \"1908d6afbbead072334abe2965f91bd2709910ab\""
+"@@ -49,12 +49,12 @@ def score_prediction(prediction: dict, gold: dict) -> dict:"
+"     except MissingEvidence:"
+"         sp = SpScore(em=0.0, f1=0.0, prec=0.0, recall=0.0)"
+"     joint_em, joint_f1 = hotpot_joint(em, precision, recall, sp)"
+"-    return {\"reward\": em, \"correct\": bool(em == 1.0),"
+"-            \"official\": {\"metric\": METRIC_NAME, \"reward_metric\": \"answer_em\","
+"+    return {\"reward\": f1, \"correct\": bool(em == 1.0),"
+"+            \"official\": {\"metric\": METRIC_NAME, \"reward_metric\": \"answer_f1\","
+"                           \"joint_metrics_role\": \"diagnostic_only\", \"em\": em, \"f1\": f1,"
+"                           \"sp_em\": sp.em, \"sp_f1\": sp.f1,"
+"                           \"joint_em\": joint_em, \"joint_f1\": joint_f1},"
+"-            \"why\": f\"answer_em={em:g}, answer_f1={f1:g}; not official joint \""
+"+            \"why\": f\"reward=answer_f1={f1:g}, answer_em={em:g}; not official joint \""
+"                    f\"(joint_em={joint_em:g}, joint_f1={joint_f1:g})\"}"
+" "
+" "
+"diff --git a/tests/quality/test_measurement_coverage_hg_b3.py b/tests/quality/test_measurement_coverage_hg_b3.py"
+"index f360417e..e8f0740c 100644"
+"--- a/tests/quality/test_measurement_coverage_hg_b3.py"
+"+++ b/tests/quality/test_measurement_coverage_hg_b3.py"
+"@@ -62,6 +62,11 @@ def test_hotpot_malformed_predictions_are_unmeasured(hotpot_boundary, prediction"
+"     assert not reward.exists()"
+" "
+" "
+"+# Gold facts are A/0 and B/1. Partial support has P=1, R=1/2, F1=2/3;"
+"+# extra support has P=2/3, R=1, F1=4/5. Missing/empty support scores zero."
+"+# For \"answer extra\", answer P=1/2, R=1. Joint P/R are products:"
+"+# partial support -> (1/2, 1/2), F1=1/2; complete -> (1/2, 1), F1=2/3;"
+"+# extra support -> (1/3, 1), F1=1/2. Joint EM requires exact answer and support."
+" @pytest.mark.parametrize(\"support, sp_em, sp_f1, partial_answer_joint_f1\", ["
+"     ({}, 0.0, 0.0, 0.0),"
+"     ({\"predicted_evidence\": []}, 0.0, 0.0, 0.0),"
+"@@ -70,6 +75,7 @@ def test_hotpot_malformed_predictions_are_unmeasured(hotpot_boundary, prediction"
+"     ({\"predicted_evidence\": [[\"A\", 0], [\"B\", 1], [\"C\", 2]]}, 0.0, 4 / 5, 1 / 2),"
+" ])"
+" @pytest.mark.parametrize(\"answer, em, f1\", ["
+"+    # Exact: P=R=1. Extra token: P=1/2, R=1, F1=2/3. Wrong: no overlap."
+"     (\"answer\", 1.0, 1.0), (\"answer extra\", 0.0, 2 / 3), (\"wrong\", 0.0, 0.0),"
+" ])"
+" def test_hotpot_answer_reward_retains_diagnostic_joint_metrics("
+"@@ -77,13 +83,15 @@ def test_hotpot_answer_reward_retains_diagnostic_joint_metrics("
+"     code, evidence, reward = hotpot_boundary(json.dumps({"
+"         \"schema_version\": 1, \"answer\": answer, **support,"
+"     }))"
+"-    assert code == (0 if em else 1)"
+"+    assert code == (0 if f1 == 1.0 else 1)"
+"     assert evidence[\"measured\"] is True"
+"-    assert float(reward.read_text()) == evidence[\"reward\"] == em"
+"-    assert evidence[\"correct\"] is bool(em)"
+"+    # The verifier serializes reward.txt with :g (six significant digits)."
+"+    assert float(reward.read_text()) == pytest.approx(f1)"
+"+    assert evidence[\"reward\"] == pytest.approx(f1)"
+"+    assert evidence[\"correct\"] is bool(em == 1.0)"
+"     metrics = evidence[\"official\"]"
+"-    assert metrics[\"metric\"] == \"HotpotQA answer EM (not official joint)\""
+"-    assert metrics[\"reward_metric\"] == \"answer_em\""
+"+    assert metrics[\"metric\"] == \"HotpotQA answer F1 (not official joint)\""
+"+    assert metrics[\"reward_metric\"] == \"answer_f1\""
+"     assert metrics[\"joint_metrics_role\"] == \"diagnostic_only\""
+"     assert metrics[\"em\"] == em"
+"     assert metrics[\"f1\"] == pytest.approx(f1)"
+"@@ -92,6 +100,7 @@ def test_hotpot_answer_reward_retains_diagnostic_joint_metrics("
+"     assert metrics[\"joint_em\"] == em * sp_em"
+"     expected_joint_f1 = (sp_f1 if em else partial_answer_joint_f1 if f1 else 0.0)"
+"     assert metrics[\"joint_f1\"] == pytest.approx(expected_joint_f1)"
+"+    assert \"reward=answer_f1=\" in evidence[\"why\"]"
+"     assert \"not official joint\" in evidence[\"why\"]"
+" "
+" "
+"diff --git a/tests/quality/test_qa_evidence_contract.py b/tests/quality/test_qa_evidence_contract.py"
+"index 4f014116..7e9981a1 100644"
+"--- a/tests/quality/test_qa_evidence_contract.py"
+"+++ b/tests/quality/test_qa_evidence_contract.py"
+"@@ -110,9 +110,13 @@ def test_hotpot_uses_answer_metrics_and_joint_exact_set():"
+" "
+"     gold = {\"answer\": \"The answer\", \"supporting_facts\": [[\"A\", 0], [\"B\", 1]]}"
+"     missing = score(\"answer\", gold)"
+"+    # Normalization removes \"The\": both answers become \"answer\", so EM=F1=1."
+"     assert missing[\"reward\"] == 1.0"
+"     assert missing[\"correct\"] is True"
+"-    assert missing[\"official\"][\"metric\"] == \"HotpotQA answer EM (not official joint)\""
+"+    assert missing[\"official\"][\"metric\"] == \"HotpotQA answer F1 (not official joint)\""
+"+    assert missing[\"official\"][\"reward_metric\"] == \"answer_f1\""
+"+    assert missing[\"official\"][\"joint_metrics_role\"] == \"diagnostic_only\""
+"+    assert missing[\"official\"][\"em\"] == missing[\"official\"][\"f1\"] == 1.0"
+"     assert missing[\"official\"][\"joint_em\"] == 0.0"
+"     assert missing[\"official\"][\"sp_f1\"] == 0.0"
+"     correct = score_prediction({\"answer\": \"answer\", \"predicted_evidence\": ["
+"@@ -120,8 +124,16 @@ def test_hotpot_uses_answer_metrics_and_joint_exact_set():"
+"     assert correct[\"official\"][\"joint_em\"] == 1.0"
+"     partial = score_prediction({\"answer\": \"answer\", \"predicted_evidence\": [[\"A\", 0]]}, gold)"
+"     assert partial[\"reward\"] == 1.0"
+"+    # One of two gold facts: support P=1, R=1/2, F1=2/3."
+"     assert partial[\"official\"][\"sp_f1\"] == pytest.approx(2 / 3)"
+"     assert partial[\"official\"][\"joint_em\"] == 0.0"
+"+    # Two predicted tokens vs one normalized gold token: P=1/2, R=1, F1=2/3."
+"+    extra = score(\"answer extra\", gold)"
+"+    assert extra[\"reward\"] == extra[\"official\"][\"f1\"] == pytest.approx(2 / 3)"
+"+    assert extra[\"correct\"] is False"
+"+    assert extra[\"official\"][\"em\"] == extra[\"official\"][\"joint_em\"] == 0.0"
+"+    assert \"reward=answer_f1=\" in extra[\"why\"]"
+"+    assert \"not official joint\" in extra[\"why\"]"
+" "
+" "
+" def test_evidence_is_in_verifier_gold_only_and_adapters_are_loadable():"
+EXIT CODE: 0
+
+COMMAND: git diff --name-only HEAD -- tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py
+"OUTPUT: <empty>"
+EXIT CODE: 0
+
+EXPLORATORY COMMAND ERRORS (not hidden as passing checks):
+COMMAND: sed -n '1,160p' tests/conftest.py
+sed: 无法读取 tests/conftest.py: 没有那个文件或目录
+EXIT CODE: 2
+The actual conftest files were then read as conftest.py and tests/quality/conftest.py.
+COMMAND: rg -n -A 30 -B 2 'Closed under reading A - hotpotqa' registry/blocker-closure-assessment.md
+OUTPUT: <empty>
+EXIT CODE: 1
+This literal header was not present in that exact one-file scope; sed -n '240,277p'
+subsequently retrieved the actual reading-A closure header at registry/blocker-closure-assessment.md:248.
+An initial invocation of the same inspection script used the filename inspect.py and failed before synthetic scoring.
+COMMAND: python3 /mnt/20t/xubuqiang/hg-work/hotpotf1/inspect.py
+ENV: PYTHONPATH=/mnt/20t/xubuqiang/hg-wt/w-hotpotf1 PYTHONDONTWRITEBYTECODE=1
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-work/hotpotf1/inspect.py", line 6, in <module>
+    from unittest.mock import patch
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/unittest/__init__.py", line 61, in <module>
+    from .case import (addModuleCleanup, TestCase, FunctionTestCase, SkipTest, skip,
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/unittest/case.py", line 6, in <module>
+    import pprint
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pprint.py", line 38, in <module>
+    import dataclasses as _dataclasses
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/dataclasses.py", line 5, in <module>
+    import inspect
+  File "/mnt/20t/xubuqiang/hg-work/hotpotf1/inspect.py", line 6, in <module>
+    from unittest.mock import patch
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/unittest/mock.py", line 2206, in <module>
+    _CODE_SIG = inspect.signature(partial(CodeType.__init__, None))
+                ^^^^^^^^^^^^^^^^^
+AttributeError: partially initialized module 'inspect' has no attribute 'signature' (most likely due to a circular import)
+EXIT CODE: 1
+Renamed the helper verify_hotpotf1.py to avoid shadowing stdlib inspect; subsequent exact output is above.
+
+EXPLICITLY NOT VERIFIED / NOT EXECUTED (UNKNOWN):
+- No dataset diagnostic, pilot, benchmark measurement, historical-run replay or score distribution.
+- No model/API calls, GPU/server operations, retrieval service, network access, download or upstream fetch.
+- No independent authentication of the adapter's dataset revision/hash or upstream official scorer equivalence.
+- No remeasurement of operator-supplied context/title coverage or recovery of historical receipts.
+- No live sandbox/snapshot lifecycle, isolation, resource-limit or cleanup exercise; timeout transports are mocked.
+- No downstream aggregate/UI/export propagation of metric identity beyond the shared QA per-task verifier path.
+- No full-repository suite. Four skipped cases remain unverified (site packet and snapshot fixture scope in pytest outputs).
+- Existing adapter loadability tests may read provisioned rows; no new dataset execution was launched.
+- No main-checkout write, merge, push, branch/worktree deletion, registry/journal edit or task input/goal rewrite.
+- No registry proposal is requested: the existing reading-A closure and historical limits remain as recorded.
+  Sources: registry/dataset-blockers.json:418, :426; registry/blocker-closure-assessment.md:248, :266.
+
+
+FINAL PRE-COMMIT CHECKS:
+COMMAND: git diff --check
+OUTPUT: <empty>
+EXIT CODE: 0
+COMMAND: git diff --name-only HEAD -- AGENTS.md registry/dataset-blockers.json registry/blocker-closure-assessment.md docs/adapter-integration-journal.md 'data/**/verify/check.py' tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py
+OUTPUT: <empty>
+EXIT CODE: 0
+COMMAND: python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT CODE: 0
+
+STAGED WHITESPACE AUDIT (initial attempt, exact stdout/stderr encoded as JSON lines):
+COMMAND: git diff --cached --check
+"registry/w-hotpotf1-validation.txt:383: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:398: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:401: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:418: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:419: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:427: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:428: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:471: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:472: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:479: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:495: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:496: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:507: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:516: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:520: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:537: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:538: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:545: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:546: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:590: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:591: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:597: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:625: trailing whitespace."
+"+ "
+"registry/w-hotpotf1-validation.txt:626: trailing whitespace."
+"+ "
+EXIT CODE: 2
+Resolution: store the source-diff stdout losslessly as JSON lines, so blank Git context lines do not introduce trailing whitespace in this transcript. No code changed.
+
+FINAL STAGED AUDIT AND TASK-OWNED SCRATCH CLEANUP:
+COMMAND: git diff --cached --check
+OUTPUT: <empty>
+EXIT CODE: 0
+COMMAND: git diff --cached --name-only
+data/datasets/hotpotqa.py
+registry/w-hotpotf1-validation.txt
+registry/w-hotpotf1.md
+tests/quality/test_measurement_coverage_hg_b3.py
+tests/quality/test_qa_evidence_contract.py
+EXIT CODE: 0
+CLEANUP: removed /mnt/20t/xubuqiang/hg-work/hotpotf1/before.txt; exists=False
+CLEANUP: removed /mnt/20t/xubuqiang/hg-work/hotpotf1/after-initial-failure.txt; exists=False
+CLEANUP: removed /mnt/20t/xubuqiang/hg-work/hotpotf1/after.txt; exists=False
+CLEANUP: removed /mnt/20t/xubuqiang/hg-work/hotpotf1/verify_hotpotf1.py; exists=False
+CLEANUP: removed /mnt/20t/xubuqiang/hg-work/hotpotf1/inspection.txt; exists=False
+CLEANUP: removed /mnt/20t/xubuqiang/hg-work/hotpotf1/source-diffs.txt; exists=False
+CLEANUP: removed empty task scratch directory; exists=False
+CLEANUP: removed worktree-local .pytest_cache; exists=False
+
+BYTE SIZES FOR EVERY FILE TO COMMIT (all below 1,000,000 bytes):
+COMMAND: wc -c data/datasets/hotpotqa.py tests/quality/test_qa_evidence_contract.py tests/quality/test_measurement_coverage_hg_b3.py registry/w-hotpotf1.md registry/w-hotpotf1-validation.txt
+ 5485 data/datasets/hotpotqa.py
+ 8223 tests/quality/test_qa_evidence_contract.py
+14873 tests/quality/test_measurement_coverage_hg_b3.py
+ 5051 registry/w-hotpotf1.md
+49200 registry/w-hotpotf1-validation.txt
+82832 总计
+EXIT CODE: 0

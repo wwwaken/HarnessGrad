@@ -110,12 +110,30 @@ def test_hotpot_uses_answer_metrics_and_joint_exact_set():
 
     gold = {"answer": "The answer", "supporting_facts": [["A", 0], ["B", 1]]}
     missing = score("answer", gold)
-    assert missing["reward"] == 0.0
+    # Normalization removes "The": both answers become "answer", so EM=F1=1.
+    assert missing["reward"] == 1.0
+    assert missing["correct"] is True
+    assert missing["official"]["metric"] == "HotpotQA answer F1 (not official joint)"
+    assert missing["official"]["reward_metric"] == "answer_f1"
+    assert missing["official"]["joint_metrics_role"] == "diagnostic_only"
+    assert missing["official"]["em"] == missing["official"]["f1"] == 1.0
+    assert missing["official"]["joint_em"] == 0.0
+    assert missing["official"]["sp_f1"] == 0.0
     correct = score_prediction({"answer": "answer", "predicted_evidence": [
         ["A", 0], ["B", 1]]}, gold)
     assert correct["official"]["joint_em"] == 1.0
     partial = score_prediction({"answer": "answer", "predicted_evidence": [["A", 0]]}, gold)
+    assert partial["reward"] == 1.0
+    # One of two gold facts: support P=1, R=1/2, F1=2/3.
+    assert partial["official"]["sp_f1"] == pytest.approx(2 / 3)
     assert partial["official"]["joint_em"] == 0.0
+    # Two predicted tokens vs one normalized gold token: P=1/2, R=1, F1=2/3.
+    extra = score("answer extra", gold)
+    assert extra["reward"] == extra["official"]["f1"] == pytest.approx(2 / 3)
+    assert extra["correct"] is False
+    assert extra["official"]["em"] == extra["official"]["joint_em"] == 0.0
+    assert "reward=answer_f1=" in extra["why"]
+    assert "not official joint" in extra["why"]
 
 
 def test_evidence_is_in_verifier_gold_only_and_adapters_are_loadable():

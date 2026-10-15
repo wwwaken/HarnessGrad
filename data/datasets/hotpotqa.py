@@ -1,8 +1,12 @@
-r"""HotpotQA fullwiki validation adapter using the official joint metric.
+r"""HotpotQA fullwiki validation adapter reporting answer F1, not official joint F1.
 
 `prediction.json` carries the answer and optional `(title, sentence_index)` pairs.
-Answer EM/F1 and supporting-fact scores feed the official joint EM/F1; support facts use
-exact set semantics. Missing evidence remains a valid prediction and produces joint zero.
+Reward uses answer F1; correctness uses answer EM, recorded alongside it. This
+question-only configuration supplies neither context nor a retrieval service, so this
+reward must not be presented as the official HotpotQA joint metric. Supporting-fact
+and joint EM/F1 remain diagnostic scores; support facts use exact set semantics.
+Missing evidence remains a valid prediction and produces support/joint zero without
+changing the answer reward. The goal still asks for supporting facts.
 The adapter reads only the pinned validation split, not test gold.
 """
 from __future__ import annotations
@@ -12,6 +16,7 @@ from data.scaffolds.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_sc
                                       SpScore, hotpot_joint, hotpot_update_sp, MissingEvidence)
 
 KIND = "dataset"
+METRIC_NAME = "HotpotQA answer F1 (not official joint)"
 
 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/hotpotqa")
 REVISION = "1908d6afbbead072334abe2965f91bd2709910ab"
@@ -44,11 +49,13 @@ def score_prediction(prediction: dict, gold: dict) -> dict:
     except MissingEvidence:
         sp = SpScore(em=0.0, f1=0.0, prec=0.0, recall=0.0)
     joint_em, joint_f1 = hotpot_joint(em, precision, recall, sp)
-    return {"reward": joint_em, "correct": bool(joint_em == 1.0),
-            "official": {"metric": "HotpotQA joint", "em": em, "f1": f1,
+    return {"reward": f1, "correct": bool(em == 1.0),
+            "official": {"metric": METRIC_NAME, "reward_metric": "answer_f1",
+                          "joint_metrics_role": "diagnostic_only", "em": em, "f1": f1,
                           "sp_em": sp.em, "sp_f1": sp.f1,
                           "joint_em": joint_em, "joint_f1": joint_f1},
-            "why": f"joint_em={joint_em:g}, joint_f1={joint_f1:g}"}
+            "why": f"reward=answer_f1={f1:g}, answer_em={em:g}; not official joint "
+                   f"(joint_em={joint_em:g}, joint_f1={joint_f1:g})"}
 
 
 def score(prediction: str, gold: dict) -> dict:
