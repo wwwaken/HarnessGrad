@@ -1,0 +1,133 @@
+Parent validation cwd: /tmp/hg-offscorer3
+Baseline: 9f78bcd
+Invocation: PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer3/validate.py
+Environment: PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES=
+No scorers/worlds/models are replayed by validation.
+
+$ python3 tests/fixtures/hg_woffscorer3/bfcl/verify.py
+{
+  "comparison": {
+    "agreements": 11,
+    "controlled_inputs": 23,
+    "divergences": 5,
+    "local_errors": 0,
+    "nonnumeric_inputs": 7,
+    "numeric_comparisons": 16,
+    "official_errors": 7
+  },
+  "manifest_files_verified": 15,
+  "source_functions_only": true,
+  "verified_custody_members": 83
+}
+exit_code=0
+
+$ python3 tests/fixtures/hg_woffscorer3/code_chess/verify.py
+{
+  "comparisons": {
+    "chessbench_puzzles": {
+      "agreements": 6,
+      "divergences": 4,
+      "inputs": 15,
+      "local_unmeasured": 0,
+      "nonnumeric_inputs": 5,
+      "numeric_comparisons": 10,
+      "official_exceptions": 5
+    },
+    "livecodebench": {
+      "agreements": 10,
+      "divergences": 0,
+      "inputs": 12,
+      "local_unmeasured": 2,
+      "nonnumeric_inputs": 2,
+      "numeric_comparisons": 10,
+      "official_exceptions": 0
+    }
+  },
+  "guard_and_cleanup_checks": "passed",
+  "official_source_files": 19,
+  "unchanged_source_files": 5,
+  "verified_fixture_files": 106
+}
+exit_code=0
+
+$ python3 tests/fixtures/hg_woffscorer3/worlds/verify.py
+{
+  "manifest_files_checked": 80,
+  "source_copy_and_local_identity_checks": "pass",
+  "controlled_archive_members_checked": 53,
+  "only_authored_appworld_task": true,
+  "comparison_counts": {
+    "alfworld": {
+      "controlled_inputs": 6,
+      "numeric_comparisons": 5,
+      "numeric_agreements": 5,
+      "numeric_divergences": 0,
+      "nonnumeric_inputs": 1,
+      "official_errors": 1,
+      "local_unmeasured": 0
+    },
+    "appworld": {
+      "controlled_inputs": 6,
+      "numeric_comparisons": 6,
+      "numeric_agreements": 6,
+      "numeric_divergences": 0,
+      "nonnumeric_inputs": 0,
+      "official_errors": 0,
+      "local_unmeasured": 0
+    }
+  }
+}
+exit_code=0
+
+$ python3 tests/fixtures/hg_woffscorer3/gaia_tau/verify.py
+{"all_temporary_case_directories_removed": true, "results": {"gaia": {"agreements": 20, "divergences": 0, "inputs": 23, "nonnumeric_or_classification": 3, "numeric_comparisons": 20}, "tau": {"agreements": 9, "divergences": 1, "inputs": 11, "nonnumeric_or_classification": 1, "numeric_comparisons": 10}}, "valid": true}
+exit_code=0
+
+$ python3 tests/fixtures/hg_woffscorer3/verify.py
+{"closure": "S1/S3/S4/S6 remain PARTIAL", "manifest_members": 267, "new_component_dataset_count": 7, "production_source_pins_verified": 91, "registry_change_only": "scorer-offline-closure observed plus additive evidence", "valid": true}
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-woffscorer3
+......................................................                   [100%]
+54 passed in 3.57s
+exit_code=0
+
+$ git diff --exit-code 9f78bcd -- data/datasets data/scaffolds eval tools/check_dataset_blockers.py
+exit_code=0
+
+$ git diff 9f78bcd --check -- . ':!tests/fixtures/hg_woffscorer3/bfcl/official-source/' ':!tests/fixtures/hg_woffscorer3/gaia_tau/source/' ':!tests/fixtures/hg_woffscorer3/worlds/source/' ':!tests/fixtures/hg_woffscorer3/worlds/*inspection.txt'
+exit_code=0
+
+$ git diff 9f78bcd --check
+{"raw_stdout": "tests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:37: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:42: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:244: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:257: trailing whitespace.\n+                \ntests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:276: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:284: trailing whitespace.\n+            \ntests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py:529: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer3/bfcl/official-source/utils.py:181: trailing whitespace.\n+            oai_tool.append({\"type\": \"function\", \ntests/fixtures/hg_woffscorer3/bfcl/official-source/utils.py:182: trailing whitespace.\n+                             \"name\": item[\"name\"], \ntests/fixtures/hg_woffscorer3/bfcl/official-source/utils.py:183: trailing whitespace.\n+                             \"description\": item[\"description\"], \ntests/fixtures/hg_woffscorer3/gaia_tau/source/scorer.py:39: trailing whitespace.\n+        \ntests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/base.py:163: trailing whitespace.\n+            \ntests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/user.py:217: trailing whitespace.\n+    \ntests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/user.py:247: trailing whitespace.\n+    \ntests/fixtures/hg_woffscorer3/worlds/appworld-api-inspection.txt:58: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/appworld-create-inspection.txt:40: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/appworld-model-inspection.txt:118: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/appworld-runtime-inspection.txt:1187: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/appworld-source-inspection.txt:926: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/source/alfworld-evaluate_dagger.py:170: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/METADATA:107: new blank line at EOF.\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:1: trailing whitespace.\n+../../../bin/appworld,sha256=lLx5hYtoK-fK-_AYP-CmhJTkaShNP_L0CH6CBRN_nWE,216\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:2: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:3: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/METADATA,sha256=9P8VX6A5mKJWcl9LdqVGTo2Ts5lVO1CMhaarhus_Ue0,6013\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:4: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/RECORD,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:5: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:6: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/WHEEL,sha256=kJCRJT_g0adfAJzTx2GUMmS80rTJIVHRCfG0DQgLq3o,88\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:7: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/entry_points.txt,sha256=JTEsmGuNnFZXRgXGCDx6I2HZkT7iGE5lAzW55gTMwLw,46\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:8: trailing whitespace.\n+appworld-0.1.3.post1.dist-info/licenses/LICENSE,sha256=xx0jnfkXJvxRnG63LTGOxlggYnIysveWIZ6H3PNdCrQ,11357\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:9: trailing whitespace.\n+appworld/.source/apps.bundle,sha256=uli8VnnDVzqo9grW9c2kN3EooOxWneXu-VQ6d1YXlrs,177209\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:10: trailing whitespace.\n+appworld/.source/tests.bundle,sha256=k9U96gb518QswDtm9LCORkTCa17UHN6uwFYMeSvBbY8,171334\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:11: trailing whitespace.\n+appworld/__init__.py,sha256=z2nmKx3D9idDMq5bzrxjMaTekjGalat_TSNW5Ci9Yro,742\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:12: trailing whitespace.\n+appworld/__pycache__/__init__.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:13: trailing whitespace.\n+appworld/__pycache__/api_docs.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:14: trailing whitespace.\n+appworld/__pycache__/cli.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:15: trailing whitespace.\n+appworld/__pycache__/download.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:16: trailing whitespace.\n+appworld/__pycache__/environment.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:17: trailing whitespace.\n+appworld/__pycache__/evaluator.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:18: trailing whitespace.\n+appworld/__pycache__/ground_truth.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:19: trailing whitespace.\n+appworld/__pycache__/install.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:20: trailing whitespace.\n+appworld/__pycache__/leaderboard.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:21: trailing whitespace.\n+appworld/__pycache__/requester.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:22: trailing whitespace.\n+appworld/__pycache__/task.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:23: trailing whitespace.\n+appworld/__pycache__/verify.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:24: trailing whitespace.\n+appworld/api_docs.py,sha256=3rFXLbywokDZ36myJptSGiUU-Jhw8WPAqLLUTqcw8HA,21318\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:25: trailing whitespace.\n+appworld/apps/__init__.py,sha256=B86N6zFgqNalIEP7xktEpDfychKIxuJyujv8gbNorUs,10710\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:26: trailing whitespace.\n+appworld/apps/__pycache__/__init__.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:27: trailing whitespace.\n+appworld/apps/__pycache__/api_lib.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:28: trailing whitespace.\n+appworld/apps/__pycache__/factory_lib.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:29: trailing whitespace.\n+appworld/apps/__pycache__/model_lib.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:30: trailing whitespace.\n+appworld/apps/__pycache__/response_lib.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:31: trailing whitespace.\n+appworld/apps/api_lib.py,sha256=VzZXw9uNmd727pK2gz-8L-3YlL5BAx_jj-66tJ5ZdIU,50986\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:32: trailing whitespace.\n+appworld/apps/factory_lib.py,sha256=faWUrAe--Aa8cZ-1cde4Khpiq7JUc-b6qN4tOBiOj5s,1302\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:33: trailing whitespace.\n+appworld/apps/model_lib.py,sha256=GDoZRjvjHNGkChECLiQ0nyMllcpLNhL6nUs6M7z2wXI,107067\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:34: trailing whitespace.\n+appworld/apps/response_lib.py,sha256=UAYtIbZwJAZCQgPb1hMF7rk8gCsZWDp0mW9cejFLG_g,2471\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:35: trailing whitespace.\n+appworld/cli.py,sha256=6auw01jRToNxFqyjMUgyLZ7Vwljzn2FbLQudcDQKJKQ,23475\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:36: trailing whitespace.\n+appworld/collections/__pycache__/api_docs.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:37: trailing whitespace.\n+appworld/collections/__pycache__/apis.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:38: trailing whitespace.\n+appworld/collections/__pycache__/models.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:39: trailing whitespace.\n+appworld/collections/api_docs.py,sha256=3C0PX-jUFN6F6ig3TNmLKah_YUbzEaYeqgDLVDLm4f8,10638\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:40: trailing whitespace.\n+appworld/collections/api_docs.pyi,sha256=vhjXdF92T5IkaFlEs3Fck0Vs2OOH3rMpRE4QW_09Tms,30629\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:41: trailing whitespace.\n+appworld/collections/apis.py,sha256=WXqmCN0kR7jneAVJC6oCidVJ-3nG09KzgmN3E-Wk7v4,8002\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:42: trailing whitespace.\n+appworld/collections/apis.pyi,sha256=JlnUDSvnC_AEEjG-_As0yyAUMV623IOeLsVqMa-4de0,95246\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:43: trailing whitespace.\n+appworld/collections/models.py,sha256=hGbPjv0TRQ38gdV7ATupb94KS6R5Vd71hcNPNq8aMew,23794\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:44: trailing whitespace.\n+appworld/collections/models.pyi,sha256=rV5JnaEKqepTBb4Z4U_-DsgTKjYpb75ihr9Y-ZpyDEc,5576\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:45: trailing whitespace.\n+appworld/common/__init__.py,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:46: trailing whitespace.\n+appworld/common/__pycache__/__init__.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:47: trailing whitespace.\n+appworld/common/__pycache__/code_parsing.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:48: trailing whitespace.\n+appworld/common/__pycache__/constants.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:49: trailing whitespace.\n+appworld/common/__pycache__/copy.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:50: trailing whitespace.\n+appworld/common/__pycache__/datetime.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:51: trailing whitespace.\n+appworld/common/__pycache__/path_store.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:52: trailing whitespace.\n+appworld/common/__pycache__/random.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:53: trailing whitespace.\n+appworld/common/__pycache__/safety_guard.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:54: trailing whitespace.\n+appworld/common/__pycache__/types.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:55: trailing whitespace.\n+appworld/common/__pycache__/utils.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:56: trailing whitespace.\n+appworld/common/code_parsing.py,sha256=Kcs3iNhSPbrSBw3DB0X_B7IQsD0DYa_QjlkfXUW1Lyc,27764\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:57: trailing whitespace.\n+appworld/common/constants.py,sha256=gjWkgwffhOOiTL62bhChqeoe74ws_cUzyGo7x9Ii0HQ,893\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:58: trailing whitespace.\n+appworld/common/copy.py,sha256=uHyLUAUf33iT3yhoEWHmLGSTKaDMbpoZ4smI7ysg_Lk,244\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:59: trailing whitespace.\n+appworld/common/datetime.py,sha256=f4GtQOf1c4MAH0jvQ02mvG1Ozd8X_Am-8hYRjk7B8CA,29147\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:60: trailing whitespace.\n+appworld/common/path_store.py,sha256=MdZbaprfl6e-Y1rse74uIFe_nasf6EX3RmRnzT9q5Uc,1459\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:61: trailing whitespace.\n+appworld/common/random.py,sha256=fJZGfkZ3GLWNQ0_HAgzf0JdmgEVFP5UQWe0HsGKZnKg,7504\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:62: trailing whitespace.\n+appworld/common/safety_guard.py,sha256=-hBcG8Vbyfw9unD0FL38tD4F_O3gbmNHfOtxIDcETac,8673\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:63: trailing whitespace.\n+appworld/common/types.py,sha256=tbF7E1g31zedg4KKmIAakwECdLeELwffz5SP5eTg8ro,506\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:64: trailing whitespace.\n+appworld/common/utils.py,sha256=5wB7aJQT4XbYUsRiumfynYiX0X-ngCmpzlxlBHx8Cww,161515\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:65: trailing whitespace.\n+appworld/download.py,sha256=LjqPtAzrUebOrnwxK8_WmQgHh28PaV2tTGHfTfOO6ck,2154\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:66: trailing whitespace.\n+appworld/environment.py,sha256=rWUFiBWHJ8Tr5yoIBjjsAXTDOviouem4Hz2b_aVdP9k,34148\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:67: trailing whitespace.\n+appworld/evaluator.py,sha256=Tnc_uRza060Q3urN4tCx9xdFS-WZ5nWEGejhu4i3XLo,24232\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:68: trailing whitespace.\n+appworld/ground_truth.py,sha256=uVbzHrgtOvnDzNrnrOya3rX4c1te_neFnWIkjsdlXzI,16253\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:69: trailing whitespace.\n+appworld/install.py,sha256=X5-6NHN6_qC7f9L47ATUSn_Kzth2Dhw6LI3QBmzLBEY,2651\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:70: trailing whitespace.\n+appworld/leaderboard.py,sha256=jHmbLyUIbJhIvA6tPr3WUpwA17FggV6V3rYASXsBm1I,9360\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:71: trailing whitespace.\n+appworld/requester.py,sha256=lmCjq5vyIsZNTyZaZVHTdTaPr2UreD46sJljieUTe-w,28277\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:72: trailing whitespace.\n+appworld/serve/__pycache__/apis.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:73: trailing whitespace.\n+appworld/serve/__pycache__/environment.cpython-311.pyc,,\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:74: trailing whitespace.\n+appworld/serve/apis.py,sha256=w8T-CsPN2QkaghsI559l9udCGyjWuGSsl2ssjmSQK8Q,959\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:75: trailing whitespace.\n+appworld/serve/environment.py,sha256=hRjuk57ZNVzSvdQ7WekwVE-YFOuE2XJOWYsbHJN5Bn0,7850\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:76: trailing whitespace.\n+appworld/serve/playground.html,sha256=aA-FH3AwAe5z4JtsGoW5uFy6aJvosvmkkYmWSEBtA80,28285\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:77: trailing whitespace.\n+appworld/serve/static/icon.png,sha256=2WGSOGxe8dUDAYRJUXlzKXdsEWe5VSdlW6B0Q-RJ5ps,103140\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:78: trailing whitespace.\n+appworld/task.py,sha256=a3RCDjBXnifDbPKs5B90PT1fBkCvTRXK4T3wQZtC1eo,11711\ntests/fixtures/hg_woffscorer3/worlds/source/appworld-dist-info/RECORD:79: trailing whitespace.\n+appworld/verify.py,sha256=TehEHFMqjfBfgdBuzTQO5LNkMmG3PASwE3effaTuBYU,4017\n"}
+exit_code=2
+Only verbatim upstream source/inspection whitespace is excluded from the passing owned-change check above.
+
+Final scope/integrity/whitespace checks after report completion and reversible escaping of upstream whitespace output:
+$ python3 tests/fixtures/hg_woffscorer3/verify.py
+{"closure": "S1/S3/S4/S6 remain PARTIAL", "manifest_members": 267, "new_component_dataset_count": 7, "production_source_pins_verified": 91, "registry_change_only": "scorer-offline-closure observed plus additive evidence", "valid": true}
+exit_code=0
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+$ git diff 9f78bcd --check -- . ':!tests/fixtures/hg_woffscorer3/bfcl/official-source/' ':!tests/fixtures/hg_woffscorer3/gaia_tau/source/' ':!tests/fixtures/hg_woffscorer3/worlds/source/' ':!tests/fixtures/hg_woffscorer3/worlds/*inspection.txt'
+exit_code=0
+
+Removal of completed, committed isolated child worktrees (branch refs retained):
+$ git -C /tmp/hg-offscorer3-bfcl status --porcelain
+exit_code=0
+$ git worktree remove /tmp/hg-offscorer3-bfcl
+exit_code=0
+$ git -C /tmp/hg-offscorer3-codechess status --porcelain
+exit_code=0
+$ git worktree remove /tmp/hg-offscorer3-codechess
+exit_code=0
+$ git -C /tmp/hg-offscorer3-worlds status --porcelain
+exit_code=0
+$ git worktree remove /tmp/hg-offscorer3-worlds
+error: 无法删除 '/tmp/hg-offscorer3-worlds': 权限不够
+exit_code=255

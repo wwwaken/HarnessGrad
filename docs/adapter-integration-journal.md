@@ -3336,6 +3336,7 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
   receipts and archives were untouched; no existing run id was resumed.
 
+<<<<<<< HEAD
 ## 2026-10-15 Pristine applicability and current-set scope - w-scope
 
 - Reviewed source at `9f78bcdd39a67e708372c44ad5c858a7e7d397fd` in registered
@@ -3400,3 +3401,12 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Resource state: code-and-record determination only for w-scope - no benchmark, model, GPU,
   endpoint or container execution. Both GPUs stayed idle and no utilisation is claimed.
   Historical runs, frozen receipts and archives were untouched.
+=======
+## 2026-10-15 Bounded official scorer evidence extension - w-offscorer3
+
+- Read the prior w-offscorer and w-offscorer2 packets, reviewed actual remaining scoring routes, and executed bounded offline official/local comparisons on common authored inputs. Complete upstream execution is added for GAIA, Tau-Bench and LiveCodeBench; ALFWorld runs its complete installed evaluator on an authored PDDL world. BFCL and ChessBench execute unchanged official function bodies after preserved complete-import failures. AppWorld's installed generic evaluator runs an authored task predicate; this does not execute released task-specific scorers.
+- Raw inputs, official/local outputs, exception tracebacks, copied authentic source, preserved failed attempts and freshly recomputed SHA-256 manifests are under `tests/fixtures/hg_woffscorer3/`. Full source identities, exact commands, per-input tables, counts and limits are in `reports/w-offscorer3-coverage.md` and its reviewed component reports. Parent inspected isolated child diffs and independently validated their packets before merging them into `/tmp/hg-offscorer3`.
+- Findings include BFCL response-contract divergences, strict-versus-upstream Chess legality/empty-reference differences, Tau-Bench's authored ground-truth respond replay contaminating the upstream output scan, GAIA sentinel refusals, LiveCodeBench malformed-test refusals, and ALFWorld's empty-trace upstream reduction exception. Failed imports, strict socket-denied IPC, dependency finalizer diagnostics and fixture corrections remain explicit; failed or unmeasured controls are not replaced with zero.
+- Still uncovered at complete-route scope: AppWorld released task predicates, BFCL full parser/checker/handler imports, ChessBench full module/engine graph and Terminal-Bench remaining task scorers. Terminal-Bench retains its prior real single-task `bash /tests/test.sh` execution in `reports/w-net-receipts.md`; this packet does not replay or broaden it. Other task/family/provenance/transitive runtime gaps remain. S1, S3, S4 and S6 stay PARTIAL; no shared or dataset blocker closes and no gate is weakened. Only shared `scorer-offline-closure.observed` and additive evidence are updated; all statuses, next_actions, dataset/history records and original references remain unchanged.
+- Parent validation passes all 267 manifest members, 91 unchanged production source pins, all component validators and 54 focused registry tests; the registry remains valid with production authorization false. `reports/w-offscorer3-validation.txt` retains exact commands and checker output. No production adapters/shared scorers, benchmark scoring run, model/GPU/endpoint call, production verifier/H0 trial, `runs/` path or frozen receipt is changed or used. Work and commits stay in registered isolated worktrees; main is untouched.
+>>>>>>> 43a0720 (evidence: narrow official scorer execution coverage with bounded offline controls)
