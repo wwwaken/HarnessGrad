@@ -7,7 +7,9 @@ The official construction is used unchanged: `code_context + code = repr(candida
 `test_execution(code)`, plus `test_string(code)` only when the context declares that helper,
 each candidate in its own process with the upstream 120-second timeout and the upstream
 deliberately-disabled `reliability_guard`. `reference_code` is gold and travels only through
-`oracle_files()`; it never enters SETUP.
+`oracle_files()`; it never enters SETUP. The solver receives the released `prompt`
+only (plus solution-file instructions); `code_context` contains private tests and
+travels only in VERIFY.inputs.
 
 **926 of the 1000 released rows are offered; 74 are excluded, and every exclusion is a
 measurement.** This is a coverage fact, reported rather than hidden. No substitute metric is
@@ -184,10 +186,6 @@ def setup_for(index: int) -> dict:
     return {"files": [
         {"path": "task.json", "content": json.dumps(
             {"task_id": task_id(index), "prompt": row["prompt"]}, ensure_ascii=False)},
-        # The official context carries the tests, and the released benchmark hands it to the
-        # solver as part of the problem. The gold `reference_code` is not in it.
-        {"path": "context.json", "content": json.dumps(
-            {"code_context": row["code_context"]}, ensure_ascii=False)},
     ]}
 
 
@@ -199,6 +197,8 @@ def verify_for(index: int) -> dict:
                  "--evidence-file", command_control.EVIDENCE_REL],
         "inputs": [
             {"path": "verify/check.py", "from": str(CHECK_FILE)},
+            # Official solver input is prompt only. code_context carries private tests;
+            # stage it after the harness exits, never in SETUP.
             {"path": "context.json", "content": json.dumps(
                 {"code_context": _raw()[index]["code_context"]}, ensure_ascii=False)},
             {"path": "execution.py", "from": str(EXECUTION_FILE)},
@@ -223,7 +223,7 @@ def load():
     for index in included_indices():
         tasks.append({"task_id": task_id(index), "goal": _raw()[index]["prompt"] + (
             "\n\nWrite your completed Python solution to solution.py in this directory. "
-            "The task context and its tests are in context.json. Do not include markdown "
+            "Do not include markdown "
             "fences; only the solution body is executed.")})
     return tasks, {task["task_id"]: "code" for task in tasks}
 

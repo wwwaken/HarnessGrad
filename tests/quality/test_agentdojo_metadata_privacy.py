@@ -77,7 +77,9 @@ def metadata_boundary(monkeypatch, adapter_code):
         for hook in DATA_HOOKS:
             guard.setattr(module, hook, denied(hook))
         # Five fixed IDs and inert source paths; no synthetic data files exist.
-        guard.setattr(module, "TASK_COUNT", 5)
+        # Public directory IDs are the metadata seam; TASK_COUNT is derived lazily
+        # from records() and must never be requested here.
+        guard.setattr(module, "_indices", lambda: list(range(5)))
         guard.setattr(module, "DATASET_ROOT", ROOT / ".scratch/metadata-codex180/source")
         guard.setattr(module, "ASSETS", ROOT / ".scratch/metadata-codex180/assets")
         yield module, attempts, guard
@@ -110,7 +112,7 @@ def test_selected_lookup_has_only_fixed_metadata(name, index, monkeypatch, adapt
                  "immutable": True},
                 {"path": "dojo.py", "from": str(module.ASSETS / "cli/dojo")},
                 {"path": "dojo.initial.json",
-                 "from": str(module.DATASET_ROOT / "prepared" / str(index) / "initial.json")},
+                 "from": str(module.DATASET_ROOT / module.PREPARED / str(index) / "initial.json")},
             ]}
         else:
             # Check metadata identities and selected paths, leaving argv opaque.
@@ -120,7 +122,7 @@ def test_selected_lookup_has_only_fixed_metadata(name, index, monkeypatch, adapt
                 {"path": "verify/check.py", "from": str(module.ASSETS / "verify/check.py")},
                 {"path": "verify/bridge.py", "from": str(module.ASSETS / "bridge.py")},
                 {"path": "verify/case.json",
-                 "from": str(module.DATASET_ROOT / "prepared" / str(index) / "case.json")},
+                 "from": str(module.DATASET_ROOT / module.PREPARED / str(index) / "case.json")},
                 {"path": "trusted_runtime", "from": str(module.DATASET_ROOT / "runtime"),
                  "immutable": True},
             ]

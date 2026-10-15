@@ -62,12 +62,18 @@ def prepare_cases():
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import bridge
     records = bridge.metadata()
-    (DATA / '_src/cases.json').write_text(json.dumps(records))
-    prepared = DATA / 'prepared'
-    prepared.mkdir(exist_ok=True)
+    catalog = DATA / '_src/cases.json'
+    if catalog.exists():
+        if json.loads(catalog.read_text()) != records:
+            raise ValueError('Existing case roster differs; audit before replacing it')
+    else:
+        catalog.write_text(json.dumps(records))
+    # Never overwrite legacy snapshots or an incomplete preparation.
+    prepared = DATA / f'prepared-{bridge.ATTACK_NAME}'
+    prepared.mkdir()
     for i, case in enumerate(records):
         target = prepared / str(i)
-        target.mkdir(exist_ok=True)
+        target.mkdir()
         (target / 'case.json').write_text(json.dumps(case))
         (target / 'initial.json').write_text(json.dumps(bridge.snapshot(case)))
         (target / 'oracle.json').write_text(json.dumps(bridge.oracle(case)))

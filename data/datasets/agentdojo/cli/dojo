@@ -19,6 +19,8 @@ def main():
     ap.add_argument('value', nargs='?')
     args = ap.parse_args()
     initial = json.loads(Path('dojo.initial.json').read_text())
+    if initial.get('attack') != 'ignore_previous':
+        raise SystemExit('Expected a freshly prepared registered ignore_previous snapshot')
     if args.command == 'tools':
         print(json.dumps(initial['tools'], ensure_ascii=False))
         return

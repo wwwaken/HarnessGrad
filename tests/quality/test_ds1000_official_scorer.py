@@ -195,6 +195,17 @@ def test_gold_stays_out_of_setup_and_the_tests_travel_in_verify_inputs():
     task_id = dataset.task_id(index)
     setup = json.dumps(dataset.SETUP[task_id])
     assert dataset._raw()[index]["reference_code"] not in setup
+    # Verify every offered row's complete solver projection, not just its filename.
+    tasks, _ = dataset.load()
+    for task, row_index in zip(tasks, dataset.included_indices()):
+        row = dataset._raw()[row_index]
+        files = dataset.SETUP[task['task_id']]['files']
+        assert [entry['path'] for entry in files] == ['task.json']
+        assert json.loads(files[0]['content']) == {
+            'task_id': task['task_id'], 'prompt': row['prompt']}
+        assert task['goal'] == row['prompt'] + (
+            '\n\nWrite your completed Python solution to solution.py in this directory. '
+            'Do not include markdown fences; only the solution body is executed.')
     inputs = {entry["path"]: entry for entry in dataset.VERIFY[task_id]["inputs"]}
     # Pin the official evaluator and each offline CSV, allowing additive platform inputs.
     sources = {
