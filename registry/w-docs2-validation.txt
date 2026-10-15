@@ -1,0 +1,21 @@
+Two more stale-tree regressions found by the sweep and fixed.
+
+1. `docs/musique-output-contract.md` was removed by the bulk `docs/` deletion while
+   `tests/quality/test_musique_official_scorer.py` opens it as a contract. It was **not** on the
+   `.gitignore` `/docs/*` whitelist, which is why the earlier sixteen-file restoration missed it.
+   Restored verbatim from `1825cd0e^` and now whitelisted (`!/docs/musique-output-contract.md`) and
+   force-added, since `/docs/*` would otherwise ignore it again.
+   `test_musique_official_scorer.py`: 10 failed / 96 passed -> **106 passed**.
+
+2. `tests/quality/test_parallel_tasks.py` stages a minimal copy of the platform and copies an explicit
+   list of `data/scaffolds/` modules. That list is `("__init__.py", "registry.py", "aggregation.py")`
+   and never gained `scorer_isolation.py`, which `2c7e4ca7` added **before** this phase
+   (`git merge-base --is-ancestor 2c7e4ca7 1825cd0e` confirms it). The staged platform therefore cannot
+   import `eval/verification/isolation.py`, so the test has been red since that commit with
+   `ModuleNotFoundError: No module named 'data.scaffolds.scorer_isolation'`. The copy list now names it,
+   exactly as the surrounding comment already says a staged platform must be complete rather than
+   minimal. `test_parallel_tasks.py`: 1 failed / 11 passed -> **12 passed**.
+
+Both are pre-existing rather than caused by this phase, and both are recorded as such; neither changes
+a production behaviour, a blocker, a receipt or a run ID. `python3 tools/check_dataset_blockers.py`
+remains `{"valid": true, ...}`.

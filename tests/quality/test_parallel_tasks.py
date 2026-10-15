@@ -253,7 +253,7 @@ def test_jobs_reaches_the_run_through_the_driver(tmp_path, isolated_platform):
     for name in ("__init__.py", "demo.py", "aggregation_policies.json"):
         shutil.copy2(ROOT / "data" / name, platform / "data" / name)
     (platform / "data" / "scaffolds").mkdir()
-    for name in ("__init__.py", "registry.py", "aggregation.py"):
+    for name in ("__init__.py", "registry.py", "aggregation.py", "scorer_isolation.py"):
         shutil.copy2(ROOT / "data/scaffolds" / name, platform / "data/scaffolds" / name)
     shutil.copytree(ROOT / "base_harness" / "loop_plain",
                     platform / "base_harness" / "loop_plain", symlinks=True,
