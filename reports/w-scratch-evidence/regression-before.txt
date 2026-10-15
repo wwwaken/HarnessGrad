@@ -1,0 +1,364 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+______ test_wrapper_removes_only_its_scratch_on_return_or_exception[pass] ______
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76855328a4e0>
+outcome = 'pass'
+
+    @pytest.mark.parametrize("outcome", ["pass", "fail", "timeout", "spawn-error", "setup-error"])
+    def test_wrapper_removes_only_its_scratch_on_return_or_exception(tmp_path, monkeypatch, outcome):
+        check = runpy.run_path(str(CHECK))
+        work = tmp_path / "task"
+        work.mkdir()
+        scratch_root = tmp_path / "scratch"
+        scratch_root.mkdir()
+        sentinel = scratch_root / "unrelated"
+        sentinel.write_text("keep")
+        (work / "context.json").write_text(json.dumps({
+            "code_context": "def test_execution(code):\n    exec(code)\n"}))
+        (work / "solution.py").write_text("assert False\n" if outcome == "fail" else "assert True\n")
+        # A dependency stub tests wrapper plumbing; the evidence packet separately runs
+        # the actual pinned upstream execution.py against authored arithmetic.
+        if outcome != "setup-error":
+            (work / "execution.py").write_text(
+                "def check_correctness(program, timeout):\n"
+                "    try:\n"
+                "        exec(program, {})\n"
+                "        return {'passed': True, 'result': 'passed'}\n"
+                "    except AssertionError:\n"
+                "        return {'passed': False, 'result': 'failed'}\n")
+        monkeypatch.chdir(work)
+        monkeypatch.setattr(sys, "argv", [str(CHECK)])
+        monkeypatch.setattr(check["tempfile"], "tempdir", str(scratch_root))
+        real_run = subprocess.run
+        created = []
+    
+        def run_runner(argv, **kwargs):
+            scratch = Path(kwargs["cwd"])
+            created.append(scratch)
+            assert scratch.parent == scratch_root
+            assert {p.name for p in scratch.iterdir()} == {
+                "execution.py", "run_ds1000.py", "program.json"}
+            assert json.loads((scratch / "program.json").read_text()).endswith("test_execution(code)\n")
+            assert kwargs["timeout"] == 130
+            if outcome == "timeout":
+                raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+            if outcome == "spawn-error":
+                raise OSError("authored spawn failure")
+            return real_run(argv, **kwargs)
+    
+        monkeypatch.setattr(check["subprocess"], "run", run_runner)
+        error = {"timeout": subprocess.TimeoutExpired, "spawn-error": OSError,
+                 "setup-error": FileNotFoundError}.get(outcome)
+        if error:
+            with pytest.raises(error):
+                check["main"]()
+            assert not (work / "verifier/reward.txt").exists()
+        else:
+            assert check["main"]() == 0
+            expected = float(outcome == "pass")
+            assert float((work / "verifier/reward.txt").read_text()) == expected
+            evidence = json.loads((work / "verifier/evidence.json").read_text())
+            assert evidence["measured"] is True
+            assert evidence["reward"] == expected
+        if outcome != "setup-error":
+            assert len(created) == 1
+>           assert not created[0].exists()
+E           AssertionError: assert not True
+E            +  where True = <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_0/scratch/ds1000-check-oc19srpq')>()
+E            +    where <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_0/scratch/ds1000-check-oc19srpq')> = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_0/scratch/ds1000-check-oc19srpq').exists
+
+/tmp/hg-scratch/tests/quality/test_ds1000_scratch_cleanup_w_scratch.py:74: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: passed
+______ test_wrapper_removes_only_its_scratch_on_return_or_exception[fail] ______
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7685530f9190>
+outcome = 'fail'
+
+    @pytest.mark.parametrize("outcome", ["pass", "fail", "timeout", "spawn-error", "setup-error"])
+    def test_wrapper_removes_only_its_scratch_on_return_or_exception(tmp_path, monkeypatch, outcome):
+        check = runpy.run_path(str(CHECK))
+        work = tmp_path / "task"
+        work.mkdir()
+        scratch_root = tmp_path / "scratch"
+        scratch_root.mkdir()
+        sentinel = scratch_root / "unrelated"
+        sentinel.write_text("keep")
+        (work / "context.json").write_text(json.dumps({
+            "code_context": "def test_execution(code):\n    exec(code)\n"}))
+        (work / "solution.py").write_text("assert False\n" if outcome == "fail" else "assert True\n")
+        # A dependency stub tests wrapper plumbing; the evidence packet separately runs
+        # the actual pinned upstream execution.py against authored arithmetic.
+        if outcome != "setup-error":
+            (work / "execution.py").write_text(
+                "def check_correctness(program, timeout):\n"
+                "    try:\n"
+                "        exec(program, {})\n"
+                "        return {'passed': True, 'result': 'passed'}\n"
+                "    except AssertionError:\n"
+                "        return {'passed': False, 'result': 'failed'}\n")
+        monkeypatch.chdir(work)
+        monkeypatch.setattr(sys, "argv", [str(CHECK)])
+        monkeypatch.setattr(check["tempfile"], "tempdir", str(scratch_root))
+        real_run = subprocess.run
+        created = []
+    
+        def run_runner(argv, **kwargs):
+            scratch = Path(kwargs["cwd"])
+            created.append(scratch)
+            assert scratch.parent == scratch_root
+            assert {p.name for p in scratch.iterdir()} == {
+                "execution.py", "run_ds1000.py", "program.json"}
+            assert json.loads((scratch / "program.json").read_text()).endswith("test_execution(code)\n")
+            assert kwargs["timeout"] == 130
+            if outcome == "timeout":
+                raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+            if outcome == "spawn-error":
+                raise OSError("authored spawn failure")
+            return real_run(argv, **kwargs)
+    
+        monkeypatch.setattr(check["subprocess"], "run", run_runner)
+        error = {"timeout": subprocess.TimeoutExpired, "spawn-error": OSError,
+                 "setup-error": FileNotFoundError}.get(outcome)
+        if error:
+            with pytest.raises(error):
+                check["main"]()
+            assert not (work / "verifier/reward.txt").exists()
+        else:
+            assert check["main"]() == 0
+            expected = float(outcome == "pass")
+            assert float((work / "verifier/reward.txt").read_text()) == expected
+            evidence = json.loads((work / "verifier/evidence.json").read_text())
+            assert evidence["measured"] is True
+            assert evidence["reward"] == expected
+        if outcome != "setup-error":
+            assert len(created) == 1
+>           assert not created[0].exists()
+E           AssertionError: assert not True
+E            +  where True = <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_1/scratch/ds1000-check-1npksh8u')>()
+E            +    where <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_1/scratch/ds1000-check-1npksh8u')> = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_1/scratch/ds1000-check-1npksh8u').exists
+
+/tmp/hg-scratch/tests/quality/test_ds1000_scratch_cleanup_w_scratch.py:74: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 0: failed
+____ test_wrapper_removes_only_its_scratch_on_return_or_exception[timeout] _____
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7685530fb830>
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["pass", "fail", "timeout", "spawn-error", "setup-error"])
+    def test_wrapper_removes_only_its_scratch_on_return_or_exception(tmp_path, monkeypatch, outcome):
+        check = runpy.run_path(str(CHECK))
+        work = tmp_path / "task"
+        work.mkdir()
+        scratch_root = tmp_path / "scratch"
+        scratch_root.mkdir()
+        sentinel = scratch_root / "unrelated"
+        sentinel.write_text("keep")
+        (work / "context.json").write_text(json.dumps({
+            "code_context": "def test_execution(code):\n    exec(code)\n"}))
+        (work / "solution.py").write_text("assert False\n" if outcome == "fail" else "assert True\n")
+        # A dependency stub tests wrapper plumbing; the evidence packet separately runs
+        # the actual pinned upstream execution.py against authored arithmetic.
+        if outcome != "setup-error":
+            (work / "execution.py").write_text(
+                "def check_correctness(program, timeout):\n"
+                "    try:\n"
+                "        exec(program, {})\n"
+                "        return {'passed': True, 'result': 'passed'}\n"
+                "    except AssertionError:\n"
+                "        return {'passed': False, 'result': 'failed'}\n")
+        monkeypatch.chdir(work)
+        monkeypatch.setattr(sys, "argv", [str(CHECK)])
+        monkeypatch.setattr(check["tempfile"], "tempdir", str(scratch_root))
+        real_run = subprocess.run
+        created = []
+    
+        def run_runner(argv, **kwargs):
+            scratch = Path(kwargs["cwd"])
+            created.append(scratch)
+            assert scratch.parent == scratch_root
+            assert {p.name for p in scratch.iterdir()} == {
+                "execution.py", "run_ds1000.py", "program.json"}
+            assert json.loads((scratch / "program.json").read_text()).endswith("test_execution(code)\n")
+            assert kwargs["timeout"] == 130
+            if outcome == "timeout":
+                raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+            if outcome == "spawn-error":
+                raise OSError("authored spawn failure")
+            return real_run(argv, **kwargs)
+    
+        monkeypatch.setattr(check["subprocess"], "run", run_runner)
+        error = {"timeout": subprocess.TimeoutExpired, "spawn-error": OSError,
+                 "setup-error": FileNotFoundError}.get(outcome)
+        if error:
+            with pytest.raises(error):
+                check["main"]()
+            assert not (work / "verifier/reward.txt").exists()
+        else:
+            assert check["main"]() == 0
+            expected = float(outcome == "pass")
+            assert float((work / "verifier/reward.txt").read_text()) == expected
+            evidence = json.loads((work / "verifier/evidence.json").read_text())
+            assert evidence["measured"] is True
+            assert evidence["reward"] == expected
+        if outcome != "setup-error":
+            assert len(created) == 1
+>           assert not created[0].exists()
+E           AssertionError: assert not True
+E            +  where True = <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_2/scratch/ds1000-check-n53kua24')>()
+E            +    where <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_2/scratch/ds1000-check-n53kua24')> = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_2/scratch/ds1000-check-n53kua24').exists
+
+/tmp/hg-scratch/tests/quality/test_ds1000_scratch_cleanup_w_scratch.py:74: AssertionError
+__ test_wrapper_removes_only_its_scratch_on_return_or_exception[spawn-error] ___
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76855328b560>
+outcome = 'spawn-error'
+
+    @pytest.mark.parametrize("outcome", ["pass", "fail", "timeout", "spawn-error", "setup-error"])
+    def test_wrapper_removes_only_its_scratch_on_return_or_exception(tmp_path, monkeypatch, outcome):
+        check = runpy.run_path(str(CHECK))
+        work = tmp_path / "task"
+        work.mkdir()
+        scratch_root = tmp_path / "scratch"
+        scratch_root.mkdir()
+        sentinel = scratch_root / "unrelated"
+        sentinel.write_text("keep")
+        (work / "context.json").write_text(json.dumps({
+            "code_context": "def test_execution(code):\n    exec(code)\n"}))
+        (work / "solution.py").write_text("assert False\n" if outcome == "fail" else "assert True\n")
+        # A dependency stub tests wrapper plumbing; the evidence packet separately runs
+        # the actual pinned upstream execution.py against authored arithmetic.
+        if outcome != "setup-error":
+            (work / "execution.py").write_text(
+                "def check_correctness(program, timeout):\n"
+                "    try:\n"
+                "        exec(program, {})\n"
+                "        return {'passed': True, 'result': 'passed'}\n"
+                "    except AssertionError:\n"
+                "        return {'passed': False, 'result': 'failed'}\n")
+        monkeypatch.chdir(work)
+        monkeypatch.setattr(sys, "argv", [str(CHECK)])
+        monkeypatch.setattr(check["tempfile"], "tempdir", str(scratch_root))
+        real_run = subprocess.run
+        created = []
+    
+        def run_runner(argv, **kwargs):
+            scratch = Path(kwargs["cwd"])
+            created.append(scratch)
+            assert scratch.parent == scratch_root
+            assert {p.name for p in scratch.iterdir()} == {
+                "execution.py", "run_ds1000.py", "program.json"}
+            assert json.loads((scratch / "program.json").read_text()).endswith("test_execution(code)\n")
+            assert kwargs["timeout"] == 130
+            if outcome == "timeout":
+                raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+            if outcome == "spawn-error":
+                raise OSError("authored spawn failure")
+            return real_run(argv, **kwargs)
+    
+        monkeypatch.setattr(check["subprocess"], "run", run_runner)
+        error = {"timeout": subprocess.TimeoutExpired, "spawn-error": OSError,
+                 "setup-error": FileNotFoundError}.get(outcome)
+        if error:
+            with pytest.raises(error):
+                check["main"]()
+            assert not (work / "verifier/reward.txt").exists()
+        else:
+            assert check["main"]() == 0
+            expected = float(outcome == "pass")
+            assert float((work / "verifier/reward.txt").read_text()) == expected
+            evidence = json.loads((work / "verifier/evidence.json").read_text())
+            assert evidence["measured"] is True
+            assert evidence["reward"] == expected
+        if outcome != "setup-error":
+            assert len(created) == 1
+>           assert not created[0].exists()
+E           AssertionError: assert not True
+E            +  where True = <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_3/scratch/ds1000-check-g2urii2i')>()
+E            +    where <bound method Path.exists of PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_3/scratch/ds1000-check-g2urii2i')> = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_3/scratch/ds1000-check-g2urii2i').exists
+
+/tmp/hg-scratch/tests/quality/test_ds1000_scratch_cleanup_w_scratch.py:74: AssertionError
+__ test_wrapper_removes_only_its_scratch_on_return_or_exception[setup-error] ___
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7685530faff0>
+outcome = 'setup-error'
+
+    @pytest.mark.parametrize("outcome", ["pass", "fail", "timeout", "spawn-error", "setup-error"])
+    def test_wrapper_removes_only_its_scratch_on_return_or_exception(tmp_path, monkeypatch, outcome):
+        check = runpy.run_path(str(CHECK))
+        work = tmp_path / "task"
+        work.mkdir()
+        scratch_root = tmp_path / "scratch"
+        scratch_root.mkdir()
+        sentinel = scratch_root / "unrelated"
+        sentinel.write_text("keep")
+        (work / "context.json").write_text(json.dumps({
+            "code_context": "def test_execution(code):\n    exec(code)\n"}))
+        (work / "solution.py").write_text("assert False\n" if outcome == "fail" else "assert True\n")
+        # A dependency stub tests wrapper plumbing; the evidence packet separately runs
+        # the actual pinned upstream execution.py against authored arithmetic.
+        if outcome != "setup-error":
+            (work / "execution.py").write_text(
+                "def check_correctness(program, timeout):\n"
+                "    try:\n"
+                "        exec(program, {})\n"
+                "        return {'passed': True, 'result': 'passed'}\n"
+                "    except AssertionError:\n"
+                "        return {'passed': False, 'result': 'failed'}\n")
+        monkeypatch.chdir(work)
+        monkeypatch.setattr(sys, "argv", [str(CHECK)])
+        monkeypatch.setattr(check["tempfile"], "tempdir", str(scratch_root))
+        real_run = subprocess.run
+        created = []
+    
+        def run_runner(argv, **kwargs):
+            scratch = Path(kwargs["cwd"])
+            created.append(scratch)
+            assert scratch.parent == scratch_root
+            assert {p.name for p in scratch.iterdir()} == {
+                "execution.py", "run_ds1000.py", "program.json"}
+            assert json.loads((scratch / "program.json").read_text()).endswith("test_execution(code)\n")
+            assert kwargs["timeout"] == 130
+            if outcome == "timeout":
+                raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+            if outcome == "spawn-error":
+                raise OSError("authored spawn failure")
+            return real_run(argv, **kwargs)
+    
+        monkeypatch.setattr(check["subprocess"], "run", run_runner)
+        error = {"timeout": subprocess.TimeoutExpired, "spawn-error": OSError,
+                 "setup-error": FileNotFoundError}.get(outcome)
+        if error:
+            with pytest.raises(error):
+                check["main"]()
+            assert not (work / "verifier/reward.txt").exists()
+        else:
+            assert check["main"]() == 0
+            expected = float(outcome == "pass")
+            assert float((work / "verifier/reward.txt").read_text()) == expected
+            evidence = json.loads((work / "verifier/evidence.json").read_text())
+            assert evidence["measured"] is True
+            assert evidence["reward"] == expected
+        if outcome != "setup-error":
+            assert len(created) == 1
+            assert not created[0].exists()
+>       assert list(scratch_root.iterdir()) == [sentinel]
+E       AssertionError: assert [PosixPath('/...ck-pig0je30')] == [PosixPath('/...h/unrelated')]
+E         Left contains one more item: PosixPath('/tmp/harnessgrad-pytest-w-scratch-before/test_wrapper_removes_only_its_4/scratch/ds1000-check-pig0je30')
+E         Use -v to get more diff
+
+/tmp/hg-scratch/tests/quality/test_ds1000_scratch_cleanup_w_scratch.py:75: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_ds1000_scratch_cleanup_w_scratch.py::test_wrapper_removes_only_its_scratch_on_return_or_exception[pass]
+FAILED tests/quality/test_ds1000_scratch_cleanup_w_scratch.py::test_wrapper_removes_only_its_scratch_on_return_or_exception[fail]
+FAILED tests/quality/test_ds1000_scratch_cleanup_w_scratch.py::test_wrapper_removes_only_its_scratch_on_return_or_exception[timeout]
+FAILED tests/quality/test_ds1000_scratch_cleanup_w_scratch.py::test_wrapper_removes_only_its_scratch_on_return_or_exception[spawn-error]
+FAILED tests/quality/test_ds1000_scratch_cleanup_w_scratch.py::test_wrapper_removes_only_its_scratch_on_return_or_exception[setup-error]
+5 failed in 0.12s

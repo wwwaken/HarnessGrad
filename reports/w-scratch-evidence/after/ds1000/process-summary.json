@@ -1,0 +1,52 @@
+{
+  "collector_waitpid": [],
+  "elapsed_seconds": 0.9244849476963282,
+  "observed_pids": {
+    "623152": {
+      "first_ns": 1792024388644600455,
+      "last_ns": 1792024389415960853,
+      "last_ppid": 623147,
+      "last_state": "Z",
+      "start_ticks": "654732566"
+    },
+    "623155": {
+      "first_ns": 1792024388747861537,
+      "last_ns": 1792024389344319050,
+      "last_ppid": 623152,
+      "last_state": "S",
+      "start_ticks": "654732567"
+    },
+    "623156": {
+      "first_ns": 1792024388748719142,
+      "last_ns": 1792024389344434586,
+      "last_ppid": 623155,
+      "last_state": "S",
+      "start_ticks": "654732567"
+    },
+    "623159": {
+      "first_ns": 1792024388847948965,
+      "last_ns": 1792024389344534854,
+      "last_ppid": 623156,
+      "last_state": "S",
+      "start_ticks": "654732580"
+    },
+    "623160": {
+      "first_ns": 1792024388929349052,
+      "last_ns": 1792024389344639138,
+      "last_ppid": 623159,
+      "last_state": "S",
+      "start_ticks": "654732594"
+    },
+    "623166": {
+      "first_ns": 1792024388930012060,
+      "last_ns": 1792024389344733374,
+      "last_ppid": 623159,
+      "last_state": "S",
+      "start_ticks": "654732595"
+    }
+  },
+  "remaining_before_collector_path_cleanup": {},
+  "returncode": 0,
+  "root_pid": 623152,
+  "timed_out": false
+}

@@ -3273,3 +3273,34 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - No model/GPU/endpoint, benchmark, production H0, runs/ write or historical
   receipt/archive edit. Commit only on registered `/tmp/hg-quiesce2` branch
   `wg-quiesce2`, for parent review and merge.
+## 2026-10-15 DS-1000 wrapper scratch lifetime - w-scratch
+
+- Reverified all 338 w-jvm manifest entries, then reproduced the actual DS-1000
+  wrapper leak with authored arithmetic and the upstream executor. Before-fix
+  `/tmp/ds1000-check-g_vvdeqq` retains execution.py, program.json and run_ds1000.py
+  after check exit. The allocating component is verify/check.py:34, not the
+  candidate or execution runner. Full characterisation, source lines and custody:
+  `reports/w-scratch-characterisation.md`; fresh raw evidence and manifest:
+  `reports/w-scratch-evidence/`.
+- Clarified scope: the leftover was outside the task directory but inside the
+  collector's owned /tmp bind, which subsequently removed it. Production private
+  /tmp also contains it; a separate direct-host reproduction proves the old
+  directory survives task removal without that fallback. The location is valid;
+  the unpaired allocation and indefinite payload retention are a wrapper defect.
+- Replaced mkdtemp with a TemporaryDirectory context around preparation and child
+  execution. Fresh upstream control removes `/tmp/ds1000-check-k37wwntg` before
+  collector cleanup; fixed host control also leaves no wrapper scratch. Scoring,
+  inputs, timeouts, environment, gates and admissions are unchanged. Python
+  unwinding is covered; abrupt termination and descendant lifecycle remain limits.
+- Reviewed and freshly exercised LiveCodeBench and BIRD with authored controls:
+  neither wrapper allocates this temporary tree, and neither leaves comparable
+  scratch. BIRD executes SQLite in the check process, not a separate SQL child.
+- Five focused cases fail before the fix and pass afterward: success, candidate
+  failure, simulated timeout/spawn errors, and setup failure. Focused plus
+  source-only registry tests pass 59/59; checker remains valid with production
+  authorization false. Raw commands/output: `reports/w-scratch-validation.txt`.
+- Registry bytes, all dataset blockers and both shared blockers are unchanged.
+  scorer-offline-closure remains open/code-solvable; S1/S3/S4/S6 and S5 remain
+  PARTIAL. No benchmark run, model/GPU/endpoint call, runs/ access, frozen receipt
+  modification, existing-ID reuse or main commit. Registered worktree:
+  `/tmp/hg-scratch`, branch `wg-scratch`; changes are for parent review only.

@@ -1,0 +1,424 @@
+data/datasets/ds1000/verify/check.py:20: def main() -> int:
+data/datasets/ds1000/verify/check.py:21:     ap = argparse.ArgumentParser()
+data/datasets/ds1000/verify/check.py:22:     ap.add_argument("--reward-file", default="verifier/reward.txt")
+data/datasets/ds1000/verify/check.py:23:     ap.add_argument("--evidence-file", default="verifier/evidence.json")
+data/datasets/ds1000/verify/check.py:24:     args = ap.parse_args()
+data/datasets/ds1000/verify/check.py:25:     work = pathlib.Path.cwd()
+data/datasets/ds1000/verify/check.py:26:     task = json.loads((work / "context.json").read_text(encoding="utf-8"))
+data/datasets/ds1000/verify/check.py:27:     solution = work / "solution.py"
+data/datasets/ds1000/verify/check.py:28:     candidate = solution.read_text(encoding="utf-8") if solution.is_file() else ""
+data/datasets/ds1000/verify/check.py:29:     program = (task["code_context"] + "\n" + f"code = {candidate!r}\n"
+data/datasets/ds1000/verify/check.py:30:                + "test_execution(code)\n"
+data/datasets/ds1000/verify/check.py:31:                + ("test_string(code)\n" if "test_string(" in task["code_context"] else ""))
+data/datasets/ds1000/verify/check.py:32:     # Keep this checker dependency-free: execution.py is a VERIFY input, and the candidate
+data/datasets/ds1000/verify/check.py:33:     # program is passed via a temporary JSON file so the child can import the official runner.
+data/datasets/ds1000/verify/check.py:34:     # Own the wrapper files even for direct host checks and runner/setup failures.
+data/datasets/ds1000/verify/check.py:35:     with tempfile.TemporaryDirectory(prefix="ds1000-check-") as scratch_dir:
+data/datasets/ds1000/verify/check.py:36:         scratch = pathlib.Path(scratch_dir)
+data/datasets/ds1000/verify/check.py:37:         runner = scratch / "run_ds1000.py"
+data/datasets/ds1000/verify/check.py:38:         (scratch / "execution.py").write_text((work / "execution.py").read_text(encoding="utf-8"), encoding="utf-8")
+data/datasets/ds1000/verify/check.py:39:         runner.write_text(
+data/datasets/ds1000/verify/check.py:40:             "import json, sys\n"
+data/datasets/ds1000/verify/check.py:41:             "from execution import check_correctness\n"
+data/datasets/ds1000/verify/check.py:42:             "program=json.loads(open(sys.argv[1]).read())\n"
+data/datasets/ds1000/verify/check.py:43:             "print(json.dumps(check_correctness(program, timeout=120)))\n",
+data/datasets/ds1000/verify/check.py:44:             encoding="utf-8")
+data/datasets/ds1000/verify/check.py:45:         payload = scratch / "program.json"
+data/datasets/ds1000/verify/check.py:46:         payload.write_text(json.dumps(program), encoding="utf-8")
+data/datasets/ds1000/verify/check.py:47:         # 14 official Matplotlib rows call `sns.load_dataset(...)`. seaborn resolves that from
+data/datasets/ds1000/verify/check.py:48:         # `$SEABORN_DATA/<name>.csv`; the four CSVs are a VERIFY input, so the official code
+data/datasets/ds1000/verify/check.py:49:         # path runs offline instead of fetching from GitHub mid-check.
+data/datasets/ds1000/verify/check.py:50:         import os
+data/datasets/ds1000/verify/check.py:51:         env = dict(os.environ)
+data/datasets/ds1000/verify/check.py:52:         env["SEABORN_DATA"] = str(work / "seaborn-data")
+data/datasets/ds1000/verify/check.py:53:         for noisy in ("MPLBACKEND",):
+data/datasets/ds1000/verify/check.py:54:             env.setdefault(noisy, "Agg")
+data/datasets/ds1000/verify/check.py:55:         proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
+data/datasets/ds1000/verify/check.py:56:                               capture_output=True, text=True, timeout=130, env=env)
+data/datasets/ds1000/verify/check.py:57:     result = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 and proc.stdout.strip() else {"passed": False, "result": proc.stderr[-500:]}
+data/datasets/ds1000/verify/check.py:58:     reward = 1.0 if result.get("passed") else 0.0
+data/datasets/ds1000/verify/check.py:59:     out = work / args.reward_file
+data/datasets/ds1000/verify/check.py:60:     out.parent.mkdir(parents=True, exist_ok=True)
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:25:     work = pathlib.Path.cwd()
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:26:     task = json.loads((work / "context.json").read_text(encoding="utf-8"))
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:27:     solution = work / "solution.py"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:28:     candidate = solution.read_text(encoding="utf-8") if solution.is_file() else ""
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:29:     program = (task["code_context"] + "\n" + f"code = {candidate!r}\n"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:30:                + "test_execution(code)\n"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:31:                + ("test_string(code)\n" if "test_string(" in task["code_context"] else ""))
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:32:     # Keep this checker dependency-free: execution.py is a VERIFY input, and the candidate
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:33:     # program is passed via a temporary JSON file so the child can import the official runner.
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:34:     scratch = pathlib.Path(tempfile.mkdtemp(prefix="ds1000-check-"))
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:35:     runner = scratch / "run_ds1000.py"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:36:     (scratch / "execution.py").write_text((work / "execution.py").read_text(encoding="utf-8"), encoding="utf-8")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:37:     runner.write_text(
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:38:         "import json, sys\n"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:39:         "from execution import check_correctness\n"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:40:         "program=json.loads(open(sys.argv[1]).read())\n"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:41:         "print(json.dumps(check_correctness(program, timeout=120)))\n",
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:42:         encoding="utf-8")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:43:     payload = scratch / "program.json"
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:44:     payload.write_text(json.dumps(program), encoding="utf-8")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:45:     # 14 official Matplotlib rows call `sns.load_dataset(...)`. seaborn resolves that from
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:46:     # `$SEABORN_DATA/<name>.csv`; the four CSVs are a VERIFY input, so the official code
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:47:     # path runs offline instead of fetching from GitHub mid-check.
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:48:     import os
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:49:     env = dict(os.environ)
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:50:     env["SEABORN_DATA"] = str(work / "seaborn-data")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:51:     for noisy in ("MPLBACKEND",):
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:52:         env.setdefault(noisy, "Agg")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:53:     proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:54:                           capture_output=True, text=True, timeout=130, env=env)
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:55:     result = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 and proc.stdout.strip() else {"passed": False, "result": proc.stderr[-500:]}
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:56:     reward = 1.0 if result.get("passed") else 0.0
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:57:     out = work / args.reward_file
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:58:     out.parent.mkdir(parents=True, exist_ok=True)
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:59:     out.write_text(f"{reward:g}\n")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:60:     ev = work / args.evidence_file
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:61:     ev.parent.mkdir(parents=True, exist_ok=True)
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:62:     ev.write_text(json.dumps({"measured": True, "reward": reward,
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:63:                               "official": {"metric": "DS-1000 test_execution plus conditional test_string",
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:64:                                             "result": result.get("result")},
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:65:                               "why": result.get("result", "")}, sort_keys=True) + "\n")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:66:     print(f"reward {reward:g}: {result.get('result', '')}")
+reports/w-scratch-evidence/before/ds1000/inputs/verify/check.py:67:     return 0
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:25:     """
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:26: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:27:     def unsafe_execute():
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:28:         with create_tempdir():
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:29: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:30:             # These system calls are needed when cleaning up tempdir.
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:31:             import os
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:32:             import shutil
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:33:             rmtree = shutil.rmtree
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:34:             rmdir = os.rmdir
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:35:             chdir = os.chdir
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:36: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:37:             # Disable functionalities that can make destructive changes to the test.
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:38:             # reliability_guard()
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:39: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:40:             # Construct the check program and run it.
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:41:             check_program = (
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:42:                 program
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:43:             )
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:44: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:45:             try:
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:46:                 exec_globals = {}
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:47:                 with swallow_io():
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:48:                     with time_limit(timeout):
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:49:                         exec(check_program, exec_globals)
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:50:                 result.append("passed")
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:51:             except TimeoutException:
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:52:                 result.append("timed out")
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:53:             except BaseException as e:
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:54:                 result.append(f"failed: {e}")
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:55: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:56:             # Needed for cleaning up.
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:57:             shutil.rmtree = rmtree
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:58:             os.rmdir = rmdir
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:59:             os.chdir = chdir
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:60: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:61:     manager = multiprocessing.Manager()
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:62:     result = manager.list()
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:63: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:64:     p = multiprocessing.Process(target=unsafe_execute)
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:65:     p.start()
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:66:     p.join(timeout=timeout + 1)
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:67:     if p.is_alive():
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:68:         p.kill()
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:69: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:70:     if not result:
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:71:         result.append("timed out")
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:72: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:73:     return dict(
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:74:         passed=result[0] == "passed",
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:75:         result=result[0],
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:100: 
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:101: @contextlib.contextmanager
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:102: def create_tempdir():
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:103:     with tempfile.TemporaryDirectory() as dirname:
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:104:         with chdir(dirname):
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:105:             yield dirname
+reports/w-scratch-evidence/before/ds1000/inputs/execution.py:106: 
+data/datasets/livecodebench/verify/check.py:62: def _workdir_on_path() -> None:
+data/datasets/livecodebench/verify/check.py:63:     """Put the workdir on `sys.path`, where the platform materialized the pinned files.
+data/datasets/livecodebench/verify/check.py:64: 
+data/datasets/livecodebench/verify/check.py:65:     This check lives in `verify/` (so `sys.path[0]` is `verify/`) while `testing_util.py` and
+data/datasets/livecodebench/verify/check.py:66:     `pass_k_utils.py` are `VERIFY.inputs` at the workdir root. DS-1000 has the same layout and
+data/datasets/livecodebench/verify/check.py:67:     solves it by launching its runner from a scratch directory that holds `execution.py`; here
+data/datasets/livecodebench/verify/check.py:68:     the two directories are one `sys.path` entry apart, which is cheaper. Measured, because the
+data/datasets/livecodebench/verify/check.py:69:     platform arm failed on exactly this: by hand the control sets `PYTHONPATH`, and under
+data/datasets/livecodebench/verify/check.py:70:     `eval.verification.verifier` it does not, so `import testing_util` raised `ModuleNotFoundError` only in
+data/datasets/livecodebench/verify/check.py:71:     the sandbox run.
+data/datasets/livecodebench/verify/check.py:72:     """
+data/datasets/livecodebench/verify/check.py:73:     work = str(Path.cwd())
+data/datasets/livecodebench/verify/check.py:74:     if work not in sys.path:
+data/datasets/livecodebench/verify/check.py:75:         sys.path.insert(0, work)
+data/datasets/livecodebench/verify/check.py:76: 
+data/datasets/livecodebench/verify/check.py:77: 
+data/datasets/livecodebench/verify/check.py:78: def _child(tests_text: str, solution: str, queue) -> None:
+data/datasets/livecodebench/verify/check.py:79:     """`run_test` in its own process: it mutates process-global state (`reliability_guard`
+data/datasets/livecodebench/verify/check.py:80:     nulls `os.system`, `os.remove`, `builtins.quit` and `os.environ` itself) and it executes
+data/datasets/livecodebench/verify/check.py:81:     the candidate, so nothing it does may reach the check's own interpreter. Upstream makes the
+data/datasets/livecodebench/verify/check.py:82:     same choice, for the same reason, in `compute_code_generation_metrics.py`."""
+data/datasets/livecodebench/verify/check.py:83:     _workdir_on_path()
+data/datasets/livecodebench/verify/check.py:167:     cap = min(CAP_S, (PER_TEST_TIMEOUT + 1) * total + 5)
+data/datasets/livecodebench/verify/check.py:168:     queue: multiprocessing.Queue = multiprocessing.Queue()
+data/datasets/livecodebench/verify/check.py:169:     process = multiprocessing.Process(target=_child, args=(tests_text, solution, queue))
+data/datasets/livecodebench/verify/check.py:170:     process.start()
+data/datasets/livecodebench/verify/check.py:171:     process.join(cap)
+data/datasets/livecodebench/verify/check.py:172:     if process.is_alive():                     # upstream kills and marks every test failed
+data/datasets/livecodebench/verify/check.py:173:         process.kill()
+data/datasets/livecodebench/verify/check.py:174:         process.join()
+data/datasets/livecodebench/verify/check.py:175:         return _measure(args, 0.0, f"global timeout after {cap:g}s: the solution did not finish "
+data/datasets/livecodebench/verify/check.py:176:                                    f"on {total} tests", total, 0, [-1] * total)
+data/datasets/livecodebench/verify/check.py:177:     if queue.empty():
+data/datasets/livecodebench/verify/check.py:178:         return _cannot_measure(args, "the executor died without a verdict")
+data/datasets/livecodebench/verify/check.py:179:     outcome = queue.get()
+data/datasets/bird_minidev/verify/check.py:105:     connection = sqlite3.connect(args.db)
+data/datasets/bird_minidev/verify/check.py:106:     try:
+data/datasets/bird_minidev/verify/check.py:107:         try:
+data/datasets/bird_minidev/verify/check.py:108:             gold_rows = run_query(connection, gold_sql)
+data/datasets/bird_minidev/verify/check.py:109:         except Exception as exc:                    # noqa: BLE001 - a broken gold is not the agent's
+data/datasets/bird_minidev/verify/check.py:110:             return _cannot_measure(
+data/datasets/bird_minidev/verify/check.py:111:                 args, f"the gold query cannot run against {Path(args.db).name} "
+data/datasets/bird_minidev/verify/check.py:112:                       f"({type(exc).__name__}: {exc}): the environment cannot measure this task")
+data/datasets/bird_minidev/verify/check.py:113: 
+data/datasets/bird_minidev/verify/check.py:114:         prediction = (Path(args.pred).read_text(encoding="utf-8").strip()
+data/datasets/bird_minidev/verify/check.py:115:                       if Path(args.pred).is_file() else "")
+data/datasets/bird_minidev/verify/check.py:116:         if not prediction:
+data/datasets/bird_minidev/verify/check.py:117:             return _measure(args, 0.0, "no answer (measured zero): answer.sql is missing or empty")
+data/datasets/bird_minidev/verify/check.py:118:         try:
+data/datasets/bird_minidev/verify/check.py:119:             predicted_rows = run_query(connection, prediction)
+data/datasets/bird_minidev/verify/check.py:120:         except Exception as exc:                    # noqa: BLE001 - upstream scores this 0
+data/datasets/bird_minidev/verify/check.py:121:             return _measure(args, 0.0, f"prediction did not run ({type(exc).__name__}: {exc})")
+data/datasets/bird_minidev/verify/check.py:122:     finally:
+data/datasets/bird_minidev/verify/check.py:123:         connection.close()
+data/datasets/bird_minidev/verify/check.py:124: 
+data/datasets/bird_minidev/verify/check.py:125:     reward = float(calculate_ex(predicted_rows, gold_rows))
+data/datasets/bird_minidev/verify/check.py:126:     return _measure(args, reward, f"exact set equality: {len(predicted_rows)} predicted vs "
+data/datasets/bird_minidev/verify/check.py:127:                                   f"{len(gold_rows)} gold rows")
+data/datasets/bird_minidev/verify/check.py:128: 
+data/datasets/bird_minidev/verify/check.py:129: 
+data/datasets/bird_minidev/verify/check.py:130: if __name__ == "__main__":
+eval/verification/verifier.py:33:     """A minimal environment for the check.
+eval/verification/verifier.py:34: 
+eval/verification/verifier.py:35:     Deliberately **not** `harness_env()`: the verifier has no business holding the
+eval/verification/verifier.py:36:     agent's API key, and a grade that can call a model is a grade that can vary
+eval/verification/verifier.py:37:     between runs.
+eval/verification/verifier.py:38:     """
+eval/verification/verifier.py:39:     env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+eval/verification/verifier.py:40:            "HOME": str(workdir), "LANG": os.environ.get("LANG", "C.UTF-8"),
+eval/verification/verifier.py:41:            "PYTHONDONTWRITEBYTECODE": "1"}
+eval/verification/verifier.py:42:     return env
+eval/verification/verifier.py:43: 
+eval/verification/verifier.py:44: 
+eval/verification/verifier.py:45: def _verifier_env_container() -> dict:
+eval/verification/verifier.py:46:     """The check's environment inside a container.
+eval/verification/verifier.py:47: 
+eval/verification/verifier.py:48:     No `PATH`: the image has its own and the host's names directories that do not
+eval/verification/verifier.py:49:     exist inside. `HOME` and `TMPDIR` point at the container's tmpfs, not at the task
+eval/verification/verifier.py:50:     mount, because the task mount is bound **read-only** for the check -- a check that
+eval/verification/verifier.py:51:     writes into the tree it is grading is one whose verdict depends on its own
+eval/verification/verifier.py:52:     leftovers. `PYTHONDONTWRITEBYTECODE` is kept for the same reason.
+eval/verification/verifier.py:53: 
+eval/verification/verifier.py:54:     And, as on the host: no agent credentials, because a grade that can call a model
+eval/verification/verifier.py:55:     is a grade that can vary between runs.
+eval/verification/verifier.py:56:     """
+eval/verification/verifier.py:57:     return {"HOME": "/tmp", "TMPDIR": "/tmp",
+eval/verification/verifier.py:58:             "LANG": os.environ.get("LANG", "C.UTF-8"),
+eval/verification/verifier.py:595:             # (An unsandboxed check runs with the harness's workdir as `sys.path[0]`,
+eval/verification/verifier.py:596:             # which is a route from the subject into a process that can read the
+eval/verification/verifier.py:597:             # platform -- the failure this module exists to prevent.)
+eval/verification/verifier.py:598:             work_root = Path(os.environ.get("HARNESSGRAD_WORK_ROOT")
+eval/verification/verifier.py:599:                              or workdir.parent.parent)
+eval/verification/verifier.py:600:             # The namespace freezes the task tree and gives the check a private tmpfs at
+eval/verification/verifier.py:601:             # `/tmp`, so HOME/TMPDIR point **there** and not at the workdir. Measured on
+eval/verification/verifier.py:602:             # ALFWorld: a check whose toolchain writes `$HOME/.cache` against a read-only
+eval/verification/verifier.py:603:             # workdir dies with `[Errno 30] Read-only file system` before it can grade
+eval/verification/verifier.py:604:             # anything, and the failure would have been recorded as a harness failure.
+eval/verification/verifier.py:605:             check_env = _verifier_env(workdir)
+eval/verification/verifier.py:606:             check_env.update({"HOME": "/tmp", "TMPDIR": "/tmp"})
+eval/verification/verifier.py:607:             proc = sandbox_mod.run(argv, platform=PLATFORM_ROOT, work_root=work_root,
+eval/verification/verifier.py:608:                                    task_dir=workdir, env=check_env,
+eval/verification/verifier.py:609:                                    timeout_s=timeout_s,
+eval/verification/verifier.py:610:                                    cwd=cwd, repo=workdir, task_dir_writable=False,
+eval/verification/verifier.py:611:                                    writable_paths=(reward_dir,) if reward_dir else ())
+eval/verification/verifier.py:612:         else:
+eval/verification/verifier.py:613:             proc = subprocess.run(argv, capture_output=True, text=True,
+eval/verification/verifier.py:614:                                   timeout=timeout_s, cwd=cwd,
+eval/verification/verifier.py:615:                                   env=_verifier_env(workdir))
+eval/verification/verifier.py:616:         code, out = proc.returncode, proc.stdout
+eval/verification/verifier.py:617:     except FileNotFoundError as exc:
+eval/verification/verifier.py:618:         return {"kind": "command", "passed": False,
+eval/verification/verifier.py:619:                 "detail": f"the verifier command does not exist: {exc}"}
+eval/containers/sandbox.py:265:         plan += ["--tmpfs", str(tree)]
+eval/containers/sandbox.py:266:     if private_tmp:
+eval/containers/sandbox.py:267:         # A private /tmp, so two runs cannot read each other's task directories.
+eval/containers/sandbox.py:268:         plan += ["--tmpfs", "/tmp"]
+eval/containers/sandbox.py:269: 
+eval/containers/container.py:538:             limits: dict | None = None) -> list[str]:
+eval/containers/container.py:539:     """The `docker run` argv. Split out so `self_check` and the tests can read it."""
+eval/containers/container.py:540:     limits = limits or {}
+eval/containers/container.py:541:     cmd = ["docker", "run", "--rm", "--network", network]
+eval/containers/container.py:542: 
+eval/containers/container.py:543:     if read_only:
+eval/containers/container.py:544:         # The environment is the image (§2.5.3). A rootfs the harness can write to
+eval/containers/container.py:545:         # would make the check's world depend on what the harness did to it, and two
+eval/containers/container.py:546:         # runs of one task would stop being comparable. `/tmp` is the exception
+eval/containers/container.py:547:         # because enough software hardcodes it that refusing would only produce
+eval/containers/container.py:548:         # confusing failures; it is a tmpfs, so it dies with the container.
+eval/containers/container.py:549:         cmd += ["--read-only", "--tmpfs", "/tmp:rw,exec,nosuid,size=512m,mode=1777"]
+eval/containers/container.py:550: 
+eval/verification/pristine.py:50:     # Exclusive platform-owned storage, never a projection inside actor state.
+eval/verification/pristine.py:51:     with tempfile.TemporaryDirectory(prefix="hg-pristine-") as scratch:
+eval/verification/pristine.py:52:         try:
+eval/verification/pristine.py:129:                            unmeasured=f"pristine scorer unavailable: {exc}")
+eval/verification/pristine.py:130:         finally:
+eval/verification/pristine.py:131:             if attempted:
+eval/verification/pristine.py:132:                 try:
+eval/verification/pristine.py:133:                     removed = container.docker("rm", "--force", name, timeout=30)
+eval/verification/pristine.py:134:                     evidence["cleanup"] = {"container": name, "removed": removed.returncode == 0,
+eval/verification/pristine.py:135:                                            **_command_result(removed)}
+eval/verification/pristine.py:136:                 except (OSError, subprocess.TimeoutExpired) as exc:
+eval/verification/pristine.py:137:                     evidence["cleanup"] = {"container": name, "removed": False,
+eval/verification/pristine.py:138:                                            "error": f"{type(exc).__name__}: {exc}"}
+eval/verification/pristine.py:139:                 if not evidence["cleanup"]["removed"]:
+eval/verification/pristine.py:140:                     verdict.update(passed=False, score=None, outcome="unmeasured",
+eval/verification/pristine.py:141:                                    unmeasured="pristine scorer cleanup failed")
+eval/verification/pristine.py:142:     verdict["scorer_isolation_evidence"] = evidence
+eval/admission/pilot_admission.py:484:     def cleanup(self) -> dict:
+eval/admission/pilot_admission.py:485:         row = self.ledger.get(self.lease)
+eval/admission/pilot_admission.py:486:         if row["state"] == "released":
+eval/admission/pilot_admission.py:487:             return row
+eval/admission/pilot_admission.py:488:         errors = []
+eval/admission/pilot_admission.py:489:         for owned in reversed(row["owned"]):
+eval/admission/pilot_admission.py:490:             try:
+eval/admission/pilot_admission.py:491:                 # Names cover create-time timeout; labels must match before removal.
+eval/admission/pilot_admission.py:492:                 info = self.docker.inspect_container(owned["id"] or owned["name"])
+eval/admission/pilot_admission.py:493:                 if info is None:
+eval/admission/pilot_admission.py:494:                     continue
+eval/admission/pilot_admission.py:495:                 labels = info.get("Config", {}).get("Labels", {})
+eval/admission/pilot_admission.py:496:                 if (labels.get("harnessgrad.admission") != self.lease
+eval/admission/pilot_admission.py:497:                         or labels.get("harnessgrad.task") != owned["task_id"]):
+eval/admission/pilot_admission.py:498:                     raise AdmissionError("ownership label mismatch; refusing removal")
+eval/admission/pilot_admission.py:499:                 if info.get("Name") != "/" + owned["name"]:
+eval/admission/pilot_admission.py:500:                     raise AdmissionError("owned container name changed")
+eval/admission/pilot_admission.py:501:                 if (not isinstance(info.get("Id"), str)
+eval/admission/pilot_admission.py:502:                         or not re.fullmatch(r"[a-f0-9]{64}", info["Id"])
+eval/admission/pilot_admission.py:503:                         or (owned["id"] is not None and info["Id"] != owned["id"])):
+eval/admission/pilot_admission.py:504:                     raise AdmissionError("owned container ID changed")
+eval/admission/pilot_admission.py:505:                 proc = self.docker.call("rm", "--force", info["Id"])
+eval/admission/pilot_admission.py:506:                 if proc.returncode or self.docker.inspect_container(info["Id"]) is not None:
+eval/admission/pilot_admission.py:507:                     raise AdmissionError("removal/absence verification failed")
+eval/admission/pilot_admission.py:508:             except (AdmissionError, OSError, subprocess.TimeoutExpired, ValueError, KeyError, TypeError, AttributeError) as exc:
+eval/admission/pilot_admission.py:509:                 errors.append(f"{owned['name']}: {exc}")
+eval/admission/pilot_admission.py:510:         # Only this label namespace is queried; no unrelated containers are touched.
+eval/admission/pilot_admission.py:511:         try:
+eval/admission/pilot_admission.py:512:             proc = self.docker.call("ps", "-aq", "--filter", f"label=harnessgrad.admission={self.lease}")
+eval/admission/pilot_admission.py:513:             if proc.returncode or proc.stdout.strip():
+eval/admission/pilot_admission.py:514:                 errors.append("owned namespace absence unproven")
+eval/admission/pilot_admission.py:515:         except (OSError, subprocess.TimeoutExpired) as exc:
+eval/admission/pilot_admission.py:516:             errors.append(str(exc))
+eval/admission/pilot_admission.py:517:         state = "quarantined" if errors else "released"
+eval/admission/pilot_admission.py:518:         return self.ledger.update(self.lease, state=state, cleanup_errors=errors,
+eval/admission/pilot_admission.py:519:                                   cleanup_checked_at=time.time())
+eval/admission/pilot_admission.py:520: 
+eval/admission/runner_admission.py:247: @_gate("cleanup")
+eval/admission/runner_admission.py:248: def admit_cleanup(binding: dict, policy: dict, observed: dict) -> dict:
+eval/admission/runner_admission.py:249:     """Check available owned-object/namespace facts, retaining coverage gaps.
+eval/admission/runner_admission.py:250: 
+eval/admission/runner_admission.py:251:     Missing absence evidence no longer quarantines a lease by itself. Known
+eval/admission/runner_admission.py:252:     remaining resources, wrong identities and failures still refuse release.
+eval/admission/runner_admission.py:253:     This check neither performs cleanup nor proves an atomic ledger update.
+eval/admission/runner_admission.py:254:     """
+eval/admission/runner_admission.py:283:         if kind is not None and resource_id is not None:
+eval/admission/runner_admission.py:284:             identities.append(dict(kind=kind, id=resource_id))
+eval/admission/runner_admission.py:285:         absent = _fact(item, "absent", uncertainties, prefix)
+eval/admission/runner_admission.py:286:         if absent is not None:
+eval/admission/runner_admission.py:287:             _require(absent is True, "owned_absence_unproven")
+eval/admission/runner_admission.py:288:         _optional_hash(item, uncertainties, prefix)
+eval/admission/runner_admission.py:289:     checked = _inventory(identities)
+eval/admission/runner_admission.py:290:     _require(checked <= owned, "cleanup_inventory_mismatch")
+eval/admission/runner_admission.py:291:     for index, item in enumerate(policy["owned"]):
+eval/admission/runner_admission.py:292:         if (item["kind"], item["id"]) not in checked:
+eval/admission/runner_admission.py:293:             uncertainties.append(f"owned[{index}]")
+eval/admission/runner_admission.py:294:     namespaces = _fact(observed, "namespaces", uncertainties)
+eval/admission/runner_admission.py:295:     if namespaces is None:
+eval/admission/runner_admission.py:296:         namespaces = {}
+eval/admission/runner_admission.py:297:     _partial_object(namespaces, KINDS, "cleanup_namespace_coverage_incomplete")
+eval/admission/runner_admission.py:298:     checked_kinds = []
+eval/admission/runner_admission.py:299:     for kind in sorted(KINDS):
+eval/admission/runner_admission.py:300:         row = _fact(namespaces, kind, uncertainties, "namespaces.")
+eval/admission/runner_admission.py:301:         if row is None:
+eval/admission/runner_admission.py:302:             continue
+eval/admission/runner_admission.py:303:         _partial_object(row, {"remaining", "evidence_sha256"}, "invalid_cleanup_namespace")
+eval/admission/runner_admission.py:304:         prefix = f"namespaces.{kind}."
+eval/admission/runner_admission.py:305:         remaining = _fact(row, "remaining", uncertainties, prefix)
+eval/admission/runner_admission.py:306:         if remaining is not None:
+eval/admission/runner_admission.py:307:             _require(remaining == [], "owned_namespace_absence_unproven")
+eval/admission/runner_admission.py:308:             checked_kinds.append(kind)
+eval/admission/runner_admission.py:309:         _optional_hash(row, uncertainties, prefix)
+eval/admission/runner_admission.py:310:     return dict(owned_count=len(owned), observed_owned_count=len(checked),
+eval/admission/runner_admission.py:311:                 checked_kinds=checked_kinds, timeout_ms=timeout,
+docs/runner-admission-contract.md:121: ## Cleanup and lease release
+docs/runner-admission-contract.md:122: 
+docs/runner-admission-contract.md:123: `admit_cleanup` takes `owned` resources and positive `timeout_ms`. Each ownership
+docs/runner-admission-contract.md:124: record is `{kind, id}`; supported kinds are `container`, `network`, `snapshot`,
+docs/runner-admission-contract.md:125: `volume` and `workspace`. Observed `objects` identify resources with `kind` and `id`.
+docs/runner-admission-contract.md:126: Known identity components must match the policy, and complete identities cannot be
+docs/runner-admission-contract.md:127: duplicated. Missing/null identity components record uncertainty; partial identities
+docs/runner-admission-contract.md:128: do not count as checked owned objects. Known
+docs/runner-admission-contract.md:129: `absent` values must be true; false still refuses release. Missing object rows,
+docs/runner-admission-contract.md:130: omitted/null absence facts or evidence hashes record uncertainty instead of refusing.
+docs/runner-admission-contract.md:131: Namespace coverage may be partial: omitted/null kinds, `remaining` values and
+docs/runner-admission-contract.md:132: hashes record uncertainty, while any known nonempty namespace still refuses.
+docs/runner-admission-contract.md:133: This retains checks for observed unrecorded allocations and interrupted intents.
+docs/runner-admission-contract.md:134: 
+docs/runner-admission-contract.md:135: The backend must persist ownership intent before allocation, validate ownership
+docs/runner-admission-contract.md:136: before removal and query only the bound owned namespace. Continue deleting resources
+docs/runner-admission-contract.md:137: and updating the ledger using the existing mechanisms; no proof of exact absence or
+docs/runner-admission-contract.md:138: atomic closure is required by this API. Actual removal failures and deadline
+docs/runner-admission-contract.md:139: mismatches still refuse. A successful remove without complete absence observations
+docs/runner-admission-contract.md:140: can proceed with uncertainty retained. The receipt records observed object counts,
+docs/runner-admission-contract.md:141: only namespace kinds with observed empty `remaining` lists, the observed deadline
+docs/runner-admission-contract.md:142: (null when unknown), policy limits, `best_effort=true` and uncertainty field paths.
+docs/runner-admission-contract.md:143: This module does not delete resources or update a ledger. Passing receipts request
+tests/fixtures/hg_wjvm/collect.py:257:     env_values = {'HOME': '/tmp/home', 'TMPDIR': '/tmp', 'XDG_CACHE_HOME': '/tmp/home/.cache',
+tests/fixtures/hg_wjvm/collect.py:258:                   'XDG_CONFIG_HOME': '/tmp/home/.config', 'PYTHONDONTWRITEBYTECODE': '1',
+tests/fixtures/hg_wjvm/collect.py:259:                   'CUDA_VISIBLE_DEVICES': '', 'OMP_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1',
+tests/fixtures/hg_wjvm/collect.py:260:                   'MKL_NUM_THREADS': '1', 'JAVA_TOOL_OPTIONS': '-Xmx512m -XX:ActiveProcessorCount=2',
+tests/fixtures/hg_wjvm/collect.py:261:                   'MAX_CONCURRENCY': '2', 'GSETTINGS_BACKEND': 'memory',
+tests/fixtures/hg_wjvm/collect.py:262:                   'PYTHONPATH': '/tmp/control/work', 'HF_HUB_OFFLINE': '1', 'HF_DATASETS_OFFLINE': '1'}
+tests/fixtures/hg_wjvm/collect.py:263:     for key, value in env_values.items():
+tests/fixtures/hg_wjvm/collect.py:264:         command += ['--setenv', key, value]
+tests/fixtures/hg_wjvm/collect.py:265:     command += ['--', sys.executable, '/tmp/control/entry.py']
+tests/fixtures/hg_wjvm/collect.py:266:     write(out / 'launch.json', {'command_argv': command, 'control_env': env_values,
+tests/fixtures/hg_wjvm/collect.py:267:                               'wall_bound_seconds': 50, 'root': str(case),
+tests/fixtures/hg_wjvm/collect.py:268:                               'before': inventory(case), 'benchmark': False,
+tests/fixtures/hg_wjvm/collect.py:269:                               'model': None, 'endpoint': None, 'production_runtime_observation': False})
+tests/fixtures/hg_wjvm/collect.py:354:             except ProcessLookupError:
+tests/fixtures/hg_wjvm/collect.py:355:                 actions.append({'pid': pid, 'already_absent': True})
+tests/fixtures/hg_wjvm/collect.py:356:         write(out / 'collector-forced-cleanup.json', actions)
+tests/fixtures/hg_wjvm/collect.py:357:     shutil.rmtree(case)
+tests/fixtures/hg_wjvm/collect.py:358:     time.sleep(0.1)
+tests/fixtures/hg_wjvm/collect.py:359:     after = process_table()
+tests/fixtures/hg_wjvm/collect.py:360:     write(out / 'cleanup.json', {'case_root': str(case), 'case_absent': not case.exists(),
+tests/fixtures/hg_wjvm/collect.py:361:                                 'scratch_absent': not (case / 'scratch').exists(),
+tests/fixtures/hg_wjvm/collect.py:362:                                 'observed_pid_absence': {str(pid): pid not in after or after[pid]['start_ticks'] != row['start_ticks']
+tests/fixtures/hg_wjvm/collect.py:363:                                                          for pid, row in known.items()},
+tests/fixtures/hg_wjvm/collect.py:373:     parser.add_argument('--output', default='reports/w-jvm-evidence/live')
+tests/fixtures/hg_wjvm/collect.py:374:     parser.add_argument('--runtimes', nargs='+', choices=RUNTIMES, default=list(RUNTIMES))
+tests/fixtures/hg_wjvm/collect.py:375:     args = parser.parse_args()
+tests/fixtures/hg_wjvm/collect.py:376:     # Adopt orphaned control children so a missed scorer wait cannot leak zombies.
+tests/fixtures/hg_wjvm/collect.py:377:     if ctypes.CDLL(None, use_errno=True).prctl(36, 1, 0, 0, 0):
+tests/fixtures/hg_wjvm/collect.py:378:         raise OSError(ctypes.get_errno(), 'PR_SET_CHILD_SUBREAPER')
+tests/fixtures/hg_wjvm/collect.py:379:     evidence = REPO / args.output
+tests/fixtures/hg_wjvm/collect.py:380:     evidence.mkdir(exist_ok=False)
+tests/fixtures/hg_wjvm/collect.py:381:     run_id = 'w-jvm-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:8]
+tests/fixtures/hg_wjvm/collect.py:382:     root = Path('/tmp') / run_id
+tests/fixtures/hg_wjvm/collect.py:383:     root.mkdir(exist_ok=False)
+tests/fixtures/hg_wjvm/collect.py:384:     shutil.copyfile(__file__, evidence / 'collector-source.py')
+tests/fixtures/hg_wjvm/collect.py:385:     shutil.copyfile(HERE / 'entry.py', evidence / 'entry-source.py')
+tests/fixtures/hg_wjvm/collect.py:386:     write(evidence / 'execution.json', {'run_id': run_id, 'command': [sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]],
+tests/fixtures/hg_wjvm/collect.py:387:                                       'work_root': str(root), 'git_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip(),
