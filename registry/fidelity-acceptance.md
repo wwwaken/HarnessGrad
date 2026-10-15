@@ -196,6 +196,38 @@ and every fix commit in this phase added its own regression test, so reverting t
 and pytest reports `ERROR: file or directory not found` instead of a failure. Restoring the test from
 `HEAD` after the revert is what makes the run meaningful - the only thing missing is then the fix.
 
-*Not verified here:* the fail-before half for C10-C16 and item 17 (their workers' validation files record
-it; I verified only the pass-after side for those), and anything requiring execution - no dataset, model,
-GPU or network was used to produce this record.
+## Range C and item 17 — the same treatment, measured
+
+An earlier version of this file recorded these as pass-after only. They are now measured the same way.
+Method note: use `git checkout <fix-sha>^ -- <production files>` rather than a whole-commit `git revert`,
+because these commits also added their own regression tests and a whole-commit revert deletes them. **Read
+`git show --stat <sha>` before choosing the test file** - my first attempt ran the wrong files for C13 and
+C14 and got a misleading "everything passed", because each fix's coverage lives in the tests the fix
+itself touched, which are not always the files you would guess from the item description.
+
+| item | fix commit | regression test | fail-before (pre-fix production files, tests kept) |
+| --- | --- | --- | --- |
+| **C10** BFCL name filter | `6b0c78ea` | `test_bfcl_adaptfid1.py` | included below |
+| **C11** 2Wiki evidence routing | `6b0c78ea` | `test_twowiki_adaptfid1.py` | **10 failed, 19 passed** (both files) |
+| **C12** AgentDojo attack/guidance/count | `87a8450a` | `test_agentdojo_bridge.py` | **4 failed, 6 passed** |
+| **C13** DS-1000 `context.json` out of `SETUP` | `87a8450a` | `test_ds1000_official_scorer.py::test_gold_stays_out_of_setup_and_the_tests_travel_in_verify_inputs` | **1 failed, 136 passed** |
+| **C14** HotpotQA reward = answer F1 | `2cdd859a` | `test_measurement_coverage_hg_b3.py`, `test_qa_evidence_contract.py` | **16 failed, 22 passed, 1 skipped** |
+| **C15** ScienceWorld budget + macro | `a121b145` | `test_scienceworld_dataset.py` | **2 failed, 14 passed, 2 skipped** |
+| **C16** ALFWorld budget/cap/split | `cdb43ac4` | `test_alfworld_fidelity.py`, `test_alfworld_dataset.py` | **17 failed, 7 passed** |
+| **17a** τ-bench service recording | `14866a0c` | `test_tau_bench_recording_w_taubench.py` | **collection ERROR**, see the note |
+| **17b** FEVER evidence groups | `28e5dc67` | `test_fever_w_fever.py` | **8 failed, 2 passed** |
+
+The failing test names name the items, which is the point of keeping them: C14's are
+`test_hotpot_answer_reward_retains_diagnostic_joint_metrics` and
+`test_hotpot_uses_answer_metrics_and_joint_exact_set`; C13's is
+`test_gold_stays_out_of_setup_and_the_tests_travel_in_verify_inputs`; C12's include
+`test_registered_attack_text_matches_agent_snapshot_and_replay` and `test_cli_refuses_a_legacy_snapshot`.
+
+**One honest weakness, stated rather than smoothed over.** 17a's fail-before is a **collection error**,
+not an assertion failure: `14866a0c` *created* `data/datasets/tau_bench/service.py`, so restoring the
+pre-fix files deletes a module the test imports and pytest reports `FileNotFoundError` instead of a
+failure. That is decisive evidence that the fix is load-bearing - the graded service does not exist
+without it - but it is not the same quality of evidence as a red assertion, and it is recorded as such.
+
+*Not verified here:* nothing outstanding for the items above. No dataset, model, GPU or network was used
+to produce this record, and the throwaway worktree was removed after each run.
