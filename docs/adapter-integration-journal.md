@@ -4921,3 +4921,35 @@ cases).
   **Recorded consequence**: AgentDojo needs re-preparation before any future run because the existing
   snapshots encode a different attacker. No AgentDojo run is authorized in this phase, so nothing is
   blocked - but the next person to run it must prepare first.
+
+## 2026-10-16 (round 4) — The two large items land: a service-owned tau recording, and FEVER's conjunctions
+
+- **`w-taubench` (`14866a0c`) moved tau-bench's grade off a file the agent can write.** The whole
+  communication half of the score (`done`, the `say` contents and `r_outputs`) came from
+  `/app/tau_calls.jsonl`, which the CLI's own docstring called "the agent's own", so **two JSONL lines
+  could forge it**. There is now a task-bound `service.py` HTTP service that owns the episode state and
+  writes `/recordings/tau/episode.json` **atomically** (`mkstemp` + `os.replace`) on every act, with
+  "errors fail the request; no success before evidence is saved" - so a successful response implies the
+  evidence exists, and the recording is not in the harness's mount. It also publishes its zero model
+  usage through the reserved `harnessgrad.json` name (§2.5.7), accepts the **upstream terminate tool**
+  (`transfer_to_human_agents`) as termination, and stops at the first termination. `check.py` now reads
+  the service recording, and a malformed or differently-task-bound recording is unmeasured (exit 3)
+  rather than a score. Verified **126 passed** with the new recording suite.
+- **`w-fever` (`28e5dc67`) implemented the conjunction the closure note said was required before any
+  measurement.** `data/scaffolds/qa/evidence_scorers.py` turned one flat exported row into
+  *independently sufficient* sentences (`[[item] for item in groups]`), so providing one of two required
+  sentences passed; it is now **one conjunctive group in source order**, with the limits stated ("other
+  original groups cannot be recovered from this flat row"). It also kept the reward as the strict
+  exported-row predicate and **named it with the recorded metric identity**
+  (`fever_exported_row_conjunctive_strict_at_5`, matching `registry/w-fevobj-receipts.md`), while
+  recording per-label TP/FP/FN in `official.classification` plus the Macro-F1 formula and an explicit
+  warning not to average per-task F1 or call label accuracy Macro-F1. That is the honest split: the
+  aggregate the paper reports is *documented and its inputs recorded*, but it is not silently substituted
+  for the measured reward.
+- **`w-hotpotf1` (`2cdd859a`) corrected the metric the operator's wording caught.** `reward = answer F1`
+  (not EM), `correct` stays `bool(em == 1.0)`, EM and the support/joint metrics stay in the evidence with
+  `joint_metrics_role: "diagnostic_only"`, and `METRIC_NAME` says plainly it is not the official joint
+  metric. Its guard now pins a case where the two differ - `"answer extra"` against `"The answer"` gives
+  `reward == f1 == 2/3` while `correct is False`, with the derivation in a comment - which is exactly the
+  case EM-as-reward would have scored 0. The earlier `w-hotpotqa` branch (reward = EM) is superseded and
+  must not be merged.
