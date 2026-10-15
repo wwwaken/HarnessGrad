@@ -15,12 +15,13 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 
-# Explicit pre-existing debt outside b1's fever/physicsquestions/reasoning_gym scope.
-# Strict xfail makes a resolved gap fail until its stale exception is removed.
-# Never add a new dataset here just to make an omitted review pass.
-_KNOWN_JOURNAL_GAPS = frozenset({
-    "sportsunderstanding", "spreadsheetbench", "strategyqa",
-})
+# Empty since 2026-10-15: the b2 three (sportsunderstanding, spreadsheetbench, strategyqa)
+# now carry their own docs/dataset-reviews/<dataset>.md, extracted verbatim from the combined
+# docs/dataset-source-reviews-b2.md and cited as `/site/dataset-reviews/<dataset>.md`. The
+# exception set is kept so that any *new* journal-coverage dataset with no per-dataset review
+# has an explicit place to be recorded rather than silently passing; never add a dataset here
+# just to make an omitted review pass.
+_KNOWN_JOURNAL_GAPS = frozenset()
 
 
 def _journal_entries():

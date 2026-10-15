@@ -194,3 +194,44 @@ bulk `reports/`/`docs/` deletion) against `HEAD`:
 
 Conclusion: no dataset is currently clear because a blocker was silently dropped. The 14 open blockers
 above are the complete outstanding set, and `22 - 8 = 14` accounts for every removal.
+
+## Correction and update, 2026-10-15 — a family-level contract the forward assessment missed
+
+The forward assessment above read each blocker's `next_action` and stopped there. That was
+incomplete: the `journal-coverage` **family** carries a contract enforced by the test suite rather
+than by the prose, and for three datasets it was not met.
+
+* `tests/quality/test_dataset_journal_coverage.py:43-62` requires every `journal-coverage` blocker's
+  `evidence` to contain a **per-dataset** reference `/site/dataset-reviews/<dataset>.md` with the
+  locator `# <dataset> source-only journal review`, and pinned `sportsunderstanding`,
+  `spreadsheetbench` and `strategyqa` as `xfail(strict=True)` in a `_KNOWN_JOURNAL_GAPS` set whose
+  comment reads "Strict xfail makes a resolved gap fail until its stale exception is removed".
+  Those three pointed only at the combined `/site/dataset-source-reviews-b2.md`, so they carried a
+  real, recorded journal-coverage debt that no `next_action` mentioned.
+* The two test files also encode two filing conventions, which is why this was invisible from the
+  registry alone: `tests/quality/test_dataset_blockers.py:132-138` maps the b2 three to the combined
+  document and asserts that entry is present (it was), while the family guard above demands a
+  per-dataset one.
+
+**Resolved in this commit.** The b2 document's three sections
+(`## sportsunderstanding source-only review`, `## spreadsheetbench source-only review`,
+`## strategyqa source-only review`) were extracted **verbatim** into
+`docs/dataset-reviews/{sportsunderstanding,spreadsheetbench,strategyqa}.md`, each with a provenance
+comment stating that this is a filing split and not a new review, plus the title line the per-dataset
+convention requires. The carriers were provisioned at the conftest resolver path with
+`PROVENANCE.json` entries recording `source_path: docs/dataset-source-reviews-b2.md`,
+`source_commit: 1825cd0e^` and an explicit `transform` note, and the exact evidence entry was added to
+each of the three blockers. `_KNOWN_JOURNAL_GAPS` is now empty, with its purpose and its "never add a
+dataset here just to make an omitted review pass" warning retained.
+
+**Effect on the dispositions above.** `spreadsheetbench` and `strategyqa` stay open on their own
+`next_action` items (measured coverage plus scorer/formula runtime; the original scorer and split).
+`sportsunderstanding` is now a closure candidate on exactly the same footing as `physicsquestions`:
+its `next_action` obligations were already satisfied, and the family-level debt that silently sat
+beside them is now discharged. The closure-semantics question at the end of the "two closure
+candidates" section is unchanged and still belongs to the operator; what changed is that
+`sportsunderstanding` no longer has a second, hidden reason to stay open.
+
+**Method note.** A blocker can be gated by its family's contract as well as by its own `next_action`.
+Any future pass over this registry must read the family guards in `tests/quality/` alongside the
+registry text, and a strict `xfail` in those guards is debt, not a passing state.
