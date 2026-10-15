@@ -155,7 +155,7 @@ def main() -> int:
         proc = subprocess.run(
             argv, cwd=workdir, env=env, timeout=timeout,
             input=prompt if use_stdin else None,
-            capture_output=True, text=True)
+            capture_output=True, text=True, errors="replace")
     except FileNotFoundError as exc:
         _write_trace(workdir, [{"error": f"the CLI does not exist: {exc}"}])
         print(f"wrapper: the CLI does not exist: {exc}", file=sys.stderr)

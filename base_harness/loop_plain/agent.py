@@ -239,7 +239,8 @@ def run(task: dict, workdir: Path) -> str:
 
             cmd = action.get("command", "")
             proc = subprocess.run(
-                cmd, shell=True, cwd=workdir, capture_output=True, text=True
+                cmd, shell=True, cwd=workdir, capture_output=True, text=True,
+                errors="replace"  # arbitrary command bytes must not crash the harness
             )
             out = proc.stdout + proc.stderr
             trace.write(json.dumps({"step": step, "command": cmd,

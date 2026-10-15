@@ -101,7 +101,9 @@ def run(task: dict, workdir: Path) -> int:
                     "agent_backend": "codex", "agent_model": model}, "task_id": task.get("task_id")})
             proc = subprocess.Popen(command(workdir, answer), cwd=workdir, env=env,
                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                    stderr=errors, text=True)
+                                    # NB: `errors` above is the caller's stream object, not this
+                                    # kwarg; decoding must still not raise on agent output.
+                                    stderr=errors, text=True, errors="replace")
             try:
                 stdout, _ = proc.communicate(prompt, timeout=timeout)
             except subprocess.TimeoutExpired:

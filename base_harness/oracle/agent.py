@@ -68,7 +68,7 @@ def main() -> int:
         script = candidates[0]
 
     proc = subprocess.run(["bash", str(script)], cwd=work,
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, errors="replace")
     print(f"oracle: {script.name} exited {proc.returncode}", file=sys.stderr)
     if proc.stderr:
         print(proc.stderr[-2000:], file=sys.stderr)

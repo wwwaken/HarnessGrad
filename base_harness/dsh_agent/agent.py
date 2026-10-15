@@ -416,7 +416,8 @@ def run(task: dict, workdir: Path) -> int:
         profile_info.update(_loader_probe(home, env))
         record({"profile": profile_info})
         proc = subprocess.Popen(command(prompt_path, patch), cwd=workdir, env=env,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                                errors="replace")
         try:
             out, err = proc.communicate(timeout=timeout)
         except subprocess.TimeoutExpired:

@@ -682,7 +682,11 @@ def run(task: dict, workdir: Path) -> str:
                 break
             t0 = time.time()
             proc = subprocess.run(
-                [shell, "-c", cmd], cwd=workdir, capture_output=True, text=True
+                # `errors="replace"`: a command may emit arbitrary bytes, and a strict decode
+                # raises UnicodeDecodeError inside the harness, which ends the episode and is
+                # recorded as a zero for a task nobody finished. Measured 2026-10-15.
+                [shell, "-c", cmd], cwd=workdir, capture_output=True, text=True,
+                errors="replace"
             )
             took = time.time() - t0
             command_s += took
