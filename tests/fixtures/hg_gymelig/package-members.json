@@ -1,0 +1,1727 @@
+{
+  "package_root": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym",
+  "scope": "observed package file opens, loaded module sources, and inspected scorer/constructor sources; not transitive closure",
+  "count": 344,
+  "members": [
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__init__.py",
+      "bytes": 668,
+      "sha256": "ce1e4c7b2d0f61ea2021395ffb228cb3bdf4a5db21cae2e72882afb4cc4b64c6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 804,
+      "sha256": "1cd6d3925267fd6b1f43a5793f01b6c11a93037bf14fd030de1a6c600904c33a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__pycache__/composite.cpython-312.pyc",
+      "bytes": 14459,
+      "sha256": "ca2b12fee0878976ec775ae7597c6f8b3708d88b58dd90fa017557e8a908e422"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__pycache__/dataset.cpython-312.pyc",
+      "bytes": 6750,
+      "sha256": "92d911e85c9753c587fa6b8f7df934a519abca01c35cdff9fea9b6355f4b5e8a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__pycache__/factory.cpython-312.pyc",
+      "bytes": 4077,
+      "sha256": "a10127001e823e61062ef680f3be9380cb17e6e5fc84926d851e629e004cad1f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__pycache__/utils.cpython-312.pyc",
+      "bytes": 7867,
+      "sha256": "aa7d283c3f82af26be00dea82581fc76adca4354549fb03014e53fc14a79e9cc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/__pycache__/version_manager.cpython-312.pyc",
+      "bytes": 3413,
+      "sha256": "ba69ca89fefcb737f694dca2744672babc80c9c792a85f8eed21ce2f44f7f4f6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__init__.py",
+      "bytes": 1301,
+      "sha256": "f9616996d2be6494b4fbefe54ecc657c9f1e0e6b022614237f7b9a33291131f2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1170,
+      "sha256": "16ddaf2a5403c6a0071508396ffaca5e0a05dfab50428ff92ff20b97c8a0a6c8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/complex_arithmetic.cpython-312.pyc",
+      "bytes": 10664,
+      "sha256": "542ff037cd41a44150125088b779307d186791917651234ed938759883822503"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/intermediate_integration.cpython-312.pyc",
+      "bytes": 19467,
+      "sha256": "9e7a284eaeb8b21fad219d3e651db11fb7e4b67b3a6a7f51f6122fd38332da46"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/polynomial_equations.cpython-312.pyc",
+      "bytes": 14658,
+      "sha256": "e13ad8b1f95b26b0c6ca1f743a649063f428b279b3661bb31b6b83e59eda40be"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/polynomial_multiplication.cpython-312.pyc",
+      "bytes": 11685,
+      "sha256": "e25946f388c35692c7933ee8ef647920ac92ca03f03323c7bbcecc1ae99fed2d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/simple_equations.cpython-312.pyc",
+      "bytes": 8829,
+      "sha256": "75bf343de84557d45bd950c6ea46736b3349606ba8d94bdcb36e5a14bfff923f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/__pycache__/simple_integration.cpython-312.pyc",
+      "bytes": 8751,
+      "sha256": "f0a4115785b127b1a530c27d41a45d9975f8136ad83ef6585ff3ef7caf6cf560"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/complex_arithmetic.py",
+      "bytes": 8782,
+      "sha256": "32beb8f40a25aa781b96f6293f11bd4de8b59c903ee30ea11e5659d8d8310d2a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/intermediate_integration.py",
+      "bytes": 13459,
+      "sha256": "74838f0224b504e369d3750183e6d96586ecd365fd618e98f11b8488260ed8ef"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/polynomial_equations.py",
+      "bytes": 13417,
+      "sha256": "d41b84e2daf73105922c4211d8a49307ae0b143c0bc58c20cbbdcd25852fcf1a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/polynomial_multiplication.py",
+      "bytes": 10350,
+      "sha256": "4a2d9db4b720f17861b02d17add43255741b871ad4c161929ec6fd54f6112b20"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/simple_equations.py",
+      "bytes": 6706,
+      "sha256": "8ff7a0f4a6d78e9fda239ef0690f10d233ced73a154aa3a00da7ab57329a0c73"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algebra/simple_integration.py",
+      "bytes": 5678,
+      "sha256": "15e275301091a609745414f1e7b05a96dfe53ed19ed910ec2df065652299c698"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__init__.py",
+      "bytes": 6302,
+      "sha256": "f77492da35192df6b595e57978c18d669aa2310c2c25f813cea7624dcef0015f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 5188,
+      "sha256": "41907434650b9b5cbf7e8f91c77448e342e026f68ff9b15240b5013e18af2b24"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/ab.cpython-312.pyc",
+      "bytes": 6601,
+      "sha256": "452e563cf76343f8f6627858f39464e05f0fb9da8f4faf18c8f180f3a5ad41e2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/base_conversion.cpython-312.pyc",
+      "bytes": 7420,
+      "sha256": "6293740f6c9d9d8e80c1cc1b8657ce80d75a7a0bc12688e241aa8c794263cdce"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/binary_alternation.cpython-312.pyc",
+      "bytes": 6636,
+      "sha256": "ba94222ae35d59f2fa349df46a78b6af8eca60dda56cafe20e9b372a33ddc024"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/binary_matrix.cpython-312.pyc",
+      "bytes": 8538,
+      "sha256": "9f89a531775959a46664a1a3daff72fd20e66a7914b1353eb1a0b68aaed54817"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/caesar_cipher.cpython-312.pyc",
+      "bytes": 6241,
+      "sha256": "bb3bbc229279a3213e00db441cf1ebb91fb80a32ba52180e5cd2b1b5e9960a40"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/count_primes.cpython-312.pyc",
+      "bytes": 4997,
+      "sha256": "ae62917fa14f883bdd2062bd5d0e1feb17a84d97329b778ded902f8000575ee2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/cryptarithm.cpython-312.pyc",
+      "bytes": 15232,
+      "sha256": "8ae8e52e1e96c65197cbcae8684d604584d03bef8d8aad12df92cfdf65f0ba65"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/game_of_life.cpython-312.pyc",
+      "bytes": 8600,
+      "sha256": "b4e26a5f4946dc3aceb17d4fb87554cf5269a14835b2702a8d5aa4a86d087a2b"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/game_of_life_halting.cpython-312.pyc",
+      "bytes": 12901,
+      "sha256": "ee98103aa4c6e704f7cf0c6ca15041c36a9fdab24746aa07503fdaa0fb1f857f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/graph_color.cpython-312.pyc",
+      "bytes": 11286,
+      "sha256": "c77c97f2783e6dc7ea5598e499651e12904b07739e1601609f7849e1692f1138"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/group_anagrams.cpython-312.pyc",
+      "bytes": 8890,
+      "sha256": "694f2295febe8713a614b5872c76fd039247ae96cab37e750019831a0ece443f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/isomorphic_strings.cpython-312.pyc",
+      "bytes": 7257,
+      "sha256": "6f5e02079b3b73ea6e731758d48fd69b3c827c42bcaf31b10c727a21cf46ab07"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/jugs.cpython-312.pyc",
+      "bytes": 14721,
+      "sha256": "ecfcda986bd418cf68eccb39203da78f1f94360b54e02adc28e89f180e3eb192"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/letter_counting.cpython-312.pyc",
+      "bytes": 5091,
+      "sha256": "72b21282040d67ad1937939cd234c005e4e762e6f4006d12e5e02ca5fe759ff2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/letter_jumble.cpython-312.pyc",
+      "bytes": 9535,
+      "sha256": "e4c685496040c949b9c8ca54c23ab8f07b9ac12f2e661a6ba409180d69c9be76"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/manipulate_matrix.cpython-312.pyc",
+      "bytes": 19674,
+      "sha256": "1de8a1ee9739da661b408804b981c8ea777c1ef7f6360f18a85197f1a40c41ff"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/number_filtering.cpython-312.pyc",
+      "bytes": 7652,
+      "sha256": "4505b889d3aa3798a6cd79120f78d37663833a104288952b27a4b10931c82e88"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/number_sorting.cpython-312.pyc",
+      "bytes": 9147,
+      "sha256": "7369f42a0add4e22aa28bc3ba0adc0beb87ba4a5173884b5a26e7848c9973684"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/palindrome_generation.cpython-312.pyc",
+      "bytes": 7085,
+      "sha256": "b47f1ac062c678800b5efde34a8483a080531f07ed518558be5e92cf11b2ee0e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/palindrome_partitioning.cpython-312.pyc",
+      "bytes": 10126,
+      "sha256": "86e256fda6f421f1be969edb5b2bb70f5a633da5f2415acbcc9453e23f4a34ea"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/pool_matrix.cpython-312.pyc",
+      "bytes": 9738,
+      "sha256": "d0352cf3c3fce78fdbc1a35b12873278614bf426aac7a088e2df5e40cf4d1181"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/ransom_note.cpython-312.pyc",
+      "bytes": 7946,
+      "sha256": "0de0072299e7a89eba992729b0350f1ea6b7bb7f7d7f1f2774a7fb8ca95611e8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/rotate_matrix.cpython-312.pyc",
+      "bytes": 7401,
+      "sha256": "c35961becc0ea52ca36dbb74fe70a1263680dedab69fb9af8e657f618164fbf3"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/rotten_oranges.cpython-312.pyc",
+      "bytes": 8119,
+      "sha256": "f3d392e95e21c7f8c686c503cfdbd18d39988817b9d3cf744810e41f35a38044"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/sentence_reordering.cpython-312.pyc",
+      "bytes": 7631,
+      "sha256": "1f48824d0ce9ac825e7d0ac00f698b4ed5390faf5cd09ee9c85334d3de56ca7d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/spell_backward.cpython-312.pyc",
+      "bytes": 5298,
+      "sha256": "895242e86c75667d9de5280ae37c3686574999fdb248e5792f50c1952c64c4dc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/spiral_matrix.cpython-312.pyc",
+      "bytes": 8881,
+      "sha256": "ddef66c09d243abd234b2c1b870fdc5b8905a0163c4edc94e7d401e424b0315d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/string_insertion.cpython-312.pyc",
+      "bytes": 6993,
+      "sha256": "6d00c9e09301bed1cd18e1cf7c11596907845d2e388277826807abdb61b3e539"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/string_manipulation.cpython-312.pyc",
+      "bytes": 15651,
+      "sha256": "f3f58f5f972dbc926e4fe13855f2f1f1743dba8b928f3d0e01df0c9c1745731e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/string_splitting.cpython-312.pyc",
+      "bytes": 8464,
+      "sha256": "2c253881bc683cce67a7442560e75779107cd1352c1c3c1f6c5d3c3963db9955"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/string_synthesis.cpython-312.pyc",
+      "bytes": 8629,
+      "sha256": "99fc54a48c8c4e792b9421d86cfbbe46c8d875af9598157e5ba0de811bf80af3"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/word_ladder.cpython-312.pyc",
+      "bytes": 14164,
+      "sha256": "41875cb713cc7126ba4d0082c14d80395bae8e9c0fbbf19ae1bf92466e5d26d8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/word_sequence_reversal.cpython-312.pyc",
+      "bytes": 4787,
+      "sha256": "890b4ce71602eaddf484cc36dfc74b757cee585ce30d8949f579ff49c2b45d40"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/__pycache__/word_sorting.cpython-312.pyc",
+      "bytes": 9526,
+      "sha256": "c73dcce5931023c47dcbc4c9b278b4a158cdbd0af0cee31dd844608302729340"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/ab.py",
+      "bytes": 5132,
+      "sha256": "a232e9cbf1cc7fb20f913cca845504d808578866734e085c9cffda12636bab65"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/base_conversion.py",
+      "bytes": 5535,
+      "sha256": "7d1a1564b6b9e462c73aba989bc572ee75a7d5bc5604637b181345ef94bb903e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/binary_alternation.py",
+      "bytes": 4973,
+      "sha256": "84cfba9930234cfe989c83a02533df1428d77e397dcd6d6b4c930ab482280464"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/binary_matrix.py",
+      "bytes": 5899,
+      "sha256": "0697d49b6cb8812731713e2d930469023e9281c8c4354400655376a0becb6491"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/caesar_cipher.py",
+      "bytes": 4545,
+      "sha256": "c836398236ec5d9bd653d4c89c2fe6dfe19d7bd854e0be5978b4b79d08318694"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/count_primes.py",
+      "bytes": 3192,
+      "sha256": "3f59935592b1a2782b738388c5245cd7b38bf2e52e919d07d3a7a84dbae752bd"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/cryptarithm.py",
+      "bytes": 14717,
+      "sha256": "9dfd7012e4fda20c15e62559b7a508d211992fa33fc8641ca76ef384119bb10f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/game_of_life.py",
+      "bytes": 7193,
+      "sha256": "0cd5e37e542f2e956efcefb898ec84f4a1d34d44ba4b039e145fcb457e907f20"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/game_of_life_halting.py",
+      "bytes": 15377,
+      "sha256": "47c54e209b1ea551b191bf577bd0ad3a5eb3f94810174f2e69052a3f30706f28"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/graph_color.py",
+      "bytes": 9803,
+      "sha256": "b89db0e352de50fe841f7126904dfff1153596811171e8da70eb4ae4295d4929"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/group_anagrams.py",
+      "bytes": 6112,
+      "sha256": "85c3fe62b293f423b9c3c404afcfba53d50b4ef53e2e52caaed9c2a123adb35c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/isomorphic_strings.py",
+      "bytes": 5243,
+      "sha256": "6355eca12e11bba559a8545eb0d397693a9bd9e70f5506b15d8eaa6c4fb6fd76"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/jugs.py",
+      "bytes": 12083,
+      "sha256": "9a14c33afbb2fcf0b182d80a2c300ef62f42a70b04768032550020c50dfe0d8d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/letter_counting.py",
+      "bytes": 3369,
+      "sha256": "52e442146f1067b6cacc24cf343ea022ab2e15cd02835624b13cfb870d4bc099"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/letter_jumble.py",
+      "bytes": 7861,
+      "sha256": "1fc2b12a373460c72d9b5e0b31bd4f79c12082e708e6fd99470e91f853bec9b8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/manipulate_matrix.py",
+      "bytes": 14850,
+      "sha256": "7203c8ad02bb74fe52a91b88a9fcaca17647735a9d32acba09b04718a0458093"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/number_filtering.py",
+      "bytes": 6132,
+      "sha256": "ce86534027aad338ce6732efa1a78b58b4e27bce411ec65df9ab64a4fb198001"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/number_sorting.py",
+      "bytes": 7825,
+      "sha256": "a481e06274f9a978b213d43abd87d04943b796d73582d4b6febcfbe6a0f369f1"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/palindrome_generation.py",
+      "bytes": 5181,
+      "sha256": "6823b3787d901f0135c6483546b416d49f107046432eebb14749b67f73d2f7de"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/palindrome_partitioning.py",
+      "bytes": 7158,
+      "sha256": "a1c218cdd2bb9e90a692be8bf7877a3b93e6230c0028b5c9f506de4d971a9f4a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/pool_matrix.py",
+      "bytes": 6443,
+      "sha256": "36b24a7835769b132a22190f6477002b9ad516aa86c486e868b19e521eca8a9a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/ransom_note.py",
+      "bytes": 5993,
+      "sha256": "92319316250a2a23f9000ba2d26f28bf90207af1fe3324e07f542cabeef20866"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/rotate_matrix.py",
+      "bytes": 4529,
+      "sha256": "264be4a9224025935878fbefa458bc6a364ef31f97bc9e8cc051824977591579"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/rotten_oranges.py",
+      "bytes": 5393,
+      "sha256": "2bf3d937e65980f138afbae89ed773b952ccb29ac8a9a35bb01443ea5c73ab92"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/sentence_reordering.py",
+      "bytes": 5914,
+      "sha256": "0a5ec0e35dccd4ab85edf8a158ab575fa33a8689128735856a6f7e1ae9be77cf"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/spell_backward.py",
+      "bytes": 3752,
+      "sha256": "a27f14e886fad4d7dd1bf0506644be70c095bb71201a5e8d71128647901d9773"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/spiral_matrix.py",
+      "bytes": 5541,
+      "sha256": "7d1b8f352b72b609dab9aed7c6e585581c86666421ba78a3145e7d97cd37ed39"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_insertion.py",
+      "bytes": 5253,
+      "sha256": "866e1de2b8fcd9f88de5b491e1b7e306a3db1041bf139cdbb79061b23fec40bf"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_manipulation.py",
+      "bytes": 10368,
+      "sha256": "acd0355646b5a302cb1af04e4d39da4ff38b097c3489c3019a297a005d06d795"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_splitting.py",
+      "bytes": 6713,
+      "sha256": "6589eb75c508270a8e095595f8c3bf6c2a4450207f980936e29cd2f663dea081"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/string_synthesis.py",
+      "bytes": 7088,
+      "sha256": "20298210ad442b0c2de736631b56845210ebccb648c2c1aef8e2579f727cc8e2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/word_ladder.py",
+      "bytes": 11174,
+      "sha256": "8a82e0dee96401a019b6842bb99c2300e1b64b4cc03051a3f22675364acd9f5e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/word_sequence_reversal.py",
+      "bytes": 3220,
+      "sha256": "912c346511855e7de945283420c472835e7d0397f74f3ef0d639d5d3b9d93e08"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/algorithmic/word_sorting.py",
+      "bytes": 6492,
+      "sha256": "32d554acf0613b0cec4236a806165bebb426420a851a9e5468943a0cb8deff41"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__init__.py",
+      "bytes": 396,
+      "sha256": "8bdd79e291ed79dee3107f073ee05d67de7aff973ead6e4012f12a47acebc262"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 544,
+      "sha256": "ac09084235e35dfd093f971614e9b62d2dc7aa57be479df66d89036cd22ec50c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__pycache__/arc_1d.cpython-312.pyc",
+      "bytes": 7156,
+      "sha256": "f7ff931d42e110de6e59746da411217014891529753237af059a1e5b8a6590d5"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__pycache__/arc_1d_tasks.cpython-312.pyc",
+      "bytes": 47775,
+      "sha256": "e3e1bcd8da89faab63dff4a34a2ec91de9cdddec4232a4cae4cc14adef04b2f6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__pycache__/arc_agi.cpython-312.pyc",
+      "bytes": 12889,
+      "sha256": "1cd899a0a38c2620d0c049970316cbe68b4c83c2d36e5e6ddcc3dab31ac9fac8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__pycache__/board_format.cpython-312.pyc",
+      "bytes": 5858,
+      "sha256": "775432335d96322768927a4bcf33dfc336ec35fea21a8c4fd6773f54ad30d922"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/__pycache__/rearc.cpython-312.pyc",
+      "bytes": 10322,
+      "sha256": "48b774823c08c477cc6ad1ab8e922020cac8fd78c8cb768fb5a9d99d6f326d38"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/arc_1d.py",
+      "bytes": 5007,
+      "sha256": "7180ae709160d07d05b46352d37afd7b3b2a10e9aec6178f554311dcb4b72b61"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/arc_1d_tasks.py",
+      "bytes": 41219,
+      "sha256": "6f5a06a909149e5eebe2b285eb334e79d3ca27a6f77e0f31fff9188f709688aa"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/arc_agi.py",
+      "bytes": 8905,
+      "sha256": "8055ffbf2e77b5225c4cbfb03db4434b67180600c20ad1decc055bd570c5d6ec"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/board_format.py",
+      "bytes": 3829,
+      "sha256": "009ada0bc6e556eb52d832442d161284e09dee28a5c3eb8f5380965e2ae1e2d6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arc/rearc.py",
+      "bytes": 7847,
+      "sha256": "258bc27a44dadf46e29dc9431f965962d25b7917de5265467e24593288d57ad7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__init__.py",
+      "bytes": 3128,
+      "sha256": "1e0d8a82d615504f73bad10e75552bdda4ed17e2b0369f4ae7d009737659b209"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 2700,
+      "sha256": "5cf97d7a49b76f3f3b5605979e1d1e19fa747ea530208e3cb0d7dbbf7db6bbb6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/basic_arithmetic.cpython-312.pyc",
+      "bytes": 13330,
+      "sha256": "ea78eefed8b27dedff39f9838a4112102c76c271e872c551f2fad3aa17a41d83"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/bitwise_arithmetic.cpython-312.pyc",
+      "bytes": 8858,
+      "sha256": "f984e08e0b886e155f4cfb0520bb13840a0ab118e54c9286b1fc73d352f9db9d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/calendar_arithmetic.cpython-312.pyc",
+      "bytes": 28636,
+      "sha256": "629183559626e8a13159b3a065a2cd01e7207b1e862a87860c4571a63d9e1ebb"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/chain_sum.cpython-312.pyc",
+      "bytes": 7330,
+      "sha256": "1165c8f45aeb44acd63a43005c513e94c414d4ef733a90d91c3a8623a1742553"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/count_bits.cpython-312.pyc",
+      "bytes": 3840,
+      "sha256": "7811f3651a351d0903cec9cac0e2d9a60f0ad89683baec43edc84d7699ca21b7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/decimal_arithmetic.cpython-312.pyc",
+      "bytes": 12077,
+      "sha256": "6f6d4ab2b0d3a43bc56415565b02a2f7d0b3d244ebb293a15ffd115ece5f4653"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/decimal_chain_sum.cpython-312.pyc",
+      "bytes": 9811,
+      "sha256": "82d039f0373cf25d97816cfd380825b140821a061f4e2b3d637f4ec17dd509a6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/dice.cpython-312.pyc",
+      "bytes": 8329,
+      "sha256": "4b65693f8edd8d286551420d4e2b4d2fa6081559e3ad7275af6bfc693d0892bb"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/fraction_simplification.cpython-312.pyc",
+      "bytes": 9839,
+      "sha256": "7842dd1c2279bed58796a535ba61328686f03fa7f254d0a616859b8cc910b268"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/gcd.cpython-312.pyc",
+      "bytes": 5524,
+      "sha256": "8ced5089d008797ac41a6c096e45b1885ffb4377e809b4474abd4e8c0c5350fc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/lcm.cpython-312.pyc",
+      "bytes": 5921,
+      "sha256": "8b0f0ceed4a3537355466f28c3cfaa66ed1108b5d4a0a09e0c3d3b46449725e7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/leg_counting.cpython-312.pyc",
+      "bytes": 7162,
+      "sha256": "a8c88fcc0a78c3c7dfbe685f99d908ea8b419299bbc087ff76c020aee9245ded"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/number_format.cpython-312.pyc",
+      "bytes": 7741,
+      "sha256": "2ce6c6a171115c5b917703893da8bef98fdda87f917538f7f1479e540b1354af"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/power_function.cpython-312.pyc",
+      "bytes": 5429,
+      "sha256": "ed348a929d8471931e2ff245e4b98127caa7280d443e960c23512003e868adf7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/prime_factorization.cpython-312.pyc",
+      "bytes": 5832,
+      "sha256": "9559eacf2fd0543d26239dec65e3ecd3bd66e5f467af65da5be0bae4ae173d14"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/products.cpython-312.pyc",
+      "bytes": 7000,
+      "sha256": "a3cd3c57ea6e5351dfc86260db405170c39a038dd6d932540050ee07d4330b33"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/__pycache__/time_intervals.cpython-312.pyc",
+      "bytes": 16909,
+      "sha256": "ceeb43d2e9238899a530db461eff68dba1aa02e6e10704edce07514548990a61"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/basic_arithmetic.py",
+      "bytes": 10686,
+      "sha256": "9eb222cd9393ee7ce9e60e3cb2d00ba2da038aa0737f9fe46b866b3a6a682934"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/bitwise_arithmetic.py",
+      "bytes": 7396,
+      "sha256": "d4c0fa2bf34ed1610c4cb3b2ec6ea40bdaf2b190875c3b64536f21e5540eacb5"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/calendar_arithmetic.py",
+      "bytes": 21642,
+      "sha256": "ad06cec5be9c14889c4860482218aecba128815b1357a1ee410b3aac4be54120"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/chain_sum.py",
+      "bytes": 5556,
+      "sha256": "7e811214e9e31aa67eeb5490a0cf8eb275fceab609c4523bb38ceec9f8dbcb9f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/count_bits.py",
+      "bytes": 2466,
+      "sha256": "32c9eb4539912277335c78a4fdbdbaf0af990d8ad2a0e02af5c7e641890f4d67"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/decimal_arithmetic.py",
+      "bytes": 10040,
+      "sha256": "e56416e0c10bb55f46961e93ef55826f419d1a0186ff75b6bb367d098dcca245"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/decimal_chain_sum.py",
+      "bytes": 7582,
+      "sha256": "1a4b13aceb3fc50dce3921f109b9d5b0d53aaa9c6eafc7acb01dd2988c15cc3e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/dice.py",
+      "bytes": 6468,
+      "sha256": "3b8f83d04f01b13526e2790245c09a52b2c0998c16baf92607b671d2459ba0d9"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/fraction_simplification.py",
+      "bytes": 8391,
+      "sha256": "54a6641f90029f4c2a396e577d62ba950e141fa208072055fa20940ad64678ab"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gcd.py",
+      "bytes": 3764,
+      "sha256": "d9a0d704f1425c5f03cee24683f63f819b324b882542da45886ca2f9682e3d2c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gsm_symbolic/__init__.py",
+      "bytes": 144,
+      "sha256": "f72ad7e5ef0ab1a572438830bd1e177ac3350da12acda3eda7ad459ea1fa20cb"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gsm_symbolic/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 338,
+      "sha256": "db3f7e34a66760d39c16e85eeeb46e608e8e2b2cda4b63cfbb76835eca456b97"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gsm_symbolic/__pycache__/gsm_symbolic.cpython-312.pyc",
+      "bytes": 5730,
+      "sha256": "26cc44ea07d73334679ba2c5e326433a6a5c6061347f9671f3fd092452d66503"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/gsm_symbolic/gsm_symbolic.py",
+      "bytes": 3976,
+      "sha256": "511e30a979511719c65019082ea298e215f4fbfab7d7660b384fa51c0fd03ee1"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/lcm.py",
+      "bytes": 3874,
+      "sha256": "1c9e9249a6ff30b1de11dba82ca4847053a72a570d98a1d55eadf69c3bb7d834"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/leg_counting.py",
+      "bytes": 5138,
+      "sha256": "6b530e05a8c6725406f9d32f583f7da0531b50ed06c702beb04874f88c72dcd7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/number_format.py",
+      "bytes": 5769,
+      "sha256": "a30fb4f8086eff3a9fbc481e2dd423fa0d552502d3746c0a8bd2bff12e1b92e2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/power_function.py",
+      "bytes": 3742,
+      "sha256": "fd820443cce4f23ac04de5c6cded9899c4898c399ea379e36d1e744b0c0ced91"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/prime_factorization.py",
+      "bytes": 4024,
+      "sha256": "30f0822f1143c58e41f96f1bf400c91f7265688914b72abc824d8b34924f187a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/products.py",
+      "bytes": 5169,
+      "sha256": "63959e2c03580d8d408e2e91c2c30c7016d8ca2ad937fd5656e83c371d5dcbc0"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/arithmetic/time_intervals.py",
+      "bytes": 16164,
+      "sha256": "b42d9a9f992eead49d028f13e0ffd454b24676f92402e1a323cbabdd74d20100"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__init__.py",
+      "bytes": 666,
+      "sha256": "fe6348ae36bb02ab3d5c3e814fee7b000e9bc3ee6371ecbbd594d0eec4a6234e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 747,
+      "sha256": "6453856500ce18ab485ac2f561d3c3664bd130eee3c0bc96155938ff3fef2821"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__pycache__/attributes.cpython-312.pyc",
+      "bytes": 2622,
+      "sha256": "fd6dfdaa3629224525e0c3aa85b98983e4b0c1f6e63e314081a319d13816c225"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__pycache__/base_curriculum.cpython-312.pyc",
+      "bytes": 15277,
+      "sha256": "c957758e69ea80950a6e31136af4e9dbaadab429e6037643021b8fed430b8a3e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__pycache__/curriculum_config.cpython-312.pyc",
+      "bytes": 3908,
+      "sha256": "631587321b6f2783b2ca86920db2d2d91e59ab321960c5d5f9ef294864c5d711"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__pycache__/experiment.cpython-312.pyc",
+      "bytes": 5744,
+      "sha256": "a069cb4bdc80dfe780bade9b4ada9708f2ff69315c889dddf402e109c48fbd05"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/__pycache__/score_board.cpython-312.pyc",
+      "bytes": 10654,
+      "sha256": "a5200987e48b77e2c45346ac9db70dc740b874a38f401d51f161d6c261b398a7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/attributes.py",
+      "bytes": 1528,
+      "sha256": "724868b3a8ed278261d14db00cd475b0c78de6c3cb69af6a6b5fe80555de88d8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/base_curriculum.py",
+      "bytes": 11175,
+      "sha256": "0e899f0c884e1bc7d4fb8b2fb6b15c75d6989540b3c2f7ca98470af5a81ced09"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/curriculum_config.py",
+      "bytes": 2949,
+      "sha256": "90b1094c23d8d918bfbe71b81b364e313998f7146acaee03fefbbc139955f809"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/experiment.py",
+      "bytes": 4587,
+      "sha256": "1744d4fd795b18044c56d5918e128f14178a485f889b92b7605a976ad465c792"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/coaching/score_board.py",
+      "bytes": 7635,
+      "sha256": "e2fc26518f11065cadd7090b8de68310fdbd229080a9a0d634386d1dcfe3100e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/__init__.py",
+      "bytes": 277,
+      "sha256": "e8de75e81aae45cd827d8a33f984f6afed7fe1c8d3977b67966f7bfe8b8326ce"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 464,
+      "sha256": "69912bf6e50e36273e9c5476500ed0318ba31bc77428a9d95ddfb8560aa3ae4e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/__pycache__/bf.cpython-312.pyc",
+      "bytes": 6030,
+      "sha256": "558e149d8aac4bb963c81f12aabae7d0c4630446fa8ae24affe18748bdef0159"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/__pycache__/codeio.cpython-312.pyc",
+      "bytes": 14264,
+      "sha256": "473a4ec6294291395b8aba1be5bc6ffd77f2758eabde1245ba4742bd100abd69"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/bf.py",
+      "bytes": 4117,
+      "sha256": "dc71afe6d2da76414b4e46f1adcbe3ebba9d361f8995226815d5de98a7038f94"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/codeio.py",
+      "bytes": 11153,
+      "sha256": "c573957be85a68179520b61cc70ebb22ab39027dd0a876b2f4402df9df6be1a2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 192,
+      "sha256": "1b3d15d141fdd6541b2bb39978b4a8b71794d391cc9c581ffdf7e70c45ed4db3"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Compiler.py",
+      "bytes": 8907,
+      "sha256": "b556e2b4f8745347aa29bb8819312102cf1ad381edd27d0fecb32a92c9ed6334"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Exceptions.py",
+      "bytes": 86,
+      "sha256": "809bb40492cd51ba8555d9d0f3e3bdee58b8914ab51d8f6b16cc06c11d3c6c00"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/FunctionCompiler.py",
+      "bytes": 52833,
+      "sha256": "3b50039b60775a1bd098e8a8d5c8244cf256302a70c8c594e1857f33ece28660"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Functions.py",
+      "bytes": 1259,
+      "sha256": "d30c1c53f5cc5326505ed267cf1b4c70b751e5a2f35e111c01df7ffea069af71"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/General.py",
+      "bytes": 45608,
+      "sha256": "1154a4e7af50e36f18f54a96b34f18b45b84ec89f8745d3ad0c5666778a50c78"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Globals.py",
+      "bytes": 2558,
+      "sha256": "110a48b54375b045e54dd3c5197e60db494673a8f46a8380ce374e24780903c2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Lexical_analyzer.py",
+      "bytes": 7763,
+      "sha256": "b6c40389277fa03e97e95f67869ab3e7923e3be73c858c856de0653263660b6d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/LibraryFunctionCompiler.py",
+      "bytes": 4003,
+      "sha256": "e3b09c9cb833ce02088cb6b5ebecd61b37225601eaa68eddcc55a42f65002837"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Minify.py",
+      "bytes": 301,
+      "sha256": "0e6a4be8e27cec51cbc23e0531b60165b16a0f7de9002fa598515656253564cf"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Node.py",
+      "bytes": 18579,
+      "sha256": "8c3d52936d2cc62c4a0f155a61e07ba632f1cf056fb4264c093ac991b85d02de"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Optimizer.py",
+      "bytes": 4031,
+      "sha256": "94150682b341eb22d92f2d8761fd00e7f0487d279246f0f7b19a0695acdc98df"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Parser.py",
+      "bytes": 5033,
+      "sha256": "1836ca757af09ea88aabe5f1b8c1654a9a3f8f38478c4d584d57bd516d97fef6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/Token.py",
+      "bytes": 1648,
+      "sha256": "362e6ca4a1766154de032f844ecb35700b316a59d5510ceb9a1e2eff68645139"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Compiler.cpython-312.pyc",
+      "bytes": 10876,
+      "sha256": "52c0f3cb2bb40129740527c03322b5322d6a8197fea38e7806964211b1b97464"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Exceptions.cpython-312.pyc",
+      "bytes": 544,
+      "sha256": "dfa77a2601ed24038d524b7c0d39c46b88a537ffe0b04d61e680298c642c9606"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/FunctionCompiler.cpython-312.pyc",
+      "bytes": 61858,
+      "sha256": "cc68cff602a4b9b6b79e54031eef38a5c8c802f88cc5f8c6c857c0bbc8e947c7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Functions.cpython-312.pyc",
+      "bytes": 1789,
+      "sha256": "96d514c1fa8ef26ab2232f7da49876b161d5031dcb8236d26e09241c57d698ae"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/General.cpython-312.pyc",
+      "bytes": 27995,
+      "sha256": "771e856a75a1bddefff1a3e8753af7b9f836b2abef2f8ff575880e16bcf23993"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Globals.cpython-312.pyc",
+      "bytes": 3848,
+      "sha256": "874c2fdeb2d09fd40df66036c7d0e7f59aadd5c95f95b5c411435d378733fc64"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Lexical_analyzer.cpython-312.pyc",
+      "bytes": 13721,
+      "sha256": "4ff8c5e0d73d0f54cf3806e3e8bb86f9d933a175fb1d78d0cbbb81491d13581f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/LibraryFunctionCompiler.cpython-312.pyc",
+      "bytes": 3891,
+      "sha256": "8163d9736308bcd6c1760598b91004ca6c34ea35abd73a3f17ceb2dfe4cac2ae"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Minify.cpython-312.pyc",
+      "bytes": 674,
+      "sha256": "bab792400291c1683d95b752a8c540e4daa0a425ea95c48628f17108d1ea850b"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Node.cpython-312.pyc",
+      "bytes": 18822,
+      "sha256": "6a34eb30200c7a19ba132ad01dae3add3e54b9cba68fb24abd4545590c7a953e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Optimizer.cpython-312.pyc",
+      "bytes": 4178,
+      "sha256": "207a656739438d8303e5bba6dfd1edd7e54b3b8ac47781a057c2432d0c31af8f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Parser.cpython-312.pyc",
+      "bytes": 7634,
+      "sha256": "c6b49b319d630fbff6396820120e240672d06fe1bff70ef81c753b33daab1bb0"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/Token.cpython-312.pyc",
+      "bytes": 2361,
+      "sha256": "d440f173327fa995dced22ca389d9ca03a6bf898524475b98d98bbc053f52f64"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/Compiler/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 206,
+      "sha256": "745230af43f72395cb842c6f264e7c8a9abfd984400dbdbf2b9242fe0a5bd9cf"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/code/contrib/bfit/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 197,
+      "sha256": "975bff08ea5ed86a6f4637c9e195deec5777ecf198aa86232244bc37803a6cc3"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__init__.py",
+      "bytes": 1283,
+      "sha256": "007bf97131b1d109466c34f605e8bfc50997b5ae6c39ac44b8228ded53ff0861"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1244,
+      "sha256": "17d28a44a941cbb60666b6fd838f3d554e6f8df54fd7a09837ffe2bb9e234873"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/color_cube_rotation.cpython-312.pyc",
+      "bytes": 12995,
+      "sha256": "acf73c5ca5547ceb14ed07fd310aa188c4a4746beb6b6e7da2aa0b199525cc41"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/figlet_fonts.cpython-312.pyc",
+      "bytes": 9068,
+      "sha256": "605d612d5421656832367a843014658bcf8d407907061a6825d4f4f15e02d53f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/modulo_grid.cpython-312.pyc",
+      "bytes": 9367,
+      "sha256": "fa6f5641ea8a5d788e98384c016ce30a39e98d813e8ceefc5a37f07c3715ef56"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/needle_haystack.cpython-312.pyc",
+      "bytes": 7459,
+      "sha256": "599372d10a2bf7677dd0009dce00a13e59d145b14a8f0626d7307769afa47649"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/number_sequences.cpython-312.pyc",
+      "bytes": 11684,
+      "sha256": "5f5071c2040a1ce9bdbbd3693886d1246d91b88d464f613a63265bc8f356c0bb"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/rectangle_count.cpython-312.pyc",
+      "bytes": 7871,
+      "sha256": "967708257c618e3cb56789bb87d1d569dc36a0c0f7006d3c9b2d5f4abcdf94ed"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/__pycache__/rubiks_cube.cpython-312.pyc",
+      "bytes": 10928,
+      "sha256": "7f1aa31b3a9519989595161bf3c84f4e790ba75d3c1542213b4918efbc3b4e9e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/color_cube_rotation.py",
+      "bytes": 8173,
+      "sha256": "0ea2f095bedd12372096fde20a06b5017820b3228e2603bc1f8a8dd188dab93e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/figlet_fonts.py",
+      "bytes": 6973,
+      "sha256": "a39ae5e48acca9018a8d2d13d3e2543ffc2da7a8cf100c251f53dc956833500f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/modulo_grid.py",
+      "bytes": 7053,
+      "sha256": "d82791d3fef00397e4ba7cf45909274e2aebef55e0a630c54eb5c273eafa7735"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/needle_haystack.py",
+      "bytes": 5845,
+      "sha256": "c9f3c04bdff4b288a4265fdfacb1e7bc2b7c6d3dbe254c1dbdfb08924bad7bdc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/number_sequences.py",
+      "bytes": 9000,
+      "sha256": "55e52b526312c06e57872d25b9ae250ddb7ec2723f35f7fcc7795cf17594f68d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/rectangle_count.py",
+      "bytes": 6045,
+      "sha256": "cbe4bb706e5db274cd9c2d600ce50e239572f700a6ba3a4043cf59f320f83769"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/cognition/rubiks_cube.py",
+      "bytes": 8419,
+      "sha256": "6e218e556f6940501d758702507fc7cc7b4ef929e9736239d8e49dfa34a09661"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/composite.py",
+      "bytes": 11266,
+      "sha256": "e12486e1c39cd081c56ad9837868698a2519a34d8edb2aa7f51ee3b4f1d63878"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/__init__.py",
+      "bytes": 1015,
+      "sha256": "67a961ad967b3b87eb5d021d67f2049f5526aa6f705401bf1a3ad713b75b9603"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1576,
+      "sha256": "d52f508de53114ec92a218c9fd5c4aad7651c9d5f6824bc24f1e4e58eecd2285"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/__pycache__/wordle_words.cpython-312.pyc",
+      "bytes": 16425,
+      "sha256": "4d303af7217c0f614c97dc557d481712057ae0ae8c4cd35b90b335a12b2358be"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/acre_objects.json",
+      "bytes": 6047,
+      "sha256": "2caa21243962bbf9c80fcf7b5844e7637e0cf7a3beb8e8ef46b465e1e92e1999"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/anagrams.jsonl",
+      "bytes": 8027234,
+      "sha256": "10dcda3a3eea6a8bc18b3f18cc50c271100e308b3189363f73effd638b6e58e7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/codeio.jsonl.gz",
+      "bytes": 2350897,
+      "sha256": "a088810cf4d020279ec50dc5e64f25b7eccc8a428a6f76a25c70c126e4370f33"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/in_the_year_2889.txt",
+      "bytes": 52851,
+      "sha256": "e9048bcd282207d6f093bff92b3ad7c94689352205105c3716f0fdf5e245a25c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/wordle_words.py",
+      "bytes": 30114,
+      "sha256": "0782494e1796c2f960e9b6eb7811580f77969febb2decec309d7c788d098e8af"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/words.csv",
+      "bytes": 60734,
+      "sha256": "dddda1a46938d3ba6f2164d0dae29ebcccf08714c931dc799f5bf9302f0f3c15"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/data/words3to10.txt",
+      "bytes": 1338903,
+      "sha256": "834c0c0748d16484cd646aaff67a1a6af25d5b0f52de0d0e7262c785086fcef2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/dataset.py",
+      "bytes": 4530,
+      "sha256": "480caacca5b12865e13bac68937687a799977e040ace5ae0496e71c1d77971e6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/factory.py",
+      "bytes": 3220,
+      "sha256": "fc651cc93205fafab926526a7d2c7a88c9dfa569af6e895135a1db48765e75bf"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__init__.py",
+      "bytes": 2596,
+      "sha256": "2bea8a60126b2ab0c990a56b47166e9a50ada51400bf17a96bcb4d691a219133"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 2407,
+      "sha256": "edd95bb7a23393ea910194849a2b536a5b4cb0ab0f379c1e16b38f47a2009431"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/boxnet.cpython-312.pyc",
+      "bytes": 15369,
+      "sha256": "b818b4f648e208d03e546181de2800a24ec282f0b2ce984bcb5ad80c9b9a76c6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/countdown.cpython-312.pyc",
+      "bytes": 12554,
+      "sha256": "0ddb5a1149140591afbc2cfe16df5f1741a485cf8b98cf1df78a59e79d172573"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/emoji_mystery.cpython-312.pyc",
+      "bytes": 9269,
+      "sha256": "b3ada4b1d8a3686d7dfb6691fc7a1173f62e29ba3e5942f9eb261bc4fa0084db"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/futoshiki.cpython-312.pyc",
+      "bytes": 31366,
+      "sha256": "d1144d7659e5ea6e3a6375b341e9604adacab2a6f5ec0372aaec6e6a519b6679"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/kakurasu.cpython-312.pyc",
+      "bytes": 21383,
+      "sha256": "575a24aaca4c9fd3e8eb995d7603fb3272384b5353b708813506c6ff0255f153"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/knight_swap.cpython-312.pyc",
+      "bytes": 21278,
+      "sha256": "d201368b436411f4cf86ab8bc1b87ae005516169964d41bf03b4d530fbce1c38"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/mahjong.cpython-312.pyc",
+      "bytes": 9561,
+      "sha256": "ec0b8d54376aaa7352fcade8824a5a61132358a0cc026a456ac615ff96ed4bcc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/maze.cpython-312.pyc",
+      "bytes": 11235,
+      "sha256": "5e95cb3c4551fab5b90636ae2d46398da513c3d9984fadb2047c5697dcdd192a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/mini_sudoku.cpython-312.pyc",
+      "bytes": 13237,
+      "sha256": "cf61d8024be86933a1eec092e3e6358ea3b2d7df088e7ee9e613c670757501ae"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/n_queens.cpython-312.pyc",
+      "bytes": 10624,
+      "sha256": "e0d758d5b4576277ce435dd30ad2b9e03e7a75f2efeccc787d7cb24885823b56"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/puzzle24.cpython-312.pyc",
+      "bytes": 8289,
+      "sha256": "ee42e1aeb38a19fb12f0658a0ca9ab9aad87c2aeb914b1ecc24376dede8db213"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/rush_hour.cpython-312.pyc",
+      "bytes": 16727,
+      "sha256": "b99b6535ea5469373142fcb7e8604334c9a9b529fc6e13565720e870a9b1a160"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/sokoban.cpython-312.pyc",
+      "bytes": 7426,
+      "sha256": "7aaac3bd1223360e85da59cb78ecb17f40b92c738cd5fd21283b49cee22b29de"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/sudoku.cpython-312.pyc",
+      "bytes": 14410,
+      "sha256": "3881877499c8155a052b2119a167a43ec87822ecb0f5ccf27ba9a5e49bb762ef"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/survo.cpython-312.pyc",
+      "bytes": 12227,
+      "sha256": "6f18d487320c2254f7d72bd8167074cfddf69b4c76a922299b252d3cc9716150"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/tower_of_hanoi.cpython-312.pyc",
+      "bytes": 18843,
+      "sha256": "df0f025ce05cb4ed34c7c8f5c5971913b460e5f985e9bb157b9e8a8b5e2e80f8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/__pycache__/tsumego.cpython-312.pyc",
+      "bytes": 16959,
+      "sha256": "479b76a7de3a1233e2fef0c2388166edb29bb7e85cd56c686a0f5395d935366d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/boxnet.py",
+      "bytes": 12328,
+      "sha256": "358d0f7d3fd245b4f7606a9397fd9311b1b606a7ee745168837a6724a3aa6307"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 193,
+      "sha256": "b4c7c20cf72dea31aeb7db3320ec965c79d54a121cd4fbb2927a1315a06bb737"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 201,
+      "sha256": "5342c5fd4be21f2478dab70a6ebe1fab7ba9072ed7b337a79e58b49371f5c9c1"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 205,
+      "sha256": "14959db2076f111a73e17f48964c386bb1c90157cf867f0c3c77bda905485104"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/astar.cpython-312.pyc",
+      "bytes": 3212,
+      "sha256": "abcd0fd13f33a6857a74589f925ca4711a737a75f780a190219dffb816596619"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/box.cpython-312.pyc",
+      "bytes": 2799,
+      "sha256": "1bb582000303d3e6d8ddebd761e4ff927a0f95afad4e492c9614347397d5ab7b"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/game.cpython-312.pyc",
+      "bytes": 10143,
+      "sha256": "10cdaf8e57a9116cf14fdfe0cc845b4e9c5bb5a32f3172f814754ee13b8ad3cc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/generator.cpython-312.pyc",
+      "bytes": 5658,
+      "sha256": "57c5cf089b1526067b7752eb41b327a6fa4f5b616816b3252e3b3596f8c394f2"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/player.cpython-312.pyc",
+      "bytes": 7098,
+      "sha256": "842833f961f9cfe3a53f708bab0a3d93b8a9af85d8580747545dfede12aa8f0c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/__pycache__/utils.cpython-312.pyc",
+      "bytes": 8510,
+      "sha256": "0f35cae6f6ecc98a4058a5b654175779ab558064841ddeaf43d5e642b79008dd"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/astar.py",
+      "bytes": 2955,
+      "sha256": "ed23e2ef5156cff0eb394faad2b700d0480f6534abd267a426c66e364b21baa6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/box.py",
+      "bytes": 1215,
+      "sha256": "57463b06e64f9383b705c37c169f2917a29cb52d01a8092a390469b767e4d003"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/game.py",
+      "bytes": 6358,
+      "sha256": "6736c62d5011e1a555ff8be11222d5498497d01136d117a419107dc8ae1e95cc"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/generator.py",
+      "bytes": 4191,
+      "sha256": "a7eb2cda74e0def9685c81c3dd1997daa8f9a056db65ee5d40aac238b022f881"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/player.py",
+      "bytes": 4311,
+      "sha256": "44d06d629b9f14b098e04cb15c1c6736409fb1ce6b8dfd7805fd7a21ef34a8e0"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/contrib/sokoban/src/utils.py",
+      "bytes": 5916,
+      "sha256": "362a8d3401df94a8b113baeff5de39c0eaee29e31ec4a7c172a7959cc3f59cac"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/countdown.py",
+      "bytes": 10516,
+      "sha256": "349cd7042a92a8b598954f4e2e771d4d4eb0ac18f81ac4a91f1c4e765ed15321"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/emoji_mystery.py",
+      "bytes": 7005,
+      "sha256": "6345fd95cc54e614e3b92e9cc82f96b8eeb4362f95bdcaafe0424b85a895f2fd"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/futoshiki.py",
+      "bytes": 29652,
+      "sha256": "1e17d801b9695f35d04047bde037beae0e6b1e6622ef89b287ec5c2061c2db5e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/kakurasu.py",
+      "bytes": 15010,
+      "sha256": "32952922a3c863ba14acc2773230e18e2226e221cae093dd04956e7f86f69ab8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/knight_swap.py",
+      "bytes": 18479,
+      "sha256": "a9de444d885125e0e6d42de9c34a705c3a22c9fed670375927ee8fe182542e95"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/mahjong.py",
+      "bytes": 6163,
+      "sha256": "421d9b55bdd6eef32b23b208cfa56e8cd4f30e43b71f9a583b6d3058955b4304"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/maze.py",
+      "bytes": 8767,
+      "sha256": "8e31f44bdf89f65b7c432a445040ce9910c4405bc8ae1282d161aa9afdc5c83a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/mini_sudoku.py",
+      "bytes": 9456,
+      "sha256": "20b77f97b1f5a9aa364940311d6647c4fa3e2b69834995371e0b20dd9f818c0c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/n_queens.py",
+      "bytes": 7094,
+      "sha256": "2738aad6232b45f21e57c0cb6d58dbcd1752a97e95e7abb8cf8c1002a4bf4c64"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/puzzle24.py",
+      "bytes": 5542,
+      "sha256": "542f8a43867de1cc0a4269fbb885fdf749954a9ea525e3edef0423f8dffdbd92"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/rush_hour.py",
+      "bytes": 12926,
+      "sha256": "75a9a4f18b7376661551e7febc67f53f4046fd967aa488912fb1aebb9fff3d61"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/sokoban.py",
+      "bytes": 5347,
+      "sha256": "19bdaa006e58627dbc76c46ae7641e34b2c9305603b1e68d47640e51c7c6b4bb"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/sudoku.py",
+      "bytes": 10087,
+      "sha256": "dcb9e0c968d33b0f7883390d7b3155aa7a6088fae9db48bba832ca9aea21f4e0"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/survo.py",
+      "bytes": 7774,
+      "sha256": "6d506c11d914f8b1d7c910c26b8da9a44e9ad8bbec1b9cf595a426f8c8cf864a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/tower_of_hanoi.py",
+      "bytes": 17791,
+      "sha256": "6a983d45cd5ef3a6380b509ef7313af859defa52d02526b022f52fae85298eef"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/games/tsumego.py",
+      "bytes": 13648,
+      "sha256": "5978a0f3b5b785e98b58190fb5ddf90403f16165094d2369d4a84f2a59daa021"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/__init__.py",
+      "bytes": 405,
+      "sha256": "421b34730ceaea23fdd4c3981fecab1bc1224213787b46f3fe1d5d40f8b9f428"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 516,
+      "sha256": "016d00a50175e5ae4384ed107837d8cacc92a14d3fde3125223be8d8fe3ab682"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/__pycache__/advanced_geometry.cpython-312.pyc",
+      "bytes": 15903,
+      "sha256": "c2cb23477ae57d009cfdb19f87f3c4fbfb3ad46200950b4b210ae89eee8352d6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/__pycache__/simple_geometry.cpython-312.pyc",
+      "bytes": 7930,
+      "sha256": "85bfc3013a57dedb7c41314c2921552a8ad5592dac7b9028f985a8fd98b7efae"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/advanced_geometry.py",
+      "bytes": 12181,
+      "sha256": "0a914f1a4095cf7d25e0bb2ba19d1e86bb7fe0cd8abb33a0acce81dbc6f7f34c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/geometry/simple_geometry.py",
+      "bytes": 7079,
+      "sha256": "32466b093be1da746e181447c41a3cd15a896835d410b58ad5d67c50bd2652d0"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__init__.py",
+      "bytes": 1094,
+      "sha256": "e506b5df0b2b17b2de7d955887abc6d4019db26d221aedd913dbb40a63339630"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1062,
+      "sha256": "863a496313fa04aefd86000c1ebc7c926292843f9dedf025da73ee6597337b0a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/course_schedule.cpython-312.pyc",
+      "bytes": 9224,
+      "sha256": "0200701198045451746f9ac3d854d7dd57282a1662b4c356872e4b6a65ef1991"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/family_relationships.cpython-312.pyc",
+      "bytes": 18397,
+      "sha256": "b90c2f23bbb7fc2ba3eb4e5357f9efe78e24189318d7998687f2cb7b56c1f3fa"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/largest_island.cpython-312.pyc",
+      "bytes": 11019,
+      "sha256": "feffd0944ee10bf890cc1604cad847a803e256c8d8430a74df5411d0b43d497e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/path_star.cpython-312.pyc",
+      "bytes": 7637,
+      "sha256": "dff1f46cb5ce1d3cee69e893d3ac63c60bb3c01add98ee8f446fe2b0276247d3"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/quantum_lock.cpython-312.pyc",
+      "bytes": 10960,
+      "sha256": "342c4f4628792bd26fc1a49a08e619336a40e1c32016cfe70b72ae36bd1c64ef"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/__pycache__/shortest_path.cpython-312.pyc",
+      "bytes": 11565,
+      "sha256": "c4c636f989f33420153150a08a7781d89381ec9776955abc19a79530456ca5d8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/course_schedule.py",
+      "bytes": 7589,
+      "sha256": "379d5519579cc9d1ed0948e91056f0fe4eb0e792f031ed5608d5e7626a8a527c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/family_relationships.py",
+      "bytes": 14470,
+      "sha256": "b00459b1242416befddbb4c0bb6880d02bf1c967a1057f9c39a298d5a4bda455"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/largest_island.py",
+      "bytes": 7674,
+      "sha256": "9b3cff09d4d001443e91612c937b399c53349fc24d848503850cda25b392b502"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/path_star.py",
+      "bytes": 5465,
+      "sha256": "ae55353009956240c0eacb5033753494c60c4b67ab29f12e77ed84ee66d9fe3a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/quantum_lock.py",
+      "bytes": 9310,
+      "sha256": "2f96d165fe0a33fb3dabdc92ffb99966fbcda41351d87f1c12df497da64311d8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/graphs/shortest_path.py",
+      "bytes": 7586,
+      "sha256": "40756d552a64f6c7b513e2e6eb2d57755e31f70b766fff62113f786165dcaabd"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/__init__.py",
+      "bytes": 296,
+      "sha256": "63737d4b3429f1974d6f6838f366ebfac88e31b42eac7e9b602da3a58eccc4e3"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 483,
+      "sha256": "51831344cc10161f92dd0d6d32127c9393960bab278a5c086d4688ede5870e14"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/__pycache__/acre.cpython-312.pyc",
+      "bytes": 5811,
+      "sha256": "016cd0b7cc0131a0a814e8aebf02a9a22e085164407950db1d6073e878555ce7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/__pycache__/blicket.cpython-312.pyc",
+      "bytes": 31356,
+      "sha256": "8386e06550c2d3ca5a7946b9347fc1e6b9559f9aeb8c9d89c12b9fcb87ea8439"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/__pycache__/const.cpython-312.pyc",
+      "bytes": 516,
+      "sha256": "2c6f41b1d52c691264be1f819de0dc8ae890357ca605e43d81ea20ebefffa237"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/acre.py",
+      "bytes": 3957,
+      "sha256": "77e2fe8e91d1017002cbb746779765a2c0d1d32a8542e88969720865f893e0a6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/blicket.py",
+      "bytes": 25789,
+      "sha256": "1b471a22b8607a2851e2ab7442c6fb6e788d0e137cb27042b1ec79a5c96d0767"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/acre/const.py",
+      "bytes": 259,
+      "sha256": "39d5bdc195aa390e6e7bae51f40dddc00a404c06623442a0c05f1947a2ebdfc7"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/list_functions/__init__.py",
+      "bytes": 154,
+      "sha256": "7f1e3958166bbde0a4af03d71fa49f9d1f5e4549dd24d66bea2fe229630a15a8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/list_functions/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 345,
+      "sha256": "37a9e7a70c5ae59da16c2278e7594dabc2922e5a50d42fc9fb2c9d5c885f9c8f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/list_functions/__pycache__/list_functions.cpython-312.pyc",
+      "bytes": 4788,
+      "sha256": "23103f0f3b1c9c04140fe1fa0480aa78d3418b9adfd614fbe2f09abce138e770"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/induction/list_functions/list_functions.py",
+      "bytes": 2944,
+      "sha256": "c39605972d1ff57ba4cd890ef98f5e35756115c9b4cf7d4cdba0b6ab68d737d8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__init__.py",
+      "bytes": 1329,
+      "sha256": "cc083b9efabcc8b9a907ad7e9c454779482afdeaa29e92cd2bb847228a51361e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1275,
+      "sha256": "f365be7bf03eacef6af33da5be82fe96f1164f2989b635ebba765641422225db"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/aiw.cpython-312.pyc",
+      "bytes": 11373,
+      "sha256": "1dd7319702547a2cadbf66c6b49d529bc7b7aa5d573d5d72a9fe6b7395f7f857"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/circuit_logic.cpython-312.pyc",
+      "bytes": 20960,
+      "sha256": "d38fab68476fc136aa84e0e9df7528e33dea6522febe2aa22cb5d3052d2acedf"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/knights_knaves.cpython-312.pyc",
+      "bytes": 24272,
+      "sha256": "7002f210cd580b3eca89ae4781b30b1882056c3bd63d41c823e016a40261113c"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/propositional_logic.cpython-312.pyc",
+      "bytes": 21150,
+      "sha256": "2f7c76f42eead0b942bcf1b1da0e53146cd25de5c0a90c5e7a8a838188dd36b0"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/self_reference.cpython-312.pyc",
+      "bytes": 13433,
+      "sha256": "313a079ffa1c0b40f4907ef08f2c2dc4555566bbb7947eb9847a6bf627d218da"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/syllogisms.cpython-312.pyc",
+      "bytes": 17491,
+      "sha256": "e7b60c6e7a6058368f2afbf23f4fb6b054fa9cf083459401e810df304754967b"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/__pycache__/zebra_puzzles.cpython-312.pyc",
+      "bytes": 5122,
+      "sha256": "bd47381962a3383d5f7b57d33f173cef18eb2457c165f22d899cb932ece5496e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/aiw.py",
+      "bytes": 9841,
+      "sha256": "2c51c0ed6e89251f1e375023b336a43c8ea04a6f6ce34a6b5b608082104f3e4e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/circuit_logic.py",
+      "bytes": 16042,
+      "sha256": "04858f961e50c87f16aab89e2f83b000c9577dd83704a7a205b919f92d14a56f"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 193,
+      "sha256": "1d74e86fd3c9d8d6df2735e6e261cb800a0d52b2e95964fac8fb9a645b9f3406"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 206,
+      "sha256": "926042d2327b72574d9b569a19b4fa1ff9ff7673e738a17f47be75c9f477282d"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__pycache__/clues.cpython-312.pyc",
+      "bytes": 16151,
+      "sha256": "b324f68e9089a1d4e8767702e320ea61e3e20e746dd01bdae8d335256a9d3db8"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__pycache__/generate.cpython-312.pyc",
+      "bytes": 19567,
+      "sha256": "f8c6bb2269ae472ea5e9daeee4cb5c38fdbcedb746131f80f21e9fb7b25ca274"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__pycache__/literals.cpython-312.pyc",
+      "bytes": 25268,
+      "sha256": "941caeddf220dbb113740a1949485522b096be4fd27676d2f9113bf00c2ee0ef"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__pycache__/puzzle.cpython-312.pyc",
+      "bytes": 13520,
+      "sha256": "c3079a0e7f84ca59f2d9a0d17ec9a50750ba08d18135ecc203e336282a4383bd"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/__pycache__/sat_utils.cpython-312.pyc",
+      "bytes": 7855,
+      "sha256": "ab9647fb9c1ad47b6b08f9854613587b259556a24d5e82837d6c9373d6558f7a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/clues.py",
+      "bytes": 8295,
+      "sha256": "7d98385414ae98aa160579c70ed879356501d4a87e95f85556621d8194223ca9"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/generate.py",
+      "bytes": 15718,
+      "sha256": "0b720d4d0069261b03f653400d42bea258a7bc4931f96b4527ea9f317ca2b61b"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/literals.py",
+      "bytes": 17104,
+      "sha256": "7a694f9ca28b7c88eff823b75fe16228c95d880cc327810e30621569d0d1e49e"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/puzzle.py",
+      "bytes": 11746,
+      "sha256": "80872b68f938f04ce0f03ee77db2fbaa496d280cef9202ea14369e291913b824"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/contrib/logic_puzzle/sat_utils.py",
+      "bytes": 5083,
+      "sha256": "4b3e1961959e42e28b11201012397bc4a4bb99c19438236b4bc4834238018651"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/knights_knaves.py",
+      "bytes": 20743,
+      "sha256": "8837a3c6dfc72bb40db168b82ad6b3da45a08a4000a006fc306368b77b622705"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/propositional_logic.py",
+      "bytes": 14809,
+      "sha256": "8367b082850207e87ffeda3cccf74d96ce92f93e449c520bc2f1b96aeacff5e6"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/self_reference.py",
+      "bytes": 14174,
+      "sha256": "8b0eebadba3c07a56a58fd9f88830be40b49cb94882a9cb595672ae337143424"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/syllogisms.py",
+      "bytes": 18824,
+      "sha256": "c2fa3a6cc9615e7970fb058856987b9a42ac64ec0177f637cb76ac97bfb86999"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/logic/zebra_puzzles.py",
+      "bytes": 3438,
+      "sha256": "41312f2635a0a7f920fd6a8006a9e8b1b7e4225d7900da504078b1fd5560e580"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/probability/__init__.py",
+      "bytes": 184,
+      "sha256": "7e1d0f8cebf8bebf2a4027cf2a43ebd98daeea9a6e40604ac45ec780f43ef926"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/probability/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 392,
+      "sha256": "769d74b1eb03dd504f3bc5cb72e7a2a2c0600854ce36ce82f03a8cbeb8953bc9"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/probability/__pycache__/coin_flip.cpython-312.pyc",
+      "bytes": 8554,
+      "sha256": "2892c49221db1f2a07008116833174822980f2aeabc3d1cd5e5e1dae71a6732a"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/probability/coin_flip.py",
+      "bytes": 5968,
+      "sha256": "a6e6ebe348bdd289bbf06bfe9360e4e1187453c82a973e2545b58a94a4b7b740"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/utils.py",
+      "bytes": 6451,
+      "sha256": "25fe815ebfce019dad92aa79e61528e0418a04edbce2aa86d019a5a3f186e9d1"
+    },
+    {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/reasoning_gym/version_manager.py",
+      "bytes": 2318,
+      "sha256": "5b36d8ae6d8ebcc5e0607abb6085ff152f8f4d6c89032e0981d50483e1431128"
+    }
+  ]
+}
