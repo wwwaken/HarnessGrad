@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    "data/scaffolds/scorer_input.py",
+    "docs/dataset-blockers.json",
+    "docs/adapter-integration-journal.md",
+    "tests/quality/test_w_wal.py",
+    "tests/fixtures/hg_wwal",
+    "reports/w-wal-receipts.md"
+  ],
+  "cwd": "/tmp/hg-wal",
+  "returncode": 0,
+  "timeout_seconds": 150
+}

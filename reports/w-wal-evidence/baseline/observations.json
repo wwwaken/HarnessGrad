@@ -1,0 +1,539 @@
+{
+  "bound_closed_wal": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "database.sqlite",
+      "--gold",
+      "gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-closed-wal/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-closed-wal/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-closed-wal/evidence.json",
+      "--task-id",
+      "w-wal-authored",
+      "--scorer-input-sha256",
+      "d669ba289f2679844d1f50c6c3f59a37177286ac6735125b275fbfbb012910d7",
+      "--scorer-input-files",
+      "{\"database.sqlite\": \"f64c88023c32f8bc19edf61f557a6dc192f461231c95f189b9af2de42d365fd9\", \"gold.sql\": \"f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800\"}"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 0.0,
+      "scorer_input": {
+        "expected_sha256": "d669ba289f2679844d1f50c6c3f59a37177286ac6735125b275fbfbb012910d7",
+        "files": {
+          "database.sqlite": "f64c88023c32f8bc19edf61f557a6dc192f461231c95f189b9af2de42d365fd9",
+          "gold.sql": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+        },
+        "path": "native-inputs",
+        "sha256": "d669ba289f2679844d1f50c6c3f59a37177286ac6735125b275fbfbb012910d7",
+        "task_id": "w-wal-authored",
+        "verified": true
+      },
+      "why": "exact set equality: 1 predicted vs 2 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "0\n"
+  },
+  "bound_delete": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "database.sqlite",
+      "--gold",
+      "gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-delete/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-delete/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-delete/evidence.json",
+      "--task-id",
+      "w-wal-authored",
+      "--scorer-input-sha256",
+      "c2cfd958b2542a3026212ed6a455487a82c32fd677558935acfdb1af11a30680",
+      "--scorer-input-files",
+      "{\"database.sqlite\": \"14415e54017dd8737c242a6f052cf75a7198eff6f97ac40800761ac4d907542b\", \"gold.sql\": \"f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800\"}"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 0.0,
+      "scorer_input": {
+        "expected_sha256": "c2cfd958b2542a3026212ed6a455487a82c32fd677558935acfdb1af11a30680",
+        "files": {
+          "database.sqlite": "14415e54017dd8737c242a6f052cf75a7198eff6f97ac40800761ac4d907542b",
+          "gold.sql": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+        },
+        "path": "native-inputs",
+        "sha256": "c2cfd958b2542a3026212ed6a455487a82c32fd677558935acfdb1af11a30680",
+        "task_id": "w-wal-authored",
+        "verified": true
+      },
+      "why": "exact set equality: 1 predicted vs 2 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "0\n"
+  },
+  "bound_live": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "database.sqlite",
+      "--gold",
+      "gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-live/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-live/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-live/evidence.json",
+      "--task-id",
+      "w-wal-authored",
+      "--scorer-input-sha256",
+      "78fc2c4631008255073ee1705e4bbab4b0e40e9b3b4e64b7edbea64caa205938",
+      "--scorer-input-files",
+      "{\"database.sqlite\": \"3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef\", \"gold.sql\": \"f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800\"}"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 1.0,
+      "scorer_input": {
+        "expected_sha256": "78fc2c4631008255073ee1705e4bbab4b0e40e9b3b4e64b7edbea64caa205938",
+        "files": {
+          "database.sqlite": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef",
+          "gold.sql": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+        },
+        "path": "native-inputs",
+        "sha256": "78fc2c4631008255073ee1705e4bbab4b0e40e9b3b4e64b7edbea64caa205938",
+        "task_id": "w-wal-authored",
+        "verified": true
+      },
+      "why": "exact set equality: 1 predicted vs 1 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "1\n"
+  },
+  "bound_materialized": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "database.sqlite",
+      "--gold",
+      "gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-materialized/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-materialized/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-materialized/evidence.json",
+      "--task-id",
+      "w-wal-authored",
+      "--scorer-input-sha256",
+      "78fc2c4631008255073ee1705e4bbab4b0e40e9b3b4e64b7edbea64caa205938",
+      "--scorer-input-files",
+      "{\"database.sqlite\": \"3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef\", \"gold.sql\": \"f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800\"}"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 1.0,
+      "scorer_input": {
+        "expected_sha256": "78fc2c4631008255073ee1705e4bbab4b0e40e9b3b4e64b7edbea64caa205938",
+        "files": {
+          "database.sqlite": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef",
+          "gold.sql": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+        },
+        "path": "native-inputs",
+        "sha256": "78fc2c4631008255073ee1705e4bbab4b0e40e9b3b4e64b7edbea64caa205938",
+        "task_id": "w-wal-authored",
+        "verified": true
+      },
+      "why": "exact set equality: 1 predicted vs 1 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "1\n"
+  },
+  "closed_wal_header": [
+    2,
+    2
+  ],
+  "delete_header": [
+    1,
+    1
+  ],
+  "explicit_external_preparation_mode": [
+    "delete"
+  ],
+  "full_export_rows": [
+    [
+      "base"
+    ],
+    [
+      "wal-only"
+    ]
+  ],
+  "full_projection": {
+    "contract": {
+      "export": {
+        "files": [
+          {
+            "max_bytes": 1048576,
+            "path": "database.sqlite"
+          },
+          {
+            "max_bytes": 1048576,
+            "path": "database.sqlite-wal"
+          },
+          {
+            "max_bytes": 1048576,
+            "path": "database.sqlite-shm"
+          },
+          {
+            "max_bytes": 1048576,
+            "path": "gold.sql"
+          }
+        ],
+        "max_bytes": 4194304,
+        "max_inodes": 32
+      },
+      "quota": {
+        "/control-output": {
+          "bytes": 65536,
+          "inodes": 16
+        },
+        "/tmp": {
+          "bytes": 1048576,
+          "inodes": 64
+        }
+      },
+      "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+      "schema": "harnessgrad.artifact-scorer.v1",
+      "scorer": {
+        "argv": [
+          "/control-scorer/sh",
+          "/control-scorer/check.sh"
+        ],
+        "entrypoint": "check.sh",
+        "files": [
+          {
+            "bytes": 976,
+            "path": "check.sh",
+            "requires": [
+              "sh",
+              "expected.txt"
+            ],
+            "role": "scorer",
+            "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa"
+          },
+          {
+            "bytes": 2193272,
+            "path": "sh",
+            "requires": [],
+            "role": "runtime",
+            "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+          },
+          {
+            "bytes": 3,
+            "path": "expected.txt",
+            "requires": [],
+            "role": "dependency",
+            "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+          }
+        ]
+      },
+      "source_sha256": "de7bd56f0b3e569955cf1776f928f9f01505b85c0b19fd044c8eeedda3837fa9",
+      "task_id": "w-wal-authored"
+    },
+    "receipt": {
+      "bytes": 45131,
+      "contract_sha256": "d8660a82d0107b27e3ce8f9c5edf9a949a20ec8798d766b6616b08a07afaee8c",
+      "execution_binding": {
+        "outer_run_id": "w-wal-03a84981c2594899a28de0878ac9f2eb",
+        "task_id": "w-wal-authored",
+        "trial_id": "1"
+      },
+      "files": [
+        {
+          "bytes": 8192,
+          "path": "database.sqlite",
+          "sha256": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef"
+        },
+        {
+          "bytes": 4152,
+          "path": "database.sqlite-wal",
+          "sha256": "bcd503d02b8413c4a329a1de5766f0448dc22ee20043f2992c34381df612f6a2"
+        },
+        {
+          "bytes": 32768,
+          "path": "database.sqlite-shm",
+          "sha256": "baa0886a5344bd9ef07813db41b92cf985e509d05669f3069fe77b3d49fc0547"
+        },
+        {
+          "bytes": 19,
+          "path": "gold.sql",
+          "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+        }
+      ],
+      "inodes": 5,
+      "limits": {
+        "max_bytes": 4194304,
+        "max_inodes": 32
+      },
+      "run_id": "w-wal-export-7dd29f6d48e64eb68f2efc31995ed5f1",
+      "schema": "harnessgrad.state-export-receipt.v2",
+      "scope": "local_artifact_projection",
+      "source_sha256": "de7bd56f0b3e569955cf1776f928f9f01505b85c0b19fd044c8eeedda3837fa9",
+      "task_id": "w-wal-authored"
+    },
+    "verified_before_any_sqlite_probe": true
+  },
+  "live_rows": [
+    [
+      "base"
+    ],
+    [
+      "wal-only"
+    ]
+  ],
+  "main_only_projection": {
+    "contract": {
+      "export": {
+        "files": [
+          {
+            "max_bytes": 1048576,
+            "path": "database.sqlite"
+          },
+          {
+            "max_bytes": 1048576,
+            "path": "gold.sql"
+          }
+        ],
+        "max_bytes": 4194304,
+        "max_inodes": 32
+      },
+      "quota": {
+        "/control-output": {
+          "bytes": 65536,
+          "inodes": 16
+        },
+        "/tmp": {
+          "bytes": 1048576,
+          "inodes": 64
+        }
+      },
+      "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+      "schema": "harnessgrad.artifact-scorer.v1",
+      "scorer": {
+        "argv": [
+          "/control-scorer/sh",
+          "/control-scorer/check.sh"
+        ],
+        "entrypoint": "check.sh",
+        "files": [
+          {
+            "bytes": 976,
+            "path": "check.sh",
+            "requires": [
+              "sh",
+              "expected.txt"
+            ],
+            "role": "scorer",
+            "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa"
+          },
+          {
+            "bytes": 2193272,
+            "path": "sh",
+            "requires": [],
+            "role": "runtime",
+            "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+          },
+          {
+            "bytes": 3,
+            "path": "expected.txt",
+            "requires": [],
+            "role": "dependency",
+            "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+          }
+        ]
+      },
+      "source_sha256": "de7bd56f0b3e569955cf1776f928f9f01505b85c0b19fd044c8eeedda3837fa9",
+      "task_id": "w-wal-authored"
+    },
+    "receipt": {
+      "bytes": 8211,
+      "contract_sha256": "d0569ead3b08730a0c45a8d1e0f9bc1961bdb9e8727ef5bed104ffea21e07a37",
+      "execution_binding": {
+        "outer_run_id": "w-wal-1bfb5b8c90b847e28d1a7b033b593d6a",
+        "task_id": "w-wal-authored",
+        "trial_id": "1"
+      },
+      "files": [
+        {
+          "bytes": 8192,
+          "path": "database.sqlite",
+          "sha256": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef"
+        },
+        {
+          "bytes": 19,
+          "path": "gold.sql",
+          "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+        }
+      ],
+      "inodes": 3,
+      "limits": {
+        "max_bytes": 4194304,
+        "max_inodes": 32
+      },
+      "run_id": "w-wal-export-da7dea1adff840d494cfb120a4d36e1b",
+      "schema": "harnessgrad.state-export-receipt.v2",
+      "scope": "local_artifact_projection",
+      "source_sha256": "de7bd56f0b3e569955cf1776f928f9f01505b85c0b19fd044c8eeedda3837fa9",
+      "task_id": "w-wal-authored"
+    },
+    "verified_before_any_sqlite_probe": true
+  },
+  "main_only_rows": [
+    [
+      "base"
+    ]
+  ],
+  "python": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+  "scratch": "/tmp/hg-w-wal-j4p6jn8g",
+  "scratch_removed": true,
+  "source_after": {
+    "database.sqlite": {
+      "bytes": 8192,
+      "sha256": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef"
+    },
+    "database.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "baa0886a5344bd9ef07813db41b92cf985e509d05669f3069fe77b3d49fc0547"
+    },
+    "database.sqlite-wal": {
+      "bytes": 4152,
+      "sha256": "bcd503d02b8413c4a329a1de5766f0448dc22ee20043f2992c34381df612f6a2"
+    },
+    "gold.sql": {
+      "bytes": 19,
+      "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+    }
+  },
+  "source_before": {
+    "database.sqlite": {
+      "bytes": 8192,
+      "sha256": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef"
+    },
+    "database.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "f2d9d0824631944128a433fc7f8ce244fbec13bcfe5619eb71475ddc760bce55"
+    },
+    "database.sqlite-wal": {
+      "bytes": 4152,
+      "sha256": "bcd503d02b8413c4a329a1de5766f0448dc22ee20043f2992c34381df612f6a2"
+    },
+    "gold.sql": {
+      "bytes": 19,
+      "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+    }
+  },
+  "sqlite_runtime": "3.45.3",
+  "unbound_full_export": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "/tmp/hg-w-wal-j4p6jn8g/full-export/database.sqlite",
+      "--gold",
+      "/tmp/hg-w-wal-j4p6jn8g/full-export/gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-full-export/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-full-export/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-full-export/evidence.json"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 0.0,
+      "scorer_input": {
+        "expected_sha256": null,
+        "files": {},
+        "path": "native-inputs",
+        "sha256": null,
+        "task_id": null,
+        "verified": false
+      },
+      "why": "exact set equality: 1 predicted vs 2 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "0\n"
+  },
+  "unbound_live": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "/tmp/hg-w-wal-j4p6jn8g/live/database.sqlite",
+      "--gold",
+      "/tmp/hg-w-wal-j4p6jn8g/live/gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-live/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-live/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-live/evidence.json"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 0.0,
+      "scorer_input": {
+        "expected_sha256": null,
+        "files": {},
+        "path": "native-inputs",
+        "sha256": null,
+        "task_id": null,
+        "verified": false
+      },
+      "why": "exact set equality: 1 predicted vs 2 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "0\n"
+  },
+  "unbound_main_only": {
+    "argv": [
+      "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+      "--db",
+      "/tmp/hg-w-wal-j4p6jn8g/main-only/database.sqlite",
+      "--gold",
+      "/tmp/hg-w-wal-j4p6jn8g/main-only/gold.sql",
+      "--pred",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-main-only/answer.sql",
+      "--reward-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-main-only/reward.txt",
+      "--evidence-file",
+      "/tmp/hg-wal/reports/w-wal-evidence/baseline/unbound-main-only/evidence.json"
+    ],
+    "evidence": {
+      "measured": true,
+      "metric": "EX",
+      "reward": 1.0,
+      "scorer_input": {
+        "expected_sha256": null,
+        "files": {},
+        "path": "native-inputs",
+        "sha256": null,
+        "task_id": null,
+        "verified": false
+      },
+      "why": "exact set equality: 1 predicted vs 1 gold rows"
+    },
+    "returncode": 0,
+    "reward_text": "1\n"
+  }
+}

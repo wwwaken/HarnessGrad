@@ -3,6 +3,11 @@
 The digest names a canonical path -> byte-digest inventory. Native consumers get
 private copies hashed while copying, never a reopened actor path. Runtime/code
 custody and upstream provenance are separate obligations.
+
+The byte-only inventory cannot authenticate SQLite WAL dependencies. Bound
+consumers refuse WAL-format main files, including already copied or checkpointed
+ones: their headers cannot prove that an omitted WAL was empty. Preparing a
+single-file database is a separate trusted operation, never an implicit conversion.
 """
 from __future__ import annotations
 
@@ -80,10 +85,23 @@ def run_bound(args, paths: dict[str, Path], score) -> int:
                 target = Path(scratch) / rel
                 target.parent.mkdir(parents=True, exist_ok=True)
                 digest = hashlib.sha256()
+                header = b""
                 with Path(path).open("rb") as src, target.open("wb") as dst:
                     for block in iter(lambda: src.read(1024 * 1024), b""):
+                        if not header:
+                            header = block[:20]
                         digest.update(block)
                         dst.write(block)
+                # Inspect the same bytes that were copied and hashed, not a second
+                # open or neighboring actor paths. SQLite header bytes 18/19 are
+                # the write/read format versions (2 denotes WAL). A missing WAL
+                # is indistinguishable here from a cleanly checkpointed database;
+                # matching main-file digests cannot establish logical equivalence.
+                if (header[:16] == b"SQLite format 3\x00"
+                        and 2 in header[18:20]):
+                    raise ValueError(
+                        f"SQLite WAL input {name!r} requires a database-aware snapshot; "
+                        "main-file-only binding is unsupported (including checkpointed WAL mode)")
                 copies[name] = target
                 receipt["files"][name] = digest.hexdigest()
             receipt["sha256"] = inventory_digest(receipt["files"])

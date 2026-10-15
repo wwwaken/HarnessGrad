@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+    "--db",
+    "database.sqlite",
+    "--gold",
+    "gold.sql",
+    "--pred",
+    "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-delete/answer.sql",
+    "--reward-file",
+    "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-delete/reward.txt",
+    "--evidence-file",
+    "/tmp/hg-wal/reports/w-wal-evidence/baseline/bound-delete/evidence.json",
+    "--task-id",
+    "w-wal-authored",
+    "--scorer-input-sha256",
+    "c2cfd958b2542a3026212ed6a455487a82c32fd677558935acfdb1af11a30680",
+    "--scorer-input-files",
+    "{\"database.sqlite\": \"14415e54017dd8737c242a6f052cf75a7198eff6f97ac40800761ac4d907542b\", \"gold.sql\": \"f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800\"}"
+  ],
+  "evidence": {
+    "measured": true,
+    "metric": "EX",
+    "reward": 0.0,
+    "scorer_input": {
+      "expected_sha256": "c2cfd958b2542a3026212ed6a455487a82c32fd677558935acfdb1af11a30680",
+      "files": {
+        "database.sqlite": "14415e54017dd8737c242a6f052cf75a7198eff6f97ac40800761ac4d907542b",
+        "gold.sql": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+      },
+      "path": "native-inputs",
+      "sha256": "c2cfd958b2542a3026212ed6a455487a82c32fd677558935acfdb1af11a30680",
+      "task_id": "w-wal-authored",
+      "verified": true
+    },
+    "why": "exact set equality: 1 predicted vs 2 gold rows"
+  },
+  "returncode": 0,
+  "reward_text": "0\n"
+}

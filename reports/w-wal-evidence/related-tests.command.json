@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "python3",
+    "tests/fixtures/hg_woffscorer3/gaia_tau/offline_exec.py",
+    "tests/fixtures/hg_wwal/pytest_offline.py",
+    "-q",
+    "tests/quality/test_terminal_artifact_admission.py",
+    "tests/quality/test_we5_equivalence.py",
+    "tests/quality/test_quiesce2_regressions.py",
+    "tests/quality/test_snapshot_binding_w_snapfix.py",
+    "tests/quality/test_dataset_blockers.py",
+    "tests/quality/test_dataset_journal_coverage.py",
+    "--basetemp=/tmp/hg-w-wal-related-pytest"
+  ],
+  "cwd": "/tmp/hg-wal",
+  "returncode": 1,
+  "timeout_seconds": 150
+}

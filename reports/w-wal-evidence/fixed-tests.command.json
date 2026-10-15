@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "tests/fixtures/hg_woffscorer3/gaia_tau/offline_exec.py",
+    "tests/fixtures/hg_wwal/pytest_offline.py",
+    "-q",
+    "tests/quality/test_w_wal.py",
+    "--basetemp=/tmp/hg-w-wal-fixed-pytest"
+  ],
+  "cwd": "/tmp/hg-wal",
+  "returncode": 0,
+  "timeout_seconds": 150
+}

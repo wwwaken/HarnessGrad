@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "/tmp/hg-wal/data/datasets/bird_minidev/verify/check.py",
+    "--db",
+    "/tmp/hg-w-wal-aa9wn01o/live/database.sqlite",
+    "--gold",
+    "/tmp/hg-w-wal-aa9wn01o/live/gold.sql",
+    "--pred",
+    "/tmp/hg-wal/reports/w-wal-evidence/fixed/unbound-live/answer.sql",
+    "--reward-file",
+    "/tmp/hg-wal/reports/w-wal-evidence/fixed/unbound-live/reward.txt",
+    "--evidence-file",
+    "/tmp/hg-wal/reports/w-wal-evidence/fixed/unbound-live/evidence.json"
+  ],
+  "evidence": {
+    "measured": true,
+    "metric": "EX",
+    "reward": 0.0,
+    "scorer_input": {
+      "expected_sha256": null,
+      "files": {},
+      "path": "native-inputs",
+      "sha256": null,
+      "task_id": null,
+      "verified": false
+    },
+    "why": "exact set equality: 1 predicted vs 2 gold rows"
+  },
+  "returncode": 0,
+  "reward_text": "0\n"
+}
