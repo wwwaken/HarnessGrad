@@ -39,11 +39,10 @@ from pathlib import Path
 #: control. The JVM reports `done` when the goal is met **or** when this many moves are
 #: spent, which is the stopping condition the official example loops on.
 #:
-#: **1000**, an adapter-owned ceiling above the longest recorded test reference path (796 moves).
-#: This keeps every 1,744 archived test path available instead of turning a correct long
-#: oracle into a false zero. The verifier timeout is raised alongside it so the larger move
-#: budget cannot be silently truncated by the wall-clock boundary.
-STEP_BUDGET = 1000
+#: **100**, following the ScienceWorld paper: "we used 100 in all experiments".
+#: Limit: long oracle paths truncate at 100, including archived test paths up to 796 moves.
+#: Keep those tasks in the fold; reference length must not select the evaluation pool.
+STEP_BUDGET = 100
 
 #: The action log the CLI appends to and the check replays. Same shape as ALFWorld's: one
 #: JSON object per line, `{"kind": "action", "step": n, "action": "..."}`.

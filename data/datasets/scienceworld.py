@@ -44,9 +44,16 @@ Only the *identity* of the tasks is needed at run time: the gold action sequence
 regenerated from the environment's own API, which is what makes the oracle control test the
 **environment** rather than a stored answer.
 
-The adapter keeps the complete `test` fold because the shared move budget is now 1,000 and the longest recorded path is 796. `test_fold.json` still carries every path length, and `test_fold()` re-applies the budget filter on every load. The current budget therefore excludes no recorded test path.
+The adapter keeps the complete `test` fold at the paper's 100-step budget ("we used
+100 in all experiments"). **Limit: long oracle paths truncate at 100**, including
+299 archived test paths longer than 100 moves; the longest is 796. Reference length
+does not filter the evaluation pool. `fold_over_budget()` reports these paths.
 
-One discrepancy remains visible in the numbers: the package enumerates **30** task names and the archive has gold paths for **29**. The task without a gold path (`identify-life-stages-2`, 10 variations) is not in the test fold and this adapter does not return it.
+One discrepancy remains visible in the numbers: the package enumerates **30** task names
+and the archive has gold paths for **29**. The missing type is
+`measure-melting-point-unknown-substance` (300 variations, the 7,207 - 6,907 gap).
+`identify-life-stages-2` is present as `task-7-identify-life-stages-2/6` through `/9`.
+The released-fold macro therefore covers **29/30 task types** at most.
 
 The variation indices in the archive are the package's own (verified: the API's
 `load(task, variationIdx, ...)` on a test-fold index reproduces that fold's path
@@ -62,6 +69,20 @@ summary clips negatives before averaging, which is where `max(0, ...)` comes fro
 integer score is carried in the evidence beside the fraction, and the goal-met predicate is
 `score == 100`.
 
+The platform's `score` is the micro mean over measured variations. The paper's Table 2
+"Average" is an unweighted macro over 30 task types. `aggregate(point["per_task"])`
+reports both micro and macro over observed task types, per-type means and coverage.
+Its `corpus_metrics` policy is declared in `data/aggregation_policies.json`, following
+the existing MuSiQue/2Wiki corpus-metric route. A partial result uses only observed types;
+unmeasured tasks and types are not zeroes. Even a complete released-fold result has
+29/30 types and must not be called the paper's full 30-type Average. The report includes
+the 100-step truncation limit beside both numbers. To export a curve point from a
+run known to have used 100 steps (omit `--step-budget` when its budget is unknown):
+
+    python3 -m data.datasets.scienceworld --aggregate point.json --step-budget 100
+
+Changing the default does not change the budget of retained historical scores.
+
 `scw done` exists because a harness needs a way to stop; it is recorded and it is **not** a
 gate, because ScienceWorld has no such requirement (`docs/dataset-onboarding-skill.md` §2).
 
@@ -71,8 +92,8 @@ Two decisions a reader should know about
   The paper also reports an "easy" preset (`teleportAction`, `openDoors`,
   `selfWateringFlowerPots`, `noElectricalAction`), which is a *different* task set with a
   different score; mixing the two in one curve is the error this note exists to prevent.
-* **A 1,000-move budget.** The environment's constructor default is 100, but the adapter
-  uses 1,000 so every recorded test reference path fits without a false zero or truncation.
+* **A 100-move budget.** This follows the paper's "we used 100 in all experiments".
+  Long oracle paths truncate at 100; their tasks remain in the evaluation pool.
   The episode stops when the goal is met or the budget is spent. `STEP_BUDGET` is declared
   once in `lib/scw_env.py` and imported by the CLI, check and control, so the three cannot
   drift apart.
@@ -103,8 +124,8 @@ ORACLE_SOURCE = "released"
 
 
 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
-#: to it**. The pool is the benchmark's own test fold: all 1,744 recorded paths fit the
-#: adapter-owned 1,000-move budget. The train and dev folds exist upstream and are not loaded here.
+#: to it**. The pool is the benchmark's own test fold: all 1,744 recorded paths, including
+#: long paths that truncate at 100 steps. The train and dev folds are not loaded here.
 #:
 #: `None` is the accurate value only because nothing in the pool is study material -- it does
 #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
@@ -171,14 +192,13 @@ EVAL_FOLD = "test"
 
 
 def test_fold() -> list[dict]:
-    """The official `test` fold, after the budget filter. Read once per process.
+    """The complete official `test` fold, read once per process.
 
     The file is a transcription of the repository's `goldpaths-all.zip` (see the module
     docstring for why it is in git rather than fetched), and it carries **every** test path
-    with its length, including the 22 that are too long. The filter lives here so the
-    exclusion is recomputed from the data on every load, and the raise below is the guard
-    that keeps it honest: if the budget is ever lowered without updating the filter, the
-    load fails loudly instead of silently scoring a correct oracle 0.
+    with its length. No task is excluded by reference length: 299 paths exceed the
+    paper's 100-step budget (none exceed the previous 1,000). Their oracle actions
+    truncate at 100, which is a reported protocol limit, not a task-selection rule.
     """
     global _FOLD_CACHE
     if _FOLD_CACHE is not None:
@@ -190,33 +210,91 @@ def test_fold() -> list[dict]:
         raise ValueError(f"{FOLD_FILE} describes fold {payload.get('eval_fold')!r}, not "
                          f"{EVAL_FOLD!r}")
     records = []
-    too_long = []
     for entry in payload["tasks"]:
         record = {"task_id": f"{entry['task_name']}/{entry['variation']}",
                   "task_name": str(entry["task_name"]),
                   "variation": int(entry["variation"]),
                   "gold_moves": int(entry["gold_moves"])}
-        (too_long if record["gold_moves"] > STEP_BUDGET else records).append(record)
+        records.append(record)
     if not records:
-        raise ValueError(f"{FOLD_FILE} leaves no tasks inside the {STEP_BUDGET}-move "
-                         f"budget")
-    if len(records) + len(too_long) == 0:
         raise ValueError(f"{FOLD_FILE} has no tasks")
     _FOLD_CACHE = records
     return records
 
 
 def fold_excluded() -> list[dict]:
-    """The test-fold paths left out for exceeding the budget, with their lengths.
+    """Compatibility accessor: no test-fold paths are excluded by move budget."""
+    return []
 
-    Exposed so the control and the tests can *report* the exclusion rather than only
-    document it, and so `provision_status` can show it.
-    """
+
+def fold_over_budget() -> list[dict]:
+    """Archived oracle paths that truncate at the budget; their tasks stay eligible."""
     payload = json.loads(FOLD_FILE.read_text())
     return [e for e in payload["tasks"] if int(e["gold_moves"]) > STEP_BUDGET]
 
 
 _FOLD_CACHE: list[dict] | None = None
+
+
+def aggregate(per_task: dict[str, float], *, step_budget: int | None = None) -> dict:
+    """Report micro and unweighted macro from measured per-variation rewards only.
+
+    Input is a curve point's `per_task`, after trial averaging. Unknown task IDs and
+    invalid rewards fail closed. Missing measurements never become zero scores.
+    `step_budget` describes the source run, not today's default; absent means unknown.
+    """
+    import math
+    from data.scaffolds.aggregation import aggregation_denominator, aggregation_policy
+
+    policy = aggregation_policy("scienceworld", "corpus_metrics")
+    if policy["aggregation"] != "ordered_macro_mean":
+        raise ValueError("scienceworld: corpus_metrics requires ordered_macro_mean")
+    if step_budget is not None and (type(step_budget) is not int or step_budget < 1):
+        raise ValueError("scienceworld: source step_budget must be a positive integer or None")
+    records = {r["task_id"]: r for r in test_fold()}
+    available_types = {r["task_name"] for r in records.values()}
+    groups: dict[str, list[float]] = {}
+    for task_id, reward in sorted(per_task.items()):
+        if task_id not in records:
+            raise ValueError(f"scienceworld: unknown test-fold task {task_id!r}")
+        if (type(reward) not in (int, float) or not math.isfinite(reward)
+                or not 0 <= reward <= 1):
+            raise ValueError(f"scienceworld: invalid measured reward for {task_id!r}")
+        groups.setdefault(records[task_id]["task_name"], []).append(float(reward))
+    by_type = {name: {"mean": sum(xs) / len(xs), "n_measured": len(xs)}
+               for name, xs in sorted(groups.items())}
+    denominator = aggregation_denominator("scienceworld", "corpus_metrics",
+                                          provided_results=len(by_type))
+    micro_denominator = aggregation_denominator("scienceworld", "run_reward",
+                                                measured_tasks=len(per_task))
+    return {
+        "metric": "last_environment_score_clipped_at_zero_divided_by_100",
+        "micro_mean": (sum(sum(xs) for xs in groups.values()) / micro_denominator
+                       if micro_denominator else None),
+        "macro_over_observed_task_types": (
+            sum(row["mean"] for row in by_type.values()) / denominator
+            if denominator else None),
+        "macro_denominator": denominator,
+        "per_task_type": by_type,
+        "n_measured": len(per_task),
+        "n_eligible": len(records),
+        "n_unmeasured": len(records) - len(per_task),
+        "task_types_observed": len(by_type),
+        "task_types_released": len(available_types),
+        "task_types_paper": 30,
+        "unobserved_released_task_types": sorted(available_types - groups.keys()),
+        "missing_released_task_type": "measure-melting-point-unknown-substance",
+        "paper_30_type_average": None,
+        "comparability": "Macro covers observed types only; released fold has 29/30 "
+                         "task types, so this is not the paper's full 30-type Average. "
+                         "The adapter uses no simplifications.",
+        "step_budget": step_budget,
+        "configured_default_step_budget": STEP_BUDGET,
+        "limit": "At the paper's 100-step budget, long oracle paths truncate at 100 "
+                 "steps; all 1,744 test tasks remain eligible (299 archived paths "
+                 "exceed 100; longest is 796). Historical scores retain their source "
+                 "run's budget; an unspecified source budget is unknown.",
+    }
 
 
 def _probe_dir() -> Path:
@@ -398,6 +476,7 @@ def provision_status() -> dict:
         "jre_tarball": str(tarball) if tarball.is_file() else None,
         "fold_file": str(FOLD_FILE) if FOLD_FILE.is_file() else None,
         "fold_excluded_over_budget": len(fold_excluded()) if FOLD_FILE.is_file() else None,
+        "fold_paths_over_budget": len(fold_over_budget()) if FOLD_FILE.is_file() else None,
         "tasks": len(_RECORDS) if _RECORDS else None,
     }
 
@@ -520,4 +599,18 @@ def __getattr__(name: str):
 
 
 __all__ = ["KIND", "DATASET_ROOT", "STEP_BUDGET", "load", "downloads",
-           "provision_status", "DEFAULT_ENV"]
+           "provision_status", "DEFAULT_ENV", "aggregate"]
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Report ScienceWorld micro/macro metrics; no execution")
+    parser.add_argument("--aggregate", type=Path, required=True,
+                        help="JSON curve point containing a measured per_task mapping")
+    parser.add_argument("--step-budget", type=int,
+                        help="known budget of the source run; omit if unobserved")
+    args = parser.parse_args()
+    point = json.loads(args.aggregate.read_text())
+    print(json.dumps(aggregate(point["per_task"], step_budget=args.step_budget),
+                     indent=2, sort_keys=True))

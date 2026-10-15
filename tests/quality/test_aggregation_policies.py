@@ -177,6 +177,114 @@ def test_native_corpus_declarations_are_live(dataset, adapters, monkeypatch, tmp
                                          inputs["twowiki_golds"])
 
 
+@pytest.fixture
+def scienceworld_measurements():
+    from data.datasets import scienceworld
+
+    # Authored scores, never benchmark executions. Unequal variation counts expose
+    # the difference between a micro mean and equal weight per task type.
+    records = scienceworld.test_fold()
+    first_type = records[0]["task_name"]
+    first = [r["task_id"] for r in records if r["task_name"] == first_type][:3]
+    other = next(r["task_id"] for r in records if r["task_name"] != first_type)
+    return scienceworld, {**dict.fromkeys(first, 0.0), other: 1.0}
+
+
+def test_scienceworld_reports_both_means_and_observed_coverage(scienceworld_measurements):
+    scienceworld, measured = scienceworld_measurements
+    report = scienceworld.aggregate(measured, step_budget=100)
+    assert report["micro_mean"] == mean(list(measured.values()), dataset="scienceworld") == 0.25
+    assert report["macro_over_observed_task_types"] == 0.5
+    assert report["macro_denominator"] == report["task_types_observed"] == 2
+    assert report["n_measured"] == 4
+    assert report["n_eligible"] == 1744
+    assert report["n_unmeasured"] == 1740
+    assert sorted(row["n_measured"] for row in report["per_task_type"].values()) == [1, 3]
+    assert report["task_types_released"] == 29
+    assert report["task_types_paper"] == 30
+    assert len(report["unobserved_released_task_types"]) == 27
+    assert report["missing_released_task_type"] == "measure-melting-point-unknown-substance"
+    assert report["paper_30_type_average"] is None
+    assert "29/30" in report["comparability"]
+    assert report["step_budget"] == 100
+    assert "truncate at 100" in report["limit"]
+    assert report["configured_default_step_budget"] == 100
+    assert report == scienceworld.aggregate(dict(reversed(list(measured.items()))), step_budget=100)
+
+
+def test_scienceworld_complete_released_fold_is_still_29_of_30(scienceworld_measurements):
+    scienceworld, _ = scienceworld_measurements
+    report = scienceworld.aggregate({r["task_id"]: 1.0 for r in scienceworld.test_fold()})
+    assert report["micro_mean"] == report["macro_over_observed_task_types"] == 1.0
+    assert report["task_types_observed"] == report["macro_denominator"] == 29
+    assert report["n_unmeasured"] == 0
+    assert report["unobserved_released_task_types"] == []
+    assert report["paper_30_type_average"] is None
+
+
+def test_scienceworld_empty_measurements_do_not_invent_zeroes(scienceworld_measurements):
+    scienceworld, _ = scienceworld_measurements
+    report = scienceworld.aggregate({})
+    assert report["micro_mean"] is report["macro_over_observed_task_types"] is None
+    assert report["macro_denominator"] == report["task_types_observed"] == 0
+    assert report["n_unmeasured"] == 1744
+
+
+def test_scienceworld_historical_budget_is_never_inferred_from_current_default(scienceworld_measurements):
+    scienceworld, measured = scienceworld_measurements
+    assert scienceworld.aggregate(measured)["step_budget"] is None
+    report = scienceworld.aggregate(measured, step_budget=1000)
+    assert report["step_budget"] == 1000
+    assert report["configured_default_step_budget"] == 100
+
+
+@pytest.mark.parametrize("budget", [0, -1, True, 100.0])
+def test_scienceworld_source_budget_requires_an_explicit_positive_integer(
+        scienceworld_measurements, budget):
+    scienceworld, measured = scienceworld_measurements
+    with pytest.raises(ValueError, match="source step_budget"):
+        scienceworld.aggregate(measured, step_budget=budget)
+
+
+@pytest.mark.parametrize("reward", [None, float("nan"), float("inf"), -0.1, 1.1, True, "0.5"])
+def test_scienceworld_invalid_rewards_are_not_zeroes(scienceworld_measurements, reward):
+    scienceworld, measured = scienceworld_measurements
+    with pytest.raises(ValueError, match="invalid measured reward"):
+        scienceworld.aggregate({next(iter(measured)): reward})
+
+
+def test_scienceworld_unknown_task_cannot_create_an_extra_type(scienceworld_measurements):
+    scienceworld, _ = scienceworld_measurements
+    with pytest.raises(ValueError, match="unknown test-fold task"):
+        scienceworld.aggregate({"measure-melting-point-unknown-substance/0": 0.0})
+
+
+@pytest.mark.parametrize("change, message", [
+    ({"denominator": "measured_tasks"}, "measured_tasks needs"),
+    ({"aggregation": "arithmetic_mean"}, "requires ordered_macro_mean"),
+])
+def test_scienceworld_corpus_policy_is_live(
+        scienceworld_measurements, monkeypatch, tmp_path, change, message):
+    scienceworld, measured = scienceworld_measurements
+    _replace_policy(monkeypatch, tmp_path, "scienceworld", "corpus_metrics", **change)
+    with pytest.raises(ValueError, match=message):
+        scienceworld.aggregate(measured)
+
+
+def test_scienceworld_report_cli_exports_both_means_without_environment(
+        scienceworld_measurements, tmp_path):
+    import subprocess
+    import sys
+
+    scienceworld, measured = scienceworld_measurements
+    point = tmp_path / "synthetic-point.json"
+    point.write_text(json.dumps({"per_task": measured}))
+    result = subprocess.run([sys.executable, "-m", "data.datasets.scienceworld",
+                             "--aggregate", str(point), "--step-budget", "100"], cwd=ROOT,
+                            text=True, capture_output=True, check=True)
+    assert json.loads(result.stdout) == scienceworld.aggregate(measured, step_budget=100)
+
+
 def test_recorded_reward_uses_the_policy_and_keeps_unmeasured_tasks_out(monkeypatch, tmp_path):
     from harnessgrad.records import _curve_point
 

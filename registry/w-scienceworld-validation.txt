@@ -1,0 +1,237 @@
+w-scienceworld validation evidence
+Worktree: /mnt/20t/xubuqiang/hg-wt/w-scienceworld
+Branch observed with git branch --show-current: wg-w-scienceworld
+All commands below ran from this worktree. Unit controls only; no ScienceWorld episode,
+model/API call, GPU use, network request, benchmark rerun or full-run launch was performed.
+The five live/JVM tests are deliberately deselected in every invocation below to obey
+"Do not re-run ScienceWorld". The archive comparison skips when its enumerated candidates
+are absent. Pytest scratch directories were created fresh and removed in finally blocks;
+no other user's temporary directories were removed. PYTHONDONTWRITEBYTECODE=1 and
+-p no:cacheprovider prevent test caches for these invocations.
+
+Reproduction wrapper used for each test invocation below:
+- Create the named /tmp/scw-... directory with Path.mkdir(exist_ok=False).
+- Run the exact displayed argv with subprocess.run(stdout=PIPE, stderr=STDOUT, text=True),
+  setting TMPDIR and PYTHONDONTWRITEBYTECODE exactly as displayed.
+- Record stdout/stderr and returncode, then shutil.rmtree only that named scratch directory.
+
+BEFORE (unmodified baseline)
+$ TMPDIR=/tmp/scw-before PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/scw-before/pytest tests/quality/test_scienceworld_dataset.py tests/quality/test_scienceworld_integrity_codex181.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_aggregation_policies.py tests/quality/test_closure_assessment.py --deselect=tests/quality/test_scienceworld_dataset.py::test_the_oracle_gold_path_for_the_eval_task_reaches_100 --deselect=tests/quality/test_scienceworld_dataset.py::test_the_environment_regenerates_the_fold_s_own_gold --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_the_reference_actions_as_one --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_no_actions_as_zero --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_re_materializes_the_task
+...s..................................................................   [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_scienceworld_dataset.py:136: no goldpaths archive on this machine to compare against
+69 passed, 1 skipped, 5 deselected in 1.21s
+
+exit_code=0
+CLEANUP /tmp/scw-before removed
+
+TEST ITERATION: after initial changes
+$ TMPDIR=/tmp/scw-after PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/scw-after/pytest tests/quality/test_scienceworld_dataset.py tests/quality/test_scienceworld_integrity_codex181.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_aggregation_policies.py tests/quality/test_closure_assessment.py --deselect=tests/quality/test_scienceworld_dataset.py::test_the_oracle_gold_path_for_the_eval_task_reaches_100 --deselect=tests/quality/test_scienceworld_dataset.py::test_the_environment_regenerates_the_fold_s_own_gold --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_the_reference_actions_as_one --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_no_actions_as_zero --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_re_materializes_the_task
+.....s.................................................................. [ 83%]
+..............                                                           [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_scienceworld_dataset.py:161: no goldpaths archive on this machine to compare against
+85 passed, 1 skipped, 5 deselected in 1.34s
+
+exit_code=0
+CLEANUP /tmp/scw-after removed
+
+TEST ITERATION: after source-budget provenance change
+$ TMPDIR=/tmp/scw-final PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/scw-final/pytest tests/quality/test_scienceworld_dataset.py tests/quality/test_scienceworld_integrity_codex181.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_aggregation_policies.py tests/quality/test_closure_assessment.py --deselect=tests/quality/test_scienceworld_dataset.py::test_the_oracle_gold_path_for_the_eval_task_reaches_100 --deselect=tests/quality/test_scienceworld_dataset.py::test_the_environment_regenerates_the_fold_s_own_gold --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_the_reference_actions_as_one --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_no_actions_as_zero --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_re_materializes_the_task
+.....s.................................................................. [ 79%]
+...................                                                      [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_scienceworld_dataset.py:161: no goldpaths archive on this machine to compare against
+90 passed, 1 skipped, 5 deselected in 1.32s
+
+exit_code=0
+CLEANUP /tmp/scw-final removed
+
+TEST ITERATION: final after sealed-runtime pin consistency change
+$ TMPDIR=/tmp/scw-verified PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/scw-verified/pytest tests/quality/test_scienceworld_dataset.py tests/quality/test_scienceworld_integrity_codex181.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_aggregation_policies.py tests/quality/test_closure_assessment.py --deselect=tests/quality/test_scienceworld_dataset.py::test_the_oracle_gold_path_for_the_eval_task_reaches_100 --deselect=tests/quality/test_scienceworld_dataset.py::test_the_environment_regenerates_the_fold_s_own_gold --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_the_reference_actions_as_one --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_grades_no_actions_as_zero --deselect=tests/quality/test_scienceworld_dataset.py::test_the_check_re_materializes_the_task
+......s................................................................. [ 78%]
+....................                                                     [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_scienceworld_dataset.py:174: no goldpaths archive on this machine to compare against
+91 passed, 1 skipped, 5 deselected in 1.02s
+
+exit_code=0
+CLEANUP /tmp/scw-verified removed
+
+STATIC CHECKS AND OBSERVATIONS (exact commands and observed output)
+$ PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 git diff --check
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 git diff --exit-code HEAD -- AGENTS.md registry/dataset-blockers.json docs/adapter-integration-journal.md data/datasets/scienceworld/verify/check.py data/datasets/scienceworld/test_fold.json eval/run/metrics.py eval/run/runner.py data/scaffolds/aggregation.py
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 sha256sum data/datasets/scienceworld/verify/check.py data/datasets/scienceworld/test_fold.json registry/dataset-blockers.json AGENTS.md docs/adapter-integration-journal.md
+1acecbf19c1bb96b95e796fa2dff20b8d73e208b06f42c24214e0b06bce03a3e  data/datasets/scienceworld/verify/check.py
+d9b15ebc1cdddef0bed71b20ecde97fcc41d6279e5781bfdee74734d9c42a807  data/datasets/scienceworld/test_fold.json
+2081719a2fc8fb1d8d1cdedfc757a4634a06af300c2dd7185941c1b74c36d65a  registry/dataset-blockers.json
+c451af64f9c85585c4ba77f28b9434dd64284792093a84528249cdcd6c1ac6d6  AGENTS.md
+5fa12b37e7c8dc50fcfd9fe7710aca69d8103f544bc267ac325adb33062c4258  docs/adapter-integration-journal.md
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 -c 'import json
+from pathlib import Path
+rows = json.loads(Path("data/datasets/scienceworld/test_fold.json").read_text())["tasks"]
+print(json.dumps({"fold_tasks": len(rows), "task_types": len({r["task_name"] for r in rows}), "longest_gold_moves": max(r["gold_moves"] for r in rows), "over_100": sum(r["gold_moves"] > 100 for r in rows), "over_1000": sum(r["gold_moves"] > 1000 for r in rows), "life_stages_2_variations": [r["variation"] for r in rows if r["task_name"] == "task-7-identify-life-stages-2"], "missing_name_substring_matches": [r["task_name"] for r in rows if "measure-melting-point-unknown-substance" in r["task_name"]]}, sort_keys=True))'
+{"fold_tasks": 1744, "life_stages_2_variations": [6, 7, 8, 9], "longest_gold_moves": 796, "missing_name_substring_matches": [], "over_100": 299, "over_1000": 0, "task_types": 29}
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 -c 'import importlib.metadata, importlib.util, json, re
+from pathlib import Path
+p = Path(importlib.util.find_spec("scienceworld").origin).parent / "tasks.json"
+names = {row["task_name"] for row in json.loads(p.read_text())}
+fold = json.loads(Path("data/datasets/scienceworld/test_fold.json").read_text())["tasks"]
+released = {re.sub(r"^task-\d+-", "", row["task_name"]) for row in fold}
+print("package_version:", importlib.metadata.version("scienceworld"))
+print("enumerated_static_scope:", p)
+print("package_task_types:", len(names))
+print("package_types_absent_from_committed_test_fold:", sorted(names - released))
+print("fold_types_absent_from_package_metadata:", sorted(released - names))'
+package_version: 1.2.3
+enumerated_static_scope: /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/tasks.json
+package_task_types: 30
+package_types_absent_from_committed_test_fold: ['chemistry-mix-paint-secondary-color', 'chemistry-mix-paint-tertiary-color', 'inclined-plane-friction-named-surfaces', 'inclined-plane-friction-unnamed-surfaces', 'lifespan-longest-lived', 'lifespan-longest-lived-then-shortest-lived', 'lifespan-shortest-lived', 'measure-melting-point-known-substance', 'measure-melting-point-unknown-substance', 'mendelian-genetics-known-plant', 'mendelian-genetics-unknown-plant', 'power-component-renewable-vs-nonrenewable-energy', 'test-conductivity', 'test-conductivity-of-unknown-substances']
+fold_types_absent_from_package_metadata: ['chemistry-mix-paint-(secondary-color)', 'chemistry-mix-paint-(tertiary-color)', 'inclined-plane-friction-(named-surfaces)', 'inclined-plane-friction-(unnamed-surfaces)', 'lifespan-(longest-lived)', 'lifespan-(longest-lived-then-shortest-lived)', 'lifespan-(shortest-lived)', 'measure-melting-point-(known-substance)', 'mendellian-genetics-(known-plant)', 'mendellian-genetics-(unknown-plant)', 'power-component-(renewable-vs-nonrenewable-energy)', 'task-2a-test-conductivity', 'task-2a-test-conductivity-of-unknown-substances']
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 -c 'from pathlib import Path
+scope = [Path("/tmp/scw/ScienceWorld-main/goldpaths/goldpaths-all.zip"), Path("/tmp/gp_main.zip")]
+for p in scope:
+    print(str(p) + ": is_file=" + str(p.is_file()))'
+/tmp/scw/ScienceWorld-main/goldpaths/goldpaths-all.zip: is_file=False
+/tmp/gp_main.zip: is_file=False
+exit_code=0
+
+NOTE ON THE FIRST STATIC NAME COMPARISON ABOVE:
+The raw stripped-prefix set comparison is not an equivalence proof: upstream names use
+parentheses, a task-2a prefix and a mendellian/mendelian spelling difference. The second
+comparison below explicitly normalizes only those spellings. No JVM API enumeration ran.
+
+PIN UPDATE (observed old declarations and observed new bytes; no runtime execution)
+scw_env previous sha256=d33efb882eec05932047b5174136816728a21ac4413d9038fde23548bd1913aa bytes=11459
+scw_env observed sha256=71c48892b5fe8808c7d693b86f7c888670e3898c823b99e8e20b3aaae3eac863 bytes=11371
+manifest previous sha256=724bfabbb3e199499568040b0bc02963b6d9ef51a97d525afce70d2cf8dce5cf
+manifest observed sha256=78ed5155efaf2d990128070bbe4f8a1af80116bb12c25d27bbc1819a54901081
+
+FINAL STATIC CHECKS (exact commands and observed output)
+$ PYTHONDONTWRITEBYTECODE=1 python3 -c 'import importlib.metadata, importlib.util, json, re
+from pathlib import Path
+p = Path(importlib.util.find_spec("scienceworld").origin).parent / "tasks.json"
+def canonical(name):
+    return re.sub(r"^task-[0-9a-z]+-", "", name).replace("(", "").replace(")", "").replace("mendellian", "mendelian")
+names = {canonical(row["task_name"]) for row in json.loads(p.read_text())}
+fold = json.loads(Path("data/datasets/scienceworld/test_fold.json").read_text())["tasks"]
+released = {canonical(row["task_name"]) for row in fold}
+print("enumerated_static_scope:", p)
+print("package_version:", importlib.metadata.version("scienceworld"))
+print("package_task_types:", len(names))
+print("released_task_types:", len(released))
+print("package_types_absent_from_committed_test_fold:", sorted(names - released))
+print("fold_types_absent_from_package_metadata:", sorted(released - names))'
+enumerated_static_scope: /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/tasks.json
+package_version: 1.2.3
+package_task_types: 30
+released_task_types: 29
+package_types_absent_from_committed_test_fold: ['measure-melting-point-unknown-substance']
+fold_types_absent_from_package_metadata: []
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 -c 'import hashlib, json
+from pathlib import Path
+from data.runtimes import NATIVE_PINS
+p = Path("data/runtimes/scienceworld-native.json")
+m = json.loads(p.read_text())
+pin = NATIVE_PINS["scienceworld"]["sha256"]
+print("manifest_pin_matches:", pin == hashlib.sha256(p.read_bytes()).hexdigest())
+print("manifest_sha256:", hashlib.sha256(p.read_bytes()).hexdigest())
+for target in ["/scorer/scw_env.py", "/scorer/check.py"]:
+    entry = m["files"][target]
+    source = Path(entry["source"])
+    print(target, "sha256=" + hashlib.sha256(source.read_bytes()).hexdigest(), "bytes=" + str(source.stat().st_size), "pin_matches=" + str(entry["sha256"] == hashlib.sha256(source.read_bytes()).hexdigest() and entry["size"] == source.stat().st_size))
+registry = Path("registry/dataset-blockers.json").read_text()
+for term in ["724bfabbb3e199499568040b0bc02963b6d9ef51a97d525afce70d2cf8dce5cf", "d33efb882eec05932047b5174136816728a21ac4413d9038fde23548bd1913aa"]:
+    print("registry/dataset-blockers.json literal_count " + term + ":", registry.count(term))'
+manifest_pin_matches: True
+manifest_sha256: 78ed5155efaf2d990128070bbe4f8a1af80116bb12c25d27bbc1819a54901081
+/scorer/scw_env.py sha256=71c48892b5fe8808c7d693b86f7c888670e3898c823b99e8e20b3aaae3eac863 bytes=11371 pin_matches=True
+/scorer/check.py sha256=1acecbf19c1bb96b95e796fa2dff20b8d73e208b06f42c24214e0b06bce03a3e bytes=10993 pin_matches=True
+registry/dataset-blockers.json literal_count 724bfabbb3e199499568040b0bc02963b6d9ef51a97d525afce70d2cf8dce5cf: 0
+registry/dataset-blockers.json literal_count d33efb882eec05932047b5174136816728a21ac4413d9038fde23548bd1913aa: 0
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 git diff --check
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 git diff --stat
+ data/aggregation_policies.json             |   2 +-
+ data/datasets/scienceworld.py              | 135 ++++++++++++++++++++++++-----
+ data/datasets/scienceworld/cli/scw         |   4 +-
+ data/datasets/scienceworld/lib/scw_env.py  |   9 +-
+ data/runtimes/__init__.py                  |   2 +-
+ data/runtimes/scienceworld-native.json     |   4 +-
+ tests/quality/test_aggregation_policies.py | 108 +++++++++++++++++++++++
+ tests/quality/test_scienceworld_dataset.py |  62 ++++++++++---
+ 8 files changed, 283 insertions(+), 43 deletions(-)
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 -c 'from pathlib import Path
+for name in ["/tmp/scw-before", "/tmp/scw-after", "/tmp/scw-final", "/tmp/scw-verified"]:
+    print(name + ": exists=" + str(Path(name).exists()))'
+/tmp/scw-before: exists=False
+/tmp/scw-after: exists=False
+/tmp/scw-final: exists=False
+/tmp/scw-verified: exists=False
+exit_code=0
+
+EXPLICITLY NOT VERIFIED / UNKNOWN
+- The paper PDF/text and Table 2 were not retrieved. The 100-step quotation, 30-type macro
+  interpretation, 300 missing variations and upstream archive absence are task-provided
+  facts, not fresh observations. No network access was used.
+- The original goldpaths-all.zip was not opened; the archive comparison test skipped.
+  ABSENT applies only to /tmp/scw/ScienceWorld-main/goldpaths/goldpaths-all.zip and
+  /tmp/gp_main.zip, tested above; existence elsewhere is UNKNOWN.
+- No JVM, official live scorer, native admission/sandbox lifecycle or ScienceWorld episode
+  was executed. The five deselected tests are not passing live evidence.
+- No current benchmark reward, full-run readiness, missing-type path generation, runtime
+  behavior at action 100, or new measured diagnostic/pilot receipt is asserted.
+- No retained 195-task receipt was opened or reaggregated. Task-provided micro 0.0846 and
+  macro 0.0419 are not independently verified here. No historical run ID was modified.
+- No archived full-archive 7,207/6,907 count or missing-type 300-variation API count was
+  independently enumerated. The committed fold and installed static tasks.json were read.
+- The report helper is an explicit corpus export. It is not automatically attached to
+  curve points; the existing curve score is micro. The parent must export the macro and
+  disclose measured type/variation coverage when reporting a result.
+- Macro intervals, repeated-trial comparability and automatic UI/report integration were
+  not added or verified. The report consumes the curve's already trial-averaged per_task.
+- The full quality suite was not run. Only the requested suites and added unit controls
+  were exercised; no production execution is authorized by these controls.
+- The complete native manifest payload closure was not revalidated. Only changed scorer
+  library bytes, unchanged check bytes, manifest identity and their pins were checked.
+
+FILE INVENTORY
+The final byte inventory below includes every file staged for this one commit, including
+this validation file itself. Every file must be smaller than 1,000,000 bytes.
+$ stat -c '%s %n' data/aggregation_policies.json data/datasets/scienceworld.py data/datasets/scienceworld/cli/scw data/datasets/scienceworld/lib/scw_env.py data/runtimes/__init__.py data/runtimes/scienceworld-native.json tests/quality/test_aggregation_policies.py tests/quality/test_scienceworld_dataset.py registry/w-scienceworld.md registry/w-scienceworld-validation.txt
+3711 data/aggregation_policies.json
+30542 data/datasets/scienceworld.py
+6763 data/datasets/scienceworld/cli/scw
+11371 data/datasets/scienceworld/lib/scw_env.py
+944 data/runtimes/__init__.py
+425155 data/runtimes/scienceworld-native.json
+15361 tests/quality/test_aggregation_policies.py
+19185 tests/quality/test_scienceworld_dataset.py
+6391 registry/w-scienceworld.md
+19041 registry/w-scienceworld-validation.txt
+exit_code=0

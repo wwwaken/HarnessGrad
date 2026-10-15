@@ -4,7 +4,7 @@ NATIVE_PINS = {
     "scienceworld": {
         "dataset": "scienceworld",
         "manifest": "data/runtimes/scienceworld-native.json",
-        "sha256": "724bfabbb3e199499568040b0bc02963b6d9ef51a97d525afce70d2cf8dce5cf",
+        "sha256": "78ed5155efaf2d990128070bbe4f8a1af80116bb12c25d27bbc1819a54901081",
     },
     "chessbench_puzzles": {
         "dataset": "chessbench_puzzles",

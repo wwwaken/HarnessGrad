@@ -98,7 +98,11 @@ def test_the_task_set_is_the_official_test_fold(scienceworld):
         r["task_name"] for r in records), "one task type per record"
     assert len({r["task_name"] for r in records}) == 29, (
         "the archive has gold paths for 29 task types; the package enumerates 30 and "
-        "`identify-life-stages-2` has no gold, so it is not in the fold")
+        "`measure-melting-point-unknown-substance` has no gold, so it is not in the fold")
+    assert [r["variation"] for r in records
+            if r["task_name"] == "task-7-identify-life-stages-2"] == [6, 7, 8, 9]
+    assert not any("measure-melting-point-unknown-substance" in r["task_name"]
+                   for r in records)
 
 
 def test_the_split_covers_every_task_once_and_both_sides_are_not_empty(scienceworld):
@@ -109,18 +113,52 @@ def test_the_split_covers_every_task_once_and_both_sides_are_not_empty(sciencewo
     assert train and eval_
 
 
-def test_no_gold_path_exceeds_the_step_budget(scienceworld):
-    """The budget has to cover the fold, or a correct oracle scores 0 on part of it.
-
-    Measured over the official archive: 16.7% of its 6,907 gold paths exceed the
-    environment's own default of 100 moves, and the longest is 798. The filter in
-    `test_fold()` removes the ones over the budget and this asserts none slipped through.
-    """
+def test_long_gold_paths_remain_eligible_at_the_paper_step_budget(scienceworld):
+    """Reference length must not remove hard variations from the evaluation pool."""
     records = scienceworld._ensure()
-    longest = max(r["gold_moves"] for r in records)
-    assert longest <= scienceworld.STEP_BUDGET, (longest, scienceworld.STEP_BUDGET)
-    excluded = scienceworld.fold_excluded()
-    assert not excluded, "the 1000-move budget should cover every recorded test path"
+    assert scienceworld.STEP_BUDGET == 100
+    assert len(records) == 1744
+    assert max(r["gold_moves"] for r in records) == 796
+    assert len(scienceworld.fold_over_budget()) == 299
+    assert {f"{r['task_name']}/{r['variation']}" for r in scienceworld.fold_over_budget()} <= {
+        r["task_id"] for r in records}
+    assert not scienceworld.fold_excluded()
+
+
+@pytest.mark.parametrize("override, expected", [(None, 100), (17, 17)])
+def test_environment_factory_passes_default_and_explicit_budgets_without_jvm(
+        scienceworld, monkeypatch, tmp_path, override, expected):
+    from types import SimpleNamespace
+
+    calls = []
+    env = SimpleNamespace(load=lambda *args, **kwargs: None)
+
+    def factory(*args, **kwargs):
+        calls.append(kwargs)
+        return env
+
+    monkeypatch.setitem(sys.modules, "scienceworld", SimpleNamespace(ScienceWorldEnv=factory))
+    monkeypatch.setattr(scienceworld._LIB, "java_home", lambda _: tmp_path)
+    # make_env changes these variables; keep the test's changes local.
+    monkeypatch.setenv("JAVA_HOME", str(tmp_path))
+    monkeypatch.setenv("PATH", "")
+    _write_task(tmp_path, scienceworld.test_fold()[0])
+    kwargs = {} if override is None else {"step_budget": override}
+    assert scienceworld._LIB.load_task(tmp_path, **kwargs) is env
+    assert calls == [{"envStepLimit": expected}]
+
+
+def test_sealed_runtime_pins_current_shared_budget_library():
+    import hashlib
+    from data.runtimes import NATIVE_PINS
+
+    pin = NATIVE_PINS["scienceworld"]
+    raw = (ROOT / pin["manifest"]).read_bytes()
+    assert pin["sha256"] == hashlib.sha256(raw).hexdigest()
+    entry = json.loads(raw)["files"]["/scorer/scw_env.py"]
+    source = (ROOT / entry["source"]).read_bytes()
+    assert entry["sha256"] == hashlib.sha256(source).hexdigest()
+    assert entry["size"] == len(source)
 
 
 def test_the_test_fold_file_is_the_archive():

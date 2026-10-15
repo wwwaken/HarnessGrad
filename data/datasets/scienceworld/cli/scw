@@ -2,11 +2,13 @@
 r"""`scw` -- the command line the agent uses to act inside a ScienceWorld episode.
 
     python3 scw look                 print the current observation and the score
-    python3 scw do "<action>"        apply one action; it costs one of the 100 steps
+    python3 scw do "<action>"        apply one action; it costs one budgeted step
     python3 scw inventory            what the agent is carrying
     python3 scw task                 the task description
     python3 scw done                 declare the episode over and stop acting
     python3 scw help                 this text
+
+The default is the paper's 100-step budget, declared in `scw_env.STEP_BUDGET`.
 
 Why a CLI, and why the log is replayed
 --------------------------------------
