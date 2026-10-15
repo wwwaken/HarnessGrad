@@ -371,3 +371,6 @@ reports/**/*.whl
 reports/**/*.conda
 reports/**/*.tar.gz
 reports/**/*.body
+
+# Per-worker evidence packets (see the note above): kept on disk, never in git.
+tests/fixtures/hg_*/
