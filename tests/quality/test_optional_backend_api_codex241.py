@@ -1,4 +1,8 @@
-"""Optional integration semantics, using authored bytes and supplied facts only."""
+"""Optional integration semantics, using authored bytes and supplied facts only.
+
+Resolution A forbids elevation while allowing identity reads and owner-preserving
+own-group changes required by eval/admission/artifact_admission.py:351.
+"""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -16,18 +20,88 @@ from test_scorer_backend_codex213 import request_inputs
 @pytest.fixture(autouse=True)
 def no_admin_operations(monkeypatch):
     def refuse(*args, **kwargs):
-        raise AssertionError("offline API attempted identity or privilege operations")
+        raise AssertionError("offline API attempted privilege elevation or shell execution")
 
-    # These APIs need readable local files, not an identity check or elevation.
+    # Identity reads and own-group export access do not change process identity.
     # Existing offline_only guards forbid subprocesses and sockets as well.
-    for name in ("getuid", "geteuid", "getgid", "getegid", "setuid", "seteuid",
-                 "setreuid", "setresuid", "setgid", "setegid", "setregid",
-                 "setresgid", "setgroups", "chown", "fchown", "lchown", "system"):
+    for name in ("setuid", "seteuid", "setreuid", "setresuid", "setgid", "setegid",
+                 "setregid", "setresgid", "setgroups", "system"):
         if hasattr(os, name):
             monkeypatch.setattr(os, name, refuse)
 
+    calls = []
 
-def test_preflight_and_completed_lifecycle_need_no_admin_operations(request_inputs):
+    def group_only(operation):
+        def record(path, uid, gid, **kwargs):
+            assert uid == -1, "offline API attempted owner-changing chown"
+            assert gid == os.getegid(), "offline API attempted foreign-group chown"
+            result = operation(path, uid, gid, **kwargs)
+            calls.append((operation.__name__, path, uid, gid))
+            return result
+        return record
+
+    for name in ("chown", "fchown", "lchown"):
+        if hasattr(os, name):
+            monkeypatch.setattr(os, name, group_only(getattr(os, name)))
+    return calls
+
+
+@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+def test_own_group_change_preserves_owner_and_reaches_os(tmp_path, no_admin_operations,
+                                                       operation):
+    path = tmp_path / "own-group.txt"
+    path.write_bytes(b"inert")
+    before = path.stat()
+    with path.open("rb") as stream:
+        target = stream.fileno() if operation == "fchown" else path
+        assert getattr(os, operation)(target, -1, os.getegid()) is None
+        assert no_admin_operations == [(operation, target, -1, os.getegid())]
+    after = path.stat()
+    assert after.st_uid == before.st_uid
+    assert after.st_gid == os.getegid()
+
+
+@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+@pytest.mark.parametrize("change", ["owner", "foreign_group"])
+def test_elevating_ownership_change_is_refused(tmp_path, no_admin_operations,
+                                             operation, change):
+    path = tmp_path / "refused.txt"
+    path.write_bytes(b"inert")
+    before = path.stat()
+    uid, gid = (0, os.getegid()) if change == "owner" else (-1, os.getegid() + 1)
+    reason = "owner-changing" if change == "owner" else "foreign-group"
+    with path.open("rb") as stream:
+        target = stream.fileno() if operation == "fchown" else path
+        with pytest.raises(AssertionError, match=reason):
+            getattr(os, operation)(target, uid, gid)
+    assert no_admin_operations == []
+    after = path.stat()
+    assert (after.st_uid, after.st_gid) == (before.st_uid, before.st_gid)
+
+
+@pytest.mark.parametrize("operation,args", [
+    ("setuid", (0,)), ("seteuid", (0,)), ("setreuid", (0, 0)),
+    ("setresuid", (0, 0, 0)), ("setgid", (0,)), ("setegid", (0,)),
+    ("setregid", (0, 0)), ("setresgid", (0, 0, 0)), ("setgroups", ([],)),
+    ("system", ("true",)),
+])
+def test_identity_setters_and_shell_remain_forbidden(operation, args):
+    with pytest.raises(AssertionError, match="privilege elevation or shell execution"):
+        getattr(os, operation)(*args)
+
+
+@pytest.mark.parametrize("operation", ["getuid", "geteuid", "getgid", "getegid"])
+def test_identity_reads_remain_available(operation):
+    assert isinstance(getattr(os, operation)(), int)
+
+
+def test_preflight_and_completed_lifecycle_need_no_admin_operations(request_inputs,
+                                                                 no_admin_operations):
+    root = request_inputs["artifact_root"]
+    assert no_admin_operations == [
+        ("chown", root, -1, os.getegid()),
+        ("chown", root / "answer.txt", -1, os.getegid()),
+    ]
     before = deepcopy(request_inputs)
     checked = backend.check_backend(**request_inputs)
     assert checked["status"] == "passed"

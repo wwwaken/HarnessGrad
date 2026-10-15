@@ -1,0 +1,1359 @@
+w-custodyguard validation
+
+Scope: assigned worktree only; no model, GPU, dataset or production scorer execution.
+These are exact shell commands and their captured combined stdout/stderr.
+A rejected shell cleanup command never executed; TemporaryDirectory was used instead.
+The temporary wrong-group mutation was restored by a finally block.
+The early cleanup assertion overlapped an active pytest run; the subsequent sequential check returned [].
+No scratch files were retained outside the deliverables.
+
+RECORD 1
+COMMAND:
+pwd && cat AGENTS.md && git status --short && git branch --show-current
+OBSERVED OUTPUT (exit 0):
+/mnt/20t/xubuqiang/hg-wt/w-custodyguard
+# HarnessGrad Agent Operating Rules
+
+## Execution priorities
+
+1. Close automatically solvable blockers and internalize reusable platform capabilities before launching large pilots.
+2. Use isolated Codex worktrees only. Parent reviews every diff, runs focused tests, rejects stale reports and unrelated changes, then merges safe commits and updates the journal.
+3. Keep up to 10 independent Codex tasks active when work can be parallelized. Every task must have a unique output filename; never trust inherited `reports/report.md` without checking the diff and commit.
+4. Avoid idle rounds: combine waits with concrete receipt inspection, diff review, test execution, journal work or launch preparation. Do not spend a round only polling unchanged status.
+
+## Working copies
+
+There are exactly **two writers**, and the rule is about who yields to whom:
+
+- **The operator writes directly to the main checkout** `/mnt/20t/xubuqiang/Study/HarnessGrad`
+  whenever they want. That is supported, not a conflict. An agent merges **on top of** whatever
+  it finds there and never rewrites, rebases away, reverts or moves an operator commit. When a
+  merge conflicts because the operator changed the same file, the operator's change is the
+  starting point and the agent's is the one that has to fit around it.
+- **Agents never commit to `main`.** They work in registered `git worktree` checkouts under
+  `/tmp/hg-*`, commit there, and the parent reviews the diff and merges.
+- Every *other* copy of this repository on this machine is read-only or disposable.
+- **Never create a full clone of this repository inside `Study/`.** Two were made on 2026-11-17
+  (`HarnessGrad-appworld-controls-20261117`, `HarnessGrad-gaia-controls-20261117`). Both are now
+  stranded on pre-rewrite commits that do not exist in `main`'s object store, and both still
+  carry the old layout (`web/dist`, root-level report files). Their `origin` remotes -- which
+  pointed at the main checkout, fetch **and push** -- have been removed, because a single
+  `git push --force` from either would have restored the old history over `main`.
+- They are kept, not deleted, and not reset: they hold run receipts and evidence
+  (`gaia-evidence/`, `gaia-evidence-all17/`, `GAIA_FINAL_LAUNCH_RECEIPT.json`, the appworld
+  `deliverables/` and `runtime/`) that exist nowhere else, and rule 5 of the staged pilot policy
+  says old and incomplete receipts are preserved. Treat them as frozen evidence: read them, never
+  fetch, merge, push or "update" them.
+- 10 of 20 local branches also still point at pre-rewrite commits. They are refs, not working
+  copies, so they are not a writing hazard, but they keep the old history reachable; decide
+  explicitly before deleting any, since they are the only record of that codex work.
+- If a copy is ever needed for an isolated run, make it a `git worktree` (registered, so
+  `git worktree list` shows it) rather than a clone, and remove it when the run is done.
+
+## Test execution
+
+Pytest `--basetemp` must be **OUTSIDE the platform tree**, for example
+`--basetemp=/tmp/harnessgrad-pytest-quality`. Driver-based tests use `tmp_path`
+as a harness work root, which the runner correctly refuses inside the platform.
+Omitting the option preserves pytest's normal default.
+
+## GPU execution
+
+- **One local endpoint: `http://127.0.0.1:8002/v1`** (model `qwen3.5-9b-local`). GPU0 and the
+  `8001` server were released on 2026-10-14 to give a card back; do not start a second one.
+- `eval/unix_model_relay.py` hard-codes the agent model route to `127.0.0.1:8002`, so `8002` is
+  the endpoint a containerised harness actually reaches. That, not preference, is why this is
+  the one that was kept -- the other would have needed a production change.
+- Keep the endpoint productively occupied with necessary no-model controls, diagnostics or valid
+  pilots; never create duplicate, fake or scientifically unjustified work for utilization. If
+  there is no approved diagnostic or pilot, an idle loaded server is the correct state: record
+  that rather than inventing work.
+- Bind each run to one endpoint and one fresh run ID. Keep total H0 concurrency `<=3`, `jobs=1`.
+
+## Staged pilot policy
+
+- First run a one-task/one-trial diagnostic after all dataset gates pass.
+- For temporary reruns of blocked/incomplete datasets, select `min(30, ceil(10% * eligible))` tasks before execution, with `trials=1`, `jobs=1`.
+- Expand only after a separate review of a valid measured diagnostic receipt. Do not silently revert to the historical `min(50, ceil(10% * eligible)) x 3` protocol.
+- Invalid, unmeasured, timeout, scorer, provider, cleanup or snapshot failures are not ordinary zero scores.
+- Preserve old and incomplete receipts; never resume or overwrite an old run ID.
+
+## Dataset taxonomy
+
+Task capability is a cross-table: `demand x surface`. Harness coverage is a separate axis: `exercises`. Do not collapse these into one flat dataset category.
+
+## Prohibited shortcuts
+
+No method tuning, paid endpoints, heldout leakage, SOTUQA, API-Bank, NESTFUL, Tau2-bench, Matrix, score fabrication or fake benchmark utilization.
+
+## Evidence requirements
+
+Every diagnostic or pilot records metric identity, eligible/selected/task/trial coverage, invalid and unmeasured counts, source/split/manifest/model/harness hashes, endpoint binding, resource/budget limits, cleanup receipt and comparability notes.
+
+## Blocker closure priorities
+
+Prioritize selected-only/privacy and provenance, scorer dependency/network and offline closure, trusted verifier/runtime, artifact-only state export, filesystem quota enforcement, official scorer execution, snapshot lifecycle and cleanup. A passing synthetic control is not a production H0 authorization.
+wg-w-custodyguard
+
+RECORD 2
+COMMAND:
+sed -n '1,175p' tests/quality/test_scorer_admission_codex173.py && sed -n '1,190p' tests/quality/test_scorer_backend_codex213.py && rg -n 'getuid|getgid|geteuid|getegid|SCORER_UID|chmod|chown' eval/admission/artifact_admission.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_scorer_backend_codex213.py && git worktree list
+OBSERVED OUTPUT (exit 0):
+"""Public API contracts using inert bytes and fabricated observations only."""
+from __future__ import annotations
+
+import copy
+import hashlib
+import inspect
+import json
+from pathlib import Path
+import socket
+import subprocess
+import sys
+
+import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from eval.admission import artifact_admission as artifacts
+from eval.admission import scorer_admission as admission
+from eval.admission import scorer_bundle as bundles
+from eval.admission.pilot_admission import AdmissionError, LOG_CONFIG
+
+
+@pytest.fixture(autouse=True)
+def offline_only(monkeypatch):
+    def refuse(*args, **kwargs):
+        raise AssertionError("synthetic API contract attempted execution or network")
+    monkeypatch.setattr(subprocess, "run", refuse)
+    monkeypatch.setattr(subprocess, "Popen", refuse)
+    monkeypatch.setattr(socket, "socket", refuse)
+    monkeypatch.setattr(socket, "create_connection", refuse)
+
+
+def seal(contract):
+    raw = json.dumps(contract, sort_keys=True).encode()
+    return raw, hashlib.sha256(raw).hexdigest()
+
+
+@pytest.fixture
+def example(tmp_path):
+    closure, source, artifact = (tmp_path / name for name in ("closure", "source", "artifact"))
+    closure.mkdir()
+    source.mkdir()
+    rows = []
+    for name, role, requires in (("check.txt", "scorer", ["runtime.txt"]),
+                                 ("runtime.txt", "runtime", [])):
+        data = f"inert synthetic {role} bytes\n".encode()
+        (closure / name).write_bytes(data)
+        if role == "runtime":
+            (closure / name).chmod(0o755)
+        rows.append(dict(path=name, role=role, requires=requires, bytes=len(data),
+                         sha256=hashlib.sha256(data).hexdigest()))
+    (source / "answer.txt").write_bytes(b"answer")
+    # Export must remain selected-only even through the facade.
+    (source / "unselected-link").symlink_to("missing")
+    manifest = dict(schema=bundles.SCHEMA, source_sha256="a" * 64,
+                    runtime_image_id="sha256:" + "b" * 64, network="none",
+                    scorer=dict(entrypoint="check.txt", files=rows,
+                                argv=["/control-scorer/runtime.txt", "/control-scorer/check.txt"]))
+    contract = dict(schema="harnessgrad.artifact-scorer.v1", task_id="synthetic-task-173",
+                    source_sha256=manifest["source_sha256"],
+                    runtime_image_id=manifest["runtime_image_id"], scorer=copy.deepcopy(manifest["scorer"]),
+                    export=dict(files=[dict(path="answer.txt", max_bytes=8)], max_bytes=8, max_inodes=2),
+                    quota={"/tmp": dict(bytes=4096, inodes=8)})
+    bundle_raw, bundle_pin = admission.seal_bundle(manifest)
+    contract_raw, contract_pin = seal(contract)
+    exported = admission.export_state(source, artifact, contract_raw, contract_pin,
+                                      run_id="synthetic-run-173")
+    info = dict(Image=contract["runtime_image_id"], State=dict(Status="created", Running=False),
+                Config=dict(Volumes={}, User=artifacts.scorer_user(), Entrypoint=contract["scorer"]["argv"][:1],
+                            Cmd=contract["scorer"]["argv"][1:], Env=list(artifacts.SCORER_ENV),
+                            WorkingDir="/tmp"), NetworkSettings=dict(Networks={"none": {}}),
+                HostConfig=dict(NetworkMode="none", ReadonlyRootfs=True, Privileged=False,
+                                CapDrop=["ALL"], SecurityOpt=["no-new-privileges"],
+                                LogConfig=copy.deepcopy(LOG_CONFIG),
+                                Tmpfs=admission.runtime_tmpfs(contract_raw, contract_pin)),
+                Mounts=[dict(Type="bind", Source=str(root), Destination=target, RW=False)
+                        for root, target in ((artifact, "/control-input"), (closure, "/control-scorer"))])
+    arguments = dict(bundle_raw=bundle_raw, bundle_sha256=bundle_pin,
+                     contract_raw=contract_raw, contract_sha256=contract_pin,
+                     closure_root=closure, artifact_root=artifact, export_receipt=exported,
+                     info=info, run_id="synthetic-run-173")
+    return manifest, contract, arguments
+
+
+def bundle_arguments(arguments):
+    return {key: arguments[key] for key in ("closure_root", "bundle_raw", "bundle_sha256")}
+
+
+def refused(check, arguments, stage, status):
+    before = copy.deepcopy(arguments)
+    with pytest.raises(admission.ScorerAdmissionError) as error:
+        check(**arguments)
+    receipt = error.value.receipt
+    suffix = "contract_refused" if status == "blocked" else "evidence_unavailable"
+    assert isinstance(error.value, AdmissionError)
+    assert receipt == dict(schema="harnessgrad.scorer-admission.v1", stage=stage, status=status,
+                           measured=False, production_authorized=False,
+                           reason=f"{stage}_{suffix}")
+    assert error.value.code == receipt["reason"]
+    assert arguments == before
+    assert "evidence" not in receipt and "score" not in receipt
+    return receipt
+
+
+def test_public_surface_and_separate_required_trust_inputs():
+    assert set(admission.__all__) == {
+        "AdmissionError", "EvidenceUnavailable", "ScorerAdmissionError", "seal_bundle", "load_bundle",
+        "load_contract", "export_state", "verify_state_export", "runtime_tmpfs",
+        "validate_bundle", "admit_runtime",
+    }
+    parameters = inspect.signature(admission.admit_runtime).parameters
+    assert set(parameters) == {"bundle_raw", "bundle_sha256", "contract_raw", "contract_sha256",
+                               "closure_root", "artifact_root", "export_receipt", "info", "run_id"}
+    assert all(p.kind == inspect.Parameter.KEYWORD_ONLY and p.default == inspect.Parameter.empty
+               for p in parameters.values())
+    assert admission.AdmissionError is AdmissionError
+    assert admission.EvidenceUnavailable is artifacts.EvidenceUnavailable
+    assert admission.seal_bundle is bundles.seal_bundle
+    assert admission.load_contract is artifacts.load_contract
+
+
+def test_bundle_receipt_is_stable_task_independent_and_scoped(example):
+    manifest, _, arguments = example
+    kwargs = bundle_arguments(arguments)
+    before = copy.deepcopy(kwargs)
+    receipt = admission.validate_bundle(**kwargs)
+    assert receipt == admission.validate_bundle(**kwargs)
+    assert receipt == dict(schema="harnessgrad.scorer-admission.v1", stage="bundle", status="passed",
+                           measured=False, production_authorized=False,
+                           evidence=bundles.verify_bundle(arguments["closure_root"],
+                                                          arguments["bundle_raw"], arguments["bundle_sha256"]))
+    assert "task_id" not in receipt["evidence"] and "score" not in receipt
+    assert receipt["evidence"]["scope"] == "local_declared_closure_integrity"
+    assert admission.load_bundle(arguments["bundle_raw"], arguments["bundle_sha256"]) == manifest
+    assert kwargs == before
+    assert json.loads(json.dumps(receipt)) == receipt
+
+
+def test_runtime_receipt_keeps_both_pins_and_legacy_scope_without_authorization(example, monkeypatch):
+    _, contract, arguments = example
+    before = copy.deepcopy(arguments)
+    legacy = artifacts.require_artifact_runtime(arguments["info"], arguments["contract_raw"],
+                arguments["contract_sha256"], artifact_root=arguments["artifact_root"],
+                closure_root=arguments["closure_root"], export_receipt=arguments["export_receipt"],
+                run_id=arguments["run_id"])
+    verify_files = artifacts.verify_scorer_files
+    checked = []
+
+    def record(root, spec):
+        checked.append(root)
+        return verify_files(root, spec)
+
+    monkeypatch.setattr(artifacts, "verify_scorer_files", record)
+    monkeypatch.setattr(bundles, "verify_scorer_files", record)
+    receipt = admission.admit_runtime(**arguments)
+    assert checked == [arguments["closure_root"]]
+    assert receipt["status"] == "passed"
+    assert receipt["measured"] is False and receipt["production_authorized"] is False
+    assert receipt["evidence"]["runtime"] == legacy
+    assert receipt["evidence"]["runtime"]["task_id"] == contract["task_id"]
+    assert receipt["evidence"]["runtime"]["contract_sha256"] == arguments["contract_sha256"]
+    assert receipt["evidence"]["bundle"]["bundle_sha256"] == arguments["bundle_sha256"]
+    assert receipt["evidence"]["bundle"]["bundle_sha256"] != arguments["contract_sha256"]
+    assert receipt["evidence"]["run_id"] == arguments["run_id"]
+    assert receipt["evidence"]["runtime"]["scope"] == "inspected_runtime_contract"
+    assert arguments == before
+    assert json.loads(json.dumps(receipt)) == receipt
+
+
+@pytest.mark.parametrize("key", ["bundle_sha256", "contract_sha256"])
+def test_each_external_pin_is_required_independently(example, key, monkeypatch):
+    _, _, arguments = example
+    arguments[key] = "c" * 64
+    monkeypatch.setattr(artifacts, "_inventory", lambda *_: pytest.fail("invalid pin read local bytes"))
+    refused(admission.admit_runtime, arguments, "runtime", "blocked")
+"""Synthetic API composition only; no backend, dataset, model or scorer runs."""
+from __future__ import annotations
+
+import copy
+import inspect
+import json
+
+import pytest
+
+from eval.admission import lifecycle_receipt as lifecycle, runner_admission, scorer_admission
+from eval.admission import scorer_backend as backend
+from lifecycle_fixtures_codex177 import attest, gate_facts
+# Reuse the public-API inert bundle/export fixture and its execution/socket guards.
+from test_scorer_admission_codex173 import example, offline_only
+
+
+@pytest.fixture
+def request_inputs(example):
+    _, contract, arguments = example
+    binding = dict(adapter_id="synthetic-adapter-213", run_id=arguments["run_id"],
+                   trial_id="synthetic-trial-213", manifest_sha256="c" * 64)
+    checkpoint = lifecycle.start_lifecycle(binding, "a" * 64)
+    checkpoint = lifecycle.transition(checkpoint, "admit", gate_facts(binding, "admit"))
+    checkpoint = lifecycle.transition(checkpoint, "execute", attest(
+        binding, "execute", dict(exit_code=0, oom_killed=False, timed_out=False)))
+    checkpoint = lifecycle.transition(checkpoint, "quiesce", attest(
+        binding, "quiesce", dict(exit_code=0, oom_killed=False, timed_out=False, running=False)))
+    enforcement = gate_facts(binding, "admit")
+    enforcement["policy"]["filesystems"] = copy.deepcopy(contract["quota"])
+    enforcement["observed"]["filesystems"] = {
+        path: dict(**limits, backend="tmpfs", scope_id=f"synthetic-quota-213-{index}",
+                   evidence_sha256="d" * 64)
+        for index, (path, limits) in enumerate(contract["quota"].items())}
+    return dict(binding=binding, scope_sha256="a" * 64, lifecycle_receipt=checkpoint,
+                **{key: value for key, value in arguments.items() if key != "run_id"},
+                runtime_policy=copy.deepcopy(enforcement["policy"]),
+                runtime_policy_sha256=lifecycle.digest(enforcement["policy"]),
+                runtime_observed=copy.deepcopy(enforcement["observed"]))
+
+
+def refused(arguments, stage, status):
+    before = copy.deepcopy(arguments)
+    with pytest.raises(backend.ScorerBackendError) as error:
+        backend.check_backend(**arguments)
+    suffix = "evidence_unavailable" if status == "unknown" else "contract_refused"
+    assert isinstance(error.value, scorer_admission.AdmissionError)
+    assert error.value.code == f"{stage}_{suffix}"
+    assert error.value.receipt == dict(
+        schema=backend.SCHEMA, stage=stage, status=status, measured=False,
+        production_authorized=False, execution_authorized=False, publication_ready=False,
+        reason=error.value.code)
+    assert str(error.value) == error.value.code
+    assert arguments == before
+    return error.value.receipt
+
+
+def test_public_surface_requires_all_independent_inputs():
+    assert backend.__all__ == ("ScorerBackendError", "check_backend")
+    parameters = inspect.signature(backend.check_backend).parameters
+    assert set(parameters) == {
+        "binding", "scope_sha256", "lifecycle_receipt", "bundle_raw", "bundle_sha256",
+        "contract_raw", "contract_sha256", "closure_root", "artifact_root", "export_receipt",
+        "info", "runtime_policy", "runtime_policy_sha256", "runtime_observed"}
+    assert all(p.kind == inspect.Parameter.KEYWORD_ONLY and p.default is inspect.Parameter.empty
+               for p in parameters.values())
+
+
+def test_composes_real_checks_without_mutation_execution_or_lifecycle_progress(request_inputs,
+                                                                             monkeypatch):
+    before = copy.deepcopy(request_inputs)
+
+    def refuse(*args, **kwargs):
+        pytest.fail("preflight attempted export writes or lifecycle progress")
+
+    monkeypatch.setattr(scorer_admission, "export_state", refuse)
+    monkeypatch.setattr(lifecycle, "transition", refuse)
+    checked = backend.check_backend(**request_inputs)
+    scorer_arguments = {key: request_inputs[key] for key in (
+        "bundle_raw", "bundle_sha256", "contract_raw", "contract_sha256", "closure_root",
+        "artifact_root", "export_receipt", "info")}
+    scorer_arguments["run_id"] = request_inputs["binding"]["run_id"]
+    assert checked == dict(
+        schema=backend.SCHEMA, stage="preflight", status="passed", measured=False,
+        production_authorized=False, execution_authorized=False, publication_ready=False,
+        binding=request_inputs["binding"], scope_sha256=request_inputs["scope_sha256"],
+        evidence=dict(lifecycle_sha256=lifecycle.digest(request_inputs["lifecycle_receipt"]),
+                      export_sha256=lifecycle.digest(request_inputs["export_receipt"]),
+                      scorer=scorer_admission.admit_runtime(**scorer_arguments),
+                      resources=runner_admission.admit_runtime(
+                          request_inputs["binding"], request_inputs["runtime_policy"],
+                          request_inputs["runtime_observed"])))
+    assert checked["evidence"]["resources"]["policy_sha256"] == request_inputs["runtime_policy_sha256"]
+    assert request_inputs == before
+    assert json.loads(json.dumps(checked)) == checked
+    assert "answer.txt" not in json.dumps(checked)
+    assert str(request_inputs["artifact_root"]) not in json.dumps(checked)
+    assert request_inputs["lifecycle_receipt"]["state"] == "quiesce"
+    checked["binding"]["run_id"] = "mutated-output"
+    assert request_inputs == before
+
+
+@pytest.mark.parametrize("key,stage", [
+    ("lifecycle_receipt", "lifecycle"), ("runtime_policy", "resources"),
+    ("runtime_observed", "resources"), ("export_receipt", "scorer"), ("info", "scorer")])
+def test_absent_evidence_stays_unknown(request_inputs, key, stage):
+    request_inputs[key] = None
+    refused(request_inputs, stage, "unknown")
+
+
+@pytest.mark.parametrize("key", ["adapter_id", "run_id", "trial_id", "manifest_sha256"])
+def test_expected_binding_cannot_be_taken_from_incoming_checkpoint(request_inputs, key):
+    request_inputs["binding"][key] = "f" * 64 if key == "manifest_sha256" else "different-213"
+    refused(request_inputs, "lifecycle", "blocked")
+
+
+def test_scope_pin_is_independent(request_inputs):
+    request_inputs["scope_sha256"] = "f" * 64
+    refused(request_inputs, "lifecycle", "blocked")
+
+
+@pytest.mark.parametrize("stage", ["scope", "admit", "execute"])
+def test_only_quiesced_checkpoint_can_reach_file_checks(request_inputs, stage, monkeypatch):
+    def refuse(**kwargs):
+        pytest.fail("unquiesced checkpoint reached artifact checks")
+
+    monkeypatch.setattr(scorer_admission, "admit_runtime", refuse)
+    checkpoint = lifecycle.start_lifecycle(request_inputs["binding"], request_inputs["scope_sha256"])
+    for event in request_inputs["lifecycle_receipt"]["events"]:
+        if checkpoint["state"] == stage:
+            break
+        checkpoint = lifecycle.transition(checkpoint, event["stage"], event["evidence"])
+    request_inputs["lifecycle_receipt"] = checkpoint
+    refused(request_inputs, "lifecycle", "blocked")
+
+
+@pytest.mark.parametrize("status", ["failed", "unknown"])
+def test_nonpassing_quiescence_is_never_accepted(request_inputs, status):
+    checkpoint = lifecycle.start_lifecycle(request_inputs["binding"], request_inputs["scope_sha256"])
+    for event in request_inputs["lifecycle_receipt"]["events"][:-1]:
+        checkpoint = lifecycle.transition(checkpoint, event["stage"], event["evidence"])
+    request_inputs["lifecycle_receipt"] = lifecycle.transition(
+        checkpoint, "quiesce", attest(request_inputs["binding"], "quiesce", status=status))
+    refused(request_inputs, "lifecycle", "blocked")
+
+
+def test_lifecycle_is_replayed_rather_than_trusting_derived_status(request_inputs):
+    request_inputs["lifecycle_receipt"]["events"][-1]["evidence"]["facts"]["running"] = True
+    refused(request_inputs, "lifecycle", "blocked")
+
+
+@pytest.mark.parametrize("change", ["policy_pin", "binding", "resources", "filesystem", "backend"])
+def test_resource_gate_and_external_policy_pin_are_required(request_inputs, change):
+    observed = request_inputs["runtime_observed"]
+    if change == "policy_pin":
+        request_inputs["runtime_policy_sha256"] = "f" * 64
+    elif change == "binding":
+        observed["binding"]["trial_id"] = "different-trial-213"
+    elif change == "resources":
+        observed["resources"]["pids"] += 1
+    elif change == "filesystem":
+        observed["filesystems"]["/tmp"]["inodes"] += 1
+    else:
+        observed["resource_backend"] = "unknown"
+    refused(request_inputs, "resources", "blocked")
+
+
+def test_policy_pin_mismatch_stays_blocked_when_runtime_observation_is_missing(request_inputs):
+    request_inputs["runtime_policy_sha256"] = "f" * 64
+    request_inputs["runtime_observed"] = None
+    refused(request_inputs, "resources", "blocked")
+
+
+def test_separately_valid_resource_policy_must_match_artifact_quota(request_inputs):
+    # runner_admission alone permits this empty filesystem policy; composition
+    # must still require the task contract's /tmp hard byte AND inode limits.
+    request_inputs["runtime_policy"]["filesystems"] = {}
+    request_inputs["runtime_observed"]["filesystems"] = {}
+    request_inputs["runtime_policy_sha256"] = lifecycle.digest(request_inputs["runtime_policy"])
+    assert runner_admission.admit_runtime(request_inputs["binding"], request_inputs["runtime_policy"],
+                                         request_inputs["runtime_observed"])["status"] == "passed"
+    refused(request_inputs, "resources", "blocked")
+
+
+@pytest.mark.parametrize("key,stage", [("contract_sha256", "resources"), ("bundle_sha256", "scorer")])
+def test_bundle_and_contract_pins_remain_independent(request_inputs, key, stage):
+    request_inputs[key] = "f" * 64
+    refused(request_inputs, stage, "blocked")
+
+
+def test_export_receipt_must_match_this_run(request_inputs):
+eval/admission/artifact_admission.py:23:SCORER_UID = 65534
+eval/admission/artifact_admission.py:27:    if os.geteuid() == SCORER_UID:
+eval/admission/artifact_admission.py:29:    return f"{SCORER_UID}:{os.getegid()}"
+eval/admission/artifact_admission.py:351:        os.chown(destination, -1, os.getegid())
+eval/admission/artifact_admission.py:352:        destination.chmod(0o750)
+eval/admission/artifact_admission.py:367:                        os.chown(parent, -1, os.getegid())
+eval/admission/artifact_admission.py:368:                        parent.chmod(0o750)
+eval/admission/artifact_admission.py:371:                    os.chown(target, -1, os.getegid())
+eval/admission/artifact_admission.py:372:                    os.chmod(target, 0o640)
+eval/admission/artifact_admission.py:494:        shift = 6 if info.st_uid == SCORER_UID else 3 if info.st_gid == os.getegid() else 0
+tests/quality/test_scorer_admission_codex173.py:49:            (closure / name).chmod(0o755)
+/mnt/20t/xubuqiang/Study/HarnessGrad     f287249b [main]
+/mnt/20t/xubuqiang/hg-wt/census          df1a978e (detached HEAD)
+/mnt/20t/xubuqiang/hg-wt/w-ai1           85dcf08e [wg-ai1]
+/mnt/20t/xubuqiang/hg-wt/w-ai2           dee9adf9 [wg-ai2]
+/mnt/20t/xubuqiang/hg-wt/w-ai3           346fd1d5 [wg-ai3]
+/mnt/20t/xubuqiang/hg-wt/w-ai4           1d7eb51c [wg-ai4]
+/mnt/20t/xubuqiang/hg-wt/w-appworld      4092f6f3 [wg-appworld3]
+/mnt/20t/xubuqiang/hg-wt/w-awcc          1a8d86ce [wg-awcc2]
+/mnt/20t/xubuqiang/hg-wt/w-awcc3         83452cbe [wg-gapfix]
+/mnt/20t/xubuqiang/hg-wt/w-awguide       69abc908 [wg-awdiag]
+/mnt/20t/xubuqiang/hg-wt/w-b2split       d675892a [wg-b2split]
+/mnt/20t/xubuqiang/hg-wt/w-b5restore     baf37fa4 [wg-b5restore]
+/mnt/20t/xubuqiang/hg-wt/w-bfclrt        908d3903 [wg-bfclrt]
+/mnt/20t/xubuqiang/hg-wt/w-close2        acb41466 [wg-close2]
+/mnt/20t/xubuqiang/hg-wt/w-custodyguard  d2a8bad7 [wg-w-custodyguard]
+/mnt/20t/xubuqiang/hg-wt/w-docs          40d814c6 [wg-docs]
+/mnt/20t/xubuqiang/hg-wt/w-docs2         f121ea3f [wg-docs2]
+/mnt/20t/xubuqiang/hg-wt/w-fevconv       d9d6cbc2 [wg-fevconv]
+/mnt/20t/xubuqiang/hg-wt/w-fevhub        629d4605 [wg-fevhub]
+/mnt/20t/xubuqiang/hg-wt/w-guard2        77537214 [wg-guard2]
+/mnt/20t/xubuqiang/hg-wt/w-gymelig       59f2afcb [wg-gymelig]
+/mnt/20t/xubuqiang/hg-wt/w-hotlim        c6c40c88 [wg-hotlim]
+/mnt/20t/xubuqiang/hg-wt/w-hotpotrec     ac7e5675 [wg-hotpotrec]
+/mnt/20t/xubuqiang/hg-wt/w-identcall     8c8d3859 [wg-w-identcall]
+/mnt/20t/xubuqiang/hg-wt/w-metriccmp     70876d09 [wg-metriccmp]
+/mnt/20t/xubuqiang/hg-wt/w-natgate       d2a8bad7 [wg-w-natgate]
+/mnt/20t/xubuqiang/hg-wt/w-recgym        e974112b [wg-recgym]
+/mnt/20t/xubuqiang/hg-wt/w-reimp         f10d83ab [wg-reverse]
+/mnt/20t/xubuqiang/hg-wt/w-rep1          4b93d121 [wg-rep1]
+/mnt/20t/xubuqiang/hg-wt/w-rep2          80c2a355 [wg-rep2]
+/mnt/20t/xubuqiang/hg-wt/w-routetest     8c8d3859 [wg-w-routetest]
+/mnt/20t/xubuqiang/hg-wt/w-scorerstub    d2a8bad7 [wg-w-scorerstub]
+/mnt/20t/xubuqiang/hg-wt/w-sharedrt      5411b297 [wg-sharedrt]
+/mnt/20t/xubuqiang/hg-wt/w-spreadrt      ac272ad5 [wg-spreadrt]
+/mnt/20t/xubuqiang/hg-wt/w-stalepoint    219c1108 [wg-stalepoint]
+/mnt/20t/xubuqiang/hg-wt/w-stratqa       734c3aa2 [wg-stratqa]
+/mnt/20t/xubuqiang/hg-wt/w-trivia2       1be5d2d5 [wg-trivia2]
+/mnt/20t/xubuqiang/hg-wt/w-vfix          1ac69e91 [wg-vfix]
+/tmp/hg-census-qwen2                     4556a9a5 (detached HEAD) prunable
+/tmp/hg-sel                              eaca2361 [wg-sel] prunable
+/tmp/hg-wd                               dc090d51 [withdraw-unobtainable] prunable
+/tmp/hg-wd2                              2e410a2d [wg-wd2] prunable
+
+RECORD 3
+COMMAND:
+git grep -n 'offline API attempted identity' -- .; git grep -n 'chown' -- eval/ tests/; git log -3 --format='%h %ad %s' --date=iso-strict -- tests/quality/test_optional_backend_api_codex241.py eval/admission/artifact_admission.py
+OBSERVED OUTPUT (exit 0):
+tests/quality/test_optional_backend_api_codex241.py:19:        raise AssertionError("offline API attempted identity or privilege operations")
+eval/admission/artifact_admission.py:351:        os.chown(destination, -1, os.getegid())
+eval/admission/artifact_admission.py:367:                        os.chown(parent, -1, os.getegid())
+eval/admission/artifact_admission.py:371:                    os.chown(target, -1, os.getegid())
+tests/fixtures/hg_migration_site/adapter-integration-journal.md:2912:    group-readable (directories `0700 -> 0750`, files `0600 -> 0640`, chowned to the platform
+tests/quality/test_optional_backend_api_codex241.py:25:                 "setresgid", "setgroups", "chown", "fchown", "lchown", "system"):
+afd98dfc 2026-10-15T09:52:04+08:00 Bind pristine exports and verdicts to native task run and trial identity
+5d2782ef 2026-10-15T08:41:22+08:00 Detect observed selected-source changes across pristine export and scoring
+73074611 2026-10-15T07:24:54+08:00 fix(pristine): enforce readable exports and completed scorer outcomes
+
+RECORD 4
+COMMAND:
+python3 - <<'PY'
+import os
+import subprocess
+import tempfile
+
+with tempfile.TemporaryDirectory(prefix='custodyguard-before-', dir='/tmp') as scratch:
+    env = dict(os.environ, TMPDIR=scratch)
+    result = subprocess.run([
+        'python3', '-m', 'pytest', '-q',
+        'tests/quality/test_optional_backend_api_codex241.py',
+        f'--basetemp={scratch}/pytest',
+    ], env=env)
+raise SystemExit(result.returncode)
+PY
+OBSERVED OUTPUT (exit 1):
+EEEEEE                                                                   [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_preflight_and_completed_lifecycle_need_no_admin_operations _
+
+args = (), kwargs = {}
+
+    def refuse(*args, **kwargs):
+>       raise AssertionError("offline API attempted identity or privilege operations")
+E       AssertionError: offline API attempted identity or privilege operations
+
+tests/quality/test_optional_backend_api_codex241.py:19: AssertionError
+__ ERROR at setup of test_incomplete_resource_observation_stays_blocked[all] ___
+
+args = (), kwargs = {}
+
+    def refuse(*args, **kwargs):
+>       raise AssertionError("offline API attempted identity or privilege operations")
+E       AssertionError: offline API attempted identity or privilege operations
+
+tests/quality/test_optional_backend_api_codex241.py:19: AssertionError
+_ ERROR at setup of test_incomplete_resource_observation_stays_blocked[resources] _
+
+args = (), kwargs = {}
+
+    def refuse(*args, **kwargs):
+>       raise AssertionError("offline API attempted identity or privilege operations")
+E       AssertionError: offline API attempted identity or privilege operations
+
+tests/quality/test_optional_backend_api_codex241.py:19: AssertionError
+_ ERROR at setup of test_incomplete_resource_observation_stays_blocked[filesystems] _
+
+args = (), kwargs = {}
+
+    def refuse(*args, **kwargs):
+>       raise AssertionError("offline API attempted identity or privilege operations")
+E       AssertionError: offline API attempted identity or privilege operations
+
+tests/quality/test_optional_backend_api_codex241.py:19: AssertionError
+_ ERROR at setup of test_preflight_refusal_can_be_recorded_before_cleanup[None-unknown] _
+
+args = (), kwargs = {}
+
+    def refuse(*args, **kwargs):
+>       raise AssertionError("offline API attempted identity or privilege operations")
+E       AssertionError: offline API attempted identity or privilege operations
+
+tests/quality/test_optional_backend_api_codex241.py:19: AssertionError
+_ ERROR at setup of test_preflight_refusal_can_be_recorded_before_cleanup[observation1-blocked] _
+
+args = (), kwargs = {}
+
+    def refuse(*args, **kwargs):
+>       raise AssertionError("offline API attempted identity or privilege operations")
+E       AssertionError: offline API attempted identity or privilege operations
+
+tests/quality/test_optional_backend_api_codex241.py:19: AssertionError
+=========================== short test summary info ============================
+ERROR tests/quality/test_optional_backend_api_codex241.py::test_preflight_and_completed_lifecycle_need_no_admin_operations
+ERROR tests/quality/test_optional_backend_api_codex241.py::test_incomplete_resource_observation_stays_blocked[all]
+ERROR tests/quality/test_optional_backend_api_codex241.py::test_incomplete_resource_observation_stays_blocked[resources]
+ERROR tests/quality/test_optional_backend_api_codex241.py::test_incomplete_resource_observation_stays_blocked[filesystems]
+ERROR tests/quality/test_optional_backend_api_codex241.py::test_preflight_refusal_can_be_recorded_before_cleanup[None-unknown]
+ERROR tests/quality/test_optional_backend_api_codex241.py::test_preflight_refusal_can_be_recorded_before_cleanup[observation1-blocked]
+6 errors in 0.10s
+
+RECORD 5
+COMMAND:
+python3 - <<'PY'
+import os
+import pathlib
+import tempfile
+
+print(f'uid={os.getuid()} euid={os.geteuid()} gid={os.getgid()} egid={os.getegid()}')
+print(f'supplementary_groups={os.getgroups()}')
+with tempfile.TemporaryDirectory(prefix='custodyguard-permission-', dir='/tmp') as scratch:
+    path = pathlib.Path(scratch) / 'owned-control.txt'
+    path.write_text('own-group control\n')
+    before = path.stat()
+    os.chown(path, -1, os.getegid())
+    after = path.stat()
+    print(f'own-group chown succeeded; owner_unchanged={before.st_uid == after.st_uid}; group_is_egid={after.st_gid == os.getegid()}')
+PY
+nl -ba eval/admission/artifact_admission.py | sed -n '23,30p;325,375p;485,500p'
+nl -ba tests/fixtures/hg_migration_site/adapter-integration-journal.md | sed -n '2906,2918p'
+git log -1 --format='%h %ad %s' --date=iso-strict -- tests/quality/test_optional_backend_api_codex241.py
+OBSERVED OUTPUT (exit 0):
+uid=1026 euid=1026 gid=1026 egid=1026
+supplementary_groups=[1026, 1034]
+own-group chown succeeded; owner_unchanged=True; group_is_egid=True
+    23	SCORER_UID = 65534
+    24	
+    25	
+    26	def scorer_user() -> str:
+    27	    if os.geteuid() == SCORER_UID:
+    28	        raise AdmissionError("reserved scorer UID must differ from platform UID")
+    29	    return f"{SCORER_UID}:{os.getegid()}"
+    30	
+   325	
+   326	def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: str,
+   327	                 *, run_id: str, execution_binding: dict | None = None) -> dict:
+   328	    """Copy an explicit data allowlist, with byte/inode limits enforced before writes.
+   329	
+   330	    Source must be quiesced by the caller. The exclusive destination and its parent
+   331	    must be platform-owned; its files cannot supply a grader toolchain. Unselected
+   332	    actor files are never traversed. No old destination is reused or overwritten.
+   333	    Metadata checks detect observable source changes; they cannot establish quiescence.
+   334	    The platform primary group grants the separate scorer UID read/search access;
+   335	    host custody still rests on the exclusive platform-owned parent and RO mounts.
+   336	    """
+   337	    contract = load_contract(raw, expected_sha256)
+   338	    binding = _execution_binding(execution_binding, contract["task_id"]) if execution_binding is not None else None
+   339	    if not isinstance(run_id, str) or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", run_id):
+   340	        raise AdmissionError("fresh export run identity required")
+   341	    export = contract["export"]
+   342	    created = False
+   343	    try:
+   344	        _root(destination)
+   345	        source_path, destination_path = source.resolve(), destination.resolve()
+   346	        if (source_path == destination_path or source_path in destination_path.parents
+   347	                or destination_path in source_path.parents):
+   348	            raise AdmissionError("state source and platform projection must be separate")
+   349	        destination.mkdir(mode=0o700)
+   350	        created = True
+   351	        os.chown(destination, -1, os.getegid())
+   352	        destination.chmod(0o750)
+   353	        total, records = 0, []
+   354	        for row in export["files"]:
+   355	            with _regular(source, row["path"], data_only=True) as (stream, info):
+   356	                limit = min(row["max_bytes"], export["max_bytes"] - total)
+   357	                if info.st_size > limit:
+   358	                    raise AdmissionError("state export byte quota exceeded")
+   359	                target = destination / row["path"]
+   360	                # Create each directory explicitly: parents=True does not apply
+   361	                # the requested mode to intermediate parents, and umask may mask it.
+   362	                parent = destination
+   363	                for part in PurePosixPath(row["path"]).parts[:-1]:
+   364	                    parent = parent / part
+   365	                    if not parent.exists():
+   366	                        parent.mkdir(mode=0o700)
+   367	                        os.chown(parent, -1, os.getegid())
+   368	                        parent.chmod(0o750)
+   369	                digest, size = hashlib.sha256(), 0
+   370	                with target.open("xb") as output:
+   371	                    os.chown(target, -1, os.getegid())
+   372	                    os.chmod(target, 0o640)
+   373	                    while True:
+   374	                        chunk = stream.read(min(65536, limit - size + 1))
+   375	                        if not chunk:
+   485	
+   486	    The scorer uses one explicit UID/GID, without supplemental groups or DAC caps.
+   487	    POSIX owner/group/other precedence matters even when another class has access.
+   488	    """
+   489	    scorer_user()  # Fail closed if the reserved identity is the platform writer.
+   490	    files = {row["path"] for row in rows}
+   491	    directories = {"."} | {str(p) for name in files for p in PurePosixPath(name).parents}
+   492	    for name in files | directories:
+   493	        info = (root / name).stat()
+   494	        shift = 6 if info.st_uid == SCORER_UID else 3 if info.st_gid == os.getegid() else 0
+   495	        required = 5 if name in directories else 5 if name == executable else 4
+   496	        if ((stat.S_IMODE(info.st_mode) >> shift) & required) != required:
+   497	            raise AdmissionError("platform projection is not readable/searchable by scorer identity")
+   498	
+   499	
+   500	def _verify_artifact_runtime(info: dict, contract: dict, expected_sha256: str,
+  2906	  unmeasured=0`**. Keeping the fixture unchanged is what makes this a re-run of the same control
+  2907	  rather than a new one, and the worker did keep it unchanged.
+  2908	- The three defects are fixed as their own clauses required, and I checked each diff for
+  2909	  weakening rather than trusting the summary:
+  2910	  - **D1** introduces a distinct unprivileged scorer UID (`SCORER_UID = 65534`, with a guard that
+  2911	    refuses if the platform itself runs as that UID) and makes the bounded projections
+  2912	    group-readable (directories `0700 -> 0750`, files `0600 -> 0640`, chowned to the platform
+  2913	    group). Crucially this changes **who can read inside the container** and not **what is
+  2914	    exported**: the allowlisted row set, the read-only mounts and the capability drops are
+  2915	    untouched, which is the distinction that would have made this a gate weakening. It also fixed
+  2916	    a real subtle bug on the way - `parents=True` does not apply the requested mode to
+  2917	    intermediate parents, so directory modes were being created inconsistently.
+  2918	  - **D2** makes an initialisation/infrastructure failure **unmeasured** while a genuinely
+15f2e6dd 2026-10-14T20:09:36+08:00 refactor(eval): group execution modules by concern
+
+RECORD 6
+COMMAND:
+git diff --check && git diff -- tests/quality/test_optional_backend_api_codex241.py && git grep -n 'offline API attempted identity' -- .; git grep -n 'chown' -- eval/ tests/; rg --files reports | sed -n '1,25p'
+OBSERVED OUTPUT (exit 0):
+diff --git a/tests/quality/test_optional_backend_api_codex241.py b/tests/quality/test_optional_backend_api_codex241.py
+index ad9f77a3..1a832c7f 100644
+--- a/tests/quality/test_optional_backend_api_codex241.py
++++ b/tests/quality/test_optional_backend_api_codex241.py
+@@ -1,4 +1,8 @@
+-"""Optional integration semantics, using authored bytes and supplied facts only."""
++"""Optional integration semantics, using authored bytes and supplied facts only.
++
++Resolution A forbids elevation while allowing identity reads and owner-preserving
++own-group changes required by eval/admission/artifact_admission.py:351.
++"""
+ from __future__ import annotations
+ 
+ from copy import deepcopy
+@@ -16,18 +20,88 @@ from test_scorer_backend_codex213 import request_inputs
+ @pytest.fixture(autouse=True)
+ def no_admin_operations(monkeypatch):
+     def refuse(*args, **kwargs):
+-        raise AssertionError("offline API attempted identity or privilege operations")
++        raise AssertionError("offline API attempted privilege elevation or shell execution")
+ 
+-    # These APIs need readable local files, not an identity check or elevation.
++    # Identity reads and own-group export access do not change process identity.
+     # Existing offline_only guards forbid subprocesses and sockets as well.
+-    for name in ("getuid", "geteuid", "getgid", "getegid", "setuid", "seteuid",
+-                 "setreuid", "setresuid", "setgid", "setegid", "setregid",
+-                 "setresgid", "setgroups", "chown", "fchown", "lchown", "system"):
++    for name in ("setuid", "seteuid", "setreuid", "setresuid", "setgid", "setegid",
++                 "setregid", "setresgid", "setgroups", "system"):
+         if hasattr(os, name):
+             monkeypatch.setattr(os, name, refuse)
+ 
++    calls = []
++
++    def group_only(operation):
++        def record(path, uid, gid, **kwargs):
++            assert uid == -1, "offline API attempted owner-changing chown"
++            assert gid == os.getegid(), "offline API attempted foreign-group chown"
++            result = operation(path, uid, gid, **kwargs)
++            calls.append((operation.__name__, path, uid, gid))
++            return result
++        return record
++
++    for name in ("chown", "fchown", "lchown"):
++        if hasattr(os, name):
++            monkeypatch.setattr(os, name, group_only(getattr(os, name)))
++    return calls
++
++
++@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
++def test_own_group_change_preserves_owner_and_reaches_os(tmp_path, no_admin_operations,
++                                                        operation):
++    path = tmp_path / "own-group.txt"
++    path.write_bytes(b"inert")
++    before = path.stat()
++    with path.open("rb") as stream:
++        target = stream.fileno() if operation == "fchown" else path
++        assert getattr(os, operation)(target, -1, os.getegid()) is None
++        assert no_admin_operations == [(operation, target, -1, os.getegid())]
++    after = path.stat()
++    assert after.st_uid == before.st_uid
++    assert after.st_gid == os.getegid()
++
++
++@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
++@pytest.mark.parametrize("change", ["owner", "foreign_group"])
++def test_elevating_ownership_change_is_refused(tmp_path, no_admin_operations,
++                                              operation, change):
++    path = tmp_path / "refused.txt"
++    path.write_bytes(b"inert")
++    before = path.stat()
++    uid, gid = (0, os.getegid()) if change == "owner" else (-1, os.getegid() + 1)
++    reason = "owner-changing" if change == "owner" else "foreign-group"
++    with path.open("rb") as stream:
++        target = stream.fileno() if operation == "fchown" else path
++        with pytest.raises(AssertionError, match=reason):
++            getattr(os, operation)(target, uid, gid)
++    assert no_admin_operations == []
++    after = path.stat()
++    assert (after.st_uid, after.st_gid) == (before.st_uid, before.st_gid)
++
++
++@pytest.mark.parametrize("operation,args", [
++    ("setuid", (0,)), ("seteuid", (0,)), ("setreuid", (0, 0)),
++    ("setresuid", (0, 0, 0)), ("setgid", (0,)), ("setegid", (0,)),
++    ("setregid", (0, 0)), ("setresgid", (0, 0, 0)), ("setgroups", ([],)),
++    ("system", ("true",)),
++])
++def test_identity_setters_and_shell_remain_forbidden(operation, args):
++    with pytest.raises(AssertionError, match="privilege elevation or shell execution"):
++        getattr(os, operation)(*args)
++
++
++@pytest.mark.parametrize("operation", ["getuid", "geteuid", "getgid", "getegid"])
++def test_identity_reads_remain_available(operation):
++    assert isinstance(getattr(os, operation)(), int)
++
+ 
+-def test_preflight_and_completed_lifecycle_need_no_admin_operations(request_inputs):
++def test_preflight_and_completed_lifecycle_need_no_admin_operations(request_inputs,
++                                                                 no_admin_operations):
++    root = request_inputs["artifact_root"]
++    assert no_admin_operations == [
++        ("chown", root, -1, os.getegid()),
++        ("chown", root / "answer.txt", -1, os.getegid()),
++    ]
+     before = deepcopy(request_inputs)
+     checked = backend.check_backend(**request_inputs)
+     assert checked["status"] == "passed"
+eval/admission/artifact_admission.py:351:        os.chown(destination, -1, os.getegid())
+eval/admission/artifact_admission.py:367:                        os.chown(parent, -1, os.getegid())
+eval/admission/artifact_admission.py:371:                    os.chown(target, -1, os.getegid())
+tests/fixtures/hg_migration_site/adapter-integration-journal.md:2912:    group-readable (directories `0700 -> 0750`, files `0600 -> 0640`, chowned to the platform
+tests/quality/test_optional_backend_api_codex241.py:36:            assert uid == -1, "offline API attempted owner-changing chown"
+tests/quality/test_optional_backend_api_codex241.py:37:            assert gid == os.getegid(), "offline API attempted foreign-group chown"
+tests/quality/test_optional_backend_api_codex241.py:43:    for name in ("chown", "fchown", "lchown"):
+tests/quality/test_optional_backend_api_codex241.py:49:@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+tests/quality/test_optional_backend_api_codex241.py:56:        target = stream.fileno() if operation == "fchown" else path
+tests/quality/test_optional_backend_api_codex241.py:64:@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+tests/quality/test_optional_backend_api_codex241.py:74:        target = stream.fileno() if operation == "fchown" else path
+tests/quality/test_optional_backend_api_codex241.py:102:        ("chown", root, -1, os.getegid()),
+tests/quality/test_optional_backend_api_codex241.py:103:        ("chown", root / "answer.txt", -1, os.getegid()),
+reports/w-b5restore-audit.json
+reports/w-e6-evidence/prerequisite-observations.json
+reports/w-e6-evidence/native.stdout.txt
+reports/w-e6-evidence/collector.stderr.txt
+reports/w-e6-evidence/source-audit.json
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/executed-probe.py
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/summary.json
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/executed-native_entry.py
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/executed-native_collect.py
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/stdout.txt
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/result.json
+reports/w-e6-evidence/followup.stdout.txt
+reports/w-chess3-control/harness.json
+reports/w-chess3-control/actor.py
+reports/w-chess3-receipts.md
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/work-copy/verifier/hg-we6-probe-2/marker
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/work-copy/verifier/observation-before.json
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/work-copy/probe.py
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/syscalls.txt
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/launch.json
+reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026/timeout/stderr.txt
+reports/w-chess3-evidence/corrected-blocker-before-run.json
+reports/w-obs-validation.txt
+reports/w-b5restore.md
+reports/w-b5restore-replay.jsonl
+
+RECORD 7
+COMMAND:
+python3 tools/check_dataset_blockers.py
+OBSERVED OUTPUT (exit 0):
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+RECORD 8
+COMMAND:
+python3 - <<'PY'
+import os
+import subprocess
+import tempfile
+
+with tempfile.TemporaryDirectory(prefix='custodyguard-after-', dir='/tmp') as scratch:
+    result = subprocess.run([
+        'python3', '-m', 'pytest', '-q',
+        'tests/quality/test_optional_backend_api_codex241.py',
+        f'--basetemp={scratch}/pytest',
+    ], env=dict(os.environ, TMPDIR=scratch))
+raise SystemExit(result.returncode)
+PY
+OBSERVED OUTPUT (exit 0):
+.............................                                            [100%]
+29 passed in 0.11s
+
+RECORD 9
+COMMAND:
+python3 - <<'PY'
+import os
+import subprocess
+import tempfile
+
+with tempfile.TemporaryDirectory(prefix='custodyguard-related-', dir='/tmp') as scratch:
+    result = subprocess.run([
+        'python3', '-m', 'pytest', '-q',
+        'tests/quality/test_scorer_admission_codex173.py',
+        'tests/quality/test_scorer_backend_codex213.py',
+        f'--basetemp={scratch}/pytest',
+    ], env=dict(os.environ, TMPDIR=scratch))
+raise SystemExit(result.returncode)
+PY
+OBSERVED OUTPUT (exit 0):
+........................................................................ [ 96%]
+...                                                                      [100%]
+75 passed in 0.25s
+
+RECORD 10
+COMMAND:
+python3 - <<'PY'
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+
+path = Path('tests/quality/test_optional_backend_api_codex241.py')
+original = path.read_bytes()
+allowed = b'assert getattr(os, operation)(target, -1, os.getegid()) is None'
+foreign = b'assert getattr(os, operation)(target, -1, os.getegid() + 1) is None'
+assert original.count(allowed) == 1
+try:
+    path.write_bytes(original.replace(allowed, foreign))
+    print('TEMPORARY MUTATION: ' + foreign.decode(), flush=True)
+    with tempfile.TemporaryDirectory(prefix='custodyguard-negative-', dir='/tmp') as scratch:
+        result = subprocess.run([
+            'python3', '-m', 'pytest', '-q',
+            'tests/quality/test_optional_backend_api_codex241.py::test_own_group_change_preserves_owner_and_reaches_os[chown]',
+            f'--basetemp={scratch}/pytest',
+        ], env=dict(os.environ, TMPDIR=scratch))
+    print(f'Observed mutation pytest exit code: {result.returncode}', flush=True)
+    assert result.returncode == 1
+finally:
+    path.write_bytes(original)
+    print(f'RESTORED: byte-identical={path.read_bytes() == original}', flush=True)
+PY
+OBSERVED OUTPUT (exit 0):
+TEMPORARY MUTATION: assert getattr(os, operation)(target, -1, os.getegid() + 1) is None
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_own_group_change_preserves_owner_and_reaches_os[chown] __________
+
+tmp_path = PosixPath('/tmp/custodyguard-negative-5prjej5c/pytest/test_own_group_change_preserve0')
+no_admin_operations = [], operation = 'chown'
+
+    @pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+    def test_own_group_change_preserves_owner_and_reaches_os(tmp_path, no_admin_operations,
+                                                           operation):
+        path = tmp_path / "own-group.txt"
+        path.write_bytes(b"inert")
+        before = path.stat()
+        with path.open("rb") as stream:
+            target = stream.fileno() if operation == "fchown" else path
+>           assert getattr(os, operation)(target, -1, os.getegid() + 1) is None
+
+tests/quality/test_optional_backend_api_codex241.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/tmp/custodyguard-negative-5prjej5c/pytest/test_own_group_change_preserve0/own-group.txt')
+uid = -1, gid = 1027, kwargs = {}, @py_assert2 = None, @py_assert4 = None
+@py_assert1 = False
+@py_format7 = '1027 == 1026\n{1026 = <built-in function getegid>\n{<built-in function getegid> = os.getegid\n}()\n}'
+@py_assert3 = <built-in function getegid>, @py_assert5 = 1026
+
+    def record(path, uid, gid, **kwargs):
+        assert uid == -1, "offline API attempted owner-changing chown"
+>       assert gid == os.getegid(), "offline API attempted foreign-group chown"
+E       AssertionError: offline API attempted foreign-group chown
+E       assert 1027 == 1026
+E        +  where 1026 = <built-in function getegid>()
+E        +    where <built-in function getegid> = os.getegid
+
+tests/quality/test_optional_backend_api_codex241.py:37: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_optional_backend_api_codex241.py::test_own_group_change_preserves_owner_and_reaches_os[chown]
+1 failed in 0.06s
+Observed mutation pytest exit code: 1
+RESTORED: byte-identical=True
+
+RECORD 11
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+roots = sorted(str(path) for path in Path('/tmp').glob('custodyguard-*'))
+print(f'Remaining custodyguard /tmp directories: {roots}')
+assert not roots
+PY
+OBSERVED OUTPUT (exit 1):
+Remaining custodyguard /tmp directories: ['/tmp/custodyguard-restored-wigxw_z2']
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+AssertionError
+
+RECORD 12
+COMMAND:
+git grep -n 'chown' -- eval/ tests/
+python3 - <<'PY'
+import subprocess
+result = subprocess.run(['git', 'grep', '-n', 'offline API attempted identity', '--', 'eval/', 'tests/'], capture_output=True, text=True)
+print('Scope: git-tracked files recursively under eval/ and tests/')
+print(f'Exact-message search exit code: {result.returncode}')
+print(f'stdout={result.stdout!r}; stderr={result.stderr!r}')
+assert result.returncode == 1
+PY
+nl -ba tests/quality/test_optional_backend_api_codex241.py | sed -n '1,180p'
+git status --short
+git diff --check
+OBSERVED OUTPUT (exit 0):
+eval/admission/artifact_admission.py:351:        os.chown(destination, -1, os.getegid())
+eval/admission/artifact_admission.py:367:                        os.chown(parent, -1, os.getegid())
+eval/admission/artifact_admission.py:371:                    os.chown(target, -1, os.getegid())
+tests/fixtures/hg_migration_site/adapter-integration-journal.md:2912:    group-readable (directories `0700 -> 0750`, files `0600 -> 0640`, chowned to the platform
+tests/quality/test_optional_backend_api_codex241.py:36:            assert uid == -1, "offline API attempted owner-changing chown"
+tests/quality/test_optional_backend_api_codex241.py:37:            assert gid == os.getegid(), "offline API attempted foreign-group chown"
+tests/quality/test_optional_backend_api_codex241.py:43:    for name in ("chown", "fchown", "lchown"):
+tests/quality/test_optional_backend_api_codex241.py:49:@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+tests/quality/test_optional_backend_api_codex241.py:56:        target = stream.fileno() if operation == "fchown" else path
+tests/quality/test_optional_backend_api_codex241.py:64:@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+tests/quality/test_optional_backend_api_codex241.py:74:        target = stream.fileno() if operation == "fchown" else path
+tests/quality/test_optional_backend_api_codex241.py:102:        ("chown", root, -1, os.getegid()),
+tests/quality/test_optional_backend_api_codex241.py:103:        ("chown", root / "answer.txt", -1, os.getegid()),
+Scope: git-tracked files recursively under eval/ and tests/
+Exact-message search exit code: 1
+stdout=''; stderr=''
+     1	"""Optional integration semantics, using authored bytes and supplied facts only.
+     2	
+     3	Resolution A forbids elevation while allowing identity reads and owner-preserving
+     4	own-group changes required by eval/admission/artifact_admission.py:351.
+     5	"""
+     6	from __future__ import annotations
+     7	
+     8	from copy import deepcopy
+     9	import os
+    10	
+    11	import pytest
+    12	
+    13	from eval.admission import lifecycle_receipt as lifecycle
+    14	from eval.admission import scorer_backend as backend
+    15	from lifecycle_fixtures_codex177 import attest, gate_facts, stage_evidence
+    16	from test_scorer_admission_codex173 import example, offline_only
+    17	from test_scorer_backend_codex213 import request_inputs
+    18	
+    19	
+    20	@pytest.fixture(autouse=True)
+    21	def no_admin_operations(monkeypatch):
+    22	    def refuse(*args, **kwargs):
+    23	        raise AssertionError("offline API attempted privilege elevation or shell execution")
+    24	
+    25	    # Identity reads and own-group export access do not change process identity.
+    26	    # Existing offline_only guards forbid subprocesses and sockets as well.
+    27	    for name in ("setuid", "seteuid", "setreuid", "setresuid", "setgid", "setegid",
+    28	                 "setregid", "setresgid", "setgroups", "system"):
+    29	        if hasattr(os, name):
+    30	            monkeypatch.setattr(os, name, refuse)
+    31	
+    32	    calls = []
+    33	
+    34	    def group_only(operation):
+    35	        def record(path, uid, gid, **kwargs):
+    36	            assert uid == -1, "offline API attempted owner-changing chown"
+    37	            assert gid == os.getegid(), "offline API attempted foreign-group chown"
+    38	            result = operation(path, uid, gid, **kwargs)
+    39	            calls.append((operation.__name__, path, uid, gid))
+    40	            return result
+    41	        return record
+    42	
+    43	    for name in ("chown", "fchown", "lchown"):
+    44	        if hasattr(os, name):
+    45	            monkeypatch.setattr(os, name, group_only(getattr(os, name)))
+    46	    return calls
+    47	
+    48	
+    49	@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+    50	def test_own_group_change_preserves_owner_and_reaches_os(tmp_path, no_admin_operations,
+    51	                                                       operation):
+    52	    path = tmp_path / "own-group.txt"
+    53	    path.write_bytes(b"inert")
+    54	    before = path.stat()
+    55	    with path.open("rb") as stream:
+    56	        target = stream.fileno() if operation == "fchown" else path
+    57	        assert getattr(os, operation)(target, -1, os.getegid()) is None
+    58	        assert no_admin_operations == [(operation, target, -1, os.getegid())]
+    59	    after = path.stat()
+    60	    assert after.st_uid == before.st_uid
+    61	    assert after.st_gid == os.getegid()
+    62	
+    63	
+    64	@pytest.mark.parametrize("operation", ["chown", "fchown", "lchown"])
+    65	@pytest.mark.parametrize("change", ["owner", "foreign_group"])
+    66	def test_elevating_ownership_change_is_refused(tmp_path, no_admin_operations,
+    67	                                             operation, change):
+    68	    path = tmp_path / "refused.txt"
+    69	    path.write_bytes(b"inert")
+    70	    before = path.stat()
+    71	    uid, gid = (0, os.getegid()) if change == "owner" else (-1, os.getegid() + 1)
+    72	    reason = "owner-changing" if change == "owner" else "foreign-group"
+    73	    with path.open("rb") as stream:
+    74	        target = stream.fileno() if operation == "fchown" else path
+    75	        with pytest.raises(AssertionError, match=reason):
+    76	            getattr(os, operation)(target, uid, gid)
+    77	    assert no_admin_operations == []
+    78	    after = path.stat()
+    79	    assert (after.st_uid, after.st_gid) == (before.st_uid, before.st_gid)
+    80	
+    81	
+    82	@pytest.mark.parametrize("operation,args", [
+    83	    ("setuid", (0,)), ("seteuid", (0,)), ("setreuid", (0, 0)),
+    84	    ("setresuid", (0, 0, 0)), ("setgid", (0,)), ("setegid", (0,)),
+    85	    ("setregid", (0, 0)), ("setresgid", (0, 0, 0)), ("setgroups", ([],)),
+    86	    ("system", ("true",)),
+    87	])
+    88	def test_identity_setters_and_shell_remain_forbidden(operation, args):
+    89	    with pytest.raises(AssertionError, match="privilege elevation or shell execution"):
+    90	        getattr(os, operation)(*args)
+    91	
+    92	
+    93	@pytest.mark.parametrize("operation", ["getuid", "geteuid", "getgid", "getegid"])
+    94	def test_identity_reads_remain_available(operation):
+    95	    assert isinstance(getattr(os, operation)(), int)
+    96	
+    97	
+    98	def test_preflight_and_completed_lifecycle_need_no_admin_operations(request_inputs,
+    99	                                                                 no_admin_operations):
+   100	    root = request_inputs["artifact_root"]
+   101	    assert no_admin_operations == [
+   102	        ("chown", root, -1, os.getegid()),
+   103	        ("chown", root / "answer.txt", -1, os.getegid()),
+   104	    ]
+   105	    before = deepcopy(request_inputs)
+   106	    checked = backend.check_backend(**request_inputs)
+   107	    assert checked["status"] == "passed"
+   108	    assert all(checked[key] is False for key in (
+   109	        "measured", "production_authorized", "execution_authorized", "publication_ready"))
+   110	
+   111	    # Empty synthetic outcomes suffice for the lifecycle structural contract.
+   112	    receipt = request_inputs["lifecycle_receipt"]
+   113	    for stage, evidence in stage_evidence(request_inputs["binding"], []).items():
+   114	        if stage in ("score", "seal", "cleanup"):
+   115	            receipt = lifecycle.transition(receipt, stage, evidence)
+   116	    lifecycle.validate_lifecycle_receipt(receipt)
+   117	    snapshot = receipt["events"][-2]["evidence"]["facts"]["snapshot"]
+   118	    assert lifecycle.require_publication(
+   119	        receipt, run_id=request_inputs["binding"]["run_id"],
+   120	        manifest_sha256=request_inputs["binding"]["manifest_sha256"],
+   121	        scope_sha256=request_inputs["scope_sha256"], outcomes_sha256=lifecycle.digest([]),
+   122	        cleanup_sha256=receipt["events"][-1]["receipt_sha256"],
+   123	        snapshot_sha256=lifecycle.digest(snapshot)) is None
+   124	    assert receipt["publication_ready"] is True
+   125	    assert receipt["production_authorized"] is False
+   126	    assert request_inputs == before
+   127	
+   128	
+   129	@pytest.mark.parametrize("missing", ["all", "resources", "filesystems"])
+   130	def test_incomplete_resource_observation_stays_blocked(request_inputs, missing):
+   131	    if missing == "all":
+   132	        request_inputs["runtime_observed"] = {}
+   133	    else:
+   134	        del request_inputs["runtime_observed"][missing]
+   135	    with pytest.raises(backend.ScorerBackendError) as error:
+   136	        backend.check_backend(**request_inputs)
+   137	    assert error.value.code == "resources_contract_refused"
+   138	    assert error.value.receipt["status"] == "blocked"
+   139	    assert error.value.receipt["measured"] is False
+   140	    assert error.value.receipt["production_authorized"] is False
+   141	
+   142	
+   143	@pytest.mark.parametrize("observation,status", [(None, "unknown"), ({}, "blocked")])
+   144	def test_preflight_refusal_can_be_recorded_before_cleanup(request_inputs, observation, status):
+   145	    request_inputs["runtime_observed"] = observation
+   146	    before = deepcopy(request_inputs)
+   147	    with pytest.raises(backend.ScorerBackendError) as error:
+   148	        backend.check_backend(**request_inputs)
+   149	    refusal = error.value.receipt
+   150	    assert refusal["status"] == status
+   151	    assert request_inputs == before
+   152	
+   153	    # The orchestrator records an unsuccessful score stage; preflight itself
+   154	    # never advances lifecycle and never supplies a score.
+   155	    score_status = "unknown" if status == "unknown" else "failed"
+   156	    evidence = attest(request_inputs["binding"], "score", status=score_status)
+   157	    evidence.update(receipt_sha256=lifecycle.digest(refusal), detail=error.value.code)
+   158	    pending = lifecycle.transition(request_inputs["lifecycle_receipt"], "score", evidence)
+   159	    finished = lifecycle.transition(pending, "cleanup", gate_facts(request_inputs["binding"], "cleanup"))
+   160	    lifecycle.validate_lifecycle_receipt(finished)
+   161	    assert finished["status"] == score_status
+   162	    assert finished["events"][-1]["status"] == "passed"
+   163	    assert finished["publication_ready"] is False
+   164	    assert finished["production_authorized"] is False
+   165	    assert "score" not in finished
+   166	    assert request_inputs == before
+ M tests/quality/test_optional_backend_api_codex241.py
+
+RECORD 13
+COMMAND:
+python3 - <<'PY'
+import os
+import subprocess
+import tempfile
+
+with tempfile.TemporaryDirectory(prefix='custodyguard-restored-', dir='/tmp') as scratch:
+    result = subprocess.run([
+        'python3', '-m', 'pytest', '-q',
+        'tests/quality/test_optional_backend_api_codex241.py',
+        f'--basetemp={scratch}/pytest',
+    ], env=dict(os.environ, TMPDIR=scratch))
+raise SystemExit(result.returncode)
+PY
+OBSERVED OUTPUT (exit 0):
+.............................                                            [100%]
+29 passed in 0.11s
+
+RECORD 14
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+roots = sorted(str(path) for path in Path('/tmp').glob('custodyguard-*'))
+print(f'Remaining custodyguard /tmp directories: {roots}')
+assert not roots
+PY
+git diff --stat
+python3 tools/check_dataset_blockers.py
+OBSERVED OUTPUT (exit 0):
+Remaining custodyguard /tmp directories: []
+ .../quality/test_optional_backend_api_codex241.py  | 88 ++++++++++++++++++++--
+ 1 file changed, 81 insertions(+), 7 deletions(-)
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+RECORD 15
+COMMAND:
+git show c45ce9b0:tests/quality/test_optional_backend_api_codex241.py | sed -n '1,35p'
+git show --format=fuller --stat 73074611 -- eval/admission/artifact_admission.py
+python3 - <<'PY'
+from pathlib import Path
+import subprocess
+
+paths = subprocess.run(['git', 'diff', '--name-only'], check=True, capture_output=True, text=True).stdout.splitlines()
+print(f'Changed tracked files before deliverables: {paths}')
+assert paths == ['tests/quality/test_optional_backend_api_codex241.py']
+print('Protected-file edits: none in observed git diff')
+print(f'Test file size: {Path(paths[0]).stat().st_size} bytes')
+PY
+OBSERVED OUTPUT (exit 0):
+"""Optional integration semantics, using authored bytes and supplied facts only."""
+from __future__ import annotations
+
+from copy import deepcopy
+import os
+
+import pytest
+
+from eval import lifecycle_receipt as lifecycle
+from eval import scorer_backend as backend
+from lifecycle_fixtures_codex177 import attest, gate_facts, stage_evidence
+from test_scorer_admission_codex173 import example, offline_only
+from test_scorer_backend_codex213 import request_inputs
+
+
+@pytest.fixture(autouse=True)
+def no_admin_operations(monkeypatch):
+    def refuse(*args, **kwargs):
+        raise AssertionError("offline API attempted identity or privilege operations")
+
+    # These APIs need readable local files, not an identity check or elevation.
+    # Existing offline_only guards forbid subprocesses and sockets as well.
+    for name in ("getuid", "geteuid", "getgid", "getegid", "setuid", "seteuid",
+                 "setreuid", "setresuid", "setgid", "setegid", "setregid",
+                 "setresgid", "setgroups", "chown", "fchown", "lchown", "system"):
+        if hasattr(os, name):
+            monkeypatch.setattr(os, name, refuse)
+
+
+def test_preflight_and_completed_lifecycle_need_no_admin_operations(request_inputs):
+    before = deepcopy(request_inputs)
+    checked = backend.check_backend(**request_inputs)
+    assert checked["status"] == "passed"
+    assert all(checked[key] is False for key in (
+        "measured", "production_authorized", "execution_authorized", "publication_ready"))
+commit 73074611be8a28a1525264846e6433f654231d22
+Author:     Xubqpanda <1227972384@qq.com>
+AuthorDate: Thu Oct 15 07:24:54 2026 +0800
+Commit:     Xubqpanda <1227972384@qq.com>
+CommitDate: Thu Oct 15 07:26:04 2026 +0800
+
+    fix(pristine): enforce readable exports and completed scorer outcomes
+
+ eval/admission/artifact_admission.py | 50 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 47 insertions(+), 3 deletions(-)
+Changed tracked files before deliverables: ['tests/quality/test_optional_backend_api_codex241.py']
+Protected-file edits: none in observed git diff
+Test file size: 7657 bytes
+
+RECORD 16
+COMMAND:
+git diff --check
+python3 tools/check_dataset_blockers.py
+python3 - <<'PY'
+from pathlib import Path
+import re
+import subprocess
+
+report = Path('reports/w-custodyguard.md')
+for path, line in re.findall(r'((?:eval|tests|reports)/[\w./-]+):(\d+)', report.read_text()):
+    rows = Path(path).read_text().splitlines()
+    assert 0 < int(line) <= len(rows), (path, line)
+print('All report file:line citations resolve to existing lines.')
+assert 'FILE_SIZES_PENDING' in Path('reports/w-custodyguard-validation.txt').read_text()
+print('Pending file-size footer will be filled before staging.')
+changes = subprocess.run(['git', 'status', '--short'], check=True, capture_output=True, text=True)
+print(changes.stdout, end='')
+remaining = sorted(str(path) for path in Path('/tmp').glob('custodyguard-*'))
+print(f'Remaining custodyguard /tmp directories: {remaining}')
+assert not remaining
+PY
+OBSERVED OUTPUT (exit 0):
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+All report file:line citations resolve to existing lines.
+Pending file-size footer will be filled before staging.
+ M tests/quality/test_optional_backend_api_codex241.py
+?? reports/w-custodyguard-validation.txt
+?? reports/w-custodyguard.md
+Remaining custodyguard /tmp directories: []
+
+
+NOT VERIFIED:
+- Separate scorer UID reading an export in an actual sandbox/container; resolution B was not attempted.
+- Production H0 authorization, measured dataset outcomes, model endpoints and GPU state.
+- Full quality suite or non-Linux ownership API availability/behavior.
+- Alternative privilege paths such as native libraries or exec APIs beyond this fixture's existing offline guards.
+- Frozen receipt validity; frozen evidence was not edited or rerun.
+- Semantically similar guards using different error text outside the exact-message search.
+
+Transcript formatting: captured command output intentionally retains terminal
+whitespace (including nl and pytest output); code/report whitespace is checked
+normally, and transcript checking permits blank-at-eol only.
+
+COMMITTED FILE SIZES (bytes):
+tests/quality/test_optional_backend_api_codex241.py: 7657
+reports/w-custodyguard.md: 6400
+reports/w-custodyguard-validation.txt: 72379
