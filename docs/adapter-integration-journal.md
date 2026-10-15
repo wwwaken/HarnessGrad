@@ -3934,3 +3934,27 @@ clean; all four named deliverables present.
 - Full container writable-layer snapshots have no SQLite filename filter; mounted/volume completeness remains separate and no Docker commit is tested here. The generic selected-file exporter and single-file materializer still require an authoritative complete contract. Their remaining counterexample is explicitly recorded. AppWorld uses per-app SQLite DBs but its current verifier replays an API log in a fresh world; no AppWorld WAL or score-change incidence is claimed.
 - The same focused tests show 6 failed / 3 passed before the production change and 9 passed after it. Related tests show 161 passed / 3 xfailed / 1 failed: the inherited E5 whole-packet audit has stale source pins for BIRD and SpreadsheetBench already at HEAD. Actual HEAD and working hashes are retained; frozen evidence is not refreshed or weakened. The first test-inventory mistake, corrected baseline, both complete raw control packets and independent reconciliation are preserved.
 - `reports/w-wal-receipts.md`, `reports/w-wal-validation.txt`, `reports/w-wal-evidence/` and `tests/fixtures/hg_wwal/` record paths, numbered source, exact commands, raw results, hashes, denial guards and scratch removal. No benchmark task, model, GPU, endpoint, paid API or Docker call; no frozen receipt or `runs/` change. Only the shared observation/evidence is appended; both shared blockers, all dataset blockers, next_actions/history, gates and production_authorized=false remain unchanged. Work/commit confined to registered `/tmp/hg-wal` on `wg-wal` for parent review.
+## Parent review and merge — w-wal — 2026-10-15
+
+- Merged `16ec1379` (w-wal). Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`; sequencer clean; report present.
+- **A score-changing state-loss defect was reproduced and fixed.** w-wal turned the E5 hint into a
+  concrete case: **WAL loss flipped authored BIRD EX from 0 to 1**, including inside the native
+  bound-input copy, so a lost SQLite sidecar could silently change a score rather than merely
+  degrade evidence. That path now **refuses WAL-format SQLite before scoring**, producing
+  unmeasured evidence and no reward. Nine focused tests pass; the registry suite is 68 passed /
+  3 xfailed. No blocker closed.
+- **The merge needed a specific check, and it passed.** w-wal branched before `w-e6fix` was merged,
+  so `git diff main..HEAD` in its tree *appeared* to revert the e6fix container-teardown fix (the
+  `hg-run-<uuid>` name plus `finally: remove_container(name)` block). That is the same
+  reverse-diff artifact this phase has hit several times. After cherry-picking, the parent verified
+  directly in the merged file that the e6fix fix is still present - `hg-run-` and
+  `remove_container(name)` at `eval/containers/container.py:620` - rather than trusting the merge.
+  A clean cherry-pick is not proof that a peer's fix survived, and this is the check that makes it
+  one.
+- Still in flight and NOT merged: `w-tb89b` (widening Terminal-Bench execution with the local model
+  endpoint) and `w-hostdeps` (pinning the native host dependency surface). Nothing about either is
+  claimed.
+- Resource state: local containers and tests only for w-wal - no model, GPU or endpoint call. GPU
+  samples stayed at 0 % and no utilisation is claimed. Historical runs, frozen receipts and
+  archives were untouched.
