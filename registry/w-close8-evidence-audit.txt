@@ -1,0 +1,128 @@
+Objective evidence audit: the seven reading-(A) closures, field by field
+=======================================================================
+
+Scope and authority
+-------------------
+This file answers one question for the objective's evidence requirement - "every closure records metric,
+coverage, invalid/unmeasured, hash, endpoint, resource, cleanup and comparability, with file+line
+citations" - over the **seven** closures made under reading (A) on 2026-10-15:
+
+    physicsquestions / dataset-journal-gap      (note: "operator decision A")
+    sportsunderstanding / dataset-journal-gap   (same note - it closes both)
+    reasoning_gym / dataset-journal-gap         (note: "second closure")
+    hotpotqa / historical-comparison-receipts   (note: "third closure")
+    strategyqa / dataset-journal-gap            (note: "fourth closure")
+    fever / dataset-journal-gap                 (note: "scoped standing limit, fifth closure")
+    spreadsheetbench / dataset-journal-gap      (note: "sixth closure")
+
+It adds **no** claim, changes **no** blocker, and does not upgrade any source-only closure to a measurement.
+Its only purpose is to make an audit that was previously spread across six notes and six validation files
+readable in one place, including the places where a field is *not applicable*.
+
+The field that makes the rest N/A
+---------------------------------
+Every one of the six `review.notes` entries carries an explicit no-measurement sentence; these were checked
+by substring over `registry/dataset-blockers.json` and are quoted verbatim below. That sentence is the
+authority for every "N/A - no run" cell in the table:
+
+    physicsquestions + sportsunderstanding   "CLOSES NO MEASUREMENT AND CLAIMS NO SCORE: neither dataset has
+                                              ever had a measured run, no coverage counts are asserted"
+    reasoning_gym                            "CLOSES NO MEASUREMENT AND CLAIMS NO SCORE: reasoning_gym has
+                                              never had a measured run, no coverage count is asserted anywhere"
+    hotpotqa                                 "CLOSES NO MEASUREMENT AND CLAIMS NO SCORE: the v4 run stays
+                                              incomplete with effect=null, the 94/1382/1476 coverage stays
+                                              unverified and unbound, unknown outcomes stay unmeasured"
+    strategyqa                               "CLOSES NO MEASUREMENT AND CLAIMS NO SCORE: strategyqa has never
+                                              had a measured run here, F1 and judge accuracy stay excluded"
+    fever                                    "CLOSES NO MEASUREMENT AND CLAIMS NO SCORE: fever has never had
+                                              a measured run here, no coverage count is promoted"
+    spreadsheetbench                         "CLOSES NO MEASUREMENT AND CLAIMS NO SCORE: spreadsheetbench has
+                                              never had a measured run here, no coverage count is promoted,
+                                              measured/selected/trial/invalid/unmeasured and run_id stay null"
+
+Because no closure executed anything, `endpoint`, `resource`, `cleanup` and the run-derived halves of
+`invalid`/`unmeasured` have no value to record: there was no endpoint bound, no resource budget consumed, no
+task tree to clean up and no trial that could be invalid or unmeasured. Recording a number there would be
+fabrication, and recording "0" would be the specific lie `runner.py:1032` names. They are therefore
+**N/A - no run**, not zero.
+
+Field-by-field
+--------------
+
+`metric`
+  RECORDED for the four metric-comparability closures. physicsquestions, sportsunderstanding, strategyqa and
+  spreadsheetbench each have their adopted metric named and delimited from the upstream one in
+  `registry/w-metriccmp-comparability.md` (the file mentions all four by name); the metric statements are
+  also restated in the closure notes. N/A for reasoning_gym, hotpotqa and fever, which claim no metric
+  because they claim no measurement - `fever` additionally records its metric **as a definition only**
+  (`fever_exported_row_conjunctive_strict_at_5`) and says the local branch still promotes singletons, so it
+  cannot be measured until a conjunction-preserving projection exists.
+
+`coverage`
+  RECORDED as an explicit **negative** in every closure: "no coverage count is asserted / promoted"
+  (physicsquestions, reasoning_gym, strategyqa, fever, spreadsheetbench) and "the 94/1382/1476 coverage stays
+  unverified and unbound" (hotpotqa, which is the one closure that had a historical incomplete run). In each
+  case measured/selected/trial and run_id remain null. This is the honest form: the field is answered, and
+  the answer is that there is no coverage to report.
+
+`invalid` / `unmeasured`
+  N/A - no run, for five closures. RECORDED for `hotpotqa` ("unknown outcomes stay unmeasured and never
+  become zeros") and for `spreadsheetbench` ("measured/selected/trial/invalid/unmeasured and run_id stay
+  null"), because in both cases a historical or staged record exists that had to be classified.
+
+`hash`
+  RECORDED where a hash is part of the closure's own evidence, and only there: `strategyqa` (the original
+  evaluator identity, `allenai/strategyqa-evaluator@49b88ed2…`, `evaluator/eval.py`, 5,797 bytes, SHA-256
+  `68c0edcd…`, reproducing upstream blob `9717ac6b…`), `fever` (loader `1776db7e…`, 7,897 bytes, git blob
+  `ab71339b…`; generated tree `ad832160…`) and `spreadsheetbench` (the scorer custody digest, now
+  `98dd6254…`). N/A for physicsquestions, sportsunderstanding and reasoning_gym, whose evidence is a journal
+  coverage review with no acquired object.
+
+  **Corrected during this audit.** A first pass recorded `hotpotqa` under this field on a substring match.
+  Reading the match showed it is `.hashstate` - a *directory name* inside the enumerated withdrawal search
+  scope, not a content digest - so `hotpotqa` has no hash to record and was removed. This is the exact
+  failure mode the common brief warns about: a keyword hit is not a field, and a path name is not evidence.
+
+`endpoint`, `resource`, `cleanup`
+  N/A - no run, in all seven. No closure bound a model endpoint, consumed a resource budget or produced a
+  task tree, so there is nothing to cite. The runtime family's separate records (not these closures) are
+  where endpoint/resource/cleanup evidence lives.
+
+`comparability`
+  RECORDED where the closure establishes a comparability boundary, which is what makes these closures
+  *source-only* rather than measurement closures: `hotpotqa` records the candidate ID's unresolved binding to
+  the reported coverage as "an explicit comparability limit" in `registry/w-hotpotrec-receipts.md`; `fever`
+  records the metric definition/measurement gap (its adopted metric is a definition only, and the local flat
+  branch still promotes singletons); `strategyqa` records that local normalized whole-answer EM is **not** the
+  original benchmark accuracy and that F1 and judge accuracy are excluded; `spreadsheetbench` records that the
+  one-released-variant named-cell metric is not the upstream three-variant soft/hard aggregate;
+  `physicsquestions` and `sportsunderstanding` have their adopted-metric delimitation in
+  `registry/w-metriccmp-comparability.md` (which names both, and `strategyqa` and `spreadsheetbench` as well);
+  and `reasoning_gym`'s limits are in `registry/w-gymelig-eligibility.md` and `registry/w-close3-validation.txt`
+  - **not** in the metric-comparability file, which does not name it at all (checked: 0 occurrences). N/A
+  nowhere: every closure states what may **not** be inferred from it, which is the point of the field.
+
+`run_id`
+  RECORDED explicitly in `hotpotqa` ("run_id=null and effect=null and is never resumed, rerun or
+  overwritten") and `spreadsheetbench` ("…and run_id stay null"). **Not named in the four earlier notes**
+  (physicsquestions/sportsunderstanding, reasoning_gym, strategyqa, fever); that is a phrasing gap in notes
+  written before this wording settled, not an open run - those four closures assert no measured run at all,
+  and their clause tables in `registry/w-close2-validation.txt` (the two journal-coverage blockers),
+  `w-close3-validation.txt` (reasoning_gym), `w-close4-validation.txt` (hotpotqa),
+  `w-close5-validation.txt` (the FEVER metric/object integration) and `w-close6-validation.txt` (fever)
+  carry the pre-closure `next_action` and its dispositions. This audit deliberately **does not rewrite those
+  notes**: a registry note is a record of what was written then, and retro-fitting a field name into it
+  would falsify that record. The gap is recorded here instead.
+
+What this audit did NOT verify
+------------------------------
+* It did not re-derive any clause table; those remain the authority in the six `w-close*-validation.txt`
+  files.
+* It did not re-open the two permanent-refusal-adjacent questions or touch the four refusals at all.
+* It did not check the *closed* datasets' worker reviews line by line; it checked which fields each closure
+  note names, by substring, over `registry/dataset-blockers.json`, and then read the match for every field it
+  was about to call RECORDED. That second step is not optional: it is what caught `hotpotqa`'s `.hashstate`
+  false positive, and it is why the `hash` and `comparability` entries above state who does *not* record the
+  field rather than only who does.
+* It makes no claim that these seven closures meet any requirement beyond the objective's field list; in
+  particular it does not claim they contain measurement evidence, because they contain none by design.
