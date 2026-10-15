@@ -3373,3 +3373,30 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   No production code, adapter or frozen receipt edits; no scorer/benchmark,
   model/GPU/endpoint/container execution, H0 trial or runs/ write. Commit only
   in this worktree for parent review; main is untouched.
+## Parent review and merge — w-scope — 2026-10-15
+
+- Merged `2ef6f75` (w-scope). Result `f1f2c1b`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`. 56 tests passed.
+- **A scope question was settled factually rather than argued: 0 of 28 datasets declare or select
+  `pristine-offline`.** Three clauses of `artifact-only-state-export` - E1, E2 and E3 - are
+  conditioned on "pristine scorers", and the platform's own topology survey found that the 23
+  surveyed datasets route through actor-workdir or snapshot-service with none opting in. The
+  worker verified the declaration count from the adapters and the dispatcher rather than from a
+  report, and `appworld` and `terminal_bench` remain the only datasets declaring any class at all
+  (both `snapshot-service`).
+- **It chose the honest middle path, which is what the brief asked for and what the temptation
+  was to skip.** It recorded E1/E2/E3 as satisfied *for today's empty instance set* with the
+  mechanism implemented and control-verified under documented caller obligations, and it preserved
+  the future opt-in requirements - while explicitly **not** claiming any real-dataset pristine
+  validation. It did not use the vacuity to force a closure, and it did not refuse to record the
+  scope finding out of caution. E4/E5/E6 remain PARTIAL and **no blocker closed**, which is
+  consistent with everything else in the registry.
+- The distinction this preserves is the one that matters for a reader: "the contract machinery
+  exists and a control exercises it" is a different statement from "a real dataset's pristine
+  export is validated", and the registry now says the first and not the second.
+- Still in flight at the end of this round and NOT merged: `w-offscorer3`, extending
+  official-execution coverage to the remaining uncovered datasets (it has already committed GAIA,
+  Tau-Bench, LiveCodeBench, ChessBench and BFCL controls). Nothing about its result is claimed.
+- Resource state: code-and-record determination only for w-scope - no benchmark, model, GPU,
+  endpoint or container execution. Both GPUs stayed idle and no utilisation is claimed.
+  Historical runs, frozen receipts and archives were untouched.
