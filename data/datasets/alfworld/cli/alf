@@ -26,8 +26,8 @@ interpreter, so each invocation rebuilds the episode and replays the log up to t
 current action. That is O(n^2) in the number of steps, and it is deliberate: it is the
 only design in which the environment the agent sees and the environment the check
 replays are built by *exactly the same code path*, which is what makes "the same
-trajectory" a fact rather than a hope. With a 30-step budget the cost is a few tens of
-seconds for a whole episode.
+trajectory" a fact rather than a hope. The default step budget comes from the shared
+`gym_env.STEP_BUDGET`; replay cost grows with that budget.
 
 What the log looks like (one JSON object per line):
     {"kind": "action", "step": 0, "action": "go to desk 2"}

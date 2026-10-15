@@ -178,8 +178,11 @@ def _score(args, inputs, receipt) -> int:
     won_per_step = [bool(r["won"]) for r in state["records"]]
     won_step = next((i for i, w in enumerate(won_per_step) if w), None)
     replayed = state["records"]
-    budget_exhausted = (len(actions) > len(replayed)
-                        and not (replayed and replayed[-1]["done"]))
+    # TextWorld's `done` also signals the step cap, so it cannot distinguish a win
+    # from truncation. Reaching the cap is observable even with no extra logged
+    # action; exhaustion additionally means the goal was never satisfied.
+    budget_reached = len(replayed) >= args.budget
+    budget_exhausted = budget_reached and not state["won"]
     # A command TextWorld did not understand comes back as "Nothing happens." It still
     # cost a step, and recording it is how a reader tells "the agent tried and was
     # refused" apart from "the agent did nothing".
@@ -195,6 +198,7 @@ def _score(args, inputs, receipt) -> int:
         won_at_step=won_step,
         actions_replayed=len(replayed),
         actions_not_replayed=len(actions) - len(replayed),
+        budget_reached=bool(budget_reached),
         budget_exhausted=bool(budget_exhausted),
         episode_done=bool(replayed and replayed[-1]["done"]),
         no_op_actions=no_ops,

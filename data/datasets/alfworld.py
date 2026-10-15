@@ -77,7 +77,8 @@ The split
 ---------
 The benchmark's own evaluation split is *all* of `valid_unseen` and it declares no
 train/eval division. The platform needs one, so it is **imposed here**, derived from the
-task id by hash so that adding or removing a task does not reshuffle the other side
+game id (the task id before `__trial_`) by hash so a game's demonstration trials
+stay together and adding or removing a task does not reshuffle the other side
 (`_is_eval`, the same rule `data/datasets/terminal_bench.py` uses). A score on the eval side is
 a score on about a third of `valid_unseen`, not on the benchmark; `HG_ALFWORLD_SPLIT=none`
 runs every task as eval and accepts the driver's warning.
@@ -139,7 +140,7 @@ VERIFY_DIR = ASSETS / "verify"
 
 #: The step budget and the two filenames are **declared once**, in
 #: `data/datasets/alfworld/lib/gym_env.py`, which the agent's CLI and the check both import.
-#: Repeating `30` here would be a second declaration that can drift from the one the
+#: Repeating the number here would be a second declaration that can drift from the one the
 #: environment is built with -- and a drift there means an action is legal for the agent
 #: and truncated for the check. Loaded by file path rather than by `import gym_env`,
 #: because `lib/` is not on `sys.path` and putting it there from inside a dataset module
@@ -155,7 +156,7 @@ def _load_gym_env():
 
 _GYM_ENV = _load_gym_env()
 
-#: The community/sibling-project protocol: at most 30 actions per episode.
+#: Upstream ALFWorld's 50-step episode limit; see `gym_env.py` for the source.
 STEP_BUDGET = _GYM_ENV.STEP_BUDGET
 GAME_IN_WORKDIR = _GYM_ENV.GAME_FILENAME
 LOG_IN_WORKDIR = _GYM_ENV.LOG_FILENAME
@@ -520,20 +521,22 @@ def load() -> tuple[list[dict], dict[str, str]]:
 
 
 def _is_eval(task_id: str) -> bool:
-    """A deterministic third, by hash of the task id.
+    """A deterministic third, by hash of the game id before the trial suffix.
 
-    Hashed rather than sliced off the sorted list so that adding or removing a task
+    All demonstration trials of a game stay on the same side. Hashed rather than
+    sliced off the sorted list so that adding or removing a task
     does not reshuffle which side every other task is on -- a split that moves under
     the benchmark is a split whose past scores cannot be compared with its future ones.
     """
-    return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
+    game_id = task_id.split("__trial_")[0]
+    return hashlib.sha256(game_id.encode()).digest()[0] % 3 == 0
 
 
 #: One environment for every task: the host, because the hard constraint of this
 #: exercise is that nothing here needs Docker. `files` cannot carry resource or timeout
 #: fields (`data/scaffolds/registry.py::_check_env` refuses them), so the platform's defaults
-#: apply: 2 cpus, 4 GB, 300 s for the harness and 300 s for the check. The CLI's
-#: replay-from-scratch design keeps a 30-step episode inside that.
+#: apply: 2 cpus, 4 GB, 300 s for the harness and 300 s for the check. Runtime at the
+#: upstream 50-step cap must be assessed separately from these resource defaults.
 DEFAULT_ENV: dict = {"kind": "files"}
 
 ENV: dict[str, dict] = {r["task_id"]: {"kind": "files"} for r in _RECORDS}

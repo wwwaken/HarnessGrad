@@ -108,12 +108,12 @@ def test_the_verifier_declares_the_contract_paths(alfworld):
 
 
 def test_the_step_budget_is_declared_once(alfworld):
-    """One number, read by the adapter, the CLI and the check. A second `30` drifts."""
+    """One upstream limit, read by the adapter, the CLI and the check."""
     gym_env = _load_module("alfworld_gym_env_test",
                            ROOT / "data" / "datasets" / "alfworld" / "lib" / "gym_env.py")
     check = _load_module("alfworld_check_budget_test",
                          ROOT / "data" / "datasets" / "alfworld" / "verify" / "check.py")
-    assert alfworld.STEP_BUDGET == gym_env.STEP_BUDGET == check.gym_env.STEP_BUDGET == 30
+    assert alfworld.STEP_BUDGET == gym_env.STEP_BUDGET == check.gym_env.STEP_BUDGET == 50
     # The CLI has no budget of its own either: its default comes from `gym_env`.
     cli = (ROOT / "data" / "datasets" / "alfworld" / "cli" / "alf").read_text()
     assert "gym_env.STEP_BUDGET" in cli
