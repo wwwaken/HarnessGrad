@@ -1,0 +1,218 @@
+{
+  "agreements": 11,
+  "cases": [
+    {
+      "agreement": false,
+      "id": "valid_full_call",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 1.0
+    },
+    {
+      "agreement": false,
+      "id": "accepted_width_alternative",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 1.0
+    },
+    {
+      "agreement": false,
+      "id": "string_normalization",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 1.0
+    },
+    {
+      "agreement": false,
+      "id": "fenced_call",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 1.0
+    },
+    {
+      "agreement": true,
+      "id": "wrong_function",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "wrong_width",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "wrong_color",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "wrong_type",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "missing_required",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "unexpected_argument",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "duplicate_calls",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": null,
+      "id": "empty_call_list",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": false,
+      "official_error": "SyntaxError",
+      "official_score": null
+    },
+    {
+      "agreement": null,
+      "id": "bare_local_contract",
+      "local_error": null,
+      "local_score": 1.0,
+      "numeric_comparison": false,
+      "official_error": "AttributeError",
+      "official_score": null
+    },
+    {
+      "agreement": null,
+      "id": "none_local_contract",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": false,
+      "official_error": "AttributeError",
+      "official_score": null
+    },
+    {
+      "agreement": null,
+      "id": "malformed_syntax",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": false,
+      "official_error": "SyntaxError",
+      "official_score": null
+    },
+    {
+      "agreement": false,
+      "id": "literal_binop",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 1.0
+    },
+    {
+      "agreement": true,
+      "id": "variable_argument",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "negative_integer",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "unary_plus",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": true,
+      "id": "positional_args",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": true,
+      "official_error": null,
+      "official_score": 0.0
+    },
+    {
+      "agreement": null,
+      "id": "empty_response",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": false,
+      "official_error": "SyntaxError",
+      "official_score": null
+    },
+    {
+      "agreement": null,
+      "id": "invalid_schema_type",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": false,
+      "official_error": "KeyError",
+      "official_score": null
+    },
+    {
+      "agreement": null,
+      "id": "empty_reference",
+      "local_error": null,
+      "local_score": 0.0,
+      "numeric_comparison": false,
+      "official_error": "IndexError",
+      "official_score": null
+    }
+  ],
+  "controlled_inputs": 23,
+  "divergences": 5,
+  "local_errors": 0,
+  "nonnumeric_inputs": 7,
+  "numeric_comparisons": 16,
+  "official_errors": 7
+}

@@ -1,0 +1,1170 @@
+{
+  "adapter_sha256": "de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17",
+  "cases": [
+    {
+      "decoded": null,
+      "error": null,
+      "id": "valid_full_call",
+      "prediction": "paint_box(width=2, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=2, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "accepted_width_alternative",
+      "prediction": "paint_box(width=3, color='blue', unit='cm')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=3, color='blue', unit='cm')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "string_normalization",
+      "prediction": "paint_box(width=2, color='B-l u_e')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=2, color='B-l u_e')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "fenced_call",
+      "prediction": "```\npaint_box(width=2, color='blue')\n```",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "```",
+            "paint_box(width=2, color='blue')",
+            "```"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "wrong_function",
+      "prediction": "other_box(width=2, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "other_box(width=2, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "wrong_width",
+      "prediction": "paint_box(width=99, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=99, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "wrong_color",
+      "prediction": "paint_box(width=2, color='red')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=2, color='red')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "wrong_type",
+      "prediction": "paint_box(width='2', color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width='2', color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "missing_required",
+      "prediction": "paint_box(color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "unexpected_argument",
+      "prediction": "paint_box(width=2, color='blue', extra=1)",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=2, color='blue', extra=1)"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "duplicate_calls",
+      "prediction": "[paint_box(width=2, color='blue'), paint_box(width=2, color='blue')]",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "[paint_box(width=2, color='blue'), paint_box(width=2, color='blue')]"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "empty_call_list",
+      "prediction": "[]",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "[]"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "bare_local_contract",
+      "prediction": "paint_box",
+      "raw_return": {
+        "correct": true,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box"
+          ],
+          "subset": "simple"
+        },
+        "reward": 1.0,
+        "why": "function-name set matches"
+      },
+      "score": 1.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "none_local_contract",
+      "prediction": "NONE",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "malformed_syntax",
+      "prediction": "paint_box(width=",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width="
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "literal_binop",
+      "prediction": "paint_box(width=1+1, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=1+1, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "variable_argument",
+      "prediction": "paint_box(width=missing, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=missing, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "negative_integer",
+      "prediction": "paint_box(width=-2, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=-2, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "unary_plus",
+      "prediction": "paint_box(width=+2, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=+2, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "positional_args",
+      "prediction": "paint_box(2, 'blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(2, 'blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "empty_response",
+      "prediction": "",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "invalid_schema_type",
+      "prediction": "paint_box(width=2, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=2, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    },
+    {
+      "decoded": null,
+      "error": null,
+      "id": "empty_reference",
+      "prediction": "paint_box(width=2, color='blue')",
+      "raw_return": {
+        "correct": false,
+        "official": {
+          "category": "simple",
+          "evidence_redacted": true,
+          "expected_functions": "<redacted>",
+          "metric": "function-name set equality (not the official BFCL score)",
+          "no_tool_needed": false,
+          "official_metric": "BFCL compares the full call including arguments; the answer file expresses each argument as a free-form list of acceptable values, which no scorer can enumerate. Only the names are decidable from the data.",
+          "predicted_functions": [
+            "paint_box(width=2, color='blue')"
+          ],
+          "subset": "simple"
+        },
+        "reward": 0.0,
+        "why": "function-name set differs"
+      },
+      "score": 0.0
+    }
+  ],
+  "identity": {
+    "archive_path": "tests/fixtures/hg_bfcl/responses/archive.body",
+    "archive_sha256": "57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe",
+    "commit": "ea13468e4423454d0c213704fb87cf7cb3990433",
+    "custody_inventory_path": "tests/fixtures/hg_bfcl/inventory.json",
+    "custody_inventory_sha256": "425d168c19b864b3367feae22c161f377b4d080386b4ed3b491f6aeb79b17562",
+    "metadata_receipts": {
+      "tests/fixtures/hg_bfcl/responses/commit.body": "e9f5ca4365d35fe97b3bf8c5497c3859e54625871dde06b05466609892d515f8",
+      "tests/fixtures/hg_bfcl/responses/tag.body": "8c0af1047736edde0312513fd217bb4168fc6fd052a221a1212cfba2d537a64f"
+    },
+    "repository": "https://github.com/ShishirPatil/gorilla",
+    "root_tree": "b34aa53a73491f42dc69b8b18c92448d7c311f50",
+    "sources": {
+      "ast_checker.py": {
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+        "path": "tests/fixtures/hg_woffscorer3/bfcl/official-source/ast_checker.py",
+        "sha256": "58a8a1d8a42ec4f7e0f340a8bf11ab4035c54d38d933ae2621f22bbc7c8d1c9b"
+      },
+      "utils.py": {
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+        "path": "tests/fixtures/hg_woffscorer3/bfcl/official-source/utils.py",
+        "sha256": "153bb33a9515ea2d6ee6a1387faaa464c7be4fe9c6a9f88cc17ad23a1cc306d2"
+      }
+    },
+    "tag": "refs/tags/v1.3",
+    "verified_member_count": 83,
+    "verified_members": [
+      {
+        "bytes": 11357,
+        "git_blob_sha1": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "original_path": "LICENSE",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/LICENSE",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/constants/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 4164,
+        "git_blob_sha1": "66e7308baa11512903656ae26e0efa2c998e87a1",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/constants/category_mapping.py",
+        "sha256": "c08dfe14283990bc4f67333183d8c14a2506da6d99ac00c6ef5f018dd44757fc"
+      },
+      {
+        "bytes": 1395,
+        "git_blob_sha1": "79d1fd0a4bd73aa34c2311227af0762bc3d640c9",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/column_headers.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/constants/column_headers.py",
+        "sha256": "8c84e7432950d5755e55c3ff5399f725e66a55bc42caf5cfebd2fac5e49e3ff5"
+      },
+      {
+        "bytes": 1463,
+        "git_blob_sha1": "37eb080480daff689748601c2c77179578c187e3",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/default_prompts.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/constants/default_prompts.py",
+        "sha256": "eeaf03cb3594666b527993160d6b6b18ee219fee6b3ab1672ef71202cc9f9721"
+      },
+      {
+        "bytes": 1159,
+        "git_blob_sha1": "04b769c682eabf9f770e436db357ad55992c4dbc",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/constants/eval_config.py",
+        "sha256": "cc87be460aa472c676e9813f35c07e6631b70477ce1423169d520922acc346d2"
+      },
+      {
+        "bytes": 71573,
+        "git_blob_sha1": "e332d00c79592ef9d35e6511f7d199e048bd9a16",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py",
+        "sha256": "26bff7e39e1ea018c5fd5a55882a0020a98f63f76068ece29e68f4ff6e8c4cb1"
+      },
+      {
+        "bytes": 1813,
+        "git_blob_sha1": "fdbdde48402f8f2812b146f9b7341b6aae9e55b8",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/constants/type_mappings.py",
+        "sha256": "1702fb67afbe2c492608e58e2b7d02e46381f50166b47f3c952f76e34c7cd3bd"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 24916,
+        "git_blob_sha1": "214f3ba55c012691761913b6aca68ab7bc4aa38b",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+        "path": "tests/fixtures/bfcl_ast_source/retry-codex227/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+        "sha256": "58a8a1d8a42ec4f7e0f340a8bf11ab4035c54d38d933ae2621f22bbc7c8d1c9b"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 15716,
+        "git_blob_sha1": "7d2b141dfcb8e527df6424893e60a833eb69f3e1",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py",
+        "sha256": "2fd4f4b0443b3dd974a1723bb4e45c086d7b352631062da7807ad1ad40706604"
+      },
+      {
+        "bytes": 11706,
+        "git_blob_sha1": "4205b92e05af83d2e61a7bf4bd2530718b57acee",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py",
+        "sha256": "a114e9ff75c025cb52787ac33d6c2fbaa390905c6125a2b3c6afebab232bb5e4"
+      },
+      {
+        "bytes": 20789,
+        "git_blob_sha1": "0ac9bd7a11dd73e3116971d925ca8383fcac0267",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner.py",
+        "sha256": "31f1420ae78709920d2fc49ceb93ea3dc451379cf5f320ac0b02b9845d0cbb36"
+      },
+      {
+        "bytes": 19856,
+        "git_blob_sha1": "1de6462be8be9cc91d5a0e95c69e2c6fd6fc1a0d",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/eval_runner_helper.py",
+        "sha256": "3bcfbb32ea37e05666f8ef2743bb7f73b2982b1775a1bd132a2204c159516389"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 13592,
+        "git_blob_sha1": "34b36715cdfaa4464ba1be137af4d30e85da8efb",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_checker.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_checker.py",
+        "sha256": "b3b787515eda3bf0e365e39634a8fc7f831763f010f716d35d86f96fd5aab1b5"
+      },
+      {
+        "bytes": 5997,
+        "git_blob_sha1": "57eb6efdd6312a5e8dd015cdf2486f31a575aac6",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py",
+        "sha256": "bfa5dacec5f2236117d4bb069d173018675e9eb38f35565eda3bd7c3881f3435"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 14037,
+        "git_blob_sha1": "e95529179d084d5974fc3947acc1c54d23b30706",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/claude.py",
+        "sha256": "5247034b7817a147e4500f86eb6429033dfc820007f8e32e2198d4d905fc3ab8"
+      },
+      {
+        "bytes": 11984,
+        "git_blob_sha1": "4a4f023cb49f19ee480a67948a6a15f1072a7d76",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/cohere.py",
+        "sha256": "7dad580d2d51c8906224a97446e8132333beb7739acc2abc0b1e76fc32575bf2"
+      },
+      {
+        "bytes": 3501,
+        "git_blob_sha1": "e75234a2afeab65c2060e5c42f9bc45b06db6a39",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/databricks.py",
+        "sha256": "c7015bd77b31c0f8c120cf30631b66156c0be0b1aaa61a4eef6d1854e17284f6"
+      },
+      {
+        "bytes": 6208,
+        "git_blob_sha1": "da3904505f3e8b15a5932974a96ed518d1146e48",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/deepseek.py",
+        "sha256": "ccb39a92644d908df9d58357d2fb94967fd0a0b0b797ebfea4fd410b470f774a"
+      },
+      {
+        "bytes": 507,
+        "git_blob_sha1": "0874f52266381fd9f5c72b9d155b660ba549f5ed",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/dm_cito.py",
+        "sha256": "d1ec30eceb1793891ab17a173e79358c13c9e14ffae9844c3bfa4a702021264b"
+      },
+      {
+        "bytes": 3989,
+        "git_blob_sha1": "26dfcc85c2e96d1f362463f5e5f76dd1fc8e8215",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/fireworks.py",
+        "sha256": "993b3558b4c2acf7785c0e24464a031d0bab7c1968cc3636030b731720651155"
+      },
+      {
+        "bytes": 586,
+        "git_blob_sha1": "402e5e2088c6a4b070e78f88f9e067cfa21e7260",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/functionary.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/functionary.py",
+        "sha256": "1a2dda6e412eaebdf293a4d12f3fc31f8a737a717812266b80e39787112c9d48"
+      },
+      {
+        "bytes": 13303,
+        "git_blob_sha1": "6fe9215a8fabb3e692e524bf65e07da65fa52457",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gemini.py",
+        "sha256": "be6316af964ed343d78c9189d908347d78ecd2a6fe8e95cb61fac9a1735987c7"
+      },
+      {
+        "bytes": 451,
+        "git_blob_sha1": "ca6e80c01876785b860133f7dab10b89fc948788",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gogoagent.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gogoagent.py",
+        "sha256": "3d3a07e10e7a8801bf55254265b4039eadd673079864f69f5de0f458c1ea863d"
+      },
+      {
+        "bytes": 3805,
+        "git_blob_sha1": "9099185fad74115ad6264f74b1296e6e35158eb3",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/gorilla.py",
+        "sha256": "9c833a1f8cadf161471c12c4b5a23bd2cf431a0a9236691f4f29d2267cda0fd0"
+      },
+      {
+        "bytes": 1074,
+        "git_blob_sha1": "e75cbfc77237a897e45721dc03cd3de8d90559c8",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/grok.py",
+        "sha256": "8e62414565d3bd2b4bee974902139d4fdf3b1bde987efce1a1d07c6396dd454b"
+      },
+      {
+        "bytes": 2806,
+        "git_blob_sha1": "bd45f960781b74db58d791451dbb16d6b2069a49",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/ling.py",
+        "sha256": "55485a65955acb63d028690899dca98e918c046f47fcf53565afe33db3c2c12a"
+      },
+      {
+        "bytes": 4846,
+        "git_blob_sha1": "e5cd82326cc08accb7985cce4a12e0044ce4cf93",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mining.py",
+        "sha256": "b5ee92d035a7fe90c70da43f5f52324c3ff75e5a06fd4a0cca18ac46880aa223"
+      },
+      {
+        "bytes": 8200,
+        "git_blob_sha1": "5b0e523476e30cb4567da327423141573c234bd1",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/mistral.py",
+        "sha256": "d717054a46a651cb184a4a32234c5f8423d1c77c7bbbc0fd2f00b61b2b6cf537"
+      },
+      {
+        "bytes": 4383,
+        "git_blob_sha1": "39ac32cb2762d6cb351bf721b8403ccff17cf186",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nemotron.py",
+        "sha256": "b480518998ad1d1d8562a25f08e12e751dc4a0569f03edd0c2db1afd16141bac"
+      },
+      {
+        "bytes": 7683,
+        "git_blob_sha1": "f64a3b260c3dc09afec868707e6cc50eb835d172",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nexus.py",
+        "sha256": "d135f8fdb4f8622f3f6622e3ed305ad43ef0c1df3957a8edb419e11c15055e6d"
+      },
+      {
+        "bytes": 7574,
+        "git_blob_sha1": "11ad37ed9cc456ee85d7b7a3ebf849312823c89b",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nova.py",
+        "sha256": "c5c9aeaeb5a3186f41c071bc2e26ee7c6a3cfff1336f68ef8e5425cdd55bc590"
+      },
+      {
+        "bytes": 1733,
+        "git_blob_sha1": "38f01b28f78029d09f212efa639e1fc37a8b0c14",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/novita.py",
+        "sha256": "70a1f55106b4bcc5171d37f99bde5e1c2ca876210466869713a3fb6d9d9f2088"
+      },
+      {
+        "bytes": 2885,
+        "git_blob_sha1": "0cf3029fddf31783059d7d2681e4c7cd379771d2",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/nvidia.py",
+        "sha256": "ee220a8d78732714f8783abc5c24dc97f80d59d57891e8636d43704217cfe008"
+      },
+      {
+        "bytes": 10871,
+        "git_blob_sha1": "8665234b651860eb8ee80bf7922936de46ee9ce2",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_completion.py",
+        "sha256": "b84c67a86190e1b8dbc38e72cb5f175ad106b1017cf14f19655318f3379ba00a"
+      },
+      {
+        "bytes": 9874,
+        "git_blob_sha1": "e2777bf49d419a8c99e289739232dd93666dc66b",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/openai_response.py",
+        "sha256": "305cb4f5d3e431aca5cbe3449d43ff771d021392b2a9db4aaff58d3dfa330d7a"
+      },
+      {
+        "bytes": 12526,
+        "git_blob_sha1": "9ce4e7dcb4543e3dec889839f01fc8e772201451",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/qwen.py",
+        "sha256": "036f2f4d6aaecedba1692593a291518bc64e888308c39a8e18c25cf18a7c4df2"
+      },
+      {
+        "bytes": 1352,
+        "git_blob_sha1": "9e0e1042b1050cc4c929e19eb6cd240b635ad5b2",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/writer.py",
+        "sha256": "dbaf6dc6fc629ead1275598976751bd0882f7373d2af0de60a0fab9a3fa76501"
+      },
+      {
+        "bytes": 5295,
+        "git_blob_sha1": "5efbf6c0a73184ff11592cb44db83c45f8fb820e",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/yi.py",
+        "sha256": "e9add376405956cfee5fd343c30fc745f1f127b34b88caf2993014bde13582ec"
+      },
+      {
+        "bytes": 39291,
+        "git_blob_sha1": "6899b8dce1444fa71e4ab86e4c6c995e988053e7",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/base_handler.py",
+        "sha256": "4a2f4e677d1f6930f396dbc92c50138f56268f970de7e4f815fb801607cafad1"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 9291,
+        "git_blob_sha1": "4e4beee7c532bcc6eee99998189db750252c0b64",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/arch.py",
+        "sha256": "d5939cf1cd4424dcf93657ea04ca759dde02e6697b1aefb734a216fe70d2fff8"
+      },
+      {
+        "bytes": 16629,
+        "git_blob_sha1": "e26dd8a8c62062be672cb6bd8fb6359666d8fb7c",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/base_oss_handler.py",
+        "sha256": "3304c7e94fcc3a9ff873759590a7f1dccf1a6a437dd31c554eb4d507e9e8435c"
+      },
+      {
+        "bytes": 982,
+        "git_blob_sha1": "ceda370bcff7f529d6f3f15c1ca10cd9b73bc4d7",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bielik.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bielik.py",
+        "sha256": "f5482a9cb7f0e203be65f86759824bee73eeeed66b3024d012483b37bd521645"
+      },
+      {
+        "bytes": 4602,
+        "git_blob_sha1": "67b896665bbc80c5f304f971134203ea6f7c3d16",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/bitagent.py",
+        "sha256": "8f755768c1806dddd511f8ff106a4387582af2b061b27db7fff64b5d55ea987f"
+      },
+      {
+        "bytes": 3417,
+        "git_blob_sha1": "0c4af8f09c21dad7e74e7db617d8709748bb24ed",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek.py",
+        "sha256": "e6357a9006ad1aeeeab27423ef18f4e17e5dba8615a5c4f90a9c91f9f656905f"
+      },
+      {
+        "bytes": 11421,
+        "git_blob_sha1": "b425bfe87a99c48dcb8aefc3d6262b26013b78df",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_coder.py",
+        "sha256": "4c07edd6f5472c35a000a128832e5e0515dbeb70577e6f8efdc86a14952fb993"
+      },
+      {
+        "bytes": 10186,
+        "git_blob_sha1": "62994859a90cccd00ac07fa2888d8d138bbdbc17",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py",
+        "sha256": "59b04da511730e7bfeb1b8c3e38f70ca24d48f3bef73afcd7a0f30bfc7fc182b"
+      },
+      {
+        "bytes": 3466,
+        "git_blob_sha1": "d9b15517a89f223bfdd721f7c069dede1d14bf7b",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/falcon_fc.py",
+        "sha256": "440293955ad874fab0729d562f925941627aea8f2487dab3e5a393011959dd29"
+      },
+      {
+        "bytes": 3805,
+        "git_blob_sha1": "3b5c3985525c4e433be52abbff5e1a16c61dd73a",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/gemma.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/gemma.py",
+        "sha256": "b2f8ec980a49c6719de3e9e18f5cb25ec54484f4e686b2c89f2d1a5fd95108d3"
+      },
+      {
+        "bytes": 1402,
+        "git_blob_sha1": "a27ad97a4d2c43dd9d55650e551a465570e24873",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glaive.py",
+        "sha256": "7252a759b7d7187c7a9b551fbacfb125e8cd7742dc3a3f6ab8984ff358d9d5ea"
+      },
+      {
+        "bytes": 5399,
+        "git_blob_sha1": "dd81ed0ea398d36195afe9350c12290db70c05b6",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/glm.py",
+        "sha256": "3e49ee7611c28ebe5d52af0f8043abac88800ed414c4c932f02e4658828d2e15"
+      },
+      {
+        "bytes": 4484,
+        "git_blob_sha1": "9bbbc1e122bac761a7ec62864aa50840b44782da",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite.py",
+        "sha256": "b56874969035189cb0b4e915837c571d4d44221f00acb1eb3a78353f34c74fbe"
+      },
+      {
+        "bytes": 13609,
+        "git_blob_sha1": "2b303b50877122bcc508fe6eef30d7dcc40eac39",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/granite_3.py",
+        "sha256": "0cfef9fc3940310bf592ddb18758e6200a172b2d484e9668aa7cb715ccac2c97"
+      },
+      {
+        "bytes": 8954,
+        "git_blob_sha1": "fee6ab74def4523a97a9615c3350df53acdf9d8b",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hammer.py",
+        "sha256": "eebf156bd5febbbaa7251368f508b553cabb0762dca31073c8effbfab0bbc193"
+      },
+      {
+        "bytes": 5117,
+        "git_blob_sha1": "2eb06b52459b21a59482ea7ced7195a2e6664a4b",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/hermes.py",
+        "sha256": "be6f72048f93ddd5e646012eb4cf7ae07ad637d8101e900d522ce24fc4e05a28"
+      },
+      {
+        "bytes": 2480,
+        "git_blob_sha1": "59c28c8a1567d4b08e607a359457500930d617a3",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama.py",
+        "sha256": "43d6a5931abc1050510b88b1055c4ffb66aeaecfe15ea0275806ef3edc10c1ee"
+      },
+      {
+        "bytes": 11429,
+        "git_blob_sha1": "9df2e225fb7bf3722a4cb14a94a72c9ce0a5016c",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/llama_3_1.py",
+        "sha256": "6ad5c7ae2921ad2dae37a8b0b45da64e76fc7c80bae6bf982863876e0c792549"
+      },
+      {
+        "bytes": 854,
+        "git_blob_sha1": "861c852b11f7b8072c711d802bea2effef623db2",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm.py",
+        "sha256": "35c3aa1b1fec5467a8f21622e9dd6034ab2aa49d1321bf200da84a00bc0bf934"
+      },
+      {
+        "bytes": 20512,
+        "git_blob_sha1": "d52b9207277b5d71d789612a316b8ff225164f32",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/minicpm_fc.py",
+        "sha256": "7948881d88c81078cf8d580c3d19b7e3eadb80cdcc7542d08607dc293c437bd3"
+      },
+      {
+        "bytes": 12676,
+        "git_blob_sha1": "cc925980980bdc886756738337793b9ea7aab7ba",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/mistral_fc.py",
+        "sha256": "11686f33c34b2bf67aaab5911e5862acac47fc543dc0a95fc01f249e03d6362f"
+      },
+      {
+        "bytes": 2490,
+        "git_blob_sha1": "71492c91d8a2c7bb2443e29cf48763bbbcc98b2a",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi.py",
+        "sha256": "457d6f9bf4a5cfdad6438d2d908eb378800a3ba52807a4081d442c6bb1b774e4"
+      },
+      {
+        "bytes": 9823,
+        "git_blob_sha1": "b52e05461cf54232e6b2a42e41b45ecd146507f6",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/phi_fc.py",
+        "sha256": "07e28e8d7129ac0de92c494599413364cae3f0738d221794a747668bd349365f"
+      },
+      {
+        "bytes": 917,
+        "git_blob_sha1": "a1e7c45fc425121ca799d0b1a290c0d8990e8397",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/quick_testing_oss.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/quick_testing_oss.py",
+        "sha256": "2f2d30416518ffa744138feb1608e305bb5b5249843538a8e67411ecc878e2ba"
+      },
+      {
+        "bytes": 8747,
+        "git_blob_sha1": "f24a4c8f847158ac19785191da614c3650a808cb",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen.py",
+        "sha256": "8354bf77dca40b425a42d665bc3944bfc4fbe1ce291fc2765e9e5cce7d84c835"
+      },
+      {
+        "bytes": 12654,
+        "git_blob_sha1": "66191d78a27a8917f3fde1095781375668866f34",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/qwen_fc.py",
+        "sha256": "57f161b88938069fca9659c93d10b668b6628b6a4db40c50dc4e3e954d84f583"
+      },
+      {
+        "bytes": 4991,
+        "git_blob_sha1": "ddd3396f9e9272df84189d63b95c074e625cf195",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_llama.py",
+        "sha256": "a44ddda09b58efa44fcb2766d0a0b3c65be6621e88d1e86934d6ea20754fa4a3"
+      },
+      {
+        "bytes": 4936,
+        "git_blob_sha1": "8850b4b6e2d5d481cf58e0c7baf4fedccf928c3d",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/salesforce_qwen.py",
+        "sha256": "ce36883003d4935e9ff614b96a817fc4608fc1e42cc4c9321c2098d42e685be0"
+      },
+      {
+        "bytes": 7761,
+        "git_blob_sha1": "5904e3fdcfc70998c7d2cd35162e5b021528557f",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/think_agent.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/local_inference/think_agent.py",
+        "sha256": "e728c0da30b9f72add108c5f3176bfab43358275ca30e08d22c32520eb600bf8"
+      },
+      {
+        "bytes": 464,
+        "git_blob_sha1": "d57680ab3eab31cce1188d765da39c5cb9784fa4",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/model_style.py",
+        "sha256": "0244f6108e85b40379d7ddd80d4f7b699a270972c4d8cf37966a4aa677f8ba57"
+      },
+      {
+        "bytes": 0,
+        "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/__init__.py",
+        "path": "tests/fixtures/e3_bfcl_source/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 5510,
+        "git_blob_sha1": "f9081a958f1d173427064c3505d25ecbebf8aa70",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/java_parser.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/java_parser.py",
+        "sha256": "78aa38dcfae655b5e3a982d0aaadf72aad0bb64a62cc4db4d7b7aa2185e666f5"
+      },
+      {
+        "bytes": 2735,
+        "git_blob_sha1": "162510cf681283c95458904177776a41271d014a",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/js_parser.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/parser/js_parser.py",
+        "sha256": "65eea903e538cc2afa5f37e15cccfc303462f750ca45556ee654f6722f4b1e52"
+      },
+      {
+        "bytes": 31374,
+        "git_blob_sha1": "f78acc240bee3c43b18de3d4195fbf6ee1a207f1",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py",
+        "sha256": "153bb33a9515ea2d6ee6a1387faaa464c7be4fe9c6a9f88cc17ad23a1cc306d2"
+      },
+      {
+        "bytes": 7494,
+        "git_blob_sha1": "c28472cd8b24e250d3412c5edf3b7b49c748f915",
+        "original_path": "berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+        "path": "tests/fixtures/external_provenance_b5/bfcl/files/berkeley-function-call-leaderboard/bfcl_eval/utils.py",
+        "sha256": "255e6dad9a6533c8e52b4c8b2bfc78c0744b915605e09c04808df6c023f4a43f"
+      },
+      {
+        "bytes": 1831,
+        "git_blob_sha1": "a514e581f18902f4f87562ee3c4964931b61e81f",
+        "original_path": "berkeley-function-call-leaderboard/pyproject.toml",
+        "path": "tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/pyproject.toml",
+        "sha256": "20d86859dc988e442c13a6c4f3567094bd8f2d4a269d59015337bdf6aeba7dd3"
+      }
+    ]
+  },
+  "inputs_sha256": "fd348b6b2b761cf540f737f80add8c6007cc2a4a3f54c755553066d717a3ed92",
+  "production_runtime_observation": false,
+  "scope": "unchanged AST-selected Python prompting parser and undotted Simple checker; no full module/handler claim",
+  "selected_original_nodes": null,
+  "side": "local"
+}
