@@ -89,3 +89,28 @@ MuSiQue and wrong for 2Wiki; the handoff has been corrected in place. Calling a 
 correct; calling it "answer F1 × support F1" is not. If a 2Wiki label is needed, use: *joint F1 = harmonic
 mean of the three-channel joint precision and joint recall, where each channel's precision and recall are
 multiplied across answer/support/evidence.*
+
+## Audit of `docs/eval-split-design.md` against this phase — one claim, not several
+
+Item 19 says to correct the hand-written documents, plural, and names §5c.1 and the MuSiQue label. The
+parent audited the whole file (357 lines, all six sections) for any *other* claim this phase invalidated,
+because handing over one patch while a second wrong sentence sits three sections away is worse than handing
+over none. The result is a clean negative:
+
+* **§5c.1 is the only invalidated claim.** Its ALFWorld paragraph is the one the replacement text above
+  targets.
+* **No metric-identity claim exists anywhere in the file to correct.** A term sweep for `F1`, `0.4254`,
+  `0.3064`, `0.0846`, `0.2687`, `0.2125`, `8001` and `8002` returns **zero** matches; the four `joint`
+  matches are all the word `disjoint`.
+* **§2 (MuSiQue leakage structure) is unaffected** and is consistent with what was verified elsewhere: it
+  states 2417 tasks and 544 connected components, matching the archive's 2417 per-task records and the
+  qualification's own figure. Its subject is the dataset's reuse graph, not the reward's identity.
+* **§5c.2 is unaffected.** Its subject is why `Σp(1−p)` must not rank datasets; its numbers are descriptive
+  statistics of one (dataset, harness, model) triple, which is exactly how that section already labels them.
+* **§6's open items remain open** - notably that the same leakage measurement has not been run for
+  `hotpotqa` and `2wiki`. This phase did not run it, and nothing here closes it.
+* **`--trials >= 3`** at `:205-207` is a statement about noise reduction, not about the reported statistic,
+  so it does not conflict with the preamble's `--trials N` versus `pass@k`/`test@N`/`pass^k` disclosure.
+
+So `docs/eval-split-design.md` needs the §5c.1 replacement and (if the figure is added there) the MuSiQue
+label - and nothing else.
