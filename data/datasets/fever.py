@@ -1,10 +1,25 @@
-r"""FEVER adapter using the official strict evidence metric.
+r"""FEVER exported-row conjunctive strict@5, not classification Macro-F1.
 
 The adapter reads the pinned `copenlu/fever_gold_evidence` validation split and keeps
-that provenance explicit; it does not claim test gold access. `prediction.json` carries
-the answer label and optional `(page, line)` pairs. The scorer checks the first five pairs,
-and preserves the upstream evidence exemption for NOT ENOUGH INFO. A legacy answer.txt
-prediction still scores, with absent required evidence measured as incorrect.
+that provenance explicit; it does not claim test gold access. Reward follows the
+operator's recorded choice in `registry/w-fevobj-receipts.md`: binary correctness of
+the label AND the whole exported evidence group within the first five predicted pairs,
+with NOT ENOUGH INFO evidence-exempt. This retains the strict predicate while naming
+the exported-row denominator honestly; it is not an original-claim FEVER aggregate.
+Each flat list is one conjunction in retained source order. Omitted alternative groups,
+annotation IDs, and original claim weighting cannot be recovered from that row.
+
+The version's paper metric, classification Macro-F1 over LABELS, is separate: sum the
+per-task per-label TP/FP/FN counts in `official.classification`, then compute
+(1/3) * sum(2*TP_c / (2*TP_c + FP_c + FN_c)); use 0 for a zero denominator.
+Do not average per-task F1 or call label accuracy Macro-F1. Label comparison only
+uppercases, matching the strict scorer. Macro-F1 is not the task reward because it
+requires an aggregate and the operator already chose the exported-row strict metric.
+
+`prediction.json` carries the label and optional `(page, line)` pairs. Missing required
+evidence gives strict reward 0 even for a right label; its classification counts still
+record that right label. The prompt supplies only the claim, not evidence text or a
+retrieval corpus. This scoring repair does not establish evidence retrieval readiness.
 """
 from __future__ import annotations
 
@@ -19,6 +34,7 @@ VALID = "valid.jsonl"
 TEST = "test.jsonl"
 TRAIN = "train.jsonl"
 LABELS = ("SUPPORTS", "REFUTES", "NOT ENOUGH INFO")
+REWARD_METRIC = "fever_exported_row_conjunctive_strict_at_5"
 
 EVIDENCE_AWARE = True
 ORACLE_SOURCE = "released"
@@ -32,8 +48,23 @@ def score_prediction(prediction: dict, gold: dict) -> dict:
             gold["answer"], answer, gold.get("evidence"), predicted_evidence)
     except MissingEvidence:
         correct = False
+    label = str(gold["answer"]).upper()
+    predicted_label = str(answer).upper()
+    classification = {
+        "metric": "classification_macro_f1",
+        "labels": list(LABELS),
+        "gold_label": label,
+        "predicted_label": predicted_label,
+        "per_label": {
+            name: {"tp": int(label == name and predicted_label == name),
+                   "fp": int(label != name and predicted_label == name),
+                   "fn": int(label == name and predicted_label != name)}
+            for name in LABELS
+        },
+    }
     return {"reward": float(correct), "correct": correct,
-            "official": {"metric": "FEVER strict_score", "max_evidence": 5},
+            "official": {"metric": REWARD_METRIC, "strict_score": float(correct),
+                         "max_evidence": 5, "classification": classification},
             "why": "strict label and evidence match" if correct else
                   "label or required evidence did not match"}
 
@@ -57,12 +88,14 @@ _SPEC = base.QASpec(
     question=lambda row: str(row["claim"]),
     gold=lambda row: {"answer": str(row["label"]), "evidence": row.get("evidence")},
     goal=lambda question, gold: (
-        f"Claim: {question}\n\nReturn the FEVER label in `answer.txt` or with `qa submit`, "
+        f"Claim: {question}\n\nReward: FEVER exported-row conjunctive strict@5. "
+        "Return the FEVER label in `answer.txt` or with `qa submit`, "
         "and include evidence in prediction.json "
         "using `qa submit-json @file`. Schema: {\"schema_version\":1,\"answer\":"
         "\"SUPPORTS|REFUTES|NOT ENOUGH INFO\",\"predicted_evidence\":[[page,line]]}. "
         "Evidence is optional in the artifact; non-NEI claims without it score incorrect. "
-        "NEI is evidence-exempt. FEVER scores only the first five evidence pairs."),
+        "NEI is evidence-exempt. All pairs in the exported evidence group must occur "
+        "within the first five predicted pairs."),
     score=score,
     downloads=lambda: [
         {
@@ -77,10 +110,9 @@ _SPEC = base.QASpec(
             # and a 404 -- a duplicate key in one dict, and the fetch is where it showed.
             "files": [VALID],
             "dst": ".",
-            "note": "Trap: FEVER's headline metric needs predicted evidence, so this "
-                    "adapter refuses to load -- staging the table is still useful because "
-                    "the refusal has to be demonstrable on real rows, and because the "
-                    "evidence groups are what a future answer contract would carry. The "
+            "note": "The exported-row conjunctive strict@5 reward requires predicted "
+                    "evidence for non-NEI claims. The paper's classification Macro-F1 "
+                    "can be aggregated separately from per-task label counts. The "
                     "repository also ships `test.jsonl` and a 97 MB `train.jsonl`; the "
                     "adapter reads `valid.jsonl` and declares only it, so `--check` does "
                     "not report a missing 97 MB file as an error. `sha256` is left null "

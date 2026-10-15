@@ -156,9 +156,9 @@ def fever_is_strictly_correct(label: str, predicted_label: str,
         head = [[e[0], e[1]] for e in (predicted_evidence or [])[:max_evidence]]
         groups = evidence or []
         if groups and groups[0] and isinstance(groups[0][0], str):
-            # The pinned Hub mirror flattens the upstream group id: each available
-            # sentence is retained as an independently sufficient evidence group.
-            groups = [[item] for item in groups]
+            # One pinned Hub row exports one conjunctive group, in source order.
+            # Other original groups cannot be recovered from this flat row.
+            groups = [groups]
         for group in groups:
             actual = [[e[0], int(e[1])] if len(e) == 3 else [e[2], e[3]]
                       for e in group]

@@ -1,0 +1,521 @@
+w-fever validation
+Cwd: /mnt/20t/xubuqiang/hg-wt/w-fever
+Baseline branch: wg-w-fever
+Baseline commit observed: 5e5441cc48f3ce79390895f8159e0666ff944587
+
+This is a source repair with synthetic scorer/verifier tests, not a FEVER diagnostic,
+pilot, benchmark measurement, or production authorization. No historical run is resumed.
+Only the two specifically requested report paths are added under registry/. No registry
+data, proposal, journal, AGENTS.md, or frozen fixture is changed.
+
+The ledger preserves the exact commands and observed outputs supporting the report.
+Each multiline command is a literal shell command. Test wrappers set TMPDIR and explicit
+pytest basetemps under their own /tmp/fever-* directory and delete it in finally.
+Initial wrappers print each pytest exit separately; the final wrapper also propagates
+failure. Both unsuccessful regression attempts are retained below. They were test-only
+expectation mistakes: measured-zero exit is 1, and reward text is "0" rather than "0.0".
+The final assertions check the measured flag, both metric records, and numeric zero.
+Source scans read installed rows and fixtures but never score installed FEVER rows.
+The structured scan includes complete JSON documents, nested dictionaries/lists, and
+line-delimited JSON fallback. Directory symlinks are not recursively followed.
+Its 91 non-UTF8/unreadable fixture files are outside the JSON search conclusion.
+
+NOT VERIFIED:
+- Original grouped FEVER source outside the two enumerated roots, or inside binary,
+  encoded, archived, or Git-object payloads; no global absence claim.
+- Fresh authenticity/provenance of installed bytes or original-group correspondence;
+  prior source records are cited, not reauthenticated or treated as a new measurement.
+- The paper's metric attribution independently of the assignment; Macro-F1 is implemented
+  as separate sufficient counts with the explicit three-label/zero-denominator convention.
+- Producing conversion execution, annotation IDs, omitted alternatives, original-claim
+  weighting, NEI retrieval inputs, original Train/Test comparability, or official corpus.
+- Any real claim's model prediction, dataset aggregate, diagnostic/pilot, performance,
+  production isolation/admission, evidence retrieval readiness, or GPU/model endpoint.
+- Full repository test suite or other workers' changes. No network denial was enforced
+  for these Python tests; no fetch, model, API, GPU, server, or dataset run was invoked.
+- No claim is made that these synthetic controls authorize a production H0.
+
+=== Retained filenames ===
+COMMAND:
+rg --files --hidden --no-ignore tests/fixtures /mnt/20t/xubuqiang/datasets/fever | rg -i 'fever|shared_task_dev|copenlu'
+OBSERVED OUTPUT:
+/mnt/20t/xubuqiang/datasets/fever/valid.jsonl
+tests/fixtures/hg_wsel/fever.json
+tests/fixtures/hg_migration_site/dataset-reviews/fever.md
+tests/fixtures/hg_migration_site/e1-fever-physics-bird-review.md
+EXIT: 0
+
+=== Structured source search ===
+COMMAND:
+PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+from pathlib import Path
+import collections, json, os
+for root in (Path('tests/fixtures'),Path('/mnt/20t/xubuqiang/datasets/fever')):
+ files=sorted(Path(d)/name for d, dirs, names in os.walk(root,followlinks=False) for name in names if (Path(d)/name).is_file())
+ records=collections.Counter(); nested=collections.Counter(); decode_errors=[]; official_names=[]
+ def inspect(value,path):
+  if isinstance(value,dict):
+   if all(key in value for key in ('claim','label','evidence')):
+    records[str(path)]+=1; e=value['evidence']
+    if isinstance(e,list) and e and isinstance(e[0],list) and e[0] and isinstance(e[0][0],list): nested[str(path)]+=1
+   for item in value.values(): inspect(item,path)
+  elif isinstance(value,list):
+   for item in value: inspect(item,path)
+ for path in files:
+  if 'shared_task_dev' in path.name.lower(): official_names.append(str(path))
+  try: content=path.read_text(encoding='utf-8')
+  except (UnicodeError,OSError): decode_errors.append(str(path)); continue
+  try: inspect(json.loads(content),path)
+  except ValueError:
+   for line in content.splitlines():
+    if not all('"'+key+'"' in line for key in ('claim','label','evidence')): continue
+    try: inspect(json.loads(line),path)
+    except ValueError: pass
+ print(json.dumps({'root':str(root),'regular_files':len(files),'official_filename_matches':official_names,'json_claim_label_evidence_records':dict(records),'nested_group_records':dict(nested),'non_utf8_or_unreadable_files':len(decode_errors)},sort_keys=True))
+PY
+OBSERVED OUTPUT:
+{"json_claim_label_evidence_records": {"tests/fixtures/hg_fevhub/server-info.body": 1}, "nested_group_records": {}, "non_utf8_or_unreadable_files": 91, "official_filename_matches": [], "regular_files": 2601, "root": "tests/fixtures"}
+{"json_claim_label_evidence_records": {"/mnt/20t/xubuqiang/datasets/fever/valid.jsonl": 15935}, "nested_group_records": {}, "non_utf8_or_unreadable_files": 0, "official_filename_matches": [], "regular_files": 1, "root": "/mnt/20t/xubuqiang/datasets/fever"}
+EXIT: 0
+
+=== Installed structure only; no scoring ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import json
+p=Path('/mnt/20t/xubuqiang/datasets/fever/valid.jsonl')
+counts={'rows':0,'non_nei_rows':0,'multi_sentence_rows':0,'nested_group_rows':0}
+for line in p.open():
+ r=json.loads(line); counts['rows']+=1
+ e=r['evidence']; counts['non_nei_rows']+=r['label']!='NOT ENOUGH INFO'
+ counts['multi_sentence_rows']+=r['label']!='NOT ENOUGH INFO' and len(e)>1
+ counts['nested_group_rows']+=bool(e and isinstance(e[0][0],list))
+print(json.dumps(counts, sort_keys=True))
+print('first-row keys:', sorted(json.loads(p.open().readline())))
+PY
+OBSERVED OUTPUT:
+{"multi_sentence_rows": 1400, "nested_group_rows": 0, "non_nei_rows": 9525, "rows": 15935}
+first-row keys: ['claim', 'evidence', 'id', 'label', 'original_id', 'verifiable']
+EXIT: 0
+
+=== Pre-fix baseline tests ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import os, shutil, subprocess
+root=Path('/tmp/fever-before-tests')
+root.mkdir(exist_ok=False)
+try:
+ env=dict(os.environ, TMPDIR=str(root), PYTHONDONTWRITEBYTECODE='1')
+ commands=[['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'qa'),'tests/quality/test_qa_evidence_contract.py'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'fever'),'tests/quality/test_dataset_refusals.py','-k','fever'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'registry'),'tests/quality/test_dataset_blockers.py','tests/quality/test_closure_assessment.py']]
+ for argv in commands:
+  print('COMMAND:', ' '.join(argv), flush=True)
+  p=subprocess.run(argv,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  print(p.stdout,end='',flush=True)
+  print('EXIT:',p.returncode,flush=True)
+finally:
+ shutil.rmtree(root)
+ print('CLEANUP:', str(root), 'exists='+str(root.exists()),flush=True)
+PY
+OBSERVED OUTPUT:
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-before-tests/qa tests/quality/test_qa_evidence_contract.py
+...........                                                              [100%]
+11 passed in 8.07s
+EXIT: 0
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-before-tests/fever tests/quality/test_dataset_refusals.py -k fever
+..                                                                       [100%]
+2 passed, 19 deselected in 0.03s
+EXIT: 0
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-before-tests/registry tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py
+........................................................................ [ 93%]
+.....                                                                    [100%]
+77 passed in 3.47s
+EXIT: 0
+CLEANUP: /tmp/fever-before-tests exists=False
+EXIT: 0
+
+=== Synthetic before/after scorer comparison ===
+COMMAND:
+PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+import json, subprocess, types
+from data.datasets.fever import score_prediction
+from data.scaffolds.qa.evidence_scorers import fever_is_strictly_correct
+old=types.ModuleType('fever_before'); import sys; sys.modules[old.__name__]=old
+exec(subprocess.check_output(['git','show','HEAD:data/scaffolds/qa/evidence_scorers.py'],text=True),old.__dict__)
+gold={'answer':'SUPPORTS','evidence':[['Synthetic_Page','0','first required sentence'],['Synthetic_Page','1','second required sentence']]}
+prediction={'answer':'SUPPORTS','predicted_evidence':[['Synthetic_Page',0]]}
+print(json.dumps({'synthetic_only':True,'gold_evidence':gold['evidence'],'predicted_evidence':prediction['predicted_evidence'],'pre_fix_strict_score':float(old.fever_is_strictly_correct(gold['answer'],prediction['answer'],gold['evidence'],prediction['predicted_evidence'])),'post_fix_strict_score':float(fever_is_strictly_correct(gold['answer'],prediction['answer'],gold['evidence'],prediction['predicted_evidence']))},sort_keys=True))
+print(json.dumps(score_prediction(prediction,gold),sort_keys=True))
+PY
+OBSERVED OUTPUT:
+{"gold_evidence": [["Synthetic_Page", "0", "first required sentence"], ["Synthetic_Page", "1", "second required sentence"]], "post_fix_strict_score": 0.0, "pre_fix_strict_score": 1.0, "predicted_evidence": [["Synthetic_Page", 0]], "synthetic_only": true}
+{"correct": false, "official": {"classification": {"gold_label": "SUPPORTS", "labels": ["SUPPORTS", "REFUTES", "NOT ENOUGH INFO"], "metric": "classification_macro_f1", "per_label": {"NOT ENOUGH INFO": {"fn": 0, "fp": 0, "tp": 0}, "REFUTES": {"fn": 0, "fp": 0, "tp": 0}, "SUPPORTS": {"fn": 0, "fp": 0, "tp": 1}}, "predicted_label": "SUPPORTS"}, "max_evidence": 5, "metric": "fever_exported_row_conjunctive_strict_at_5", "strict_score": 0.0}, "reward": 0.0, "why": "label or required evidence did not match"}
+EXIT: 0
+
+=== First regression attempt (test exit-code expectation was wrong) ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import os, shutil, subprocess
+root=Path('/tmp/fever-after-tests')
+root.mkdir(exist_ok=False)
+try:
+ env=dict(os.environ, TMPDIR=str(root), PYTHONDONTWRITEBYTECODE='1')
+ commands=[['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'qa'),'tests/quality/test_qa_evidence_contract.py','tests/quality/test_fever_w_fever.py'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'fever'),'tests/quality/test_dataset_refusals.py','-k','fever'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'registry'),'tests/quality/test_dataset_blockers.py','tests/quality/test_closure_assessment.py']]
+ for argv in commands:
+  print('COMMAND:', ' '.join(argv), flush=True)
+  p=subprocess.run(argv,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  print(p.stdout,end='',flush=True)
+  print('EXIT:',p.returncode,flush=True)
+finally:
+ shutil.rmtree(root)
+ print('CLEANUP:', str(root), 'exists='+str(root.exists()),flush=True)
+PY
+OBSERVED OUTPUT:
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-after-tests/qa tests/quality/test_qa_evidence_contract.py tests/quality/test_fever_w_fever.py
+....................F                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_isolated_synthetic_verifier_emits_both_metric_records __________
+
+tmp_path = PosixPath('/tmp/fever-after-tests/qa/test_isolated_synthetic_verifi0')
+
+    def test_isolated_synthetic_verifier_emits_both_metric_records(tmp_path):
+        record = {"task_id": "fever/validation/synthetic-w-fever",
+                  "gold": {"answer": "SUPPORTS", "evidence": [
+                      ["A", "0", "first required sentence"],
+                      ["B", "1", "second required sentence"]]}}
+        spec = fever._SPEC.verifier(record)
+        for entry in spec["inputs"]:
+            path = tmp_path / entry["path"]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if "content" in entry:
+                path.write_text(entry["content"], encoding="utf-8")
+            else:
+                path.write_bytes(Path(entry["from"]).read_bytes())
+        (tmp_path / "prediction.json").write_text(json.dumps({
+            "schema_version": 1, "answer": "SUPPORTS", "predicted_evidence": [["A", 0]]}))
+        proc = subprocess.run(spec["argv"], cwd=tmp_path,
+                              env=dict(os.environ, PYTHONPATH=str(tmp_path)),
+                              text=True, capture_output=True)
+>       assert proc.returncode == 0, proc.stderr
+"E       AssertionError: \n"
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['python3', 'qa/lib/verify/check.py', '--dataset', 'fever', '--answer', 'answer.txt', '--predict...le', 'verifier/evidence.json'], returncode=1, stdout='reward 0: label or required evidence did not match\n', stderr='').returncode
+
+tests/quality/test_fever_w_fever.py:113: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_fever_w_fever.py::test_isolated_synthetic_verifier_emits_both_metric_records
+1 failed, 20 passed in 8.61s
+EXIT: 1
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-after-tests/fever tests/quality/test_dataset_refusals.py -k fever
+..                                                                       [100%]
+2 passed, 19 deselected in 0.02s
+EXIT: 0
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-after-tests/registry tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py
+........................................................................ [ 93%]
+.....                                                                    [100%]
+77 passed in 3.18s
+EXIT: 0
+CLEANUP: /tmp/fever-after-tests exists=False
+EXIT: 0
+
+=== Second regression attempt (test reward-text expectation was wrong) ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import os, shutil, subprocess, sys
+root=Path('/tmp/fever-final-tests')
+root.mkdir(exist_ok=False)
+try:
+ env=dict(os.environ, TMPDIR=str(root), PYTHONDONTWRITEBYTECODE='1')
+ commands=[['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'qa'),'tests/quality/test_qa_evidence_contract.py','tests/quality/test_fever_w_fever.py'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'fever'),'tests/quality/test_dataset_refusals.py','-k','fever'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'registry'),'tests/quality/test_dataset_blockers.py','tests/quality/test_closure_assessment.py']]
+ failed=False
+ for argv in commands:
+  print('COMMAND:', ' '.join(argv), flush=True)
+  p=subprocess.run(argv,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  print(p.stdout,end='',flush=True)
+  print('EXIT:',p.returncode,flush=True)
+  failed |= p.returncode != 0
+finally:
+ shutil.rmtree(root)
+ print('CLEANUP:', str(root), 'exists='+str(root.exists()),flush=True)
+sys.exit(int(failed))
+PY
+OBSERVED OUTPUT:
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-final-tests/qa tests/quality/test_qa_evidence_contract.py tests/quality/test_fever_w_fever.py
+....................F                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_isolated_synthetic_verifier_emits_both_metric_records __________
+
+tmp_path = PosixPath('/tmp/fever-final-tests/qa/test_isolated_synthetic_verifi0')
+
+    def test_isolated_synthetic_verifier_emits_both_metric_records(tmp_path):
+        record = {"task_id": "fever/validation/synthetic-w-fever",
+                  "gold": {"answer": "SUPPORTS", "evidence": [
+                      ["A", "0", "first required sentence"],
+                      ["B", "1", "second required sentence"]]}}
+        spec = fever._SPEC.verifier(record)
+        for entry in spec["inputs"]:
+            path = tmp_path / entry["path"]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if "content" in entry:
+                path.write_text(entry["content"], encoding="utf-8")
+            else:
+                path.write_bytes(Path(entry["from"]).read_bytes())
+        (tmp_path / "prediction.json").write_text(json.dumps({
+            "schema_version": 1, "answer": "SUPPORTS", "predicted_evidence": [["A", 0]]}))
+        proc = subprocess.run(spec["argv"], cwd=tmp_path,
+                              env=dict(os.environ, PYTHONPATH=str(tmp_path)),
+                              text=True, capture_output=True)
+        assert proc.returncode == 1, (proc.stdout, proc.stderr)  # Valid measured zero.
+        result = json.loads((tmp_path / "verifier/evidence.json").read_text())
+        assert result["measured"] is True  # Synthetic verifier contract only.
+        assert result["reward"] == 0.0
+        assert result["official"]["metric"] == fever.REWARD_METRIC
+        assert result["official"]["classification"]["per_label"]["SUPPORTS"]["tp"] == 1
+>       assert (tmp_path / "verifier/reward.txt").read_text().strip() == "0.0"
+E       AssertionError: assert '0' == '0.0'
+E         - 0.0
+E         + 0
+
+tests/quality/test_fever_w_fever.py:119: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_fever_w_fever.py::test_isolated_synthetic_verifier_emits_both_metric_records
+1 failed, 20 passed in 9.22s
+EXIT: 1
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-final-tests/fever tests/quality/test_dataset_refusals.py -k fever
+..                                                                       [100%]
+2 passed, 19 deselected in 0.02s
+EXIT: 0
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-final-tests/registry tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py
+........................................................................ [ 93%]
+.....                                                                    [100%]
+77 passed in 3.08s
+EXIT: 0
+CLEANUP: /tmp/fever-final-tests exists=False
+EXIT: 1
+
+=== Final passing tests ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import os, shutil, subprocess, sys
+root=Path('/tmp/fever-verified-tests')
+root.mkdir(exist_ok=False)
+try:
+ env=dict(os.environ, TMPDIR=str(root), PYTHONDONTWRITEBYTECODE='1')
+ commands=[['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'qa'),'tests/quality/test_qa_evidence_contract.py','tests/quality/test_fever_w_fever.py'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'fever'),'tests/quality/test_dataset_refusals.py','-k','fever'],['python3','-m','pytest','-q','-p','no:cacheprovider','--basetemp='+str(root/'registry'),'tests/quality/test_dataset_blockers.py','tests/quality/test_closure_assessment.py']]
+ failed=False
+ for argv in commands:
+  print('COMMAND:', ' '.join(argv), flush=True)
+  p=subprocess.run(argv,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  print(p.stdout,end='',flush=True)
+  print('EXIT:',p.returncode,flush=True)
+  failed |= p.returncode != 0
+finally:
+ shutil.rmtree(root)
+ print('CLEANUP:', str(root), 'exists='+str(root.exists()),flush=True)
+sys.exit(int(failed))
+PY
+OBSERVED OUTPUT:
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-verified-tests/qa tests/quality/test_qa_evidence_contract.py tests/quality/test_fever_w_fever.py
+.....................                                                    [100%]
+21 passed in 9.01s
+EXIT: 0
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-verified-tests/fever tests/quality/test_dataset_refusals.py -k fever
+..                                                                       [100%]
+2 passed, 19 deselected in 0.03s
+EXIT: 0
+COMMAND: python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/fever-verified-tests/registry tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py
+........................................................................ [ 93%]
+.....                                                                    [100%]
+77 passed in 4.04s
+EXIT: 0
+CLEANUP: /tmp/fever-verified-tests exists=False
+EXIT: 0
+
+=== Exact shared-scorer hunk and scope review ===
+COMMAND:
+git status --short; git diff --numstat; git diff --unified=0 -- data/scaffolds/qa/evidence_scorers.py; nl -ba tests/quality/test_fever_w_fever.py | tail -45
+OBSERVED OUTPUT:
+ M data/datasets/fever.py
+ M data/scaffolds/qa/evidence_scorers.py
+?? tests/quality/test_fever_w_fever.py
+44	12	data/datasets/fever.py
+3	3	data/scaffolds/qa/evidence_scorers.py
+diff --git a/data/scaffolds/qa/evidence_scorers.py b/data/scaffolds/qa/evidence_scorers.py
+index 1fa92f37..2cabd5c1 100644
+--- a/data/scaffolds/qa/evidence_scorers.py
++++ b/data/scaffolds/qa/evidence_scorers.py
+@@ -159,3 +159,3 @@ def fever_is_strictly_correct(label: str, predicted_label: str,
+-            # The pinned Hub mirror flattens the upstream group id: each available
+-            # sentence is retained as an independently sufficient evidence group.
+-            groups = [[item] for item in groups]
++            # One pinned Hub row exports one conjunctive group, in source order.
++            # Other original groups cannot be recovered from this flat row.
++            groups = [groups]
+    75	    assert result["official"]["classification"]["per_label"]["NOT ENOUGH INFO"]["fn"] == 1
+"    76\t\n"
+"    77\t\n"
+    78	def test_macro_f1_is_aggregated_from_counts_not_per_task_accuracy():
+    79	    pairs = [("SUPPORTS", "SUPPORTS"), ("SUPPORTS", "REFUTES"),
+    80	             ("REFUTES", "REFUTES"), ("NOT ENOUGH INFO", "NOT ENOUGH INFO")]
+    81	    counts = {label: {key: 0 for key in ("tp", "fp", "fn")} for label in fever.LABELS}
+    82	    for gold, prediction in pairs:
+    83	        result = fever.score(prediction, {"answer": gold, "evidence": []})
+    84	        for label, values in result["official"]["classification"]["per_label"].items():
+    85	            for key, value in values.items():
+    86	                counts[label][key] += value
+    87	    f1s = []
+    88	    for values in counts.values():
+    89	        denominator = 2 * values["tp"] + values["fp"] + values["fn"]
+    90	        f1s.append(2 * values["tp"] / denominator if denominator else 0.0)
+    91	    assert sum(f1s) / 3 == pytest.approx(7 / 9)
+    92	    assert sum(f1s) / 3 != pytest.approx(3 / 4)
+"    93\t\n"
+"    94\t\n"
+    95	def test_isolated_synthetic_verifier_emits_both_metric_records(tmp_path):
+    96	    record = {"task_id": "fever/validation/synthetic-w-fever",
+    97	              "gold": {"answer": "SUPPORTS", "evidence": [
+    98	                  ["A", "0", "first required sentence"],
+    99	                  ["B", "1", "second required sentence"]]}}
+   100	    spec = fever._SPEC.verifier(record)
+   101	    for entry in spec["inputs"]:
+   102	        path = tmp_path / entry["path"]
+   103	        path.parent.mkdir(parents=True, exist_ok=True)
+   104	        if "content" in entry:
+   105	            path.write_text(entry["content"], encoding="utf-8")
+   106	        else:
+   107	            path.write_bytes(Path(entry["from"]).read_bytes())
+   108	    (tmp_path / "prediction.json").write_text(json.dumps({
+   109	        "schema_version": 1, "answer": "SUPPORTS", "predicted_evidence": [["A", 0]]}))
+   110	    proc = subprocess.run(spec["argv"], cwd=tmp_path,
+   111	                          env=dict(os.environ, PYTHONPATH=str(tmp_path)),
+   112	                          text=True, capture_output=True)
+   113	    assert proc.returncode == 1, (proc.stdout, proc.stderr)  # Valid measured zero.
+   114	    result = json.loads((tmp_path / "verifier/evidence.json").read_text())
+   115	    assert result["measured"] is True  # Synthetic verifier contract only.
+   116	    assert result["reward"] == 0.0
+   117	    assert result["official"]["metric"] == fever.REWARD_METRIC
+   118	    assert result["official"]["classification"]["per_label"]["SUPPORTS"]["tp"] == 1
+   119	    assert (tmp_path / "verifier/reward.txt").read_text().strip() == "0.0"
+EXIT: 0
+
+=== Required checker ===
+COMMAND:
+python3 tools/check_dataset_blockers.py
+OBSERVED OUTPUT:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT: 0
+
+=== Protected paths and whitespace verification ===
+COMMAND:
+git diff --name-only -- AGENTS.md registry/dataset-blockers.json docs/adapter-integration-journal.md tests/fixtures; git diff --check; python3 tools/check_dataset_blockers.py
+OBSERVED OUTPUT:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT: 0
+
+=== Fixture schema clarification and existing metric decision ===
+COMMAND:
+python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path('tests/fixtures/hg_fevhub/server-info.body')
+data=json.loads(p.read_text())
+found=[]
+def inspect(value):
+ if isinstance(value,dict):
+  if all(key in value for key in ('claim','label','evidence')):
+   found.append({key:type(value[key]).__name__ for key in ('claim','label','evidence')})
+  for item in value.values(): inspect(item)
+ elif isinstance(value,list):
+  for item in value: inspect(item)
+inspect(data)
+print(json.dumps({'file':str(p),'matching_object_value_types':found},sort_keys=True))
+PY
+rg -n '^\*\*Metric decision' registry/w-fevobj-receipts.md
+OBSERVED OUTPUT:
+{"file": "tests/fixtures/hg_fevhub/server-info.body", "matching_object_value_types": [{"claim": "dict", "evidence": "dict", "label": "dict"}]}
+23:**Metric decision — choose option (a), “FEVER exported-row conjunctive strict@5”, identifier fever_exported_row_conjunctive_strict_at_5.** Award binary strict correctness per measured exported row for the correct label (uppercase comparison only) and, for non-NEI, every pair in that row's exported group within the first five ordered predicted pairs; correctly labelled NEI is exempt from evidence. Preserve each exported conjunction as one nested group of annotation-shaped records [null, null, page, int(line)] when using pinned sheffieldnlp/fever-scorer@4801615100fbf6327f8e99b5dbaefe5dd890e869 source; identity, label predicate, complete-group rule, NEI exemption and five-pair default are retained at registry/w-fevconv-receipts.md:13, registry/w-fevconv-receipts.md:182, registry/w-fevconv-receipts.md:197, registry/w-fevconv-receipts.md:201, registry/w-fevconv-receipts.md:205, registry/w-fevconv-receipts.md:266. Average trials within each measured exported-row task, then weight measured exported rows equally, retaining eligible/selected/task/trial/invalid/unmeasured counts and split/side/selection with any future result; invalid/unmeasured outcomes are not ordinary zero scores (reporting convention registry/w-metriccmp-comparability.md:46, registry/w-metriccmp-comparability.md:52, registry/w-metriccmp-comparability.md:65, adopted here as the chosen rule). An original claim with several exported rows receives several row weights (registry/w-fevconv-receipts.md:109). With a correct non-NEI label and well-formed predictions, disagreement with singleton promotion is exactly 0 < |G ∩ P5| < |G|: **1,400 of 9,525** installed non-NEI rows are exposed (**1,369 with 2–5 pairs, 31 with 6–25**); the 31 overlong conjunctions cannot pass at five pairs and must remain in any selected denominator without silent filtering (registry/w-fevconv-receipts.md:99, registry/w-fevconv-receipts.md:107, registry/w-fevconv-receipts.md:113). The first five selected rows do not exercise this branch (registry/w-fevconv-receipts.md:128). I choose this named local row metric because exported complete-group correspondence is established, while **51 original alternative groups for 42 represented non-NEI IDs are omitted**, the export has **15,935 rows versus 9,835 distinct original IDs**, and historical omission/NEI-input decisions remain unauthenticated (registry/w-fevconv-receipts.md:9, registry/w-fevconv-receipts.md:109, registry/w-fevconv-receipts.md:134; registry/w-fevhub-receipts.md:248). This decision makes no original-FEVER aggregate/comparability claim; option (b) would require restored complete original groups, declared claim weighting and omission coverage.
+EXIT: 0
+
+=== Baseline FEVER filename discovery ===
+COMMAND:
+python3 - <<'PY'
+import json, subprocess
+baseline='5e5441cc48f3ce79390895f8159e0666ff944587'
+paths=subprocess.check_output(['git','ls-tree','-r','--name-only',baseline,'--','tests/quality'],text=True).splitlines()
+print(json.dumps({'baseline':baseline,'scope':'tests/quality/*fever*','matching_paths':[p for p in paths if 'fever' in p.rsplit('/',1)[-1].lower()]},sort_keys=True))
+PY
+OBSERVED OUTPUT:
+{"baseline": "5e5441cc48f3ce79390895f8159e0666ff944587", "matching_paths": [], "scope": "tests/quality/*fever*"}
+EXIT: 0
+
+=== Bounded old metric-name search ===
+COMMAND:
+rg -n --fixed-strings 'FEVER strict_score' data eval tools tests/quality || test "$?" -eq 1
+OBSERVED OUTPUT:
+
+EXIT: 0
+
+=== Final citations, cleanup, checker, and protected-path review ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import re
+p=Path('registry/w-fever.md')
+references=re.findall(r'((?:data|tests|registry)/[A-Za-z0-9_./-]+):(\d+)',p.read_text())
+for name,line in references:
+ target=Path(name)
+ assert target.is_file(),name
+ assert 1<=int(line)<=len(target.read_text().splitlines()),(name,line)
+print('report file:line references checked:',len(references))
+for name in ('/tmp/fever-before-tests','/tmp/fever-after-tests','/tmp/fever-final-tests','/tmp/fever-verified-tests'):
+ print(name,'exists='+str(Path(name).exists()))
+PY
+python3 tools/check_dataset_blockers.py
+git diff --check
+git diff --name-only -- AGENTS.md registry/dataset-blockers.json docs/adapter-integration-journal.md tests/fixtures
+OBSERVED OUTPUT:
+report file:line references checked: 57
+/tmp/fever-before-tests exists=False
+/tmp/fever-after-tests exists=False
+/tmp/fever-final-tests exists=False
+/tmp/fever-verified-tests exists=False
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT: 0
+
+Lossless whitespace convention: five observed output lines ending in spaces/tabs
+are JSON-quoted (including their newline) to preserve their exact bytes while keeping
+the committed text free of trailing whitespace. Decode each quoted line with json.loads.
+All other command/output lines are literal. Any git show HEAD above ran before this task
+commit, when HEAD was the baseline commit recorded on line 4; replay using that revision.
+
+=== Final file sizes (self-size stabilized and checked against filesystem) ===
+COMMAND:
+python3 - <<'PY'
+from pathlib import Path
+import json
+assert str(Path.cwd()) == '/mnt/20t/xubuqiang/hg-wt/w-fever'
+files=['data/datasets/fever.py','data/scaffolds/qa/evidence_scorers.py','tests/quality/test_fever_w_fever.py','registry/w-fever.md','registry/w-fever-validation.txt']
+p=Path('registry/w-fever-validation.txt')
+marker='=== Final byte inventory output ===\n'
+prefix=p.read_text().split(marker)[0]+marker
+for _ in range(10):
+ sizes={name:Path(name).stat().st_size for name in files}
+ output=''.join(json.dumps({'path':name,'bytes':size},sort_keys=True)+'\n' for name,size in sizes.items())
+ output+='all_committed_files_below_1000000_bytes='+str(all(size<1000000 for size in sizes.values()))+'\n'
+ p.write_text(prefix+output)
+ if sizes=={name:Path(name).stat().st_size for name in files}: break
+else: raise AssertionError('byte inventory did not stabilize')
+assert all(size<1000000 for size in sizes.values())
+print(output,end='')
+PY
+OBSERVED OUTPUT:
+=== Final byte inventory output ===
+{"bytes": 6751, "path": "data/datasets/fever.py"}
+{"bytes": 7468, "path": "data/scaffolds/qa/evidence_scorers.py"}
+{"bytes": 5828, "path": "tests/quality/test_fever_w_fever.py"}
+{"bytes": 9605, "path": "registry/w-fever.md"}
+{"bytes": 32022, "path": "registry/w-fever-validation.txt"}
+all_committed_files_below_1000000_bytes=True
