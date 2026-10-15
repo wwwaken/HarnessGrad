@@ -345,3 +345,23 @@ harnessgrad_work/
 # plus tools/build_tau_bench_gt.py regenerates the tau-bench databases.
 web/dist/
 data/datasets/tau_bench/db/
+
+# --- Resource payloads must never enter git -------------------------------
+# A live-evidence worker downloaded real packages (conda/whl/tarballs) and saved
+# upstream HTTP bodies and multi-MB dumps under tests/fixtures/hg_*/ and reports/.
+# That put 516 MB of binaries into the object store for no reason: the EVIDENCE is
+# the recomputed digest list, not the payload. Keep the digests and the scripts;
+# keep the payloads on disk (they are reproducible from the recorded URLs+hashes).
+tests/fixtures/**/*.whl
+tests/fixtures/**/*.conda
+tests/fixtures/**/*.tar.bz2
+tests/fixtures/**/*.tar.gz
+tests/fixtures/**/*.tgz
+tests/fixtures/**/*.zip
+tests/fixtures/**/*.body
+tests/fixtures/**/*.strace.txt
+tests/fixtures/**/*.incomplete
+reports/**/*.whl
+reports/**/*.conda
+reports/**/*.tar.gz
+reports/**/*.body
