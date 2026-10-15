@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import signal
 import sys
 from pathlib import Path
 
@@ -351,7 +352,13 @@ def _materialize(workdir: Path, entries, platform_root: Path,
             continue
         written.append(rel)
     return written
-def process_outcome(exit_code, stderr) -> str | None:
+#: Shell convention for a process that ended from a signal: 128 + signum. A sandbox
+#: wrapper relays an inner kill this way, so the code arrives **positive** and would
+#: otherwise read as an ordinary harness crash.
+WRAPPER_SIGNALS = {128 + signal.SIGKILL: "SIGKILL", 128 + signal.SIGTERM: "SIGTERM"}
+
+
+def process_outcome(exit_code, stderr, wrapper: bool = False) -> str | None:
     """How the harness's process ended, kept apart from what the task scored.
 
     `INTERFACE.md` §2.2 is explicit that the two are independent: "the harness's exit
@@ -382,15 +389,31 @@ def process_outcome(exit_code, stderr) -> str | None:
                            watchdog, the OOM killer. The platform never graded it as a
                            budget failure, which is what `_cancel` means by "a cancelled
                            task is not a task that scored nothing".
+    ``relayed_signal``     a **sandbox wrapper** reported ``128+signal`` (137 or 143).
+                           Only reachable when ``wrapper=True``; on the host the same
+                           kill arrives negative. The convention says a signal ended the
+                           process *inside* the wrapper and says nothing about who sent
+                           it: a harness that killed itself and an outside kill are the
+                           same number here. The record therefore names the convention and
+                           leaves the cause **undetermined** rather than asserting either.
 
-    The signal case is the only one of the four that must not be scored, and
-    `runner.py` routes it to `unmeasured`. The other three stay scores.
+    The signal cases are the only ones that must not be scored when nothing passed, and
+    `runner.py` routes them to `unmeasured`. The other three stay scores.
+
+    ``wrapper=True`` means the platform launched a wrapper (a sandbox) as the direct child,
+    which is the only situation where the 128+signal convention can appear. It is an
+    explicit argument rather than something inferred from the code, because "the wrapper
+    relayed a signal" and "the harness exited 137" are indistinguishable from the number
+    alone -- and inferring the former from the latter is exactly the mistake this value
+    exists to avoid.
     """
     if exit_code is None:
         return None
     if exit_code == 0:
         return "completed"
     if exit_code > 0:
+        if wrapper and exit_code in WRAPPER_SIGNALS:
+            return "relayed_signal"
         return "harness_crash"
     if "timeout after " in str(stderr or ""):
         return "platform_timeout"
@@ -483,7 +506,11 @@ def _write_progress(progress_dir, round_no: int, tid: str,
             "tests": last.get("tests"),
             "wall_clock_s": wall,
             "exit_code": last_exit,
-            "process_outcome": process_outcome(last_exit, last_stderr),
+            # `wrapper=` is read from the same record the code came from, so the
+            # annotation and the scoring rule cannot disagree about what a 137 was.
+            "process_outcome": process_outcome(
+                last_exit, last_stderr,
+                wrapper=bool((measured[-1] if measured else {}).get("sandbox"))),
             "complete": True,
             **({"enforcement": enforcement} if enforcement is not None else {}),
         }, indent=1, ensure_ascii=False), encoding="utf-8")

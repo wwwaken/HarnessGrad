@@ -560,7 +560,15 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                 stage="immutable runtime launch", service=None)
             if stepwise_relay is None:
                 raise
-            exit_code, stderr = -1, "stepwise harness launch failed"
+            # The stepwise harness never launched, so nothing graded it: return the
+            # platform's own invalid result, exactly as the two `OSError` branches above
+            # do. It previously became the `-1` sentinel, and `-1` *without* the
+            # `timeout after Ns` marker is how `process_outcome` recognises a foreign
+            # signal -- so the record claimed "terminated by signal 1 (exit code -1)"
+            # for a launch failure that killed nothing. The outcome was already right
+            # (unmeasured, not a score); the reason was fabricated.
+            return _invalid(task, "stepwise harness launch failed",
+                            stage="harness launch", service=None)
         except sandbox_mod.SandboxUnavailable as exc:
             if immutable_runtimes or verifier_runtimes:
                 return _invalid(task, exc, stage="immutable runtime launch", service=None)
@@ -604,6 +612,11 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
 
         return {"task_id": task["task_id"], "answer": answer,
                 "trace": trace, "exit_code": exit_code, "stderr": stderr,
+                # A wrapper (the sandbox) is the direct child when `sandbox` is set, and a
+                # wrapper relays an inner kill as `128+signal`. Recording which launch
+                # shape produced the code is what lets `process_outcome` tell the
+                # convention apart from a positive code a harness chose for itself.
+                "sandbox": bool(sandbox),
                 "verdict": verdict, "env_usage": env_usage,
                 "harness_runtime": harness_runtime.record(
                     overlay, platform_interpreter=(image_python is None)),
@@ -714,21 +727,26 @@ def _provider_failure(result: dict) -> dict | None:
 
 
 def _stopped_by_signals(measured: list[dict]) -> dict | None:
-    """Was this task killed by something **outside** the measurement?
+    """Was this task killed by something the platform never graded as a task failure?
 
-    `process_outcome` separates four endings. Three of them are scores under
-    `INTERFACE.md` §2.2 -- the harness ran, the harness crashed on its own, and the
-    harness blew through the `agent_timeout_s` budget it was given (a *declared* bound,
-    so exceeding it is failing to finish in budget). The fourth is not a score: a
-    negative return code that is not the platform's own timeout marker means something
-    else killed the process, so no trial got the chance to leave an artifact and nothing
-    graded one.
+    `process_outcome` separates five endings. Three are scores under `INTERFACE.md` §2.2 --
+    the harness ran, the harness crashed on its own, and the harness blew through the
+    `agent_timeout_s` budget it was given (a *declared* bound, so exceeding it is failing to
+    finish in budget). Two are not: a negative return code that is not the platform's own
+    timeout marker, and the sandbox wrapper's `128+signal` relay of an inner signal. In
+    both, no trial got the chance to leave an artifact and nothing graded one.
+
+    The relayed case is deliberately weaker than the negative one. A wrapper exit says a
+    signal ended the process inside the wrapper and says nothing about who sent it -- a
+    harness that killed itself and an outside kill are the same number -- so the record
+    names the convention and leaves the cause undetermined instead of asserting one. Only
+    `sandbox=True` records can take this branch; on the host the same kill arrives negative.
 
     That is the case `_cancel` already names -- "a cancelled task is not a task that
     scored nothing ... rather than given a zero the platform never measured" (§2.5.7).
-    Nothing checked the sign of the return code until now, so all four endings fell
-    through to the verifier and were written as ordinary zeros. Measured on our own
-    AgentDojo passes: the tasks an operator watchdog killed (156,157,159,160 and
+    Nothing checked the sign of the return code until now, so all endings fell through to
+    the verifier and were written as ordinary zeros. Measured on our own AgentDojo passes:
+    the tasks an operator watchdog killed (156,157,159,160 and
     294,295,296,297,301,302,303,307, eval 257,259) are recorded as clean `0.0` and are
     the only zeros in that collection that are actually wrong.
 
@@ -738,7 +756,22 @@ def _stopped_by_signals(measured: list[dict]) -> dict | None:
     if any((res.get("verdict") or {}).get("passed") for res in measured or []):
         return None
     for res in reversed(measured or []):
-        if process_outcome(res.get("exit_code"), res.get("stderr")) != "stopped_by_signal":
+        outcome = process_outcome(res.get("exit_code"), res.get("stderr"),
+                                  wrapper=bool(res.get("sandbox")))
+        if outcome == "relayed_signal":
+            # The sandbox wrapper's account of an inner signal. It says a signal ended the
+            # process; it does not say who sent it, and a harness that killed itself is
+            # the same number here as an outside kill. The rule the operator chose is to
+            # keep the task unmeasured when nothing passed *and say that the cause is
+            # undetermined*, rather than pick one reading and hide the other.
+            code = res.get("exit_code")
+            return {"stage": "harness", "outcome": "relayed_signal",
+                    "detail": (f"the sandbox wrapper reported exit {code} "
+                               f"({code - 128} = the 128+signal convention) and no trial "
+                               f"passed, so no artifact was ever graded; whether the task "
+                               f"killed itself or was killed from outside is not "
+                               f"distinguishable from a wrapper exit, and this is not a score")}
+        if outcome != "stopped_by_signal":
             continue
         code = res.get("exit_code")
         return {"stage": "harness", "outcome": "stopped_by_signal",

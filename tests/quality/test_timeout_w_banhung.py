@@ -39,6 +39,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from eval.containers.process import run
+from eval.observe.tracing import process_outcome
 from eval.policy.runtime_policy import phase_timeout
 from eval.run import runner
 
@@ -95,21 +96,49 @@ def test_a_signal_with_no_passing_artifact_is_unmeasured(tmp_path):
     assert "score" not in observed["progress"]
 
 
-def test_a_sandboxed_inner_signal_is_ambiguous_today(tmp_path):
-    """Pins an observed asymmetry so a future decision is visible, not silent.
+def test_a_sandboxed_inner_signal_is_unmeasured_with_an_undetermined_cause(tmp_path):
+    """Rule chosen by the operator: name the convention, do not invent the cause.
 
     In the sandbox the direct child is `bwrap`, which relays an inner kill as exit 137 -
-    positive, so `process_outcome` classifies it as `harness_crash` and the task scores,
-    where the identical self-kill on the host gives `-9` and is unmeasured. A wrapper exit
-    cannot distinguish a harness that killed itself from an outside kill of the process
-    inside the sandbox, and no rule in `INTERFACE.md` covers it, so this test asserts what
-    happens rather than what should. If the operator decides `128+signal` means
-    `stopped_by_signal`, this assertion is the one that changes.
+    positive, so a sign-reading rule would call it `harness_crash` and score it, while the
+    identical self-kill on the host gives `-9` and is unmeasured. A wrapper exit cannot
+    distinguish a harness that killed itself from an outside kill of the process inside the
+    sandbox, so the task is unmeasured when nothing passed and the record says the cause is
+    undetermined. This test previously pinned the *scored* reading and named itself as the
+    assertion that would change if the operator decided otherwise; they did.
     """
     observed = _observe(tmp_path, "sandbox", "kill-zero")
     assert observed["result"]["exit_code"] == 137, observed["result"]["exit_code"]
-    assert observed["per_task"] == {"synthetic": 0.0}
-    assert observed["invalid"] == {}
+    assert observed["per_task"] == observed["cache"] == {}
+    bad = observed["invalid"]["synthetic"]
+    assert bad["outcome"] == "relayed_signal"
+    assert "128+signal convention" in bad["detail"]
+    assert "not distinguishable" in bad["detail"] and "not a score" in bad["detail"]
+    assert "score" not in observed["progress"]
+
+
+def test_the_wrapper_rule_does_not_reach_a_host_launch():
+    """The gate is the wrapper, not the number: 137 only means "relayed" behind one."""
+    assert process_outcome(137, "", wrapper=True) == "relayed_signal"
+    assert process_outcome(143, "", wrapper=True) == "relayed_signal"
+    assert process_outcome(137, "", wrapper=False) == "harness_crash"
+    assert process_outcome(137, "") == "harness_crash"      # default stays the host reading
+    assert process_outcome(2, "", wrapper=True) == "harness_crash"
+    assert process_outcome(-9, "", wrapper=True) == "stopped_by_signal"
+
+
+def test_a_passing_artifact_still_survives_a_relayed_signal(tmp_path, monkeypatch):
+    """The positive-evidence exception is untouched by the wrapper rule."""
+    results = iter([
+        {"verdict": {"passed": True, "score": 1.0}, "trace": "completed",
+         "exit_code": 0, "sandbox": True},
+        {"verdict": {"passed": False, "score": 0.0}, "trace": "partial",
+         "exit_code": 137, "stderr": "", "sandbox": True}])
+    monkeypatch.setattr(runner, "run_one", lambda *a, **k: next(results))
+    cache = {}
+    result = runner._evaluate(tmp_path, [{"task_id": "synthetic"}], {}, trials=2, cache=cache)
+    assert result["per_task"] == {"synthetic": 0.5}
+    assert result["invalid"] == {}
 
 
 def test_a_passing_trial_survives_a_later_signal(tmp_path, monkeypatch):
