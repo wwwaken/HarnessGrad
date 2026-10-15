@@ -41,5 +41,5 @@ def test_assessment_marks_the_four_permanent_refusals_as_refused():
 
 def test_assessment_states_that_nothing_was_closed_by_a_source_only_review():
     text = ASSESSMENT.read_text(encoding="utf-8")
-    assert "No blocker in this document can be closed by a source-only or metadata-only review" in text
+    assert "that closure waived no verification step" in text
     assert "no measured score is asserted anywhere" in text

@@ -1,6 +1,6 @@
-# Blocker closure assessment — 14 open blockers, clause by clause
+# Blocker closure assessment — open blockers, clause by clause
 
-Parent assessment, 2026-10-15, at registry commit `21d6ebbf`. This document does not change the
+Parent assessment, 2026-10-15, opened at registry commit `21d6ebbf` and updated as blockers closed. This document does not change the
 registry. Its purpose is to answer one question for every open blocker: **which of its own
 `next_action` obligations are already discharged, which are not, and what class the rest belong to** —
 so that "14 open" becomes a set of concrete dispositions instead of a number.
@@ -31,16 +31,14 @@ the artefact.
 | `nestful / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `sotuqa / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `tau2_bench / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
-| `physicsquestions / dataset-journal-gap` | measurement | **closure candidate** | none (`PRE-DIAGNOSTIC` only) |
-| `sportsunderstanding / dataset-journal-gap` | measurement | **closure candidate** | none (`PRE-DIAGNOSTIC` only) |
-| `appworld / successful-task-evidence` | measurement | open | `PENDING-RUN` (+ an operator decision, below) |
+| `appworld / successful-task-evidence` | measurement | open, diagnostic AUTHORIZED | `PENDING-RUN` |
 | `spreadsheetbench / dataset-journal-gap` | measurement | open | `PENDING-RUN`, `PENDING-WORK` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
 | `fever / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM`, one naming decision |
 | `strategyqa / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM` |
 | `reasoning_gym / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM`, `PENDING-WORK` |
 | `triviaqa / hub-export-scorer-linkage` | external | open | `PENDING-UPSTREAM`, `PENDING-WORK` |
-| `hotpotqa / historical-comparison-receipts` | measurement | open | `LIMIT-CANDIDATE` |
+| `hotpotqa / historical-comparison-receipts` | measurement | open | `LIMIT-RECORDED` |
 
 ## The four permanent refusals
 
@@ -49,61 +47,39 @@ refusal and exclusion, do not provision or run the dataset, do not substitute it
 `SATISFIED` by retention and is `REFUSED` by operator instruction — the objective explicitly says not to
 attempt closure. Unchanged.
 
-## The two closure candidates
+## Closed under reading A, 2026-10-15 — `physicsquestions` and `sportsunderstanding`
 
-Both are `family: journal-coverage` with blocker id `dataset-journal-gap`. The journal gap they were
-opened for is the coverage the journal must carry about the dataset's source, metric, custody and
-selection. Every clause in their current `next_action` is now either satisfied or a precondition on a
-future diagnostic:
+The operator chose reading **(A)**: a `dataset-journal-gap` is discharged when the journal coverage its
+own `next_action` names exists, and the diagnostic-time clauses are preconditions on a *future,
+separately authorized* diagnostic rather than conditions on closure. Both blockers are therefore
+**closed** and removed from the active registry; the pre-closure texts stay readable in this file's
+git history and the decision is recorded in the registry's own `review.notes`.
 
-**`physicsquestions / dataset-journal-gap`**
+At closure, every clause of each `next_action` was satisfied or withdrawn:
 
-| clause | class | where it stands |
+| clause | class | where it stood |
 | --- | --- | --- |
-| Retain installed-to-ReWOO and ordered pinned-BIG-bench row linkage, and the bounded first-five selected-only custody record | `SATISFIED` | `tests/fixtures/hg_wprov/README.md`, `tests/fixtures/hg_wsel/physicsquestions.json` |
-| Report the local asymmetric normalized accepted-spelling exact-match reward separately | `SATISFIED` | `registry/w-metriccmp-comparability.md` |
-| Do not claim BIG-bench `exact_str_match`, BLEU or matched generation/processing/aggregation equivalence | constraint | recorded in the same document; the difference is shown with a synthetic discriminating pair |
-| Do not infer a historical converter revision or runtime execution | constraint | recorded |
-| For any separately authorized diagnostic: reconcile the run-specific manifest/export, exact rows and split mode/side, and establish deterministic offline dependencies and dataset-specific trusted/pristine verifier execution | `PRE-DIAGNOSTIC` | statement only; no diagnostic is authorized |
-| Record eligible/selected/task/trial/invalid/unmeasured coverage and fresh execution identities | `PRE-DIAGNOSTIC` | scoped to the same future diagnostic |
+| Retain installed-to-ReWOO and ordered pinned-BIG-bench row linkage | `SATISFIED` | `tests/fixtures/hg_wprov/README.md` |
+| Retain the bounded first-five selected-only custody record | `SATISFIED` | `tests/fixtures/hg_wsel/physicsquestions.json`, `.../sportsunderstanding.json` |
+| Cite the dataset's own migrated review | `SATISFIED` | `docs/dataset-reviews/<dataset>.md`, provisioned as `/site/dataset-reviews/<dataset>.md` |
+| Report the local metric separately, with no upstream-equivalence claim | `SATISFIED` | `registry/w-metriccmp-comparability.md` - physicsquestions is asymmetric normalized accepted-spelling exact match, **different** from BIG-bench `exact_str_match`; sportsunderstanding is generated-text ASCII-letter-boundary label accuracy, **different** from candidate-log-probability `multiple_choice_grade` |
+| Do not infer a historical converter revision or runtime execution | constraint | recorded in the same document |
+| For any separately authorized diagnostic: reconcile the run-specific manifest/export, exact rows and split mode/side; establish offline dependencies and dataset-specific trusted/pristine execution; record eligible/selected/task/trial/invalid/unmeasured coverage | `PRE-DIAGNOSTIC` | statement only; **no diagnostic is authorized** and none of it is waived by this closure |
 | Preserve the withdrawn `official-scorer-identity` decision and the shared-requirement withdrawals | `WITHDRAWN` | `registry/withdrawn-requirements.md` |
 
-**`sportsunderstanding / dataset-journal-gap`** — identical shape: installed-to-ReWOO and pinned
-BIG-bench row linkage retained (`tests/fixtures/hg_wprov/README.md`,
-`tests/fixtures/hg_wsel/sportsunderstanding.json`); the separate local generated-text label-accuracy
-statement adopted (`registry/w-metriccmp-comparability.md`); non-equivalence to
-candidate-log-probability `multiple_choice_grade` recorded; the diagnostic-time clauses are
-`PRE-DIAGNOSTIC`; the shared-requirement withdrawals are `WITHDRAWN`.
+**This closes no measurement and claims no score.** Neither dataset has ever had a measured run, no
+coverage count is asserted anywhere, and the diagnostic-time obligations above remain requirements of
+any future diagnostic - which still needs its own authorization, a fresh run ID, a split/side binding
+and the staged policy. The closure removes a bookkeeping blocker, not a verification step.
 
-### Why they are not closed here, and what closing requires
+**The rule is now fixed, so it does not need re-deciding.** It does **not** generalise to the other
+four journal-coverage blockers, and the registry note says why: `fever` still owes an upstream
+producing-execution receipt, `reasoning_gym` an original generation receipt plus behavioural family
+eligibility, `strategyqa` the original scorer/split definition, and `spreadsheetbench` measured
+coverage plus scorer and formula/LibreOffice runtime evidence. Each of those is a named artefact that
+does not exist yet, not a diagnostic-time precondition.
 
-Two things must be true before closing either one, and both are decisions rather than more work:
-
-1. **A stale-`observed` problem must be superseded, not ignored.** Both records still contain earlier
-   worker sentences that read as current: physicsquestions says "all shared gates remain open" and
-   "Remaining next_action obligations: Actual scorer-offline-closure, pristine verifier execution and
-   both shared gates"; sportsunderstanding says "Selected run manifest/export custody, offline/pristine
-   runtime and measured coverage remain open with every shared gate". Those sentences were accurate when
-   written and were **superseded by the withdrawal** — the shared gates no longer exist. Rather than
-   edit dated worker notes, a registry-level clarification note was appended to `review.notes` in this
-   same commit stating that those names in an `observed` field are not current obligations. Closing a
-   blocker while a reader can still find "all shared gates remain open" in its own `observed` field
-   would be a misreading trap.
-2. **A closure-semantics decision is needed.** Both blockers carry `status: measurement`, and the
-   registry's own taxonomy says the status "classifies the work needed, not benchmark readiness". Under
-   reading **(A)** — the blocker is `dataset-journal-gap`, so it closes when the journal coverage named
-   in its `next_action` exists — both are closeable now. Under reading **(B)** — `status: measurement`
-   means the blocker is not discharged until a measured diagnostic has actually run — both stay open,
-   and so do `fever`, `reasoning_gym`, `strategyqa` and `spreadsheetbench`, because none of the six has
-   ever had a measured run. Reading (B) makes six of the ten real blockers dependent on a model run that
-   no one has authorized, which is the circular shape the operator asked to have removed; reading (A)
-   closes two now and leaves the other four blocked on their own documents and executions.
-
-The parent has deliberately not chosen between (A) and (B) on the operator's behalf: closing two
-blockers is a visible change to the headline count, and the two readings are both defensible. Under
-either reading the *work* that remains is the same, and it is listed below.
-
-## The eight that need something
+## The ten that need something
 
 **`appworld / successful-task-evidence`** — `PENDING-RUN`. Retained receipts, the incomplete Docker
 exit-125 attempt, the raw-versus-staged distinction and the generic protocol review are all
@@ -171,10 +147,10 @@ obligations are unchanged and it stays open.
 
 ## What is not in doubt
 
-No blocker in this document can be closed by a source-only or metadata-only review, and none has been.
-Every `SATISFIED` entry above names an artefact that exists; every `PRE-DIAGNOSTIC` entry is labelled as
-such rather than counted as closure; no measured score is asserted anywhere; and the four refusals are
-untouched.
+Two blockers were closed under reading (A) on 2026-10-15 and both are recorded above with their
+clause-by-clause basis; that closure waived no verification step. For every blocker that remains open,
+nothing here is discharged by a review that has not been done: every `SATISFIED` entry names an artefact
+that exists, every `PRE-DIAGNOSTIC` entry is labelled as such rather than counted as closure, and no measured score is asserted anywhere. The four permanent refusals are untouched.
 
 ## Reverse audit — is every cleared dataset cleared for a recorded reason?
 
@@ -197,8 +173,11 @@ bulk `reports/`/`docs/` deletion) against `HEAD`:
   `scienceworld`, `terminal_bench` - carried no blocker at either baseline, so their clearance predates
   this phase's registry and is not a result of anything removed here.
 
-Conclusion: no dataset is currently clear because a blocker was silently dropped. The 14 open blockers
-above are the complete outstanding set, and `22 - 8 = 14` accounts for every removal.
+Conclusion: no dataset is currently clear because a blocker was silently dropped. `22 - 8 = 14`
+accounts for every one of those removals, and the two closures under reading (A) on 2026-10-15
+(`physicsquestions` and `sportsunderstanding`) take the active set to **12**. Both are recorded above
+and in the registry's `review.notes`, so the count is accounted for in two documented steps rather than
+one unexplained drop.
 
 ## Correction and update, 2026-10-15 — a family-level contract the forward assessment missed
 

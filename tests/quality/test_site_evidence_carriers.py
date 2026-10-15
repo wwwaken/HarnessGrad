@@ -40,8 +40,14 @@ def _provenance():
 
 
 def _known(path, by_reference):
-    """True when `path` is an in-repo file or a recorded carrier reference."""
-    if (ROOT / path).is_file():
+    """True when `path` is an in-repo file, a cited directory, or a recorded carrier reference.
+
+    A reference may legitimately name a directory - the closure record cites
+    `docs/dataset-reviews/` as the home of the per-dataset reviews - so an existing directory
+    resolves too rather than being reported as a missing document.
+    """
+    candidate = ROOT / path
+    if candidate.is_file() or (path.endswith("/") and candidate.is_dir()):
         return True
     item = by_reference.get(path)
     return bool(item) and (ROOT / item["carrier"]).is_file()
@@ -79,7 +85,7 @@ def test_provenance_covers_every_carrier_and_records_its_recovery():
     assert len(by_reference) == len(provenance), "duplicate reference in PROVENANCE.json"
     # Every citation whose path is not present in the repo must be recorded, and the
     # packet's files must be described exactly (no undocumented carrier, no stale entry).
-    missing = [r for r in _cited_references() if not (ROOT / r).is_file()]
+    missing = [r for r in _cited_references() if not _known(r, by_reference)]
     assert set(missing) <= set(by_reference), "a cited document has no provenance entry"
     packet_carriers = {str(p.relative_to(ROOT)) for p in PACKET.rglob("*")
                        if p.is_file() and p.name != "PROVENANCE.json"}

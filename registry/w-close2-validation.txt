@@ -1,0 +1,61 @@
+Parent closure of two journal-coverage blockers under operator decision (A).
+
+Decision
+--------
+Operator, 2026-10-15: choose reading (A) - "现在关闭这两个". A `dataset-journal-gap` is discharged when
+the journal coverage its own `next_action` names exists; diagnostic-time clauses are preconditions on a
+future, separately authorized diagnostic rather than conditions on closure.
+
+Closed
+------
+* `physicsquestions / dataset-journal-gap`
+* `sportsunderstanding / dataset-journal-gap`
+
+Both were removed from `registry/dataset-blockers.json`. At closure every clause of each `next_action`
+was `SATISFIED` or `WITHDRAWN`, and the remainder were `PRE-DIAGNOSTIC`: authenticated installed-to-ReWOO
+and ordered pinned-BIG-bench row linkage; the bounded operator first-five selected-only custody record;
+each dataset's own `docs/dataset-reviews/<dataset>.md` citation (provisioned as
+`/site/dataset-reviews/<dataset>.md`, previously a strict xfail debt); and the separate local metric
+statement in `registry/w-metriccmp-comparability.md` - physicsquestions is asymmetric normalized
+accepted-spelling exact match, DIFFERENT from BIG-bench `exact_str_match`; sportsunderstanding is
+generated-text ASCII-letter-boundary label accuracy, DIFFERENT from candidate-log-probability
+`multiple_choice_grade`. The withdrawn `official-scorer-identity` decision and the shared-requirement
+withdrawals remain recorded limits.
+
+What this does NOT do
+---------------------
+* It closes NO measurement and asserts NO score. Neither dataset has ever had a measured run and no
+  coverage count is claimed. Every diagnostic-time obligation recorded in the pre-closure `next_action`
+  - run-specific manifest/export reconciliation, exact rows and split mode/side, offline dependencies,
+  dataset-specific trusted/pristine execution, eligible/selected/task/trial/invalid/unmeasured coverage,
+  fresh execution identities - remains a requirement of any future diagnostic, which still needs its own
+  authorization, a fresh run ID and the staged policy.
+* It generalises to nothing else. `fever`, `reasoning_gym`, `strategyqa` and `spreadsheetbench` stay OPEN,
+  and the new registry review note says why: each still owes a named artefact that does not exist yet (an
+  upstream producing-execution receipt; an original generation receipt plus behavioural family
+  eligibility; the original scorer/split definition; measured coverage plus scorer and formula/LibreOffice
+  runtime evidence), which is not a diagnostic-time precondition.
+* It edits no historical record, frozen receipt or run ID, and reinstates no withdrawn shared gate.
+
+Records
+-------
+* `registry/dataset-blockers.json`: two blockers removed; one `review.notes` entry appended recording the
+  decision, the clause-by-clause basis, the explicit non-claim, and the rule fixed by the operator.
+  The pre-closure texts remain readable in this file's git history.
+* `registry/blocker-closure-assessment.md`: header generalised, the two summary rows removed, the closure
+  section rewritten with the clause table, the "what is not in doubt" paragraph corrected (it previously
+  said no blocker could be closed by a review - that is no longer the rule), and the reverse audit now
+  accounts for the count in two documented steps (`22 - 8 = 14`, then two closures -> **12**).
+* `tests/quality/test_site_evidence_carriers.py`: a cited reference may name a **directory** (the closure
+  note cites `docs/dataset-reviews/`), so an existing directory now resolves instead of being reported as
+  a missing document.
+* `tests/quality/test_closure_assessment.py`: the non-claim anchor updated to the new wording.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest <the ten registry-reading guard modules> -q
+159 passed, 12 skipped, 0 failed
+
+Open blockers: 14 -> **12**. Four of those remain the permanent refusals.
