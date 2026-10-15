@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from eval.containers import sandbox
 from eval.run.integrity import diff, snapshot
-from eval.run.runner import run_one
+from eval.run.runner import _refuse_unobserved_policies, run_one
 from eval.policy.runtime_policy import stage_agent_runtime
 from harnessgrad import methods
 
@@ -371,12 +371,16 @@ print(json.dumps({'reference_module': importlib.util.find_spec('jericho.game_inf
     old_root, seen = execute(plan, case, "old verifier root /", cwd=task)
     assert "ro" in effective(old_root["mountinfo"], "/tmp")["options"]
     assert seen["tempfile"] == "ENOENT"
-    # Unmodified runner still refuses the selected policy before staging execution.
+    # The platform applies the adapter's deadlines/network. A separate unsupported
+    # native CPU declaration must still refuse before staging execution.
+    assert _refuse_unobserved_policies({"task_id": "acorncourt"}, env, verify) is None
+    admission_env = {**env, "cpus": 2}
     refused = run_one(work / "uncreated-harness", {"task_id": "acorncourt", "goal": "control"},
-                      env=env, verifier=verify)
+                      env=admission_env, verifier=verify)
     assert refused["invalid"]["receipt"]["production_authorized"] is False
     assert refused["invalid"]["receipt"]["reason"] == "backend_observation_unavailable"
     assert "score" not in refused and "verdict" not in refused
+    assert refused["invalid"]["receipt"]["policy_fields"] == ["env.cpus"]
     assert before == snapshot(ROOT)
     assert package_before == {str(path): digest(path) for path in sorted(package.glob('*')) if path.is_file()}
     manifest = {"task_id": "acorncourt", "rom": record["rom"], "seed": record["seed"],
@@ -394,6 +398,7 @@ print(json.dumps({'reference_module': importlib.util.find_spec('jericho.game_inf
         "controls": controls, "parent_observations": observed,
         "projection_controls": visibility, "old_root_negative": old_root,
         "admission": refused["invalid"]["receipt"],
+        "admission_env": admission_env,
         "platform_before": before, "platform_after": snapshot(ROOT),
         "package_sha256": {str(path): digest(path) for path in sorted(package.glob('*')) if path.is_file()},
         "identity": identity(), "cleanup": cleanup,

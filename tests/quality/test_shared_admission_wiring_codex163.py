@@ -50,12 +50,11 @@ def assert_refusal(result):
 
 
 @pytest.mark.parametrize("env", [
-    {"kind": "files", "network": "none"},
     {"cpus": 2}, {"memory_mb": 128},
-    {"agent_timeout_s": 5}, {"verify_timeout_s": 5},
     {"resources": {}}, {"filesystems": {}},
     {"resource_policy": None}, {"network_policy": {}}, {"artifact_policy": {}},
     {"kind": "exec", "image": "synthetic-image"},
+    {"kind": "exec", "network": "none"},
     {"kind": "exec", "state": "container"},
     {"kind": "exec", "network": "services", "services": [{"name": "synthetic"}]},
     {"kind": "exec", "network": "bridge"},
@@ -73,6 +72,28 @@ def test_policy_refusal_precedes_manifest_storage_and_backend_dispatch(
                             setup={"files": [{"path": "unused", "from": "absent"}]})
     assert_refusal(result)
     assert env == before
+
+
+@pytest.mark.parametrize("env", [
+    {"kind": "files", "network": "none"},
+    {"agent_timeout_s": 5}, {"verify_timeout_s": 5},
+    {"kind": "files"}, {},
+    {"kind": "files", "network": "none", "agent_timeout_s": 5, "verify_timeout_s": 5},
+])
+def test_platform_applied_policies_need_no_backend_observation(env):
+    before = deepcopy(env)
+    assert runner._refuse_unobserved_policies(TASK, env, None) is None
+    assert env == before
+
+
+@pytest.mark.parametrize("route", [{"kind": "exec"}, {"state": "container"}])
+@pytest.mark.parametrize("declare_network", [True, False])
+def test_external_network_trigger_requires_a_declaration(route, declare_network):
+    env = {**route, **({"network": "none"} if declare_network else {})}
+    refusal = runner._refuse_unobserved_policies(TASK, env, None)
+    assert_refusal(refusal)
+    fields = refusal["invalid"]["receipt"]["policy_fields"]
+    assert ("env.network" in fields) is declare_network
 
 
 @pytest.mark.parametrize("verifier", [{"artifact_policy": None}])
@@ -100,7 +121,8 @@ def test_a_verifier_timeout_is_not_a_backend_observation_trigger():
     "status": "passed", "enforced": True, "production_authorized": True,
 }])
 def test_adapter_evidence_cannot_override_missing_trusted_observer(tmp_path, observation):
-    env = {"network": "none", "observation": observation, "admission_receipt": observation}
+    env = {"kind": "exec", "network": "none", "observation": observation,
+           "admission_receipt": observation}
     result = runner.run_one(tmp_path / "absent-harness", TASK, env=env)
     assert_refusal(result)
     assert "enforced" not in json.dumps(result)
@@ -121,7 +143,7 @@ def test_unknown_observations_refuse_before_cache_and_never_become_zero_scores(
     monkeypatch.setattr(runner, "run_one", refuse)
     result = runner._evaluate(
         tmp_path / "absent-harness", tasks, {}, harness_sha="synthetic-sha", cache=cache,
-        envs={TASK["task_id"]: {"network": "none"},
+        envs={TASK["task_id"]: {"kind": "exec", "network": "none"},
               tasks[1]["task_id"]: {"artifact_policy": {}}},
         progress_dir=tmp_path, trials=trials, jobs=jobs,
     )

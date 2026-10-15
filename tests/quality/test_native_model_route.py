@@ -166,7 +166,8 @@ print(json.dumps({'url':os.environ['HG_AGENT_BASE_URL'], 'net':os.readlink('/pro
     assert route.account()["connections"] == 1
 
 
-def test_runner_live_backend_wiring_and_policy_gate(tmp_path, upstream, monkeypatch):
+@pytest.mark.parametrize("authorized", [False, True])
+def test_runner_live_backend_wiring_and_policy_gate(tmp_path, upstream, monkeypatch, authorized):
     repo = tmp_path / "work/workspace"
     repo.mkdir(parents=True)
     (repo / "harness.json").write_text(json.dumps({"entrypoint": "agent.py"}))
@@ -181,16 +182,20 @@ pathlib.Path(a.workdir, 'answer.txt').write_text('route reached')
     monkeypatch.setenv("HG_AGENT_BASE_URL", upstream[0])
     task = {"task_id": "netroute-synthetic", "goal": "transport control"}
     env = {"kind": "files", "network": "none"}
-    refused = run_one(repo, task, env=env)
-    assert refused["invalid"]["detail"] == "backend_observation_unavailable"
     auth = Authorization("netroute-synthetic", task["task_id"], "synthetic local transport test")
+    # Native offline isolation is applied by this process, so both paths must
+    # actually reach the synthetic upstream without weakening the transport checks.
     result = run_one(repo, task, env=env, timeout_s=15, run_id=auth.run_id,
-                     diagnostic_authorization=auth)
+                     diagnostic_authorization=auth if authorized else None)
+    assert "invalid" not in result
     assert result["exit_code"] == 0, result
     assert result["answer"] == "route reached"
     assert result["model_gateway"]["transport"] == "unix+isolated-loopback"
     assert result["model_gateway"]["connections"] == 1
-    assert result["enforcement"]["production_authorized"] is False
+    if authorized:
+        assert result["enforcement"]["production_authorized"] is False
+    else:
+        assert "enforcement" not in result
 
 
 def test_offline_without_sandbox_fails_before_execution(tmp_path, monkeypatch):

@@ -16,8 +16,7 @@ sys.path.insert(0, str(ROOT))
 
 from data.scaffolds.registry import _check_env, _normalize_env
 from eval.containers import sandbox
-from policy_assertions import assert_policy_refusal
-from eval.run.runner import run_one
+from eval.run.runner import _refuse_unobserved_policies, run_one
 from eval.policy.runtime_policy import phase_timeout, stage_agent_runtime
 from eval.verification.verifier import _verify, _verify_container_state
 
@@ -153,9 +152,9 @@ def harness(path, body):
 
 def test_runner_refuses_unsandboxed_declared_isolation(tmp_path):
     repo = harness(tmp_path / "harness", "raise AssertionError('must not execute')")
-    result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
-                     env={"kind": "files", "network": "none"})
-    assert_policy_refusal(result, ("env.network",))
+    with pytest.raises(ValueError, match="isolation requires sandbox=True"):
+        run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
+                env={"kind": "files", "network": "none"})
     assert list(tmp_path.iterdir()) == [repo]
 
 
@@ -208,14 +207,11 @@ pathlib.Path(a.workdir, 'answer.txt').write_text(json.dumps(seen))
             "assert p.REFERENCE == 'SYNTHETIC_SECRET'; print('trusted package retained')"]}
         env = {"kind": "files", "network": "none", "agent_timeout_s": 3,
                "verify_timeout_s": 5, "agent_runtime": runtime}
-        refused = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
-                          env=env, verifier=verifier)
-        assert_policy_refusal(refused, ("env.network", "env.agent_timeout_s", "env.verify_timeout_s"))
+        assert _refuse_unobserved_policies({"task_id": "synthetic"}, env, verifier) is None
         assert not list(work.glob("task-*"))
         assert (package / "__init__.py").read_text() == 'REFERENCE = "SYNTHETIC_SECRET"\n'
-        # Synthetic backend regression only: production admission above remains blocked.
-        # This local monkeypatch grants no observer receipt or production authorization.
-        monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a, **k: None)
+        # Exercise the real admission hook: the platform applies these deadlines,
+        # the package projection and the private network without an authorization.
         result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
                          env=env, verifier=verifier)
     assert result["exit_code"] == 0, result["stderr"]

@@ -835,7 +835,27 @@ closed. The harness client, prompts and budgets are unchanged. The socket and
 forwarder are infrastructure mounts, never setup files or task capability metadata,
 and are not projected into verification. Native `bridge` and `services` remain
 unsupported and refused; omitted native network still means inherited host network.
-The separate backend-observation admission gate continues to apply.
+The backend-observation admission rule is: **refuse a declared policy when, and only
+when, this process is not the thing that applies it.** The gate's ownership table is:
+
+| declaration | native `files` route | `exec` / container-state route | backend-observation admission |
+| --- | --- | --- | --- |
+| `env.agent_timeout_s` | runner applies `phase_timeout` and subprocess deadline | same platform deadline on the agent invocation | no trigger |
+| `env.verify_timeout_s`, `verifier.timeout_s` | runner/verifier apply `phase_timeout` and subprocess deadline | same platform deadline on the verifier invocation | no trigger |
+| `env.network` | omitted: inherits host network; `none`: platform builds `--unshare-net`; other values fail runtime validation | daemon owns network namespace | triggers only if declared and `kind == "exec"` or `state == "container"` |
+| `env.cpus`, `env.memory_mb` | no declaration-driven CPU/memory enforcement | daemon applies resource limits | trigger when declared |
+| `env.resources`, `env.resource_policy` | no implementation of these declarations | no trusted backend observation wired | trigger when declared |
+| `env.filesystems` | fixed platform mounts do not implement this declaration or its quotas | no trusted backend observation wired | trigger when declared |
+| `env.network_policy` | native `network` support does not implement this separate declaration | no trusted backend observation wired | trigger when declared |
+| `env.artifact_policy`, `verifier.artifact_policy` | fixed artifact mounts do not implement these declarations or their quotas | no trusted backend observation wired | trigger when declared |
+| `env.exec_defaults` (implicit for every `kind == "exec"`) | not requested | daemon applies default CPU/memory/PID bounds | always triggers for `exec` |
+| `env.state=container` | no native container-state implementation | daemon owns container state and snapshots | triggers for container state |
+
+This gate runs before storage/backend dispatch. Native isolation still requires
+`sandbox=True`; admission here does not bypass runtime validation. A bound operator
+authorization permits only an explicitly unmeasured diagnostic attempt and is never
+backend observation or production authorization. Declarations without a native
+implementation stay refused even for direct callers that bypass registry validation.
 
 `env.model_gateway` is `{"published": true, "target": "<host>:<port>"}`, or `null`. It is
 recorded because "the model was reachable from inside the container" is a fact about the

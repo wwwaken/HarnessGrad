@@ -41,8 +41,11 @@ from eval.policy.unobserved_diagnostic import Authorization
 def _refuse_unobserved_policies(task: dict, env: dict | None,
                                verifier: dict | None, *, run_id: str = "",
                                diagnostic_authorization: Authorization | None = None) -> dict | None:
-    """Refuse policy-bearing tasks until a trusted backend observer is wired in.
+    """Refuse a declared policy when, and only when, this process does not apply it.
 
+    Phase deadlines and native files network isolation are applied by the platform
+    itself. Exec/container network and resource/state policies depend on an external
+    backend; declarations the native path does not implement also remain refused.
     The offline runner_admission checks cannot discover enforcement. Launch flags,
     adapter observations and cached verdicts are not a substitute for that observer.
     An operator may authorize one explicitly unmeasured diagnostic attempt. That
@@ -50,7 +53,7 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
     """
     env_spec = env or {}
     fields = {"env." + key for key in (
-        "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s", "network",
+        "cpus", "memory_mb",
         "resources", "filesystems", "resource_policy", "network_policy", "artifact_policy",
     ) if key in env_spec}
     # Even direct callers that omit normalized fields request these default bounds
@@ -59,15 +62,15 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
         fields.add("env.exec_defaults")
     if env_spec.get("state") == "container":
         fields.add("env.state=container")
-    # `verifier.timeout_s` is deliberately NOT a trigger. The platform enforces it
-    # itself -- `eval/verification/verifier.py` passes it to `phase_timeout` and to the verifier
-    # subprocess' `timeout=`, and records expiry as its own outcome ("the verifier
-    # timed out after Ns"), which is an unmeasured result rather than a score. There
-    # is no external backend capability to observe, so demanding an observation for it
-    # refused every dataset that declares one (the shared QA scaffold sets 3600s for
-    # all of its adapters) while adding no guarantee. Everything whose enforcement
-    # really does live outside this process -- exec defaults, container state, network,
-    # cpus/memory, filesystems, resource and artifact policy -- still refuses.
+    if "network" in env_spec and (env_spec.get("kind") == "exec"
+                                 or env_spec.get("state") == "container"):
+        fields.add("env.network")
+    # env.agent_timeout_s, env.verify_timeout_s and verifier.timeout_s flow through
+    # phase_timeout to the platform's subprocess deadlines. Native files network
+    # isolation is built here through sandbox.command's --unshare-net; unsupported
+    # native network values and unsandboxed isolation are refused by the runtime.
+    # Neither needs an external backend observation. The remaining declarations
+    # either depend on that backend or have no native implementation at all.
     if "artifact_policy" in (verifier or {}):
         fields.add("verifier.artifact_policy")
     if not fields:

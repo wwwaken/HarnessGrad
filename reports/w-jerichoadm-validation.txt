@@ -1,0 +1,1167 @@
+w-jerichoadm validation transcript
+Working directory: /mnt/20t/xubuqiang/hg-wt/w-jerichoadm
+$ git rev-parse HEAD
+54ffe90bc425a3ff98418834e6956b0561b82f39
+
+Test protocol: the Python source below is the exact runner used for before/after.
+Its child commands, complete observed combined output, exit codes and cleanup checks
+follow. All pytest temporary roots use a unique /tmp/jerichoadm-* directory and each
+is deleted immediately after its command. Selection is identical before and after.
+No fixture/assertion was patched by the validation runner. Ordinary pytest skipping
+and explicit -k deselection are reported, never converted into passes.
+
+$ python3 /mnt/20t/xubuqiang/hg-work/jerichoadm/validate.py before
+$ python3 /mnt/20t/xubuqiang/hg-work/jerichoadm/validate.py after
+SOURCE validate.py:
+import json
+import os
+from pathlib import Path
+import shlex
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path('/mnt/20t/xubuqiang/hg-wt/w-jerichoadm')
+OUT = Path('/mnt/20t/xubuqiang/hg-work/jerichoadm')
+FILES = ['test_shared_admission_wiring_codex163.py', 'test_native_model_route.py',
+         'test_gaia_official_scorer.py', 'test_unobserved_diagnostic_c2.py',
+         'test_runtime_blocker_evidence_b7.py', 'test_jericho_runtime_boundaries.py',
+         'test_web_gateway.py', 'test_services.py', 'test_isolation.py']
+# Select only local authored controls, refusal paths and pure declaration checks.
+SELECT = {
+ 'test_gaia_official_scorer.py': ['-k', 'test_the_environment_is_networked_and_says_so or test_platform_control_refuses_regardless_of_arm'],
+ 'test_web_gateway.py': ['-k', 'not test_unobserved_admission_and_synthetic_web_isolation_backend'],
+ 'test_services.py': ['-k', 'not (test_a_harness_reaches_the_service_by_the_name_it_was_told or test_the_health_check_actually_waits or test_nothing_is_left_behind_after_teardown or test_a_start_that_fails_does_not_leave_a_network or test_a_leftover_network_from_a_crash_does_not_kill_the_next_run or test_reap_removes_a_service_container_a_crash_left_running or test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out or test_a_service_needing_a_model_stops_the_run_when_none_is_configured or test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero or test_a_refused_service_run_names_the_service_in_its_header or test_an_unmeasured_service_environment_is_recorded_without_a_curve or test_a_container_reaches_the_host_on_the_internal_gateway)'],
+ 'test_isolation.py': ['-k', 'test_checkout_guard_ignores_generated_caches or test_checkout_guard_still_tracks_source_changes or test_snapshot_covers_the_referee_not_the_candidate or test_a_modified_platform_file_is_reported_by_name or test_an_added_or_removed_platform_file_is_also_a_violation or test_workspace_inside_the_platform_is_refused or test_the_driver_refuses_a_workspace_inside_the_platform'],
+}
+phase = sys.argv[1]
+log = OUT / f'{phase}.txt'
+with log.open('x') as out:
+    for filename in FILES:
+        for collect in (True, False):
+            # B7's existing fixture skips on this writable checkout, before any control.
+            with tempfile.TemporaryDirectory(prefix='jerichoadm-') as tmp:
+                env = dict(os.environ, TMPDIR=tmp, PYTHONDONTWRITEBYTECODE='1', HG_AGENT_BACKEND='mock')
+                cmd = ['python3', '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
+                       f'--basetemp={tmp}/pytest', f'tests/quality/{filename}']
+                if collect:
+                    cmd += ['--collect-only']
+                else:
+                    cmd += SELECT.get(filename, [])
+                prefix = 'TMPDIR=' + shlex.quote(tmp) + ' PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock '
+                out.write('$ ' + prefix + shlex.join(cmd) + '\n')
+                out.flush()
+                proc = subprocess.run(cmd, cwd=ROOT, env=env, stdout=subprocess.PIPE,
+                                      stderr=subprocess.STDOUT, text=True)
+                out.write(proc.stdout + f'EXIT_CODE={proc.returncode}\n')
+                out.flush()
+                print(f'{phase} {filename} {"collection" if collect else "execution"}:\n{proc.stdout[-2200:]}EXIT_CODE={proc.returncode}', flush=True)
+            out.write(f'CLEANUP {tmp}: absent={not Path(tmp).exists()}\n\n')
+            out.flush()
+
+BEFORE EXACT CHILD COMMANDS AND OUTPUT:
+$ TMPDIR=/tmp/jerichoadm-4vl41f2p PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-4vl41f2p/pytest tests/quality/test_shared_admission_wiring_codex163.py --collect-only
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env4]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env5]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env6]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env7]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env8]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env9]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env10]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env11]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env12]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env13]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env4]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env5]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env6]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env7]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env8]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env9]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env10]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env11]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env12]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env13]
+tests/quality/test_shared_admission_wiring_codex163.py::test_verifier_artifact_policy_refuses_before_scoring[verifier0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_a_verifier_timeout_is_not_a_backend_observation_trigger
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[None]
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[observation1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[unknown]
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[observation3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[1-1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[3-1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[1-2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[3-2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_legacy_files_path_without_policy_declarations_still_scores
+tests/quality/test_shared_admission_wiring_codex163.py::test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved[None]
+tests/quality/test_shared_admission_wiring_codex163.py::test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved[in-process]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[None-runtime-policy0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[None-snapshot-policy1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[None-cleanup-policy2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[observation1-runtime-policy0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[observation1-snapshot-policy1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[observation1-cleanup-policy2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[unknown-runtime-policy0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[unknown-snapshot-policy1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[unknown-cleanup-policy2]
+
+50 tests collected in 0.18s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-4vl41f2p: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-_q29eyac PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-_q29eyac/pytest tests/quality/test_shared_admission_wiring_codex163.py
+..................................................                       [100%]
+50 passed in 0.27s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-_q29eyac: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-texfi63f PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-texfi63f/pytest tests/quality/test_native_model_route.py --collect-only
+tests/quality/test_native_model_route.py::test_native_policy_matrix
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[https://example.com/v1]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[unix:///model.sock]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[http://user:pass@localhost/v1]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[http://localhost/v1?q=1]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[http://localhost/v1#fragment]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[]
+tests/quality/test_native_model_route.py::test_private_socket_and_cleanup
+tests/quality/test_native_model_route.py::test_validated_mount_rejects_aliases_wrong_kind_and_unisolated_route
+tests/quality/test_native_model_route.py::test_launch_revalidates_replaced_socket
+tests/quality/test_native_model_route.py::test_live_namespace_http_preserves_payload_and_fixed_upstream
+tests/quality/test_native_model_route.py::test_runner_live_backend_wiring_and_policy_gate
+tests/quality/test_native_model_route.py::test_offline_without_sandbox_fails_before_execution
+tests/quality/test_native_model_route.py::test_timeout_and_nonzero_child_cleanup
+
+14 tests collected in 0.17s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-texfi63f: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-zx9n65rh PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-zx9n65rh/pytest tests/quality/test_native_model_route.py
+..............                                                           [100%]
+14 passed in 8.04s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-zx9n65rh: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-ud33ud5x PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-ud33ud5x/pytest tests/quality/test_gaia_official_scorer.py --collect-only
+tests/quality/test_gaia_official_scorer.py::test_the_pool_is_the_pinned_one
+tests/quality/test_gaia_official_scorer.py::test_every_attachment_matches_the_pool_header
+tests/quality/test_gaia_official_scorer.py::test_the_test_split_is_excluded_because_its_gold_is_a_placeholder
+tests/quality/test_gaia_official_scorer.py::test_the_scorer_is_the_pinned_leaderboard_file
+tests/quality/test_gaia_official_scorer.py::test_the_three_normalization_branches_are_upstreams
+tests/quality/test_gaia_official_scorer.py::test_the_check_scores_the_released_answer_and_a_wrong_one
+tests/quality/test_gaia_official_scorer.py::test_a_missing_answer_is_a_measured_zero_and_a_placeholder_gold_is_not
+tests/quality/test_gaia_official_scorer.py::test_the_prompt_carries_neither_the_annotator_steps_nor_internal_paths
+tests/quality/test_gaia_official_scorer.py::test_the_environment_is_networked_and_says_so
+tests/quality/test_gaia_official_scorer.py::test_platform_control_refuses_regardless_of_arm
+
+10 tests collected in 0.06s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-ud33ud5x: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-6l3yklig PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-6l3yklig/pytest tests/quality/test_gaia_official_scorer.py -k 'test_the_environment_is_networked_and_says_so or test_platform_control_refuses_regardless_of_arm'
+..                                                                       [100%]
+2 passed, 8 deselected in 0.82s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-6l3yklig: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-gczjkgrt PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-gczjkgrt/pytest tests/quality/test_unobserved_diagnostic_c2.py --collect-only
+tests/quality/test_unobserved_diagnostic_c2.py::test_unauthorized_exec_refuses_before_launch_and_cache
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorized_exec_runs_and_tags_every_result_without_cache_publication
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change0]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change1]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change2]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change3]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change4]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change5]
+tests/quality/test_unobserved_diagnostic_c2.py::test_unknown_gates_without_operator_permission_still_refuse
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_authorized_driver_runs_once_but_cannot_publish_or_expand
+tests/quality/test_unobserved_diagnostic_c2.py::test_incomplete_authorized_attempt_has_final_nonobservation_receipt[preflight]
+tests/quality/test_unobserved_diagnostic_c2.py::test_incomplete_authorized_attempt_has_final_nonobservation_receipt[exception]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra0]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra1]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra2]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra3]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra4]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra5]
+
+18 tests collected in 0.29s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-gczjkgrt: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-huwvwh7j PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-huwvwh7j/pytest tests/quality/test_unobserved_diagnostic_c2.py
+..................                                                       [100%]
+18 passed in 0.90s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-huwvwh7j: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-e93cfn0q PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-e93cfn0q/pytest tests/quality/test_runtime_blocker_evidence_b7.py --collect-only
+tests/quality/test_runtime_blocker_evidence_b7.py::test_parent_observer_detects_effective_mount_regression
+tests/quality/test_runtime_blocker_evidence_b7.py::test_jericho_selected_runtime_and_control_have_parent_receipts
+
+2 tests collected in 0.19s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-e93cfn0q: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-ivts57e5 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-ivts57e5/pytest tests/quality/test_runtime_blocker_evidence_b7.py
+ss                                                                       [100%]
+2 skipped in 0.20s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-ivts57e5: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-ru9w4hwl PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-ru9w4hwl/pytest tests/quality/test_jericho_runtime_boundaries.py --collect-only
+tests/quality/test_jericho_runtime_boundaries.py::test_adapter_import_does_not_read_release_payload
+tests/quality/test_jericho_runtime_boundaries.py::test_projection_reads_only_code_and_excludes_docs_data_and_bytecode
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[0]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[-1]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[True]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[300]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[nan]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[inf]
+tests/quality/test_jericho_runtime_boundaries.py::test_limits_cannot_be_loosened_and_files_policy_survives_normalization
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[host]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[sandbox]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[exec]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[snapshot]
+tests/quality/test_jericho_runtime_boundaries.py::test_real_host_sleep_obeys_declared_timeout
+tests/quality/test_jericho_runtime_boundaries.py::test_runner_refuses_unsandboxed_declared_isolation
+tests/quality/test_jericho_runtime_boundaries.py::test_unobserved_admission_and_synthetic_projection_backend_boundaries
+tests/quality/test_jericho_runtime_boundaries.py::test_control_materialization_resets_actions_and_requires_explicit_id
+
+17 tests collected in 0.18s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-ru9w4hwl: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-ndh9cfzv PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-ndh9cfzv/pytest tests/quality/test_jericho_runtime_boundaries.py
+............s....                                                        [100%]
+16 passed, 1 skipped in 0.45s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-ndh9cfzv: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-4uhy4oxm PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-4uhy4oxm/pytest tests/quality/test_web_gateway.py --collect-only
+tests/quality/test_web_gateway.py::test_recorded_provider_fixtures_have_common_shape
+tests/quality/test_web_gateway.py::test_web_declaration_survives_environment_normalization
+tests/quality/test_web_gateway.py::test_gateway_records_search_and_fetch_but_not_health
+tests/quality/test_web_gateway.py::test_fetch_rejects_non_http_urls
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://127.0.0.1/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://2130706433/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://0x7f000001/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://192.168.1.1/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://169.254.169.254/latest/meta-data]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://[::1]/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://[::ffff:127.0.0.1]/]
+tests/quality/test_web_gateway.py::test_fetch_allows_checked_external_url_with_mocked_opener
+tests/quality/test_web_gateway.py::test_fetch_rejects_redirect_to_private
+tests/quality/test_web_gateway.py::test_searxng_failed_engine_is_not_an_empty_measured_zero
+tests/quality/test_web_gateway.py::test_healthy_searxng_zero_results_is_allowed
+tests/quality/test_web_gateway.py::test_paid_provider_without_key_refuses_to_start
+tests/quality/test_web_gateway.py::test_unobserved_admission_and_synthetic_web_isolation_backend
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses0]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses1]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses2]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses3]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses4]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses5]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses6]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses7]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses8]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses9]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses10]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses11]
+tests/quality/test_web_gateway.py::test_real_transport_pins_ip_and_does_not_resolve_hostname_twice
+tests/quality/test_web_gateway.py::test_proxy_connect_uses_pinned_ip_and_https_keeps_original_tls_name[http]
+tests/quality/test_web_gateway.py::test_proxy_connect_uses_pinned_ip_and_https_keeps_original_tls_name[https]
+tests/quality/test_web_gateway.py::test_redirect_handler_cannot_bypass_private_policy_and_preserves_failed_bytes
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[<html>error</html>]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{}]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[[]]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{"results": null}]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{"results": [null]}]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{"results": [], "unresponsive_engines": [["google", "ConnectError"]]}]
+tests/quality/test_web_gateway.py::test_searxng_local_endpoint_survives_and_healthy_zero_is_http_200
+tests/quality/test_web_gateway.py::test_searxng_connection_failure_has_status_zero_and_error_record
+tests/quality/test_web_gateway.py::test_driver_writes_real_run_meta_before_task_launch[searxng-http://127.0.0.1:19999]
+tests/quality/test_web_gateway.py::test_driver_writes_real_run_meta_before_task_launch[none-None]
+
+43 tests collected in 0.21s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-4uhy4oxm: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-v662ilfk PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-v662ilfk/pytest tests/quality/test_web_gateway.py -k 'not test_unobserved_admission_and_synthetic_web_isolation_backend'
+..........................................                               [100%]
+42 passed, 1 deselected in 6.22s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-v662ilfk: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-y9en8l20 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-y9en8l20/pytest tests/quality/test_services.py --collect-only
+tests/quality/test_services.py::test_services_without_a_service_network_are_refused
+tests/quality/test_services.py::test_a_service_name_must_be_a_dns_label
+tests/quality/test_services.py::test_a_service_needs_a_health_check
+tests/quality/test_services.py::test_duplicate_service_names_are_refused
+tests/quality/test_services.py::test_a_service_needs_an_image_and_a_port
+tests/quality/test_services.py::test_an_unknown_service_field_is_refused
+tests/quality/test_services.py::test_services_are_refused_on_a_files_environment
+tests/quality/test_services.py::test_the_normalized_env_carries_the_services_through
+tests/quality/test_services.py::test_the_environment_credential_never_reaches_the_harness
+tests/quality/test_services.py::test_services_receive_the_environment_budget_and_the_harness_does_not
+tests/quality/test_services.py::test_the_task_seed_is_derived_and_reproducible
+tests/quality/test_services.py::test_the_harness_is_given_no_view_of_a_recording
+tests/quality/test_services.py::test_the_check_is_given_the_recording_read_only
+tests/quality/test_services.py::test_an_unknown_audience_is_refused_rather_than_defaulted
+tests/quality/test_services.py::test_a_harness_reaches_the_service_by_the_name_it_was_told
+tests/quality/test_services.py::test_unobserved_service_task_is_refused_before_health_checks
+tests/quality/test_services.py::test_healthy_service_cannot_authorize_an_unobserved_backend
+tests/quality/test_services.py::test_the_health_check_actually_waits
+tests/quality/test_services.py::test_nothing_is_left_behind_after_teardown
+tests/quality/test_services.py::test_a_start_that_fails_does_not_leave_a_network
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: No such network: owned-net\n-True]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: network owned-net not found\nexit status 1\n-True]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: network owned-net has active endpoints\n-False]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: plugin not found\n-False]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: network other-net not found\n-False]
+tests/quality/test_services.py::test_a_leftover_network_from_a_crash_does_not_kill_the_next_run
+tests/quality/test_services.py::test_reap_removes_a_service_container_a_crash_left_running
+tests/quality/test_services.py::test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out
+tests/quality/test_services.py::test_the_record_carries_the_services_and_their_digests
+tests/quality/test_services.py::test_the_record_says_which_services_if_any_are_missing
+tests/quality/test_services.py::test_needs_seed_and_needs_model_decide_whether_the_record_is_null
+tests/quality/test_services.py::test_the_environment_spend_is_reported_separately_from_the_harness
+tests/quality/test_services.py::test_the_improvers_own_split_reaches_the_point
+tests/quality/test_services.py::test_a_service_needing_a_model_stops_the_run_when_none_is_configured
+tests/quality/test_services.py::test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero
+tests/quality/test_services.py::test_a_refused_service_run_names_the_service_in_its_header
+tests/quality/test_services.py::test_an_unmeasured_service_environment_is_recorded_without_a_curve
+tests/quality/test_services.py::test_a_host_local_url_is_recognised_and_a_remote_one_is_not
+tests/quality/test_services.py::test_the_gateway_preserves_the_path
+tests/quality/test_services.py::test_a_container_reaches_the_host_on_the_internal_gateway
+tests/quality/test_services.py::test_a_model_gateway_cannot_bypass_unobserved_exec_admission
+tests/quality/test_services.py::test_synthetic_model_gateway_backend_still_isolates_the_internet
+tests/quality/test_services.py::test_a_remote_model_with_an_offline_network_is_refused
+
+43 tests collected in 0.30s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-y9en8l20: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-lga_5br5 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-lga_5br5/pytest tests/quality/test_services.py -k 'not (test_a_harness_reaches_the_service_by_the_name_it_was_told or test_the_health_check_actually_waits or test_nothing_is_left_behind_after_teardown or test_a_start_that_fails_does_not_leave_a_network or test_a_leftover_network_from_a_crash_does_not_kill_the_next_run or test_reap_removes_a_service_container_a_crash_left_running or test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out or test_a_service_needing_a_model_stops_the_run_when_none_is_configured or test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero or test_a_refused_service_run_names_the_service_in_its_header or test_an_unmeasured_service_environment_is_recorded_without_a_curve or test_a_container_reaches_the_host_on_the_internal_gateway)'
+...............................                                          [100%]
+31 passed, 12 deselected in 6.58s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-lga_5br5: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-ejyqz8tp PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-ejyqz8tp/pytest tests/quality/test_isolation.py --collect-only
+tests/quality/test_isolation.py::test_checkout_guard_ignores_generated_caches
+tests/quality/test_isolation.py::test_checkout_guard_still_tracks_source_changes
+tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+tests/quality/test_isolation.py::test_a_modified_platform_file_is_reported_by_name
+tests/quality/test_isolation.py::test_an_added_or_removed_platform_file_is_also_a_violation
+tests/quality/test_isolation.py::test_workspace_inside_the_platform_is_refused
+tests/quality/test_isolation.py::test_the_driver_refuses_a_workspace_inside_the_platform
+tests/quality/test_isolation.py::test_a_harness_that_edits_the_platform_fails_the_run
+tests/quality/test_isolation.py::test_the_driver_exits_nonzero_when_a_harness_tampers
+tests/quality/test_isolation.py::test_the_method_side_guard_fails_the_call
+tests/quality/test_isolation.py::test_mode_a_completes_a_normal_round_and_records_its_diff
+tests/quality/test_isolation.py::test_a_method_cannot_read_the_platform_it_is_being_measured_by
+tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers
+tests/quality/test_isolation.py::test_the_harness_gets_only_its_own_credential
+tests/quality/test_isolation.py::test_the_harness_has_no_memory_from_one_task_to_the_next
+tests/quality/test_isolation.py::test_neither_side_of_a_run_contains_the_other
+
+16 tests collected in 0.06s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-ejyqz8tp: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-fsptw_r9 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-fsptw_r9/pytest tests/quality/test_isolation.py -k 'test_checkout_guard_ignores_generated_caches or test_checkout_guard_still_tracks_source_changes or test_snapshot_covers_the_referee_not_the_candidate or test_a_modified_platform_file_is_reported_by_name or test_an_added_or_removed_platform_file_is_also_a_violation or test_workspace_inside_the_platform_is_refused or test_the_driver_refuses_a_workspace_inside_the_platform'
+..F....                                                                  [100%]
+=================================== FAILURES ===================================
+______________ test_snapshot_covers_the_referee_not_the_candidate ______________
+
+    def test_snapshot_covers_the_referee_not_the_candidate():
+        """The scorer is watched; the artifact under improvement is not.
+    
+        `base_harness/` missing from the tuple is deliberate and load-bearing: every
+        run copies it into a workspace and edits the copy. Watching it would flag the
+        only write the platform exists to make.
+        """
+        snap = snapshot(ROOT)
+        assert "driver.py" in snap, "the driver decides what a curve means"
+        assert "eval/run/integrity.py" in snap, "the checker watches itself"
+        assert "eval/run/runner.py" in snap, "the runner runs the subject"
+>       assert ".env" in snap, "the credentials pay for the measurement"
+E       AssertionError: the credentials pay for the measurement
+E       assert '.env' in {'INTERFACE.md': '6814c4a8960e549c7e6925112b3cfbdff6eb9cd8b68b95d6bee6f4e1c0cb4098', 'ckpt/git_state.py': '85ce26bc78e...b4d3e2c5d6', 'data/aggregation_policies.json': '7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163', ...}
+
+tests/quality/test_isolation.py:156: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+1 failed, 6 passed, 9 deselected in 4.00s
+EXIT_CODE=1
+CLEANUP /tmp/jerichoadm-fsptw_r9: absent=True
+
+
+AFTER EXACT CHILD COMMANDS AND OUTPUT:
+$ TMPDIR=/tmp/jerichoadm-rgt1zmav PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-rgt1zmav/pytest tests/quality/test_shared_admission_wiring_codex163.py --collect-only
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env4]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env5]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env6]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env7]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env8]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env9]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env10]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[True-env11]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env4]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env5]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env6]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env7]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env8]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env9]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env10]
+tests/quality/test_shared_admission_wiring_codex163.py::test_policy_refusal_precedes_manifest_storage_and_backend_dispatch[False-env11]
+tests/quality/test_shared_admission_wiring_codex163.py::test_platform_applied_policies_need_no_backend_observation[env0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_platform_applied_policies_need_no_backend_observation[env1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_platform_applied_policies_need_no_backend_observation[env2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_platform_applied_policies_need_no_backend_observation[env3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_platform_applied_policies_need_no_backend_observation[env4]
+tests/quality/test_shared_admission_wiring_codex163.py::test_platform_applied_policies_need_no_backend_observation[env5]
+tests/quality/test_shared_admission_wiring_codex163.py::test_external_network_trigger_requires_a_declaration[True-route0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_external_network_trigger_requires_a_declaration[True-route1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_external_network_trigger_requires_a_declaration[False-route0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_external_network_trigger_requires_a_declaration[False-route1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_verifier_artifact_policy_refuses_before_scoring[verifier0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_a_verifier_timeout_is_not_a_backend_observation_trigger
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[None]
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[observation1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[unknown]
+tests/quality/test_shared_admission_wiring_codex163.py::test_adapter_evidence_cannot_override_missing_trusted_observer[observation3]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[1-1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[3-1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[1-2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_unknown_observations_refuse_before_cache_and_never_become_zero_scores[3-2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_legacy_files_path_without_policy_declarations_still_scores
+tests/quality/test_shared_admission_wiring_codex163.py::test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved[None]
+tests/quality/test_shared_admission_wiring_codex163.py::test_only_selected_tasks_are_checked_and_legacy_cache_is_preserved[in-process]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[None-runtime-policy0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[None-snapshot-policy1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[None-cleanup-policy2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[observation1-runtime-policy0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[observation1-snapshot-policy1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[observation1-cleanup-policy2]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[unknown-runtime-policy0]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[unknown-snapshot-policy1]
+tests/quality/test_shared_admission_wiring_codex163.py::test_shared_contracts_refuse_malformed_or_unbound_observations[unknown-cleanup-policy2]
+
+56 tests collected in 0.20s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-rgt1zmav: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-hoz7t1w4 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-hoz7t1w4/pytest tests/quality/test_shared_admission_wiring_codex163.py
+........................................................                 [100%]
+56 passed in 0.27s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-hoz7t1w4: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-a_qr53tt PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-a_qr53tt/pytest tests/quality/test_native_model_route.py --collect-only
+tests/quality/test_native_model_route.py::test_native_policy_matrix
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[https://example.com/v1]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[unix:///model.sock]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[http://user:pass@localhost/v1]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[http://localhost/v1?q=1]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[http://localhost/v1#fragment]
+tests/quality/test_native_model_route.py::test_unrepresentable_urls_fail_closed[]
+tests/quality/test_native_model_route.py::test_private_socket_and_cleanup
+tests/quality/test_native_model_route.py::test_validated_mount_rejects_aliases_wrong_kind_and_unisolated_route
+tests/quality/test_native_model_route.py::test_launch_revalidates_replaced_socket
+tests/quality/test_native_model_route.py::test_live_namespace_http_preserves_payload_and_fixed_upstream
+tests/quality/test_native_model_route.py::test_runner_live_backend_wiring_and_policy_gate[False]
+tests/quality/test_native_model_route.py::test_runner_live_backend_wiring_and_policy_gate[True]
+tests/quality/test_native_model_route.py::test_offline_without_sandbox_fails_before_execution
+tests/quality/test_native_model_route.py::test_timeout_and_nonzero_child_cleanup
+
+15 tests collected in 0.17s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-a_qr53tt: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-xpk6fytc PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-xpk6fytc/pytest tests/quality/test_native_model_route.py
+...............                                                          [100%]
+15 passed in 10.21s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-xpk6fytc: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-0p79stsu PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-0p79stsu/pytest tests/quality/test_gaia_official_scorer.py --collect-only
+tests/quality/test_gaia_official_scorer.py::test_the_pool_is_the_pinned_one
+tests/quality/test_gaia_official_scorer.py::test_every_attachment_matches_the_pool_header
+tests/quality/test_gaia_official_scorer.py::test_the_test_split_is_excluded_because_its_gold_is_a_placeholder
+tests/quality/test_gaia_official_scorer.py::test_the_scorer_is_the_pinned_leaderboard_file
+tests/quality/test_gaia_official_scorer.py::test_the_three_normalization_branches_are_upstreams
+tests/quality/test_gaia_official_scorer.py::test_the_check_scores_the_released_answer_and_a_wrong_one
+tests/quality/test_gaia_official_scorer.py::test_a_missing_answer_is_a_measured_zero_and_a_placeholder_gold_is_not
+tests/quality/test_gaia_official_scorer.py::test_the_prompt_carries_neither_the_annotator_steps_nor_internal_paths
+tests/quality/test_gaia_official_scorer.py::test_the_environment_is_networked_and_says_so
+tests/quality/test_gaia_official_scorer.py::test_platform_control_refuses_regardless_of_arm
+
+10 tests collected in 0.06s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-0p79stsu: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-y4l5urrc PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-y4l5urrc/pytest tests/quality/test_gaia_official_scorer.py -k 'test_the_environment_is_networked_and_says_so or test_platform_control_refuses_regardless_of_arm'
+..                                                                       [100%]
+2 passed, 8 deselected in 0.83s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-y4l5urrc: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-f0dhtl6d PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-f0dhtl6d/pytest tests/quality/test_unobserved_diagnostic_c2.py --collect-only
+tests/quality/test_unobserved_diagnostic_c2.py::test_unauthorized_exec_refuses_before_launch_and_cache
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorized_exec_runs_and_tags_every_result_without_cache_publication
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change0]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change1]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change2]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change3]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change4]
+tests/quality/test_unobserved_diagnostic_c2.py::test_authorization_cannot_expand_scope[change5]
+tests/quality/test_unobserved_diagnostic_c2.py::test_unknown_gates_without_operator_permission_still_refuse
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_authorized_driver_runs_once_but_cannot_publish_or_expand
+tests/quality/test_unobserved_diagnostic_c2.py::test_incomplete_authorized_attempt_has_final_nonobservation_receipt[preflight]
+tests/quality/test_unobserved_diagnostic_c2.py::test_incomplete_authorized_attempt_has_final_nonobservation_receipt[exception]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra0]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra1]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra2]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra3]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra4]
+tests/quality/test_unobserved_diagnostic_c2.py::test_operator_flag_never_authorizes_other_driver_paths[extra5]
+
+18 tests collected in 0.30s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-f0dhtl6d: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-cb88zie5 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-cb88zie5/pytest tests/quality/test_unobserved_diagnostic_c2.py
+..................                                                       [100%]
+18 passed in 0.91s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-cb88zie5: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-0emmsws2 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-0emmsws2/pytest tests/quality/test_runtime_blocker_evidence_b7.py --collect-only
+tests/quality/test_runtime_blocker_evidence_b7.py::test_parent_observer_detects_effective_mount_regression
+tests/quality/test_runtime_blocker_evidence_b7.py::test_jericho_selected_runtime_and_control_have_parent_receipts
+
+2 tests collected in 0.19s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-0emmsws2: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-b9j2xo9j PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-b9j2xo9j/pytest tests/quality/test_runtime_blocker_evidence_b7.py
+ss                                                                       [100%]
+2 skipped in 0.21s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-b9j2xo9j: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-hrb1o8aj PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-hrb1o8aj/pytest tests/quality/test_jericho_runtime_boundaries.py --collect-only
+tests/quality/test_jericho_runtime_boundaries.py::test_adapter_import_does_not_read_release_payload
+tests/quality/test_jericho_runtime_boundaries.py::test_projection_reads_only_code_and_excludes_docs_data_and_bytecode
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[0]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[-1]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[True]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[300]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[nan]
+tests/quality/test_jericho_runtime_boundaries.py::test_invalid_timeouts_refused[inf]
+tests/quality/test_jericho_runtime_boundaries.py::test_limits_cannot_be_loosened_and_files_policy_survives_normalization
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[host]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[sandbox]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[exec]
+tests/quality/test_jericho_runtime_boundaries.py::test_verifier_declaration_reaches_every_launch_path[snapshot]
+tests/quality/test_jericho_runtime_boundaries.py::test_real_host_sleep_obeys_declared_timeout
+tests/quality/test_jericho_runtime_boundaries.py::test_runner_refuses_unsandboxed_declared_isolation
+tests/quality/test_jericho_runtime_boundaries.py::test_unobserved_admission_and_synthetic_projection_backend_boundaries
+tests/quality/test_jericho_runtime_boundaries.py::test_control_materialization_resets_actions_and_requires_explicit_id
+
+17 tests collected in 0.20s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-hrb1o8aj: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-u2kiazmg PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-u2kiazmg/pytest tests/quality/test_jericho_runtime_boundaries.py
+............s....                                                        [100%]
+16 passed, 1 skipped in 0.44s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-u2kiazmg: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-6k0tz6dl PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-6k0tz6dl/pytest tests/quality/test_web_gateway.py --collect-only
+tests/quality/test_web_gateway.py::test_recorded_provider_fixtures_have_common_shape
+tests/quality/test_web_gateway.py::test_web_declaration_survives_environment_normalization
+tests/quality/test_web_gateway.py::test_gateway_records_search_and_fetch_but_not_health
+tests/quality/test_web_gateway.py::test_fetch_rejects_non_http_urls
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://127.0.0.1/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://2130706433/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://0x7f000001/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://192.168.1.1/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://169.254.169.254/latest/meta-data]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://[::1]/]
+tests/quality/test_web_gateway.py::test_fetch_rejects_private_and_alternative_ip_destinations[http://[::ffff:127.0.0.1]/]
+tests/quality/test_web_gateway.py::test_fetch_allows_checked_external_url_with_mocked_opener
+tests/quality/test_web_gateway.py::test_fetch_rejects_redirect_to_private
+tests/quality/test_web_gateway.py::test_searxng_failed_engine_is_not_an_empty_measured_zero
+tests/quality/test_web_gateway.py::test_healthy_searxng_zero_results_is_allowed
+tests/quality/test_web_gateway.py::test_paid_provider_without_key_refuses_to_start
+tests/quality/test_web_gateway.py::test_unobserved_admission_and_synthetic_web_isolation_backend
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses0]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses1]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses2]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses3]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses4]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses5]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses6]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses7]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses8]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses9]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses10]
+tests/quality/test_web_gateway.py::test_dns_rejects_any_private_answer[addresses11]
+tests/quality/test_web_gateway.py::test_real_transport_pins_ip_and_does_not_resolve_hostname_twice
+tests/quality/test_web_gateway.py::test_proxy_connect_uses_pinned_ip_and_https_keeps_original_tls_name[http]
+tests/quality/test_web_gateway.py::test_proxy_connect_uses_pinned_ip_and_https_keeps_original_tls_name[https]
+tests/quality/test_web_gateway.py::test_redirect_handler_cannot_bypass_private_policy_and_preserves_failed_bytes
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[<html>error</html>]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{}]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[[]]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{"results": null}]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{"results": [null]}]
+tests/quality/test_web_gateway.py::test_searxng_faults_return_structured_http_error_and_record_upstream[{"results": [], "unresponsive_engines": [["google", "ConnectError"]]}]
+tests/quality/test_web_gateway.py::test_searxng_local_endpoint_survives_and_healthy_zero_is_http_200
+tests/quality/test_web_gateway.py::test_searxng_connection_failure_has_status_zero_and_error_record
+tests/quality/test_web_gateway.py::test_driver_writes_real_run_meta_before_task_launch[searxng-http://127.0.0.1:19999]
+tests/quality/test_web_gateway.py::test_driver_writes_real_run_meta_before_task_launch[none-None]
+
+43 tests collected in 0.20s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-6k0tz6dl: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-e6pztym0 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-e6pztym0/pytest tests/quality/test_web_gateway.py -k 'not test_unobserved_admission_and_synthetic_web_isolation_backend'
+..........................................                               [100%]
+42 passed, 1 deselected in 6.23s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-e6pztym0: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-lvx71dg9 PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-lvx71dg9/pytest tests/quality/test_services.py --collect-only
+tests/quality/test_services.py::test_services_without_a_service_network_are_refused
+tests/quality/test_services.py::test_a_service_name_must_be_a_dns_label
+tests/quality/test_services.py::test_a_service_needs_a_health_check
+tests/quality/test_services.py::test_duplicate_service_names_are_refused
+tests/quality/test_services.py::test_a_service_needs_an_image_and_a_port
+tests/quality/test_services.py::test_an_unknown_service_field_is_refused
+tests/quality/test_services.py::test_services_are_refused_on_a_files_environment
+tests/quality/test_services.py::test_the_normalized_env_carries_the_services_through
+tests/quality/test_services.py::test_the_environment_credential_never_reaches_the_harness
+tests/quality/test_services.py::test_services_receive_the_environment_budget_and_the_harness_does_not
+tests/quality/test_services.py::test_the_task_seed_is_derived_and_reproducible
+tests/quality/test_services.py::test_the_harness_is_given_no_view_of_a_recording
+tests/quality/test_services.py::test_the_check_is_given_the_recording_read_only
+tests/quality/test_services.py::test_an_unknown_audience_is_refused_rather_than_defaulted
+tests/quality/test_services.py::test_a_harness_reaches_the_service_by_the_name_it_was_told
+tests/quality/test_services.py::test_unobserved_service_task_is_refused_before_health_checks
+tests/quality/test_services.py::test_healthy_service_cannot_authorize_an_unobserved_backend
+tests/quality/test_services.py::test_the_health_check_actually_waits
+tests/quality/test_services.py::test_nothing_is_left_behind_after_teardown
+tests/quality/test_services.py::test_a_start_that_fails_does_not_leave_a_network
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: No such network: owned-net\n-True]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: network owned-net not found\nexit status 1\n-True]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: network owned-net has active endpoints\n-False]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: plugin not found\n-False]
+tests/quality/test_services.py::test_network_cleanup_is_idempotent_but_keeps_real_errors[Error response from daemon: network other-net not found\n-False]
+tests/quality/test_services.py::test_a_leftover_network_from_a_crash_does_not_kill_the_next_run
+tests/quality/test_services.py::test_reap_removes_a_service_container_a_crash_left_running
+tests/quality/test_services.py::test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out
+tests/quality/test_services.py::test_the_record_carries_the_services_and_their_digests
+tests/quality/test_services.py::test_the_record_says_which_services_if_any_are_missing
+tests/quality/test_services.py::test_needs_seed_and_needs_model_decide_whether_the_record_is_null
+tests/quality/test_services.py::test_the_environment_spend_is_reported_separately_from_the_harness
+tests/quality/test_services.py::test_the_improvers_own_split_reaches_the_point
+tests/quality/test_services.py::test_a_service_needing_a_model_stops_the_run_when_none_is_configured
+tests/quality/test_services.py::test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero
+tests/quality/test_services.py::test_a_refused_service_run_names_the_service_in_its_header
+tests/quality/test_services.py::test_an_unmeasured_service_environment_is_recorded_without_a_curve
+tests/quality/test_services.py::test_a_host_local_url_is_recognised_and_a_remote_one_is_not
+tests/quality/test_services.py::test_the_gateway_preserves_the_path
+tests/quality/test_services.py::test_a_container_reaches_the_host_on_the_internal_gateway
+tests/quality/test_services.py::test_a_model_gateway_cannot_bypass_unobserved_exec_admission
+tests/quality/test_services.py::test_synthetic_model_gateway_backend_still_isolates_the_internet
+tests/quality/test_services.py::test_a_remote_model_with_an_offline_network_is_refused
+
+43 tests collected in 0.28s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-lvx71dg9: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-g5i5yf_z PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-g5i5yf_z/pytest tests/quality/test_services.py -k 'not (test_a_harness_reaches_the_service_by_the_name_it_was_told or test_the_health_check_actually_waits or test_nothing_is_left_behind_after_teardown or test_a_start_that_fails_does_not_leave_a_network or test_a_leftover_network_from_a_crash_does_not_kill_the_next_run or test_reap_removes_a_service_container_a_crash_left_running or test_the_service_and_the_check_share_a_network_and_the_harness_cannot_see_out or test_a_service_needing_a_model_stops_the_run_when_none_is_configured or test_a_run_where_nothing_is_scoreable_is_refused_not_recorded_as_zero or test_a_refused_service_run_names_the_service_in_its_header or test_an_unmeasured_service_environment_is_recorded_without_a_curve or test_a_container_reaches_the_host_on_the_internal_gateway)'
+...............................                                          [100%]
+31 passed, 12 deselected in 6.77s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-g5i5yf_z: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-tjqtwuvw PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-tjqtwuvw/pytest tests/quality/test_isolation.py --collect-only
+tests/quality/test_isolation.py::test_checkout_guard_ignores_generated_caches
+tests/quality/test_isolation.py::test_checkout_guard_still_tracks_source_changes
+tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+tests/quality/test_isolation.py::test_a_modified_platform_file_is_reported_by_name
+tests/quality/test_isolation.py::test_an_added_or_removed_platform_file_is_also_a_violation
+tests/quality/test_isolation.py::test_workspace_inside_the_platform_is_refused
+tests/quality/test_isolation.py::test_the_driver_refuses_a_workspace_inside_the_platform
+tests/quality/test_isolation.py::test_a_harness_that_edits_the_platform_fails_the_run
+tests/quality/test_isolation.py::test_the_driver_exits_nonzero_when_a_harness_tampers
+tests/quality/test_isolation.py::test_the_method_side_guard_fails_the_call
+tests/quality/test_isolation.py::test_mode_a_completes_a_normal_round_and_records_its_diff
+tests/quality/test_isolation.py::test_a_method_cannot_read_the_platform_it_is_being_measured_by
+tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers
+tests/quality/test_isolation.py::test_the_harness_gets_only_its_own_credential
+tests/quality/test_isolation.py::test_the_harness_has_no_memory_from_one_task_to_the_next
+tests/quality/test_isolation.py::test_neither_side_of_a_run_contains_the_other
+
+16 tests collected in 0.06s
+EXIT_CODE=0
+CLEANUP /tmp/jerichoadm-tjqtwuvw: absent=True
+
+$ TMPDIR=/tmp/jerichoadm-wu17ctao PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 -m pytest -q -p no:cacheprovider --basetemp=/tmp/jerichoadm-wu17ctao/pytest tests/quality/test_isolation.py -k 'test_checkout_guard_ignores_generated_caches or test_checkout_guard_still_tracks_source_changes or test_snapshot_covers_the_referee_not_the_candidate or test_a_modified_platform_file_is_reported_by_name or test_an_added_or_removed_platform_file_is_also_a_violation or test_workspace_inside_the_platform_is_refused or test_the_driver_refuses_a_workspace_inside_the_platform'
+..F....                                                                  [100%]
+=================================== FAILURES ===================================
+______________ test_snapshot_covers_the_referee_not_the_candidate ______________
+
+    def test_snapshot_covers_the_referee_not_the_candidate():
+        """The scorer is watched; the artifact under improvement is not.
+    
+        `base_harness/` missing from the tuple is deliberate and load-bearing: every
+        run copies it into a workspace and edits the copy. Watching it would flag the
+        only write the platform exists to make.
+        """
+        snap = snapshot(ROOT)
+        assert "driver.py" in snap, "the driver decides what a curve means"
+        assert "eval/run/integrity.py" in snap, "the checker watches itself"
+        assert "eval/run/runner.py" in snap, "the runner runs the subject"
+>       assert ".env" in snap, "the credentials pay for the measurement"
+E       AssertionError: the credentials pay for the measurement
+E       assert '.env' in {'INTERFACE.md': 'f8fed280957f3cfdc572eb5e4a30c40dd2e5c29bf04a98960ec739c3012dcb44', 'ckpt/git_state.py': '85ce26bc78e...b4d3e2c5d6', 'data/aggregation_policies.json': '7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163', ...}
+
+tests/quality/test_isolation.py:156: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+1 failed, 6 passed, 9 deselected in 3.92s
+EXIT_CODE=1
+CLEANUP /tmp/jerichoadm-wu17ctao: absent=True
+
+
+
+DIRECT JERICHO DECLARATION / UNEXECUTED PLAN:
+$ PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 /mnt/20t/xubuqiang/hg-work/jerichoadm/demonstrate.py
+SOURCE demonstrate.py:
+import json
+from pathlib import Path
+import sys
+import tempfile
+
+sys.path.insert(0, '/mnt/20t/xubuqiang/hg-wt/w-jerichoadm')
+from data.datasets import jericho
+from eval.containers import sandbox
+from eval.run.runner import _refuse_unobserved_policies
+
+TASK = {'task_id': 'acorncourt'}
+tid = TASK['task_id']
+env = jericho.ENV[tid]
+print('TASK =', json.dumps(TASK, sort_keys=True))
+print('ENV declaration =', json.dumps({k: v for k, v in env.items() if k != 'agent_runtime'}, sort_keys=True))
+print('agent_runtime declared =', 'agent_runtime' in env)
+print('_refuse_unobserved_policies(TASK, data.datasets.jericho.ENV[tid], None) =',
+      _refuse_unobserved_policies(TASK, env, None))
+assert _refuse_unobserved_policies(TASK, env, None) is None
+with tempfile.TemporaryDirectory(prefix='jerichoadm-plan-') as temporary:
+    root = Path(temporary)
+    work, task, repo = root / 'work', root / 'task', root / 'work/run/workspace'
+    repo.mkdir(parents=True)
+    task.mkdir()
+    plan = sandbox.command(['true'], platform=Path(jericho.__file__).resolve().parents[2],
+                           work_root=work, task_dir=task, repo=repo, env={}, network=env.get('network'))
+    print('native plan argv =', json.dumps(plan))
+    print('--unshare-net in native plan =', '--unshare-net' in plan)
+    assert '--unshare-net' in plan
+print('plan scratch absent =', not Path(temporary).exists())
+print('plan executed = False; dataset/scorer/model/GPU execution = False')
+
+OBSERVED OUTPUT (exit 0):
+TASK = {"task_id": "acorncourt"}
+ENV declaration = {"agent_timeout_s": 300, "kind": "files", "network": "none", "verify_timeout_s": 300}
+agent_runtime declared = True
+_refuse_unobserved_policies(TASK, data.datasets.jericho.ENV[tid], None) = None
+native plan argv = ["/usr/bin/bwrap", "--die-with-parent", "--unshare-pid", "--proc", "/proc", "--dev", "/dev", "--unshare-net", "--ro-bind", "/usr", "/usr", "--ro-bind", "/bin", "/bin", "--ro-bind", "/sbin", "/sbin", "--ro-bind", "/lib", "/lib", "--ro-bind", "/lib64", "/lib64", "--ro-bind", "/etc", "/etc", "--ro-bind", "/run/systemd/resolve", "/run/systemd/resolve", "--ro-bind", "/mnt/8t/xubuqiang/anaconda3", "/mnt/8t/xubuqiang/anaconda3", "--ro-bind", "/tmp/jerichoadm-plan-yb2p8fqp/work", "/tmp/jerichoadm-plan-yb2p8fqp/work", "--bind", "/tmp/jerichoadm-plan-yb2p8fqp/task", "/tmp/jerichoadm-plan-yb2p8fqp/task", "--tmpfs", "/mnt/20t/xubuqiang/hg-wt/w-jerichoadm", "--tmpfs", "/tmp", "--tmpfs", "/tmp", "--bind", "/tmp/jerichoadm-plan-yb2p8fqp/task", "/tmp/jerichoadm-plan-yb2p8fqp/task", "--ro-bind", "/tmp/jerichoadm-plan-yb2p8fqp/work/run/workspace", "/tmp/jerichoadm-plan-yb2p8fqp/work/run/workspace", "--ro-bind", "/tmp/jerichoadm-plan-yb2p8fqp/work", "/tmp/jerichoadm-plan-yb2p8fqp/work", "--", "true"]
+--unshare-net in native plan = True
+plan scratch absent = True
+plan executed = False; dataset/scorer/model/GPU execution = False
+
+
+ENUMERATED ABSENCE SCOPE AND GAIA REFUSAL:
+The initial standalone invocation without PYTHONPATH failed at `from data.datasets
+import gaia` with `ModuleNotFoundError: No module named 'data'`; the corrected command
+below completed, with no code/declaration changes needed.
+$ PYTHONPATH=. PYTHONDONTWRITEBYTECODE=1 HG_AGENT_BACKEND=mock python3 /mnt/20t/xubuqiang/hg-work/jerichoadm/scope.py
+SOURCE scope.py:
+from pathlib import Path
+import subprocess
+
+scope = ['eval/containers/sandbox.py']
+cmd = ['rg', '-n', 'cpus|memory_mb|resources|filesystems|resource_policy|network_policy|artifact_policy|exec_defaults|state=container', *scope]
+p = subprocess.run(cmd, capture_output=True, text=True)
+print('$', ' '.join(cmd))
+print(repr(p.stdout))
+print('EXIT_CODE=' + str(p.returncode))
+print('ABSENT within enumerated scope only: declaration names above')
+for path in ['tests/quality/test_isolations.py', 'tests/quality/test_isolation.py', '.env']:
+    print(path, 'exists=' + str(Path(path).exists()))
+from data.datasets import gaia
+from eval.run.runner import _refuse_unobserved_policies
+TASK = {'task_id':'gaia/0'}
+env = gaia.ENV[TASK['task_id']]
+print('GAIA declared resource fields =', {k:env[k] for k in ('cpus','memory_mb')})
+print('GAIA refusal receipt =', _refuse_unobserved_policies(TASK, env, gaia.VERIFY[TASK['task_id']])['invalid']['receipt'])
+
+OBSERVED OUTPUT (exit 0):
+$ rg -n cpus|memory_mb|resources|filesystems|resource_policy|network_policy|artifact_policy|exec_defaults|state=container eval/containers/sandbox.py
+''
+EXIT_CODE=1
+ABSENT within enumerated scope only: declaration names above
+tests/quality/test_isolations.py exists=False
+tests/quality/test_isolation.py exists=True
+.env exists=False
+GAIA declared resource fields = {'cpus': 2, 'memory_mb': 4096}
+GAIA refusal receipt = {'schema': 'harnessgrad.runner-policy-refusal.v1', 'stage': 'admission', 'status': 'blocked', 'reason': 'backend_observation_unavailable', 'measured': False, 'production_authorized': False, 'observation': 'unknown', 'policy_fields': ['env.cpus', 'env.exec_defaults', 'env.memory_mb', 'env.network', 'env.state=container']}
+
+
+REQUIRED CHECKER:
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT_CODE=0
+
+NOT VERIFIED:
+- No Jericho dataset episode, released reference control, real scorer, model call,
+  GPU operation, paid endpoint or production H0 pilot was executed.
+- The actual Jericho ENV map was read for acorncourt; its generated plan was printed,
+  not executed, and its runtime package overlay was not staged by the demonstration.
+- B7's guarded reproduction bodies were not executed: the existing evidence_root
+  fixture skipped both tests on this checkout's writable platform mount. Its changed
+  admission assertion / serialized admission_env therefore has only static review.
+- The Jericho snapshot verifier case skipped because its ignored hg_wsnap fixture
+  is absent. Other authored boundary/timeout/transport cases executed as reported.
+- Full GAIA scorer tests, web isolation integration and 12 service integration cases
+  were deselected to avoid scorer/dataset runs and unnecessary container work.
+- Nine isolation cases that launch dataset-based driver work were deselected.
+  The missing-.env isolation assertion failed before and after; it was not weakened,
+  furnished with credentials, skipped or repaired as part of this admission change.
+- No external daemon enforcement observer, quota enforcement, production admission,
+  scientific measurement/comparability or registry authorization is established.
+- No registry proposal: this task changes the shared predicate, not registry facts.
+
+FINAL DIFF / PROTECTED-FILE REVIEW:
+$ git diff --check
+EXIT_CODE=0
+$ git diff --exit-code -- AGENTS.md registry/dataset-blockers.json registry/withdrawn-requirements.md docs/adapter-integration-journal.md
+EXIT_CODE=0
+$ git diff HEAD -- INTERFACE.md eval/run/runner.py tests/quality/test_shared_admission_wiring_codex163.py tests/quality/test_native_model_route.py tests/quality/test_jericho_runtime_boundaries.py tests/quality/test_runtime_blocker_evidence_b7.py
+diff --git a/INTERFACE.md b/INTERFACE.md
+index 08f8efcb..d0e8c879 100644
+--- a/INTERFACE.md
++++ b/INTERFACE.md
+@@ -835,7 +835,27 @@ closed. The harness client, prompts and budgets are unchanged. The socket and
+ forwarder are infrastructure mounts, never setup files or task capability metadata,
+ and are not projected into verification. Native `bridge` and `services` remain
+ unsupported and refused; omitted native network still means inherited host network.
+-The separate backend-observation admission gate continues to apply.
++The backend-observation admission rule is: **refuse a declared policy when, and only
++when, this process is not the thing that applies it.** The gate's ownership table is:
++
++| declaration | native `files` route | `exec` / container-state route | backend-observation admission |
++| --- | --- | --- | --- |
++| `env.agent_timeout_s` | runner applies `phase_timeout` and subprocess deadline | same platform deadline on the agent invocation | no trigger |
++| `env.verify_timeout_s`, `verifier.timeout_s` | runner/verifier apply `phase_timeout` and subprocess deadline | same platform deadline on the verifier invocation | no trigger |
++| `env.network` | omitted: inherits host network; `none`: platform builds `--unshare-net`; other values fail runtime validation | daemon owns network namespace | triggers only if declared and `kind == "exec"` or `state == "container"` |
++| `env.cpus`, `env.memory_mb` | no declaration-driven CPU/memory enforcement | daemon applies resource limits | trigger when declared |
++| `env.resources`, `env.resource_policy` | no implementation of these declarations | no trusted backend observation wired | trigger when declared |
++| `env.filesystems` | fixed platform mounts do not implement this declaration or its quotas | no trusted backend observation wired | trigger when declared |
++| `env.network_policy` | native `network` support does not implement this separate declaration | no trusted backend observation wired | trigger when declared |
++| `env.artifact_policy`, `verifier.artifact_policy` | fixed artifact mounts do not implement these declarations or their quotas | no trusted backend observation wired | trigger when declared |
++| `env.exec_defaults` (implicit for every `kind == "exec"`) | not requested | daemon applies default CPU/memory/PID bounds | always triggers for `exec` |
++| `env.state=container` | no native container-state implementation | daemon owns container state and snapshots | triggers for container state |
++
++This gate runs before storage/backend dispatch. Native isolation still requires
++`sandbox=True`; admission here does not bypass runtime validation. A bound operator
++authorization permits only an explicitly unmeasured diagnostic attempt and is never
++backend observation or production authorization. Declarations without a native
++implementation stay refused even for direct callers that bypass registry validation.
+ 
+ `env.model_gateway` is `{"published": true, "target": "<host>:<port>"}`, or `null`. It is
+ recorded because "the model was reachable from inside the container" is a fact about the
+diff --git a/eval/run/runner.py b/eval/run/runner.py
+index abb4d931..3f61d061 100644
+--- a/eval/run/runner.py
++++ b/eval/run/runner.py
+@@ -41,8 +41,11 @@ from eval.policy.unobserved_diagnostic import Authorization
+ def _refuse_unobserved_policies(task: dict, env: dict | None,
+                                verifier: dict | None, *, run_id: str = "",
+                                diagnostic_authorization: Authorization | None = None) -> dict | None:
+-    """Refuse policy-bearing tasks until a trusted backend observer is wired in.
++    """Refuse a declared policy when, and only when, this process does not apply it.
+ 
++    Phase deadlines and native files network isolation are applied by the platform
++    itself. Exec/container network and resource/state policies depend on an external
++    backend; declarations the native path does not implement also remain refused.
+     The offline runner_admission checks cannot discover enforcement. Launch flags,
+     adapter observations and cached verdicts are not a substitute for that observer.
+     An operator may authorize one explicitly unmeasured diagnostic attempt. That
+@@ -50,7 +53,7 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
+     """
+     env_spec = env or {}
+     fields = {"env." + key for key in (
+-        "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s", "network",
++        "cpus", "memory_mb",
+         "resources", "filesystems", "resource_policy", "network_policy", "artifact_policy",
+     ) if key in env_spec}
+     # Even direct callers that omit normalized fields request these default bounds
+@@ -59,15 +62,15 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
+         fields.add("env.exec_defaults")
+     if env_spec.get("state") == "container":
+         fields.add("env.state=container")
+-    # `verifier.timeout_s` is deliberately NOT a trigger. The platform enforces it
+-    # itself -- `eval/verification/verifier.py` passes it to `phase_timeout` and to the verifier
+-    # subprocess' `timeout=`, and records expiry as its own outcome ("the verifier
+-    # timed out after Ns"), which is an unmeasured result rather than a score. There
+-    # is no external backend capability to observe, so demanding an observation for it
+-    # refused every dataset that declares one (the shared QA scaffold sets 3600s for
+-    # all of its adapters) while adding no guarantee. Everything whose enforcement
+-    # really does live outside this process -- exec defaults, container state, network,
+-    # cpus/memory, filesystems, resource and artifact policy -- still refuses.
++    if "network" in env_spec and (env_spec.get("kind") == "exec"
++                                 or env_spec.get("state") == "container"):
++        fields.add("env.network")
++    # env.agent_timeout_s, env.verify_timeout_s and verifier.timeout_s flow through
++    # phase_timeout to the platform's subprocess deadlines. Native files network
++    # isolation is built here through sandbox.command's --unshare-net; unsupported
++    # native network values and unsandboxed isolation are refused by the runtime.
++    # Neither needs an external backend observation. The remaining declarations
++    # either depend on that backend or have no native implementation at all.
+     if "artifact_policy" in (verifier or {}):
+         fields.add("verifier.artifact_policy")
+     if not fields:
+diff --git a/tests/quality/test_jericho_runtime_boundaries.py b/tests/quality/test_jericho_runtime_boundaries.py
+index 122af06b..bb071e51 100644
+--- a/tests/quality/test_jericho_runtime_boundaries.py
++++ b/tests/quality/test_jericho_runtime_boundaries.py
+@@ -16,8 +16,7 @@ sys.path.insert(0, str(ROOT))
+ 
+ from data.scaffolds.registry import _check_env, _normalize_env
+ from eval.containers import sandbox
+-from policy_assertions import assert_policy_refusal
+-from eval.run.runner import run_one
++from eval.run.runner import _refuse_unobserved_policies, run_one
+ from eval.policy.runtime_policy import phase_timeout, stage_agent_runtime
+ from eval.verification.verifier import _verify, _verify_container_state
+ 
+@@ -153,9 +152,9 @@ def harness(path, body):
+ 
+ def test_runner_refuses_unsandboxed_declared_isolation(tmp_path):
+     repo = harness(tmp_path / "harness", "raise AssertionError('must not execute')")
+-    result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
+-                     env={"kind": "files", "network": "none"})
+-    assert_policy_refusal(result, ("env.network",))
++    with pytest.raises(ValueError, match="isolation requires sandbox=True"):
++        run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
++                env={"kind": "files", "network": "none"})
+     assert list(tmp_path.iterdir()) == [repo]
+ 
+ 
+@@ -208,14 +207,11 @@ pathlib.Path(a.workdir, 'answer.txt').write_text(json.dumps(seen))
+             "assert p.REFERENCE == 'SYNTHETIC_SECRET'; print('trusted package retained')"]}
+         env = {"kind": "files", "network": "none", "agent_timeout_s": 3,
+                "verify_timeout_s": 5, "agent_runtime": runtime}
+-        refused = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+-                          env=env, verifier=verifier)
+-        assert_policy_refusal(refused, ("env.network", "env.agent_timeout_s", "env.verify_timeout_s"))
++        assert _refuse_unobserved_policies({"task_id": "synthetic"}, env, verifier) is None
+         assert not list(work.glob("task-*"))
+         assert (package / "__init__.py").read_text() == 'REFERENCE = "SYNTHETIC_SECRET"\n'
+-        # Synthetic backend regression only: production admission above remains blocked.
+-        # This local monkeypatch grants no observer receipt or production authorization.
+-        monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a, **k: None)
++        # Exercise the real admission hook: the platform applies these deadlines,
++        # the package projection and the private network without an authorization.
+         result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
+                          env=env, verifier=verifier)
+     assert result["exit_code"] == 0, result["stderr"]
+diff --git a/tests/quality/test_native_model_route.py b/tests/quality/test_native_model_route.py
+index 42f657c6..64d4c183 100644
+--- a/tests/quality/test_native_model_route.py
++++ b/tests/quality/test_native_model_route.py
+@@ -166,7 +166,8 @@ print(json.dumps({'url':os.environ['HG_AGENT_BASE_URL'], 'net':os.readlink('/pro
+     assert route.account()["connections"] == 1
+ 
+ 
+-def test_runner_live_backend_wiring_and_policy_gate(tmp_path, upstream, monkeypatch):
++@pytest.mark.parametrize("authorized", [False, True])
++def test_runner_live_backend_wiring_and_policy_gate(tmp_path, upstream, monkeypatch, authorized):
+     repo = tmp_path / "work/workspace"
+     repo.mkdir(parents=True)
+     (repo / "harness.json").write_text(json.dumps({"entrypoint": "agent.py"}))
+@@ -181,16 +182,20 @@ pathlib.Path(a.workdir, 'answer.txt').write_text('route reached')
+     monkeypatch.setenv("HG_AGENT_BASE_URL", upstream[0])
+     task = {"task_id": "netroute-synthetic", "goal": "transport control"}
+     env = {"kind": "files", "network": "none"}
+-    refused = run_one(repo, task, env=env)
+-    assert refused["invalid"]["detail"] == "backend_observation_unavailable"
+     auth = Authorization("netroute-synthetic", task["task_id"], "synthetic local transport test")
++    # Native offline isolation is applied by this process, so both paths must
++    # actually reach the synthetic upstream without weakening the transport checks.
+     result = run_one(repo, task, env=env, timeout_s=15, run_id=auth.run_id,
+-                     diagnostic_authorization=auth)
++                     diagnostic_authorization=auth if authorized else None)
++    assert "invalid" not in result
+     assert result["exit_code"] == 0, result
+     assert result["answer"] == "route reached"
+     assert result["model_gateway"]["transport"] == "unix+isolated-loopback"
+     assert result["model_gateway"]["connections"] == 1
+-    assert result["enforcement"]["production_authorized"] is False
++    if authorized:
++        assert result["enforcement"]["production_authorized"] is False
++    else:
++        assert "enforcement" not in result
+ 
+ 
+ def test_offline_without_sandbox_fails_before_execution(tmp_path, monkeypatch):
+diff --git a/tests/quality/test_runtime_blocker_evidence_b7.py b/tests/quality/test_runtime_blocker_evidence_b7.py
+index d0fad2a2..d2abbb04 100644
+--- a/tests/quality/test_runtime_blocker_evidence_b7.py
++++ b/tests/quality/test_runtime_blocker_evidence_b7.py
+@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
+ 
+ from eval.containers import sandbox
+ from eval.run.integrity import diff, snapshot
+-from eval.run.runner import run_one
++from eval.run.runner import _refuse_unobserved_policies, run_one
+ from eval.policy.runtime_policy import stage_agent_runtime
+ from harnessgrad import methods
+ 
+@@ -371,12 +371,16 @@ print(json.dumps({'reference_module': importlib.util.find_spec('jericho.game_inf
+     old_root, seen = execute(plan, case, "old verifier root /", cwd=task)
+     assert "ro" in effective(old_root["mountinfo"], "/tmp")["options"]
+     assert seen["tempfile"] == "ENOENT"
+-    # Unmodified runner still refuses the selected policy before staging execution.
++    # The platform applies the adapter's deadlines/network. A separate unsupported
++    # native CPU declaration must still refuse before staging execution.
++    assert _refuse_unobserved_policies({"task_id": "acorncourt"}, env, verify) is None
++    admission_env = {**env, "cpus": 2}
+     refused = run_one(work / "uncreated-harness", {"task_id": "acorncourt", "goal": "control"},
+-                      env=env, verifier=verify)
++                      env=admission_env, verifier=verify)
+     assert refused["invalid"]["receipt"]["production_authorized"] is False
+     assert refused["invalid"]["receipt"]["reason"] == "backend_observation_unavailable"
+     assert "score" not in refused and "verdict" not in refused
++    assert refused["invalid"]["receipt"]["policy_fields"] == ["env.cpus"]
+     assert before == snapshot(ROOT)
+     assert package_before == {str(path): digest(path) for path in sorted(package.glob('*')) if path.is_file()}
+     manifest = {"task_id": "acorncourt", "rom": record["rom"], "seed": record["seed"],
+@@ -394,6 +398,7 @@ print(json.dumps({'reference_module': importlib.util.find_spec('jericho.game_inf
+         "controls": controls, "parent_observations": observed,
+         "projection_controls": visibility, "old_root_negative": old_root,
+         "admission": refused["invalid"]["receipt"],
++        "admission_env": admission_env,
+         "platform_before": before, "platform_after": snapshot(ROOT),
+         "package_sha256": {str(path): digest(path) for path in sorted(package.glob('*')) if path.is_file()},
+         "identity": identity(), "cleanup": cleanup,
+diff --git a/tests/quality/test_shared_admission_wiring_codex163.py b/tests/quality/test_shared_admission_wiring_codex163.py
+index c9e03821..2dedbb7a 100644
+--- a/tests/quality/test_shared_admission_wiring_codex163.py
++++ b/tests/quality/test_shared_admission_wiring_codex163.py
+@@ -50,12 +50,11 @@ def assert_refusal(result):
+ 
+ 
+ @pytest.mark.parametrize("env", [
+-    {"kind": "files", "network": "none"},
+     {"cpus": 2}, {"memory_mb": 128},
+-    {"agent_timeout_s": 5}, {"verify_timeout_s": 5},
+     {"resources": {}}, {"filesystems": {}},
+     {"resource_policy": None}, {"network_policy": {}}, {"artifact_policy": {}},
+     {"kind": "exec", "image": "synthetic-image"},
++    {"kind": "exec", "network": "none"},
+     {"kind": "exec", "state": "container"},
+     {"kind": "exec", "network": "services", "services": [{"name": "synthetic"}]},
+     {"kind": "exec", "network": "bridge"},
+@@ -75,6 +74,28 @@ def test_policy_refusal_precedes_manifest_storage_and_backend_dispatch(
+     assert env == before
+ 
+ 
++@pytest.mark.parametrize("env", [
++    {"kind": "files", "network": "none"},
++    {"agent_timeout_s": 5}, {"verify_timeout_s": 5},
++    {"kind": "files"}, {},
++    {"kind": "files", "network": "none", "agent_timeout_s": 5, "verify_timeout_s": 5},
++])
++def test_platform_applied_policies_need_no_backend_observation(env):
++    before = deepcopy(env)
++    assert runner._refuse_unobserved_policies(TASK, env, None) is None
++    assert env == before
++
++
++@pytest.mark.parametrize("route", [{"kind": "exec"}, {"state": "container"}])
++@pytest.mark.parametrize("declare_network", [True, False])
++def test_external_network_trigger_requires_a_declaration(route, declare_network):
++    env = {**route, **({"network": "none"} if declare_network else {})}
++    refusal = runner._refuse_unobserved_policies(TASK, env, None)
++    assert_refusal(refusal)
++    fields = refusal["invalid"]["receipt"]["policy_fields"]
++    assert ("env.network" in fields) is declare_network
++
++
+ @pytest.mark.parametrize("verifier", [{"artifact_policy": None}])
+ def test_verifier_artifact_policy_refuses_before_scoring(tmp_path, verifier):
+     assert_refusal(runner.run_one(tmp_path / "absent-harness", TASK, verifier=verifier))
+@@ -100,7 +121,8 @@ def test_a_verifier_timeout_is_not_a_backend_observation_trigger():
+     "status": "passed", "enforced": True, "production_authorized": True,
+ }])
+ def test_adapter_evidence_cannot_override_missing_trusted_observer(tmp_path, observation):
+-    env = {"network": "none", "observation": observation, "admission_receipt": observation}
++    env = {"kind": "exec", "network": "none", "observation": observation,
++           "admission_receipt": observation}
+     result = runner.run_one(tmp_path / "absent-harness", TASK, env=env)
+     assert_refusal(result)
+     assert "enforced" not in json.dumps(result)
+@@ -121,7 +143,7 @@ def test_unknown_observations_refuse_before_cache_and_never_become_zero_scores(
+     monkeypatch.setattr(runner, "run_one", refuse)
+     result = runner._evaluate(
+         tmp_path / "absent-harness", tasks, {}, harness_sha="synthetic-sha", cache=cache,
+-        envs={TASK["task_id"]: {"network": "none"},
++        envs={TASK["task_id"]: {"kind": "exec", "network": "none"},
+               tasks[1]["task_id"]: {"artifact_policy": {}}},
+         progress_dir=tmp_path, trials=trials, jobs=jobs,
+     )
+EXIT_CODE=0
+
+$ sorted(str(p) for p in Path('/tmp').glob('jerichoadm-*'))
+[]
+
+TRANSCRIPT WHITESPACE NOTE:
+The first staged whitespace check reported whitespace-only source/context lines in
+this verbatim transcript (pytest excerpts and git diff context). No commit was made
+by that attempted chain. Those original bytes are intentionally retained.
+$ git -c core.whitespace=-blank-at-eol diff --cached --check
+Observed stdout/stderr: empty
+EXIT_CODE=0
+The source/doc diff had passed the ordinary check before transcript staging.
+
+COMMIT FILE BYTE SIZES (Path.stat().st_size):
+INTERFACE.md: 158517
+eval/run/runner.py: 84618
+tests/quality/test_jericho_runtime_boundaries.py: 11949
+tests/quality/test_native_model_route.py: 9499
+tests/quality/test_runtime_blocker_evidence_b7.py: 22461
+tests/quality/test_shared_admission_wiring_codex163.py: 10640
+reports/w-jerichoadm.md: 12209
+reports/w-jerichoadm-validation.txt: 93870
