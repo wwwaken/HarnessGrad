@@ -132,7 +132,8 @@ def main() -> int:
     if len(sys.argv) != 5:
         print(__doc__, file=sys.stderr)
         return 2
-    base, ours, theirs, output = (load(r) for r in sys.argv[1:4]), sys.argv[4]
+    base, ours, theirs = (load(r) for r in sys.argv[1:4])
+    output = sys.argv[4]
     base, ours, theirs = base
     merged: dict = {}
     for field in sorted(set(base) | set(ours) | set(theirs)):
