@@ -682,11 +682,14 @@ retry, and 27 of these are not retries.**
 Measured 2026-10-16 against the packet, after `w-b5restore`'s replay had run the whole 87-entry
 residue and then re-attempted the still-absent paths at a 120 s interval. The second pass settled the
 cohort the first pass had left ambiguous, so the numbers below supersede the first measurement (which
-read `54 restored / 17 mismatch / 15 fetch_failure`). **Scope of the second pass, stated exactly:** it
-attempted 60 of its 61 targets and then exited without writing an `rc` line; the two paths it did not
-reach, `triviaqa-dns-dohpub.body` and `triviaqa-mirror-loader.body`, are a live DNS answer and the
-recorded 404 - the same two classes as their measured siblings - so **no disposition below depends on
-them**, and neither was written:
+read `54 restored / 17 mismatch / 15 fetch_failure`). **Scope of the second pass, stated exactly, and corrected:** an earlier version
+of this sentence said it attempted 60 of its 61 targets and exited without an `rc` line. That was a
+snapshot of a still-running process, not its final state. The pass **completed all 61 targets and exited
+`rc=0`**, with **33 `restored_verified`, 26 `mismatch` and 2 `fetch_failure`**, so *every* absent entry
+below is now measured rather than inferred: the 23 error-pinned paths and the 3 live endpoints are all
+**measured `mismatch` at 200**, and `triviaqa-mirror-loader.body` is a **measured 404 / `Not Found`**
+returning 15 bytes with exactly the recorded digest. The only still-unrestored retryable is
+`bfcl-web-bitagent`, attempted and failed with no status. Nothing below rests on an unrun fetch:
 
 | outcome | n | receipt's `status` | what it is |
 | --- | --- | --- | --- |
