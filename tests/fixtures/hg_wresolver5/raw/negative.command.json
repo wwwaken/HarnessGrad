@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver5-offline-m0ubu58w/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--progress-bar",
+    "off",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver5-offline-m0ubu58w/missing-flatbuffers",
+    "-r",
+    "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/roots.in",
+    "-c",
+    "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/constraints.txt"
+  ],
+  "elapsed_seconds": 2.4241615757346153,
+  "exit_code": 1,
+  "timeout_seconds": 300
+}

@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver5-offline-m0ubu58w/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--progress-bar",
+    "off",
+    "--find-links",
+    "/tmp/hg-wresolver5-acquire-zf_mxsyl/candidates",
+    "--require-hashes",
+    "-r",
+    "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/resolved.lock"
+  ],
+  "elapsed_seconds": 60.36757934372872,
+  "exit_code": 0,
+  "timeout_seconds": 600
+}

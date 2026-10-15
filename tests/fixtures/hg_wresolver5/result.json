@@ -1,0 +1,89 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver5-offline-m0ubu58w/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--progress-bar",
+    "off",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver5-acquire-zf_mxsyl/candidates",
+    "--report",
+    "/tmp/hg-wresolver5-offline-m0ubu58w/pip-report.json",
+    "-r",
+    "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/roots.in",
+    "-c",
+    "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/constraints.txt"
+  ],
+  "check": {
+    "argv": [
+      "/tmp/hg-wresolver5-offline-m0ubu58w/venv/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "elapsed_seconds": 0.7638542391359806,
+    "exit_code": 0,
+    "timeout_seconds": 300
+  },
+  "elapsed_seconds": 3.622132702730596,
+  "exit_code": 0,
+  "install": {
+    "argv": [
+      "/tmp/hg-wresolver5-offline-m0ubu58w/venv/bin/python",
+      "-m",
+      "pip",
+      "--isolated",
+      "--disable-pip-version-check",
+      "install",
+      "--ignore-installed",
+      "--no-index",
+      "--no-cache-dir",
+      "--only-binary=:all:",
+      "--progress-bar",
+      "off",
+      "--find-links",
+      "/tmp/hg-wresolver5-acquire-zf_mxsyl/candidates",
+      "--require-hashes",
+      "-r",
+      "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/resolved.lock"
+    ],
+    "elapsed_seconds": 60.36757934372872,
+    "exit_code": 0,
+    "timeout_seconds": 600
+  },
+  "negative": {
+    "argv": [
+      "/tmp/hg-wresolver5-offline-m0ubu58w/venv/bin/python",
+      "-m",
+      "pip",
+      "--isolated",
+      "--disable-pip-version-check",
+      "install",
+      "--ignore-installed",
+      "--no-index",
+      "--no-cache-dir",
+      "--only-binary=:all:",
+      "--progress-bar",
+      "off",
+      "--dry-run",
+      "--find-links",
+      "/tmp/hg-wresolver5-offline-m0ubu58w/missing-flatbuffers",
+      "-r",
+      "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/roots.in",
+      "-c",
+      "/tmp/hg-resolver5/tests/fixtures/hg_wresolver5/profile/constraints.txt"
+    ],
+    "elapsed_seconds": 2.4241615757346153,
+    "exit_code": 1,
+    "timeout_seconds": 300
+  },
+  "timeout_seconds": 300
+}

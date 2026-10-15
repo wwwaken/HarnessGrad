@@ -1,0 +1,39 @@
+{
+  "bounded_profiles": 17,
+  "bounded_profiles_resolved": 17,
+  "complete_nonempty_python_profiles": 13,
+  "ds1000_candidate_bytes": 914231609,
+  "ds1000_direct_import_roots": 12,
+  "ds1000_selected_distributions": 67,
+  "ds1000_static_context_rows": 1000,
+  "meaning": "Finite source-scoped Python metadata reconstruction. DS1000 covers declared Python roots plus all released direct/static-literal context imports, preserving version pins and Python3.10 with an explicit CPU PyTorch mapping. Terminal-Bench additions are host3.12 bootstrap tooling only. No native/Conda/image/ABI/runtime equivalence, scorer execution or blocker closure.",
+  "new_bounded_profiles": 4,
+  "new_refusals": 4,
+  "new_tb_bootstrap_profiles": 3,
+  "no_third_party_payload": 9,
+  "prior_bounded_profiles": 13,
+  "prior_complete_nonempty_python_profiles": 12,
+  "production_authorized": false,
+  "remaining_datasets": [
+    "bfcl_v3",
+    "bird_minidev",
+    "fever",
+    "musique",
+    "physicsquestions",
+    "sportsunderstanding",
+    "strategyqa",
+    "tau_bench",
+    "terminal_bench",
+    "twowikimultihopqa"
+  ],
+  "selected_distributions": {
+    "build-cython-ext": 6,
+    "ds1000": 67,
+    "headless-terminal": 11,
+    "hf-model-inference": 12
+  },
+  "shared_datasets": 23,
+  "tb_demonstrated_bootstrap_profiles": 4,
+  "tb_tasks": 89,
+  "tb_undemonstrated_tooling_routes": 85
+}

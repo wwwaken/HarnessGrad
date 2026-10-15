@@ -1,0 +1,21 @@
+{
+  "corrections": [
+    {
+      "bytes": 2562,
+      "captured_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "/tmp/hg-wresolver5-acquire-zf_mxsyl/flatbuffers-25.12.19.json",
+      "reason": "Initial fetch hashed before flushing a small buffered file. Actual response bytes remain outside git; independently rehashed after close.",
+      "recomputed_sha256": "3800bcba3177624044bb53f06f4a588061c10034f93467a0d163549b0928045a"
+    },
+    {
+      "bytes": 3611,
+      "captured_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "/tmp/hg-wresolver5-acquire-zf_mxsyl/gast-0.7.0.json",
+      "reason": "Initial fetch hashed before flushing a small buffered file. Actual response bytes remain outside git; independently rehashed after close.",
+      "recomputed_sha256": "91a9ba28946d819450f386aa48aff82affce16f2e932f26c8849c1afcb58e88a"
+    }
+  ],
+  "disposition": "Parent deliberately SIGTERMed only its redundant refetch process after identifying the unflushed-small-index hash bug and a stalled redundant wheel transfer. Initial completed pip discovery and all payloads/partial transfers are preserved outside git. No dataset/scorer/run ID was launched or resumed.",
+  "initial_process_exit_code": 143,
+  "original_script": "attempts/acquire-executed-initial.py"
+}

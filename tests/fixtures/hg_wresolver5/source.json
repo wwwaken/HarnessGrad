@@ -1,0 +1,663 @@
+{
+  "dataset_source": {
+    "bytes": 3439876,
+    "path": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+    "sha256": "26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363"
+  },
+  "import_roots": {
+    "PIL": {
+      "distribution": "pillow",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "PIL",
+          "jsonl_line": 512
+        },
+        {
+          "context_line": 5,
+          "import_module": "PIL",
+          "jsonl_line": 513
+        },
+        {
+          "context_line": 5,
+          "import_module": "PIL",
+          "jsonl_line": 514
+        },
+        {
+          "context_line": 5,
+          "import_module": "PIL",
+          "jsonl_line": 515
+        }
+      ],
+      "import_site_count": 155
+    },
+    "gensim": {
+      "distribution": "gensim",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "gensim.models",
+          "jsonl_line": 937
+        },
+        {
+          "context_line": 4,
+          "import_module": "gensim.test.utils",
+          "jsonl_line": 937
+        },
+        {
+          "context_line": 3,
+          "import_module": "gensim.models",
+          "jsonl_line": 938
+        },
+        {
+          "context_line": 4,
+          "import_module": "gensim.test.utils",
+          "jsonl_line": 938
+        }
+      ],
+      "import_site_count": 4
+    },
+    "matplotlib": {
+      "distribution": "matplotlib",
+      "first_sites": [
+        {
+          "context_line": 2,
+          "import_module": "matplotlib.pyplot",
+          "jsonl_line": 512
+        },
+        {
+          "context_line": 3,
+          "import_module": "matplotlib.pyplot",
+          "jsonl_line": 513
+        },
+        {
+          "context_line": 3,
+          "import_module": "matplotlib.pyplot",
+          "jsonl_line": 514
+        },
+        {
+          "context_line": 3,
+          "import_module": "matplotlib.pyplot",
+          "jsonl_line": 515
+        }
+      ],
+      "import_site_count": 180
+    },
+    "numpy": {
+      "distribution": "numpy",
+      "first_sites": [
+        {
+          "context_line": 2,
+          "import_module": "numpy",
+          "jsonl_line": 1
+        },
+        {
+          "context_line": 2,
+          "import_module": "numpy",
+          "jsonl_line": 2
+        },
+        {
+          "context_line": 2,
+          "import_module": "numpy",
+          "jsonl_line": 3
+        },
+        {
+          "context_line": 2,
+          "import_module": "numpy",
+          "jsonl_line": 4
+        }
+      ],
+      "import_site_count": 878
+    },
+    "pandas": {
+      "distribution": "pandas",
+      "first_sites": [
+        {
+          "context_line": 1,
+          "import_module": "pandas",
+          "jsonl_line": 1
+        },
+        {
+          "context_line": 1,
+          "import_module": "pandas",
+          "jsonl_line": 2
+        },
+        {
+          "context_line": 1,
+          "import_module": "pandas",
+          "jsonl_line": 3
+        },
+        {
+          "context_line": 1,
+          "import_module": "pandas",
+          "jsonl_line": 4
+        }
+      ],
+      "import_site_count": 589
+    },
+    "scipy": {
+      "distribution": "scipy",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "scipy.stats",
+          "jsonl_line": 351
+        },
+        {
+          "context_line": 3,
+          "import_module": "scipy.stats",
+          "jsonl_line": 352
+        },
+        {
+          "context_line": 3,
+          "import_module": "scipy.stats",
+          "jsonl_line": 353
+        },
+        {
+          "context_line": 3,
+          "import_module": "scipy",
+          "jsonl_line": 372
+        }
+      ],
+      "import_site_count": 131
+    },
+    "seaborn": {
+      "distribution": "seaborn",
+      "first_sites": [
+        {
+          "context_line": 4,
+          "import_module": "seaborn",
+          "jsonl_line": 513
+        },
+        {
+          "context_line": 4,
+          "import_module": "seaborn",
+          "jsonl_line": 514
+        },
+        {
+          "context_line": 4,
+          "import_module": "seaborn",
+          "jsonl_line": 515
+        },
+        {
+          "context_line": 4,
+          "import_module": "seaborn",
+          "jsonl_line": 516
+        }
+      ],
+      "import_site_count": 53
+    },
+    "sklearn": {
+      "distribution": "scikit-learn",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "sklearn.preprocessing",
+          "jsonl_line": 487
+        },
+        {
+          "context_line": 3,
+          "import_module": "sklearn.preprocessing",
+          "jsonl_line": 488
+        },
+        {
+          "context_line": 3,
+          "import_module": "sklearn.preprocessing",
+          "jsonl_line": 489
+        },
+        {
+          "context_line": 4,
+          "import_module": "sklearn.datasets",
+          "jsonl_line": 818
+        }
+      ],
+      "import_site_count": 242
+    },
+    "tensorflow": {
+      "distribution": "tensorflow-cpu",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "tensorflow",
+          "jsonl_line": 380
+        },
+        {
+          "context_line": 3,
+          "import_module": "tensorflow",
+          "jsonl_line": 381
+        },
+        {
+          "context_line": 1,
+          "import_module": "tensorflow",
+          "jsonl_line": 667
+        },
+        {
+          "context_line": 1,
+          "import_module": "tensorflow",
+          "jsonl_line": 668
+        }
+      ],
+      "import_site_count": 46
+    },
+    "torch": {
+      "distribution": "torch",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "torch",
+          "jsonl_line": 378
+        },
+        {
+          "context_line": 3,
+          "import_module": "torch",
+          "jsonl_line": 379
+        },
+        {
+          "context_line": 1,
+          "import_module": "torch",
+          "jsonl_line": 933
+        },
+        {
+          "context_line": 3,
+          "import_module": "torch",
+          "jsonl_line": 933
+        }
+      ],
+      "import_site_count": 76
+    },
+    "xgboost": {
+      "distribution": "xgboost",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "xgboost.sklearn",
+          "jsonl_line": 838
+        },
+        {
+          "context_line": 3,
+          "import_module": "xgboost.sklearn",
+          "jsonl_line": 839
+        }
+      ],
+      "import_site_count": 2
+    },
+    "yaml": {
+      "distribution": "PyYAML",
+      "first_sites": [
+        {
+          "context_line": 3,
+          "import_module": "yaml",
+          "jsonl_line": 16
+        }
+      ],
+      "import_site_count": 1
+    }
+  },
+  "observed_unpinned": {
+    "PyYAML": {
+      "policy": "Fresh host observation for source-unpinned import; not an upstream pin or installed-image claim",
+      "version": "6.0.3"
+    },
+    "pillow": {
+      "policy": "Fresh host observation for source-unpinned import; not an upstream pin or installed-image claim",
+      "version": "10.3.0"
+    }
+  },
+  "pytorch_mapping": "Conda pytorch::pytorch==2.2.0 + cpuonly is represented ONLY for Python metadata by official torch==2.2.0+cpu wheel, satisfying original ==2.2.0 under PEP440. cpuonly is a Conda selector, not an importable Python distribution. No CUDA wheel/substitute version/native Conda equivalence is asserted.",
+  "roots": [
+    "PyYAML==6.0.3",
+    "gensim==4.3.2",
+    "matplotlib==3.8.4",
+    "numpy==1.26.4",
+    "pandas==1.5.3",
+    "pillow==10.3.0",
+    "scikit-learn==1.4.0",
+    "scipy==1.12.0",
+    "seaborn==0.13.2",
+    "statsmodels==0.14.1",
+    "tensorflow-cpu==2.16.1",
+    "torch==2.2.0",
+    "xgboost==2.0.3"
+  ],
+  "rows": 1000,
+  "scope": "All released context static imports plus upstream declared Python roots. No candidate-dependent imports, task execution, gold/reference/prompt export, or Conda/native/image equivalence.",
+  "selection_rule": "Remaining nonempty datasets only. DS1000: first derive static import roots from every released code_context with a metadata-only AST pass, retain exact upstream Python 3.10/minor and all declared version pins; resolve the finite Python metadata union if a faithful named mapping is available. Terminal-Bench gets a separate bounded deterministic bootstrap selection. Nine stdlib-only routes are audited, never empty-solved.",
+  "sources": [
+    {
+      "bytes": 14291,
+      "excerpts": [
+        {
+          "line": 6,
+          "text": "The official construction is used unchanged: `code_context + code = repr(candidate)`, then"
+        },
+        {
+          "line": 24,
+          "text": "  acceptable here. This group is recomputed from `code_context`, so it cannot drift."
+        },
+        {
+          "line": 42,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 44,
+          "text": "from data.scaffolds.scorer_input import bind as bind_scorer_input"
+        },
+        {
+          "line": 46,
+          "text": "import json"
+        },
+        {
+          "line": 47,
+          "text": "import re"
+        },
+        {
+          "line": 48,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 50,
+          "text": "from data.scaffolds import command_control"
+        },
+        {
+          "line": 51,
+          "text": "from data.scaffolds.qa.base import is_eval"
+        },
+        {
+          "line": 109,
+          "text": "_TF_PATTERN = re.compile(r\"\\b(import tensorflow|from tensorflow|tf\\.)\")"
+        },
+        {
+          "line": 135,
+          "text": "    return {i for i, row in enumerate(_raw()) if _TF_PATTERN.search(row[\"code_context\"])}"
+        },
+        {
+          "line": 190,
+          "text": "            {\"code_context\": row[\"code_context\"]}, ensure_ascii=False)},"
+        },
+        {
+          "line": 203,
+          "text": "                {\"code_context\": _raw()[index][\"code_context\"]}, ensure_ascii=False)},"
+        },
+        {
+          "line": 245,
+          "text": "         \"note\": \"Canonical HF simplified format. Trap: the tests live inside code_context \""
+        }
+      ],
+      "path": "data/datasets/ds1000.py",
+      "sha256": "05146f3a18072502599503d64b73ab13747a94ae107934a16601d72cbcc120ac"
+    },
+    {
+      "bytes": 4706,
+      "excerpts": [
+        {
+          "line": 5,
+          "text": "`code_context + code=<candidate> + test_execution(code)`, plus `test_string(code)` only"
+        },
+        {
+          "line": 9,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 11,
+          "text": "import argparse"
+        },
+        {
+          "line": 12,
+          "text": "import json"
+        },
+        {
+          "line": 13,
+          "text": "import pathlib"
+        },
+        {
+          "line": 14,
+          "text": "import re"
+        },
+        {
+          "line": 15,
+          "text": "import subprocess"
+        },
+        {
+          "line": 16,
+          "text": "import sys"
+        },
+        {
+          "line": 17,
+          "text": "import tempfile"
+        },
+        {
+          "line": 21,
+          "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+        },
+        {
+          "line": 49,
+          "text": "    program = (task[\"code_context\"] + \"\\n\" + f\"code = {candidate!r}\\n\""
+        },
+        {
+          "line": 51,
+          "text": "               + (\"test_string(code)\\n\" if \"test_string(\" in task[\"code_context\"] else \"\"))"
+        },
+        {
+          "line": 53,
+          "text": "    # program is passed via a temporary JSON file so the child can import the official runner."
+        },
+        {
+          "line": 60,
+          "text": "            \"import json, sys\\n\""
+        },
+        {
+          "line": 61,
+          "text": "            \"from execution import check_correctness\\n\""
+        },
+        {
+          "line": 70,
+          "text": "        import os"
+        }
+      ],
+      "path": "data/datasets/ds1000/verify/check.py",
+      "sha256": "ffcb9ce4913dc944417fc0dc0828b236f1d17c65e7dd9242ae838db4ee15d5d6"
+    },
+    {
+      "bytes": 386,
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "name: ds1000-3.10"
+        },
+        {
+          "line": 2,
+          "text": "channels:"
+        },
+        {
+          "line": 3,
+          "text": "  - defaults"
+        },
+        {
+          "line": 4,
+          "text": "  - conda-forge"
+        },
+        {
+          "line": 5,
+          "text": "  - pytorch"
+        },
+        {
+          "line": 7,
+          "text": "  - pip"
+        },
+        {
+          "line": 8,
+          "text": "  - python=3.10"
+        },
+        {
+          "line": 9,
+          "text": "  - gensim==4.3.2"
+        },
+        {
+          "line": 10,
+          "text": "  - matplotlib==3.8.4"
+        },
+        {
+          "line": 11,
+          "text": "  - numpy==1.26.4"
+        },
+        {
+          "line": 12,
+          "text": "  - pandas==1.5.3"
+        },
+        {
+          "line": 13,
+          "text": "  - pytorch::cpuonly"
+        },
+        {
+          "line": 14,
+          "text": "  - pytorch::pytorch==2.2.0"
+        },
+        {
+          "line": 15,
+          "text": "  - seaborn==0.13.2"
+        },
+        {
+          "line": 16,
+          "text": "  - scikit-learn==1.4.0"
+        },
+        {
+          "line": 17,
+          "text": "  - scipy==1.12.0"
+        },
+        {
+          "line": 18,
+          "text": "  - statsmodels==0.14.1"
+        },
+        {
+          "line": 19,
+          "text": "  - xgboost==2.0.3"
+        },
+        {
+          "line": 20,
+          "text": "  - yaml"
+        },
+        {
+          "line": 21,
+          "text": "  - pip:"
+        },
+        {
+          "line": 22,
+          "text": "      - tensorflow-cpu==2.16.1"
+        }
+      ],
+      "path": "/mnt/20t/xubuqiang/datasets/ds1000/_src/DS-1000-b39aab71/environment.yml",
+      "sha256": "61575788abe7cd77d26921ba2043efb652d2e1a9fe569378e9405a8469bb76aa"
+    },
+    {
+      "bytes": 5791,
+      "excerpts": [
+        {
+          "line": 5,
+          "text": "from typing import Optional, Callable, Dict"
+        },
+        {
+          "line": 6,
+          "text": "import ast"
+        },
+        {
+          "line": 7,
+          "text": "import contextlib"
+        },
+        {
+          "line": 8,
+          "text": "import faulthandler"
+        },
+        {
+          "line": 9,
+          "text": "import io"
+        },
+        {
+          "line": 10,
+          "text": "import os"
+        },
+        {
+          "line": 11,
+          "text": "import multiprocessing"
+        },
+        {
+          "line": 12,
+          "text": "import platform"
+        },
+        {
+          "line": 13,
+          "text": "import signal"
+        },
+        {
+          "line": 14,
+          "text": "import tempfile"
+        },
+        {
+          "line": 31,
+          "text": "            import os"
+        },
+        {
+          "line": 32,
+          "text": "            import shutil"
+        },
+        {
+          "line": 49,
+          "text": "                        exec(check_program, exec_globals)"
+        },
+        {
+          "line": 162,
+          "text": "        import resource"
+        },
+        {
+          "line": 170,
+          "text": "    import builtins"
+        },
+        {
+          "line": 174,
+          "text": "    import os"
+        },
+        {
+          "line": 205,
+          "text": "    import shutil"
+        },
+        {
+          "line": 210,
+          "text": "    import subprocess"
+        },
+        {
+          "line": 215,
+          "text": "    import sys"
+        }
+      ],
+      "path": "/mnt/20t/xubuqiang/datasets/ds1000/_src/DS-1000-b39aab71/execution.py",
+      "sha256": "fab0beb2a5c3300f4540c2225ffc013881e5770fed388ad20d4620ae040cd311"
+    }
+  ],
+  "syntax_errors": [],
+  "syntax_warnings": [
+    {
+      "category": "SyntaxWarning",
+      "message": "invalid escape sequence '\\['"
+    },
+    {
+      "category": "SyntaxWarning",
+      "message": "invalid escape sequence '\\]'"
+    },
+    {
+      "category": "SyntaxWarning",
+      "message": "invalid escape sequence '\\m'"
+    },
+    {
+      "category": "SyntaxWarning",
+      "message": "invalid escape sequence '\\m'"
+    },
+    {
+      "category": "SyntaxWarning",
+      "message": "invalid escape sequence '\\s'"
+    },
+    {
+      "category": "ResourceWarning",
+      "message": "unclosed file <_io.TextIOWrapper name='/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl' mode='r' encoding='UTF-8'>"
+    }
+  ],
+  "yaml_mapping": "environment.yml yaml is a native Conda libyaml requirement, retained as a native gap; actual code_context import yaml maps to PyYAML. All other Python module/distribution aliases are explicit."
+}

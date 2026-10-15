@@ -1,0 +1,1532 @@
+{
+  "protected_registry": {
+    "datasets": [
+      {
+        "blockers": [],
+        "dataset": "agentdojo",
+        "demand": "tool_use",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "safety"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [],
+        "surface": "tool_dialogue"
+      },
+      {
+        "blockers": [],
+        "dataset": "alfworld",
+        "demand": "environment",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "recovery"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "embodied_text"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "REFUSED =",
+                "path": "data/datasets/api_bank.py"
+              }
+            ],
+            "family": "contract-refusal",
+            "id": "retain-contract-refusal",
+            "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric.",
+            "observed": "Recorded API results rely on missing dialogue state; the oracle cannot reproduce the released metric.",
+            "status": "external"
+          }
+        ],
+        "dataset": "api_bank",
+        "demand": "tool_use",
+        "exercises": [
+          "tools"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [],
+        "surface": "tool_calling"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "### AppWorld thirty-two-step smoke",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "AppWorld: source review DONE; successful-task gate remains measurement",
+                "path": "reports/b9-appworld-protocol-and-pilot-guidance-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "AppWorld successful-task-evidence remains open.",
+                "path": "reports/w-appworld-receipts.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "AppWorld successful-task-evidence remains OPEN.",
+                "path": "reports/w-appworld2-receipts.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## 2026-10-15 AppWorld unchanged-budget actor diagnostic - w-appworld2",
+                "path": "docs/adapter-integration-journal.md"
+              }
+            ],
+            "family": "actor-protocol",
+            "id": "successful-task-evidence",
+            "next_action": "Retain the measured-zero receipts and unresolved gate; review task-facing protocol evidence without tuning to the selected task or increasing its budget.",
+            "observed": "Task-facing source review DONE: a generic init/action, persistent service Python/API discovery/state-change/final-answer protocol exists. Retain the journal's 16/32-step measured-zero receipts (15/26 API calls) and unresolved successful-task gate; API activity and synthetic protocol controls are not successful-task evidence. External receipt bodies were not opened or reverified; no authentic successful measured actor-task receipt is established from repository evidence. Fresh authorized w-appworld diagnostic w-appworld-20261014T225023Z-f02d7cd5 selected train task cf6abd2_2 and executed a separate mounted-recording verifier: raw TGC measured=true, success=false, score=0.0 (8 official tests; assert answers match. failed). The staged receipt retains score=null, measured_trials=0, unmeasured_trials=1, invalid_trials=0 for policy_enforcement_not_observed. This failed task adds lifecycle/resource/cleanup evidence but no authentic successful measured actor-task receipt; successful-task-evidence remains open. Fresh unchanged-budget diagnostic w-appworld2-20261015T050036Z-a6d55a63 selected deterministic study task cf6abd2_2 from 147 eligible, one trial/jobs=1/rounds=0 on http://127.0.0.1:8002/v1 (qwen3.5-9b-local). Raw official TGC was measured=true, success=false, score=0.0, six passes/two failures across eight requirements; the actor made an incorrect note edit and omitted supervisor completion. The actor submitted at step 15 after 16 model calls within its unchanged 32-step/2048-output-token budget; spare budget demonstrates action reachability but neither success nor impossibility. Formal staged score remains null, measured=0/unmeasured=1/invalid=0 for policy_enforcement_not_observed. No successful actor-task receipt exists in this attempt; successful-task-evidence remains OPEN. No shared blocker closes and no expansion is authorized.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "appworld",
+        "demand": "tool_use",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "recovery"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "### AppWorld real-model smoke blocker",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/101/deliverables/receipt.md"
+              }
+            ],
+            "observation": "Original actor launch failed with Docker exit 125. Later repaired smokes measured zero; they do not replace this incomplete attempt. Original failed run ID is not specified.",
+            "record_id": "appworld-initial-infrastructure-smoke",
+            "run_id": null,
+            "status": "incomplete"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "tool_dialogue"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "Current scorer remains function-name multiset diagnostic",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "external source/provenance blocker remains open",
+                "path": "tests/fixtures/bfcl_ast_source/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "checker acquired; complete checker closure remains blocked",
+                "path": "reports/bfcl-blob-retry-codex227-report.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "not_attempted_missing_pinned_blob_sha",
+                "path": "tests/fixtures/bfcl_ast_source/retry-codex227/provenance.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "## bfcl_v3: simple-ast-contract",
+                "path": "tests/fixtures/external_provenance_b5/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Locally reviewed Simple invocation graph",
+                "path": "docs/e3-bfcl-simple-source-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "\"schema\": \"harnessgrad.e3-bfcl-acquisition-candidate.v1\"",
+                "path": "tests/fixtures/e3_bfcl_source/inventory.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Final disposition and remaining work",
+                "path": "reports/w-bfcl-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "public-source archive/tag/commit/member/root-license custody",
+                "path": "tests/fixtures/hg_bfcl/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "\"schema\": \"harnessgrad.w-bfcl-public-custody.v1\"",
+                "path": "tests/fixtures/hg_bfcl/inventory.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "revoked as a blocker",
+                "path": "docs/independent-review-deferred.md"
+              }
+            ],
+            "family": "official-scorer-execution",
+            "id": "simple-ast-contract",
+            "next_action": "Complete exact offline third-party/native runtime custody (Python/build/ABI/platform, direct and transitive package artifacts/hashes, compatible Tree-sitter grammars/native objects/linked libraries and third-party licenses/notices). Document the concrete local-model handler, response grammar and model-config behavior; bind the acquired code-only projection and runtime to exact integrity pins without requiring human approval. Satisfy the technical source gate, preserve full-call selected reference/schema information and selected-only/privacy boundaries, contain expression evaluation, derive the full-call contract using fabricated differential calls, and record actual official scorer execution with exact source/runtime/input/metric/receipt identities. Archive/tag/commit/member/root-license acquisition and the retained code-only graph review are established, but runtime closure and official execution remain unmet; leave this blocker external. Preserve the name diagnostic and all historical receipts. No production H0.",
+            "observed": "W-bfcl builds on tasks 195/227/B5/E3 without changing their receipts: five fresh public HTTPS responses preserve v1.3 tag/release/commit/license/archive bytes and headers. The 44,552,456-byte archive SHA-256 is recomputed and matches the adapter pin; its PAX commit, reconstructed signed Git commit and 93 tree objects bind all 83 retained original files to exact archive members, measured sizes, SHA-256 and Git blobs. Root Apache-2.0 custody and a code-only review of the retained Simple handler/parser/checker/dispatch/helper graph, including expression-evaluation branches and third-party/native import/version requirements, are recorded with file+line. Complete offline package/native/Python ABI/transitive/license artifacts and a concrete local-model handler/full-call integration remain absent. No fabricated full-call differential or official scorer execution occurred; production remains function-name multiset diagnostic-only. Independent human approval and separately approved receipt-signature gates were withdrawn by the operator; they are not unmet requirements.",
+            "status": "external"
+          }
+        ],
+        "dataset": "bfcl_v3",
+        "demand": "tool_use",
+        "exercises": [
+          "tools"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "tool_calling"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## Bird MiniDev \u2014 SQL measurement",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Bird MiniDev: label/semantics review closed; metadata reconciliation open",
+                "path": "reports/measurement-coverage-hg-b3-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "def test_bird_schema_failure_depends_on_which_query_failed",
+                "path": "tests/quality/test_measurement_coverage_hg_b3.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Bird: historical labels preserved; original measurement metadata missing",
+                "path": "reports/e1-fever-physics-bird-review.md"
+              }
+            ],
+            "family": "measurement-coverage",
+            "id": "sql-coverage-reconciliation",
+            "next_action": "Keep this measurement gate open until original selected-ID/phase/trial/error metadata binds the 90 phases to actual measurements, invalid/unmeasured counts, SQLite/schema/scorer identity and the score denominator. Preserve v4 incomplete and v5 partial-measurement/effect=null, including the historical complete label; do not infer 90 or 84 measured trials or compare full-coverage effects.",
+            "observed": "Bounded tracked-source inventory is checked in; it finds journal/registry/readiness summaries and pinned historical records, not original selected-ID/phase/trial/error rows. Preserve v4 incomplete and v5 historical complete label with partial-measurement/effect=null: 34x3=102 planned task-trials, reported 28/34 measured tasks and 90 verify phases, score 0.3214285714. Current source executes gold first: caught gold/schema errors are unmeasured, runnable-gold prediction errors are measured EX zero; uncaught connection/read failures require raw phase status. Neither current source nor phase arithmetic establishes historical SQLite/schema/scorer identity, measured trial counts, error counts or score denominator. Original metadata reconciliation remains open.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "bird_minidev",
+        "demand": "artifact",
+        "exercises": [
+          "context",
+          "tools",
+          "verification"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "v4 stalled and remains incomplete",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/qa-h0-archive-v4/index.json"
+              }
+            ],
+            "observation": "V4 stalled and remains incomplete; no later V5 record supersedes it. The journal names the v4 generation but does not provide its exact run ID.",
+            "record_id": "bird-v4-incomplete",
+            "run_id": null,
+            "status": "incomplete"
+          },
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "only 28/34 tasks were measured (90 verify phases)",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/qa-h0-archive-v4/index.json"
+              }
+            ],
+            "observation": "Historical label complete, reported score 0.3214285714; only 28/34 tasks measured, 90 verify phases. Planned 34 tasks x3 is not certified full coverage.",
+            "record_id": "bird-v5-partial-coverage",
+            "run_id": "bird-minidev-h0-10pct-v5",
+            "status": "partial-measurement"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "text_to_sql"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "- Interruption audit: termination authority is undetermined",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## chessbench_puzzles / interruption-closure",
+                "path": "reports/preserved-lifecycle-review-b8.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Both historical IDs",
+                "path": "reports/chess-recovery-id-conflict-codex182-report.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Snapshot/cleanup uncertainty alone is not a new",
+                "path": "docs/enforcement-proof-decision.md"
+              }
+            ],
+            "family": "termination-audit",
+            "id": "interruption-closure",
+            "next_action": "Preserve chess-pilot-h0-20261013 and chess-pilot-h0-20261013-recovery-01, their original receipts and null effects; never resume, re-run or overwrite either ID. Keep the runtime gate open pending independent audit/receipt authentication and termination/quiescence review. Continue best-effort cleanup with uncertainty retained; proof of exact owned absence or atomic lease closure is not a prerequisite. Do not turn missing outcomes or zero failed envelopes into measured zeros or complete coverage.",
+            "observed": "Repository audit and receipt-identity citations reviewed: the original and recovery IDs remain incomplete at reported 19 and 149/150 completed task-trials, with no terminal verdict/aggregate or cleanup closure. Termination authority remains undetermined on the native bwrap/files path. The cited audit digest is not authentication of either external run receipt; unknown final outcomes remain unmeasured.",
+            "status": "runtime"
+          }
+        ],
+        "dataset": "chessbench_puzzles",
+        "demand": "reasoning",
+        "exercises": [
+          "context",
+          "control"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "- Pilot interruption: run `chess-pilot-h0-20261013`",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/chess/interruption-audit.md"
+              }
+            ],
+            "observation": "19 task-trials completed, 0 failed envelopes; events stopped during test/1270 trial 2 with no final verdict or aggregate curve.",
+            "record_id": "chess-original-incomplete",
+            "run_id": "chess-pilot-h0-20261013",
+            "status": "incomplete"
+          },
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "- Recovery result: `chess-pilot-h0-20261013-recovery-01`",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/chess/interruption-audit.md"
+              }
+            ],
+            "observation": "149/150 task-trials completed, 0 failed envelopes; final test/9967 trial stopped after more than 620s with no terminal verdict/curve. Termination/cleanup closure unproven.",
+            "record_id": "chess-recovery-incomplete",
+            "run_id": "chess-pilot-h0-20261013-recovery-01",
+            "status": "incomplete"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "planning_and_search"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## DS1000 \u2014 host slice and timeout evidence",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## DS1000: host-pool interpretation closed; archive acceptance open",
+                "path": "reports/measurement-coverage-hg-b3-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "def test_ds1000_timeout_result_needs_classification_beyond_measured_flag",
+                "path": "tests/quality/test_measurement_coverage_hg_b3.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## What remains and status",
+                "path": "docs/e3-ds1000-measurement-review.md"
+              }
+            ],
+            "family": "measurement-coverage",
+            "id": "host-slice-archive-review",
+            "next_action": "Keep archive acceptance blocked pending original selected-ID/split/host-pool provenance, original trial outcomes and timeout/error/lifecycle records; reconcile measured, invalid and unmeasured counts before considering append or comparison. Preserve ds1000-v4-pending-review with effect=null. Neither host oracle-sweep coverage nor timeout limits certify the pilot's 183 planned measurements.",
+            "observed": "Source review separates documented 926/1000 host availability (74 exclusions) from 61 selected platform train-side tasks x3=183 planned task-trials; actual measured coverage, selected IDs and timeout counts are unavailable in repository receipts. The reported 0.2076502732 remains unaccepted and the archive unappended. The 120/130-second checker values are configured limits; a synthetic serialized timeout result still produces measured=true/reward=0, so that flag cannot replace historical timeout classification. E3 records a reproducible repository metadata search and source hashes: 27 frozen non-TensorFlow exclusion IDs in 12 cause groups are source metadata; the original 926-ID host manifest, 61-ID selection, trial outcomes and timeout/error/lifecycle receipts were not located in the documented scope. No archive effect is accepted.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "ds1000",
+        "demand": "artifact",
+        "exercises": [
+          "tools",
+          "verification"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## DS1000 \u2014 host slice and timeout evidence",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/61/report.md"
+              }
+            ],
+            "observation": "Reported score 0.2076502732 over a 61-task/3-trial pilot on the 926/1000 host slice; sample/trial/timeout audit and archive append remain pending.",
+            "record_id": "ds1000-v4-pending-review",
+            "run_id": "ds1000-h0-10pct-v4",
+            "status": "pending-review"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "code_generation"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "KIND = \"dataset\"",
+                "path": "data/datasets/fever.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "# FEVER source-only journal review",
+                "path": "docs/dataset-reviews/fever.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## FEVER \u2014 source-only journal coverage \u2014 b1",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Snapshot/cleanup uncertainty alone is not a new",
+                "path": "docs/enforcement-proof-decision.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## FEVER: evaluator acquired; export and group preservation unresolved",
+                "path": "reports/e1-fever-physics-bird-review.md"
+              }
+            ],
+            "family": "journal-coverage",
+            "id": "dataset-journal-gap",
+            "next_action": "NEXT gate remains source-provenance and metric-comparability: bind the authenticated exact Hub revision/tree export metadata to actual export bytes, the producing conversion and original FEVER ID/evidence-group correspondence; establish installed bytes and selected manifest custody. Use the acquired exact scorer source revision without inventing a release or claiming singleton equivalence. Document the actual metric and establish scorer-offline-closure and pristine verifier evidence with all remaining shared gates before any separately authorized diagnostic. The official-scorer-identity proof obligation stays withdrawn.",
+            "observed": "Acquired scorer source pins sheffieldnlp/fever-scorer@4801615100fbf6327f8e99b5dbaefe5dd890e869 and documents complete-group strictness/five-pair default. Tags/releases are empty and setup says 0.0.0; no named release is invented. After preserved direct failures, the recorded public proxy authenticated the exact declared Hub revision/tree/README and valid.jsonl Git blob identity/size. The README-referenced repository converter emits flat conjunctions per original group, but its revision-to-Hub-export binding and original group/ID preservation are unverified. Local singleton conversion can change conjunction semantics. Source acquisition advances; actual export/installed/selected custody, comparability and offline/pristine runtime remain open. Fresh installed export binding - w-journalcov: independently recomputed installed validation SHA-256 5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9 and Git blob SHA-1 ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f match the preserved authenticated Hub revision/tree member and size. All 15935 row/task digests and default imposed 10559-train/5376-eval inventory are now preserved, with current scorer/input file-line linkage. This supersedes only the actual-export-byte/installed-inventory part of the prior gap; producing conversion and original FEVER ID/complete evidence-group correspondence, flat-to-singleton metric comparability, independently supplied selection/export and chosen run split/side, actual pristine execution and shared evidence remain unmet. Per-clause satisfied/unmet findings and the next concrete dependency are in reports/w-journalcov-review.md; all run/selected/trial fields stay null and no diagnostic is authorized. Status, next_action, evidence references and history are unchanged. Original-ID/group correspondence follow-up - w-jc2: official public dev bytes SHA-256 e89865bfe1b4dd054e03dd57d7241a6fde24862905f31117cf0cd719f7c78df7 bind all 15935 installed rows by original_id with exact claim/label/verifiable agreement; all 9525 non-NEI rows match one complete original group after explicit NFC-page/int-line normalization. Collaborator Hub link and pinned producer README/merge/NEI source blobs are corroborated. This supersedes the absence of row-level correspondence only: 51 original alternative groups for 42 represented non-NEI IDs are absent from this validation export, and 1395 export rows have structurally insufficient singleton sentences. Producing conversion revision, ID assignment, split/filter/omission and NEI-input receipt remain unauthenticated; local singleton scoring equivalence is unproved. No selection/runtime/shared clause is satisfied by this mapping. Packet tests/fixtures/hg_wjc2/fever/ and reports/w-jc2-review.md preserve raw sources, per-row digests and precise producer input; status and full next_action remain open.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "fever",
+        "demand": "evidence",
+        "exercises": [
+          "context"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "information_seeking"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## GAIA lifecycle wiring audit \u2014 Codex 165",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## GAIA / frozen-lifecycle-receipt",
+                "path": "reports/preserved-lifecycle-review-b8.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "\"receipt_validation\": \"not-performed\"",
+                "path": "eval/policy/gaia_snapshot_attestation.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Required operator deliveries, in dependency order",
+                "path": "docs/gaia-operator-packet-codex210.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Snapshot/cleanup uncertainty alone is not a new",
+                "path": "docs/enforcement-proof-decision.md"
+              }
+            ],
+            "family": "snapshot-cleanup",
+            "id": "frozen-lifecycle-receipt",
+            "next_action": "Retain policy refusal: do not provision or run GAIA. Preserve gaia-validation-pilot-h0-20261117-v2 and gaia-validation-pilot-h0-20261117-v3 without resuming or overwriting them. Keep the runtime gate open for independently authenticated selected-only/source-lock, verifier/dependency and artifact-only export. Continue best-effort snapshots and cleanup with uncertainty retained; incomplete observations alone are not a gate and known failures remain recorded. Retain unknown outcomes as unmeasured and publish no aggregate score.",
+            "observed": "Metadata-only source/runtime/lifecycle requirements reviewed; GAIA remains policy-refused. Compatibility compares supplied identities without validating receipts or authorizing reuse. Both V2/V3 IDs remain incomplete with null effects; V2 coverage/timeout usage and V3 pre-verification exit 137 remain unresolved. No aggregate score is valid.",
+            "status": "runtime"
+          }
+        ],
+        "dataset": "gaia",
+        "demand": "evidence",
+        "exercises": [
+          "context",
+          "tools",
+          "control"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "### GAIA V2 real-model pilot attempt",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/gaia-h0-launch-v2-evidence/GAIA_H0_V2_RECEIPT.json"
+              }
+            ],
+            "observation": "17 tasks x3 planned; sealed receipt reports 9 persisted trials, events contain 10 done events. API-timeout usage unknown; coverage discrepancy unresolved.",
+            "record_id": "gaia-v2-incomplete",
+            "run_id": "gaia-validation-pilot-h0-20261117-v2",
+            "status": "incomplete"
+          },
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "### GAIA V3 real-model pilot attempt",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/gaia-h0-launch-v3/runs/gaia-validation-pilot-h0-20261117-v3/events.jsonl"
+              }
+            ],
+            "observation": "11 trials completed normally; gaia/49 third trial reached agent completion but snapshot exited 137 before verification. No aggregate score is valid.",
+            "record_id": "gaia-v3-incomplete",
+            "run_id": "gaia-validation-pilot-h0-20261117-v3",
+            "status": "incomplete"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "information_seeking"
+      },
+      {
+        "blockers": [],
+        "dataset": "gsm8k",
+        "demand": "reasoning",
+        "exercises": [
+          "context",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "reasoning"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## HotpotQA \u2014 structured evidence and time budget",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## HotpotQA: schema/timeout review closed; timeout aggregation still blocked",
+                "path": "reports/measurement-coverage-hg-b3-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "def test_timeout_detail_alone_does_not_close_aggregation_gate",
+                "path": "tests/quality/test_measurement_coverage_hg_b3.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "# HotpotQA timeout outcome/persistence/aggregation closure - w-hotpot",
+                "path": "docs/w-hotpot-timeout-closure.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "def test_timeout_is_unmeasured_through_persistence_and_aggregation",
+                "path": "tests/quality/test_hotpot_timeout_admission_w_hotpot.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "12 passed",
+                "path": "reports/w-hotpot-validation.txt"
+              }
+            ],
+            "family": "measurement-coverage",
+            "id": "historical-comparison-receipts",
+            "next_action": "Historical comparison requires original selected-ID/trial/error/timeout and source/split/manifest/model/harness provenance receipts, with measured/invalid/unmeasured counts and lifecycle/cleanup reconciliation. Preserve the old full-size protocol as incomplete, unknown run ID and effect=null; do not resume or rerun it. Timeout classification/persistence/aggregation is synthetically closed; current selected scorer/control admission and all existing shared gates remain required. Any separately authorized future diagnostic uses a fresh ID under the current staged policy.",
+            "observed": "Closed timeout-aggregation-admission independently of shared runtime gates by focused synthetic validation: the final 12 regressions fail on baseline bd25f5a and pass after repair. Native/sandbox/exec and snapshot expiration now explicitly returns outcome=timeout and unmeasured with no score; persistence retains the invalid timeout reason/trace, aggregation excludes the task and its trials, and no timeout score enters the cache. A valid measured zero remains zero; a timeout-only round has no measurements. Schema review remains closed: malformed JSON/evidence is unmeasured, valid missing/partial support is measured joint EM zero. No live or measured HotpotQA run or selected scorer/control admission is claimed. Historical user-stopped v4 remains incomplete, unknown run ID and effect=null: 492x3=1476 planned, 94 reported completed/measured task-trials, 1382 uncertified; unique-task/trial/error coverage is not independently verified. The 3600-second verifier limit and historical 60-minute note are not measured timeout counts.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "hotpotqa",
+        "demand": "evidence",
+        "exercises": [
+          "context"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## HotpotQA \u2014 structured evidence and time budget",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "external-reference",
+                "locator": "Journal citation only; external receipt not opened during this review.",
+                "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/qa-h0-incomplete-index.json"
+              }
+            ],
+            "observation": "User stopped the oversized 492-task/3-trial run at 94/1476 task-trials; the journal provides no exact run ID, so none is invented.",
+            "record_id": "hotpot-v4-incomplete",
+            "run_id": null,
+            "status": "incomplete"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "information_seeking"
+      },
+      {
+        "blockers": [],
+        "dataset": "jericho",
+        "demand": "environment",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "memory"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "interactive_fiction"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "### LiveCodeBench `/740` trusted metadata validation",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## LiveCodeBench: row-attestation",
+                "path": "reports/b6-dataset-blocker-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## LiveCodeBench: acquired evidence and limits",
+                "path": "reports/e2-upstream-provenance-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Finding: requirements still unmet",
+                "path": "reports/w-lcb-review.md"
+              }
+            ],
+            "family": "source-provenance",
+            "id": "row-attestation",
+            "next_action": "Use the substantive metadata custody procedure in task-207 (its independent approval clauses are superseded by operator instruction) to acquire a genuine complete ID-only catalog for the pinned release, with authoritative total, per-shard membership/order, uniqueness and sorted rank. Obtain reproducible authenticated provenance binding specific rows, especially /740 -> abc360_a, to the actual frozen pool digest, full imposed split and public statement identity/transformation. Compare that evidence with the preserved inert selection without payload reads. Existing release/builder/shard metadata and conditional local split/selection calculations do not establish those bindings. Current public viewer metadata is unavailable and does not authenticate revision pinning; obtain an authoritative metadata-only catalog/custody source if available. No separate reviewer, human approval or sign-off is required. Leave this blocker external while any catalog or row/pool/split/statement evidence remains missing.",
+            "observed": "B6/E2 acquired canonical pinned release/tree/builder/card/history metadata for livecodebench/code_generation_lite@0fe84c3912ea0c4d4a78037083943e8f0c4dd505. W-lcb rehashed inherited raw response chains, matched the builder Git blob and all six advertised shard LFS identities to local adapter declarations without reading shards. Upstream release_v6 emits test rows in shard/line order; local prepare.py rejects duplicate question IDs, sorts the union and writes a header before zero-based body indices. No authoritative metadata-only problem IDs, complete catalog, upstream problem count or sorted row ranks were obtained (zero upstream IDs against 1055 locally declared problems). New preserved public viewer metadata returns /splits HTTP 501 for unsupported arbitrary-Python loading and /size and /info HTTP 404; its preserved OpenAPI documents neither revision pinning nor row column projection, so these are current availability observations, not authenticated pinned-release results. Task-207 targets and the unchanged three-candidate inert selection agree locally, selecting /740 -> abc360_a in imposed train. Applying the existing hash split to the declared original 0..1054 ordinal namespace reproduces 663 train / 392 eval and the declared split digest, conditional on that namespace only. No acquired evidence authenticates actual row/pool/full-split/statement linkage; row_attested=false and no fresh pool verification. Independent reviewer/approver gates are withdrawn by operator instruction and docs/independent-review-deferred.md; missing sign-off is not an outstanding requirement. The remaining gap is real catalog completeness and reproducible source/local transformation custody.",
+            "status": "external"
+          }
+        ],
+        "dataset": "livecodebench",
+        "demand": "artifact",
+        "exercises": [
+          "tools",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "code_generation"
+      },
+      {
+        "blockers": [],
+        "dataset": "musique",
+        "demand": "evidence",
+        "exercises": [
+          "context"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "information_seeking"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "REFUSED =",
+                "path": "data/datasets/nestful.py"
+              }
+            ],
+            "family": "contract-refusal",
+            "id": "retain-contract-refusal",
+            "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric.",
+            "observed": "Official execution Win Rate is nondeterministic/unreproducible as released; slot/sequence metrics cannot replace it.",
+            "status": "external"
+          }
+        ],
+        "dataset": "nestful",
+        "demand": "tool_use",
+        "exercises": [
+          "tools"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [],
+        "surface": "tool_calling"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "KIND = \"dataset\"",
+                "path": "data/datasets/physicsquestions.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "# Physics Questions source-only journal review",
+                "path": "docs/dataset-reviews/physicsquestions.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Physics Questions \u2014 source-only journal coverage \u2014 b1",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Snapshot/cleanup uncertainty alone is not a new",
+                "path": "docs/enforcement-proof-decision.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Physics Questions: content linkage established; metric differs; runtime open",
+                "path": "reports/e1-fever-physics-bird-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## physicsquestions installed custody",
+                "path": "tests/fixtures/hg_wprov/README.md"
+              }
+            ],
+            "family": "journal-coverage",
+            "id": "dataset-journal-gap",
+            "next_action": "NEXT gate: bind an independently supplied run-specific selected manifest and selected-only export to the preserved installed CSV, row/task inventory and chosen split/side; no selection or run ID is supplied here. Then establish scorer-offline-closure, pristine verifier execution and remaining shared evidence. Retain the installed-to-ReWOO and ordered pinned-BIG-bench linkage, report local normalized accepted-spelling EM separately from matched BIG-bench processing/aggregation, and do not infer a historical converter revision or runtime execution. Preserve invalid/unmeasured coverage and withdrawn official-scorer-identity proof decision; no diagnostic is authorized.",
+            "observed": "Installed CSV custody now established at the observed host path: 17953 bytes, SHA-256 7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa, identical to the declared member of authenticated ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1 and its Git tree/content bytes. All 53 ordered pairs retain E1 linkage to nonblank BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b examples. Source-derived row/task/structural-eligibility manifests and imposed 37-train/16-eval division are preserved. Runtime reads CSV with an inline local scorer, not an installed ReWOO/BIG-bench evaluator. No selected run manifest or pristine runtime is authenticated. Local asymmetric normalization/full BIG-bench response protocol divergence remains; all shared gates remain open. Fresh current-byte/source reconciliation - w-journalcov: installed SHA-256 7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa and all 53 row/task mappings with default imposed 37-train/16-eval division reproduce preserved custody. Current file-line linkage traces the CSV through accepted gold and task-scoped input binding to the inline scorer; the separately reported metric remains local asymmetric normalized accepted-spelling EM. No independent run-specific selected manifest, fresh run ID, chosen split mode/side or selected-only export is supplied; current source linkage is not runtime execution or shared closure. Per-clause satisfied/unmet findings and the next concrete dependency are in reports/w-journalcov-review.md; all run/selected/trial fields stay null and no diagnostic is authorized. Status, next_action, evidence references and history are unchanged. Exact serialized-gold custody - w-jc2: source-extracted current _gold helpers, without adapter imports or scoring, bind every installed ordered row/task/default side to the exact qa/base.py JSON gold SHA-256 in tests/fixtures/hg_wjc2/physicsquestions-gold-bindings.json. All prior parsed-row/split identities match, with raw independent source/CSV digests preserved. This whole-pool hash inventory exports no expected answers, does not choose a run side or tasks, and does not supply the missing operator-authorized fresh run ID/ordered selected manifest/explicit split mode and side/selected-only export. Local metric identity, null trial coverage, pristine/offline/shared obligations and all next_action clauses remain unchanged; no blocker closes. Detailed next blocking input is in reports/w-jc2-review.md.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "physicsquestions",
+        "demand": "reasoning",
+        "exercises": [
+          "context",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "reasoning"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "KIND = \"dataset\"",
+                "path": "data/datasets/reasoning_gym.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "# Reasoning Gym source-only journal review",
+                "path": "docs/dataset-reviews/reasoning_gym.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Reasoning Gym \u2014 source-only journal coverage \u2014 b1",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Snapshot/cleanup uncertainty alone is not a new",
+                "path": "docs/enforcement-proof-decision.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## reasoning_gym installed custody",
+                "path": "tests/fixtures/hg_wprov/README.md"
+              }
+            ],
+            "family": "journal-coverage",
+            "id": "dataset-journal-gap",
+            "next_action": "Retain authenticated distribution/source/installed-member custody and declared pool hash/family/order evidence; recover original generation environment/date/order metadata and reproduce the declared pool with recorded inputs, without changing its seed/families or overwriting original bytes; independently establish behavioral reference=1/empty=0 family eligibility and bind an independently supplied run-specific selected manifest and selected-only export to exact pool rows and chosen split/side. No independent seed-specific pool release or selected run manifest was authenticated from the acquired public sources. Establish deterministic transitive dependencies without scoring extras in the actual pristine verifier, metric identity, scorer-offline-closure and all remaining shared evidence; the official-scorer-identity proof obligation stays withdrawn. No diagnostic is authorized.",
+            "observed": "Installed pool custody now established: 3315981 bytes, SHA-256 c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177 matches the declared pin; preserved rows have all 89 declared families x 20 indices in family-major order, nonempty references and matching entry questions. PyPI reasoning-gym 0.1.25 wheel SHA-256 7f17a3eddb13c015d7d4a755ed576a061df889faf9468bcc2cca334ebe9e0435 and sdist bytes bind all 200 package/data members to GitHub v0.1.25 commit 21e6d2a9a581b3e11aafe711abfd37402f8482d5; 204/205 installed wheel members match, with only pip-rewritten RECORD differing. Source-derived row/task/structural-eligibility manifests and imposed 1216-train/564-eval split are preserved. A bounded CPU-only provenance regeneration at seed 20261008 completed but differs in 84 rows across six families (preserved generated SHA-256 d00b2b1cb8134ee37c7b76fce5547cb3e2c44a247dfa07beaa984385532cffd1); seed-only whole-pool reproduction is not established. Runtime still lacks pool-digest/installed-version enforcement. Behavioral family eligibility, selected run manifest/export binding, transitive dependency/offline closure and pristine execution remain open; structural custody does not establish family scorer/offline claims or measurement. Fresh current-byte/source reconciliation - w-journalcov: installed SHA-256 c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177, all 1780 ordered row/task mappings and default imposed 1216-train/564-eval division reproduce preserved custody, with current family-entry/scorer/input file-line linkage. Distribution/source/installed-member provenance revalidation passes; preserved generation mismatch is not repaired or rerun. Later bounded Python metadata-resolution evidence does not establish actual pristine execution-selected scorer closure. Original generation metadata/reproduction, all-family behavioral eligibility, independent selected manifest/export and chosen run split/side remain absent; structural inventories are not eligible-task or measured coverage. Per-clause satisfied/unmet findings and the next concrete dependency are in reports/w-journalcov-review.md; all run/selected/trial fields stay null and no diagnostic is authorized. Status, next_action, evidence references and history are unchanged. Original generation record follow-up - w-jc2: fresh exact-pool bytes, recovered introduction-commit generator/adapter pins and nine stored time-only rows corroborate effective date 2026-10-08. Current parser source explains the carried-date path; neither current dependencies, commit dates nor filesystem times authenticate the original process clock/environment. Scoped inspected source/history/dataset/attempt records recover no original launch receipt; no exhaustive machine-wide absence is asserted. Needed upstream input is the pool producer process receipt binding invocation/interpreter/build, effective clock/timezone, launch hash-order setting or realized hash state/order, and dependency artifact lock to this exact pool digest. No regeneration, new seed/family/order, scoring or runtime execution occurred; existing behavioral eligibility, selection/export, offline/pristine/shared clauses remain open. Raw evidence and source/digest bindings: tests/fixtures/hg_wjc2/gym/REVIEW.md and reports/w-jc2-review.md.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "reasoning_gym",
+        "demand": "reasoning",
+        "exercises": [
+          "context",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "reasoning"
+      },
+      {
+        "blockers": [],
+        "dataset": "scienceworld",
+        "demand": "environment",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "memory",
+          "recovery"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## ScienceWorld \u2014 platform integrity",
+                "path": "docs/adapter-integration-journal.md"
+              }
+            ],
+            "observation": "354/354 task-trials completed, but platform-integrity mismatch invalidates run-level completeness; diagnostic mean 0.1380508475 is not an archive effect.",
+            "record_id": "scienceworld-v4-incomplete",
+            "run_id": "scienceworld-h0-10pct-v4",
+            "status": "incomplete"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "science_simulation"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "REFUSAL =",
+                "path": "data/datasets/sotuqa.py"
+              }
+            ],
+            "family": "contract-refusal",
+            "id": "retain-contract-refusal",
+            "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric.",
+            "observed": "The headline unpinned LLM-judge metric is unavailable under the platform contract; EM/F1 are not a substitute.",
+            "status": "external"
+          }
+        ],
+        "dataset": "sotuqa",
+        "demand": "evidence",
+        "exercises": [
+          "context"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [],
+        "surface": "information_seeking"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "KIND = \"dataset\"",
+                "path": "data/datasets/sportsunderstanding.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## sportsunderstanding source-only review",
+                "path": "docs/dataset-source-reviews-b2.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## sportsunderstanding source-only review \u2014 2026-10-15 \u2014 b2",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## sportsunderstanding installed custody",
+                "path": "tests/fixtures/hg_wprov/README.md"
+              }
+            ],
+            "family": "journal-coverage",
+            "id": "dataset-journal-gap",
+            "next_action": "Retain authenticated installed-to-ReWOO and pinned BIG-bench sports row linkage. Resolve the measured source-level metric/protocol mismatch or report the local text-label metric separately; do not call it equivalent to candidate-log-probability multiple_choice_grade. Bind an independently supplied run-specific selected manifest and selected-only export to exact source rows and chosen split/side, then establish scorer-offline-closure, pristine runtime and all shared admission evidence before any separately authorized diagnostic. Report invalid/unmeasured coverage explicitly.",
+            "observed": "Installed CSV custody now established: 137846 bytes, SHA-256 5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e, identical to the declared member and Git tree/content bytes of ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1. All 1000 rows link to authenticated BIG-bench@092b196c1f8f14a54bbc62f24759d43bde46dd3b sports examples; preserved row/task/structural-eligibility mappings yield imposed 663-train/337-eval division. Runtime uses an inline local scorer, not an installed evaluator package. Upstream multiple_choice_grade uses candidate log-probability argmax/target_scores, unlike local generated-text word-label/dual-label-rejection scoring; equivalence is not established. Selected run manifest/export custody, offline/pristine runtime and measured coverage remain open with every shared gate. Fresh current-byte/source reconciliation - w-journalcov: installed SHA-256 5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e, all 1000 row/task mappings and default imposed 663-train/337-eval division reproduce preserved custody, with current expected-input/scorer file-line linkage. Local generated-text word-label/dual-label-rejection reward is explicitly reported separately from upstream candidate-log-probability multiple_choice_grade. No independent selected manifest, fresh run ID, chosen split mode/side or selected-only export is supplied; offline/pristine runtime, actual invalid/unmeasured coverage and shared admission evidence remain unmet. Per-clause satisfied/unmet findings and the next concrete dependency are in reports/w-journalcov-review.md; all run/selected/trial fields stay null and no diagnostic is authorized. Status, next_action, evidence references and history are unchanged. Exact serialized-gold custody - w-jc2: source-extracted current _gold helpers, without adapter imports or scoring, bind every installed ordered row/task/default side to the exact qa/base.py JSON gold SHA-256 in tests/fixtures/hg_wjc2/sportsunderstanding-gold-bindings.json. All prior parsed-row/split identities match, with raw independent source/CSV digests preserved. This whole-pool hash inventory exports no expected answers, does not choose a run side or tasks, and does not supply the missing operator-authorized fresh run ID/ordered selected manifest/explicit split mode and side/selected-only export. Local metric identity, null trial coverage, pristine/offline/shared obligations and all next_action clauses remain unchanged; no blocker closes. Detailed next blocking input is in reports/w-jc2-review.md.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "sportsunderstanding",
+        "demand": "reasoning",
+        "exercises": [
+          "context",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "reasoning"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "KIND = \"dataset\"",
+                "path": "data/datasets/spreadsheetbench.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## spreadsheetbench source-only review",
+                "path": "docs/dataset-source-reviews-b2.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## spreadsheetbench source-only review \u2014 2026-10-15 \u2014 b2",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "def test_materialized_oracle_submits_and_scores_one",
+                "path": "tests/quality/test_spreadsheetbench_control_submit.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Decision: option (a), official-equivalent measured zero",
+                "path": "reports/w-spread2-reconciliation.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "parse_failing_tasks: 1",
+                "path": "reports/w-spread2-evidence/audit-output.txt"
+              },
+              {
+                "kind": "repository",
+                "locator": "def test_classification_survives_verifier_persistence_and_aggregation",
+                "path": "tests/quality/test_spreadsheetbench_classification_w_spread2.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## SpreadsheetBench official-range reconciliation \u2014 2026-10-15 - w-spread2",
+                "path": "docs/adapter-integration-journal.md"
+              }
+            ],
+            "family": "journal-coverage",
+            "id": "dataset-journal-gap",
+            "next_action": "Establish authenticated row-level gradable eligibility and eligible/selected/task/trial/invalid/unmeasured coverage under the explicit official-range-zero compatibility policy; independently authenticate complete installed workbook/mirror and scorer custody/execution, formula/LibreOffice offline runtime and both shared gates (scorer-offline-closure and artifact-only-state-export) before a separately authorized diagnostic. Retain the official-equivalent measured-zero denominator for released parser-rejected ranges, distinguish it from completed comparisons, and never publish infrastructure failures as scores. Keep one-variant scores distinct from paper soft/hard aggregates and do not promote repaired synthetic/local controls to production evidence.",
+            "observed": "Source-only journal gap closed: cited review identifies single-variant named-cell comparison, the pinned verified_400 Hub mirror, hash/all-eval options and declared openpyxl/LibreOffice runtime. Repair 8c323e6 establishes submission-helper provisioning and error-output visibility, with inherited local-control evidence only. Reconciliation w-spread2 deliberately chooses option (a): official-parser range rejection retains an explicitly named official-equivalent measured zero, while workbook-load, formula-probe, unexpected comparator/parser and LibreOffice lifecycle failures are explicit unmeasured evidence without score publication/cache admission. Absent artifacts and completed value/result-sheet mismatches remain measured zero. Canonical upstream source plus synthetic caller reproduction show the range ValueError escapes compare_workbooks and evaluation catches it as int(False). A parser audit of all 400 installed verified_400 metadata rows finds one affected task, 283-32, with two A:G components; metadata matches the local archive member and declared archive hash. This preserves the selected malformed-task denominator, not semantic gradability; single-variant scores remain distinct from paper soft/hard aggregates. Authenticated row-level gradable eligibility/coverage, complete installed workbook/mirror and scorer custody/execution, formula/LibreOffice offline runtime and both shared gates remain open; partial byte/source receipts and synthetic controls do not authorize production. Fresh complete default-loader pair inventory - w-journalcov: recomputed metadata SHA-256 bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7 and all 800 chosen init/golden workbook members match the local archive; its recomputed SHA-256 10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949 equals the adapter pin. All 400 metadata row/task digests and default imposed 291-train/109-eval inventory are preserved with current task.json/golden.xlsx/scorer source linkage. This establishes local extraction custody only, not independent mirror-to-original release authentication, row-level gradability or scorer/runtime execution. Official-range-zero policy and full released denominator remain intact; selected/run split-side/export and actual trial coverage are absent. The inherited w-offscorer2 root integrity check fails on missing bird_ds/SHA256SUMS and its SpreadsheetBench raw subpacket is absent here; historical controlled-execution report claims are not newly validated production evidence. Formula/LibreOffice offline closure and both shared gates remain open. Per-clause satisfied/unmet findings and the next concrete dependency are in reports/w-journalcov-review.md; all run/selected/trial fields stay null and no diagnostic is authorized. Status, next_action, evidence references and history are unchanged. Independent mirror-to-original release mapping - w-jc2: canonical upstream commit 49b73a94775fb489063f60ca1865e3a650079a79 contains the verified_400 archive; independently acquired canonical archive bytes equal the installed mirror archive, SHA-256 10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949, Git blob b6baaf0f23ef5adc1cd22078f4eeb3102b4a7c72 matched to upstream tree/API. Upstream README explicitly links the Verified 400 mirror. Exact installed metadata and all 800 default-loader init/golden members bind to both byte-identical archives; parser-rejected 283-32 remains included and single-variant identity/range-zero policy remain intact. This satisfies only the prior report mirror-mapping step and supersedes its missing independent-release-custody observation. It does not prove authenticated row-level gradable eligibility, selected/task/trial coverage, official scorer execution, LibreOffice/formula/offline/pristine runtime or shared admission evidence. No selection/run ID, closure or production authorization. Full raw custody and remaining input: tests/fixtures/hg_wjc2/spread/ and reports/w-jc2-review.md.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "spreadsheetbench",
+        "demand": "artifact",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "spreadsheet"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "KIND = \"dataset\"",
+                "path": "data/datasets/strategyqa.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "## strategyqa source-only review",
+                "path": "docs/dataset-source-reviews-b2.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## strategyqa source-only review \u2014 2026-10-15 \u2014 b2",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## strategyqa installed custody",
+                "path": "tests/fixtures/hg_wprov/README.md"
+              }
+            ],
+            "family": "journal-coverage",
+            "id": "dataset-journal-gap",
+            "next_action": "Retain authenticated installed CSV/member/revision and ReWOO evaluator identity; next bind an independently supplied run-specific selected manifest and selected-only export to exact source rows and chosen split/side, and resolve original-benchmark metric/split comparability beyond the vendored table. Establish deterministic offline dependencies, pristine verifier/runtime and all shared admission evidence before any separately authorized diagnostic. Acquired evaluator bytes are not an execution-equivalence receipt; retain EM identity and explicit invalid/unmeasured task/trial coverage.",
+            "observed": "Installed CSV custody now established: 200453 bytes, SHA-256 c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055, identical to the declared member and Git tree/content bytes of ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1. Exact ReWOO evaluator identity is authenticated at that revision; runtime uses the inline normalized whole-answer EM and does not import an evaluator package. All 2290 rows have preserved row/task/structural-eligibility mappings and a 1520-train/770-eval imposed hash split. Original-benchmark metric/split comparability, selected run manifest/export binding, offline execution and measured coverage remain unestablished with every shared gate open; F1 and judge accuracy remain excluded. Fresh current-byte/source reconciliation - w-journalcov: installed SHA-256 c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055, all 2290 row/task mappings and default imposed 1520-train/770-eval division reproduce preserved custody, with current normalized whole-answer EM and expected-input/scorer file-line linkage. ReWOO/member/evaluator provenance revalidation passes; original-benchmark metric/split comparability remains open. No independent selected manifest, fresh run ID, chosen split mode/side or selected-only export is supplied; acquired evaluator bytes and source wiring are not execution-equivalence, pristine runtime or shared admission evidence. Per-clause satisfied/unmet findings and the next concrete dependency are in reports/w-journalcov-review.md; all run/selected/trial fields stay null and no diagnostic is authorized. Status, next_action, evidence references and history are unchanged. Exact serialized-gold custody - w-jc2: source-extracted current _gold helpers, without adapter imports or scoring, bind every installed ordered row/task/default side to the exact qa/base.py JSON gold SHA-256 in tests/fixtures/hg_wjc2/strategyqa-gold-bindings.json. All prior parsed-row/split identities match, with raw independent source/CSV digests preserved. This whole-pool hash inventory exports no expected answers, does not choose a run side or tasks, and does not supply the missing operator-authorized fresh run ID/ordered selected manifest/explicit split mode and side/selected-only export. Local metric identity, null trial coverage, pristine/offline/shared obligations and all next_action clauses remain unchanged; no blocker closes. Detailed next blocking input is in reports/w-jc2-review.md.",
+            "status": "measurement"
+          }
+        ],
+        "dataset": "strategyqa",
+        "demand": "reasoning",
+        "exercises": [
+          "context",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "reasoning"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "REFUSED =",
+                "path": "data/datasets/tau2_bench.py"
+              }
+            ],
+            "family": "contract-refusal",
+            "id": "retain-contract-refusal",
+            "next_action": "Retain the explicit refusal and current exclusion; do not provision or run this dataset or substitute its metric.",
+            "observed": "Independent user simulation and judge-dependent assertions are unavailable; required user actions cannot be supplied by the actor.",
+            "status": "external"
+          }
+        ],
+        "dataset": "tau2_bench",
+        "demand": "tool_use",
+        "exercises": [
+          "tools",
+          "control"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [],
+        "surface": "tool_dialogue"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## AppWorld / GAIA / tau-bench \u2014 local state boundaries",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## tau_bench / local-state-lifecycle",
+                "path": "reports/preserved-lifecycle-review-b8.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "_ALL_GT: list[dict] = _read_gt()",
+                "path": "data/datasets/tau_bench.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "def _verifier(record: dict) -> dict:",
+                "path": "data/datasets/tau_bench.py"
+              },
+              {
+                "kind": "repository",
+                "locator": "3. **Two recorded generated databases are absent, intentionally ignored by git.**",
+                "path": "docs/tau-bench-vendoring.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Snapshot/cleanup uncertainty alone is not a new",
+                "path": "docs/enforcement-proof-decision.md"
+              }
+            ],
+            "family": "snapshot-cleanup",
+            "id": "local-state-lifecycle",
+            "next_action": "Keep the runtime gate open. Require selected-only custody plus independent run/trial/manifest-bound clean-state restoration, database/image identity, evaluator secrecy, effective backend limits and artifact-only state export before any readiness claim. Continue best-effort snapshots and owned cleanup with uncertainty retained; incomplete observations alone are not a gate and known failures still refuse. Do not infer a runtime pass from source declarations, inventory or synthetic contracts; evidence outside this review remains unknown.",
+            "observed": "Source metadata review establishes task-specific database setup and late verifier-input declarations, not selected-only custody or observed reset/secrecy: import reads the full ground-truth pool, both clean databases are absent in this worktree, and no independent selected runtime/lifecycle receipt was located in the reviewed repository metadata. Loadability and historical image inventory do not establish readiness.",
+            "status": "runtime"
+          }
+        ],
+        "dataset": "tau_bench",
+        "demand": "tool_use",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "memory",
+          "recovery"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "tool_dialogue"
+      },
+      {
+        "blockers": [],
+        "dataset": "terminal_bench",
+        "demand": "environment",
+        "exercises": [
+          "context",
+          "tools",
+          "control",
+          "recovery",
+          "verification"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "terminal"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## TriviaQA \u2014 current scorer identity and registry review \u2014 Codex 215 \u2014 2026-10-14",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "ca43b5820b107f3970cf4b7d67f7db7a98117b79",
+                "path": "tests/fixtures/triviaqa_upstream/provenance.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "Only confirmed repository-solvable mismatch: the active registry still named upstream evaluator acquisition as open.",
+                "path": "reports/triviaqa-review-codex215-report.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Exact Hub revision linkage remains unverified.",
+                "path": "tests/fixtures/triviaqa_hub_codex225/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Compatibility for the exact Hub revision is not established.",
+                "path": "reports/triviaqa-hub-linkage-codex225-report.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## triviaqa: hub-export-scorer-linkage",
+                "path": "tests/fixtures/external_provenance_b5/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "The blocker remains external: authoritative Hub identities are corroborated, but immutable conversion execution provenance is missing.",
+                "path": "reports/w-trivia-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Request URL and recomputed response digest",
+                "path": "tests/fixtures/hg_trivia/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## TriviaQA authoritative Hub origin and missing execution provenance - 2026-10-15 - w-trivia",
+                "path": "docs/adapter-integration-journal.md"
+              }
+            ],
+            "family": "source-provenance",
+            "id": "hub-export-scorer-linkage",
+            "next_action": "Obtain immutable build/export provenance binding Hub export 0f7faf33a3908546c6fd5b73a660e0f8ff173c2f to the loader/converter actually executed, source/license hashes, runtime/writer versions and consumed input revision/hashes; the inspected authoritative public record supplies ancestry/output declarations but no execution receipt. PR ancestry, identical predecessor blobs and similarly named converter artifacts do not attest execution. Review HumanAnswers preservation/absence/redundancy, Domain/VerifiedEval/source membership, duplicates, scorer-key mapping and denominator/aggregation without rows. Preserve v2 and historical identities and all shared admission gates; no production authorization.",
+            "observed": "Original scorer fixture and triviaqa-alias-max-em-upstream-normalization-all-aliases-v2 remain unchanged. w-trivia fetched authoritative huggingface.co exact-revision/root/config/split/file, predecessor loader/input and PR #8 metadata via verified HTTPS; ten responses exactly match B5 mirror bytes. All eight export subtrees reconstruct from 150 metadata entries. Fresh immutable GitHub scorer/license bytes match the original fixture. Origin corroboration now succeeds. Predecessor d63a76f01c8226449f76b437dd512cf8b17adf5d loader blob a9a6932c23d378b9e5628ecec1f0509496806d77 and PR ancestry do not identify executed converter/runtime/writer/input identities. The inspected public record has no immutable build/export execution receipt. HumanAnswers absence/redundancy, actual source/verified membership, writer duplicates and full scorer-key/denominator/aggregation compatibility remain unestablished; no rows were read.",
+            "status": "external"
+          }
+        ],
+        "dataset": "triviaqa",
+        "demand": "evidence",
+        "exercises": [
+          "context"
+        ],
+        "historical_runs": [],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "information_seeking"
+      },
+      {
+        "blockers": [
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "## 2WikiMultihopQA source-gate review \u2014 Codex 206 \u2014 2026-10-14",
+                "path": "docs/adapter-integration-journal.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Clean-environment offline artifact closure remains open",
+                "path": "tests/fixtures/twowikimultihopqa_upstream_codex197/provenance.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "38 passed in 0.24s",
+                "path": "docs/task-206-twowiki-provenance-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "Precise remaining blocker",
+                "path": "docs/task-226-ujson-wheel-report.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "\"runtime_closed\": false",
+                "path": "tests/fixtures/ujson_pypi_codex226/provenance.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "## 2Wiki: ujson-native-offline-closure",
+                "path": "reports/b6-dataset-blocker-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Remaining source/build custody requirement",
+                "path": "reports/w-ujson-receipts.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "\"runtime_checks_passed\": true",
+                "path": "tests/fixtures/hg_wujson/provenance.json"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Non-reproduction and remaining custody gap",
+                "path": "reports/w-ujson2-reproduction.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "\"wheel_reproduced\": false",
+                "path": "tests/fixtures/hg_wujson2/assessment.json"
+              }
+            ],
+            "family": "scorer-dependency-network",
+            "id": "ujson-native-offline-closure",
+            "next_action": "Obtain authenticated original wheel-to-source/build-input custody for task-226 SHA-256 f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1, including the actual double-conversion source and bundled/external build selection. Preserve the w-ujson immutable image/wheel/notice bindings and network-denied install/import/recursive-provider/synthetic evaluator receipts; repeat runtime checks for any changed distribution. Keep external until the remaining original-build custody clause is met. Synthetic controls do not authorize H0.",
+            "observed": "Tasks 197/226 establish evaluator source and exact PyPI cp312 ujson==5.10.0 wheel/RECORD; B6 establishes immutable source/default-build observations and complete supplemental notices. W-ujson recomputed wheel SHA-256 f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1 and built a notice-carrying distribution hg-wujson-closure@sha256:1f5686c525d48af356933060335d6876455bf371229e8e66c3a4a7fca5014e45 from pinned CPython 3.12.15/Linux amd64/glibc base python@sha256:5560e9ab8709f459489e5b8aa696eda8a07ef821e14bb122be62d91234bfa98b. A fresh Docker network=none run passed offline installation, exact installed-member/notice checks, native import/eager binding, recursive ELF/symbol-provider resolution and both unchanged evaluators on fabricated input. Raw receipts include loader/glibc/package identities and the observed host-kernel vDSO bytes; the image does not pin the kernel. Authenticated linkage from the original published wheel to its actual source/build inputs remains unestablished. The official PyPI provenance query returned 404/no provenance available; source/default-build observations and runtime success do not attest the original wheel build. W-ujson2 verified all 102 blobs of immutable commit 59875e089937c8b05c2f4b474530e3a9ec706a56 and rebuilt offline in the same pinned CPython 3.12.15 image with wheel 0.43.0 and default bundled/stripped settings. The rebuilt wheel SHA-256 63a3456428e7a40f7270eafff1226f875bb3c3a2ce1770fa7058ce4dbcdcd378 does not reproduce task-226: six file-member names and three member byte strings (LICENSE.txt, METADATA, top_level.txt) match, but the extension, WHEEL and RECORD differ; ELF code sections and compiler markers differ (published GCC 10.2.1 versus local GCC 12.2.0). Both binaries define the same 53 double-conversion symbol names with no undefined double-conversion imports, and fresh native symbol lookup locates the implementation in the extension. Embedded double-conversion linkage is observable; vendored-source compilation versus external-static-library linkage, the producer environment/invocation and exact actual source revision remain unauthenticated. Fresh network-denied install/import/eager-binding/recursive-provider and fabricated evaluator controls passed separately for both wheels. This non-reproduction does not establish original wheel-to-source/build custody; status remains external.",
+            "status": "external"
+          },
+          {
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "Hub/data provenance remains blocked",
+                "path": "docs/task-206-twowiki-provenance-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "this acquisition makes no assertion about dataset redistribution rights",
+                "path": "tests/fixtures/twowikimultihopqa_upstream_codex197/README.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## 2Wiki: hub-data-provenance",
+                "path": "reports/b6-dataset-blocker-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## 2Wiki: acquired evidence and limits",
+                "path": "reports/e2-upstream-provenance-review.md"
+              },
+              {
+                "kind": "repository",
+                "locator": "## Selected-manifest linkage: file and line",
+                "path": "reports/w-2wiki-review.md"
+              }
+            ],
+            "family": "source-provenance",
+            "id": "hub-data-provenance",
+            "next_action": "Obtain metadata-only original data-release archive/file content-digest custody and member mapping to pinned Hub raw dev/alias hashes; explicit applicable original dataset/alias rights and digest-bound completeness/ID-coverage evidence; and reproducible authenticated selected ordinal-to-raw-artifact linkage. The inspected original share returns a disabled-link HTML error; do not treat its page digest or the later opaque ETag/size as a data-release digest. Reconcile the witness card count conflict before using it as completeness evidence. Canonical Hub identity and intended evaluator-version documentation are acquired; do not substitute builder-converted rows or infer original release equivalence. No independent human/custodian approval is required under docs/independent-review-deferred.md. Keep payload and production execution outside this review; retain external until these substantive custody clauses are met.",
+            "observed": "B6 acquired canonical HTTPS Hub metadata/tree and builder for f4f0d7e4ae275d9281e90c46c93e66d6cdda3674. Advertised dev/alias LFS SHA-256 and witness validation hash match the adapter pins. The pinned upstream README links the December 2020 ID-enriched release, id_aliases.json and evaluator v1.1. The Hub builder drops answer_id/evidences_id and does not load aliases; its generated dataset is not the adapter raw-JSON route. Original-release-to-Hub byte linkage, data/alias rights and completeness, and independently custodied selected-manifest binding remain unestablished. E2 acquired exact-revision upload history, empty upstream release/tag inventories and a zero-result license-issue search. Original Dropbox HEAD returns HTML metadata; a different later link advertises a 259216602-byte attachment with an opaque ETag, not an archive SHA-256. Preserved split/selection metadata is locally consistent, without independent raw-artifact binding. No original-release digest custody, dataset/alias rights, ID-coverage attestation or authenticated selected-manifest linkage was obtained. W-2wiki acquired the original share HTML body, which identifies shared_link_disabled, the publisher paper, the current upstream Apache-2.0 license response and the exact-revision witness README. All response bytes have recomputed SHA-256 custody. The license decodes to the existing task-197 blob, with no explicit scope statement for the external dataset/alias files. The witness asserts Apache-2.0 redistribution, but its prose counts 113284/12981/12995 conflict with front matter 167454/12576/12576; its linked LICENSE is absent from the pinned sibling inventory. The paper claims 192606 examples (167454 training, 12576 dev, 12576 test), not an enumerated unique-ID inventory or December alias-coverage attestation. No original data-release content digest/member mapping or authenticated selected ordinal-to-raw-row binding was obtained. These substantive gaps, not withdrawn human approval, keep the blocker external.",
+            "status": "external"
+          }
+        ],
+        "dataset": "twowikimultihopqa",
+        "demand": "evidence",
+        "exercises": [
+          "context"
+        ],
+        "historical_runs": [
+          {
+            "effect": null,
+            "evidence": [
+              {
+                "kind": "repository",
+                "locator": "- Local results: MuSiQue capped train pilot",
+                "path": "docs/adapter-integration-journal.md"
+              }
+            ],
+            "observation": "Original 50-task pilot had 48 scored tasks, two malformed-output invalids and mixed legacy Answer F1/structured Joint F1. Reported original curve 0.5081597292 is not full comparable coverage. Exact original run ID not specified.",
+            "record_id": "twowiki-original-invalid-pilot",
+            "run_id": null,
+            "status": "partial-measurement"
+          }
+        ],
+        "shared_blockers": [
+          "scorer-offline-closure",
+          "artifact-only-state-export"
+        ],
+        "surface": "information_seeking"
+      }
+    ],
+    "review": {
+      "date": "2026-10-14",
+      "notes": [
+        "Task capability is demand x surface; exercises is the separate harness-sensitivity axis, not isolated component measurement.",
+        "Status labels classify the work needed, not benchmark readiness: code-solvable, external, runtime or measurement.",
+        "Published coverage conservatively includes all literal KIND=dataset declarations, even refused or unprovisioned adapters; no adapter imports or task-payload reads.",
+        "Repository evidence anchors source observations. External paths and historical scores are unverified journal citations and were not opened or executed.",
+        "Shared blocker references are cumulative requirements, not a claim that every runtime mode needs a container snapshot.",
+        "Missing dataset-specific journal evidence is an explicit measurement/review gap, never a passing status.",
+        "Unknown historical run IDs remain null; historical date strings and coverage discrepancies are preserved as written.",
+        "Current AGENTS.md governs staged planning; historical 50x3 protocols are retained as history, not new-run authorization.",
+        "Operator decision 2026-10-15: snapshot and cleanup admission are best-effort with uncertainty retained; incomplete observations alone do not block, known failures and integrity mismatches still refuse. See docs/enforcement-proof-decision.md.",
+        "Source review 2026-10-15 - w-shared: pristine-verifier review action closed by the opt-in pinned offline runtime identity, stopped-instance inspection and two-projection recheck mechanism; see docs/w-shared-verifier-review.md. This is not live dataset evidence or production authorization. runtime-observations remains open: unknown-only aggregation is allowed; both code-solvable shared blockers remain unchanged.",
+        "Source/test review 2026-10-15 - w-obs, corrected by w-fix: runtime-observations source-review action closed; stepwise ChessBench records the trusted platform in-process controller class, and all-unknown aggregates/progress/curves retain complete evidence with scorer_isolation_class=unknown and scorer_isolation_comparable=false; unknown comparison and mixed-class aggregation/comparison still refuse. See docs/w-fix-unknown-isolation-records.md and reports/w-fix-validation.txt; docs/w-obs-runtime-review.md and reports/w-obs-validation.txt describe the original change. Unsupported policy-bearing paths remain blocked; both code-solvable shared blockers, dataset-local requirements and historical receipts remain unchanged. No live dataset evidence or production authorization.",
+        "w-chess3: Corrected trusted-stepwise-transport observed before execution: the solver_turn=0 falsy gate was in the AGENT'S OWN GENERATED SCRIPT (reports/w-chess2-evidence/actor-command-line-19.sh:25), not platform code. Closed only this transport blocker after w-chess3-stepwise-20261014T222208Z-728e7478 delivered a failed/wrong_move terminal exchange with exit_code=0, submissions=1 and successful relay cleanup. Raw controller score=0.0, scorer_isolation_class=in-process; staged score=null, invalid_trials=0, unmeasured_trials=1, reason=policy_enforcement_not_observed. Diagnostic control only, no model or protocol comparison. Correction and full closure evidence: reports/w-chess3-receipts.md and reports/w-chess3-evidence/corrected-blocker-before-run.json. interruption-closure and all historical/shared gates are unchanged."
+      ],
+      "production_authorized": false,
+      "scope": "repository-source-and-journal-only"
+    },
+    "schema_version": 1,
+    "shared_blockers": [
+      {
+        "family": "scorer-dependency-network",
+        "id": "scorer-offline-closure",
+        "next_action": "Provision dataset-specific pinned scorer closures and class-specific runtime evidence, including complete transitive image/ABI dependencies, official provenance/execution and trusted lifecycle/resource/cleanup observations; validate live controls before pilots, preserve snapshot/service connectivity and compare only matching known classes.",
+        "status": "code-solvable"
+      },
+      {
+        "evidence": [
+          {
+            "kind": "repository",
+            "locator": "Container-state",
+            "path": "reports/SHARED_ADMISSION_WIRING.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## artifact-only-state-export",
+            "path": "reports/b10-shared-boundary-review.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "test_state_export_refuses_toolchain_links_special_or_missing_files[executable] PASSED",
+            "path": "reports/b10-shared-boundaries-focused-tests.txt"
+          },
+          {
+            "kind": "repository",
+            "locator": "## artifact-only-state-export",
+            "path": "reports/sb-option-b-review.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "test_comparison_across_two_classes_is_refused_with_reason REFUSED: scorer isolation class mismatch: pristine-offline, snapshot-service",
+            "path": "reports/sb-option-b-focused-tests.txt"
+          },
+          {
+            "kind": "repository",
+            "locator": "## Shared blocker decision and validation",
+            "path": "reports/w-pristine-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## E4: source quiescence is not established",
+            "path": "reports/w-quiesce-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## E5: paired control pre/post-export equivalence is established",
+            "path": "reports/w-quiesce-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## E4: selected-file changes observed, quiescence unproven",
+            "path": "reports/w-quiesce2-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## Exact registry wording",
+            "path": "reports/w-scope-pristine-applicability.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## Exact registry observation - w-bind",
+            "path": "reports/w-bind-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## Exact registry observation - w-snapfix",
+            "path": "reports/w-snapfix-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "**E4/E5/E6 remain PARTIAL. No shared or dataset blocker closes.**",
+            "path": "reports/w-e6-lifecycle.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## Exact registry observation - w-e5",
+            "path": "reports/w-e5-equivalence.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "The baseline mounted timeout never reaches `remove_container`.",
+            "path": "reports/w-e6fix-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "\"native_stop_problems\": []",
+            "path": "reports/w-e6fix-evidence/live-after.txt"
+          },
+          {
+            "kind": "repository",
+            "locator": "def test_verifier_timeout_releases_mount_before_service_network_stop",
+            "path": "tests/quality/test_w_e6fix_cleanup.py"
+          },
+          {
+            "kind": "repository",
+            "locator": "8 passed",
+            "path": "reports/w-e6fix-evidence/tests-after.txt"
+          },
+          {
+            "kind": "repository",
+            "locator": "## Registry observation - w-wal",
+            "path": "reports/w-wal-receipts.md"
+          },
+          {
+            "kind": "repository",
+            "locator": "## SQLite WAL dependency loss and native-input refusal \u2014 2026-10-15 - w-wal",
+            "path": "docs/adapter-integration-journal.md"
+          }
+        ],
+        "family": "artifact-only-export",
+        "id": "artifact-only-state-export",
+        "next_action": "Provision authoritative per-task export and private-input contracts for pristine scorers; validate ownership, quiescence/trial binding, scoring equivalence and live lifecycle/cleanup. Review snapshot/service state and recording surfaces under their declared class without forcing an inferred artifact allowlist.",
+        "observed": "Option B integrates bounded allowlisted data-only export and exact two-projection runtime checks for opt-in pristine-offline scorers. Scores and points record the executed class and mixed classes are refused. Snapshot-service intentionally retains actor snapshots/service recordings. Synthetic export/scoring/refusal controls do not establish dataset-specific private-input safety, quiescence/ownership, state equivalence or live cleanup. Real production pristine diagnostic attempt - w-pristine provisions a locally authoritative synthetic-task export contract and sealed private expected-answer dependency with independent bundle/contract pins. Actual export contains only answer.txt (3 bytes, 2 inodes), both projections recheck before start, and removal/absence receipts exist. The exported 0600 file owned by host UID 1026 is unreadable to the default-root capability-dropped scorer; no answer comparison completed and native score 0 is invalid (audited measured=0, invalid=1, unmeasured=0, score=null). This is bounded control-only provisioning and failed live lifecycle evidence, not dataset-specific ownership/quiescence, scoring equivalence, or production authorization. Effective kernel resource observations and formal lifecycle remain unknown. Both shared blockers remain open. Live pristine source/equivalence diagnostics - w-quiesce use the unchanged w-prifix sealed addition control and unchanged production gates/scorer. The fresh working control is genuinely measured score=0.0 (measured=1, invalid=0, unmeasured=0), superseding only the historical unreadable-control limitation above. E4 remains PARTIAL: a real same-UID source change after successful projection/runtime admission persists through attached scoring, while the scorer reads the unchanged exported 41 and completes measured 0.0; restoring source bytes makes endpoint hashes equal despite the interval write. At the w-quiesce baseline pristine.py delegated source quiescence to the caller and received task_id but no native outer-run/trial inputs; observer envelopes bind these distinct diagnostic runs/trial=1, and wrong task/export-run IDs are refused. Trusted source custody through use and native execution-bound run/trial inputs remain unmet. E5 now has real paired pre/post-export equivalence for this authored control only: the same selected-only pre-state root is scored directly under a genuine export receipt and then copied by production export/scoring, with equal submitted/private/scorer/image identities and completed predicate fail/exit1/score0.0 despite fresh path/inode and permission changes. A same-size unsealed exported 41-to-42 edit is refused before start; fresh legitimate 42 scores 1.0. This is bounded selected-only control equivalence, not arbitrary actor-state or applicable dataset/private-input/official-metric equivalence. Final evidence retains four production measurements, one direct reference measurement, two deliberate unmeasured refusals, six created/removed containers, and the earlier environment-order refusal separately. E1/E2/E3/E4/E5/E6 remain PARTIAL; both shared blockers and all dataset blockers stay open with no production authorization. Selected-source interval observations - w-quiesce2 now capture bounded allowlisted regular-file SHA-256, size, device/inode, mtime/ctime, link count, mode and UID/GID before export and after attempted scorer cleanup, and compare export bytes to the first probe. The exact same-UID 41-to-42-through-scoring/restore-to-41 mutation is reproduced on the baseline (native measured 0.0) and now detected by changed mtime/ctime despite equal endpoint digests: native source_observation.status=difference_observed, quiescence_established=false, score=null, outcome=unmeasured. An unchanged 42 control remains measured 1.0 with no_change_observed; an environment-order admission refusal is separately retained. Missing/unsafe/oversized final source probes also prevent measurements. This establishes only no-change-observed or detected differences in selected-file endpoint probes, not general interval quiescence: a focused same-UID directory-substitution/restore counterexample evades the file probes; unselected state, directory history, sequential-probe races, hidden/restored metadata and compromised host/observer remain outside scope. execution_binding records checked task identity and generated runtime/export UUID but explicitly has outer_run_id=null, trial_id=null and outer_run_trial_binding=not_provided. E4 remains PARTIAL pending trusted source/writer custody through use and execution-enforced outer-run/trial inputs. E1/E2/E3/E6 remain PARTIAL; E5 still needs dataset-specific transformation/private-input/metric equivalence. No shared or dataset blocker closes and production is not authorized. Pristine applicability scope determination 2026-10-15 - w-scope: source review of all 28 declared datasets finds zero pristine-offline declarations or selections; the only explicit dataset isolation declarations are appworld and terminal_bench, both snapshot-service. The 23 surveyed shared-blocker datasets retain 19 actor-workdir and 4 snapshot-service routes; the additional AgentDojo native route and four load-refused datasets add no pristine instance. No current adapter requirement mandates pristine migration. E1/E2/E3 are SATISFIED FOR THE CURRENT DATASET SET (zero applicable pristine datasets), superseding the earlier PARTIAL labels only at that conditional dataset scope. The opt-in export/private-input/ownership mechanism is implemented and verified on authored controls under its documented trusted-caller pin, ownership and custody preconditions; no real-dataset pristine export, private-input safety or backend ownership validation is established. The class is unused by current datasets, not inherently inapplicable to future migrations. Every future pristine opt-in must provision authoritative per-task export and selected private-input/gold contracts, authority, exclusion and scorer binding, and validate actual backend/source/projection ownership; it must also discharge applicable quiescence/trial binding, scoring equivalence and live lifecycle/cleanup requirements before any dataset readiness claim. This finding grants no future opt-in a contract or automatic satisfaction. E4/E5/E6 remain PARTIAL, E7/E8 remain SATISFIED, and artifact-only-state-export remains OPEN/code-solvable with its full next_action unchanged. scorer-offline-closure and all dataset blockers remain unchanged; no blocker closes and production_authorized remains false. Native pristine trial binding 2026-10-15 - w-bind: the opt-in native pristine path now requires selected task_id, outer run_id and trial_id, propagates the runner's round/harness-revision/one-based-trial label, emits v2 bounded exports with execution_binding, compares the independent expected identity before scorer start, records it in native verdict/export/runtime evidence and rechecks returned and cached verdicts before aggregation. Authored real-Docker controls refuse foreign task/run/trial exports before start and foreign verdicts before aggregation; focused controls also refuse missing identities and v1 downgrade. This establishes task/run/trial consistency under trusted caller labels, pins, platform receipt custody and runtime observations, not external-JSON authentication, source-lineage proof or global run-label uniqueness. Direct callers still supply truthful unique run/trial/source mappings and trusted custody. E4 remains PARTIAL because trusted source/writer custody through use and actual quiescence remain unestablished; E5/E6 remain PARTIAL. E1/E2/E3 retain only the current empty pristine-instance scope from w-scope. artifact-only-state-export remains OPEN/code-solvable with its full next_action unchanged; no dataset blocker closes and production_authorized remains false. Snapshot boundary repair 2026-10-15 - w-snapfix prevents actor startup mutation at checker entry and enforces expected commit identity only on the container-state snapshot-service route. Dependency/service networking, declared bridge attachment, recording/reward mounts and the pristine two-projection checks are preserved. This is not artifact-only export, whole-filesystem immutability, checker-time runtime integrity or dataset/private-input/state-transformation equivalence. Inherited-volume coverage and historical payload replay remain open; E5/E6 remain PARTIAL. Both shared blockers and every dataset blocker stay open with statuses/next_actions/history/gates and production_authorized=false unchanged. w-e6 live lifecycle observations: post-change AppWorld service CPU/memory/PID caps are observed in actual Docker and cgroup samples; normal mounted verification removes its container, but two fresh authored timeout controls leave the verifier and its read-only recording bind alive, preventing service-network removal after the service itself is removed. Collector rescue and native failure are recorded separately. Authored GAIA/Tau cached-image snapshot controls remove verifier containers on normal return and timeout; they do not establish full dataset/network/scorer coverage. Native platform sandbox controls observe child waits/timeout namespace teardown with inherited unlimited CPU/address-space and shared cgroup limits, not a private production resource envelope. Exact uncovered dataset/runtime/error branches and the absent startup-only AppWorld replay log are documented in reports/w-e6-lifecycle.md. E4/E5/E6 remain PARTIAL; no shared or dataset blocker closes and no production authorization is added. Bounded pre/post-export scoring equivalence 2026-10-15 - w-e5: actual selected-file exports preserve 18/18 authored passing/failing pairs across nine local scorer routes, covering 9/24 implemented routes (9/28 published datasets) and some branches of 5/12 enumerated scorer read/transform shapes. Three of four enumerated pristine transformation groups are exercised only at the filesystem-export/local-scorer boundary; production namespace/UID/read-only execution is not exercised. Eighteen same-length selected-byte mutations are refused before scoring; bound private-gold and outside-workbook-pointer changes are unmeasured with no reward. Incomplete semantic contracts remain a real limitation: omitting structured predictions or the named workbook changes four of eight control scores; copying an open SQLite main file without its committed WAL changes actual BIRD EX from 0 to 1 despite identical selected main bytes. A fresh export after orderly writer close/checkpoint preserves EX=0 for the authored case only. These are conditional state-projection controls, not general equivalence, official metric equivalence or production pristine dataset certification. E4/E5/E6 remain PARTIAL; artifact-only-state-export remains OPEN/code-solvable, all dataset blockers and full next_actions/history/gates remain unchanged, and production_authorized remains false. Mounted timeout cleanup repair 2026-10-15 - w-e6fix: a fresh bounded offline authored recording-service control reproduces the surviving verifier bind/active endpoint before repair; unique per-call naming plus exact container removal in container.run finally removes the mounted verifier before native service/network cleanup afterward, preserving the unmeasured timeout and all pin/mount/resource/refusal settings. The mounted actor uses the same repaired helper; no model-bearing actor or complete driver run is newly measured. Identical focused tests change from 7 failed/1 passed to 8 passed. Broader offline checks record 105 passed, 3 pre-existing failed and 1 live test deselected; baseline-module replay reproduces all three stale synthetic snapshot identity failures without weakening admission. Snapshot post-create timeout/missing-command/staging and pristine create/start timeout controls pass; snapshot/service allocation acknowledgement, interpreter-discovery and uncertain image/network cleanup remain separate source-level risks. This supersedes only the known mounted-run timeout omission observed by w-e6; it does not close snapshot lifecycle coverage or certify production cleanup broadly. S1/S3/S4/S5/S6 and E4/E5/E6 remain PARTIAL; no shared or dataset blocker closes, and statuses/full next_actions, dataset/history records, gates and production_authorized=false are unchanged. SQLite WAL dependency follow-up - w-wal: offline authored controls reproduce score-changing main-only export/staging and native bound private-copy loss despite matching main-file digests. Native bound input copying now refuses WAL-format SQLite bytes before scoring, including already copied and closed/checkpointed WAL-mode files; no reward is emitted and the refusal is unmeasured. Generic selected-file export, other sidecars and mounted-state completeness remain explicit limitations. AppWorld uses SQLite but current grading replays recorded calls in a fresh world; no AppWorld WAL incidence or score-change claim is established. E4/E5/E6 remain PARTIAL; no shared or dataset blocker, next_action, historical record or gate closes or weakens; production_authorized remains false.",
+        "status": "code-solvable"
+      }
+    ]
+  },
+  "registry_source_sha256": "9c1e7ec944c32f2835ea01b50d38f44831942d4759a1aaf9848030814621ae76"
+}

@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/usr/bin/python3.10",
+    "-c",
+    "import json,platform,sys,sysconfig\nfrom pip._vendor.packaging.markers import default_environment\nfrom pip._vendor.packaging.tags import sys_tags\nprint(json.dumps(dict(executable=sys.executable,version=sys.version,SOABI=sysconfig.get_config_var('SOABI'),marker_environment=default_environment(),tags=[str(x) for x in sys_tags()]),sort_keys=True))\n"
+  ],
+  "elapsed_seconds": 0.1332162581384182,
+  "exit_code": 0,
+  "timeout_seconds": 300
+}

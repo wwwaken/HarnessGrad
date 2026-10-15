@@ -1,0 +1,359 @@
+{
+  "dynamic_call_counts": {
+    "eval": 2,
+    "exec": 1000
+  },
+  "extra_external_distributions_outside_declared_roots": [],
+  "literal_import_roots": {
+    "gensim": {
+      "distribution": "gensim",
+      "first_sites": [
+        {
+          "jsonl_line": 937,
+          "literal_line": 5,
+          "module": "gensim.models",
+          "outer_context_line": 38
+        },
+        {
+          "jsonl_line": 937,
+          "literal_line": 6,
+          "module": "gensim.test.utils",
+          "outer_context_line": 38
+        }
+      ],
+      "import_site_count": 2
+    },
+    "io": {
+      "distribution": "stdlib",
+      "first_sites": [
+        {
+          "jsonl_line": 118,
+          "literal_line": 4,
+          "module": "io",
+          "outer_context_line": 43
+        },
+        {
+          "jsonl_line": 119,
+          "literal_line": 4,
+          "module": "io",
+          "outer_context_line": 42
+        },
+        {
+          "jsonl_line": 120,
+          "literal_line": 4,
+          "module": "io",
+          "outer_context_line": 42
+        }
+      ],
+      "import_site_count": 8
+    },
+    "math": {
+      "distribution": "stdlib",
+      "first_sites": [
+        {
+          "jsonl_line": 661,
+          "literal_line": 3,
+          "module": "math",
+          "outer_context_line": 38
+        },
+        {
+          "jsonl_line": 717,
+          "literal_line": 3,
+          "module": "math",
+          "outer_context_line": 47
+        },
+        {
+          "jsonl_line": 773,
+          "literal_line": 3,
+          "module": "math",
+          "outer_context_line": 40
+        }
+      ],
+      "import_site_count": 5
+    },
+    "matplotlib": {
+      "distribution": "matplotlib",
+      "first_sites": [
+        {
+          "jsonl_line": 512,
+          "literal_line": 4,
+          "module": "matplotlib.pyplot",
+          "outer_context_line": 36
+        },
+        {
+          "jsonl_line": 513,
+          "literal_line": 4,
+          "module": "matplotlib.pyplot",
+          "outer_context_line": 45
+        },
+        {
+          "jsonl_line": 514,
+          "literal_line": 4,
+          "module": "matplotlib.pyplot",
+          "outer_context_line": 44
+        }
+      ],
+      "import_site_count": 163
+    },
+    "mpl_toolkits": {
+      "distribution": "matplotlib",
+      "first_sites": [
+        {
+          "jsonl_line": 664,
+          "literal_line": 3,
+          "module": "mpl_toolkits.mplot3d",
+          "outer_context_line": 40
+        }
+      ],
+      "import_site_count": 1
+    },
+    "numpy": {
+      "distribution": "numpy",
+      "first_sites": [
+        {
+          "jsonl_line": 1,
+          "literal_line": 3,
+          "module": "numpy",
+          "outer_context_line": 38
+        },
+        {
+          "jsonl_line": 2,
+          "literal_line": 3,
+          "module": "numpy",
+          "outer_context_line": 39
+        },
+        {
+          "jsonl_line": 3,
+          "literal_line": 3,
+          "module": "numpy",
+          "outer_context_line": 103
+        }
+      ],
+      "import_site_count": 874
+    },
+    "os": {
+      "distribution": "stdlib",
+      "first_sites": [
+        {
+          "jsonl_line": 707,
+          "literal_line": 3,
+          "module": "os",
+          "outer_context_line": 28
+        },
+        {
+          "jsonl_line": 931,
+          "literal_line": 1,
+          "module": "os",
+          "outer_context_line": 32
+        }
+      ],
+      "import_site_count": 2
+    },
+    "pandas": {
+      "distribution": "pandas",
+      "first_sites": [
+        {
+          "jsonl_line": 1,
+          "literal_line": 2,
+          "module": "pandas",
+          "outer_context_line": 38
+        },
+        {
+          "jsonl_line": 2,
+          "literal_line": 2,
+          "module": "pandas",
+          "outer_context_line": 39
+        },
+        {
+          "jsonl_line": 3,
+          "literal_line": 2,
+          "module": "pandas",
+          "outer_context_line": 103
+        }
+      ],
+      "import_site_count": 582
+    },
+    "random": {
+      "distribution": "stdlib",
+      "first_sites": [
+        {
+          "jsonl_line": 729,
+          "literal_line": 3,
+          "module": "random",
+          "outer_context_line": 41
+        },
+        {
+          "jsonl_line": 731,
+          "literal_line": 3,
+          "module": "random",
+          "outer_context_line": 49
+        }
+      ],
+      "import_site_count": 2
+    },
+    "scipy": {
+      "distribution": "scipy",
+      "first_sites": [
+        {
+          "jsonl_line": 351,
+          "literal_line": 3,
+          "module": "scipy.stats",
+          "outer_context_line": 30
+        },
+        {
+          "jsonl_line": 352,
+          "literal_line": 3,
+          "module": "scipy.stats",
+          "outer_context_line": 36
+        },
+        {
+          "jsonl_line": 353,
+          "literal_line": 3,
+          "module": "scipy.stats",
+          "outer_context_line": 35
+        }
+      ],
+      "import_site_count": 115
+    },
+    "seaborn": {
+      "distribution": "seaborn",
+      "first_sites": [
+        {
+          "jsonl_line": 512,
+          "literal_line": 5,
+          "module": "seaborn",
+          "outer_context_line": 36
+        },
+        {
+          "jsonl_line": 513,
+          "literal_line": 5,
+          "module": "seaborn",
+          "outer_context_line": 45
+        },
+        {
+          "jsonl_line": 514,
+          "literal_line": 5,
+          "module": "seaborn",
+          "outer_context_line": 44
+        }
+      ],
+      "import_site_count": 54
+    },
+    "shutil": {
+      "distribution": "stdlib",
+      "first_sites": [
+        {
+          "jsonl_line": 707,
+          "literal_line": 2,
+          "module": "shutil",
+          "outer_context_line": 28
+        }
+      ],
+      "import_site_count": 1
+    },
+    "sklearn": {
+      "distribution": "scikit-learn",
+      "first_sites": [
+        {
+          "jsonl_line": 487,
+          "literal_line": 3,
+          "module": "sklearn.preprocessing",
+          "outer_context_line": 34
+        },
+        {
+          "jsonl_line": 488,
+          "literal_line": 3,
+          "module": "sklearn.preprocessing",
+          "outer_context_line": 31
+        },
+        {
+          "jsonl_line": 489,
+          "literal_line": 3,
+          "module": "sklearn.preprocessing",
+          "outer_context_line": 41
+        }
+      ],
+      "import_site_count": 146
+    },
+    "statsmodels": {
+      "distribution": "statsmodels",
+      "first_sites": [
+        {
+          "jsonl_line": 912,
+          "literal_line": 5,
+          "module": "statsmodels.api",
+          "outer_context_line": 43
+        }
+      ],
+      "import_site_count": 1
+    },
+    "tensorflow": {
+      "distribution": "tensorflow-cpu",
+      "first_sites": [
+        {
+          "jsonl_line": 380,
+          "literal_line": 2,
+          "module": "tensorflow",
+          "outer_context_line": 32
+        },
+        {
+          "jsonl_line": 381,
+          "literal_line": 2,
+          "module": "tensorflow",
+          "outer_context_line": 47
+        },
+        {
+          "jsonl_line": 667,
+          "literal_line": 2,
+          "module": "tensorflow",
+          "outer_context_line": 46
+        }
+      ],
+      "import_site_count": 39
+    },
+    "torch": {
+      "distribution": "torch",
+      "first_sites": [
+        {
+          "jsonl_line": 378,
+          "literal_line": 2,
+          "module": "torch",
+          "outer_context_line": 32
+        },
+        {
+          "jsonl_line": 379,
+          "literal_line": 2,
+          "module": "torch",
+          "outer_context_line": 32
+        },
+        {
+          "jsonl_line": 933,
+          "literal_line": 4,
+          "module": "torch",
+          "outer_context_line": 53
+        }
+      ],
+      "import_site_count": 60
+    },
+    "xgboost": {
+      "distribution": "xgboost",
+      "first_sites": [
+        {
+          "jsonl_line": 838,
+          "literal_line": 4,
+          "module": "xgboost.sklearn",
+          "outer_context_line": 49
+        },
+        {
+          "jsonl_line": 839,
+          "literal_line": 4,
+          "module": "xgboost.sklearn",
+          "outer_context_line": 49
+        }
+      ],
+      "import_site_count": 2
+    }
+  },
+  "scope": "Metadata-only AST of all code_context and parseable import-containing string constants. No gold, prompt, candidate execution or task contents exported. All literal external imports are already covered, including mpl_toolkits -> matplotlib and statsmodels. Arbitrary candidate-dependent exec/eval imports are outside finite declared-root reconstruction.",
+  "source_sha256": "26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363"
+}
