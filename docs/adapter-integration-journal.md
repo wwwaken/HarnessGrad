@@ -4115,3 +4115,30 @@ clean; all four named deliverables present.
 - Reachability evidence: 14 API calls, 15 shell commands, 16 model calls; voluntary harness submission at step 15 with spare 32-step/2048-output-token budget, no retries/context trims. Authentication/edit/readback work at this budget, but semantic correctness and official completion do not follow. This one failed task/trial establishes neither success nor impossibility for a 9B model. The task-facing final harness answer did not become a supervisor API call; no correction/replay or follow-up run was performed.
 - Evidence: `reports/w-appworld2-receipts.md`, raw packet `reports/w-appworld2-evidence/`, `reports/w-appworld2-validation.txt`. All 25 run files have byte-identical review copies; original run `/tmp/hg-appworld2-run-artifacts/w-appworld2-20261015T050036Z-a6d55a63` and external work root `/tmp/w-appworld2-20261015T050036Z-a6d55a63-work` remain intact. The repository's `runs/` and frozen evidence were not touched. Passive Docker role/network/path cleanup observations do not replace unknown formal lifecycle enforcement. Operator-owned concurrent activity was observed and left untouched.
 - Registry: append only this bounded AppWorld observation and report/journal evidence; retain status, next_action, historical runs, taxonomy, all shared references/blockers, gates and `production_authorized=false`. Missing: an authentic successful measured actor-task receipt; any production/pilot use also needs the unresolved shared admission/lifecycle requirements. No production code changes.
+## Parent review and merge — w-journalcov, w-resolver3, w-appworld2 — 2026-10-15
+
+- Merged `e9076ecc`, `06a463c0`, `e99ec83b`. Result `f0495efe`. Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`; sequencer clean; all three
+  deliverables present. Registry merged cleanly for all three; only the journal conflicted.
+- **w-journalcov advanced the objective's priority-1 family without inventing anything.** It added
+  FEVER export-byte linkage, SpreadsheetBench's **800 workbook-member bindings**, and current
+  scorer/input citations with recomputed digests - and it recorded, per dataset, satisfied clauses,
+  unmet clauses and one next action each. **No selection was invented**, and all six dataset
+  blockers plus both shared blockers remain open. That restraint is the point: these blockers name
+  "an independently supplied run-specific selected manifest" that does not exist yet.
+- **w-resolver3 raised offline resolution to 11/11 bounded profiles and 10/23 complete nonempty
+  dataset profiles** (from 6/6 and 5/23), with missing-wheel controls still refusing. Third round
+  running in which the resolver surface moved by measurement rather than assertion.
+- **w-appworld2 produced a genuinely informative negative.** The fresh unchanged-budget diagnostic
+  returned raw **TGC=0.0, `success=false`** on incorrect note contents and a missing supervisor
+  completion; the staged score stays `null` because enforcement was unobserved, so the blocker
+  correctly **stays OPEN**. The useful part: **the actor stopped after 16 of 32 steps, so budget
+  exhaustion does not explain the loss** - and the worker explicitly declined to convert one loss
+  into "a 9B model cannot succeed". Both halves matter: without the step count, "budget" would have
+  been the tempting wrong explanation.
+- `w-hostpin2` (reported last round) failed on an upstream provider 403 and its five uncommitted
+  production files were **not** merged; its branch is preserved at `/tmp/hg-hostpin2` and the work
+  can be re-dispatched.
+- Resource state: w-appworld2 used the local model endpoint for an authorised diagnostic; the other
+  two were local source/payload work. No fabrication. Historical runs, frozen receipts and archives
+  were untouched.
