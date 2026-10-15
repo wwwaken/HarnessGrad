@@ -1,0 +1,448 @@
+w-bfclroute validation in /tmp/hg-bfclroute, branch wg-bfclroute.
+Raw preparation/collection command history: tests/fixtures/hg_wbfclroute/preparation-commands.txt.
+Exact child argv/cwd/environment/returncodes and raw output filenames: tests/fixtures/hg_wbfclroute/commands.json and ordered-import.command.json.
+Official dependency failures are preserved unmeasured; collector exits do not certify scorer execution.
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_wbfclroute/validate.py
+{
+  "valid": true,
+  "source_members_rechecked": 103,
+  "manifest_members": 189,
+  "guarded_processes": 27,
+  "removed_execution_scratch_roots": 25,
+  "primary_controls": 43,
+  "numeric_pairs": 0,
+  "complete_dataset_routes_demonstrated": 0,
+  "all_dataset_and_other_blocker_records_unchanged": true
+}
+exit=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py --basetemp=/tmp/harnessgrad-pytest-wbfclroute
+...........................................................xxx           [100%]
+59 passed, 3 xfailed in 5.41s
+exit=0
+
+$ git diff --cached --check -- . :(exclude)tests/fixtures/hg_wbfclroute/source/** :(exclude)tests/fixtures/hg_wbfclroute/source-lines.txt
+exit=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_wbfclroute/validate.py
+{
+  "valid": true,
+  "source_members_rechecked": 103,
+  "manifest_members": 190,
+  "guarded_processes": 27,
+  "removed_execution_scratch_roots": 25,
+  "primary_controls": 43,
+  "numeric_pairs": 0,
+  "complete_dataset_routes_demonstrated": 0,
+  "all_dataset_and_other_blocker_records_unchanged": true
+}
+exit=0
+
+$ (cd tests/fixtures/hg_wbfclroute && sha256sum -c SHA256SUMS)
+baseline.json: 成功
+bfcl-local.stderr.txt: 成功
+bfcl-local.stdout.txt: 成功
+bfcl-official.stderr.txt: 成功
+bfcl-official.stdout.txt: 成功
+chess-board.stderr.txt: 成功
+chess-board.stdout.txt: 成功
+chess-local.stderr.txt: 成功
+chess-local.stdout.txt: 成功
+chess-row.stderr.txt: 成功
+chess-row.stdout.txt: 成功
+collect.py: 成功
+collect.stderr.txt: 成功
+collect.stdout.txt: 成功
+commands.json: 成功
+compare.py: 成功
+compare.stderr.txt: 成功
+compare.stdout.txt: 成功
+comparison.json: 成功
+document.py: 成功
+document.stderr.txt: 成功
+document.stdout.txt: 成功
+environment.stderr.txt: 成功
+environment.stdout.txt: 成功
+execute.py: 成功
+identity.json: 成功
+import-00.stderr.txt: 成功
+import-00.stdout.txt: 成功
+import-01.stderr.txt: 成功
+import-01.stdout.txt: 成功
+import-02.stderr.txt: 成功
+import-02.stdout.txt: 成功
+import-03.stderr.txt: 成功
+import-03.stdout.txt: 成功
+import-04.stderr.txt: 成功
+import-04.stdout.txt: 成功
+import-05.stderr.txt: 成功
+import-05.stdout.txt: 成功
+import-06.stderr.txt: 成功
+import-06.stdout.txt: 成功
+import-07.stderr.txt: 成功
+import-07.stdout.txt: 成功
+import-08.stderr.txt: 成功
+import-08.stdout.txt: 成功
+import-09.stderr.txt: 成功
+import-09.stdout.txt: 成功
+import-10.stderr.txt: 成功
+import-10.stdout.txt: 成功
+import-11.stderr.txt: 成功
+import-11.stdout.txt: 成功
+import-12.stderr.txt: 成功
+import-12.stdout.txt: 成功
+import-13.stderr.txt: 成功
+import-13.stdout.txt: 成功
+import-14.stderr.txt: 成功
+import-14.stdout.txt: 成功
+import-15.stderr.txt: 成功
+import-15.stdout.txt: 成功
+import-16.stderr.txt: 成功
+import-16.stdout.txt: 成功
+import-17.stderr.txt: 成功
+import-17.stdout.txt: 成功
+inputs.json: 成功
+offline-wheel-absl.stderr.txt: 成功
+offline-wheel-absl.stdout.txt: 成功
+offline-wheel-tree-sitter.stderr.txt: 成功
+offline-wheel-tree-sitter.stdout.txt: 成功
+offline_exec.py: 成功
+ordered-import.command.json: 成功
+ordered-import.stderr.txt: 成功
+ordered-import.stdout.txt: 成功
+ordered_probe.py: 成功
+pip-cache-list.stderr.txt: 成功
+pip-cache-list.stdout.txt: 成功
+pip_probe.py: 成功
+preparation-commands.txt: 成功
+prepare.py: 成功
+prepare.stderr.txt: 成功
+prepare.stdout.txt: 成功
+source/bfcl/LICENSE: 成功
+source/bfcl/bfcl_eval/__init__.py: 成功
+source/bfcl/bfcl_eval/constants/__init__.py: 成功
+source/bfcl/bfcl_eval/constants/category_mapping.py: 成功
+source/bfcl/bfcl_eval/constants/column_headers.py: 成功
+source/bfcl/bfcl_eval/constants/default_prompts.py: 成功
+source/bfcl/bfcl_eval/constants/eval_config.py: 成功
+source/bfcl/bfcl_eval/constants/model_config.py: 成功
+source/bfcl/bfcl_eval/constants/type_mappings.py: 成功
+source/bfcl/bfcl_eval/eval_checker/__init__.py: 成功
+source/bfcl/bfcl_eval/eval_checker/ast_eval/__init__.py: 成功
+source/bfcl/bfcl_eval/eval_checker/ast_eval/ast_checker.py: 成功
+source/bfcl/bfcl_eval/eval_checker/ast_eval/type_convertor/__init__.py: 成功
+source/bfcl/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py: 成功
+source/bfcl/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py: 成功
+source/bfcl/bfcl_eval/eval_checker/eval_runner.py: 成功
+source/bfcl/bfcl_eval/eval_checker/eval_runner_helper.py: 成功
+source/bfcl/bfcl_eval/eval_checker/multi_turn_eval/__init__.py: 成功
+source/bfcl/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_checker.py: 成功
+source/bfcl/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py: 成功
+source/bfcl/bfcl_eval/model_handler/__init__.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/__init__.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/claude.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/cohere.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/databricks.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/deepseek.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/dm_cito.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/fireworks.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/functionary.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/gemini.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/gogoagent.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/gorilla.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/grok.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/ling.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/mining.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/mistral.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/nemotron.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/nexus.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/nova.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/novita.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/nvidia.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/openai_completion.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/openai_response.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/qwen.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/writer.py: 成功
+source/bfcl/bfcl_eval/model_handler/api_inference/yi.py: 成功
+source/bfcl/bfcl_eval/model_handler/base_handler.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/__init__.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/arch.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/base_oss_handler.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/bielik.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/bitagent.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/deepseek.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/deepseek_coder.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/falcon_fc.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/gemma.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/glaive.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/glm.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/granite.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/granite_3.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/hammer.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/hermes.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/llama.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/llama_3_1.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/minicpm.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/minicpm_fc.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/mistral_fc.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/phi.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/phi_fc.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/quick_testing_oss.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/qwen.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/qwen_fc.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/salesforce_llama.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/salesforce_qwen.py: 成功
+source/bfcl/bfcl_eval/model_handler/local_inference/think_agent.py: 成功
+source/bfcl/bfcl_eval/model_handler/model_style.py: 成功
+source/bfcl/bfcl_eval/model_handler/parser/__init__.py: 成功
+source/bfcl/bfcl_eval/model_handler/parser/java_parser.py: 成功
+source/bfcl/bfcl_eval/model_handler/parser/js_parser.py: 成功
+source/bfcl/bfcl_eval/model_handler/utils.py: 成功
+source/bfcl/bfcl_eval/utils.py: 成功
+source/bfcl/pyproject.toml: 成功
+source/chess/searchless_chess/LICENSE: 成功
+source/chess/searchless_chess/requirements.txt: 成功
+source/chess/searchless_chess/src/bagz.py: 成功
+source/chess/searchless_chess/src/config.py: 成功
+source/chess/searchless_chess/src/constants.py: 成功
+source/chess/searchless_chess/src/data_loader.py: 成功
+source/chess/searchless_chess/src/engines/constants.py: 成功
+source/chess/searchless_chess/src/engines/engine.py: 成功
+source/chess/searchless_chess/src/engines/lc0_engine.py: 成功
+source/chess/searchless_chess/src/engines/neural_engines.py: 成功
+source/chess/searchless_chess/src/engines/stockfish_engine.py: 成功
+source/chess/searchless_chess/src/metrics_evaluator.py: 成功
+source/chess/searchless_chess/src/puzzles.py: 成功
+source/chess/searchless_chess/src/tokenizer.py: 成功
+source/chess/searchless_chess/src/tournament.py: 成功
+source/chess/searchless_chess/src/train.py: 成功
+source/chess/searchless_chess/src/training.py: 成功
+source/chess/searchless_chess/src/training_utils.py: 成功
+source/chess/searchless_chess/src/transformer.py: 成功
+source/chess/searchless_chess/src/utils.py: 成功
+source-entrypoints.json: 成功
+source-imports.json: 成功
+source-lines.txt: 成功
+staged-whitespace-raw.json: 成功
+supplement.py: 成功
+supplement.stderr.txt: 成功
+supplement.stdout.txt: 成功
+validate.py: 成功
+exit=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ git diff --cached --check -- . :(exclude)tests/fixtures/hg_wbfclroute/source/** :(exclude)tests/fixtures/hg_wbfclroute/source-lines.txt
+exit=0
+
+Root final review: independent reader found two stale source citations; generator and report now cite BFCL pyproject.toml:26-28 and Chess app.run(main):119. Exact current strings asserted in both files. Reviewed owned scripts, complete-import raw outcomes and additive registry/journal diff.
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ git diff --cached --name-only
+docs/adapter-integration-journal.md
+docs/dataset-blockers.json
+reports/w-bfclroute-coverage.md
+reports/w-bfclroute-validation.txt
+tests/fixtures/hg_wbfclroute/SHA256SUMS
+tests/fixtures/hg_wbfclroute/baseline.json
+tests/fixtures/hg_wbfclroute/bfcl-local.stderr.txt
+tests/fixtures/hg_wbfclroute/bfcl-local.stdout.txt
+tests/fixtures/hg_wbfclroute/bfcl-official.stderr.txt
+tests/fixtures/hg_wbfclroute/bfcl-official.stdout.txt
+tests/fixtures/hg_wbfclroute/chess-board.stderr.txt
+tests/fixtures/hg_wbfclroute/chess-board.stdout.txt
+tests/fixtures/hg_wbfclroute/chess-local.stderr.txt
+tests/fixtures/hg_wbfclroute/chess-local.stdout.txt
+tests/fixtures/hg_wbfclroute/chess-row.stderr.txt
+tests/fixtures/hg_wbfclroute/chess-row.stdout.txt
+tests/fixtures/hg_wbfclroute/collect.py
+tests/fixtures/hg_wbfclroute/collect.stderr.txt
+tests/fixtures/hg_wbfclroute/collect.stdout.txt
+tests/fixtures/hg_wbfclroute/commands.json
+tests/fixtures/hg_wbfclroute/compare.py
+tests/fixtures/hg_wbfclroute/compare.stderr.txt
+tests/fixtures/hg_wbfclroute/compare.stdout.txt
+tests/fixtures/hg_wbfclroute/comparison.json
+tests/fixtures/hg_wbfclroute/document.py
+tests/fixtures/hg_wbfclroute/document.stderr.txt
+tests/fixtures/hg_wbfclroute/document.stdout.txt
+tests/fixtures/hg_wbfclroute/environment.stderr.txt
+tests/fixtures/hg_wbfclroute/environment.stdout.txt
+tests/fixtures/hg_wbfclroute/execute.py
+tests/fixtures/hg_wbfclroute/identity.json
+tests/fixtures/hg_wbfclroute/import-00.stderr.txt
+tests/fixtures/hg_wbfclroute/import-00.stdout.txt
+tests/fixtures/hg_wbfclroute/import-01.stderr.txt
+tests/fixtures/hg_wbfclroute/import-01.stdout.txt
+tests/fixtures/hg_wbfclroute/import-02.stderr.txt
+tests/fixtures/hg_wbfclroute/import-02.stdout.txt
+tests/fixtures/hg_wbfclroute/import-03.stderr.txt
+tests/fixtures/hg_wbfclroute/import-03.stdout.txt
+tests/fixtures/hg_wbfclroute/import-04.stderr.txt
+tests/fixtures/hg_wbfclroute/import-04.stdout.txt
+tests/fixtures/hg_wbfclroute/import-05.stderr.txt
+tests/fixtures/hg_wbfclroute/import-05.stdout.txt
+tests/fixtures/hg_wbfclroute/import-06.stderr.txt
+tests/fixtures/hg_wbfclroute/import-06.stdout.txt
+tests/fixtures/hg_wbfclroute/import-07.stderr.txt
+tests/fixtures/hg_wbfclroute/import-07.stdout.txt
+tests/fixtures/hg_wbfclroute/import-08.stderr.txt
+tests/fixtures/hg_wbfclroute/import-08.stdout.txt
+tests/fixtures/hg_wbfclroute/import-09.stderr.txt
+tests/fixtures/hg_wbfclroute/import-09.stdout.txt
+tests/fixtures/hg_wbfclroute/import-10.stderr.txt
+tests/fixtures/hg_wbfclroute/import-10.stdout.txt
+tests/fixtures/hg_wbfclroute/import-11.stderr.txt
+tests/fixtures/hg_wbfclroute/import-11.stdout.txt
+tests/fixtures/hg_wbfclroute/import-12.stderr.txt
+tests/fixtures/hg_wbfclroute/import-12.stdout.txt
+tests/fixtures/hg_wbfclroute/import-13.stderr.txt
+tests/fixtures/hg_wbfclroute/import-13.stdout.txt
+tests/fixtures/hg_wbfclroute/import-14.stderr.txt
+tests/fixtures/hg_wbfclroute/import-14.stdout.txt
+tests/fixtures/hg_wbfclroute/import-15.stderr.txt
+tests/fixtures/hg_wbfclroute/import-15.stdout.txt
+tests/fixtures/hg_wbfclroute/import-16.stderr.txt
+tests/fixtures/hg_wbfclroute/import-16.stdout.txt
+tests/fixtures/hg_wbfclroute/import-17.stderr.txt
+tests/fixtures/hg_wbfclroute/import-17.stdout.txt
+tests/fixtures/hg_wbfclroute/inputs.json
+tests/fixtures/hg_wbfclroute/offline-wheel-absl.stderr.txt
+tests/fixtures/hg_wbfclroute/offline-wheel-absl.stdout.txt
+tests/fixtures/hg_wbfclroute/offline-wheel-tree-sitter.stderr.txt
+tests/fixtures/hg_wbfclroute/offline-wheel-tree-sitter.stdout.txt
+tests/fixtures/hg_wbfclroute/offline_exec.py
+tests/fixtures/hg_wbfclroute/ordered-import.command.json
+tests/fixtures/hg_wbfclroute/ordered-import.stderr.txt
+tests/fixtures/hg_wbfclroute/ordered-import.stdout.txt
+tests/fixtures/hg_wbfclroute/ordered_probe.py
+tests/fixtures/hg_wbfclroute/pip-cache-list.stderr.txt
+tests/fixtures/hg_wbfclroute/pip-cache-list.stdout.txt
+tests/fixtures/hg_wbfclroute/pip_probe.py
+tests/fixtures/hg_wbfclroute/preparation-commands.txt
+tests/fixtures/hg_wbfclroute/prepare.py
+tests/fixtures/hg_wbfclroute/prepare.stderr.txt
+tests/fixtures/hg_wbfclroute/prepare.stdout.txt
+tests/fixtures/hg_wbfclroute/source-entrypoints.json
+tests/fixtures/hg_wbfclroute/source-imports.json
+tests/fixtures/hg_wbfclroute/source-lines.txt
+tests/fixtures/hg_wbfclroute/source/bfcl/LICENSE
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/category_mapping.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/column_headers.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/default_prompts.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/eval_config.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/model_config.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/constants/type_mappings.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/ast_eval/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/ast_eval/ast_checker.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/ast_eval/type_convertor/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/ast_eval/type_convertor/java_type_converter.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/ast_eval/type_convertor/js_type_converter.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/eval_runner.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/eval_runner_helper.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/multi_turn_eval/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_checker.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/eval_checker/multi_turn_eval/multi_turn_utils.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/claude.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/cohere.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/databricks.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/deepseek.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/dm_cito.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/fireworks.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/functionary.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/gemini.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/gogoagent.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/gorilla.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/grok.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/ling.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/mining.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/mistral.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/nemotron.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/nexus.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/nova.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/novita.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/nvidia.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/openai_completion.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/openai_response.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/qwen.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/writer.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/api_inference/yi.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/base_handler.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/arch.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/base_oss_handler.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/bielik.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/bitagent.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/deepseek.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/deepseek_coder.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/deepseek_reasoning.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/falcon_fc.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/gemma.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/glaive.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/glm.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/granite.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/granite_3.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/hammer.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/hermes.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/llama.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/llama_3_1.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/minicpm.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/minicpm_fc.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/mistral_fc.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/phi.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/phi_fc.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/quick_testing_oss.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/qwen.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/qwen_fc.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/salesforce_llama.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/salesforce_qwen.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/local_inference/think_agent.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/model_style.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/parser/__init__.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/parser/java_parser.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/parser/js_parser.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/model_handler/utils.py
+tests/fixtures/hg_wbfclroute/source/bfcl/bfcl_eval/utils.py
+tests/fixtures/hg_wbfclroute/source/bfcl/pyproject.toml
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/LICENSE
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/requirements.txt
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/bagz.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/config.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/constants.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/data_loader.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/engines/constants.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/engines/engine.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/engines/lc0_engine.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/engines/neural_engines.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/engines/stockfish_engine.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/metrics_evaluator.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/puzzles.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/tokenizer.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/tournament.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/train.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/training.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/training_utils.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/transformer.py
+tests/fixtures/hg_wbfclroute/source/chess/searchless_chess/src/utils.py
+tests/fixtures/hg_wbfclroute/staged-whitespace-raw.json
+tests/fixtures/hg_wbfclroute/supplement.py
+tests/fixtures/hg_wbfclroute/supplement.stderr.txt
+tests/fixtures/hg_wbfclroute/supplement.stdout.txt
+tests/fixtures/hg_wbfclroute/validate.py
+exit=0

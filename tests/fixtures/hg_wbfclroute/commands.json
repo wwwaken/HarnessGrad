@@ -1,0 +1,620 @@
+[
+  {
+    "name": "environment",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "environment"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "environment.stdout.txt",
+    "stderr": "environment.stderr.txt"
+  },
+  {
+    "name": "import-00",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.eval_checker.eval_runner"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-00.stdout.txt",
+    "stderr": "import-00.stderr.txt"
+  },
+  {
+    "name": "import-01",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.eval_checker.ast_eval.ast_checker"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-01.stdout.txt",
+    "stderr": "import-01.stderr.txt"
+  },
+  {
+    "name": "import-02",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.model_handler.utils"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-02.stdout.txt",
+    "stderr": "import-02.stderr.txt"
+  },
+  {
+    "name": "import-03",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.model_handler.local_inference.qwen"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-03.stdout.txt",
+    "stderr": "import-03.stderr.txt"
+  },
+  {
+    "name": "import-04",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.constants.model_config"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-04.stdout.txt",
+    "stderr": "import-04.stderr.txt"
+  },
+  {
+    "name": "import-05",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.model_handler.parser.java_parser"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-05.stdout.txt",
+    "stderr": "import-05.stderr.txt"
+  },
+  {
+    "name": "import-06",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.model_handler.parser.js_parser"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-06.stdout.txt",
+    "stderr": "import-06.stderr.txt"
+  },
+  {
+    "name": "import-07",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.eval_checker.ast_eval.type_convertor.java_type_converter"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-07.stdout.txt",
+    "stderr": "import-07.stderr.txt"
+  },
+  {
+    "name": "import-08",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.eval_checker.ast_eval.type_convertor.js_type_converter"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-08.stdout.txt",
+    "stderr": "import-08.stderr.txt"
+  },
+  {
+    "name": "import-09",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "bfcl_eval.eval_checker.eval_runner_helper"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-09.stdout.txt",
+    "stderr": "import-09.stderr.txt"
+  },
+  {
+    "name": "import-10",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.puzzles"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-10.stdout.txt",
+    "stderr": "import-10.stderr.txt"
+  },
+  {
+    "name": "import-11",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.engines.constants"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-11.stdout.txt",
+    "stderr": "import-11.stderr.txt"
+  },
+  {
+    "name": "import-12",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.engines.engine"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-12.stdout.txt",
+    "stderr": "import-12.stderr.txt"
+  },
+  {
+    "name": "import-13",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.engines.stockfish_engine"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-13.stdout.txt",
+    "stderr": "import-13.stderr.txt"
+  },
+  {
+    "name": "import-14",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.engines.lc0_engine"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-14.stdout.txt",
+    "stderr": "import-14.stderr.txt"
+  },
+  {
+    "name": "import-15",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.engines.neural_engines"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-15.stdout.txt",
+    "stderr": "import-15.stderr.txt"
+  },
+  {
+    "name": "import-16",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.training_utils"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-16.stdout.txt",
+    "stderr": "import-16.stderr.txt"
+  },
+  {
+    "name": "import-17",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "import",
+      "searchless_chess.src.utils"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "import-17.stdout.txt",
+    "stderr": "import-17.stderr.txt"
+  },
+  {
+    "name": "bfcl-official",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "bfcl-official"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "bfcl-official.stdout.txt",
+    "stderr": "bfcl-official.stderr.txt"
+  },
+  {
+    "name": "bfcl-local",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "bfcl-local"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "bfcl-local.stdout.txt",
+    "stderr": "bfcl-local.stderr.txt"
+  },
+  {
+    "name": "chess-board",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "chess-board"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "chess-board.stdout.txt",
+    "stderr": "chess-board.stderr.txt"
+  },
+  {
+    "name": "chess-row",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "chess-row"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "chess-row.stdout.txt",
+    "stderr": "chess-row.stderr.txt"
+  },
+  {
+    "name": "chess-local",
+    "argv": [
+      "timeout",
+      "150s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/execute.py",
+      "chess-local"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "chess-local.stdout.txt",
+    "stderr": "chess-local.stderr.txt"
+  },
+  {
+    "name": "pip-cache-list",
+    "argv": [
+      "timeout",
+      "30s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "-m",
+      "pip",
+      "cache",
+      "list",
+      "--format=abspath"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 0,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "pip-cache-list.stdout.txt",
+    "stderr": "pip-cache-list.stderr.txt"
+  },
+  {
+    "name": "offline-wheel-tree-sitter",
+    "argv": [
+      "timeout",
+      "45s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/pip_probe.py",
+      "tree_sitter==0.21.3",
+      "/tmp/hg-wbfclroute-wheel-probe-t_w7zq0j"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 1,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "offline-wheel-tree-sitter.stdout.txt",
+    "stderr": "offline-wheel-tree-sitter.stderr.txt",
+    "scratch_removed": true
+  },
+  {
+    "name": "offline-wheel-absl",
+    "argv": [
+      "timeout",
+      "45s",
+      "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/offline_exec.py",
+      "/tmp/hg-bfclroute/tests/fixtures/hg_wbfclroute/pip_probe.py",
+      "absl-py",
+      "/tmp/hg-wbfclroute-wheel-probe-nfojfp5u"
+    ],
+    "cwd": "/tmp/hg-bfclroute",
+    "returncode": 1,
+    "environment_overrides": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "stdout": "offline-wheel-absl.stdout.txt",
+    "stderr": "offline-wheel-absl.stderr.txt",
+    "scratch_removed": true
+  }
+]

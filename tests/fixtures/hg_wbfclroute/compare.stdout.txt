@@ -1,0 +1,53 @@
+{
+  "primary_numeric_pairs": 0,
+  "primary_controls": 43,
+  "complete_dataset_routes_demonstrated": 0,
+  "requested_dataset_routes": 2,
+  "agreement_rate": null,
+  "scope": "The two requested complete dataset module routes; not global S4 coverage.",
+  "import_probe_counts": {
+    "attempts": 19,
+    "imported": 6,
+    "failed": 13
+  }
+}
+{
+  "bfcl_v3": {
+    "controls": 28,
+    "numeric_pairs": 0,
+    "numeric_agreements": 0,
+    "numeric_divergences": 0,
+    "official_numeric": 0,
+    "official_unmeasured": 28,
+    "local_numeric": 28,
+    "local_unmeasured": 0,
+    "official_import_failures": 28,
+    "local_score_counts": {
+      "0.0": 25,
+      "1.0": 3
+    },
+    "unique_official_errors": {
+      "ModuleNotFoundError: No module named 'tree_sitter'": 28
+    }
+  },
+  "chessbench_puzzles": {
+    "controls": 15,
+    "numeric_pairs": 0,
+    "numeric_agreements": 0,
+    "numeric_divergences": 0,
+    "official_numeric": 0,
+    "official_unmeasured": 15,
+    "local_numeric": 15,
+    "local_unmeasured": 0,
+    "official_import_failures": 15,
+    "local_score_counts": {
+      "1.0": 6,
+      "0.0": 9
+    },
+    "unique_official_errors": {
+      "ModuleNotFoundError: No module named 'absl'": 15
+    },
+    "supplementary_row_attempts": 15,
+    "supplementary_row_numeric": 0
+  }
+}

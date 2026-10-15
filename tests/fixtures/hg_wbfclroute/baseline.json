@@ -1,0 +1,52 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "bf917b3b237e352ac46373fdba501d35004c7911\n"
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "wg-bfclroute\n"
+    },
+    {
+      "argv": [
+        "git",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "worktree /mnt/20t/xubuqiang/Study/HarnessGrad\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/main\n\nworktree /tmp/hg-2wiki\nHEAD 6af7fef0f09714be9c22aabcd7f972a00d66ec74\nbranch refs/heads/wg-2wiki\n\nworktree /tmp/hg-alf\nHEAD ab81db7aace4cb86f49810125cb98340ccf14abf\nbranch refs/heads/wg-alf\n\nworktree /tmp/hg-appworld\nHEAD 18379f4304fa09f25b08c2c11604c281274180a4\nbranch refs/heads/wg-appworld\n\nworktree /tmp/hg-assess\nHEAD 55f194fb29ccdd38b76cc372357b210613e08328\nbranch refs/heads/wg-assess\n\nworktree /tmp/hg-awp\nHEAD 47484b068e5c2c1dc0f4118adf832e403fbc18a0\nbranch refs/heads/wg-awp\n\nworktree /tmp/hg-b1\nHEAD 1cc156e8da09d6bbc80b1358998c5253b226c9cf\ndetached\n\nworktree /tmp/hg-b10\nHEAD 2fa96ae841d478481ac021494aa86cc1706fdbb0\ndetached\n\nworktree /tmp/hg-b2\nHEAD a5e67230033ac340c316614df23face16290b8cd\ndetached\n\nworktree /tmp/hg-b3\nHEAD e90282fa91c82f86a89d52c33e9d62c962d3edf0\ndetached\n\nworktree /tmp/hg-b4\nHEAD 39c5e8b422ac67215c314a8d2ac1e0611657ccc5\ndetached\n\nworktree /tmp/hg-b5\nHEAD 5b776c41e2ad300120728b07bbf7e27b8f8ac15b\ndetached\n\nworktree /tmp/hg-b6\nHEAD 97af046b14f5ca7a70fcd020252bb2ba9e313e09\ndetached\n\nworktree /tmp/hg-b7\nHEAD 8aaac24db4373580d9f15b572ccc600603757fc0\ndetached\n\nworktree /tmp/hg-b8\nHEAD b5fc7a9374218d1f2ead218d40da3a33dcc7613a\ndetached\n\nworktree /tmp/hg-b9\nHEAD 18bca126f9572f33b4660a45434cceb76b630130\ndetached\n\nworktree /tmp/hg-bfcl\nHEAD b8f4a5a9e5ed49f609813620a67a6ba7177395ba\nbranch refs/heads/wg-bfcl\n\nworktree /tmp/hg-bfclroute\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/wg-bfclroute\n\nworktree /tmp/hg-bind\nHEAD 84f4f4bd3bb9872ac98d9f490dd7484f0371fcbd\nbranch refs/heads/wg-bind\n\nworktree /tmp/hg-c1\nHEAD 348d6afe04bedf4f02a1988ed04b9b462dc5565f\ndetached\n\nworktree /tmp/hg-c2\nHEAD 59d3d1fbfa0d78c127130797a289f9a866d0d328\ndetached\n\nworktree /tmp/hg-caps\nHEAD afd1f873b0fd1eb60ca01781e37f6384c2d82235\nbranch refs/heads/wg-caps\n\nworktree /tmp/hg-chess\nHEAD 06194c0b71b9192baf6c1d595c2e89bf7331efcd\nbranch refs/heads/wg-chess\n\nworktree /tmp/hg-chess2\nHEAD 9c2a7561d5bb7e9eaa76313aab54a72f8730c771\nbranch refs/heads/wg-chess2\n\nworktree /tmp/hg-chess3\nHEAD f056cd3e36039cc654a6d8b33bc6028296419ccb\nbranch refs/heads/wg-chess3\n\nworktree /tmp/hg-clo\nHEAD 6d9d0d1d5b1d64a7cd7c7144c37f1baf0b213b80\nbranch refs/heads/wg-clo\n\nworktree /tmp/hg-clo2\nHEAD f7c13d0e3b9d3152c13d8e4115ae94d16ae89f26\nbranch refs/heads/wg-clo2\n\nworktree /tmp/hg-d1\nHEAD 53c7f3d720bca467b474d11dd1708330d6eed5d1\ndetached\n\nworktree /tmp/hg-ds\nHEAD f1b2d0d7662364e12aa48e2d67b58e1e1d1de263\ndetached\n\nworktree /tmp/hg-ds2\nHEAD 4ca470f6173d95133d0a81b2e38f375933f08d07\ndetached\n\nworktree /tmp/hg-ds3\nHEAD 88a3106161f49bf17d018e7fd7efc4c79b7b35c1\ndetached\n\nworktree /tmp/hg-ds4\nHEAD 74bde0a22555040433812b6592a86f3b7ac484e9\ndetached\n\nworktree /tmp/hg-e1\nHEAD ff391e663c036b3dc10ce5a81a79d70613d43a5e\ndetached\n\nworktree /tmp/hg-e2\nHEAD a13ef82c787db41cbe22fe4d26cf60552b575f5a\ndetached\n\nworktree /tmp/hg-e3\nHEAD 05ccd81e0e34e05ef446890b39e62cfac8d065ba\ndetached\n\nworktree /tmp/hg-e5\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/wg-e5\n\nworktree /tmp/hg-e6\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/wg-e6\n\nworktree /tmp/hg-fix\nHEAD 36af2b254558f8dde7abb5d40fb5eedec2f588e7\nbranch refs/heads/wg-fix\n\nworktree /tmp/hg-hotpot\nHEAD b987b03c5428424928c3410b47cad73544e60020\nbranch refs/heads/wg-hotpot\n\nworktree /tmp/hg-img\nHEAD 01b4c50e8b59e723a66a3f247a28d7c102d59dcd\nbranch refs/heads/wg-img\n\nworktree /tmp/hg-jvm\nHEAD 8f38a578d8964fb7789db241ef97146408c08282\nbranch refs/heads/wg-jvm\n\nworktree /tmp/hg-lcb\nHEAD cfe80c205281c485b0e99e8b217f2f59397235a6\nbranch refs/heads/wg-lcb\n\nworktree /tmp/hg-mkl\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/wg-mkl\n\nworktree /tmp/hg-net\nHEAD 5728db71f0dcdc6ca32212b8998410fdbaf5206f\nbranch refs/heads/wg-net\n\nworktree /tmp/hg-obs\nHEAD 72f5c379b5c056c11a3ef60af99a1fc52ed50ad4\nbranch refs/heads/wg-obs\n\nworktree /tmp/hg-offscorer\nHEAD 1277d97d5078dd3d26b41ff8ce6764b6e7d0d4be\nbranch refs/heads/wg-offscorer\n\nworktree /tmp/hg-offscorer2\nHEAD 7287876b59c0d4f96a1ddd9495af2e7af1d62562\nbranch refs/heads/wg-offscorer2\n\nworktree /tmp/hg-offscorer3\nHEAD fd33508c123e8c21b88229fa3135ee5c9d41b0a6\nbranch refs/heads/wg-offscorer3\n\nworktree /tmp/hg-pin\nHEAD 8b5c5458c4cb878fba27372aecf6a96ee492c555\nbranch refs/heads/wg-pin\n\nworktree /tmp/hg-prifix\nHEAD 938a581847156abff17705b84e81f96de1f7c295\nbranch refs/heads/wg-prifix\n\nworktree /tmp/hg-pristine\nHEAD c61f174e2d200a06c11efad7116d317c1088180f\nbranch refs/heads/wg-pristine\n\nworktree /tmp/hg-prov\nHEAD bff4d19f65f65c5be69318e370b714a35864e79f\nbranch refs/heads/wg-prov\n\nworktree /tmp/hg-quiesce\nHEAD 2e4e60ec243c51b0dd03f6281c3f8b6c4b0d8fb2\nbranch refs/heads/wg-quiesce\n\nworktree /tmp/hg-quiesce2\nHEAD 1e6d66fcb3e6caa0fbc0925577a59d167a37a5f4\nbranch refs/heads/wg-quiesce2\n\nworktree /tmp/hg-reassess\nHEAD 1e43edcb21b1c113b933afc0294f20eb52ae91e6\nbranch refs/heads/wg-reassess\n\nworktree /tmp/hg-reassess2\nHEAD 77e9856901e903b23e5922a98f69f5a108ccbe48\nbranch refs/heads/wg-reassess2\n\nworktree /tmp/hg-resolver\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/wg-resolver\n\nworktree /tmp/hg-s1\nHEAD f7f547b8e4d361332bc50646ef7f9d007c5bc690\ndetached\n\nworktree /tmp/hg-s2\nHEAD 67b028d36c25c3cd06ba9c79747632d6f7ae3bd8\ndetached\n\nworktree /tmp/hg-s3\nHEAD dbabd9625dc2c1c6ecd258ffdb67c8a4c411af69\ndetached\n\nworktree /tmp/hg-s4\nHEAD 065d29cd570ec84b0035e835b40ca0ceb292d116\ndetached\n\nworktree /tmp/hg-s5\nHEAD b61dbc0d11e981f17b0e79089e6589da3697072b\ndetached\n\nworktree /tmp/hg-s6\nHEAD bf917b3b237e352ac46373fdba501d35004c7911\nbranch refs/heads/wg-s6\n\nworktree /tmp/hg-s7\nHEAD 99d14eb6e738d163807e4fecbe5446e763891337\ndetached\n\nworktree /tmp/hg-s8\nHEAD 6ea1b5463876067368480f268f0d88275fa94294\ndetached\n\nworktree /tmp/hg-s9\nHEAD 1bb9da212bef70c0f00167ca467b1cfe02b2c84f\ndetached\n\nworktree /tmp/hg-sb\nHEAD 89512c31a1d7624ecef6717d18d33d2ba6b2655e\ndetached\n\nworktree /tmp/hg-scope\nHEAD 2ef6f75298da9b1b835d6e5fc508a3d9c523f845\nbranch refs/heads/wg-scope\n\nworktree /tmp/hg-scratch\nHEAD 7eafe2a7b0e312136d58d35282e6e1c3bba38319\nbranch refs/heads/wg-scratch\n\nworktree /tmp/hg-shared\nHEAD fb5b788150b851e745e39fc4268dea8169031397\nbranch refs/heads/wg-shared\n\nworktree /tmp/hg-snap\nHEAD b4017fe7197192d557f9fdf575a0453cccd9a267\nbranch refs/heads/wg-snap\n\nworktree /tmp/hg-snap2\nHEAD 1bea368476d26a3541dc690859a01d9915bd3406\nbranch refs/heads/wg-snap2\n\nworktree /tmp/hg-snapfix\nHEAD c3c01092c1d9c86eeef3f7e1a06a27ef3f1aca6a\nbranch refs/heads/wg-snapfix\n\nworktree /tmp/hg-spread\nHEAD 5202b6236976961ee6c41b904acc44732f610824\nbranch refs/heads/wg-spread\n\nworktree /tmp/hg-spread2\nHEAD 8b3b25dc5ddee870bf97fb270eca27cc450ed3bf\nbranch refs/heads/wg-spread2\n\nworktree /tmp/hg-t1\nHEAD f3e91fbeda811f4416ba845dff6e54efda634368\ndetached\n\nworktree /tmp/hg-t2\nHEAD ddaf1615f818691a9bb61907ab04823a2d3d2577\ndetached\n\nworktree /tmp/hg-t3\nHEAD 324b7832026646491d57d6013c13131d8731ebb8\ndetached\n\nworktree /tmp/hg-t4\nHEAD 7d53b9107ef79bbe3c6a3e0af719bddacf345806\ndetached\n\nworktree /tmp/hg-t5\nHEAD 8271ccfd6bef8eef7da340ba0c1a06413a56b493\ndetached\n\nworktree /tmp/hg-t6\nHEAD 5da28c8f934b7f0fedcf1df8f7525620a30fb258\ndetached\n\nworktree /tmp/hg-t7\nHEAD fdef36a7dfe2d219136fbfc76024477c82f77fd5\ndetached\n\nworktree /tmp/hg-tbdep\nHEAD 0f71569116adc044e617dd1ddfecafb5bbd96256\nbranch refs/heads/wg-tbdep\n\nworktree /tmp/hg-tbi\nHEAD 2a141db242e8e116a2ee000956d473a4954d626a\nbranch refs/heads/wg-tbi\n\nworktree /tmp/hg-tbi2\nHEAD cd53c3d7a64e7446e2958b80af17fce40ef66f4b\nbranch refs/heads/wg-tbi2\n\nworktree /tmp/hg-tbi2-audit\nHEAD 4e44c6644f78ac624a65a3420b3a6e542bfd488f\nbranch refs/heads/wg-tbi2-audit\n\nworktree /tmp/hg-tbi2-tests\nHEAD 6ad4151c440fb0cc1cd54d2df083a5e469ca5ea8\nbranch refs/heads/wg-tbi2-tests\n\nworktree /tmp/hg-tbrun\nHEAD 1106f1d2628920b6fbc4ba94606a9f0f99c6a0d6\nbranch refs/heads/wg-tbrun\n\nworktree /tmp/hg-tbrun2\nHEAD 16dae813e83a6d7342d14f42676fd8f5de423db1\nbranch refs/heads/wg-tbrun2\n\nworktree /tmp/hg-tbrun3\nHEAD fc5f812951ef77d13697402658d5f238796cdeb8\nbranch refs/heads/wg-tbrun3\n\nworktree /tmp/hg-tbrun4\nHEAD 606c62a86a84dfdfd99f0d9a9272e7c8efb71889\nbranch refs/heads/wg-tbrun4\n\nworktree /tmp/hg-trivia\nHEAD a1f324ba67f3d2cc2b49ef5cc8c8dfa56b7173c7\nbranch refs/heads/wg-trivia\n\nworktree /tmp/hg-ujson\nHEAD c9af248c74c1d6d95575a71f2c0c4223c291fe06\nbranch refs/heads/wg-ujson\n\nworktree /tmp/hg-ujson2\nHEAD 90f46cf11110838123d9d9842ca7d92b28baa57c\nbranch refs/heads/wg-ujson2\n\nworktree /tmp/hg-uvx\nHEAD 77f6f8b915f3ef238024f6e8a6c8ebd821c64733\nbranch refs/heads/wg-uvx\n\nworktree /tmp/hg-verify\nHEAD 5f7624715431d26b2a42fa608250993bffbc9f00\nbranch refs/heads/wg-verify\n\nworktree /tmp/hg-wheelhouse\nHEAD be5e51fcc246171df8ec9fcc98cd1907ae14f33e\nbranch refs/heads/wg-wheelhouse\n\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/check_dataset_blockers.py"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 2, \"historical_records\": 11, \"production_authorized\": false}\n"
+    }
+  ],
+  "controlled_input_counts": {
+    "bfcl_v3": 28,
+    "chessbench_puzzles": 15
+  },
+  "source_member_counts": {
+    "bfcl_v3": 83,
+    "chessbench_puzzles": 20
+  }
+}
