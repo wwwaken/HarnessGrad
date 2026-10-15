@@ -4793,3 +4793,48 @@ cases).
 - **What the diagnostic's zero actually is.** Re-running the platform's **own** checker on that frozen log, with `reward.txt`/`evidence.json` written outside the frozen run, reproduces `reward 0.0`, `success False, num_tests 8, passes 6, failures 2`: `assert answers match.` fails because the actor supplied a prose sentence where this state-change task's expected answer is `None` (`'marked "…" as not done in my bucket list note.' == 'null'`, and AppWorld's own API doc says a non-question task's answer "must be left to the default value, i.e. None"), and `assert the updated note's content rest of the lines …` fails on the note content. **So there is no platform defect and no replay defect** — the measurement path reproduces the failure faithfully, and the remaining gap is actor behaviour. Two intermediate explanations I gave were wrong and are withdrawn with it: the "decoy endpoint" reading (`/supervisor/message` *is* the completion) and the "replay loses the write" reading (it does not; `tracker.success` is false on content). The registry now carries the correction as an explicit superseding paragraph (`d25a71a1`).
 - **Method note, because this cost three reversals.** The two runs shared a task id, a run directory name shape and an evidence vocabulary, and I compared evidence from one against logs from the other. **A task id is not a run id.** The check that settles it is cheap and should be first: hash the traces, or count the calls, on both sides before drawing any conclusion across runs.
 - **`w-bfclguard` merged (`3a48f51a`, registry `8aed83a9`) — a scoped reachability result, which is the shape this blocker needs.** `FOUND`: the platform's BFCL name scorer and shared verifier completed four fabricated scoring controls without importing the retained decoder. `ABSENT over an enumerated scope`: 317 files (308 `.py` + nine shebang scripts) under `driver.py`, `eval/`, `data/`, `tools/`, `harnessgrad/`, `ckpt/`, `methods/`, each pinned by bytes and SHA-256, every one treated as an entry point, 2,115 import-graph records — `known_target_imports: 0`, `target_mechanisms: 0`, with the only target references being two data-path string constants. `UNKNOWN`: computed loaders, generated code, process argv, dependencies, and anything outside that scope. The preflight gate exists with controls but is **unwired**, and no platform call site was edited. **The pinned inventory had to be refreshed at integration** because two scoped sources changed after the worker's base (this session's launch-failure and relayed-signal fix): the documented regeneration moved `import_nodes` 2115 → 2116 — exactly the new `import signal` — and left both target counters at 0, so the conclusion does not depend on the refresh. Verified 168 passed across the reachability, containment, AST-contract, import-direction, decoding and registry guards.
+
+## 2026-10-16 — Fidelity phase opens: the finished branch reused instead of redone, and eleven workers
+
+- **Range A closed the two defects that would have made the next run fail, and one of them was already
+  fixed.** `b2f19e26` (`wg-awbind`, six commits behind `main`) is a clean pick, so the relative
+  `--runs-root` → `docker --mount` defect was **reviewed and merged as `5e5441cc`** rather than
+  re-implemented: it adds `recording_host().resolve()` (the one mount source the platform derives from a
+  user-supplied path) and two regression tests (hermetic `chdir`, and a fake docker capturing the argv).
+  Verified: `tests/quality/test_services.py` **45 passed**. The Terminal-Bench zeros report `a15dce8c`
+  merged as `54639277` (report only).
+- **This is the lesson the operator caught before it cost anything.** The worker brief I had just written
+  for the mount fix said "fix it" without naming `wg-awbind`, so a worker was already re-doing finished
+  work. The brief was killed early and the goal re-written to name both branches **and to separate their
+  difficulty**: `a36145bb` (spreadsheetbench) sits on `wg-outcome`, **52 commits behind `main`**, and
+  `main` has since changed that same file twice (`w-spreadcache`, `w-spreadvacuous`) — so it must be
+  re-implemented from its intent, whereas `b2f19e26` was a near-trivial pick. "Cherry-pick the existing
+  branch" is not one instruction; how far behind it is decides whether it is a review or a rewrite.
+- **Endpoints unified, and the change is one line in an untracked file.** `.env` pointed at `8001`,
+  `AGENTS.md` documents `8002`, `eval/policy/diagnostic_policy.py:29` **accepts only `8002`** for any
+  staged diagnostic, and another worktree uses `8010`; all three answer `200` and all three serve the same
+  `qwen3.5-9b-local`. `.env` now says `8002` for both the agent and the method, so a diagnostic is no
+  longer refused by its own policy for pointing at the wrong port. `.env` is gitignored, so this is a
+  local config change, not a commit — recorded here because it changes what a future run measures.
+- **Eleven workers launched for the fidelity phase**, all pure code/evidence with no GPU: `w-metricfix`
+  (PhysicsQuestions period, SportsUnderstanding negation, GSM8K `####`, LiveCodeBench cap),
+  `w-sbfix2` (the spreadsheetbench read-only write, re-implemented on the current file),
+  `w-verifierfix` (the reward-file-absent branch → `unmeasured`), `w-adaptfid1` (BFCL irrelevance, 2Wiki
+  evidence-awareness), `w-adaptfid2` (AgentDojo defence prompt + attack string + derived `TASK_COUNT`;
+  DS-1000's `context.json` out of `SETUP`), `w-alfworld` (budget 30→50, `budget_exhausted` mislabel,
+  declared-split group key), `w-scienceworld` (**gates the planned run**: budget 1000→100, macro
+  aggregation, the real missing task type), `w-hotpotqa` (reward = answer F1, joint no longer published),
+  `w-taubench` (the forgeable communication half), `w-fever` (evidence groups), `w-evidence` (the
+  per-dataset qualification, the disclosure table, the operator-owned doc replacement text, the archive
+  finding).
+- **The goal itself now carries the reference paths**, because the operator's point is right: a summary
+  compression would otherwise lose where the facts live. The authoritative handoff is
+  `docs/paper-fidelity-audit-handoff.md` (42,973 B, untracked); this journal and
+  `hg-work/eval-fidelity-plan.md` carry what I verified myself versus what I took on trust. The intern's
+  original review has no file on disk, so the handoff's §3 is the only durable copy of its 18 claims.
+- **Method note: I killed my own shell with `pkill -f`.** The pattern `hg-wt/w-platguard` appeared in the
+  command line that ran `pkill`, so the shell matched itself — the exact hazard the fidelity handoff's §1
+  warns about, and I had read it an hour earlier. The robust form is to build the pattern from pieces
+  (`P1=w-plat; P2=guard`) or use the bracket trick, and never to put the literal string anywhere else in
+  the same command (an `echo` label was enough to re-trigger it a second time). The kill still worked, so
+  the duplicate worker stopped and nothing was lost.
