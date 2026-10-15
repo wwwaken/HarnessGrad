@@ -4982,3 +4982,67 @@ cases).
   actor-visible `code_context`). Those rows are accurate about the code the worker could see and wrong
   about the code that is now in `main`; a focused follow-up will re-derive them, with the row-by-row
   correction list supplied by the parent rather than left to free interpretation.
+
+## 2026-10-16 (round 6) — The B5 packet was never "mechanically restorable", and a lot of other records read the same way
+
+**The correction (`0365c9ab`).** `registry/known-red-tests.md` said `external_provenance_b5` "is
+mechanically restorable" and that its residue was "70 of 75 ... HTTP 403 ... **transient** ... not
+unobtainable". Both sentences were read off the *fetch outcomes* of a first pass that never opened the
+receipts. Opening all 100 receipts, after `w-b5restore`'s replay had touched all 87 absent entries:
+
+- **55 of 87 are restored and digest-verified** (54 fetched + one deliberately-empty `HEAD` body);
+- **23 are unrecoverable *as recorded***, and this is the finding. Every
+  `responses/bfcl-handler-local_inference-*.body` receipt records `status: 403` with a **279-byte**
+  `response_body`, and all 23 pin the **same** digest `fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b`
+  - identically in `SHA256SUMS` and in each receipt. That is GitHub's unauthenticated rate-limit JSON.
+  Twenty-three distinct blobs cannot share a digest, so the pin is provably a pin of an error page.
+  The trap is worth naming: the receipt records `status`, so this **is** auditable, but `SHA256SUMS`
+  records only the digest, so a check that verifies digests sees nothing wrong. Replay now gets the real
+  blob (200) and correctly **refuses to overwrite** `recorded_sha256` instead of laundering a new body
+  into an old pin. These can only be "restored" by re-pinning, which changes the evidence rather than
+  restoring it - a decision, not a retry;
+- **3 are live dynamic endpoints** - two DNS-over-HTTPS answers for `huggingface.co` (191 -> 192 bytes;
+  391 -> 391) and a served discussion page (13,106 -> 13,106) - which returned 200 with different bytes.
+  Same-plus-one and same-count-different-digest are the signatures of a moving resource;
+- **1** (`triviaqa-mirror-loader.body`) was recorded 404 and still 404s;
+- **5** (`bfcl-{release,root-tree,tag,tree,web-bitagent}`) are the only genuinely retryable entries.
+
+So the residue is 23 + 3 + 1 = 27 structurally unrecoverable and 5 pending, consistent with
+**202 present / 234 pinned**. Consequence recorded with the correction: `test_external_provenance_b5.py`'s
+5 failures **will not clear by fetching**, so "the restoration is running" is retired as a status and the
+honest assertion is a per-entry disposition.
+
+**The generalisable lesson, which is why this got its own round.** Both wrong sentences were *inferences
+from a proxy*: rate-limit-shaped fetch failures were read as "the fetch is the problem". The packet's own
+receipts contained the counter-evidence the whole time. This is the same error shape the file itself warns
+about elsewhere ("it reads a *consistent with* observation as a cause"). A second worker,
+**`w-provresidue`**, is now applying the receipt-first method to the other five partially-tracked packets
+(`e3_bfcl_source`, `hg_wprov`, `upstream_provenance_e2`, `hg_trivia`, `hg_bfcl`) with the same per-entry
+classes and a machine-readable disposition file, so the inventory can be stated by class and count instead
+of a bare `24/63/64` triple.
+
+**Goal item A2 is satisfied, and by the operator rather than by us.** The operator cherry-picked
+`b2f19e262fff1f7db9e889cad141b9cb1470b8f2` to `main` as **`5e5441cc`** ("services: make recording bind
+mounts absolute", 2026-10-16 00:56). We do not need to review or merge `wg-awbind`; it is in (item A2 closed).
+`tests/quality/test_services.py` is **45 passed** in 71.0 s on the merged tree, so the fix is green.
+It repairs a **second, distinct** AppWorld Docker admission failure, and the distinction is worth stating because the two are easy to collapse into one
+story: the **exit-125** episode (this file, "AppWorld real-model smoke blocker", line 482) was the runner
+mounting the dependency overlay **twice**, repaired by `a9e78d8`, whereas `5e5441cc` fixes a different
+failure - a CWD-relative `--runs-root` handed a relative bind *source* to `docker run --mount`, which
+Docker rejects. First-hand receipt for the latter: run `runs/appworld-diag-20261015T094818Z-4f07cd24`,
+whose `diagnostic_execution.json` carries `invalid = {"cf6abd2_2": {"stage": "start", "service":
+"appworld", "detail": "... invalid mount path: 'runs/appworld-diag-.../recordings/cf6abd2_2/appworld'
+mount path must be absolute"}}`, with `coverage = {measured 0, unmeasured 0, invalid 1}` and
+`score = null`. It failed at stage `start`, before the actor existed, and the platform classified it
+**`invalid`** rather than `unmeasured` - which is why it is not, and must not become, a zero. Both
+repairs are in `main`, so **AppWorld's next staged diagnostic is the first that can reach the service at
+all** - a precondition for its open `successful-task-evidence` blocker, not progress against it. One
+record ambiguity to hand on rather than silently resolve: `appworld`'s `next_action` calls this receipt
+"the incomplete Docker **exit-125** attempt with effect=null", but the receipt's own `detail` is the
+relative-mount error and its outcome is `invalid`; the exit-125 overlay failure is the older `a9e78d8`
+episode, so that phrase should name the run id. service. `w-evidence2` is re-verifying all 28 disclosure rows against current `main`: eight were written
+against the pre-fix tree (alfworld 30 actions, hotpotqa joint EM, the LiveCodeBench 600 s cap, AgentDojo's
+custom attack, FEVER's flat singletons, GSM8K's last-number rule, BFCL's non-call lines, DS-1000's
+actor-visible `code_context`), and the parent has verified each of those eight against the code and handed
+`w-evidence2` the file:line for every one - the worker's job is to check them rather than trust them, and
+to mark `UNVERIFIABLE` anything it did not check.
