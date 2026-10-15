@@ -448,3 +448,23 @@ class of omission `w-identcall` fixed on the test side and `w-scorerstub` fixed 
 production caller of the platform `_verify` that omitted it (`grep -rn '_verify(' data/` finds three
 adapter-local functions with a different signature and this one call site), and the control returns to
 reward 1 for the oracle and 0 for the noop: `1 passed`.
+
+## The per-file pass is complete: 14 red files, all accounted for
+
+The pass over all 194 `tests/quality/test_*.py` files finished on 2026-10-15 (`ALLPER_DONE`). Fourteen
+files reported a non-zero exit, and every one is accounted for:
+
+* **twelve fixed** - the seven above plus `test_console.py`, `test_dataset_controls.py` and
+  `test_quiesce_evidence.py` (all in the table earlier in this file);
+* **one recorded limit** - `test_we5_equivalence.py`, the preserved archive that exists nowhere, already
+  enumerated above;
+* **one explained, not a defect** - `test_unified_budget.py` failed inside the pass because the *parent*
+  was merging 18 commits into `main` while it ran, and `driver.py`'s integrity check correctly refused a
+  checkout that changed under it (`PlatformTampered`). Re-run in a quiet tree afterwards:
+  `test_unified_budget.py` + `test_console.py` = **16 passed in 204 s**.
+
+Two method notes worth keeping. First, a per-file pass is itself a *writer-sensitive* measurement: any
+commit to `main` during it invalidates the driver-based files in it, which is how `test_unified_budget.py`
+appeared red. Second, the honest end state of this file is not "no reds" - `test_we5_equivalence.py` and
+`test_external_provenance_b5.py` are red for recorded, enumerated reasons, and `test_isolation.py` carries
+the known pre-existing failure.
