@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--name",
+    "w-tb89-fix-git-20261015T035144Z-679b6acd-prereq",
+    "--network",
+    "none",
+    "--cpus",
+    "1",
+    "--memory",
+    "256m",
+    "--pids-limit",
+    "64",
+    "--entrypoint",
+    "/bin/bash",
+    "sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+    "-lc",
+    "set -e; command -v bash; command -v apt-get; command -v python3; python3 --version; test -d /app; test -w /app"
+  ],
+  "returncode": 0,
+  "stdout": "/usr/bin/bash\n/usr/bin/apt-get\n/usr/local/bin/python3\nPython 3.13.7\n",
+  "stderr": ""
+}

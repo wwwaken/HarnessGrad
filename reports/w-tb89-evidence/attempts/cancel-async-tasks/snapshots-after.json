@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "ls",
+    "--filter",
+    "reference=hg-snapshot:*w-tb89-cancel-async-tasks-20261015T035134Z-86e331e8*",
+    "--no-trunc",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

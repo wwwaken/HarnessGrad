@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--name",
+    "w-tb89-regex-log-20261015T035152Z-014810fc-prereq",
+    "--network",
+    "none",
+    "--cpus",
+    "1",
+    "--memory",
+    "256m",
+    "--pids-limit",
+    "64",
+    "--entrypoint",
+    "/bin/bash",
+    "sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9",
+    "-lc",
+    "set -e; command -v bash; command -v apt-get; command -v python3; python3 --version; test -d /app; test -w /app"
+  ],
+  "returncode": 1,
+  "stdout": "/usr/bin/bash\n/usr/bin/apt-get\n",
+  "stderr": ""
+}

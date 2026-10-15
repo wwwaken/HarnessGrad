@@ -1,0 +1,35 @@
+{
+  "kind": "observer pre-execution binding; not admission evidence",
+  "run_id": "w-tb89-cancel-async-tasks-20261015T035134Z-86e331e8",
+  "task_id": "cancel-async-tasks",
+  "trial": 1,
+  "image_id": "sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d",
+  "repo_digests": [
+    "alexgshaw/cancel-async-tasks@sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d"
+  ],
+  "platform_commit": "4967006c601acf39c91293403d9756cc98428134",
+  "dataset_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+  "source_sha256": "fe400305def7ab3e9cdada70929301637515e056cd846e66f6456716a3a8741e",
+  "split_sha256": "522b8dff75c21fbe17354610b67a4218de43f3e71b7a6f5264586d8e43af18c2",
+  "harness_sha256": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+  "endpoint": null,
+  "model": null,
+  "environment": {
+    "HG_EGRESS_PROXY": "http://172.17.0.1:17890",
+    "HG_TB_TASKS": "cancel-async-tasks",
+    "HG_TB_SPLIT": "none",
+    "HG_AGENT_BACKEND": "mock",
+    "HG_AGENT_MODEL": "",
+    "HG_AGENT_BASE_URL": "",
+    "HG_AGENT_API_KEY": "",
+    "HG_AGENT_MAX_STEPS": "1",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "limits": {
+    "cpus": 1,
+    "memory_mb": 2048,
+    "agent_timeout_s": 900,
+    "verify_timeout_s": 900
+  },
+  "selection_rule": "Purposeful four-task surface diversity: async code, Git/file state, CSV aggregation and regex output; require cached image, complete local verifier sources, standard pytest/CTRF-only uvx bootstrap, zero GPU, no MCP/service prerequisite, <=1 CPU and <=2048 MiB. No result-dependent substitutions. Other cached tasks remain unexecuted, not certified runnable."
+}

@@ -1,0 +1,30 @@
+{
+  "task_references": 89,
+  "cached_images": 86,
+  "missing_images": [
+    "mteb-leaderboard",
+    "pytorch-model-recovery",
+    "reshard-c4-data"
+  ],
+  "missing_source_tasks": [],
+  "selected": 4,
+  "driver_attempts": 4,
+  "task_trials_started": 0,
+  "new_ctrf_tasks": 0,
+  "new_raw_measured_tasks": 0,
+  "observer_ledger": {
+    "measured": 0,
+    "invalid": 0,
+    "unmeasured": 4,
+    "definition": "Administrative ledger of refused requested tasks, not native trial coverage; no task trials or native diagnostic receipts exist."
+  },
+  "native_trial_coverage": null,
+  "prior_official_tasks": 1,
+  "cumulative_official_execution_fraction": "1/89",
+  "new_execution_fraction": "0/89",
+  "selected_fraction": "4/89",
+  "endpoint": null,
+  "model": null,
+  "selection_rule": "Purposeful four-task surface diversity: async code, Git/file state, CSV aggregation and regex output; require cached image, complete local verifier sources, standard pytest/CTRF-only uvx bootstrap, zero GPU, no MCP/service prerequisite, <=1 CPU and <=2048 MiB. No result-dependent substitutions. Other cached tasks remain unexecuted, not certified runnable.",
+  "runs_root": "/tmp/w-tb89-controls-20261015T035134Z-bf8b6a2d"
+}

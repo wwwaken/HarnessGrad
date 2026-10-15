@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "returncode": 2,
+  "stdout": "reports/w-tb89-evidence/inventory/sources/regex-log/instruction.md:6: trailing whitespace.\n+Note: Be careful that there might be text in the log that looks similar to dates or IPv4 addresses but is not (e.g., user 1134-12-1234). \n",
+  "stderr": "",
+  "raw_copy": "/tmp/w-tb89-controls-20261015T035134Z-bf8b6a2d/review-failures/staged-first-diff-check.txt"
+}

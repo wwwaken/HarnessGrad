@@ -1,0 +1,36 @@
+{
+  "kind": "observer pre-execution binding; not admission evidence",
+  "run_id": "w-tb89-fix-git-20261015T035144Z-679b6acd",
+  "task_id": "fix-git",
+  "trial": 1,
+  "image_id": "sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+  "repo_digests": [
+    "docker.1panel.live/alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+    "alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119"
+  ],
+  "platform_commit": "4967006c601acf39c91293403d9756cc98428134",
+  "dataset_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+  "source_sha256": "a1dead1b3401bd0a4adaef76daf3aa7671093e291af23a0dbf6010a0266f1f84",
+  "split_sha256": "b50cf1f1f536eac1eacb0356ae63798be43973ca99ab136467be17fe14cf1937",
+  "harness_sha256": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+  "endpoint": null,
+  "model": null,
+  "environment": {
+    "HG_EGRESS_PROXY": "http://172.17.0.1:17890",
+    "HG_TB_TASKS": "fix-git",
+    "HG_TB_SPLIT": "none",
+    "HG_AGENT_BACKEND": "mock",
+    "HG_AGENT_MODEL": "",
+    "HG_AGENT_BASE_URL": "",
+    "HG_AGENT_API_KEY": "",
+    "HG_AGENT_MAX_STEPS": "1",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "limits": {
+    "cpus": 1,
+    "memory_mb": 2048,
+    "agent_timeout_s": 900,
+    "verify_timeout_s": 900
+  },
+  "selection_rule": "Purposeful four-task surface diversity: async code, Git/file state, CSV aggregation and regex output; require cached image, complete local verifier sources, standard pytest/CTRF-only uvx bootstrap, zero GPU, no MCP/service prerequisite, <=1 CPU and <=2048 MiB. No result-dependent substitutions. Other cached tasks remain unexecuted, not certified runnable."
+}
