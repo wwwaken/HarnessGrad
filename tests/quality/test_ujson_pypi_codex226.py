@@ -198,7 +198,14 @@ def test_offline_install_origin_and_file_receipt_do_not_assert_runtime_closure()
         assert closure[key] is False
     registry = json.loads((ROOT / "registry/dataset-blockers.json").read_bytes())
     assert registry["review"]["production_authorized"] is False
+    # The ujson blocker was WITHDRAWN by operator decision and recorded as a limit: the pinned
+    # reproducible rebuild did not reproduce (the compiled extension, WHEEL and RECORD differ) and
+    # PyPI returned 404 "No provenance available". This assertion used to require the blocker to
+    # still be present with status external, and went red the moment it was withdrawn. What must
+    # stay pinned is the absence plus the readable failed-search evidence.
     dataset = next(item for item in registry["datasets"] if item["dataset"] == "twowikimultihopqa")
-    blocker = next(item for item in dataset["blockers"] if item["id"] == "ujson-native-offline-closure")
-    assert blocker["status"] == "external" and blocker["family"] == "scorer-dependency-network"
-    assert "docs/task-226-ujson-wheel-report.md" in {item["path"] for item in blocker["evidence"]}
+    assert "ujson-native-offline-closure" not in {item["id"] for item in dataset["blockers"]}
+    withdrawal = (ROOT / "registry" / "withdrawn-requirements.md").read_text(encoding="utf-8")
+    assert "### `twowikimultihopqa / ujson-native-offline-closure`" in withdrawal
+    assert "the rebuild **did not reproduce**" in withdrawal
+    assert "PyPI build attestation" in withdrawal

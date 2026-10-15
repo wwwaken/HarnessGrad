@@ -238,13 +238,15 @@ def test_registry_closes_only_the_saved_writer_blocker():
     appworld = next(row for row in registry["datasets"] if row["dataset"] == "appworld")
     assert "trusted-trial-evidence-writer" not in {b["id"] for b in appworld["blockers"]}
     assert "successful-task-evidence" in {b["id"] for b in appworld["blockers"]}
-    # w-shared completed pristine-verifier; w-obs completes runtime-observations
-    # with recorded controller topology and unknown-only aggregation refusal.
-    # Those source-review closures leave scorer/export requirements pinned;
-    # see docs/w-shared-verifier-review.md and docs/w-obs-runtime-review.md.
-    assert set(appworld["shared_blockers"]) == {
-        "scorer-offline-closure", "artifact-only-state-export",
-    }
+    # w-shared completed pristine-verifier and w-obs completed runtime-observations; the
+    # operator then withdrew the remaining shared requirements as recorded limits
+    # (registry/withdrawn-requirements.md, commit 73a5ab22), so NO dataset, appworld included,
+    # pins a shared blocker any more. An absent shared list is the correct current state; this
+    # assertion used to pin the two withdrawn ids and went red the moment they were withdrawn.
+    assert appworld["shared_blockers"] == []
+    withdrawal = (ROOT / "registry" / "withdrawn-requirements.md").read_text(encoding="utf-8")
+    for blocker_id in ("scorer-offline-closure", "artifact-only-state-export"):
+        assert f"## Shared requirement withdrawn: `{blocker_id}`" in withdrawal
     assert not {"official-scorer-identity", "snapshot-owned-cleanup"} & \
         set(appworld["shared_blockers"])
     assert registry["review"]["production_authorized"] is False

@@ -86,3 +86,48 @@ def test_the_withdrawal_record_still_names_the_retained_boundary():
     for marker in ("**Asked for:**", "**Searched:**", "**Result:**"):
         assert marker in text, f"the withdrawal record lost its {marker} evidence structure"
     assert "Retained future opt-in boundary" in text
+
+
+# Any test module that names a withdrawn shared requirement must also read the record that says it
+# was withdrawn. A module that pins the requirement as still active without looking at
+# `registry/withdrawn-requirements.md` is exactly the failure this caught by hand:
+# test_appworld_trusted_trial_writer_codex183.py asserted appworld's shared_blockers still equalled
+# {scorer-offline-closure, artifact-only-state-export} and went red the moment they were withdrawn.
+GUARD_DIR = ROOT / "tests" / "quality"
+
+
+def test_only_tests_that_read_the_withdrawal_record_name_a_withdrawn_requirement():
+    offenders = []
+    for path in sorted(GUARD_DIR.glob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        named = sorted(name for name in _shared_ids() if name in text)
+        if not named:
+            continue
+        reads_record = "withdrawn-requirements.md" in text
+        if not reads_record:
+            offenders.append((path.name, named))
+    assert offenders == [], (
+        "test modules name a withdrawn shared requirement without reading the withdrawal record: "
+        f"{offenders}")
+
+
+def test_only_tests_that_read_the_withdrawal_record_pin_a_withdrawn_blocker():
+    """The same rule for dataset-level withdrawals.
+
+    Three test sites pinned withdrawn blockers as still active and went red the moment the operator
+    withdrew them - appworld's shared list, and `ujson-native-offline-closure` in two files. A module
+    that names such a blocker must read the record explaining why it is gone.
+    """
+    withdrawn_ids = {blocker for _, blocker
+                     in WITHDRAWN_DATASET.findall(WITHDRAWALS.read_text(encoding="utf-8"))}
+    assert withdrawn_ids, "no dataset-level withdrawal parsed"
+    offenders = []
+    for path in sorted(GUARD_DIR.glob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        named = sorted(name for name in withdrawn_ids
+                       if f'"{name}"' in text or f"'{name}'" in text)
+        if named and "withdrawn-requirements.md" not in text:
+            offenders.append((path.name, named))
+    assert offenders == [], (
+        "test modules pin a withdrawn dataset blocker without reading the withdrawal record: "
+        f"{offenders}")
