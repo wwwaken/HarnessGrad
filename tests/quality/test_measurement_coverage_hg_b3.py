@@ -159,17 +159,32 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
     baseline = json.loads((ROOT / "tests/fixtures/dataset_blockers/history-codex178.json").read_text())
     target = next(row for row in document["datasets"] if row["dataset"] == dataset)
     blockers = {item["id"]: item for item in target["blockers"]}
-    withdrawn = dataset in {"bird_minidev", "ds1000"}
+    # hotpotqa joined the withdrawn branch on 2026-10-15 when its blocker closed under reading (A)
+    # (registry/blocker-closure-assessment.md, "Closed under reading A - hotpotqa"). Its withdrawal
+    # section carries a longer header than the other two, so it is looked up explicitly rather than
+    # interpolated, and its own wording is asserted below.
+    withdrawn = dataset in {"bird_minidev", "ds1000", "hotpotqa"}
     if withdrawn:
         assert active_id not in blockers
         withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
-        section = withdrawal.split(f"### `{dataset} / {active_id}`", 1)[1].split("\n##", 1)[0]
+        header = (f"### `{dataset} / {active_id} / original-v4-receipts`" if dataset == "hotpotqa"
+                  else f"### `{dataset} / {active_id}`")
+        section = withdrawal.split(header, 1)[1].split("\n##", 1)[0]
         assert "**Searched:**" in section
         if dataset == "bird_minidev":
             assert "the tracked-source inventory" in section
             assert "only summaries exist" in section
             assert "**not present in\nthis repository**" in section
             assert "not published upstream" in section
+        elif dataset == "hotpotqa":
+            # The wording that distinguishes HotpotQA from the never-captured pair: these receipts
+            # existed and were lost, so "not published upstream" would have overstated the case.
+            assert "**local pilot of this platform**" in section
+            assert "the receipts existed and were" in section
+            assert "lost, rather than never being captured" in section
+            assert "`hotpotqa-h0-10pct-v4`" in section
+            assert "`historical_runs` keeps `run_id=null` and `effect=null`" in section
+            assert "`/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4`" in section
         else:
             assert "the same inventory" in section
             assert "**do not exist in the repository**" in section
@@ -180,7 +195,7 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
     if retired:
         assert retired not in blockers
     # BIRD/DS1000's old B3 citation membership checks lost their active carriers.
-    # Their failed archive searches are checked above; HotpotQA's gate stays pinned.
+    # Their failed archive searches are checked above.
     if active_id is not None and not withdrawn:
         locator = {
             "hotpotqa": "## HotpotQA: schema/timeout review closed; timeout aggregation still blocked",
@@ -203,9 +218,17 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
         # meaning "carries every shared gate" the moment the shared set changes again.
         assert set(target["shared_blockers"]) == {
             item["id"] for item in document["shared_blockers"]}
-        assert {"kind": "external-reference", "path": "/site/w-hotpot-timeout-closure.md",
-                "locator": "# HotpotQA timeout outcome/persistence/aggregation closure - w-hotpot"
-                } in blockers[active_id]["evidence"]
+        if withdrawn:
+            # The blocker is gone, so the timeout-closure citation moved to the closure record.
+            # The exact evidence pair is asserted there rather than dropped.
+            assessment = (ROOT / "registry/blocker-closure-assessment.md").read_text(encoding="utf-8")
+            assert "/site/w-hotpot-timeout-closure.md" in assessment
+            assert ("# HotpotQA timeout outcome/persistence/aggregation closure - w-hotpot"
+                    in assessment)
+        else:
+            assert {"kind": "external-reference", "path": "/site/w-hotpot-timeout-closure.md",
+                    "locator": "# HotpotQA timeout outcome/persistence/aggregation closure - w-hotpot"
+                    } in blockers[active_id]["evidence"]
     else:
         assert set(target["shared_blockers"]) == {item["id"] for item in document["shared_blockers"]}
     assert document["review"]["production_authorized"] is False

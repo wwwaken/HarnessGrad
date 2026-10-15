@@ -4,7 +4,7 @@ Parent assessment, 2026-10-15, opened at registry commit `21d6ebbf` and updated 
 registry. Its purpose is to answer one question for every open blocker: **which of its own
 `next_action` obligations are already discharged, which are not, and what class the rest belong to** —
 so that "14 open" becomes a set of concrete dispositions instead of a number. It currently describes
-**11** open blockers; the count and every supersession are recorded in the closure sections below.
+**10** open blockers; the count and every supersession are recorded in the closure sections below.
 
 The controlling rule is the objective's: a blocker closes only on the kind of evidence its own
 `next_action` names. Nothing here is a claim that an obligation is met unless the record already holds
@@ -38,7 +38,6 @@ the artefact.
 | `fever / dataset-journal-gap` | measurement | open | metric DETERMINED; upstream producing-execution search done and **bounded** ABSENT (two historical objects still unread); metric choice outstanding |
 | `strategyqa / dataset-journal-gap` | measurement | open | original scorer FOUND and DIFFERENT; split membership `PENDING-UPSTREAM` |
 | `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |
-| `hotpotqa / historical-comparison-receipts` | measurement | open | `LIMIT-RECORDED` |
 
 ## The four permanent refusals
 
@@ -140,26 +139,28 @@ propose one. This was the clearest candidate for the operator's standing-limit r
 `hotpotqa / historical-comparison-receipts / original-v4-receipts`, with wording that does not
 overstate the case: the receipts existed and were lost, the run was a local pilot so no upstream
 source can hold them, the enumerated scope is named, and the deletion cause is left unattributed.
-The candidate ID, the filenames and the enumerated absence stay recorded; the blocker's remaining
-obligations are unchanged and it stays open.
+The candidate ID, the filenames and the enumerated absence stay recorded; the blocker was later
+**closed** on the same reading - see the closure section at the end of this document.
 
 ## What is not in doubt
 
 Two blockers were closed under reading (A) on 2026-10-15 and both are recorded above with their
-clause-by-clause basis; that closure waived no verification step. For every blocker that remains open,
+clause-by-clause basis; that closure waived no verification step. Two more - `reasoning_gym` and
+`hotpotqa` - were closed under the same reading the same day, each with its own clause-by-clause
+section below, and that closure waived no verification step either. For every blocker that remains open,
 nothing here is discharged by a review that has not been done: every `SATISFIED` entry names an artefact
 that exists, every `PRE-DIAGNOSTIC` entry is labelled as such rather than counted as closure, and no measured score is asserted anywhere. The four permanent refusals are untouched.
 
 ## Reverse audit — is every cleared dataset cleared for a recorded reason?
 
-A forward assessment of the 11 open blockers says nothing about the 17 datasets that currently carry
+A forward assessment of the 10 open blockers says nothing about the 18 datasets that currently carry
 none. If a blocker had ever been dropped without a disposition, the registry would show a dataset as
 clear for no recorded reason, which is a worse defect than an open blocker. The reverse audit compared
 the blocker set per dataset at `db32421c` (before the withdrawal wave) and at `1825cd0e^` (before the
 bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
 
 * `1825cd0e^` and `db32421c`: 28 datasets, **22** blockers. At the reverse audit's own commit: 28
-  datasets, **14** blockers (11 now; the three reading-(A) closures below are documented steps, not
+  datasets, **14** blockers (10 now; the four reading-(A) closures below are documented steps, not
   unrecorded drops).
   Eight blockers were removed and eight withdrawal entries exist in
   `registry/withdrawn-requirements.md`, one per removal: `livecodebench/row-attestation`,
@@ -174,10 +175,10 @@ bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
   this phase's registry and is not a result of anything removed here.
 
 Conclusion: no dataset is currently clear because a blocker was silently dropped. `22 - 8 = 14`
-accounts for every one of those removals, and the three closures under reading (A) on 2026-10-15
-(`physicsquestions`, `sportsunderstanding` and `reasoning_gym`) take the active set from **14** to
-**11**. Each is recorded above and in the registry's `review.notes`, so the count is accounted for in
-documented steps rather than one unexplained drop.
+accounts for every one of those removals, and the four closures under reading (A) on 2026-10-15
+(`physicsquestions`, `sportsunderstanding`, `reasoning_gym` and `hotpotqa`) take the active set from
+**14** to **10**. Each is recorded above and in the registry's `review.notes`, so the count is
+accounted for in documented steps rather than one unexplained drop.
 
 ## Closed under reading A, 2026-10-15 - `reasoning_gym`
 
@@ -247,15 +248,15 @@ candidates" section is unchanged and still belongs to the operator; what changed
 Any future pass over this registry must read the family guards in `tests/quality/` alongside the
 registry text, and a strict `xfail` in those guards is debt, not a passing state.
 
-## Closure candidate, 2026-10-15 — `hotpotqa / historical-comparison-receipts`
+## Closed under reading A, 2026-10-15 - `hotpotqa / historical-comparison-receipts`
 
-This one is filed as a **candidate**, not a closure, because it is the first time reading (A) would be
-applied to a `measurement-coverage` blocker rather than to a `dataset-journal-gap`, and because the
-earlier assessment deliberately left it open. The basis is that every clause of its current `next_action`
-is now satisfied, recorded as a limit, or a precondition on a future diagnostic — and the operator's
-standing rule is that a requirement which is **proven unobtainable is withdrawn and recorded as a limit
-rather than left open**. Leaving it open would reimpose, as an open blocker, a requirement this registry
-has already withdrawn, which is the failure mode that rule exists to prevent.
+The parent filed this as a **closure candidate** first, because it is the first time reading (A) is
+applied to a `measurement-coverage` blocker rather than to a `dataset-journal-gap`; the operator then
+confirmed the closure. The basis is unchanged by the confirmation: every clause of the blocker's current
+`next_action` is satisfied, recorded as a limit, or a precondition on a future diagnostic — and the
+operator's standing rule is that a requirement which is **proven unobtainable is withdrawn and recorded
+as a limit rather than left open**. Leaving it open would reimpose, as an open blocker, a requirement
+this registry has already withdrawn, which is the failure mode that rule exists to prevent.
 
 | clause from the current `next_action` | class | where it stands |
 | --- | --- | --- |
@@ -268,18 +269,27 @@ has already withdrawn, which is the failure mode that rule exists to prevent.
 | Current selected scorer/control admission for any separately authorized future diagnostic, with a fresh ID and the current staged policy | `PRE-DIAGNOSTIC` | statement only; **no diagnostic is authorized**, and nothing above waives it |
 | Withdrawn shared gates do not condition closure or admission | `WITHDRAWN` | `registry/withdrawn-requirements.md` |
 
-**What closing it would and would not mean.** It would close no measurement and assert no score: the v4
-run stays incomplete with `effect=null`, the 94/1382/1476 coverage stays unverified and unbound, and every
-diagnostic-time clause remains a requirement of any future diagnostic. What it would remove is a blocker
-whose only remaining content is a limit this registry already records.
+**This closes no measurement and asserts no score.** The v4 run stays incomplete with `effect=null`, the
+94/1382/1476 coverage stays unverified and unbound, unknown outcomes stay unmeasured and never become
+zeros, and every diagnostic-time clause remains a requirement of any future diagnostic. What the closure
+removes is a blocker whose only remaining content is a limit this registry already records.
 
-**It is not a free edit.** `tests/quality/test_measurement_coverage_hg_b3.py:155-215` parametrizes
-hotpotqa with `active_id="historical-comparison-receipts"` and asserts that blocker **exists** with status
-`measurement`, that its evidence cites the timeout-closure record, that `schema-timeout-measurement` is
-absent, and that its `shared_blockers` set tracks the live shared set. Closing means moving hotpotqa into
-that test's `withdrawn` branch beside `bird_minidev` and `ds1000`, giving it the same class of assertions
-over its withdrawal entry (`**Searched:**`, the enumerated scope, the retained `effect=null`) and moving -
-not deleting - the `historical_runs`, shared-set and timeout-closure assertions so they keep being checked
-against the cleared dataset. The reverse audit above would take the active set from 11 to **10**, and the
-`LIMIT-RECORDED` dispositions for `hotpotqa` in the summary table and in this document would become a
-closure section.
+**The guard change is a move, not a deletion.** `tests/quality/test_measurement_coverage_hg_b3.py:155-215`
+had parametrized hotpotqa with `active_id="historical-comparison-receipts"` and asserted that blocker
+**exists** with status `measurement`, that its evidence cites the timeout-closure record, that
+`schema-timeout-measurement` is absent, and that its `shared_blockers` set tracks the live shared set.
+hotpotqa now takes the `withdrawn` branch beside `bird_minidev` and `ds1000`, with assertions over its own
+withdrawal entry (`**Searched:**`, the enumerated on-machine scope, the "existed and were lost" wording
+that distinguishes it from the never-captured pair, and the retained `run_id=null`/`effect=null`). The
+`historical_runs` comparison, the live-`shared_blockers` comparison and the timeout-closure citation all
+still run against the cleared dataset - the citation is now read from this closure record, which carries
+the exact `path`/`locator` pair verbatim below - so nothing was deleted to make the closure pass.
+
+Timeout-closure citation retained verbatim:
+`{"kind": "external-reference", "path": "/site/w-hotpot-timeout-closure.md", "locator":
+"# HotpotQA timeout outcome/persistence/aggregation closure - w-hotpot"}`.
+
+The reverse audit above takes the active set from 11 to **10** with this closure as its fourth documented
+step. The summary table's `LIMIT-RECORDED` row for `hotpotqa` is gone because the blocker is gone; the
+limit itself is unchanged in `registry/withdrawn-requirements.md` and
+`registry/w-hotpotrec-receipts.md`.

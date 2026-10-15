@@ -115,6 +115,13 @@ obligations - current selected scorer/control admission, the retained first-five
 synthetic timeout closure - are unchanged, and any separately authorized future diagnostic still uses
 a fresh ID under the staged policy.
 
+**Superseded 2026-10-15:** the sentence above describes the state when this limit was recorded.
+The blocker itself was afterwards **closed** under reading (A) once the parent filed it as a closure
+candidate and the operator confirmed it; the closure note is in `registry/dataset-blockers.json`
+(`review.notes`) and the clause table is in `registry/blocker-closure-assessment.md`. This withdrawal
+entry, its enumerated scope and its retained limits are unchanged, and nothing here is reopened: the v4
+run stays incomplete with `run_id=null` and `effect=null`, and no diagnostic is authorized.
+
 
 ### `livecodebench / row-attestation`
 **Asked for:** a metadata-only complete upstream catalogue/rank plus authenticated

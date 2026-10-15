@@ -224,18 +224,20 @@ def test_accepts_a_bare_list_of_per_dataset_records(registry, capsys):
     """w-metriccmp emits a bare JSON list with next_action_replacement per dataset."""
     target, write = registry
     document = json.loads(target.read_text(encoding="utf-8"))
-    old = a_blocker(document, "hotpotqa", "historical-comparison-receipts")["next_action"]
+    # Any open blocker works here; this was `hotpotqa/historical-comparison-receipts` until that
+    # blocker closed under reading (A) on 2026-10-15 (registry/w-close4-validation.txt).
+    old = a_blocker(document, "strategyqa", "dataset-journal-gap")["next_action"]
     proposal = write("list.json", [
-        {"dataset": "hotpotqa", "blocker": "historical-comparison-receipts",
+        {"dataset": "strategyqa", "blocker": "dataset-journal-gap",
          "determination": "different",
          "observed_append": "LIST-SHAPE-MARKER.",
          "next_action_replacement": old + " LIST-SHAPE."},
     ])
-    assert applier.main([str(proposal), "--dataset", "hotpotqa",
-                         "--blocker", "historical-comparison-receipts", "--registry", str(target),
+    assert applier.main([str(proposal), "--dataset", "strategyqa",
+                         "--blocker", "dataset-journal-gap", "--registry", str(target),
                          "--apply"]) == 0
     updated = a_blocker(json.loads(target.read_text(encoding="utf-8")),
-                        dataset="hotpotqa", blocker_id="historical-comparison-receipts")
+                        dataset="strategyqa", blocker_id="dataset-journal-gap")
     assert updated["next_action"].endswith("LIST-SHAPE.")
     assert "LIST-SHAPE-MARKER." in updated["observed"]
 
@@ -244,9 +246,9 @@ def test_refuses_a_list_record_with_no_matching_dataset(registry, capsys):
     target, write = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     proposal = write("list2.json", [
-        {"dataset": "hotpotqa", "blocker": "historical-comparison-receipts",
-         "next_action_replacement": a_blocker(document, "hotpotqa",
-                                              "historical-comparison-receipts")["next_action"] + " X."},
+        {"dataset": "strategyqa", "blocker": "dataset-journal-gap",
+         "next_action_replacement": a_blocker(document, "strategyqa",
+                                              "dataset-journal-gap")["next_action"] + " X."},
     ])
     assert applier.main([str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
                          "--registry", str(target)]) == 1

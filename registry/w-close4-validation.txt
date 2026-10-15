@@ -1,0 +1,81 @@
+Parent closure of a fourth blocker under operator decision (A), and the first applied to a
+`measurement-coverage` blocker rather than a `dataset-journal-gap`.
+
+Decision
+--------
+The parent filed `hotpotqa / historical-comparison-receipts` as a **closure candidate** with its
+clause-by-clause basis in `registry/blocker-closure-assessment.md` - because it is the first application
+of reading (A) outside the journal-coverage family, and because the earlier assessment had deliberately
+left it open. The operator then confirmed the closure. Reading (A) is unchanged: the diagnostic-time
+clauses are preconditions on a *future, separately authorized* diagnostic rather than conditions on
+closure. The controlling argument is the operator's own standing rule - a requirement that is **proven
+unobtainable is withdrawn and recorded as a limit rather than left open** - so leaving this blocker open
+would reimpose, as an open blocker, a requirement the registry had already withdrawn.
+
+Closed
+------
+* `hotpotqa / historical-comparison-receipts`, removed from `registry/dataset-blockers.json`.
+
+Clause-by-clause basis at closure
+---------------------------------
+* original v4 selected-ID/trial/error/timeout receipts, its source/split/manifest/model/harness
+  provenance receipts, and that run's measured/invalid/unmeasured counts and lifecycle/cleanup
+  reconciliation -> WITHDRAWN (`registry/withdrawn-requirements.md`,
+  `hotpotqa / historical-comparison-receipts / original-v4-receipts`); enumerated scope: 722
+  `~/.codex/sessions` transcripts, the full object store/history/reflog/stash, `runs/`,
+  `runs_discarded_*`, `.hashstate`, `tests/fixtures/`, the named archives and
+  `/mnt/20t/xubuqiang/hg-census/`.
+* candidate ID `hotpotqa-h0-10pct-v4` and its unresolved binding to the reported 94/1382/1476 coverage
+  -> LIMIT-RECORDED (`registry/w-hotpotrec-receipts.md`, `registry/w-hotpotrec-evidence.json`).
+* old full-size protocol preserved incomplete with `run_id=null` / `effect=null`, never resumed, rerun
+  or overwritten -> SATISFIED, and still pinned.
+* timeout classification/persistence/aggregation -> SATISFIED (synthetic closure,
+  `/site/w-hotpot-timeout-closure.md`).
+* bounded operator first-five selected-only manifest/export -> SATISFIED
+  (`tests/fixtures/hg_wsel/hotpotqa.json`); mixed-side, not a diagnostic specification.
+* current selected scorer/control admission for any separately authorized future diagnostic, fresh run
+  ID, current staged policy -> PRE-DIAGNOSTIC; **no diagnostic is authorized by this closure**.
+* withdrawn shared gates do not condition closure or admission -> WITHDRAWN.
+
+The guard change is a move, not a deletion
+------------------------------------------
+`tests/quality/test_measurement_coverage_hg_b3.py:151-215` previously parametrized hotpotqa with
+`active_id="historical-comparison-receipts"` and asserted the blocker **exists** with status
+`measurement`, that its evidence cites the timeout-closure record, that `schema-timeout-measurement` is
+absent, and that its `shared_blockers` set tracks the live shared set. hotpotqa now takes the test's
+`withdrawn` branch beside `bird_minidev` and `ds1000`, with new assertions over its own withdrawal entry:
+
+* `**Searched:**` is present (as for the other two);
+* `**local pilot of this platform**`, `the receipts existed and were`, `lost, rather than never being
+  captured` - the wording that distinguishes this case from the never-captured pair, where "not
+  published upstream" would have overstated it;
+* `hotpotqa-h0-10pct-v4`, `historical_runs` keeps `run_id=null` and `effect=null`, and the enumerated run
+  directory `/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4`.
+
+The `historical_runs` baseline comparison, the live-`shared_blockers` comparison and the timeout-closure
+citation all still run against the cleared dataset; the citation is now read from the closure record,
+which carries the exact `path`/`locator` pair verbatim. Nothing was deleted to make the closure pass.
+
+`registry/withdrawn-requirements.md` keeps its dated text and gains a **Superseded 2026-10-15** sentence
+pointing at the closure note, so the entry no longer reads as "an active blocker that stays open".
+
+What this does NOT do
+---------------------
+It closes no measurement and asserts no score. The v4 run stays incomplete with `effect=null`, the
+94/1382/1476 coverage stays unverified and unbound, unknown outcomes stay unmeasured and never become
+zeros, and every diagnostic-time clause remains a requirement of any future diagnostic - which still
+needs its own authorization, a fresh run ID, a split/side binding and the staged pilot policy. The
+pre-closure text remains readable in the git history of `registry/dataset-blockers.json`.
+
+Verification
+------------
+```
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+$ python3 -m pytest -q tests/quality/test_measurement_coverage_hg_b3.py \
+      tests/quality/test_closure_assessment.py tests/quality/test_dataset_blockers.py
+93 passed, 1 skipped in 6.06s
+```
+
+Open blockers: 11 -> 10. `production_authorized` stays `false`.
