@@ -342,6 +342,9 @@ def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mo
     # Filter only runtime directories unused by boundary spies; all actual
     # scorer inputs, check scripts and helper files retain real materialization.
     spec["inputs"] = [e for e in spec["inputs"] if not ("from" in e and Path(e["from"]).is_dir())]
+    # The sealed runtime requires sandbox=True; exercise identity binding on the
+    # generic route that reaches this test's process boundary spy.
+    spec.pop("native_runtime", None)
     if mode == "unbound-check":
         for flag in ("--task-id", "--scorer-input-sha256", "--scorer-input-files"):
             if flag in spec["argv"]:

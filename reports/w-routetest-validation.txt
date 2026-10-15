@@ -1,0 +1,931 @@
+w-routetest report and validation
+
+This is the single additional committed file beyond the two test files: it combines
+this task's required standalone report, exact validation output, and file sizes.
+
+FOUND
+- Worktree base and actual branch: see commands [base] and [branch] below.
+- The only test changes select the generic route on private spec copies in three
+  boundary-spy tests: tests/quality/test_task_bound_scorer_inputs_w_tbi.py:158,
+  tests/quality/test_task_bound_scorer_inputs_w_tbi.py:184, and
+  tests/quality/test_task_bound_native_inputs_w_tbi2.py:339; see [diff] and [audit].
+- Real input/check/helper staging remains in those tests; the pre-existing runtime
+  directory filter is retained at tests/quality/test_task_bound_native_inputs_w_tbi2.py:342.
+- Every original assertion, function decorator, fixture and DATASETS assignment is
+  preserved: [audit] compares source ASTs against HEAD and limits changed top-level
+  definitions to exactly the intended three test functions (31 + 41 assertions).
+- Scorer suite: before 4 failed, 152 passed; after 156 passed. Exact commands and
+  full outputs: [before-scorer] and [after-scorer].
+- Native-input suite: before 12 failed, 94 passed; after 106 passed. Exact commands
+  and full outputs: [before-native] and [after-native].
+- The complete seven-file Python test scope matching native_runtime, scorer_input
+  or admit( was enumerated by [scope] and executed together in [neighbors]:
+  306 passed, 5 skipped. No new skips were added; [diff] and [audit] show the change.
+- The checker returned {"valid": true, "datasets": 28, "shared_blockers": 0,
+  "historical_records": 11, "production_authorized": false}; exact output [checker].
+  This test-only change does not edit the registry; [protected-diff] verifies that scope.
+- Each pytest invocation used a fresh /tmp/routetest-* TMPDIR and basetemp and
+  removed that entire root as soon as subprocess.run returned; exact cleanup
+  observations accompany every pytest capture, and the capture-driver source follows.
+
+Native-route identity argument (one line): The sealed route passes the original spec to _verify_existing at eval/verification/verifier.py:489, which rejects a foreign/missing selected task at eval/verification/verifier.py:525 before check execution and validates the consumed identity at eval/verification/verifier.py:543 through eval/verification/verifier.py:546-562.
+
+Order clarification: runtime admission itself occurs at eval/verification/verifier.py:487,
+before _verify_existing; the selected-task refusal precedes check execution, not admission.
+The sandbox=False refusal remains at eval/verification/verifier.py:474-475.
+Exact cited source lines are reproduced in [source-citations].
+
+ABSENT (only the explicitly enumerated scope below)
+- tests/fixtures/hg_whp3 and tests/fixtures/hg_wwal do not exist in this worktree:
+  [fixture-scope] checks these two paths, and no broader absence is asserted.
+- [skip-details] observes four skips at test_native_runtime_hp3.py:83 for the
+  missing hg_whp3 fixture, and one module skip at test_w_wal.py:14 for hg_wwal.
+- No tracked diff in eval/, data/, registry/, docs/adapter-integration-journal.md,
+  or AGENTS.md: exact enumerated diff scope and empty output in [protected-diff].
+
+UNKNOWN / explicitly NOT verified
+- The four authored ALFWorld/Jericho replay and parent/child tests requiring
+  tests/fixtures/hg_whp3, and the WAL module requiring tests/fixtures/hg_wwal,
+  did not execute their bodies. Most important review uncertainty: those native
+  replay/WAL paths remain unverified in this checkout because the fixtures are absent.
+- The full repository test suite, benchmark measurements, model endpoints, GPU
+  execution, pilot authorization, and upstream source provenance beyond assertions
+  exercised by the named suites were not independently verified.
+- No claims are made about other worktrees, the operator's uncommitted files, or
+  whether this commit has been reviewed/merged by the parent.
+
+Exact verification command captures
+All commands ran in /mnt/20t/xubuqiang/hg-wt/w-routetest.
+stdout and stderr were combined by the capture driver. Each output block is a
+lossless JSON array of lines; concatenate its decoded strings to recover the exact
+output, including whitespace and newlines. [] means no stdout/stderr.
+
+[base]
+$ git rev-parse HEAD
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "8c8d3859cf3e7e16756cb8a298380b1408a229c4\n"
+]
+--- end exact output ---
+
+[branch]
+$ git branch --show-current
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "wg-w-routetest\n"
+]
+--- end exact output ---
+
+[before-scorer]
+$ TMPDIR=/tmp/routetest-before-scorer-3kfz35v4 CUDA_VISIBLE_DEVICES= python3 -m pytest -q tests/quality/test_task_bound_scorer_inputs_w_tbi.py --basetemp=/tmp/routetest-before-scorer-3kfz35v4/pytest
+Exit status: 1
+--- exact combined output (JSON lines) ---
+[
+  ".....................F.FFF.............................................. [ 46%]\n",
+  "........................................................................ [ 92%]\n",
+  "............                                                             [100%]\n",
+  "=================================== FAILURES ===================================\n",
+  "______ test_native_matching_identity_preserves_reward[chessbench_puzzles] ______\n",
+  "\n",
+  "case = namespace(name='chessbench_puzzles', record={'task_id': 'chessbench_puzzles/test/0', 'index': 0, 'split': 'test', 'row...ntimes/chessbench_puzzles-native.json', 'sha256': 'b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c'}})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-scorer-3kfz35v4/pytest/test_native_matching_identity_1')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7827ce2c4320>\n",
+  "\n",
+  "    def test_native_matching_identity_preserves_reward(case, tmp_path, monkeypatch):\n",
+  "        binding = case.spec.get(\"scorer_input\", {})\n",
+  "        receipt = {**binding, \"expected_sha256\": binding.get(\"sha256\"), \"verified\": True}\n",
+  "        monkeypatch.setattr(verifier, \"_verify_inner\", lambda *a, **kw: {\n",
+  "            \"kind\": \"command\", \"passed\": True, \"score\": 0.25,\n",
+  "            \"evidence\": {\"measured\": True, \"scorer_input\": receipt}})\n",
+  "        result = verifier._verify(tmp_path, case.spec, \"\", sandbox=False, timeout_s=5,\n",
+  "                                  task_id=case.record[\"task_id\"])\n",
+  ">       assert not result.get(\"unmeasured\")\n",
+  "E       AssertionError: assert not 'native runtime requires sandbox=True'\n",
+  "E        +  where 'native runtime requires sandbox=True' = <built-in method get of dict object at 0x7827cd3bc740>('unmeasured')\n",
+  "E        +    where <built-in method get of dict object at 0x7827cd3bc740> = {'kind': 'command', 'native_runtime': {'sha256': 'b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c', 'verified': False}, 'outcome': 'unmeasured', 'passed': False, ...}.get\n",
+  "\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py:166: AssertionError\n",
+  "_ test_native_materialization_check_and_verdict_consumption[chessbench_puzzles-unchanged] _\n",
+  "\n",
+  "case = namespace(name='chessbench_puzzles', record={'task_id': 'chessbench_puzzles/test/0', 'index': 0, 'split': 'test', 'row...ntimes/chessbench_puzzles-native.json', 'sha256': 'b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c'}})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-scorer-3kfz35v4/pytest/test_native_materialization_ch3')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7827ce2c5a60>\n",
+  "mode = 'unchanged'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"unchanged\", \"foreign-gold\", \"unbound-check\"])\n",
+  "    def test_native_materialization_check_and_verdict_consumption(case, tmp_path, monkeypatch, mode):\n",
+  "        \"\"\"Use real staging and verdict reads; intercept only the process/scorer boundary.\"\"\"\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--gold-sha256\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "    \n",
+  "        def process(argv, **kwargs):\n",
+  "            # Staging has completed. A foreign input is substituted at the last moment\n",
+  "            # before the real check reads it, rather than editing the trusted spec's pin.\n",
+  "            payload = gold_bytes(case.other if mode == \"foreign-gold\" else spec)\n",
+  "            code, evidence, calls = invoke(case, spec, payload, tmp_path, monkeypatch)\n",
+  "            results.append((evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "    \n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5,\n",
+  "                                  task_id=case.record[\"task_id\"])\n",
+  ">       evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py:201: IndexError\n",
+  "_ test_native_materialization_check_and_verdict_consumption[chessbench_puzzles-foreign-gold] _\n",
+  "\n",
+  "case = namespace(name='chessbench_puzzles', record={'task_id': 'chessbench_puzzles/test/0', 'index': 0, 'split': 'test', 'row...ntimes/chessbench_puzzles-native.json', 'sha256': 'b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c'}})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-scorer-3kfz35v4/pytest/test_native_materialization_ch4')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7827ce2c71d0>\n",
+  "mode = 'foreign-gold'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"unchanged\", \"foreign-gold\", \"unbound-check\"])\n",
+  "    def test_native_materialization_check_and_verdict_consumption(case, tmp_path, monkeypatch, mode):\n",
+  "        \"\"\"Use real staging and verdict reads; intercept only the process/scorer boundary.\"\"\"\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--gold-sha256\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "    \n",
+  "        def process(argv, **kwargs):\n",
+  "            # Staging has completed. A foreign input is substituted at the last moment\n",
+  "            # before the real check reads it, rather than editing the trusted spec's pin.\n",
+  "            payload = gold_bytes(case.other if mode == \"foreign-gold\" else spec)\n",
+  "            code, evidence, calls = invoke(case, spec, payload, tmp_path, monkeypatch)\n",
+  "            results.append((evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "    \n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5,\n",
+  "                                  task_id=case.record[\"task_id\"])\n",
+  ">       evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py:201: IndexError\n",
+  "_ test_native_materialization_check_and_verdict_consumption[chessbench_puzzles-unbound-check] _\n",
+  "\n",
+  "case = namespace(name='chessbench_puzzles', record={'task_id': 'chessbench_puzzles/test/0', 'index': 0, 'split': 'test', 'row...ntimes/chessbench_puzzles-native.json', 'sha256': 'b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c'}})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-scorer-3kfz35v4/pytest/test_native_materialization_ch5')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7827ce2c5a00>\n",
+  "mode = 'unbound-check'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"unchanged\", \"foreign-gold\", \"unbound-check\"])\n",
+  "    def test_native_materialization_check_and_verdict_consumption(case, tmp_path, monkeypatch, mode):\n",
+  "        \"\"\"Use real staging and verdict reads; intercept only the process/scorer boundary.\"\"\"\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--gold-sha256\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "    \n",
+  "        def process(argv, **kwargs):\n",
+  "            # Staging has completed. A foreign input is substituted at the last moment\n",
+  "            # before the real check reads it, rather than editing the trusted spec's pin.\n",
+  "            payload = gold_bytes(case.other if mode == \"foreign-gold\" else spec)\n",
+  "            code, evidence, calls = invoke(case, spec, payload, tmp_path, monkeypatch)\n",
+  "            results.append((evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "    \n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5,\n",
+  "                                  task_id=case.record[\"task_id\"])\n",
+  ">       evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py:201: IndexError\n",
+  "=========================== short test summary info ============================\n",
+  "FAILED tests/quality/test_task_bound_scorer_inputs_w_tbi.py::test_native_matching_identity_preserves_reward[chessbench_puzzles]\n",
+  "FAILED tests/quality/test_task_bound_scorer_inputs_w_tbi.py::test_native_materialization_check_and_verdict_consumption[chessbench_puzzles-unchanged]\n",
+  "FAILED tests/quality/test_task_bound_scorer_inputs_w_tbi.py::test_native_materialization_check_and_verdict_consumption[chessbench_puzzles-foreign-gold]\n",
+  "FAILED tests/quality/test_task_bound_scorer_inputs_w_tbi.py::test_native_materialization_check_and_verdict_consumption[chessbench_puzzles-unbound-check]\n",
+  "4 failed, 152 passed in 7.37s\n"
+]
+--- end exact output ---
+Cleanup observation: /tmp/routetest-before-scorer-3kfz35v4: exists=False
+
+[before-native]
+$ TMPDIR=/tmp/routetest-before-native-oy00lxd2 CUDA_VISIBLE_DEVICES= python3 -m pytest -q tests/quality/test_task_bound_native_inputs_w_tbi2.py --basetemp=/tmp/routetest-before-native-oy00lxd2/pytest
+Exit status: 1
+--- exact combined output (JSON lines) ---
+[
+  "...........FFF............FFF...........................FFF............. [ 67%]\n",
+  "..............FFF.................                                       [100%]\n",
+  "=================================== FAILURES ===================================\n",
+  "_______ test_real_materialization_check_and_dispatch[alfworld-matching] ________\n",
+  "\n",
+  "case = namespace(name='alfworld', module=<module 'data.datasets.alfworld' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/data/dat...291073c244ff594b'}, foreign_files={'game.tw-pddl': 'c4699c0e4a1a3f081d89b1fc40cc105a02ba689ecb96f9a06f453d987e8d4d25'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec0')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70554ee26270>\n",
+  "mode = 'matching'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "____ test_real_materialization_check_and_dispatch[alfworld-foreign-payload] ____\n",
+  "\n",
+  "case = namespace(name='alfworld', module=<module 'data.datasets.alfworld' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/data/dat...291073c244ff594b'}, foreign_files={'game.tw-pddl': 'c4699c0e4a1a3f081d89b1fc40cc105a02ba689ecb96f9a06f453d987e8d4d25'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec1')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70554ee255b0>\n",
+  "mode = 'foreign-payload'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "_____ test_real_materialization_check_and_dispatch[alfworld-unbound-check] _____\n",
+  "\n",
+  "case = namespace(name='alfworld', module=<module 'data.datasets.alfworld' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/data/dat...291073c244ff594b'}, foreign_files={'game.tw-pddl': 'c4699c0e4a1a3f081d89b1fc40cc105a02ba689ecb96f9a06f453d987e8d4d25'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec2')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70554ee24d40>\n",
+  "mode = 'unbound-check'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "_____ test_real_materialization_check_and_dispatch[bird_minidev-matching] ______\n",
+  "\n",
+  "case = namespace(name='bird_minidev', module=<module 'data.datasets.bird_minidev' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/...8e7bfa89680d968541102f090b74f', 'database.sqlite': 'eb89bcfe97eefa386a27904ec5aa15159811a7eac894ec659a36e48fa9f76b77'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec3')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70554ed1a990>\n",
+  "mode = 'matching'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "__ test_real_materialization_check_and_dispatch[bird_minidev-foreign-payload] __\n",
+  "\n",
+  "case = namespace(name='bird_minidev', module=<module 'data.datasets.bird_minidev' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/...8e7bfa89680d968541102f090b74f', 'database.sqlite': 'eb89bcfe97eefa386a27904ec5aa15159811a7eac894ec659a36e48fa9f76b77'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec4')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70554ed1a090>\n",
+  "mode = 'foreign-payload'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "___ test_real_materialization_check_and_dispatch[bird_minidev-unbound-check] ___\n",
+  "\n",
+  "case = namespace(name='bird_minidev', module=<module 'data.datasets.bird_minidev' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/...8e7bfa89680d968541102f090b74f', 'database.sqlite': 'eb89bcfe97eefa386a27904ec5aa15159811a7eac894ec659a36e48fa9f76b77'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec5')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70554ede89e0>\n",
+  "mode = 'unbound-check'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "________ test_real_materialization_check_and_dispatch[jericho-matching] ________\n",
+  "\n",
+  "case = namespace(name='jericho', module=<module 'data.datasets.jericho' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/data/datas...88dfd6939d3f23d8d9257955008c066', 'acorncourt.z5': '6179b5d5b17d692ec83fe64101ff8e4092390166c2b05063e7310eb976b93ea0'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec9')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70553e77c740>\n",
+  "mode = 'matching'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "____ test_real_materialization_check_and_dispatch[jericho-foreign-payload] _____\n",
+  "\n",
+  "case = namespace(name='jericho', module=<module 'data.datasets.jericho' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/data/datas...88dfd6939d3f23d8d9257955008c066', 'acorncourt.z5': '6179b5d5b17d692ec83fe64101ff8e4092390166c2b05063e7310eb976b93ea0'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec10')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70553e768080>\n",
+  "mode = 'foreign-payload'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "_____ test_real_materialization_check_and_dispatch[jericho-unbound-check] ______\n",
+  "\n",
+  "case = namespace(name='jericho', module=<module 'data.datasets.jericho' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/data/datas...88dfd6939d3f23d8d9257955008c066', 'acorncourt.z5': '6179b5d5b17d692ec83fe64101ff8e4092390166c2b05063e7310eb976b93ea0'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec11')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70553e76b320>\n",
+  "mode = 'unbound-check'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "_____ test_real_materialization_check_and_dispatch[scienceworld-matching] ______\n",
+  "\n",
+  "case = namespace(name='scienceworld', module=<module 'data.datasets.scienceworld' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/...bca7bfd2317e976b068ff6774311', 'scienceworld.jar': '724cfd249175c186391ef9bd4322283dae28db4b96b45f74f9fcd76f5b13328c'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec15')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70553df1a6f0>\n",
+  "mode = 'matching'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "__ test_real_materialization_check_and_dispatch[scienceworld-foreign-payload] __\n",
+  "\n",
+  "case = namespace(name='scienceworld', module=<module 'data.datasets.scienceworld' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/...bca7bfd2317e976b068ff6774311', 'scienceworld.jar': '724cfd249175c186391ef9bd4322283dae28db4b96b45f74f9fcd76f5b13328c'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec16')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70553df1baa0>\n",
+  "mode = 'foreign-payload'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "___ test_real_materialization_check_and_dispatch[scienceworld-unbound-check] ___\n",
+  "\n",
+  "case = namespace(name='scienceworld', module=<module 'data.datasets.scienceworld' from '/mnt/20t/xubuqiang/hg-wt/w-routetest/...bca7bfd2317e976b068ff6774311', 'scienceworld.jar': '724cfd249175c186391ef9bd4322283dae28db4b96b45f74f9fcd76f5b13328c'})\n",
+  "tmp_path = PosixPath('/tmp/routetest-before-native-oy00lxd2/pytest/test_real_materialization_chec17')\n",
+  "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70553df3e5a0>\n",
+  "mode = 'unbound-check'\n",
+  "\n",
+  "    @pytest.mark.parametrize(\"mode\", [\"matching\", \"foreign-payload\", \"unbound-check\"])\n",
+  "    def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mode):\n",
+  "        stage(case, tmp_path)\n",
+  "        spec = copy.deepcopy(case.spec)\n",
+  "        # Filter only runtime directories unused by boundary spies; all actual\n",
+  "        # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "        spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "        if mode == \"unbound-check\":\n",
+  "            for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "                if flag in spec[\"argv\"]:\n",
+  "                    index = spec[\"argv\"].index(flag)\n",
+  "                    del spec[\"argv\"][index:index + 2]\n",
+  "        results = []\n",
+  "        def process(argv, **kwargs):\n",
+  "            with monkeypatch.context() as patch:\n",
+  "                code, evidence, calls = invoke(case, tmp_path, patch, spec=spec, staged=True,\n",
+  "                        substitute=next(iter(case.payloads)) if mode == \"foreign-payload\" else None)\n",
+  "                results.append((code, evidence, calls))\n",
+  "            return subprocess.CompletedProcess(argv, code, \"\", \"\")\n",
+  "        monkeypatch.setattr(verifier.subprocess, \"run\", process)\n",
+  "        result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5, task_id=case.task_id)\n",
+  ">       code, evidence, calls = results[0]\n",
+  "E       IndexError: list index out of range\n",
+  "\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: IndexError\n",
+  "=========================== short test summary info ============================\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-matching]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-foreign-payload]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-unbound-check]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[bird_minidev-matching]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[bird_minidev-foreign-payload]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[bird_minidev-unbound-check]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[jericho-matching]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[jericho-foreign-payload]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[jericho-unbound-check]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[scienceworld-matching]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[scienceworld-foreign-payload]\n",
+  "FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[scienceworld-unbound-check]\n",
+  "12 failed, 94 passed in 10.77s\n"
+]
+--- end exact output ---
+Cleanup observation: /tmp/routetest-before-native-oy00lxd2: exists=False
+
+[after-scorer]
+$ TMPDIR=/tmp/routetest-after-scorer-8_iidjig CUDA_VISIBLE_DEVICES= python3 -m pytest -q tests/quality/test_task_bound_scorer_inputs_w_tbi.py --basetemp=/tmp/routetest-after-scorer-8_iidjig/pytest
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "........................................................................ [ 46%]\n",
+  "........................................................................ [ 92%]\n",
+  "............                                                             [100%]\n",
+  "156 passed in 7.15s\n"
+]
+--- end exact output ---
+Cleanup observation: /tmp/routetest-after-scorer-8_iidjig: exists=False
+
+[after-native]
+$ TMPDIR=/tmp/routetest-after-native-rf4d_s5y CUDA_VISIBLE_DEVICES= python3 -m pytest -q tests/quality/test_task_bound_native_inputs_w_tbi2.py --basetemp=/tmp/routetest-after-native-rf4d_s5y/pytest
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "........................................................................ [ 67%]\n",
+  "..................................                                       [100%]\n",
+  "106 passed in 11.05s\n"
+]
+--- end exact output ---
+Cleanup observation: /tmp/routetest-after-native-rf4d_s5y: exists=False
+
+[scope]
+$ rg -l 'native_runtime|scorer_input|admit\(' tests --glob '*.py'
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "tests/quality/test_bird_minidev_official_scorer.py\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py\n",
+  "tests/quality/test_native_runtime_hp3.py\n",
+  "tests/quality/test_w_wal.py\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py\n",
+  "tests/quality/test_native_runtime_hostpin.py\n",
+  "tests/quality/test_native_runtime_hp4.py\n"
+]
+--- end exact output ---
+
+[neighbors]
+$ TMPDIR=/tmp/routetest-neighbors-9wdwt0jc CUDA_VISIBLE_DEVICES= python3 -m pytest -q tests/quality/test_task_bound_scorer_inputs_w_tbi.py tests/quality/test_task_bound_native_inputs_w_tbi2.py tests/quality/test_bird_minidev_official_scorer.py tests/quality/test_native_runtime_hostpin.py tests/quality/test_native_runtime_hp3.py tests/quality/test_native_runtime_hp4.py tests/quality/test_w_wal.py --basetemp=/tmp/routetest-neighbors-9wdwt0jc/pytest
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "........................................................................ [ 23%]\n",
+  "........................................................................ [ 46%]\n",
+  "........................................................................ [ 69%]\n",
+  "........................................................................ [ 92%]\n",
+  ".......ssss...........                                                   [100%]\n",
+  "306 passed, 5 skipped in 94.34s (0:01:34)\n"
+]
+--- end exact output ---
+Cleanup observation: /tmp/routetest-neighbors-9wdwt0jc: exists=False
+
+[skip-details]
+$ TMPDIR=/tmp/routetest-skip-details-ceuc_11e CUDA_VISIBLE_DEVICES= python3 -m pytest -q -rs tests/quality/test_native_runtime_hp3.py::test_actual_bound_replay_and_input_refusal tests/quality/test_native_runtime_hp3.py::test_parent_and_child_replay_only_load_admitted_bytes tests/quality/test_w_wal.py --basetemp=/tmp/routetest-skip-details-ceuc_11e/pytest
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "ssss                                                                     [100%]\n",
+  "=========================== short test summary info ============================\n",
+  "SKIPPED [1] tests/quality/test_w_wal.py:14: tests/fixtures/hg_wwal is internal (see .gitignore) and absent from this clone\n",
+  "SKIPPED [4] tests/quality/test_native_runtime_hp3.py:83: tests/fixtures/hg_whp3 is internal (see .gitignore) and absent from this clone\n",
+  "5 skipped in 0.03s\n"
+]
+--- end exact output ---
+Cleanup observation: /tmp/routetest-skip-details-ceuc_11e: exists=False
+
+[fixture-scope]
+$ python3 -c 'from pathlib import Path; paths = ["tests/fixtures/hg_whp3", "tests/fixtures/hg_wwal"]; [print(f"{p}: exists={Path(p).exists()}, is_dir={Path(p).is_dir()}") for p in paths]'
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "tests/fixtures/hg_whp3: exists=False, is_dir=False\n",
+  "tests/fixtures/hg_wwal: exists=False, is_dir=False\n"
+]
+--- end exact output ---
+
+[checker]
+$ python3 tools/check_dataset_blockers.py
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 0, \"historical_records\": 11, \"production_authorized\": false}\n"
+]
+--- end exact output ---
+
+[source-citations]
+$ python3 -c 'from pathlib import Path; p=Path("eval/verification/verifier.py"); lines=p.read_text().splitlines(); [print(f"{p}:{i}: {lines[i-1]}") for a,b in [(465,475),(487,491),(525,530),(540,543),(546,562)] for i in range(a,b+1)]'
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "eval/verification/verifier.py:465: def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:\n",
+  "eval/verification/verifier.py:466:     \"\"\"Bind a supported host scorer's native pin to execution and verdict.\"\"\"\n",
+  "eval/verification/verifier.py:467:     spec = verifier or {}\n",
+  "eval/verification/verifier.py:468:     if \"native_runtime\" not in spec:\n",
+  "eval/verification/verifier.py:469:         return _verify_existing(workdir, verifier, answer, **options)\n",
+  "eval/verification/verifier.py:470:     from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS, CHECK_PATHS\n",
+  "eval/verification/verifier.py:471:     binding = spec[\"native_runtime\"]\n",
+  "eval/verification/verifier.py:472:     receipt = {\"verified\": False, \"sha256\": binding.get(\"sha256\") if isinstance(binding, dict) else None}\n",
+  "eval/verification/verifier.py:473:     try:\n",
+  "eval/verification/verifier.py:474:         if not options.get(\"sandbox\"):\n",
+  "eval/verification/verifier.py:475:             raise NativeRuntimeUnavailable(\"native runtime requires sandbox=True\")\n",
+  "eval/verification/verifier.py:487:         with admit(binding) as runtime:\n",
+  "eval/verification/verifier.py:488:             receipt = runtime.receipt\n",
+  "eval/verification/verifier.py:489:             verdict = _verify_existing(workdir, verifier, answer,\n",
+  "eval/verification/verifier.py:490:                                        native_runtime=runtime, **options)\n",
+  "eval/verification/verifier.py:491:             return {**verdict, \"native_runtime\": receipt}\n",
+  "eval/verification/verifier.py:525:     binding = spec.get(\"scorer_input\")\n",
+  "eval/verification/verifier.py:526:     if binding is not None and (not isinstance(binding, dict) or not task_id\n",
+  "eval/verification/verifier.py:527:                                 or binding.get(\"task_id\") != task_id):\n",
+  "eval/verification/verifier.py:528:         return record_class({\"kind\": spec.get(\"kind\"), \"passed\": False, \"score\": None,\n",
+  "eval/verification/verifier.py:529:                              \"unmeasured\": \"scorer input does not belong to selected task\"},\n",
+  "eval/verification/verifier.py:530:                             spec, actual)\n",
+  "eval/verification/verifier.py:540:     verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,\n",
+  "eval/verification/verifier.py:541:                          timeout_s=timeout_s, env=env,\n",
+  "eval/verification/verifier.py:542:                          service_specs=service_specs, running=running, native_runtime=native_runtime)\n",
+  "eval/verification/verifier.py:543:     return record_class(_enforce_scorer_input(verdict, binding), spec, actual)\n",
+  "eval/verification/verifier.py:546: def _enforce_scorer_input(verdict: dict, binding: dict | None) -> dict:\n",
+  "eval/verification/verifier.py:547:     \"\"\"Consume a check's input receipt only against the independently selected spec.\n",
+  "eval/verification/verifier.py:548: \n",
+  "eval/verification/verifier.py:549:     These are consistency checks under trusted spec/check custody, not authentication\n",
+  "eval/verification/verifier.py:550:     of arbitrary scorer JSON. Other verifier routes retain their existing contracts.\n",
+  "eval/verification/verifier.py:551:     \"\"\"\n",
+  "eval/verification/verifier.py:552:     if binding is None:\n",
+  "eval/verification/verifier.py:553:         return verdict\n",
+  "eval/verification/verifier.py:554:     evidence = verdict.get(\"evidence\")\n",
+  "eval/verification/verifier.py:555:     receipt = evidence.get(\"scorer_input\") if isinstance(evidence, dict) else None\n",
+  "eval/verification/verifier.py:556:     if (isinstance(receipt, dict) and receipt.get(\"verified\") is True\n",
+  "eval/verification/verifier.py:557:             and all(receipt.get(k) == binding.get(k) for k in (\"task_id\", \"path\", \"sha256\"))\n",
+  "eval/verification/verifier.py:558:             and receipt.get(\"expected_sha256\") == binding.get(\"sha256\")\n",
+  "eval/verification/verifier.py:559:             and (\"files\" not in binding or receipt.get(\"files\") == binding[\"files\"])):\n",
+  "eval/verification/verifier.py:560:         return verdict\n",
+  "eval/verification/verifier.py:561:     return {**verdict, \"passed\": False, \"score\": None,\n",
+  "eval/verification/verifier.py:562:             \"unmeasured\": verdict.get(\"unmeasured\") or \"scorer input receipt mismatch or missing\"}\n"
+]
+--- end exact output ---
+
+[audit]
+$ python3 - <<'PY'
+import ast
+import subprocess
+from pathlib import Path
+
+paths = [
+    'tests/quality/test_task_bound_scorer_inputs_w_tbi.py',
+    'tests/quality/test_task_bound_native_inputs_w_tbi2.py',
+]
+allowed = {
+    paths[0]: {'test_native_matching_identity_preserves_reward',
+               'test_native_materialization_check_and_verdict_consumption'},
+    paths[1]: {'test_real_materialization_check_and_dispatch'},
+}
+for path in paths:
+    before = ast.parse(subprocess.check_output(['git', 'show', f'HEAD:{path}'], text=True))
+    after = ast.parse(Path(path).read_text())
+    assert len(before.body) == len(after.body)
+    changed = []
+    for old, new in zip(before.body, after.body):
+        if ast.dump(old) != ast.dump(new):
+            assert isinstance(old, ast.FunctionDef) and old.name == new.name
+            changed.append(old.name)
+    assert set(changed) == allowed[path], changed
+    print(f'{path}: only intended functions changed: {", ".join(changed)}')
+    for label, kind in [('assertions', ast.Assert)]:
+        original = [ast.dump(n) for n in ast.walk(before) if isinstance(n, kind)]
+        revised = [ast.dump(n) for n in ast.walk(after) if isinstance(n, kind)]
+        assert original == revised
+        print(f'{path}: {label} unchanged ({len(original)} AST nodes)')
+    original = [ast.dump(n.decorator_list) if False else [ast.dump(d) for d in n.decorator_list]
+                for n in before.body if isinstance(n, ast.FunctionDef)]
+    revised = [[ast.dump(d) for d in n.decorator_list]
+               for n in after.body if isinstance(n, ast.FunctionDef)]
+    assert original == revised
+    print(f'{path}: all function decorators (including parametrization/fixtures) unchanged')
+    changed_nodes = [n for n in after.body if isinstance(n, ast.FunctionDef) and n.name in allowed[path]]
+    assert all(any(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                   and isinstance(n.func.value, ast.Name) and n.func.value.id == 'spec'
+                   and n.func.attr == 'pop' and ast.literal_eval(n.args[0]) == 'native_runtime'
+                   for n in ast.walk(node)) for node in changed_nodes)
+    print(f'{path}: every intended function removes native_runtime from its local spec')
+
+for path in [*paths, 'eval/verification/verifier.py']:
+    assert Path(path).is_file(), path
+print('All cited source paths exist')
+PY
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py: only intended functions changed: test_native_matching_identity_preserves_reward, test_native_materialization_check_and_verdict_consumption\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py: assertions unchanged (31 AST nodes)\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py: all function decorators (including parametrization/fixtures) unchanged\n",
+  "tests/quality/test_task_bound_scorer_inputs_w_tbi.py: every intended function removes native_runtime from its local spec\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py: only intended functions changed: test_real_materialization_check_and_dispatch\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py: assertions unchanged (41 AST nodes)\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py: all function decorators (including parametrization/fixtures) unchanged\n",
+  "tests/quality/test_task_bound_native_inputs_w_tbi2.py: every intended function removes native_runtime from its local spec\n",
+  "All cited source paths exist\n"
+]
+--- end exact output ---
+
+[protected-diff]
+$ git diff --exit-code -- eval data registry docs/adapter-integration-journal.md AGENTS.md
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[]
+--- end exact output ---
+
+[diff-check]
+$ git diff --check
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[]
+--- end exact output ---
+
+[diff]
+$ git diff -- tests/quality/test_task_bound_scorer_inputs_w_tbi.py tests/quality/test_task_bound_native_inputs_w_tbi2.py
+Exit status: 0
+--- exact combined output (JSON lines) ---
+[
+  "diff --git a/tests/quality/test_task_bound_native_inputs_w_tbi2.py b/tests/quality/test_task_bound_native_inputs_w_tbi2.py\n",
+  "index a562dcc6..99682a2b 100644\n",
+  "--- a/tests/quality/test_task_bound_native_inputs_w_tbi2.py\n",
+  "+++ b/tests/quality/test_task_bound_native_inputs_w_tbi2.py\n",
+  "@@ -342,6 +342,9 @@ def test_real_materialization_check_and_dispatch(case, tmp_path, monkeypatch, mo\n",
+  "     # Filter only runtime directories unused by boundary spies; all actual\n",
+  "     # scorer inputs, check scripts and helper files retain real materialization.\n",
+  "     spec[\"inputs\"] = [e for e in spec[\"inputs\"] if not (\"from\" in e and Path(e[\"from\"]).is_dir())]\n",
+  "+    # The sealed runtime requires sandbox=True; exercise identity binding on the\n",
+  "+    # generic route that reaches this test's process boundary spy.\n",
+  "+    spec.pop(\"native_runtime\", None)\n",
+  "     if mode == \"unbound-check\":\n",
+  "         for flag in (\"--task-id\", \"--scorer-input-sha256\", \"--scorer-input-files\"):\n",
+  "             if flag in spec[\"argv\"]:\n",
+  "diff --git a/tests/quality/test_task_bound_scorer_inputs_w_tbi.py b/tests/quality/test_task_bound_scorer_inputs_w_tbi.py\n",
+  "index 8da018cf..39bd6df0 100644\n",
+  "--- a/tests/quality/test_task_bound_scorer_inputs_w_tbi.py\n",
+  "+++ b/tests/quality/test_task_bound_scorer_inputs_w_tbi.py\n",
+  "@@ -156,12 +156,16 @@ def test_native_verdict_cannot_omit_or_relabel_consumed_identity(case, tmp_path,\n",
+  " \n",
+  " \n",
+  " def test_native_matching_identity_preserves_reward(case, tmp_path, monkeypatch):\n",
+  "+    spec = copy.deepcopy(case.spec)\n",
+  "+    # The sealed runtime requires sandbox=True; exercise identity binding on the\n",
+  "+    # generic route that reaches this test's verifier boundary spy.\n",
+  "+    spec.pop(\"native_runtime\", None)\n",
+  "     binding = case.spec.get(\"scorer_input\", {})\n",
+  "     receipt = {**binding, \"expected_sha256\": binding.get(\"sha256\"), \"verified\": True}\n",
+  "     monkeypatch.setattr(verifier, \"_verify_inner\", lambda *a, **kw: {\n",
+  "         \"kind\": \"command\", \"passed\": True, \"score\": 0.25,\n",
+  "         \"evidence\": {\"measured\": True, \"scorer_input\": receipt}})\n",
+  "-    result = verifier._verify(tmp_path, case.spec, \"\", sandbox=False, timeout_s=5,\n",
+  "+    result = verifier._verify(tmp_path, spec, \"\", sandbox=False, timeout_s=5,\n",
+  "                               task_id=case.record[\"task_id\"])\n",
+  "     assert not result.get(\"unmeasured\")\n",
+  "     assert result[\"score\"] == 0.25\n",
+  "@@ -180,6 +184,9 @@ def test_native_missing_selected_task_is_refused(case, tmp_path, monkeypatch):\n",
+  " def test_native_materialization_check_and_verdict_consumption(case, tmp_path, monkeypatch, mode):\n",
+  "     \"\"\"Use real staging and verdict reads; intercept only the process/scorer boundary.\"\"\"\n",
+  "     spec = copy.deepcopy(case.spec)\n",
+  "+    # The sealed runtime requires sandbox=True; exercise identity binding on the\n",
+  "+    # generic route that reaches this test's process boundary spy.\n",
+  "+    spec.pop(\"native_runtime\", None)\n",
+  "     if mode == \"unbound-check\":\n",
+  "         for flag in (\"--task-id\", \"--gold-sha256\"):\n",
+  "             if flag in spec[\"argv\"]:\n"
+]
+--- end exact output ---
+
+Capture-driver source (not a repository change)
+import json
+import os
+from pathlib import Path
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+
+scratch = Path('/mnt/20t/xubuqiang/hg-work/routetest')
+label, *args = sys.argv[1:]
+root = Path(tempfile.mkdtemp(prefix=f'routetest-{label}-', dir='/tmp'))
+env = dict(os.environ, TMPDIR=str(root), CUDA_VISIBLE_DEVICES='')
+cmd = ['python3', '-m', 'pytest', '-q', *args, f'--basetemp={root}/pytest']
+try:
+    result = subprocess.run(cmd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    capture = {'cwd': str(Path.cwd()), 'command': f'TMPDIR={root} CUDA_VISIBLE_DEVICES= ' + shlex.join(cmd),
+               'exit_code': result.returncode, 'output': result.stdout}
+finally:
+    shutil.rmtree(root)
+capture['cleanup'] = f'{root}: exists={root.exists()}'
+(scratch / f'{label}.json').write_text(json.dumps(capture, indent=2) + '\n')
+print(json.dumps({k: v for k, v in capture.items() if k != 'output'}, indent=2))
+print('\n'.join(result.stdout.splitlines()[-20:]))
+sys.exit(result.returncode)
+
+Committed file sizes (observed with stat after writing this report)
+$ stat -c '%n %s bytes' tests/quality/test_task_bound_scorer_inputs_w_tbi.py tests/quality/test_task_bound_native_inputs_w_tbi2.py reports/w-routetest-validation.txt
+Exit status: 0
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py 9919 bytes
+tests/quality/test_task_bound_native_inputs_w_tbi2.py 20545 bytes
+reports/w-routetest-validation.txt 63460 bytes

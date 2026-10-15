@@ -156,12 +156,16 @@ def test_native_verdict_cannot_omit_or_relabel_consumed_identity(case, tmp_path,
 
 
 def test_native_matching_identity_preserves_reward(case, tmp_path, monkeypatch):
+    spec = copy.deepcopy(case.spec)
+    # The sealed runtime requires sandbox=True; exercise identity binding on the
+    # generic route that reaches this test's verifier boundary spy.
+    spec.pop("native_runtime", None)
     binding = case.spec.get("scorer_input", {})
     receipt = {**binding, "expected_sha256": binding.get("sha256"), "verified": True}
     monkeypatch.setattr(verifier, "_verify_inner", lambda *a, **kw: {
         "kind": "command", "passed": True, "score": 0.25,
         "evidence": {"measured": True, "scorer_input": receipt}})
-    result = verifier._verify(tmp_path, case.spec, "", sandbox=False, timeout_s=5,
+    result = verifier._verify(tmp_path, spec, "", sandbox=False, timeout_s=5,
                               task_id=case.record["task_id"])
     assert not result.get("unmeasured")
     assert result["score"] == 0.25
@@ -180,6 +184,9 @@ def test_native_missing_selected_task_is_refused(case, tmp_path, monkeypatch):
 def test_native_materialization_check_and_verdict_consumption(case, tmp_path, monkeypatch, mode):
     """Use real staging and verdict reads; intercept only the process/scorer boundary."""
     spec = copy.deepcopy(case.spec)
+    # The sealed runtime requires sandbox=True; exercise identity binding on the
+    # generic route that reaches this test's process boundary spy.
+    spec.pop("native_runtime", None)
     if mode == "unbound-check":
         for flag in ("--task-id", "--gold-sha256"):
             if flag in spec["argv"]:
