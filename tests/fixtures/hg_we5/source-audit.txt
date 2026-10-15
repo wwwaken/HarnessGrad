@@ -1,0 +1,1037 @@
+FILE eval/admission/artifact_admission.py SHA256 82279c1b789fd85038fc834d441da5436a726bc6766a4645c1a93d2a9540497d
+  144 def load_contract(raw: bytes, expected_sha256: str) -> dict:
+  145     """Accept only a caller-pinned declaration; no truth-valued attestation fields."""
+  146     contract = _load_sealed_object(raw, expected_sha256, label="artifact contract")
+  147     try:
+  148         if (set(contract) != {"schema", "task_id", "source_sha256", "runtime_image_id",
+  149                               "scorer", "export", "quota"}
+  150                 or contract["schema"] != "harnessgrad.artifact-scorer.v1"
+  151                 or not isinstance(contract["task_id"], str)
+  152                 or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", contract["task_id"])
+  153                 or not _digest(contract["source_sha256"])
+  154                 or not re.fullmatch(r"sha256:[a-f0-9]{64}", contract["runtime_image_id"])):
+  155             raise AdmissionError("invalid artifact contract identity")
+  156         validate_scorer_spec(contract["scorer"])
+  157         export = contract["export"]
+  158         if (set(export) != {"files", "max_bytes", "max_inodes"}
+  159                 or not export["files"] or not _positive(export["max_bytes"])
+  160                 or not _positive(export["max_inodes"])):
+  161             raise AdmissionError("bounded state export required")
+  162         for row in export["files"]:
+  163             if set(row) != {"path", "max_bytes"} or not _positive(row["max_bytes"]):
+  164                 raise AdmissionError("invalid state export file bound")
+  165         _paths(export["files"])
+  166         if _inodes([row["path"] for row in export["files"]]) > export["max_inodes"]:
+  167             raise AdmissionError("state export inode quota exceeded")
+  168         quota = contract["quota"]
+  169         # Supported runtime writes are bounded tmpfs scratch/output only. Disk-backed
+  170         # writable actor layers or project quotas require a separate real backend.
+  171         if not quota or set(quota) - {"/tmp", "/control-output"}:
+  172             raise AdmissionError("unsupported writable runtime quota surface")
+  173         for limits in quota.values():
+  174             if (set(limits) != {"bytes", "inodes"}
+  175                     or not all(_positive(v) for v in limits.values())):
+  176                 raise AdmissionError("hard byte and inode limits required")
+  177         return contract
+  182 @contextlib.contextmanager
+  183 def _regular(root: Path, relative: str, *, data_only: bool = False):
+  184     """Traverse using directory descriptors; never follow a link in any component."""
+  185     relative = _relative(relative)
+  186     _root(root)
+  187     with contextlib.ExitStack() as stack:
+  188         fd = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+  189         stack.callback(os.close, fd)
+  190         for component in relative.split("/")[:-1]:
+  191             fd = os.open(component, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+  192             stack.callback(os.close, fd)
+  193         fd = os.open(relative.split("/")[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+  194                      dir_fd=fd)
+  195         stream = stack.enter_context(os.fdopen(fd, "rb"))
+  196         info = os.fstat(stream.fileno())
+  197         if (not stat.S_ISREG(info.st_mode) or info.st_nlink != 1
+  198                 or (data_only and info.st_mode & 0o111)):
+  199             raise AdmissionError("state/closure must be regular files with one link; state must be data-only")
+  200         yield stream, info
+  201         # Reads can update atime; compare write-relevant fields only.
+  202         after = os.fstat(stream.fileno())
+  203         if any(getattr(after, key) != getattr(info, key) for key in
+  204                ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns", "st_nlink")):
+  205             raise AdmissionError("source changed during projection")
+  326 def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: str,
+  327                  *, run_id: str, execution_binding: dict | None = None) -> dict:
+  328     """Copy an explicit data allowlist, with byte/inode limits enforced before writes.
+  329 
+  330     Source must be quiesced by the caller. The exclusive destination and its parent
+  331     must be platform-owned; its files cannot supply a grader toolchain. Unselected
+  332     actor files are never traversed. No old destination is reused or overwritten.
+  333     Metadata checks detect observable source changes; they cannot establish quiescence.
+  334     The platform primary group grants the separate scorer UID read/search access;
+  335     host custody still rests on the exclusive platform-owned parent and RO mounts.
+  336     """
+  337     contract = load_contract(raw, expected_sha256)
+  338     binding = _execution_binding(execution_binding, contract["task_id"]) if execution_binding is not None else None
+  339     if not isinstance(run_id, str) or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", run_id):
+  340         raise AdmissionError("fresh export run identity required")
+  341     export = contract["export"]
+  342     created = False
+  343     try:
+  344         _root(destination)
+  345         source_path, destination_path = source.resolve(), destination.resolve()
+  346         if (source_path == destination_path or source_path in destination_path.parents
+  347                 or destination_path in source_path.parents):
+  348             raise AdmissionError("state source and platform projection must be separate")
+  349         destination.mkdir(mode=0o700)
+  350         created = True
+  351         os.chown(destination, -1, os.getegid())
+  352         destination.chmod(0o750)
+  353         total, records = 0, []
+  354         for row in export["files"]:
+  355             with _regular(source, row["path"], data_only=True) as (stream, info):
+  356                 limit = min(row["max_bytes"], export["max_bytes"] - total)
+  357                 if info.st_size > limit:
+  358                     raise AdmissionError("state export byte quota exceeded")
+  359                 target = destination / row["path"]
+  360                 # Create each directory explicitly: parents=True does not apply
+  361                 # the requested mode to intermediate parents, and umask may mask it.
+  362                 parent = destination
+  363                 for part in PurePosixPath(row["path"]).parts[:-1]:
+  364                     parent = parent / part
+  365                     if not parent.exists():
+  366                         parent.mkdir(mode=0o700)
+  367                         os.chown(parent, -1, os.getegid())
+  368                         parent.chmod(0o750)
+  369                 digest, size = hashlib.sha256(), 0
+  370                 with target.open("xb") as output:
+  371                     os.chown(target, -1, os.getegid())
+  372                     os.chmod(target, 0o640)
+  373                     while True:
+  374                         chunk = stream.read(min(65536, limit - size + 1))
+  375                         if not chunk:
+  376                             break
+  377                         if size + len(chunk) > limit:
+  378                             raise AdmissionError("state export byte quota exceeded")
+  379                         output.write(chunk)
+  380                         digest.update(chunk)
+  381                         size += len(chunk)
+  382                 if size != info.st_size:
+  383                     raise AdmissionError("source size changed during projection")
+  384                 total += size
+  385                 records.append(dict(path=row["path"], bytes=size, sha256=digest.hexdigest()))
+  386         return dict(schema="harnessgrad.state-export-receipt.v2" if binding is not None
+  387                     else "harnessgrad.state-export-receipt.v1", run_id=run_id,
+  388                     task_id=contract["task_id"], contract_sha256=expected_sha256,
+  389                     source_sha256=contract["source_sha256"], files=records,
+  390                     bytes=total, inodes=_inodes([row["path"] for row in records]),
+  391                     limits={key: export[key] for key in ("max_bytes", "max_inodes")},
+  392                     scope="local_artifact_projection",
+  393                     **({"execution_binding": binding} if binding is not None else {}))
+  394     except (OSError, AdmissionError) as exc:
+  395         if created:
+  396             try:
+  397                 shutil.rmtree(destination)
+  398             except OSError as cleanup:
+  399                 raise EvidenceUnavailable("failed state export cleanup; partial projection retained") from cleanup
+  400         if isinstance(exc, AdmissionError):
+  401             raise
+  402         raise EvidenceUnavailable("state export unavailable; existing destination is never reused") from exc
+  403 
+  404 
+  405 def verify_state_export(root: Path, receipt: dict, raw: bytes, expected_sha256: str,
+  406                         *, run_id: str, execution_binding: dict | None = None) -> None:
+  407     """Recheck a platform export receipt immediately before a read-only mount."""
+  408     contract = load_contract(raw, expected_sha256)
+  409     binding = _execution_binding(execution_binding, contract["task_id"]) if execution_binding is not None else None
+  410     try:
+  411         export = contract["export"]
+  412         schema = "harnessgrad.state-export-receipt.v2" if binding is not None else "harnessgrad.state-export-receipt.v1"
+  413         if (receipt["schema"] != schema or receipt.get("execution_binding") != binding
+  414                 or receipt["scope"] != "local_artifact_projection"
+  415                 or receipt["run_id"] != run_id or receipt["task_id"] != contract["task_id"]
+  416                 or receipt["contract_sha256"] != expected_sha256
+  417                 or receipt["source_sha256"] != contract["source_sha256"]
+  418                 or receipt["limits"] != {key: export[key] for key in ("max_bytes", "max_inodes")}
+  419                 or [row["path"] for row in receipt["files"]] != [row["path"] for row in export["files"]]):
+  420             raise AdmissionError("state export receipt identity mismatch")
+  421         names = {row["path"] for row in export["files"]}
+  422         expected = names | {str(p) for name in names for p in PurePosixPath(name).parents if str(p) != "."}
+  423         if _inventory(root) != expected:
+  424             raise AdmissionError("state projection differs from data allowlist")
+  425         total = 0
+  426         for row, bound in zip(receipt["files"], export["files"]):
+  427             if (type(row["bytes"]) is not int or not 0 <= row["bytes"] <= bound["max_bytes"]
+  428                     or not _digest(row["sha256"])):
+  429                 raise AdmissionError("invalid state export seal")
+  430             total += row["bytes"]
+  431             if total > export["max_bytes"]:
+  432                 raise AdmissionError("state export byte quota exceeded")
+  433             with _regular(root, row["path"], data_only=True) as (stream, info):
+  434                 if info.st_size != row["bytes"]:
+  435                     raise AdmissionError("state projection size mismatch")
+  436                 digest, remaining = hashlib.sha256(), info.st_size
+  437                 while remaining:
+  438                     chunk = stream.read(min(65536, remaining))
+  439                     if not chunk:
+  440                         raise AdmissionError("state projection truncated")
+  441                     digest.update(chunk)
+  442                     remaining -= len(chunk)
+  443                 if stream.read(1) or digest.hexdigest() != row["sha256"]:
+  444                     raise AdmissionError("state projection seal mismatch")
+  445         if receipt["bytes"] != total or receipt["inodes"] != _inodes(names):
+  446             raise AdmissionError("state export accounting mismatch")
+FILE eval/verification/pristine.py SHA256 4c5a3620d9c4651c76297f47a64c6002ac3b0b9b4ed63846bc1f4b509e806694
+   96                 **identity, selected_task_checked=True, runtime_export_run_id=name,
+   97                 scope="task_contract_runtime_export_and_outer_run_trial",
+   98                 outer_run_trial_binding="enforced")
+   99             observation = evidence["source_observation"] = dict(
+  100                 scope="selected_source_file_endpoint_probes", status="probe_unavailable",
+  101                 quiescence_established=False,
+  102                 interval="before_export_through_scorer_cleanup")
+  103             observation["before"] = artifacts.observe_selected_source(workdir, contract_raw, contract_pin)
+  104             artifact_root = Path(scratch) / "input"
+  105             exported = artifacts.export_state(workdir, artifact_root, contract_raw, contract_pin,
+  106                                               run_id=name, execution_binding=dict(identity))
+  107             evidence["export"] = exported
+  108             observation["export_content_matches_before"] = exported["files"] == [
+  109                 {key: row[key] for key in ("path", "bytes", "sha256")}
+  110                 for row in observation["before"]["files"]]
+  111             if not observation["export_content_matches_before"]:
+  112                 raise AdmissionError("selected source differs between observation and export")
+  113             argv = manifest["scorer"]["argv"]
+  114             cmd = ["create", "--pull=never", "--name", name, "--network", "none",
+  115                    "--user", artifacts.scorer_user(), "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
+  116                    "--ipc", "private", "--log-driver", LOG_CONFIG["Type"], "--pids-limit", "128",
+  117                    "--memory", "512m", "--cpus", "1", "--workdir", "/tmp",
+  118                    "--entrypoint", argv[0]]
+  119             for env in artifacts.SCORER_ENV:
+  120                 cmd += ["--env", env]
+  121             for key, value in LOG_CONFIG["Config"].items():
+  122                 cmd += ["--log-opt", f"{key}={value}"]
+  123             for path, options in artifacts.runtime_tmpfs(contract_raw, contract_pin).items():
+  124                 cmd += ["--tmpfs", f"{path}:{options}"]
+  125             for source, target in ((artifact_root, "/control-input"), (root, "/control-scorer")):
+  126                 if "," in str(source):
+  127                     raise AdmissionError("projection path cannot contain mount option separators")
+  128                 cmd += ["--mount", f"type=bind,src={source},dst={target},readonly"]
+  129             cmd += [manifest["runtime_image_id"], *argv[1:]]
+  130             attempted = True
+  131             created = docker(*cmd)
+  132             if created.returncode:
+  133                 raise AdmissionError("pristine scorer creation failed")
+  134             inspected = docker("inspect", name)
+  135             if inspected.returncode:
+  136                 raise AdmissionError("pristine scorer inspection failed")
+  137             info = json.loads(inspected.stdout)[0]
+  138             evidence["runtime"] = artifacts.require_artifact_runtime(
+  139                 info, contract_raw, contract_pin, artifact_root=artifact_root, closure_root=root,
+  140                 export_receipt=exported, run_id=name, execution_binding=dict(identity))
+  141             # Exit status alone cannot distinguish initialization from a measured
+  142             # failing predicate. The sealed scorer must explicitly attest completion.
+FILE eval/verification/verifier.py SHA256 61643659858f6de72e5035d154e712fd005433234b56ba3f9d7e067dbecd5871
+  470             run_id: str | None = None, trial_id: str | None = None) -> dict:
+  471     """Run a verifier with platform-owned output storage for exec reward checks."""
+  472     spec = verifier or {"kind": "answer", "expected": None}
+  473     env_spec = env or {"kind": "files"}
+  474     timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"), env_spec.get("verify_timeout_s"))
+  475     declared = declared_class(spec)
+  476     actual = ("in-process" if spec.get("kind", "answer") == "answer" else
+  477               "snapshot-service" if running is not None or service_specs else "actor-workdir")
+  478     if declared == "pristine-offline":
+  479         if actual != "actor-workdir" or spec.get("reward_file") or spec.get("pass_when", "exit0") != "exit0":
+  480             return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+  481                                  "unmeasured": "pristine scorer requires artifact command with exit0 protocol"},
+  482                                 spec, "unknown")
+  483         from eval.verification.pristine import verify, enforce_verdict_binding
+  484         verdict = verify(workdir, spec, timeout_s=timeout_s, task_id=task_id,
+  485                          run_id=run_id, trial_id=trial_id)
+  486         return enforce_verdict_binding(verdict, task_id=task_id, run_id=run_id, trial_id=trial_id)
+  487     if declared not in ("unknown", actual):
+  488         return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+  489                              "unmeasured": "scorer declaration incompatible with runtime route"},
+  490                             spec, "unknown")
+  491     binding = spec.get("scorer_input")
+  492     if binding is not None and (not isinstance(binding, dict) or not task_id
+  493                                 or binding.get("task_id") != task_id):
+  557                       and answer.strip().lower() == str(expected).strip().lower())
+  558         return {"kind": "answer", "passed": passed,
+  559                 "detail": f"answer {answer.strip()[:80]!r} vs {str(expected)[:80]!r}"}
+  560 
+  561     if kind != "command":
+  562         raise ValueError(f"unknown verifier kind {kind!r}")
+  563 
+  564     # Re-materialize the check's inputs, overwriting whatever the harness left there.
+  565     try:
+  566         _materialize(workdir, spec.get("inputs"), PLATFORM_ROOT)
+  567     except (ValueError, OSError) as exc:
+  568         return {"kind": "command", "passed": False,
+FILE eval/observe/tracing.py SHA256 4bd36fbe166e8c8dbd739b7604d855a7e3834ec381018546ebc2a86fdb10da97
+  310     Paths are refused rather than clamped if they escape `workdir`: a `../` silently
+  311     turning into `.` would set up a task whose inputs are not where the dataset said.
+  312     """
+  313     written: list[str] = []
+  314     for entry in entries or []:
+  315         rel = str(entry.get("path") or "")
+  316         if not rel:
+  317             continue
+  318         target = (workdir / rel).resolve()
+  319         if not str(target).startswith(str(workdir.resolve()) + os.sep) \
+  320                 and target != workdir.resolve():
+  321             raise ValueError(f"setup path {rel!r} escapes the working directory")
+  322         if "content" in entry and entry["content"] is not None:
+  323             target.parent.mkdir(parents=True, exist_ok=True)
+  324             target.write_text(str(entry["content"]))
+  325         elif "from" in entry:
+  326             source = Path(str(entry["from"]))
+  327             if not source.is_absolute():
+  328                 source = (base or platform_root) / source
+  329             if not source.exists():
+  330                 raise ValueError(f"setup source {source} does not exist")
+  331             if source.is_dir():
+  332                 _clear_tree(target)
+  333                 shutil.copytree(source, target, dirs_exist_ok=True)
+  334             else:
+  335                 target.parent.mkdir(parents=True, exist_ok=True)
+  336                 shutil.copy2(source, target)
+  337         else:
+FILE data/scaffolds/qa/base.py SHA256 3c2242e4ed82d76eb7732a6c077122f3d74fb4387860caa3b53a9d8a049a8d8a
+  323         """The grade: a check that re-derives the official metric from `answer.txt`.
+  324 
+  325         `inputs` use `path` (relative to the workdir) rather than `dst`, because a
+  326         `files` environment has no container to put `/gold` into. The gold is inline
+  327         `content`, so it is re-materialized by the platform before the check runs and
+  328         the copy the check reads is not the one the agent could have found.
+  329 
+  330         **Everything the check imports travels with it.** That is not tidiness: the
+  331         verification namespace puts a tmpfs over the platform tree (`eval/containers/sandbox.py`
+  332         hides the work root's ancestors), so a check that imported `data.scaffolds.qa.verify.check`
+  333         from the platform would fail to find it -- or, worse, would find whatever the
+  334         subject left at that path. So the check, the parquet reader and the dataset's own
+  335         scorer are copied into `qa/` in the workdir and imported from there. The
+  336         scorer itself must import nothing but the standard library for this to work,
+  337         which the adapters satisfy by keeping their scoring half self-contained.
+  338         """
+  339         gold_content = json.dumps(record["gold"], ensure_ascii=False, sort_keys=True)
+  340         scorer_input = {"task_id": record["task_id"], "path": GOLD_FILE,
+  341                         "sha256": hashlib.sha256(gold_content.encode("utf-8")).hexdigest()}
+  342         return {
+  343             "kind": self.VERIFIER_KIND,
+  344             "scorer_input": scorer_input,
+  345             "argv": [
+  346                 "python3", f"{CHECK_DIR}/{CHECK_NAME}",
+  347                 "--dataset", self.name,
+  348                 "--answer", ANSWER_FILE,
+  349                 "--prediction", PREDICTION_FILE,
+  350                 "--gold", GOLD_FILE,
+  351                 "--task-id", record["task_id"],
+  352                 "--gold-sha256", scorer_input["sha256"],
+  353                 "--reward-file", REWARD_REL,
+  354                 "--evidence-file", EVIDENCE_REL,
+  355             ],
+  356             "inputs": [
+  357                 {"path": GOLD_FILE,
+  358                  "content": gold_content},
+FILE data/scaffolds/qa/verify/check.py SHA256 7625d8070cac767c5a878623f98469cb7f4bb0b528a86980d7334b5fdbbbbe7e
+  163         # and it is emphatically not the agent's zero.
+  164         return unmeasured(args, evidence,
+  165                           f"no gold file at {gold_path} -- the platform's "
+  166                           f"re-materialization did not happen")
+  167 
+  168     try:
+  169         # Hash and parse one buffer: a later path substitution cannot change the
+  170         # object supplied to the scorer while leaving a receipt for earlier bytes.
+  171         gold_bytes = gold_path.read_bytes()
+  172         digest = hashlib.sha256(gold_bytes).hexdigest()
+  173         bound = (bool(args.task_id) and bool(args.gold_sha256)
+  174                  and re.fullmatch(r"[0-9a-f]{64}", args.gold_sha256) is not None
+  175                  and digest == args.gold_sha256)
+  176         evidence["scorer_input"] = {
+  177             "task_id": args.task_id, "path": str(gold_path), "sha256": digest,
+  178             "expected_sha256": args.gold_sha256, "verified": bound,
+  179         }
+  180         if (args.task_id is not None or args.gold_sha256 is not None) and not bound:
+  181             return unmeasured(args, evidence, "scorer input task/digest binding mismatch")
+  182         # Legacy by-hand calls without either argument remain explicitly unbound.
+  183         # Native bound dispatch refuses such a receipt, even if it has a reward.
+  184         gold = json.loads(gold_bytes.decode("utf-8"))
+  185     except (OSError, ValueError) as exc:
+  186         return unmeasured(args, evidence,
+  187                           f"gold file {gold_path} is unreadable: {error_detail(args, exc)}")
+  188     if not isinstance(gold, dict):
+  189         return unmeasured(args, evidence,
+  190                           f"gold file {gold_path} holds {type(gold).__name__}, not an "
+  191                           f"object")
+  192 
+  193     try:
+  194         answer = answer_path.read_text(encoding="utf-8") if answer_path.is_file() else ""
+  195     except (OSError, ValueError) as exc:
+  196         return unmeasured(args, evidence,
+  197                           f"answer file {answer_path} is unreadable: {error_detail(args, exc)}")
+  198     evidence.update(answer_present=answer_path.is_file(),
+  199                     answer_chars=len(answer),
+  200                     answer=answer[:2000],
+  201                     gold={"redacted": True} if args.redact_gold else gold)
+  202 
+  203     structured = None
+  204     if prediction_path.is_file():
+  205         try:
+  206             from data.scaffolds.qa.prediction import validate_prediction
+  207             structured, prediction_error = validate_prediction(
+  208                 json.loads(prediction_path.read_text(encoding="utf-8")))
+  209         except (OSError, ValueError) as exc:
+  210             return unmeasured(args, evidence,
+  211                               f"prediction file {prediction_path} is malformed: {error_detail(args, exc)}")
+  212         except Exception as exc:  # noqa: BLE001 - unavailable validation is unmeasured
+  213             record_traceback(args, evidence)
+  214             return unmeasured(args, evidence,
+  215                               f"could not validate prediction: {error_detail(args, exc)}")
+  216         if prediction_error:
+  217             return unmeasured(args, evidence,
+  218                               f"prediction file {prediction_path} is invalid: "
+  219                               f"{prediction_error}")
+  220         evidence.update(prediction_file=str(prediction_path), prediction=structured)
+  251     prediction = (str(structured["answer"]) if structured is not None
+  252                   else unwrap(answer).strip())
+  253     try:
+  254         evidence_scorer = getattr(adapter, "score_prediction", None)
+  255         score_options = {"mode": args.score_mode} if args.score_mode is not None else {}
+  256         result = (evidence_scorer(structured, gold, **score_options)
+  257                   if structured is not None
+  258                   and getattr(adapter, "EVIDENCE_AWARE", False)
+  259                   and callable(evidence_scorer)
+  260                   else scorer(prediction, gold, **score_options))
+  261     except Exception as exc:  # noqa: BLE001 - a scorer that refuses is not a zero
+  262         record_traceback(args, evidence)
+  263         return unmeasured(args, evidence,
+  264                           f"the official scorer refused to score this item: "
+  265                           f"{error_detail(args, exc)}")
+FILE data/scaffolds/qa/prediction.py SHA256 598ebb5fe688f561d6cb6388ef202be4233de14058c51e65391613c7a6bedd7e
+    1 """Validation for the optional structured QA prediction artifact.
+    2 
+    3 The artifact is deliberately small and closed: a schema version, a final answer, and
+    4 optional model-selected evidence. Gold answers and arbitrary metadata never belong in it.
+    5 """
+    6 from __future__ import annotations
+    7 
+    8 SCHEMA_VERSION = 1
+    9 ALLOWED_KEYS = {"schema_version", "answer", "predicted_evidence"}
+   10 
+   11 
+   12 def validate_prediction(value: object) -> tuple[dict | None, str | None]:
+   13     if not isinstance(value, dict):
+   14         return None, "prediction must be a JSON object"
+   15     if set(value) - ALLOWED_KEYS:
+   16         return None, "prediction contains unsupported properties"
+   17     if value.get("schema_version") != SCHEMA_VERSION:
+   18         return None, f"schema_version must be {SCHEMA_VERSION}"
+   19     answer = value.get("answer")
+   20     if not isinstance(answer, str) or not answer.strip():
+   21         return None, "answer must be a nonempty string"
+   22     evidence = value.get("predicted_evidence")
+   23     if evidence is None:
+   24         return dict(value), None
+   25     if not isinstance(evidence, list):
+   26         return None, "predicted_evidence must be a list of pairs"
+   27     for index, pair in enumerate(evidence):
+   28         if (not isinstance(pair, list) or len(pair) != 2
+   29                 or not isinstance(pair[0], str) or not pair[0].strip()
+   30                 or isinstance(pair[1], bool) or not isinstance(pair[1], int)
+   31                 or pair[1] < 0):
+   32             return None, (
+   33                 f"predicted_evidence[{index}] must be [nonempty page/title, "
+   34                 "nonnegative integer]")
+   35     return dict(value), None
+   36 
+   37 
+   38 __all__ = ["SCHEMA_VERSION", "validate_prediction"]
+FILE data/datasets/twowikimultihopqa.py SHA256 55556cbb914e64bcdb644b5d96df6b89752a927c3b96a4b5d34f3dbbc3ceec21
+  411                      "id": gold.get("id"), "type": gold.get("type")},
+  412         "why": (f"legacy answer-only: Ans F1={metrics['f1']:g}, Ans EM={metrics['em']:g}; "
+  413                 "Sup/Evi/Joint are not reported in this mode"),
+  414     }
+  415 
+  416 
+  417 METRIC_KEYS = tuple(prefix + metric for prefix in ("", "sp_", "evi_", "joint_")
+  418                     for metric in ("em", "f1", "prec", "recall"))
+  419 PREDICTION_KEYS = {"schema_version", "answer", "supporting_facts", "evidence"}
+  420 
+  421 
+  422 def validate_prediction(prediction: dict) -> None:
+  423     """Validate the adapter's public JSON contract, including partial predictions.
+  424 
+  425     Omitted channels are different from submitted empty values. Unknown fields and
+  426     malformed channels are contract errors rather than invented scorer zeroes.
+  427     """
+  428     if not isinstance(prediction, dict) or set(prediction) - PREDICTION_KEYS:
+  429         raise ValueError("2Wiki prediction must be an object with only public prediction fields")
+  430     if type(prediction.get("schema_version")) is not int or prediction["schema_version"] != 1:
+  431         raise ValueError("2Wiki prediction requires schema_version=1")
+  432     if "answer" in prediction and not isinstance(prediction["answer"], str):
+  433         raise ValueError("answer must be a string")
+  434     for channel, length in (("supporting_facts", 2), ("evidence", 3)):
+  435         if channel not in prediction:
+  436             continue
+  437         if not isinstance(prediction[channel], list):
+  438             raise ValueError(f"{channel} must be a list")
+  439         for item in prediction[channel]:
+  440             if not isinstance(item, list) or len(item) != length:
+  441                 raise ValueError(f"{channel} entries must be lists of length {length}")
+  442             if channel == "supporting_facts":
+  443                 valid = (isinstance(item[0], str) and type(item[1]) is int and item[1] >= 0)
+  444             else:
+  445                 valid = all(isinstance(part, str) for part in item)
+  446             if not valid:
+  447                 raise ValueError(f"invalid {channel} entry")
+  448 
+  449 
+  450 def _prediction_metrics(prediction: dict, gold: dict) -> dict:
+  451     validate_prediction(prediction)
+  452     if not isinstance(gold.get("answer"), str):
+  453         raise ValueError("gold has no answer")
+  454     if "supporting_facts" not in gold or "evidences" not in gold:
+  455         raise ValueError("structured scoring requires support and evidence gold")
+  456     metrics = dict.fromkeys(METRIC_KEYS, 0.0)
+  457     if "answer" in prediction:
+  458         em, prec, recall = update_answer(
+  459             metrics, prediction["answer"], {gold["answer"], *gold.get("aliases", [])})
+  460     if "supporting_facts" in prediction:
+  461         sp_em, sp_prec, sp_recall = update_sp(
+  462             metrics, prediction["supporting_facts"], gold["supporting_facts"])
+  463     if "evidence" in prediction:
+  464         variants = _evidence_variants(gold)
+  465         # Upstream normalizes evidence in place; variants are fresh and predictions
+  466         # must be copied so a verifier does not mutate its inputs.
+  467         evi_em, evi_prec, evi_recall = update_evi(
+  468             metrics, deepcopy(prediction["evidence"]), variants)
+  469     if all(channel in prediction for channel in ("answer", "supporting_facts", "evidence")):
+  470         joint_prec = prec * sp_prec * evi_prec
+  471         joint_recall = recall * sp_recall * evi_recall
+  472         metrics.update(
+  473             joint_em=float(em * sp_em * evi_em), joint_prec=joint_prec,
+  474             joint_recall=joint_recall,
+  475             joint_f1=(2 * joint_prec * joint_recall / (joint_prec + joint_recall)
+  476                       if joint_prec + joint_recall > 0 else 0.0))
+  477     return metrics
+  478 
+  479 
+  480 def score_prediction(prediction: dict, gold: dict) -> dict:
+  481     """All official v1.1 metrics; Joint F1 reward and Joint EM correctness."""
+  482     metrics = _prediction_metrics(prediction, gold)
+  483     return {"reward": float(metrics["joint_f1"]), "correct": bool(metrics["joint_em"]),
+  484             "official": {"metric": "2WikiMultihopQA Joint F1 (official v1.1 evaluator)",
+  485                          "mode": "structured", "scale": "fraction", **metrics,
+  486                          "id": gold.get("id"), "type": gold.get("type")},
+  487             "why": f"Joint F1={metrics['joint_f1']:g}, Joint EM={metrics['joint_em']:g}"}
+  488 
+  489 
+  490 def score(prediction: str | dict, gold: dict) -> dict:
+  491     """Platform entry point: JSON in answer.txt, or labeled legacy answer text."""
+  492     if isinstance(prediction, dict):
+  493         return score_prediction(prediction, gold)
+  494     if prediction.lstrip().startswith("{"):
+  495         return score_prediction(json.loads(prediction), gold)
+  496     return score_answer_only(prediction, gold)
+FILE data/datasets/gaia/verify/check.py SHA256 59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e
+   68     parser.add_argument("--evidence-file", default="/verifier/evidence.json")
+   69     args = parser.parse_args()
+   70 
+   71     try:
+   72         from scorer import question_scorer
+   73     except Exception as exc:                       # noqa: BLE001 - the environment, not the agent
+   74         return _cannot_measure(args, f"the pinned scorer will not import: "
+   75                                      f"{type(exc).__name__}: {exc}")
+   76 
+   77     gold_path = Path(args.gold)
+   78     if not gold_path.is_file():
+   79         return _cannot_measure(args, f"no gold at {gold_path}")
+   80     try:
+   81         record = json.loads(gold_path.read_text(encoding="utf-8"))
+   82         gold = str(record["gold"])
+   83     except Exception as exc:                       # noqa: BLE001
+   84         return _cannot_measure(args, f"the gold is not usable: {type(exc).__name__}: {exc}")
+   85     if gold.strip() in ("", "?"):
+   86         return _cannot_measure(
+   87             args, f"gold is the placeholder {gold!r} (the test split's sentinel): this task "
+   88                   f"cannot be scored")
+   89 
+   90     answer_path = Path(args.answer)
+   91     answer = answer_path.read_text(encoding="utf-8").strip() if answer_path.is_file() else ""
+   92     if not answer:
+   93         return _measure(args, 0.0, "no answer (measured zero): answer.txt is missing or empty",
+   94                         {"gold": gold, "task_id": record.get("task_id")})
+   95 
+   96     transcript = io.StringIO()
+   97     try:
+   98         with contextlib.redirect_stdout(transcript):
+   99             correct = bool(question_scorer(answer, gold))
+  100     except Exception as exc:                       # noqa: BLE001 - a scorer crash is not a wrong answer
+FILE data/datasets/bird_minidev/verify/check.py SHA256 2c0a012468c9d3b6126428008f9eae6f08fc7f81c454e02bf68000b0011840d0
+   92     parser.add_argument("--db", required=True)
+   93     parser.add_argument("--gold", required=True)
+   94     parser.add_argument("--pred", required=True)
+   95     parser.add_argument("--reward-file", default="verifier/reward.txt")
+   96     parser.add_argument("--evidence-file", default="verifier/evidence.json")
+   97     args = parser.parse_args()
+   98 
+   99     gold_sql = Path(args.gold).read_text(encoding="utf-8").strip() if Path(args.gold).is_file() else ""
+  100     if not Path(args.db).is_file():
+  101         return _cannot_measure(args, f"no database at {args.db}: this task cannot be graded")
+  102     if not gold_sql:
+  103         return _cannot_measure(args, "the gold query is empty: this task cannot be graded")
+  104 
+  105     connection = sqlite3.connect(args.db)
+  106     try:
+  107         try:
+  108             gold_rows = run_query(connection, gold_sql)
+  109         except Exception as exc:                    # noqa: BLE001 - a broken gold is not the agent's
+  110             return _cannot_measure(
+  111                 args, f"the gold query cannot run against {Path(args.db).name} "
+  112                       f"({type(exc).__name__}: {exc}): the environment cannot measure this task")
+  113 
+  114         prediction = (Path(args.pred).read_text(encoding="utf-8").strip()
+  115                       if Path(args.pred).is_file() else "")
+  116         if not prediction:
+  117             return _measure(args, 0.0, "no answer (measured zero): answer.sql is missing or empty")
+  118         try:
+  119             predicted_rows = run_query(connection, prediction)
+  120         except Exception as exc:                    # noqa: BLE001 - upstream scores this 0
+  121             return _measure(args, 0.0, f"prediction did not run ({type(exc).__name__}: {exc})")
+  122     finally:
+  123         connection.close()
+  124 
+  125     reward = float(calculate_ex(predicted_rows, gold_rows))
+  126     return _measure(args, reward, f"exact set equality: {len(predicted_rows)} predicted vs "
+  127                                   f"{len(gold_rows)} gold rows")
+  128 
+  129 
+  130 if __name__ == "__main__":
+  131     raise SystemExit(main())
+FILE data/datasets/spreadsheetbench/verify/check.py SHA256 9ec684b333d4d4ca648c76fe6991085a8c4d046f9a620566a945bf0cbcb7bd19
+  163     branch on it (upstream only uses it to group the report).
+  164     """
+  165     import openpyxl
+  166 
+  167     if not os.path.exists(proc_file):
+  168         # main() handles an absent submission; disappearance during comparison is a failure.
+  169         raise FileNotFoundError(f"result workbook unavailable for comparison: {proc_file}")
+  170     try:
+  171         wb_gt = openpyxl.load_workbook(filename=gt_file, data_only=True)
+  172         wb_proc = openpyxl.load_workbook(filename=proc_file, data_only=True)
+  173     except Exception as exc:  # noqa: BLE001 - loading failed, no comparison was completed
+  174         raise RuntimeError(f"workbook load failed: {type(exc).__name__}: {exc}") from exc
+  175 
+  176     sheet_cell_ranges = answer_position.split(",")
+  177     result_list = []
+  178     msg_list = []
+  179     for sheet_cell_range in sheet_cell_ranges:
+  180         # Compatibility decision (w-spread2, option a): upstream evaluation() catches
+  181         # range-parse ValueError and records int(False). Preserve that measured zero
+  182         # for released metadata such as 283-32; it is not a local runtime failure.
+  183         # Unexpected parser exceptions still propagate to the unmeasured path.
+  184         _cell = sheet_cell_range.split("!")[-1].strip().strip("'")
+  185         # Only a **range** goes through `parse_cell_range`; a single cell (`B6`) is returned
+  186         # as-is by `generate_cell_names` and never parsed. Measured: a first version validated
+  187         # every position, which rejected `B6` and marked `51-12` unmeasurable.
+  188         if ":" in _cell:
+  189             try:
+  190                 _ = parse_cell_range(_cell)
+  191             except ValueError as exc:
+  192                 return False, (
+  193                     f"official-equivalent measured zero: the task's answer_position "
+  194                     f"{sheet_cell_range!r} is not a cell range the official parser can read: "
+  195                     f"{exc}")
+  196         if "!" in sheet_cell_range:
+  197             sheet_name, cell_range = sheet_cell_range.split("!")
+  198             sheet_name = sheet_name.lstrip("'").rstrip("'")
+  199         else:
+  200             sheet_name = wb_gt.sheetnames[0]
+  201             cell_range = sheet_cell_range
+  202         sheet_name = sheet_name.lstrip("'").rstrip("'")
+  203         cell_range = cell_range.lstrip("'").rstrip("'")
+  204         result, msg = cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range)
+  205         result_list.append(result)
+  206         msg_list.append(msg)
+  207     first_bad = next((m for r, m in zip(result_list, msg_list) if not r), "")
+  208     return all(result_list), first_bad
+  209 
+  210 
+  211 # ------------------------------------------------------------- recalculation ---
+  212 
+  213 
+  214 def soffice_path() -> str | None:
+  237     cmd = [soffice, "--headless", "--calc", "--norestore", "--nolockcheck",
+  238            f"-env:UserInstallation=file://{profile}",
+  239            "--convert-to", "xlsx:Calc MS Excel 2007 XML",
+  240            "--outdir", str(outdir), str(workbook)]
+  241     try:
+  242         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
+  243     except subprocess.TimeoutExpired:
+  244         return False, "LibreOffice timed out after 180s"
+  245     if proc.returncode != 0:
+  246         return False, f"LibreOffice exited {proc.returncode}: {proc.stderr.strip()[:300]}"
+  247     converted = outdir / (workbook.stem + ".xlsx")
+  248     if not converted.is_file():
+  249         return False, (f"LibreOffice produced no file (stderr: {proc.stderr.strip()[:200]})")
+  250     shutil.move(str(converted), str(workbook))
+  328     raw_answer = answer_path.read_text(encoding="utf-8").strip() if answer_path.is_file() else ""
+  329     # The answer is the **name of the workbook** the agent left behind. An empty answer means
+  330     # the conventional name; anything else is taken as a relative path inside the workdir, so a
+  331     # harness cannot name a file outside the task.
+  332     named = raw_answer.splitlines()[0].strip() if raw_answer else ""
+  333     named = named or args.result
+  334     candidate = (workdir / named).resolve()
+  335     if not str(candidate).startswith(str(workdir.resolve()) + os.sep):
+  336         evidence.update(measured=False,
+  337                         error=f"the answer names {named!r}, which is outside the workdir")
+  338         write_evidence(args.evidence_file, evidence)
+  339         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  340         return 3
+  341     evidence.update(named_result=named, result_exists=candidate.is_file())
+  342 
+  343     if not candidate.is_file():
+  344         # The agent left no workbook: a measured zero, not an unmeasured task. It had a
+  345         # contract, and the artifact it names is absent.
+  346         evidence.update(measured=True, reward=0.0,
+  347                         why=f"the answer names {named!r} but no such file exists",
+  348                         score=0.0, correct=False)
+  349         write_evidence(args.evidence_file, evidence)
+  350         write_reward(args.reward_file, 0.0)
+  351         print(f"reward 0: {evidence['why']}")
+  352         return 1
+  353 
+  354     phase = "formula detection"
+  355     try:
+  356         # Recalculate before comparing: data_only=True reads cached formula values.
+  357         if workbook_has_formulas(candidate):
+  358             phase = "LibreOffice recalculation"
+  359             soffice = soffice_path()
+  360             if soffice is None:
+  361                 raise RuntimeError("the result workbook holds formulas and no LibreOffice is "
+  362                                    "installed, so its values cannot be computed; the check "
+  363                                    "will not score an unevaluated workbook")
+  364             with tempfile.TemporaryDirectory(prefix="sb-recalc-") as scratch:
+  365                 ok, why = recalculate(candidate, scratch=Path(scratch), soffice=soffice)
+  366             evidence["recalculated"] = ok
+  367             if not ok:
+  368                 raise RuntimeError(f"could not recalculate the workbook: {why}")
+  369         else:
+  370             evidence["recalculated"] = False
+  371 
+  372         phase = "comparison"
+  373         ok, message = compare_workbooks(str(golden_path), str(candidate),
+  374                                         spec.get("instruction_type"),
+  375                                         str(spec["answer_position"]))
+  376     except Exception as exc:  # noqa: BLE001 - a failed tool/comparator is not a zero
+  377         evidence.update(measured=False, error=f"{phase} failed: {type(exc).__name__}: {exc}",
+  378                         traceback=traceback.format_exc()[-2000:])
+FILE data/datasets/ds1000/verify/check.py SHA256 24f25dee67eeaf473b94d7c2cd2ef3cb43ba470b8ea46cc1662131693028701e
+   26     task = json.loads((work / "context.json").read_text(encoding="utf-8"))
+   27     solution = work / "solution.py"
+   28     candidate = solution.read_text(encoding="utf-8") if solution.is_file() else ""
+   29     program = (task["code_context"] + "\n" + f"code = {candidate!r}\n"
+   30                + "test_execution(code)\n"
+   31                + ("test_string(code)\n" if "test_string(" in task["code_context"] else ""))
+   32     # Keep this checker dependency-free: execution.py is a VERIFY input, and the candidate
+   33     # program is passed via a temporary JSON file so the child can import the official runner.
+   34     # Own the wrapper files even for direct host checks and runner/setup failures.
+   35     with tempfile.TemporaryDirectory(prefix="ds1000-check-") as scratch_dir:
+   36         scratch = pathlib.Path(scratch_dir)
+   37         runner = scratch / "run_ds1000.py"
+   38         (scratch / "execution.py").write_text((work / "execution.py").read_text(encoding="utf-8"), encoding="utf-8")
+   39         runner.write_text(
+   40             "import json, sys\n"
+   41             "from execution import check_correctness\n"
+   42             "program=json.loads(open(sys.argv[1]).read())\n"
+   43             "print(json.dumps(check_correctness(program, timeout=120)))\n",
+   44             encoding="utf-8")
+   45         payload = scratch / "program.json"
+   46         payload.write_text(json.dumps(program), encoding="utf-8")
+   47         # 14 official Matplotlib rows call `sns.load_dataset(...)`. seaborn resolves that from
+   48         # `$SEABORN_DATA/<name>.csv`; the four CSVs are a VERIFY input, so the official code
+   49         # path runs offline instead of fetching from GitHub mid-check.
+   50         import os
+   51         env = dict(os.environ)
+   52         env["SEABORN_DATA"] = str(work / "seaborn-data")
+   53         for noisy in ("MPLBACKEND",):
+   54             env.setdefault(noisy, "Agg")
+   55         proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
+   56                               capture_output=True, text=True, timeout=130, env=env)
+   57     result = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 and proc.stdout.strip() else {"passed": False, "result": proc.stderr[-500:]}
+FILE data/datasets/livecodebench/verify/check.py SHA256 191ee875cf2443dd1e284781d196864d563fe354b12863365b21de5954d75274
+  150     tests_text = tests_path.read_text(encoding="utf-8")
+  151     try:
+  152         payload = json.loads(tests_text)
+  153         inputs, outputs = payload["inputs"], payload["outputs"]
+  154     except Exception as exc:                   # noqa: BLE001
+  155         return _cannot_measure(args, f"the test payload is not usable: "
+  156                                      f"{type(exc).__name__}: {exc}")
+  157     total = len(inputs)
+  158     if total == 0 or total != len(outputs):
+  159         return _cannot_measure(args, f"{total} inputs against {len(outputs)} outputs")
+  160 
+  161     solution_path = Path(args.solution)
+  162     solution = solution_path.read_text(encoding="utf-8") if solution_path.is_file() else ""
+  163     if not solution.strip():
+  164         return _measure(args, 0.0, "no answer (measured zero): solution.py is missing or empty",
+  165                         total, 0, [])
+  166 
+  167     cap = min(CAP_S, (PER_TEST_TIMEOUT + 1) * total + 5)
+  168     queue: multiprocessing.Queue = multiprocessing.Queue()
+  169     process = multiprocessing.Process(target=_child, args=(tests_text, solution, queue))
+  170     process.start()
+  171     process.join(cap)
+  172     if process.is_alive():                     # upstream kills and marks every test failed
+  173         process.kill()
+  174         process.join()
+  175         return _measure(args, 0.0, f"global timeout after {cap:g}s: the solution did not finish "
+FILE data/datasets/alfworld/verify/check.py SHA256 c1e7b97377122babc47c519128244ffce60b4511c1b5faa061c10b50a1e03c6d
+  147     records = gym_env.action_log_records(args.log)
+  148     actions = [str(r["action"]) for r in records
+  149                if r.get("kind") == "action" and isinstance(r.get("action"), str)]
+  150     declared_done = any(r.get("kind") == "done" for r in records)
+  151     unparseable = len([line for line in
+  152                        (args.log.read_text(errors="replace").splitlines()
+  153                         if args.log.is_file() else []) if line.strip()]) - len(records)
+  154     evidence.update(actions_in_log=len(actions), log_records=len(records),
+  155                     unparseable_lines=unparseable, agent_declared_done=declared_done,
+  156                     budget=args.budget)
+  157 
+  158     try:
+  159         state = gym_env.replay(str(args.game), actions, args.budget)
+  160     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+  161         evidence["error"] = f"could not build or replay the environment: {exc}"
+  162         evidence["traceback"] = traceback.format_exc()[-2000:]
+  163         evidence["measured"] = False
+  164         write_evidence(args.evidence_file, evidence)
+  165         print(f"check cannot run: {evidence['error']}", file=sys.stderr)
+  166         return 3
+  167 
+  168     won_per_step = [bool(r["won"]) for r in state["records"]]
+  169     won_step = next((i for i, w in enumerate(won_per_step) if w), None)
+  170     replayed = state["records"]
+  171     budget_exhausted = (len(actions) > len(replayed)
+  172                         and not (replayed and replayed[-1]["done"]))
+  173     # A command TextWorld did not understand comes back as "Nothing happens." It still
+  174     # cost a step, and recording it is how a reader tells "the agent tried and was
+  175     # refused" apart from "the agent did nothing".
+FILE data/datasets/scienceworld/verify/check.py SHA256 afa6b10db53458afb02df9f25fb08e690f2f415019f28f1dec2e2508be69cf2f
+  140     records = scw_env.action_log_records(args.log)
+  141     actions = scw_env.actions_in(records)
+  142     declared_done = any(r.get("kind") == "done" for r in records)
+  143     evidence.update(actions_in_log=len(actions), log_records=len(records),
+  144                     agent_declared_done=declared_done,
+  145                     unparseable_lines=None)
+  146 
+  147     java_home = _point_at_the_jvm(workdir)
+  148     evidence["java_home"] = str(java_home) if java_home else None
+  149     if java_home is None:
+  150         evidence.update(measured=False,
+  151                         error="no Java runtime in the workdir or under the dataset root")
+  152         write_evidence(args.evidence_file, evidence)
+  153         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  154         return 3
+  155 
+  156     try:
+  157         env = scw_env.load_task(workdir, step_budget=args.budget)
+  158     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+  159         evidence.update(measured=False,
+  160                         error=f"could not build the world: {exc}",
+  161                         traceback=traceback.format_exc()[-2000:])
+  162         write_evidence(args.evidence_file, evidence)
+  163         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  164         return 3
+  165 
+  166     steps = []
+  167     score = 0
+  168     try:
+  169         for index, action in enumerate(actions[:args.budget]):
+  170             observation, _reward, done, info = env.step(action)
+  171             score = int(info.get("score", 0))
+  172             steps.append({"step": index, "action": action, "score": score,
+  173                           "done": bool(done),
+  174                           "observation": str(observation)[:200]})
+  175             if done:
+FILE data/datasets/jericho/verify/check.py SHA256 da09db93dd0b3159311114d77f90bd2c79f2c83dcb3e7bf87685540c2924227f
+   98     records = jer_env.action_log_records(args.log)
+   99     actions = jer_env.actions_in(records)
+  100     declared_done = any(r.get("kind") == "done" for r in records)
+  101     blank_or_broken = sum(
+  102         1 for line in (args.log.read_text(errors="replace").splitlines()
+  103                        if args.log.is_file() else []) if line.strip()) - len(records)
+  104     evidence.update(actions_in_log=len(actions), log_records=len(records),
+  105                     unparseable_lines=max(0, blank_or_broken),
+  106                     agent_declared_done=declared_done)
+  107 
+  108     try:
+  109         env = jer_env.load_game(args.workdir)
+  110     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+  111         evidence.update(measured=False, error=f"could not start the game: {exc}",
+  112                         traceback=traceback.format_exc()[-2000:])
+  113         write_evidence(args.evidence_file, evidence)
+  114         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  115         return 3
+  116 
+  117     try:
+  118         maximum = int(env.get_max_score())
+  119         spec = json.loads(args.game.read_text())
+  120         steps = jer_env.replay(env, actions)
+  121     except Exception as exc:  # noqa: BLE001
+  122         evidence.update(measured=False, error=f"the game died mid-episode: {exc}",
+  123                         traceback=traceback.format_exc()[-2000:])
+  124         write_evidence(args.evidence_file, evidence)
+  125         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  126         return 3
+  127 
+  128     score = steps[-1]["score"] if steps else 0
+  129     moves = steps[-1]["moves"] if steps else 0
+  130     fraction = jer_env.score_fraction(score, maximum)
+  131     evidence.update(
+  132         measured=True,
+  133         reward=fraction,
+  134         score=score,
+  135         max_score=maximum,
+FILE data/datasets/appworld/verify/check.py SHA256 0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5
+   35         calls = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines() if line.strip()]
+   36     except (OSError, json.JSONDecodeError) as exc:
+   37         unmeasured(f"unreadable API-call log: {exc}", args.evidence_file, metadata)
+   38     try:
+   39         if Path("/appworld/data").is_dir():
+   40             runtime_root = Path(tempfile.mkdtemp(prefix="appworld-verify-"))
+   41             (runtime_root / "data").symlink_to("/appworld/data")
+   42             (runtime_root / "experiments").mkdir()
+   43             os.environ["APPWORLD_ROOT"] = str(runtime_root)
+   44         from appworld import AppWorld
+   45         with AppWorld(task_id=args.task_id, experiment_name="verify", raise_on_failure=False,
+   46                       ground_truth_mode="minimal") as world:
+   47             for call in calls:
+   48                 url = str(call["url"]).split("?", 1)[0]
+   49                 method = str(call.get("method", "get")).lower()
+   50                 if method not in {"get", "post", "put", "patch", "delete"}:
+   51                     unmeasured(f"unknown API method: {method}", args.evidence_file, metadata)
+   52                 world.execute(
+   53                     f"requester.{method}({url!r}, data={call.get('data') or {}!r}, "
+   54                     "client=requester.client)"
+   55                 )
+   56             tracker = world.evaluate()
+   57     except SystemExit:
+   58         raise
+   59     except Exception as exc:  # an environment/import/data failure is not a task failure
+   60         unmeasured(f"environment failure: {type(exc).__name__}: {exc}", args.evidence_file, metadata)
+   61     evidence = {
+   62         **metadata,
+   63         "measured": True,
+   64         "success": bool(tracker.success),
+   65         "num_tests": tracker.num_tests,
+   66         "passes": tracker.passes,
+   67         "failures": tracker.failures,
+   68     }
+   69     reward = Path(args.reward_file)
+   70     reward.parent.mkdir(parents=True, exist_ok=True)
+FILE data/datasets/tau_bench/verify/check.py SHA256 b2cad46a3f541eae927334961a76c91c79e3dbb730b5016f0dc325a544dad6ec
+  109                             help=f"default: {DEFAULTS[name]} (${env_name})")
+  110     args = parser.parse_args(argv)
+  111     return {key: _env_path(getattr(args, key),
+  112                            "TAU_" + key.upper(), DEFAULTS[key]) for key in DEFAULTS}
+  113 
+  114 
+  115 def hash_of(value) -> str:
+  116     from tau_bench.envs.hash import consistent_hash, to_hashable
+  117     return consistent_hash(to_hashable(value))
+  118 
+  184 def check_outputs(outputs, says) -> tuple[dict, float]:
+  185     """`tau_bench/envs/base.py:calculate_reward`'s outputs rule, applied to `says`.
+  186 
+  187     Verbatim upstream test, per output: `output.lower()` must appear in some
+  188     respond content after `content.lower().replace(",", "")`. Note the comma
+  189     removal applies to the content only, exactly as upstream wrote it. Returns
+  190     `(found_by_output, r_outputs)`, mirroring upstream's `RewardOutputInfo`.
+  191     """
+  192     found = {}
+  193     for output in outputs:
+  194         found[output] = any(
+  195             str(output).lower() in str(say).lower().replace(",", "")
+  196             for say in says)
+  197     return found, (1.0 if all(found.values()) else 0.0)
+  198 
+  199 
+  200 def section_comparison(agent_db, gt_db) -> dict:
+  284     # ---- the agent's own log: evidence, and the `done`/`outputs` gates. ----
+  285     log = read_agent_log(paths["call_log"])
+  286     evidence.update(log)
+  287     outputs_found, r_outputs = check_outputs(outputs, log["agent_says"])
+  288     done = log["agent_declared_done"]
+  289     evidence.update(outputs=outputs_found, r_outputs=r_outputs,
+  290                     outputs_satisfied=(r_outputs == 1.0))
+  291 
+  292     # ---- the agent's database, which is the state being graded ----
+  293     try:
+  294         raw = paths["db"].read_bytes()
+  295         agent_db = json.loads(raw)
+  296         if not isinstance(agent_db, dict):
+  297             raise ValueError(f"database is a {type(agent_db).__name__}, "
+  298                              f"expected a JSON object")
+  299     except (OSError, ValueError) as exc:
+  300         evidence.update(reward=0, database_hash_matched=False,
+  301                         agent_db_error=str(exc), agent_db_keys=[])
+  302         write_reward(paths["reward"], 0)
+  303         write_evidence(paths["evidence"], evidence)
+  304         print(f"reward 0: the agent's database could not be read: {exc}")
+  305         return 0
+  306 
+  307     agent_hash = hash_of(agent_db)
+  308     matched = agent_hash == gt_hash
+  309     reward = int(matched and done and r_outputs == 1.0)
+  310     evidence.update(reward=reward, database_hash_matched=matched,
+  311                     agent_data_hash=agent_hash, agent_db_bytes=len(raw),
+  312                     agent_db_keys=sorted(agent_db),
+  313                     sections=section_comparison(agent_db, clean_db))
+  314 
+  315     write_reward(paths["reward"], reward)
+FILE data/datasets/agentdojo/verify/check.py SHA256 b04a292c0e3f0f07973b880e7e3b7147384c925e6981944768f03ea2f12b21b0
+   18     evidence_file = work / args.evidence_file
+   19     reward_file.parent.mkdir(parents=True, exist_ok=True)
+   20     evidence_file.parent.mkdir(parents=True, exist_ok=True)
+   21     argv = [str(work / 'trusted_runtime/bin/python'), str(work / 'verify/bridge.py'),
+   22             'evaluate', '--case', str(work / 'verify/case.json')]
+   23     if (work / 'action.json').is_file():
+   24         argv += ['--action', str(work / 'action.json')]
+   25     proc = subprocess.run(argv, cwd=work, capture_output=True, text=True, timeout=90)
+   26     if proc.returncode:
+   27         evidence_file.write_text(json.dumps({'measured': False, 'error': proc.stderr[-2000:]}))
+   28         reward_file.unlink(missing_ok=True)
+   29         return 3
+   30     result = json.loads(proc.stdout)
+   31     reward_file.write_text(str(result['reward']) + '\n')
+   32     result.update(measured=True, why=f"utility={result['utility']}, attack_success={result['attack_success']}",
+   33                   official={'metric': 'AgentDojo utility under fixed injection',
+   34                             'attack_success': result['attack_success'], 'version': result['suite_version']})
+   35     evidence_file.write_text(json.dumps(result))
+   36     print(f"reward {result['reward']:g}: {result['why']}")
+   37     return 0
+   38 
+FILE data/datasets/terminal_bench.py SHA256 8f3d8c1b0ecb0fbbb9696f876257706ff3c0019e7a5657dd296dc295a9a47175
+  231     verifier = {
+  232         "kind": "command",
+  233         "scorer_bundle": {"isolation_class": "snapshot-service"},
+  234         "argv": ["bash", "/tests/test.sh"],
+  235         # A real path in the checkout, copied in after the harness stops. `dst` because
+  236         # the check expects its tests at `/tests`, which a path relative to the workdir
+  237         # cannot express (§2.5.9).
+  238         "inputs": [{"dst": "/tests", "from": str(task_dir / "tests")}],
+  239         # The exit code carries nothing here: `test.sh` exits 0 whether the reward is 1
+  240         # or 0, because the `if` that writes the file is its last statement.
+  241         "reward_file": REWARD_FILE,
+  242         # Where the check records *which* of its tests failed. Declared per task rather
+  243         # than assumed by the platform: it is the task's `test.sh` that writes it.
+  244         "evidence_file": CHECK_REPORT,
+  245         "timeout_s": env["verify_timeout_s"],
+FILE data/datasets/api_bank.py SHA256 2ceb6c76854aad05ec3af537b44b28286dffa6a6070e5e4fbe344ea79294cbcd
+  169 def load() -> tuple[list[dict], dict[str, str]]:
+  170     raise ValueError(REFUSED)
+FILE data/datasets/nestful.py SHA256 7595f19d65cd8133850486b9a5c9910a5371072a29e220a0654e3fe38c9aa967
+   51 def load():
+   52     raise ValueError(REFUSED)
+FILE data/datasets/sotuqa.py SHA256 a6df5d8d2a0a01e80ac891ffd87ba90ff2917300872d036a2c3b3e742c58e9e1
+  157 def load() -> tuple[list[dict], dict[str, str]]:
+  158     raise ValueError(REFUSAL)
+FILE data/datasets/tau2_bench.py SHA256 805aeb8d8215f057e79d21eb2030df7d8796b51ad8599a5f2888680421b8c4d9
+  150 def load() -> tuple[list[dict], dict[str, str]]:
+  151     raise ValueError(REFUSED)

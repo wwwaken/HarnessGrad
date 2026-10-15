@@ -1,0 +1,23 @@
+{
+  "dataset": "hotpotqa",
+  "files": {
+    "answer.txt": "wrong fallback\n",
+    "prediction.json": "{\"schema_version\": 1, \"answer\": \"red town\", \"predicted_evidence\": [[\"Authored Page\", 0]]}"
+  },
+  "gold": {
+    "answer": "red town",
+    "supporting_facts": [
+      [
+        "Authored Page",
+        0
+      ]
+    ]
+  },
+  "gold_sha256": "cbd449fde22e2a62e13da4a8fb6bcbfc90dd04ccd47c737da330938e27aaafbe",
+  "id": "hotpotqa-positive",
+  "kind": "qa",
+  "output": "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/hotpotqa-positive/incomplete/scorer-output",
+  "private": "/tmp/hg-we5-98wezuyu/hotpotqa-positive/private",
+  "state": "/tmp/hg-we5-98wezuyu/hotpotqa-positive/incomplete",
+  "task_id": "w-e5-hotpotqa"
+}

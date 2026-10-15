@@ -1,0 +1,20 @@
+{
+  "dataset": "triviaqa",
+  "files": {
+    "answer.txt": "blue town\n"
+  },
+  "gold": {
+    "accepted": [
+      "crimson city",
+      "red town"
+    ],
+    "value": "Crimson City"
+  },
+  "gold_sha256": "4d32ebd1e109b87fa36e3ebd8e58deaa3344bf9923244afb6d166a7a460ce7f1",
+  "id": "triviaqa-negative",
+  "kind": "qa",
+  "output": "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/triviaqa-negative/pre/scorer-output",
+  "private": "/tmp/hg-we5-98wezuyu/triviaqa-negative/private",
+  "state": "/tmp/hg-we5-98wezuyu/triviaqa-negative/state",
+  "task_id": "w-e5-triviaqa"
+}

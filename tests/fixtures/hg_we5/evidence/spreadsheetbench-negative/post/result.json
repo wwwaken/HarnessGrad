@@ -1,0 +1,61 @@
+{
+  "adapter_file": "/tmp/hg-e5/data/datasets/spreadsheetbench/verify/check.py",
+  "argv": [
+    "--workdir",
+    "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/exported",
+    "--golden",
+    "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/private/golden.xlsx",
+    "--task",
+    "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/private/task.json",
+    "--reward-file",
+    "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/spreadsheetbench-negative/post/scorer-output/reward.txt",
+    "--evidence-file",
+    "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/spreadsheetbench-negative/post/scorer-output/evidence.json"
+  ],
+  "evidence": {
+    "answer_file": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/exported/answer.txt",
+    "answer_position": "Sheet1!A1:A2",
+    "correct": false,
+    "golden": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/private/golden.xlsx",
+    "instruction_type": "synthetic",
+    "measured": true,
+    "named_result": "nested/result.xlsx",
+    "recalculated": false,
+    "result_exists": true,
+    "reward": 0.0,
+    "score": 0.0,
+    "task_id": "w-e5-spreadsheetbench",
+    "why": "workbook differs: value difference at A1: golden has 3.14, result has 9"
+  },
+  "returncode": 1,
+  "reward_text": "0\n",
+  "state_reads": [
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/private/task.json"
+    },
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/exported/answer.txt"
+    },
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/exported/nested/result.xlsx"
+    },
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/private/golden.xlsx"
+    },
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/spreadsheetbench-negative/exported/nested/result.xlsx"
+    }
+  ],
+  "stderr": "",
+  "stdout": "reward 0: workbook differs: value difference at A1: golden has 3.14, result has 9\n"
+}

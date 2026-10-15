@@ -1,0 +1,51 @@
+{
+  "full": {
+    "correct": false,
+    "measured": true,
+    "official": {
+      "max_evidence": 5,
+      "metric": "FEVER strict_score"
+    },
+    "returncode": 1,
+    "reward": 0.0,
+    "reward_text": "0\n"
+  },
+  "incomplete": {
+    "correct": false,
+    "measured": true,
+    "official": {
+      "max_evidence": 5,
+      "metric": "FEVER strict_score"
+    },
+    "returncode": 1,
+    "reward": 0.0,
+    "reward_text": "0\n"
+  },
+  "omitted": "prediction.json",
+  "receipt": {
+    "bytes": 8,
+    "contract_sha256": "d91200b92716b02e0d42b30f585874b897af0bcf3451965d08f2aedbe1f5c752",
+    "execution_binding": {
+      "outer_run_id": "w-e5-04d44df1ced84ebc936774fe07260d09",
+      "task_id": "w-e5-fever",
+      "trial_id": "1"
+    },
+    "files": [
+      {
+        "bytes": 8,
+        "path": "answer.txt",
+        "sha256": "27f7b2395be35f299ac3f43f5dcc3a3a788b99cac15188eae955ef5ce50b0069"
+      }
+    ],
+    "inodes": 2,
+    "limits": {
+      "max_bytes": 4194304,
+      "max_inodes": 32
+    },
+    "run_id": "w-e5-export-e35d0cbc73c84a8189f249f03afc3c1a",
+    "schema": "harnessgrad.state-export-receipt.v2",
+    "scope": "local_artifact_projection",
+    "source_sha256": "d2e0b5d1feab0d3c027ee88ef0f4e3e8fdd1f21f547b6dd87ad20b2cfbcd88ff",
+    "task_id": "w-e5-fever"
+  }
+}

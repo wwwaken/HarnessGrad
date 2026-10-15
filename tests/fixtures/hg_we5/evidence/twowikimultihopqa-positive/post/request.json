@@ -1,0 +1,34 @@
+{
+  "dataset": "twowikimultihopqa",
+  "files": {
+    "answer.txt": "{\"schema_version\": 1, \"answer\": \"red town\", \"supporting_facts\": [[\"Authored Page\", 0]], \"evidence\": [[\"S\", \"born in\", \"O\"]]}"
+  },
+  "gold": {
+    "aliases": [],
+    "answer": "red town",
+    "evidence_aliases": {},
+    "evidences": [
+      [
+        "S",
+        "born in",
+        "O"
+      ]
+    ],
+    "evidences_id": [],
+    "id": "authored",
+    "supporting_facts": [
+      [
+        "Authored Page",
+        0
+      ]
+    ],
+    "type": "synthetic"
+  },
+  "gold_sha256": "735e0051b081c373b0499702bc2b394545515e87ee17b05a61099b7a04a5b06a",
+  "id": "twowikimultihopqa-positive",
+  "kind": "qa",
+  "output": "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/twowikimultihopqa-positive/post/scorer-output",
+  "private": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-positive/private",
+  "state": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-positive/exported",
+  "task_id": "w-e5-twowikimultihopqa"
+}

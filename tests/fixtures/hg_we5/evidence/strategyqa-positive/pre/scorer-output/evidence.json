@@ -1,0 +1,30 @@
+{
+ "answer": " `Yes` \n",
+ "answer_chars": 8,
+ "answer_file": "answer.txt",
+ "answer_present": true,
+ "correct": true,
+ "dataset": "strategyqa",
+ "gold": {
+  "answer": "yes"
+ },
+ "gold_file": "/tmp/hg-we5-98wezuyu/strategyqa-positive/private/gold.json",
+ "measured": true,
+ "official": {
+  "label": "yes",
+  "metric": "exact_match after ReWOO's normalize_answer",
+  "normalized_prediction": "yes"
+ },
+ "prediction": "Yes",
+ "reward": 1.0,
+ "reward_file": "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/strategyqa-positive/pre/scorer-output/reward.txt",
+ "scorer_input": {
+  "expected_sha256": "15776b37260a5897bb8aa57ee5df951203984ccc24a5bd9cb44d4521dc0ca203",
+  "path": "/tmp/hg-we5-98wezuyu/strategyqa-positive/private/gold.json",
+  "sha256": "15776b37260a5897bb8aa57ee5df951203984ccc24a5bd9cb44d4521dc0ca203",
+  "task_id": "w-e5-strategyqa",
+  "verified": true
+ },
+ "scorer_module": "data.datasets.strategyqa",
+ "why": "matches 'yes' vs 'yes'; the whole answer is compared, not its first token"
+}

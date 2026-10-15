@@ -1,0 +1,30 @@
+{
+ "answer": "  '#### 18'\n",
+ "answer_chars": 12,
+ "answer_file": "answer.txt",
+ "answer_present": true,
+ "correct": true,
+ "dataset": "gsm8k",
+ "gold": {
+  "answer": "18"
+ },
+ "gold_file": "/tmp/hg-we5-98wezuyu/gsm8k-positive/private/gold.json",
+ "measured": true,
+ "official": {
+  "filter": "decimal-aware-extract",
+  "flexible_extract": "18",
+  "strict_match": "18"
+ },
+ "prediction": "#### 18",
+ "reward": 1.0,
+ "reward_file": "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/gsm8k-positive/pre/scorer-output/reward.txt",
+ "scorer_input": {
+  "expected_sha256": "905b42f94828587a7ef42fc7ba8099189e62d85d0ce525a14225d15c8e35e922",
+  "path": "/tmp/hg-we5-98wezuyu/gsm8k-positive/private/gold.json",
+  "sha256": "905b42f94828587a7ef42fc7ba8099189e62d85d0ce525a14225d15c8e35e922",
+  "task_id": "w-e5-gsm8k",
+  "verified": true
+ },
+ "scorer_module": "data.datasets.gsm8k",
+ "why": "decimal-aware-extract 18 vs 18 -> match; strict-match 18 (match)"
+}

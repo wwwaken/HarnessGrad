@@ -1,0 +1,84 @@
+{
+  "argv": [
+    "python3",
+    "qa/lib/verify/check.py",
+    "--dataset",
+    "musique",
+    "--answer",
+    "answer.txt",
+    "--prediction",
+    "prediction.json",
+    "--gold",
+    "gold.json",
+    "--task-id",
+    "w-e5-musique",
+    "--gold-sha256",
+    "3c250bae4890ff4b7756a1eef035ab697c598a3e62413a32aa60937798d9c3fc",
+    "--reward-file",
+    "verifier/reward.txt",
+    "--evidence-file",
+    "verifier/evidence.json",
+    "--score-mode",
+    "answer_support",
+    "--redact-gold"
+  ],
+  "evidence_file": "/verifier/evidence.json",
+  "inputs": [
+    {
+      "content": "{\"aliases\": [], \"answer\": \"red town\", \"id\": \"authored\", \"supporting_facts\": [[\"Authored Page\", 0]]}",
+      "path": "gold.json"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/verify/check.py",
+      "path": "qa/lib/verify/check.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/read.py",
+      "path": "qa/lib/verify/read.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/__init__.py",
+      "path": "data/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/__init__.py",
+      "path": "data/scaffolds/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/__init__.py",
+      "path": "data/scaffolds/qa/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/read.py",
+      "path": "data/scaffolds/qa/read.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/base.py",
+      "path": "data/scaffolds/qa/base.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/evidence_scorers.py",
+      "path": "data/scaffolds/qa/evidence_scorers.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/prediction.py",
+      "path": "data/scaffolds/qa/prediction.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/datasets/__init__.py",
+      "path": "data/datasets/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/datasets/musique.py",
+      "path": "data/datasets/musique.py"
+    }
+  ],
+  "kind": "command",
+  "reward_file": "/verifier/reward.txt",
+  "scorer_input": {
+    "path": "gold.json",
+    "sha256": "3c250bae4890ff4b7756a1eef035ab697c598a3e62413a32aa60937798d9c3fc",
+    "task_id": "w-e5-musique"
+  },
+  "timeout_s": 3600
+}

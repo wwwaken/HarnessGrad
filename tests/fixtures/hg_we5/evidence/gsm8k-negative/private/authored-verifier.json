@@ -1,0 +1,81 @@
+{
+  "argv": [
+    "python3",
+    "qa/lib/verify/check.py",
+    "--dataset",
+    "gsm8k",
+    "--answer",
+    "answer.txt",
+    "--prediction",
+    "prediction.json",
+    "--gold",
+    "gold.json",
+    "--task-id",
+    "w-e5-gsm8k",
+    "--gold-sha256",
+    "905b42f94828587a7ef42fc7ba8099189e62d85d0ce525a14225d15c8e35e922",
+    "--reward-file",
+    "verifier/reward.txt",
+    "--evidence-file",
+    "verifier/evidence.json"
+  ],
+  "evidence_file": "/verifier/evidence.json",
+  "inputs": [
+    {
+      "content": "{\"answer\": \"18\"}",
+      "path": "gold.json"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/verify/check.py",
+      "path": "qa/lib/verify/check.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/read.py",
+      "path": "qa/lib/verify/read.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/__init__.py",
+      "path": "data/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/__init__.py",
+      "path": "data/scaffolds/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/__init__.py",
+      "path": "data/scaffolds/qa/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/read.py",
+      "path": "data/scaffolds/qa/read.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/base.py",
+      "path": "data/scaffolds/qa/base.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/evidence_scorers.py",
+      "path": "data/scaffolds/qa/evidence_scorers.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/scaffolds/qa/prediction.py",
+      "path": "data/scaffolds/qa/prediction.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/datasets/__init__.py",
+      "path": "data/datasets/__init__.py"
+    },
+    {
+      "from": "/tmp/hg-e5/data/datasets/gsm8k.py",
+      "path": "data/datasets/gsm8k.py"
+    }
+  ],
+  "kind": "command",
+  "reward_file": "/verifier/reward.txt",
+  "scorer_input": {
+    "path": "gold.json",
+    "sha256": "905b42f94828587a7ef42fc7ba8099189e62d85d0ce525a14225d15c8e35e922",
+    "task_id": "w-e5-gsm8k"
+  },
+  "timeout_s": 3600
+}

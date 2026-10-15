@@ -1,0 +1,31 @@
+{
+  "bytes": 4847,
+  "contract_sha256": "9e6fa76096ecad4a3892d562ea563a356460b02361003aa0fe599504c14f87fb",
+  "execution_binding": {
+    "outer_run_id": "w-e5-04d44df1ced84ebc936774fe07260d09",
+    "task_id": "w-e5-spreadsheetbench",
+    "trial_id": "1"
+  },
+  "files": [
+    {
+      "bytes": 19,
+      "path": "answer.txt",
+      "sha256": "bad34b32409d9763c105d568da4843b1dd32dfb8e5409ffc3f0d2ace04fb9520"
+    },
+    {
+      "bytes": 4828,
+      "path": "nested/result.xlsx",
+      "sha256": "ee12d3af7dbe128fb301feda0013255b04110a091a5963ce2160eaf77885c737"
+    }
+  ],
+  "inodes": 4,
+  "limits": {
+    "max_bytes": 4194304,
+    "max_inodes": 32
+  },
+  "run_id": "w-e5-export-55ab9a322ed4416b991302341f65f53b",
+  "schema": "harnessgrad.state-export-receipt.v2",
+  "scope": "local_artifact_projection",
+  "source_sha256": "52beebd085f45800ba6c481783e03acd5c4b295f12b6c2ea6b66ca916c9bfbff",
+  "task_id": "w-e5-spreadsheetbench"
+}

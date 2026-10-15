@@ -1,0 +1,45 @@
+{
+  "full": {
+    "correct": false,
+    "measured": true,
+    "official": null,
+    "returncode": 1,
+    "reward": 0.0,
+    "reward_text": "0\n"
+  },
+  "incomplete": {
+    "correct": false,
+    "measured": true,
+    "official": null,
+    "returncode": 1,
+    "reward": 0.0,
+    "reward_text": "0\n"
+  },
+  "omitted": "nested/result.xlsx",
+  "receipt": {
+    "bytes": 19,
+    "contract_sha256": "530929c5e4dbda0f5d99e33cf6f45f197f1e2b9b8a33fb178b082147e5685066",
+    "execution_binding": {
+      "outer_run_id": "w-e5-04d44df1ced84ebc936774fe07260d09",
+      "task_id": "w-e5-spreadsheetbench",
+      "trial_id": "1"
+    },
+    "files": [
+      {
+        "bytes": 19,
+        "path": "answer.txt",
+        "sha256": "bad34b32409d9763c105d568da4843b1dd32dfb8e5409ffc3f0d2ace04fb9520"
+      }
+    ],
+    "inodes": 2,
+    "limits": {
+      "max_bytes": 4194304,
+      "max_inodes": 32
+    },
+    "run_id": "w-e5-export-6649419e62e144b389829bbe4abde45d",
+    "schema": "harnessgrad.state-export-receipt.v2",
+    "scope": "local_artifact_projection",
+    "source_sha256": "fd596464522bbd97c6981a3c98954e4e681bd9618410303e54772fc10c9277b1",
+    "task_id": "w-e5-spreadsheetbench"
+  }
+}

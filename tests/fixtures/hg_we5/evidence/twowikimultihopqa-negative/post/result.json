@@ -1,0 +1,108 @@
+{
+  "adapter_file": "/tmp/hg-e5/data/datasets/twowikimultihopqa.py",
+  "argv": [
+    "--dataset",
+    "twowikimultihopqa",
+    "--answer",
+    "answer.txt",
+    "--prediction",
+    "prediction.json",
+    "--gold",
+    "/tmp/hg-we5-98wezuyu/twowikimultihopqa-negative/private/gold.json",
+    "--task-id",
+    "w-e5-twowikimultihopqa",
+    "--gold-sha256",
+    "735e0051b081c373b0499702bc2b394545515e87ee17b05a61099b7a04a5b06a",
+    "--reward-file",
+    "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/twowikimultihopqa-negative/post/scorer-output/reward.txt",
+    "--evidence-file",
+    "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/twowikimultihopqa-negative/post/scorer-output/evidence.json"
+  ],
+  "evidence": {
+    "answer": "{\"schema_version\": 1, \"answer\": \"red town\", \"supporting_facts\": [[\"Authored Page\", 0]], \"evidence\": []}",
+    "answer_chars": 103,
+    "answer_file": "answer.txt",
+    "answer_present": true,
+    "correct": false,
+    "dataset": "twowikimultihopqa",
+    "gold": {
+      "aliases": [],
+      "answer": "red town",
+      "evidence_aliases": {},
+      "evidences": [
+        [
+          "S",
+          "born in",
+          "O"
+        ]
+      ],
+      "evidences_id": [],
+      "id": "authored",
+      "supporting_facts": [
+        [
+          "Authored Page",
+          0
+        ]
+      ],
+      "type": "synthetic"
+    },
+    "gold_file": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-negative/private/gold.json",
+    "measured": true,
+    "official": {
+      "em": 1.0,
+      "evi_em": 0.0,
+      "evi_f1": 0.0,
+      "evi_prec": 0.0,
+      "evi_recall": 0.0,
+      "f1": 1.0,
+      "id": "authored",
+      "joint_em": 0.0,
+      "joint_f1": 0.0,
+      "joint_prec": 0.0,
+      "joint_recall": 0.0,
+      "metric": "2WikiMultihopQA Joint F1 (official v1.1 evaluator)",
+      "mode": "structured",
+      "prec": 1.0,
+      "recall": 1.0,
+      "scale": "fraction",
+      "sp_em": 1.0,
+      "sp_f1": 1.0,
+      "sp_prec": 1.0,
+      "sp_recall": 1.0,
+      "type": "synthetic"
+    },
+    "prediction": "{\"schema_version\": 1, \"answer\": \"red town\", \"supporting_facts\": [[\"Authored Page\", 0]], \"evidence\": []}",
+    "reward": 0.0,
+    "reward_file": "/tmp/hg-e5/tests/fixtures/hg_we5/evidence/twowikimultihopqa-negative/post/scorer-output/reward.txt",
+    "scorer_input": {
+      "expected_sha256": "735e0051b081c373b0499702bc2b394545515e87ee17b05a61099b7a04a5b06a",
+      "path": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-negative/private/gold.json",
+      "sha256": "735e0051b081c373b0499702bc2b394545515e87ee17b05a61099b7a04a5b06a",
+      "task_id": "w-e5-twowikimultihopqa",
+      "verified": true
+    },
+    "scorer_module": "data.datasets.twowikimultihopqa",
+    "why": "Joint F1=0, Joint EM=0"
+  },
+  "returncode": 1,
+  "reward_text": "0\n",
+  "state_reads": [
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-negative/private/authored-verifier.json"
+    },
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-negative/private/gold.json"
+    },
+    {
+      "flags": 524288,
+      "mode": "r",
+      "path": "/tmp/hg-we5-98wezuyu/twowikimultihopqa-negative/exported/answer.txt"
+    }
+  ],
+  "stderr": "",
+  "stdout": "reward 0: Joint F1=0, Joint EM=0\n"
+}

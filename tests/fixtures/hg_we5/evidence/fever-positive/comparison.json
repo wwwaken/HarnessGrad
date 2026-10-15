@@ -1,0 +1,28 @@
+{
+  "dataset": "fever",
+  "equivalent": true,
+  "id": "fever-positive",
+  "kind": "qa",
+  "post": {
+    "correct": true,
+    "measured": true,
+    "official": {
+      "max_evidence": 5,
+      "metric": "FEVER strict_score"
+    },
+    "returncode": 0,
+    "reward": 1.0,
+    "reward_text": "1\n"
+  },
+  "pre": {
+    "correct": true,
+    "measured": true,
+    "official": {
+      "max_evidence": 5,
+      "metric": "FEVER strict_score"
+    },
+    "returncode": 0,
+    "reward": 1.0,
+    "reward_text": "1\n"
+  }
+}

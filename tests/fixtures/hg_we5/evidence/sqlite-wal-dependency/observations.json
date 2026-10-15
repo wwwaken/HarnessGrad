@@ -1,0 +1,301 @@
+{
+  "checkpoint_before_insert": [
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "checkpointed": {
+    "correct": null,
+    "measured": true,
+    "official": null,
+    "returncode": 0,
+    "reward": 0.0,
+    "reward_text": "0\n"
+  },
+  "checkpointed_contract": {
+    "export": {
+      "files": [
+        {
+          "max_bytes": 1048576,
+          "path": "db.sqlite"
+        },
+        {
+          "max_bytes": 1048576,
+          "path": "gold.sql"
+        }
+      ],
+      "max_bytes": 4194304,
+      "max_inodes": 32
+    },
+    "quota": {
+      "/control-output": {
+        "bytes": 65536,
+        "inodes": 16
+      },
+      "/tmp": {
+        "bytes": 1048576,
+        "inodes": 64
+      }
+    },
+    "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+    "schema": "harnessgrad.artifact-scorer.v1",
+    "scorer": {
+      "argv": [
+        "/control-scorer/sh",
+        "/control-scorer/check.sh"
+      ],
+      "entrypoint": "check.sh",
+      "files": [
+        {
+          "bytes": 976,
+          "path": "check.sh",
+          "requires": [
+            "sh",
+            "expected.txt"
+          ],
+          "role": "scorer",
+          "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa"
+        },
+        {
+          "bytes": 2193272,
+          "path": "sh",
+          "requires": [],
+          "role": "runtime",
+          "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+        },
+        {
+          "bytes": 3,
+          "path": "expected.txt",
+          "requires": [],
+          "role": "dependency",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+        }
+      ]
+    },
+    "source_sha256": "6e1e105e4e9e07f85a52faaf29a7f2ff2c7d5b86d054c6d5bcff75a33bd4bc62",
+    "task_id": "w-e5-wal"
+  },
+  "checkpointed_receipt": {
+    "bytes": 8211,
+    "contract_sha256": "190ffabc639103af2809c8c9fb90bb659ec3492883c27c7debc72ff1ce4a399a",
+    "execution_binding": {
+      "outer_run_id": "w-e5-04d44df1ced84ebc936774fe07260d09",
+      "task_id": "w-e5-wal",
+      "trial_id": "1"
+    },
+    "files": [
+      {
+        "bytes": 8192,
+        "path": "db.sqlite",
+        "sha256": "f64c88023c32f8bc19edf61f557a6dc192f461231c95f189b9af2de42d365fd9"
+      },
+      {
+        "bytes": 19,
+        "path": "gold.sql",
+        "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+      }
+    ],
+    "inodes": 3,
+    "limits": {
+      "max_bytes": 4194304,
+      "max_inodes": 32
+    },
+    "run_id": "w-e5-export-5015a84858e14b5e8f6c2c8504a4aafd",
+    "schema": "harnessgrad.state-export-receipt.v2",
+    "scope": "local_artifact_projection",
+    "source_sha256": "6e1e105e4e9e07f85a52faaf29a7f2ff2c7d5b86d054c6d5bcff75a33bd4bc62",
+    "task_id": "w-e5-wal"
+  },
+  "closed_private": [
+    {
+      "bytes": 8192,
+      "gid": 1026,
+      "inode": 2906626,
+      "mode": "0o644",
+      "mtime_ns": 1792035253997629772,
+      "path": "db.sqlite",
+      "sha256": "f64c88023c32f8bc19edf61f557a6dc192f461231c95f189b9af2de42d365fd9",
+      "uid": 1026
+    },
+    {
+      "bytes": 19,
+      "gid": 1026,
+      "inode": 2906641,
+      "mode": "0o664",
+      "mtime_ns": 1792035253695628270,
+      "path": "gold.sql",
+      "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800",
+      "uid": 1026
+    }
+  ],
+  "contract": {
+    "export": {
+      "files": [
+        {
+          "max_bytes": 1048576,
+          "path": "db.sqlite"
+        },
+        {
+          "max_bytes": 1048576,
+          "path": "gold.sql"
+        }
+      ],
+      "max_bytes": 4194304,
+      "max_inodes": 32
+    },
+    "quota": {
+      "/control-output": {
+        "bytes": 65536,
+        "inodes": 16
+      },
+      "/tmp": {
+        "bytes": 1048576,
+        "inodes": 64
+      }
+    },
+    "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+    "schema": "harnessgrad.artifact-scorer.v1",
+    "scorer": {
+      "argv": [
+        "/control-scorer/sh",
+        "/control-scorer/check.sh"
+      ],
+      "entrypoint": "check.sh",
+      "files": [
+        {
+          "bytes": 976,
+          "path": "check.sh",
+          "requires": [
+            "sh",
+            "expected.txt"
+          ],
+          "role": "scorer",
+          "sha256": "c55ac9fd2bf4bd6e4a3a42e9a240f7dbb46052da91fe5d716590c8ce1d382aaa"
+        },
+        {
+          "bytes": 2193272,
+          "path": "sh",
+          "requires": [],
+          "role": "runtime",
+          "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+        },
+        {
+          "bytes": 3,
+          "path": "expected.txt",
+          "requires": [],
+          "role": "dependency",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+        }
+      ]
+    },
+    "source_sha256": "6e1e105e4e9e07f85a52faaf29a7f2ff2c7d5b86d054c6d5bcff75a33bd4bc62",
+    "task_id": "w-e5-wal"
+  },
+  "journal_mode": [
+    "wal"
+  ],
+  "live_private_before_copy": [
+    {
+      "bytes": 8192,
+      "gid": 1026,
+      "inode": 2906626,
+      "mode": "0o644",
+      "mtime_ns": 1792035253676628175,
+      "path": "db.sqlite",
+      "sha256": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef",
+      "uid": 1026
+    },
+    {
+      "bytes": 32768,
+      "gid": 1026,
+      "inode": 2906639,
+      "mode": "0o644",
+      "mtime_ns": 1792035253838628981,
+      "path": "db.sqlite-shm",
+      "sha256": "56ca9dcadf3805766e2d166868a590349ffb93050d6fc5efb0ed1a3ae06f20d5",
+      "uid": 1026
+    },
+    {
+      "bytes": 4152,
+      "gid": 1026,
+      "inode": 2906627,
+      "mode": "0o644",
+      "mtime_ns": 1792035253688628235,
+      "path": "db.sqlite-wal",
+      "sha256": "e0cf75d77b10a1b1750961d5d252a4233d89fef3580b0ed39c4b0f455e78d073",
+      "uid": 1026
+    },
+    {
+      "bytes": 19,
+      "gid": 1026,
+      "inode": 2906641,
+      "mode": "0o664",
+      "mtime_ns": 1792035253695628270,
+      "path": "gold.sql",
+      "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800",
+      "uid": 1026
+    }
+  ],
+  "live_rows": [
+    [
+      "base"
+    ],
+    [
+      "wal-only"
+    ]
+  ],
+  "main_only": {
+    "correct": null,
+    "measured": true,
+    "official": null,
+    "returncode": 0,
+    "reward": 1.0,
+    "reward_text": "1\n"
+  },
+  "main_only_receipt": {
+    "bytes": 8211,
+    "contract_sha256": "190ffabc639103af2809c8c9fb90bb659ec3492883c27c7debc72ff1ce4a399a",
+    "execution_binding": {
+      "outer_run_id": "w-e5-04d44df1ced84ebc936774fe07260d09",
+      "task_id": "w-e5-wal",
+      "trial_id": "1"
+    },
+    "files": [
+      {
+        "bytes": 8192,
+        "path": "db.sqlite",
+        "sha256": "3be20c5b8ac441683ddbf2f2a8d20e18028949a492c901b20659453c84dc6eef"
+      },
+      {
+        "bytes": 19,
+        "path": "gold.sql",
+        "sha256": "f51a696ca44aff601dab21e6a87a5a315b5419e5f3eea978f4597f580a9c2800"
+      }
+    ],
+    "inodes": 3,
+    "limits": {
+      "max_bytes": 4194304,
+      "max_inodes": 32
+    },
+    "run_id": "w-e5-export-2a65cbacc42145038b8982fde2c1c7e5",
+    "schema": "harnessgrad.state-export-receipt.v2",
+    "scope": "local_artifact_projection",
+    "source_sha256": "6e1e105e4e9e07f85a52faaf29a7f2ff2c7d5b86d054c6d5bcff75a33bd4bc62",
+    "task_id": "w-e5-wal"
+  },
+  "main_only_rows": [
+    [
+      "base"
+    ]
+  ],
+  "pre": {
+    "correct": null,
+    "measured": true,
+    "official": null,
+    "returncode": 0,
+    "reward": 0.0,
+    "reward_text": "0\n"
+  }
+}
