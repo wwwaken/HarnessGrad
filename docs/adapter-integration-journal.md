@@ -5339,3 +5339,55 @@ not be reported under the new metric name.
 uncovered qualifications), `97fce629` (D18 landing), `59785475` (bfcl_v3's corrected qualification append,
 additive, all four obligations preserved), `086e06c8` (the B5 floor). All four workers have now landed and
 merged; the b5 replay has exited. Nothing is running.
+
+## 2026-10-16 (goal round 6) — the acceptance criteria, measured; and one released endpoint still a default
+
+**Re-oriented from disk, and the goal snapshot is behind.** Its "in the running worker" list names eleven
+workers; all eleven have landed and been merged in this session (`w-evidence` `27d2efaa`, `w-provresidue`
+`7364dcb1`, `w-decisionpack` `b38d7754`, `w-knownred` `527512f3`, `w-evidence2` `18054949`, plus the
+earlier metric/adaptfid/alfworld/scienceworld/hotpotqa/verifierfix/taubench/fever merges), and the B5
+replay has exited. I cannot edit the snapshot on an automatic round, so it is corrected here.
+
+**Range A2 was not finished, and the leftover was a real bug rather than a doc task.** The audit line
+(`registry/w-evidence-external-sources.md:54-57`) says `.env` said 8001, `AGENTS.md:107` says 8002,
+`eval/policy/diagnostic_policy.py:29` admits **only** 8002, and the handoff and `hg-wt/w-outcome/.env` say
+**8010** - all three answering 200. Searching for the endpoint rather than the string (a bare `8001` grep
+matches a phone number in a tau-bench DB dump) found **`tools/check_local_model.py:46` still defaulting
+`--base-url` to `http://127.0.0.1:8001/v1`** - a tool whose out-of-the-box target is a port released on
+2026-10-14 - plus the same stale example in `tools/probe_tool_calls.py:4`. Two things that look like the
+same drift are **not** and must be left alone: `eval/diagnostic_receipt.schema.json:112-117` keeps `8001`
+in its `endpoint` **enum** because frozen historical receipts record that value, so removing it would stop
+them validating - destroying evidence to tidy a constant; and `eval/service/modelgate.py:6-10`, `:124`
+name `container -> 127.0.0.1:8001` as a **measured failing container route**, which is the whole reason the
+gateway exists. `w-endpointfix` is doing the fix, the regression test and the durable note.
+
+**The acceptance criteria are now measured, not asserted.** The goal asks for fail-before/pass-after per
+must-fix. That evidence existed but was scattered across eleven workers' validation files, so I produced
+it myself: pass-after is **230 passed, 3 skipped in 254.65s** over the fifteen-file must-fix and Range-C
+set, and the fail-before half came from reverting each fix commit in a throwaway worktree **while keeping
+its regression test**. Every must-fix failed with the fix absent - B5 physics, B6 sports, B7 verifier
+(2 failed / 4 passed), C8 GSM8K, C9 LiveCodeBench, A1 SpreadsheetBench - and consolidated into
+`registry/fidelity-acceptance.md`. **B7's fail-before is the clearest thing in the phase**: the captured
+stdout shows `per_task: {"synthetic-task": 0.0}` for a run that wrote no reward file at all, which *is*
+the silent zero the item was about. **C9's** names the clamp numerically: `join_budget_s 600 != 726`,
+`killed True != False`, `passed 0 != 103`.
+
+Two traps in that method are worth keeping, because my first attempt produced a garbage result:
+`git revert --no-commit` **stages** its changes, so `git diff --stat` prints nothing and the revert looks
+empty; and every fix commit in this phase *added its own regression test*, so reverting the commit deletes
+the test and pytest reports `ERROR: file or directory not found` instead of a failure. Restoring the test
+from `HEAD` after the revert is what makes the run meaningful - the only thing missing is then the fix.
+The throwaway worktree was removed; the 80 registered worktrees are left alone deliberately, since they
+are the only record of that codex work and AGENTS.md requires an explicit decision before deleting them.
+
+**D19 was amended twice, and one amendment was to my own error.** The ALFWorld replacement text said the
+30-action budget "differs from the paper's 50", which is now incomplete: `STEP_BUDGET` is **50** on `main`
+(`data/datasets/alfworld/lib/gym_env.py:44`, `cdb43ac4`) and `verify/check.py:184-185` separates
+`budget_reached` from `budget_exhausted`, so the honest sentence is "archived number, old instrument"
+versus "current code, paper budget". And a new section forbids extending the MuSiQue label to 2Wiki:
+MuSiQue is `answer_f1 × support_f1` (`musique.py:106`) while 2Wiki multiplies three channel precisions and
+three recalls and takes their **harmonic mean** (`twowikimultihopqa.py:476-482`) - the exact conflation
+handoff §3.4 made. Checking my own new text caught a citation I had introduced in **three** places: I wrote
+the 2Wiki docstring as `:30-32` when the sentence is at `:29`. Fixed in the handoff, the journal's round-7
+entry and the corrections file. This is the fourth time this phase that verifying a citation against the
+file changed the text.
