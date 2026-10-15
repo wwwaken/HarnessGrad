@@ -185,11 +185,11 @@ The singleton rule has been replaced by one complete exported group (`data/scaff
 
 ## tau_bench
 
-2026-10-16 — **FOUND, qualification required.** Our number: Binary final database hash match AND explicit done AND all required output substrings (`data/datasets/tau_bench/verify/check.py:185-197`, `:284-309`).
+2026-10-16 — **FOUND, qualification required.** Our number: Service-recorded database hash AND first termination AND all required output substrings (`data/datasets/tau_bench/verify/check.py:96-115`, `:240-259`). The service owns `/recordings/tau/episode.json` and the platform mounts it read-only (`:2-12`); the database is taken from the recording (`:254`) and the recording's termination state must agree with its events or the run is unmeasured (`:134`).
 
-Difference: Local mock-user/tool protocol differs from independent user interaction; log reading continues after done and recognizes done rather than upstream termination-tool events (`data/datasets/tau_bench/verify/check.py:156-180`; `data/datasets/tau_bench.py:35-55`). Official pass^k is not arithmetic trial mean (shared disclosure below). Actor database/log trust needs a recorded service boundary, not just matching predicates.
+Difference: There is still no independent user interaction, and official pass^k is not the arithmetic trial mean (shared disclosure below). The former actor-owns-the-log hazard is repaired: the database and the termination state now come from the service-owned recording, and the check refuses a recording whose termination state disagrees with its events (`data/datasets/tau_bench/verify/check.py:118-135`, `:240-259`), publishing `evidence_source: service-recording` (`:172-173`).
 
-Effect: NUMBER/CONDITION for trusted recording, stop-at-done, or terminate-tool changes. Earlier local transaction figures must not be reused as a corrected service-backed τ-bench/pass^k figure.
+Effect: NUMBER/CONDITION: the service-recording change has landed (`14866a0c`, which took the checker from 347 to 297 lines). Earlier figures measured under the actor-owned log must not be reused as service-recording τ-bench, and pass^k remains unimplemented by the shared trial mean. No runtime boundary validation or value delta was measured here.
 
 Existing record to qualify or update:
 

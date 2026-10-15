@@ -402,3 +402,64 @@ obligation, the fresh bounded no-model regressions with real engine invocation, 
 and explicit network isolation, and the reconciliation of any diagnostic manifest with the bounded
 first-five packet (`tests/fixtures/hg_wsel/spreadsheetbench.json`) all remain preconditions on a future,
 separately authorized diagnostic, which must use its own fresh run ID and the current staged policy.
+
+## Metric-identity qualification, 2026-10-16 - 20 datasets, no closure reopened
+
+`registry/w-evidence-qualification.md` and `registry/w-evidence-disclosure.md` (both landed this phase)
+record, per dataset, **what our number actually is** and where it differs from the official metric or the
+paper protocol. This section attaches that qualification to the closure record, because the registry has
+no closed-blocker record to attach it to: `registry/dataset-blockers.json` carries exactly 7
+`datasets[*].blockers` entries, all open, plus `historical_runs` and `review.notes`; `agentdojo`,
+`alfworld`, `gsm8k` and `musique` each carry `blockers: []`. **No status changes here and no closure is
+reopened.** The obligations each closure withdrew are unchanged; what changes is the *identity of the
+number*, which several records described incompletely or wrongly.
+
+**Scope.** 20 of 28 datasets carry a finding. 4 are `no new finding in the named scope` (`gaia`,
+`jericho`, `spreadsheetbench` before its locator drift, `terminal_bench`) and 4 are the permanent
+refusals (`api_bank`, `nestful`, `sotuqa`, `tau2_bench`), which are excluded and were not investigated.
+
+**What the operator needs from this table.** Of the 20, **13 lead with `NUMBER`** - the change alters the
+number, so an earlier figure must not be reported under the new metric name - **6 lead with `LABEL`**
+(label-only, though some carry a conditional NUMBER) and **1 leads with `CONDITION`** (appworld, where a
+guidance or aggregation change would move the number while the current scalar can be stated honestly
+now). Because this phase runs **no re-runs**, no archived figure has been re-measured: for every
+`NUMBER` row, the archived value was produced by the **pre-fix instrument** and is not comparable to what
+the code computes today. That sentence is the deliverable; the rest is provenance.
+
+| dataset | blocker | effect class | what the fix changes |
+| --- | --- | --- | --- |
+| `agentdojo` | closed | NUMBER/CONDITION | NUMBER/CONDITION: warning removal and registered-attack wiring have landed. |
+| `alfworld` | closed | NUMBER/CONDITION | NUMBER/CONDITION: the budget has changed 30→50, so earlier 30-action figures must not be reused as 50-action success (`data/datasets/alfworld/lib/gym_env.py:41-44`). |
+| `appworld` | measurement | CONDITION/NUMBER for guidance or scenario aggregation changes, LABEL for stating single-task success honestly. Earlier single-task figures must not be reused as a new grouped or test@N figure. The successful-measured-task blocker remains open; no new success is asserted. | CONDITION/NUMBER for guidance or scenario aggregation changes, LABEL for stating single-task success honestly. |
+| `bfcl_v3` | external | NUMBER | NUMBER: the irrelevance filter has changed. |
+| `bird_minidev` | closed | LABEL/DENOMINATOR DISCLOSURE; NUMBER if coverage/failure classification changes. Earlier measured-subset EX figures must not be reused as full-sample EX, Soft-F1 or R-VES. | LABEL/DENOMINATOR DISCLOSURE; NUMBER if coverage/failure classification changes. |
+| `chessbench_puzzles` | closed | LABEL ONLY while keeping offline replay; NUMBER/CONDITION if an interactive controller is used. Earlier offline figures must not be reused as interactive official accuracy. | LABEL ONLY while keeping offline replay; NUMBER/CONDITION if an interactive controller is used. |
+| `ds1000` | closed | NUMBER/CONDITION | NUMBER/CONDITION: private tests have been removed from actor SETUP. |
+| `fever` | closed | NUMBER | NUMBER: conjunction-preserving projection has landed. |
+| `gsm8k` | closed | NUMBER | NUMBER: first-marker precedence has landed. |
+| `hotpotqa` | closed | NUMBER | NUMBER: joint-EM reward has changed to answer F1 (`data/datasets/hotpotqa.py:52-58`). |
+| `livecodebench` | closed | NUMBER/CONDITION | NUMBER/CONDITION: the inner 600-second clamp has been removed. |
+| `musique` | closed | LABEL ONLY for the handed-off 0.3064 | LABEL ONLY for the handed-off 0.3064: call it local joint F1, never Answer F1. |
+| `physicsquestions` | closed | NUMBER | NUMBER: prediction-side normalization changed. |
+| `reasoning_gym` | closed | LABEL/DISCLOSURE pending verified aggregation evidence; NUMBER if an aggregation definition changes. Earlier pooled means must not be reused as an unverified official max+mean figure. | LABEL/DISCLOSURE pending verified aggregation evidence; NUMBER if an aggregation definition changes. |
+| `scienceworld` | closed | NUMBER/CONDITION | NUMBER/CONDITION: the 1000→100 budget change has landed and a separate observed-type macro now exists (`data/datasets/scienceworld.py:239-296`), while the default run scalar remains micro. |
+| `sportsunderstanding` | closed | NUMBER | NUMBER: immediate-negation interpretation changed. |
+| `strategyqa` | closed | LABEL/DISCLOSURE now; NUMBER if answer semantics or the evaluation split changes. Earlier local string EM figures must not be reused as original Accuracy on Test. | LABEL/DISCLOSURE now; NUMBER if answer semantics or the evaluation split changes. |
+| `tau_bench` | closed | NUMBER/CONDITION | NUMBER/CONDITION: the service-recording change has landed (`14866a0c`, which took the checker from 347 to 297 lines). |
+| `triviaqa` | external | LABEL/PROVENANCE now; NUMBER potentially if alias preservation, key grouping or denominator changes. Earlier row-EM figures must not be reused as official key-level EM/F1 after such a fix. No numerical effect is observed. | LABEL/PROVENANCE now; NUMBER potentially if alias preservation, key grouping or denominator changes. |
+| `twowikimultihopqa` | closed | NUMBER/CHANNEL | NUMBER/CHANNEL: the routing change has landed. |
+
+**Ten mechanisms were described against the pre-fix tree in the first draft of these documents** and are
+corrected here: alfworld's 30-action budget, hotpotqa's joint-EM reward, the LiveCodeBench 600 s clamp,
+AgentDojo's custom fixed attack, FEVER's flat singleton evidence, GSM8K's last-number rule, BFCL's
+non-call lines, DS-1000's actor-visible tests, ScienceWorld's 1000-move budget, and 2Wiki's undeclared
+`EVIDENCE_AWARE` - plus `tau_bench`, where the cited line range no longer resolved because the fix made
+the checker shorter (347 -> 297 lines, `14866a0c`). Nine of these are `NUMBER` changes on `main` today.
+
+**What this section does not do.** It closes no measurement, claims no score, authorizes no run, and
+changes no blocker status. It does not substitute for the three open blockers' own decisions, which are
+set out with their exact registry text in `registry/w-decisionpack.md`. The archived figures themselves
+are separately constrained: this phase measured that the four enumerated archive trees contain **zero**
+verdict files and that the census originals are only a partial substitute
+(`registry/w-evidence-archive.md`, parent-reproduced).
+
