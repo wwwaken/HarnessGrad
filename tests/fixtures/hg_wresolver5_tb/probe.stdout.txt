@@ -1,0 +1,85 @@
+build-cython-ext-pip-version exit_code 0
+resolve-build-cython-ext exit_code 0
+install-build-cython-ext exit_code 0
+check-build-cython-ext exit_code 0
+negative-build-cython-ext exit_code 1
+headless-terminal-pip-version exit_code 0
+resolve-headless-terminal exit_code 0
+install-headless-terminal exit_code 0
+check-headless-terminal exit_code 0
+negative-headless-terminal exit_code 1
+hf-model-inference-pip-version exit_code 0
+resolve-hf-model-inference exit_code 0
+install-hf-model-inference exit_code 0
+check-hf-model-inference exit_code 0
+negative-hf-model-inference exit_code 1
+{
+  "build-cython-ext": {
+    "resolve": 0,
+    "install": 0,
+    "check": 0,
+    "selected": 6,
+    "removed": {
+      "name": "pluggy",
+      "version": "1.6.0",
+      "filename": "pluggy-1.6.0-py3-none-any.whl",
+      "remaining_files": [
+        "iniconfig-2.3.1-py3-none-any.whl",
+        "packaging-26.3-py3-none-any.whl",
+        "pygments-2.21.0-py3-none-any.whl",
+        "pytest-8.4.1-py3-none-any.whl",
+        "pytest_json_ctrf-0.3.5-py3-none-any.whl"
+      ]
+    },
+    "negative": 1
+  },
+  "headless-terminal": {
+    "resolve": 0,
+    "install": 0,
+    "check": 0,
+    "selected": 11,
+    "removed": {
+      "name": "pluggy",
+      "version": "1.6.0",
+      "filename": "pluggy-1.6.0-py3-none-any.whl",
+      "remaining_files": [
+        "certifi-2026.7.22-py3-none-any.whl",
+        "charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "idna-3.20-py3-none-any.whl",
+        "iniconfig-2.3.1-py3-none-any.whl",
+        "packaging-26.3-py3-none-any.whl",
+        "pygments-2.21.0-py3-none-any.whl",
+        "pytest-8.4.1-py3-none-any.whl",
+        "pytest_json_ctrf-0.3.5-py3-none-any.whl",
+        "requests-2.32.5-py3-none-any.whl",
+        "urllib3-2.8.0-py3-none-any.whl"
+      ]
+    },
+    "negative": 1
+  },
+  "hf-model-inference": {
+    "resolve": 0,
+    "install": 0,
+    "check": 0,
+    "selected": 12,
+    "removed": {
+      "name": "pluggy",
+      "version": "1.6.0",
+      "filename": "pluggy-1.6.0-py3-none-any.whl",
+      "remaining_files": [
+        "certifi-2026.7.22-py3-none-any.whl",
+        "charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "idna-3.20-py3-none-any.whl",
+        "iniconfig-2.3.1-py3-none-any.whl",
+        "packaging-26.3-py3-none-any.whl",
+        "psutil-7.0.0-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "pygments-2.21.0-py3-none-any.whl",
+        "pytest-8.4.1-py3-none-any.whl",
+        "pytest_json_ctrf-0.3.5-py3-none-any.whl",
+        "requests-2.32.4-py3-none-any.whl",
+        "urllib3-2.8.0-py3-none-any.whl"
+      ]
+    },
+    "negative": 1
+  }
+}

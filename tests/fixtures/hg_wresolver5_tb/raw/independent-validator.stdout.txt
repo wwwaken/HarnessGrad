@@ -1,0 +1,46 @@
+{
+  "valid": true,
+  "scope": "Host CPython 3.12 reconstruction of test.sh pip-bootstrap metadata tooling only, not task/image/native/application dependencies or complete Terminal-Bench task graphs.",
+  "profiles": {
+    "build-cython-ext": {
+      "selected": 6,
+      "resolve": 0,
+      "install": 0,
+      "check": 0,
+      "negative": 1,
+      "missing": "pluggy==1.6.0"
+    },
+    "headless-terminal": {
+      "selected": 11,
+      "resolve": 0,
+      "install": 0,
+      "check": 0,
+      "negative": 1,
+      "missing": "pluggy==1.6.0"
+    },
+    "hf-model-inference": {
+      "selected": 12,
+      "resolve": 0,
+      "install": 0,
+      "check": 0,
+      "negative": 1,
+      "missing": "pluggy==1.6.0"
+    }
+  },
+  "selected_task_ids": [
+    "build-cython-ext",
+    "headless-terminal",
+    "hf-model-inference"
+  ],
+  "new_distinct_bootstrap_profiles": 3,
+  "unique_artifacts": 13,
+  "unique_artifact_bytes": 2787959,
+  "packet_files": 132,
+  "packet_bytes": 645977,
+  "largest_file": [
+    128491,
+    "raw/hf-model-inference.pip-report.json"
+  ],
+  "complete_dataset_profile_increment": 0,
+  "shared_or_dataset_blockers_closed": 0
+}

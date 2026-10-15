@@ -1,0 +1,15 @@
+Looking in links: /tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext
+Processing /tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext/pytest_json_ctrf-0.3.5-py3-none-any.whl (from -r /tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in (line 1))
+Processing /tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext/pytest-8.4.1-py3-none-any.whl (from -r /tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in (line 2))
+Processing /tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext/iniconfig-2.3.1-py3-none-any.whl (from pytest==8.4.1->-r /tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in (line 2))
+Processing /tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext/packaging-26.3-py3-none-any.whl (from pytest==8.4.1->-r /tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in (line 2))
+INFO: pip is looking at multiple versions of pytest to determine which version is compatible with other requirements. This could take a while.
+
+The conflict is caused by:
+    pytest 8.4.1 depends on pluggy<2 and >=1.5
+    The user requested (constraint) pluggy==1.6.0
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip attempt to solve the dependency conflict
+

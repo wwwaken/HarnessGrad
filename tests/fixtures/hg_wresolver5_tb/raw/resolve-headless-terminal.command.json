@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver5-tb-offline-9sr_itgc/headless-terminal/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-headless-terminal",
+    "--report",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/raw/headless-terminal.pip-report.json",
+    "-r",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/roots.in",
+    "-c",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/constraints.txt"
+  ],
+  "elapsed_seconds": 0.521485747769475,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

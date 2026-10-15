@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver5-tb-offline-9sr_itgc/hf-model-inference/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--find-links",
+    "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-hf-model-inference",
+    "--require-hashes",
+    "-r",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/hf-model-inference/resolved.lock"
+  ],
+  "elapsed_seconds": 2.842317331582308,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

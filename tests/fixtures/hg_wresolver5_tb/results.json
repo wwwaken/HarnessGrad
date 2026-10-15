@@ -1,0 +1,449 @@
+{
+  "build-cython-ext": {
+    "argv": [
+      "/tmp/hg-wresolver5-tb-offline-9sr_itgc/build-cython-ext/bin/python",
+      "-m",
+      "pip",
+      "--isolated",
+      "--disable-pip-version-check",
+      "install",
+      "--ignore-installed",
+      "--no-index",
+      "--no-cache-dir",
+      "--only-binary=:all:",
+      "--dry-run",
+      "--find-links",
+      "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext",
+      "--report",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/raw/build-cython-ext.pip-report.json",
+      "-r",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in",
+      "-c",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/constraints.txt"
+    ],
+    "check": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/build-cython-ext/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "elapsed_seconds": 0.34880784805864096,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "elapsed_seconds": 0.6006757915019989,
+    "exit_code": 0,
+    "install": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/build-cython-ext/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--find-links",
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext",
+        "--require-hashes",
+        "-r",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/resolved.lock"
+      ],
+      "elapsed_seconds": 1.9718647375702858,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "negative": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/build-cython-ext/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--dry-run",
+        "--find-links",
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext",
+        "-r",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in",
+        "-c",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/constraints.txt"
+      ],
+      "elapsed_seconds": 0.5771509958431125,
+      "exit_code": 1,
+      "timeout_seconds": 180
+    },
+    "negative_removed": {
+      "filename": "pluggy-1.6.0-py3-none-any.whl",
+      "name": "pluggy",
+      "remaining_files": [
+        "iniconfig-2.3.1-py3-none-any.whl",
+        "packaging-26.3-py3-none-any.whl",
+        "pygments-2.21.0-py3-none-any.whl",
+        "pytest-8.4.1-py3-none-any.whl",
+        "pytest_json_ctrf-0.3.5-py3-none-any.whl"
+      ],
+      "version": "1.6.0"
+    },
+    "selected": [
+      {
+        "name": "pytest-json-ctrf",
+        "sha256": "e82fd1d69be2f92385bc33540063e5ad7b17b36de67764c84f3ceb9815a895e9",
+        "version": "0.3.5"
+      },
+      {
+        "name": "pytest",
+        "sha256": "539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7",
+        "version": "8.4.1"
+      },
+      {
+        "name": "iniconfig",
+        "sha256": "9121e2c1fdb355232495be3194c8dfe87ccc2d5dee45947b78e68f499790d7a7",
+        "version": "2.3.1"
+      },
+      {
+        "name": "packaging",
+        "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+        "version": "26.3"
+      },
+      {
+        "name": "pluggy",
+        "sha256": "e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746",
+        "version": "1.6.0"
+      },
+      {
+        "name": "Pygments",
+        "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+        "version": "2.21.0"
+      }
+    ],
+    "timeout_seconds": 180
+  },
+  "headless-terminal": {
+    "argv": [
+      "/tmp/hg-wresolver5-tb-offline-9sr_itgc/headless-terminal/bin/python",
+      "-m",
+      "pip",
+      "--isolated",
+      "--disable-pip-version-check",
+      "install",
+      "--ignore-installed",
+      "--no-index",
+      "--no-cache-dir",
+      "--only-binary=:all:",
+      "--dry-run",
+      "--find-links",
+      "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-headless-terminal",
+      "--report",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/raw/headless-terminal.pip-report.json",
+      "-r",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/roots.in",
+      "-c",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/constraints.txt"
+    ],
+    "check": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/headless-terminal/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "elapsed_seconds": 0.45163076743483543,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "elapsed_seconds": 0.521485747769475,
+    "exit_code": 0,
+    "install": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/headless-terminal/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--find-links",
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-headless-terminal",
+        "--require-hashes",
+        "-r",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/resolved.lock"
+      ],
+      "elapsed_seconds": 2.2058019768446684,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "negative": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/headless-terminal/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--dry-run",
+        "--find-links",
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-headless-terminal",
+        "-r",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/roots.in",
+        "-c",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/headless-terminal/constraints.txt"
+      ],
+      "elapsed_seconds": 0.5866983365267515,
+      "exit_code": 1,
+      "timeout_seconds": 180
+    },
+    "negative_removed": {
+      "filename": "pluggy-1.6.0-py3-none-any.whl",
+      "name": "pluggy",
+      "remaining_files": [
+        "certifi-2026.7.22-py3-none-any.whl",
+        "charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "idna-3.20-py3-none-any.whl",
+        "iniconfig-2.3.1-py3-none-any.whl",
+        "packaging-26.3-py3-none-any.whl",
+        "pygments-2.21.0-py3-none-any.whl",
+        "pytest-8.4.1-py3-none-any.whl",
+        "pytest_json_ctrf-0.3.5-py3-none-any.whl",
+        "requests-2.32.5-py3-none-any.whl",
+        "urllib3-2.8.0-py3-none-any.whl"
+      ],
+      "version": "1.6.0"
+    },
+    "selected": [
+      {
+        "name": "pytest-json-ctrf",
+        "sha256": "e82fd1d69be2f92385bc33540063e5ad7b17b36de67764c84f3ceb9815a895e9",
+        "version": "0.3.5"
+      },
+      {
+        "name": "pytest",
+        "sha256": "539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7",
+        "version": "8.4.1"
+      },
+      {
+        "name": "requests",
+        "sha256": "2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6",
+        "version": "2.32.5"
+      },
+      {
+        "name": "certifi",
+        "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+        "version": "2026.7.22"
+      },
+      {
+        "name": "charset-normalizer",
+        "sha256": "3d31298449090ab8d47b7b1b2a555ff73cac7ed438a08b7ac160980c7ebed649",
+        "version": "3.5.2"
+      },
+      {
+        "name": "idna",
+        "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+        "version": "3.20"
+      },
+      {
+        "name": "iniconfig",
+        "sha256": "9121e2c1fdb355232495be3194c8dfe87ccc2d5dee45947b78e68f499790d7a7",
+        "version": "2.3.1"
+      },
+      {
+        "name": "packaging",
+        "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+        "version": "26.3"
+      },
+      {
+        "name": "pluggy",
+        "sha256": "e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746",
+        "version": "1.6.0"
+      },
+      {
+        "name": "Pygments",
+        "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+        "version": "2.21.0"
+      },
+      {
+        "name": "urllib3",
+        "sha256": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3",
+        "version": "2.8.0"
+      }
+    ],
+    "timeout_seconds": 180
+  },
+  "hf-model-inference": {
+    "argv": [
+      "/tmp/hg-wresolver5-tb-offline-9sr_itgc/hf-model-inference/bin/python",
+      "-m",
+      "pip",
+      "--isolated",
+      "--disable-pip-version-check",
+      "install",
+      "--ignore-installed",
+      "--no-index",
+      "--no-cache-dir",
+      "--only-binary=:all:",
+      "--dry-run",
+      "--find-links",
+      "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-hf-model-inference",
+      "--report",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/raw/hf-model-inference.pip-report.json",
+      "-r",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/hf-model-inference/roots.in",
+      "-c",
+      "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/hf-model-inference/constraints.txt"
+    ],
+    "check": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/hf-model-inference/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "elapsed_seconds": 0.35128825809806585,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "elapsed_seconds": 0.6959627401083708,
+    "exit_code": 0,
+    "install": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/hf-model-inference/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--find-links",
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-hf-model-inference",
+        "--require-hashes",
+        "-r",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/hf-model-inference/resolved.lock"
+      ],
+      "elapsed_seconds": 2.842317331582308,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "negative": {
+      "argv": [
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/hf-model-inference/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--dry-run",
+        "--find-links",
+        "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-hf-model-inference",
+        "-r",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/hf-model-inference/roots.in",
+        "-c",
+        "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/hf-model-inference/constraints.txt"
+      ],
+      "elapsed_seconds": 0.5243231104686856,
+      "exit_code": 1,
+      "timeout_seconds": 180
+    },
+    "negative_removed": {
+      "filename": "pluggy-1.6.0-py3-none-any.whl",
+      "name": "pluggy",
+      "remaining_files": [
+        "certifi-2026.7.22-py3-none-any.whl",
+        "charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "idna-3.20-py3-none-any.whl",
+        "iniconfig-2.3.1-py3-none-any.whl",
+        "packaging-26.3-py3-none-any.whl",
+        "psutil-7.0.0-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "pygments-2.21.0-py3-none-any.whl",
+        "pytest-8.4.1-py3-none-any.whl",
+        "pytest_json_ctrf-0.3.5-py3-none-any.whl",
+        "requests-2.32.4-py3-none-any.whl",
+        "urllib3-2.8.0-py3-none-any.whl"
+      ],
+      "version": "1.6.0"
+    },
+    "selected": [
+      {
+        "name": "psutil",
+        "sha256": "4b1388a4f6875d7e2aff5c4ca1cc16c545ed41dd8bb596cefea80111db353a34",
+        "version": "7.0.0"
+      },
+      {
+        "name": "pytest-json-ctrf",
+        "sha256": "e82fd1d69be2f92385bc33540063e5ad7b17b36de67764c84f3ceb9815a895e9",
+        "version": "0.3.5"
+      },
+      {
+        "name": "pytest",
+        "sha256": "539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7",
+        "version": "8.4.1"
+      },
+      {
+        "name": "requests",
+        "sha256": "27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c",
+        "version": "2.32.4"
+      },
+      {
+        "name": "certifi",
+        "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+        "version": "2026.7.22"
+      },
+      {
+        "name": "charset-normalizer",
+        "sha256": "3d31298449090ab8d47b7b1b2a555ff73cac7ed438a08b7ac160980c7ebed649",
+        "version": "3.5.2"
+      },
+      {
+        "name": "idna",
+        "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+        "version": "3.20"
+      },
+      {
+        "name": "iniconfig",
+        "sha256": "9121e2c1fdb355232495be3194c8dfe87ccc2d5dee45947b78e68f499790d7a7",
+        "version": "2.3.1"
+      },
+      {
+        "name": "packaging",
+        "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+        "version": "26.3"
+      },
+      {
+        "name": "pluggy",
+        "sha256": "e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746",
+        "version": "1.6.0"
+      },
+      {
+        "name": "Pygments",
+        "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+        "version": "2.21.0"
+      },
+      {
+        "name": "urllib3",
+        "sha256": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3",
+        "version": "2.8.0"
+      }
+    ],
+    "timeout_seconds": 180
+  }
+}

@@ -1,0 +1,847 @@
+{
+  "considered_prefix": [
+    {
+      "declarations": [
+        {
+          "line": 9,
+          "pins": [
+            "pytest==8.4.1",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "selected-distinct-bootstrap",
+      "image_declaration_audit": {
+        "excerpts": [
+          {
+            "line": 3,
+            "text": "FROM python:3.13-slim-bookworm"
+          },
+          {
+            "line": 14,
+            "text": "RUN pip install numpy==2.3.0"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/environment/Dockerfile",
+        "sha256": "cb6cf421cb9b69d43bd25cd491e49bda982fbb865d47515178d017eda727194e"
+      },
+      "root_requirements": [
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/tests/test.sh",
+      "script_preimage": "source/build-cython-ext-test.sh",
+      "script_sha256": "0156c9c4085258b696ce424cf1ce96cba44d1263c5d73bdf54083fd80237f915",
+      "task_id": "build-cython-ext",
+      "test_import_audit": {
+        "imports": [
+          {
+            "line": 6,
+            "roots": [
+              "importlib"
+            ],
+            "stdlib": [
+              "importlib"
+            ],
+            "text": "import importlib.machinery"
+          },
+          {
+            "line": 7,
+            "roots": [
+              "importlib"
+            ],
+            "stdlib": [
+              "importlib"
+            ],
+            "text": "import importlib.util"
+          },
+          {
+            "line": 8,
+            "roots": [
+              "os"
+            ],
+            "stdlib": [
+              "os"
+            ],
+            "text": "import os"
+          },
+          {
+            "line": 9,
+            "roots": [
+              "random"
+            ],
+            "stdlib": [
+              "random"
+            ],
+            "text": "import random"
+          },
+          {
+            "line": 10,
+            "roots": [
+              "subprocess"
+            ],
+            "stdlib": [
+              "subprocess"
+            ],
+            "text": "import subprocess"
+          },
+          {
+            "line": 11,
+            "roots": [
+              "tempfile"
+            ],
+            "stdlib": [
+              "tempfile"
+            ],
+            "text": "import tempfile"
+          },
+          {
+            "line": 12,
+            "roots": [
+              "pathlib"
+            ],
+            "stdlib": [
+              "pathlib"
+            ],
+            "text": "from pathlib import Path"
+          },
+          {
+            "line": 19,
+            "roots": [
+              "numpy"
+            ],
+            "stdlib": [],
+            "text": "import numpy as np"
+          },
+          {
+            "line": 20,
+            "roots": [
+              "packaging"
+            ],
+            "stdlib": [],
+            "text": "from packaging import version"
+          },
+          {
+            "line": 84,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves.chelpers as ch"
+          },
+          {
+            "line": 96,
+            "roots": [
+              "numpy"
+            ],
+            "stdlib": [],
+            "text": "import numpy as np"
+          },
+          {
+            "line": 97,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves.ccomplexity as cc"
+          },
+          {
+            "line": 115,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.invariants as inv"
+          },
+          {
+            "line": 116,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.make as mk"
+          },
+          {
+            "line": 117,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves as sp"
+          },
+          {
+            "line": 128,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.make as mk"
+          },
+          {
+            "line": 129,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves as sp"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/tests/test_outputs.py",
+        "policy": "AST import statements only retained. Task/application/image imports outside declared verifier bootstrap are not claimed resolved.",
+        "sha256": "6549f1a8e04b6163ec08877e6f6b9868bf94563f3a3c72ac1fba9c512c31689e"
+      }
+    },
+    {
+      "declarations": [
+        {
+          "line": 9,
+          "pins": [
+            "pytest==8.4.1",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "duplicate-bootstrap-graph",
+      "root_requirements": [
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/fix-code-vulnerability/tests/test.sh",
+      "script_sha256": "f1611da693cb4cfc5e8482698c6a1858a5c67220ae9db89b50aed66584e9b17f",
+      "task_id": "fix-code-vulnerability"
+    },
+    {
+      "declarations": [
+        {
+          "line": 13,
+          "pins": [
+            "pytest==8.4.1",
+            "requests==2.32.5",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 requests==2.32.5 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "selected-distinct-bootstrap",
+      "image_declaration_audit": {
+        "excerpts": [
+          {
+            "line": 1,
+            "text": "FROM python:3.13-slim-bookworm"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/environment/Dockerfile",
+        "sha256": "c17679907b17671ab6e363aebaa26464dac2d3d0cfd5680cb0bbe6160af17481"
+      },
+      "root_requirements": [
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1",
+        "requests==2.32.5"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/tests/test.sh",
+      "script_preimage": "source/headless-terminal-test.sh",
+      "script_sha256": "bfaa32131cbbef985f9b0bbc3cb231ac51eb90579e6e3db55a2f09b5fa0f46b7",
+      "task_id": "headless-terminal",
+      "test_import_audit": {
+        "imports": [
+          {
+            "line": 1,
+            "roots": [
+              "shlex"
+            ],
+            "stdlib": [
+              "shlex"
+            ],
+            "text": "import shlex"
+          },
+          {
+            "line": 2,
+            "roots": [
+              "subprocess"
+            ],
+            "stdlib": [
+              "subprocess"
+            ],
+            "text": "import subprocess"
+          },
+          {
+            "line": 3,
+            "roots": [
+              "sys"
+            ],
+            "stdlib": [
+              "sys"
+            ],
+            "text": "import sys"
+          },
+          {
+            "line": 4,
+            "roots": [
+              "pathlib"
+            ],
+            "stdlib": [
+              "pathlib"
+            ],
+            "text": "from pathlib import Path"
+          },
+          {
+            "line": 6,
+            "roots": [
+              "requests"
+            ],
+            "stdlib": [],
+            "text": "import requests"
+          },
+          {
+            "line": 13,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 18,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 32,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 57,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 84,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 99,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 120,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/tests/test_outputs.py",
+        "policy": "AST import statements only retained. Task/application/image imports outside declared verifier bootstrap are not claimed resolved.",
+        "sha256": "c6998195e29efb64f41f903b6a727059c4f0ee267f730cd7ffca5c1f7d99ab78"
+      }
+    },
+    {
+      "declarations": [
+        {
+          "line": 4,
+          "pins": [
+            "pytest==8.4.1",
+            "psutil==7.0.0",
+            "requests==2.32.4",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 psutil==7.0.0 requests==2.32.4 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "selected-distinct-bootstrap",
+      "image_declaration_audit": {
+        "excerpts": [
+          {
+            "line": 2,
+            "text": "FROM python:3.13-slim-bookworm"
+          },
+          {
+            "line": 5,
+            "text": "RUN pip install transformers==4.56.0 torch==2.7.1 flask==3.1.1"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/environment/Dockerfile",
+        "sha256": "ad4f71e919cc0889dd8ac33e49d5bdc48ffb9f7d44609ac95819f8ea663d3b2b"
+      },
+      "root_requirements": [
+        "psutil==7.0.0",
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1",
+        "requests==2.32.4"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/tests/test.sh",
+      "script_preimage": "source/hf-model-inference-test.sh",
+      "script_sha256": "6528c4c44d46004738c57dc59709bc80fb4226d37aaf0e8d778cc08017642e8f",
+      "task_id": "hf-model-inference",
+      "test_import_audit": {
+        "imports": [
+          {
+            "line": 3,
+            "roots": [
+              "os"
+            ],
+            "stdlib": [
+              "os"
+            ],
+            "text": "import os"
+          },
+          {
+            "line": 5,
+            "roots": [
+              "requests"
+            ],
+            "stdlib": [],
+            "text": "import requests"
+          },
+          {
+            "line": 10,
+            "roots": [
+              "transformers"
+            ],
+            "stdlib": [],
+            "text": "from transformers import AutoModelForSequenceClassification, AutoTokenizer"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/tests/test_outputs.py",
+        "policy": "AST import statements only retained. Task/application/image imports outside declared verifier bootstrap are not claimed resolved.",
+        "sha256": "61a686d6caf833ac3c240f2a8ceddacfed82b9f392c51b48ed8359d3e0f87857"
+      }
+    }
+  ],
+  "distinct_profile_count": 3,
+  "scope": "Host CPython 3.12 reconstruction of test.sh pip-bootstrap metadata tooling only, not task/image/native/application dependencies or complete Terminal-Bench task graphs.",
+  "selected": [
+    {
+      "declarations": [
+        {
+          "line": 9,
+          "pins": [
+            "pytest==8.4.1",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "selected-distinct-bootstrap",
+      "image_declaration_audit": {
+        "excerpts": [
+          {
+            "line": 3,
+            "text": "FROM python:3.13-slim-bookworm"
+          },
+          {
+            "line": 14,
+            "text": "RUN pip install numpy==2.3.0"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/environment/Dockerfile",
+        "sha256": "cb6cf421cb9b69d43bd25cd491e49bda982fbb865d47515178d017eda727194e"
+      },
+      "root_requirements": [
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/tests/test.sh",
+      "script_preimage": "source/build-cython-ext-test.sh",
+      "script_sha256": "0156c9c4085258b696ce424cf1ce96cba44d1263c5d73bdf54083fd80237f915",
+      "task_id": "build-cython-ext",
+      "test_import_audit": {
+        "imports": [
+          {
+            "line": 6,
+            "roots": [
+              "importlib"
+            ],
+            "stdlib": [
+              "importlib"
+            ],
+            "text": "import importlib.machinery"
+          },
+          {
+            "line": 7,
+            "roots": [
+              "importlib"
+            ],
+            "stdlib": [
+              "importlib"
+            ],
+            "text": "import importlib.util"
+          },
+          {
+            "line": 8,
+            "roots": [
+              "os"
+            ],
+            "stdlib": [
+              "os"
+            ],
+            "text": "import os"
+          },
+          {
+            "line": 9,
+            "roots": [
+              "random"
+            ],
+            "stdlib": [
+              "random"
+            ],
+            "text": "import random"
+          },
+          {
+            "line": 10,
+            "roots": [
+              "subprocess"
+            ],
+            "stdlib": [
+              "subprocess"
+            ],
+            "text": "import subprocess"
+          },
+          {
+            "line": 11,
+            "roots": [
+              "tempfile"
+            ],
+            "stdlib": [
+              "tempfile"
+            ],
+            "text": "import tempfile"
+          },
+          {
+            "line": 12,
+            "roots": [
+              "pathlib"
+            ],
+            "stdlib": [
+              "pathlib"
+            ],
+            "text": "from pathlib import Path"
+          },
+          {
+            "line": 19,
+            "roots": [
+              "numpy"
+            ],
+            "stdlib": [],
+            "text": "import numpy as np"
+          },
+          {
+            "line": 20,
+            "roots": [
+              "packaging"
+            ],
+            "stdlib": [],
+            "text": "from packaging import version"
+          },
+          {
+            "line": 84,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves.chelpers as ch"
+          },
+          {
+            "line": 96,
+            "roots": [
+              "numpy"
+            ],
+            "stdlib": [],
+            "text": "import numpy as np"
+          },
+          {
+            "line": 97,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves.ccomplexity as cc"
+          },
+          {
+            "line": 115,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.invariants as inv"
+          },
+          {
+            "line": 116,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.make as mk"
+          },
+          {
+            "line": 117,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves as sp"
+          },
+          {
+            "line": 128,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.make as mk"
+          },
+          {
+            "line": 129,
+            "roots": [
+              "pyknotid"
+            ],
+            "stdlib": [],
+            "text": "import pyknotid.spacecurves as sp"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/build-cython-ext/tests/test_outputs.py",
+        "policy": "AST import statements only retained. Task/application/image imports outside declared verifier bootstrap are not claimed resolved.",
+        "sha256": "6549f1a8e04b6163ec08877e6f6b9868bf94563f3a3c72ac1fba9c512c31689e"
+      }
+    },
+    {
+      "declarations": [
+        {
+          "line": 13,
+          "pins": [
+            "pytest==8.4.1",
+            "requests==2.32.5",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 requests==2.32.5 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "selected-distinct-bootstrap",
+      "image_declaration_audit": {
+        "excerpts": [
+          {
+            "line": 1,
+            "text": "FROM python:3.13-slim-bookworm"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/environment/Dockerfile",
+        "sha256": "c17679907b17671ab6e363aebaa26464dac2d3d0cfd5680cb0bbe6160af17481"
+      },
+      "root_requirements": [
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1",
+        "requests==2.32.5"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/tests/test.sh",
+      "script_preimage": "source/headless-terminal-test.sh",
+      "script_sha256": "bfaa32131cbbef985f9b0bbc3cb231ac51eb90579e6e3db55a2f09b5fa0f46b7",
+      "task_id": "headless-terminal",
+      "test_import_audit": {
+        "imports": [
+          {
+            "line": 1,
+            "roots": [
+              "shlex"
+            ],
+            "stdlib": [
+              "shlex"
+            ],
+            "text": "import shlex"
+          },
+          {
+            "line": 2,
+            "roots": [
+              "subprocess"
+            ],
+            "stdlib": [
+              "subprocess"
+            ],
+            "text": "import subprocess"
+          },
+          {
+            "line": 3,
+            "roots": [
+              "sys"
+            ],
+            "stdlib": [
+              "sys"
+            ],
+            "text": "import sys"
+          },
+          {
+            "line": 4,
+            "roots": [
+              "pathlib"
+            ],
+            "stdlib": [
+              "pathlib"
+            ],
+            "text": "from pathlib import Path"
+          },
+          {
+            "line": 6,
+            "roots": [
+              "requests"
+            ],
+            "stdlib": [],
+            "text": "import requests"
+          },
+          {
+            "line": 13,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 18,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 32,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 57,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 84,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 99,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          },
+          {
+            "line": 120,
+            "roots": [
+              "headless_terminal"
+            ],
+            "stdlib": [],
+            "text": "from headless_terminal import HeadlessTerminal"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/headless-terminal/tests/test_outputs.py",
+        "policy": "AST import statements only retained. Task/application/image imports outside declared verifier bootstrap are not claimed resolved.",
+        "sha256": "c6998195e29efb64f41f903b6a727059c4f0ee267f730cd7ffca5c1f7d99ab78"
+      }
+    },
+    {
+      "declarations": [
+        {
+          "line": 4,
+          "pins": [
+            "pytest==8.4.1",
+            "psutil==7.0.0",
+            "requests==2.32.4",
+            "pytest-json-ctrf==0.3.5"
+          ],
+          "text": "pip install pytest==8.4.1 psutil==7.0.0 requests==2.32.4 pytest-json-ctrf==0.3.5"
+        }
+      ],
+      "disposition": "selected-distinct-bootstrap",
+      "image_declaration_audit": {
+        "excerpts": [
+          {
+            "line": 2,
+            "text": "FROM python:3.13-slim-bookworm"
+          },
+          {
+            "line": 5,
+            "text": "RUN pip install transformers==4.56.0 torch==2.7.1 flask==3.1.1"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/environment/Dockerfile",
+        "sha256": "ad4f71e919cc0889dd8ac33e49d5bdc48ffb9f7d44609ac95819f8ea663d3b2b"
+      },
+      "root_requirements": [
+        "psutil==7.0.0",
+        "pytest-json-ctrf==0.3.5",
+        "pytest==8.4.1",
+        "requests==2.32.4"
+      ],
+      "script_origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/tests/test.sh",
+      "script_preimage": "source/hf-model-inference-test.sh",
+      "script_sha256": "6528c4c44d46004738c57dc59709bc80fb4226d37aaf0e8d778cc08017642e8f",
+      "task_id": "hf-model-inference",
+      "test_import_audit": {
+        "imports": [
+          {
+            "line": 3,
+            "roots": [
+              "os"
+            ],
+            "stdlib": [
+              "os"
+            ],
+            "text": "import os"
+          },
+          {
+            "line": 5,
+            "roots": [
+              "requests"
+            ],
+            "stdlib": [],
+            "text": "import requests"
+          },
+          {
+            "line": 10,
+            "roots": [
+              "transformers"
+            ],
+            "stdlib": [],
+            "text": "from transformers import AutoModelForSequenceClassification, AutoTokenizer"
+          }
+        ],
+        "origin": "/mnt/20t/xubuqiang/datasets/terminal-bench/hf-model-inference/tests/test_outputs.py",
+        "policy": "AST import statements only retained. Task/application/image imports outside declared verifier bootstrap are not claimed resolved.",
+        "sha256": "61a686d6caf833ac3c240f2a8ceddacfed82b9f392c51b48ed8359d3e0f87857"
+      }
+    }
+  ],
+  "selected_task_count": 3,
+  "selection_rule": "Sorted task id among direct pip install verifiers with only finite exact distribution pins; skip identical bootstrap pin sets; select first three distinct graphs. Stop after three, do not extrapolate duplicate-task coverage.",
+  "total_task_count": 89
+}

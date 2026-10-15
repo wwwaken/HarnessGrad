@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver5-tb-offline-9sr_itgc/build-cython-ext/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver5-tb-offline-9sr_itgc/wheels-build-cython-ext",
+    "--report",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/raw/build-cython-ext.pip-report.json",
+    "-r",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/roots.in",
+    "-c",
+    "/tmp/hg-resolver5-tb/tests/fixtures/hg_wresolver5_tb/profiles/build-cython-ext/constraints.txt"
+  ],
+  "elapsed_seconds": 0.6006757915019989,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

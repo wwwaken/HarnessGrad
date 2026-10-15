@@ -1,0 +1,117 @@
+{
+  "artifact_sha256": "e82fd1d69be2f92385bc33540063e5ad7b17b36de67764c84f3ceb9815a895e9",
+  "modules": [
+    {
+      "imports": [
+        {
+          "line": 1,
+          "text": "from pytest import Config, hookimpl, Item"
+        },
+        {
+          "line": 2,
+          "text": "from .Report import Report"
+        }
+      ],
+      "member": "ctrf/BaseMetadataReport.py",
+      "sha256": "05df0a154f06355e0372287ba9dfd8a6e1c1b22a464802df5052ee00d9e9148a"
+    },
+    {
+      "imports": [
+        {
+          "line": 1,
+          "text": "from pytest import hookimpl, TestReport"
+        },
+        {
+          "line": 2,
+          "text": "from collections import OrderedDict"
+        },
+        {
+          "line": 3,
+          "text": "from .BaseMetadataReport import metadata, BaseMetadataReport"
+        }
+      ],
+      "member": "ctrf/CommonTestReportPlugin.py",
+      "sha256": "ee1738621addce612b7b674d645dc08c5cb0e16ba781dbcba3f5e60716d805ee"
+    },
+    {
+      "imports": [
+        {
+          "line": 1,
+          "text": "import os"
+        },
+        {
+          "line": 2,
+          "text": "import pytest"
+        },
+        {
+          "line": 3,
+          "text": "import time"
+        },
+        {
+          "line": 4,
+          "text": "import json"
+        },
+        {
+          "line": 5,
+          "text": "from typing import Optional"
+        },
+        {
+          "line": 6,
+          "text": "from pytest import TestReport"
+        },
+        {
+          "line": 7,
+          "text": "from collections import OrderedDict"
+        },
+        {
+          "line": 8,
+          "text": "from .TestObject import TestObject, TestStatus"
+        }
+      ],
+      "member": "ctrf/Report.py",
+      "sha256": "a65eb77fbb89a1e71a893fa7764edd652952f12484b34eabc8380099842f1a84"
+    },
+    {
+      "imports": [
+        {
+          "line": 1,
+          "text": "from enum import Enum"
+        },
+        {
+          "line": 2,
+          "text": "from typing import Any"
+        },
+        {
+          "line": 4,
+          "text": "from pytest import TestReport"
+        }
+      ],
+      "member": "ctrf/TestObject.py",
+      "sha256": "9f4af2222bdd9f2df784a1c873e6e6220a74393659340ab5d6b24b338ce1cc24"
+    },
+    {
+      "imports": [],
+      "member": "ctrf/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "imports": [
+        {
+          "line": 1,
+          "text": "from pytest import Config, Parser, FixtureRequest, fixture"
+        },
+        {
+          "line": 2,
+          "text": "from ctrf.CommonTestReportPlugin import CTRF"
+        },
+        {
+          "line": 3,
+          "text": "from ctrf.BaseMetadataReport import BaseMetadataReport"
+        }
+      ],
+      "member": "ctrf/main.py",
+      "sha256": "42c48c728547285bee4a28ece1794e81c3d01482ff96aa28a081bd863ea03169"
+    }
+  ],
+  "scope": "Import-only static bootstrap plugin audit. All absolute third-party imports are pytest, provided by the declared graph; local ctrf imports are in the same wheel. No plugin is imported or run."
+}
