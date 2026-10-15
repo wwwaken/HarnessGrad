@@ -89,3 +89,22 @@ Batches 0-60 of 16 done. Failures so far: the five ALFWorld-native, four `test_c
 `test_chess3_diagnostic_actor`, one `test_chessbench_puzzles_strict_replay`, six
 `test_external_provenance_b5`, one `test_ds1000_official_scorer`, one `test_dgm_rule` - **20 in total,
 all in files untouched by any commit in this phase**, and all but the last three classified above.
+
+## Worktree-only failures - do not mistake these for regressions
+
+Two `tests/quality/test_isolation.py` tests behave differently in a fresh worktree than in the main
+checkout, and both were checked against `main` before being attributed:
+
+* `test_snapshot_covers_the_referee_not_the_candidate` asserts `.env` is in the snapshot inventory.
+  `.env` is gitignored, so it exists only in the main checkout; this test **passes on `main` and fails
+  in a worktree**. A worktree run must not read that as a regression.
+* `test_the_harness_cannot_read_the_platform_or_its_answers` fails **on `main` as well**
+  (`AssertionError: 平台的沙箱里还有东西:None`) and is therefore pre-existing, not worktree-specific.
+
+## Fixed this phase, recorded so the pins are not "restored" by mistake
+
+A lost reward file used to be published as `score: 0.0`. The branch, its false parity comment, the
+reproduced fault injection and the corrected assertions are in `registry/w-vfix-validation.txt`.
+`test_exec_verdict_missing_new_reward_is_zero` was renamed to `..._is_unmeasured_not_zero`, and three
+security-property tests that had asserted `score == 0.0` incidentally now assert the property they were
+written for. Reverting any of those to `0.0` would restore an infrastructure-failure-as-zero defect.
