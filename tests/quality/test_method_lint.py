@@ -136,6 +136,31 @@ def test_model_names_in_metadata_strings_are_not_client_construction(tmp_path):
     assert not [e for e in result.errors if "model client" in e], result.errors
 
 
+def test_a_rule_test_is_named_after_the_method_not_after_a_later_token(
+        tmp_path, monkeypatch):
+    """A decoy ending in the method's letter is not this method's rule test.
+
+    Measured: the loose token search matched `test_scorer_isolation_option_b.py` -- "option B"
+    of scorer isolation -- for the method named `b`, and demanded a citation for a rule that
+    file does not implement. Both halves are asserted here, because a fix that simply stopped
+    finding rule tests would also silence the citation requirement.
+    """
+    tests = tmp_path / "tests"
+    tests.mkdir()
+    monkeypatch.setattr(method_lint, "TESTS", tests)
+    (tests / "test_unrelated_option_probe_method_zzz.py").write_text("no citation here\n")
+    (tmp_path / "decoy").mkdir()
+    decoy = method_lint.lint_one(_probe(tmp_path / "decoy", meta=_minimal("reference")))
+    assert decoy.rule_test is None, decoy.rule_test
+    assert not decoy.errors, decoy.errors
+
+    (tests / "test_probe_method_zzz_rule.py").write_text("still no citation\n")
+    (tmp_path / "named").mkdir()
+    named = method_lint.lint_one(_probe(tmp_path / "named", meta=_minimal("reference")))
+    assert named.rule_test == "test_probe_method_zzz_rule.py", named.rule_test
+    assert any("does not cite the rule" in error for error in named.errors), named.errors
+
+
 @pytest.mark.parametrize("run", [
     "import anthropic\nclient = anthropic.Anthropic()\n",
     "from anthropic import Anthropic as Client\nclient = Client()\n",

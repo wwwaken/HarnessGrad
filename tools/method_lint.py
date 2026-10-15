@@ -213,7 +213,15 @@ def lint_one(path: Path) -> Result:
     # The name has to appear as a **token**, not as a substring: a bare `*a*.py` matched
     # `test_adapters.py` for the method named `a`, which would have made the check pass or
     # fail on an unrelated file. Found by running this lint for the first time.
-    token = re.compile(rf"(^|_){re.escape(path.name)}(_|\.)")
+    #
+    # The token must also be the **first** one after `test_`: a rule test is named after the
+    # method, and a later token is a different label that happens to end in the same letter.
+    # Measured 2026-10-15: the loose form matched `test_scorer_isolation_option_b.py` for the
+    # method named `b` -- "option B" of scorer isolation, nothing to do with the shape in
+    # `methods/b/run.py` -- and demanded a citation for a rule that file does not implement.
+    # Anchoring keeps every real mapping (`test_dgm_rule.py`, `test_rrsi_fidelity.py`, ...)
+    # and drops that one.
+    token = re.compile(rf"^test_{re.escape(path.name)}(_|\.)")
     found = sorted(f for f in TESTS.rglob("test_*.py") if token.search(f.name))
     if found:
         result.rule_test = found[0].name
