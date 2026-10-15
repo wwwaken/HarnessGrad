@@ -1,0 +1,184 @@
+DEBUG uv 0.9.5
+TRACE Checking shared lock for `/tmp/resolver/uvx-cache` at `/tmp/resolver/uvx-cache/.lock`
+DEBUG Acquired shared lock for `/tmp/resolver/uvx-cache`
+DEBUG Checking for Python interpreter at path `/usr/local/bin/python3.13`
+TRACE Querying interpreter executable at /usr/local/bin/python3.13
+TRACE Checking lock for `/tmp/resolver/.local/share/uv/tools` at `/tmp/resolver/.local/share/uv/tools/.lock`
+DEBUG Acquired lock for `/tmp/resolver/.local/share/uv/tools`
+DEBUG Checking for Python environment at: `/tmp/resolver/.local/share/uv/tools/pytest`
+DEBUG Released lock at `/tmp/resolver/.local/share/uv/tools/.lock`
+DEBUG Assessing Python executable as base candidate: /usr/local/bin/python3.13
+DEBUG Caching via base interpreter: `/usr/local/bin/python3.13`
+DEBUG Using request timeout of 30s
+DEBUG Found 6 packages in `--find-links` entry: file:///prior/wheels
+DEBUG Solving with installed Python version: 3.13.7
+DEBUG Solving with target Python version: >=3.13.7
+TRACE Assigned packages: 
+TRACE Chose package for decision: root. remaining choices: 
+DEBUG Adding direct dependency: pytest*
+DEBUG Adding direct dependency: pytest>=8.4.1, <8.4.1+
+DEBUG Adding direct dependency: pytest-json-ctrf>=0.3.5, <0.3.5+
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: pytest. remaining choices: pytest-json-ctrf
+TRACE Received package metadata for: pytest
+TRACE Received package metadata for: pytest-json-ctrf
+DEBUG Searching for a compatible version of pytest (>=8.4.1, <8.4.1+)
+TRACE Selecting candidate for pytest with range >=8.4.1, <8.4.1+ with 1 remote versions
+TRACE Selecting candidate for pytest-json-ctrf with range >=0.3.5, <0.3.5+ with 1 remote versions
+TRACE Found candidate for package pytest with range >=8.4.1, <8.4.1+ after 1 steps: 8.4.1 version
+TRACE Returning candidate for package pytest with range >=8.4.1, <8.4.1+ after 1 steps
+TRACE Found candidate for package pytest-json-ctrf with range >=0.3.5, <0.3.5+ after 1 steps: 0.3.5 version
+TRACE Returning candidate for package pytest-json-ctrf with range >=0.3.5, <0.3.5+ after 1 steps
+DEBUG Selecting: pytest==8.4.1 [compatible] (pytest-8.4.1-py3-none-any.whl)
+TRACE Selecting candidate for pytest with range >=8.4.1, <8.4.1+ with 1 remote versions
+TRACE Found candidate for package pytest with range >=8.4.1, <8.4.1+ after 1 steps: 8.4.1 version
+TRACE Returning candidate for package pytest with range >=8.4.1, <8.4.1+ after 1 steps
+TRACE Received built distribution metadata for: pytest-json-ctrf==0.3.5
+TRACE Received built distribution metadata for: pytest==8.4.1
+DEBUG Adding transitive dependency for pytest==8.4.1: iniconfig>=1
+DEBUG Adding transitive dependency for pytest==8.4.1: packaging>=20
+DEBUG Adding transitive dependency for pytest==8.4.1: pluggy>=1.5, <2
+DEBUG Adding transitive dependency for pytest==8.4.1: pygments>=2.7.2
+TRACE Received package metadata for: iniconfig
+TRACE Assigned packages: root==0a0.dev0, pytest==8.4.1
+TRACE Received package metadata for: packaging
+TRACE Chose package for decision: pytest-json-ctrf. remaining choices: pygments, iniconfig, packaging, pluggy
+DEBUG Searching for a compatible version of pytest-json-ctrf (>=0.3.5, <0.3.5+)
+TRACE Selecting candidate for pytest-json-ctrf with range >=0.3.5, <0.3.5+ with 1 remote versions
+TRACE Received package metadata for: pluggy
+TRACE Found candidate for package pytest-json-ctrf with range >=0.3.5, <0.3.5+ after 1 steps: 0.3.5 version
+TRACE Returning candidate for package pytest-json-ctrf with range >=0.3.5, <0.3.5+ after 1 steps
+DEBUG Selecting: pytest-json-ctrf==0.3.5 [compatible] (pytest_json_ctrf-0.3.5-py3-none-any.whl)
+TRACE Received package metadata for: pygments
+TRACE Selecting candidate for pygments with range >=2.7.2 with 1 remote versions
+TRACE Found candidate for package pygments with range >=2.7.2 after 1 steps: 2.21.0 version
+TRACE Returning candidate for package pygments with range >=2.7.2 after 1 steps
+DEBUG Adding transitive dependency for pytest-json-ctrf==0.3.5: pytest>6.0.0
+TRACE Assigned packages: root==0a0.dev0, pytest==8.4.1, pytest-json-ctrf==0.3.5
+TRACE Chose package for decision: iniconfig. remaining choices: pygments, pluggy, packaging
+DEBUG Searching for a compatible version of iniconfig (>=1)
+TRACE Selecting candidate for pluggy with range >=1.5, <2 with 1 remote versions
+TRACE Selecting candidate for iniconfig with range >=1 with 1 remote versions
+TRACE Found candidate for package pluggy with range >=1.5, <2 after 1 steps: 1.6.0 version
+TRACE Found candidate for package iniconfig with range >=1 after 1 steps: 2.3.1 version
+TRACE Returning candidate for package pluggy with range >=1.5, <2 after 1 steps
+TRACE Returning candidate for package iniconfig with range >=1 after 1 steps
+DEBUG Selecting: iniconfig==2.3.1 [compatible] (iniconfig-2.3.1-py3-none-any.whl)
+TRACE Selecting candidate for packaging with range >=20 with 1 remote versions
+TRACE Found candidate for package packaging with range >=20 after 1 steps: 26.3 version
+TRACE Returning candidate for package packaging with range >=20 after 1 steps
+TRACE Selecting candidate for iniconfig with range >=1 with 1 remote versions
+TRACE Found candidate for package iniconfig with range >=1 after 1 steps: 2.3.1 version
+TRACE Returning candidate for package iniconfig with range >=1 after 1 steps
+TRACE Received built distribution metadata for: iniconfig==2.3.1
+TRACE Assigned packages: root==0a0.dev0, pytest==8.4.1, pytest-json-ctrf==0.3.5, iniconfig==2.3.1
+TRACE Chose package for decision: packaging. remaining choices: pygments, pluggy
+DEBUG Searching for a compatible version of packaging (>=20)
+TRACE Selecting candidate for packaging with range >=20 with 1 remote versions
+TRACE Found candidate for package packaging with range >=20 after 1 steps: 26.3 version
+TRACE Returning candidate for package packaging with range >=20 after 1 steps
+DEBUG Selecting: packaging==26.3 [compatible] (packaging-26.3-py3-none-any.whl)
+TRACE Received built distribution metadata for: pluggy==1.6.0
+TRACE Received built distribution metadata for: pygments==2.21.0
+TRACE Received built distribution metadata for: packaging==26.3
+TRACE Assigned packages: root==0a0.dev0, pytest==8.4.1, pytest-json-ctrf==0.3.5, iniconfig==2.3.1, packaging==26.3
+TRACE Chose package for decision: pluggy. remaining choices: pygments
+DEBUG Searching for a compatible version of pluggy (>=1.5, <2)
+TRACE Selecting candidate for pluggy with range >=1.5, <2 with 1 remote versions
+TRACE Found candidate for package pluggy with range >=1.5, <2 after 1 steps: 1.6.0 version
+TRACE Returning candidate for package pluggy with range >=1.5, <2 after 1 steps
+DEBUG Selecting: pluggy==1.6.0 [compatible] (pluggy-1.6.0-py3-none-any.whl)
+TRACE Assigned packages: root==0a0.dev0, pytest==8.4.1, pytest-json-ctrf==0.3.5, iniconfig==2.3.1, packaging==26.3, pluggy==1.6.0
+TRACE Chose package for decision: pygments. remaining choices: 
+DEBUG Searching for a compatible version of pygments (>=2.7.2)
+TRACE Selecting candidate for pygments with range >=2.7.2 with 1 remote versions
+TRACE Found candidate for package pygments with range >=2.7.2 after 1 steps: 2.21.0 version
+TRACE Returning candidate for package pygments with range >=2.7.2 after 1 steps
+DEBUG Selecting: pygments==2.21.0 [compatible] (pygments-2.21.0-py3-none-any.whl)
+TRACE Assigned packages: root==0a0.dev0, pytest==8.4.1, pytest-json-ctrf==0.3.5, iniconfig==2.3.1, packaging==26.3, pluggy==1.6.0, pygments==2.21.0
+DEBUG Tried 6 versions: iniconfig 1, packaging 1, pluggy 1, pygments 1, pytest 1, pytest-json-ctrf 1
+DEBUG marker environment resolution took 0.004s
+TRACE Resolution: ResolverEnvironment { kind: Specific { marker_env: ResolverMarkerEnvironment(MarkerEnvironment { inner: MarkerEnvironmentInner { implementation_name: "cpython", implementation_version: StringVersion { string: "3.13.7", version: "3.13.7" }, os_name: "posix", platform_machine: "x86_64", platform_python_implementation: "CPython", platform_release: "6.8.0-136-generic", platform_system: "Linux", platform_version: "#136~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul  3 16:29:11 UTC ", python_full_version: StringVersion { string: "3.13.7", version: "3.13.7" }, python_version: StringVersion { string: "3.13", version: "3.13" }, sys_platform: "linux" } }) } }
+TRACE Resolution edge: ROOT -> pytest
+TRACE Resolution edge:     0a0.dev0 -> 8.4.1
+TRACE Resolution edge: ROOT -> pytest
+TRACE Resolution edge:     0a0.dev0 -> 8.4.1
+TRACE Resolution edge: ROOT -> pytest-json-ctrf
+TRACE Resolution edge:     0a0.dev0 -> 0.3.5
+TRACE Resolution edge: pytest -> iniconfig
+TRACE Resolution edge:     8.4.1 -> 2.3.1
+TRACE Resolution edge: pytest -> packaging
+TRACE Resolution edge:     8.4.1 -> 26.3
+TRACE Resolution edge: pytest -> pluggy
+TRACE Resolution edge:     8.4.1 -> 1.6.0
+TRACE Resolution edge: pytest -> pygments
+TRACE Resolution edge:     8.4.1 -> 2.21.0
+TRACE Resolution edge: pytest-json-ctrf -> pytest
+TRACE Resolution edge:     0.3.5 -> 8.4.1
+Resolved 6 packages in 5ms
+DEBUG Using base executable for virtual environment: /usr/local/bin/python3.13
+TRACE Using empty directory at `/tmp/resolver/uvx-cache/builds-v0/.tmp1UnIJX` for virtual environment
+DEBUG Using request timeout of 30s
+DEBUG Found 6 packages in `--find-links` entry: file:///prior/wheels
+DEBUG Identified uncached distribution: pygments==2.21.0
+DEBUG Identified uncached distribution: pytest-json-ctrf==0.3.5
+DEBUG Identified uncached distribution: pluggy==1.6.0
+DEBUG Identified uncached distribution: pytest==8.4.1
+DEBUG Identified uncached distribution: packaging==26.3
+DEBUG Identified uncached distribution: iniconfig==2.3.1
+Prepared 6 packages in 31ms
+TRACE Extracting file name=PackageName("pytest-json-ctrf")
+TRACE Extracted 11 files name=PackageName("pytest-json-ctrf")
+TRACE No entrypoints name=PackageName("pytest-json-ctrf")
+TRACE No data name=PackageName("pytest-json-ctrf")
+TRACE Writing installer metadata name=PackageName("pytest-json-ctrf")
+TRACE Writing record name=PackageName("pytest-json-ctrf")
+TRACE Extracting file name=PackageName("iniconfig")
+TRACE Extracted 10 files name=PackageName("iniconfig")
+TRACE No entrypoints name=PackageName("iniconfig")
+TRACE No data name=PackageName("iniconfig")
+TRACE Writing installer metadata name=PackageName("iniconfig")
+TRACE Writing record name=PackageName("iniconfig")
+TRACE Extracting file name=PackageName("pluggy")
+TRACE Extracted 14 files name=PackageName("pluggy")
+TRACE No entrypoints name=PackageName("pluggy")
+TRACE No data name=PackageName("pluggy")
+TRACE Writing installer metadata name=PackageName("pluggy")
+TRACE Writing record name=PackageName("pluggy")
+TRACE Extracting file name=PackageName("packaging")
+TRACE Extracted 29 files name=PackageName("packaging")
+TRACE No entrypoints name=PackageName("packaging")
+TRACE No data name=PackageName("packaging")
+TRACE Writing installer metadata name=PackageName("packaging")
+TRACE Writing record name=PackageName("packaging")
+TRACE Extracting file name=PackageName("pytest")
+TRACE Extracted 81 files name=PackageName("pytest")
+TRACE Writing entrypoints name=PackageName("pytest")
+TRACE No data name=PackageName("pytest")
+TRACE Writing installer metadata name=PackageName("pytest")
+TRACE Writing record name=PackageName("pytest")
+TRACE Extracting file name=PackageName("pygments")
+TRACE Extracted 349 files name=PackageName("pygments")
+TRACE Writing entrypoints name=PackageName("pygments")
+TRACE No data name=PackageName("pygments")
+TRACE Writing installer metadata name=PackageName("pygments")
+TRACE Writing record name=PackageName("pygments")
+Installed 6 packages in 8ms
+ + iniconfig==2.3.1
+ + packaging==26.3
+ + pluggy==1.6.0
+ + pygments==2.21.0
+ + pytest==8.4.1
+ + pytest-json-ctrf==0.3.5
+DEBUG Checking for Python environment at: `/tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u`
+TRACE Querying interpreter executable at /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/bin/python3
+DEBUG Looking at `.dist-info` at: /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/lib/python3.13/site-packages/iniconfig-2.3.1.dist-info
+DEBUG Looking at `.dist-info` at: /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/lib/python3.13/site-packages/packaging-26.3.dist-info
+DEBUG Looking at `.dist-info` at: /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/lib/python3.13/site-packages/pluggy-1.6.0.dist-info
+DEBUG Looking at `.dist-info` at: /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/lib/python3.13/site-packages/pygments-2.21.0.dist-info
+DEBUG Looking at `.dist-info` at: /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/lib/python3.13/site-packages/pytest-8.4.1.dist-info
+DEBUG Looking at `.dist-info` at: /tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/lib/python3.13/site-packages/pytest_json_ctrf-0.3.5.dist-info
+DEBUG Running `pytest --version`
+DEBUG Spawned child 38 in process group 1
+DEBUG Command exited with code: 0
+DEBUG Released lock at `/tmp/resolver/uvx-cache/.lock`

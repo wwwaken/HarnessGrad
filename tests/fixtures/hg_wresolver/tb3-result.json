@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--name",
+    "hg-wresolver-hg-wresolver-name-6hat3t4o",
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cpus=1",
+    "--memory=512m",
+    "--pids-limit=64",
+    "--user",
+    "1026:1026",
+    "--tmpfs",
+    "/tmp:rw,exec,size=256m",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--mount",
+    "type=bind,src=/tmp/hg-resolver/tests/fixtures/hg_wresolver,dst=/packet/tests/fixtures/hg_wresolver,readonly",
+    "--mount",
+    "type=bind,src=/tmp/hg-resolver/tests/fixtures/hg_wuvx/artifacts,dst=/prior,readonly",
+    "--mount",
+    "type=bind,src=/tmp/hg-resolver/tests/fixtures/hg_wresolver/tb3,dst=/out",
+    "--entrypoint",
+    "/usr/local/bin/python3.13",
+    "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+    "/packet/tests/fixtures/hg_wresolver/tb_probe.py"
+  ],
+  "elapsed_seconds": 3.947648852132261,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

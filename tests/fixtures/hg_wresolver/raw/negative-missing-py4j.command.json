@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver-native-74vzb0gg/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--ignore-installed",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver-native-74vzb0gg/missing-py4j",
+    "-r",
+    "/tmp/hg-resolver/tests/fixtures/hg_wresolver/profiles/scienceworld/roots.in"
+  ],
+  "elapsed_seconds": 0.45889492612332106,
+  "exit_code": 1,
+  "timeout_seconds": 120
+}

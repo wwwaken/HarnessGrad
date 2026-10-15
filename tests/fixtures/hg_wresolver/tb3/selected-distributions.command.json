@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/tmp/resolver/uvx-cache/archive-v0/euJksVnHhQx_GXWzaY-5u/bin/python",
+    "-c",
+    "import importlib.metadata,json; print(json.dumps(sorted((d.metadata[\"Name\"],d.version) for d in importlib.metadata.distributions())))"
+  ],
+  "elapsed_seconds": 0.3924247305840254,
+  "exit_code": 0,
+  "timeout_seconds": 120
+}

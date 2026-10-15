@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver-supplement-3srn9s5e/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--dry-run",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--find-links",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "mkl-service==2.4.0"
+  ],
+  "elapsed_seconds": 0.5280243279412389,
+  "exit_code": 1,
+  "timeout_seconds": 120
+}

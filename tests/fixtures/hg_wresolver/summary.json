@@ -1,0 +1,94 @@
+{
+  "active_unsatisfied_metadata_edges": [
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 27,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/cffi/METADATA",
+      "parent": "cffi",
+      "requirement": "pycparser",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 12,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/jericho/METADATA",
+      "parent": "jericho",
+      "requirement": "spacy>=2.1.0",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 13,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/jericho/METADATA",
+      "parent": "jericho",
+      "requirement": "termcolor",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 42,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/matplotlib/METADATA",
+      "parent": "matplotlib",
+      "requirement": "contourpy >=1.0.1",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 44,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/matplotlib/METADATA",
+      "parent": "matplotlib",
+      "requirement": "fonttools >=4.22.0",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 26,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/openpyxl/METADATA",
+      "parent": "openpyxl",
+      "requirement": "et-xmlfile",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 28,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/rich/METADATA",
+      "parent": "rich",
+      "requirement": "markdown-it-py (>=2.2.0)",
+      "satisfied_by_candidate": false
+    },
+    {
+      "candidate_version": null,
+      "default_extra_active": true,
+      "line": 29,
+      "metadata_path": "tests/fixtures/hg_wresolver/metadata/rich/METADATA",
+      "parent": "rich",
+      "requirement": "pygments (>=2.13.0,<3.0.0)",
+      "satisfied_by_candidate": false
+    }
+  ],
+  "bounded_datasets": 6,
+  "bounded_profiles_failed": 3,
+  "bounded_profiles_resolved": 3,
+  "candidate_bytes": 66021286,
+  "candidate_wheels": 33,
+  "complete_nonempty_python_profiles": 2,
+  "meaning": "Python metadata reconstruction only, not installed-host ABI custody or production closure",
+  "no_third_party_payload": 8,
+  "not_demonstrated_at_dataset_profile_scope": 21,
+  "shared_datasets": 23,
+  "tb_demonstrated_tasks": 1,
+  "tb_task_resolvers": {
+    "pip": 6,
+    "unclassified": 0,
+    "uv": 1,
+    "uvx": 82
+  },
+  "tb_task_sources": 89
+}

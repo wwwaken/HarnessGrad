@@ -1,0 +1,311 @@
+[
+  {
+    "dataset": "alfworld",
+    "prior_imported_distributions": [
+      "alfworld",
+      "fast-downward-textworld",
+      "jericho",
+      "mementos",
+      "mkl-service",
+      "networkx",
+      "numpy",
+      "prompt-toolkit",
+      "psutil",
+      "tatsu",
+      "termcolor",
+      "textworld",
+      "tqdm",
+      "wcwidth"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "appworld",
+    "prior_imported_distributions": null,
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "bfcl_v3",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "bird_minidev",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "chessbench_puzzles",
+    "prior_imported_distributions": [
+      "chess"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "resolved-full-python-metadata-profile"
+  },
+  {
+    "dataset": "ds1000",
+    "prior_imported_distributions": [
+      "asttokens",
+      "bcrypt",
+      "boto3",
+      "botocore",
+      "bottleneck",
+      "brotli",
+      "certifi",
+      "cffi",
+      "chardet",
+      "charset-normalizer",
+      "cloudpickle",
+      "colorama",
+      "comm",
+      "cryptography",
+      "cycler",
+      "decorator",
+      "defusedxml",
+      "dill",
+      "executing",
+      "gensim",
+      "idna",
+      "ipykernel",
+      "ipython",
+      "ipython-genutils",
+      "ipywidgets",
+      "jedi",
+      "jmespath",
+      "joblib",
+      "jupyter-client",
+      "jupyter-core",
+      "kiwisolver",
+      "lz4",
+      "matplotlib",
+      "mkl-service",
+      "numexpr",
+      "numpy",
+      "nvidia-ml-py",
+      "packaging",
+      "pandas",
+      "parso",
+      "patsy",
+      "pickleshare",
+      "pillow",
+      "platformdirs",
+      "prompt-toolkit",
+      "psutil",
+      "pure-eval",
+      "pyarrow",
+      "pygments",
+      "pyopenssl",
+      "pyparsing",
+      "pysocks",
+      "python-dateutil",
+      "pytz",
+      "pyyaml",
+      "pyzmq",
+      "requests",
+      "s3transfer",
+      "scikit-learn",
+      "scipy",
+      "seaborn",
+      "simplejson",
+      "six",
+      "smart-open",
+      "stack-data",
+      "statsmodels",
+      "threadpoolctl",
+      "torch",
+      "tornado",
+      "tqdm",
+      "traitlets",
+      "typing-extensions",
+      "unicodedata2",
+      "urllib3",
+      "wcwidth",
+      "zstandard",
+      "nvidia-cublas-cu12",
+      "nvidia-cuda-cupti-cu12",
+      "nvidia-cuda-nvrtc-cu12",
+      "nvidia-cuda-runtime-cu12",
+      "nvidia-cudnn-cu12",
+      "nvidia-cufft-cu12",
+      "nvidia-curand-cu12",
+      "nvidia-cusolver-cu12",
+      "nvidia-cusparse-cu12",
+      "nvidia-nccl-cu12",
+      "nvidia-nvjitlink-cu12",
+      "nvidia-nvtx-cu12"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "fever",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "gaia",
+    "prior_imported_distributions": null,
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "gsm8k",
+    "prior_imported_distributions": [
+      "cloudpickle",
+      "mkl-service",
+      "numpy",
+      "pyarrow",
+      "typing-extensions"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "hotpotqa",
+    "prior_imported_distributions": [
+      "cloudpickle",
+      "mkl-service",
+      "numpy",
+      "pyarrow",
+      "typing-extensions"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "jericho",
+    "prior_imported_distributions": [
+      "jericho",
+      "mkl-service",
+      "numpy"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "resolution-failed"
+  },
+  {
+    "dataset": "livecodebench",
+    "prior_imported_distributions": [
+      "mkl-service",
+      "numpy"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "musique",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "physicsquestions",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "reasoning_gym",
+    "prior_imported_distributions": [
+      "arckit",
+      "bfi",
+      "cellpylib",
+      "cffi",
+      "cycler",
+      "defusedxml",
+      "drawsvg",
+      "kiwisolver",
+      "magiccube",
+      "matplotlib",
+      "mkl-service",
+      "mpmath",
+      "numpy",
+      "packaging",
+      "pillow",
+      "pycosat",
+      "pyfiglet",
+      "pyparsing",
+      "python-dateutil",
+      "pytz",
+      "pyyaml",
+      "reasoning-gym",
+      "rich",
+      "six",
+      "sympy",
+      "tabulate",
+      "wcwidth",
+      "zss"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "resolution-failed"
+  },
+  {
+    "dataset": "scienceworld",
+    "prior_imported_distributions": [
+      "py4j",
+      "scienceworld"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "resolved-full-python-metadata-profile"
+  },
+  {
+    "dataset": "sportsunderstanding",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "spreadsheetbench",
+    "prior_imported_distributions": [
+      "cffi",
+      "defusedxml",
+      "lxml",
+      "mkl-service",
+      "numpy",
+      "openpyxl",
+      "pillow"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "resolution-failed"
+  },
+  {
+    "dataset": "strategyqa",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  },
+  {
+    "dataset": "tau_bench",
+    "prior_imported_distributions": null,
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "terminal_bench",
+    "prior_imported_distributions": null,
+    "runtime_resolver": "task-specific pip/uv/uvx plus import system",
+    "status": "one-task-profile-resolved; dataset-incomplete"
+  },
+  {
+    "dataset": "triviaqa",
+    "prior_imported_distributions": [
+      "cloudpickle",
+      "mkl-service",
+      "numpy",
+      "pyarrow",
+      "typing-extensions"
+    ],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "not-demonstrated"
+  },
+  {
+    "dataset": "twowikimultihopqa",
+    "prior_imported_distributions": [],
+    "runtime_resolver": "Python import system; no installer in inspected scoring entry",
+    "status": "no-third-party-resolver-needed; not-counted-as-demonstration"
+  }
+]

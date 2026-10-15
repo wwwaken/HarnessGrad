@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver-native-74vzb0gg/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--ignore-installed",
+    "--dry-run",
+    "-vv",
+    "--find-links",
+    "/tmp/hg-wresolver-payloads-sofec32i/wheels",
+    "--report",
+    "/tmp/hg-resolver/tests/fixtures/hg_wresolver/raw/chessbench_puzzles.pip-report.json",
+    "-r",
+    "/tmp/hg-resolver/tests/fixtures/hg_wresolver/profiles/chessbench_puzzles/roots.in",
+    "-c",
+    "/tmp/hg-resolver/tests/fixtures/hg_wresolver/profiles/chessbench_puzzles/constraints.txt"
+  ],
+  "elapsed_seconds": 0.5673890598118305,
+  "exit_code": 0,
+  "timeout_seconds": 120
+}

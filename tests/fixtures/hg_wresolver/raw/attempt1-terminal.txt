@@ -1,0 +1,14 @@
+Command: unshare -Urn python3 tests/fixtures/hg_wresolver/probe.py
+Execution tool session_id: 39777
+Exit code: 1
+Captured tool output (before any resolver command ran):
+Traceback (most recent call last):
+  File "/tmp/hg-resolver/tests/fixtures/hg_wresolver/probe.py", line 29, in <module>
+    assert network['errno'] == 101 and len(route.splitlines()) == 1, network
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'netns': 'net:[4026535619]', 'route': '', 'interfaces': [(1, 'lo')], 'connect_error': '[Errno 101] Network is unreachable', 'errno': 101}
+
+The initial collector incorrectly required a header in an empty /proc/net/route.
+The corrected collector accepts empty routes or a header with no route rows, and
+still requires the actual external connection failure errno 101. No resolver,
+scorer, task, model or dataset run was started by the failed collector.

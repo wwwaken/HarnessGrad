@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: cellpylib
+Version: 2.4.0
+Summary: CellPyLib, A library for working with Cellular Automata, for Python.
+Home-page: http://github.com/lantunes/cellpylib
+Author: Luis M. Antunes
+Author-email: lantunes@gmail.com
+License: Apache License 2.0
+Keywords: cellular automata,complexity,complex systems,computation,non-linear dynamics
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.6
+Requires-Python: >3.6
+License-File: LICENSE.txt
+Requires-Dist: numpy>=1.15.4
+Requires-Dist: matplotlib>=3.0.2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+CellPyLib is a library for working with Cellular Automata, for Python. Currently, only 1- and 2-dimensional k-color cellular automata with periodic boundary conditions are supported. The size of the neighbourhood can be adjusted. 

@@ -1,0 +1,119 @@
+{
+  "version": "1",
+  "pip_version": "24.0",
+  "install": [
+    {
+      "download_info": {
+        "url": "file:///tmp/hg-wresolver-payloads-sofec32i/wheels/scienceworld-1.2.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=e9737b9d099bfaad90ef053ad6ac1d795e2063ed320efdfc0e9d9c8b5bebf419",
+          "hashes": {
+            "sha256": "e9737b9d099bfaad90ef053ad6ac1d795e2063ed320efdfc0e9d9c8b5bebf419"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "scienceworld",
+        "version": "1.2.3",
+        "dynamic": [
+          "author",
+          "classifier",
+          "description",
+          "description-content-type",
+          "home-page",
+          "license-file",
+          "provides-extra",
+          "requires-dist",
+          "requires-python",
+          "summary"
+        ],
+        "summary": "ScienceWorld: An interactive text environment to study AIagents on accomplishing tasks from the standardized elementary science curriculum.",
+        "description": "<h1 align=\"center\">\nScienceWorld\n</h1>\n\n<p align=\"center\">\n<!-- Version badge using shields.io -->\n  <a href=\"https://github.com/allenai/ScienceWorld/releases\">\n    <img src=\"https://img.shields.io/github/v/release/allenai/ScienceWorld\">\n  </a>\n<!-- Link to tutorials badge using shields.io -->\n  <a href=\"https://huggingface.co/spaces/MarcCote/ScienceWorld\">\n    <img src=\"https://img.shields.io/badge/🤗-Demo-yellow\">\n  </a>\n<!-- Follow on twitter badge using shields.io -->\n  <a href=\"https://sciworld.apps.allenai.org\">\n    <img src=\"https://img.shields.io/badge/Website-green\">\n  </a>\n</p>\n\nScienceWorld is a text-based virtual environment centered around accomplishing tasks from the standardized elementary science curriculum.  This code accompanies the paper [ScienceWorld: Is your Textual Agent Smarter than a 5th grader?](https://arxiv.org/abs/2203.07540).\n\n<h3 align=\"center\"><img src=\"https://github.com/allenai/ScienceWorld/blob/main/media/scienceworld_environment.png\" width=\"75%\"/></h3>\n\n### Demo and examples\n\nYou can try ScienceWorld yourself via our [HuggingFace Space](https://huggingface.co/spaces/MarcCote/ScienceWorld) or read some of the [playthrough transcripts](https://sciworld.apps.allenai.org/explore).\n\n### Citation\n```\n@misc{scienceworld2022,\n    title={ScienceWorld: Is your Agent Smarter than a 5th Grader?},\n    author={Ruoyao Wang and Peter Jansen and Marc-Alexandre C{\\^o}t{\\'e} and Prithviraj Ammanabrolu},\n    year={2022},\n    eprint={2203.07540},\n    archivePrefix={arXiv},\n    primaryClass={cs.CL},\n    url={https://arxiv.org/abs/2203.07540}\n}\n```\n\n# Quickstart\n**Before running:** You will have to have `Java 1.8+` installed on your system (shipped with most linux distributions) and `Python 3.8+`. We recommend creating a conda environment like this:\n\n```bash\nconda create --name scienceworld python=3.8\nconda activate scienceworld\n```\n\nThen, install ScienceWorld either from PyPi:\n\n    pip install scienceworld\n\nor from source in development mode:\n\n    git clone https://github.com/allenai/ScienceWorld.git\n    cd ScienceWorld\n    pip install .\n\n\nRun an example random agent, on task 13 (classification: place a non-living thing in a box), for 5 episodes:\n\n    python examples/random_agent.py --task-num=13 --num-episodes=5 --simplifications-preset easy\n\nRun a user console where you can interact with the environment, on task 3 (change of state: melting):\n\n    python examples/human.py --task-num=3 --num-episodes=5\n\n\n# Web Server Demo\n\nA web server demo is also available, that allows running a ScienceWorld user console that can be interacted with in a web browser.\n\n<h3 align=\"center\"><img src=\"https://github.com/allenai/ScienceWorld/blob/main/media/web_demo_screenshot.png\" width=\"75%\"/></h3>\n\nTo run the web server demo:\n```bash\nconda create --name scienceworld python=3.8\nconda activate scienceworld\npip install scienceworld[webserver]\n```\n\nRun the web server:\n\n    python examples/scienceworld-web-server-example.py\n\nPoint your web browser to:\n`localhost:8080`\n\n\n# ScienceWorld Design\nScienceWorld is written in Scala (2.12.9), and compiles using `sbt` into a JAR file that is run with Java.  For convenience, a Python API is provided (Python >= 3.8), which interfaces using the `py4j` package.\n\nIf you modified the Scala code, you can recompile the JAR file by running:\n```bash\n./simulator/package.sh\npip install -e .\n```\n\n# Tasks\nThe tasks are listed in the table below along with their number of variations. Either the task ID or its name can be used to a task with `env.load()`.\n\n| Task ID | Task Name                                | # Variations |\n|-------|----------------------------------------------------|------|\n|   1-1 |                                             boil |   30 |\n|   1-2 |                                             melt |   30 |\n|   1-3 |                                           freeze |   30 |\n|   1-4 |                    change-the-state-of-matter-of |   30 |\n|   2-1 |                                  use-thermometer |  540 |\n|   2-2 |            measure-melting-point-known-substance |  436 |\n|   2-3 |          measure-melting-point-unknown-substance |  300 |\n|   3-1 |                                  power-component |   20 |\n|   3-2 | power-component-renewable-vs-nonrenewable-energy |   20 |\n|   3-3 |                                test-conductivity |  900 |\n|   3-4 |          test-conductivity-of-unknown-substances |  600 |\n|   4-1 |                                find-living-thing |  300 |\n|   4-2 |                            find-non-living-thing |  300 |\n|   4-3 |                                       find-plant |  300 |\n|   4-4 |                                      find-animal |  300 |\n|   5-1 |                                       grow-plant |  126 |\n|   5-2 |                                       grow-fruit |  126 |\n|   6-1 |                                    chemistry-mix |   32 |\n|   6-2 |              chemistry-mix-paint-secondary-color |   36 |\n|   6-3 |               chemistry-mix-paint-tertiary-color |   36 |\n|   7-1 |                           lifespan-longest-lived |  125 |\n|   7-2 |                          lifespan-shortest-lived |  125 |\n|   7-3 |       lifespan-longest-lived-then-shortest-lived |  125 |\n|   8-1 |                           identify-life-stages-1 |   14 |\n|   8-2 |                           identify-life-stages-2 |   10 |\n|   9-1 |                   inclined-plane-determine-angle |  168 |\n|   9-2 |           inclined-plane-friction-named-surfaces | 1386 |\n|   9-3 |         inclined-plane-friction-unnamed-surfaces |  162 |\n|  10-1 |                   mendelian-genetics-known-plant |  120 |\n|  10-2 |                 mendelian-genetics-unknown-plant |  480 |\n\n## Simplifications\nScienceWorld supports a number of simplifications that can be applied to the environment to make it easier for agents to learn. These simplifications can be applied by passing the `--simplifications-preset` argument to the command line interface, or by passing the `simplifications` argument to the Python API.\n\nThe available simplifications are:\n- `teleportAction`: Allows agents to instantly move to any location in the environment.\n- `openDoors`: All doors in the environment are open by default.\n- `selfWateringFlowerPots`: Automatically waters all flower pots in the environment.\n- `noElectricalAction`: Disables electrical actions, making it easier for agents to learn tasks that do not require electrical actions.\n- `openContainers`: All containers in the environment are open by default.\n\nThe `--simplifications-preset` argument can be set to `easy` to apply the following simplifications:\n- `teleportAction`\n- `openDoors`\n- `selfWateringFlowerPots`\n- `noElectricalAction` (for non-connectivity tasks)\n\n> [!WARNING]\n> The `easy` preset differs from what is described in the paper (see Appendix B.5). The `openContainers` is not included in that preset and should manually be added if desired.\n\n\n# Baseline Agents\n**DRRN:** https://github.com/cognitiveailab/drrn-scienceworld\n\n**KG-A2C:** https://github.com/cognitiveailab/kga2c-scienceworld\n\n**CALM:** https://github.com/cognitiveailab/calm-scienceworld\n\n**Behavior Cloning and Decision Transformer:** https://github.com/cognitiveailab/t5-scienceworld\n\n\n\n# Developers\n\nTo compile the ScienceWorld JAR file, follow these steps:\n\n### Prerequisites\nYou will need to have `Java 1.8+` SDK installed on your system (shipped with most linux distributions). E.g. on Ubuntu, you can install it with:\n\n    sudo apt-get install openjdk-21-jdk\n\nThen, install sbt (Scala Build Tool) by running:\n```bash\n    echo \"deb https://repo.scala-sbt.org/scalasbt/debian all main\" | sudo tee /etc/apt/sources.list.d/sbt.list\n    echo \"deb https://repo.scala-sbt.org/scalasbt/debian /\" | sudo tee /etc/apt/sources.list.d/sbt_old.list\n    curl -sL \"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823\" | sudo tee /etc/apt/trusted.gpg.d/sbt.asc\n    sudo apt-get update\n    sudo apt-get install sbt\n```\n\n### Building the JAR\nOnce you have `sbt` installed, you can compile the ScienceWorld JAR file by running:\n```bash\n./simulator/package.sh\n```\n",
+        "description_content_type": "text/markdown",
+        "home_page": "https://scienceworld.github.io",
+        "author": "Peter Jansen",
+        "classifier": [
+          "Programming Language :: Python :: 3",
+          "License :: OSI Approved :: Apache Software License",
+          "Operating System :: POSIX :: Linux",
+          "Operating System :: MacOS :: MacOS X"
+        ],
+        "requires_dist": [
+          "py4j",
+          "py4j; extra == \"webserver\"",
+          "pywebio; extra == \"webserver\"",
+          "build; extra == \"dev\"",
+          "flake8; extra == \"dev\"",
+          "pre-commit; extra == \"dev\"",
+          "py4j; extra == \"dev\"",
+          "pytest; extra == \"dev\"",
+          "tox; extra == \"dev\"",
+          "twine; extra == \"dev\""
+        ],
+        "requires_python": ">=3.7",
+        "provides_extra": [
+          "webserver",
+          "dev"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/hg-wresolver-payloads-sofec32i/wheels/py4j-0.10.9.9-py2.py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c7c26e4158defb37b0bb124933163641a2ff6e3a3913f7811b0ddbe07ed61533",
+          "hashes": {
+            "sha256": "c7c26e4158defb37b0bb124933163641a2ff6e3a3913f7811b0ddbe07ed61533"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "py4j",
+        "version": "0.10.9.9",
+        "summary": "Enables Python programs to dynamically access arbitrary Java objects",
+        "description": "Py4J enables Python programs running in a Python interpreter to dynamically access Java objects in a Java Virtual Machine. Methods are called as if the Java objects resided in the Python interpreter and Java collections can be accessed through standard Python collection methods. Py4J also enables Java programs to call back Python objects.\n",
+        "home_page": "https://www.py4j.org/",
+        "author": "Barthelemy Dagenais",
+        "author_email": "barthelemy@infobart.com",
+        "license": "BSD License",
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Java",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Software Development :: Object Brokering"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.4",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "6.8.0-136-generic",
+    "platform_system": "Linux",
+    "platform_version": "#136~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul  3 16:29:11 UTC ",
+    "python_full_version": "3.12.4",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "linux"
+  }
+}

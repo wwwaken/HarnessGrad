@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "ps",
+    "-a",
+    "--filter",
+    "name=^/hg-wresolver-hg-wresolver-name-6hat3t4o$",
+    "--format",
+    "{{.Names}}"
+  ],
+  "elapsed_seconds": 0.022848909720778465,
+  "exit_code": 0,
+  "timeout_seconds": 120
+}

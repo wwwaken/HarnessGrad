@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/tmp/resolver/uv-x86_64-unknown-linux-gnu/uv",
+    "pip",
+    "compile",
+    "-vv",
+    "--offline",
+    "--no-index",
+    "--find-links",
+    "/prior/wheels",
+    "--no-python-downloads",
+    "--python",
+    "/usr/local/bin/python3.13",
+    "--generate-hashes",
+    "--no-header",
+    "--output-file",
+    "/out/resolved.lock",
+    "/out/roots.in"
+  ],
+  "elapsed_seconds": 0.2854393720626831,
+  "exit_code": 0,
+  "timeout_seconds": 120
+}

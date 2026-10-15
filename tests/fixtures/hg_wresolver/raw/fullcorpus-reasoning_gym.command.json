@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver-supplement-3srn9s5e/venv/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--dry-run",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--find-links",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "-vv",
+    "-r",
+    "/tmp/hg-resolver/tests/fixtures/hg_wresolver/profiles/reasoning_gym/roots.in",
+    "-c",
+    "/tmp/hg-resolver/tests/fixtures/hg_wresolver/profiles/reasoning_gym/constraints.txt"
+  ],
+  "elapsed_seconds": 0.8696717917919159,
+  "exit_code": 1,
+  "timeout_seconds": 120
+}
