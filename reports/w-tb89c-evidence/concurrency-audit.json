@@ -1,0 +1,38 @@
+{
+  "foreign_drivers": [
+    {
+      "pid": 1211770,
+      "process_line": "1211770 /mnt/8t/xubuqiang/anaconda3/bin/python3 driver.py --harness loop_plain --mode A --rounds 1 --run-id vkind --dataset verify_demo --sampling all --runs-root /tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/runs --work-root /tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/work --method-entrypoint /mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/hg-hostpin/methods/noop/run.py",
+      "samples": [
+        {
+          "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-polyglot-c-py-20261015T043834Z-dc4ac8d2-evidence/processes-sample-0021.json",
+          "sha256": "1e2fe3b77a07beb8ccf3f0f60b4a2a4f11e2db40fabf4b90897609cf6e24a9c7"
+        },
+        {
+          "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-polyglot-c-py-20261015T043834Z-dc4ac8d2-evidence/processes-sample-0023.json",
+          "sha256": "067828c4dfee3dc5a9d5397f15ca7b8a2c6797127c29486501661956931f8006"
+        },
+        {
+          "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-polyglot-c-py-20261015T043834Z-dc4ac8d2-evidence/processes-sample-0022.json",
+          "sha256": "1b94e78dc5dc12115b5b718c9d55411e3b82c15c7e25f2a9775329c887c505ba"
+        },
+        {
+          "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-polyglot-c-py-20261015T043834Z-dc4ac8d2-evidence/processes-sample-0020.json",
+          "sha256": "d9d5e248a9afe35353e74cb271399d4764237c46c12186b0e711fe39bc4d8214"
+        }
+      ],
+      "run_meta_raw": {
+        "argv": [
+          "cat",
+          "/tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/runs/vkind/run_meta.json"
+        ],
+        "returncode": 0,
+        "stdout": "{\n \"run_id\": \"vkind\",\n \"mode\": \"unified\",\n \"harness\": \"loop_plain\",\n \"dataset\": \"verify_demo\",\n \"sampling_policy\": \"all\",\n \"workspace\": \"/tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/work/vkind/workspace\",\n \"work_root\": \"/tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/work\",\n \"platform_root\": \"/tmp/hg-hostpin\",\n \"sandbox\": {\n  \"requested\": true,\n  \"active\": true,\n  \"plan_version\": 2,\n  \"detail\": \"bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v2; /usr/bin/bwrap\"\n },\n \"config\": {\n  \"agent\": {\n   \"backend\": \"mock\",\n   \"model\": null,\n   \"base_url\": \"\",\n   \"api_key\": {\n    \"present\": false\n   }\n  },\n  \"method\": {\n   \"model\": null,\n   \"base_url\": null,\n   \"api_key\": {\n    \"present\": false\n   },\n   \"timeout_s\": 180,\n   \"parse_retries\": 2,\n   \"history_rounds\": 0,\n   \"dump\": null,\n   \"source_limit\": 200000,\n   \"source_total\": 60000,\n   \"skill_limit\": 24000\n  },\n  \"improver\": {\n   \"selection\": null,\n   \"name\": null,\n   \"model\": null,\n   \"effort\": null,\n   \"args\": \"\",\n   \"skill\": null,\n   \"timeout_s\": 1800,\n   \"skip_tool_gate\": null,\n   \"codex_home_source\": null,\n   \"api_key\": {\n    \"present\": false\n   }\n  },\n  \"environment\": {\n   \"model\": null,\n   \"base_url\": null,\n   \"api_key\": {\n    \"present\": false\n   },\n   \"seed\": null\n  },\n  \"sandbox\": {\n   \"bwrap\": null\n  },\n  \"egress\": {\n   \"proxy\": null,\n   \"bind\": \"172.17.0.1\",\n   \"port\": 17890,\n   \"upstream\": \"127.0.0.1:17891\"\n  },\n  \"runtime\": {\n   \"overlay_root\": null,\n   \"overlay_builder_image\": null,\n   \"registry_mirrors\": null\n  },\n  \"storage\": {\n   \"run_root\": null,\n   \"record_dir\": \"/recordings/orders\",\n   \"pull_timeout_s\": 900\n  },\n  \"run\": {\n   \"run_id\": \"vkind\",\n   \"harness\": \"loop_plain\",\n   \"dataset\": \"verify_demo\",\n   \"side\": \"train\",\n   \"sampling\": \"all\",\n   \"rounds\": 1,\n   \"trials\": 1,\n   \"jobs\": 1,\n   \"sandbox\": true,\n   \"mode\": \"unified\",\n   \"seed\": \"b4d61487947bd6ee\",\n   \"runs_root\": \"/tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/runs\",\n   \"work_root\": \"/tmp/hg-hostpin-pytest-focused/test_curve_points_carry_the_ve0/work\",\n   \"method_entrypoint\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/hg-hostpin/methods/noop/run.py\",\n   \"budget_profile\": null,\n   \"budget_ledger\": null,\n   \"budget_arm\": \"agent\",\n   \"budget_profile_hash\": null\n  }\n },\n \"env\": {\n  \"kind\": \"files\",\n  \"image_digest\": null,\n  \"network\": null,\n  \"placement\": null,\n  \"services\": [],\n  \"model_gateway\": null,\n  \"model\": null,\n  \"seed\": null\n },\n \"split\": {\n  \"train\": [\n   \"v01\",\n   \"v02\"\n  ],\n  \"eval\": [\n   \"v03\",\n   \"v04\"\n  ]\n },\n \"split_declared\": true,\n \"split_source\": \"declared\",\n \"split_sha\": \"df915b600c73a8f76f96931cd45be962d5d7785d563f696b35b87aa93da5e8a1\",\n \"agent_backend\": \"mock\",\n \"framework_version\": \"0.1.0\",\n \"method_entrypoint\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/hg-hostpin/methods/noop/run.py\",\n \"trials\": 1,\n \"jobs\": 1,\n \"platform\": {\n  \"content_sha\": \"dd788ec2e6e9adf56815c229509a8484c4cc244a22ef416739b2aefc88d7246d\",\n  \"git_sha\": \"2ef797eea1dd28e7c1fc09b2983abf33d2a988b3\",\n  \"dirty\": true\n },\n \"trajectory_shape\": \"sequence\",\n \"curve_drawn\": \"per_round\",\n \"nominated\": 0,\n \"acceptance_rule\": {\n  \"text\": \"accept nothing\",\n  \"source\": \"control\",\n  \"calibrated\": false\n },\n \"selection_pool_size\": 1,\n \"failed_steps\": [],\n \"rounds_measured\": 2,\n \"steps_truncated\": 0,\n \"steps_measured\": 1,\n \"final_score\": 0.0,\n \"wall_clock_s\": 12.4\n}",
+        "stderr": ""
+      },
+      "classification": "Other worktree pytest synthetic verify_demo driver; mock backend and no endpoint/model/gateway configured."
+    }
+  ],
+  "other_endpoint_driver_observed": false,
+  "note": "All sampled foreign drivers accounted for above; arbitrary direct clients and endpoint reservation remain unobserved."
+}

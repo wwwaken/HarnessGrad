@@ -1,0 +1,89 @@
+{
+  "cleanup": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "context": {
+    "comparability_notes": [
+      "One-task diagnostic selection, HG_TB_SPLIT=none; train CLI required by unchanged authorization guard. Five live-local-model diagnostics in serial, default harness steps, zero improvement rounds.",
+      "Local endpoint/model binding; no model weight digest or benchmark-performance comparability. Raw verifier evidence is separate from withheld policy publication.",
+      "Source and scorer hashes do not establish transitive offline dependency closure. Declared verifier bridge egress via documented free proxy is allowed; this is not a network-denied run."
+    ],
+    "dataset": "terminal_bench",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "gates": {
+      "detail": "Operator authorized bounded live-local-model diagnostics; dataset enforcement remains unknown; no blocker closure or production authorization.",
+      "receipt_sha256": null,
+      "status": "unknown"
+    },
+    "hashes": {
+      "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+      "manifest": "3fff3fbc6af0caf73481a95820fb4b989e75917f9c4c49390770c41c3bcf43dc",
+      "model": null,
+      "source": "df2ce7ddb40d35af79ac5d808c312e5b972c6333db8920825285bf01d161b2e0",
+      "split": "1bcc85c07053a6b52de6d3b64c26f0a9628cad5995d602b4b64f480cd3289115"
+    },
+    "limits": {
+      "budget": null,
+      "resource": {
+        "agent_timeout_s": 900,
+        "cpus": 1,
+        "memory_mb": 2048,
+        "verify_timeout_s": 900
+      }
+    },
+    "metric": {
+      "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+      "scorer_sha256": "84ee50194effb4c72b9cbd0306cccaf0f855f3634227cd8359928722a53bbdaf"
+    },
+    "side": "train"
+  },
+  "coverage": {
+    "eligible_tasks": 1,
+    "expected_trials": 1,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 1,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "eligible_task_ids_sha256": "b429740fab1b77f7aafa25d920c27b501f0c5b869a88def6a80fa60a41f21817",
+  "enforcement": {
+    "comparable": false,
+    "measured": false,
+    "non_comparable_reason": "policy_enforcement_not_observed",
+    "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+    "policy_enforcement_observed": false,
+    "production_authorized": false,
+    "run_id": "w-tb89c-extract-elf-20261015T043324Z-cc8159b9",
+    "stage": "diagnostic",
+    "task_id": "extract-elf"
+  },
+  "jobs": 1,
+  "lifecycle": null,
+  "outcomes": [
+    {
+      "reason": "policy_enforcement_not_observed",
+      "score": null,
+      "status": "unmeasured",
+      "task_id": "extract-elf",
+      "trial": 1
+    }
+  ],
+  "run_id": "w-tb89c-extract-elf-20261015T043324Z-cc8159b9",
+  "schema": "harnessgrad.diagnostic-receipt.v2",
+  "score": null,
+  "selected_task_ids": [
+    "extract-elf"
+  ],
+  "snapshot": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  },
+  "stage": "diagnostic",
+  "trials": 1
+}

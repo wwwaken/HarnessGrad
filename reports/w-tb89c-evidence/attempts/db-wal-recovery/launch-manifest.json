@@ -1,0 +1,36 @@
+{
+  "kind": "observer pre-execution binding; not admission evidence",
+  "run_id": "w-tb89c-db-wal-recovery-20261015T043148Z-cb15a3a7",
+  "task_id": "db-wal-recovery",
+  "trial": 1,
+  "image_id": "sha256:0e33ea5ec823975d1bd6c3778395c9f94251dd88f571146057bff6adb7e4594e",
+  "repo_digests": [
+    "docker.1panel.live/alexgshaw/db-wal-recovery@sha256:0e33ea5ec823975d1bd6c3778395c9f94251dd88f571146057bff6adb7e4594e",
+    "alexgshaw/db-wal-recovery@sha256:0e33ea5ec823975d1bd6c3778395c9f94251dd88f571146057bff6adb7e4594e"
+  ],
+  "platform_commit": "2ef797eea1dd28e7c1fc09b2983abf33d2a988b3",
+  "dataset_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+  "source_sha256": "856f0da9e07e3e01365009cbd72fa92f14174d602cc65674d3591373b0f35a1c",
+  "split_sha256": "38fb19663ef648f1b3e9dd258356091dc874eaff86ecfa70f99bdae27429c460",
+  "harness_sha256": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "environment": {
+    "HG_EGRESS_PROXY": "http://172.17.0.1:17890",
+    "HG_TB_TASKS": "db-wal-recovery",
+    "HG_TB_SPLIT": "none",
+    "HG_AGENT_BACKEND": "openai",
+    "HG_AGENT_MODEL": "qwen3.5-9b-local",
+    "HG_AGENT_BASE_URL": "http://127.0.0.1:8002/v1",
+    "HG_AGENT_API_KEY": "local"
+  },
+  "limits": {
+    "cpus": 1,
+    "memory_mb": 2048,
+    "agent_timeout_s": 900,
+    "verify_timeout_s": 900
+  },
+  "selection_rule": "Fixed five new surfaces: SQLite WAL recovery, ELF extraction, Git leak recovery, C/Python polyglot and Git sanitization. Require cached immutable image, complete official verifier sources, shell/Python parse success, read-only network-disabled tool/input existence probes, no GPU/MCP, <=1 CPU/2048 MiB, declared agent/verifier timeouts <=900s; standard uv/pytest bootstrap via documented proxy. All five selected before any model trial; no result-dependent substitution or rerun. Purposeful coverage, not a performance sample.",
+  "platform_source_sha256": "19608bfade77ac8d129f70318443efbac9516d153921bdd453ed2458d8eca6b4",
+  "model_weights_sha256": null
+}

@@ -1,0 +1,47 @@
+{
+ "task_id": "db-wal-recovery",
+ "round": 0,
+ "score": 0.0,
+ "scorer_isolation_class": "snapshot-service",
+ "scorer_isolation_comparable": true,
+ "trial_scorer_isolation": [
+  "snapshot-service"
+ ],
+ "trial_scores": [
+  0.0
+ ],
+ "n_trials": 1,
+ "passed": false,
+ "kind": "command",
+ "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (7 failed) | FAILED test_outputs.py::test_recovered_json_exists: + where <module 'posixpath' (frozen)> = os.path | FAILED test_outputs.py::test_recovered_json_is_valid: FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json' | FAILED test_outputs.py::test_recovered_data_structure: FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json' | FAILED test_outputs.py::test_recovered_data_sorted: FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json' | FAILED test_outputs.py::test_recovered_data_completeness: FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json' | FAILED test_outputs.py::test_no_duplicate_ids: FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json' | FAILED test_outputs.py::test_wal_was_decrypted: FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json' | stdout r\n_______________________ test_recovered_data_completeness _______________________\n\n    def test_recovered_data_completeness():\n        \"\"\"Test that all expected data is recovered including WAL changes.\"\"\"\n>       with open(\"/app/recovered.json\", \"r\") as f:\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json'\n\n/tests/test_outputs.py:49: FileNotFoundError\n____________________________ test_no_duplicate_ids _____________________________\n\n    def test_no_duplicate_ids():\n        \"\"\"Test that there are no duplicate IDs in the recovered data.\"\"\"\n>       with open(\"/app/recovered.json\", \"r\") as f:\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json'\n\n/tests/test_outputs.py:85: FileNotFoundError\n____________________________ test_wal_was_decrypted ____________________________\n\n    def test_wal_was_decrypted():\n        \"\"\"Test that the agent successfully decrypted the WAL file.\"\"\"\n>       with open(\"/app/recovered.json\", \"r\") as f:\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/app/recovered.json'\n\n/tests/test_outputs.py:94: FileNotFoundError\n=========================== short test summary info ============================\nFAILED ../tests/test_outputs.py::test_recovered_json_exists - AssertionError:...\nFAILED ../tests/test_outputs.py::test_recovered_json_is_valid - FileNotFoundE...\nFAILED ../tests/test_outputs.py::test_recovered_data_structure - FileNotFound...\nFAILED ../tests/test_outputs.py::test_recovered_data_sorted - FileNotFoundErr...\nFAILED ../tests/test_outputs.py::test_recovered_data_completeness - FileNotFo...\nFAILED ../tests/test_outputs.py::test_no_duplicate_ids - FileNotFoundError: [...\nFAILED ../tests/test_outputs.py::test_wal_was_decrypted - FileNotFoundError: ...\n============================== 7 failed in 0.12s =============================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading cpython-3.13.9-linux-x86_64-gnu (download) (32.0MiB)\n Downloading cpython-3.13.9-linux-x86_64-gnu (download)\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 6 packages in 20ms",
+ "tests": {
+  "tests": 7,
+  "passed": 0,
+  "failed": 7,
+  "skipped": 0,
+  "pending": 0,
+  "other": 0,
+  "failed_names": [
+   "test_outputs.py::test_recovered_json_exists",
+   "test_outputs.py::test_recovered_json_is_valid",
+   "test_outputs.py::test_recovered_data_structure",
+   "test_outputs.py::test_recovered_data_sorted",
+   "test_outputs.py::test_recovered_data_completeness",
+   "test_outputs.py::test_no_duplicate_ids",
+   "test_outputs.py::test_wal_was_decrypted"
+  ]
+ },
+ "wall_clock_s": 20.2,
+ "complete": true,
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tb89c-db-wal-recovery-20261015T043148Z-cb15a3a7",
+  "task_id": "db-wal-recovery",
+  "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ }
+}

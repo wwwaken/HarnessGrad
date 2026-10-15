@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "ls",
+    "--filter",
+    "reference=hg-snapshot:*w-tb89c-extract-elf-20261015T043324Z-cc8159b9*",
+    "--no-trunc",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

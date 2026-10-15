@@ -1,0 +1,272 @@
+{
+  "kind": "observer samples, not trusted enforcement or peaks",
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b",
+    "trial_id": "git-leak-recovery:1",
+    "manifest_sha256": "902e9202121fda9d365e073e644f6d79c9ca9d239561f496a19878b817311314"
+  },
+  "declared": {
+    "resource": {
+      "cpus": 1,
+      "memory_mb": 2048,
+      "agent_timeout_s": 900,
+      "verify_timeout_s": 900
+    },
+    "budget": null
+  },
+  "roles": {
+    "agent": {
+      "container_id": "47b5893f4e2c2cf96e6b69a150ea64b99397878d5769650ba9ccfd6d8b1f80ba",
+      "name": "/hg-w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-git-leak-recovery",
+      "image_id": "sha256:62160e522a4238b8bcd522411ea97b5b200f811e5899d34947e66809bef7e586",
+      "first_inspection": {
+        "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0002.json",
+        "sha256": "ed06fed82ebf711646ccef3105f99574f0d53c8bfbde254f2bcd1fa27d94aad5",
+        "bytes": 21113
+      },
+      "limits": {
+        "NanoCpus": 1000000000,
+        "Memory": 2147483648,
+        "MemorySwap": 4294967296,
+        "PidsLimit": 1024,
+        "ReadonlyRootfs": false,
+        "StorageOpt": null
+      },
+      "networks": [
+        "bridge",
+        "hg-w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-git-leak-recovery"
+      ],
+      "last_inspection": {
+        "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0020.json",
+        "sha256": "c8f90ec39026005fbe4398f79b54066106967d5a3353d73248dfd97d992c05a2",
+        "bytes": 20828
+      },
+      "last_sample_size_rw": 188416,
+      "last_sample_size_root_fs": 236531712
+    },
+    "verifier": {
+      "container_id": "6a838108186497ff046776eb9e0c57fa9e67fa3ee5d2898cab19e29aefbaac1f",
+      "name": "/hg-verify-w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-git-leak-recovery",
+      "image_id": "sha256:eae2d051b36d768255e7271b07b6186ba17ca54ae6c0ddf13f1b950c23ac80d9",
+      "first_inspection": {
+        "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0013.json",
+        "sha256": "c37eddcf6265a148519710aa3a0329fb70ab814b70c78e0cc070f7b8a1718dad",
+        "bytes": 41338
+      },
+      "limits": {
+        "NanoCpus": 1000000000,
+        "Memory": 2147483648,
+        "MemorySwap": 4294967296,
+        "PidsLimit": 1024,
+        "ReadonlyRootfs": false,
+        "StorageOpt": null
+      },
+      "networks": [
+        "bridge",
+        "hg-w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-git-leak-recovery"
+      ],
+      "last_inspection": {
+        "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0019.json",
+        "sha256": "575d02a34812a43318c8e278515ead914635373af0e6da0c7075bf3278908c72",
+        "bytes": 41432
+      },
+      "last_sample_size_rw": 181260288,
+      "last_sample_size_root_fs": 417771520
+    }
+  },
+  "inspection_samples": [
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0002.json",
+      "sha256": "ed06fed82ebf711646ccef3105f99574f0d53c8bfbde254f2bcd1fa27d94aad5",
+      "bytes": 21113
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0003.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0004.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0005.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0006.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0007.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0008.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0009.json",
+      "sha256": "f47892b2a4410127004fcdf80ddad9a91cb7eae73091a34a855ca302c52ae755",
+      "bytes": 21203
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0010.json",
+      "sha256": "4873f16c8030b42a593e1277ee0dbdb193c6446ce5bfd1bc4a294d19b96a0674",
+      "bytes": 21204
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0011.json",
+      "sha256": "c56e7b758813d46f12577f8cd3fb743022d1c7989f43843e3fefc1345ad3b2a5",
+      "bytes": 21204
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0012.json",
+      "sha256": "5d05baf1766b0decdfd7710c0e24ced804053121726c5e6dbf34ec9b630d9479",
+      "bytes": 21114
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0013.json",
+      "sha256": "c37eddcf6265a148519710aa3a0329fb70ab814b70c78e0cc070f7b8a1718dad",
+      "bytes": 41338
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0014.json",
+      "sha256": "f13a2e3b82ab084136ac06ddb75e535cbcdf959e4baf78b1c264e4685ea53e62",
+      "bytes": 41430
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0015.json",
+      "sha256": "c7af825abc4cdc3b0d8a429daf2893d9caaef7858b554a59bc3e8a0561e6b038",
+      "bytes": 41431
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0016.json",
+      "sha256": "bf65a2dcc63f4fdcd362313141ab7515f1478447313f4303a01e91d4784273c2",
+      "bytes": 41431
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0017.json",
+      "sha256": "5d03e9021629c91f82b5ea91bf160f91062d2e3d28778ba2d7fcc9d3471b44c3",
+      "bytes": 41431
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0018.json",
+      "sha256": "b77fa074d3493515af28419837e1ecb415b8fdb02a6b33bae4aa96601775da2b",
+      "bytes": 41431
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0019.json",
+      "sha256": "575d02a34812a43318c8e278515ead914635373af0e6da0c7075bf3278908c72",
+      "bytes": 41432
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-inspect-0020.json",
+      "sha256": "c8f90ec39026005fbe4398f79b54066106967d5a3353d73248dfd97d992c05a2",
+      "bytes": 20828
+    }
+  ],
+  "stats_samples": [
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0002.json",
+      "sha256": "1fec5d0267c0aa3d9bfc559e531beaf9ec7d3601f0580fa48514305ae5ced370",
+      "bytes": 462
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0003.json",
+      "sha256": "09ab1a8c87dfe2b8528ff30735138ca8e0e3ca93035b207a5e178b5a9e2769df",
+      "bytes": 467
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0004.json",
+      "sha256": "40766e953831fba7a8749bf5c1377a4dbd86ea3c73127e74aacbcb319d16e612",
+      "bytes": 467
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0005.json",
+      "sha256": "3b382f0d399064dfda89c5b6ba9f9dd94e8d9910b0e00209465f9d5135f897be",
+      "bytes": 467
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0006.json",
+      "sha256": "5efc616df1687bb3c3a2c5d3693e9c4d26b5feefc1fff20aa9176bc7c3f41e89",
+      "bytes": 465
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0007.json",
+      "sha256": "5efc616df1687bb3c3a2c5d3693e9c4d26b5feefc1fff20aa9176bc7c3f41e89",
+      "bytes": 465
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0008.json",
+      "sha256": "5efc616df1687bb3c3a2c5d3693e9c4d26b5feefc1fff20aa9176bc7c3f41e89",
+      "bytes": 465
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0009.json",
+      "sha256": "641e51a258e1a108c6285da7efd629ef831f18d21b0748679f5f3257087dee52",
+      "bytes": 466
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0010.json",
+      "sha256": "83c114d401fae3c54a420750f947867bf050335d2f606462ff3e41d5d0f37773",
+      "bytes": 468
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0011.json",
+      "sha256": "f0f45e6a33f9ad65154f89232b55d058282e18f7b3eb5bd2406f22823f50f2a7",
+      "bytes": 468
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0012.json",
+      "sha256": "99df030a54dd0513dd64a579aea3bfcffa4e5ca5a9a759b567d41676f973ddd7",
+      "bytes": 466
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0013.json",
+      "sha256": "0db8f449504168b3d0117fa5d571e6ec24c90984fcd2df519c6e422e03cd7e5f",
+      "bytes": 763
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0014.json",
+      "sha256": "bfbbcd964a03b264fd3a49fd5b2a3c91aa4b5fd648ded3a16275e21ddd8926ce",
+      "bytes": 764
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0015.json",
+      "sha256": "d6af7de587fa019b6524f38a605d690463462b7ce068bec92fd56486df1c813e",
+      "bytes": 764
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0016.json",
+      "sha256": "08b2d4d9909efdec99a1124b188c80362869305ed8ed3270f779129c41747158",
+      "bytes": 764
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0017.json",
+      "sha256": "7d5325a0a7d2f24310fb09748a4e8a3eaae5687c4a7fdd22cfc409f18b906ffe",
+      "bytes": 764
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0018.json",
+      "sha256": "7ff13b77b604d61bdc19c3bf18d27b9123481b7a1f19f6bcb11e77d2c1527c33",
+      "bytes": 765
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0019.json",
+      "sha256": "b7f5a6f32bb77292b7685069d23d1682f8553aa3c45227664d1a939e0da8a560",
+      "bytes": 766
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b-evidence/container-stats-0020.json",
+      "sha256": "acb7a3a077e7b7c0e3c8475424c53e633a8c4441ca0456440ed46aa864eb3686",
+      "bytes": 444
+    }
+  ]
+}

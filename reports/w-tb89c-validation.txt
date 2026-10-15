@@ -1,0 +1,78 @@
+w-tb89c validation — 2026-10-15T04:46:24.457795+00:00
+Exact commands and raw outputs. No gate/runtime/task/test changes.
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+[exit 0]
+
+$ python3 reports/w-tb89c-evidence/verify.py
+{
+  "verified": true,
+  "raw_execution": {
+    "selected_tasks": 5,
+    "expected_trials": 5,
+    "measured_tasks": 5,
+    "measured_trials": 5,
+    "invalid_tasks": 0,
+    "unmeasured_tasks": 0
+  },
+  "publication": {
+    "eligible_tasks": 5,
+    "expected_trials": 5,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 5,
+    "unmeasured_tasks": 5,
+    "unmeasured_trials": 5
+  },
+  "retained_artifacts": 1247,
+  "serial": true,
+  "foreign_sampled_drivers": 1,
+  "all_foreign_drivers_proven_mock": true,
+  "cumulative_raw_tasks": 9,
+  "denominator": 89,
+  "registry_additive_only": true
+}
+
+[exit 0]
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-tb89c-final
+........................................................                 [100%]
+56 passed in 6.78s
+
+[exit 0]
+
+$ git diff --check
+
+[exit 0]
+
+Generated SHA256SUMS from 431 existing review/report files.
+
+$ sha256sum --check --quiet reports/w-tb89c-evidence/SHA256SUMS
+
+[exit 0]
+
+$ git diff --stat
+ docs/adapter-integration-journal.md |  9 +++++++++
+ docs/dataset-blockers.json          | 12 +++++++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
+
+[exit 0]
+
+Initial staged whitespace check flagged the generated validation file final blank line. Removed that formatting-only blank line.
+
+$ git diff --cached --check
+
+[exit 0]
+
+Staged scope inspected:
+{
+  "staged_files": 435,
+  "all_paths_authorized": true,
+  "runtime_source_changes": 0,
+  "repository_runs_changes": 0,
+  "branch": "wg-tb89c"
+}

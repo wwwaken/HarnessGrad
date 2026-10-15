@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "curl",
+    "--max-time",
+    "30",
+    "-x",
+    "http://172.17.0.1:17890",
+    "-LsS",
+    "-o",
+    "/dev/null",
+    "-w",
+    "%{http_code}",
+    "https://pypi.org/simple/pytest-json-ctrf/"
+  ],
+  "returncode": 0,
+  "stdout": "200",
+  "stderr": ""
+}

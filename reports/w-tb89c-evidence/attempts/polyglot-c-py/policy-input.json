@@ -1,0 +1,37 @@
+{
+  "context": {
+    "dataset": "terminal_bench",
+    "side": "train",
+    "metric": {
+      "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+      "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+    },
+    "hashes": {
+      "source": "dc871f7eb7027cd07d228923ea1db5d02181f518ffc65981184d831ecfa9a2ae",
+      "split": "a789bd94dd24831477fe77cd9995b3e1c768b3977c3a23ebf1accd0353d81025",
+      "manifest": "40ed256356317c00589019438253a667f6dd648f7a19975ae2232a1d3bf56450",
+      "model": null,
+      "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+    },
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "limits": {
+      "resource": {
+        "cpus": 1,
+        "memory_mb": 2048,
+        "agent_timeout_s": 900,
+        "verify_timeout_s": 900
+      },
+      "budget": null
+    },
+    "gates": {
+      "status": "unknown",
+      "receipt_sha256": null,
+      "detail": "Operator authorized bounded live-local-model diagnostics; dataset enforcement remains unknown; no blocker closure or production authorization."
+    },
+    "comparability_notes": [
+      "One-task diagnostic selection, HG_TB_SPLIT=none; train CLI required by unchanged authorization guard. Five live-local-model diagnostics in serial, default harness steps, zero improvement rounds.",
+      "Local endpoint/model binding; no model weight digest or benchmark-performance comparability. Raw verifier evidence is separate from withheld policy publication.",
+      "Source and scorer hashes do not establish transitive offline dependency closure. Declared verifier bridge egress via documented free proxy is allowed; this is not a network-denied run."
+    ]
+  }
+}

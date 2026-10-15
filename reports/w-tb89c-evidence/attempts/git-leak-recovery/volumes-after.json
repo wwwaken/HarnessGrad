@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "volume",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

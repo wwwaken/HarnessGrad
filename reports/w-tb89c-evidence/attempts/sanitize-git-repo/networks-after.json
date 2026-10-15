@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

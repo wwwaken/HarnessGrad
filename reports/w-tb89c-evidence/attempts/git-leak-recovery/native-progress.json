@@ -1,0 +1,41 @@
+{
+ "task_id": "git-leak-recovery",
+ "round": 0,
+ "score": 0.0,
+ "scorer_isolation_class": "snapshot-service",
+ "scorer_isolation_comparable": true,
+ "trial_scorer_isolation": [
+  "snapshot-service"
+ ],
+ "trial_scores": [
+  0.0
+ ],
+ "n_trials": 1,
+ "passed": false,
+ "kind": "command",
+ "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (4 passed 1 failed) | FAILED test_outputs.py::test_repository_contents_checksum: assert '2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb' in '7c516438c1ab8163e49bdb050255a84a12b2c31b864a5efb5b8738acd5a103d6 -\\n' | stdout ksum():\n        \"\"\"Verify repository contents remain unchanged.\"\"\"\n        result = subprocess.run(\n            [\n                \"sh\",\n                \"-c\",\n                \"find /app/repo -type f -not -path '*/\\.*' \"\n                \"-exec sha256sum {} + | sort | sha256sum\",\n            ],\n            capture_output=True,\n            text=True,\n        )\n        assert result.returncode == 0, f\"Checksum calculation failed: {result.stderr}\"\n    \n        output = result.stdout\n        expected = \"2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb\"\n>       assert expected in output, (\n            f\"Repository checksum mismatch. Expected: {expected}, Got: {output}\"\n        )\nE       AssertionError: Repository checksum mismatch. Expected: 2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb, Got: 7c516438c1ab8163e49bdb050255a84a12b2c31b864a5efb5b8738acd5a103d6  -\nE         \nE       assert '2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb' in '7c516438c1ab8163e49bdb050255a84a12b2c31b864a5efb5b8738acd5a103d6  -\\n'\n\n/tests/test_outputs.py:111: AssertionError\n=============================== warnings summary ===============================\n../tests/test_outputs.py:101\n  /tests/test_outputs.py:101: SyntaxWarning: invalid escape sequence '\\.'\n    \"find /app/repo -type f -not -path '*/\\.*' \"\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n==================================== PASSES ====================================\n=========================== short test summary info ============================\nPASSED ../tests/test_outputs.py::test_flag_file_exists_and_correct\nPASSED ../tests/test_outputs.py::test_no_secrets_in_commits\nPASSED ../tests/test_outputs.py::test_good_commits_preserved\nPASSED ../tests/test_outputs.py::test_no_secrets_in_unreachable_objects\nFAILED ../tests/test_outputs.py::test_repository_contents_checksum - Assertio...\n==================== 1 failed, 4 passed, 1 warning in 0.14s ==================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading cpython-3.13.9-linux-x86_64-gnu (download) (32.0MiB)\n Downloading cpython-3.13.9-linux-x86_64-gnu (download)\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 6 packages in 21ms",
+ "tests": {
+  "tests": 5,
+  "passed": 4,
+  "failed": 1,
+  "skipped": 0,
+  "pending": 0,
+  "other": 0,
+  "failed_names": [
+   "test_outputs.py::test_repository_contents_checksum"
+  ]
+ },
+ "wall_clock_s": 38.2,
+ "complete": true,
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b",
+  "task_id": "git-leak-recovery",
+  "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ }
+}

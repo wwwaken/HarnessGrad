@@ -1,0 +1,199 @@
+{
+  "run_id": "w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+  "task_id": "sanitize-git-repo",
+  "run_dir": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+  "work_root": "/tmp/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-work",
+  "evidence_dir": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence",
+  "image_id": "sha256:4b5234da5bb0d67f3b0bf8db40a2883c07a5219f62b64c2bf9ff1ac84cd0f672",
+  "repo_digests": [
+    "docker.1panel.live/alexgshaw/sanitize-git-repo@sha256:4b5234da5bb0d67f3b0bf8db40a2883c07a5219f62b64c2bf9ff1ac84cd0f672",
+    "alexgshaw/sanitize-git-repo@sha256:4b5234da5bb0d67f3b0bf8db40a2883c07a5219f62b64c2bf9ff1ac84cd0f672"
+  ],
+  "ctrf_produced": true,
+  "raw_measured": true,
+  "verifier_verdict": {
+    "kind": "command",
+    "passed": false,
+    "score": 0.0,
+    "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (1 passed 2 failed) | FAILED test_outputs.py::test_removal_of_secret_information: ...Full output truncated (282 lines hidden), use '-vv' to show | FAILED test_outputs.py::test_correct_replacement_of_secret_information: ...Full output truncated (284 lines hidden), use '-vv' to show | stdout pp/dclm/ray_processing/ray_cluster.yaml\",\n            \"/app/dclm/ray_processing/process.py\",\n            \"/app/dclm/exp_data/datasets/tokenized/\"\n            \"rw_v2_fasttext_openhermes_vs_rw_v2_bigram_0.1_arcade100k.json\",\n        ]\n        DECONTAMINATED_PATHS = [\n            Path(__file__).parent / \"ray_cluster.yaml\",\n            Path(__file__).parent / \"process.py\",\n            Path(__file__).parent\n            / (\"rw_v2_fasttext_openhermes_vs_rw_v2_bigram_0.1_arcade100k.json\"),\n        ]\n    \n        for contaminated_path, decontaminated_path in zip(\n            CONTAMINATED_PATHS, DECONTAMINATED_PATHS\n        ):\n            with open(contaminated_path, \"r\") as file:\n                contaminated_text = file.read()\n    \n            with open(decontaminated_path, \"r\") as file:\n                decontaminated_text = file.read()\n    \n>           assert contaminated_text == decontaminated_text\nE           assert 'import argpa..., indent=4)\\n' == 'import argpa..., indent=4)\\n'\nE             \nE             Skipping 3172 identical leading characters in diff, use -v to show\nE             - Y_ID\"] = \"<your-aws-access-key-id>\"\nE             -     os.environ[\"AWS_SECRET_ACCESS_KEY\"] = \"<your-aws-secret-access-key>\"\nE             + Y_ID\"] = \"AKIA1234567890123456\"\nE             +     os.environ[\"AWS_SECRET_ACCESS_KEY\"] = \"D4w8z9wKN1aVeT3BpQj6kIuN7wH8X0M9KfV5OqzF\"\nE               ...\nE             \nE             ...Full output truncated (284 lines hidden), use '-vv' to show\n\n/tests/test_outputs.py:57: AssertionError\n==================================== PASSES ====================================\n=========================== short test summary info ============================\nPASSED ../../tests/test_outputs.py::test_no_other_files_changed\nFAILED ../../tests/test_outputs.py::test_removal_of_secret_information - asse...\nFAILED ../../tests/test_outputs.py::test_correct_replacement_of_secret_information\n========================= 2 failed, 1 passed in 0.66s ========================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 9 packages in 19ms",
+    "tests": {
+      "tests": 3,
+      "passed": 1,
+      "failed": 2,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0,
+      "failed_names": [
+        "test_outputs.py::test_removal_of_secret_information",
+        "test_outputs.py::test_correct_replacement_of_secret_information"
+      ]
+    },
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "snapshot-service"
+  },
+  "raw_score": 0.0,
+  "raw_invalid": {},
+  "raw_not_run": [],
+  "ctrf_files": [
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/verifier-ctrf.json-406678e4d4306b65dfaf730865a750dfc6bf30adcf84c694435f8362bd6f9b24",
+      "sha256": "406678e4d4306b65dfaf730865a750dfc6bf30adcf84c694435f8362bd6f9b24",
+      "bytes": 4378,
+      "summary": {
+        "tests": 3,
+        "passed": 1,
+        "failed": 2,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1792039394.2148716,
+        "stop": 1792039394.8759341
+      }
+    }
+  ],
+  "reward_files": [
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2,
+      "text": "0\n"
+    }
+  ],
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "model_weights_sha256": null,
+  "model_gateway": {
+    "published": true,
+    "target": "127.0.0.1:8002",
+    "connections": 32,
+    "upstream_connect_failed": 0,
+    "upstream_connect_error": null,
+    "upstream_closed_first": 32,
+    "client_closed_first": 0,
+    "bytes_to_upstream": 553272,
+    "bytes_to_client": 38044,
+    "read_errors": []
+  },
+  "identity_declared": {
+    "harness": "loop",
+    "config": {
+      "max_steps": 32,
+      "submit_retries": 2,
+      "parse_retries": 2,
+      "finish_nudge_steps": 4,
+      "repeat_nudge_limit": 2,
+      "output_limit": 4000,
+      "context_chars": 60000,
+      "shell": "/usr/bin/bash",
+      "shell_dialect": "Bash",
+      "max_output_tokens": 2048
+    },
+    "agent_model": "qwen3.5-9b-local",
+    "agent_backend": "openai"
+  },
+  "agent_tokens": {
+    "input": 161563,
+    "output": 3647,
+    "calls": 32,
+    "source": "retained native trial trace usage",
+    "trace_paths": [
+      "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773/progress/round-0/traces/sanitize-git-repo.trial1.jsonl"
+    ]
+  },
+  "native_aggregate_tokens": {
+    "input": 161563,
+    "output": 3647,
+    "calls": 32,
+    "tasks_reported": 1
+  },
+  "env_usage": {
+    "input": 0,
+    "output": 0,
+    "calls": 0,
+    "services_reported": 0
+  },
+  "trace_usage": {
+    "calls": 32,
+    "input_tokens": 161563,
+    "output_tokens": 3647,
+    "retries": 0,
+    "context_trims": 0
+  },
+  "publication": {
+    "score": null,
+    "coverage": {
+      "eligible_tasks": 1,
+      "expected_trials": 1,
+      "invalid_tasks": 0,
+      "invalid_trials": 0,
+      "measured_tasks": 0,
+      "measured_trials": 0,
+      "selected_tasks": 1,
+      "unmeasured_tasks": 1,
+      "unmeasured_trials": 1
+    },
+    "outcomes": [
+      {
+        "reason": "policy_enforcement_not_observed",
+        "score": null,
+        "status": "unmeasured",
+        "task_id": "sanitize-git-repo",
+        "trial": 1
+      }
+    ],
+    "enforcement": {
+      "stage": "diagnostic",
+      "run_id": "w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+      "task_id": "sanitize-git-repo",
+      "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+      "policy_enforcement_observed": false,
+      "measured": false,
+      "production_authorized": false,
+      "comparable": false,
+      "non_comparable_reason": "policy_enforcement_not_observed"
+    }
+  },
+  "hashes": {
+    "source": "02b800eb064a2d17d9cecfb7479d6ed25bdc2e99d8672815a0450c5126fa2877",
+    "split": "b9c9c8418a9aeea6c7e87b6205d6af63fa49e15b959a19a830a7bb9ca26296f5",
+    "manifest": "07e578738e777f4daef812ea9fd0fae9d007d9fe8f1c449541af79cfe14123c7",
+    "model": null,
+    "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+  },
+  "scorer": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "16014722171ae4479112051d2e8af7d0c5bb231bae6aff1b80cfa19e718c814f"
+  },
+  "declared_limits": {
+    "resource": {
+      "cpus": 1,
+      "memory_mb": 2048,
+      "agent_timeout_s": 900,
+      "verify_timeout_s": 900
+    },
+    "budget": null
+  },
+  "resource_receipt": {
+    "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/resource-observation-receipt.json",
+    "sha256": "21e6c303d1911e44f5d31ba882ed166f3c72f1df9293160741f01b2ff8e1c2cf",
+    "bytes": 13837
+  },
+  "snapshot_receipt": {
+    "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/snapshot-observation-receipt.json",
+    "sha256": "2b198680d93fe49f3b486b0cf856201063c31cb3cd227ff4643c94d0fa41e8fa",
+    "bytes": 977
+  },
+  "cleanup_receipt": {
+    "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/cleanup-observation-receipt.json",
+    "sha256": "30ce95bd10fe7917a5eec176b548dae5954138939a072690644416b120085440",
+    "bytes": 4376
+  },
+  "cleanup_observed_absent": true,
+  "launch_observation": {
+    "returncode": 2,
+    "started_at": "2026-10-15T04:41:47.314155+00:00",
+    "ended_at": "2026-10-15T04:43:18.506379+00:00",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "model": "qwen3.5-9b-local"
+  }
+}

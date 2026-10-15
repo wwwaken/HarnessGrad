@@ -1,0 +1,139 @@
+{
+  "per_task": {
+    "git-leak-recovery": 0.0
+  },
+  "per_task_std": {},
+  "score_std": 0.0,
+  "scorer_isolation_class": "snapshot-service",
+  "scorer_isolation_comparable": true,
+  "per_task_scorer_isolation": {
+    "git-leak-recovery": "snapshot-service"
+  },
+  "per_task_trials": {},
+  "trials": 1,
+  "per_task_test_rate": {
+    "git-leak-recovery": 0.8
+  },
+  "per_task_test_rate_trials": {},
+  "test_rate": 0.8,
+  "test_rate_n_tasks": 1,
+  "tests_passed": 4,
+  "tests_total": 5,
+  "traces": {
+    "git-leak-recovery": "{\"harness_identity\": {\"harness\": \"loop\", \"config\": {\"max_steps\": 32, \"submit_retries\": 2, \"parse_retries\": 2, \"finish_nudge_steps\": 4, \"repeat_nudge_limit\": 2, \"output_limit\": 4000, \"context_chars\": 60000, \"shell\": \"/usr/bin/bash\", \"shell_dialect\": \"Bash\", \"max_output_tokens\": 2048}, \"agent_model\": \"qwen3.5-9b-local\", \"agent_backend\": \"openai\"}}\n{\"step\": 0, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --oneline --source --remotes 2>/dev/null | head -20\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git reflog --all | head -30\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --full-history -- '*secret*' 2>/dev/null\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H %s' | head -20\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --pretty=format:'%H %s' --name-only | head -50\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --oneline --name-only | head -100\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show --name-only $hash 2>/dev/null | grep -i secret; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -E 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\[.*\\\\\\\\]' | head -1; done\\\"}}\\n{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --format='%H' | while read hash; do git show $hash 2>/dev/null | grep -oE 'secret\\\\\\\\\", \"model_ms\": 29706}\n{\"step\": 0, \"command\": \"cd /app/repo && git log --all --oneline --source --remotes 2>/dev/null | head -20\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 13, \"output\": \"c6d9997\\trefs/heads/master chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n7a2420e\\trefs/heads/master chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n\"}\n{\"step\": 1, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --oneline --source --remotes 2>/dev/null | head -50\\\"}}\", \"model_ms\": 674}\n{\"step\": 1, \"command\": \"cd /app/repo && git log --all --oneline --source --remotes 2>/dev/null | head -50\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 5, \"output\": \"c6d9997\\trefs/heads/master chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n7a2420e\\trefs/heads/master chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n\"}\n{\"step\": 2, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git reflog | head -20\\\"}\", \"model_ms\": 579}\n{\"step\": 2, \"command\": \"cd /app/repo && git reflog | head -20\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 16, \"output\": \"c6d9997 HEAD@{0}: commit: chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n7a2420e HEAD@{1}: reset: moving to HEAD~1\\n6b4c75c HEAD@{2}: commit: feat: add scratch notes\\n7a2420e HEAD@{3}: commit (initial): chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n\"}\n{\"step\": 3, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git show 6b4c75c --stat\\\"}}\", \"model_ms\": 536}\n{\"step\": 3, \"command\": \"cd /app/repo && git show 6b4c75c --stat\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 5, \"output\": \"commit 6b4c75caa9a2aa9a630e16764007b0109b1f5c07\\nAuthor: TerminalBench <tb@example.com>\\nDate:   Tue Oct 28 22:02:30 2025 +0000\\n\\n    feat: add scratch notes\\n\\n secret.txt | 1 +\\n 1 file changed, 1 insertion(+)\\n\"}\n{\"step\": 4, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git show 6b4c75c:secret.txt\\\"}}\", \"model_ms\": 555}\n{\"step\": 4, \"command\": \"cd /app/repo && git show 6b4c75c:secret.txt\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 6, \"output\": \"secret[lost_and_found_in_git]\\n\"}\n{\"step\": 5, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"echo 'secret[lost_and_found_in_git]' > /app/secret.txt\\\"}\", \"model_ms\": 516}\n{\"step\": 5, \"command\": \"echo 'secret[lost_and_found_in_git]' > /app/secret.txt\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 4, \"output\": \"\"}\n{\"step\": 6, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git reset --hard 7a2420e\\\"}}\", \"model_ms\": 579}\n{\"step\": 6, \"command\": \"cd /app/repo && git reset --hard 7a2420e\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 28, \"output\": \"HEAD is now at 7a2420e chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n\"}\n{\"step\": 7, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git log --all --oneline && echo '---' && find . -name 'secret.txt' 2>/dev/null && echo '---' && git show HEAD:secret.txt 2>&1 || echo 'secret.txt not found in HEAD'\\\"}}\", \"model_ms\": 1157}\n{\"step\": 7, \"command\": \"cd /app/repo && git log --all --oneline && echo '---' && find . -name 'secret.txt' 2>/dev/null && echo '---' && git show HEAD:secret.txt 2>&1 || echo 'secret.txt not found in HEAD'\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 19, \"output\": \"7a2420e chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n---\\n---\\nfatal: path 'secret.txt' does not exist in 'HEAD'\\nsecret.txt not found in HEAD\\n\"}\n{\"step\": 8, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git fsck --unreachable 2>/dev/null | grep -i secret || echo 'No unreachable objects with secret found'\\\"}\", \"model_ms\": 734}\n{\"step\": 8, \"command\": \"cd /app/repo && git fsck --unreachable 2>/dev/null | grep -i secret || echo 'No unreachable objects with secret found'\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 18, \"output\": \"No unreachable objects with secret found\\n\"}\n{\"step\": 9, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git reflog expire --expire=now --all && git gc --prune=now --aggressive && echo 'Garbage collection completed'\\\"}\", \"model_ms\": 778}\n{\"step\": 9, \"command\": \"cd /app/repo && git reflog expire --expire=now --all && git gc --prune=now --aggressive && echo 'Garbage collection completed'\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 70, \"output\": \"Garbage collection completed\\n\"}\n{\"step\": 10, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cd /app/repo && git fsck --unreachable 2>/dev/null | grep -i secret || echo 'No unreachable objects with secret found'\\\"}\", \"model_ms\": 759}\n{\"step\": 10, \"command\": \"cd /app/repo && git fsck --unreachable 2>/dev/null | grep -i secret || echo 'No unreachable objects with secret found'\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 13, \"output\": \"No unreachable objects with secret found\\n\"}\n{\"step\": 11, \"reply\": \"{\\\"tool\\\": \\\"bash\\\", \\\"command\\\": \\\"cat /app/secret.txt && echo '---' && cd /app/repo && git log --all --oneline && echo '---' && find . -name 'secret.txt' 2>/dev/null | head -5\\\"}\", \"model_ms\": 955}\n{\"step\": 11, \"command\": \"cat /app/secret.txt && echo '---' && cd /app/repo && git log --all --oneline && echo '---' && find . -name 'secret.txt' 2>/dev/null | head -5\", \"exit\": 0, \"shell\": \"/usr/bin/bash\", \"command_ms\": 13, \"output\": \"secret[lost_and_found_in_git]\\n---\\n7a2420e chore: init e665d1a2-04a7-4e61-b523-e897e231d9cc\\n---\\n\"}\n{\"step\": 12, \"reply\": \"{\\\"answer\\\": {\\\"secret\\\": \\\"secret[lost_and_found_in_git]\\\"}}\", \"model_ms\": 423}\n{\"step\": 12, \"submitted\": true, \"missing\": []}\n{\"wall_clock_s\": {\"model\": 38.0, \"commands\": 0.2, \"total\": 38.2}}\n{\"usage\": {\"calls\": 13, \"input_tokens\": 13575, \"output_tokens\": 2515, \"retries\": 0, \"context_trims\": 0}}\n"
+  },
+  "tampered": {},
+  "trial_traces": {},
+  "trial_verdicts": {},
+  "cached_tasks": [],
+  "verdicts": {
+    "git-leak-recovery": {
+      "kind": "command",
+      "passed": false,
+      "score": 0.0,
+      "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (4 passed 1 failed) | FAILED test_outputs.py::test_repository_contents_checksum: assert '2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb' in '7c516438c1ab8163e49bdb050255a84a12b2c31b864a5efb5b8738acd5a103d6 -\\n' | stdout ksum():\n        \"\"\"Verify repository contents remain unchanged.\"\"\"\n        result = subprocess.run(\n            [\n                \"sh\",\n                \"-c\",\n                \"find /app/repo -type f -not -path '*/\\.*' \"\n                \"-exec sha256sum {} + | sort | sha256sum\",\n            ],\n            capture_output=True,\n            text=True,\n        )\n        assert result.returncode == 0, f\"Checksum calculation failed: {result.stderr}\"\n    \n        output = result.stdout\n        expected = \"2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb\"\n>       assert expected in output, (\n            f\"Repository checksum mismatch. Expected: {expected}, Got: {output}\"\n        )\nE       AssertionError: Repository checksum mismatch. Expected: 2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb, Got: 7c516438c1ab8163e49bdb050255a84a12b2c31b864a5efb5b8738acd5a103d6  -\nE         \nE       assert '2c3d6389133b6f9fffae5d3428ec1250c3b1cab5573c716d580dc1d4fa2f4adb' in '7c516438c1ab8163e49bdb050255a84a12b2c31b864a5efb5b8738acd5a103d6  -\\n'\n\n/tests/test_outputs.py:111: AssertionError\n=============================== warnings summary ===============================\n../tests/test_outputs.py:101\n  /tests/test_outputs.py:101: SyntaxWarning: invalid escape sequence '\\.'\n    \"find /app/repo -type f -not -path '*/\\.*' \"\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n==================================== PASSES ====================================\n=========================== short test summary info ============================\nPASSED ../tests/test_outputs.py::test_flag_file_exists_and_correct\nPASSED ../tests/test_outputs.py::test_no_secrets_in_commits\nPASSED ../tests/test_outputs.py::test_good_commits_preserved\nPASSED ../tests/test_outputs.py::test_no_secrets_in_unreachable_objects\nFAILED ../tests/test_outputs.py::test_repository_contents_checksum - Assertio...\n==================== 1 failed, 4 passed, 1 warning in 0.14s ==================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading cpython-3.13.9-linux-x86_64-gnu (download) (32.0MiB)\n Downloading cpython-3.13.9-linux-x86_64-gnu (download)\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 6 packages in 21ms",
+      "tests": {
+        "tests": 5,
+        "passed": 4,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "failed_names": [
+          "test_outputs.py::test_repository_contents_checksum"
+        ]
+      },
+      "scorer_isolation_class": "snapshot-service",
+      "scorer_isolation_declared": "snapshot-service"
+    }
+  },
+  "evaluation_protocols": {},
+  "invalid": {},
+  "not_run": [],
+  "startup_failure": null,
+  "harness_failed": {},
+  "harness_output": {
+    "git-leak-recovery": {
+      "exit_code": 0,
+      "stderr": ""
+    }
+  },
+  "harness_runtime": [
+    {
+      "source": "platform",
+      "python": null,
+      "note": "the platform's interpreter supplies the dependencies"
+    }
+  ],
+  "env_usage": {
+    "input": 0,
+    "output": 0,
+    "calls": 0,
+    "services_reported": 0
+  },
+  "model_gateway": {
+    "published": true,
+    "target": "127.0.0.1:8002",
+    "connections": 13,
+    "upstream_connect_failed": 0,
+    "upstream_connect_error": null,
+    "upstream_closed_first": 13,
+    "client_closed_first": 0,
+    "bytes_to_upstream": 49165,
+    "bytes_to_client": 18588,
+    "read_errors": []
+  },
+  "identity_declared": {
+    "harness": "loop",
+    "config": {
+      "max_steps": 32,
+      "submit_retries": 2,
+      "parse_retries": 2,
+      "finish_nudge_steps": 4,
+      "repeat_nudge_limit": 2,
+      "output_limit": 4000,
+      "context_chars": 60000,
+      "shell": "/usr/bin/bash",
+      "shell_dialect": "Bash",
+      "max_output_tokens": 2048
+    },
+    "agent_model": "qwen3.5-9b-local",
+    "agent_backend": "openai"
+  },
+  "identity_variants": [
+    {
+      "harness": "loop",
+      "config": {
+        "max_steps": 32,
+        "submit_retries": 2,
+        "parse_retries": 2,
+        "finish_nudge_steps": 4,
+        "repeat_nudge_limit": 2,
+        "output_limit": 4000,
+        "context_chars": 60000,
+        "shell": "/usr/bin/bash",
+        "shell_dialect": "Bash",
+        "max_output_tokens": 2048
+      },
+      "agent_model": "qwen3.5-9b-local",
+      "agent_backend": "openai"
+    }
+  ],
+  "tokens": {
+    "input": 13575,
+    "output": 2515,
+    "calls": 13,
+    "tasks_reported": 1
+  },
+  "enforcement": {
+    "stage": "diagnostic",
+    "run_id": "w-tb89c-git-leak-recovery-20261015T043706Z-0ab2385b",
+    "task_id": "git-leak-recovery",
+    "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+    "policy_enforcement_observed": false,
+    "measured": false,
+    "production_authorized": false,
+    "comparable": false,
+    "non_comparable_reason": "policy_enforcement_not_observed"
+  }
+}

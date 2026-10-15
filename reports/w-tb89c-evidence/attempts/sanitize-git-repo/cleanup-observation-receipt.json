@@ -1,0 +1,121 @@
+{
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+    "trial_id": "sanitize-git-repo:1",
+    "manifest_sha256": "07e578738e777f4daef812ea9fd0fae9d007d9fe8f1c449541af79cfe14123c7"
+  },
+  "all_owned_objects_observed_absent": true,
+  "probes": [
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/containers-after.json",
+      "sha256": "c58f1ad2b01bd7dc9d039693df00a26bf228b76b5a62667ba1ac71c117ce5bfe",
+      "bytes": 235,
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/networks-after.json",
+      "sha256": "7eada349453bc9ae0d6d7a9224fe245ecedcca6b7092ea14e684804e4ba9fdb5",
+      "bytes": 240,
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/volumes-after.json",
+      "sha256": "82b475af89996ea52611331f79d56b16dc7a04890ab922ea6baf3fdadc1515da",
+      "bytes": 239,
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/snapshots-after.json",
+      "sha256": "cada6946a5307d82e7e8481380dfe58d4efeeffd8e8ffaafa5d4d78741b83702",
+      "bytes": 258,
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773*",
+        "--no-trunc",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/container-exact-after-00.json",
+      "sha256": "a92bda7a5511d670245ca0ec4b1e09084dbf2ad10bf7d71b6f3540ea47efd67d",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "inspect",
+        "e72a51d1bc0043d7f9823491b8e2bc9e84c8dbba3940cccb9d3d06d1c8158531"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: e72a51d1bc0043d7f9823491b8e2bc9e84c8dbba3940cccb9d3d06d1c8158531\n"
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/container-exact-after-01.json",
+      "sha256": "9e234bfc86e4e60a0d627217571420f5dd777dfbc8c888ef343b02a6fd14c8f3",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "inspect",
+        "77a23ff7922a067edf4a5371c2b119257e19f2055e413654e30bcde0ff6e2d2f"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 77a23ff7922a067edf4a5371c2b119257e19f2055e413654e30bcde0ff6e2d2f\n"
+    },
+    {
+      "path": "/tmp/w-tb89c-runs-20261015T043105Z-2bb62685/w-tb89c-sanitize-git-repo-20261015T044136Z-18b33773-evidence/snapshot-exact-after-00.json",
+      "sha256": "69af4ccfc89d56c2597ecafb48eae14b5ea57407321798549d6da51295b3a252",
+      "bytes": 311,
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:e3bc0e6582e6a18cb348211753dbc5d262c69f9c4240907f632952c5e5298a31"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such image: sha256:e3bc0e6582e6a18cb348211753dbc5d262c69f9c4240907f632952c5e5298a31\n"
+    }
+  ],
+  "note": "Owned-object absence observations, not atomic lease release or production authorization. Work/native receipts retained."
+}

@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "nvidia-smi",
+    "--query-gpu=index,utilization.gpu,memory.used,memory.total",
+    "--format=csv,noheader"
+  ],
+  "returncode": 0,
+  "stdout": "0, 0 %, 10 MiB, 40960 MiB\n1, 0 %, 36858 MiB, 40960 MiB\n",
+  "stderr": ""
+}

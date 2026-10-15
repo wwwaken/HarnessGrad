@@ -1,0 +1,4 @@
+{
+  "path": "eval/unix_model_relay.py",
+  "text": "\"\"\"Compatibility alias for :mod:`eval.service.unix_model_relay`.\n\nNew code imports the canonical path. Module identity (including private names,\npatch targets and mutable state) is shared; see docs/architecture.md.\n\"\"\"\nimport sys as _sys\nfrom eval.service import unix_model_relay as _implementation\n\n_sys.modules[__name__] = _implementation\n"
+}
