@@ -3818,3 +3818,22 @@ clean; all four named deliverables present.
 - Exercised fresh authored-state snapshots on cached GAIA/Tau images through production snapshot admission/identity/start/verify helpers, normal and timeout. Their verifier containers are removed natively; full dataset/network/scorer/actor routes are outside the evidence. Native sandbox normal and timeout controls capture actual child waits/namespace teardown with inherited/shared resource limits, without collector rlimits or subreaper. Preserved the initial native RO-/tmp scratch failure separately; changed only probe scratch to the already writable output directory for the fresh followup.
 - Report reports/w-e6-lifecycle.md names exact remaining branches, scope restrictions and the absent startup-only AppWorld API-call log prerequisite. Only the shared export blocker's observed text/evidence gains these facts. E4/E5/E6 stay PARTIAL; both shared statuses/full next_actions, all dataset blockers/references and historical records remain unchanged. No gate or production code changes, benchmark scorer, model/GPU/model-endpoint/paid call, runs/ modification, frozen-receipt edit or reused run ID.
 - Validation is preserved in reports/w-e6-validation.txt, with registry/source-only and focused verifier/service-command tests, independent raw-packet audit and SHA256SUMS verification. Work and commit confined to registered /tmp/hg-e6 on wg-e6; no main merge.
+## Parent review and merge — w-e6 — 2026-10-15
+
+- Merged `4b84c13` (w-e6). Result `5a3d30ea`. Registry valid: 28 datasets, 2 shared blockers, 11
+  historical records, `production_authorized=false`; sequencer clean; report present. 56 registry
+  tests and 68 focused tests passed, and all 839 manifest entries verified.
+- **Another real defect surfaced from a live control, which is now the phase's most productive
+  pattern.** w-e6 observed current AppWorld service caps, then found that a **timeout path retains
+  the verifier's recording mount and blocks network cleanup**, and it preserved the failure
+  evidence before the collector removed it. It also observed the GAIA/Tau snapshot and native
+  sandbox cleanup paths. This is the same family as the DS-1000 wrapper scratch leak fixed earlier
+  in the phase: an infrastructure path that leaks state or blocks cleanup, found only by actually
+  running the route rather than reading it.
+- It also added a file-and-line coverage inventory so the remaining E6 surface is named rather
+  than summarised. E4/E5/E6 remain PARTIAL and no dataset blocker closed.
+- Still in flight and NOT merged: `w-e5` (pre/post-export equivalence). Nothing about its result is
+  claimed.
+- Resource state: local container controls and tests only - no benchmark scoring run, model, GPU or
+  endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
+  receipts and archives were untouched.
