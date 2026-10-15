@@ -1,0 +1,86 @@
+Parent integration of two worker proposals: the FEVER metric decision and object recovery, and the
+closure of `strategyqa / dataset-journal-gap` under reading (A).
+
+1. `fever / dataset-journal-gap` - obligations discharged, blocker stays OPEN
+-----------------------------------------------------------------------------
+`w-fevobj` recovered the two historical public objects the previous search left unread and named the
+metric. The parent rewrote only the two `next_action` sentences those findings discharge, keeping every
+other sentence verbatim:
+
+* the loader at `1776db7e9abab525eae8e59c5015e3589dfe371b` (7897 bytes, git blob
+  `ab71339be067bc98bcad7df12a12c0e05fc6b521`, matching the prior tree entry) and the generated tree at
+  `ad8321607bcad0e534c243ec8c108a5787cea6c8` (4596-byte HTTP 200 JSON, nine entries) are **FOUND**, with
+  raw bodies, exact requests, response digests and the redirect preserved in `tests/fixtures/hg_fevobj/`
+  and enumerated in `registry/w-fevobj-receipts.md`. Neither contains or implies a producing-execution
+  receipt;
+* the flat-versus-singleton metric is **decided and named**: option (a), the conjunctive per-exported-row
+  metric `fever_exported_row_conjunctive_strict_at_5`, with its aggregation and its explicit non-use of
+  original-claim weighting, recorded as a definition only.
+
+A sentence-level check against the pre-change text (`git show HEAD:registry/dataset-blockers.json`)
+reports exactly those two sentences dropped and no others, which is the property
+`tools/apply_blocker_proposal.py` exists to protect; the worker's own proposal was refused by that tool
+for 15 reworded sentences, and this surgical rewrite is why.
+
+**The blocker stays open.** The producing-execution receipt remains absent, and its absence is BOUNDED,
+not proven unobtainable: the producer is a public third party, private/unindexed/producer-held records
+remain UNKNOWN, and `w-fevhub`'s own wording refuses to call it impossible. The parent therefore makes
+no standing-limit decision - that is the operator's, and the evidence a decision needs is now complete.
+
+2. `strategyqa / dataset-journal-gap` - CLOSED under reading (A)
+----------------------------------------------------------------
+The blocker was left open for one non-diagnostic-time obligation: "the original scorer and split
+definition remain undetermined". Both halves are now determined.
+
+* scorer: `allenai/strategyqa-evaluator@49b88ed2b2f1b57385c13e8a0699dee1d227f83e`, `evaluator/eval.py`,
+  5797 bytes, SHA-256 `68c0edcd2fd26daf2cec368302d9f564cbf351288aa4a2c265f47bdc00704044`, reproducing
+  upstream blob `9717ac6bfd7f3428cb15aa87f3e0ab5873458ce1`; raw Python equality over every supplied gold
+  instance, DIFFERENT from the local normalized whole-answer EM.
+* split: `registry/w-stratsplit-membership.md` and `tests/fixtures/hg_stratsplit/binding-summary.json` -
+  the generation-pinned ZIP Train multiset equals the installed 2290 rows (after literal prefix removal
+  and an explicit Boolean-to-Yes/No mapping) and equals the union of the author repository's unofficial
+  train/dev memberships (2061/229); the ZIP Test membership equals the official evaluator's published
+  490-ID dummy-submission key set; original partition coverage Train 2290 / Test 0, unaccounted installed
+  rows 0, and 490 original Test IDs absent from the installed pool.
+
+Retained as explicit limits: landing-page endorsement of the ZIP is unobserved (HTTP 403), so the binding
+rests on the documented official-evaluator/author-content authority bridge; two duplicate-content installed
+rows keep ambiguous exact qid candidates with no invented tie-break and zero partition ambiguity; the
+imposed 1520/770 hash split and the author's unofficial train/dev division are NOT the original Train/Test
+evaluation.
+
+This closes no measurement and asserts no score: no measured run exists, F1 and judge accuracy stay
+excluded, local EM stays separate from original Accuracy, and every diagnostic-time clause remains a
+requirement of any future diagnostic. Open blockers 10 -> 9.
+
+3. Guard repair forced by the closure
+------------------------------------
+`tests/quality/test_apply_blocker_proposal.py` used a named open blocker as its list-shape fixture. It was
+repointed from `hotpotqa/historical-comparison-receipts` to `strategyqa/dataset-journal-gap` earlier the
+same day, and that one closed too. The fixture now selects **whichever** non-refusal blocker the live
+registry has (`an_open_blocker`), so it can no longer break when a particular blocker closes; the two
+tests still assert the same behaviour (the applier applies the list record, and refuses a list record that
+matches no CLI dataset/blocker).
+
+Verification, run in the parent worktree `/mnt/20t/xubuqiang/hg-wt/w-parent2`
+----------------------------------------------------------------------------
+```
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+$ python3 -m pytest -q tests/quality/test_closure_assessment.py tests/quality/test_dataset_blockers.py \
+      tests/quality/test_dataset_journal_coverage.py tests/quality/test_measurement_coverage_hg_b3.py \
+      tests/quality/test_apply_blocker_proposal.py tests/quality/test_withdrawn_requirements_not_reimposed.py
+115 passed, 1 skipped
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py \
+      tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py \
+      tests/quality/test_site_evidence_carriers.py tests/quality/test_apply_blocker_proposal.py \
+      tests/quality/test_closure_assessment.py tests/quality/test_withdrawn_requirements_not_reimposed.py \
+      tests/quality/test_appworld_trusted_trial_writer_codex183.py tests/quality/test_ujson_pypi_codex226.py
+273 passed, 12 skipped, 7 failed
+```
+The 7 failures are all in `test_ujson_pypi_codex226.py` and are the **worktree-only payload failures**
+recorded in `registry/known-red-tests.md`: its gitignored `artifacts/*.whl` payloads exist only in the
+main checkout, so a fresh worktree cannot exercise them. They are not caused by this change and must be
+re-checked in `main` after the merge.

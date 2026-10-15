@@ -4,7 +4,7 @@ Parent assessment, 2026-10-15, opened at registry commit `21d6ebbf` and updated 
 registry. Its purpose is to answer one question for every open blocker: **which of its own
 `next_action` obligations are already discharged, which are not, and what class the rest belong to** —
 so that "14 open" becomes a set of concrete dispositions instead of a number. It currently describes
-**10** open blockers; the count and every supersession are recorded in the closure sections below.
+**9** open blockers; the count and every supersession are recorded in the closure sections below.
 
 The controlling rule is the objective's: a blocker closes only on the kind of evidence its own
 `next_action` names. Nothing here is a claim that an obligation is met unless the record already holds
@@ -36,7 +36,6 @@ the artefact.
 | `spreadsheetbench / dataset-journal-gap` | measurement | open | scorer+engine custody FOUND; synthetic stale-cache control FAILED; measured coverage `PENDING-RUN` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
 | `fever / dataset-journal-gap` | measurement | open | metric DETERMINED; upstream producing-execution search done and **bounded** ABSENT (two historical objects still unread); metric choice outstanding |
-| `strategyqa / dataset-journal-gap` | measurement | open | original scorer FOUND and DIFFERENT; split membership `PENDING-UPSTREAM` |
 | `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |
 
 ## The four permanent refusals
@@ -110,10 +109,10 @@ search now running as `w-fevhub` before any standing-limit decision; and an expl
 conjunctive per-exported-row metric and complete original-group scoring with declared
 original-claim weighting.
 
-**`strategyqa / dataset-journal-gap`** — `PENDING-UPSTREAM`. Custody, the local EM statement and the
-EM-identity limit are `SATISFIED`; the original scorer and split definition remain **undetermined**
-because they are not in the enumerated local scope. Obtain readable authoritative scorer/split
-definitions and bind their scope.
+**`strategyqa / dataset-journal-gap`** — **CLOSED** on 2026-10-15 under reading (A); see the closure
+section below. Custody, the local EM statement and the EM-identity limit were already `SATISFIED`; the
+original scorer was `FOUND` and the split membership is now `FOUND` and bound, so the obligation the
+earlier assessment recorded as **undetermined** - "an original scorer/split definition" - is discharged.
 
 **`reasoning_gym / dataset-journal-gap`** — **CLOSED** on 2026-10-15 under reading (A); see the closure
 section below. Distribution, source and installed-member custody, the declared pool hash and the frozen
@@ -145,22 +144,22 @@ The candidate ID, the filenames and the enumerated absence stay recorded; the bl
 ## What is not in doubt
 
 Two blockers were closed under reading (A) on 2026-10-15 and both are recorded above with their
-clause-by-clause basis; that closure waived no verification step. Two more - `reasoning_gym` and
-`hotpotqa` - were closed under the same reading the same day, each with its own clause-by-clause
-section below, and that closure waived no verification step either. For every blocker that remains open,
+clause-by-clause basis; that closure waived no verification step. Three more - `reasoning_gym`,
+`hotpotqa` and `strategyqa` - were closed under the same reading the same day, each with its own
+clause-by-clause section below, and that closure waived no verification step either. For every blocker that remains open,
 nothing here is discharged by a review that has not been done: every `SATISFIED` entry names an artefact
 that exists, every `PRE-DIAGNOSTIC` entry is labelled as such rather than counted as closure, and no measured score is asserted anywhere. The four permanent refusals are untouched.
 
 ## Reverse audit — is every cleared dataset cleared for a recorded reason?
 
-A forward assessment of the 10 open blockers says nothing about the 18 datasets that currently carry
+A forward assessment of the 9 open blockers says nothing about the 19 datasets that currently carry
 none. If a blocker had ever been dropped without a disposition, the registry would show a dataset as
 clear for no recorded reason, which is a worse defect than an open blocker. The reverse audit compared
 the blocker set per dataset at `db32421c` (before the withdrawal wave) and at `1825cd0e^` (before the
 bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
 
 * `1825cd0e^` and `db32421c`: 28 datasets, **22** blockers. At the reverse audit's own commit: 28
-  datasets, **14** blockers (10 now; the four reading-(A) closures below are documented steps, not
+  datasets, **14** blockers (9 now; the five reading-(A) closures below are documented steps, not
   unrecorded drops).
   Eight blockers were removed and eight withdrawal entries exist in
   `registry/withdrawn-requirements.md`, one per removal: `livecodebench/row-attestation`,
@@ -175,9 +174,9 @@ bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
   this phase's registry and is not a result of anything removed here.
 
 Conclusion: no dataset is currently clear because a blocker was silently dropped. `22 - 8 = 14`
-accounts for every one of those removals, and the four closures under reading (A) on 2026-10-15
-(`physicsquestions`, `sportsunderstanding`, `reasoning_gym` and `hotpotqa`) take the active set from
-**14** to **10**. Each is recorded above and in the registry's `review.notes`, so the count is
+accounts for every one of those removals, and the five closures under reading (A) on 2026-10-15
+(`physicsquestions`, `sportsunderstanding`, `reasoning_gym`, `hotpotqa` and `strategyqa`) take the active
+set from **14** to **9**. Each is recorded above and in the registry's `review.notes`, so the count is
 accounted for in documented steps rather than one unexplained drop.
 
 ## Closed under reading A, 2026-10-15 - `reasoning_gym`
@@ -293,3 +292,35 @@ The reverse audit above takes the active set from 11 to **10** with this closure
 step. The summary table's `LIMIT-RECORDED` row for `hotpotqa` is gone because the blocker is gone; the
 limit itself is unchanged in `registry/withdrawn-requirements.md` and
 `registry/w-hotpotrec-receipts.md`.
+
+## Closed under reading A, 2026-10-15 - `strategyqa`
+
+The earlier assessment left this blocker open for exactly one non-diagnostic-time obligation: *"the
+original scorer and split definition remain **undetermined**"*. Both halves are now determined, so the
+blocker closes on the same reading as the other four.
+
+| clause from the pre-closure `next_action` | class | where it stands |
+| --- | --- | --- |
+| Bind the original answer Accuracy separately to `allenai/strategyqa-evaluator@49b88ed2...`, `evaluator/eval.py` SHA-256 `68c0edcd...` | `SATISFIED` | `registry/w-stratqa-receipts.md`, `tests/fixtures/hg_stratqa/`; raw Python equality over every supplied gold instance, **different** from the local normalized whole-answer EM |
+| Obtain authoritative membership IDs or a complete author-endorsed generator and bind their scope and local task mapping | `SATISFIED` | `registry/w-stratsplit-membership.md`, `tests/fixtures/hg_stratsplit/binding-summary.json`: the ZIP Train multiset equals the installed 2290 rows and the author repository's unofficial train/dev union (2061/229); the ZIP Test membership equals the official evaluator's published 490-ID key set; 0 installed rows unaccounted for |
+| Do not report local EM as original Accuracy; exclude F1 and judge accuracy | constraint | recorded in `registry/w-metriccmp-comparability.md` and the closure note |
+| Retain authenticated installed CSV/member/revision and ReWOO evaluator identity and the bounded first-five selected-only custody record | `SATISFIED` | `tests/fixtures/hg_wsel/strategyqa.json`; mixed-side, not a diagnostic specification |
+| Cite the dataset's own migrated review | `SATISFIED` | `/site/dataset-source-reviews-b2.md` -> `## strategyqa source-only review`, and `docs/dataset-reviews/strategyqa.md` |
+| For any separately authorized diagnostic: reconcile the run-specific manifest/export and split mode/side, establish deterministic offline dependencies and dataset-specific trusted verifier/runtime execution, and report eligible/selected/task/trial/invalid/unmeasured coverage | `PRE-DIAGNOSTIC` | statement only; **no diagnostic is authorized** and none of it is waived by this closure |
+| Preserve the shared-requirement withdrawals | `WITHDRAWN` | `registry/withdrawn-requirements.md` |
+
+**Retained as explicit limits, in the blocker's own words before closure.** Direct landing-page
+endorsement of the generation-pinned ZIP is **unobserved** (the request returned HTTP 403), so the
+binding rests on the documented official-evaluator/author-content authority bridge rather than on a
+landing-page attestation. Two duplicate-content installed rows keep **ambiguous exact qid candidates**,
+with no invented occurrence-order tie-break; there is no partition ambiguity. And the imposed 1520/770
+hash split and the author repository's *unofficial* train/dev division are **not** the original
+Train/Test evaluation - the original Test membership (490 IDs) is entirely absent from the installed
+pool, so the installed pool is an original-Train pool and nothing here licenses an original-benchmark
+comparison.
+
+**This closes no measurement and claims no score.** `strategyqa` has never had a measured run here, no
+coverage count is promoted, F1 and judge accuracy stay excluded, and local normalized whole-answer EM
+stays reported separately rather than as original Accuracy. Every diagnostic-time clause above remains a
+requirement of any future diagnostic, which still needs its own authorization, a fresh run ID, a
+split/side binding and the staged pilot policy.

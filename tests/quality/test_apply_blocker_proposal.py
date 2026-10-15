@@ -43,6 +43,21 @@ def a_blocker(document, dataset="fever", blocker_id="dataset-journal-gap"):
     raise AssertionError(f"{dataset}/{blocker_id} is not an open blocker")
 
 
+def an_open_blocker(document):
+    """Any open, non-refusal blocker, chosen from the live registry.
+
+    The list-shape tests need *an* open blocker, not a particular one. Pinning a dataset here broke
+    twice on 2026-10-15 - `hotpotqa/historical-comparison-receipts` and then
+    `strategyqa/dataset-journal-gap` closed under reading (A) - so the fixture now reads whichever
+    non-refusal blocker the registry actually has, and fails only if there are none at all.
+    """
+    for row in sorted(document["datasets"], key=lambda r: r["dataset"]):
+        for item in row["blockers"]:
+            if item["id"] != "retain-contract-refusal":
+                return row["dataset"], item["id"], item
+    raise AssertionError("no open non-refusal blocker to exercise the applier with")
+
+
 def test_valid_single_record_proposal_is_applied(registry, capsys):
     target, write = registry
     document = json.loads(target.read_text(encoding="utf-8"))
@@ -224,20 +239,19 @@ def test_accepts_a_bare_list_of_per_dataset_records(registry, capsys):
     """w-metriccmp emits a bare JSON list with next_action_replacement per dataset."""
     target, write = registry
     document = json.loads(target.read_text(encoding="utf-8"))
-    # Any open blocker works here; this was `hotpotqa/historical-comparison-receipts` until that
-    # blocker closed under reading (A) on 2026-10-15 (registry/w-close4-validation.txt).
-    old = a_blocker(document, "strategyqa", "dataset-journal-gap")["next_action"]
+    dataset, blocker_id, blocker = an_open_blocker(document)
+    old = blocker["next_action"]
     proposal = write("list.json", [
-        {"dataset": "strategyqa", "blocker": "dataset-journal-gap",
+        {"dataset": dataset, "blocker": blocker_id,
          "determination": "different",
          "observed_append": "LIST-SHAPE-MARKER.",
          "next_action_replacement": old + " LIST-SHAPE."},
     ])
-    assert applier.main([str(proposal), "--dataset", "strategyqa",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target),
+    assert applier.main([str(proposal), "--dataset", dataset,
+                         "--blocker", blocker_id, "--registry", str(target),
                          "--apply"]) == 0
     updated = a_blocker(json.loads(target.read_text(encoding="utf-8")),
-                        dataset="strategyqa", blocker_id="dataset-journal-gap")
+                        dataset=dataset, blocker_id=blocker_id)
     assert updated["next_action"].endswith("LIST-SHAPE.")
     assert "LIST-SHAPE-MARKER." in updated["observed"]
 
@@ -245,10 +259,10 @@ def test_accepts_a_bare_list_of_per_dataset_records(registry, capsys):
 def test_refuses_a_list_record_with_no_matching_dataset(registry, capsys):
     target, write = registry
     document = json.loads(target.read_text(encoding="utf-8"))
+    dataset, blocker_id, blocker = an_open_blocker(document)
     proposal = write("list2.json", [
-        {"dataset": "strategyqa", "blocker": "dataset-journal-gap",
-         "next_action_replacement": a_blocker(document, "strategyqa",
-                                              "dataset-journal-gap")["next_action"] + " X."},
+        {"dataset": dataset, "blocker": blocker_id,
+         "next_action_replacement": blocker["next_action"] + " X."},
     ])
     assert applier.main([str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
                          "--registry", str(target)]) == 1
