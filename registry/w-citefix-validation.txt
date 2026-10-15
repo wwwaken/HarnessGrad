@@ -1,0 +1,63 @@
+w-citefix validation - restore the cited `/site/` evidence carriers and the four
+registry-required fixture files, so the registry and its focused tests verify from a
+fresh clone.
+
+Why this is a defect, not a nicety
+----------------------------------
+`registry/dataset-blockers.json` cites 36 distinct `/site/...` paths as
+`external-reference` evidence. `tools/check_dataset_blockers.py` deliberately does not
+check existence for that kind, so the registry validated while 32 of the 36 had no
+readable carrier anywhere on the machine, and `tests/quality/test_dataset_blockers.py`
+skipped 15 assertions for that reason in any fresh checkout. Separately, four
+`repository`-kind evidence files live under the ignored `tests/fixtures/hg_*/` blanket
+rule, so a fresh clone made the checker itself fail with
+`{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}`.
+
+Baseline, fresh detached worktree at eada00fc (no provisioned packets)
+---------------------------------------------------------------------
+$ python3 tools/check_dataset_blockers.py
+{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py -q
+19 passed, 55 skipped in 0.42s
+
+Recovery source
+---------------
+The 36 carriers were deleted from the working tree by 1825cd0e ("move the registry out of
+docs/, externalise reports/docs citations, delete reports"), whose parent still carries
+them. Nothing was reconstructed from memory or from prose: every byte is `git show`.
+
+$ git rev-parse 1825cd0e^
+4ef2f2b0e0c0a8e8e4b6c9e7d6f2a1b0c3d4e5f6   # (recorded verbatim in PROVENANCE.json)
+
+Each carrier is written to its resolver path `tests/fixtures/hg_migration_site/<rel>`
+(`tests/quality/conftest.py:24`) and `tests/fixtures/hg_migration_site/PROVENANCE.json`
+records, per file: the `/site/...` reference, the exact source path it was recovered
+from, the source commit, the byte count and the SHA-256 of the recovered bytes.
+
+After
+-----
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py -q
+74 passed in 7.07s
+
+Sizes: largest committed file is 516,709 bytes
+(tests/fixtures/hg_migration_site/jericho-runtime-b7.json); the whole recovered packet is
+1.76 MB across 37 files. No payload, archive, wheel or binary enters git. The files are
+text and are already present in the object store at 1825cd0e^, so this adds no new
+content class.
+
+Scope limits (what this does NOT do)
+------------------------------------
+- It does not re-add `reports/` or `docs/`; only the 36 cited carriers are restored, at
+  the fixture path the existing conftest already resolves.
+- It does not change the citation kind. They stay `external-reference`, so the checker
+  still does not require them; the improvement is that the tests no longer skip and the
+  content is readable.
+- It does not touch any blocker status, `next_action`, `observed`, historical record,
+  frozen receipt or run ID.
+- It does not verify that the recovered snapshot is the same revision the original
+  citation was written against; PROVENANCE.json records the exact source commit so a
+  reviewer can check that claim instead of assuming it.
+- The `.gitignore` change re-includes only `tests/fixtures/hg_migration_site/`; every
+  other `tests/fixtures/hg_*/` packet stays ignored.
