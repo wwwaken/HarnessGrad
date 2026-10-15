@@ -46,6 +46,10 @@ import tempfile
 import traceback
 from pathlib import Path
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 DEFAULT_REWARD_FILE = "/verifier/reward.txt"
 DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
 
@@ -280,6 +284,7 @@ def parse_args(argv):
     parser.add_argument("--task", default="task.json")
     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
+    add_arguments(parser)
     args = parser.parse_args(argv)
     args.workdir = Path(args.workdir)
     args.reward_file = Path(args.reward_file)
@@ -303,11 +308,16 @@ def write_evidence(path: Path, evidence: dict) -> None:
 
 def main(argv) -> int:
     args = parse_args(argv)
+    return run_bound(args, {args.task: args.workdir / args.task, args.golden: args.workdir / args.golden},
+                     lambda inputs, receipt: _score(args, inputs, receipt))
+
+
+def _score(args, inputs, receipt) -> int:
     workdir = Path(args.workdir)
-    task_path = workdir / args.task
-    golden_path = workdir / args.golden
+    task_path = inputs[args.task]
+    golden_path = inputs[args.golden]
     answer_path = workdir / args.answer
-    evidence: dict = {"answer_file": str(answer_path), "golden": str(golden_path)}
+    evidence: dict = {"scorer_input": receipt, "answer_file": str(answer_path), "golden": str(golden_path)}
 
     if not task_path.is_file():
         evidence.update(measured=False, error=f"no task file at {task_path}")

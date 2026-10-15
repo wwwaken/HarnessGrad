@@ -521,7 +521,8 @@ def _enforce_scorer_input(verdict: dict, binding: dict | None) -> dict:
     receipt = evidence.get("scorer_input") if isinstance(evidence, dict) else None
     if (isinstance(receipt, dict) and receipt.get("verified") is True
             and all(receipt.get(k) == binding.get(k) for k in ("task_id", "path", "sha256"))
-            and receipt.get("expected_sha256") == binding.get("sha256")):
+            and receipt.get("expected_sha256") == binding.get("sha256")
+            and ("files" not in binding or receipt.get("files") == binding["files"])):
         return verdict
     return {**verdict, "passed": False, "score": None,
             "unmeasured": verdict.get("unmeasured") or "scorer input receipt mismatch or missing"}

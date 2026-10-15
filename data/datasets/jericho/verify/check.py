@@ -41,6 +41,10 @@ import sys
 import traceback
 from pathlib import Path
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import jer_env  # noqa: E402
 
@@ -56,6 +60,7 @@ def parse_args(argv):
     parser.add_argument("--log", default=None)
     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
+    add_arguments(parser)
     args = parser.parse_args(argv)
     workdir = Path(args.workdir)
     args.game = Path(args.game) if args.game else workdir / jer_env.GAME_FILENAME
@@ -83,7 +88,16 @@ def write_evidence(path: Path, evidence: dict) -> None:
 
 def main(argv) -> int:
     args = parse_args(argv)
+    if args.rom is None:
+        args.rom = (json.loads(args.game.read_text())["rom"]
+                    if args.game.is_file() else "missing-rom")
+    return run_bound(args, {str(args.game): args.game, args.rom: args.workdir / args.rom},
+                     lambda inputs, receipt: _score(args, inputs, receipt))
+
+
+def _score(args, inputs, receipt) -> int:
     evidence: dict = {
+        "scorer_input": receipt,
         "game_file": str(args.game),
         "rom": args.rom,
         "action_log": str(args.log),
@@ -106,7 +120,8 @@ def main(argv) -> int:
                     agent_declared_done=declared_done)
 
     try:
-        env = jer_env.load_game(args.workdir)
+        env = jer_env.load_game(args.workdir, config_path=inputs[str(args.game)],
+                                rom_path=inputs[args.rom])
     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
         evidence.update(measured=False, error=f"could not start the game: {exc}",
                         traceback=traceback.format_exc()[-2000:])
@@ -116,7 +131,7 @@ def main(argv) -> int:
 
     try:
         maximum = int(env.get_max_score())
-        spec = json.loads(args.game.read_text())
+        spec = json.loads(inputs[str(args.game)].read_text())
         steps = jer_env.replay(env, actions)
     except Exception as exc:  # noqa: BLE001
         evidence.update(measured=False, error=f"the game died mid-episode: {exc}",

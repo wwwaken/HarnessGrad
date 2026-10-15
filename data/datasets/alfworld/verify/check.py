@@ -58,6 +58,10 @@ import sys
 import traceback
 from pathlib import Path
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gym_env  # noqa: E402
 
@@ -79,6 +83,7 @@ def parse_args(argv):
                         default=os.environ.get("ALFWORLD_EVIDENCE_FILE",
                                                DEFAULT_EVIDENCE_FILE))
     parser.add_argument("--budget", type=int, default=gym_env.STEP_BUDGET)
+    add_arguments(parser)
     args = parser.parse_args(argv)
     workdir = Path(args.workdir)
     args.game = Path(args.game) if args.game else workdir / gym_env.GAME_FILENAME
@@ -130,7 +135,13 @@ def official_reduction(won_per_step: list[bool]) -> float:
 
 def main(argv) -> int:
     args = parse_args(argv)
+    return run_bound(args, {str(args.game): args.game},
+                     lambda inputs, receipt: _score(args, inputs, receipt))
+
+
+def _score(args, inputs, receipt) -> int:
     evidence: dict = {
+        "scorer_input": receipt,
         "game_file": str(args.game),
         "action_log": str(args.log),
         "reward_file": str(args.reward_file),
@@ -156,7 +167,7 @@ def main(argv) -> int:
                     budget=args.budget)
 
     try:
-        state = gym_env.replay(str(args.game), actions, args.budget)
+        state = gym_env.replay(str(inputs[str(args.game)]), actions, args.budget)
     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
         evidence["error"] = f"could not build or replay the environment: {exc}"
         evidence["traceback"] = traceback.format_exc()[-2000:]

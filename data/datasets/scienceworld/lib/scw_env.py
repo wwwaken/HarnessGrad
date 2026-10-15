@@ -112,7 +112,8 @@ def staged_jre() -> Path:
     return root / "jre" / JRE_DIRNAME
 
 
-def make_env(workdir: Path, *, step_budget: int = STEP_BUDGET):
+def make_env(workdir: Path, *, step_budget: int = STEP_BUDGET,
+             server_path: Path | None = None):
     """A `ScienceWorldEnv` with the JVM pointed at the workdir's copy.
 
     The import is inside the function on purpose: `data/datasets/scienceworld.py` is imported by
@@ -124,11 +125,12 @@ def make_env(workdir: Path, *, step_budget: int = STEP_BUDGET):
     os.environ["PATH"] = str(home / "bin") + os.pathsep + os.environ.get("PATH", "")
     from scienceworld import ScienceWorldEnv
 
-    return ScienceWorldEnv("", None, envStepLimit=step_budget)
+    return ScienceWorldEnv("", str(server_path) if server_path else None, envStepLimit=step_budget)
 
 
 def load_task(workdir: Path, *, generate_gold: bool = False,
-              step_budget: int = STEP_BUDGET):
+              step_budget: int = STEP_BUDGET, config_path: Path | None = None,
+              server_path: Path | None = None):
     """Build the world named by `scw_task.json` in `workdir`. Returns the live env.
 
     `generate_gold=True` asks the JVM for the reference action sequence, which is the
@@ -137,8 +139,9 @@ def load_task(workdir: Path, *, generate_gold: bool = False,
     tests -- the agent's CLI never sets the flag, which is the leak boundary: the sequence
     is reachable through an API the agent's process does not call.
     """
-    spec = json.loads((workdir / TASK_FILENAME).read_text())
-    env = make_env(workdir, step_budget=step_budget)
+    spec = json.loads((config_path or workdir / TASK_FILENAME).read_text())
+    env = (make_env(workdir, step_budget=step_budget, server_path=server_path)
+           if server_path else make_env(workdir, step_budget=step_budget))
     env.load(spec["task_name"], int(spec["variation"]), spec.get("simplifications", ""),
              generateGoldPath=generate_gold)
     return env

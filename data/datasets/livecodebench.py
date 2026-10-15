@@ -56,6 +56,8 @@ and reports how much of the pool has one -- `ORACLE_COVERAGE`. The references li
 """
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 import base64
 import json
 import pickle
@@ -260,7 +262,7 @@ def _setup(row: dict) -> dict:
 
 
 def _verify(row: dict) -> dict:
-    return {
+    spec = {
         "kind": "command",
         "argv": ["python3", "verify/check.py", "--tests", "tests.json",
                  "--solution", "solution.py",
@@ -280,6 +282,7 @@ def _verify(row: dict) -> dict:
         # capped at 600 s needs room to write its verdict rather than be killed by the runner.
         "timeout_s": 900,
     }
+    return bind_scorer_input(spec, task_id(row["index"]), ["tests.json"])
 
 
 _INDEXED = [{**row, "index": index} for index, row in enumerate(_raw())]

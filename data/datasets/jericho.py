@@ -68,6 +68,8 @@ What is deliberately not added
 """
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 import os
 from pathlib import Path
 
@@ -249,7 +251,7 @@ def _verifier(record: dict) -> dict:
     """
     import json
 
-    return {
+    spec = {
         "kind": "command",
         "argv": [
             "python3", "check.py",
@@ -272,6 +274,7 @@ def _verifier(record: dict) -> dict:
         "evidence_file": EVIDENCE_FILE,
         "timeout_s": VERIFY_TIMEOUT_S,
     }
+    return bind_scorer_input(spec, record["task_id"], [GAME_FILE, record["rom"]])
 
 
 def downloads() -> list[dict]:

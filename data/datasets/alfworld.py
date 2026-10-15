@@ -94,6 +94,8 @@ granularity is `1/n`.
 
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 #: See `data/scaffolds/registry.py:KIND_DATASET`. A fixture is platform test material and is
 #: deliberately not offered as a choice in the Launch form.
 KIND = "dataset"
@@ -339,7 +341,7 @@ def _verifier(record: dict) -> dict:
     apply here (there is no `docker cp`), but the paths are kept absolute anyway so the
     adapter is a valid container dataset if one is ever built.
     """
-    return {
+    spec = {
         "kind": "command",
         "argv": [
             "python3", "check.py",
@@ -359,6 +361,7 @@ def _verifier(record: dict) -> dict:
         "evidence_file": EVIDENCE_FILE,
         "timeout_s": 300,
     }
+    return bind_scorer_input(spec, record["task_id"], [GAME_IN_WORKDIR])
 
 
 def downloads() -> list[dict]:

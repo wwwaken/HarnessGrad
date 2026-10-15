@@ -1,0 +1,30 @@
+[
+  {
+    "command": [
+      "git",
+      "worktree",
+      "remove",
+      "--force",
+      "/tmp/hg-tbi2-audit"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "worktree",
+      "remove",
+      "--force",
+      "/tmp/hg-tbi2-tests"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "parent_worktree_still_registered": true,
+    "temporary_worktrees_absent": true
+  }
+]

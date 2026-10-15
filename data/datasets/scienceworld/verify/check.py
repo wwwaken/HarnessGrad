@@ -55,6 +55,10 @@ import sys
 import traceback
 from pathlib import Path
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import scw_env  # noqa: E402
 
@@ -70,6 +74,7 @@ def parse_args(argv):
     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
     parser.add_argument("--budget", type=int, default=scw_env.STEP_BUDGET)
+    add_arguments(parser)
     args = parser.parse_args(argv)
     workdir = Path(args.workdir)
     args.task = Path(args.task) if args.task else workdir / scw_env.TASK_FILENAME
@@ -124,8 +129,14 @@ def write_evidence(path: Path, evidence: dict) -> None:
 
 def main(argv) -> int:
     args = parse_args(argv)
+    return run_bound(args, {str(args.task): args.task, "scienceworld.jar": Path(args.workdir) / "scienceworld.jar"},
+                     lambda inputs, receipt: _score(args, inputs, receipt))
+
+
+def _score(args, inputs, receipt) -> int:
     workdir = Path(args.workdir)
     evidence: dict = {
+        "scorer_input": receipt,
         "task_file": str(args.task),
         "action_log": str(args.log),
         "budget": args.budget,
@@ -154,7 +165,9 @@ def main(argv) -> int:
         return 3
 
     try:
-        env = scw_env.load_task(workdir, step_budget=args.budget)
+        env = scw_env.load_task(workdir, step_budget=args.budget,
+                                config_path=inputs[str(args.task)],
+                                server_path=(inputs["scienceworld.jar"] if receipt["verified"] else None))
     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
         evidence.update(measured=False,
                         error=f"could not build the world: {exc}",

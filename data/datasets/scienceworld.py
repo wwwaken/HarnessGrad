@@ -89,6 +89,8 @@ had to be stripped out of a file the agent receives.
 """
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 import os
 from pathlib import Path
 
@@ -303,7 +305,13 @@ def _verifier(record: dict) -> dict:
     file, the check, the shared library and the JRE are all re-materialised at verification
     time, so nothing the agent wrote to any of them is what runs.
     """
-    return {
+    # Locate package data without importing the JVM wrapper or launching Java.
+    import importlib.util
+    package = importlib.util.find_spec("scienceworld")
+    if package is None or package.origin is None:
+        raise FileNotFoundError("scienceworld package payload is not provisioned")
+    world_jar = Path(package.origin).parent / "scienceworld.jar"
+    spec = {
         "kind": "command",
         "argv": [
             "python3", "check.py",
@@ -316,6 +324,7 @@ def _verifier(record: dict) -> dict:
         ],
         "inputs": [
             {"path": "check.py", "from": str(VERIFY_DIR / "check.py")},
+            {"path": "scienceworld.jar", "from": str(world_jar)},
             {"path": "scw_env.py", "from": str(LIB_DIR / "scw_env.py")},
             {"path": TASK_IN_WORKDIR,
              "content": json.dumps({"task_name": record["task_name"],
@@ -327,6 +336,7 @@ def _verifier(record: dict) -> dict:
         "evidence_file": EVIDENCE_FILE,
         "timeout_s": 900,
     }
+    return bind_scorer_input(spec, record["task_id"], [TASK_IN_WORKDIR, "scienceworld.jar"])
 
 
 def downloads() -> list[dict]:

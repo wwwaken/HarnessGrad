@@ -50,6 +50,8 @@ What is deliberately not added, and what is not checked
 """
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 import json
 import os
 from pathlib import Path
@@ -226,7 +228,7 @@ def _verifier(record: dict) -> dict:
     re-materializes them immediately before grading -- the same rule ALFWorld's game file
     follows, and the reason a dataset with an artifact can be graded honestly.
     """
-    return {
+    spec = {
         "kind": "command",
         "argv": [
             "python3", "check.py",
@@ -252,6 +254,7 @@ def _verifier(record: dict) -> dict:
         "evidence_file": EVIDENCE_FILE,
         "timeout_s": 300,
     }
+    return bind_scorer_input(spec, record["task_id"], ["golden.xlsx", "task.json"])
 
 
 def downloads() -> list[dict]:

@@ -16,14 +16,34 @@ import subprocess
 import sys
 import tempfile
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(pathlib.Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--reward-file", default="verifier/reward.txt")
     ap.add_argument("--evidence-file", default="verifier/evidence.json")
+    add_arguments(ap)
     args = ap.parse_args()
+    paths = {"context.json": pathlib.Path("context.json")}
+    if args.scorer_input_files is not None:
+        # The exact static CSV inventory travels in the trusted task-scoped arguments.
+        try:
+            declared = json.loads(args.scorer_input_files)
+            if isinstance(declared, dict):
+                paths.update({name: pathlib.Path(name) for name in declared
+                              if name.startswith("seaborn-data/")})
+        except ValueError:
+            pass  # run_bound emits the malformed-inventory refusal receipt.
+    return run_bound(args, paths,
+                     lambda inputs, receipt: _score(args, inputs, receipt))
+
+
+def _score(args, inputs, receipt) -> int:
     work = pathlib.Path.cwd()
-    task = json.loads((work / "context.json").read_text(encoding="utf-8"))
+    task = json.loads(inputs["context.json"].read_text(encoding="utf-8"))
     solution = work / "solution.py"
     candidate = solution.read_text(encoding="utf-8") if solution.is_file() else ""
     program = (task["code_context"] + "\n" + f"code = {candidate!r}\n"
@@ -49,7 +69,8 @@ def main() -> int:
         # path runs offline instead of fetching from GitHub mid-check.
         import os
         env = dict(os.environ)
-        env["SEABORN_DATA"] = str(work / "seaborn-data")
+        csv_paths = [path for name, path in inputs.items() if name.startswith("seaborn-data/")]
+        env["SEABORN_DATA"] = str(csv_paths[0].parent if csv_paths else work / "seaborn-data")
         for noisy in ("MPLBACKEND",):
             env.setdefault(noisy, "Agg")
         proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
@@ -61,7 +82,7 @@ def main() -> int:
     out.write_text(f"{reward:g}\n")
     ev = work / args.evidence_file
     ev.parent.mkdir(parents=True, exist_ok=True)
-    ev.write_text(json.dumps({"measured": True, "reward": reward,
+    ev.write_text(json.dumps({"scorer_input": receipt, "measured": True, "reward": reward,
                               "official": {"metric": "DS-1000 test_execution plus conditional test_string",
                                             "result": result.get("result")},
                               "why": result.get("result", "")}, sort_keys=True) + "\n")

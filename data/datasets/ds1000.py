@@ -41,6 +41,8 @@ holds the per-row result, and `MEASURED_EXCLUSIONS` is derived from it.
 """
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 import json
 import re
 from pathlib import Path
@@ -190,20 +192,26 @@ def setup_for(index: int) -> dict:
 
 
 def verify_for(index: int) -> dict:
-    return {
+    spec = {
         "kind": "command",
         "argv": ["python3", "verify/check.py",
                  "--reward-file", command_control.REWARD_REL,
                  "--evidence-file", command_control.EVIDENCE_REL],
         "inputs": [
             {"path": "verify/check.py", "from": str(CHECK_FILE)},
+            {"path": "context.json", "content": json.dumps(
+                {"code_context": _raw()[index]["code_context"]}, ensure_ascii=False)},
             {"path": "execution.py", "from": str(EXECUTION_FILE)},
             # Removes the official tests' only network fetch; see the module docstring.
-            {"path": "seaborn-data", "from": str(SEABORN_DIR)},
+            *[{"path": f"seaborn-data/{name}", "from": str(SEABORN_DIR / name)}
+              for name in sorted(SEABORN_CSVS)],
         ],
         "reward_file": command_control.REWARD_FILE,
         "evidence_file": command_control.EVIDENCE_FILE,
     }
+    return bind_scorer_input(spec, task_id(index),
+                             ["context.json", *[f"seaborn-data/{name}"
+                                                for name in sorted(SEABORN_CSVS)]])
 
 
 SETUP = {task_id(i): setup_for(i) for i in included_indices()}

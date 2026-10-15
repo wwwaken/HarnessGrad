@@ -31,6 +31,10 @@ import sqlite3
 import sys
 from pathlib import Path
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 #: Upstream's per-query budget (`evaluation_ex.py`, `--meta_time_out` default 30.0).
 TIMEOUT_S = 30.0
 
@@ -74,7 +78,7 @@ def _write(path: str, payload: str) -> None:
 def _measure(args, reward: float, why: str) -> int:
     _write(args.reward_file, f"{reward:g}\n")
     _write(args.evidence_file, json.dumps(
-        {"measured": True, "metric": "EX", "reward": reward, "why": why}, sort_keys=True) + "\n")
+        {"scorer_input": args.scorer_input_receipt, "measured": True, "metric": "EX", "reward": reward, "why": why}, sort_keys=True) + "\n")
     print(f"reward {reward:g}: {why}")
     return 0
 
@@ -82,7 +86,7 @@ def _measure(args, reward: float, why: str) -> int:
 def _cannot_measure(args, why: str) -> int:
     """No reward file at all: `eval/verification/verifier.py` turns this into an `invalid` task."""
     _write(args.evidence_file, json.dumps(
-        {"measured": False, "metric": "EX", "error": why}, sort_keys=True) + "\n")
+        {"scorer_input": args.scorer_input_receipt, "measured": False, "metric": "EX", "error": why}, sort_keys=True) + "\n")
     print(f"check cannot measure: {why}", file=sys.stderr)
     return 3
 
@@ -94,15 +98,22 @@ def main() -> int:
     parser.add_argument("--pred", required=True)
     parser.add_argument("--reward-file", default="verifier/reward.txt")
     parser.add_argument("--evidence-file", default="verifier/evidence.json")
+    add_arguments(parser)
     args = parser.parse_args()
+    return run_bound(args, {args.gold: Path(args.gold), args.db: Path(args.db)},
+                     lambda inputs, receipt: _score(args, inputs, receipt))
 
-    gold_sql = Path(args.gold).read_text(encoding="utf-8").strip() if Path(args.gold).is_file() else ""
+
+def _score(args, inputs, receipt) -> int:
+
+    args.scorer_input_receipt = receipt
+    gold_sql = inputs[args.gold].read_text(encoding="utf-8").strip() if inputs[args.gold].is_file() else ""
     if not Path(args.db).is_file():
         return _cannot_measure(args, f"no database at {args.db}: this task cannot be graded")
     if not gold_sql:
         return _cannot_measure(args, "the gold query is empty: this task cannot be graded")
 
-    connection = sqlite3.connect(args.db)
+    connection = sqlite3.connect(str(inputs[args.db]))
     try:
         try:
             gold_rows = run_query(connection, gold_sql)

@@ -53,6 +53,10 @@ import multiprocessing
 import sys
 from pathlib import Path
 
+# Native staging supplies this dependency at the task root.
+sys.path.insert(0, str(Path.cwd()))
+from data.scaffolds.scorer_input import add_arguments, run_bound
+
 #: Upstream's per-test budget (`testing_util.run_test(..., timeout=6)`).
 PER_TEST_TIMEOUT = 6
 #: This check's cap on upstream's `(timeout + 1) * n_tests + 5`.
@@ -121,7 +125,7 @@ def _write(path: str, payload: str) -> None:
 def _measure(args, reward: float, why: str, total: int, passed: int, results) -> int:
     _write(args.reward_file, f"{reward:g}\n")
     _write(args.evidence_file, json.dumps(
-        {"measured": True, "metric": "pass@1 (one generation, all released tests)",
+        {"scorer_input": args.scorer_input_receipt, "measured": True, "metric": "pass@1 (one generation, all released tests)",
          "reward": reward, "tests": {"total": total, "passed": passed},
          "per_test": results, "why": why}, sort_keys=True) + "\n")
     print(f"reward {reward:g}: {why}")
@@ -130,7 +134,7 @@ def _measure(args, reward: float, why: str, total: int, passed: int, results) ->
 
 def _cannot_measure(args, why: str) -> int:
     _write(args.evidence_file, json.dumps(
-        {"measured": False, "metric": "pass@1", "error": why}, sort_keys=True) + "\n")
+        {"scorer_input": args.scorer_input_receipt, "measured": False, "metric": "pass@1", "error": why}, sort_keys=True) + "\n")
     print(f"check cannot measure: {why}", file=sys.stderr)
     return 3
 
@@ -141,10 +145,17 @@ def main() -> int:
     parser.add_argument("--solution", required=True)
     parser.add_argument("--reward-file", default="verifier/reward.txt")
     parser.add_argument("--evidence-file", default="verifier/evidence.json")
+    add_arguments(parser)
     args = parser.parse_args()
+    return run_bound(args, {args.tests: Path(args.tests)},
+                     lambda inputs, receipt: _score(args, inputs, receipt))
+
+
+def _score(args, inputs, receipt) -> int:
+    args.scorer_input_receipt = receipt
     _workdir_on_path()
 
-    tests_path = Path(args.tests)
+    tests_path = inputs[args.tests]
     if not tests_path.is_file():
         return _cannot_measure(args, f"no test payload at {tests_path}")
     tests_text = tests_path.read_text(encoding="utf-8")

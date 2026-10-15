@@ -3674,3 +3674,34 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Resource state: assessment and source-level binding work plus tests only - no benchmark scoring
   run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical
   runs, frozen receipts and archives were untouched.
+
+
+## 2026-10-15 Native scorer input inventory binding - w-tbi2
+
+Continued the merged w-tbi report and raw/source evidence, correcting the proposed
+remaining set: livecodebench is native/unbound; chessbench_puzzles is already one
+of the 12 shared QA routes. Added task-scoped consumed-input bindings to alfworld,
+bird_minidev, ds1000, jericho, livecodebench, scienceworld and spreadsheetbench.
+All seven now record per-file/canonical inventory SHA-256 and consume authenticated
+private copies, with independent selected-task and receipt checks at dispatch.
+DS1000 restores trusted context and binds its four offline CSVs; BIRD covers SQL
+and DB; Jericho covers config/seed and ROM; ScienceWorld explicitly loads its bound
+world JAR; SpreadsheetBench covers metadata and golden workbook. QA binding is
+preserved and scoring predicates unchanged.
+
+Coverage is 19/19 surveyed actor-workdir command routes, 0/19 remaining. All seven
+foreign-task cases and all 15 component substitutions are refused before scoring,
+with exit 3/no reward and native score=null/unmeasured. The same final native tests
+change from 99 failed/7 passed to 106 passed; three real-loader path controls change
+from three failures to three passes. The 253-test regression set includes all 156
+existing QA binding controls. Engine/query/program/comparator boundaries are spies;
+these are input-consistency controls, not benchmark measurements. Details, actual
+IDs/digests, source lines and raw outputs: reports/w-tbi2-receipts.md and
+reports/w-tbi2-validation.txt.
+
+Updated only scorer-offline-closure observed/evidence at this input-binding scope.
+S1 remains PARTIAL on complete execution-selected interpreter/import/native/runtime
+custody; S3/S4/S5/S6 remain PARTIAL. No shared or dataset blocker closes, no status,
+next_action, history, gate or production authorization changes. No benchmark run,
+model/GPU/endpoint/container call; runs/ and frozen receipts remain untouched.
+Work was committed only in registered isolated worktrees, never main.

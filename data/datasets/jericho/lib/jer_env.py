@@ -46,14 +46,15 @@ def make_env(rom: Path, *, seed: int):
     return env
 
 
-def load_game(workdir: Path, *, rom_dir: Path | None = None):
+def load_game(workdir: Path, *, rom_dir: Path | None = None,
+              config_path: Path | None = None, rom_path: Path | None = None):
     """Build and reset the game named by `jer_game.json`. Returns the live env.
 
     `rom_dir` defaults to the workdir, which is where `VERIFY.inputs` puts the ROM for the
     check; the CLI's workdir has it too, because `SETUP` ships it there as well.
     """
-    spec = json.loads((workdir / GAME_FILENAME).read_text())
-    rom = (rom_dir or workdir) / spec["rom"]
+    spec = json.loads((config_path or workdir / GAME_FILENAME).read_text())
+    rom = rom_path or (rom_dir or workdir) / spec["rom"]
     if not rom.is_file():
         raise FileNotFoundError(f"no ROM at {rom}")
     return make_env(rom, seed=int(spec.get("seed") or 0))

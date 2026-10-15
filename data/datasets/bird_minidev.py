@@ -51,6 +51,8 @@ the run says so rather than implying the pool is the whole benchmark.
 """
 from __future__ import annotations
 
+from data.scaffolds.scorer_input import bind as bind_scorer_input
+
 import csv
 import io
 import json
@@ -250,7 +252,7 @@ def _setup(record: dict) -> dict:
 
 def _verify(record: dict) -> dict:
     database = DBS / record["db_id"] / f"{record['db_id']}.sqlite"
-    return {
+    spec = {
         "kind": "command",
         "argv": ["python3", "check.py", "--db", "database.sqlite", "--gold", "gold.sql",
                  "--pred", "answer.sql", "--reward-file", "verifier/reward.txt",
@@ -264,6 +266,7 @@ def _verify(record: dict) -> dict:
             {"path": "database.sqlite", "from": str(database)},
         ],
     }
+    return bind_scorer_input(spec, record["task_id"], ["gold.sql", "database.sqlite"])
 
 
 def setup_map() -> dict:
