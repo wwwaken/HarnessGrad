@@ -1,0 +1,127 @@
+{
+  "observed_at": "2026-10-15T05:56:58.634133+00:00",
+  "processes": [
+    {
+      "pid": 2163303,
+      "comm": "docker",
+      "argv": [
+        "docker",
+        "events",
+        "--since",
+        "2026-10-15T05:51:17.733431+00:00",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+        "--format",
+        "{{json .}}",
+        ""
+      ],
+      "matching_owned_run_ids": [
+        "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd"
+      ]
+    },
+    {
+      "pid": 2163305,
+      "comm": "python3",
+      "argv": [
+        "python3",
+        "driver.py",
+        "--harness",
+        "loop",
+        "--dataset",
+        "terminal_bench",
+        "--sampling",
+        "diagnostic",
+        "--policy-evidence",
+        "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence/policy-input.json",
+        "--authorize-unobserved-diagnostic",
+        "Operator requests broader bounded Terminal-Bench live-local verifier coverage. Initial five attempts are retained including bootstrap/interruption failures; this is one of two separately preselected additional cached pip-bootstrap tasks, bringing unique selected surfaces to seven within the nine-task bound. Pip dependency bootstrap was verified end to end before these fresh trials. No old task or run ID is resumed or replaced. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+        "--rounds",
+        "0",
+        "--trials",
+        "1",
+        "--jobs",
+        "1",
+        "--side",
+        "train",
+        "--improver",
+        "none",
+        "--run-id",
+        "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+        "--runs-root",
+        "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501",
+        "--work-root",
+        "/tmp/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-work",
+        ""
+      ],
+      "matching_owned_run_ids": [
+        "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd"
+      ]
+    },
+    {
+      "pid": 2166237,
+      "comm": "docker",
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app",
+        "-e",
+        "HARNESSGRAD_STATE=/tmp/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-work/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd/workspace/.state",
+        "-e",
+        "HG_AGENT_API_KEY=local",
+        "-e",
+        "HG_AGENT_BACKEND=openai",
+        "-e",
+        "HG_AGENT_BASE_URL=http://172.19.0.1:43077/v1",
+        "-e",
+        "HG_AGENT_DEADLINE_S=900",
+        "-e",
+        "HG_AGENT_MODEL=qwen3.5-9b-local",
+        "-e",
+        "HOME=/app/.harnessgrad-home",
+        "-e",
+        "LANG=zh_CN.UTF-8",
+        "-e",
+        "LC_ALL=C.UTF-8",
+        "-e",
+        "PYTHONPATH=/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+        "-e",
+        "TMPDIR=/app/.harnessgrad-home/tmp",
+        "-e",
+        "XDG_CACHE_HOME=/app/.harnessgrad-home/.cache",
+        "-e",
+        "XDG_CONFIG_HOME=/app/.harnessgrad-home/.config",
+        "-e",
+        "XDG_DATA_HOME=/app/.harnessgrad-home/.local/share",
+        "hg-w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-kv-store-grpc",
+        "/usr/local/bin/python3",
+        "/tmp/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-work/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd/workspace/agent.py",
+        "--task",
+        "/app/task.json",
+        "--workdir",
+        "/app",
+        ""
+      ],
+      "matching_owned_run_ids": [
+        "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd"
+      ]
+    },
+    {
+      "pid": 2166274,
+      "comm": "python3",
+      "argv": [
+        "/usr/local/bin/python3",
+        "/tmp/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-work/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd/workspace/agent.py",
+        "--task",
+        "/app/task.json",
+        "--workdir",
+        "/app",
+        ""
+      ],
+      "matching_owned_run_ids": [
+        "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd"
+      ]
+    }
+  ],
+  "note": "Only host processes whose argv names an actually launched owned run; no operator process is modified."
+}

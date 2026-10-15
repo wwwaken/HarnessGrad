@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

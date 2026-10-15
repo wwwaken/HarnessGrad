@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--network",
+    "none",
+    "--read-only",
+    "--cpus",
+    "1",
+    "--memory",
+    "2048m",
+    "--pids-limit",
+    "128",
+    "--entrypoint",
+    "/bin/sh",
+    "sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1",
+    "-ec",
+    "command -v bash; command -v apt-get; command -v sh; command -v gcc; test -s /app/decomp.c; test -x /app/decomp; test -s /app/data.txt"
+  ],
+  "returncode": 0,
+  "stdout": "/usr/bin/bash\n/usr/bin/apt-get\n/usr/bin/sh\n/usr/bin/gcc\n",
+  "stderr": ""
+}

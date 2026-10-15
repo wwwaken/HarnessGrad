@@ -1,0 +1,22 @@
+{
+  "prior_unique_measured": [
+    "cancel-async-tasks",
+    "db-wal-recovery",
+    "extract-elf",
+    "fix-git",
+    "git-leak-recovery",
+    "openssl-selfsigned-cert",
+    "polyglot-c-py",
+    "regex-log",
+    "sanitize-git-repo"
+  ],
+  "prior_measured_count": 9,
+  "cached_not_previously_measured": 77,
+  "metadata_not_previously_measured": 32,
+  "new_selected": 5,
+  "cached_new_outside_batch": 72,
+  "metadata_new_outside_batch": 27,
+  "prerequisite_verified_not_selected": 0,
+  "remaining_certified_queue_after_fixed_batch": 0,
+  "note": "Cache/metadata availability is not runtime readiness. Only the fixed selected tasks have fresh tool/input probes; runtime readiness includes real verifier bootstrap, observed during execution."
+}

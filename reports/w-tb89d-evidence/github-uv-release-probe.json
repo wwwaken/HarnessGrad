@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "curl",
+    "--max-time",
+    "45",
+    "-x",
+    "http://172.17.0.1:17890",
+    "-LsS",
+    "-o",
+    "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/bootstrap-host-followup/uv-release.tar.gz",
+    "-w",
+    "%{http_code}",
+    "https://github.com/astral-sh/uv/releases/download/0.9.5/uv-x86_64-unknown-linux-gnu.tar.gz"
+  ],
+  "returncode": 35,
+  "stdout": "000",
+  "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to release-assets.githubusercontent.com:443 \n"
+}

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

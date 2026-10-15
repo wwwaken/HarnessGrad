@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "curl",
+    "--max-time",
+    "25",
+    "-x",
+    "http://172.17.0.1:17890",
+    "-LsS",
+    "-o",
+    "/dev/null",
+    "-w",
+    "%{http_code}",
+    "https://astral.sh/uv/0.9.5/install.sh"
+  ],
+  "returncode": 28,
+  "stdout": "000",
+  "stderr": "curl: (28) Connection timed out after 15016 milliseconds\n"
+}

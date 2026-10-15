@@ -1,0 +1,566 @@
+w-tb89d validation — 2026-10-15T06:13:46.581713+00:00
+Exact commands and raw outputs. No gate/runtime/task/test changes.
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+[exit 0]
+
+$ python3 reports/w-tb89d-evidence/verify.py
+{
+  "verified": true,
+  "raw_execution": {
+    "selected_tasks": 7,
+    "expected_trials": 7,
+    "measured_tasks": 1,
+    "measured_trials": 1,
+    "invalid_tasks": 6,
+    "unmeasured_tasks": 0
+  },
+  "publication": {
+    "eligible_tasks": 6,
+    "expected_trials": 6,
+    "invalid_tasks": 5,
+    "invalid_trials": 5,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 6,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "retained_artifacts": 3718,
+  "serial": true,
+  "foreign_sampled_drivers": 3,
+  "all_foreign_drivers_accounted": true,
+  "operator_sharing_permitted": true,
+  "cumulative_raw_tasks": 10,
+  "denominator": 89,
+  "registry_additive_only": true
+}
+
+[exit 0]
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-tb89d-final
+........................................................                 [100%]
+56 passed in 6.74s
+
+[exit 0]
+
+$ git diff --check
+
+[exit 0]
+
+Generated SHA256SUMS from 594 existing review/report files.
+
+$ sha256sum --check --quiet reports/w-tb89d-evidence/SHA256SUMS
+
+[exit 0]
+
+$ git diff --stat
+ docs/adapter-integration-journal.md | 10 ++++++++++
+ docs/dataset-blockers.json          | 12 +++++++++++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+[exit 0]
+
+
+Final diff, packet and owned-resource review — 2026-10-15T06:14:39.310403+00:00
+{
+  "branch": "wg-tb89d",
+  "changed_tracked_files": [
+    "docs/adapter-integration-journal.md",
+    "docs/dataset-blockers.json"
+  ],
+  "new_files": 596,
+  "packet_credential_shaped_matches": [],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "returncode": 0,
+      "stdout": "wg-tb89d\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only"
+      ],
+      "returncode": 0,
+      "stdout": "docs/adapter-integration-journal.md\ndocs/dataset-blockers.json\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-files",
+        "--others",
+        "--exclude-standard"
+      ],
+      "returncode": 0,
+      "stdout": "reports/w-tb89d-evidence/SHA256SUMS\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/command.txt\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-exact-after-00.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-exact-after-01.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-first-9a200f65b7a5b3c9ff7ed22a9dea542fe231fbb83a90b3205a12ba0d769ea437.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-first-9a9f9528993e6c8f298c39fc47b69335957bc79316b40e6a8844cf3754d5067e.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-inspect-0002.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-inspect-0018.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/container-inspect-0019.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/containers-after.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/containers-before.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/disk-after.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/driver-process.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/endpoint-models.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/harness-files.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/identity.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/image-inspect.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/launch-input.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/launch-manifest.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/launch-observation.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/native-diagnostic_execution.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/native-diagnostic_receipt.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/native-progress.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/native-run_meta.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/native-staged_plan.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/native-trace-fix-code-vulnerability.trial1.jsonl\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/networks-after.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/observer-errors.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/platform-source-files.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/policy-input.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/processes-preflight.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/proxy-astral.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/result.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/snapshot-exact-after-00.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/snapshot-inspect-0019.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/snapshots-after.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/source-files.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/split.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/verifier-ctrf.json-ee4f2f22925f556a886409d1e5110b5dbff7d4a3529ee3a980a556010dd70ea8\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/verifier-file-observations.json\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa\nreports/w-tb89d-evidence/attempts/fix-code-vulnerability/volumes-after.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/command.txt\nreports/w-tb89d-evidence/attempts/gcode-to-text/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-exact-after-00.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-exact-after-01.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-first-29d2c0e2b7e8d6c81ad63606cb881f3b7fc4c9d2df58cc7eb40bf083b6f464fc.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-first-341e88ef6c4bc9cf614b30daa33a2d9cbca18040778b66e1adc5d3aca41ac811.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-inspect-0002.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-inspect-0006.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/container-inspect-0014.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/containers-after.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/containers-before.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/disk-after.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/gcode-to-text/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/gcode-to-text/driver-process.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/gcode-to-text/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/gcode-to-text/endpoint-models.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/harness-files.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/identity.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/image-inspect.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/launch-input.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/launch-manifest.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/launch-observation.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/native-diagnostic_execution.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/native-diagnostic_receipt.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/native-progress.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/native-run_meta.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/native-staged_plan.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/native-trace-gcode-to-text.invalid.jsonl\nreports/w-tb89d-evidence/attempts/gcode-to-text/networks-after.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/observer-errors.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/operator-run-meta.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/platform-source-files.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/policy-input.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/processes-preflight.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/proxy-astral.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/result.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/shared-endpoint-observation.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/snapshot-exact-after-00.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/snapshot-inspect-0014.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/snapshots-after.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/source-files.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/split.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/verifier-file-observations.json\nreports/w-tb89d-evidence/attempts/gcode-to-text/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa\nreports/w-tb89d-evidence/attempts/gcode-to-text/volumes-after.json\nreports/w-tb89d-evidence/attempts/git-multibranch/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/git-multibranch/command.txt\nreports/w-tb89d-evidence/attempts/git-multibranch/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-exact-after-00.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-exact-after-01.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-first-67ff2128dc7a74bff84bdb813a1b61fbc0a987f6f7d912bbabcde5851d140188.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-first-c0adbaf66811c76019b16abdab21bc8f81f7dae86bc58afec411d5a4f6a715bb.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-inspect-0002.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-inspect-0015.json\nreports/w-tb89d-evidence/attempts/git-multibranch/container-inspect-0026.json\nreports/w-tb89d-evidence/attempts/git-multibranch/containers-after.json\nreports/w-tb89d-evidence/attempts/git-multibranch/containers-before.json\nreports/w-tb89d-evidence/attempts/git-multibranch/disk-after.json\nreports/w-tb89d-evidence/attempts/git-multibranch/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/git-multibranch/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/git-multibranch/driver-process.json\nreports/w-tb89d-evidence/attempts/git-multibranch/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/git-multibranch/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/git-multibranch/endpoint-models.json\nreports/w-tb89d-evidence/attempts/git-multibranch/harness-files.json\nreports/w-tb89d-evidence/attempts/git-multibranch/identity.json\nreports/w-tb89d-evidence/attempts/git-multibranch/image-inspect.json\nreports/w-tb89d-evidence/attempts/git-multibranch/launch-input.json\nreports/w-tb89d-evidence/attempts/git-multibranch/launch-manifest.json\nreports/w-tb89d-evidence/attempts/git-multibranch/launch-observation.json\nreports/w-tb89d-evidence/attempts/git-multibranch/native-diagnostic_execution.json\nreports/w-tb89d-evidence/attempts/git-multibranch/native-diagnostic_receipt.json\nreports/w-tb89d-evidence/attempts/git-multibranch/native-progress.json\nreports/w-tb89d-evidence/attempts/git-multibranch/native-run_meta.json\nreports/w-tb89d-evidence/attempts/git-multibranch/native-staged_plan.json\nreports/w-tb89d-evidence/attempts/git-multibranch/native-trace-git-multibranch.invalid.jsonl\nreports/w-tb89d-evidence/attempts/git-multibranch/networks-after.json\nreports/w-tb89d-evidence/attempts/git-multibranch/observer-errors.json\nreports/w-tb89d-evidence/attempts/git-multibranch/operator-run-meta.json\nreports/w-tb89d-evidence/attempts/git-multibranch/platform-source-files.json\nreports/w-tb89d-evidence/attempts/git-multibranch/policy-input.json\nreports/w-tb89d-evidence/attempts/git-multibranch/processes-preflight.json\nreports/w-tb89d-evidence/attempts/git-multibranch/proxy-astral.json\nreports/w-tb89d-evidence/attempts/git-multibranch/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/git-multibranch/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/git-multibranch/result.json\nreports/w-tb89d-evidence/attempts/git-multibranch/shared-endpoint-observation.json\nreports/w-tb89d-evidence/attempts/git-multibranch/snapshot-exact-after-00.json\nreports/w-tb89d-evidence/attempts/git-multibranch/snapshot-inspect-0026.json\nreports/w-tb89d-evidence/attempts/git-multibranch/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/git-multibranch/snapshots-after.json\nreports/w-tb89d-evidence/attempts/git-multibranch/source-files.json\nreports/w-tb89d-evidence/attempts/git-multibranch/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/git-multibranch/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/git-multibranch/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/git-multibranch/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/git-multibranch/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/git-multibranch/split.json\nreports/w-tb89d-evidence/attempts/git-multibranch/verifier-file-observations.json\nreports/w-tb89d-evidence/attempts/git-multibranch/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa\nreports/w-tb89d-evidence/attempts/git-multibranch/volumes-after.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/command.txt\nreports/w-tb89d-evidence/attempts/kv-store-grpc/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-exact-after-00.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-exact-after-01.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-first-80bdfde30037c66b989bfebc40ba2a4c184f960389e01ab204f8793ceecc3403.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-first-bf76f8f90f16abc845238dcc953b9c19e53255915901c5eb8fe15da2faa3472b.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-inspect-0002.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-inspect-0216.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/container-inspect-0218.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/containers-after.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/containers-before.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/disk-after.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/kv-store-grpc/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/kv-store-grpc/driver-process.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/kv-store-grpc/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/kv-store-grpc/endpoint-models.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/harness-files.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/identity.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/image-inspect.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/launch-input.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/launch-manifest.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/launch-observation.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/native-diagnostic_execution.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/native-diagnostic_receipt.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/native-progress.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/native-run_meta.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/native-staged_plan.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/native-trace-kv-store-grpc.trial1.jsonl\nreports/w-tb89d-evidence/attempts/kv-store-grpc/networks-after.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/observer-errors.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/operator-run-meta.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/platform-source-files.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/policy-input.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/process-tree-060027.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/processes-preflight.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/proxy-astral.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/result.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/shared-endpoint-observation.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/snapshot-exact-after-00.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/snapshot-inspect-0218.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/snapshots-after.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/source-files.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/split.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/verifier-ctrf.json-e958bc6401f322c1de9c370de707c452613dc5ee398202b50920231d287bea47\nreports/w-tb89d-evidence/attempts/kv-store-grpc/verifier-file-observations.json\nreports/w-tb89d-evidence/attempts/kv-store-grpc/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa\nreports/w-tb89d-evidence/attempts/kv-store-grpc/volumes-after.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/command.txt\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-exact-after-00.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-exact-after-01.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-first-9b802c896971185046507ca44a74900a747bbcbc824c5cab3e71ece8230b6b19.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-first-e25a49e5e049cc752be0d5c3c4a07e308ca59809fa1c51a604b3daaf94dd4fa9.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-inspect-0002.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-inspect-0182.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/container-inspect-0188.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/containers-after.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/containers-before.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/disk-after.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/driver-process.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/endpoint-models.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/harness-files.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/identity.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/image-inspect.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/launch-input.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/launch-manifest.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/launch-observation.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/native-diagnostic_execution.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/native-diagnostic_receipt.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/native-progress.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/native-run_meta.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/native-staged_plan.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/native-trace-log-summary-date-ranges.invalid.jsonl\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/networks-after.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/observer-errors.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/operator-run-meta.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/platform-source-files.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/policy-input.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/processes-preflight.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/proxy-astral.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/result.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/shared-endpoint-observation.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/snapshot-exact-after-00.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/snapshot-inspect-0188.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/snapshots-after.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/source-files.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/split.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/verifier-file-observations.json\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa\nreports/w-tb89d-evidence/attempts/log-summary-date-ranges/volumes-after.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/command.txt\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/container-exact-after-0.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/container-first-feb2f3f1550938b9b67660e2ccd7807b3f2557a426abbd4b5567957c6f4b04aa.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/container-inspect-0003.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/container-inspect-0056.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/containers-after.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/containers-before.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/driver-process.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/endpoint-models.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/harness-files.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/identity.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/image-inspect.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/interrupted-disposition.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/launch-input.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/launch-manifest.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/native-trace-trace.jsonl\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/networks-after.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/operator-run-meta.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/platform-source-files.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/policy-input.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/processes-preflight.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/proxy-astral.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/result.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/shared-endpoint-observation.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/snapshots-after.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/source-files.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/split.json\nreports/w-tb89d-evidence/attempts/sqlite-db-truncate/volumes-after.json\nreports/w-tb89d-evidence/attempts/write-compressor/cleanup-observation-receipt.json\nreports/w-tb89d-evidence/attempts/write-compressor/command.txt\nreports/w-tb89d-evidence/attempts/write-compressor/concurrency-preflight.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-exact-after-00.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-exact-after-01.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-first-d9a5b1883d15db826b3efcb2884e6998617c06c27a0f53f77e37ce2409f0b9df.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-first-fdd687ebe64b1dd0671c08eb8675debf991fd512dfc292e5686d14563142e5c5.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-inspect-0003.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-inspect-0015.json\nreports/w-tb89d-evidence/attempts/write-compressor/container-inspect-0032.json\nreports/w-tb89d-evidence/attempts/write-compressor/containers-after.json\nreports/w-tb89d-evidence/attempts/write-compressor/containers-before.json\nreports/w-tb89d-evidence/attempts/write-compressor/disk-after.json\nreports/w-tb89d-evidence/attempts/write-compressor/docker-events.jsonl\nreports/w-tb89d-evidence/attempts/write-compressor/docker-events.stderr.txt\nreports/w-tb89d-evidence/attempts/write-compressor/driver-process.json\nreports/w-tb89d-evidence/attempts/write-compressor/driver.stderr.txt\nreports/w-tb89d-evidence/attempts/write-compressor/driver.stdout.txt\nreports/w-tb89d-evidence/attempts/write-compressor/endpoint-models.json\nreports/w-tb89d-evidence/attempts/write-compressor/harness-files.json\nreports/w-tb89d-evidence/attempts/write-compressor/identity.json\nreports/w-tb89d-evidence/attempts/write-compressor/image-inspect.json\nreports/w-tb89d-evidence/attempts/write-compressor/launch-input.json\nreports/w-tb89d-evidence/attempts/write-compressor/launch-manifest.json\nreports/w-tb89d-evidence/attempts/write-compressor/launch-observation.json\nreports/w-tb89d-evidence/attempts/write-compressor/native-diagnostic_execution.json\nreports/w-tb89d-evidence/attempts/write-compressor/native-diagnostic_receipt.json\nreports/w-tb89d-evidence/attempts/write-compressor/native-progress.json\nreports/w-tb89d-evidence/attempts/write-compressor/native-run_meta.json\nreports/w-tb89d-evidence/attempts/write-compressor/native-staged_plan.json\nreports/w-tb89d-evidence/attempts/write-compressor/native-trace-write-compressor.invalid.jsonl\nreports/w-tb89d-evidence/attempts/write-compressor/networks-after.json\nreports/w-tb89d-evidence/attempts/write-compressor/observer-errors.json\nreports/w-tb89d-evidence/attempts/write-compressor/operator-run-meta.json\nreports/w-tb89d-evidence/attempts/write-compressor/platform-source-files.json\nreports/w-tb89d-evidence/attempts/write-compressor/policy-input.json\nreports/w-tb89d-evidence/attempts/write-compressor/processes-preflight.json\nreports/w-tb89d-evidence/attempts/write-compressor/proxy-astral.json\nreports/w-tb89d-evidence/attempts/write-compressor/proxy-pypi.json\nreports/w-tb89d-evidence/attempts/write-compressor/resource-observation-receipt.json\nreports/w-tb89d-evidence/attempts/write-compressor/result.json\nreports/w-tb89d-evidence/attempts/write-compressor/shared-endpoint-observation.json\nreports/w-tb89d-evidence/attempts/write-compressor/snapshot-exact-after-00.json\nreports/w-tb89d-evidence/attempts/write-compressor/snapshot-inspect-0032.json\nreports/w-tb89d-evidence/attempts/write-compressor/snapshot-observation-receipt.json\nreports/w-tb89d-evidence/attempts/write-compressor/snapshots-after.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-files.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-Dockerfile.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-instruction.md.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-task.toml.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-tests/original-data.txt.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-tests/original-decomp.c.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-tests/test.sh.json\nreports/w-tb89d-evidence/attempts/write-compressor/source-preimages/selected-tests/test_outputs.py.json\nreports/w-tb89d-evidence/attempts/write-compressor/split.json\nreports/w-tb89d-evidence/attempts/write-compressor/verifier-file-observations.json\nreports/w-tb89d-evidence/attempts/write-compressor/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa\nreports/w-tb89d-evidence/attempts/write-compressor/volumes-after.json\nreports/w-tb89d-evidence/audit_concurrency.py\nreports/w-tb89d-evidence/availability-all.json\nreports/w-tb89d-evidence/availability.json\nreports/w-tb89d-evidence/availability.py\nreports/w-tb89d-evidence/availability.stderr.txt\nreports/w-tb89d-evidence/availability.stdout.txt\nreports/w-tb89d-evidence/batch-supplement.json\nreports/w-tb89d-evidence/batch.json\nreports/w-tb89d-evidence/blocker-check-after-edit.json\nreports/w-tb89d-evidence/blocker-check-before.json\nreports/w-tb89d-evidence/bootstrap-prerequisite-result.json\nreports/w-tb89d-evidence/bootstrap-probe.stderr.txt\nreports/w-tb89d-evidence/bootstrap-probe.stdout.txt\nreports/w-tb89d-evidence/cleanup_interrupted.py\nreports/w-tb89d-evidence/collect-network-bound.stderr.txt\nreports/w-tb89d-evidence/collect-network-bound.stdout.txt\nreports/w-tb89d-evidence/collect.py\nreports/w-tb89d-evidence/collect.stderr.txt\nreports/w-tb89d-evidence/collect.stdout.txt\nreports/w-tb89d-evidence/combine-selection.stderr.txt\nreports/w-tb89d-evidence/combine-selection.stdout.txt\nreports/w-tb89d-evidence/combine_selection.py\nreports/w-tb89d-evidence/completed-receipt-review.json\nreports/w-tb89d-evidence/concurrency-audit-complete.stderr.txt\nreports/w-tb89d-evidence/concurrency-audit-complete.stdout.txt\nreports/w-tb89d-evidence/concurrency-audit-corrected.stderr.txt\nreports/w-tb89d-evidence/concurrency-audit-corrected.stdout.txt\nreports/w-tb89d-evidence/concurrency-audit-final.stderr.txt\nreports/w-tb89d-evidence/concurrency-audit-final.stdout.txt\nreports/w-tb89d-evidence/concurrency-audit.json\nreports/w-tb89d-evidence/concurrency-audit.stderr.txt\nreports/w-tb89d-evidence/concurrency-audit.stdout.txt\nreports/w-tb89d-evidence/dataset-commit.json\nreports/w-tb89d-evidence/dataset-status.json\nreports/w-tb89d-evidence/dependency-bootstrap-fix-code-vulnerability-second.json\nreports/w-tb89d-evidence/dependency-bootstrap-fix-code-vulnerability.json\nreports/w-tb89d-evidence/dependency-bootstrap-kv-store-grpc.json\nreports/w-tb89d-evidence/disk-before.json\nreports/w-tb89d-evidence/early-receipt-review.json\nreports/w-tb89d-evidence/early-results-second-review.json\nreports/w-tb89d-evidence/endpoint-completion.json\nreports/w-tb89d-evidence/endpoint-models.json\nreports/w-tb89d-evidence/github-uv-release-probe.json\nreports/w-tb89d-evidence/image-adaptive-rejection-sampler.json\nreports/w-tb89d-evidence/image-bn-fit-modify.json\nreports/w-tb89d-evidence/image-break-filter-js-from-html.json\nreports/w-tb89d-evidence/image-build-cython-ext.json\nreports/w-tb89d-evidence/image-build-pmars.json\nreports/w-tb89d-evidence/image-build-pov-ray.json\nreports/w-tb89d-evidence/image-caffe-cifar-10.json\nreports/w-tb89d-evidence/image-cancel-async-tasks.json\nreports/w-tb89d-evidence/image-chess-best-move.json\nreports/w-tb89d-evidence/image-circuit-fibsqrt.json\nreports/w-tb89d-evidence/image-cobol-modernization.json\nreports/w-tb89d-evidence/image-code-from-image.json\nreports/w-tb89d-evidence/image-compile-compcert.json\nreports/w-tb89d-evidence/image-configure-git-webserver.json\nreports/w-tb89d-evidence/image-constraints-scheduling.json\nreports/w-tb89d-evidence/image-count-dataset-tokens.json\nreports/w-tb89d-evidence/image-crack-7z-hash.json\nreports/w-tb89d-evidence/image-custom-memory-heap-crash.json\nreports/w-tb89d-evidence/image-db-wal-recovery.json\nreports/w-tb89d-evidence/image-distribution-search.json\nreports/w-tb89d-evidence/image-dna-assembly.json\nreports/w-tb89d-evidence/image-dna-insert.json\nreports/w-tb89d-evidence/image-extract-elf.json\nreports/w-tb89d-evidence/image-extract-moves-from-video.json\nreports/w-tb89d-evidence/image-feal-differential-cryptanalysis.json\nreports/w-tb89d-evidence/image-feal-linear-cryptanalysis.json\nreports/w-tb89d-evidence/image-filter-js-from-html.json\nreports/w-tb89d-evidence/image-financial-document-processor.json\nreports/w-tb89d-evidence/image-fix-code-vulnerability.json\nreports/w-tb89d-evidence/image-fix-git.json\nreports/w-tb89d-evidence/image-fix-ocaml-gc.json\nreports/w-tb89d-evidence/image-gcode-to-text.json\nreports/w-tb89d-evidence/image-git-leak-recovery.json\nreports/w-tb89d-evidence/image-git-multibranch.json\nreports/w-tb89d-evidence/image-gpt2-codegolf.json\nreports/w-tb89d-evidence/image-headless-terminal.json\nreports/w-tb89d-evidence/image-hf-model-inference.json\nreports/w-tb89d-evidence/image-install-windows-3.11.json\nreports/w-tb89d-evidence/image-kv-store-grpc.json\nreports/w-tb89d-evidence/image-large-scale-text-editing.json\nreports/w-tb89d-evidence/image-largest-eigenval.json\nreports/w-tb89d-evidence/image-llm-inference-batching-scheduler.json\nreports/w-tb89d-evidence/image-log-summary-date-ranges.json\nreports/w-tb89d-evidence/image-mailman.json\nreports/w-tb89d-evidence/image-make-doom-for-mips.json\nreports/w-tb89d-evidence/image-make-mips-interpreter.json\nreports/w-tb89d-evidence/image-mcmc-sampling-stan.json\nreports/w-tb89d-evidence/image-merge-diff-arc-agi-task.json\nreports/w-tb89d-evidence/image-model-extraction-relu-logits.json\nreports/w-tb89d-evidence/image-modernize-scientific-stack.json\nreports/w-tb89d-evidence/image-mteb-leaderboard.json\nreports/w-tb89d-evidence/image-mteb-retrieve.json\nreports/w-tb89d-evidence/image-multi-source-data-merger.json\nreports/w-tb89d-evidence/image-nginx-request-logging.json\nreports/w-tb89d-evidence/image-openssl-selfsigned-cert.json\nreports/w-tb89d-evidence/image-overfull-hbox.json\nreports/w-tb89d-evidence/image-password-recovery.json\nreports/w-tb89d-evidence/image-path-tracing-reverse.json\nreports/w-tb89d-evidence/image-path-tracing.json\nreports/w-tb89d-evidence/image-polyglot-c-py.json\nreports/w-tb89d-evidence/image-polyglot-rust-c.json\nreports/w-tb89d-evidence/image-portfolio-optimization.json\nreports/w-tb89d-evidence/image-protein-assembly.json\nreports/w-tb89d-evidence/image-prove-plus-comm.json\nreports/w-tb89d-evidence/image-pypi-server.json\nreports/w-tb89d-evidence/image-pytorch-model-cli.json\nreports/w-tb89d-evidence/image-pytorch-model-recovery.json\nreports/w-tb89d-evidence/image-qemu-alpine-ssh.json\nreports/w-tb89d-evidence/image-qemu-startup.json\nreports/w-tb89d-evidence/image-query-optimize.json\nreports/w-tb89d-evidence/image-raman-fitting.json\nreports/w-tb89d-evidence/image-regex-chess.json\nreports/w-tb89d-evidence/image-regex-log.json\nreports/w-tb89d-evidence/image-reshard-c4-data.json\nreports/w-tb89d-evidence/image-rstan-to-pystan.json\nreports/w-tb89d-evidence/image-sam-cell-seg.json\nreports/w-tb89d-evidence/image-sanitize-git-repo.json\nreports/w-tb89d-evidence/image-schemelike-metacircular-eval.json\nreports/w-tb89d-evidence/image-sparql-university.json\nreports/w-tb89d-evidence/image-sqlite-db-truncate.json\nreports/w-tb89d-evidence/image-sqlite-with-gcov.json\nreports/w-tb89d-evidence/image-torch-pipeline-parallelism.json\nreports/w-tb89d-evidence/image-torch-tensor-parallelism.json\nreports/w-tb89d-evidence/image-train-fasttext.json\nreports/w-tb89d-evidence/image-tune-mjcf.json\nreports/w-tb89d-evidence/image-video-processing.json\nreports/w-tb89d-evidence/image-vulnerable-secret.json\nreports/w-tb89d-evidence/image-winning-avg-corewars.json\nreports/w-tb89d-evidence/image-write-compressor.json\nreports/w-tb89d-evidence/interrupted-cleanup.stderr.txt\nreports/w-tb89d-evidence/interrupted-cleanup.stdout.txt\nreports/w-tb89d-evidence/interrupted-launcher-observation.json\nreports/w-tb89d-evidence/interrupted-run-disposition.json\nreports/w-tb89d-evidence/inventory-task-metadata-raw.json\nreports/w-tb89d-evidence/inventory.json\nreports/w-tb89d-evidence/inventory.py\nreports/w-tb89d-evidence/inventory.stderr.txt\nreports/w-tb89d-evidence/inventory.stdout.txt\nreports/w-tb89d-evidence/launch-first-preflight.py\nreports/w-tb89d-evidence/launch-preflight-stopped.stderr.txt\nreports/w-tb89d-evidence/launch-preflight-stopped.stdout.txt\nreports/w-tb89d-evidence/launch-supplement-process.json\nreports/w-tb89d-evidence/launch-supplement.stderr.txt\nreports/w-tb89d-evidence/launch-supplement.stdout.txt\nreports/w-tb89d-evidence/launch.py\nreports/w-tb89d-evidence/launch.stderr.txt\nreports/w-tb89d-evidence/launch.stdout.txt\nreports/w-tb89d-evidence/launch_supplement.py\nreports/w-tb89d-evidence/launcher-terminal-observation.json\nreports/w-tb89d-evidence/operator-routing-observation.json\nreports/w-tb89d-evidence/owned-host-process-observation.json\nreports/w-tb89d-evidence/platform-commit.json\nreports/w-tb89d-evidence/platform-status.json\nreports/w-tb89d-evidence/prepare-supplement-first.stderr.txt\nreports/w-tb89d-evidence/prepare-supplement-first.stdout.txt\nreports/w-tb89d-evidence/prepare-supplement-syntax-error-source.txt\nreports/w-tb89d-evidence/prepare-supplement-syntax.stderr.txt\nreports/w-tb89d-evidence/prepare-supplement-syntax.stdout.txt\nreports/w-tb89d-evidence/prepare-supplement.stderr.txt\nreports/w-tb89d-evidence/prepare-supplement.stdout.txt\nreports/w-tb89d-evidence/prepare.py\nreports/w-tb89d-evidence/prepare.stderr.txt\nreports/w-tb89d-evidence/prepare.stdout.txt\nreports/w-tb89d-evidence/prepare_supplement-first.py\nreports/w-tb89d-evidence/prepare_supplement.py\nreports/w-tb89d-evidence/prerequisite-fix-code-vulnerability-second.json\nreports/w-tb89d-evidence/prerequisite-fix-code-vulnerability.json\nreports/w-tb89d-evidence/prerequisite-gcode-to-text.json\nreports/w-tb89d-evidence/prerequisite-git-multibranch.json\nreports/w-tb89d-evidence/prerequisite-kv-store-grpc.json\nreports/w-tb89d-evidence/prerequisite-log-summary-date-ranges.json\nreports/w-tb89d-evidence/prerequisite-sqlite-db-truncate.json\nreports/w-tb89d-evidence/prerequisite-write-compressor.json\nreports/w-tb89d-evidence/prior-openssl-result.json\nreports/w-tb89d-evidence/prior-tb89b-result.json\nreports/w-tb89d-evidence/prior-tb89c-result.json\nreports/w-tb89d-evidence/probe_bootstrap.py\nreports/w-tb89d-evidence/proxy-astral.json\nreports/w-tb89d-evidence/proxy-debian.json\nreports/w-tb89d-evidence/proxy-gitpython.json\nreports/w-tb89d-evidence/proxy-pypi.json\nreports/w-tb89d-evidence/proxy-ubuntu.json\nreports/w-tb89d-evidence/registry-observation.txt\nreports/w-tb89d-evidence/result.json\nreports/w-tb89d-evidence/review-batch.json\nreports/w-tb89d-evidence/review-packet-boundary-check.json\nreports/w-tb89d-evidence/run-artifact-inventory.json\nreports/w-tb89d-evidence/shell-syntax-fix-code-vulnerability-second.json\nreports/w-tb89d-evidence/shell-syntax-fix-code-vulnerability.json\nreports/w-tb89d-evidence/shell-syntax-gcode-to-text.json\nreports/w-tb89d-evidence/shell-syntax-git-multibranch.json\nreports/w-tb89d-evidence/shell-syntax-kv-store-grpc.json\nreports/w-tb89d-evidence/shell-syntax-log-summary-date-ranges.json\nreports/w-tb89d-evidence/shell-syntax-sqlite-db-truncate.json\nreports/w-tb89d-evidence/shell-syntax-write-compressor.json\nreports/w-tb89d-evidence/static-and-blocker-review.json\nreports/w-tb89d-evidence/update-registry.stderr.txt\nreports/w-tb89d-evidence/update-registry.stdout.txt\nreports/w-tb89d-evidence/update_registry.py\nreports/w-tb89d-evidence/validate.py\nreports/w-tb89d-evidence/verify-first.stderr.txt\nreports/w-tb89d-evidence/verify-first.stdout.txt\nreports/w-tb89d-evidence/verify-network-bound.stderr.txt\nreports/w-tb89d-evidence/verify-network-bound.stdout.txt\nreports/w-tb89d-evidence/verify.py\nreports/w-tb89d-evidence/worktree-registration.json\nreports/w-tb89d-evidence/write-report.stderr.txt\nreports/w-tb89d-evidence/write-report.stdout.txt\nreports/w-tb89d-evidence/write_report.py\nreports/w-tb89d-receipts.md\nreports/w-tb89d-validation.txt\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-write-compressor-20261015T053445Z-32417279*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-git-multibranch-20261015T053910Z-c59479ab*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd*",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/check_dataset_blockers.py"
+      ],
+      "returncode": 0,
+      "stdout": "{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 2, \"historical_records\": 11, \"production_authorized\": false}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}
+
+Staged new-source whitespace review — 2026-10-15T06:15:22.460564+00:00
+The first full staged diff check found trailing spaces in three new review helper sources. Removed only trailing spaces; exact executed sources remain intact in external launch/preparation artifacts. Regenerated review SHA256SUMS.
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+[exit 0]
+$ python3 reports/w-tb89d-evidence/verify.py
+{
+  "verified": true,
+  "raw_execution": {
+    "selected_tasks": 7,
+    "expected_trials": 7,
+    "measured_tasks": 1,
+    "measured_trials": 1,
+    "invalid_tasks": 6,
+    "unmeasured_tasks": 0
+  },
+  "publication": {
+    "eligible_tasks": 6,
+    "expected_trials": 6,
+    "invalid_tasks": 5,
+    "invalid_trials": 5,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 6,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "retained_artifacts": 3718,
+  "serial": true,
+  "foreign_sampled_drivers": 3,
+  "all_foreign_drivers_accounted": true,
+  "operator_sharing_permitted": true,
+  "cumulative_raw_tasks": 10,
+  "denominator": 89,
+  "registry_additive_only": true
+}
+
+[exit 0]
+$ sha256sum --check --quiet reports/w-tb89d-evidence/SHA256SUMS
+
+[exit 0]
+$ git diff 'HEAD^' --check
+
+[exit 0]

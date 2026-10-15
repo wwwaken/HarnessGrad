@@ -1,0 +1,121 @@
+{
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-tb89d-write-compressor-20261015T053445Z-32417279",
+    "trial_id": "write-compressor:1",
+    "manifest_sha256": "d22cf7468124c489036d35fe48de055e5e373a9b70c1f9aa59aed01aea5ba885"
+  },
+  "all_owned_objects_observed_absent": true,
+  "probes": [
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/containers-after.json",
+      "sha256": "233026e909bc7cc913f82038e3930154cd864751a49afcff225adbcc7ed996c0",
+      "bytes": 234,
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/networks-after.json",
+      "sha256": "f95a2f5b2a089234298e5e34d132ec3a29632aecd9eb2d91e6f8961d5eb307c1",
+      "bytes": 239,
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/volumes-after.json",
+      "sha256": "51130de31f13d88704fd9da6e001fe738b6e12eadd47edd0a5aa580c90cbdd7d",
+      "bytes": 238,
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-write-compressor-20261015T053445Z-32417279",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/snapshots-after.json",
+      "sha256": "b2e5d7ef6b779b01357423836fbb26d33c46443b310b64c8abb20099b51e525b",
+      "bytes": 257,
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-write-compressor-20261015T053445Z-32417279*",
+        "--no-trunc",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/container-exact-after-00.json",
+      "sha256": "f32b16f10698c1a3040f5ca4faf1f3066d83ed8284a36b5f375e240a4a23a25c",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "inspect",
+        "d9a5b1883d15db826b3efcb2884e6998617c06c27a0f53f77e37ce2409f0b9df"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: d9a5b1883d15db826b3efcb2884e6998617c06c27a0f53f77e37ce2409f0b9df\n"
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/container-exact-after-01.json",
+      "sha256": "56c5560cdc5d76b6ebb4c9f0770b8d05cf67e4769cdafd7fad1de817292aa3b7",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "inspect",
+        "fdd687ebe64b1dd0671c08eb8675debf991fd512dfc292e5686d14563142e5c5"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: fdd687ebe64b1dd0671c08eb8675debf991fd512dfc292e5686d14563142e5c5\n"
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/snapshot-exact-after-00.json",
+      "sha256": "a46d0417760a9c2e777a74e36af35a75af5e25d9e818e0f0913adcc9c2791cc8",
+      "bytes": 311,
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:d0489487ba8017889c7c366a0fccda9a25fc2408872846abd3d41c2067302122"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such image: sha256:d0489487ba8017889c7c366a0fccda9a25fc2408872846abd3d41c2067302122\n"
+    }
+  ],
+  "note": "Owned-object absence observations, not atomic lease release or production authorization. Work/native receipts retained."
+}

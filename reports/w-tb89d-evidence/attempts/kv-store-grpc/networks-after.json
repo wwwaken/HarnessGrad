@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

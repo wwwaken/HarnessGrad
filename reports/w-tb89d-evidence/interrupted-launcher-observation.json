@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "docker",
+    "ps",
+    "-a",
+    "--filter",
+    "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "{\"Command\":\"\\\"sleep infinity\\\"\",\"CreatedAt\":\"2026-10-15 13:41:51 +0800 CST\",\"ID\":\"feb2f3f15509\",\"Image\":\"aabac93c93bd\",\"Labels\":\"com.docker.compose.project=harbor-build-sqlite-db-truncate,com.docker.compose.service=task,com.docker.compose.version=2.35.1,harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2,harnessgrad.task=sqlite-db-truncate\",\"LocalVolumes\":\"0\",\"Mounts\":\"/home/xubuqian\u2026,/tmp/w-tb89d-s\u2026\",\"Names\":\"hg-w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-sqlite-db-truncate\",\"Networks\":\"bridge,hg-w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-sqlite-db-truncate\",\"Platform\":{\"architecture\":\"amd64\",\"os\":\"linux\"},\"Ports\":\"\",\"RunningFor\":\"4 minutes ago\",\"Size\":\"4.69MB (virtual 141MB)\",\"State\":\"running\",\"Status\":\"Up 4 minutes\"}\n",
+  "stderr": "",
+  "driver_pid": 2039464,
+  "driver_alive": false
+}

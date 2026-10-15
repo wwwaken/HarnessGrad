@@ -1,0 +1,94 @@
+{
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+    "trial_id": "sqlite-db-truncate:1",
+    "manifest_sha256": "76d0b7a0b86bc279f088556ae7aa8f2456307fca11ff1c715236cd773a26e085"
+  },
+  "all_owned_objects_observed_absent": true,
+  "probes": [
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/containers-after.json",
+      "sha256": "47a175a537e7ce9605b0a56f59bcbcbbd260ae068cd3f900e62f128d6ac565bb",
+      "bytes": 236,
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/networks-after.json",
+      "sha256": "6bbccdc57e2689a4448763bfe686bf1f87e255d9d87d5f0a5d32931df12d70c0",
+      "bytes": 241,
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/volumes-after.json",
+      "sha256": "b656b2c90f4bf776983f000600aee48111cf834cf611313132ca75ce33f0883a",
+      "bytes": 240,
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/snapshots-after.json",
+      "sha256": "ff5cadcdfb9b9e67f11b572655ffde410fab9502fcd8f203dd1dea93666a4f9f",
+      "bytes": 259,
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2*",
+        "--no-trunc",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/container-exact-after-0.json",
+      "sha256": "7d1ff23d510625effecfae67e4ec2659bb50909d837a06b2606949a9d01b6094",
+      "bytes": 160,
+      "argv": [
+        "docker",
+        "inspect",
+        "feb2f3f15509"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: feb2f3f15509\n"
+    }
+  ],
+  "note": "Owned-object absence observations, not atomic lease release or production authorization. Work/native receipts retained."
+}

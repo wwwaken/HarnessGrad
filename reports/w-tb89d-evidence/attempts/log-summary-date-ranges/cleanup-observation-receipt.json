@@ -1,0 +1,121 @@
+{
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+    "trial_id": "log-summary-date-ranges:1",
+    "manifest_sha256": "cc5c79922e03c487ef0fae03ff20d316733ac25fbb2c8f347de11e9005d067e5"
+  },
+  "all_owned_objects_observed_absent": true,
+  "probes": [
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/containers-after.json",
+      "sha256": "50c8dcafb9ddf76d9a6f548a7a3a9f2643426e92d8d761b0d89f7dc2ba5cad9d",
+      "bytes": 241,
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/networks-after.json",
+      "sha256": "f562a39fb125622c6d4c6e0e56b0a9acacd5c1908521ae836648a8d09b775eba",
+      "bytes": 246,
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/volumes-after.json",
+      "sha256": "eec2538c2c317763e4e276d328ecbd4a54003cd1ebd014d268174777872f28e7",
+      "bytes": 245,
+      "argv": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=harnessgrad.run=w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/snapshots-after.json",
+      "sha256": "683335530896c3a7c806649721790bb2a430960c7b3fdf0ca71b5c7c6655a287",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--filter",
+        "reference=hg-snapshot:*w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46*",
+        "--no-trunc",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/container-exact-after-00.json",
+      "sha256": "922e5402e6214a7c94f852251943af1dc79000d66e6e74d6a8b0c8b3cbddeef2",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "inspect",
+        "e25a49e5e049cc752be0d5c3c4a07e308ca59809fa1c51a604b3daaf94dd4fa9"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: e25a49e5e049cc752be0d5c3c4a07e308ca59809fa1c51a604b3daaf94dd4fa9\n"
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/container-exact-after-01.json",
+      "sha256": "05c48f6893b5aa48070d38a15e6285367b8c22e8df4d72cba039b447b0c9833a",
+      "bytes": 264,
+      "argv": [
+        "docker",
+        "inspect",
+        "9b802c896971185046507ca44a74900a747bbcbc824c5cab3e71ece8230b6b19"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 9b802c896971185046507ca44a74900a747bbcbc824c5cab3e71ece8230b6b19\n"
+    },
+    {
+      "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/snapshot-exact-after-00.json",
+      "sha256": "542bf4bd92eac261be3e7f9a2e15a9f46c4c96ef44cddd7db192885864983ce5",
+      "bytes": 311,
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:5a03ea02607549a36098ea0e4073dac14f85fc46eea08dcc925ed3a2b242092a"
+      ],
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such image: sha256:5a03ea02607549a36098ea0e4073dac14f85fc46eea08dcc925ed3a2b242092a\n"
+    }
+  ],
+  "note": "Owned-object absence observations, not atomic lease release or production authorization. Work/native receipts retained."
+}

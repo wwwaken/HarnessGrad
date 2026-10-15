@@ -1,0 +1,182 @@
+{
+ "run_id": "w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+ "mode": "unified",
+ "harness": "loop",
+ "dataset": "terminal_bench",
+ "sampling_policy": "diagnostic",
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+  "task_id": "gcode-to-text",
+  "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "diagnostic_policy": {
+  "receipt_schema": "harnessgrad.diagnostic-receipt.v2",
+  "eligible_tasks": 1,
+  "eligible_task_ids_sha256": "2750baa3a05fecc49b6f875bed1123f4957854fa9c7e27ce92309fb6411dae3c",
+  "selected_tasks": 1,
+  "selected_task_ids": [
+   "gcode-to-text"
+  ],
+  "expected_trials": 1,
+  "trials": 1,
+  "jobs": 1,
+  "evidence_sha256": "cbba2c28e5cb6c726d519a23ee8c11e762ed8ed19927e00d3d99f401c59fb34c",
+  "context": {
+   "dataset": "terminal_bench",
+   "side": "train",
+   "metric": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+   },
+   "hashes": {
+    "source": "36e263a7d8782dfb96f69fd20ea87c6245d44450e7d0a7e60838dbcb2957225d",
+    "split": "31085ee0d076e1d3a6adc6a13e7cb9fbfeaab6589d1df12e24a264a72cb9db12",
+    "manifest": "1f0558cc19c2fb5166d48b1184670cbbde81714e294fbdc5f68bbda1024ab668",
+    "model": null,
+    "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+   },
+   "endpoint": "http://127.0.0.1:8002/v1",
+   "limits": {
+    "resource": {
+     "cpus": 1,
+     "memory_mb": 2048,
+     "agent_timeout_s": 900,
+     "verify_timeout_s": 900
+    },
+    "budget": null
+   },
+   "gates": {
+    "status": "unknown",
+    "receipt_sha256": null,
+    "detail": "Operator authorized bounded live-local-model diagnostics; dataset enforcement remains unknown; no blocker closure or production authorization."
+   },
+   "comparability_notes": [
+    "One-task diagnostic selection, HG_TB_SPLIT=none; train CLI required by unchanged authorization guard. Five live-local-model diagnostics in serial, default harness steps, zero improvement rounds.",
+    "Local endpoint/model binding; no model weight digest or benchmark-performance comparability. Raw verifier evidence is separate from withheld policy publication.",
+    "Source and scorer hashes do not establish transitive offline dependency closure. Declared verifier bridge egress via documented free proxy is allowed; this is not a network-denied run."
+   ]
+  }
+ },
+ "workspace": "/tmp/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-work/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97/workspace",
+ "work_root": "/tmp/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-work",
+ "platform_root": "/tmp/hg-tb89d",
+ "sandbox": {
+  "requested": true,
+  "active": true,
+  "plan_version": 2,
+  "detail": "bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v2; /usr/bin/bwrap"
+ },
+ "config": {
+  "agent": {
+   "backend": "openai",
+   "model": "qwen3.5-9b-local",
+   "base_url": "http://127.0.0.1:8002/v1",
+   "api_key": {
+    "present": true
+   }
+  },
+  "method": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "timeout_s": 180,
+   "parse_retries": 2,
+   "history_rounds": 0,
+   "dump": null,
+   "source_limit": 200000,
+   "source_total": 60000,
+   "skill_limit": 24000
+  },
+  "improver": {
+   "selection": null,
+   "name": null,
+   "model": null,
+   "effort": null,
+   "args": "",
+   "skill": null,
+   "timeout_s": 1800,
+   "skip_tool_gate": null,
+   "codex_home_source": null,
+   "api_key": {
+    "present": false
+   }
+  },
+  "environment": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "seed": null
+  },
+  "sandbox": {
+   "bwrap": null
+  },
+  "egress": {
+   "proxy": "http://172.17.0.1:17890",
+   "bind": "172.17.0.1",
+   "port": 17890,
+   "upstream": "127.0.0.1:17891"
+  },
+  "runtime": {
+   "overlay_root": null,
+   "overlay_builder_image": null,
+   "registry_mirrors": null
+  },
+  "storage": {
+   "run_root": null,
+   "record_dir": "/recordings/orders",
+   "pull_timeout_s": 900
+  },
+  "run": {
+   "run_id": "w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+   "harness": "loop",
+   "dataset": "terminal_bench",
+   "side": "train",
+   "sampling": "diagnostic",
+   "rounds": 0,
+   "trials": 1,
+   "jobs": 1,
+   "sandbox": true,
+   "mode": "unified",
+   "seed": "6cd09d127b4554a5",
+   "runs_root": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1",
+   "work_root": "/tmp/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-work",
+   "method_entrypoint": null,
+   "budget_profile": null,
+   "budget_ledger": null,
+   "budget_arm": "agent",
+   "budget_profile_hash": null
+  }
+ },
+ "env": {
+  "kind": "exec",
+  "image_digest": "sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d",
+  "network": "bridge",
+  "placement": "inside",
+  "services": [],
+  "model_gateway": null,
+  "model": null,
+  "seed": null
+ },
+ "split_declared": false,
+ "oracle_source": "released",
+ "agent_model": "qwen3.5-9b-local",
+ "agent_backend": "openai",
+ "framework_version": "0.1.0",
+ "trials": 1,
+ "jobs": 1,
+ "platform": {
+  "content_sha": "2e98997741fc37d5f3b3992d212af5c58ecec620758f577a73e275513dd39072",
+  "git_sha": "31ff59160bcca58c2bb91ebaf8e09c7c8b7db338",
+  "dirty": true
+ }
+}

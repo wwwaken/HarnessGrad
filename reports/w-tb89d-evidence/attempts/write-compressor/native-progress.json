@@ -1,0 +1,40 @@
+{
+ "task_id": "write-compressor",
+ "round": 0,
+ "invalid": {
+  "stage": "check",
+  "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+ },
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tb89d-write-compressor-20261015T053445Z-32417279",
+  "task_id": "write-compressor",
+  "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "harness_output": {
+  "exit_code": 0,
+  "stderr": "",
+  "harness_runtime": {
+   "source": "platform",
+   "python": null,
+   "note": "the platform's interpreter supplies the dependencies"
+  },
+  "model_gateway": {
+   "published": true,
+   "target": "127.0.0.1:8002",
+   "connections": 32,
+   "upstream_connect_failed": 0,
+   "upstream_connect_error": null,
+   "upstream_closed_first": 32,
+   "client_closed_first": 0,
+   "bytes_to_upstream": 416638,
+   "bytes_to_client": 29616,
+   "read_errors": []
+  }
+ }
+}

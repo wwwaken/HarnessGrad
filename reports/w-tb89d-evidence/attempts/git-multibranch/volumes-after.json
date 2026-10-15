@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "volume",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

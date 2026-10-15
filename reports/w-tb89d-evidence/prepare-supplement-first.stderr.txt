@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/hg-tb89d/reports/w-tb89d-evidence/prepare_supplement.py", line 21, in <module>
+    cap('dependency-bootstrap-'+tid,args)
+  File "/tmp/hg-tb89d/reports/w-tb89d-evidence/prepare_supplement.py", line 10, in cap
+    assert r.returncode==0,(name,r.stderr[-2000:]);return r
+           ^^^^^^^^^^^^^^^
+AssertionError: ('dependency-bootstrap-fix-code-vulnerability', 'WARNING: Running pip as the \'root\' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n\n[notice] A new release of pip is available: 24.2 -> 26.2.1\n[notice] To update, run: pip install --upgrade pip\nTraceback (most recent call last):\n  File "<string>", line 1, in <module>\nModuleNotFoundError: No module named \'pytest_json_ctrf\'\n')

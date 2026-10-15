@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "inspect",
+    "alexgshaw/configure-git-webserver:20251031"
+  ],
+  "returncode": 0,
+  "stdout": "[\n    {\n        \"Id\": \"sha256:9e48389b917fd4650dda1f64406bd7198bbf20dc1c6b0e5c4d81a3c16369f88c\",\n        \"RepoTags\": [\n            \"alexgshaw/configure-git-webserver:20251031\"\n        ],\n        \"RepoDigests\": [\n            \"alexgshaw/configure-git-webserver@sha256:9e48389b917fd4650dda1f64406bd7198bbf20dc1c6b0e5c4d81a3c16369f88c\"\n        ],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2025-10-28T22:16:43.259780964Z\",\n        \"Config\": {\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"/bin/bash\"\n            ],\n            \"WorkingDir\": \"/app\",\n            \"Labels\": {\n                \"com.docker.compose.project\": \"harbor-build-configure-git-webserver\",\n                \"com.docker.compose.service\": \"task\",\n                \"com.docker.compose.version\": \"2.35.1\",\n                \"org.opencontainers.image.ref.name\": \"ubuntu\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            }\n        },\n        \"Architecture\": \"amd64\",\n        \"Os\": \"linux\",\n        \"Size\": 72341286,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc\",\n                \"sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020\",\n                \"sha256:095aeb0eebf5c4a811dc7edd2e09d41e2b9446b516a44a0f233e2a6ea0fcc3a2\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-09-26T04:52:01.235296255Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.docker.distribution.manifest.v2+json\",\n            \"digest\": \"sha256:9e48389b917fd4650dda1f64406bd7198bbf20dc1c6b0e5c4d81a3c16369f88c\",\n            \"size\": 947\n        },\n        \"Identity\": {\n            \"Pull\": [\n                {\n                    \"Repository\": \"docker.io/alexgshaw/configure-git-webserver\"\n                }\n            ]\n        }\n    }\n]\n",
+  "stderr": ""
+}

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--network",
+    "none",
+    "--read-only",
+    "--cpus",
+    "1",
+    "--memory",
+    "2048m",
+    "--pids-limit",
+    "128",
+    "--entrypoint",
+    "/bin/sh",
+    "sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d",
+    "-ec",
+    "command -v bash; command -v apt-get; command -v sh; command -v python3; test -s /app/text.gcode"
+  ],
+  "returncode": 0,
+  "stdout": "/usr/bin/bash\n/usr/bin/apt-get\n/usr/bin/sh\n/usr/local/bin/python3\n",
+  "stderr": ""
+}

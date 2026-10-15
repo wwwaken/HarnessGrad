@@ -1,0 +1,182 @@
+{
+ "run_id": "w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+ "mode": "unified",
+ "harness": "loop",
+ "dataset": "terminal_bench",
+ "sampling_policy": "diagnostic",
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+  "task_id": "log-summary-date-ranges",
+  "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "diagnostic_policy": {
+  "receipt_schema": "harnessgrad.diagnostic-receipt.v2",
+  "eligible_tasks": 1,
+  "eligible_task_ids_sha256": "04cb763f79b001bed527d505bafd79ce21abf86b6340a384078cb1d86d9ae5c4",
+  "selected_tasks": 1,
+  "selected_task_ids": [
+   "log-summary-date-ranges"
+  ],
+  "expected_trials": 1,
+  "trials": 1,
+  "jobs": 1,
+  "evidence_sha256": "2faeb1d95ddc6f310e85b803d098ff790fcb6b98e58a1ce5e99d22665aa644b1",
+  "context": {
+   "dataset": "terminal_bench",
+   "side": "train",
+   "metric": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+   },
+   "hashes": {
+    "source": "a2669cee7129af255c8fbd4eadddd287cc1b723594f3a0818f43f1c1c33c48db",
+    "split": "f69b53501ea0f7593c8fff50a51da550329499ead0625a46da906dd3f08638f1",
+    "manifest": "cc5c79922e03c487ef0fae03ff20d316733ac25fbb2c8f347de11e9005d067e5",
+    "model": null,
+    "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+   },
+   "endpoint": "http://127.0.0.1:8002/v1",
+   "limits": {
+    "resource": {
+     "cpus": 1,
+     "memory_mb": 2048,
+     "agent_timeout_s": 900,
+     "verify_timeout_s": 900
+    },
+    "budget": null
+   },
+   "gates": {
+    "status": "unknown",
+    "receipt_sha256": null,
+    "detail": "Operator authorized bounded live-local-model diagnostics; dataset enforcement remains unknown; no blocker closure or production authorization."
+   },
+   "comparability_notes": [
+    "One-task diagnostic selection, HG_TB_SPLIT=none; train CLI required by unchanged authorization guard. Five live-local-model diagnostics in serial, default harness steps, zero improvement rounds.",
+    "Local endpoint/model binding; no model weight digest or benchmark-performance comparability. Raw verifier evidence is separate from withheld policy publication.",
+    "Source and scorer hashes do not establish transitive offline dependency closure. Declared verifier bridge egress via documented free proxy is allowed; this is not a network-denied run."
+   ]
+  }
+ },
+ "workspace": "/tmp/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-work/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46/workspace",
+ "work_root": "/tmp/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-work",
+ "platform_root": "/tmp/hg-tb89d",
+ "sandbox": {
+  "requested": true,
+  "active": true,
+  "plan_version": 2,
+  "detail": "bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v2; /usr/bin/bwrap"
+ },
+ "config": {
+  "agent": {
+   "backend": "openai",
+   "model": "qwen3.5-9b-local",
+   "base_url": "http://127.0.0.1:8002/v1",
+   "api_key": {
+    "present": true
+   }
+  },
+  "method": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "timeout_s": 180,
+   "parse_retries": 2,
+   "history_rounds": 0,
+   "dump": null,
+   "source_limit": 200000,
+   "source_total": 60000,
+   "skill_limit": 24000
+  },
+  "improver": {
+   "selection": null,
+   "name": null,
+   "model": null,
+   "effort": null,
+   "args": "",
+   "skill": null,
+   "timeout_s": 1800,
+   "skip_tool_gate": null,
+   "codex_home_source": null,
+   "api_key": {
+    "present": false
+   }
+  },
+  "environment": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "seed": null
+  },
+  "sandbox": {
+   "bwrap": null
+  },
+  "egress": {
+   "proxy": "http://172.17.0.1:17890",
+   "bind": "172.17.0.1",
+   "port": 17890,
+   "upstream": "127.0.0.1:17891"
+  },
+  "runtime": {
+   "overlay_root": null,
+   "overlay_builder_image": null,
+   "registry_mirrors": null
+  },
+  "storage": {
+   "run_root": null,
+   "record_dir": "/recordings/orders",
+   "pull_timeout_s": 900
+  },
+  "run": {
+   "run_id": "w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+   "harness": "loop",
+   "dataset": "terminal_bench",
+   "side": "train",
+   "sampling": "diagnostic",
+   "rounds": 0,
+   "trials": 1,
+   "jobs": 1,
+   "sandbox": true,
+   "mode": "unified",
+   "seed": "a7c15860dca929f9",
+   "runs_root": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1",
+   "work_root": "/tmp/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-work",
+   "method_entrypoint": null,
+   "budget_profile": null,
+   "budget_ledger": null,
+   "budget_arm": "agent",
+   "budget_profile_hash": null
+  }
+ },
+ "env": {
+  "kind": "exec",
+  "image_digest": "sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51",
+  "network": "bridge",
+  "placement": "inside",
+  "services": [],
+  "model_gateway": null,
+  "model": null,
+  "seed": null
+ },
+ "split_declared": false,
+ "oracle_source": "released",
+ "agent_model": "qwen3.5-9b-local",
+ "agent_backend": "openai",
+ "framework_version": "0.1.0",
+ "trials": 1,
+ "jobs": 1,
+ "platform": {
+  "content_sha": "2e98997741fc37d5f3b3992d212af5c58ecec620758f577a73e275513dd39072",
+  "git_sha": "31ff59160bcca58c2bb91ebaf8e09c7c8b7db338",
+  "dirty": true
+ }
+}

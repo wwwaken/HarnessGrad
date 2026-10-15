@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--network",
+    "none",
+    "--read-only",
+    "--cpus",
+    "1",
+    "--memory",
+    "2048m",
+    "--pids-limit",
+    "128",
+    "--entrypoint",
+    "/bin/sh",
+    "sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791",
+    "-ec",
+    "command -v bash; command -v sh; command -v python; command -v pip; test -d /app"
+  ],
+  "returncode": 0,
+  "stdout": "/usr/bin/bash\n/usr/bin/sh\n/usr/local/bin/python\n/usr/local/bin/pip\n",
+  "stderr": ""
+}

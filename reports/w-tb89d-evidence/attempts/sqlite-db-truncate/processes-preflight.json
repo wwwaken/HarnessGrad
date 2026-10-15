@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "python3",
+    "-c",
+    "import pathlib; print('PID ARGS'); [(print(p.name,*(p/'cmdline').read_bytes().decode().split(chr(0))[:-1])) for p in pathlib.Path('/proc').iterdir() if p.name.isdigit() and (p/'cmdline').is_file() and (p/'comm').read_text().strip() in ('python','python3') and any(pathlib.Path(a).name=='driver.py' for a in (p/'cmdline').read_bytes().decode().split(chr(0))) ]"
+  ],
+  "returncode": 0,
+  "stdout": "PID ARGS\n1303893 python3 driver.py --harness loop --dataset musique --side train --split declared --sampling all --trials 1 --jobs 40 --rounds 0 --improver none --run-id musique-full-qwen-t1-train --runs-root /mnt/20t/xubuqiang/hg-census/runs\n",
+  "stderr": ""
+}

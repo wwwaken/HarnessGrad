@@ -1,0 +1,1829 @@
+{
+  "native_execution_receipts": 6,
+  "missing_native_receipts": 1,
+  "batch": {
+    "runs_root": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1",
+    "selected": [
+      "log-summary-date-ranges",
+      "write-compressor",
+      "gcode-to-text",
+      "git-multibranch",
+      "sqlite-db-truncate",
+      "fix-code-vulnerability",
+      "kv-store-grpc"
+    ],
+    "selection_rule": "Fixed five new surfaces not in the prior 9 measured tasks: date-range log aggregation, constrained compression, G-code interpretation, SSH/Git multi-branch HTTPS deployment and truncated SQLite recovery. Require cached immutable image, complete official verifier sources, shell/Python parse success, read-only network-disabled tool/input existence probes, no GPU/MCP, <=1 CPU/2048 MiB, declared agent/verifier timeouts <=900s; standard uv/pytest bootstrap via documented proxy. All five selected before any model trial; no result-dependent substitution or rerun. Purposeful coverage, not a performance sample. Initial five source/tool probes did not certify the transitive uv download; four attempts were invalid for missing CTRF and the fifth was interrupted. All are retained. Two additional new cached surfaces: Bottle vulnerability repair with original/additional official tests, and gRPC key/value service construction. Fixed before either model trial, after a no-model probe identified the initial uv release-download gap. Same immutable cache/source/shell/Python/CPU/memory/GPU/MCP/timeout bounds; additionally run the exact pinned pip test-dependency installation and import/version smoke checks in disposable images with the documented proxy. No official tests/solutions or model are used in probes. Initial five attempts are retained, never replaced or rerun. Total preselected new task surfaces across both batches is seven, within ceil(10% * 89)=9. This is purposeful execution coverage, no performance sample.",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "model": "qwen3.5-9b-local",
+    "total_serial_tasks": 7,
+    "metadata_candidates": [
+      "adaptive-rejection-sampler",
+      "build-cython-ext",
+      "build-pmars",
+      "cancel-async-tasks",
+      "chess-best-move",
+      "cobol-modernization",
+      "configure-git-webserver",
+      "count-dataset-tokens",
+      "db-wal-recovery",
+      "extract-elf",
+      "fix-code-vulnerability",
+      "fix-git",
+      "gcode-to-text",
+      "git-leak-recovery",
+      "git-multibranch",
+      "headless-terminal",
+      "hf-model-inference",
+      "kv-store-grpc",
+      "largest-eigenval",
+      "log-summary-date-ranges",
+      "make-doom-for-mips",
+      "model-extraction-relu-logits",
+      "modernize-scientific-stack",
+      "multi-source-data-merger",
+      "nginx-request-logging",
+      "openssl-selfsigned-cert",
+      "password-recovery",
+      "polyglot-c-py",
+      "polyglot-rust-c",
+      "prove-plus-comm",
+      "pypi-server",
+      "pytorch-model-cli",
+      "raman-fitting",
+      "regex-log",
+      "sanitize-git-repo",
+      "sparql-university",
+      "sqlite-db-truncate",
+      "sqlite-with-gcov",
+      "tune-mjcf",
+      "vulnerable-secret",
+      "write-compressor"
+    ],
+    "prerequisite_verified": [
+      "log-summary-date-ranges",
+      "write-compressor",
+      "gcode-to-text",
+      "git-multibranch",
+      "sqlite-db-truncate",
+      "fix-code-vulnerability",
+      "kv-store-grpc"
+    ],
+    "prerequisite_verified_not_selected": [],
+    "cached_unselected": 79,
+    "note": "Initial local tool/input prerequisites passed but transitive bootstrap was not established. Two additional pip tasks have complete dependency smoke checks. No original run ID is resumed; no task is replaced or rerun.",
+    "runs_roots": [
+      "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1",
+      "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501"
+    ],
+    "initial_batch": {
+      "runs_root": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1",
+      "selected": [
+        "log-summary-date-ranges",
+        "write-compressor",
+        "gcode-to-text",
+        "git-multibranch",
+        "sqlite-db-truncate"
+      ],
+      "selection_rule": "Fixed five new surfaces not in the prior 9 measured tasks: date-range log aggregation, constrained compression, G-code interpretation, SSH/Git multi-branch HTTPS deployment and truncated SQLite recovery. Require cached immutable image, complete official verifier sources, shell/Python parse success, read-only network-disabled tool/input existence probes, no GPU/MCP, <=1 CPU/2048 MiB, declared agent/verifier timeouts <=900s; standard uv/pytest bootstrap via documented proxy. All five selected before any model trial; no result-dependent substitution or rerun. Purposeful coverage, not a performance sample.",
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "total_serial_tasks": 5,
+      "metadata_candidates": [
+        "adaptive-rejection-sampler",
+        "build-cython-ext",
+        "build-pmars",
+        "cancel-async-tasks",
+        "chess-best-move",
+        "cobol-modernization",
+        "configure-git-webserver",
+        "count-dataset-tokens",
+        "db-wal-recovery",
+        "extract-elf",
+        "fix-code-vulnerability",
+        "fix-git",
+        "gcode-to-text",
+        "git-leak-recovery",
+        "git-multibranch",
+        "headless-terminal",
+        "hf-model-inference",
+        "kv-store-grpc",
+        "largest-eigenval",
+        "log-summary-date-ranges",
+        "make-doom-for-mips",
+        "model-extraction-relu-logits",
+        "modernize-scientific-stack",
+        "multi-source-data-merger",
+        "nginx-request-logging",
+        "openssl-selfsigned-cert",
+        "password-recovery",
+        "polyglot-c-py",
+        "polyglot-rust-c",
+        "prove-plus-comm",
+        "pypi-server",
+        "pytorch-model-cli",
+        "raman-fitting",
+        "regex-log",
+        "sanitize-git-repo",
+        "sparql-university",
+        "sqlite-db-truncate",
+        "sqlite-with-gcov",
+        "tune-mjcf",
+        "vulnerable-secret",
+        "write-compressor"
+      ],
+      "prerequisite_verified": [
+        "log-summary-date-ranges",
+        "write-compressor",
+        "gcode-to-text",
+        "git-multibranch",
+        "sqlite-db-truncate"
+      ],
+      "prerequisite_verified_not_selected": [],
+      "cached_unselected": 81,
+      "note": "Only these five have fresh image tool/input prerequisite probes. Other cached/metadata candidates are not certified runnable. Remote bootstrap is checked by host proxy probes and subsequently by actual verifier receipts, not certified offline."
+    },
+    "supplemental_batch": {
+      "runs_root": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501",
+      "selected": [
+        "fix-code-vulnerability",
+        "kv-store-grpc"
+      ],
+      "selection_rule": "Two additional new cached surfaces: Bottle vulnerability repair with original/additional official tests, and gRPC key/value service construction. Fixed before either model trial, after a no-model probe identified the initial uv release-download gap. Same immutable cache/source/shell/Python/CPU/memory/GPU/MCP/timeout bounds; additionally run the exact pinned pip test-dependency installation and import/version smoke checks in disposable images with the documented proxy. No official tests/solutions or model are used in probes. Initial five attempts are retained, never replaced or rerun. Total preselected new task surfaces across both batches is seven, within ceil(10% * 89)=9. This is purposeful execution coverage, no performance sample.",
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "total_serial_tasks": 2,
+      "metadata_candidates": [
+        "adaptive-rejection-sampler",
+        "build-cython-ext",
+        "build-pmars",
+        "cancel-async-tasks",
+        "chess-best-move",
+        "cobol-modernization",
+        "configure-git-webserver",
+        "count-dataset-tokens",
+        "db-wal-recovery",
+        "extract-elf",
+        "fix-code-vulnerability",
+        "fix-git",
+        "gcode-to-text",
+        "git-leak-recovery",
+        "git-multibranch",
+        "headless-terminal",
+        "hf-model-inference",
+        "kv-store-grpc",
+        "largest-eigenval",
+        "log-summary-date-ranges",
+        "make-doom-for-mips",
+        "model-extraction-relu-logits",
+        "modernize-scientific-stack",
+        "multi-source-data-merger",
+        "nginx-request-logging",
+        "openssl-selfsigned-cert",
+        "password-recovery",
+        "polyglot-c-py",
+        "polyglot-rust-c",
+        "prove-plus-comm",
+        "pypi-server",
+        "pytorch-model-cli",
+        "raman-fitting",
+        "regex-log",
+        "sanitize-git-repo",
+        "sparql-university",
+        "sqlite-db-truncate",
+        "sqlite-with-gcov",
+        "tune-mjcf",
+        "vulnerable-secret",
+        "write-compressor"
+      ],
+      "prerequisite_verified": [
+        "fix-code-vulnerability",
+        "kv-store-grpc"
+      ],
+      "prerequisite_verified_not_selected": [],
+      "cached_unselected": 79,
+      "note": "Pip-route bootstrap verified end to end before these two trials. Initial five local probes passed but transitive uv download readiness did not; all failures remain invalid, excluded from coverage."
+    }
+  },
+  "inventory": {
+    "total_task_references": 89,
+    "cached_images": 86,
+    "missing_images": [
+      "mteb-leaderboard",
+      "pytorch-model-recovery",
+      "reshard-c4-data"
+    ]
+  },
+  "raw_execution_coverage": {
+    "selected_tasks": 7,
+    "expected_trials": 7,
+    "measured_tasks": 1,
+    "measured_trials": 1,
+    "invalid_tasks": 6,
+    "unmeasured_tasks": 0
+  },
+  "publication_coverage_sum_of_one_task_selections": {
+    "eligible_tasks": 6,
+    "expected_trials": 6,
+    "invalid_tasks": 5,
+    "invalid_trials": 5,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 6,
+    "unmeasured_tasks": 1,
+    "unmeasured_trials": 1
+  },
+  "rows": [
+    {
+      "run_id": "w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+      "task_id": "log-summary-date-ranges",
+      "run_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+      "work_root": "/tmp/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-work",
+      "evidence_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence",
+      "native_execution_present": true,
+      "interrupted": false,
+      "image_id": "sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/log-summary-date-ranges@sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51",
+        "alexgshaw/log-summary-date-ranges@sha256:cbeb6ba905c2fec294f16cd5e16e3ea7f2e04d38ac2484d51a11de262aa7dc51"
+      ],
+      "ctrf_produced": false,
+      "raw_measured": false,
+      "verifier_verdict": null,
+      "raw_score": null,
+      "native_raw_score": null,
+      "native_invalid": {
+        "log-summary-date-ranges": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "agent_timeout_observed": false,
+      "harness_output": {
+        "exit_code": 0,
+        "stderr": "",
+        "harness_runtime": {
+          "source": "overlay",
+          "python": "3.13",
+          "install": "requirements.txt",
+          "install_sha256": "8be10848dc9737d2dcfd24a34f5034ddeb02e918b078ce09a3c2d090fbc44ed8",
+          "path": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+          "built_from_image": "alexgshaw/break-filter-js-from-html:20251031",
+          "packages": {
+            "annotated_types-0.8.0": {
+              "top_level": [
+                "annotated_types"
+              ],
+              "version": "0.8.0"
+            },
+            "anyio-4.15.1": {
+              "top_level": [
+                "anyio"
+              ],
+              "version": "4.15.1"
+            },
+            "h11-0.16.0": {
+              "top_level": [
+                "h11"
+              ],
+              "version": "0.16.0"
+            },
+            "httpcore2-2.13.1": {
+              "top_level": [
+                "httpcore2"
+              ],
+              "version": "2.13.1"
+            },
+            "httpx2-2.13.1": {
+              "top_level": [
+                "httpx2"
+              ],
+              "version": "2.13.1"
+            },
+            "idna-3.20": {
+              "top_level": [
+                "idna"
+              ],
+              "version": "3.20"
+            },
+            "jiter-0.17.0": {
+              "top_level": [
+                "jiter"
+              ],
+              "version": "0.17.0"
+            },
+            "openai-3.22.1": {
+              "top_level": [
+                "openai"
+              ],
+              "version": "3.22.1"
+            },
+            "pydantic-2.13.5": {
+              "top_level": [
+                "pydantic"
+              ],
+              "version": "2.13.5"
+            },
+            "pydantic_core-2.46.5": {
+              "top_level": [
+                "pydantic_core"
+              ],
+              "version": "2.46.5"
+            },
+            "sniffio-1.3.1": {
+              "top_level": [
+                "sniffio"
+              ],
+              "version": "1.3.1"
+            },
+            "truststore-0.10.4": {
+              "top_level": [
+                "truststore"
+              ],
+              "version": "0.10.4"
+            },
+            "typing_extensions-4.16.0": {
+              "top_level": [
+                "typing_extensions"
+              ],
+              "version": "4.16.0"
+            },
+            "typing_inspection-0.4.4": {
+              "top_level": [
+                "typing_inspection"
+              ],
+              "version": "0.4.4"
+            }
+          }
+        },
+        "model_gateway": {
+          "published": true,
+          "target": "127.0.0.1:8002",
+          "connections": 38,
+          "upstream_connect_failed": 0,
+          "upstream_connect_error": null,
+          "upstream_closed_first": 37,
+          "client_closed_first": 1,
+          "bytes_to_upstream": 1116348,
+          "bytes_to_client": 84360,
+          "read_errors": []
+        }
+      },
+      "raw_invalid": {
+        "log-summary-date-ranges": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "raw_not_run": [],
+      "raw_exclusion_reason": "missing_ctrf",
+      "ctrf_files": [],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 38,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 37,
+        "client_closed_first": 1,
+        "bytes_to_upstream": 1116348,
+        "bytes_to_client": 84360,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": {
+        "input": 273565,
+        "output": 14249,
+        "calls": 32,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46/progress/round-0/traces/log-summary-date-ranges.invalid.jsonl"
+        ]
+      },
+      "native_aggregate_tokens": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "tasks_reported": 0
+      },
+      "env_usage": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "services_reported": 0
+      },
+      "trace_usage": {
+        "calls": 32,
+        "input_tokens": 273565,
+        "output_tokens": 14249,
+        "retries": 6,
+        "context_trims": 6
+      },
+      "publication": {
+        "score": null,
+        "coverage": {
+          "eligible_tasks": 1,
+          "expected_trials": 1,
+          "invalid_tasks": 1,
+          "invalid_trials": 1,
+          "measured_tasks": 0,
+          "measured_trials": 0,
+          "selected_tasks": 1,
+          "unmeasured_tasks": 0,
+          "unmeasured_trials": 0
+        },
+        "outcomes": [
+          {
+            "reason": "{\"detail\": \"the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured\", \"stage\": \"check\"}",
+            "score": null,
+            "status": "invalid",
+            "task_id": "log-summary-date-ranges",
+            "trial": 1
+          }
+        ],
+        "enforcement": {
+          "stage": "diagnostic",
+          "run_id": "w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46",
+          "task_id": "log-summary-date-ranges",
+          "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+          "policy_enforcement_observed": false,
+          "measured": false,
+          "production_authorized": false,
+          "comparable": false,
+          "non_comparable_reason": "policy_enforcement_not_observed"
+        }
+      },
+      "hashes": {
+        "source": "a2669cee7129af255c8fbd4eadddd287cc1b723594f3a0818f43f1c1c33c48db",
+        "split": "f69b53501ea0f7593c8fff50a51da550329499ead0625a46da906dd3f08638f1",
+        "manifest": "cc5c79922e03c487ef0fae03ff20d316733ac25fbb2c8f347de11e9005d067e5",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/resource-observation-receipt.json",
+        "sha256": "f40cca6a0bf6aa5d51a17b02985166500b97a95a9022b0c5640da7bb87c12e76",
+        "bytes": 105961
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/snapshot-observation-receipt.json",
+        "sha256": "fa6d890041e519455fc2c9e9dd23325aacd5a2e0105711b70116331e05dc373a",
+        "bytes": 1006
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-log-summary-date-ranges-20261015T052111Z-254e4b46-evidence/cleanup-observation-receipt.json",
+        "sha256": "b5be443b8135cb80280c8b3493c6dbb02d876ed66e1354b4758c48f74baf6038",
+        "bytes": 4454
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T05:21:21.096806+00:00",
+        "ended_at": "2026-10-15T05:34:45.764538+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      }
+    },
+    {
+      "run_id": "w-tb89d-write-compressor-20261015T053445Z-32417279",
+      "task_id": "write-compressor",
+      "run_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279",
+      "work_root": "/tmp/w-tb89d-write-compressor-20261015T053445Z-32417279-work",
+      "evidence_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence",
+      "native_execution_present": true,
+      "interrupted": false,
+      "image_id": "sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/write-compressor@sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1",
+        "alexgshaw/write-compressor@sha256:3618e1f8a997b437c09cd3dbaac736705809c05f6f12f584b65722175970ebe1"
+      ],
+      "ctrf_produced": false,
+      "raw_measured": false,
+      "verifier_verdict": null,
+      "raw_score": null,
+      "native_raw_score": null,
+      "native_invalid": {
+        "write-compressor": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "agent_timeout_observed": false,
+      "harness_output": {
+        "exit_code": 0,
+        "stderr": "",
+        "harness_runtime": {
+          "source": "platform",
+          "python": null,
+          "note": "the platform's interpreter supplies the dependencies"
+        },
+        "model_gateway": {
+          "published": true,
+          "target": "127.0.0.1:8002",
+          "connections": 32,
+          "upstream_connect_failed": 0,
+          "upstream_connect_error": null,
+          "upstream_closed_first": 32,
+          "client_closed_first": 0,
+          "bytes_to_upstream": 416638,
+          "bytes_to_client": 29616,
+          "read_errors": []
+        }
+      },
+      "raw_invalid": {
+        "write-compressor": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "raw_not_run": [],
+      "raw_exclusion_reason": "missing_ctrf",
+      "ctrf_files": [],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 32,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 32,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 416638,
+        "bytes_to_client": 29616,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": {
+        "input": 225050,
+        "output": 1145,
+        "calls": 32,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279/progress/round-0/traces/write-compressor.invalid.jsonl"
+        ]
+      },
+      "native_aggregate_tokens": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "tasks_reported": 0
+      },
+      "env_usage": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "services_reported": 0
+      },
+      "trace_usage": {
+        "calls": 32,
+        "input_tokens": 225050,
+        "output_tokens": 1145,
+        "retries": 0,
+        "context_trims": 0
+      },
+      "publication": {
+        "score": null,
+        "coverage": {
+          "eligible_tasks": 1,
+          "expected_trials": 1,
+          "invalid_tasks": 1,
+          "invalid_trials": 1,
+          "measured_tasks": 0,
+          "measured_trials": 0,
+          "selected_tasks": 1,
+          "unmeasured_tasks": 0,
+          "unmeasured_trials": 0
+        },
+        "outcomes": [
+          {
+            "reason": "{\"detail\": \"the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured\", \"stage\": \"check\"}",
+            "score": null,
+            "status": "invalid",
+            "task_id": "write-compressor",
+            "trial": 1
+          }
+        ],
+        "enforcement": {
+          "stage": "diagnostic",
+          "run_id": "w-tb89d-write-compressor-20261015T053445Z-32417279",
+          "task_id": "write-compressor",
+          "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+          "policy_enforcement_observed": false,
+          "measured": false,
+          "production_authorized": false,
+          "comparable": false,
+          "non_comparable_reason": "policy_enforcement_not_observed"
+        }
+      },
+      "hashes": {
+        "source": "f8cbe8ce19f66aec100d87064e06515a4f65b418a2b4e2e2b872ba6244a38d6c",
+        "split": "25cfcb86ef8ef89a116d3be7869682d1be5a58002c2fa7354e3393e416ae4925",
+        "manifest": "d22cf7468124c489036d35fe48de055e5e373a9b70c1f9aa59aed01aea5ba885",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/resource-observation-receipt.json",
+        "sha256": "0bfd780ce2c8611a462080aab16cbcdcb8bb79ff9ccc6f942dc73c46c59bec5b",
+        "bytes": 19991
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/snapshot-observation-receipt.json",
+        "sha256": "1f853c7f9f4bb259885ca79d948910eee20b641b9208a0a289d0a73a5cc687f7",
+        "bytes": 972
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-write-compressor-20261015T053445Z-32417279-evidence/cleanup-observation-receipt.json",
+        "sha256": "65a3f5996824db1c6e22768ba4b746bf18d8edfa569e17355f1789e621f7ef64",
+        "bytes": 4363
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T05:35:03.647263+00:00",
+        "ended_at": "2026-10-15T05:37:21.984578+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      }
+    },
+    {
+      "run_id": "w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+      "task_id": "gcode-to-text",
+      "run_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+      "work_root": "/tmp/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-work",
+      "evidence_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-evidence",
+      "native_execution_present": true,
+      "interrupted": false,
+      "image_id": "sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/gcode-to-text@sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d",
+        "alexgshaw/gcode-to-text@sha256:0979ef40c6a3e8c4e7ab5b6c2524c74625a84799e15cd45dd98dcf83b11efd4d"
+      ],
+      "ctrf_produced": false,
+      "raw_measured": false,
+      "verifier_verdict": null,
+      "raw_score": null,
+      "native_raw_score": null,
+      "native_invalid": {
+        "gcode-to-text": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "agent_timeout_observed": false,
+      "harness_output": {
+        "exit_code": 0,
+        "stderr": "",
+        "harness_runtime": {
+          "source": "overlay",
+          "python": "3.13",
+          "install": "requirements.txt",
+          "install_sha256": "8be10848dc9737d2dcfd24a34f5034ddeb02e918b078ce09a3c2d090fbc44ed8",
+          "path": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.13",
+          "built_from_image": "alexgshaw/break-filter-js-from-html:20251031",
+          "packages": {
+            "annotated_types-0.8.0": {
+              "top_level": [
+                "annotated_types"
+              ],
+              "version": "0.8.0"
+            },
+            "anyio-4.15.1": {
+              "top_level": [
+                "anyio"
+              ],
+              "version": "4.15.1"
+            },
+            "h11-0.16.0": {
+              "top_level": [
+                "h11"
+              ],
+              "version": "0.16.0"
+            },
+            "httpcore2-2.13.1": {
+              "top_level": [
+                "httpcore2"
+              ],
+              "version": "2.13.1"
+            },
+            "httpx2-2.13.1": {
+              "top_level": [
+                "httpx2"
+              ],
+              "version": "2.13.1"
+            },
+            "idna-3.20": {
+              "top_level": [
+                "idna"
+              ],
+              "version": "3.20"
+            },
+            "jiter-0.17.0": {
+              "top_level": [
+                "jiter"
+              ],
+              "version": "0.17.0"
+            },
+            "openai-3.22.1": {
+              "top_level": [
+                "openai"
+              ],
+              "version": "3.22.1"
+            },
+            "pydantic-2.13.5": {
+              "top_level": [
+                "pydantic"
+              ],
+              "version": "2.13.5"
+            },
+            "pydantic_core-2.46.5": {
+              "top_level": [
+                "pydantic_core"
+              ],
+              "version": "2.46.5"
+            },
+            "sniffio-1.3.1": {
+              "top_level": [
+                "sniffio"
+              ],
+              "version": "1.3.1"
+            },
+            "truststore-0.10.4": {
+              "top_level": [
+                "truststore"
+              ],
+              "version": "0.10.4"
+            },
+            "typing_extensions-4.16.0": {
+              "top_level": [
+                "typing_extensions"
+              ],
+              "version": "4.16.0"
+            },
+            "typing_inspection-0.4.4": {
+              "top_level": [
+                "typing_inspection"
+              ],
+              "version": "0.4.4"
+            }
+          }
+        },
+        "model_gateway": {
+          "published": true,
+          "target": "127.0.0.1:8002",
+          "connections": 10,
+          "upstream_connect_failed": 0,
+          "upstream_connect_error": null,
+          "upstream_closed_first": 10,
+          "client_closed_first": 0,
+          "bytes_to_upstream": 61218,
+          "bytes_to_client": 9067,
+          "read_errors": []
+        }
+      },
+      "raw_invalid": {
+        "gcode-to-text": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "raw_not_run": [],
+      "raw_exclusion_reason": "missing_ctrf",
+      "ctrf_files": [],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 10,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 10,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 61218,
+        "bytes_to_client": 9067,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": {
+        "input": 29313,
+        "output": 277,
+        "calls": 10,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97/progress/round-0/traces/gcode-to-text.invalid.jsonl"
+        ]
+      },
+      "native_aggregate_tokens": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "tasks_reported": 0
+      },
+      "env_usage": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "services_reported": 0
+      },
+      "trace_usage": {
+        "calls": 10,
+        "input_tokens": 29313,
+        "output_tokens": 277,
+        "retries": 0,
+        "context_trims": 0
+      },
+      "publication": {
+        "score": null,
+        "coverage": {
+          "eligible_tasks": 1,
+          "expected_trials": 1,
+          "invalid_tasks": 1,
+          "invalid_trials": 1,
+          "measured_tasks": 0,
+          "measured_trials": 0,
+          "selected_tasks": 1,
+          "unmeasured_tasks": 0,
+          "unmeasured_trials": 0
+        },
+        "outcomes": [
+          {
+            "reason": "{\"detail\": \"the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured\", \"stage\": \"check\"}",
+            "score": null,
+            "status": "invalid",
+            "task_id": "gcode-to-text",
+            "trial": 1
+          }
+        ],
+        "enforcement": {
+          "stage": "diagnostic",
+          "run_id": "w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97",
+          "task_id": "gcode-to-text",
+          "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+          "policy_enforcement_observed": false,
+          "measured": false,
+          "production_authorized": false,
+          "comparable": false,
+          "non_comparable_reason": "policy_enforcement_not_observed"
+        }
+      },
+      "hashes": {
+        "source": "36e263a7d8782dfb96f69fd20ea87c6245d44450e7d0a7e60838dbcb2957225d",
+        "split": "31085ee0d076e1d3a6adc6a13e7cb9fbfeaab6589d1df12e24a264a72cb9db12",
+        "manifest": "1f0558cc19c2fb5166d48b1184670cbbde81714e294fbdc5f68bbda1024ab668",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-evidence/resource-observation-receipt.json",
+        "sha256": "ec0738524b366096f0a942418fd6742cebefc3400d98d328a138b996d412f9b8",
+        "bytes": 10845
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-evidence/snapshot-observation-receipt.json",
+        "sha256": "852b87ddcd092662c6f2c12be9d880b67b7756468169e55c95cd25e84fa878bb",
+        "bytes": 956
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-gcode-to-text-20261015T053722Z-aa7e1f97-evidence/cleanup-observation-receipt.json",
+        "sha256": "3badf1e06d37ed93751ce490193cc67ce36e9943fcd0b999168d566ba752735f",
+        "bytes": 4324
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T05:38:07.881837+00:00",
+        "ended_at": "2026-10-15T05:39:10.606273+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      }
+    },
+    {
+      "run_id": "w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+      "task_id": "git-multibranch",
+      "run_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+      "work_root": "/tmp/w-tb89d-git-multibranch-20261015T053910Z-c59479ab-work",
+      "evidence_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab-evidence",
+      "native_execution_present": true,
+      "interrupted": false,
+      "image_id": "sha256:5bc449921c138295f6ddd8dca2977319fee2ce523811dbe56cec4ca663385fb5",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/git-multibranch@sha256:5bc449921c138295f6ddd8dca2977319fee2ce523811dbe56cec4ca663385fb5",
+        "alexgshaw/git-multibranch@sha256:5bc449921c138295f6ddd8dca2977319fee2ce523811dbe56cec4ca663385fb5"
+      ],
+      "ctrf_produced": false,
+      "raw_measured": false,
+      "verifier_verdict": null,
+      "raw_score": null,
+      "native_raw_score": null,
+      "native_invalid": {
+        "git-multibranch": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "agent_timeout_observed": false,
+      "harness_output": {
+        "exit_code": 0,
+        "stderr": "",
+        "harness_runtime": {
+          "source": "overlay",
+          "python": "3.12",
+          "install": "requirements.txt",
+          "install_sha256": "8be10848dc9737d2dcfd24a34f5034ddeb02e918b078ce09a3c2d090fbc44ed8",
+          "path": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.12",
+          "built_from_image": "alexgshaw/chess-best-move:20251031",
+          "packages": {
+            "annotated_types": {
+              "top_level": [
+                "annotated_types"
+              ],
+              "version": "0.8.0"
+            },
+            "anyio": {
+              "top_level": [
+                "anyio"
+              ],
+              "version": "4.15.1"
+            },
+            "h11": {
+              "top_level": [
+                "h11"
+              ],
+              "version": "0.16.0"
+            },
+            "httpcore2": {
+              "top_level": [
+                "httpcore2"
+              ],
+              "version": "2.13.1"
+            },
+            "httpx2": {
+              "top_level": [
+                "httpx2"
+              ],
+              "version": "2.13.1"
+            },
+            "idna": {
+              "top_level": [
+                "idna"
+              ],
+              "version": "3.20"
+            },
+            "jiter": {
+              "top_level": [
+                "jiter"
+              ],
+              "version": "0.17.0"
+            },
+            "openai": {
+              "top_level": [
+                "openai"
+              ],
+              "version": "3.22.1"
+            },
+            "pydantic": {
+              "top_level": [
+                "pydantic"
+              ],
+              "version": "2.13.5"
+            },
+            "pydantic_core": {
+              "top_level": [
+                "pydantic_core"
+              ],
+              "version": "2.46.5"
+            },
+            "sniffio": {
+              "top_level": [
+                "sniffio"
+              ],
+              "version": "1.3.1"
+            },
+            "truststore": {
+              "top_level": [
+                "truststore"
+              ],
+              "version": "0.10.4"
+            },
+            "typing_extensions": {
+              "top_level": [
+                "typing_extensions"
+              ],
+              "version": "4.16.0"
+            },
+            "typing_inspection": {
+              "top_level": [
+                "typing_inspection"
+              ],
+              "version": "0.4.4"
+            }
+          }
+        },
+        "model_gateway": {
+          "published": true,
+          "target": "127.0.0.1:8002",
+          "connections": 17,
+          "upstream_connect_failed": 0,
+          "upstream_connect_error": null,
+          "upstream_closed_first": 17,
+          "client_closed_first": 0,
+          "bytes_to_upstream": 115275,
+          "bytes_to_client": 20263,
+          "read_errors": []
+        }
+      },
+      "raw_invalid": {
+        "git-multibranch": {
+          "stage": "check",
+          "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+        }
+      },
+      "raw_not_run": [],
+      "raw_exclusion_reason": "missing_ctrf",
+      "ctrf_files": [],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 17,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 17,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 115275,
+        "bytes_to_client": 20263,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": {
+        "input": 26664,
+        "output": 1646,
+        "calls": 17,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab/progress/round-0/traces/git-multibranch.invalid.jsonl"
+        ]
+      },
+      "native_aggregate_tokens": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "tasks_reported": 0
+      },
+      "env_usage": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "services_reported": 0
+      },
+      "trace_usage": {
+        "calls": 17,
+        "input_tokens": 26664,
+        "output_tokens": 1646,
+        "retries": 0,
+        "context_trims": 0
+      },
+      "publication": {
+        "score": null,
+        "coverage": {
+          "eligible_tasks": 1,
+          "expected_trials": 1,
+          "invalid_tasks": 1,
+          "invalid_trials": 1,
+          "measured_tasks": 0,
+          "measured_trials": 0,
+          "selected_tasks": 1,
+          "unmeasured_tasks": 0,
+          "unmeasured_trials": 0
+        },
+        "outcomes": [
+          {
+            "reason": "{\"detail\": \"the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured\", \"stage\": \"check\"}",
+            "score": null,
+            "status": "invalid",
+            "task_id": "git-multibranch",
+            "trial": 1
+          }
+        ],
+        "enforcement": {
+          "stage": "diagnostic",
+          "run_id": "w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+          "task_id": "git-multibranch",
+          "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+          "policy_enforcement_observed": false,
+          "measured": false,
+          "production_authorized": false,
+          "comparable": false,
+          "non_comparable_reason": "policy_enforcement_not_observed"
+        }
+      },
+      "hashes": {
+        "source": "1391051f94185a0b17677a0bee2296b0513c01e65cb745a1d76809b4ea6d4ca5",
+        "split": "75085087f935f99d986813aa07403fd9a71cbfb7878fe32fd4d23c3e7f9e972b",
+        "manifest": "c9a23a611cd92b31c5f722a2592d2a93e90e42e61ed36c7eb4a0dbdab5ecc5df",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "ddbde3eea6ffa8fda105cbd86597a53bd409f41e13223900aa27e77a84b6b155"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab-evidence/resource-observation-receipt.json",
+        "sha256": "388db672248872f97fdd3ef6b3e8a4dd7cd8ca97e2997797f941beb80b87fa43",
+        "bytes": 17272
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab-evidence/snapshot-observation-receipt.json",
+        "sha256": "f3bebcd6714d787df2ac11a2c96918372f840127e0ee4129d3cab9d12314523b",
+        "bytes": 967
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-git-multibranch-20261015T053910Z-c59479ab-evidence/cleanup-observation-receipt.json",
+        "sha256": "8d1e38e9f22ecf2b980dea11818a6e66ab5e1d620ca28cc410ef8bde5e477c7d",
+        "bytes": 4350
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T05:39:28.508906+00:00",
+        "ended_at": "2026-10-15T05:41:22.557608+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      }
+    },
+    {
+      "run_id": "w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+      "task_id": "sqlite-db-truncate",
+      "run_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2",
+      "work_root": "/tmp/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-work",
+      "evidence_dir": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence",
+      "native_execution_present": false,
+      "interrupted": true,
+      "image_id": "sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/sqlite-db-truncate@sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4",
+        "alexgshaw/sqlite-db-truncate@sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4"
+      ],
+      "ctrf_produced": false,
+      "raw_measured": false,
+      "verifier_verdict": null,
+      "raw_score": null,
+      "native_raw_score": null,
+      "native_invalid": null,
+      "agent_timeout_observed": false,
+      "harness_output": {},
+      "raw_invalid": {
+        "sqlite-db-truncate": {
+          "stage": "observer-interruption",
+          "detail": "launcher exited 143; driver absent; no final native execution/receipt; no CTRF; task was not resumed"
+        }
+      },
+      "raw_not_run": null,
+      "raw_exclusion_reason": "missing_ctrf",
+      "ctrf_files": [],
+      "reward_files": [],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": null,
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": null,
+      "native_aggregate_tokens": null,
+      "env_usage": null,
+      "trace_usage": null,
+      "publication": {
+        "score": null,
+        "coverage": null,
+        "outcomes": null,
+        "enforcement": null
+      },
+      "hashes": {
+        "source": "a2981a3356a922d29c32f888a19c727b87a56a875e60c0524165dfb09918d127",
+        "split": "cfcba3fbcfc9788921eb99c06f6f4bfaf5211eddf386545730c13149a829272e",
+        "manifest": "76d0b7a0b86bc279f088556ae7aa8f2456307fca11ff1c715236cd773a26e085",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/resource-observation-receipt.json",
+        "sha256": "3166f796b1ed1dc5f8e7af42bffacca0f4fcc2f4880714e7ef3d1b46aa60f189",
+        "bytes": 31178
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/snapshot-observation-receipt.json",
+        "sha256": "736a32e62a01e5e308c047997433169326f934814bcb81792d4cd753f48a7f02",
+        "bytes": 354
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1/w-tb89d-sqlite-db-truncate-20261015T054122Z-60c1eaa2-evidence/cleanup-observation-receipt.json",
+        "sha256": "daa7a6d2146a8686b1a68a882465f8531cdc0d45b74859db21013ab47cd14670",
+        "bytes": 3110
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": null,
+        "launcher_returncode": 143,
+        "started_at": "2026-10-15T05:41:45.066308+00:00",
+        "ended_at": "2026-10-15T05:47:30.314151+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local",
+        "note": "End is the scoped orphan-cleanup observation, not a native driver completion; no native execution/receipt exists."
+      }
+    },
+    {
+      "run_id": "w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445",
+      "task_id": "fix-code-vulnerability",
+      "run_dir": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445",
+      "work_root": "/tmp/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-work",
+      "evidence_dir": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-evidence",
+      "native_execution_present": true,
+      "interrupted": false,
+      "image_id": "sha256:cac325252991f823713b2d0441502972901dd782bd67f66c03d9b1e410dac5c0",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/fix-code-vulnerability@sha256:cac325252991f823713b2d0441502972901dd782bd67f66c03d9b1e410dac5c0",
+        "alexgshaw/fix-code-vulnerability@sha256:cac325252991f823713b2d0441502972901dd782bd67f66c03d9b1e410dac5c0"
+      ],
+      "ctrf_produced": true,
+      "raw_measured": true,
+      "verifier_verdict": {
+        "kind": "command",
+        "passed": false,
+        "score": 0.0,
+        "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (4 passed 2 failed) | FAILED test_outputs.py::test_cwe_id: assert 'cwe-93' in ['cwe-381'] | FAILED test_outputs.py::test_hkey_error_cases: assert False | stdout arriage return\n            \"header\\0name\",  # null byte\n        ]\n        for error_str in error_cases:\n            try:\n                _hkey(error_str)\n>               assert False, f\"_hkey('{repr(error_str)}') should raise ValueError\"\nE               AssertionError: _hkey(''header\\nname'') should raise ValueError\nE               assert False\n\n/tests/test_outputs.py:95: AssertionError\n\nDuring handling of the above exception, another exception occurred:\n\n    def test_hkey_error_cases():\n        \"\"\"Test _hkey raises ValueError for invalid header names.\"\"\"\n    \n        from bottle import _hkey\n    \n        error_cases = [\n            \"header\\nname\",  # newline\n            \"header\\rname\",  # carriage return\n            \"header\\0name\",  # null byte\n        ]\n        for error_str in error_cases:\n            try:\n                _hkey(error_str)\n                assert False, f\"_hkey('{repr(error_str)}') should raise ValueError\"\n            except ValueError:\n                pass  # Expected\n            except Exception as e:\n>               assert False, f\"_hkey('{repr(error_str)}') raised unexpected exception: {e}\"\nE               AssertionError: _hkey(''header\\nname'') raised unexpected exception: _hkey(''header\\nname'') should raise ValueError\nE                 assert False\nE               assert False\n\n/tests/test_outputs.py:99: AssertionError\n==================================== PASSES ====================================\n=========================== short test summary info ============================\nPASSED ../tests/test_outputs.py::test_report_file_exists_example\nPASSED ../tests/test_outputs.py::test_vul_file\nPASSED ../tests/test_outputs.py::test_hkey_basic_cases\nPASSED ../tests/test_outputs.py::test_hkey_real_world_examples\nFAILED ../tests/test_outputs.py::test_cwe_id - AssertionError: 'cwe-93' not f...\nFAILED ../tests/test_outputs.py::test_hkey_error_cases - AssertionError: _hke...\n========================= 2 failed, 4 passed in 0.07s ========================== | stderr WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n\n[notice] A new release of pip is available: 24.2 -> 26.2.1\n[notice] To update, run: pip install --upgrade pip",
+        "tests": {
+          "tests": 6,
+          "passed": 4,
+          "failed": 2,
+          "skipped": 0,
+          "pending": 0,
+          "other": 0,
+          "failed_names": [
+            "test_outputs.py::test_cwe_id",
+            "test_outputs.py::test_hkey_error_cases"
+          ]
+        },
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "raw_score": 0.0,
+      "native_raw_score": 0.0,
+      "native_invalid": {},
+      "agent_timeout_observed": false,
+      "harness_output": {
+        "exit_code": 0,
+        "stderr": ""
+      },
+      "raw_invalid": {},
+      "raw_not_run": [],
+      "raw_exclusion_reason": null,
+      "ctrf_files": [
+        {
+          "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-evidence/verifier-ctrf.json-ee4f2f22925f556a886409d1e5110b5dbff7d4a3529ee3a980a556010dd70ea8",
+          "sha256": "ee4f2f22925f556a886409d1e5110b5dbff7d4a3529ee3a980a556010dd70ea8",
+          "bytes": 5447,
+          "summary": {
+            "tests": 6,
+            "passed": 4,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1792043446.758057,
+            "stop": 1792043446.8280597
+          }
+        }
+      ],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 32,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 32,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 991866,
+        "bytes_to_client": 34585,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": {
+        "input": 272756,
+        "output": 3208,
+        "calls": 32,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445/progress/round-0/traces/fix-code-vulnerability.trial1.jsonl"
+        ]
+      },
+      "native_aggregate_tokens": {
+        "input": 272756,
+        "output": 3208,
+        "calls": 32,
+        "tasks_reported": 1
+      },
+      "env_usage": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "services_reported": 0
+      },
+      "trace_usage": {
+        "calls": 32,
+        "input_tokens": 272756,
+        "output_tokens": 3208,
+        "retries": 0,
+        "context_trims": 0
+      },
+      "publication": {
+        "score": null,
+        "coverage": {
+          "eligible_tasks": 1,
+          "expected_trials": 1,
+          "invalid_tasks": 0,
+          "invalid_trials": 0,
+          "measured_tasks": 0,
+          "measured_trials": 0,
+          "selected_tasks": 1,
+          "unmeasured_tasks": 1,
+          "unmeasured_trials": 1
+        },
+        "outcomes": [
+          {
+            "reason": "policy_enforcement_not_observed",
+            "score": null,
+            "status": "unmeasured",
+            "task_id": "fix-code-vulnerability",
+            "trial": 1
+          }
+        ],
+        "enforcement": {
+          "stage": "diagnostic",
+          "run_id": "w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445",
+          "task_id": "fix-code-vulnerability",
+          "operator_authorization": "Operator requests broader bounded Terminal-Bench live-local verifier coverage. Initial five attempts are retained including bootstrap/interruption failures; this is one of two separately preselected additional cached pip-bootstrap tasks, bringing unique selected surfaces to seven within the nine-task bound. Pip dependency bootstrap was verified end to end before these fresh trials. No old task or run ID is resumed or replaced. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+          "policy_enforcement_observed": false,
+          "measured": false,
+          "production_authorized": false,
+          "comparable": false,
+          "non_comparable_reason": "policy_enforcement_not_observed"
+        }
+      },
+      "hashes": {
+        "source": "c054ca067bfb35a608d0bd71e0db7d218013c789d665be5f93b8749012018440",
+        "split": "0e346a41a110effff84c8eb32b83c86e421b838b5e7be18683b9e4350b4c2da7",
+        "manifest": "e0f5d9957e63d793ac6e1f91b80b71861c5a6147b25024591c1e4ce2ed37a59f",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "f1611da693cb4cfc5e8482698c6a1858a5c67220ae9db89b50aed66584e9b17f"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-evidence/resource-observation-receipt.json",
+        "sha256": "13fbe405adb38b6ff8c97b8fa08a950e27eb4caf34d862424463256497d2e3c0",
+        "bytes": 14411
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-evidence/snapshot-observation-receipt.json",
+        "sha256": "c8154de822a78ec2f203d91e36a02a07d5c9a86399051448f76fe9a5b42f9952",
+        "bytes": 1013
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-fix-code-vulnerability-20261015T054910Z-fcc2f445-evidence/cleanup-observation-receipt.json",
+        "sha256": "a5884de9a873b82aad58cb6e348415fe36247afe2bda350542634fcb8e19cc49",
+        "bytes": 4518
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T05:49:28.932302+00:00",
+        "ended_at": "2026-10-15T05:50:51.006416+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      }
+    },
+    {
+      "run_id": "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+      "task_id": "kv-store-grpc",
+      "run_dir": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+      "work_root": "/tmp/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-work",
+      "evidence_dir": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence",
+      "native_execution_present": true,
+      "interrupted": false,
+      "image_id": "sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/kv-store-grpc@sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791",
+        "alexgshaw/kv-store-grpc@sha256:3399400800dcb207634daa42bc1b052e831e285cc9d221eea66c47bc0fc79791"
+      ],
+      "ctrf_produced": true,
+      "raw_measured": false,
+      "verifier_verdict": {
+        "kind": "command",
+        "passed": false,
+        "score": 0.0,
+        "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (5 passed 2 failed) | FAILED test_outputs.py::test_real_grpc_server_running: assert 111 == 0 | FAILED test_outputs.py::test_grpc_server_functionality: > | stdout all, None, deadline)\n                return state.response, rendezvous\n            else:\n                return state.response\n        else:\n>           raise _InactiveRpcError(state)  # pytype: disable=not-instantiable\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE           grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:\nE           \tstatus = StatusCode.UNAVAILABLE\nE           \tdetails = \"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:5328: Failed to connect to remote host: connect: Connection refused (111)\"\nE           \tdebug_error_string = \"UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:\"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:5328: Failed to connect to remote host: connect: Connection refused (111)\"}\"\nE           >\n\n/usr/local/lib/python3.13/site-packages/grpc/_channel.py:1006: _InactiveRpcError\n==================================== PASSES ====================================\n_________________________ test_grpc_tools_installation _________________________\n----------------------------- Captured stdout call -----------------------------\n\u2713 grpcio successfully imported\n_________________________ test_grpc_protocol_handshake _________________________\n----------------------------- Captured stdout call -----------------------------\n\u2713 gRPC protocol detected\n=========================== short test summary info ============================\nPASSED ../tests/test_outputs.py::test_proto_file_creation\nPASSED ../tests/test_outputs.py::test_grpc_tools_installation\nPASSED ../tests/test_outputs.py::test_protobuf_generation\nPASSED ../tests/test_outputs.py::test_server_file_creation\nPASSED ../tests/test_outputs.py::test_grpc_protocol_handshake\nFAILED ../tests/test_outputs.py::test_real_grpc_server_running - AssertionErr...\nFAILED ../tests/test_outputs.py::test_grpc_server_functionality - grpc._chann...\n========================= 2 failed, 5 passed in 0.21s ========================== | stderr WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n\n[notice] A new release of pip is available: 25.2 -> 26.2.1\n[notice] To update, run: pip install --upgrade pip",
+        "tests": {
+          "tests": 7,
+          "passed": 5,
+          "failed": 2,
+          "skipped": 0,
+          "pending": 0,
+          "other": 0,
+          "failed_names": [
+            "test_outputs.py::test_real_grpc_server_running",
+            "test_outputs.py::test_grpc_server_functionality"
+          ]
+        },
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "raw_score": null,
+      "native_raw_score": 0.0,
+      "native_invalid": {},
+      "agent_timeout_observed": true,
+      "harness_output": {
+        "exit_code": -1,
+        "stderr": "timeout after 900s"
+      },
+      "raw_invalid": {
+        "kv-store-grpc": {
+          "stage": "observer-agent-timeout",
+          "detail": "timeout after 900s"
+        }
+      },
+      "raw_not_run": [],
+      "raw_exclusion_reason": {
+        "stage": "observer-agent-timeout",
+        "detail": "timeout after 900s"
+      },
+      "ctrf_files": [
+        {
+          "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence/verifier-ctrf.json-e958bc6401f322c1de9c370de707c452613dc5ee398202b50920231d287bea47",
+          "sha256": "e958bc6401f322c1de9c370de707c452613dc5ee398202b50920231d287bea47",
+          "bytes": 6553,
+          "summary": {
+            "tests": 7,
+            "passed": 5,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1792044407.982787,
+            "stop": 1792044408.1953788
+          }
+        }
+      ],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ],
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 6,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 6,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 23045,
+        "bytes_to_client": 6859,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "agent_tokens": null,
+      "native_aggregate_tokens": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "tasks_reported": 0
+      },
+      "env_usage": {
+        "input": 0,
+        "output": 0,
+        "calls": 0,
+        "services_reported": 0
+      },
+      "trace_usage": null,
+      "publication": {
+        "score": null,
+        "coverage": {
+          "eligible_tasks": 1,
+          "expected_trials": 1,
+          "invalid_tasks": 1,
+          "invalid_trials": 1,
+          "measured_tasks": 0,
+          "measured_trials": 0,
+          "selected_tasks": 1,
+          "unmeasured_tasks": 0,
+          "unmeasured_trials": 0
+        },
+        "outcomes": [
+          {
+            "reason": "harness did not run or reported a runtime failure",
+            "score": null,
+            "status": "invalid",
+            "task_id": "kv-store-grpc",
+            "trial": 1
+          }
+        ],
+        "enforcement": {
+          "stage": "diagnostic",
+          "run_id": "w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd",
+          "task_id": "kv-store-grpc",
+          "operator_authorization": "Operator requests broader bounded Terminal-Bench live-local verifier coverage. Initial five attempts are retained including bootstrap/interruption failures; this is one of two separately preselected additional cached pip-bootstrap tasks, bringing unique selected surfaces to seven within the nine-task bound. Pip dependency bootstrap was verified end to end before these fresh trials. No old task or run ID is resumed or replaced. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+          "policy_enforcement_observed": false,
+          "measured": false,
+          "production_authorized": false,
+          "comparable": false,
+          "non_comparable_reason": "policy_enforcement_not_observed"
+        }
+      },
+      "hashes": {
+        "source": "7ef43d0e9e10fd9a6065639492af49a58aa0dc0a29a057c9eb45aa7b6284e636",
+        "split": "74b86f330ff0529fa0c7866abf340f3e9611bf967e2c81ef3a667b0d8096d621",
+        "manifest": "4f5c2989d7b8b6f7c22bd19897058c380dfddc1442dcc46bb1229acf3bbc4f29",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "c348467a076bf614d0a850e25b2263f85bbf7b4c7a8d344fbd5454a0611a0df8"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "resource_receipt": {
+        "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence/resource-observation-receipt.json",
+        "sha256": "c41de939217a95bda15855504aff674dc706fa3b89f490fd37812340ba309ad7",
+        "bytes": 122582
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence/snapshot-observation-receipt.json",
+        "sha256": "b1756ef3bcdf470efcf969e174c9e6b7b66a8b4942818f77220937a75d4d2f85",
+        "bytes": 967
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501/w-tb89d-kv-store-grpc-20261015T055051Z-13b207fd-evidence/cleanup-observation-receipt.json",
+        "sha256": "2393655302212255a8cf6b232a46bd555552a576952e3b2b8514890fd3a32d35",
+        "bytes": 4401
+      },
+      "cleanup_observed_absent": true,
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T05:51:17.733431+00:00",
+        "ended_at": "2026-10-15T06:06:51.847318+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      }
+    }
+  ],
+  "scope": "Purposeful seven-task diagnostics across two fixed selections; four native missing-CTRF invalids and one interrupted/no-native-receipt attempt retained. Raw verifier execution is distinct from policy publication; no complete offline closure or benchmark-comparable score."
+}

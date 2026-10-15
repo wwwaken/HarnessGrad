@@ -1,0 +1,129 @@
+{
+ "task_id": "git-multibranch",
+ "round": 0,
+ "invalid": {
+  "stage": "check",
+  "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+ },
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-tb89d-git-multibranch-20261015T053910Z-c59479ab",
+  "task_id": "git-multibranch",
+  "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ },
+ "harness_output": {
+  "exit_code": 0,
+  "stderr": "",
+  "harness_runtime": {
+   "source": "overlay",
+   "python": "3.12",
+   "install": "requirements.txt",
+   "install_sha256": "8be10848dc9737d2dcfd24a34f5034ddeb02e918b078ce09a3c2d090fbc44ed8",
+   "path": "/home/xubuqiang/.cache/harnessgrad/overlays/8be10848dc9737d2/3.12",
+   "built_from_image": "alexgshaw/chess-best-move:20251031",
+   "packages": {
+    "annotated_types": {
+     "top_level": [
+      "annotated_types"
+     ],
+     "version": "0.8.0"
+    },
+    "anyio": {
+     "top_level": [
+      "anyio"
+     ],
+     "version": "4.15.1"
+    },
+    "h11": {
+     "top_level": [
+      "h11"
+     ],
+     "version": "0.16.0"
+    },
+    "httpcore2": {
+     "top_level": [
+      "httpcore2"
+     ],
+     "version": "2.13.1"
+    },
+    "httpx2": {
+     "top_level": [
+      "httpx2"
+     ],
+     "version": "2.13.1"
+    },
+    "idna": {
+     "top_level": [
+      "idna"
+     ],
+     "version": "3.20"
+    },
+    "jiter": {
+     "top_level": [
+      "jiter"
+     ],
+     "version": "0.17.0"
+    },
+    "openai": {
+     "top_level": [
+      "openai"
+     ],
+     "version": "3.22.1"
+    },
+    "pydantic": {
+     "top_level": [
+      "pydantic"
+     ],
+     "version": "2.13.5"
+    },
+    "pydantic_core": {
+     "top_level": [
+      "pydantic_core"
+     ],
+     "version": "2.46.5"
+    },
+    "sniffio": {
+     "top_level": [
+      "sniffio"
+     ],
+     "version": "1.3.1"
+    },
+    "truststore": {
+     "top_level": [
+      "truststore"
+     ],
+     "version": "0.10.4"
+    },
+    "typing_extensions": {
+     "top_level": [
+      "typing_extensions"
+     ],
+     "version": "4.16.0"
+    },
+    "typing_inspection": {
+     "top_level": [
+      "typing_inspection"
+     ],
+     "version": "0.4.4"
+    }
+   }
+  },
+  "model_gateway": {
+   "published": true,
+   "target": "127.0.0.1:8002",
+   "connections": 17,
+   "upstream_connect_failed": 0,
+   "upstream_connect_error": null,
+   "upstream_closed_first": 17,
+   "client_closed_first": 0,
+   "bytes_to_upstream": 115275,
+   "bytes_to_client": 20263,
+   "read_errors": []
+  }
+ }
+}

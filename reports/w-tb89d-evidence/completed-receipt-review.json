@@ -1,0 +1,54 @@
+[
+  {
+    "task_id": "log-summary-date-ranges",
+    "invalid": {
+      "log-summary-date-ranges": {
+        "stage": "check",
+        "detail": "the check wrote no /logs/verifier/ctrf.json: its tests did not run, so this task was not measured"
+      }
+    },
+    "raw_per_task": {},
+    "ctrf_copies": 0,
+    "rewards": [
+      "0\n"
+    ],
+    "publication_coverage": {
+      "eligible_tasks": 1,
+      "expected_trials": 1,
+      "invalid_tasks": 1,
+      "invalid_trials": 1,
+      "measured_tasks": 0,
+      "measured_trials": 0,
+      "selected_tasks": 1,
+      "unmeasured_tasks": 0,
+      "unmeasured_trials": 0
+    },
+    "agent_trace_usage": {
+      "calls": 32,
+      "input_tokens": 273565,
+      "output_tokens": 14249,
+      "retries": 6,
+      "context_trims": 6
+    },
+    "model_gateway": {
+      "published": true,
+      "target": "127.0.0.1:8002",
+      "connections": 38,
+      "upstream_connect_failed": 0,
+      "upstream_connect_error": null,
+      "upstream_closed_first": 37,
+      "client_closed_first": 1,
+      "bytes_to_upstream": 1116348,
+      "bytes_to_client": 84360,
+      "read_errors": []
+    },
+    "observer_errors": [],
+    "launch": {
+      "returncode": 2,
+      "started_at": "2026-10-15T05:21:21.096806+00:00",
+      "ended_at": "2026-10-15T05:34:45.764538+00:00",
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local"
+    }
+  }
+]
