@@ -571,7 +571,9 @@ def test_new_historical_record_cannot_reuse_an_existing_run_id(document, blocker
 def test_chess_future_launch_guidance_requires_new_ids_and_preserves_history(document):
     target = row(document, "chessbench_puzzles")
     assert "recovery-id-conflict" not in {blocker["id"] for blocker in target["blockers"]}
-    assert "interruption-closure" in {blocker["id"] for blocker in target["blockers"]}
+    assert "interruption-closure" not in {blocker["id"] for blocker in target["blockers"]}
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
+    assert "### `chessbench_puzzles / interruption-closure`" in withdrawal
     baseline = checker.read_json(checker.HISTORY)
     assert target["historical_runs"] == [
         item["record"] for item in baseline["records"]
@@ -586,6 +588,42 @@ def test_chess_future_launch_guidance_requires_new_ids_and_preserves_history(doc
         assert history["status"] == "incomplete" and history["effect"] is None
         assert f'`{history["run_id"]}`' in audit
         assert f'launch a fresh `{history["run_id"]}`' not in journal
+
+
+@pytest.mark.parametrize("name, blocker_id, family, evidence, retained", [
+    ("gaia", "frozen-lifecycle-receipt", "snapshot-cleanup",
+     ("Retain policy refusal: do not provision or run GAIA.",
+      '`"receipt_validation": "not-performed"`',
+      "No permitted live run\ncan supply that evidence here"),
+     ("gaia-validation-pilot-h0-20261117-v2", "gaia-validation-pilot-h0-20261117-v3",
+      "9 persisted trials", "10 done events", "snapshot exit 137", "`effect=null`")),
+    ("tau_bench", "local-state-lifecycle", "snapshot-cleanup",
+     ("Keep the runtime gate open.", "selected-only custody plus independent",
+      "run/trial/manifest-bound clean-state restoration", "both clean databases\nare absent",
+      "no independent selected runtime/lifecycle receipt"),
+     ("`historical_runs` stays empty", "no frozen tau-bench run or independent receipt is invented",
+      "without a runtime pass, readiness claim or production\nauthorization")),
+    ("chessbench_puzzles", "interruption-closure", "termination-audit",
+     ("independent audit/receipt authentication", "termination/quiescence review",
+      "`docs/independent-review-deferred.md`", "operator withdrew the independent-approval gates",
+      "That standalone exported source is not available"),
+     ("chess-pilot-h0-20261013", "chess-pilot-h0-20261013-recovery-01", "19 and 149/150",
+      "Never resume, rerun or overwrite either ID", "`effect=null`", "not measured zeros")),
+])
+def test_operator_withdrawn_runtime_requirements_retain_evidence_and_limits(
+        document, name, blocker_id, family, evidence, retained):
+    assert blocker_id not in {blocker["id"] for blocker in row(document, name)["blockers"]}
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
+    heading = f"### `{name} / {blocker_id}`"
+    assert heading in withdrawal
+    section = withdrawal.split(heading, 1)[1].split("\n### ", 1)[0].split("\n## ", 1)[0]
+    assert f"**Former family:** `{family}`. **Former status:** `runtime`." in section
+    for label in ("**Asked for:**", "**Evidence reviewed:**",
+                  "**Why it cannot be advanced here:**", "**Retained:**"):
+        assert label in section
+    for fact in evidence + retained:
+        assert fact in section
+    assert document["review"]["production_authorized"] is False
 
 
 def test_archived_chess_launch_guidance(document, site_archive):

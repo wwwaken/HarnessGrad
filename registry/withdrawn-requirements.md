@@ -10,6 +10,11 @@ A requirement withdrawn here is one that no amount of further work in this repos
 satisfy — not one that is merely difficult. Each entry names what was searched and what
 came back empty or impossible.
 
+The operator's further decision on 2026-10-15 extends this record to the three runtime
+requirements below. Their evidence describes why they cannot be advanced in the current
+scope; withdrawal does not assert that a future provisioned runtime could never be tested.
+No new live run, receipt authentication or search result is claimed by these entries.
+
 ## Shared requirement withdrawn: `scorer-offline-closure`
 
 The withdrawn shared requirement includes S6 "validate live controls before pilots".
@@ -117,14 +122,106 @@ preserved with `effect=null`. Archive acceptance stays blocked in the sense that
 measurement is claimed from it — what is withdrawn is the requirement to *produce* records
 that were never captured.
 
+### `gaia / frozen-lifecycle-receipt`
+**Former family:** `snapshot-cleanup`. **Former status:** `runtime`.
+**Asked for:** independently authenticated selected-only/source-lock, verifier/dependency
+and artifact-only export evidence, plus resolution of the frozen V2/V3 lifecycle gaps.
+**Evidence reviewed:** the former blocker's own next_action starts
+"Retain policy refusal: do not provision or run GAIA." Its observed record says compatibility
+only compares supplied identities, without validating receipts or authorizing reuse;
+`eval/policy/gaia_snapshot_attestation.py` explicitly records
+`"receipt_validation": "not-performed"`. Historical citations remain
+`/site/adapter-integration-journal.md` (`## GAIA lifecycle wiring audit — Codex 165`),
+`/site/preserved-lifecycle-review-b8.md` (`## GAIA / frozen-lifecycle-receipt`),
+`/site/gaia-operator-packet-codex210.md`
+(`## Required operator deliveries, in dependency order`) and
+`/site/enforcement-proof-decision.md` (`Snapshot/cleanup uncertainty alone is not a new`).
+**Why it cannot be advanced here:** the requirement withholds readiness pending live
+evidence while its own action forbids provisioning or running GAIA. No permitted live run
+can supply that evidence here. The operator withdraws this requirement as a standing limit;
+this does not lift the policy refusal or authenticate the frozen receipts.
+**Retained:** `gaia-validation-pilot-h0-20261117-v2` and
+`gaia-validation-pilot-h0-20261117-v3`, their original receipts and historical records stay
+untouched: never resume, rerun or overwrite either ID. V2's 9 persisted trials versus
+10 done events and unknown API-timeout usage remain unresolved; V3's pre-verification
+snapshot exit 137 remains unresolved. Both records remain incomplete with `effect=null`;
+unknown outcomes stay unmeasured and no aggregate score is valid. Their original receipt
+citations remain in `historical_runs`:
+`/mnt/20t/xubuqiang/Study/gaia-h0-launch-v2-evidence/GAIA_H0_V2_RECEIPT.json` and
+`/mnt/20t/xubuqiang/Study/gaia-h0-launch-v3/runs/gaia-validation-pilot-h0-20261117-v3/events.jsonl`.
+Best-effort snapshots/cleanup retain uncertainty; known failures remain recorded.
+
+### `tau_bench / local-state-lifecycle`
+**Former family:** `snapshot-cleanup`. **Former status:** `runtime`.
+**Asked for:** "Keep the runtime gate open." Require selected-only custody plus independent
+run/trial/manifest-bound clean-state restoration, database/image identity, evaluator secrecy,
+effective backend limits and artifact-only state export before a readiness claim.
+**Evidence reviewed:** the former observed record says import reads the full ground-truth
+pool (`data/datasets/tau_bench.py`, `_ALL_GT: list[dict] = _read_gt()`), both clean databases
+are absent in the reviewed worktree, and no independent selected runtime/lifecycle receipt
+was located in the reviewed repository metadata. The late verifier-input declaration
+(`def _verifier(record: dict) -> dict:`) is source evidence, not reset/secrecy observation.
+Historical citations remain `/site/adapter-integration-journal.md`
+(`## AppWorld / GAIA / tau-bench — local state boundaries`),
+`/site/preserved-lifecycle-review-b8.md` (`## tau_bench / local-state-lifecycle`),
+`/site/tau-bench-vendoring.md`
+(`3. **Two recorded generated databases are absent, intentionally ignored by git.**`) and
+`/site/enforcement-proof-decision.md` (`Snapshot/cleanup uncertainty alone is not a new`).
+**Why it cannot be advanced here:** the cited source/inventory cannot establish selected-only
+custody or independently observed run/trial/manifest-bound restoration. The reviewed record
+has neither the clean database pair nor that independent receipt; repeating declarations
+or synthetic contracts cannot supply the missing observation. The operator now withdraws
+the keep-open requirement and records those missing runtime facts as limits. This is an
+operator scope decision, not proof that a future provisioned runtime could never be tested.
+**Retained:** the full-pool import, missing database pair and unobserved custody, reset,
+secrecy, backend-limit and export properties remain limits. `historical_runs` stays empty;
+no frozen tau-bench run or independent receipt is invented. Existing vendoring and lifecycle
+citations stay historical evidence, without a runtime pass, readiness claim or production
+authorization. Best-effort snapshots/owned cleanup retain uncertainty; known failures still
+refuse, and evidence outside the cited review remains unknown.
+
+### `chessbench_puzzles / interruption-closure`
+**Former family:** `termination-audit`. **Former status:** `runtime`.
+**Asked for:** "Keep the runtime gate open pending independent audit/receipt authentication
+and termination/quiescence review." Preserve both historical IDs, original receipts and null
+effects; never resume, rerun or overwrite either ID, or turn missing outcomes into zeros.
+**Evidence reviewed:** the former observed record reports 19 and 149/150 completed
+task-trials with no terminal verdict/aggregate or cleanup closure. Termination authority
+remains undetermined on the native bwrap/files path; an audit digest does not authenticate
+either external run receipt. Former citations remain `data/datasets/chessbench_puzzles.py`
+(`KIND = "dataset"`), `/site/adapter-integration-journal.md`
+(`- Interruption audit: termination authority is undetermined`),
+`/site/preserved-lifecycle-review-b8.md` (`## chessbench_puzzles / interruption-closure`),
+`/site/chess-recovery-id-conflict-codex182-report.md` (`Both historical IDs`) and
+`/site/enforcement-proof-decision.md` (`Snapshot/cleanup uncertainty alone is not a new`).
+**Why it cannot be advanced here:** the independent-approval requirement was already
+withdrawn by the operator in `docs/independent-review-deferred.md` (now cited as
+`/site/independent-review-deferred.md`). That standalone exported source is not available
+in this worktree; the existing journal's "Parent review and merge — w-trivia — 2026-10-15"
+entry corroborates that the operator withdrew the independent-approval gates and instructed
+workers not to re-impose human sign-off. Neither that decision nor source review supplies
+authentication or missing terminal/quiescence observations for frozen runs. The operator's
+new decision withdraws the remaining keep-open requirement; those unknowns remain limits.
+**Retained:** `chess-pilot-h0-20261013` and
+`chess-pilot-h0-20261013-recovery-01`, their original receipts, historical records and
+`/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/chess/interruption-audit.md`
+citation stay untouched. Never resume, rerun or overwrite either ID. Both records remain
+incomplete with `effect=null`; the 19 and 149/150 coverage, missing terminal outcomes,
+undetermined termination authority and unproven cleanup remain as recorded. Unknown
+outcomes are unmeasured, not measured zeros or complete coverage. Future attempts still
+require new unique IDs and separately applicable admission; withdrawal is no rerun or pilot
+authorization. Best-effort cleanup retains uncertainty without requiring proof of exact
+owned absence or atomic lease closure.
+
 ## What this decision does not do
 
-- It does not claim any withdrawn requirement was solved. Each is recorded with the search
-  that failed.
+- It does not claim any withdrawn requirement was solved. Each is recorded with its
+  supporting evidence and retained limits.
 - It does not touch the four permanent refusals (`api_bank`, `nestful`, `sotuqa`,
   `tau2_bench`), whose `retain-contract-refusal` entries stay exactly as they are.
-- It does not touch the operator-decided trio: `gaia` (its own action says do not provision
-  or run), `tau_bench` and `chessbench_puzzles/interruption-closure` (both say keep open).
+- The operator's further decision on 2026-10-15 withdraws the three runtime requirements
+  above, superseding the earlier decision to leave this trio untouched. Their limits and
+  historical receipts remain; `appworld` and `bfcl_v3` stay real remaining work unchanged.
 - It does not withdraw anything whose evidence merely has not been collected yet. The
   `journal-coverage` family, `hotpotqa` and `triviaqa` stay open because what they need is an
   operator-supplied selected manifest, which is an input rather than an impossibility.

@@ -257,42 +257,7 @@
       "surface": "text_to_sql"
     },
     {
-      "blockers": [
-        {
-          "id": "interruption-closure",
-          "family": "termination-audit",
-          "status": "runtime",
-          "observed": "Repository audit and receipt-identity citations reviewed: the original and recovery IDs remain incomplete at reported 19 and 149/150 completed task-trials, with no terminal verdict/aggregate or cleanup closure. Termination authority remains undetermined on the native bwrap/files path. The cited audit digest is not authentication of either external run receipt; unknown final outcomes remain unmeasured.",
-          "evidence": [
-            {
-              "kind": "repository",
-              "path": "data/datasets/chessbench_puzzles.py",
-              "locator": "KIND = \"dataset\""
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/adapter-integration-journal.md",
-              "locator": "- Interruption audit: termination authority is undetermined"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/preserved-lifecycle-review-b8.md",
-              "locator": "## chessbench_puzzles / interruption-closure"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/chess-recovery-id-conflict-codex182-report.md",
-              "locator": "Both historical IDs"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/enforcement-proof-decision.md",
-              "locator": "Snapshot/cleanup uncertainty alone is not a new"
-            }
-          ],
-          "next_action": "Preserve chess-pilot-h0-20261013 and chess-pilot-h0-20261013-recovery-01, their original receipts and null effects; never resume, re-run or overwrite either ID. Keep the runtime gate open pending independent audit/receipt authentication and termination/quiescence review. Continue best-effort cleanup with uncertainty retained; proof of exact owned absence or atomic lease closure is not a prerequisite. Do not turn missing outcomes or zero failed envelopes into measured zeros or complete coverage."
-        }
-      ],
+      "blockers": [],
       "dataset": "chessbench_puzzles",
       "demand": "reasoning",
       "exercises": [
@@ -421,42 +386,7 @@
       "surface": "information_seeking"
     },
     {
-      "blockers": [
-        {
-          "id": "frozen-lifecycle-receipt",
-          "family": "snapshot-cleanup",
-          "status": "runtime",
-          "observed": "Metadata-only source/runtime/lifecycle requirements reviewed; GAIA remains policy-refused. Compatibility compares supplied identities without validating receipts or authorizing reuse. Both V2/V3 IDs remain incomplete with null effects; V2 coverage/timeout usage and V3 pre-verification exit 137 remain unresolved. No aggregate score is valid.",
-          "evidence": [
-            {
-              "kind": "external-reference",
-              "path": "/site/adapter-integration-journal.md",
-              "locator": "## GAIA lifecycle wiring audit — Codex 165"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/preserved-lifecycle-review-b8.md",
-              "locator": "## GAIA / frozen-lifecycle-receipt"
-            },
-            {
-              "kind": "repository",
-              "path": "eval/policy/gaia_snapshot_attestation.py",
-              "locator": "\"receipt_validation\": \"not-performed\""
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/gaia-operator-packet-codex210.md",
-              "locator": "## Required operator deliveries, in dependency order"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/enforcement-proof-decision.md",
-              "locator": "Snapshot/cleanup uncertainty alone is not a new"
-            }
-          ],
-          "next_action": "Retain policy refusal: do not provision or run GAIA. Preserve gaia-validation-pilot-h0-20261117-v2 and gaia-validation-pilot-h0-20261117-v3 without resuming or overwriting them. Keep the runtime gate open for independently authenticated selected-only/source-lock, verifier/dependency and artifact-only export. Continue best-effort snapshots and cleanup with uncertainty retained; incomplete observations alone are not a gate and known failures remain recorded. Retain unknown outcomes as unmeasured and publish no aggregate score."
-        }
-      ],
+      "blockers": [],
       "dataset": "gaia",
       "demand": "evidence",
       "exercises": [
@@ -984,47 +914,7 @@
       "surface": "tool_dialogue"
     },
     {
-      "blockers": [
-        {
-          "id": "local-state-lifecycle",
-          "family": "snapshot-cleanup",
-          "status": "runtime",
-          "observed": "Source metadata review establishes task-specific database setup and late verifier-input declarations, not selected-only custody or observed reset/secrecy: import reads the full ground-truth pool, both clean databases are absent in this worktree, and no independent selected runtime/lifecycle receipt was located in the reviewed repository metadata. Loadability and historical image inventory do not establish readiness.",
-          "evidence": [
-            {
-              "kind": "external-reference",
-              "path": "/site/adapter-integration-journal.md",
-              "locator": "## AppWorld / GAIA / tau-bench — local state boundaries"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/preserved-lifecycle-review-b8.md",
-              "locator": "## tau_bench / local-state-lifecycle"
-            },
-            {
-              "kind": "repository",
-              "path": "data/datasets/tau_bench.py",
-              "locator": "_ALL_GT: list[dict] = _read_gt()"
-            },
-            {
-              "kind": "repository",
-              "path": "data/datasets/tau_bench.py",
-              "locator": "def _verifier(record: dict) -> dict:"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/tau-bench-vendoring.md",
-              "locator": "3. **Two recorded generated databases are absent, intentionally ignored by git.**"
-            },
-            {
-              "kind": "external-reference",
-              "path": "/site/enforcement-proof-decision.md",
-              "locator": "Snapshot/cleanup uncertainty alone is not a new"
-            }
-          ],
-          "next_action": "Keep the runtime gate open. Require selected-only custody plus independent run/trial/manifest-bound clean-state restoration, database/image identity, evaluator secrecy, effective backend limits and artifact-only state export before any readiness claim. Continue best-effort snapshots and owned cleanup with uncertainty retained; incomplete observations alone are not a gate and known failures still refuse. Do not infer a runtime pass from source declarations, inventory or synthetic contracts; evidence outside this review remains unknown."
-        }
-      ],
+      "blockers": [],
       "dataset": "tau_bench",
       "demand": "tool_use",
       "exercises": [
@@ -1161,7 +1051,8 @@
       "Source review 2026-10-15 - w-shared: pristine-verifier review action closed by the opt-in pinned offline runtime identity, stopped-instance inspection and two-projection recheck mechanism; see docs/w-shared-verifier-review.md. This is not live dataset evidence or production authorization. runtime-observations remains open: unknown-only aggregation is allowed; both code-solvable shared blockers remain unchanged.",
       "Source/test review 2026-10-15 - w-obs, corrected by w-fix: runtime-observations source-review action closed; stepwise ChessBench records the trusted platform in-process controller class, and all-unknown aggregates/progress/curves retain complete evidence with scorer_isolation_class=unknown and scorer_isolation_comparable=false; unknown comparison and mixed-class aggregation/comparison still refuse. See docs/w-fix-unknown-isolation-records.md and reports/w-fix-validation.txt; docs/w-obs-runtime-review.md and reports/w-obs-validation.txt describe the original change. Unsupported policy-bearing paths remain blocked; both code-solvable shared blockers, dataset-local requirements and historical receipts remain unchanged. No live dataset evidence or production authorization.",
       "w-chess3: Corrected trusted-stepwise-transport observed before execution: the solver_turn=0 falsy gate was in the AGENT'S OWN GENERATED SCRIPT (reports/w-chess2-evidence/actor-command-line-19.sh:25), not platform code. Closed only this transport blocker after w-chess3-stepwise-20261014T222208Z-728e7478 delivered a failed/wrong_move terminal exchange with exit_code=0, submissions=1 and successful relay cleanup. Raw controller score=0.0, scorer_isolation_class=in-process; staged score=null, invalid_trials=0, unmeasured_trials=1, reason=policy_enforcement_not_observed. Diagnostic control only, no model or protocol comparison. Correction and full closure evidence: reports/w-chess3-receipts.md and reports/w-chess3-evidence/corrected-blocker-before-run.json. interruption-closure and all historical/shared gates are unchanged.",
-      "Operator decision 2026-10-15: requirements that are PROVEN unobtainable are withdrawn and recorded as limits with their search evidence, rather than left open. Withdrawn: the shared blocker `scorer-offline-closure` (including clause S6 'validate live controls before pilots', which is circular - the observation flag that would clear it is hard-coded false and only flips after the admission it helps withhold) and the shared blocker `artifact-only-state-export`; and the dataset blockers livecodebench/row-attestation (zero authoritative upstream row IDs obtainable), twowikimultihopqa/hub-data-provenance (opaque ETag, no content digest), twowikimultihopqa/ujson-native-offline-closure (rebuild from the pinned commit did not reproduce; PyPI attestation 404), bird_minidev/sql-coverage-reconciliation and ds1000/host-slice-archive-review (original trial/provenance records were never captured and are not published). Evidence for each search: registry/withdrawn-requirements.md. Clauses whose evidence EXISTS are closed on that evidence, with residual gaps recorded as standing limits in the same file. Nothing is withdrawn for being merely difficult: the journal-coverage family, hotpotqa and triviaqa stay open because they need an operator-supplied selected manifest, and the operator-decided trio (gaia, tau_bench, chessbench_puzzles/interruption-closure) is untouched. The four permanent refusals are unchanged."
+      "Operator decision 2026-10-15: requirements that are PROVEN unobtainable are withdrawn and recorded as limits with their search evidence, rather than left open. Withdrawn: the shared blocker `scorer-offline-closure` (including clause S6 'validate live controls before pilots', which is circular - the observation flag that would clear it is hard-coded false and only flips after the admission it helps withhold) and the shared blocker `artifact-only-state-export`; and the dataset blockers livecodebench/row-attestation (zero authoritative upstream row IDs obtainable), twowikimultihopqa/hub-data-provenance (opaque ETag, no content digest), twowikimultihopqa/ujson-native-offline-closure (rebuild from the pinned commit did not reproduce; PyPI attestation 404), bird_minidev/sql-coverage-reconciliation and ds1000/host-slice-archive-review (original trial/provenance records were never captured and are not published). Evidence for each search: registry/withdrawn-requirements.md. Clauses whose evidence EXISTS are closed on that evidence, with residual gaps recorded as standing limits in the same file. Nothing is withdrawn for being merely difficult: the journal-coverage family, hotpotqa and triviaqa stay open because they need an operator-supplied selected manifest, and the operator-decided trio (gaia, tau_bench, chessbench_puzzles/interruption-closure) is untouched. The four permanent refusals are unchanged.",
+      "Operator further decision 2026-10-15 - w-wd2: withdraw gaia/frozen-lifecycle-receipt, tau_bench/local-state-lifecycle and chessbench_puzzles/interruption-closure as recorded limits. This supersedes the earlier note leaving this trio untouched. GAIA's own action forbids provisioning or running it; tau-bench's reviewed metadata lacks the clean database pair and independent selected-only/run/trial/manifest-bound lifecycle receipt; ChessBench's keep-open action depends on independent audit/receipt authentication although the independent-approval requirement was already withdrawn (docs/independent-review-deferred.md; corroborated in the journal). Evidence, missing observations and retained boundaries are documented in registry/withdrawn-requirements.md. This withdraws requirements, does not certify runtime readiness or authenticate receipts, and authorizes no pilot. GAIA policy refusal and all frozen original/recovery/V2/V3 receipts and historical_runs remain unchanged with null effects; unknown outcomes stay unmeasured. appworld, bfcl_v3, all other blockers and production_authorized=false remain unchanged."
     ],
     "production_authorized": false,
     "scope": "repository-source-and-journal-only"
