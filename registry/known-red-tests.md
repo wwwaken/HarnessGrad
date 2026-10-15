@@ -282,3 +282,28 @@ reaches `verify.py:161` and fails on the same absent archive regardless. The tes
 unmodified and failing, which is the honest state; the enumeration above is the record. This is a
 limit of a preserved evidence packet, not an open platform requirement, so it is deliberately not
 entered in `registry/withdrawn-requirements.md`.
+
+## The B5 body restoration invalidates any dataset run that is executing while it writes
+
+The B5 replay writes bodies into the tracked tree (`tests/fixtures/external_provenance_b5/responses/*.body`).
+`driver.py`'s run-integrity check hashes protected paths around every method call, so a replay that
+writes during a run makes the run fail **correctly**:
+
+```
+FAILING RUN: protected files changed during method call:
+  tests/fixtures/external_provenance_b5/responses/bfcl-blob-multi_turn_checker.body
+PlatformTampered: {'added': [...], 'removed': [], 'modified': []}
+```
+
+Measured consequence, 2026-10-15: with the replay running, `test_dgm_rule.py::test_a_batch_becomes_one_curve_point_per_child`
+failed with `driver exited 3` and `test_candidate_apply.py::test_a_half_finished_step_is_not_a_measurement`
+failed with `"step failed" not in combined`, and `test_isolation.py`'s autouse
+`_the_shared_checkout_is_never_edited` teardown raised `added: [...bfcl-blob-model_config.body]`. All three
+pass once the replay is stopped, so none of them is a code defect. The replay also explains at least one
+earlier sweep failure (`test_stop_semantics.py`, 1 failed in the sweep, **4 passed** run alone with the
+replay stopped) and is a plausible contributor to others.
+
+**Rule for this tree:** do not run the B5 replay concurrently with pytest or with any dataset run. The
+replay is left **paused** (`kill -STOP`) rather than killed, so its 71 remaining bodies can be resumed with
+`kill -CONT` when nothing else is executing; the residue and its per-body reasons are enumerated in
+`reports/w-b5restore-replay2-20261015.jsonl`.
