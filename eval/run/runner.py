@@ -31,7 +31,8 @@ from eval.run.task_contract import runtime_task
 from eval.policy.runtime_policy import admit_native_network, phase_timeout, stage_agent_runtime
 from eval.observe.tracing import _last_identity, _last_usage, _materialize, _write_progress
 from eval.verification.verifier import _verify, test_rate_of
-from eval.verification.isolation import common_class, observed_class
+from eval.verification.isolation import common_class, observed_class, declared_class
+from eval.verification.pristine import enforce_verdict_binding
 from eval.policy.unobserved_diagnostic import Authorization
 
 
@@ -154,7 +155,8 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
             env: dict | None = None,
             run_id: str = "", run_seed: str = "",
             recordings_root: Path | None = None,
-            diagnostic_authorization: Authorization | None = None) -> dict:
+            diagnostic_authorization: Authorization | None = None,
+            trial_id: str | None = None) -> dict:
     if diagnostic_authorization is not None:
         diagnostic_authorization.require_scope(run_id, [task["task_id"]])
     refusal = _refuse_unobserved_policies(
@@ -162,7 +164,7 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
         diagnostic_authorization=diagnostic_authorization)
     result = refusal if refusal is not None else _run_one(
         repo, task, timeout_s, sandbox, setup, verifier, verify_timeout_s,
-        env, run_id, run_seed, recordings_root)
+        env, run_id, run_seed, recordings_root, trial_id=trial_id)
     if result.get("verdict") is not None:
         result["verdict"].setdefault("scorer_isolation_class", "unknown")
     if diagnostic_authorization is not None:
@@ -176,7 +178,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
             verify_timeout_s: int | None = None,
             env: dict | None = None,
             run_id: str = "", run_seed: str = "",
-            recordings_root: Path | None = None) -> dict:
+            recordings_root: Path | None = None, *, trial_id: str | None = None) -> dict:
     """Run the harness on one task in a throwaway dir, off the platform's disk.
 
     Returns {task_id, answer, trace, exit_code}. A non-zero exit is recorded as
@@ -523,6 +525,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 verdict = chess_stepwise.finish(stepwise_relay, exit_code)
             else:
                 verdict = _verify(workdir, verifier, answer, sandbox=sandbox, task_id=task["task_id"],
+                                  run_id=run_id, trial_id=trial_id,
                                   timeout_s=verify_timeout_s, env=env_spec,
                                   service_specs=service_specs, running=running)
                 if protocol is not None:
@@ -910,6 +913,10 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             key += ":" + chess_stepwise.STEPWISE
         return key
 
+    def trial_identity(trial: int) -> str:
+        # The ordinal repeats in each round and harness revision within an outer run.
+        return f"round-{round_no}.harness-{harness_sha}.trial-{trial + 1}"
+
     cache = cache if cache is not None else {}
     per_task, traces, verdicts = {}, {}, {}
     per_task_scorer_isolation = {}
@@ -1026,6 +1033,17 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         key = measurement_key(task)
         hit = cache.get(key)
         if hit is not None:
+            if declared_class((verifiers or {}).get(tid)) == "pristine-offline":
+                cached = hit.get("trial_verdicts") or [hit.get("verdict") or {}]
+                if len(cached) != trials:
+                    return {"task_id": tid, "invalid": {"stage": "check",
+                            "detail": "pristine cached verdict execution binding coverage mismatch"}}
+                for index, verdict in enumerate(cached):
+                    checked = enforce_verdict_binding(verdict, task_id=tid, run_id=run_id,
+                                                      trial_id=trial_identity(index))
+                    if checked.get("unmeasured"):
+                        return {"task_id": tid, "invalid": {"stage": "check",
+                                "detail": checked["unmeasured"]}}
             return {"task_id": tid, "cached": hit}
 
         # One task, one record, and the phases inside it belong to it. Where this
@@ -1049,6 +1067,8 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                                      env=(envs or {}).get(tid),
                                      run_id=run_id, run_seed=run_seed,
                                      recordings_root=recordings_root,
+                                     **({"trial_id": trial_identity(trial)}
+                                        if declared_class((verifiers or {}).get(tid)) == "pristine-offline" else {}),
                                      **({"diagnostic_authorization": diagnostic_authorization}
                                         if diagnostic_authorization is not None else {}))
                 except BaseException as exc:
@@ -1064,6 +1084,10 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                     unmeasured = result["invalid"]
                     held.failed(str(unmeasured.get("detail") or "")[:200])
                     break
+                if declared_class((verifiers or {}).get(tid)) == "pristine-offline":
+                    result["verdict"] = enforce_verdict_binding(
+                        result.get("verdict") or {}, task_id=tid, run_id=run_id,
+                        trial_id=trial_identity(trial))
                 # **The harness died because it could not reach the model endpoint.**
                 # `_provider_failure` has existed since the bug it describes was measured
                 # and was, until this call, only ever exercised by its own tests -- so a run

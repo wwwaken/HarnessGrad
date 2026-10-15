@@ -3336,7 +3336,6 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
   receipts and archives were untouched; no existing run id was resumed.
 
-<<<<<<< HEAD
 ## 2026-10-15 Pristine applicability and current-set scope - w-scope
 
 - Reviewed source at `9f78bcdd39a67e708372c44ad5c858a7e7d397fd` in registered
@@ -3401,7 +3400,6 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Resource state: code-and-record determination only for w-scope - no benchmark, model, GPU,
   endpoint or container execution. Both GPUs stayed idle and no utilisation is claimed.
   Historical runs, frozen receipts and archives were untouched.
-=======
 ## 2026-10-15 Bounded official scorer evidence extension - w-offscorer3
 
 - Read the prior w-offscorer and w-offscorer2 packets, reviewed actual remaining scoring routes, and executed bounded offline official/local comparisons on common authored inputs. Complete upstream execution is added for GAIA, Tau-Bench and LiveCodeBench; ALFWorld runs its complete installed evaluator on an authored PDDL world. BFCL and ChessBench execute unchanged official function bodies after preserved complete-import failures. AppWorld's installed generic evaluator runs an authored task predicate; this does not execute released task-specific scorers.
@@ -3409,7 +3407,6 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Findings include BFCL response-contract divergences, strict-versus-upstream Chess legality/empty-reference differences, Tau-Bench's authored ground-truth respond replay contaminating the upstream output scan, GAIA sentinel refusals, LiveCodeBench malformed-test refusals, and ALFWorld's empty-trace upstream reduction exception. Failed imports, strict socket-denied IPC, dependency finalizer diagnostics and fixture corrections remain explicit; failed or unmeasured controls are not replaced with zero.
 - Still uncovered at complete-route scope: AppWorld released task predicates, BFCL full parser/checker/handler imports, ChessBench full module/engine graph and Terminal-Bench remaining task scorers. Terminal-Bench retains its prior real single-task `bash /tests/test.sh` execution in `reports/w-net-receipts.md`; this packet does not replay or broaden it. Other task/family/provenance/transitive runtime gaps remain. S1, S3, S4 and S6 stay PARTIAL; no shared or dataset blocker closes and no gate is weakened. Only shared `scorer-offline-closure.observed` and additive evidence are updated; all statuses, next_actions, dataset/history records and original references remain unchanged.
 - Parent validation passes all 267 manifest members, 91 unchanged production source pins, all component validators and 54 focused registry tests; the registry remains valid with production authorization false. `reports/w-offscorer3-validation.txt` retains exact commands and checker output. No production adapters/shared scorers, benchmark scoring run, model/GPU/endpoint call, production verifier/H0 trial, `runs/` path or frozen receipt is changed or used. Work and commits stay in registered isolated worktrees; main is untouched.
->>>>>>> 43a0720 (evidence: narrow official scorer execution coverage with bounded offline controls)
 ## Parent review and merge — w-offscorer3 — 2026-10-15
 
 - Merged the six non-merge commits of `wg-offscorer3` (from its merge base `9f78bcd`). Result
@@ -3470,3 +3467,11 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Resource state: one bootstrap replay in a network-denied local container plus local source
   inventory - no benchmark scoring run, model, GPU or endpoint call. Both GPUs stayed idle and no
   utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
+
+## 2026-10-15 Native pristine task/run/trial binding - w-bind
+
+- Read w-quiesce2's incomplete-binding section and actual binding/events/Docker/verdict/original-restored predicate artifacts first. Its native evidence bound the contract task and generated runtime UUID; outer run/trial existed only in the observer envelope. Baseline source pins and raw review are in `reports/w-bind-evidence/`.
+- Added caller-owned task/run/trial identities through native runner, verifier, bounded v2 export, runtime admission and verdict consumption/cache checks. The runner derives distinct round/harness-revision/one-based-trial labels; direct callers must provide truthful fresh run/trial identities. Missing identities, foreign task/run/trial exports/verdicts and v1 downgrade refuse as null/unmeasured; unchanged low-level v1 controls remain explicitly unbound. No scorer predicate, two-projection check, bounds or runtime/admission gate changed.
+- Same new focused tests: 20 failed before, 20 passed after. Broader focused suite: 303 passed. Before/after real Docker controls demonstrate unsafe baseline foreign-trial export acceptance and three foreign-verdict acceptances, then refuse all three foreign exports before start and all three foreign verdicts before aggregation. The complete native outer control passed two distinctly bound trials in fresh run `w-bind-after-20261015-b3-outer-attempt-03`; both containers were removed and independently absent. Earlier exact-environment-order refusals and an incomplete collector packet are retained, never credited as zeros or overwritten.
+- `reports/w-bind-receipts.md` states source lines, commands, native identities, raw packets, defeat results and caller obligations; `reports/w-bind-validation.txt` retains checks. The packet auditor verifies 230 copied raw files and actual export/score/identity/cleanup observations. Only the shared artifact-only-state-export observed text and additive evidence are sharpened; status and next_action, every dataset record and all historical evidence remain unchanged.
+- E4 native binding is implemented at trusted-caller/platform scope; source/writer custody through use and actual quiescence remain missing. E4/E5/E6 remain PARTIAL. E1/E2/E3 retain only w-scope's current empty pristine-instance satisfaction. No blocker closes and no production authorization follows. No model/GPU/endpoint, dataset pilot, main commit or runs/ write; all work stays in registered worktree `/tmp/hg-bind` on `wg-bind`.

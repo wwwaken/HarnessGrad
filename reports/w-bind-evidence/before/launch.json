@@ -1,0 +1,57 @@
+{
+  "argv": [
+    "reports/w-bind-evidence/collect.py",
+    "--work-root",
+    "/tmp/hg-wbind-runtime",
+    "--run-id",
+    "w-bind-before-20261015-a1"
+  ],
+  "eligible_tasks": 1,
+  "endpoint": null,
+  "git_head": "dc9a362f76e4388b6a48ef4f8b203a5b7c70d4cf",
+  "jobs": 1,
+  "limits": {
+    "cpus": 1,
+    "memory": "512m",
+    "pids": 128,
+    "timeout_s": 60
+  },
+  "metric": "authored addition control: completed_check and exit0",
+  "model": null,
+  "pins": {
+    "artifact_contract_sha256": "28d615baa4b11c72c67f097e25025817f19a18e8abb3c22a6207e7172cda82e6",
+    "manifest_sha256": "168d15a4945ea4ef093da3040fb7bd441ad1ec77ef4143379fbd1a6d318c4fbd",
+    "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+    "source_sha256": "8e13963d42f2b87eb36756e9124922e24bc91ea9ef20af81ff15e9334dfd3f0b"
+  },
+  "production_authorized": false,
+  "python": "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+  "run_id": "w-bind-before-20261015-a1",
+  "selected_tasks": 1,
+  "source": "/tmp/hg-wbind-runtime/w-bind-before-20261015-a1/source",
+  "source_sha256": {
+    "eval/admission/artifact_admission.py": "f948b316de94d9bcc3cf42e3fcd5f6447d6fd805ec45cbc6b345f4c3a5f32ac9",
+    "eval/run/runner.py": "e0b3c147dd6c25523e9c1a39532ca290e3814d19807d4804ddef6215b7ccf42b",
+    "eval/verification/pristine.py": "16d8d6369b6cccb4373581714c16d2023b7978edbf620088a92786067aaf728d",
+    "eval/verification/verifier.py": "fc7970fcc107b07bca0d1a345a968fa066917787e697f6d5dee4361325d06bae",
+    "reports/w-bind-evidence/collect.py": "a55b2e7be5d8057a3cc6676ab2de54ff111ffc3980b4a9f41d66a9b11c427a00"
+  },
+  "spec": {
+    "argv": [
+      "/control-scorer/sh",
+      "/control-scorer/check.sh"
+    ],
+    "kind": "command",
+    "pass_when": "exit0",
+    "scorer_bundle": {
+      "artifact_contract": "/tmp/hg-wbind-runtime/w-bind-before-20261015-a1/platform/task-contract.json",
+      "artifact_contract_sha256": "28d615baa4b11c72c67f097e25025817f19a18e8abb3c22a6207e7172cda82e6",
+      "isolation_class": "pristine-offline",
+      "manifest": "/tmp/hg-wbind-runtime/w-bind-before-20261015-a1/platform/bundle.json",
+      "manifest_sha256": "168d15a4945ea4ef093da3040fb7bd441ad1ec77ef4143379fbd1a6d318c4fbd",
+      "root": "/tmp/hg-wbind-runtime/w-bind-before-20261015-a1/platform/closure"
+    }
+  },
+  "trials": 1,
+  "utc": "2026-10-15T01:25:43.648244+00:00"
+}

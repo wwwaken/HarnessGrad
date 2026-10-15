@@ -1,0 +1,38 @@
+{
+  "native_binding_api": true,
+  "original_verdict_path": "control-attempt-01/verdict.json",
+  "replays": {
+    "outer_run_id": {
+      "invalid": {
+        "w-pristine-addition-control": {
+          "detail": "pristine verdict execution binding refused: pristine verdict execution binding mismatch",
+          "outcome": "unmeasured",
+          "stage": "check"
+        }
+      },
+      "per_task": {}
+    },
+    "task_id": {
+      "invalid": {
+        "w-pristine-addition-control-foreign": {
+          "detail": "pristine verdict execution binding refused: pristine verdict execution binding mismatch",
+          "outcome": "unmeasured",
+          "stage": "check"
+        }
+      },
+      "per_task": {}
+    },
+    "trial_id": {
+      "invalid": {
+        "w-pristine-addition-control": {
+          "detail": "pristine verdict execution binding refused: pristine verdict execution binding mismatch",
+          "outcome": "unmeasured",
+          "stage": "check"
+        }
+      },
+      "per_task": {}
+    }
+  },
+  "selected_control": "control-attempt-01",
+  "source_after_sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+}

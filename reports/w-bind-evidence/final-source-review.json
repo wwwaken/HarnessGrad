@@ -1,0 +1,31 @@
+{
+  "eval/admission/artifact_admission.py": {
+    "archived_baseline_matches_git": true,
+    "baseline_sha256": "f948b316de94d9bcc3cf42e3fcd5f6447d6fd805ec45cbc6b345f4c3a5f32ac9",
+    "current_sha256": "82279c1b789fd85038fc834d441da5436a726bc6766a4645c1a93d2a9540497d"
+  },
+  "eval/run/runner.py": {
+    "archived_baseline_matches_git": true,
+    "baseline_sha256": "e0b3c147dd6c25523e9c1a39532ca290e3814d19807d4804ddef6215b7ccf42b",
+    "current_sha256": "b82a8d91c508ace0aeac80ccb976a9d2d3c89e17c1d27f149c86d010af57af62"
+  },
+  "eval/verification/pristine.py": {
+    "archived_baseline_matches_git": true,
+    "baseline_sha256": "16d8d6369b6cccb4373581714c16d2023b7978edbf620088a92786067aaf728d",
+    "current_sha256": "4c5a3620d9c4651c76297f47a64c6002ac3b0b9b4ed63846bc1f4b509e806694"
+  },
+  "eval/verification/verifier.py": {
+    "archived_baseline_matches_git": true,
+    "baseline_sha256": "fc7970fcc107b07bca0d1a345a968fa066917787e697f6d5dee4361325d06bae",
+    "current_sha256": "94453f0c345c21c528c9797b70db3b05d64bb716f5590dbd9a80090c901faa34"
+  },
+  "focused_test": {
+    "after_output": "reports/w-bind-evidence/tests-after.txt",
+    "baseline_output": "reports/w-bind-evidence/tests-before.txt",
+    "path": "tests/quality/test_trial_binding.py",
+    "sha256": "0171ac1fbd6c88ddda890c25121caedd4e765d6ce0b28b30211832be74b58b90"
+  },
+  "journal_append_only": true,
+  "no_tracked_runs_changes": true,
+  "registry_only_target_observed_and_evidence_changed": true
+}

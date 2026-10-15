@@ -33,7 +33,34 @@ def _platform_path(value, actor: Path) -> Path:
     return path
 
 
-def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = None) -> dict:
+def enforce_verdict_binding(verdict: dict, *, task_id: str, run_id: str, trial_id: str) -> dict:
+    """Refuse foreign/missing native evidence at a verdict consumption boundary.
+
+    This is a trusted-platform consistency check, not authentication of arbitrary
+    JSON. Actor code must never write these receipts or choose the expected labels.
+    """
+    try:
+        expected = artifacts.execution_identity(task_id, run_id, trial_id)
+        evidence = verdict["scorer_isolation_evidence"]
+        binding, exported = evidence["execution_binding"], evidence["export"]
+        if ({key: binding[key] for key in expected} != expected
+                or exported["execution_binding"] != expected
+                or exported["task_id"] != task_id
+                or exported["schema"] != "harnessgrad.state-export-receipt.v2"
+                or evidence["runtime"]["execution_binding"] != expected
+                or binding["runtime_export_run_id"] != exported["run_id"]
+                or evidence["cleanup"]["container"] != exported["run_id"]):
+            raise AdmissionError("pristine verdict execution binding mismatch")
+    except (AdmissionError, KeyError, TypeError, ValueError) as exc:
+        # Keep genuine unavailable/timeout reasons; never promote them to a score.
+        if verdict.get("score") is not None or not verdict.get("unmeasured"):
+            return {**verdict, "passed": False, "score": None, "outcome": "unmeasured",
+                    "unmeasured": f"pristine verdict execution binding refused: {exc}"}
+    return verdict
+
+
+def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = None,
+           run_id: str | None = None, trial_id: str | None = None) -> dict:
     bundle = spec["scorer_bundle"]
     name = "hg-pristine-" + uuid.uuid4().hex
     actual = "unknown"
@@ -50,6 +77,7 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
     # Exclusive platform-owned storage, never a projection inside actor state.
     with tempfile.TemporaryDirectory(prefix="hg-pristine-") as scratch:
         try:
+            identity = artifacts.execution_identity(task_id, run_id, trial_id)
             raw = _platform_path(bundle["manifest"], workdir).read_bytes()
             pin = bundle["manifest_sha256"]
             root = _platform_path(bundle["root"], workdir)
@@ -62,13 +90,12 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
             contract_raw = _platform_path(bundle["artifact_contract"], workdir).read_bytes()
             contract_pin = bundle["artifact_contract_sha256"]
             contract = bundles.require_contract_bundle(contract_raw, contract_pin, raw, pin)
-            if task_id is not None and contract["task_id"] != task_id:
+            if contract["task_id"] != task_id:
                 raise AdmissionError("artifact contract task differs from selected task")
             evidence["execution_binding"] = dict(
-                task_id=contract["task_id"], selected_task_checked=task_id is not None,
-                runtime_export_run_id=name, outer_run_id=None, trial_id=None,
-                scope="task_contract_and_generated_runtime_export_id",
-                outer_run_trial_binding="not_provided")
+                **identity, selected_task_checked=True, runtime_export_run_id=name,
+                scope="task_contract_runtime_export_and_outer_run_trial",
+                outer_run_trial_binding="enforced")
             observation = evidence["source_observation"] = dict(
                 scope="selected_source_file_endpoint_probes", status="probe_unavailable",
                 quiescence_established=False,
@@ -76,7 +103,7 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
             observation["before"] = artifacts.observe_selected_source(workdir, contract_raw, contract_pin)
             artifact_root = Path(scratch) / "input"
             exported = artifacts.export_state(workdir, artifact_root, contract_raw, contract_pin,
-                                              run_id=name)
+                                              run_id=name, execution_binding=dict(identity))
             evidence["export"] = exported
             observation["export_content_matches_before"] = exported["files"] == [
                 {key: row[key] for key in ("path", "bytes", "sha256")}
@@ -110,7 +137,7 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
             info = json.loads(inspected.stdout)[0]
             evidence["runtime"] = artifacts.require_artifact_runtime(
                 info, contract_raw, contract_pin, artifact_root=artifact_root, closure_root=root,
-                export_receipt=exported, run_id=name)
+                export_receipt=exported, run_id=name, execution_binding=dict(identity))
             # Exit status alone cannot distinguish initialization from a measured
             # failing predicate. The sealed scorer must explicitly attest completion.
             started = docker("start", "--attach", name)

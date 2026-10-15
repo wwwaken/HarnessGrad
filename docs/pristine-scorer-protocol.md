@@ -8,6 +8,31 @@ the completion protocol; there is no numeric-zero compatibility fallback.
 
 ## Input identity and permissions
 
+Measured pristine calls require a caller-supplied selected `task_id`, outer
+`run_id` and nonempty string `trial_id`. The runner supplies the selected task
+and outer run and derives `round-{round_no}.harness-{harness_sha}.trial-{ordinal}`
+(ordinal starts at 1). This distinguishes trials across rounds and harness
+revisions. Direct `_verify` / `pristine.verify` / `run_one` callers must supply
+their own trial label and a fresh outer run label; missing identities fail closed.
+
+The bounded exporter emits a v2 receipt with `execution_binding` containing
+`task_id`, `outer_run_id`, `trial_id`, alongside its existing generated runtime
+`run_id` and contract/source/content seals. Runtime admission compares that binding
+with the independently held expected identity before start, while rechecking both
+projections. V1 remains an unbound low-level control API; it cannot satisfy a bound
+call. A v2 consumer must supply an expected identity, rather than trust the receipt
+to choose it. Native verdict evidence records the identity and runtime/export UUID.
+Verifier dispatch and runner aggregation recheck it; cache hits must match every
+expected trial in order, including round, harness revision and outer run.
+
+These checks assume trusted platform code, declaration pins, receipt storage and
+caller labels. They do not authenticate arbitrary external JSON, establish source
+lineage from actor bytes, enforce global run-label uniqueness or prove that a caller
+named its actual execution truthfully. Callers still own that mapping, custody and
+source quiescence. Standalone consumers of persisted verdicts must compare the
+expected identity too (the native helper is `enforce_verdict_binding`); merely reading
+`score` bypasses the native consumption boundary. No scorer predicate changes.
+
 The platform creates the bounded data projection under an exclusive private parent.
 Every projected directory has mode `0750`, every data file `0640`, and their group
 is the platform process's effective primary GID. This applies explicitly to every

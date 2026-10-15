@@ -457,7 +457,8 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             *, sandbox: bool, timeout_s: int,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
-            running=None, task_id: str | None = None) -> dict:
+            running=None, task_id: str | None = None,
+            run_id: str | None = None, trial_id: str | None = None) -> dict:
     """Run a verifier with platform-owned output storage for exec reward checks."""
     spec = verifier or {"kind": "answer", "expected": None}
     env_spec = env or {"kind": "files"}
@@ -470,8 +471,10 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
                                  "unmeasured": "pristine scorer requires artifact command with exit0 protocol"},
                                 spec, "unknown")
-        from eval.verification.pristine import verify
-        return verify(workdir, spec, timeout_s=timeout_s, task_id=task_id)
+        from eval.verification.pristine import verify, enforce_verdict_binding
+        verdict = verify(workdir, spec, timeout_s=timeout_s, task_id=task_id,
+                         run_id=run_id, trial_id=trial_id)
+        return enforce_verdict_binding(verdict, task_id=task_id, run_id=run_id, trial_id=trial_id)
     if declared not in ("unknown", actual):
         return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
                              "unmeasured": "scorer declaration incompatible with runtime route"},

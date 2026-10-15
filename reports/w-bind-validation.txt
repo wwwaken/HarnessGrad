@@ -1,0 +1,23 @@
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_trial_binding.py tests/quality/test_scorer_isolation_option_b.py tests/quality/test_prifix_regressions.py tests/quality/test_quiesce2_regressions.py tests/quality/test_terminal_artifact_admission.py tests/quality/test_scorer_bundle_codex170.py tests/quality/test_scorer_admission_codex173.py tests/quality/test_dataset_blockers.py tests/quality/test_trials_and_unmeasured.py tests/quality/test_verifier.py --basetemp=/tmp/hg-wbind-final-validation
+........................................................................ [ 23%]
+........................................................................ [ 47%]
+........................................................................ [ 71%]
+........................................................................ [ 95%]
+...............                                                          [100%]
+303 passed in 96.02s (0:01:36)
+exit_code=0
+
+$ audit.py: recompute audit(reports/w-bind-evidence) and compare with audit.json
+PASS: source/packet/provenance seals, native identity, foreign export/verdict refusals, completion protocol, cleanup/absence; 230 copied files.
+{"copied_files": 230, "native_outer": {"bindings": [{"outer_run_id": "w-bind-after-20261015-b3-outer-attempt-03", "outer_run_trial_binding": "enforced", "runtime_export_run_id": "hg-pristine-0896eba23e114db7b79e2c43345aae68", "scope": "task_contract_runtime_export_and_outer_run_trial", "selected_task_checked": true, "task_id": "w-pristine-addition-control", "trial_id": "round-3.harness-74d75732a062c9a7a22ee34947013661df34834982d286461641364684e8398e.trial-1"}, {"outer_run_id": "w-bind-after-20261015-b3-outer-attempt-03", "outer_run_trial_binding": "enforced", "runtime_export_run_id": "hg-pristine-9c5e8e871d4c421590a306fc2b56d873", "scope": "task_contract_runtime_export_and_outer_run_trial", "selected_task_checked": true, "task_id": "w-pristine-addition-control", "trial_id": "round-3.harness-74d75732a062c9a7a22ee34947013661df34834982d286461641364684e8398e.trial-2"}], "case": "native-outer-attempt-03"}, "production_authorized": false, "source_quiescence_established": false}
+
+$ git diff --check
+exit_code=0
+
+Full staged whitespace check flags the preserved raw baseline pytest traceback only; raw receipts were not trimmed.
+$ git diff --cached --check -- . ":(exclude)reports/w-bind-evidence/tests-before.txt"
+exit_code=0

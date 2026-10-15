@@ -305,8 +305,26 @@ def observe_selected_source(source: Path, raw: bytes, expected_sha256: str) -> d
                 files=records)
 
 
+def execution_identity(task_id: str, outer_run_id: str, trial_id: str) -> dict:
+    """Caller-owned labels, never inferred from actor files or an export receipt."""
+    identity = dict(task_id=task_id, outer_run_id=outer_run_id, trial_id=trial_id)
+    if any(not isinstance(value, str) or not value.strip()
+           or any(ord(c) < 32 or ord(c) == 127 for c in value) for value in identity.values()):
+        raise AdmissionError("explicit task/run/trial execution identity required")
+    return identity
+
+
+def _execution_binding(binding: dict, task_id: str) -> dict:
+    if not isinstance(binding, dict) or set(binding) != {"task_id", "outer_run_id", "trial_id"}:
+        raise AdmissionError("explicit task/run/trial execution identity required")
+    identity = execution_identity(**binding)
+    if identity["task_id"] != task_id:
+        raise AdmissionError("execution identity differs from artifact contract task")
+    return identity
+
+
 def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: str,
-                 *, run_id: str) -> dict:
+                 *, run_id: str, execution_binding: dict | None = None) -> dict:
     """Copy an explicit data allowlist, with byte/inode limits enforced before writes.
 
     Source must be quiesced by the caller. The exclusive destination and its parent
@@ -317,6 +335,7 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
     host custody still rests on the exclusive platform-owned parent and RO mounts.
     """
     contract = load_contract(raw, expected_sha256)
+    binding = _execution_binding(execution_binding, contract["task_id"]) if execution_binding is not None else None
     if not isinstance(run_id, str) or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", run_id):
         raise AdmissionError("fresh export run identity required")
     export = contract["export"]
@@ -364,12 +383,14 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
                     raise AdmissionError("source size changed during projection")
                 total += size
                 records.append(dict(path=row["path"], bytes=size, sha256=digest.hexdigest()))
-        return dict(schema="harnessgrad.state-export-receipt.v1", run_id=run_id,
+        return dict(schema="harnessgrad.state-export-receipt.v2" if binding is not None
+                    else "harnessgrad.state-export-receipt.v1", run_id=run_id,
                     task_id=contract["task_id"], contract_sha256=expected_sha256,
                     source_sha256=contract["source_sha256"], files=records,
                     bytes=total, inodes=_inodes([row["path"] for row in records]),
                     limits={key: export[key] for key in ("max_bytes", "max_inodes")},
-                    scope="local_artifact_projection")
+                    scope="local_artifact_projection",
+                    **({"execution_binding": binding} if binding is not None else {}))
     except (OSError, AdmissionError) as exc:
         if created:
             try:
@@ -382,12 +403,14 @@ def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: s
 
 
 def verify_state_export(root: Path, receipt: dict, raw: bytes, expected_sha256: str,
-                        *, run_id: str) -> None:
+                        *, run_id: str, execution_binding: dict | None = None) -> None:
     """Recheck a platform export receipt immediately before a read-only mount."""
     contract = load_contract(raw, expected_sha256)
+    binding = _execution_binding(execution_binding, contract["task_id"]) if execution_binding is not None else None
     try:
         export = contract["export"]
-        if (receipt["schema"] != "harnessgrad.state-export-receipt.v1"
+        schema = "harnessgrad.state-export-receipt.v2" if binding is not None else "harnessgrad.state-export-receipt.v1"
+        if (receipt["schema"] != schema or receipt.get("execution_binding") != binding
                 or receipt["scope"] != "local_artifact_projection"
                 or receipt["run_id"] != run_id or receipt["task_id"] != contract["task_id"]
                 or receipt["contract_sha256"] != expected_sha256
@@ -438,7 +461,8 @@ def _tmpfs_options(contract: dict) -> dict[str, str]:
 
 def require_artifact_runtime(info: dict, raw: bytes, expected_sha256: str,
                              *, artifact_root: Path, closure_root: Path,
-                             export_receipt: dict, run_id: str) -> dict:
+                             export_receipt: dict, run_id: str,
+                             execution_binding: dict | None = None) -> dict:
     """Validate a stopped pristine runtime observation, without creating/executing it.
 
     Only the two platform projections may be bound read-only; every writable mount
@@ -447,9 +471,13 @@ def require_artifact_runtime(info: dict, raw: bytes, expected_sha256: str,
     """
     contract = load_contract(raw, expected_sha256)
     verify_scorer_files(closure_root, contract["scorer"])
-    verify_state_export(artifact_root, export_receipt, raw, expected_sha256, run_id=run_id)
-    return _verify_artifact_runtime(info, contract, expected_sha256,
-                                    artifact_root=artifact_root, closure_root=closure_root)
+    verify_state_export(artifact_root, export_receipt, raw, expected_sha256, run_id=run_id,
+                        execution_binding=execution_binding)
+    receipt = _verify_artifact_runtime(info, contract, expected_sha256,
+                                       artifact_root=artifact_root, closure_root=closure_root)
+    if execution_binding is not None:
+        receipt["execution_binding"] = _execution_binding(execution_binding, contract["task_id"])
+    return receipt
 
 
 def _require_scorer_access(root: Path, rows: list[dict], *, executable: str | None = None) -> None:

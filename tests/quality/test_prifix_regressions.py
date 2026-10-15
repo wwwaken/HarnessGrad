@@ -46,7 +46,7 @@ def test_d1_projection_is_readable_by_separate_scorer_identity(tmp_path, scorer,
         observed["metadata"] = [(stat.S_IMODE(p.stat().st_mode), p.stat().st_gid)
                                 for p in (root, root / "answer.txt")]
     docker_double.mutate = observe
-    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert observed["user"] == f"65534:{os.getegid()}"
     assert int(observed["user"].split(":")[0]) != os.geteuid()
     assert observed["metadata"] == [(0o750, os.getegid()), (0o640, os.getegid())]
@@ -56,14 +56,14 @@ def test_d1_projection_is_readable_by_separate_scorer_identity(tmp_path, scorer,
 @pytest.mark.parametrize("user", ["", "0:0", f"65534:{os.getegid() + 1}"])
 def test_d1_unexpected_scorer_identity_refuses(tmp_path, scorer, docker_double, user):
     docker_double.mutate = lambda info: info["Config"].update(User=user)
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and verdict.get("unmeasured")
     assert not docker_double.started
 
 
 def test_d1_private_closure_cannot_start_unreadable(tmp_path, scorer, docker_double):
     Path(scorer["scorer_bundle"]["root"], "check.py").chmod(0o600)
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and "readable" in verdict["unmeasured"]
     assert not docker_double.started
 
@@ -81,7 +81,7 @@ def test_d1_private_closure_cannot_start_unreadable(tmp_path, scorer, docker_dou
 def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
         tmp_path, scorer, docker_double, body, reason):
     replace_script(scorer, body + "\n")
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert docker_double.started
     assert verdict["score"] is None and verdict["passed"] is False
     assert verdict["outcome"] == "unmeasured"
@@ -92,7 +92,7 @@ def test_d2_incomplete_or_inconsistent_check_is_unmeasured(
 
 @pytest.mark.parametrize("answer,score", [("correct", 1.0), ("wrong", 0.0)])
 def test_d2_completed_checks_remain_measurements(tmp_path, scorer, docker_double, answer, score):
-    verdict = verifier._verify(actor(tmp_path, answer), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path, answer), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] == score
     assert verdict["outcome"] == "measured"
     assert not verdict.get("unmeasured")
@@ -102,7 +102,7 @@ def test_d2_completed_checks_remain_measurements(tmp_path, scorer, docker_double
 def test_d3_native_verdict_retains_stopped_and_cleanup_results(
         tmp_path, scorer, docker_double, cleanup_failure):
     docker_double.cleanup_failure = cleanup_failure
-    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     # Round-trip the native verdict; no external observer supplies these facts.
     evidence = json.loads(json.dumps(verdict))["scorer_isolation_evidence"]
     assert evidence["stopped_result"]["state"] == docker_double.info["State"]
@@ -165,7 +165,7 @@ def test_d2_infrastructure_failure_with_marker_is_unmeasured_and_retained(
             return subprocess.CompletedProcess(args, 1, "", "synthetic inspect error")
         return result
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and verdict["passed"] is False
     assert verdict["outcome"] == ("timeout" if failure == "timeout" else "unmeasured")
     reason = verdict["unmeasured"]
@@ -197,7 +197,7 @@ def test_d3_cleanup_exception_retains_native_error(tmp_path, scorer, docker_doub
             raise OSError("synthetic remove unavailable")
         return original(*args, **kwargs)
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and verdict["outcome"] == "unmeasured"
     cleanup = verdict["scorer_isolation_evidence"]["cleanup"]
     assert cleanup["removed"] is False

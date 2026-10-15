@@ -133,7 +133,7 @@ def actor(tmp_path, answer="correct"):
 def test_truthful_pristine_scorer_runs_and_class_reaches_point_and_saved_verdict(
         tmp_path, scorer, docker_double, monkeypatch, answer, expected):
     work = actor(tmp_path, answer)
-    verdict = verifier._verify(work, scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(work, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert docker_double.started and verdict["score"] == expected, verdict
     assert verdict["scorer_isolation_class"] == "pristine-offline"
     assert verdict["scorer_isolation_evidence"]["cleanup"]["removed"] is True
@@ -157,23 +157,27 @@ def test_pristine_declaration_dispatches_from_run_one_to_curve(tmp_path, scorer,
         "p=argparse.ArgumentParser();p.add_argument('--task');p.add_argument('--workdir')\n"
         "a=p.parse_args();pathlib.Path(a.workdir,'answer.txt').write_text('correct')\n")
     result = runner.evaluate(repo, [dict(task_id="t", goal="synthetic")], {}, sandbox=False,
-                             verifiers={"t": scorer})
+                             verifiers={"t": scorer}, run_id="binding-control")
     recorded = point(result)
     assert docker_double.started and recorded["score"] == 1.0
     assert recorded["scorer_isolation_class"] == "pristine-offline"
     assert recorded["per_task_scorer_isolation"] == {"t": "pristine-offline"}
 
 
-def test_changed_bundle_declaration_cannot_reuse_cached_score(tmp_path, monkeypatch):
+def test_changed_bundle_declaration_cannot_reuse_cached_score(tmp_path, scorer, docker_double, monkeypatch):
+    bound = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5,
+                             task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+    assert bound["score"] == 1.0
     calls = []
     def run(*_a, verifier, **_kw):
         calls.append(verifier["scorer_bundle"]["isolation_class"])
-        return dict(verdict=dict(score=1.0, passed=True, scorer_isolation_class=calls[-1]),
+        return dict(verdict=bound if calls[-1] == "pristine-offline" else
+                    dict(score=1.0, passed=True, scorer_isolation_class=calls[-1]),
                     trace="x", exit_code=0, stderr="")
     monkeypatch.setattr(runner, "run_one", run)
     cache = {}
     for class_ in ("pristine-offline", "snapshot-service"):
-        result = runner._evaluate(tmp_path, [dict(task_id="t")], {}, cache=cache,
+        result = runner._evaluate(tmp_path, [dict(task_id="t")], {}, cache=cache, run_id="binding-control",
             verifiers={"t": dict(scorer_bundle=dict(isolation_class=class_))})
         assert result["scorer_isolation_class"] == class_
     assert calls == ["pristine-offline", "snapshot-service"]
@@ -189,7 +193,7 @@ def test_false_pristine_runtime_is_refused_before_scorer_execution(tmp_path, sco
         else:
             info["Image"] = "sha256:" + "c" * 64
     docker_double.mutate = mutate
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and verdict["unmeasured"]
     assert verdict["scorer_isolation_class"] == "unknown"
     assert not docker_double.started
@@ -198,7 +202,7 @@ def test_false_pristine_runtime_is_refused_before_scorer_execution(tmp_path, sco
 
 def test_cleanup_failure_is_unmeasured_not_zero(tmp_path, scorer, docker_double):
     docker_double.cleanup_failure = True
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None
     assert verdict["scorer_isolation_class"] == "pristine-offline"
     assert "cleanup failed" in verdict["unmeasured"]
@@ -256,7 +260,8 @@ def test_pristine_binding_mismatch_is_refused_before_runtime_creation(tmp_path, 
     elif change == "bundle_bytes":
         Path(scorer["scorer_bundle"]["manifest"]).write_text("{}")
     verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5,
-                               task_id="other-task" if change == "task" else "t")
+                               task_id="other-task" if change == "task" else "t",
+                               run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and verdict["unmeasured"]
     assert not docker_double.calls
 

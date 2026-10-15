@@ -1,0 +1,57 @@
+{
+  "argv": [
+    "reports/w-bind-evidence/collect.py",
+    "--work-root",
+    "/tmp/hg-wbind-runtime",
+    "--run-id",
+    "w-bind-after-20261015-b3"
+  ],
+  "eligible_tasks": 1,
+  "endpoint": null,
+  "git_head": "dc9a362f76e4388b6a48ef4f8b203a5b7c70d4cf",
+  "jobs": 1,
+  "limits": {
+    "cpus": 1,
+    "memory": "512m",
+    "pids": 128,
+    "timeout_s": 60
+  },
+  "metric": "authored addition control: completed_check and exit0",
+  "model": null,
+  "pins": {
+    "artifact_contract_sha256": "28d615baa4b11c72c67f097e25025817f19a18e8abb3c22a6207e7172cda82e6",
+    "manifest_sha256": "168d15a4945ea4ef093da3040fb7bd441ad1ec77ef4143379fbd1a6d318c4fbd",
+    "runtime_image_id": "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d",
+    "source_sha256": "8e13963d42f2b87eb36756e9124922e24bc91ea9ef20af81ff15e9334dfd3f0b"
+  },
+  "production_authorized": false,
+  "python": "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+  "run_id": "w-bind-after-20261015-b3",
+  "selected_tasks": 1,
+  "source": "/tmp/hg-wbind-runtime/w-bind-after-20261015-b3/source",
+  "source_sha256": {
+    "eval/admission/artifact_admission.py": "82279c1b789fd85038fc834d441da5436a726bc6766a4645c1a93d2a9540497d",
+    "eval/run/runner.py": "b82a8d91c508ace0aeac80ccb976a9d2d3c89e17c1d27f149c86d010af57af62",
+    "eval/verification/pristine.py": "4c5a3620d9c4651c76297f47a64c6002ac3b0b9b4ed63846bc1f4b509e806694",
+    "eval/verification/verifier.py": "94453f0c345c21c528c9797b70db3b05d64bb716f5590dbd9a80090c901faa34",
+    "reports/w-bind-evidence/collect.py": "9a2290b3959a66b9c15a573e637db5e600b5ce42cc9466418564fe6e812e3797"
+  },
+  "spec": {
+    "argv": [
+      "/control-scorer/sh",
+      "/control-scorer/check.sh"
+    ],
+    "kind": "command",
+    "pass_when": "exit0",
+    "scorer_bundle": {
+      "artifact_contract": "/tmp/hg-wbind-runtime/w-bind-after-20261015-b3/platform/task-contract.json",
+      "artifact_contract_sha256": "28d615baa4b11c72c67f097e25025817f19a18e8abb3c22a6207e7172cda82e6",
+      "isolation_class": "pristine-offline",
+      "manifest": "/tmp/hg-wbind-runtime/w-bind-after-20261015-b3/platform/bundle.json",
+      "manifest_sha256": "168d15a4945ea4ef093da3040fb7bd441ad1ec77ef4143379fbd1a6d318c4fbd",
+      "root": "/tmp/hg-wbind-runtime/w-bind-after-20261015-b3/platform/closure"
+    }
+  },
+  "trials": 1,
+  "utc": "2026-10-15T01:35:57.115484+00:00"
+}

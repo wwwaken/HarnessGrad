@@ -31,7 +31,7 @@ def test_source_aba_is_unmeasured(tmp_path, scorer, docker_double, monkeypatch, 
         return result
 
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t")
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert docker_double.started and answer.read_text() == "correct"
     assert verdict["score"] is None and verdict["outcome"] == "unmeasured"
     observation = verdict["scorer_isolation_evidence"]["source_observation"]
@@ -65,7 +65,7 @@ def test_source_changes_refuse_measurement(tmp_path, scorer, docker_double, monk
         return result
 
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert docker_double.started and verdict["score"] is None
     assert verdict["outcome"] == "unmeasured"
     observation = verdict["scorer_isolation_evidence"]["source_observation"]
@@ -85,7 +85,7 @@ def test_unchanged_selected_files_and_binding_scope(tmp_path, scorer, docker_dou
         return original(*args, **kwargs)
 
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t")
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] == 1.0 and verdict["outcome"] == "measured"
     evidence = json.loads(json.dumps(verdict))["scorer_isolation_evidence"]
     observation = evidence["source_observation"]
@@ -97,8 +97,9 @@ def test_unchanged_selected_files_and_binding_scope(tmp_path, scorer, docker_dou
     binding = evidence["execution_binding"]
     assert binding["task_id"] == "t" and binding["selected_task_checked"]
     assert binding["runtime_export_run_id"] == evidence["export"]["run_id"] == evidence["cleanup"]["container"]
-    assert binding["outer_run_id"] is None and binding["trial_id"] is None
-    assert binding["outer_run_trial_binding"] == "not_provided"
+    assert binding["outer_run_id"] == "binding-control"
+    assert binding["trial_id"] == "round-0.harness-.trial-1"
+    assert binding["outer_run_trial_binding"] == "enforced"
 
 
 def test_source_change_between_baseline_and_export_never_starts(tmp_path, scorer, docker_double, monkeypatch):
@@ -112,7 +113,7 @@ def test_source_change_between_baseline_and_export_never_starts(tmp_path, scorer
         return result
 
     monkeypatch.setattr(artifacts, "export_state", export)
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and not docker_double.started and not docker_double.calls
     observation = verdict["scorer_isolation_evidence"]["source_observation"]
     assert observation["status"] == "difference_observed"
@@ -132,7 +133,7 @@ def test_source_observed_after_execution_failure_without_losing_cause(tmp_path, 
         return original(*args, **kwargs)
 
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None
     observation = verdict["scorer_isolation_evidence"]["source_observation"]
     assert "after" in observation
@@ -144,13 +145,13 @@ def test_source_observed_after_execution_failure_without_losing_cause(tmp_path, 
 def test_missing_baseline_never_claims_no_change_or_starts(tmp_path, scorer, docker_double):
     source = actor(tmp_path)
     (source / "answer.txt").unlink()
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and not docker_double.calls
     assert verdict["scorer_isolation_evidence"]["source_observation"]["status"] == "probe_unavailable"
 
 
 def test_wrong_task_still_refuses_before_source_probe(tmp_path, scorer, docker_double):
-    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="other")
+    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="other", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     assert verdict["score"] is None and "task differs" in verdict["unmeasured"]
     assert not docker_double.calls
     assert "source_observation" not in verdict["scorer_isolation_evidence"]
@@ -177,7 +178,7 @@ def test_transient_directory_swap_is_explicitly_outside_file_probe_scope(tmp_pat
                 parked.rename(source)
 
     monkeypatch.setattr(container, "docker", docker)
-    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5)
+    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
     observation = verdict["scorer_isolation_evidence"]["source_observation"]
     assert verdict["score"] == 1.0 and observation["status"] == "no_change_observed"
     assert not observation["quiescence_established"]
