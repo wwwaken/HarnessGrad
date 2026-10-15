@@ -1,0 +1,504 @@
+w-endpointfix validation — source-only endpoint default and durable operator note
+
+Evidence labels
+FOUND means read directly or observed in the exact command transcripts below.
+ABSENT is limited to the enumerated scopes and searches stated below.
+UNKNOWN means not checked; it is not a negative result.
+
+FOUND — change and regression
+- tools/check_local_model.py:34 exposes DEFAULT_BASE_URL; :49 uses it as the
+  argparse default. Both tool examples now use 8002
+  (tools/check_local_model.py:6; tools/probe_tool_calls.py:4).
+- The new tests/quality/test_local_model_endpoints.py:2-7 imports the real tool
+  default and asserts membership in the real policy tuple, rather than asserting
+  a hard-coded URL. tests/quality/test_local_entrypoint_docs_codex235.py:1-3 and
+  tests/quality/test_diagnostic_policy.py:1-2 establish the quality-test location
+  for source/CLI and endpoint-policy checks; existing test files were not edited.
+- Fail-before method: first extracted the original inline 8001 argparse default
+  into DEFAULT_BASE_URL without changing its value, added the test, and ran it.
+  The baseline git-show excerpt below records the original inline default; the
+  fail-before transcript records the extracted 8001 value and membership failure.
+  Then changed the constant to 8002 and the two docstring examples and reran the
+  exact same regression test. No stashing, monkeypatching the default, or mutation
+  of policy ENDPOINTS was used. Exact failure and pass output follows.
+- The seven related checks used an in-process socket/DNS refusal guard. The
+  existing driver probe test (tests/quality/test_improver.py:406-410) reaches
+  tools.probe_tool_calls through driver.py:142, and was exercised with simulated
+  connection failure before any network access. It is not a live dead-port probe.
+
+FOUND — premise and durable note
+- Read-only main .env bindings were both 8002; exact narrowly scoped rg output
+  below is the observation. No main-checkout file was modified.
+- eval/policy/diagnostic_policy.py:24-29 explains retirement and the one admitted
+  endpoint; :72-73 enforces it. eval/unix_model_relay.py:7-9 is now a compatibility
+  alias; eval/service/unix_model_relay.py:19 and :128-129 are the actual fixed route.
+- docs/local-model-endpoints.md:3-31 documents these facts, historical drift and
+  the UNKNOWN live state, plus an unexecuted local listener-inspection command.
+- The task's snapshot reference uses embedded source lines 54-57; the real file
+  lines are registry/w-evidence-external-sources.md:1057-1060. Its report of 8010
+  and all three HTTP 200 responses is historical evidence, not a current result.
+- .gitignore:292 explicitly allows the new note. Before staging, verbose
+  check-ignore printed the NEGATED allowlist rule with exit 0; that output is not
+  evidence that the note was ignored. After git add, the requested identical
+  command prints nothing, exits 1, and git ls-files lists the note. Both stages
+  and outputs are retained below, rather than disguising the first result.
+
+FOUND — leave historical and arbitrary-port references unchanged
+- eval/diagnostic_receipt.schema.json:114-119 retains both 8001 and 8002. Keep the
+  historical enum entry for frozen receipt compatibility, consistent with
+  AGENTS.md:65's preservation rule. This task does not tighten receipt history.
+- eval/service/modelgate.py:3-10 describes measured failing container routes, and
+  :122-128 quotes a historical failure record. These are evidence, not a current
+  host endpoint default, so no values were rewritten.
+- tests/quality/test_improver.py:271 is an intentionally competing generic env URL;
+  :274-281 asserts that the named provider's own URL/model/key wins. Leave 8001.
+- tests/quality/test_improver.py:286 supplies the same competing fallback for the
+  missing named-provider credential refusal asserted at :289-293. Leave 8001.
+- tests/quality/test_improver.py:396 and :399 test config extraction preserves the
+  custom provider's chosen URL. This is mapping, not our endpoint policy. Leave
+  both the authored input and expected 8001 output unchanged.
+- tests/quality/test_services.py:732-737 tests host classification (four local
+  spellings and remote controls), independent of port identity. Leave all 8001s.
+- tests/quality/test_services.py:745-748 tests URL decomposition preserves host,
+  arbitrary port, /v1, and an empty path. Leave all 8001s.
+- All five behaviors above passed in the related checks transcript below.
+- Protected paths and the unchanged evidence/test files have no diff in the
+  explicit git diff command below. No registry proposal is necessary: this change
+  edits the tool/default documentation, not dataset status. The required registry
+  checker was run and its exact valid:true output is retained below.
+
+ABSENT — narrowly enumerated scope only
+- Other direct imports or literal script references to either tool were absent
+  from the recursively searched tests/*.py scope: the exact rg command below
+  returns only the new test's tools.check_local_model import. The broader search
+  also records driver helper references; those are not direct tool imports.
+- No diff is present in the exact protected/untouched path list passed to git diff
+  below. No claim is made about changes in other worktrees.
+
+UNKNOWN / explicitly NOT verified
+- Current listener presence, port response codes, loaded model identity/weights,
+  endpoint readiness, GPU state, and whether 8001 or 8010 currently serves anything.
+  No ss, curl, HTTP/model request, server start/stop, GPU command or dataset run.
+- The original external handoff and w-outcome .env were not reread; their 8010
+  association is cited only through the retained in-repo historical snapshot.
+- No frozen receipt was rerun, resumed, edited, or individually revalidated; the
+  receipt schema was left unchanged. No production diagnostic or pilot authorized.
+- Full repository, Docker/container/network integration and full improver/services
+  suites were not run. In particular, the subprocess driver/demo integration test
+  at tests/quality/test_improver.py:413 was not run under the no-dataset/no-network
+  task restriction. Its child driver path is not a direct test-module tool import.
+- Listener command syntax/process ownership visibility was not exercised.
+- Most important reviewer uncertainty: file configuration and policy consistency
+  cannot establish the actual live listener/model; runtime identity remains UNKNOWN.
+
+Exact verification commands and observed output
+All pytest basetemps and TMPDIRs were fresh /tmp/endpointfix-* directories and
+were deleted immediately in finally blocks, as shown in the transcripts.
+The scratch transcripts below are copied in full; source-excerpt output uses
+lossless JSON line encoding to preserve trailing tabs without diff whitespace.
+
+
+=== Baseline and fail-before ===
+
+$ git branch --show-current
+wg-w-endpointfix
+[exit 0]
+
+$ rg -n '^(HG_AGENT_BASE_URL|HG_METHOD_BASE_URL)=' /mnt/20t/xubuqiang/Study/HarnessGrad/.env
+4:HG_AGENT_BASE_URL=http://127.0.0.1:8002/v1
+14:HG_METHOD_BASE_URL=http://127.0.0.1:8002/v1
+[exit 0]
+
+$ rg -n 'ENDPOINTS =|retired on|2026-10-14|one that was kept' eval/policy/diagnostic_policy.py
+24:#: claim that the endpoint exists: leaving `8001` in after its server was retired on
+25:#: 2026-10-14 would let a receipt attest to a binding nothing could serve. `8002` is
+26:#: the one that was kept because `eval/unix_model_relay.py` routes the agent's model
+29:ENDPOINTS = ("http://127.0.0.1:8002/v1",)
+[exit 0]
+
+$ rg -n 'released on|One local endpoint' AGENTS.md
+48:- **One local endpoint: `http://127.0.0.1:8002/v1`** (model `qwen3.5-9b-local`). GPU0 and the
+49:  `8001` server were released on 2026-10-14 to give a card back; do not start a second one.
+[exit 0]
+
+$ rg -n '_implementation|HOST, PORT, ROUTE =|owner.connect' eval/unix_model_relay.py eval/service/unix_model_relay.py
+eval/service/unix_model_relay.py:19:HOST, PORT, ROUTE = "127.0.0.1", 8002, "/v1/chat/completions"
+eval/service/unix_model_relay.py:128:                    conn = owner.connect(HOST, PORT, timeout=10)
+eval/unix_model_relay.py:7:from eval.service import unix_model_relay as _implementation
+eval/unix_model_relay.py:9:_sys.modules[__name__] = _implementation
+[exit 0]
+
+$ rg -n 'default=DEFAULT_BASE_URL|DEFAULT_BASE_URL =' tools/check_local_model.py
+34:DEFAULT_BASE_URL = "http://127.0.0.1:8001/v1"
+49:    ap.add_argument("--base-url", default=DEFAULT_BASE_URL)
+[exit 0]
+
+$ TMPDIR=/tmp/endpointfix-before-yc_puud4 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider tests/quality/test_local_model_endpoints.py --basetemp=/tmp/endpointfix-before-yc_puud4/pytest
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_local_model_check_default_is_admitted_by_platform_policy _________
+
+    def test_local_model_check_default_is_admitted_by_platform_policy():
+>       assert DEFAULT_BASE_URL in ENDPOINTS
+E       AssertionError: assert 'http://127.0.0.1:8001/v1' in ('http://127.0.0.1:8002/v1',)
+
+tests/quality/test_local_model_endpoints.py:7: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_local_model_endpoints.py::test_local_model_check_default_is_admitted_by_platform_policy
+1 failed in 0.44s
+[exit 1]
+
+Cleanup: shutil.rmtree('/tmp/endpointfix-before-yc_puud4'); exists=False
+
+=== Fix and pass-after / registry / protected paths ===
+
+$ TMPDIR=/tmp/endpointfix-after-3h7xxp68 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider tests/quality/test_local_model_endpoints.py --basetemp=/tmp/endpointfix-after-3h7xxp68/pytest
+.                                                                        [100%]
+1 passed in 0.40s
+[exit 0]
+
+Cleanup: shutil.rmtree('/tmp/endpointfix-after-3h7xxp68'); exists=False
+
+$ rg -n 'check_local_model|probe_tool_calls' tests -g '*.py'
+tests/quality/test_improver.py:408:    from driver import _probe_tool_calls
+tests/quality/test_improver.py:409:    ok, why = _probe_tool_calls("http://127.0.0.1:9/v1", "nope")
+tests/quality/test_diagnostic_policy.py:268:    for name in ("load_env", "evaluate", "_probe_tool_calls", "_run_mode_a", "_run_eval_side"):
+tests/quality/test_diagnostic_policy.py:295:    monkeypatch.setattr(driver, "_probe_tool_calls", lambda *a, **k: pytest.fail("model is forbidden"))
+tests/quality/test_local_model_endpoints.py:3:from tools.check_local_model import DEFAULT_BASE_URL
+tests/quality/test_gpu_entrypoint_contract_codex242.py:29:    monkeypatch.setattr(driver, "_probe_tool_calls", refuse)
+tests/quality/test_staged_receipt_audit_codex193.py:150:    monkeypatch.setattr(driver, "_probe_tool_calls", lambda *a: pytest.fail("Model calls forbidden"))
+[exit 0]
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+[exit 0]
+
+$ git diff --check
+[exit 0]
+
+$ git diff -- AGENTS.md docs/eval-split-design.md registry/dataset-blockers.json docs/adapter-integration-journal.md registry/known-red-tests.md tests/fixtures/external_provenance_b5 eval/diagnostic_receipt.schema.json eval/service/modelgate.py tests/quality/test_improver.py tests/quality/test_services.py
+[exit 0]
+
+=== Related checks with network refusal / searches ===
+
+$ TMPDIR=/tmp/endpointfix-related-3jb5ag5x PYTHONDONTWRITEBYTECODE=1 python3 -c 'import socket
+import pytest
+
+def refuse_network(*args, **kwargs):
+    raise OSError("endpointfix validation forbids network access")
+
+socket.socket.connect = refuse_network
+socket.socket.connect_ex = refuse_network
+socket.create_connection = refuse_network
+socket.getaddrinfo = refuse_network
+raise SystemExit(pytest.main([
+    "-q", "-p", "no:cacheprovider",
+    "tests/quality/test_local_model_endpoints.py",
+    "tests/quality/test_improver.py::test_a_named_endpoint_improver_declares_its_own_url_model_and_key",
+    "tests/quality/test_improver.py::test_an_endpoint_improver_without_its_credential_is_refused_by_name",
+    "tests/quality/test_improver.py::test_a_cli_s_custom_provider_endpoint_is_derived_from_its_own_config",
+    "tests/quality/test_improver.py::test_the_probe_reports_a_dead_endpoint_instead_of_raising",
+    "tests/quality/test_services.py::test_a_host_local_url_is_recognised_and_a_remote_one_is_not",
+    "tests/quality/test_services.py::test_the_gateway_preserves_the_path",
+    "--basetemp=/tmp/endpointfix-related-3jb5ag5x/pytest",
+]))
+'
+.......                                                                  [100%]
+7 passed in 0.79s
+[exit 0]
+
+Cleanup: shutil.rmtree('/tmp/endpointfix-related-3jb5ag5x'); exists=False
+
+$ rg -n 'from tools\.(check_local_model|probe_tool_calls)|import tools\.(check_local_model|probe_tool_calls)|tools/(check_local_model|probe_tool_calls)\.py' tests -g '*.py'
+tests/quality/test_local_model_endpoints.py:3:from tools.check_local_model import DEFAULT_BASE_URL
+[exit 0]
+
+$ rg -n 8001 tests/quality/test_improver.py tests/quality/test_services.py
+tests/quality/test_services.py:732:    for local in ("http://127.0.0.1:8001/v1", "http://localhost:8001/v1",
+tests/quality/test_services.py:733:                  "http://0.0.0.0:8001/v1", "http://host.docker.internal:8001/v1"):
+tests/quality/test_services.py:735:    for remote in ("https://api.deepseek.com/v1", "http://10.0.0.5:8001/v1",
+tests/quality/test_services.py:745:    target, path = modelgate.split("http://127.0.0.1:8001/v1")
+tests/quality/test_services.py:746:    assert target == ("127.0.0.1", 8001)
+tests/quality/test_services.py:748:    assert modelgate.split("http://127.0.0.1:8001")[1] == ""
+tests/quality/test_improver.py:271:    monkeypatch.setenv("HG_METHOD_BASE_URL", "http://127.0.0.1:8001/v1")
+tests/quality/test_improver.py:286:    monkeypatch.setenv("HG_METHOD_BASE_URL", "http://127.0.0.1:8001/v1")
+tests/quality/test_improver.py:396:        'base_url = "http://127.0.0.1:8001/v1"\nwire_api = "responses"\n')
+tests/quality/test_improver.py:399:    assert _cli_provider_base_url({"name": "codex"}) == "http://127.0.0.1:8001/v1"
+[exit 0]
+
+$ git check-ignore -v docs/local-model-endpoints.md
+.gitignore:292:!/docs/local-model-endpoints.md	docs/local-model-endpoints.md
+[exit 0]
+
+=== Tracking verification (before validation file staging) ===
+
+$ git add .gitignore tools/check_local_model.py tools/probe_tool_calls.py tests/quality/test_local_model_endpoints.py docs/local-model-endpoints.md
+[exit 0]
+
+$ git check-ignore -v docs/local-model-endpoints.md
+[exit 1]
+
+$ git ls-files docs/local-model-endpoints.md
+docs/local-model-endpoints.md
+[exit 0]
+
+$ git diff --cached --check
+[exit 0]
+
+$ git diff --cached --stat
+ .gitignore                                  |  1 +
+ docs/local-model-endpoints.md               | 31 +++++++++++++++++++++++++++++
+ tests/quality/test_local_model_endpoints.py |  7 +++++++
+ tools/check_local_model.py                  |  7 +++++--
+ tools/probe_tool_calls.py                   |  2 +-
+ 5 files changed, 45 insertions(+), 3 deletions(-)
+[exit 0]
+
+$ git diff --cached -- docs/local-model-endpoints.md tests/quality/test_local_model_endpoints.py
+diff --git a/docs/local-model-endpoints.md b/docs/local-model-endpoints.md
+new file mode 100644
+index 00000000..91a8d952
+--- /dev/null
++++ b/docs/local-model-endpoints.md
+@@ -0,0 +1,31 @@
++# Where is the local model?
++
++**FOUND — configured endpoint:** `http://127.0.0.1:8002/v1`, model
++`qwen3.5-9b-local` (`AGENTS.md:48`). Staged policy admits only this URL
++(`eval/policy/diagnostic_policy.py:29`, enforced at `:72-73`). The compatibility
++module `eval/unix_model_relay.py:7-9` delegates to the implementation whose fixed
++route is `127.0.0.1:8002`, `/v1/chat/completions`
++(`eval/service/unix_model_relay.py:19`, used at `:128-129`). This relay route is
++why 8002 was kept (`eval/policy/diagnostic_policy.py:25-28`).
++
++**FOUND — retired endpoint:** the 8001 server was released on 2026-10-14
++(`AGENTS.md:48-49`; `eval/policy/diagnostic_policy.py:24-25`). The receipt schema
++deliberately retains 8001 alongside 8002 for frozen historical receipts
++(`eval/diagnostic_receipt.schema.json:114-119`; preserve old/incomplete receipts:
++`AGENTS.md:65`). Schema compatibility does not admit 8001 for a new staged run
++(`eval/policy/diagnostic_policy.py:29`, `:72-73`).
++
++**FOUND — historical drift snapshot:** the fidelity handoff and
++`hg-wt/w-outcome/.env` used 8010; the same snapshot records main's `.env` using
++8001 and all three ports answering 200
++(`registry/w-evidence-external-sources.md:1057-1060`, embedded source lines 54–57).
++Those are historical observations, not a current listener check. 8010 is outside
++the current staged policy (`eval/policy/diagnostic_policy.py:29`).
++
++**UNKNOWN — current listeners and server identity:** not inspected for this
++change. To inspect local TCP listeners without issuing requests, run
++`ss -ltnp '( sport = :8001 or sport = :8002 or sport = :8010 )'` and retain its
++output; this command was not run here. A listener alone does not establish the
++model's behavior (`tools/check_local_model.py:8-19`). When model calls are
++authorized, `tools/check_local_model.py:6` shows the check command; its default
++is defined at `:34` and used at `:49`.
+diff --git a/tests/quality/test_local_model_endpoints.py b/tests/quality/test_local_model_endpoints.py
+new file mode 100644
+index 00000000..c0ff74f2
+--- /dev/null
++++ b/tests/quality/test_local_model_endpoints.py
+@@ -0,0 +1,7 @@
++"""Local-model tool defaults must stay within staged endpoint policy; no requests."""
++from eval.policy.diagnostic_policy import ENDPOINTS
++from tools.check_local_model import DEFAULT_BASE_URL
++
++
++def test_local_model_check_default_is_admitted_by_platform_policy():
++    assert DEFAULT_BASE_URL in ENDPOINTS
+[exit 0]
+
+=== Source excerpts supporting unchanged-reference decisions ===
+
+Lossless transcript encoding: concatenate the decoded JSON strings below.
+This preserves numbered blank source lines and their trailing tabs exactly.
+
+"$ git show HEAD:tools/check_local_model.py | sed -n '44,48p'\n"
+"def main() -> int:\n"
+"    ap = argparse.ArgumentParser()\n"
+"    ap.add_argument(\"--base-url\", default=\"http://127.0.0.1:8001/v1\")\n"
+"    ap.add_argument(\"--model\", default=None,\n"
+"                    help=\"served model name; taken from /v1/models if omitted\")\n"
+"[exit 0]\n"
+"\n"
+"$ nl -ba tests/quality/test_improver.py | sed -n '261,293p;389,410p'\n"
+"   261\tdef test_a_named_endpoint_improver_declares_its_own_url_model_and_key(monkeypatch):\n"
+"   262\t    \"\"\"`--improver deepseek` 不能在记录里写 deepseek,而方法实际打的是 `.env` 里的本地端点。\n"
+"   263\t\n"
+"   264\t    这条和 harness 误报自己模型是同一类 bug,修法也一样:平台把事实写在消费者读的地方。\n"
+"   265\t    注册项声明端点/模型/钥匙变量,`.env` 只是通用兜底 —— 一个**具名**的改进器被 `.env`\n"
+"   266\t    悄悄改道,正是\"记录说 A、实际跑 B\"的形态。\n"
+"   267\t    \"\"\"\n"
+"   268\t    # `.env` 会被 driver 提前塞进 os.environ,所以在真实运行里这两个变量**是**设着的 ——\n"
+"   269\t    # 第一版测试把它们删掉才通过,于是漏掉了实测到的那次错误:具名改进器的端点被 .env\n"
+"   270\t    # 覆盖,记录写 deepseek、方法实际打本地 vLLM。\n"
+"   271\t    monkeypatch.setenv(\"HG_METHOD_BASE_URL\", \"http://127.0.0.1:8001/v1\")\n"
+"   272\t    monkeypatch.setenv(\"HG_METHOD_MODEL\", \"qwen3.5-9b-local\")\n"
+"   273\t    monkeypatch.setenv(\"DEEPSEEK_API_KEY\", \"k\" * 12)\n"
+"   274\t    cfg = {\"default\": \"deepseek\", \"improvers\": {\"deepseek\": {\n"
+"   275\t        \"name\": \"deepseek\", \"kind\": \"openai-compatible\", \"model\": \"deepseek-v4-pro\",\n"
+"   276\t        \"base_url\": \"https://api.deepseek.com/v1\", \"api_key_env\": \"DEEPSEEK_API_KEY\"}}}\n"
+"   277\t    got = improver.resolve(cfg, requested=\"deepseek\")\n"
+"   278\t    assert got[\"ok\"], got\n"
+"   279\t    assert got[\"path\"] == \"https://api.deepseek.com/v1\"\n"
+"   280\t    assert got[\"model\"] == \"deepseek-v4-pro\"\n"
+"   281\t    assert got[\"api_key_env\"] == \"DEEPSEEK_API_KEY\"\n"
+"   282\t\n"
+"   283\t\n"
+"   284\tdef test_an_endpoint_improver_without_its_credential_is_refused_by_name(monkeypatch):\n"
+"   285\t    \"\"\"没有钥匙要在**门口**拒绝,而不是花掉一轮之后在方法里报一个像方法坏了的错。\"\"\"\n"
+"   286\t    monkeypatch.setenv(\"HG_METHOD_BASE_URL\", \"http://127.0.0.1:8001/v1\")\n"
+"   287\t    monkeypatch.setenv(\"HG_METHOD_MODEL\", \"qwen3.5-9b-local\")\n"
+"   288\t    monkeypatch.delenv(\"DEEPSEEK_API_KEY\", raising=False)\n"
+"   289\t    cfg = {\"default\": \"deepseek\", \"improvers\": {\"deepseek\": {\n"
+"   290\t        \"name\": \"deepseek\", \"kind\": \"openai-compatible\", \"model\": \"deepseek-v4-pro\",\n"
+"   291\t        \"base_url\": \"https://api.deepseek.com/v1\", \"api_key_env\": \"DEEPSEEK_API_KEY\"}}}\n"
+"   292\t    got = improver.resolve(cfg, requested=\"deepseek\")\n"
+"   293\t    assert not got[\"ok\"] and \"DEEPSEEK_API_KEY\" in got[\"reason\"], got\n"
+"   389\tdef test_a_cli_s_custom_provider_endpoint_is_derived_from_its_own_config(tmp_path, monkeypatch):\n"
+"   390\t    \"\"\"门要能拿到\"codex 到底会连哪个 endpoint\",而那个答案在 codex 自己的配置里。\"\"\"\n"
+"   391\t    home = tmp_path / \"home\"\n"
+"   392\t    home.mkdir()\n"
+"   393\t    (home / \"config.toml\").write_text(\n"
+"   394\t        'model = \"qwen3.5-9b-local\"\\nmodel_provider = \"local9b\"\\n\\n'\n"
+"   395\t        '[model_providers.local9b]\\nname = \"local9b\"\\n'\n"
+"   396\t        'base_url = \"http://127.0.0.1:8001/v1\"\\nwire_api = \"responses\"\\n')\n"
+"   397\t    monkeypatch.setenv(\"CODEX_HOME\", str(home))\n"
+"   398\t    from driver import _cli_provider_base_url\n"
+"   399\t    assert _cli_provider_base_url({\"name\": \"codex\"}) == \"http://127.0.0.1:8001/v1\"\n"
+"   400\t\n"
+"   401\t    # 内置 provider(没有 base_url 定义) -> 探测不到,于是\"未探测\",不是\"不支持\"\n"
+"   402\t    (home / \"config.toml\").write_text('model = \"x\"\\nmodel_provider = \"OPENAI\"\\n')\n"
+"   403\t    assert _cli_provider_base_url({\"name\": \"codex\"}) == \"\"\n"
+"   404\t\n"
+"   405\t\n"
+"   406\tdef test_the_probe_reports_a_dead_endpoint_instead_of_raising(monkeypatch):\n"
+"   407\t    \"\"\"门自己不能成为失败来源:连不上就返回 False + 原因,不抛异常。\"\"\"\n"
+"   408\t    from driver import _probe_tool_calls\n"
+"   409\t    ok, why = _probe_tool_calls(\"http://127.0.0.1:9/v1\", \"nope\")\n"
+"   410\t    assert ok is False and why, why\n"
+"[exit 0]\n"
+"\n"
+"$ nl -ba tests/quality/test_services.py | sed -n '726,748p'\n"
+"   726\tdef test_a_host_local_url_is_recognised_and_a_remote_one_is_not():\n"
+"   727\t    \"\"\"The decision that selects the mechanism. A remote endpoint is *not* published:\n"
+"   728\t    the container has no route to it, and pretending otherwise would produce a gateway\n"
+"   729\t    that forwards into nothing.\"\"\"\n"
+"   730\t    from eval.service import modelgate\n"
+"   731\t\n"
+"   732\t    for local in (\"http://127.0.0.1:8001/v1\", \"http://localhost:8001/v1\",\n"
+"   733\t                  \"http://0.0.0.0:8001/v1\", \"http://host.docker.internal:8001/v1\"):\n"
+"   734\t        assert modelgate.is_host_local(local), local\n"
+"   735\t    for remote in (\"https://api.deepseek.com/v1\", \"http://10.0.0.5:8001/v1\",\n"
+"   736\t                   \"https://example.com\"):\n"
+"   737\t        assert not modelgate.is_host_local(remote), remote\n"
+"   738\t\n"
+"   739\t\n"
+"   740\tdef test_the_gateway_preserves_the_path():\n"
+"   741\t    \"\"\"`/v1` is part of an OpenAI-compatible endpoint. Dropping it produces a 404 that\n"
+"   742\t    reads like a wrong model rather than a wrong URL.\"\"\"\n"
+"   743\t    from eval.service import modelgate\n"
+"   744\t\n"
+"   745\t    target, path = modelgate.split(\"http://127.0.0.1:8001/v1\")\n"
+"   746\t    assert target == (\"127.0.0.1\", 8001)\n"
+"   747\t    assert path == \"/v1\"\n"
+"   748\t    assert modelgate.split(\"http://127.0.0.1:8001\")[1] == \"\"\n"
+"[exit 0]\n"
+"\n"
+"$ nl -ba eval/diagnostic_receipt.schema.json | sed -n '114,119p'\n"
+"   114\t        \"endpoint\": {\n"
+"   115\t          \"enum\": [\n"
+"   116\t            \"http://127.0.0.1:8001/v1\",\n"
+"   117\t            \"http://127.0.0.1:8002/v1\",\n"
+"   118\t            null\n"
+"   119\t          ]\n"
+"[exit 0]\n"
+"\n"
+"$ nl -ba eval/service/modelgate.py | sed -n '3,10p;119,129p'\n"
+"     3\t**The problem.** A harness inside a container cannot reach a model listening on the\n"
+"     4\thost's loopback. Measured, every obvious route fails:\n"
+"     5\t\n"
+"     6\t    container -> 127.0.0.1:8001            the container's own loopback\n"
+"     7\t    container -> 172.17.0.1:8001           the bridge gateway; vLLM binds loopback only,\n"
+"     8\t                                           so nothing is listening there\n"
+"     9\t    container -> host.docker.internal      not defined on Linux by default\n"
+"    10\t    internal  -> <its own gateway>:8001    same, nothing listening\n"
+"   119\tclass GatewayStats:\n"
+"   120\t    \"\"\"What one gateway saw, counted, safe to read while it is running.\n"
+"   121\t\n"
+"   122\t    The measured reason this exists: 20 of 91 task-runs of one experiment died with the\n"
+"   123\t    harness printing `APIConnectionError: Connection error.`, and the record said only\n"
+"   124\t    `model_gateway: {published: true, target: \"127.0.0.1:8001\"}`. \"The model was down\",\n"
+"   125\t    \"the model hung up on an idle keep-alive connection\" and \"the container's network\n"
+"   126\t    dropped it\" all produce that one client-side string, and they have three different\n"
+"   127\t    fixes -- so a record that cannot separate them cannot be acted on. Counted here rather\n"
+"   128\t    than inferred from the harness's stderr because the gateway is the only party that can\n"
+"   129\t    see both ends.\n"
+"[exit 0]\n"
+"\n"
+"$ nl -ba registry/w-evidence-external-sources.md | sed -n '1057,1060p'\n"
+"  1057\t54: * **Endpoint.** `.env` (main) says `8001`; `AGENTS.md:107` says `8002`; `eval/policy/diagnostic_policy.py:29`\n"
+"  1058\t55:   `ENDPOINTS = (\"http://127.0.0.1:8002/v1\",)` means a **staged diagnostic is refused unless it binds\n"
+"  1059\t56:   8002**; the handoff and `hg-wt/w-outcome/.env` say **8010**. All three answer `200`. A run pointed at\n"
+"  1060\t57:   the wrong one is refused by policy or measures a different server — decide one and put it in `.env`.\n"
+"[exit 0]\n"
+
+=== Validation-log whitespace check and correction ===
+
+$ git diff --cached --check
+Output (JSON encoded, exact including trailing tabs):
+"registry/w-endpointfix-validation.txt:322: trailing whitespace.\n+   263\t\nregistry/w-endpointfix-validation.txt:341: trailing whitespace.\n+   282\t\nregistry/w-endpointfix-validation.txt:342: trailing whitespace.\n+   283\t\nregistry/w-endpointfix-validation.txt:364: trailing whitespace.\n+   400\t\nregistry/w-endpointfix-validation.txt:368: trailing whitespace.\n+   404\t\nregistry/w-endpointfix-validation.txt:369: trailing whitespace.\n+   405\t\nregistry/w-endpointfix-validation.txt:383: trailing whitespace.\n+   731\t\nregistry/w-endpointfix-validation.txt:390: trailing whitespace.\n+   738\t\nregistry/w-endpointfix-validation.txt:391: trailing whitespace.\n+   739\t\nregistry/w-endpointfix-validation.txt:396: trailing whitespace.\n+   744\t\nregistry/w-endpointfix-validation.txt:415: trailing whitespace.\n+     5\t\nregistry/w-endpointfix-validation.txt:423: trailing whitespace.\n+   121\t\n"
+[exit 2]
+
+Numbered blank source lines from nl contained trailing tabs. The source-excerpt
+transcript above now uses lossless JSON encoding; source files were not changed.
+
+=== Final review and task-owned scratch cleanup ===
+
+$ git add registry/w-endpointfix-validation.txt
+[exit 0]
+
+$ git diff --cached --check
+[exit 0]
+
+$ git diff --cached --name-only
+.gitignore
+docs/local-model-endpoints.md
+registry/w-endpointfix-validation.txt
+tests/quality/test_local_model_endpoints.py
+tools/check_local_model.py
+tools/probe_tool_calls.py
+[exit 0]
+
+$ git diff --name-only
+[exit 0]
+
+$ git check-ignore -v docs/local-model-endpoints.md
+[exit 1]
+
+$ git ls-files docs/local-model-endpoints.md
+docs/local-model-endpoints.md
+[exit 0]
+
+Cleanup after tracked transcript copy: Path('/mnt/20t/xubuqiang/hg-work/endpointfix/fail-before.txt').unlink(); exists=False
+
+Cleanup after tracked transcript copy: Path('/mnt/20t/xubuqiang/hg-work/endpointfix/pass-after.txt').unlink(); exists=False
+
+Cleanup after tracked transcript copy: Path('/mnt/20t/xubuqiang/hg-work/endpointfix/related-tests.txt').unlink(); exists=False
+
+Cleanup after tracked transcript copy: Path('/mnt/20t/xubuqiang/hg-work/endpointfix/tracking.txt').unlink(); exists=False
+
+Cleanup after tracked transcript copy: Path('/mnt/20t/xubuqiang/hg-work/endpointfix/citations.txt').unlink(); exists=False
+
+Cleanup: Path('/mnt/20t/xubuqiang/hg-work/endpointfix').rmdir(); exists=False
+
+=== Final committed-file byte sizes (includes this validation file) ===
+
+$ wc -c .gitignore docs/local-model-endpoints.md registry/w-endpointfix-validation.txt tests/quality/test_local_model_endpoints.py tools/check_local_model.py tools/probe_tool_calls.py
+13066 .gitignore
+ 1889 docs/local-model-endpoints.md
+29726 registry/w-endpointfix-validation.txt
+  303 tests/quality/test_local_model_endpoints.py
+ 7568 tools/check_local_model.py
+ 5740 tools/probe_tool_calls.py
+58292 总计
+[exit 0]
