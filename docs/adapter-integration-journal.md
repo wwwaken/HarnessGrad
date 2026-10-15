@@ -3335,3 +3335,41 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Resource state: local container controls and tests only - no benchmark scoring run, model, GPU or
   endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
   receipts and archives were untouched; no existing run id was resumed.
+
+## 2026-10-15 Pristine applicability and current-set scope - w-scope
+
+- Reviewed source at `9f78bcdd39a67e708372c44ad5c858a7e7d397fd` in registered
+  `/tmp/hg-scope`, branch `wg-scope`. AST/source inspection covers all 28 declared
+  datasets, their factories, shared QA construction and both verifier dispatchers:
+  zero declare/select pristine-offline. The only explicit class declarations are
+  AppWorld (`data/datasets/appworld.py:270`) and Terminal-Bench
+  (`data/datasets/terminal_bench.py:233`), both snapshot-service. The survey's
+  19 actor-workdir / 4 snapshot-service routes still match; AgentDojo's native
+  route and four refused adapters add no pristine instance.
+- Conclusion (b), scoped to E1/E2/E3: no current adapter requirement mandates
+  pristine migration; connected export/private-input/ownership primitives are
+  implemented and exercised by existing w-prifix/w-quiesce2 authored controls
+  under explicit trusted-caller pin, ownership and custody preconditions. The
+  class is unused, not intrinsically unsuitable for QA/GAIA or future migrations.
+  E1/E2/E3 are SATISFIED FOR THE CURRENT DATASET SET (zero applicable pristine
+  datasets). No real-dataset pristine export/private-input/backend ownership
+  validation is established, and future opt-ins owe their own complete contracts
+  and applicable validation. Read-only independent mechanism audit agreed;
+  its temporary registered `/tmp/hg-scope-audit` worktree was removed.
+- Appended this precise scope correction and report evidence to the shared
+  export blocker's observed history. E4/E5/E6 remain PARTIAL for custody/native
+  outer-run/trial binding, applicable dataset equivalence and live lifecycle
+  coverage; E7/E8 remain SATISFIED. The blocker remains OPEN/code-solvable with
+  its full next_action intact. scorer-offline-closure, all dataset records,
+  statuses, references and historical evidence are unchanged. No blocker closes.
+- Added two source-only regression pins in the same commit: changed dataset/QA
+  pristine declarations require scope re-review, and conditional satisfaction
+  cannot erase residual requirements or claim real-dataset validation. Existing
+  shared-gate assertions are retained with the reason documented beside the pin.
+  Checker valid: 28 datasets, 2 shared blockers, 11 historical records,
+  production_authorized=false; 56 focused tests passed with external basetemp.
+- Report and exact registry wording: `reports/w-scope-pristine-applicability.md`.
+  Checker, focused output and preservation checks: `reports/w-scope-validation.txt`.
+  No production code, adapter or frozen receipt edits; no scorer/benchmark,
+  model/GPU/endpoint/container execution, H0 trial or runs/ write. Commit only
+  in this worktree for parent review; main is untouched.

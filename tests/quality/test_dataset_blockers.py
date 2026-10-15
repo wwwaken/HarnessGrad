@@ -1,6 +1,7 @@
 """Source-only index regressions: no adapters, task pools or external receipts."""
 from __future__ import annotations
 
+import ast
 import builtins
 import copy
 import hashlib
@@ -61,6 +62,64 @@ def test_source_inventory_and_taxonomy_cover_every_publishable_dataset(document)
     assert counts["historical_records"] == len(checker.read_json(checker.HISTORY)["records"])
     # Refusal and absent provisioning must never make a dataset disappear.
     assert {"api_bank", "nestful", "sotuqa", "tau2_bench"} <= set(checker.published_declarations())
+
+
+def test_pristine_scope_inventory_requires_review_on_any_dataset_opt_in():
+    """w-scope is an empty-instance finding, not a permanent pristine exemption.
+
+    Inspect source without importing adapters or loading task pools. A changed
+    declaration must invalidate the dated finding and trigger a scope review.
+    """
+    declarations = []
+    for path in sorted((ROOT / "data/datasets").glob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        assert not any(isinstance(node, ast.Constant) and node.value == "pristine-offline"
+                       for node in ast.walk(tree)), "new pristine opt-in: re-review w-scope"
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Dict):
+                continue
+            for key, value in zip(node.keys, node.values):
+                if isinstance(key, ast.Constant) and key.value == "isolation_class":
+                    declarations.append((path.stem, ast.literal_eval(value)))
+    assert sorted(declarations) == [
+        ("appworld", "snapshot-service"), ("terminal_bench", "snapshot-service"),
+    ], "changed dataset isolation declarations: re-review w-scope"
+    scaffold = ast.parse((ROOT / "data/scaffolds/qa/base.py").read_text(encoding="utf-8"))
+    assert not any(isinstance(node, ast.Constant) and node.value == "pristine-offline"
+                   for node in ast.walk(scaffold)), "new QA opt-in: re-review w-scope"
+
+
+def test_pristine_scope_finding_preserves_residual_requirements_and_open_blockers(document):
+    """w-scope corrects only E1/E2/E3 applicability; E4/E5/E6 still block closure.
+
+    Pin the standing next_action and the evidence boundary in the same commit as
+    the visible registry annotation. No real-dataset pristine validation follows.
+    """
+    shared = {item["id"]: item for item in document["shared_blockers"]}
+    assert set(shared) == {"scorer-offline-closure", "artifact-only-state-export"}
+    blocker = shared["artifact-only-state-export"]
+    assert blocker["status"] == "code-solvable"
+    assert blocker["next_action"] == (
+        "Provision authoritative per-task export and private-input contracts for pristine scorers; "
+        "validate ownership, quiescence/trial binding, scoring equivalence and live lifecycle/cleanup. "
+        "Review snapshot/service state and recording surfaces under their declared class without "
+        "forcing an inferred artifact allowlist.")
+    observed = blocker["observed"].split(
+        "Pristine applicability scope determination 2026-10-15 - w-scope: ", 1)[1]
+    for boundary in (
+        "zero pristine-offline declarations or selections",
+        "SATISFIED FOR THE CURRENT DATASET SET (zero applicable pristine datasets)",
+        "no real-dataset pristine export, private-input safety or backend ownership validation is established",
+        "Every future pristine opt-in must provision authoritative per-task export",
+        "validate actual backend/source/projection ownership",
+        "E4/E5/E6 remain PARTIAL",
+        "artifact-only-state-export remains OPEN/code-solvable with its full next_action unchanged",
+    ):
+        assert boundary in observed
+    assert {"kind": "repository", "path": "reports/w-scope-pristine-applicability.md",
+            "locator": "## Exact registry wording"} in blocker["evidence"]
+    assert shared["scorer-offline-closure"]["status"] == "code-solvable"
+    assert document["review"]["production_authorized"] is False
 
 
 def test_every_journal_coverage_dataset_points_to_a_checked_in_review(document):
@@ -362,6 +421,8 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     # controller class; w-fix preserves unknown evidence as noncomparable and
     # refuses comparison (docs/w-fix-unknown-isolation-records.md). Remove exactly these two
     # completed review gates; keep the real dependency/export gates pinned.
+    # w-scope narrows E1/E2/E3 to their current empty pristine instance set;
+    # E4/E5/E6 remain partial, so neither shared gate nor this pin is removed.
     assert set(target["shared_blockers"]) == {
         "scorer-offline-closure", "artifact-only-state-export",
     }
