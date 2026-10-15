@@ -3202,3 +3202,32 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - No production scoring logic, benchmark run, model/GPU/endpoint call, runs/
   write, frozen receipt change or main commit. Work is committed only on the
   registered `/tmp/hg-jvm` worktree branch for parent review.
+## Parent review and merge — w-quiesce, w-jvm — 2026-10-15
+
+- Merged `a06a27e` (w-quiesce) and `724f601` (w-jvm). Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`; sequencer clean; every named
+  deliverable present on `main`.
+- **A real limitation was demonstrated rather than assumed: the current pristine path cannot
+  establish quiescence.** w-quiesce states it plainly - "a real source mutation persisted through
+  scoring undetected" - which means the export source is not proven unchanged across the scoring
+  window, and trusted source custody plus native run/trial binding are still needed. This is the
+  honest answer to E4, and it is more useful than a metadata check dressed up as quiescence. E5
+  did advance: pre/post-export equivalence is established for the control's selected-only state
+  and tampering was refused, while dataset-specific transformation, private-input and metric
+  equivalence remain outstanding. 162 tests passed.
+- **S5's remaining runtime coverage hole is now filled with live observations instead of source
+  review.** w-jvm recorded actual limits, lifecycle and cleanup for the JVM (scienceworld), native
+  libfrotz (jericho), LibreOffice recalculation (spreadsheetbench), and the child-process runtimes
+  of DS-1000, LiveCodeBench and BIRD - with the unexercised branches named per runtime rather than
+  glossed. One finding is worth singling out: **DS-1000 leaked wrapper scratch**, which was
+  observed and archived before the collector removed it. Production enforcement remains
+  unverified, S5 stays PARTIAL, and no blocker closed. All 338 manifest entries verify.
+- Merge mechanics: the registry conflicted again and the helper aborted the automatic path, as
+  designed. The resolution kept **both** workers' evidence objects (16 entries now) and merged the
+  duplicated `observed` by common prefix (15105 + 14468 -> 16522 chars), so no sentence and no
+  cited artifact was dropped. The checker was green before the cherry-pick was allowed to
+  complete.
+- Resource state: local control executions for the pristine path, the JVM/LibreOffice/child
+  runtimes and offline payload installs only - no benchmark scoring run, model, GPU or endpoint
+  call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen receipts and
+  archives were untouched; no existing run id was resumed.
