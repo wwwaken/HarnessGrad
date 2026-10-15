@@ -117,7 +117,11 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     old_work_root = os.environ.get("HARNESSGRAD_WORK_ROOT")
     os.environ["HARNESSGRAD_WORK_ROOT"] = str(control_root)
     try:
+        # `task_id` is required: since 63606f42 the verifier refuses a spec whose `scorer_input`
+        # binding does not match the selected task, and omitting it made this control report
+        # reward -1 / unmeasured for a task the oracle had actually completed.
         verdict = _verify(workdir, verifier, "", sandbox=True,
+                          task_id=record["task_id"],
                           timeout_s=module.VERIFY_TIMEOUT_S, env=module.DEFAULT_ENV)
     finally:
         if old_work_root is None:

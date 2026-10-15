@@ -413,3 +413,33 @@ Also confirmed benign or environmental: `test_claims_doc.py` exits `rc=5` (no te
 skip), `test_appworld_official_scorer.py` needs more than the pass's 300 s per-file budget, and
 `test_console.py`'s `test_the_curve_is_on_disk_before_the_run_ends` has a **6-second** deadline that a
 loaded machine can miss - it passed on re-run and is re-checked below.
+
+## A seventh sweep-missed red, and it is production: jericho's own control was broken
+
+`test_dataset_controls.py::test_the_control_reaches_one_and_the_noop_reaches_zero[jericho]` failed in
+`main` - the per-file pass found it, the chunked sweep did not. The oracle replays 17 reference commands
+and the control then reports `reward -1` with `measured: null`, which the test correctly refuses:
+
+```
+E  AssertionError: jericho --oracle exited 1; a dataset whose own control fails is not gradeable:
+E    task acorncourt (17 reference commands) / mode oracle / reward -1
+E  stderr='CONTROL FAILED: expected reward 1, got -1'
+```
+
+**Cause.** `data/datasets/jericho/control.py:120` called the platform verifier without the selected task:
+
+```python
+verdict = _verify(workdir, verifier, "", sandbox=True, timeout_s=..., env=...)
+```
+
+`63606f42` made `_verify_existing` refuse a spec whose `scorer_input` binding does not match the `task_id`
+it was called with (`eval/verification/verifier.py:525-530`), so with `task_id` omitted the binding
+comparison failed, the verdict came back `unmeasured` with `score: null`, and this helper turned that into
+its own `reward -1` sentinel. The platform was right to refuse; the helper was the stale caller - the same
+class of omission `w-identcall` fixed on the test side and `w-scorerstub` fixed in
+`data/datasets/alfworld/control.py`.
+
+**Fix.** `task_id=record["task_id"]` is now passed, with the reason in a comment. This is the **only**
+production caller of the platform `_verify` that omitted it (`grep -rn '_verify(' data/` finds three
+adapter-local functions with a different signature and this one call site), and the control returns to
+reward 1 for the oracle and 0 for the noop: `1 passed`.
