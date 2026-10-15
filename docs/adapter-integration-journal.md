@@ -3646,3 +3646,31 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   bindings; S3/S4/S6 remain PARTIAL. No shared or dataset blocker closes, no gate
   is weakened and no production authorization is added. No model/GPU/endpoint,
   benchmark scorer, Docker, runs/ modification or frozen-receipt edit occurred.
+## Parent review and merge — w-reassess2, w-tbi — 2026-10-15
+
+- Merged `77e9856` (w-reassess2) and `2a141db` (w-tbi). Result `0670578`. Registry valid: 28
+  datasets, 2 shared blockers, 11 historical records, `production_authorized=false`; sequencer
+  clean; both named deliverables present. 56 focused tests passed for the assessment, and w-tbi's
+  regression suite went **132 failed / 24 passed before -> 156 passed after** with 113 regressions
+  passing.
+- **The re-assessment revised exactly one set of verdicts and closed nothing.** E1/E2/E3 moved
+  **PARTIAL -> SATISFIED**, explicitly and only for "today's zero applicable pristine datasets",
+  which is the same bounded form the earlier scope determination established. Every S verdict is
+  unchanged: `scorer-offline-closure` is still held by **S1, S3, S4, S5, S6** and
+  `artifact-only-state-export` by **E4, E5, E6**. Registry unchanged.
+- **w-tbi produced the phase's largest single coverage step on a clause that had been stuck.**
+  **12 of 19 datasets now have task-bound scorer inputs** - the scorer records the identity of the
+  expected input it consumed and binds it to the task id - and **all 12 foreign-task input
+  substitutions were refused before scoring**, with native verdicts null/unmeasured. Seven native
+  routes remain unbound and the worker says so, so **S1 stays PARTIAL** on complete
+  execution-selected runtime custody plus those seven. No blocker closed.
+- The point worth keeping about the re-assessment: it did not let ten rounds of fixes inflate a
+  clause. The snapshot-identity fix, the quiescence detection, the trial binding, the uvx bootstrap
+  and the official-execution coverage are all real, and the worker still recorded S3 and S4 as
+  PARTIAL because complete transitive custody and coverage are not what those fixes establish. It
+  also refused to upgrade S6's raw measured controls into "cleared pilot controls" - the staged
+  receipts still publish null because policy enforcement was not observed, and that distinction is
+  exactly what S6 asks about.
+- Resource state: assessment and source-level binding work plus tests only - no benchmark scoring
+  run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical
+  runs, frozen receipts and archives were untouched.
