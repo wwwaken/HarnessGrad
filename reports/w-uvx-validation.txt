@@ -1,0 +1,112 @@
+w-uvx exact validation and collection commands
+Workspace: /tmp/hg-uvx (registered isolated worktree, branch wg-uvx)
+Scope: one fresh openssl-selfsigned-cert tooling bootstrap, no task tests/scoring/model/GPU/inference calls.
+
+Collection commands actually executed:
+$ python3 tests/fixtures/hg_wuvx/scripts/inventory.py > tests/fixtures/hg_wuvx/raw/inventory.stdout.txt
+Source checkout 2fd12b88aafdd04a52c298e3940bcb189f9766d6; 89 local task sources; 369/369 hashes match.
+337 verifier bootstrap command blocks: 82 uvx tasks, one uv task, six pip tasks.
+Raw output: tests/fixtures/hg_wuvx/raw/inventory.stdout.txt
+
+$ python3 tests/fixtures/hg_wuvx/scripts/collect.py
+First attempt online exit 1 after successful apt installation: image docker-clean hook deleted cached .debs.
+Original script preserved: tests/fixtures/hg_wuvx/scripts/attempt1-online.sh
+Original stdout/stderr/argv/inspect/cleanup: tests/fixtures/hg_wuvx/raw/attempt1-online.* and attempt1-online-container-inspect.*, attempt1-online-cleanup.*
+
+$ python3 tests/fixtures/hg_wuvx/scripts/collect.py
+Second attempt online exit 0 after disabling only the disposable container's docker-clean hook.
+Per-command argv/start_utc/returncode and unabridged stdout/stderr under tests/fixtures/hg_wuvx/raw/:
+  checkout.command.json; image-inspect.command.json; base-probe.command.json;
+  online.command.json; online-container-inspect.command.json; online-cleanup.command.json
+Actual container command: bash /packet/scripts/online.sh
+Raw selected Python/ABI/distributions: raw/online-python.json; resolver/download URLs: raw/online.stderr.txt
+uv 0.9.5; uvx 0.9.5; existing CPython 3.13.7, SOABI cpython-313-x86_64-linux-gnu; six wheels.
+
+$ python3 tests/fixtures/hg_wuvx/scripts/fetch_wheels.py
+Six exact wheel URLs from online uv TRACE GET output, all curl returncodes 0.
+Raw exact curl argv/stdout/stderr/headers: raw/wheel-{1..6}.command.json and adjacent files.
+Recomputed digests and wheel metadata: artifacts/wheels.json; hash lock: artifacts/requirements.lock
+Uv archive member hashes: artifacts/uv-members.json, agreeing with installed binaries in raw/online.stdout.txt.
+
+$ python3 tests/fixtures/hg_wuvx/scripts/offline.py
+Raw command records: raw/offline.command.json; raw/offline-container-inspect.command.json;
+raw/copy-offline-*.command.json; raw/offline-cleanup.command.json.
+Actual container command: bash /packet/scripts/offline.sh
+Docker --pull=never --network=none --cpus=1 --memory=1g --pids-limit=128; fixture mount read-only.
+Container exit 0, cleanup exit 0. Initial caches empty; both external socket probes return errno 101.
+Captured 19 .debs install; SHA-256 artifact/binary checks pass; hash-required six-wheel install passes.
+A second initially absent uv cache creates the uvx pytest environment offline from the wheel directory.
+Raw stdout prints uv 0.9.5, uvx 0.9.5, pytest 8.4.1 and --ctrf=CTRF registration.
+Complete unabridged outputs: raw/offline.stdout.txt, raw/offline.stderr.txt, raw/offline-python.json,
+raw/offline-dpkg.txt, raw/offline-pytest-help.txt, raw/offline-container-inspect.stdout.txt.
+No task tests are collected or executed; pytest only receives --version or --help.
+
+$ python3 tests/fixtures/hg_wuvx/scripts/summarize.py > tests/fixtures/hg_wuvx/raw/summary.stdout.txt
+Exit 0. Online/offline interpreter/ABI and six distributions agree; complete dpkg-query outputs byte-equal;
+each downloaded wheel METADATA/WHEEL hash matches the online installed file hash.
+Raw dpkg-deb -f argv/stdout and recomputed .deb hashes: raw/apt-artifacts.json.
+
+$ python3 tests/fixtures/hg_wuvx/scripts/write_report.py
+Writes reports/w-uvx-bootstrap.md, including 337 bootstrap rows plus source/ABI/artifact/offline scope.
+
+Raw sha256sum command and complete output: raw/artifact-sha256.command.json and raw/artifact-sha256.txt.
+artifacts/SHA256SUMS covers every offline installation artifact; fixture SHA256SUMS covers the full packet.
+
+Focused repository tests (exact tool-stream stdout retained below):
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-wuvx
+........................................................                 [100%]
+56 passed in 4.44s
+
+Final read-only validation follows; outputs appended directly by the commands shown.
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+[exit 0]
+
+$ python3 tests/fixtures/hg_wuvx/scripts/verify.py
+{
+  "valid": true,
+  "manifest_files": 323,
+  "wheels": 6,
+  "debs": 19,
+  "source_files_compared": 369,
+  "task_sources": 89,
+  "offline_bootstrap_tasks": 1,
+  "offline_docker_network": "none",
+  "registry_change": "observed append and one evidence entry only",
+  "production_authorized": false
+}
+[exit 0]
+
+$ git diff --check
+[exit 0]
+
+$ git diff --cached --check
+[exit 2; 385 trailing-whitespace diagnostics in verbatim captured artifacts/source/output]
+Unmodified evidence bytes retained; complete check output is JSON-escaped in tests/fixtures/hg_wuvx/raw/staged-diff-check.json. No whitespace normalization of downloaded installer, external source or raw apt stdout is performed.
+
+$ git diff --cached --check -- docs/dataset-blockers.json docs/adapter-integration-journal.md reports/w-uvx-bootstrap.md reports/w-uvx-validation.txt tests/fixtures/hg_wuvx/scripts tests/fixtures/hg_wuvx/README.md tests/fixtures/hg_wuvx/SHA256SUMS tests/fixtures/hg_wuvx/artifacts/requirements.lock
+[exit 0; authored files]
+
+Final packet after preserving whitespace diagnostics:
+
+$ python3 tests/fixtures/hg_wuvx/scripts/verify.py
+{
+  "valid": true,
+  "manifest_files": 324,
+  "wheels": 6,
+  "debs": 19,
+  "source_files_compared": 369,
+  "task_sources": 89,
+  "offline_bootstrap_tasks": 1,
+  "offline_docker_network": "none",
+  "registry_change": "observed append and one evidence entry only",
+  "production_authorized": false
+}
+[exit 0]
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+[exit 0]
+
+Staged-byte audit: all 324 manifest preimages are staged byte-identically, including six explicitly force-added .whl files ignored by the inherited global pattern. 329 total changed files; allowed scope only. No collectible task-source .py files or pyc files added.

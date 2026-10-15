@@ -1,0 +1,124 @@
+{
+  "task": "openssl-selfsigned-cert",
+  "coverage": "one fresh tooling-bootstrap resolution; not historical transitive recovery or scoring",
+  "packages": {
+    "iniconfig": "2.3.1",
+    "packaging": "26.3",
+    "pluggy": "1.6.0",
+    "pygments": "2.21.0",
+    "pytest": "8.4.1",
+    "pytest-json-ctrf": "0.3.5"
+  },
+  "python": {
+    "version": "3.13.7 (main, Aug 15 2025, 22:13:55) [GCC 12.2.0]",
+    "real_executable": {
+      "path": "/usr/local/bin/python3.13",
+      "sha256": "73b68fc2dac176af16098180a2c98a03ee9f1f1b02db25d42d44d782e79e2330",
+      "size": 14480
+    },
+    "cache_tag": "cpython-313",
+    "SOABI": "cpython-313-x86_64-linux-gnu",
+    "libc": [
+      "glibc",
+      "2.36"
+    ],
+    "openssl": "OpenSSL 3.0.17 1 Jul 2025"
+  },
+  "apt_artifacts": 19,
+  "wheel_artifacts": 6,
+  "online_offline_package_and_python_abi_equal": true,
+  "online_offline_dpkg_equal": true,
+  "wheel_metadata_matches_online_installed": [
+    {
+      "wheel": "artifacts/wheels/pytest-8.4.1-py3-none-any.whl",
+      "metadata_checks": [
+        {
+          "member": "pytest-8.4.1.dist-info/METADATA",
+          "sha256": "3e6f6ba5b37585c7d54b9283e9804a647e83e953dc9c9759df81fba0e391ed1f",
+          "matches_online_installed_file": true
+        },
+        {
+          "member": "pytest-8.4.1.dist-info/WHEEL",
+          "sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b",
+          "matches_online_installed_file": true
+        }
+      ]
+    },
+    {
+      "wheel": "artifacts/wheels/pytest_json_ctrf-0.3.5-py3-none-any.whl",
+      "metadata_checks": [
+        {
+          "member": "pytest_json_ctrf-0.3.5.dist-info/METADATA",
+          "sha256": "dd99ab17302feeaeaf366839e2baa11c68500f1d14ce5d0364b56f3d1648b396",
+          "matches_online_installed_file": true
+        },
+        {
+          "member": "pytest_json_ctrf-0.3.5.dist-info/WHEEL",
+          "sha256": "195f5a3138703ffe28342b6f102d9e737a9462eb6059e033925ae8ff49b85894",
+          "matches_online_installed_file": true
+        }
+      ]
+    },
+    {
+      "wheel": "artifacts/wheels/pluggy-1.6.0-py3-none-any.whl",
+      "metadata_checks": [
+        {
+          "member": "pluggy-1.6.0.dist-info/METADATA",
+          "sha256": "7438c35ee25a095eb7416f84b461c2d74425c5e734ad54c3912453c65244e01c",
+          "matches_online_installed_file": true
+        },
+        {
+          "member": "pluggy-1.6.0.dist-info/WHEEL",
+          "sha256": "370dfa0e3ba1ff9543ba42b41fbf10cce5fefc5404a3a577ee6de7926f7a82d5",
+          "matches_online_installed_file": true
+        }
+      ]
+    },
+    {
+      "wheel": "artifacts/wheels/iniconfig-2.3.1-py3-none-any.whl",
+      "metadata_checks": [
+        {
+          "member": "iniconfig-2.3.1.dist-info/METADATA",
+          "sha256": "47c2c35d936f5c649d8074c6464719a42966a67b5cebad01e3e5784cf090cfb6",
+          "matches_online_installed_file": true
+        },
+        {
+          "member": "iniconfig-2.3.1.dist-info/WHEEL",
+          "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+          "matches_online_installed_file": true
+        }
+      ]
+    },
+    {
+      "wheel": "artifacts/wheels/packaging-26.3-py3-none-any.whl",
+      "metadata_checks": [
+        {
+          "member": "packaging-26.3.dist-info/WHEEL",
+          "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db",
+          "matches_online_installed_file": true
+        },
+        {
+          "member": "packaging-26.3.dist-info/METADATA",
+          "sha256": "70fdb89fc4d4a9a043bf7372b8972bcc883fddff34ab55e9cf80d73875384763",
+          "matches_online_installed_file": true
+        }
+      ]
+    },
+    {
+      "wheel": "artifacts/wheels/pygments-2.21.0-py3-none-any.whl",
+      "metadata_checks": [
+        {
+          "member": "pygments-2.21.0.dist-info/METADATA",
+          "sha256": "1dde075570136774c706bf0009183a793fe0ee262e4a5590cc6eff8453eedd43",
+          "matches_online_installed_file": true
+        },
+        {
+          "member": "pygments-2.21.0.dist-info/WHEEL",
+          "sha256": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59",
+          "matches_online_installed_file": true
+        }
+      ]
+    }
+  ],
+  "containers_exit_and_cleanup_success": true
+}

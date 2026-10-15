@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "curl",
+    "--proxy",
+    "http://172.17.0.1:17890",
+    "-fLsS",
+    "--max-time",
+    "120",
+    "-D",
+    "/tmp/hg-uvx/tests/fixtures/hg_wuvx/raw/wheel-4.headers.txt",
+    "https://files.pythonhosted.org/packages/56/43/4ca9e49d27a1fcf6bece6f6aec0ea46bb9112489b93d4b688fb415457bdb/iniconfig-2.3.1-py3-none-any.whl",
+    "-o",
+    "/tmp/hg-uvx/tests/fixtures/hg_wuvx/artifacts/wheels/iniconfig-2.3.1-py3-none-any.whl"
+  ],
+  "cwd": "/tmp/hg-uvx",
+  "start_utc": "2026-10-15T01:25:29.986930+00:00",
+  "returncode": 0
+}
