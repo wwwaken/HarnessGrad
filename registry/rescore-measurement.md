@@ -85,6 +85,26 @@ tasks and must not be extended to the full pools.
 | `alfworld`, `agentdojo`, `scienceworld`, `jericho`, `bird_minidev` | - | - | `alfworld`/`agentdojo`/`scienceworld` are classified **RERUN** (`eval-fidelity-plan.md:116-117`: the instrument changed, not only the scorer); the other two have no verdicts with a recorded prediction |
 | `sportsunderstanding` | - | - | no archived run at all (the plan already recorded "never run") |
 
+### The musique redaction is deliberate - and its cost is now measured
+
+I checked whether the 813 lost verdicts are an oversight before recording them as a limitation. They are
+not: `REDACT_EVIDENCE = True` (`data/datasets/musique.py:29`) was added by `ce7f3f4b` ("restore MuSiQue and
+2Wiki evaluation fidelity", 2026-10-13) together with `EVIDENCE_AWARE` and the joint-F1 policy, and the
+mechanism is documented in this repository's own output contract - *"MuSiQue verifier evidence redacts gold
+before prediction parsing, including invalid-artifact paths"* (`docs/musique-output-contract.md:52-53`), in
+the paragraph that also says gold "live[s] only in trusted `VERIFY.inputs`". The two peer adapters that
+redact give their reasons inline and both are about **private** data (`bfcl_v3.py:76` "avoid echoing
+trusted BFCL gold"; `chessbench_puzzles.py:34` "the complete private reference").
+
+MuSiQue's gold is **public** - it is the dataset w-evidence re-derived from a public mirror. So this
+redaction is a **defence-in-depth consistency choice rather than a privacy requirement**, and its measured
+cost is that the single dataset whose finding is **LABEL-only** - the one where replaying the archive would
+have been most informative, because the claim is about the metric's *name* rather than its value - is the
+one whose evidence can never be replayed. Recording the trade, not a recommendation: removing the redaction
+would restore 813 verdicts to rescorability and would also start echoing a public gold into evidence, which
+is a custody decision for the operator. No inline comment states musique's *motive*, unlike its two peers;
+that is the only documentation gap here, and it is small.
+
 ## Reproduce
 
 ```bash
