@@ -5489,3 +5489,38 @@ measurement here.
 **Commits:** `3561569f` (the fold patch and its record), `5f5cfa05` (the two verifications). Checker valid on
 both. Still operator-gated: the three open blockers' closure decisions, B5's 47 gitignored bodies, and the
 optional B5 per-entry disposition guard.
+
+### Goal round 7, addendum — two audits that both came back negative
+
+**Item 19 was "correct the hand-written documents", plural, and only one section had been produced.** So I
+audited all 357 lines of `docs/eval-split-design.md` for other claims this phase invalidated. Clean
+negative, and it matters that it is recorded: a term sweep for `F1`, `0.4254`, `0.3064`, `0.0846`, `0.2687`,
+`0.2125`, `8001`, `8002` returns **zero** matches, and the four `joint` matches are all the word
+`disjoint`. §2's MuSiQue leakage structure (2417 tasks, 544 components) is consistent with the archive's
+2417 per-task records and is about the reuse graph, not the reward's identity; §5c.2 is about why
+`Σp(1−p)` must not rank datasets and already labels its numbers as a property of one triple; §6's open
+items stay open; `--trials >= 3` at `:205-207` is about noise, not the reported statistic. **So the file
+needs the §5c.1 replacement and, if the figure is added there, the MuSiQue label - and nothing else.**
+
+**Item 17a was one instance of a class worth generalising, so I checked whether it recurs.** τ-bench decided
+success from `done`, the required-output predicates and the database read out of an agent-writable file, so
+two JSONL lines could forge the communication half of a score. Auditing all **twelve** verifier entrypoints
+(11 datasets plus the `qa` scaffold) needed a decidable line first, and "reads an agent-writable file" is not
+it: every replay-based verifier here reads the agent's action log, and that is *correct*. The defect is
+narrower - **an agent-writable file carrying evidence of completion that the verifier accepts, rather than
+carrying the agent's actions which the verifier re-executes.** On that line there is **no recurrence**, and
+the strongest evidence is in the code's own words: jericho reads "one thing from the agent: the ordered
+commands" and then rebuilds from a trusted `jer_game.json` **and a trusted ROM**; alfworld's prints "are
+never consulted"; `agentdojo` replays "`action.json`, not subject-supplied state or observations"; τ-bench
+now says "**Agent-local `db.json` and `tau_calls.jsonl` are not inputs to grading**"; and appworld's `--log`
+lives inside the platform recording mount while its service is task-bound, rejects a foreign task id with
+403, exposes only the action surface, and never loads ground truth into the agent-facing process. Two
+incidental strengths worth keeping: **appworld's boundary is the strongest in the set and that was not
+obvious from the adapter name**, and jericho's re-materialisation of the game and ROM immediately before
+the check is the detail that makes its replay mean anything. Recorded in
+`registry/verifier-trust-anchor-audit.md` with its limits stated: static reading only, no verifier executed,
+scope is the twelve declared entrypoints, and the coarse `stdout`/`print` sweep is *not* evidence of
+print-trust.
+
+Both audits are the same shape as the rest of this phase: **the check is cheap, and a recorded negative is
+worth as much as a finding**, because it is what stops the next session re-opening it.
