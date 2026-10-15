@@ -3304,3 +3304,34 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   PARTIAL. No benchmark run, model/GPU/endpoint call, runs/ access, frozen receipt
   modification, existing-ID reuse or main commit. Registered worktree:
   `/tmp/hg-scratch`, branch `wg-scratch`; changes are for parent review only.
+## Parent review and merge — w-quiesce2, w-scratch — 2026-10-15
+
+- Merged `1e6d66f` (w-quiesce2) and `7eafe2a` (w-scratch). Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`; sequencer clean; both named
+  deliverables present on `main`.
+- **The mutation that the previous round demonstrated as undetected is now detected.**
+  w-quiesce2 implements interval-quiescence detection for the pristine export: a changed
+  mtime/ctime across the export-and-scoring window yields `difference_observed` with
+  `score=null` and `outcome=unmeasured`, while the unchanged control still scores `1.0`.
+  Regression counts went **2 failed / 2 passed before -> 4 passed after**, and the focused suite
+  is 180 passed. This is the phase's usual shape - demonstrate the gap, then close the specific
+  gap - and it is the first time an E-clause moved because of a new mechanism rather than new
+  evidence.
+- **The residual threat model is stated instead of hidden**, which is what makes the fix
+  trustworthy: directory swap-and-restore, changes to unselected files, and mutations that hide
+  from both endpoint probes remain **undetectable**, and E4 stays PARTIAL for trusted continuous
+  custody and native outer-run/trial binding. A quiescence claim that did not say this would be
+  worse than no claim.
+- **A real cleanup defect found by an earlier live control is fixed.** w-scratch reproduced the
+  DS-1000 leak: a `ds1000-check-*` directory containing the executor, the runner and the
+  candidate/test payload. The collector contained and removed it, but direct host checks showed it
+  surviving task removal, so it was a wrapper cleanup defect rather than a benign scratch path. It
+  is fixed with `TemporaryDirectory`, and the same pattern was checked for and **not** found in the
+  LiveCodeBench or BIRD wrappers - the worker checked rather than assuming DS-1000 was unique.
+  59 tests passed.
+- Neither blocker closed and no dataset blocker closed; S1/S3/S4/S6 remain PARTIAL, as the workers
+  state. The registry conflict was handled by the helper aborting and the parent resolving it by
+  parsing both sides.
+- Resource state: local container controls and tests only - no benchmark scoring run, model, GPU or
+  endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen
+  receipts and archives were untouched; no existing run id was resumed.
