@@ -1,0 +1,143 @@
+     1	#!/usr/bin/env python3
+     2	"""BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+     3	
+     4	Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+     5	`evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+     6	and the test asserts it is a substring of this file, so drift in upstream is a test failure
+     7	rather than a slow divergence. The execution semantics around it are upstream's too --
+     8	predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+     9	error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    10	catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    11	
+    12	**One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    13	upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    14	database, a missing table -- is scored as a wrong answer. This platform treats that as
+    15	unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    16	otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    17	`data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    18	in that class: the task ran and the agent did not answer, which is a measured zero.
+    19	
+    20	The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    21	(`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    22	query pair and are **not** reported here; the metric is named in the evidence so a published
+    23	number cannot be mistaken for one of them.
+    24	"""
+    25	from __future__ import annotations
+    26	
+    27	import argparse
+    28	import json
+    29	import signal
+    30	import sqlite3
+    31	import sys
+    32	from pathlib import Path
+    33	
+    34	# Resolve helpers beside trusted scorer code. The pinned route places this directory
+    35	# outside the actor task tree, so task-local Python files cannot shadow imports.
+    36	sys.path.insert(0, str(Path(__file__).resolve().parent))
+    37	from data.scaffolds.scorer_input import add_arguments, run_bound
+    38	
+    39	#: Upstream's per-query budget (`evaluation_ex.py`, `--meta_time_out` default 30.0).
+    40	TIMEOUT_S = 30.0
+    41	
+    42	
+    43	# --- verbatim: bird-bench/mini_dev@abd11b6 evaluation/evaluation_ex.py lines 18-22 ---------
+    44	def calculate_ex(predicted_res, ground_truth_res):
+    45	    res = 0
+    46	    if set(predicted_res) == set(ground_truth_res):
+    47	        res = 1
+    48	    return res
+    49	# -------------------------------------------------------------------------------------------
+    50	
+    51	
+    52	class QueryTimedOut(Exception):
+    53	    """The query exceeded upstream's 30-second budget."""
+    54	
+    55	
+    56	def _alarm(_signum, _frame):
+    57	    raise QueryTimedOut(f"exceeded {TIMEOUT_S:g}s")
+    58	
+    59	
+    60	def run_query(connection: sqlite3.Connection, sql: str) -> list[tuple]:
+    61	    """`execute_sql`'s two lines, with upstream's timeout as a real interrupt."""
+    62	    previous = signal.signal(signal.SIGALRM, _alarm)
+    63	    signal.setitimer(signal.ITIMER_REAL, TIMEOUT_S)
+    64	    try:
+    65	        cursor = connection.cursor()
+    66	        cursor.execute(sql)
+    67	        return cursor.fetchall()
+    68	    finally:
+    69	        signal.setitimer(signal.ITIMER_REAL, 0)
+    70	        signal.signal(signal.SIGALRM, previous)
+    71	
+    72	
+    73	def _write(path: str, payload: str) -> None:
+    74	    out = Path(path)
+    75	    out.parent.mkdir(parents=True, exist_ok=True)
+    76	    out.write_text(payload, encoding="utf-8")
+    77	
+    78	
+    79	def _measure(args, reward: float, why: str) -> int:
+    80	    _write(args.reward_file, f"{reward:g}\n")
+    81	    _write(args.evidence_file, json.dumps(
+    82	        {"scorer_input": args.scorer_input_receipt, "measured": True, "metric": "EX", "reward": reward, "why": why}, sort_keys=True) + "\n")
+    83	    print(f"reward {reward:g}: {why}")
+    84	    return 0
+    85	
+    86	
+    87	def _cannot_measure(args, why: str) -> int:
+    88	    """No reward file at all: `eval/verification/verifier.py` turns this into an `invalid` task."""
+    89	    _write(args.evidence_file, json.dumps(
+    90	        {"scorer_input": args.scorer_input_receipt, "measured": False, "metric": "EX", "error": why}, sort_keys=True) + "\n")
+    91	    print(f"check cannot measure: {why}", file=sys.stderr)
+    92	    return 3
+    93	
+    94	
+    95	def main() -> int:
+    96	    parser = argparse.ArgumentParser()
+    97	    parser.add_argument("--db", required=True)
+    98	    parser.add_argument("--gold", required=True)
+    99	    parser.add_argument("--pred", required=True)
+   100	    parser.add_argument("--reward-file", default="verifier/reward.txt")
+   101	    parser.add_argument("--evidence-file", default="verifier/evidence.json")
+   102	    add_arguments(parser)
+   103	    args = parser.parse_args()
+   104	    return run_bound(args, {args.gold: Path(args.gold), args.db: Path(args.db)},
+   105	                     lambda inputs, receipt: _score(args, inputs, receipt))
+   106	
+   107	
+   108	def _score(args, inputs, receipt) -> int:
+   109	
+   110	    args.scorer_input_receipt = receipt
+   111	    gold_sql = inputs[args.gold].read_text(encoding="utf-8").strip() if inputs[args.gold].is_file() else ""
+   112	    if not Path(args.db).is_file():
+   113	        return _cannot_measure(args, f"no database at {args.db}: this task cannot be graded")
+   114	    if not gold_sql:
+   115	        return _cannot_measure(args, "the gold query is empty: this task cannot be graded")
+   116	
+   117	    connection = sqlite3.connect(str(inputs[args.db]))
+   118	    try:
+   119	        try:
+   120	            gold_rows = run_query(connection, gold_sql)
+   121	        except Exception as exc:                    # noqa: BLE001 - a broken gold is not the agent's
+   122	            return _cannot_measure(
+   123	                args, f"the gold query cannot run against {Path(args.db).name} "
+   124	                      f"({type(exc).__name__}: {exc}): the environment cannot measure this task")
+   125	
+   126	        prediction = (Path(args.pred).read_text(encoding="utf-8").strip()
+   127	                      if Path(args.pred).is_file() else "")
+   128	        if not prediction:
+   129	            return _measure(args, 0.0, "no answer (measured zero): answer.sql is missing or empty")
+   130	        try:
+   131	            predicted_rows = run_query(connection, prediction)
+   132	        except Exception as exc:                    # noqa: BLE001 - upstream scores this 0
+   133	            return _measure(args, 0.0, f"prediction did not run ({type(exc).__name__}: {exc})")
+   134	    finally:
+   135	        connection.close()
+   136	
+   137	    reward = float(calculate_ex(predicted_rows, gold_rows))
+   138	    return _measure(args, reward, f"exact set equality: {len(predicted_rows)} predicted vs "
+   139	                                  f"{len(gold_rows)} gold rows")
+   140	
+   141	
+   142	if __name__ == "__main__":
+   143	    raise SystemExit(main())

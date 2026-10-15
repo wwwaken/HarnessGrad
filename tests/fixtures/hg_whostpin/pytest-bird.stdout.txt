@@ -1,0 +1,482 @@
+.FFFFFFFFF.                                                              [100%]
+=================================== FAILURES ===================================
+______ test_ex_differential_against_the_pinned_source[predicted0-gold0-1] ______
+
+predicted = [(1,), (2,)], gold = [(2,), (1,)], expected = 1
+
+    @pytest.mark.parametrize("predicted,gold,expected", [
+        ([(1,), (2,)], [(2,), (1,)], 1),          # order is irrelevant: set equality
+        ([(1,), (1,)], [(1,)], 1),                # duplicates collapse, as upstream's `set` does
+        ([(1,)], [(1,), (2,)], 0),
+        ([], [], 1),
+        ([(1,)], [], 0),
+        ([("a", None)], [("a", None)], 1),
+    ])
+    def test_ex_differential_against_the_pinned_source(predicted, gold, expected):
+        """Upstream's own function, executed from the archive, on the same inputs."""
+        upstream = _calculate_ex_from(_upstream_calculate_ex_source(), MEMBER)
+>       ours = _calculate_ex_from(CHECK.read_text(encoding="utf-8"), str(CHECK))
+
+tests/quality/test_bird_minidev_official_scorer.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:152: in _calculate_ex_from
+    exec(compile(source, name, "exec"), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+    
+    Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+    `evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+    and the test asserts it is a substring of this file, so drift in upstream is a test failure
+    rather than a slow divergence. The execution semantics around it are upstream's too --
+    predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+    error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    
+    **One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    database, a missing table -- is scored as a wrong answer. This platform treats that as
+    unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    `data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    in that class: the task ran and the agent did not answer, which is a measured zero.
+    
+    The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    query pair and are **not** reported here; the metric is named in the evidence so a published
+    number cannot be mistaken for one of them.
+    """
+    from __future__ import annotations
+    
+    import argparse
+    import json
+    import signal
+    import sqlite3
+    import sys
+    from pathlib import Path
+    
+    # Resolve helpers beside trusted scorer code. The pinned route places this directory
+    # outside the actor task tree, so task-local Python files cannot shadow imports.
+>   sys.path.insert(0, str(Path(__file__).resolve().parent))
+E   NameError: name '__file__' is not defined
+
+data/datasets/bird_minidev/verify/check.py:36: NameError
+______ test_ex_differential_against_the_pinned_source[predicted1-gold1-1] ______
+
+predicted = [(1,), (1,)], gold = [(1,)], expected = 1
+
+    @pytest.mark.parametrize("predicted,gold,expected", [
+        ([(1,), (2,)], [(2,), (1,)], 1),          # order is irrelevant: set equality
+        ([(1,), (1,)], [(1,)], 1),                # duplicates collapse, as upstream's `set` does
+        ([(1,)], [(1,), (2,)], 0),
+        ([], [], 1),
+        ([(1,)], [], 0),
+        ([("a", None)], [("a", None)], 1),
+    ])
+    def test_ex_differential_against_the_pinned_source(predicted, gold, expected):
+        """Upstream's own function, executed from the archive, on the same inputs."""
+        upstream = _calculate_ex_from(_upstream_calculate_ex_source(), MEMBER)
+>       ours = _calculate_ex_from(CHECK.read_text(encoding="utf-8"), str(CHECK))
+
+tests/quality/test_bird_minidev_official_scorer.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:152: in _calculate_ex_from
+    exec(compile(source, name, "exec"), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+    
+    Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+    `evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+    and the test asserts it is a substring of this file, so drift in upstream is a test failure
+    rather than a slow divergence. The execution semantics around it are upstream's too --
+    predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+    error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    
+    **One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    database, a missing table -- is scored as a wrong answer. This platform treats that as
+    unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    `data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    in that class: the task ran and the agent did not answer, which is a measured zero.
+    
+    The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    query pair and are **not** reported here; the metric is named in the evidence so a published
+    number cannot be mistaken for one of them.
+    """
+    from __future__ import annotations
+    
+    import argparse
+    import json
+    import signal
+    import sqlite3
+    import sys
+    from pathlib import Path
+    
+    # Resolve helpers beside trusted scorer code. The pinned route places this directory
+    # outside the actor task tree, so task-local Python files cannot shadow imports.
+>   sys.path.insert(0, str(Path(__file__).resolve().parent))
+E   NameError: name '__file__' is not defined
+
+data/datasets/bird_minidev/verify/check.py:36: NameError
+______ test_ex_differential_against_the_pinned_source[predicted2-gold2-0] ______
+
+predicted = [(1,)], gold = [(1,), (2,)], expected = 0
+
+    @pytest.mark.parametrize("predicted,gold,expected", [
+        ([(1,), (2,)], [(2,), (1,)], 1),          # order is irrelevant: set equality
+        ([(1,), (1,)], [(1,)], 1),                # duplicates collapse, as upstream's `set` does
+        ([(1,)], [(1,), (2,)], 0),
+        ([], [], 1),
+        ([(1,)], [], 0),
+        ([("a", None)], [("a", None)], 1),
+    ])
+    def test_ex_differential_against_the_pinned_source(predicted, gold, expected):
+        """Upstream's own function, executed from the archive, on the same inputs."""
+        upstream = _calculate_ex_from(_upstream_calculate_ex_source(), MEMBER)
+>       ours = _calculate_ex_from(CHECK.read_text(encoding="utf-8"), str(CHECK))
+
+tests/quality/test_bird_minidev_official_scorer.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:152: in _calculate_ex_from
+    exec(compile(source, name, "exec"), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+    
+    Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+    `evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+    and the test asserts it is a substring of this file, so drift in upstream is a test failure
+    rather than a slow divergence. The execution semantics around it are upstream's too --
+    predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+    error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    
+    **One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    database, a missing table -- is scored as a wrong answer. This platform treats that as
+    unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    `data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    in that class: the task ran and the agent did not answer, which is a measured zero.
+    
+    The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    query pair and are **not** reported here; the metric is named in the evidence so a published
+    number cannot be mistaken for one of them.
+    """
+    from __future__ import annotations
+    
+    import argparse
+    import json
+    import signal
+    import sqlite3
+    import sys
+    from pathlib import Path
+    
+    # Resolve helpers beside trusted scorer code. The pinned route places this directory
+    # outside the actor task tree, so task-local Python files cannot shadow imports.
+>   sys.path.insert(0, str(Path(__file__).resolve().parent))
+E   NameError: name '__file__' is not defined
+
+data/datasets/bird_minidev/verify/check.py:36: NameError
+______ test_ex_differential_against_the_pinned_source[predicted3-gold3-1] ______
+
+predicted = [], gold = [], expected = 1
+
+    @pytest.mark.parametrize("predicted,gold,expected", [
+        ([(1,), (2,)], [(2,), (1,)], 1),          # order is irrelevant: set equality
+        ([(1,), (1,)], [(1,)], 1),                # duplicates collapse, as upstream's `set` does
+        ([(1,)], [(1,), (2,)], 0),
+        ([], [], 1),
+        ([(1,)], [], 0),
+        ([("a", None)], [("a", None)], 1),
+    ])
+    def test_ex_differential_against_the_pinned_source(predicted, gold, expected):
+        """Upstream's own function, executed from the archive, on the same inputs."""
+        upstream = _calculate_ex_from(_upstream_calculate_ex_source(), MEMBER)
+>       ours = _calculate_ex_from(CHECK.read_text(encoding="utf-8"), str(CHECK))
+
+tests/quality/test_bird_minidev_official_scorer.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:152: in _calculate_ex_from
+    exec(compile(source, name, "exec"), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+    
+    Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+    `evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+    and the test asserts it is a substring of this file, so drift in upstream is a test failure
+    rather than a slow divergence. The execution semantics around it are upstream's too --
+    predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+    error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    
+    **One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    database, a missing table -- is scored as a wrong answer. This platform treats that as
+    unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    `data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    in that class: the task ran and the agent did not answer, which is a measured zero.
+    
+    The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    query pair and are **not** reported here; the metric is named in the evidence so a published
+    number cannot be mistaken for one of them.
+    """
+    from __future__ import annotations
+    
+    import argparse
+    import json
+    import signal
+    import sqlite3
+    import sys
+    from pathlib import Path
+    
+    # Resolve helpers beside trusted scorer code. The pinned route places this directory
+    # outside the actor task tree, so task-local Python files cannot shadow imports.
+>   sys.path.insert(0, str(Path(__file__).resolve().parent))
+E   NameError: name '__file__' is not defined
+
+data/datasets/bird_minidev/verify/check.py:36: NameError
+______ test_ex_differential_against_the_pinned_source[predicted4-gold4-0] ______
+
+predicted = [(1,)], gold = [], expected = 0
+
+    @pytest.mark.parametrize("predicted,gold,expected", [
+        ([(1,), (2,)], [(2,), (1,)], 1),          # order is irrelevant: set equality
+        ([(1,), (1,)], [(1,)], 1),                # duplicates collapse, as upstream's `set` does
+        ([(1,)], [(1,), (2,)], 0),
+        ([], [], 1),
+        ([(1,)], [], 0),
+        ([("a", None)], [("a", None)], 1),
+    ])
+    def test_ex_differential_against_the_pinned_source(predicted, gold, expected):
+        """Upstream's own function, executed from the archive, on the same inputs."""
+        upstream = _calculate_ex_from(_upstream_calculate_ex_source(), MEMBER)
+>       ours = _calculate_ex_from(CHECK.read_text(encoding="utf-8"), str(CHECK))
+
+tests/quality/test_bird_minidev_official_scorer.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:152: in _calculate_ex_from
+    exec(compile(source, name, "exec"), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+    
+    Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+    `evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+    and the test asserts it is a substring of this file, so drift in upstream is a test failure
+    rather than a slow divergence. The execution semantics around it are upstream's too --
+    predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+    error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    
+    **One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    database, a missing table -- is scored as a wrong answer. This platform treats that as
+    unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    `data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    in that class: the task ran and the agent did not answer, which is a measured zero.
+    
+    The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    query pair and are **not** reported here; the metric is named in the evidence so a published
+    number cannot be mistaken for one of them.
+    """
+    from __future__ import annotations
+    
+    import argparse
+    import json
+    import signal
+    import sqlite3
+    import sys
+    from pathlib import Path
+    
+    # Resolve helpers beside trusted scorer code. The pinned route places this directory
+    # outside the actor task tree, so task-local Python files cannot shadow imports.
+>   sys.path.insert(0, str(Path(__file__).resolve().parent))
+E   NameError: name '__file__' is not defined
+
+data/datasets/bird_minidev/verify/check.py:36: NameError
+______ test_ex_differential_against_the_pinned_source[predicted5-gold5-1] ______
+
+predicted = [('a', None)], gold = [('a', None)], expected = 1
+
+    @pytest.mark.parametrize("predicted,gold,expected", [
+        ([(1,), (2,)], [(2,), (1,)], 1),          # order is irrelevant: set equality
+        ([(1,), (1,)], [(1,)], 1),                # duplicates collapse, as upstream's `set` does
+        ([(1,)], [(1,), (2,)], 0),
+        ([], [], 1),
+        ([(1,)], [], 0),
+        ([("a", None)], [("a", None)], 1),
+    ])
+    def test_ex_differential_against_the_pinned_source(predicted, gold, expected):
+        """Upstream's own function, executed from the archive, on the same inputs."""
+        upstream = _calculate_ex_from(_upstream_calculate_ex_source(), MEMBER)
+>       ours = _calculate_ex_from(CHECK.read_text(encoding="utf-8"), str(CHECK))
+
+tests/quality/test_bird_minidev_official_scorer.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:152: in _calculate_ex_from
+    exec(compile(source, name, "exec"), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """BIRD Mini-Dev's official **EX**, with "cannot measure" kept apart from "wrong".
+    
+    Provenance: `bird-bench/mini_dev@abd11b6db92a1c9f809b32f7564c7c71b34d67f0`,
+    `evaluation/evaluation_ex.py`. `calculate_ex` (lines 18-22) is transcribed **verbatim** below
+    and the test asserts it is a substring of this file, so drift in upstream is a test failure
+    rather than a slow divergence. The execution semantics around it are upstream's too --
+    predicted SQL first, then the gold, `fetchall()` each, set equality, and a timeout or an
+    error on the *prediction* scoring 0 (`evaluation_ex.py::execute_model`, lines 25-43, which
+    catches `FunctionTimedOut` and `Exception` and returns `res = 0`).
+    
+    **One deliberate difference**, and it is why this file is not `execute_model` wholesale:
+    upstream catches everything in one `try`, so a **gold** query that fails -- a broken
+    database, a missing table -- is scored as a wrong answer. This platform treats that as
+    unmeasurable and writes `measured: false`, because a harness's 0 and an environment's 0 are
+    otherwise indistinguishable (`docs/dataset-onboarding-skill.md` §5, and the same rule
+    `data/scaffolds/qa/verify/check.py` implements by exiting 3). A missing or empty `answer.sql` is *not*
+    in that class: the task ran and the agent did not answer, which is a measured zero.
+    
+    The reward is per-question EX. The benchmark's other two official columns -- Soft-F1
+    (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) -- are separate metrics over the same
+    query pair and are **not** reported here; the metric is named in the evidence so a published
+    number cannot be mistaken for one of them.
+    """
+    from __future__ import annotations
+    
+    import argparse
+    import json
+    import signal
+    import sqlite3
+    import sys
+    from pathlib import Path
+    
+    # Resolve helpers beside trusted scorer code. The pinned route places this directory
+    # outside the actor task tree, so task-local Python files cannot shadow imports.
+>   sys.path.insert(0, str(Path(__file__).resolve().parent))
+E   NameError: name '__file__' is not defined
+
+data/datasets/bird_minidev/verify/check.py:36: NameError
+___________ test_the_check_scores_the_gold_and_rejects_a_wrong_query ___________
+
+world = PosixPath('/tmp/hg-hostpin-pytest-bird/test_the_check_scores_the_gold0')
+
+    def test_the_check_scores_the_gold_and_rejects_a_wrong_query(world):
+        (world / "answer.sql").write_text("SELECT value FROM numbers\n")
+>       code, reward, evidence = _run_check(world)
+
+tests/quality/test_bird_minidev_official_scorer.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:197: in _run_check
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/hg-hostpin-pytest-bird/test_the_check_scores_the_gold0/verifier/evidence.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-hostpin-pytest-bird/test_the_check_scores_the_gold0/verifier/evidence.json'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________ test_a_missing_answer_is_a_measured_zero_not_an_invalid_task _________
+
+world = PosixPath('/tmp/hg-hostpin-pytest-bird/test_a_missing_answer_is_a_mea0')
+
+    def test_a_missing_answer_is_a_measured_zero_not_an_invalid_task(world):
+        """The platform's rule: the task ran and the agent did not answer."""
+>       code, reward, evidence = _run_check(world)
+
+tests/quality/test_bird_minidev_official_scorer.py:217: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:197: in _run_check
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/hg-hostpin-pytest-bird/test_a_missing_answer_is_a_mea0/verifier/evidence.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-hostpin-pytest-bird/test_a_missing_answer_is_a_mea0/verifier/evidence.json'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______________ test_a_broken_environment_writes_no_reward_file ________________
+
+world = PosixPath('/tmp/hg-hostpin-pytest-bird/test_a_broken_environment_writ0')
+
+    def test_a_broken_environment_writes_no_reward_file(world):
+        """Upstream catches this in the same `try` as the prediction and scores 0. Here it is
+        `measured: false` and exit 3, because a dataset defect and a wrong answer must not look
+        alike in a curve -- the distinction `docs/dataset-onboarding-skill.md` §5 is about."""
+        (world / "gold.sql").write_text("SELECT missing_column FROM numbers\n")
+        (world / "answer.sql").write_text("SELECT value FROM numbers\n")
+>       code, reward, evidence = _run_check(world)
+
+tests/quality/test_bird_minidev_official_scorer.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:197: in _run_check
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/hg-hostpin-pytest-bird/test_a_broken_environment_writ0/verifier/evidence.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-hostpin-pytest-bird/test_a_broken_environment_writ0/verifier/evidence.json'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_ex_differential_against_the_pinned_source[predicted0-gold0-1]
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_ex_differential_against_the_pinned_source[predicted1-gold1-1]
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_ex_differential_against_the_pinned_source[predicted2-gold2-0]
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_ex_differential_against_the_pinned_source[predicted3-gold3-1]
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_ex_differential_against_the_pinned_source[predicted4-gold4-0]
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_ex_differential_against_the_pinned_source[predicted5-gold5-1]
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_the_check_scores_the_gold_and_rejects_a_wrong_query
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_a_missing_answer_is_a_measured_zero_not_an_invalid_task
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_a_broken_environment_writes_no_reward_file
+9 failed, 2 passed, 7 deselected in 1.02s

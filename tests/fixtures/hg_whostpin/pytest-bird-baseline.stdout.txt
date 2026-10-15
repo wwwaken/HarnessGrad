@@ -1,0 +1,104 @@
+.......FFF.                                                              [100%]
+=================================== FAILURES ===================================
+___________ test_the_check_scores_the_gold_and_rejects_a_wrong_query ___________
+
+world = PosixPath('/tmp/hg-hostpin-pytest-bird-baseline/test_the_check_scores_the_gold0')
+
+    def test_the_check_scores_the_gold_and_rejects_a_wrong_query(world):
+        (world / "answer.sql").write_text("SELECT value FROM numbers\n")
+>       code, reward, evidence = _run_check(world)
+
+tests/quality/test_bird_minidev_official_scorer.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:197: in _run_check
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/hg-hostpin-pytest-bird-baseline/test_the_check_scores_the_gold0/verifier/evidence.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-hostpin-pytest-bird-baseline/test_the_check_scores_the_gold0/verifier/evidence.json'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________ test_a_missing_answer_is_a_measured_zero_not_an_invalid_task _________
+
+world = PosixPath('/tmp/hg-hostpin-pytest-bird-baseline/test_a_missing_answer_is_a_mea0')
+
+    def test_a_missing_answer_is_a_measured_zero_not_an_invalid_task(world):
+        """The platform's rule: the task ran and the agent did not answer."""
+>       code, reward, evidence = _run_check(world)
+
+tests/quality/test_bird_minidev_official_scorer.py:217: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:197: in _run_check
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/hg-hostpin-pytest-bird-baseline/test_a_missing_answer_is_a_mea0/verifier/evidence.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-hostpin-pytest-bird-baseline/test_a_missing_answer_is_a_mea0/verifier/evidence.json'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______________ test_a_broken_environment_writes_no_reward_file ________________
+
+world = PosixPath('/tmp/hg-hostpin-pytest-bird-baseline/test_a_broken_environment_writ0')
+
+    def test_a_broken_environment_writes_no_reward_file(world):
+        """Upstream catches this in the same `try` as the prediction and scores 0. Here it is
+        `measured: false` and exit 3, because a dataset defect and a wrong answer must not look
+        alike in a curve -- the distinction `docs/dataset-onboarding-skill.md` §5 is about."""
+        (world / "gold.sql").write_text("SELECT missing_column FROM numbers\n")
+        (world / "answer.sql").write_text("SELECT value FROM numbers\n")
+>       code, reward, evidence = _run_check(world)
+
+tests/quality/test_bird_minidev_official_scorer.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality/test_bird_minidev_official_scorer.py:197: in _run_check
+    evidence = json.loads((work / "verifier" / "evidence.json").read_text())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/hg-hostpin-pytest-bird-baseline/test_a_broken_environment_writ0/verifier/evidence.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-hostpin-pytest-bird-baseline/test_a_broken_environment_writ0/verifier/evidence.json'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_the_check_scores_the_gold_and_rejects_a_wrong_query
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_a_missing_answer_is_a_measured_zero_not_an_invalid_task
+FAILED tests/quality/test_bird_minidev_official_scorer.py::test_a_broken_environment_writes_no_reward_file
+3 failed, 8 passed, 7 deselected in 0.85s

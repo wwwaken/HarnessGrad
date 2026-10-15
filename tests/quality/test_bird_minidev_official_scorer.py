@@ -148,7 +148,7 @@ def test_the_transcription_is_upstreams_bytes():
 
 
 def _calculate_ex_from(source: str, name: str):
-    namespace: dict = {}
+    namespace: dict = {"__file__": name}
     exec(compile(source, name, "exec"), namespace)
     return namespace["calculate_ex"]
 
@@ -183,6 +183,13 @@ def world(tmp_path) -> Path:
     connection.close()
     (tmp_path / "gold.sql").write_text("SELECT value FROM numbers\n")
     (tmp_path / "check.py").write_text(CHECK.read_text(encoding="utf-8"))
+    # Mirror VERIFY.inputs: a copied scorer cannot import the platform's helper
+    # unless the fixture stages it, just as the adapter's bound spec does.
+    helper = tmp_path / "data/scaffolds"
+    helper.mkdir(parents=True)
+    (helper.parent / "__init__.py").write_text("")
+    (helper / "__init__.py").write_text("")
+    (helper / "scorer_input.py").write_bytes((ROOT / "data/scaffolds/scorer_input.py").read_bytes())
     return tmp_path
 
 

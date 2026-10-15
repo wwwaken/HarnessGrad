@@ -1,0 +1,49 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x0
+There are 8 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0015e0 0x0015e0 R   0x1000
+  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x00d442 0x00d442 R E 0x1000
+  LOAD           0x010000 0x0000000000010000 0x0000000000010000 0x00166c 0x00166c R   0x1000
+  LOAD           0x011c40 0x0000000000012c40 0x0000000000012c40 0x001000 0x001010 RW  0x1000
+  DYNAMIC        0x011ce0 0x0000000000012ce0 0x0000000000012ce0 0x000180 0x000180 RW  0x8
+  GNU_EH_FRAME   0x010b28 0x0000000000010b28 0x0000000000010b28 0x000174 0x000174 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x011c40 0x0000000000012c40 0x0000000000012c40 0x0003c0 0x0003c0 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .hash .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn 
+   01     .init .plt .plt.got .text .fini 
+   02     .rodata .eh_frame_hdr .eh_frame 
+   03     .ctors .dtors .data.rel.ro .dynamic .got .got.plt .data .bss 
+   04     .dynamic 
+   05     .eh_frame_hdr 
+   06     
+   07     .ctors .dtors .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x11ce0 contains 20 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000e (SONAME)             Library soname: [libbz2.so.1.0]
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x000000000000000c (INIT)               0x2000
+ 0x000000000000000d (FINI)               0xf434
+ 0x0000000000000004 (HASH)               0x200
+ 0x000000006ffffef5 (GNU_HASH)           0x3a0
+ 0x0000000000000005 (STRTAB)             0xaf8
+ 0x0000000000000006 (SYMTAB)             0x4f8
+ 0x000000000000000a (STRSZ)              949 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x13000
+ 0x0000000000000007 (RELA)               0xf80
+ 0x0000000000000008 (RELASZ)             1632 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0xf30
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0xeae
+ 0x000000006ffffff9 (RELACOUNT)          17
+ 0x0000000000000000 (NULL)               0x0

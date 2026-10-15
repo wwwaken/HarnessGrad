@@ -1,0 +1,9 @@
+/usr/include/linux/fcntl.h:35:#define F_ADD_SEALS	(F_LINUX_SPECIFIC_BASE + 9)
+/usr/include/linux/fcntl.h:36:#define F_GET_SEALS	(F_LINUX_SPECIFIC_BASE + 10)
+/usr/include/linux/fcntl.h:41:#define F_SEAL_SEAL	0x0001	/* prevent further seals from being set */
+/usr/include/linux/fcntl.h:42:#define F_SEAL_SHRINK	0x0002	/* prevent file from shrinking */
+/usr/include/linux/fcntl.h:43:#define F_SEAL_GROW	0x0004	/* prevent file from growing */
+/usr/include/linux/fcntl.h:44:#define F_SEAL_WRITE	0x0008	/* prevent writes */
+/usr/include/linux/fcntl.h:45:#define F_SEAL_FUTURE_WRITE	0x0010  /* prevent future writes while mapped */
+/usr/include/linux/memfd.h:8:#define MFD_CLOEXEC		0x0001U
+/usr/include/linux/memfd.h:9:#define MFD_ALLOW_SEALING	0x0002U

@@ -1,0 +1,691 @@
+     1	"""Writing the record: curve points, diffs, states, traces, verdicts, run_meta.
+     2	
+     3	Everything the platform persists goes through here, and the rule the module keeps is that a
+     4	number never travels without the thing that explains it. `_curve_point` builds the one shape
+     5	every consumer reads -- the panel, the method channel, the plotter, an exported record -- so
+     6	"what a point contains" has exactly one definition to change.
+     7	
+     8	`_require_untampered` lives here because it guards the record: a point whose harness rewrote
+     9	the scorer is not a measurement, and the check that says so belongs next to the write that
+    10	would otherwise have happened.
+    11	"""
+    12	
+    13	from __future__ import annotations
+    14	
+    15	from pathlib import Path
+    16	import json
+    17	import shutil
+    18	import subprocess
+    19	import time
+    20	
+    21	from eval.observe.console import CONSOLE as console
+    22	from eval.run.metrics import ci95
+    23	from eval.run.metrics import mean
+    24	from harnessgrad.environments import _env_record
+    25	from eval.observe.tracing import task_file
+    26	from harnessgrad.methods import PlatformTampered
+    27	from eval.verification.isolation import common_class, observed_class
+    28	
+    29	def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
+    30	             method_claimed: int | dict | None = None) -> dict:
+    31	    """What this curve point cost, in the units a cost-aware method reasons about.
+    32	
+    33	    `tokens` are the harness's own spend, read from its traces by the runner. They are
+    34	    what a method like RRSI needs for `Delta C`: it permits a candidate to spend more
+    35	    only in proportion to the score it gains, and a cost rule whose input is a constant
+    36	    zero permits everything.
+    37	
+    38	    `harness_tokens` and `method_generation_tokens` are kept apart on purpose. They are
+    39	    different budgets -- the harness spends per model call while working, the method
+    40	    spends per round while improving -- and one number covering both could not tell a
+    41	    thrifty harness from a lazy method.
+    42	
+    43	    `env_generation_tokens` is the **third** budget, kept apart for that reason plus the
+    44	    one §2.5.7 states: a simulated user spends tokens whether or not the harness is any
+    45	    good, so folding it into `harness_tokens` would feed a cost-aware acceptance rule a
+    46	    number its formula is not about. `None` when no service reported any, which is a
+    47	    different fact from zero.
+    48	
+    49	    `method_claimed` is the step's `claimed_cost` block when the caller has one, and a bare
+    50	    number when it does not -- the trajectory has carried the split (input, output, calls,
+    51	    model) since the method started reporting what its own provider said, and the single
+    52	    number alone cannot answer why a round got expensive.
+    53	    """
+    54	    claimed = method_claimed or {}
+    55	    if isinstance(claimed, (int, float)):
+    56	        claimed = {"generation_tokens": int(claimed)}
+    57	    method_tokens = claimed.get("generation_tokens")
+    58	    tokens = (res or {}).get("tokens") or {}
+    59	    harness_tokens = None
+    60	    if tokens.get("tasks_reported"):
+    61	        harness_tokens = (tokens.get("input") or 0) + (tokens.get("output") or 0)
+    62	    env = (res or {}).get("env_usage") or {}
+    63	    env_tokens = None
+    64	    if env.get("services_reported"):
+    65	        env_tokens = (env.get("input") or 0) + (env.get("output") or 0)
+    66	    return {
+    67	        "evaluation_trials": n_tasks if res else 0,
+    68	        # Kept because curves recorded before the runner read usage have it, and a
+    69	        # reader should not have to guess which field is authoritative.
+    70	        "generation_tokens": method_tokens or 0,
+    71	        "method_generation_tokens": method_tokens,
+    72	        # The improver's own split, from what its provider reported. `None` and not 0 when
+    73	        # the method is older than this field or its endpoint reports no usage: "0 tokens
+    74	        # in" is a claim, and a method that was not asked cannot make it.
+    75	        "method_generation_input": claimed.get("method_input_tokens"),
+    76	        "method_generation_output": claimed.get("method_output_tokens"),
+    77	        "method_model_calls": claimed.get("method_model_calls"),
+    78	        "method_model": claimed.get("method_model"),
+    79	        "harness_tokens": harness_tokens,
+    80	        "harness_tokens_reported_by_tasks": tokens.get("tasks_reported", 0),
+    81	        "harness_model_calls": tokens.get("calls"),
+    82	        "env_generation_tokens": env_tokens,
+    83	        "env_services_reported": env.get("services_reported", 0),
+    84	        "wall_clock_s": round(wall_s, 1),
+    85	    }
+    86	
+    87	def _save_round_state(run_dir: Path, round_no: int, work: Path) -> None:
+    88	    """Keep the harness as it stands at the end of a round, inside the run's record.
+    89	
+    90	    **An eval run measures a state, so a state has to survive the run that made it.**
+    91	    It did not: the round's trees were written into `method_root`, a `tempfile.mkdtemp`
+    92	    that is deliberately outside the platform and outside the work root -- which is the
+    93	    right place for a *method's* inputs, because a method must not be able to write into
+    94	    the record, but it means the states were gone when the run ended and there was
+    95	    nothing for an eval run to point at.
+    96	
+    97	    Copied **after** the round, from `work`, so it is the state the round produced rather
+    98	    than the one it started from. `.git` is excluded for the same reason `base_dir`
+    99	    excludes it: the tree is what a harness is, and the history is already in the record
+   100	    as per-round diffs.
+   101	
+   102	    Round 0 included, because "measure H0 on the exam" is the most useful baseline there
+   103	    is and it needs the same thing a later round does.
+   104	    """
+   105	    dest = run_dir / f"state_after_round{round_no}"
+   106	    if dest.exists():
+   107	        shutil.rmtree(dest)
+   108	    try:
+   109	        shutil.copytree(work, dest, ignore=shutil.ignore_patterns(".git"))
+   110	    except OSError as exc:
+   111	        # Not fatal: the round's numbers are already recorded, and a run that measured
+   112	        # correctly must not be lost because a copy failed.
+   113	        console.note(f"could not keep the round {round_no} state for later evaluation: "
+   114	                     f"{exc}", level="warn")
+   115	
+   116	def _scored(res, ids) -> list[str]:
+   117	    """The ids that actually produced a score.
+   118	
+   119	    A task whose environment was invalid is **absent** from `per_task`
+   120	    (INTERFACE.md §2.5.7), so a caller cannot zip ids with scores without filtering
+   121	    both -- and a misalignment here would attribute one task's score to another, which
+   122	    is worse than the missing task it came from.
+   123	    """
+   124	    per_task = (res or {}).get("per_task") or {}
+   125	    return [t for t in ids if t in per_task]
+   126	
+   127	def test_rate_fields(res: dict | None) -> dict:
+   128	    """The check's own tally, as the arguments `_curve_point` takes.
+   129	
+   130	    One place, because there are three call sites (the base point, a round point, and the
+   131	    eval-side point) and a field added to one of them is a field missing from the other two
+   132	    -- which is how `per_task_trials` first shipped. A caller that forgets this loses the
+   133	    finer signal without losing the point, so the failure is silent; that is the argument
+   134	    for it being a function rather than five keyword arguments copied three times.
+   135	    """
+   136	    res = res or {}
+   137	    return {
+   138	        "per_task_scorer_isolation": res.get("per_task_scorer_isolation"),
+   139	        "per_task_test_rate": res.get("per_task_test_rate"),
+   140	        "test_rate": res.get("test_rate"),
+   141	        "test_rate_n_tasks": res.get("test_rate_n_tasks"),
+   142	        "tests_passed": res.get("tests_passed"),
+   143	        "tests_total": res.get("tests_total"),
+   144	        "per_task_test_rate_trials": res.get("per_task_test_rate_trials"),
+   145	    }
+   146	
+   147	
+   148	def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
+   149	                 cost, cumulative, selection=None, label="",
+   150	                 method_reported=None, train_scores=None, train_ids=None,
+   151	                 split=None, env_record=None, invalid=None, harness_failed=None,
+   152	                 model_gateway=None, harness_runtime=None, hypothesis=None,
+   153	                 evaluation_protocols=None, per_task_scorer_isolation=None,
+   154	                 edits_applied=None, files_claimed=None, candidate_problems=None,
+   155	                 side="train", evaluated_from=None,
+   156	                 n_trials=None, score_std=None, per_task_std=None,
+   157	                 per_task_trials=None, cached_tasks=None,
+   158	                 per_task_test_rate=None, test_rate=None, test_rate_n_tasks=0,
+   159	                 tests_passed=0, tests_total=0,
+   160	                 per_task_test_rate_trials=None) -> dict:
+   161	    isolation_by_task = {tid: (per_task_scorer_isolation or {}).get(tid, "unknown")
+   162	                         for tid in task_ids}
+   163	    isolation = common_class(isolation_by_task.values())
+   164	    lo, hi = ci95(scores)
+   165	    return {
+   166	        "run_id": run_id, "round": round_index, "label": label,
+   167	        "identity": identity,
+   168	        # Which side of the split this point measures, and therefore what `score` *is*.
+   169	        #
+   170	        # `score` cannot be null on a train run: the method's acceptance rule reads it
+   171	        # (RRSI permits more spend only in proportion to score gain), so a train run
+   172	        # needs one. But a train score is **guaranteed to be inflated** -- the method has
+   173	        # read the traces of exactly these tasks -- so it is a progress indicator and not
+   174	        # a result, and `score_kind` is what stops it being quoted as one. A field a
+   175	        # reader can check beats a convention they have to remember.
+   176	        "side": side,
+   177	        "score_kind": "exam" if side == "eval" else "training",
+   178	        **({"evaluated_from": evaluated_from} if evaluated_from else {}),
+   179	        # Where this measurement was taken (INTERFACE.md §2.5.4). A `files` curve and
+   180	        # an `exec` curve are different quantities, and so are two `exec` curves under
+   181	        # different image digests -- so the environment travels with the number, on
+   182	        # every point, rather than only in `run_meta.json`.
+   183	        "env": {**(env_record or _env_record({}, [])),
+   184	                "model_gateway": model_gateway,
+   185	                # Which interpreter ran the harness, and where its own dependencies came
+   186	                # from (`eval/containers/harness_runtime.py`). A list because the version is a
+   187	                # property of each task's image and a run may cross several -- the same
+   188	                # reason `variants` exists above. `[]` means the harness declared no
+   189	                # dependencies at all, which is a fact rather than a missing field.
+   190	                "harness_runtime": list(harness_runtime or [])},
+   191	        "sampling": dict(sampling),
+   192	        **({"evaluation_protocols": {
+   193	                tid: protocol for tid, protocol in evaluation_protocols.items()
+   194	                if tid in sampling.get("task_ids", task_ids)},
+   195	            "protocol_comparability":
+   196	                "Compare only matching protocols; interactive and offline ChessBench "
+   197	                "are not comparable."} if evaluation_protocols else {}),
+   198	        # What the method claimed for this state, kept beside what the platform
+   199	        # measured. The gap between the two is itself a reportable finding, so
+   200	        # the platform never overwrites one with the other.
+   201	        "method_reported": method_reported or {},
+   202	        # The method's own word for what kind of change this was. The platform
+   203	        # never interprets, validates or constrains it -- it only makes it
+   204	        # readable. Seven published methods were checked and none of them makes
+   205	        # this machine-readable: AHE declares `constraint_level:
+   206	        # middleware|tool_impl|tool_desc|skill|prompt` in its prompt and no code
+   207	        # reads it. A vocabulary that only exists in prose cannot be analysed,
+   208	        # which is why the field is recorded here rather than asked for in a
+   209	        # template.
+   210	        "edit_kind": None,
+   211	        "score": mean(scores, dataset=sampling.get("dataset")), "score_ci95": [lo, hi],
+   212	        "scorer_isolation_class": isolation,
+   213	        "scorer_isolation_comparable": isolation != "unknown",
+   214	        "per_task_scorer_isolation": isolation_by_task,
+   215	        # **How noisy this number is.** One evaluation per (harness, task) is one sample,
+   216	        # and measured on this platform the *same* unmodified harness scored 0.333 in one
+   217	        # run and 0.000 in the next -- the agent model intermittently emits a tool call the
+   218	        # harness cannot parse and the task ends there. A curve that does not say how much
+   219	        # of a difference is noise cannot support "this edit helped", which is the whole
+   220	        # claim the platform exists to make. Present only when the run asked for more than
+   221	        # one trial (`--trials`): absent means "one sample", not "no spread".
+   222	        **({"n_trials": int(n_trials)} if n_trials and n_trials > 1 else {}),
+   223	        **({"score_std": round(float(score_std), 6)}
+   224	           if n_trials and n_trials > 1 and score_std is not None else {}),
+   225	        **({"per_task_std": {k: round(float(v), 6) for k, v in (per_task_std or {}).items()}}
+   226	           if n_trials and n_trials > 1 else {}),
+   227	        # **The trials themselves**, not only their mean and spread. A mean of 0.667 over
+   228	        # three trials is two passes and one failure, and which one failed -- and why --
+   229	        # decides whether the number is saying something about the harness or about the
+   230	        # check. Measured on `B2-noop` (2026-10-04): `cobol-modernization` produced a
+   231	        # byte-identical trajectory and scored 2/3 in one measurement and 3/3 in the next,
+   232	        # so the *reward* varies for one artifact; that claim cannot be made, or checked,
+   233	        # from a mean and a standard deviation.
+   234	        **({"per_task_trials": {k: [round(float(x), 6) for x in v]
+   235	                                for k, v in (per_task_trials or {}).items()}}
+   236	           if n_trials and n_trials > 1 else {}),
+   237	        # Which tasks this round did not measure, because the same (harness, task, trials)
+   238	        # had already been measured. A reused number and a fresh one that happens to agree
+   239	        # are different facts, and the point has to say which it is -- otherwise a flat
+   240	        # control curve reads as a deterministic harness.
+   241	        **({"n_cached": len(cached_tasks), "cached_tasks": sorted(cached_tasks)}
+   242	           if cached_tasks else {}),
+   243	        "per_task": dict(zip(task_ids, scores)),
+   244	        # **The same measurement at the resolution the check already provides.** A task set
+   245	        # of ten all-or-nothing checks has a resolution of 0.1 and, measured on this
+   246	        # platform, a noise band of about +/-0.1: the instrument cannot see the effect it
+   247	        # exists to measure. Most `command` checks tally individual tests, and that tally
+   248	        # was already parsed (`eval/run/runner.py:_test_report_failures`) and already saved in
+   249	        # the verdict's `detail` string -- this is that number, as a number.
+   250	        #
+   251	        # **Always present, `null` when nothing reported.** The rest of this file omits a
+   252	        # field that does not apply, and for a *fact about the harness* that is fine. Here
+   253	        # it is not: `test_rate` missing because no check tallies tests and `test_rate`
+   254	        # missing because this point predates the field are different, and a reader cannot
+   255	        # tell them apart -- which is the defect that let a non-functional candidate be
+   256	        # read as a +0.100 gain (`docs/experiment_noise.md`). `null` says the platform
+   257	        # looked and no check reported a tally; `test_rate_n_tasks` says how many did.
+   258	        "test_rate": (None if test_rate is None else round(float(test_rate), 6)),
+   259	        "test_rate_n_tasks": int(test_rate_n_tasks or 0),
+   260	        "per_task_test_rate": {k: round(float(v), 6)
+   261	                               for k, v in sorted((per_task_test_rate or {}).items())},
+   262	        # Pooled over every trial and every reporting task, so a reader can compute the
+   263	        # rate themselves and cannot be misled by the mean-of-means above.
+   264	        "tests_passed": int(tests_passed or 0),
+   265	        "tests_total": int(tests_total or 0),
+   266	        **({"per_task_test_rate_trials": {k: [round(float(x), 6) for x in v]
+   267	                                          for k, v in per_task_test_rate_trials.items()}}
+   268	           if n_trials and n_trials > 1 and per_task_test_rate_trials else {}),
+   269	        # How many tasks were scored, and how many of them earned full credit.
+   270	        #
+   271	        # These two are what a method is allowed to know about the eval side's
+   272	        # *distribution* (§2.3): the aggregate breakdown without the identities.
+   273	        # They exist because withholding `per_task` alone would have cost real
+   274	        # fidelity -- HarnessX's acceptance gate decides on an absolute count of
+   275	        # passing tasks, and reconstructing that count from the mean is exact for
+   276	        # 0/1 scores but approximate for a fractionally-graded dataset. A count
+   277	        # carries no per-task information, so it can be given back whole.
+   278	        "n_scored": len(scores),
+   279	        "n_passed": sum(1 for s in scores if s >= 1.0),
+   280	        # Tasks the platform could not measure, kept apart from tasks that scored
+   281	        # nothing. `n_invalid` + the attribution is what makes "the mock API never came
+   282	        # up" distinguishable from "the harness failed", which is the distinction
+   283	        # this platform exists to preserve (INTERFACE.md §2.5.7).
+   284	        "n_invalid": len(invalid or {}),
+   285	        **({"invalid": dict(invalid)} if invalid else {}),
+   286	        # Tasks that *were* measured but whose harness left no trace, with the exit code
+   287	        # and the tail of its stderr. Separate from `invalid` because the score here is
+   288	        # real; what is missing is the evidence that the harness ever got to work.
+   289	        "n_harness_failed": len(harness_failed or {}),
+   290	        **({"harness_failed": dict(harness_failed)} if harness_failed else {}),
+   291	        # **Why the method did what it did**, in its own words. `method_reported` carries
+   292	        # numbers the method claims; this is the sentence it wrote. It was dropped on the
+   293	        # floor: `editor.report` has always sent `hypothesis` and `driver.py` never read
+   294	        # it, so a round that declined to edit recorded only the method's own label --
+   295	        # measured, `RRSI rule: no edit (b_t=4)`, which credits the *rule* for a decision
+   296	        # the **model** made, and says nothing about why. That is the one sentence a
+   297	        # reader asking "why no edit" needs, and it was being thrown away.
+   298	        "method_hypothesis": hypothesis,
+   299	        # **The files whose content actually changed in this round**, from the platform's
+   300	        # own git diff of the round (`_save_round_diff`), never from the method's word.
+   301	        #
+   302	        # This field used to carry the method's claimed `files` list, and on `B2-llm`
+   303	        # (2026-10-04) that list said `["agent.py"]` for two rounds whose patch was **0
+   304	        # bytes** and whose `harness_sha` never moved: the local model re-wrote the same
+   305	        # broken file with the same broken content, so rounds 2 and 3 read as two new
+   306	        # candidates when they were the same tree, already cached. A curve that counts
+   307	        # those as attempts is counting intent, and intent is not a measurement.
+   308	        "edits_applied": list(edits_applied or []),
+   309	        # What the method said it changed. Kept beside the fact rather than dropped: a
+   310	        # method that names a file it did not change is itself a finding, and silently
+   311	        # overwriting the claim with the fact would erase it.
+   312	        **({"files_claimed": list(files_claimed)} if files_claimed is not None else {}),
+   313	        **({"candidate_problems": list(candidate_problems)}
+   314	           if candidate_problems else {}),
+   315	        # The same measurement on the side the method was allowed to study. It is
+   316	        # recorded, never scored: `score` above is the exam. The pair is the whole
+   317	        # point -- an eval that is flat while train climbs is a method that fitted
+   318	        # its diagnostics, and that is invisible if only one of the two is kept.
+   319	        # Absent on a train run, because there it would be a **copy** of `per_task`:
+   320	        # one run has one task set, and a duplicate field invites a reader to think two
+   321	        # sets were measured. On an eval run there is no train set either, so `train_*`
+   322	        # only ever means something on a point that carries both -- and under the
+   323	        # separate-sides design no point does. Kept in the schema rather than deleted
+   324	        # because curves recorded before the split exist and a reader must be able to
+   325	        # tell "no second side" from "this field was never written".
+   326	        "train_score": None if (side != "eval" or train_scores is None)
+   327	                       else mean(train_scores, dataset=sampling.get("dataset")),
+   328	        "train_per_task": (dict(zip(train_ids or [], train_scores or []))
+   329	                           if side == "eval" else {}),
+   330	        # Which tasks were which. Stored per point rather than only in run_meta
+   331	        # because a curve point is the unit that gets exported, compared and
+   332	        # plotted, and a point that does not carry its own split cannot be read
+   333	        # correctly on its own.
+   334	        "split": split or {"train": [], "eval": list(task_ids)},
+   335	        # Was this number the max over N evaluations on the same set it is
+   336	        # reported on? Cheap, unambiguous, and omitted almost everywhere.
+   337	        "selection_effect": selection or {
+   338	            "selected_on_reported_set": None, "selection_pool_size": None,
+   339	        },
+   340	        "cost": cost, "cumulative": dict(cumulative),
+   341	        "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+   342	    }
+   343	
+   344	def _require_untampered(res: dict | None) -> None:
+   345	    """Stop on a protected-file mismatch, without attributing the write.
+   346	
+   347	    The snapshots establish changed paths, not the writer or whether an added
+   348	    file is tracked source. Concurrent user edits and untracked task artifacts
+   349	    can also change a snapshot. Keep the failure fatal: attribution uncertainty
+   350	    does not establish that the evaluation used an unchanged platform.
+   351	    """
+   352	    changes = (res or {}).get("tampered") or {}
+   353	    touched = changes.get("added", []) + changes.get("removed", []) \
+   354	        + changes.get("modified", [])
+   355	    if not touched:
+   356	        return
+   357	    shown = ", ".join(sorted(set(touched))[:8])
+   358	    console.note(
+   359	        "protected files changed during evaluation; writer unknown",
+   360	        level="error",
+   361	        human=f"\nFAILING RUN: protected files changed during evaluation: {shown}\n"
+   362	              f"  Content snapshots do not identify the writer or source tracking.\n"
+   363	              f"  Run integrity is unverified; inspect the changed paths and their\n"
+   364	              f"  provenance before a new run. `git status --short` shows local changes.")
+   365	    raise PlatformTampered(changes)
+   366	
+   367	_PLATFORM_RECORD: dict | None = None
+   368	
+   369	
+   370	def _platform_record() -> dict:
+   371	    """Which code decided what this run's numbers mean.
+   372	
+   373	    **Stamped by the writer, not passed by the caller.** There are two call sites for
+   374	    `_write_run_meta` and both would have to remember; a run record that omits this is
+   375	    indistinguishable from one produced by different code, which is exactly the state
+   376	    measured on 2026-10-05: 82 run directories, none naming its platform, and one run
+   377	    invalidated mid-flight by an edit to `eval/` that no reader could detect.
+   378	
+   379	    `content_sha` is over the platform's own files (`eval/integrity.snapshot`), so an
+   380	    uncommitted edit changes it -- `git rev-parse HEAD` would not have caught the run that
+   381	    was actually invalidated. `git_sha` is recorded beside it because a human reading a
+   382	    directory wants the revision they can check out.
+   383	
+   384	    **Computed once per process, and that is a correctness property.** This runs when the
+   385	    run starts and again when it ends. Without the cache, a platform file edited during the
+   386	    run would be recorded at its *new* hash by the second write -- the record would then
+   387	    attest to code the run never executed, which is the one thing this field exists to
+   388	    prevent. The cache makes both writes report the tree the process loaded. Tampering is
+   389	    still detected independently and at the end (`_require_untampered`); this field is what
+   390	    a reader months later compares against.
+   391	    """
+   392	    global _PLATFORM_RECORD
+   393	    if _PLATFORM_RECORD is not None:
+   394	        return _PLATFORM_RECORD
+   395	    from eval.run.integrity import PLATFORM_ROOT, content_sha
+   396	    record: dict = {"content_sha": content_sha(PLATFORM_ROOT)}
+   397	    try:
+   398	        import subprocess
+   399	        git_sha = subprocess.run(["git", "-C", str(PLATFORM_ROOT), "rev-parse", "HEAD"],
+   400	                                 capture_output=True, text=True, timeout=10).stdout.strip()
+   401	    except Exception:                                                 # noqa: BLE001
+   402	        git_sha = ""
+   403	    if git_sha:
+   404	        record["git_sha"] = git_sha
+   405	    try:
+   406	        dirty = subprocess.run(["git", "-C", str(PLATFORM_ROOT), "status", "--porcelain"],
+   407	                               capture_output=True, text=True, timeout=10).stdout.strip()
+   408	    except Exception:                                                 # noqa: BLE001
+   409	        dirty = ""
+   410	    # A fact a reader needs: the content hash covers uncommitted edits, but knowing
+   411	    # whether there *were* any is how someone reproduces the exact tree.
+   412	    record["dirty"] = bool(dirty)
+   413	    _PLATFORM_RECORD = record
+   414	    return record
+   415	
+   416	
+   417	def _write_run_meta(run_dir: Path, fresh: bool = False, **fields) -> None:
+   418	    """Record what the run was, for readers that only have the run directory.
+   419	
+   420	    Written before the first round as well as at the end, because a run can stop
+   421	    early -- the control harness reports no change and mode A writes no metadata of
+   422	    its own. A run whose record is only written on success is missing exactly for
+   423	    the runs someone wants to inspect.
+   424	
+   425	    `fresh=True` is for the run's *first* write and drops anything already there.
+   426	    Without it a reused run id inherits the previous run's fields, because the merge
+   427	    below cannot tell "this run wrote a partial record and is now completing it"
+   428	    from "a different run wrote this file earlier". Measured: a run directory whose
+   429	    `method_entrypoint` said `rrsi` carried `rounds_measured: 7` and
+   430	    `final_score: 1.0` from a previous DGM run, so the two runs read as one.
+   431	
+   432	    `workspace` is here rather than recomputed by readers: the working tree moved
+   433	    outside the platform tree, so `runs/<id>/workspace` no longer exists, and the
+   434	    commits that hold every checkpoint live in the tree that does. Readers that
+   435	    guess the path wrong lose the checkpoints, not just the convenience.
+   436	
+   437	    A field passed as `None` is left unchanged rather than written: `None` is how a
+   438	    caller says "I have nothing to say about this", and the workspace path recorded
+   439	    before round 0 must survive a later call that does not repeat it.
+   440	    """
+   441	    # **Which platform produced these numbers, on every write.** Not a parameter: see
+   442	    # `_platform_record`. A caller that passes its own value overrides this, which is
+   443	    # what a test with a synthetic platform wants.
+   444	    fields.setdefault("platform", _platform_record())
+   445	    path = run_dir / "run_meta.json"
+   446	    existing = {}
+   447	    if path.exists() and not fresh:
+   448	        try:
+   449	            existing = json.loads(path.read_text())
+   450	        except json.JSONDecodeError:
+   451	            existing = {}
+   452	    existing.update({k: v for k, v in fields.items() if v is not None})
+   453	    path.write_text(json.dumps(existing, indent=1))
+   454	
+   455	def _save_traces(run_dir: Path, round_no: int, traces: dict,
+   456	                 task_ids: list[str] | None, split: dict | None = None,
+   457	                 trial_traces: dict | None = None) -> None:
+   458	    """Persist one round's traces beside the run, for a human to inspect.
+   459	
+   460	    **Every task, both sides** -- and this reverses a deliberate earlier decision, so the
+   461	    reasoning is recorded rather than the conclusion alone.
+   462	
+   463	    The first version wrote the **train side only**, on this argument: "writing the eval
+   464	    side's traces here would put them on disk under the run directory and one `cp -r`
+   465	    away from a method -- which is the leak the split exists to prevent". That is a
+   466	    defence-in-depth argument and it was sound as far as it went. What it never priced
+   467	    was its cost: the eval traces were **discarded**, so the most valuable question a
+   468	    human can ask about a run -- *why did the harness fail the exam task?* -- had no
+   469	    answer anywhere, and the UI's trace viewer could only ever show the half nobody
+   470	    needed to look at. Measured: 37 train traces on disk and 25 eval tasks whose
+   471	    behaviour was gone.
+   472	
+   473	    What makes this safe is not that the eval traces are absent from the disk. It is
+   474	    that **the method cannot reach the disk**: `_method_sandbox_plan` hides the platform
+   475	    and allows exactly one tree, `methods/`. `tests/quality/test_isolation.py` pins that
+   476	    with a probe method that tries to read this directory and is asserted to fail. A
+   477	    guarantee by mount rule is stronger than a guarantee by absence, and it is the one
+   478	    the rest of the platform already rests on -- the platform is not hidden from a
+   479	    harness by deleting it, but by not mounting it.
+   480	
+   481	    An exported record therefore *does* carry the exam's behaviour, which is the point of
+   482	    exporting it, and `.sides.json` says which traces are which so an exporter that means
+   483	    to hand a record to a method can strip them. That is the operator's decision to make
+   484	    with the facts in front of them, rather than one the platform made for them by
+   485	    throwing the evidence away.
+   486	    """
+   487	    if not traces:
+   488	        return
+   489	    dest = run_dir / f"round{round_no}_traces"
+   490	    dest.mkdir(parents=True, exist_ok=True)
+   491	    for tid, body in traces.items():
+   492	        task_file(dest, f"{tid}.jsonl").write_text(body)
+   493	
+   494	    # **And one file per trial, when a task was measured more than once.** `<task>.jsonl`
+   495	    # above is the last trial only, which is what every reader had; with `--trials 3` that
+   496	    # meant a score of 0.667 came with the trace of a trial that passed, and the missing
+   497	    # trial -- the one that failed -- was not on disk at all (`B2-noop`,
+   498	    # `cobol-modernization`, 2026-10-04). The trials are numbered from 1 and always start
+   499	    # there, so `trial1` is the first measurement in both a 1-trial and a 3-trial run.
+   500	    for tid, bodies in (trial_traces or {}).items():
+   501	        for index, body in enumerate(bodies, start=1):
+   502	            task_file(dest, f"{tid}.trial{index}.jsonl").write_text(body)
+   503	
+   504	    # Which side each trace belongs to, so the directory is readable on its own. Named
+   505	    # with a leading dot because it sits beside files named after task ids and must not
+   506	    # ever be mistaken for one.
+   507	    sides = {"train": [], "eval": []}
+   508	    known = split or {}
+   509	    for tid in sorted(traces):
+   510	        if tid in set(known.get("eval") or []):
+   511	            sides["eval"].append(tid)
+   512	        elif tid in set(known.get("train") or []):
+   513	            sides["train"].append(tid)
+   514	        else:
+   515	            # No split declared: everything is the exam, matching how the point is
+   516	            # scored and how the method channel behaves.
+   517	            sides["eval"].append(tid)
+   518	    (dest / ".sides.json").write_text(json.dumps(
+   519	        {**sides, "task_ids": task_ids, "round": round_no}, indent=1))
+   520	
+   521	def _saved_verdict(verdict: dict) -> dict:
+   522	    """Copy scorer facts and supplied original trial identity, without inference.
+   523	
+   524	    Anonymous survivors may have been compacted upstream. Mark them unaligned
+   525	    even when their count happens to equal a later report's requested coverage.
+   526	    Preserve malformed evidence too, so a reader can refuse it instead of treating
+   527	    it as absent. Generic score/passed fields never supply measurement evidence.
+   528	    """
+   529	    entry = {key: verdict.get(key) for key in ("kind", "passed", "detail")}
+   530	    entry["scorer_isolation_class"] = observed_class(verdict)
+   531	    entry.update({key: verdict[key] for key in
+   532	                  ("scorer_isolation_declared", "scorer_isolation_evidence") if key in verdict})
+   533	    entry.update({key: verdict[key] for key in ("trial", "invalid", "unmeasured", "evidence", "protocol", "native_runtime")
+   534	                  if key in verdict})
+   535	    evidence = verdict.get("evidence")
+   536	    has_identity = "trial" in verdict or (isinstance(evidence, dict) and "trial" in evidence)
+   537	    entry["trial_aligned"] = has_identity and verdict.get("trial_aligned", True) is True
+   538	    # Preserve the scorer's own tally alongside its metric evidence.
+   539	    if isinstance(verdict.get("tests"), dict):
+   540	        entry["tests"] = verdict["tests"]
+   541	    return entry
+   542	
+   543	
+   544	def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
+   545	                   task_ids) -> None:
+   546	    """Persist, per task, **why** the score is what it is.
+   547	
+   548	    A curve point says `per_task: {"bn-fit-modify": 0.0}` and nothing else. Everything
+   549	    that could explain that number already existed inside `evaluate` -- the verifier's
+   550	    `detail` (reward, exit code, and the tail of the check's own stdout) and the harness's
+   551	    stderr -- and every bit of it died with the process. Measured: answering "why 0?" for
+   552	    one run meant re-reading five traces by hand and reproducing a task's own test script
+   553	    outside the platform.
+   554	
+   555	    On disk rather than only in the event stream, for the same reason traces are: a run
+   556	    gets exported, read months later, and grepped. `runs/<id>/verdicts/round-N/<task>.json`
+   557	    is the level at which the question is actually asked -- one task at a time -- so that
+   558	    is the shape of the file.
+   559	    """
+   560	    if res is None:
+   561	        return
+   562	    verdicts = res.get("verdicts") or {}
+   563	    scores = res.get("per_task") or {}
+   564	    histories = res.get("trial_verdicts") or {}
+   565	    invalid = res.get("invalid") or {}
+   566	    unmeasured = res.get("unmeasured") or {}
+   567	    dest = run_dir / "verdicts" / f"round-{round_no}"
+   568	    dest.mkdir(parents=True, exist_ok=True)
+   569	    # Scorer evidence and nonmeasurement receipts do not require generic scores.
+   570	    # Only selected records are persisted; a wholly absent task remains missing.
+   571	    recorded = set(scores) | set(verdicts) | set(histories) | set(invalid) | set(unmeasured)
+   572	    for tid in sorted(set(task_ids) & recorded):
+   573	        trials_v = histories.get(tid)
+   574	        v = dict(verdicts.get(tid) or (trials_v[-1] if trials_v else {}) or {})
+   575	        entry = {
+   576	            "task_id": tid,
+   577	            "round": round_no,
+   578	            "score": scores.get(tid),
+   579	            **_saved_verdict(v),
+   580	        }
+   581	        # With a history, the last verdict's identity/flags belong only to its cell.
+   582	        if trials_v is not None:
+   583	            for key in ("trial", "trial_aligned", "invalid", "unmeasured"):
+   584	                entry.pop(key, None)
+   585	        harness_out = (res.get("harness_output") or {}).get(tid)
+   586	        if harness_out:
+   587	            entry["harness"] = harness_out
+   588	        if tid in invalid:
+   589	            entry["invalid"] = invalid[tid]
+   590	        if tid in unmeasured:
+   591	            entry["unmeasured"] = unmeasured[tid]
+   592	        # **Every trial's reason, not only the last one's.** `entry` above describes the
+   593	        # last trial (`res["verdicts"][tid]`), while `entry["score"]` is the mean over
+   594	        # all of them -- so a task that passed 2 of 3 used to be written as
+   595	        # `score 0.667, passed: true`, and the trial that failed left no record at all.
+   596	        # Measured on `B2-noop` (2026-10-04): `cobol-modernization` was 0.667, the saved
+   597	        # verdict said `passed`, and the question the number raises -- which trial
+   598	        # failed, and why -- had no answer anywhere on disk.
+   599	        if trials_v is not None:
+   600	            # Retain supplied diagnostic scores; absent/None scores stay unknown.
+   601	            # Neither generic passed flags nor metric success invent a score here.
+   602	            entry["trial_scores"] = [float(t["score"]) if (t or {}).get("score") is not None
+   603	                                     else None for t in trials_v]
+   604	            entry["trials"] = [_saved_verdict(t or {}) for t in trials_v]
+   605	        task_file(dest, f"{tid}.json").write_text(
+   606	            json.dumps(entry, indent=1, ensure_ascii=False), encoding="utf-8")
+   607	
+   608	        # One line per task on the terminal; the body goes to the panel collapsed. The
+   609	        # score is in this line on purpose: "0.000 + the check's first line" is the
+   610	        # pairing that makes a zero diagnosable at a glance instead of after an
+   611	        # archaeology session.
+   612	        console.log(source="check", task=f"round {round_no} · {tid}",
+   613	                    exit_code=None, round_no=round_no,
+   614	                    detail=str(v.get("detail") or entry.get("invalid") or ""),
+   615	                    body=str(harness_out.get("stderr") if harness_out else ""),
+   616	                    level="error" if not scores.get(tid) else "info")
+   617	
+   618	def _write_curve(path: Path, curve: list[dict]) -> None:
+   619	    common_class(observed_class(point) for point in curve)
+   620	    with path.open("w") as fh:
+   621	        for point in curve:
+   622	            # External/legacy points need the same explicit label as new points.
+   623	            # Derive it from observations, never from a caller's claimed flag.
+   624	            isolation = observed_class(point)
+   625	            fh.write(json.dumps({**point, "scorer_isolation_class": isolation,
+   626	                                 "scorer_isolation_comparable": isolation != "unknown"}) + "\n")
+   627	
+   628	def _keep_method_logs(method_ws: Path, run_dir: Path | None, round_no: int) -> None:
+   629	    """Copy a method's own `*.log` files into the record before its scratch dir goes.
+   630	
+   631	    The method workspace is temporary by design -- a temp directory, deleted when the
+   632	    round ends -- and that is right for the *candidate harness*, which the platform has
+   633	    already copied out, and wrong for the method's own diagnostics. Measured with the
+   634	    CLI improver: its entire transcript (up to 200 kB: what it read, what
+   635	    it tried, why it changed nothing) went to `<workspace>/improver.log`, and every run
+   636	    that had to answer "why did the improver change nothing?" had thrown that file away
+   637	    with the scratch directory. The question is normally asked after the run.
+   638	
+   639	    The convention is deliberately narrow -- files named `*.log` at the root of the
+   640	    method's workspace -- so it is a rule a method can follow rather than a licence to
+   641	    fill the record, and so the platform does not have to know which method it is.
+   642	    """
+   643	    if run_dir is None or not method_ws.is_dir():
+   644	        return
+   645	    logs = sorted(p for p in method_ws.glob("*.log") if p.is_file())
+   646	    if not logs:
+   647	        return
+   648	    dest = run_dir / "method_logs" / f"round-{round_no}"
+   649	    dest.mkdir(parents=True, exist_ok=True)
+   650	    for path in logs:
+   651	        shutil.copy2(path, dest / path.name)
+   652	
+   653	
+   654	def _save_round_diff(run_dir: Path, round_no: int, work: Path,
+   655	                     prev_sha: str, sha: str) -> dict:
+   656	    """Persist one round's diff as part of the experiment record.
+   657	
+   658	    Why not just read it back from git later: mode A ends with `reset_hard`, so the
+   659	    round's commit becomes a *dangling* object. `git diff` still resolves it until a
+   660	    `git gc` collects it, and then the diff is gone -- an experiment record that
+   661	    survives only until housekeeping runs is not a record. The panel shows per-step
+   662	    diffs, and that view has to work on an old run.
+   663	
+   664	    Written even when empty, so "this round changed nothing" is a recorded fact rather
+   665	    than a missing file that a reader has to interpret.
+   666	    """
+   667	    def git(*args: str) -> str:
+   668	        return subprocess.run(["git", "-C", str(work), *args],
+   669	                              capture_output=True, text=True).stdout
+   670	
+   671	    diff = git("diff", prev_sha, sha)
+   672	    stat = git("diff", "--numstat", prev_sha, sha)
+   673	
+   674	    files = []
+   675	    for line in stat.splitlines():
+   676	        parts = line.split("\t")
+   677	        if len(parts) == 3:
+   678	            added, removed, name = parts
+   679	            files.append({"path": name,
+   680	                          "added": int(added) if added.isdigit() else None,
+   681	                          "removed": int(removed) if removed.isdigit() else None})
+   682	
+   683	    out_dir = Path(run_dir) / "diffs"
+   684	    out_dir.mkdir(parents=True, exist_ok=True)
+   685	    (out_dir / f"round-{round_no}.patch").write_text(diff)
+   686	    (out_dir / f"round-{round_no}.json").write_text(json.dumps(
+   687	        {"round": round_no, "from": prev_sha, "to": sha, "files": files,
+   688	         "added": sum(f["added"] or 0 for f in files),
+   689	         "removed": sum(f["removed"] or 0 for f in files)}, indent=1))
+   690	    return {"files": files, "added": sum(f["added"] or 0 for f in files),
+   691	            "removed": sum(f["removed"] or 0 for f in files)}

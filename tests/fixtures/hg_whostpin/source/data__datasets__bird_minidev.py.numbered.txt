@@ -1,0 +1,371 @@
+     1	"""BIRD Mini-Dev (SQLite): 500 text-to-SQL tasks, the official **EX** metric.
+     2	
+     3	    python3 tools/datasets.py --fetch --dataset bird_minidev
+     4	    python3 data/datasets/bird_minidev/control.py --oracle --platform
+     5	    python3 tools/dataset_lint.py --dataset bird_minidev
+     6	
+     7	Where the data is
+     8	-----------------
+     9	`minidev.zip` (800,943,648 bytes) from the official OSS mirror, pinned by sha256 *and* by
+    10	the object's ETag/Last-Modified (`2024-06-20/7BEB6DAB…`), unpacked to
+    11	`_src/unpacked/minidev/MINIDEV/`:
+    12	
+    13	* `mini_dev_sqlite.json` -- 500 questions with `question_id`, `db_id`, `question`,
+    14	  `evidence`, `difficulty` and a `SQL` field;
+    15	* `mini_dev_sqlite_gold.sql` -- the same 500 gold queries as `SQL<TAB>db_id` lines, which is
+    16	  what the official evaluator reads (`evaluation_utils.py::package_sqls`, mode `"gt"`);
+    17	* `dev_databases/<db_id>/<db_id>.sqlite` -- 11 databases, 1.4 GB;
+    18	* `dev_tables.json` -- the official schema (tables, columns, types, primary and foreign
+    19	  keys) and `database_description/<table>.csv` -- per-column descriptions.
+    20	
+    21	The two released gold channels are checked against each other rather than trusted: the JSON
+    22	`SQL` equals the `.sql` line for **all 500** rows, every gold line carries exactly one tab,
+    23	and every gold line's `db_id` equals its question's. The adapter reads the `.sql` file,
+    24	because that is the file the official evaluator reads.
+    25	
+    26	What the agent sees, and what it does not
+    27	----------------------------------------
+    28	The question, the released `evidence` hint, and the **official schema** rendered from
+    29	`dev_tables.json` plus the per-column descriptions -- the inputs BIRD's own setting gives a
+    30	model. It does **not** get the database, for two reasons: BIRD's task is to write SQL from
+    31	the schema, and the database contains the rows that answer the question. It does not get the
+    32	gold SQL, and `difficulty` travels in the gold rather than the prompt (the benchmark
+    33	publishes EX per difficulty, so the platform can too).
+    34	
+    35	The metric, and the two it does not report
+    36	------------------------------------------
+    37	Reward is per-question **EX**, and the official comparison is transcribed verbatim in
+    38	`data/datasets/bird_minidev/verify/check.py` from
+    39	`bird-bench/mini_dev@abd11b6 evaluation/evaluation_ex.py` lines 18-22. That file's execution
+    40	semantics are upstream's as well (predicted query, then gold, `fetchall()`, set equality,
+    41	timeout -> 0), with **one deliberate difference**: upstream scores a *gold* query that fails
+    42	as a wrong answer, and this check reports `measured: false` instead, because a broken
+    43	environment and a wrong answer must not look the same (`docs/dataset-onboarding-skill.md`
+    44	§5). Soft-F1 (`evaluation_f1.py`) and R-VES (`evaluation_ves.py`) are the benchmark's other
+    45	two official columns over the same query pair; they are **not** reported, and the evidence
+    46	names `EX` so a published number cannot be mistaken for one of them.
+    47	
+    48	The division is the platform's (`SPLIT_SOURCE == "hash"`, `OFFICIAL_EVAL is None`): Mini-Dev
+    49	is one released pool and publishes no study split, so the pool **is** the scored split, and
+    50	the run says so rather than implying the pool is the whole benchmark.
+    51	"""
+    52	from __future__ import annotations
+    53	
+    54	from data.scaffolds.scorer_input import bind as bind_scorer_input
+    55	
+    56	import csv
+    57	import io
+    58	import json
+    59	from pathlib import Path
+    60	
+    61	from data.scaffolds import registry
+    62	
+    63	KIND = "dataset"
+    64	
+    65	#: The oracle control submits the benchmark's own released reference; see
+    66	#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+    67	ORACLE_SOURCE = "released"
+    68	
+    69	DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/bird_minidev")
+    70	RELEASE = "2024-06-20/7BEB6DAB11E65F0FDE563E644A1EA319"
+    71	DATA_SHA256 = "cc48ba16838204e4e214512030cb572eeb5f7bcdd999bae4b9b6ff12ec13b92f"
+    72	DATA_MD5 = "7beb6dab11e65f0fde563e644a1ea319"
+    73	EVALUATION_COMMIT = "abd11b6db92a1c9f809b32f7564c7c71b34d67f0"
+    74	EVALUATION_SHA256 = "e70bcf57ed7dcc1ab4a55e38a14fa12d8bf7ff0cc2e66db673e4d55b16f5050b"
+    75	
+    76	UNPACKED = DATASET_ROOT / "_src" / "unpacked" / "minidev" / "MINIDEV"
+    77	QUESTIONS = UNPACKED / "mini_dev_sqlite.json"
+    78	GOLD = UNPACKED / "mini_dev_sqlite_gold.sql"
+    79	TABLES = UNPACKED / "dev_tables.json"
+    80	DBS = UNPACKED / "dev_databases"
+    81	CLI = Path(__file__).resolve().parent / "bird_minidev" / "cli" / "bird"
+    82	EXPECTED_ROWS = 500
+    83	
+    84	
+    85	# --------------------------------------------------------------------------- the table ---
+    86	
+    87	
+    88	def _rows() -> list[dict]:
+    89	    """One record per released question, with the gold query the official evaluator reads."""
+    90	    questions = json.loads(QUESTIONS.read_text(encoding="utf-8"))
+    91	    golds = [line.split("\t", 1)[0] for line in GOLD.read_text(encoding="utf-8").splitlines()
+    92	             if line.strip()]
+    93	    if len(questions) != EXPECTED_ROWS or len(golds) != EXPECTED_ROWS:
+    94	        raise ValueError(f"expected exactly {EXPECTED_ROWS} questions and gold queries, "
+    95	                         f"found {len(questions)} and {len(golds)}")
+    96	    return [{"task_id": f"bird_minidev/{index}", "index": index,
+    97	             "question_id": row["question_id"], "db_id": row["db_id"],
+    98	             "question": row["question"], "evidence": (row.get("evidence") or "").strip(),
+    99	             "difficulty": row.get("difficulty", ""), "gold_sql": gold}
+   100	            for index, (row, gold) in enumerate(zip(questions, golds))]
+   101	
+   102	
+   103	_RECORDS: list[dict] = []
+   104	_LOAD_ERROR: str | None = None
+   105	try:
+   106	    _RECORDS = _rows()
+   107	except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+   108	    _RECORDS = []
+   109	    _LOAD_ERROR = f"{type(_exc).__name__}: {_exc}"
+   110	
+   111	
+   112	def _ensure() -> list[dict]:
+   113	    """The table, or an error that says how to provision it.
+   114	
+   115	    Read at import **inside a guard**, the pattern `data/datasets/spreadsheetbench.py` uses, because
+   116	    `data/scaffolds/registry.py::published()` imports every module in `data/` to decide what the
+   117	    Launch form offers and that has to work on a machine where `--fetch` has not run. The
+   118	    first version read the table unguarded, so an unprovisioned machine silently dropped
+   119	    this dataset from `published()` -- 27 datasets became 26 with no error anywhere.
+   120	    """
+   121	    if _RECORDS:
+   122	        return _RECORDS
+   123	    raise ValueError(
+   124	        f"bird_minidev: cannot read {UNPACKED} ({_LOAD_ERROR}). Provision it with "
+   125	        f"`python3 tools/datasets.py --fetch --dataset bird_minidev`")
+   126	
+   127	
+   128	def _ids() -> list[str]:
+   129	    return [record["task_id"] for record in _RECORDS]
+   130	
+   131	
+   132	# ------------------------------------------------------------------ the agent's world ---
+   133	
+   134	
+   135	_DESCRIPTION_CACHE: dict[str, dict[str, str]] = {}
+   136	
+   137	
+   138	def _descriptions(db_id: str) -> dict[str, str]:
+   139	    """`{column: note}` from the release's per-database description CSVs.
+   140	
+   141	    Keyed by the *original* column name, because that is the name `dev_tables.json` carries,
+   142	    and cached because 500 tasks share 11 databases.
+   143	
+   144	    The encoding ladder is measured, not defensive: **4 of the 75** description files are
+   145	    cp1252 rather than UTF-8 (`european_football_2/Player_Attributes.csv` and three others,
+   146	    each failing at a `0x95` bullet), and one of them is reached by a task in this pool. A
+   147	    reader that assumed UTF-8 made the whole dataset unimportable -- the schema renderer runs
+   148	    inside `SETUP` -- so the first version's prompt would have raised for those tasks.
+   149	    """
+   150	    if db_id not in _DESCRIPTION_CACHE:
+   151	        notes: dict[str, str] = {}
+   152	        directory = DBS / db_id / "database_description"
+   153	        if directory.is_dir():
+   154	            for path in sorted(directory.glob("*.csv")):
+   155	                text = None
+   156	                for encoding in ("utf-8-sig", "cp1252", "latin-1"):
+   157	                    try:
+   158	                        text = path.read_text(encoding=encoding)
+   159	                        break
+   160	                    except UnicodeDecodeError:
+   161	                        continue
+   162	                if text is None:                        # pragma: no cover - latin-1 never fails
+   163	                    continue
+   164	                for row in csv.DictReader(io.StringIO(text)):
+   165	                    column = (row.get("original_column_name") or "").strip()
+   166	                    if not column:
+   167	                        continue
+   168	                    description = (row.get("column_description") or "").strip()
+   169	                    values = (row.get("value_description") or "").strip()
+   170	                    note = description or (row.get("data_format") or "").strip()
+   171	                    if values and values != description:
+   172	                        note = f"{note}; values: {values}" if note else f"values: {values}"
+   173	                    notes[column] = note
+   174	        _DESCRIPTION_CACHE[db_id] = notes
+   175	    return _DESCRIPTION_CACHE[db_id]
+   176	
+   177	
+   178	def schema_text(db_id: str) -> str:
+   179	    """The official schema as DDL, from `dev_tables.json` plus the column descriptions.
+   180	
+   181	    Deterministic: the release's own table and column order, so a task's prompt is a
+   182	    function of the release rather than of a dict iteration.
+   183	    """
+   184	    entry = next((row for row in json.loads(TABLES.read_text(encoding="utf-8"))
+   185	                  if row["db_id"] == db_id), None)
+   186	    if entry is None:
+   187	        raise KeyError(f"bird_minidev: {db_id} is not in dev_tables.json")
+   188	    names = entry["table_names_original"]
+   189	    columns = entry["column_names_original"]          # [[table_index, name], ...]
+   190	    types = entry["column_types"]
+   191	    notes = _descriptions(db_id)
+   192	    by_table: dict[int, list[int]] = {index: [] for index in range(len(names))}
+   193	    for index, (table_index, _name) in enumerate(columns):
+   194	        if table_index >= 0:
+   195	            by_table[table_index].append(index)
+   196	
+   197	    def flatten(values) -> list[int]:
+   198	        out: list[int] = []
+   199	        for value in values:
+   200	            out.extend(value if isinstance(value, (list, tuple)) else [value])
+   201	        return out
+   202	
+   203	    primary = flatten(entry["primary_keys"])
+   204	    lines = [f"Database: {db_id}", ""]
+   205	    for table_index, table in enumerate(names):
+   206	        body = []
+   207	        for index in by_table[table_index]:
+   208	            name, kind = columns[index][1], types[index]
+   209	            note = notes.get(name, "")
+   210	            body.append(f"    {name} {kind}" + (f"  -- {note}" if note else ""))
+   211	        keys = [index for index in primary if columns[index][0] == table_index]
+   212	        if keys:
+   213	            body.append(f"    PRIMARY KEY ({', '.join(columns[index][1] for index in keys)})")
+   214	        for index, target in entry["foreign_keys"]:
+   215	            if columns[index][0] == table_index:
+   216	                other = columns[target]
+   217	                body.append(f"    FOREIGN KEY ({columns[index][1]}) REFERENCES "
+   218	                            f"{names[other[0]]}({other[1]})")
+   219	        lines.append(f"CREATE TABLE {table} (")
+   220	        lines.append(",\n".join(body))
+   221	        lines.append(");")
+   222	        lines.append("")
+   223	    return "\n".join(lines).rstrip() + "\n"
+   224	
+   225	
+   226	def _task_md(record: dict) -> str:
+   227	    evidence = record["evidence"] or "none given"
+   228	    return (f"# {record['question']}\n\n"
+   229	            f"Evidence: {evidence}\n\n"
+   230	            f"Write one SQLite query that answers the question, against the schema in\n"
+   231	            f"`schema.sql`. Submit it with\n\n"
+   232	            f'    python3 bird/bin/bird submit "<SQL>"\n\n'
+   233	            f"or write it to `answer.sql` yourself. The reward is the official **EX**: the\n"
+   234	            f"result rows of your query must equal the gold query's result rows as a **set**\n"
+   235	            f"(duplicates and order do not matter; a query that does not run scores 0).\n")
+   236	
+   237	
+   238	def _goal(record: dict) -> str:
+   239	    return (f"{record['question']}\n\n"
+   240	            f"Write one SQLite query answering it into `answer.sql`; the schema is in "
+   241	            f"`schema.sql`, and `python3 bird/bin/bird show` prints the task. Reward is the "
+   242	            f"official EX: set equality of your query's result rows with the gold query's.\n")
+   243	
+   244	
+   245	def _setup(record: dict) -> dict:
+   246	    return {"files": [
+   247	        {"path": "TASK.md", "content": _task_md(record)},
+   248	        {"path": "schema.sql", "content": schema_text(record["db_id"])},
+   249	        {"path": "bird/bin/bird", "from": str(CLI)},
+   250	    ]}
+   251	
+   252	
+   253	def _verify(record: dict) -> dict:
+   254	    database = DBS / record["db_id"] / f"{record['db_id']}.sqlite"
+   255	    spec = {
+   256	        "kind": "command",
+   257	        "argv": ["python3", "check.py", "--db", "database.sqlite", "--gold", "gold.sql",
+   258	                 "--pred", "answer.sql", "--reward-file", "verifier/reward.txt",
+   259	                 "--evidence-file", "verifier/evidence.json"],
+   260	        "reward_file": "/verifier/reward.txt",
+   261	        "evidence_file": "/verifier/evidence.json",
+   262	        "inputs": [
+   263	            {"path": "check.py",
+   264	             "from": str(Path(__file__).resolve().parent / "bird_minidev" / "verify" / "check.py")},
+   265	            {"path": "gold.sql", "content": record["gold_sql"]},
+   266	            {"path": "database.sqlite", "from": str(database)},
+   267	        ],
+   268	    }
+   269	    spec["native_runtime"] = {
+   270	        "dataset": "bird_minidev",
+   271	        "manifest": "data/runtimes/bird_minidev-native.json",
+   272	        "sha256": "bc6f725f5ed371060e8f28f53fe69e339d65f18d97dae2ecc7000d3a4e07fb08",
+   273	    }
+   274	    return bind_scorer_input(spec, record["task_id"], ["gold.sql", "database.sqlite"])
+   275	
+   276	
+   277	def setup_map() -> dict:
+   278	    return {record["task_id"]: _setup(record) for record in _RECORDS}
+   279	
+   280	
+   281	def verify_map() -> dict:
+   282	    return {record["task_id"]: _verify(record) for record in _RECORDS}
+   283	
+   284	
+   285	def tasks() -> list[dict]:
+   286	    return [{"task_id": record["task_id"], "goal": _goal(record), "inputs": []}
+   287	            for record in _RECORDS]
+   288	
+   289	
+   290	_TASKS_CACHE: list[dict] = []
+   291	
+   292	
+   293	def __getattr__(name: str):
+   294	    """`SETUP`, `VERIFY` and `TASKS`, on demand.
+   295	
+   296	    Each holds one entry per task and each entry renders a schema, so building them at
+   297	    import would tax every module that only asks which datasets exist. This mirrors
+   298	    `data/scaffolds/qa/base.py::module_getattr`; the control and the lint ask for them by name.
+   299	    """
+   300	    global _TASKS_CACHE
+   301	    if name == "SETUP":
+   302	        return setup_map()
+   303	    if name == "VERIFY":
+   304	        return verify_map()
+   305	    if name == "TASKS":
+   306	        if not _TASKS_CACHE:
+   307	            _TASKS_CACHE = tasks()
+   308	        return _TASKS_CACHE
+   309	    if name == "_RECORDS":
+   310	        return _RECORDS
+   311	    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+   312	
+   313	
+   314	# -------------------------------------------------------------------- the platform ---
+   315	
+   316	DEFAULT_ENV = {"kind": "files"}
+   317	ENV = {task_id: {"kind": "files"} for task_id in _ids()}
+   318	SPLIT = registry.default_split([{"task_id": task_id} for task_id in _ids()])
+   319	
+   320	#: `None`: Mini-Dev publishes no study split, so the pool **is** the scored split. Every task
+   321	#: belongs to the evaluation set, which claims nothing about whether the pool is the whole of
+   322	#: Mini-Dev or of BIRD. `--split official --side eval` scores the whole pool, the comparable
+   323	#: run.
+   324	OFFICIAL_EVAL = None
+   325	
+   326	#: Which rule produced `SPLIT`: `"hash"` -- the benchmark published no study split, so the
+   327	#: platform imposes one. See `data/scaffolds/qa/base.py::division` for the QA half of this rule.
+   328	SPLIT_SOURCE = "hash"
+   329	
+   330	
+   331	def load() -> tuple[list[dict], dict[str, str]]:
+   332	    records = _ensure()
+   333	    if not records:
+   334	        raise ValueError(f"bird_minidev: no tasks under {DATASET_ROOT}")
+   335	    return tasks(), {record["task_id"]: record["gold_sql"] for record in records}
+   336	
+   337	
+   338	def oracle_files(task: dict) -> dict[str, str]:
+   339	    """The gold query, as data: the same bytes the official evaluator reads."""
+   340	    record = next(record for record in _ensure() if record["task_id"] == task["task_id"])
+   341	    return {"answer.sql": record["gold_sql"] + "\n"}
+   342	
+   343	
+   344	def downloads() -> list[dict]:
+   345	    return [
+   346	        {"kind": "http", "name": "BIRD Mini-Dev ZIP", "version": RELEASE,
+   347	         "url": "https://bird-bench.oss-cn-beijing.aliyuncs.com/minidev.zip",
+   348	         "size": "800943648 bytes", "sha256": DATA_SHA256,
+   349	         "dst": "_src/minidev.zip",
+   350	         "note": "Official Mini-Dev release: 500 questions, the gold SQL, and 11 SQLite databases (1.4 GB). Pinned by sha256 and by the object's ETag/Last-Modified, both re-derived by the test. The agent gets the question, the released evidence hint and the schema rendered from dev_tables.json -- never the database, which holds the answer rows, and never the gold SQL."},
+   351	        {"kind": "http", "name": "BIRD Mini-Dev official evaluation code",
+   352	         "version": EVALUATION_COMMIT,
+   353	         "url": "https://codeload.github.com/bird-bench/mini_dev/tar.gz/" + EVALUATION_COMMIT,
+   354	         "size": "3479775 bytes compressed source", "sha256": EVALUATION_SHA256,
+   355	         "dst": "_src/evaluation.tar.gz", "extract_to": "_src/evaluation",
+   356	         "note": "Pins evaluation/evaluation_ex.py, whose `calculate_ex` is transcribed verbatim in data/datasets/bird_minidev/verify/check.py, plus evaluation_f1.py (Soft-F1) and evaluation_ves.py (R-VES) -- the benchmark's other two official columns, named in the evidence and not reported. The tests read this archive and compare bytes; no run imports it."},
+   357	    ]
+   358	
+   359	
+   360	def provision_status() -> dict:
+   361	    return {"root": str(DATASET_ROOT),
+   362	            "present": (QUESTIONS.is_file() and GOLD.is_file() and TABLES.is_file()
+   363	                        and DBS.is_dir() and any(DBS.glob("*/*.sqlite"))),
+   364	            "unpacked": str(UNPACKED),
+   365	            "tasks": len(_RECORDS)}
+   366	
+   367	
+   368	__all__ = ["KIND", "DATASET_ROOT", "RELEASE", "DATA_SHA256", "DATA_MD5",
+   369	           "EVALUATION_COMMIT", "EVALUATION_SHA256", "EXPECTED_ROWS", "load", "downloads",
+   370	           "oracle_files", "provision_status", "schema_text", "setup_map", "verify_map",
+   371	           "tasks", "SPLIT", "SPLIT_SOURCE", "OFFICIAL_EVAL", "ENV", "DEFAULT_ENV"]

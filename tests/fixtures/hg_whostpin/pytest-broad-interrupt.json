@@ -1,0 +1,21 @@
+{
+  "action": "SIGINT unnecessary broad pytest pass (mock demo-driver tests)",
+  "targets": [
+    {
+      "pid": 1286280,
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "-s",
+        "tests/quality/test_native_runtime_hostpin.py",
+        "tests/quality/test_verifier.py",
+        "tests/quality/test_w_wal.py",
+        "tests/quality/test_dataset_blockers.py",
+        "tests/quality/test_identity_and_verdicts.py",
+        "--basetemp=/tmp/hg-hostpin-pytest-final"
+      ]
+    }
+  ]
+}

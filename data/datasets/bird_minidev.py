@@ -266,6 +266,11 @@ def _verify(record: dict) -> dict:
             {"path": "database.sqlite", "from": str(database)},
         ],
     }
+    spec["native_runtime"] = {
+        "dataset": "bird_minidev",
+        "manifest": "data/runtimes/bird_minidev-native.json",
+        "sha256": "bc6f725f5ed371060e8f28f53fe69e339d65f18d97dae2ecc7000d3a4e07fb08",
+    }
     return bind_scorer_input(spec, record["task_id"], ["gold.sql", "database.sqlite"])
 
 

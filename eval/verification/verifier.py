@@ -462,12 +462,44 @@ def _copy_relative_input(name: str, entry: dict, staging: Path,
     target = staging / "rel"
     _materialize(target, [entry], PLATFORM_ROOT)
     container_mod.cp_in(name, target / rel, f"{task_mount}/{rel}")
-def _verify(workdir: Path, verifier: dict | None, answer: str,
+def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
+    """Bind BIRD's selected native pin to execution and to the returned verdict."""
+    spec = verifier or {}
+    if "native_runtime" not in spec:
+        return _verify_existing(workdir, verifier, answer, **options)
+    from eval.verification.native_runtime import admit, NativeRuntimeUnavailable
+    binding = spec["native_runtime"]
+    receipt = {"verified": False, "sha256": binding.get("sha256") if isinstance(binding, dict) else None}
+    try:
+        if not options.get("sandbox"):
+            raise NativeRuntimeUnavailable("native runtime requires sandbox=True")
+        if ((options.get("env") or {}).get("kind", "files") != "files"
+                or options.get("service_specs") or options.get("running")
+                or spec.get("kind") != "command"
+                or declared_class(spec) not in ("unknown", "actor-workdir")
+                or spec.get("cwd") not in (None, ".")
+                or spec.get("reward_file") != "/verifier/reward.txt"
+                or spec.get("evidence_file") != "/verifier/evidence.json"
+                or spec.get("argv", [])[:2] != ["python3", "check.py"]):
+            raise NativeRuntimeUnavailable("native runtime binding requires the BIRD host check route")
+        with admit(binding) as runtime:
+            receipt = runtime.receipt
+            verdict = _verify_existing(workdir, verifier, answer,
+                                       native_runtime=runtime, **options)
+            return {**verdict, "native_runtime": receipt}
+    except NativeRuntimeUnavailable as exc:
+        return record_class({"kind": "command", "passed": False, "score": None,
+                             "outcome": "unmeasured", "unmeasured": str(exc),
+                             "native_runtime": {**receipt, "verified": False}}, spec, "actor-workdir")
+
+
+def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
             *, sandbox: bool, timeout_s: int,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
             running=None, task_id: str | None = None,
-            run_id: str | None = None, trial_id: str | None = None) -> dict:
+            run_id: str | None = None, trial_id: str | None = None,
+            native_runtime=None) -> dict:
     """Run a verifier with platform-owned output storage for exec reward checks."""
     spec = verifier or {"kind": "answer", "expected": None}
     env_spec = env or {"kind": "files"}
@@ -501,11 +533,11 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
             verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                                  timeout_s=timeout_s, env=env,
                                  service_specs=service_specs, running=running,
-                                 verdict_dir=Path(verdict_dir))
+                                 verdict_dir=Path(verdict_dir), native_runtime=native_runtime)
             return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
     verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                          timeout_s=timeout_s, env=env,
-                         service_specs=service_specs, running=running)
+                         service_specs=service_specs, running=running, native_runtime=native_runtime)
     return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
 
 
@@ -532,7 +564,7 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
             *, sandbox: bool, timeout_s: int,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
-            running=None, verdict_dir: Path | None = None) -> dict:
+            running=None, verdict_dir: Path | None = None, native_runtime=None) -> dict:
     """Decide whether the task was completed. Returns {kind, passed, detail}.
 
     `answer` is the legacy path and stays byte-for-byte what it was: stripped,
@@ -597,7 +629,14 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
         reward_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        if is_exec:
+        if native_runtime is not None:
+            proc = native_runtime.run(argv, workdir=workdir, reward_dir=reward_dir,
+                                      timeout_s=timeout_s)
+            if proc.returncode and not host_reward_path.is_file():
+                from eval.verification.native_runtime import NativeRuntimeUnavailable
+                raise NativeRuntimeUnavailable("native runtime check did not produce a reward: "
+                                               + _check_output_detail(proc.stdout, proc.stderr))
+        elif is_exec:
             # A **fresh** container from the same image, sharing only the task bind
             # mount -- see `eval/container.run` for why the check does not reuse the
             # harness's container. Its `cwd` and its `argv` are container paths, and

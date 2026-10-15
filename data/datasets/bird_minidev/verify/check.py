@@ -31,8 +31,9 @@ import sqlite3
 import sys
 from pathlib import Path
 
-# Native staging supplies this dependency at the task root.
-sys.path.insert(0, str(Path.cwd()))
+# Resolve helpers beside trusted scorer code. The pinned route places this directory
+# outside the actor task tree, so task-local Python files cannot shadow imports.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from data.scaffolds.scorer_input import add_arguments, run_bound
 
 #: Upstream's per-query budget (`evaluation_ex.py`, `--meta_time_out` default 30.0).
