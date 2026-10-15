@@ -5098,7 +5098,7 @@ sentence is the deliverable; the rest is provenance.
 support F1)". That conflates two formulas and `w-evidence` was right to flag it: MuSiQue is
 `f1 * support["f1"]` (`data/datasets/musique.py:106`), while 2Wiki multiplies **three** channel precisions
 and three recalls and takes their **harmonic mean**
-(`data/datasets/twowikimultihopqa.py:476-482`, and its own docstring at `:30-32` says Joint F1 "is their
+(`data/datasets/twowikimultihopqa.py:476-482`, and its own docstring at `:28-29` says Joint F1 "is their
 harmonic mean, **not** the product of the three component F1s"). §4.4 and decision 5 also claimed the
 census originals survive because "the backup was made by copying"; `w-evidence` counted instead — the
 three AgentDojo fold sources are **absent** at the exact census paths and GSM8K `train-full` plus three

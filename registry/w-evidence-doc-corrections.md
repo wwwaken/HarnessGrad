@@ -26,9 +26,20 @@ Source: `/mnt/20t/xubuqiang/Study/HarnessGrad/docs/eval-split-design.md:314`. **
   group by `task_id.split("__trial_")[0]` when constructing a study/eval split and
   use group-aware error bars. They do not justify dividing the success rate by
   134/47 or replacing the benchmark's episode mean with a 47-group macro mean.
-  The historical 30-action budget also differs from the paper's 50; removing the
-  dilution claim does not repair that protocol difference.
+  The archived 0.4254 was measured under a historical 30-action budget; the adapter
+  now uses the paper's 50 (`data/datasets/alfworld/lib/gym_env.py:41-44`, commit
+  `cdb43ac4`), so the protocol difference is repaired in code but the archived number
+  was not re-measured and must not be read as a 50-action result.
 ```
+
+**Parent amendment 2026-10-16.** The sentence above read "The historical 30-action budget also differs
+from the paper's 50; removing the dilution claim does not repair that protocol difference." That was
+correct when written and is now incomplete: `STEP_BUDGET` is **50** on `main`
+(`data/datasets/alfworld/lib/gym_env.py:44`, landed by `cdb43ac4`), and `verify/check.py:184-185` now
+separates `budget_reached` from `budget_exhausted` instead of labelling truncation as exhaustion. So the
+protocol gap is closed **in the code** while the archived figure predates it — the distinction a reader
+needs is "archived number, old instrument" versus "current code, paper budget", not "we still differ".
+Nothing else in this correction changes, and the 47-group/2.85x point is unaffected.
 
 Evidence/limits: local source identifies the complete 134-game valid_unseen set (`data/datasets/alfworld.py:10-17`); the archive inventory independently counts 134 per-task records (`registry/w-evidence-archive-observed.json:18`, alfworld entry). The 47 clusters, distinct-state interpretation and paper 50-action protocol are inherited from the retrieved handoff (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:231-255`), not remeasured from game payload here. Do not carry forward the former 46/99%/30 grouping numbers as new observations; that calculation was not reproduced. This correction leaves the episode success rate unchanged and corrects its interpretation; a budget change requires a new result.
 
@@ -55,3 +66,18 @@ Source: `/mnt/20t/xubuqiang/HarnessGrad_experiments_result/musique/loop_qwen3.5-
 ```
 
 Insert the qualification paragraph above immediately before this table; leave every numerical cell unchanged. This also labels all hop rows consistently. The operator can use the same qualification if adding 0.3064 to eval-split-design.md; it is not currently present there in the retrieved version.
+
+## Do not extend the MuSiQue formula sentence to 2Wiki
+
+**Parent addition 2026-10-16.** Any wording produced alongside the MuSiQue label must **not** be shared with
+2WikiMultihopQA, because the two are different formulas. MuSiQue's reward is `answer_f1 × support_f1`
+(`data/datasets/musique.py:106`). 2Wiki's is **not** a product of component F1s: it multiplies the three
+channel precisions (`joint_prec = answer_prec × sp_prec × evi_prec`) and the three recalls, then takes
+their **harmonic mean**, with `joint_em` the product of the three EMs
+(`data/datasets/twowikimultihopqa.py:476-482`); that module's own docstring states Joint F1 "is their
+harmonic mean, **not** the product of the three component F1s" (`:28-29`). Fidelity handoff §3.4
+previously read "MuSiQue's and 2Wiki's reward is joint F1 (answer F1 × support F1)", which is right for
+MuSiQue and wrong for 2Wiki; the handoff has been corrected in place. Calling a 2Wiki figure "joint F1" is
+correct; calling it "answer F1 × support F1" is not. If a 2Wiki label is needed, use: *joint F1 = harmonic
+mean of the three-channel joint precision and joint recall, where each channel's precision and recall are
+multiplied across answer/support/evidence.*
