@@ -1,0 +1,48 @@
+[
+  {
+    "argv": [
+      "stat",
+      "--",
+      "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "stat: \u5bf9 '/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl' \u8c03\u7528 statx \u5931\u8d25: \u6ca1\u6709\u90a3\u4e2a\u6587\u4ef6\u6216\u76ee\u5f55\n"
+  },
+  {
+    "argv": [
+      "find",
+      "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld",
+      "-maxdepth",
+      "4",
+      "-printf",
+      "%y %p\n"
+    ],
+    "returncode": 0,
+    "stdout": "d /tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld\nf /tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld/service.log\nd /tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld/experiments\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "stat",
+      "--",
+      "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "stat: \u5bf9 '/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl' \u8c03\u7528 statx \u5931\u8d25: \u6ca1\u6709\u90a3\u4e2a\u6587\u4ef6\u6216\u76ee\u5f55\n"
+  },
+  {
+    "argv": [
+      "find",
+      "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld",
+      "-maxdepth",
+      "4",
+      "-printf",
+      "%y %p\n"
+    ],
+    "returncode": 0,
+    "stdout": "d /tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld\nf /tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld/service.log\nd /tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld/experiments\n",
+    "stderr": ""
+  }
+]

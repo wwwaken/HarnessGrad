@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-w",
+    "/",
+    "hg-verify-w-e6-20261015T032920Z-72d6bfb0-gaia-normal",
+    "python3",
+    "/we6-probe.py",
+    "--mode",
+    "normal",
+    "--state",
+    "/we6-state.txt"
+  ],
+  "cwd": "/tmp/hg-e6",
+  "timeout_s": 15,
+  "utc": "2026-10-15T03:29:41.614273+00:00",
+  "returncode": 0
+}

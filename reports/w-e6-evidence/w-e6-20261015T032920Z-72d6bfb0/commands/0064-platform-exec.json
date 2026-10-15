@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-w",
+    "/",
+    "hg-verify-w-e6-20261015T032920Z-72d6bfb0-gaia-timeout",
+    "python3",
+    "/we6-probe.py",
+    "--mode",
+    "timeout",
+    "--state",
+    "/we6-state.txt"
+  ],
+  "cwd": "/tmp/hg-e6",
+  "timeout_s": 4,
+  "utc": "2026-10-15T03:29:45.753533+00:00",
+  "exception": "TimeoutExpired(['docker', 'exec', '-w', '/', 'hg-verify-w-e6-20261015T032920Z-72d6bfb0-gaia-timeout', 'python3', '/we6-probe.py', '--mode', 'timeout', '--state', '/we6-state.txt'], 4)"
+}

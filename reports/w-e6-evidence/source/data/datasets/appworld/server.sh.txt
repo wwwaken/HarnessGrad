@@ -1,0 +1,30 @@
+    1 #!/bin/sh
+    2 set -eu
+    3 
+    4 # The service process is task-scoped.  The image is assembled from the release for
+    5 # convenience, but an agent must see only the task selected by the platform. Remove
+    6 # every sibling before importing AppWorld. This
+    7 # also means arbitrary action code cannot inspect another task's database through the
+    8 # ordinary filesystem.
+    9 python - <<'PY'
+   10 import os
+   11 import re
+   12 import shutil
+   13 from pathlib import Path
+   14 
+   15 task_id = os.environ.get("HG_ENV_TASK_ID", "")
+   16 if not re.fullmatch(r"[A-Za-z0-9]+_[0-9]+", task_id):
+   17     raise SystemExit("HG_ENV_TASK_ID is missing or malformed")
+   18 tasks = Path("/appworld/data/tasks")
+   19 if not (tasks / task_id).is_dir():
+   20     raise SystemExit("HG_ENV_TASK_ID is not a released task")
+   21 for task in tasks.iterdir():
+   22     if task.name != task_id:
+   23         shutil.rmtree(task)
+   24 PY
+   25 
+   26 mkdir -p /recordings/appworld/experiments
+   27 rm -rf /appworld/experiments
+   28 ln -s /recordings/appworld/experiments /appworld/experiments
+   29 export APPWORLD_ROOT=/appworld
+   30 exec python -m uvicorn appworld_service:app --host 0.0.0.0 --port 8000

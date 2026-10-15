@@ -1,0 +1,567 @@
+    1 """Run the subject in its own mount namespace, so the platform is not on its disk.
+    2 
+    3 The threat this closes
+    4 ----------------------
+    5 `eval/run/runner.py` executes a harness the platform did not write. Until this module
+    6 existed the harness was an ordinary child process of the driver, which meant -- and
+    7 this was measured, not assumed -- that it could `open()` `driver.py`, read `.env`,
+    8 and write into `eval/run/metrics.py`. `eval/run/integrity.py` catches all three after the
+    9 fact. Catching is not preventing: the run is void, but the credentials have already
+   10 been read.
+   11 
+   12 What was measured, before and after
+   13 -----------------------------------
+   14 A harness whose entrypoint probes its own surroundings, run with and without the
+   15 namespace:
+   16 
+   17                                 bare        sandboxed
+   18     HarnessGrad/.env            readable    absent
+   19     HarnessGrad/driver.py       readable    absent
+   20     HarnessGrad/eval/           readable    absent
+   21     HarnessGrad/methods/        readable    absent
+   22     other runs' workspaces      readable    absent
+   23     HG_METHOD_* in the env      leakable    absent
+   24 
+   25     startup overhead            --          +11.1 ms (median of 15)
+   26     one live model call         ~2100 ms    ~2100 ms
+   27     relative cost               --          +0.53%
+   28 
+   29 Neither a container nor an image is needed, which matters for a reason that is not
+   30 about speed: a container fixes the language and runtime, and `docs/writing_a_harness.md`
+   31 §4 promises the opposite. `bwrap` runs whatever the manifest names, so that promise
+   32 survives.
+   33 
+   34 The rule the mount plan follows
+   35 -------------------------------
+   36 Paths are bound at **the same absolute path they have on the host**. No translation,
+   37 because every translation is a place where a harness's own record of what it did
+   38 stops matching the filesystem it did it on. The plan is therefore:
+   39 
+   40   1. bind the runtime the subject needs (`/usr`, `/bin`, the interpreter's prefix)
+   41      and leave the rest of the host root alone,
+   42   2. hide the tree that contains the platform *and* the work root, using an empty
+   43      tmpfs -- the platform is not "permission denied", it is absent,
+   44   3. bind the work root back, which re-exposes exactly one subtree of the hidden
+   45      tree and no siblings,
+   46   4. bind the task directory, which lives under `/tmp` and would otherwise be lost
+   47      behind a tmpfs.
+   48 
+   49 Step 2 is what makes step 3 safe: binding a directory exposes that directory, not
+   50 its siblings, so `harnessgrad_work/` reappears while `HarnessGrad/` stays gone.
+   51 
+   52 What this does not do
+   53 ---------------------
+   54 By default the subject has unrestricted network access and holds the agent's
+   55 API key. Native tasks that declare network='none' get a private network namespace.
+   56 A subject on the default network can
+   57 therefore exfiltrate that key to anywhere it likes. A namespace cannot fix this;
+   58 only egress filtering or a scoped key can, and neither is implemented. This is a
+   59 recorded gap, not an oversight -- see INTERFACE.md §4.8.
+   60 """
+   61 from __future__ import annotations
+   62 
+   63 import json
+   64 import os
+   65 import shutil
+   66 import subprocess
+   67 import sys
+   68 import tempfile
+   69 from pathlib import Path
+   70 
+   71 from ckpt.git_state import STATE_DIRNAME
+   72 from harnessgrad.config import current as current_config
+   73 
+   74 #: The mount plan's version. Bump it whenever what the subject can see changes.
+   75 #: A curve made under plan 1 and one made under plan 2 are measurements of a
+   76 #: harness in two different worlds, so `run_meta.json` records this number and
+   77 #: `tools/plot_curve.py` refuses to put them on the same axis without saying so.
+   78 PLAN_VERSION = 2
+   79 
+   80 #: Runtime trees a subject may need, bound read-only at their host paths. Kept as
+   81 #: a short explicit list rather than "the whole host": the point of the namespace
+   82 #: is that what is not named is not there.
+   83 RUNTIME = ("/usr", "/bin", "/sbin", "/lib", "/lib64", "/etc")
+   84 
+   85 #: Sub-paths of `/etc` that carry DNS. `/etc/resolv.conf` is a symlink into
+   86 #: `/run/systemd/resolve` on this distribution, and binding only `/etc` leaves it
+   87 #: dangling -- which presents as "model call failed", the worst possible shape for
+   88 #: a sandbox bug, because it looks like a harness defect. Measured: without this,
+   89 #: every live call dies with `Temporary failure in name resolution`.
+   90 DNS = ("/run/systemd/resolve",)
+   91 
+   92 
+   93 class SandboxUnavailable(RuntimeError):
+   94     """bwrap is missing or cannot build a namespace. Never silently fall back."""
+   95 
+   96 
+   97 def interpreter_prefix() -> Path | None:
+   98     """The tree holding the running interpreter, if it lives outside the host root.
+   99 
+  100     A conda env or a venv is one directory that must survive step 2. `/usr/bin/python3`
+  101     needs nothing extra (step 1 already bound `/usr`); `/mnt/8t/.../anaconda3/bin/python3`
+  102     needs its prefix, or the subject starts and immediately dies importing `openai`.
+  103     """
+  104     exe = Path(sys.executable).resolve()
+  105     for parent in exe.parents:
+  106         if (parent / "pyvenv.cfg").exists() or (parent / "conda-meta").is_dir():
+  107             return parent
+  108         if parent == Path("/"):
+  109             break
+  110     return None
+  111 
+  112 
+  113 def hidden_trees(work_root: Path, platform: Path) -> list[Path]:
+  114     """Exactly which directories get covered by an empty tmpfs.
+  115 
+  116     Two, and the list is this short on purpose. An earlier version hid every
+  117     directory from the root down to the work root, on the theory that wholesale
+  118     erasure was tidier. It erased the interpreter too: this platform's Python lives
+  119     under `/mnt/8t/.../anaconda3`, so covering `/mnt` left the subject unable to
+  120     start and the failure read as a broken harness.
+  121 
+  122     So:
+  123 
+  124     * **the platform itself**, so the driver, the scorer and `.env` are not on the
+  125       subject's disk. Its siblings stay visible, deliberately -- hiding a
+  126       neighbouring work tree buys nothing and costs diagnostics.
+  127     * **`/tmp`**, always and unconditionally. The task directory is bound back
+  128       afterwards; without this, two runs on a machine whose work root is elsewhere
+  129       would share a `/tmp` and could read each other's answers.
+  130 
+  131     The work root's parents are never touched, which is what makes the plan
+  132     independent of where the trees sit: no common ancestor is required, so a work
+  133     root on a different mount from the platform is fine. And since bwrap starts from
+  134     an empty root rather than inheriting the host's, hiding the platform is the only
+  135     hiding that matters -- everything unnamed is already absent.
+  136     """
+  137     work_root, platform = work_root.resolve(), platform.resolve()
+  138     if platform == work_root or platform in work_root.parents:
+  139         raise SandboxUnavailable(
+  140             f"the work root {work_root} is inside the platform {platform}; the "
+  141             f"subject's own tree cannot be hidden from it")
+  142     hidden = [platform]
+  143     if Path("/tmp") != work_root:
+  144         hidden.append(Path("/tmp"))
+  145     return hidden
+  146 
+  147 
+  148 def _bwrap() -> str:
+  149     """Where bubblewrap is, honouring `HG_BWRAP` if it is set to an executable.
+  150 
+  151     The override exists because the installer checks the binary it is about to use and
+  152     the platform must check the *same* one: with two candidates in play, `install.sh`
+  153     could report a working `bwrap` from a non-standard path while the driver silently
+  154     used a broken one from `PATH`, and the diagnostic would then be about a different
+  155     program than the one that failed.
+  156     """
+  157     override = current_config().sandbox.bwrap
+  158     if override:
+  159         if os.access(override, os.X_OK):
+  160             return override
+  161         raise SandboxUnavailable(
+  162             f"HG_BWRAP={override!r} is not an executable. Unset it to fall back to "
+  163             f"PATH, or point it at a real bubblewrap.")
+  164     exe = shutil.which("bwrap")
+  165     if not exe:
+  166         raise SandboxUnavailable(
+  167             "bwrap not found on PATH. Run ./install.sh, install bubblewrap yourself "
+  168             "(`apt install bubblewrap`), or pass --no-sandbox to accept that a harness "
+  169             "can reach the platform.")
+  170     return exe
+  171 
+  172 
+  173 def command(argv: list[str], *, platform: Path, work_root: Path,
+  174             task_dir: Path, env: dict[str, str], repo: Path | None = None,
+  175             state_dirs: tuple[Path, ...] = (),
+  176             task_dir_writable: bool = True,
+  177             runtime_paths: tuple[Path, ...] = (),
+  178             visible_paths: tuple[Path, ...] = (),
+  179             writable_paths: tuple[Path, ...] = (),
+  180             network: str | None = None,
+  181             package_overlays: tuple[tuple[Path, Path], ...] = ()) -> list[str]:
+  182     """Wrap `argv` so it runs with the platform off its disk.
+  183 
+  184     Raises rather than degrading. A sandbox that quietly did not apply would make
+  185     every subsequent number mean something different from what it says -- the one
+  186     failure mode this whole module exists to prevent.
+  187     """
+  188     bwrap = _bwrap()
+  189     platform, work_root = platform.resolve(), work_root.resolve()
+  190     repo = platform if repo is None else repo.resolve()
+  191     repo_in_work_root = repo == work_root or work_root in repo.parents
+  192     private_tmp = Path("/tmp") != work_root
+  193 
+  194     plan: list[str] = ["--die-with-parent", "--unshare-pid", "--proc", "/proc",
+  195                        "--dev", "/dev"]
+  196     if network not in (None, "none"):
+  197         raise ValueError(f"unsupported native sandbox network policy: {network!r}")
+  198     if network == "none":
+  199         plan += ["--unshare-net"]
+  200 
+  201     for path in RUNTIME:
+  202         if Path(path).exists():
+  203             plan += ["--ro-bind", path, path]
+  204     for path in DNS:
+  205         if Path(path).exists():
+  206             plan += ["--ro-bind", path, path]
+  207 
+  208     prefix = interpreter_prefix()
+  209     if prefix is not None:
+  210         plan += ["--ro-bind", str(prefix), str(prefix)]
+  211 
+  212     # Trees the harness declares it needs, bound read-only.
+  213     #
+  214     # The interpreter prefix above is the same idea hard-coded for Python. It stopped
+  215     # being enough the moment a harness could be a *CLI*: Claude Code installed into a
+  216     # venv or a local build lives outside `/usr`, and an agent CLI that cannot be
+  217     # executed is indistinguishable from a broken harness. A harness that needs a tree
+  218     # says so in its manifest rather than the platform guessing.
+  219     #
+  220     # Bound **before** the hides, so a declaration cannot re-materialise something the
+  221     # hides remove: the platform stays hidden even if a harness declares its path.
+  222     for path in runtime_paths:
+  223         target = Path(path)
+  224         if target.exists():
+  225             plan += ["--ro-bind", str(target), str(target)]
+  226 
+  227     # Paths that must survive the hides below. Bound twice, exactly like `repo`: once
+  228     # here so the mount target exists, and again after the hides, because **a tmpfs
+  229     # over a parent covers what is mounted beneath it**. That second bind is what makes
+  230     # a path inside the hidden tree visible again -- which is how a method is given its
+  231     # own program (under the platform) without being given the platform.
+  232     for path in visible_paths:
+  233         target = Path(path)
+  234         if target.exists():
+  235             plan += ["--ro-bind", str(target), str(target)]
+  236 
+  237     # --- What the subject must be able to read ---------------------------------
+  238     #
+  239     # Bound before the hides, because these are the mounts the subject's whole job
+  240     # depends on. All of them are re-asserted at the very end; this pass is what makes
+  241     # the *hides* possible, that one is what makes them true.
+  242     plan += ["--ro-bind", str(work_root), str(work_root)]
+  243     if repo_in_work_root:
+  244         pass  # already covered by the work root bind above
+  245     else:
+  246         # Bound explicitly rather than assumed to be inside the work root. `run_one`
+  247         # normally passes `<work_root>/<run>/workspace`, but "normally" is how an
+  248         # earlier version shipped a sandbox in which the subject could rewrite itself:
+  249         # a harness outside the bound tree fell through to bwrap's auto-created parents
+  250         # and ended up writable. The tree the harness must read is a stated
+  251         # requirement now, not an inference.
+  252         plan += ["--ro-bind", str(repo), str(repo)]
+  253 
+  254     # The task directory. Bound here and not after the hides, so it cannot re-create a
+  255     # parent that the work root bind above needs to have made first.
+  256     plan += ["--bind", str(task_dir), str(task_dir)]
+  257 
+  258     # --- What the subject must not see -----------------------------------------
+  259     #
+  260     # A tmpfs on the platform's own path. Its contents go; the directory name survives
+  261     # as an empty mount point, which is the deliberate stopping point -- nothing
+  262     # readable remains, and erasing the name too would mean covering the whole branch
+  263     # the work root lives on.
+  264     for tree in hidden_trees(work_root, platform):
+  265         plan += ["--tmpfs", str(tree)]
+  266     if private_tmp:
+  267         # A private /tmp, so two runs cannot read each other's task directories.
+  268         plan += ["--tmpfs", "/tmp"]
+  269 
+  270     # --- Re-assert everything, in order ----------------------------------------
+  271     #
+  272     # This pass exists because bwrap creates missing mount targets: a writable `--bind`
+  273     # of a directory that *contains* the harness re-materialises it, and the later
+  274     # mount wins. Measured: with the task directory one level above the harness, the
+  275     # final `--bind /tmp/xxx /tmp/xxx` made the harness's own source writable and the
+  276     # self-check reported `source_writable='ok'` -- a sandbox that silently did not
+  277     # apply, which is the one failure this module exists to prevent.
+  278     #
+  279     # So: mounts that must exist come first (parents before children), then the
+  280     # read-only trees, then the writable hole on top of the read-only tree it lives in.
+  281     #
+  282     # **The order inside this pass is load-bearing and was wrong.** The read-only
+  283     # re-asserts used to come *after* the writable hole, which is fine while they do
+  284     # not nest -- the harness's work directory is under `/tmp` and the work root is
+  285     # elsewhere. A *method's* scratch directory is under the work root, and there the
+  286     # read-only bind of the parent won: the method got `Read-only file system` writing
+  287     # its own trajectory. Read-only first, writable hole last, which is what the
+  288     # sentence above always said.
+  289     # The writable hole first, then everything that must stay read-only **even where
+  290     # it sits inside the hole**, then the enclosing tree.
+  291     #
+  292     # This order is the whole of it, and it took three attempts to get right:
+  293     #
+  294     #   * the harness's source lives inside the hole's parent, so it must be re-bound
+  295     #     read-only *after* the hole or the harness can rewrite itself (the self-check
+  296     #     catches exactly this, and did);
+  297     #   * a method's `base_harness` is a sibling of its scratch directory, so it too
+  298     #     must come after the hole;
+  299     #   * `work_root` must come last, and must not enclose the hole -- a read-only bind
+  300     #     of a parent wins over a writable bind of its child, which is how a method's
+  301     #     own trajectory file came back `Read-only file system`.
+  302     plan += ["--bind", str(task_dir), str(task_dir)]
+  303     plan += ["--ro-bind", str(repo), str(repo)]
+  304     for path in visible_paths:
+  305         target = Path(path)
+  306         if target.exists():
+  307             plan += ["--ro-bind", str(target), str(target)]
+  308     plan += ["--ro-bind", str(work_root), str(work_root)]
+  309     if not task_dir_writable:
+  310         # Verification runs with the harness's artifacts frozen. Said *last*, so it is
+  311         # the final word about this path.
+  312         plan += ["--ro-bind", str(task_dir), str(task_dir)]
+  313 
+  314     # The check's own verdict directory, when it declares one. **After** the read-only
+  315     # re-assert of the task dir, so it is the last word about that subtree: a host check
+  316     # that must write a `reward_file` can write exactly there and nowhere else, and the
+  317     # harness's artifacts stay frozen. This exists so the reward-file contract does not
+  318     # require turning the verification sandbox off -- an unsandboxed check would be one
+  319     # whose import path (`sys.path[0]`) is the harness's workdir, which is a route from
+  320     # the harness into a process that can read the platform.
+  321     for path in writable_paths:
+  322         target = Path(path)
+  323         if target.exists():
+  324             plan += ["--bind", str(target), str(target)]
+  325 
+  326     # The writable hole: a tmpfs over the harness's own scratch directory, so a harness
+  327     # can write caches, session state or intermediate files where it expects to find
+  328     # them -- inside its tree -- while the code beside them stays untouchable.
+  329     # Measured: with a read-only parent and a tmpfs child, rewriting `agent.py` raises
+  330     # `OSError`, writing `.state/cache.json` succeeds, and the host tree is not touched.
+  331     #
+  332     # A tmpfs rather than a bind, so the contents are per-task and evaporate at the end
+  333     # of it. A directory shared across the task set would make a score depend on what an
+  334     # earlier task left behind, which is what the task boundary exists to prevent;
+  335     # persistent cross-session memory belongs in a task that contains the sessions, not
+  336     # in storage the platform supplies.
+  337     for state_dir in state_dirs:
+  338         state = Path(state_dir)
+  339         if not state.is_dir():
+  340             raise SandboxUnavailable(
+  341                 f"the harness has no {state.name}/ directory at {state}, so the "
+  342                 f"sandbox cannot give it a writable scratch space. It is created when "
+  343                 f"the workspace is staged (ckpt/git_state.py); a workspace built by "
+  344                 f"hand from an older commit will not have it.")
+  345         plan += ["--tmpfs", str(state)]
+  346 
+  347     # Last mounts win: runtime_paths or a parent bind must never uncover the
+  348     # installed reference-bearing package after its public projection is mounted.
+  349     for source, target in package_overlays:
+  350         source, target = Path(source).resolve(), Path(target).resolve()
+  351         if not source.is_dir() or not target.is_dir():
+  352             raise SandboxUnavailable("agent package overlay is missing")
+  353         for writable in (task_dir, *writable_paths, *state_dirs):
+  354             writable = Path(writable).resolve()
+  355             if source == writable or writable in source.parents:
+  356                 raise SandboxUnavailable("agent package projection is in writable storage")
+  357         plan += ["--ro-bind", str(source), str(target)]
+  358 
+  359     #: Variables the platform itself sets to a filesystem path. Only these are
+  360     #: checked against the hidden tree, and the list is explicit because guessing
+  361     #: is what went wrong twice: `HG_AGENT_MODEL=deepseek-flash` is not a path, but
+  362     #: `Path("deepseek-flash").resolve()` is relative to the platform's own cwd and
+  363     #: lands inside the hidden tree -- so a value-shaped guess deleted the agent's
+  364     #: API key out of the sandbox, and the failure would have surfaced as "the
+  365     #: harness cannot reach a model". A model name, a URL and a secret are not
+  366     #: paths, and the platform does not get to pretend otherwise.
+  367     path_bearing = ("HARNESSGRAD_WORKSPACE", "HARNESSGRAD_WORK_ROOT", "PYTHONPATH")
+  368 
+  369     def visible(name: str, value: str) -> bool:
+  370         """Does this platform-set path still exist once the plan is applied?"""
+  371         if name not in path_bearing:
+  372             return True
+  373         try:
+  374             target = Path(value).resolve()
+  375         except (OSError, ValueError):
+  376             return True
+  377         for anchor in (work_root, task_dir):
+  378             if target == anchor or anchor in target.parents:
+  379                 return True
+  380         for tree in hidden_trees(work_root, platform):
+  381             if target == tree or tree in target.parents:
+  382                 print(f"  sandbox: dropping {name}={value} -- it points under the "
+  383                       f"hidden tree {tree} and is not the work root. The subject "
+  384                       f"will not see it.", file=sys.stderr)
+  385                 return False
+  386         return True
+  387 
+  388     for name, value in sorted(env.items()):
+  389         if visible(name, value):
+  390             plan += ["--setenv", name, value]
+  391 
+  392     return [bwrap] + plan + ["--"] + argv
+  393 
+  394 
+  395 def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
+  396         env: dict[str, str], timeout_s: int, cwd: Path | None = None,
+  397         repo: Path | None = None, state_dirs: tuple[Path, ...] = (),
+  398         task_dir_writable: bool = True,
+  399         runtime_paths: tuple[Path, ...] = (),
+  400         visible_paths: tuple[Path, ...] = (),
+  401         writable_paths: tuple[Path, ...] = (),
+  402         input_text: str | None = None,
+  403         network: str | None = None,
+  404         package_overlays: tuple[tuple[Path, Path], ...] = ()):
+  405     """`subprocess.run` with the namespace in place. Same return type.
+  406 
+  407     `input_text` exists because a *method* is driven over stdin (it reads one JSON
+  408     request and writes one JSON reply), while a harness is driven with arguments. Both
+  409     need the same namespace, so the namespace takes the input as a parameter rather
+  410     than the caller reaching for `subprocess` and losing the sandbox by accident.
+  411     """
+  412     wrapped = command(argv, platform=platform, work_root=work_root,
+  413                       task_dir=task_dir, env=env, repo=repo,
+  414                       state_dirs=state_dirs,
+  415                       task_dir_writable=task_dir_writable,
+  416                       runtime_paths=runtime_paths,
+  417                       visible_paths=visible_paths,
+  418                       writable_paths=writable_paths,
+  419                       network=network, package_overlays=package_overlays)
+  420     return subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
+  421                           timeout=timeout_s, cwd=cwd, env=env)
+  422 
+  423 
+  424 def self_check(platform: Path, work_root: Path) -> dict:
+  425     """Prove the namespace applies before a paid run depends on it.
+  426 
+  427     Returns {"ok": bool, "detail": str}. Called by the driver at startup: a sandbox
+  428     that cannot be built must stop the run at the door, not once per task, and
+  429     never by falling back to no sandbox.
+  430     """
+  431     try:
+  432         bwrap = _bwrap()
+  433     except SandboxUnavailable as exc:
+  434         return {"ok": False, "detail": str(exc)}
+  435     try:
+  436         hidden = hidden_trees(work_root, platform)
+  437     except SandboxUnavailable as exc:
+  438         return {"ok": False, "detail": str(exc)}
+  439 
+  440     with tempfile.TemporaryDirectory(prefix="hg-sandbox-check-") as tmp:
+  441         tmp_path = Path(tmp)
+  442         # A throwaway harness, so the probe can check both halves of the plan: the
+  443         # platform is gone, and the writable hole is genuinely writable. Checking
+  444         # only the first would pass on a sandbox that also broke the harness.
+  445         fake_repo = tmp_path / "harness"
+  446         state_dir = fake_repo / STATE_DIRNAME
+  447         state_dir.mkdir(parents=True)
+  448         (fake_repo / "agent.py").write_text("# a harness\n")
+  449 
+  450         probe = tmp_path / "probe.py"
+  451         probe.write_text(
+  452             "import json, pathlib\n"
+  453             f"platform = pathlib.Path({str(platform)!r})\n"
+  454             f"repo = pathlib.Path({str(fake_repo)!r})\n"
+  455             "def attempt(fn):\n"
+  456             "    try:\n"
+  457             "        fn(); return 'ok'\n"
+  458             "    except OSError as exc:\n"
+  459             "        return type(exc).__name__\n"
+  460             "print(json.dumps({\n"
+  461             "  'platform_visible': (platform / 'driver.py').exists(),\n"
+  462             "  'env_visible': (platform / '.env').exists(),\n"
+  463             "  'source_writable': attempt(\n"
+  464             "      lambda: (repo / 'agent.py').write_text('hacked')),\n"
+  465             "  'state_writable': attempt(\n"
+  466             "      lambda: (repo / '.state' / 'cache.json').write_text('{}')),\n"
+  467             "}))\n"
+  468         )
+  469         try:
+  470             proc = run([sys.executable, str(probe)], platform=platform,
+  471                        work_root=work_root, task_dir=tmp_path,
+  472                        env={}, timeout_s=60, cwd=tmp_path,
+  473                        repo=fake_repo, state_dirs=(state_dir,))
+  474         except (subprocess.TimeoutExpired, OSError) as exc:
+  475             return {"ok": False, "detail": f"sandbox probe did not run: {exc}"}
+  476 
+  477     if proc.returncode != 0:
+  478         return {"ok": False,
+  479                 "detail": f"sandbox probe exited {proc.returncode}: "
+  480                           f"{proc.stderr.strip()[-400:]}"}
+  481     try:
+  482         result = json.loads(proc.stdout.strip().splitlines()[-1])
+  483     except (json.JSONDecodeError, IndexError):
+  484         return {"ok": False, "detail": f"unreadable probe output: {proc.stdout[:200]}"}
+  485     if result.get("platform_visible") or result.get("env_visible"):
+  486         return {"ok": False,
+  487                 "detail": f"the platform is still visible inside the sandbox "
+  488                           f"({result}); hiding {[str(h) for h in hidden]} did not "
+  489                           f"take effect"}
+  490     if result.get("source_writable") != "OSError":
+  491         return {"ok": False,
+  492                 "detail": f"the harness could rewrite its own source "
+  493                           f"(source_writable={result.get('source_writable')!r}); one "
+  494                           f"copy of it scores every task, so two tasks could run two "
+  495                           f"different programs"}
+  496     if result.get("state_writable") != "ok":
+  497         return {"ok": False,
+  498                 "detail": f"the harness has no writable scratch space "
+  499                           f"(state_writable={result.get('state_writable')!r}); a "
+  500                           f"harness that cannot write while working cannot do most "
+  501                           f"tasks"}
+  502 
+  503     # The verification pass runs with the harness's artifacts frozen, and that is the
+  504     # whole reason the platform's grade can be trusted: a check the subject can edit
+  505     # is not a check. Probed separately rather than assumed, because this mode is
+  506     # only taken on runs that declare a `command` verifier -- so a broken read-only
+  507     # mount would stay invisible until the first dataset that needed it, and would
+  508     # look like a wrong score rather than a broken sandbox.
+  509     with tempfile.TemporaryDirectory(prefix="hg-verify-check-") as tmp2:
+  510         verify_dir = Path(tmp2) / "artifacts"
+  511         verify_dir.mkdir()
+  512         (verify_dir / "answer.txt").write_text("the harness's work\n")
+  513         probe2 = Path(tmp2) / "probe2.py"
+  514         probe2.write_text(
+  515             "import json, pathlib\n"
+  516             f"platform = pathlib.Path({str(platform)!r})\n"
+  517             f"artifacts = pathlib.Path({str(verify_dir)!r})\n"
+  518             "def attempt(fn):\n"
+  519             "    try:\n"
+  520             "        fn(); return 'ok'\n"
+  521             "    except OSError as exc:\n"
+  522             "        return type(exc).__name__\n"
+  523             "print(json.dumps({\n"
+  524             "  'platform_visible': (platform / 'driver.py').exists(),\n"
+  525             "  'artifacts_writable': attempt(\n"
+  526             "      lambda: (artifacts / 'answer.txt').write_text('edited')),\n"
+  527             "  'artifacts_readable': (artifacts / 'answer.txt').read_text().strip(),\n"
+  528             "}))\n"
+  529         )
+  530         try:
+  531             # `task_dir` is the whole probe directory, not just the artifacts: the
+  532             # probe script itself has to be readable from inside, and the point of the
+  533             # check is that *everything* there is read-only.
+  534             proc2 = run([sys.executable, str(probe2)], platform=platform,
+  535                         work_root=work_root, task_dir=Path(tmp2),
+  536                         env={}, timeout_s=60, cwd=Path(tmp2),
+  537                         repo=Path(tmp2), task_dir_writable=False)
+  538         except (subprocess.TimeoutExpired, OSError) as exc:
+  539             return {"ok": False, "detail": f"verification probe did not run: {exc}"}
+  540 
+  541     if proc2.returncode != 0:
+  542         return {"ok": False,
+  543                 "detail": f"verification probe exited {proc2.returncode}: "
+  544                           f"{proc2.stderr.strip()[-400:]}"}
+  545     try:
+  546         vresult = json.loads(proc2.stdout.strip().splitlines()[-1])
+  547     except (json.JSONDecodeError, IndexError):
+  548         return {"ok": False,
+  549                 "detail": f"unreadable verification probe output: {proc2.stdout[:200]}"}
+  550     if vresult.get("platform_visible"):
+  551         return {"ok": False,
+  552                 "detail": f"the platform is visible to the verification pass "
+  553                           f"({vresult}); the verifier would run with the driver on disk"}
+  554     if vresult.get("artifacts_writable") != "OSError":
+  555         return {"ok": False,
+  556                 "detail": f"the verification pass can edit the harness's artifacts "
+  557                           f"(artifacts_writable={vresult.get('artifacts_writable')!r}); "
+  558                           f"a check the subject can rewrite is not a check"}
+  559     if vresult.get("artifacts_readable") != "the harness's work":
+  560         return {"ok": False,
+  561                 "detail": f"the verification pass cannot read the artifacts "
+  562                           f"(saw {vresult.get('artifacts_readable')!r})"}
+  563 
+  564     return {"ok": True,
+  565             "detail": f"bwrap active; {len(hidden)} trees hidden; source read-only; "
+  566                       f"{STATE_DIRNAME}/ writable; artifacts frozen for verification; "
+  567                       f"plan v{PLAN_VERSION}; {bwrap}"}

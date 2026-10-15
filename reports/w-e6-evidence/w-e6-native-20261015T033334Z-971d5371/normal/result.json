@@ -1,0 +1,33 @@
+{
+  "returncode": 0,
+  "verdict": {
+    "kind": "command",
+    "passed": false,
+    "score": 0.0,
+    "detail": "the check wrote no /verifier/reward.txt (looked for /tmp/w-e6-native-20261015T033334Z-971d5371-h4huptp_/normal/verifier/reward.txt), exit 1 | stderr Traceback (most recent call last):\n  File \"/tmp/w-e6-native-20261015T033334Z-971d5371-h4huptp_/normal/probe.py\", line 26, in <module>\n    scratch.mkdir()\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py\", line 1311, in mkdir\n    os.mkdir(self, mode)\nOSError: [Errno 30] Read-only file system: '/tmp/hg-we6-probe-2'",
+    "scorer_isolation_class": "actor-workdir",
+    "scorer_isolation_declared": "unknown"
+  },
+  "process_identities_after_native": {
+    "855453-655815209": {
+      "proc_path_exists": false,
+      "same_starttime_present": false
+    },
+    "855456-655815209": {
+      "proc_path_exists": false,
+      "same_starttime_present": false
+    },
+    "855458-655815223": {
+      "proc_path_exists": false,
+      "same_starttime_present": false
+    },
+    "855459-655815224": {
+      "proc_path_exists": false,
+      "same_starttime_present": false
+    },
+    "855460-655815227": {
+      "proc_path_exists": false,
+      "same_starttime_present": false
+    }
+  }
+}

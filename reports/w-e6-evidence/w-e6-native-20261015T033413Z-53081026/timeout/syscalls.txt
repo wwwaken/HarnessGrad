@@ -1,0 +1,37 @@
+857269 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["/mnt/8t/xubuqiang/anaconda3/bin/"..., "/tmp/hg-e6/tests/fixtures/hg_we6"..., "--work", "/tmp/w-e6-native-20261015T033413"..., "--mode", "timeout"], 0x7ffd1634ae50 /* 72 vars */) = 0
+857269 vfork( <unfinished ...>
+857270 execve("/usr/bin/bwrap", ["/usr/bin/bwrap", "--die-with-parent", "--unshare-pid", "--proc", "/proc", "--dev", "/dev", "--ro-bind", "/usr", "/usr", "--ro-bind", "/bin", "/bin", "--ro-bind", "/sbin", "/sbin", "--ro-bind", "/lib", "/lib", "--ro-bind", "/lib64", "/lib64", "--ro-bind", "/etc", "/etc", "--ro-bind", "/run/systemd/resolve", "/run/systemd/resolve", "--ro-bind", "/mnt/8t/xubuqiang/anaconda3", "/mnt/8t/xubuqiang/anaconda3", "--ro-bind", ...], 0x7df81ea07bd0 /* 5 vars */ <unfinished ...>
+857269 <... vfork resumed>)             = 857270
+857270 <... execve resumed>)            = 0
+857270 wait4(-1, 0x7fff30d8d160, WNOHANG, NULL) = -1 ECHILD (没有子进程)
+857270 clone(child_stack=NULL, flags=CLONE_NEWNS|CLONE_NEWUSER|CLONE_NEWPID|SIGCHLD) = 857271
+857271 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7cb2bf69b450) = 2
+857272 execve("/home/xubuqiang/.nvm/versions/node/v22.16.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.local/bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.codex/tmp/arg0/codex-arg0aI93Yx/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.nvm/versions/node/v22.16.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/mnt/20t/xubuqiang/deepseek-harness/node_modules/.bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.cache/node/corepack/v1/pnpm/11.7.0/dist/node-gyp-bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */ <unfinished ...>
+857271 wait4(-1,  <unfinished ...>
+857272 <... execve resumed>)            = -1 ENOENT (没有那个文件或目录)
+857272 execve("/mnt/20t/xubuqiang/deepseek-harness/node_modules/.bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.local/bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.nvm/versions/node/v22.19.0/bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/home/xubuqiang/.opencode/bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = -1 ENOENT (没有那个文件或目录)
+857272 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["python3", "probe.py", "--mode", "timeout", "--out", "verifier", "--scratch-root", "verifier"], 0x5e206ba11a30 /* 6 vars */) = 0
+857272 vfork( <unfinished ...>
+857280 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["/mnt/8t/xubuqiang/anaconda3/bin/"..., "-c", "import time; time.sleep(60)"], 0x7ffcde3360b0 /* 6 vars */ <unfinished ...>
+857272 <... vfork resumed>)             = 3
+857280 <... execve resumed>)            = 0
+857269 wait4(857270, 0x7fffa313bce4, WNOHANG, NULL) = 0
+857269 kill(857270, SIGKILL)            = 0
+857269 wait4(857270,  <unfinished ...>
+857270 +++ killed by SIGKILL +++
+857271 <... wait4 resumed> <unfinished ...>) = ?
+857269 <... wait4 resumed>[{WIFSIGNALED(s) && WTERMSIG(s) == SIGKILL}], 0, NULL) = 857270
+857269 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_KILLED, si_pid=857270, si_uid=1026, si_status=SIGKILL, si_utime=0, si_stime=0} ---
+857280 +++ killed by SIGKILL +++
+857272 +++ killed by SIGKILL +++
+857271 +++ killed by SIGKILL +++
+857269 exit_group(0)                    = ?
+857269 +++ exited with 0 +++

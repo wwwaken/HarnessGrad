@@ -1,0 +1,258 @@
+    1 r"""Physics Questions as a dataset: numeric answers graded by BIG-bench's string metric.
+    2 
+    3     python3 tools/datasets.py --fetch --dataset physicsquestions
+    4     python3 data/scaffolds/qa/control.py --dataset physicsquestions --oracle
+    5     driver.py --dataset physicsquestions ...
+    6 
+    7 Where the tasks come from
+    8 -------------------------
+    9 `data/bigbench/physics_question.csv` in `github.com/billxbf/ReWOO` at commit
+   10 `9cd0283...`, 53 rows of `input,target`, where the target is BIG-bench's **list** of
+   11 acceptable spellings:
+   12 
+   13     "During a recent morning run, Ken averaged a speed of 5.9 m/s for 14.9 minutes. ..."
+   14     -> Can be one of ['7187 m', '7 km']
+   15 
+   16 **53 rows is a fact about every number here.** The 95% confidence interval on an accuracy
+   17 at n=53 is roughly ±13 points -- wider than any difference this dataset could be used to
+   18 argue for. It is useful for mechanism attribution (does the harness use a calculator?),
+   19 not for ranking.
+   20 
+   21 The metric, verbatim
+   22 --------------------
+   23 BIG-bench's `physics_questions/task.json` declares `metrics: ["exact_str_match", "bleu"]`
+   24 and its examples carry a **list** target. `exact_str_match` is BIG-bench's standard
+   25 metric: the prediction, stripped of surrounding whitespace, must equal one of the targets
+   26 exactly, after the reference strips the trailing period. So `7 km` and `7187 m` both score
+   27 for the row above, and they are **not equal numbers** (7187 m is 7.187 km) -- they are two
+   28 roundings of the same quantity, which is why the target is a list rather than a value.
+   29 
+   30 **Two things this adapter deliberately does not do**, because both were tempting and both
+   31 change the number:
+   32 
+   33 * it does not compare numerically with a relative tolerance. That is a *different, more
+   34   generous* metric: it would score `7.2 km` correct for a target of `7 km`, where
+   35   `exact_str_match` does not. A tolerance is a defensible scorer for a *different*
+   36   question ("is the physics right?"); it is not this benchmark's number, and reporting it
+   37   under this benchmark's name would be the §1 error.
+   38 * it does not accept the whole `Can be one of [...]` string as an answer. The list is
+   39   BIG-bench's encoding of "any of these", not the answer text.
+   40 
+   41 `bleu` is the task's second metric and is not reported: a BLEU score over a three-token
+   42 numeric answer measures tokenisation, and its corpus implementation depends on a library
+   43 this platform does not pin.
+   44 """
+   45 from __future__ import annotations
+   46 
+   47 import csv
+   48 import re
+   49 
+   50 from data.scaffolds.qa import base
+   51 
+   52 KIND = "dataset"
+   53 
+   54 #: The oracle control submits the benchmark's own released reference; see
+   55 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+   56 ORACLE_SOURCE = "released"
+   57 
+   58 
+   59 
+   60 
+   61 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/physicsquestions")
+   62 CSV_MEMBER = "data/bigbench/physics_question.csv"
+   63 CSV_PATH = ("ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/"
+   64             "physics_question.csv")
+   65 N_TOTAL = 53
+   66 
+   67 #: BIG-bench's target encoding: `Can be one of ['7187 m', '7 km']`. The list is parsed
+   68 #: rather than compared as a string.
+   69 _TARGET = re.compile(r"^Can be one of \[(?P<items>.*)\]\s*$", re.I)
+   70 _QUOTED = re.compile(r"'([^']*)'|\"([^\"]*)\"")
+   71 
+   72 
+   73 def accepted_answers(target: str) -> list[str]:
+   74     """The acceptable spellings in a BIG-bench target.
+   75 
+   76     **Raises when the encoding is not recognised** instead of falling back to the raw
+   77     string: comparing a prediction with `Can be one of [...]` scores every answer 0 for a
+   78     reason nothing records, and a silent wrong number is worse than an error. Measured:
+   79     every one of the 53 rows uses the encoding.
+   80     """
+   81     match = _TARGET.match(str(target).strip())
+   82     if not match:
+   83         raise ValueError(f"physicsquestions: target {target!r} is not `Can be one of [...]`")
+   84     items = [a or b for a, b in _QUOTED.findall(match.group("items"))]
+   85     if not items:
+   86         raise ValueError(f"physicsquestions: no quoted answers in {target!r}")
+   87     return items
+   88 
+   89 
+   90 # ------------------------------------------------------------------ the scorer ---
+   91 
+   92 
+   93 def exact_str_match(prediction: str, ground_truth: str) -> bool:
+   94     """BIG-bench's `exact_str_match`, as its examples define it.
+   95 
+   96     The prediction is stripped; the reference has a trailing period stripped (the task's
+   97     own examples end in one and the answers do not). Nothing else is normalised: case and
+   98     units are part of the answer, which is why the dataset lists several spellings.
+   99     """
+  100     return str(prediction).strip() == str(ground_truth).strip().rstrip(".")
+  101 
+  102 
+  103 def score(prediction: str, gold: dict) -> dict:
+  104     accepted = list(gold.get("accepted") or [])
+  105     hit = any(exact_str_match(prediction or "", want) for want in accepted)
+  106     return {
+  107         "reward": 1.0 if hit else 0.0,
+  108         "correct": hit,
+  109         "official": {"metric": "exact_str_match over BIG-bench's accepted spellings",
+  110                      "accepted": accepted,
+  111                      "prediction": str(prediction).strip()},
+  112         "why": (f"{str(prediction).strip()!r} "
+  113                 f"{'matches' if hit else 'matches none of'} {accepted}"),
+  114     }
+  115 
+  116 
+  117 # ---------------------------------------------------------------- the adapter ---
+  118 
+  119 
+  120 def _rows() -> list[dict]:
+  121     path = DATASET_ROOT / CSV_PATH
+  122     if not path.is_file():
+  123         raise FileNotFoundError(f"no physics_question.csv at {path}")
+  124     with path.open(encoding="utf-8", newline="") as handle:
+  125         rows = [row for row in csv.DictReader(handle) if str(row.get("input") or "").strip()]
+  126     # BIG-bench's own task.json has one row with an empty input and an empty target
+  127     # (measured: 54 examples, the first blank); ReWOO's CSV drops it. 53 is the count of
+  128     # real questions, and the adapter asserts it so a re-extraction that changes the count
+  129     # is noticed rather than scored.
+  130     if len(rows) != N_TOTAL:
+  131         raise ValueError(f"physicsquestions: {len(rows)} rows, expected {N_TOTAL}")
+  132     return rows
+  133 
+  134 
+  135 def _gold(row: dict) -> dict:
+  136     accepted = accepted_answers(str(row["target"]))
+  137     return {"answer": accepted[0], "accepted": accepted}
+  138 
+  139 
+  140 def _goal(question: str, gold: dict) -> str:
+  141     return (
+  142         "# Task\n"
+  143         "\n"
+  144         f"{question}\n"
+  145         "\n"
+  146         "## How to answer\n"
+  147         "\n"
+  148         "Write the answer -- a number and its unit, for example `12.5 m` -- to\n"
+  149         f"`{base.ANSWER_FILE}` in your working directory, or submit it with\n"
+  150         "\n"
+  151         f"    python3 {base.CLI_FILE} submit \"12.5 m\"\n"
+  152         "\n"
+  153         "Do not explain. Include the unit.\n"
+  154         "\n"
+  155         "## How it is scored\n"
+  156         "\n"
+  157         "- Your answer must equal one of the reference spellings for this question\n"
+  158         "  (BIG-bench's `exact_str_match` for this task), allowing only surrounding\n"
+  159         "  whitespace and a trailing period.\n"
+  160         "- Several equivalent spellings are accepted where the dataset lists them, for\n"
+  161         "  example `7 km` and `7187 m` for the same distance.\n"
+  162         "- Nothing else you print is read.\n"
+  163     )
+  164 
+  165 
+  166 #: The ReWOO tarball these tables come from, pinned by commit sha. Declared inline in
+  167 #: each adapter rather than imported from a shared module: the *check* materializes the
+  168 #: adapter and the QA scaffold only, so an adapter that imported another QA module would
+  169 #: fail inside the verification namespace (measured: `ImportError: cannot import name
+  170 #: 'rewoo'` from the materialized `data.scaffolds.qa`). Three constant lines are cheaper than a
+  171 #: fourth file in every `VERIFY.inputs`.
+  172 REWOO_COMMIT = "9cd0283043ff4be0c9d614fda2789d143ca6ffd1"
+  173 REWOO_TARBALL = "https://codeload.github.com/billxbf/ReWOO/tar.gz/9cd0283043ff4be0c9d614fda2789d143ca6ffd1"
+  174 REWOO_SHA256 = "7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136"
+  175 
+  176 
+  177 def _rewoo_entry(*, name: str, csv_size: str, note: str) -> dict:
+  178     return {
+  179         "kind": "http",
+  180         "name": name,
+  181         "version": REWOO_COMMIT,
+  182         "url": REWOO_TARBALL,
+  183         "size": csv_size + " of CSV (the whole tarball is ~6 MB)",
+  184         "sha256": REWOO_SHA256,
+  185         "dst": "rewoo.tar.gz",
+  186         "extract_to": ".",
+  187         "note": note,
+  188     }
+  189 
+  190 
+  191 _SPEC = base.QASpec(
+  192     name="physicsquestions",
+  193     root=DATASET_ROOT,
+  194     rows=lambda: {"test": _rows()},
+  195     question=lambda row: str(row["input"]),
+  196     gold=_gold,
+  197     goal=_goal,
+  198     score=score,
+  199     downloads=lambda: [
+  200         _rewoo_entry(
+  201             name="ReWOO tarball (physics_question.csv)",
+  202             csv_size="18 KB",
+  203             note="Trap 1: only **53** rows, so its accuracy has a ±13-point confidence "
+  204                  "interval -- useful for mechanism attribution, not for ranking. Trap 2: "
+  205                  "the target is a **list** of acceptable spellings (`Can be one of ['7187 "
+  206                  "m', '7 km']`); comparing it as a string scores every answer 0, and "
+  207                  "comparing numerically with a tolerance is a different, more generous "
+  208                  "metric than BIG-bench's `exact_str_match`."),
+  209         {"kind": "pip", "name": "pyarrow", "package": "pyarrow", "version": "23.0.0",
+  210          "size": "~40 MB",
+  211          "note": "Declared for consistency with the other QA datasets; this table is "
+  212                  "CSV, so the check reads it with `csv`, not pyarrow."},
+  213     ],
+  214     split="test",
+  215     source="billxbf/ReWOO@9cd0283043ff4be0c9d614fda2789d143ca6ffd1 "
+  216            "data/bigbench/physics_question.csv; metric from google/BIG-bench "
+  217            "physics_questions task.json (`exact_str_match`)",
+  218 )
+  219 
+  220 _BUILT = _SPEC.build()
+  221 
+  222 DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+  223 ENV = _BUILT["ENV"]
+  224 SPLIT = _BUILT["SPLIT"]
+  225 
+  226 #: The benchmark's own evaluation set, within this adapter's pool. The pool is the released 53-row table, which is the whole benchmark.
+  227 #:
+  228 #: Read from `QASpec.division()`, the one place that decides what this pool's division
+  229 #: is: `None` here because the benchmark released no study split for this table, so the
+  230 #: pool **is** the scored split and every task in it belongs to the evaluation set. It
+  231 #: claims nothing about whether the pool is the whole of that set. `--split official
+  232 #: --side eval` scores the whole pool, which is the comparable run; `--split declared`
+  233 #: keeps the platform's hash third (`SPLIT_SOURCE == "hash"`).
+  234 OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
+  235 
+  236 #: Which rule produced `SPLIT`: `"hash"` here -- the benchmark published no study split,
+  237 #: so the platform imposes one. See `data/scaffolds/qa/base.py::division`.
+  238 SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
+  239 
+  240 
+  241 def __getattr__(name: str):
+  242     return base.module_getattr(_SPEC, name)
+  243 
+  244 
+  245 def load() -> tuple[list[dict], dict[str, str]]:
+  246     return _SPEC.load()
+  247 
+  248 
+  249 def downloads() -> list[dict]:
+  250     return _SPEC._downloads()
+  251 
+  252 
+  253 def provision_status() -> dict:
+  254     return _SPEC.provision_status()
+  255 
+  256 
+  257 __all__ = ["KIND", "DATASET_ROOT", "load", "downloads", "score",
+  258            "accepted_answers", "exact_str_match", "SPLIT"]

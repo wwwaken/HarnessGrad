@@ -1,0 +1,69 @@
+    1 """Task-bound AppWorld service.
+    2 
+    3 The upstream environment server is intentionally not exposed: its initialize endpoint
+    4 accepts ``load_ground_truth`` and ``ground_truth_mode`` and it also exposes evaluation,
+    5 task, state, and log-management endpoints.  This wrapper accepts only the action surface
+    6 needed by a harness and fixes the task to ``HG_ENV_TASK_ID`` supplied by the platform.
+    7 """
+    8 from __future__ import annotations
+    9 
+   10 import os
+   11 from typing import Any
+   12 
+   13 from fastapi import Body, FastAPI, HTTPException
+   14 from munch import unmunchify
+   15 from appworld import AppWorld
+   16 
+   17 TASK_ID = os.environ.get("HG_ENV_TASK_ID", "")
+   18 if not TASK_ID:
+   19     raise RuntimeError("HG_ENV_TASK_ID is required")
+   20 
+   21 app = FastAPI(title="AppWorld task action service")
+   22 world: AppWorld | None = None
+   23 
+   24 
+   25 def _check(task_id: str) -> None:
+   26     if task_id != TASK_ID:
+   27         raise HTTPException(status_code=403, detail="task id is not this service's task")
+   28     if world is None:
+   29         raise HTTPException(status_code=409, detail="task is not initialized")
+   30 
+   31 
+   32 @app.get("/")
+   33 async def health() -> dict[str, str]:
+   34     return {"status": "ok", "task_id": TASK_ID}
+   35 
+   36 
+   37 @app.post("/initialize")
+   38 async def initialize(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+   39     global world
+   40     task_id = payload.get("task_id")
+   41     if task_id != TASK_ID:
+   42         raise HTTPException(status_code=403, detail="task id is not this service's task")
+   43     # Ground truth is never loaded in the agent-facing process.  The verifier creates a
+   44     # separate AppWorld with the official evaluator after the recording is complete.
+   45     # The client cannot choose an output path.  AppWorld joins this value to its
+   46     # recording root, so accepting an absolute or traversal name would let action code
+   47     # redirect logs and state outside the platform recording mount.
+   48     world = AppWorld(task_id=TASK_ID, experiment_name="harness",
+   49                      load_ground_truth=False, ground_truth_mode="minimal",
+   50                      raise_on_failure=False)
+   51     task = world.task
+   52     supervisor = task.supervisor
+   53     return {"output": {"task_id": task.id, "instruction": task.instruction,
+   54                         "supervisor": {k: supervisor[k] for k in
+   55                                        ("first_name", "last_name", "email", "phone_number")},
+   56                         "datetime": task.datetime}}
+   57 
+   58 
+   59 @app.post("/execute")
+   60 async def execute(task_id: str = Body(...), code: str = Body(...)) -> dict[str, Any]:
+   61     _check(task_id)
+   62     return {"output": world.execute(code)}
+   63 
+   64 
+   65 @app.get("/api_docs")
+   66 async def api_docs() -> dict[str, Any]:
+   67     if world is None:
+   68         raise HTTPException(status_code=409, detail="task is not initialized")
+   69     return unmunchify(world.task.api_docs.copy())

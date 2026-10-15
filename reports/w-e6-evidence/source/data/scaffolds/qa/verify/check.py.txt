@@ -1,0 +1,297 @@
+    1 #!/usr/bin/env python3
+    2 """The check every plain-text QA dataset in this repository shares.
+    3 
+    4     python3 -m data.scaffolds.qa.verify.check --dataset gsm8k --module data.datasets.gsm8k \
+    5         --answer answer.txt --gold gold.json \
+    6         --reward-file verifier/reward.txt --evidence-file verifier/evidence.json
+    7 
+    8 The rule
+    9 --------
+   10     reward = the dataset's **official scorer**, applied to the bytes in `answer.txt`
+   11              and the gold the platform re-materialized into `gold.json`.
+   12 
+   13 Nothing else is read. Not stdout, not a trace, not a summary the harness wrote beside
+   14 the answer: an interactive or tool-using harness can make all of those say anything,
+   15 and `answer.txt` is the platform's own answer channel (`eval/run/runner.py`), so it is the
+   16 one a harness has to mean.
+   17 
+   18 Why the gold is a file and not an argument
+   19 ------------------------------------------
+   20 `VERIFY.inputs` re-materializes it immediately before this check runs
+   21 (`eval/verification/verifier.py::_verify`), so the `gold.json` read here is the platform's copy. If
+   22 the gold travelled as an argv value the check would be identical, but a check that reads
+   23 a *path* is the shape ALFWorld already uses for its trusted game file, and one shape for
+   24 "trusted input" is easier to keep trustworthy than two.
+   25 
+   26 `measured: false` is not a zero
+   27 -------------------------------
+   28 A check that cannot run -- no `gold.json`, a dataset module that will not import, an
+   29 official scorer that refuses the contract -- writes **no reward file**, writes evidence
+   30 saying `measured: false` and why, and exits 3. `eval/verification/verifier.py` turns that into an
+   31 `invalid` task. A bare 0 would be indistinguishable from "the agent answered wrongly",
+   32 and that distinction is the whole reason the evidence file exists.
+   33 
+   34 A missing or empty `answer.txt` is a **measured zero**: the task ran and the agent did
+   35 not answer. That is a real result and it is reported as one.
+   36 """
+   37 from __future__ import annotations
+   38 
+   39 import argparse
+   40 import hashlib
+   41 import json
+   42 import re
+   43 import sys
+   44 import traceback
+   45 from pathlib import Path
+   46 
+   47 #: This file lands in `<workdir>/qa/verify/check.py` when the platform materializes a
+   48 #: `VERIFY.inputs` entry, and it is also runnable in place from the platform checkout.
+   49 #: In both layouts the module it imports -- `read`, the parquet reader -- sits **one
+   50 #: directory up**, so that directory goes on `sys.path` first. Nothing here may import
+   51 #: `data.*`: the verification namespace hides the platform tree, and a check that
+   52 #: reached back into it would either fail or read whatever the subject left there.
+   53 HERE = Path(__file__).resolve().parent
+   54 for candidate in (HERE.parent, Path.cwd()):
+   55     if str(candidate) not in sys.path:
+   56         sys.path.insert(0, str(candidate))
+   57 
+   58 DEFAULT_REWARD_FILE = "/verifier/reward.txt"
+   59 DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
+   60 
+   61 
+   62 #: Dataset names are a strict subset of what a module path may be, so `--dataset` is
+   63 #: validated before it is used to build an import name. Validated rather than escaped: a
+   64 #: dynamic import of `data.` + an unchecked value is a route into any importable module,
+   65 #: and `tests/quality/test_boundaries.py::R1` refuses the unvalidated spelling for the
+   66 #: same reason. With this pattern the argument can only name a module under `data/`,
+   67 #: which is what the adapter is.
+   68 DATASET_NAME_RE = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
+   69 
+   70 #: The package the adapter is materialized into. The check imports `data.datasets.<name>` -- the
+   71 #: adapter's real module name, so the scorer that grades is the same file the platform
+   72 #: loaded, re-materialized into the workdir by `VERIFY.inputs`.
+   73 DATASET_PACKAGE = "data.datasets"
+   74 
+   75 
+   76 def parse_args(argv):
+   77     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+   78     parser.add_argument("--dataset", required=True)
+   79     parser.add_argument("--answer", default="answer.txt")
+   80     parser.add_argument("--prediction", default="prediction.json")
+   81     parser.add_argument("--gold", default="gold.json")
+   82     parser.add_argument("--task-id", help="trusted selected task identity")
+   83     parser.add_argument("--gold-sha256", help="trusted SHA-256 of serialized gold bytes")
+   84     parser.add_argument("--score-mode", help="trusted adapter scoring policy")
+   85     parser.add_argument("--redact-gold", action="store_true",
+   86                         help="omit trusted gold from all verifier evidence paths")
+   87     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
+   88     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
+   89     return parser.parse_args(argv)
+   90 
+   91 
+   92 def write_reward(path: Path, score: float) -> None:
+   93     path.parent.mkdir(parents=True, exist_ok=True)
+   94     path.write_text(f"{score:g}\n")
+   95 
+   96 
+   97 def write_evidence(path: Path, evidence: dict) -> None:
+   98     """Evidence is for a reader, never for the score: failing to write it is not fatal."""
+   99     try:
+  100         path.parent.mkdir(parents=True, exist_ok=True)
+  101         path.write_text(json.dumps(evidence, indent=1, sort_keys=True,
+  102                                    ensure_ascii=False) + "\n")
+  103     except OSError as exc:
+  104         print(f"could not write evidence: {exc}", file=sys.stderr)
+  105 
+  106 
+  107 def unmeasured(args, evidence: dict, why: str) -> int:
+  108     """The one path that must not write a reward file. See the module docstring."""
+  109     evidence.update(measured=False, error=why)
+  110     write_evidence(args.evidence_file, evidence)
+  111     print(f"check cannot measure: {why}", file=sys.stderr)
+  112     return 3
+  113 
+  114 
+  115 def error_detail(args, exc: Exception) -> str:
+  116     """Exception messages and traceback source lines can contain trusted labels."""
+  117     return type(exc).__name__ if args.redact_gold else f"{type(exc).__name__}: {exc}"
+  118 
+  119 
+  120 def record_traceback(args, evidence: dict) -> None:
+  121     if not args.redact_gold:
+  122         evidence["traceback"] = traceback.format_exc()[-2000:]
+  123 
+  124 
+  125 #: A quoted answer is unwrapped before scoring. Measured on the first smoke run of
+  126 #: `sportsunderstanding`: the oracle's own submission came back as `'plausible'` in one
+  127 #: trial because a shell snippet quoted it, and an official scorer that does a substring
+  128 #: test then *passes* for the wrong reason while an exact-match one fails for the wrong
+  129 #: reason. Unwrapping one layer of matching quotes is a formatting fix, not a scoring
+  130 #: concession: it changes no dataset's rule, and it is stated here because a silent
+  131 #: normalisation is how a scorer stops being the official one.
+  132 _QUOTED = re.compile(r"^\s*(?P<q>['\"`])(?P<body>.*)(?P=q)\s*$", re.S)
+  133 
+  134 
+  135 def unwrap(answer: str) -> str:
+  136     match = _QUOTED.match(answer)
+  137     return match.group("body") if match else answer
+  138 
+  139 
+  140 def main(argv) -> int:
+  141     args = parse_args(argv)
+  142     # Known private adapters must redact before gold parsing, prediction validation,
+  143     # or scorer import. Adapter flags are too late for those failure paths.
+  144     args.redact_gold = args.redact_gold or args.dataset in {"chessbench_puzzles", "bfcl_v3"}
+  145     args.reward_file = Path(args.reward_file)
+  146     args.evidence_file = Path(args.evidence_file)
+  147     answer_path = Path(args.answer)
+  148     prediction_path = Path(args.prediction)
+  149     gold_path = Path(args.gold)
+  150 
+  151     evidence: dict = {
+  152         "dataset": args.dataset,
+  153         "answer_file": str(answer_path),
+  154         "gold_file": str(gold_path),
+  155         "reward_file": str(args.reward_file),
+  156     }
+  157     if args.redact_gold:
+  158         evidence["gold"] = {"redacted": True}
+  159 
+  160     if not gold_path.is_file():
+  161         # The check's own trusted input is missing. On a real run the platform writes
+  162         # it; on a by-hand run the caller forgot. Either way this is not a measurement,
+  163         # and it is emphatically not the agent's zero.
+  164         return unmeasured(args, evidence,
+  165                           f"no gold file at {gold_path} -- the platform's "
+  166                           f"re-materialization did not happen")
+  167 
+  168     try:
+  169         # Hash and parse one buffer: a later path substitution cannot change the
+  170         # object supplied to the scorer while leaving a receipt for earlier bytes.
+  171         gold_bytes = gold_path.read_bytes()
+  172         digest = hashlib.sha256(gold_bytes).hexdigest()
+  173         bound = (bool(args.task_id) and bool(args.gold_sha256)
+  174                  and re.fullmatch(r"[0-9a-f]{64}", args.gold_sha256) is not None
+  175                  and digest == args.gold_sha256)
+  176         evidence["scorer_input"] = {
+  177             "task_id": args.task_id, "path": str(gold_path), "sha256": digest,
+  178             "expected_sha256": args.gold_sha256, "verified": bound,
+  179         }
+  180         if (args.task_id is not None or args.gold_sha256 is not None) and not bound:
+  181             return unmeasured(args, evidence, "scorer input task/digest binding mismatch")
+  182         # Legacy by-hand calls without either argument remain explicitly unbound.
+  183         # Native bound dispatch refuses such a receipt, even if it has a reward.
+  184         gold = json.loads(gold_bytes.decode("utf-8"))
+  185     except (OSError, ValueError) as exc:
+  186         return unmeasured(args, evidence,
+  187                           f"gold file {gold_path} is unreadable: {error_detail(args, exc)}")
+  188     if not isinstance(gold, dict):
+  189         return unmeasured(args, evidence,
+  190                           f"gold file {gold_path} holds {type(gold).__name__}, not an "
+  191                           f"object")
+  192 
+  193     try:
+  194         answer = answer_path.read_text(encoding="utf-8") if answer_path.is_file() else ""
+  195     except (OSError, ValueError) as exc:
+  196         return unmeasured(args, evidence,
+  197                           f"answer file {answer_path} is unreadable: {error_detail(args, exc)}")
+  198     evidence.update(answer_present=answer_path.is_file(),
+  199                     answer_chars=len(answer),
+  200                     answer=answer[:2000],
+  201                     gold={"redacted": True} if args.redact_gold else gold)
+  202 
+  203     structured = None
+  204     if prediction_path.is_file():
+  205         try:
+  206             from data.scaffolds.qa.prediction import validate_prediction
+  207             structured, prediction_error = validate_prediction(
+  208                 json.loads(prediction_path.read_text(encoding="utf-8")))
+  209         except (OSError, ValueError) as exc:
+  210             return unmeasured(args, evidence,
+  211                               f"prediction file {prediction_path} is malformed: {error_detail(args, exc)}")
+  212         except Exception as exc:  # noqa: BLE001 - unavailable validation is unmeasured
+  213             record_traceback(args, evidence)
+  214             return unmeasured(args, evidence,
+  215                               f"could not validate prediction: {error_detail(args, exc)}")
+  216         if prediction_error:
+  217             return unmeasured(args, evidence,
+  218                               f"prediction file {prediction_path} is invalid: "
+  219                               f"{prediction_error}")
+  220         evidence.update(prediction_file=str(prediction_path), prediction=structured)
+  221 
+  222     if not DATASET_NAME_RE.match(args.dataset):
+  223         return unmeasured(args, evidence,
+  224                           f"{args.dataset!r} is not a dataset name; this check imports "
+  225                           f"`data.datasets.<name>` and will not be handed an arbitrary module")
+  226     module_name = f"{DATASET_PACKAGE}.{args.dataset}"
+  227     evidence["scorer_module"] = module_name
+  228     try:
+  229         # `__import__` rather than an importlib call with a variable argument: the
+  230         # boundary rule (`tests/quality/test_boundaries.py::R1`) reads the argument of
+  231         # every dynamic import call and refuses one that is not a literal, because a
+  232         # non-literal is how the platform would reach an arbitrary module. The name is
+  233         # already validated to `data.datasets.<name>` above, and the rule this file must not break
+  234         # is about *reaching an arbitrary module*, not about which builtin does it.
+  235         adapter = __import__(module_name, fromlist=["score"])
+  236         if getattr(adapter, "REDACT_EVIDENCE", False) and not args.redact_gold:
+  237             evidence["gold"] = {"subset": gold.get("subset"),
+  238                                   "category": gold.get("subset"),
+  239                                   "redacted": True}
+  240             args.redact_gold = True
+  241         scorer = getattr(adapter, "score", None)
+  242         if not callable(scorer):
+  243             return unmeasured(args, evidence,
+  244                               f"{module_name} has no callable `score(prediction, gold)`; "
+  245                               f"the adapter was materialized without its scoring half")
+  246     except Exception as exc:  # noqa: BLE001 - materializing the scorer is the platform's job
+  247         record_traceback(args, evidence)
+  248         return unmeasured(args, evidence, f"could not import {module_name}: "
+  249                                           f"{error_detail(args, exc)}")
+  250 
+  251     prediction = (str(structured["answer"]) if structured is not None
+  252                   else unwrap(answer).strip())
+  253     try:
+  254         evidence_scorer = getattr(adapter, "score_prediction", None)
+  255         score_options = {"mode": args.score_mode} if args.score_mode is not None else {}
+  256         result = (evidence_scorer(structured, gold, **score_options)
+  257                   if structured is not None
+  258                   and getattr(adapter, "EVIDENCE_AWARE", False)
+  259                   and callable(evidence_scorer)
+  260                   else scorer(prediction, gold, **score_options))
+  261     except Exception as exc:  # noqa: BLE001 - a scorer that refuses is not a zero
+  262         record_traceback(args, evidence)
+  263         return unmeasured(args, evidence,
+  264                           f"the official scorer refused to score this item: "
+  265                           f"{error_detail(args, exc)}")
+  266 
+  267     if not isinstance(result, dict) or "reward" not in result:
+  268         return unmeasured(args, evidence,
+  269                           f"{module_name}.score() returned "
+  270                           f"{'an invalid result' if args.redact_gold else repr(result)}; it must "
+  271                           f"return a dict with a numeric `reward`")
+  272     try:
+  273         reward = float(result["reward"])
+  274     except (TypeError, ValueError):
+  275         return unmeasured(args, evidence,
+  276                           f"{module_name}.score() returned a non-numeric reward "
+  277                           f"{'<redacted>' if args.redact_gold else repr(result['reward'])}")
+  278 
+  279     evidence.update(measured=True, reward=reward,
+  280                     prediction=(structured if structured is not None else prediction[:2000]),
+  281                     correct=bool(result.get("correct", reward >= 1.0)),
+  282                     why=str(result.get("why") or ""),
+  283                     official=result.get("official"))
+  284     write_evidence(args.evidence_file, evidence)
+  285     write_reward(args.reward_file, reward)
+  286     print(f"reward {reward:g}: {evidence['why']}")
+  287     return 0 if reward >= 1.0 else 1
+  288 
+  289 
+  290 if __name__ == "__main__":
+  291     try:
+  292         raise SystemExit(main(sys.argv[1:]))
+  293     except SystemExit:
+  294         raise
+  295     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+  296         traceback.print_exc()
+  297         raise SystemExit(4)

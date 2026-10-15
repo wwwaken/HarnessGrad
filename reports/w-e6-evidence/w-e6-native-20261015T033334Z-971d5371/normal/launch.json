@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "strace",
+    "-f",
+    "-e",
+    "trace=process",
+    "-o",
+    "/tmp/hg-e6/reports/w-e6-evidence/w-e6-native-20261015T033334Z-971d5371/normal/syscalls.txt",
+    "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+    "/tmp/hg-e6/tests/fixtures/hg_we6/native_entry.py",
+    "--work",
+    "/tmp/w-e6-native-20261015T033334Z-971d5371-h4huptp_/normal",
+    "--mode",
+    "normal"
+  ],
+  "cwd": "/tmp/hg-e6",
+  "outer_timeout_s": 25,
+  "utc": "2026-10-15T03:33:34.979952+00:00"
+}

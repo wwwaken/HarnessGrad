@@ -171,3 +171,65 @@ Two consequences for how this file is used: read the `=== batch N rc=` line befo
 failures, and re-run every failure **on its own** before classifying it. `test_livecodebench_official_scorer.py`
 is in the same position - a single-file run does not finish in 60 s, so it needs a background run to
 triage rather than a foreground one.
+
+## Two more `reports/` paths the bulk deletion broke, and what the restore does and does not verify
+
+The sweep's last batch (`180`) died on a **collection error**, not a test failure, which is why it read
+as `rc=2` with no tests run:
+
+* `reports/w-chess3-control/` (2 files) is loaded by `test_chess3_diagnostic_actor.py`, which copies it
+  into a workdir. Removed by the bulk deletion; restored from `1825cd0e^`.
+* `reports/w-e6-evidence/` (829 files, 4.02 MB, largest 473,039 bytes) is pinned by
+  `test_w_e6fix_cleanup.py`, which reads `preflight/bindings.json` at import time. Restored whole from
+  `1825cd0e^` rather than as the single file the test reads, because the packet carries its own
+  `SHA256SUMS` and a one-file tree would be a receipt that cannot be checked at all.
+
+`python3 -m pytest -q tests/quality/test_w_e6fix_cleanup.py` -> **8 passed**, and
+`test_chess3_diagnostic_actor.py` no longer fails on the missing directory. The chess3 runs then reach a
+**different, real** failure (`KeyError: 'task_id'`) which is recorded below with the rest of that class.
+
+**The restored packet's `SHA256SUMS` does not verify completely, and the residue is not reconstructible
+from this restoration.** `sha256sum -c reports/w-e6-evidence/SHA256SUMS` reports 4 files that cannot be
+read and 2 digest mismatches:
+
+* absent and never tracked: `reports/w-e6-20261015T032920Z-72d6bfb0/samples.jsonl`,
+  `.../033109Z-e7153160/appworld/recordings-retained/cf6abd2_2/appworld/service.log` (and the `032920Z`
+  twin), and `reports/w-e6-lifecycle.md` - artifacts that lived only on disk;
+* digest mismatch: `tests/fixtures/hg_we6/audit_packet.py` and `tests/fixtures/hg_we6/source_audit.py`.
+  Both were **added after** the packet was written (`git show 1825cd0e^:<path>` -> *exists on disk but not
+  in that tree*), so the packet pins versions of two fixtures that have since evolved. The packet is a
+  historical record of the fixtures at collection time, not a claim that today's copies match; nothing is
+  edited to make the digests agree.
+
+## The `scorer_input.task_id` binding broke callers that build a record by hand
+
+`63606f42` ("Bind QA scorer inputs to selected task identities") made `QASpec.verifier()` read
+`record["task_id"]` and emit a `--task-id`/`--gold-sha256` pair plus a `scorer_input` binding. It updated
+the adapters and added its own guard test (156 passed at that commit), but callers that construct a
+minimal record - `verify_for({"gold": gold})` - were left behind, and they now raise
+`KeyError: 'task_id'` at `data/scaffolds/qa/base.py:340`. Measured in the main checkout, this is the single
+cause of:
+
+| file | result |
+| --- | --- |
+| `test_chess3_diagnostic_actor.py` | 2 failed |
+| `test_chessbench_selected_control.py` | 7 errors (fixture setup) |
+| `test_chessbench_stepwise_runner.py` | 15 errors (fixture setup) |
+| `test_chessbench_puzzles_strict_replay.py` | 1 failed |
+
+`test_spreadsheetbench_classification_w_spread2.py` is the same class with a different symptom - the test
+supplies an empty `task_id`, so `_verify` refuses with `scorer input does not belong to selected task`
+before the scorer runs. The binding is deliberate and its guard test
+(`tests/quality/test_task_bound_scorer_inputs_w_tbi.py`) is the authority, so the repair is to give these
+callers the selected identity rather than to relax the binding.
+
+A **second, independent** chessbench break is in that same guard test: `4556a9a5` ("native runtime:
+generalise the sealed closure to scienceworld and chessbench_puzzles") gave `chessbench_puzzles` a
+`native_runtime`, so `_verify(..., sandbox=False)` now short-circuits at
+`eval/verification/verifier.py:474-475` with `native runtime requires sandbox=True`. Four cases in
+`test_task_bound_scorer_inputs_w_tbi.py` fail with `IndexError: list index out of range` because the
+intercepted `subprocess.run` is never called, and 12 cases in
+`test_task_bound_native_inputs_w_tbi2.py` fail for the same reason. This is **not** a hole in the binding:
+the `task_id` check at `verifier.py:525-530` runs on the native route too, before the sealed runtime is
+admitted. The guard tests need to exercise the generic route (drop `native_runtime`) or the sandbox route,
+not to have the binding relaxed.
