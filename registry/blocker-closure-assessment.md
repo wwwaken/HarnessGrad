@@ -170,3 +170,27 @@ No blocker in this document can be closed by a source-only or metadata-only revi
 Every `SATISFIED` entry above names an artefact that exists; every `PRE-DIAGNOSTIC` entry is labelled as
 such rather than counted as closure; no measured score is asserted anywhere; and the four refusals are
 untouched.
+
+## Reverse audit — is every cleared dataset cleared for a recorded reason?
+
+A forward assessment of the 14 open blockers says nothing about the 14 datasets that currently carry
+none. If a blocker had ever been dropped without a disposition, the registry would show a dataset as
+clear for no recorded reason, which is a worse defect than an open blocker. The reverse audit compared
+the blocker set per dataset at `db32421c` (before the withdrawal wave) and at `1825cd0e^` (before the
+bulk `reports/`/`docs/` deletion) against `HEAD`:
+
+* `1825cd0e^` and `db32421c`: 28 datasets, **22** blockers. `HEAD`: 28 datasets, **14** blockers.
+  Eight blockers were removed and eight withdrawal entries exist in
+  `registry/withdrawn-requirements.md`, one per removal: `livecodebench/row-attestation`,
+  `twowikimultihopqa/hub-data-provenance`, `twowikimultihopqa/ujson-native-offline-closure`,
+  `bird_minidev/sql-coverage-reconciliation`, `ds1000/host-slice-archive-review`,
+  `gaia/frozen-lifecycle-receipt`, `tau_bench/local-state-lifecycle` and
+  `chessbench_puzzles/interruption-closure`.
+* A mechanical check found **zero** removals not explained by either a withdrawal entry or the
+  separately recorded `twowikimultihopqa/recovery-comparability` review closure.
+* The remaining seven cleared datasets - `agentdojo`, `alfworld`, `gsm8k`, `jericho`, `musique`,
+  `scienceworld`, `terminal_bench` - carried no blocker at either baseline, so their clearance predates
+  this phase's registry and is not a result of anything removed here.
+
+Conclusion: no dataset is currently clear because a blocker was silently dropped. The 14 open blockers
+above are the complete outstanding set, and `22 - 8 = 14` accounts for every removal.
