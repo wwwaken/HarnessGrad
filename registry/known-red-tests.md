@@ -656,7 +656,7 @@ The five reds, all previously recorded and none new:
 | --- | --- | --- |
 | `test_appworld_official_scorer.py` | 2 failed, 12 passed (1538.6 s) | the long-standing `test_platform_control_arms` admission conflict, filed above |
 | `test_chessbench_stepwise_runner.py` | 2 failed, 16 passed (28.8 s) | **concurrency-sensitive, cause UNKNOWN**: 18 passed when re-run alone, and 18 passed again under 24 `while True: pass` CPU loops, so "load-induced" was a guess and is withdrawn. Both are socket-deadline tests (`test_reconnect_cannot_reset_session_allowance` with `timeout_s=1`, `test_trickled_partial_frame_cannot_extend_absolute_socket_deadline` with `timeout_s=0.2`) and both failed in the two sweeps that ran beside the operator's 40-job AgentDojo pass, so sub-second deadlines meeting I/O and scheduler contention is the leading hypothesis - **not established**, and not a licence to retune either deadline to make it pass |
-| `test_external_provenance_b5.py` | 5 failed, 1 passed | bodies unrestored at sweep time (71 then); the replay wrote to `tests/fixtures/` while a sweep read it. Now 32, of which 27 are unrecoverable - see "The B5 packet's residue is not a rate limit" |
+| `test_external_provenance_b5.py` | **2 failed, 4 passed** (was 5/1 when the sweep ran) | the replay finished: 206 of 234 pinned bodies present, 28 absent of which 27 are unrecoverable as recorded (23 pin a shared 279-byte rate-limit page, 3 are live dynamic endpoints, 1 is an upstream 404). The 2 survivors cannot clear by fetching - see "The B5 packet's residue is not a rate limit" |
 | `test_isolation.py` | 1 failed, 15 passed (184.2 s) | known pre-existing |
 | `test_we5_equivalence.py` | 1 failed, 22 passed | the preserved packet that exists nowhere; enumerated limit |
 
@@ -710,6 +710,22 @@ checks digests alone sees nothing wrong. Replay now returns 200 with the real bl
 `local_inference-minicpm` 1,463 bytes) and the replay correctly **refuses to overwrite** `recorded_sha256`
 rather than laundering a new body into an old pin. They can only be restored by *re-pinning*, which
 changes the evidence rather than restoring it - a decision, not a retry.
+
+**The measured test result, after the replay settled: `test_external_provenance_b5.py` is 2 failed,
+4 passed** (it was 5 failed, 1 passed). The four now-passing tests are the ones the restored bodies unblock
+- `test_bfcl_tag_signed_commit_and_all_original_git_trees` in particular needed `bfcl-tag`,
+`bfcl-release`, `bfcl-root-tree` and `bfcl-tree`, all four of which the second pass restored, with
+`bfcl-tree` verified at 161,306 bytes against its pin. **The two remaining failures are exactly the two
+classes that cannot clear by fetching**, and they are worth naming because they are the whole residue now:
+
+| failing test | why it cannot clear |
+| --- | --- |
+| `test_inventory_and_every_raw_response_are_intact` | walks every `SHA256SUMS` entry and reads it; the 28 absent bodies include the 23 error-pinned `local_inference-*` blobs, whose pins are a rate-limit page rather than the artifact |
+| `test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution` | needs `responses/triviaqa-conversion-discussion.body`, a served discussion page that returned 200 with different bytes on every fetch |
+
+So "the restoration is running" is not just retired as a status - it is now **finished**, and the test file
+landed at a stable 2-failure floor that only a re-pin decision (for the 23) or an abandonment decision (for
+the served page) can move. That is the operator's call, not a retry.
 
 **The restoration is not durable, and that is a separate defect from the missing bytes.** 47 of the 206
 bodies now present on disk are **untracked and gitignored**: `.gitignore:365` ignores
