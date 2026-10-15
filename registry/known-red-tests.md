@@ -815,3 +815,35 @@ in retained evidence**, which is a different and quieter thing. The standalone p
 (`hg_wprov/verify.py:14-19`, `upstream_provenance_e2/verify.py:54-67`, `hg_bfcl/verify.py:39-43`,
 `hg_trivia/verify.py:51-56`, `e3_bfcl_source/verify.py:26`) would raise on the mismatches or the absences
 if run, and were not run.
+
+## A phantom failure class: `test_services.py` names Docker networks after the task, not the run
+
+Measured 2026-10-16 while verifying the A2 endpoint merge. Running `test_services.py` produced one red:
+
+```
+FAILED tests/quality/test_services.py::test_synthetic_model_gateway_backend_still_isolates_the_internet
+eval.service.services.ServiceUnavailable: could not create the internal network for task 'g01':
+  Error response from daemon: network with name hg-gl-g01 already exists
+```
+
+The test was **not** broken and the merge did not cause it. `hg-gl-g01` existed because an **earlier run of
+mine had been SIGTERMed at the tool's 60 s cap while this file was mid-test**, and the network name is
+`hg-gl-<task_id>` - a fixed name for a fixed task, not run-scoped. So the same file has two properties that
+produce phantom reds:
+
+* **A killed run leaks the network.** This is the documented `finally`-does-not-run-on-SIGTERM behaviour,
+  the same shape as the leaked `hg-task-*` trees in `AGENTS.md`. The remedy is the same: let the file
+  finish, and reap what a killed run left.
+* **Two concurrent runs of this file collide**, because both try to create the identical network name for
+  the identical task. It is not safe to run `test_services.py` twice at once - from two worktrees, or
+  beside a worker doing the same - and the failure looks like a service defect rather than a name collision.
+
+**The evidence that it is environmental and not a regression:** `docker network inspect hg-gl-g01` listed
+**no attached containers** (an empty leaked network), and after removing it and running the file to
+completion in the background it was **45 passed in 63.94 s, rc=0, with no `hg-*` network left behind**. The
+file cleans up correctly when it is allowed to finish.
+
+**How to read this when it appears:** check `docker network ls | grep '^hg-'` and
+`docker network inspect <name>` *before* believing the failure, and never run this file in the foreground
+under a short timeout during a parallel sweep. A red here that names `already exists` is a leftover, not a
+defect. This belongs with the file's other "do not mistake these for regressions" entries.

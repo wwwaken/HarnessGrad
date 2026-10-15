@@ -128,6 +128,37 @@ frozen task tree's bytes are unchanged and scratch is empty afterwards.
 
 `tests/quality/test_services.py` alone: **45 passed in 70.95s** (parent run).
 
+**A2 also had a live defect left over, found in goal round 6.** `tools/check_local_model.py` was still
+defaulting `--base-url` to `http://127.0.0.1:8001/v1` - a port released on 2026-10-14 - while
+`eval/policy/diagnostic_policy.py:29` admits only 8002, so the tool's out-of-the-box target was dead. Fixed
+by `w-endpointfix` (parent-merged `ad6df083`) by naming the constant (`DEFAULT_BASE_URL`, `:34`, used at
+`:49`). The regression test asserts the **invariant** rather than the string, so moving the endpoint again
+fails the test rather than the tool:
+
+```python
+def test_local_model_check_default_is_admitted_by_platform_policy():
+    assert DEFAULT_BASE_URL in ENDPOINTS      # eval.policy.diagnostic_policy
+```
+
+Fail-before, with the constant present but set to the old value:
+
+```
+E       AssertionError: assert 'http://127.0.0.1:8001/v1' in ('http://127.0.0.1:8002/v1',)
+FAILED tests/quality/test_local_model_endpoints.py::test_local_model_check_default_is_admitted_by_platform_policy
+1 failed in 0.42s
+```
+
+pass-after: `1 passed in 0.62s`. `grep` confirms no `8001` default remains in `tools/` or `eval/`. Three
+things that look like the same drift were deliberately **not** changed, and the reasons matter:
+`eval/diagnostic_receipt.schema.json:112-117` keeps `8001` in its `endpoint` **enum** because frozen
+receipts record that value and removing it would stop them validating - a custody change, not a tidy-up;
+`eval/service/modelgate.py:6-10`, `:124` name `container -> 127.0.0.1:8001` as a **measured failing
+container route**, which is why the gateway exists; and `test_services.py:732-746` uses 8001 as an
+arbitrary local address to test gateway *mapping*, where the port is the point. The new note
+`docs/local-model-endpoints.md` is allowlisted in `.gitignore` (`!/docs/local-model-endpoints.md`) so it is
+actually tracked - the durability rule this phase learned when 47 restored B5 bodies turned out to be
+gitignored.
+
 ## Range D — the evidence landing
 
 | item | landed where | status |
