@@ -1,0 +1,880 @@
+w-bfclattest validation transcript
+Workspace: /mnt/20t/xubuqiang/hg-wt/w-bfclattest
+Branch observed by git branch --show-current: wg-w-bfclattest
+Prerequisite source object: 736afcacdc125457ed77422047f990a4ada359d1
+No commit from another branch was merged, rebased or cherry-picked. The missing prerequisite evidence was restored by reading exact git-show objects; tests/fixtures/hg_bfclattest/prerequisite.jsonl records each exact argv, digest and byte count. These are inherited observations, not worker executions. All 143 restored paths are reviewed against that object; only the canonical custody document and two gap shards are enriched.
+
+Evidence-producing commands and exact observed output:
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/collect.py http
+{"exact_subject_bindings": 42, "requests": 190, "statuses": {"asc:404": 95, "pep740:200": 43, "pep740:404": 52}}
+Exit status: 0
+Per-request exact curl argv/status/stdout/stderr, response/header hashes/sizes and raw paths: tests/fixtures/hg_bfclattest/http.jsonl:1 through :190.
+
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/collect.py archives
+{"archives_verified": 95, "embedded_candidate_count": 10, "members_verified": 7458}
+Exit status: 0
+Ran once to verify all existing member bytes, and again to retain the seven embedded SBOMs. Both executions produced the exact output above. No archive was reacquired.
+
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/collect.py system
+{"candidate_files": 9, "found": 9, "system_names": 9}
+Exit status: 0
+Final system records include the exact ldconfig/readelf/dpkg argv, stdout/stderr/status and retained ELF bytes. Earlier collector iteration used an overly strict literal ABI tuple and reported exactly {"candidate_files": 4, "found": 4, "system_names": 9}; it was corrected to accept additional ABI qualifiers. A subsequent notice-owner parser split multiarch package names correctly. Final evidence is tests/fixtures/hg_bfclattest/system.jsonl:1 through :9; no actual loader choice is claimed.
+
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/publisher.py
+{"requests": 6, "statuses": [200, 200, 200, 200, 200, 200], "version_tag_licenses_found": 2}
+Exit status: 0
+Exact API curl commands/responses and decoded licence/blob identities: tests/fixtures/hg_bfclattest/publisher.jsonl:1 through :6. An earlier raw.githubusercontent.com attempt failed with curl exit 35; the producer GitHub contents API at the observed commit was used successfully. That was a transport failure, not licence absence.
+
+$ curl --silent --show-error --location --max-time 20 --output /mnt/20t/xubuqiang/hg-work/bfclattest/raw-connect-test.txt --write-out '%{http_code}' https://raw.githubusercontent.com/huggingface/tokenizers/v0.23.3/LICENSE
+curl: (35) Recv failure: 连接被对方重置
+000
+Exit status: 35
+No response body was received or inferred from this failed transport.
+
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/signatures.py
+{"dsse_signatures_checked": 43, "trusted_sigstore_verifications": 0, "verified_with_supplied_leaf": 43}
+Exit status: 0
+Exact openssl argv/stdout/stderr/status and decoded certificate/statement/signature/PAE bytes: tests/fixtures/hg_bfclattest/signatures.jsonl:1 through :43. Supplied-leaf signature validity is the verification boundary; Fulcio/Rekor/publisher-policy trust is UNKNOWN.
+
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/supplement.py
+{"common_texts_found": 8, "referenced_common_license_paths": 8, "sbom_component_declarations": 550}
+Exit status: 0
+Earlier regex extraction retained terminal sentence periods in two candidate paths; punctuation was removed and only copyright-source references were used for final enumeration. No false absence was retained.
+
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclattest/update.py
+{"actual_loader_and_dlopen": "UNKNOWN", "archive_publication": {"ABSENT": 52, "FOUND": 42, "UNKNOWN": 1}, "compiled_build_unknown": 87, "linked_edges": 170, "linked_static_supplies": {"retained wheel member": 5, "system": 165}, "native_license_scopes": {"FOUND": 87}, "native_members": 87, "production_authorized": false}
+Exit status: 0
+Canonical entries changed: runtime-gaps-001 rows 1-10 gain only the public-record field relative to prerequisite; rows 11-996 preserved. runtime-gaps-003 compiled-build rows 1-87 enriched but remain UNKNOWN; static-system candidate rows 88-90 become FOUND with loader UNKNOWN; rows 91-93 preserved. runtime-gaps-002 unchanged. All new per-target tables are inside registry/w-bfclrt-custody.md.
+
+Earlier validation-helper failures were implementation errors, not data dispositions: git show was first passed an absolute object path (exit 128); after correcting to repository-relative paths, the validator correctly rejected a cited validation file that had not yet been created. This file is created before the final validation below.
+
+What was NOT verified:
+- Complete compiled-build manifests for all 87 ELF members; publish/v1 null predicates and SBOM declarations do not establish them.
+- Exact build CPython patch/SOABI, source checkout, compiler/flags and every linked/static build input.
+- Fulcio certificate chain/root trust, Rekor signed checkpoint/inclusion trust, expected publisher policy or trusted Sigstore verification.
+- Per-parent actual loader resolution, RPATH precedence, namespaces, symbol interposition or runtime dlopen branch/name completeness. System files are static supply evidence.
+- Complete Rust/native component licence/NOTICE/source-offer coverage. SBOM licence expressions are not complete retained licence texts.
+- Compiler-level binding of producer version tags to tokenizers/OpenSSL compiled inputs. Version-tag text is external producer evidence; tokenizers has no packaged licence text in the enumerated wheel.
+- The strict websockets filename mismatch; the observed digest is equal but subject filename orders wheel tags differently.
+- Unenumerated producer CI/release/signing endpoints, alternate builds, optional wandb, older installed-object build attestations in runtime-gaps-002, or other users/environments.
+- BFCL technical source gate, local model alias/config binding, expression containment, full-call differential, scorer execution, dataset execution, selected-reference/schema integration or production authorization.
+No GPU/model/server/API credits or paid endpoint were used. No frozen receipt/run ID, main checkout, AGENTS.md, registry/dataset-blockers.json, registry/withdrawn-requirements.md or journal was modified.
+
+The blocker checker is unaffected by runtime evidence-only changes; registry status remains external/open. Exact final checks follow.
+
+$ python3 -B tests/fixtures/hg_bfclattest/validate.py
+{"all_committed_files_under_1MB": true, "canonical_citations_checked": 681, "compiled_build_unknown": 87, "complete_compiled_builds_found": 0, "dsse_leaf_signatures": 43, "exact_publication_subjects": 42, "filename_mismatch": 1, "http_records_verified": 190, "linked_static_edges": 170, "prerequisite_unchanged_paths": 140, "protected_paths_unchanged": 4, "publish_404": 52, "valid": true}
+Exit status: 0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+Exit status: 0
+
+$ git diff --cached --check -- registry/w-bfclrt-custody.md registry/proposals/w-bfclattest.json tests/fixtures/hg_bfclattest/collect.py tests/fixtures/hg_bfclattest/publisher.py tests/fixtures/hg_bfclattest/signatures.py tests/fixtures/hg_bfclattest/supplement.py tests/fixtures/hg_bfclattest/update.py tests/fixtures/hg_bfclattest/validate.py
+Exit status: 0
+(no stdout/stderr)
+
+$ git diff --cached --name-only -- AGENTS.md registry/dataset-blockers.json registry/withdrawn-requirements.md docs/adapter-integration-journal.md
+Exit status: 0
+(no stdout/stderr)
+
+Inherited validator command and exact observed output:
+$ TMPDIR=/tmp/bfclattest-tmp python3 -B tests/fixtures/hg_bfclrt/w_bfclmem_validate.py
+{"active_edges": 155, "archive_members": 7458, "archives": 95, "dependency_edges": 676, "exact_grammar_loaded_hashes": true, "native_members": 87, "source_edges": 41454, "source_modules": 6226, "temporary_directories_remaining": 0, "unchanged_prior_gap_rows": 985, "valid": true}
+Exit status: 0
+
+Cleanup: removed only task-owned /tmp/bfclattest-tmp (empty, by rmdir) and duplicate task-owned scratch/input Git export (shutil.rmtree). Retained system ELF/readelf evidence remains under /mnt/20t/xubuqiang/hg-work/bfclattest/system/. Exact observed cleanup output:
+{"duplicate_git_export_removed": true, "persistent_scratch_bytes": 6245845, "task_tmp_removed": true}
+No pytest was needed: these are evidence-only changes, verified by the focused integrity/citation/preservation validators. No model or scorer code was executed.
+
+File inventory: tests/fixtures/hg_bfclattest/files.jsonl contains observed SHA-256 and byte count for every committed file except itself and this transcript (self-reference excluded). Exact staged paths are this inventory plus those two files. Every file is strictly smaller than 1,000,000 bytes.
+
+File sizes of everything committed (bytes TAB exact path):
+2385	registry/proposals/w-bfclattest.json
+62787	registry/w-bfclattest-validation.txt
+16418	registry/w-bfclmem-handler.md
+137171	registry/w-bfclmem-validation.txt
+249503	registry/w-bfclrt-custody.md
+57304	tests/fixtures/hg_bfclattest/archives.jsonl
+10743	tests/fixtures/hg_bfclattest/collect.py
+5219	tests/fixtures/hg_bfclattest/common-licenses.jsonl
+20594	tests/fixtures/hg_bfclattest/embedded/0c8885a9d45f3c9280aeb1e06701077036748b22bd6e3a4201fe09e6b73f99b5.json
+121146	tests/fixtures/hg_bfclattest/embedded/1e69267af86e10347fd92ae0647dcd176590a9833bf2497197406e200a9364e8.json
+43425	tests/fixtures/hg_bfclattest/embedded/5d6e0e6c24646a3dc40ebe40aee1ed046939385a73ff1073a1fb8913a27ca0cd.json
+151305	tests/fixtures/hg_bfclattest/embedded/6faa23324b2b53b4a8da9b451a675610cc45e1a23e8c5bb0740c080064e1ba0d.json
+45685	tests/fixtures/hg_bfclattest/embedded/8fa299053f3da6ff2c5b85ce2b34bfc2870e2ea17c5a8629dea5b8285cd1d654.json
+1206	tests/fixtures/hg_bfclattest/embedded/90a9c8d03d95672422f4e7c611fb6d35d1a7c5fed98d032d9dc57d8965e239e6.json
+282478	tests/fixtures/hg_bfclattest/embedded/cb60fc609397473419653fb56eb8c3fff0d722a3775f3ac2079e40ec550ab2e4.json
+132022	tests/fixtures/hg_bfclattest/files.jsonl
+297831	tests/fixtures/hg_bfclattest/http.jsonl
+694	tests/fixtures/hg_bfclattest/http/aiohappyeyeballs-2.7.1-asc.headers
+410	tests/fixtures/hg_bfclattest/http/aiohappyeyeballs-2.7.1-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/aiohappyeyeballs-2.7.1-pep740.headers
+9695	tests/fixtures/hg_bfclattest/http/aiohappyeyeballs-2.7.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/aiohttp-3.14.5-asc.headers
+466	tests/fixtures/hg_bfclattest/http/aiohttp-3.14.5-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/aiohttp-3.14.5-pep740.headers
+9853	tests/fixtures/hg_bfclattest/http/aiohttp-3.14.5-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/aiosignal-1.4.0-asc.headers
+403	tests/fixtures/hg_bfclattest/http/aiosignal-1.4.0-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/aiosignal-1.4.0-pep740.headers
+9290	tests/fixtures/hg_bfclattest/http/aiosignal-1.4.0-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/annotated-doc-0.0.5-asc.headers
+387	tests/fixtures/hg_bfclattest/http/annotated-doc-0.0.5-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/annotated-doc-0.0.5-pep740.headers
+78	tests/fixtures/hg_bfclattest/http/annotated-doc-0.0.5-pep740.raw
+671	tests/fixtures/hg_bfclattest/http/annotated-types-0.8.0-asc.headers
+389	tests/fixtures/hg_bfclattest/http/annotated-types-0.8.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/annotated-types-0.8.0-pep740.headers
+80	tests/fixtures/hg_bfclattest/http/annotated-types-0.8.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/anthropic-0.53.0-asc.headers
+404	tests/fixtures/hg_bfclattest/http/anthropic-0.53.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/anthropic-0.53.0-pep740.headers
+75	tests/fixtures/hg_bfclattest/http/anthropic-0.53.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/anyio-4.15.1-asc.headers
+380	tests/fixtures/hg_bfclattest/http/anyio-4.15.1-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/anyio-4.15.1-pep740.headers
+9828	tests/fixtures/hg_bfclattest/http/anyio-4.15.1-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/argcomplete-3.7.2-asc.headers
+385	tests/fixtures/hg_bfclattest/http/argcomplete-3.7.2-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/argcomplete-3.7.2-pep740.headers
+9775	tests/fixtures/hg_bfclattest/http/argcomplete-3.7.2-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/attrs-26.1.0-asc.headers
+380	tests/fixtures/hg_bfclattest/http/attrs-26.1.0-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/attrs-26.1.0-pep740.headers
+9676	tests/fixtures/hg_bfclattest/http/attrs-26.1.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/black-26.10.1-asc.headers
+465	tests/fixtures/hg_bfclattest/http/black-26.10.1-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/black-26.10.1-pep740.headers
+9584	tests/fixtures/hg_bfclattest/http/black-26.10.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/certifi-2026.7.22-asc.headers
+405	tests/fixtures/hg_bfclattest/http/certifi-2026.7.22-asc.raw
+2748	tests/fixtures/hg_bfclattest/http/certifi-2026.7.22-pep740.headers
+10113	tests/fixtures/hg_bfclattest/http/certifi-2026.7.22-pep740.raw
+672	tests/fixtures/hg_bfclattest/http/cffi-2.1.1-asc.headers
+420	tests/fixtures/hg_bfclattest/http/cffi-2.1.1-asc.raw
+2440	tests/fixtures/hg_bfclattest/http/cffi-2.1.1-pep740.headers
+111	tests/fixtures/hg_bfclattest/http/cffi-2.1.1-pep740.raw
+692	tests/fixtures/hg_bfclattest/http/charset-normalizer-3.5.2-asc.headers
+476	tests/fixtures/hg_bfclattest/http/charset-normalizer-3.5.2-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/charset-normalizer-3.5.2-pep740.headers
+9705	tests/fixtures/hg_bfclattest/http/charset-normalizer-3.5.2-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/click-8.5.0-asc.headers
+379	tests/fixtures/hg_bfclattest/http/click-8.5.0-asc.raw
+2746	tests/fixtures/hg_bfclattest/http/click-8.5.0-pep740.headers
+9566	tests/fixtures/hg_bfclattest/http/click-8.5.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/cohere-5.13.3-asc.headers
+401	tests/fixtures/hg_bfclattest/http/cohere-5.13.3-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/cohere-5.13.3-pep740.headers
+72	tests/fixtures/hg_bfclattest/http/cohere-5.13.3-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/cryptography-50.0.2-asc.headers
+407	tests/fixtures/hg_bfclattest/http/cryptography-50.0.2-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/cryptography-50.0.2-pep740.headers
+9647	tests/fixtures/hg_bfclattest/http/cryptography-50.0.2-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/dashscope-1.27.7-asc.headers
+384	tests/fixtures/hg_bfclattest/http/dashscope-1.27.7-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/dashscope-1.27.7-pep740.headers
+75	tests/fixtures/hg_bfclattest/http/dashscope-1.27.7-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/datamodel-code-generator-0.25.7-asc.headers
+419	tests/fixtures/hg_bfclattest/http/datamodel-code-generator-0.25.7-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/datamodel-code-generator-0.25.7-pep740.headers
+90	tests/fixtures/hg_bfclattest/http/datamodel-code-generator-0.25.7-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/distro-1.9.0-asc.headers
+400	tests/fixtures/hg_bfclattest/http/distro-1.9.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/distro-1.9.0-pep740.headers
+71	tests/fixtures/hg_bfclattest/http/distro-1.9.0-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/dnspython-2.9.0-asc.headers
+383	tests/fixtures/hg_bfclattest/http/dnspython-2.9.0-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/dnspython-2.9.0-pep740.headers
+9737	tests/fixtures/hg_bfclattest/http/dnspython-2.9.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/email-validator-2.3.0-asc.headers
+409	tests/fixtures/hg_bfclattest/http/email-validator-2.3.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/email-validator-2.3.0-pep740.headers
+80	tests/fixtures/hg_bfclattest/http/email-validator-2.3.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/eval-type-backport-0.4.0-asc.headers
+392	tests/fixtures/hg_bfclattest/http/eval-type-backport-0.4.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/eval-type-backport-0.4.0-pep740.headers
+83	tests/fixtures/hg_bfclattest/http/eval-type-backport-0.4.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/fastavro-1.13.1-asc.headers
+467	tests/fixtures/hg_bfclattest/http/fastavro-1.13.1-asc.raw
+2440	tests/fixtures/hg_bfclattest/http/fastavro-1.13.1-pep740.headers
+138	tests/fixtures/hg_bfclattest/http/fastavro-1.13.1-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/filelock-4.2.0-asc.headers
+382	tests/fixtures/hg_bfclattest/http/filelock-4.2.0-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/filelock-4.2.0-pep740.headers
+9921	tests/fixtures/hg_bfclattest/http/filelock-4.2.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/frozenlist-1.8.0-asc.headers
+444	tests/fixtures/hg_bfclattest/http/frozenlist-1.8.0-asc.raw
+2744	tests/fixtures/hg_bfclattest/http/frozenlist-1.8.0-pep740.headers
+9458	tests/fixtures/hg_bfclattest/http/frozenlist-1.8.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/fsspec-2026.9.0-asc.headers
+403	tests/fixtures/hg_bfclattest/http/fsspec-2026.9.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/fsspec-2026.9.0-pep740.headers
+74	tests/fixtures/hg_bfclattest/http/fsspec-2026.9.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/genson-1.4.0-asc.headers
+400	tests/fixtures/hg_bfclattest/http/genson-1.4.0-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/genson-1.4.0-pep740.headers
+9564	tests/fixtures/hg_bfclattest/http/genson-1.4.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/google-auth-2.62.0-asc.headers
+406	tests/fixtures/hg_bfclattest/http/google-auth-2.62.0-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/google-auth-2.62.0-pep740.headers
+6138	tests/fixtures/hg_bfclattest/http/google-auth-2.62.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/google-genai-1.24.0-asc.headers
+407	tests/fixtures/hg_bfclattest/http/google-genai-1.24.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/google-genai-1.24.0-pep740.headers
+78	tests/fixtures/hg_bfclattest/http/google-genai-1.24.0-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/h11-0.16.0-asc.headers
+378	tests/fixtures/hg_bfclattest/http/h11-0.16.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/h11-0.16.0-pep740.headers
+69	tests/fixtures/hg_bfclattest/http/h11-0.16.0-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/hf-xet-1.7.0-asc.headers
+420	tests/fixtures/hg_bfclattest/http/hf-xet-1.7.0-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/hf-xet-1.7.0-pep740.headers
+9933	tests/fixtures/hg_bfclattest/http/hf-xet-1.7.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/httpcore-1.0.9-asc.headers
+382	tests/fixtures/hg_bfclattest/http/httpcore-1.0.9-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/httpcore-1.0.9-pep740.headers
+73	tests/fixtures/hg_bfclattest/http/httpcore-1.0.9-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/httpcore2-2.13.1-asc.headers
+404	tests/fixtures/hg_bfclattest/http/httpcore2-2.13.1-asc.raw
+2403	tests/fixtures/hg_bfclattest/http/httpcore2-2.13.1-pep740.headers
+75	tests/fixtures/hg_bfclattest/http/httpcore2-2.13.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/httpx-0.28.1-asc.headers
+400	tests/fixtures/hg_bfclattest/http/httpx-0.28.1-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/httpx-0.28.1-pep740.headers
+71	tests/fixtures/hg_bfclattest/http/httpx-0.28.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/httpx-sse-0.4.0-asc.headers
+403	tests/fixtures/hg_bfclattest/http/httpx-sse-0.4.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/httpx-sse-0.4.0-pep740.headers
+74	tests/fixtures/hg_bfclattest/http/httpx-sse-0.4.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/httpx2-2.13.1-asc.headers
+401	tests/fixtures/hg_bfclattest/http/httpx2-2.13.1-asc.raw
+2406	tests/fixtures/hg_bfclattest/http/httpx2-2.13.1-pep740.headers
+72	tests/fixtures/hg_bfclattest/http/httpx2-2.13.1-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/huggingface-hub-2.2.0-asc.headers
+389	tests/fixtures/hg_bfclattest/http/huggingface-hub-2.2.0-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/huggingface-hub-2.2.0-pep740.headers
+9591	tests/fixtures/hg_bfclattest/http/huggingface-hub-2.2.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/idna-3.20-asc.headers
+397	tests/fixtures/hg_bfclattest/http/idna-3.20-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/idna-3.20-pep740.headers
+9133	tests/fixtures/hg_bfclattest/http/idna-3.20-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/inflect-5.6.2-asc.headers
+401	tests/fixtures/hg_bfclattest/http/inflect-5.6.2-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/inflect-5.6.2-pep740.headers
+72	tests/fixtures/hg_bfclattest/http/inflect-5.6.2-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/isort-5.13.2-asc.headers
+380	tests/fixtures/hg_bfclattest/http/isort-5.13.2-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/isort-5.13.2-pep740.headers
+71	tests/fixtures/hg_bfclattest/http/isort-5.13.2-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/jinja2-3.1.6-asc.headers
+400	tests/fixtures/hg_bfclattest/http/jinja2-3.1.6-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/jinja2-3.1.6-pep740.headers
+9055	tests/fixtures/hg_bfclattest/http/jinja2-3.1.6-pep740.raw
+672	tests/fixtures/hg_bfclattest/http/jiter-0.17.0-asc.headers
+422	tests/fixtures/hg_bfclattest/http/jiter-0.17.0-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/jiter-0.17.0-pep740.headers
+9523	tests/fixtures/hg_bfclattest/http/jiter-0.17.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/json5-0.17.3-asc.headers
+380	tests/fixtures/hg_bfclattest/http/json5-0.17.3-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/json5-0.17.3-pep740.headers
+71	tests/fixtures/hg_bfclattest/http/json5-0.17.3-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/jsonlines-4.0.0-asc.headers
+383	tests/fixtures/hg_bfclattest/http/jsonlines-4.0.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/jsonlines-4.0.0-pep740.headers
+74	tests/fixtures/hg_bfclattest/http/jsonlines-4.0.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/jsonschema-4.26.0-asc.headers
+385	tests/fixtures/hg_bfclattest/http/jsonschema-4.26.0-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/jsonschema-4.26.0-pep740.headers
+9531	tests/fixtures/hg_bfclattest/http/jsonschema-4.26.0-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/jsonschema-specifications-2025.9.1-asc.headers
+422	tests/fixtures/hg_bfclattest/http/jsonschema-specifications-2025.9.1-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/jsonschema-specifications-2025.9.1-pep740.headers
+9964	tests/fixtures/hg_bfclattest/http/jsonschema-specifications-2025.9.1-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/markdown-it-py-4.2.0-asc.headers
+408	tests/fixtures/hg_bfclattest/http/markdown-it-py-4.2.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/markdown-it-py-4.2.0-pep740.headers
+79	tests/fixtures/hg_bfclattest/http/markdown-it-py-4.2.0-pep740.raw
+692	tests/fixtures/hg_bfclattest/http/markupsafe-3.0.4-asc.headers
+468	tests/fixtures/hg_bfclattest/http/markupsafe-3.0.4-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/markupsafe-3.0.4-pep740.headers
+9924	tests/fixtures/hg_bfclattest/http/markupsafe-3.0.4-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/mdurl-0.1.2-asc.headers
+399	tests/fixtures/hg_bfclattest/http/mdurl-0.1.2-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/mdurl-0.1.2-pep740.headers
+70	tests/fixtures/hg_bfclattest/http/mdurl-0.1.2-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/mistralai-1.7.0-asc.headers
+403	tests/fixtures/hg_bfclattest/http/mistralai-1.7.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/mistralai-1.7.0-pep740.headers
+74	tests/fixtures/hg_bfclattest/http/mistralai-1.7.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/multidict-7.1.0-asc.headers
+447	tests/fixtures/hg_bfclattest/http/multidict-7.1.0-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/multidict-7.1.0-pep740.headers
+9609	tests/fixtures/hg_bfclattest/http/multidict-7.1.0-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/mypy-extensions-1.1.0-asc.headers
+389	tests/fixtures/hg_bfclattest/http/mypy-extensions-1.1.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/mypy-extensions-1.1.0-pep740.headers
+80	tests/fixtures/hg_bfclattest/http/mypy-extensions-1.1.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/numpy-1.26.4-asc.headers
+442	tests/fixtures/hg_bfclattest/http/numpy-1.26.4-asc.raw
+2440	tests/fixtures/hg_bfclattest/http/numpy-1.26.4-pep740.headers
+113	tests/fixtures/hg_bfclattest/http/numpy-1.26.4-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/openai-3.31.0-asc.headers
+401	tests/fixtures/hg_bfclattest/http/openai-3.31.0-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/openai-3.31.0-pep740.headers
+9701	tests/fixtures/hg_bfclattest/http/openai-3.31.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/packaging-26.3-asc.headers
+402	tests/fixtures/hg_bfclattest/http/packaging-26.3-asc.raw
+2717	tests/fixtures/hg_bfclattest/http/packaging-26.3-pep740.headers
+9443	tests/fixtures/hg_bfclattest/http/packaging-26.3-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/parameterized-0.9.0-asc.headers
+391	tests/fixtures/hg_bfclattest/http/parameterized-0.9.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/parameterized-0.9.0-pep740.headers
+82	tests/fixtures/hg_bfclattest/http/parameterized-0.9.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/pathspec-1.1.1-asc.headers
+382	tests/fixtures/hg_bfclattest/http/pathspec-1.1.1-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/pathspec-1.1.1-pep740.headers
+9885	tests/fixtures/hg_bfclattest/http/pathspec-1.1.1-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/platformdirs-4.13.0-asc.headers
+407	tests/fixtures/hg_bfclattest/http/platformdirs-4.13.0-asc.raw
+2720	tests/fixtures/hg_bfclattest/http/platformdirs-4.13.0-pep740.headers
+9869	tests/fixtures/hg_bfclattest/http/platformdirs-4.13.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/propcache-0.5.4-asc.headers
+447	tests/fixtures/hg_bfclattest/http/propcache-0.5.4-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/propcache-0.5.4-pep740.headers
+9588	tests/fixtures/hg_bfclattest/http/propcache-0.5.4-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/pyasn1-0.6.4-asc.headers
+400	tests/fixtures/hg_bfclattest/http/pyasn1-0.6.4-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/pyasn1-0.6.4-pep740.headers
+71	tests/fixtures/hg_bfclattest/http/pyasn1-0.6.4-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/pyasn1-modules-0.4.2-asc.headers
+408	tests/fixtures/hg_bfclattest/http/pyasn1-modules-0.4.2-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/pyasn1-modules-0.4.2-pep740.headers
+79	tests/fixtures/hg_bfclattest/http/pyasn1-modules-0.4.2-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/pycparser-3.11-asc.headers
+382	tests/fixtures/hg_bfclattest/http/pycparser-3.11-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/pycparser-3.11-pep740.headers
+73	tests/fixtures/hg_bfclattest/http/pycparser-3.11-pep740.raw
+692	tests/fixtures/hg_bfclattest/http/pydantic-2.14.1-asc.headers
+403	tests/fixtures/hg_bfclattest/http/pydantic-2.14.1-asc.raw
+2718	tests/fixtures/hg_bfclattest/http/pydantic-2.14.1-pep740.headers
+9798	tests/fixtures/hg_bfclattest/http/pydantic-2.14.1-pep740.raw
+692	tests/fixtures/hg_bfclattest/http/pydantic-core-2.50.1-asc.headers
+450	tests/fixtures/hg_bfclattest/http/pydantic-core-2.50.1-asc.raw
+2441	tests/fixtures/hg_bfclattest/http/pydantic-core-2.50.1-pep740.headers
+121	tests/fixtures/hg_bfclattest/http/pydantic-core-2.50.1-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/pygments-2.21.0-asc.headers
+383	tests/fixtures/hg_bfclattest/http/pygments-2.21.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/pygments-2.21.0-pep740.headers
+74	tests/fixtures/hg_bfclattest/http/pygments-2.21.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/python-dateutil-2.9.0.post0-asc.headers
+399	tests/fixtures/hg_bfclattest/http/python-dateutil-2.9.0.post0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/python-dateutil-2.9.0.post0-pep740.headers
+90	tests/fixtures/hg_bfclattest/http/python-dateutil-2.9.0.post0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/python-dotenv-1.2.2-asc.headers
+407	tests/fixtures/hg_bfclattest/http/python-dotenv-1.2.2-asc.raw
+2717	tests/fixtures/hg_bfclattest/http/python-dotenv-1.2.2-pep740.headers
+9637	tests/fixtures/hg_bfclattest/http/python-dotenv-1.2.2-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/pytokens-0.4.1-asc.headers
+466	tests/fixtures/hg_bfclattest/http/pytokens-0.4.1-asc.raw
+2438	tests/fixtures/hg_bfclattest/http/pytokens-0.4.1-pep740.headers
+137	tests/fixtures/hg_bfclattest/http/pytokens-0.4.1-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/pyyaml-6.0.3-asc.headers
+444	tests/fixtures/hg_bfclattest/http/pyyaml-6.0.3-asc.raw
+2440	tests/fixtures/hg_bfclattest/http/pyyaml-6.0.3-pep740.headers
+135	tests/fixtures/hg_bfclattest/http/pyyaml-6.0.3-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/qwen-agent-0.0.25-asc.headers
+405	tests/fixtures/hg_bfclattest/http/qwen-agent-0.0.25-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/qwen-agent-0.0.25-pep740.headers
+76	tests/fixtures/hg_bfclattest/http/qwen-agent-0.0.25-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/referencing-0.37.0-asc.headers
+386	tests/fixtures/hg_bfclattest/http/referencing-0.37.0-asc.raw
+2747	tests/fixtures/hg_bfclattest/http/referencing-0.37.0-pep740.headers
+9523	tests/fixtures/hg_bfclattest/http/referencing-0.37.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/regex-2026.9.29-asc.headers
+467	tests/fixtures/hg_bfclattest/http/regex-2026.9.29-asc.raw
+2438	tests/fixtures/hg_bfclattest/http/regex-2026.9.29-pep740.headers
+138	tests/fixtures/hg_bfclattest/http/regex-2026.9.29-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/requests-2.34.2-asc.headers
+403	tests/fixtures/hg_bfclattest/http/requests-2.34.2-asc.raw
+2745	tests/fixtures/hg_bfclattest/http/requests-2.34.2-pep740.headers
+9282	tests/fixtures/hg_bfclattest/http/requests-2.34.2-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/rich-15.0.0-asc.headers
+379	tests/fixtures/hg_bfclattest/http/rich-15.0.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/rich-15.0.0-pep740.headers
+70	tests/fixtures/hg_bfclattest/http/rich-15.0.0-pep740.raw
+691	tests/fixtures/hg_bfclattest/http/rpds-py-2026.9.1-asc.headers
+446	tests/fixtures/hg_bfclattest/http/rpds-py-2026.9.1-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/rpds-py-2026.9.1-pep740.headers
+9505	tests/fixtures/hg_bfclattest/http/rpds-py-2026.9.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/shellingham-1.5.4-asc.headers
+409	tests/fixtures/hg_bfclattest/http/shellingham-1.5.4-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/shellingham-1.5.4-pep740.headers
+80	tests/fixtures/hg_bfclattest/http/shellingham-1.5.4-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/six-1.17.0-asc.headers
+402	tests/fixtures/hg_bfclattest/http/six-1.17.0-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/six-1.17.0-pep740.headers
+73	tests/fixtures/hg_bfclattest/http/six-1.17.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/sniffio-1.3.1-asc.headers
+401	tests/fixtures/hg_bfclattest/http/sniffio-1.3.1-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/sniffio-1.3.1-pep740.headers
+72	tests/fixtures/hg_bfclattest/http/sniffio-1.3.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/tenacity-8.5.0-asc.headers
+402	tests/fixtures/hg_bfclattest/http/tenacity-8.5.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/tenacity-8.5.0-pep740.headers
+73	tests/fixtures/hg_bfclattest/http/tenacity-8.5.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/tiktoken-0.14.0-asc.headers
+424	tests/fixtures/hg_bfclattest/http/tiktoken-0.14.0-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/tiktoken-0.14.0-pep740.headers
+95	tests/fixtures/hg_bfclattest/http/tiktoken-0.14.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/tokenizers-0.23.3-asc.headers
+426	tests/fixtures/hg_bfclattest/http/tokenizers-0.23.3-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/tokenizers-0.23.3-pep740.headers
+9909	tests/fixtures/hg_bfclattest/http/tokenizers-0.23.3-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/tqdm-4.70.1-asc.headers
+399	tests/fixtures/hg_bfclattest/http/tqdm-4.70.1-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/tqdm-4.70.1-pep740.headers
+9442	tests/fixtures/hg_bfclattest/http/tqdm-4.70.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/tree-sitter-0.21.3-asc.headers
+448	tests/fixtures/hg_bfclattest/http/tree-sitter-0.21.3-asc.raw
+2438	tests/fixtures/hg_bfclattest/http/tree-sitter-0.21.3-pep740.headers
+119	tests/fixtures/hg_bfclattest/http/tree-sitter-0.21.3-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/tree-sitter-java-0.21.0-asc.headers
+490	tests/fixtures/hg_bfclattest/http/tree-sitter-java-0.21.0-asc.raw
+2441	tests/fixtures/hg_bfclattest/http/tree-sitter-java-0.21.0-pep740.headers
+161	tests/fixtures/hg_bfclattest/http/tree-sitter-java-0.21.0-pep740.raw
+693	tests/fixtures/hg_bfclattest/http/tree-sitter-javascript-0.21.4-asc.headers
+496	tests/fixtures/hg_bfclattest/http/tree-sitter-javascript-0.21.4-asc.raw
+2440	tests/fixtures/hg_bfclattest/http/tree-sitter-javascript-0.21.4-pep740.headers
+167	tests/fixtures/hg_bfclattest/http/tree-sitter-javascript-0.21.4-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/truststore-0.10.5-asc.headers
+385	tests/fixtures/hg_bfclattest/http/truststore-0.10.5-asc.raw
+2719	tests/fixtures/hg_bfclattest/http/truststore-0.10.5-pep740.headers
+9994	tests/fixtures/hg_bfclattest/http/truststore-0.10.5-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/typer-0.27.3-asc.headers
+380	tests/fixtures/hg_bfclattest/http/typer-0.27.3-asc.raw
+2405	tests/fixtures/hg_bfclattest/http/typer-0.27.3-pep740.headers
+71	tests/fixtures/hg_bfclattest/http/typer-0.27.3-pep740.raw
+673	tests/fixtures/hg_bfclattest/http/types-requests-2.33.0.20261006-asc.headers
+398	tests/fixtures/hg_bfclattest/http/types-requests-2.33.0.20261006-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/types-requests-2.33.0.20261006-pep740.headers
+89	tests/fixtures/hg_bfclattest/http/types-requests-2.33.0.20261006-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/typing-extensions-4.16.0-asc.headers
+412	tests/fixtures/hg_bfclattest/http/typing-extensions-4.16.0-asc.raw
+2744	tests/fixtures/hg_bfclattest/http/typing-extensions-4.16.0-pep740.headers
+10119	tests/fixtures/hg_bfclattest/http/typing-extensions-4.16.0-pep740.raw
+672	tests/fixtures/hg_bfclattest/http/typing-inspection-0.4.4-asc.headers
+391	tests/fixtures/hg_bfclattest/http/typing-inspection-0.4.4-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/typing-inspection-0.4.4-pep740.headers
+10010	tests/fixtures/hg_bfclattest/http/typing-inspection-0.4.4-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/urllib3-2.8.0-asc.headers
+381	tests/fixtures/hg_bfclattest/http/urllib3-2.8.0-asc.raw
+2718	tests/fixtures/hg_bfclattest/http/urllib3-2.8.0-pep740.headers
+9533	tests/fixtures/hg_bfclattest/http/urllib3-2.8.0-pep740.raw
+674	tests/fixtures/hg_bfclattest/http/websocket-client-1.9.2-asc.headers
+390	tests/fixtures/hg_bfclattest/http/websocket-client-1.9.2-asc.raw
+2407	tests/fixtures/hg_bfclattest/http/websocket-client-1.9.2-pep740.headers
+81	tests/fixtures/hg_bfclattest/http/websocket-client-1.9.2-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/websockets-15.0.1-asc.headers
+486	tests/fixtures/hg_bfclattest/http/websockets-15.0.1-asc.raw
+2744	tests/fixtures/hg_bfclattest/http/websockets-15.0.1-pep740.headers
+9498	tests/fixtures/hg_bfclattest/http/websockets-15.0.1-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/writer-sdk-2.1.0-asc.headers
+404	tests/fixtures/hg_bfclattest/http/writer-sdk-2.1.0-asc.raw
+2406	tests/fixtures/hg_bfclattest/http/writer-sdk-2.1.0-pep740.headers
+75	tests/fixtures/hg_bfclattest/http/writer-sdk-2.1.0-pep740.raw
+694	tests/fixtures/hg_bfclattest/http/yarl-1.25.1-asc.headers
+463	tests/fixtures/hg_bfclattest/http/yarl-1.25.1-asc.raw
+2721	tests/fixtures/hg_bfclattest/http/yarl-1.25.1-pep740.headers
+9471	tests/fixtures/hg_bfclattest/http/yarl-1.25.1-pep740.raw
+109727	tests/fixtures/hg_bfclattest/ldconfig.jsonl
+22962	tests/fixtures/hg_bfclattest/licenses/4748f03ed2dbcc14cde6ebc30799899c403e356a7465dc30fcf2b80c45fc0059.txt
+20431	tests/fixtures/hg_bfclattest/licenses/56976e64523fa1e68db4e6f464f5b2cb89d7d08f54b1d012e317b8db286b3faf.txt
+18092	tests/fixtures/hg_bfclattest/licenses/8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643.txt
+35147	tests/fixtures/hg_bfclattest/licenses/8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903.txt
+6111	tests/fixtures/hg_bfclattest/licenses/b7fd9b73ea99602016a326e0b62e6646060d18febdd065ceca8bb482208c3d88.txt
+26462	tests/fixtures/hg_bfclattest/licenses/d3c95b56fa33e28b57860580f0baf4e4f4de2a268a2b80f1d031a5191bade265.txt
+2920	tests/fixtures/hg_bfclattest/licenses/d77204eee882807240f6351c4f5ae2a4bcdb5b773ff77d10647b9b66b826b2fb.txt
+7651	tests/fixtures/hg_bfclattest/licenses/da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768.txt
+68194	tests/fixtures/hg_bfclattest/licenses/da8191658b3452ce9caf31638ba61dab31a38c619fa39df119812e050f592fd3.txt
+26530	tests/fixtures/hg_bfclattest/licenses/dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551.txt
+54982	tests/fixtures/hg_bfclattest/prerequisite.jsonl
+8293	tests/fixtures/hg_bfclattest/publisher.jsonl
+3390	tests/fixtures/hg_bfclattest/publisher.py
+10175	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-LICENSE.txt
+1305	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-license-api.headers
+15035	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-license-api.raw
+1351	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-ref.headers
+394	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-ref.raw
+1329	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-tag-ae89995a4fdd66c460a916dce3950948a0b5a8e6.headers
+2876	tests/fixtures/hg_bfclattest/publisher/openssl-4.0.3-tag-ae89995a4fdd66c460a916dce3950948a0b5a8e6.raw
+11357	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-LICENSE.txt
+1305	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-license-api.headers
+16684	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-license-api.raw
+1350	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-ref.headers
+388	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-ref.raw
+1329	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-tag-9ab7691f497eff905f961aba51a4bb9be3e9555c.headers
+1575	tests/fixtures/hg_bfclattest/publisher/tokenizers-0.23.3-tag-9ab7691f497eff905f961aba51a4bb9be3e9555c.raw
+483526	tests/fixtures/hg_bfclattest/sbom-components.jsonl
+309906	tests/fixtures/hg_bfclattest/signatures.jsonl
+3035	tests/fixtures/hg_bfclattest/signatures.py
+1828	tests/fixtures/hg_bfclattest/signatures/aiohappyeyeballs-0-0.der
+317	tests/fixtures/hg_bfclattest/signatures/aiohappyeyeballs-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/aiohappyeyeballs-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/aiohappyeyeballs-0-0.sig
+274	tests/fixtures/hg_bfclattest/signatures/aiohappyeyeballs-0-0.statement.json
+1743	tests/fixtures/hg_bfclattest/signatures/aiohttp-0-0.der
+373	tests/fixtures/hg_bfclattest/signatures/aiohttp-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/aiohttp-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/aiohttp-0-0.sig
+330	tests/fixtures/hg_bfclattest/signatures/aiohttp-0-0.statement.json
+1702	tests/fixtures/hg_bfclattest/signatures/aiosignal-0-0.der
+310	tests/fixtures/hg_bfclattest/signatures/aiosignal-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/aiosignal-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/aiosignal-0-0.sig
+267	tests/fixtures/hg_bfclattest/signatures/aiosignal-0-0.statement.json
+1797	tests/fixtures/hg_bfclattest/signatures/anyio-0-0.der
+307	tests/fixtures/hg_bfclattest/signatures/anyio-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/anyio-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/anyio-0-0.sig
+264	tests/fixtures/hg_bfclattest/signatures/anyio-0-0.statement.json
+1817	tests/fixtures/hg_bfclattest/signatures/argcomplete-0-0.der
+312	tests/fixtures/hg_bfclattest/signatures/argcomplete-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/argcomplete-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/argcomplete-0-0.sig
+269	tests/fixtures/hg_bfclattest/signatures/argcomplete-0-0.statement.json
+1790	tests/fixtures/hg_bfclattest/signatures/attrs-0-0.der
+307	tests/fixtures/hg_bfclattest/signatures/attrs-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/attrs-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/attrs-0-0.sig
+264	tests/fixtures/hg_bfclattest/signatures/attrs-0-0.statement.json
+1734	tests/fixtures/hg_bfclattest/signatures/black-0-0.der
+372	tests/fixtures/hg_bfclattest/signatures/black-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/black-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/black-0-0.sig
+329	tests/fixtures/hg_bfclattest/signatures/black-0-0.statement.json
+1845	tests/fixtures/hg_bfclattest/signatures/certifi-0-0.der
+312	tests/fixtures/hg_bfclattest/signatures/certifi-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/certifi-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/certifi-0-0.sig
+269	tests/fixtures/hg_bfclattest/signatures/certifi-0-0.statement.json
+1834	tests/fixtures/hg_bfclattest/signatures/charset-normalizer-0-0.der
+383	tests/fixtures/hg_bfclattest/signatures/charset-normalizer-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/charset-normalizer-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/charset-normalizer-0-0.sig
+340	tests/fixtures/hg_bfclattest/signatures/charset-normalizer-0-0.statement.json
+1762	tests/fixtures/hg_bfclattest/signatures/click-0-0.der
+306	tests/fixtures/hg_bfclattest/signatures/click-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/click-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/click-0-0.sig
+263	tests/fixtures/hg_bfclattest/signatures/click-0-0.statement.json
+1798	tests/fixtures/hg_bfclattest/signatures/cryptography-0-0.der
+334	tests/fixtures/hg_bfclattest/signatures/cryptography-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/cryptography-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/cryptography-0-0.sig
+291	tests/fixtures/hg_bfclattest/signatures/cryptography-0-0.statement.json
+1785	tests/fixtures/hg_bfclattest/signatures/dnspython-0-0.der
+310	tests/fixtures/hg_bfclattest/signatures/dnspython-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/dnspython-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/dnspython-0-0.sig
+267	tests/fixtures/hg_bfclattest/signatures/dnspython-0-0.statement.json
+1757	tests/fixtures/hg_bfclattest/signatures/filelock-0-0.der
+309	tests/fixtures/hg_bfclattest/signatures/filelock-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/filelock-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/filelock-0-0.sig
+266	tests/fixtures/hg_bfclattest/signatures/filelock-0-0.statement.json
+1711	tests/fixtures/hg_bfclattest/signatures/frozenlist-0-0.der
+371	tests/fixtures/hg_bfclattest/signatures/frozenlist-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/frozenlist-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/frozenlist-0-0.sig
+328	tests/fixtures/hg_bfclattest/signatures/frozenlist-0-0.statement.json
+1788	tests/fixtures/hg_bfclattest/signatures/genson-0-0.der
+307	tests/fixtures/hg_bfclattest/signatures/genson-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/genson-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/genson-0-0.sig
+264	tests/fixtures/hg_bfclattest/signatures/genson-0-0.statement.json
+771	tests/fixtures/hg_bfclattest/signatures/google-auth-0-0.der
+313	tests/fixtures/hg_bfclattest/signatures/google-auth-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/google-auth-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/google-auth-0-0.sig
+270	tests/fixtures/hg_bfclattest/signatures/google-auth-0-0.statement.json
+1808	tests/fixtures/hg_bfclattest/signatures/hf-xet-0-0.der
+347	tests/fixtures/hg_bfclattest/signatures/hf-xet-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/hf-xet-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/hf-xet-0-0.sig
+304	tests/fixtures/hg_bfclattest/signatures/hf-xet-0-0.statement.json
+1853	tests/fixtures/hg_bfclattest/signatures/huggingface-hub-0-0.der
+316	tests/fixtures/hg_bfclattest/signatures/huggingface-hub-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/huggingface-hub-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/huggingface-hub-0-0.sig
+273	tests/fixtures/hg_bfclattest/signatures/huggingface-hub-0-0.statement.json
+1715	tests/fixtures/hg_bfclattest/signatures/idna-0-0.der
+304	tests/fixtures/hg_bfclattest/signatures/idna-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/idna-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/idna-0-0.sig
+261	tests/fixtures/hg_bfclattest/signatures/idna-0-0.statement.json
+1679	tests/fixtures/hg_bfclattest/signatures/jinja2-0-0.der
+307	tests/fixtures/hg_bfclattest/signatures/jinja2-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/jinja2-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/jinja2-0-0.sig
+264	tests/fixtures/hg_bfclattest/signatures/jinja2-0-0.statement.json
+1775	tests/fixtures/hg_bfclattest/signatures/jiter-0-0.der
+349	tests/fixtures/hg_bfclattest/signatures/jiter-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/jiter-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/jiter-0-0.sig
+306	tests/fixtures/hg_bfclattest/signatures/jiter-0-0.statement.json
+1790	tests/fixtures/hg_bfclattest/signatures/jsonschema-0-0.der
+312	tests/fixtures/hg_bfclattest/signatures/jsonschema-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/jsonschema-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/jsonschema-0-0.sig
+269	tests/fixtures/hg_bfclattest/signatures/jsonschema-0-0.statement.json
+1870	tests/fixtures/hg_bfclattest/signatures/jsonschema-specifications-0-0.der
+329	tests/fixtures/hg_bfclattest/signatures/jsonschema-specifications-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/jsonschema-specifications-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/jsonschema-specifications-0-0.sig
+286	tests/fixtures/hg_bfclattest/signatures/jsonschema-specifications-0-0.statement.json
+1795	tests/fixtures/hg_bfclattest/signatures/markupsafe-0-0.der
+375	tests/fixtures/hg_bfclattest/signatures/markupsafe-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/markupsafe-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/markupsafe-0-0.sig
+332	tests/fixtures/hg_bfclattest/signatures/markupsafe-0-0.statement.json
+1752	tests/fixtures/hg_bfclattest/signatures/multidict-0-0.der
+374	tests/fixtures/hg_bfclattest/signatures/multidict-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/multidict-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/multidict-0-0.sig
+331	tests/fixtures/hg_bfclattest/signatures/multidict-0-0.statement.json
+1809	tests/fixtures/hg_bfclattest/signatures/openai-0-0.der
+308	tests/fixtures/hg_bfclattest/signatures/openai-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/openai-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/openai-0-0.sig
+265	tests/fixtures/hg_bfclattest/signatures/openai-0-0.statement.json
+1782	tests/fixtures/hg_bfclattest/signatures/packaging-0-0.der
+309	tests/fixtures/hg_bfclattest/signatures/packaging-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/packaging-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/packaging-0-0.sig
+266	tests/fixtures/hg_bfclattest/signatures/packaging-0-0.statement.json
+1804	tests/fixtures/hg_bfclattest/signatures/pathspec-0-0.der
+309	tests/fixtures/hg_bfclattest/signatures/pathspec-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/pathspec-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/pathspec-0-0.sig
+266	tests/fixtures/hg_bfclattest/signatures/pathspec-0-0.statement.json
+1790	tests/fixtures/hg_bfclattest/signatures/platformdirs-0-0.der
+314	tests/fixtures/hg_bfclattest/signatures/platformdirs-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/platformdirs-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/platformdirs-0-0.sig
+271	tests/fixtures/hg_bfclattest/signatures/platformdirs-0-0.statement.json
+1785	tests/fixtures/hg_bfclattest/signatures/propcache-0-0.der
+374	tests/fixtures/hg_bfclattest/signatures/propcache-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/propcache-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/propcache-0-0.sig
+331	tests/fixtures/hg_bfclattest/signatures/propcache-0-0.statement.json
+1750	tests/fixtures/hg_bfclattest/signatures/pydantic-0-0.der
+310	tests/fixtures/hg_bfclattest/signatures/pydantic-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/pydantic-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/pydantic-0-0.sig
+267	tests/fixtures/hg_bfclattest/signatures/pydantic-0-0.statement.json
+1790	tests/fixtures/hg_bfclattest/signatures/python-dotenv-0-0.der
+314	tests/fixtures/hg_bfclattest/signatures/python-dotenv-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/python-dotenv-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/python-dotenv-0-0.sig
+271	tests/fixtures/hg_bfclattest/signatures/python-dotenv-0-0.statement.json
+1774	tests/fixtures/hg_bfclattest/signatures/referencing-0-0.der
+313	tests/fixtures/hg_bfclattest/signatures/referencing-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/referencing-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/referencing-0-0.sig
+270	tests/fixtures/hg_bfclattest/signatures/referencing-0-0.statement.json
+1712	tests/fixtures/hg_bfclattest/signatures/requests-0-0.der
+310	tests/fixtures/hg_bfclattest/signatures/requests-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/requests-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/requests-0-0.sig
+267	tests/fixtures/hg_bfclattest/signatures/requests-0-0.statement.json
+1783	tests/fixtures/hg_bfclattest/signatures/rpds-py-0-0.der
+353	tests/fixtures/hg_bfclattest/signatures/rpds-py-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/rpds-py-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/rpds-py-0-0.sig
+310	tests/fixtures/hg_bfclattest/signatures/rpds-py-0-0.statement.json
+1834	tests/fixtures/hg_bfclattest/signatures/tokenizers-0-0.der
+353	tests/fixtures/hg_bfclattest/signatures/tokenizers-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/tokenizers-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/tokenizers-0-0.sig
+310	tests/fixtures/hg_bfclattest/signatures/tokenizers-0-0.statement.json
+1720	tests/fixtures/hg_bfclattest/signatures/tqdm-0-0.der
+306	tests/fixtures/hg_bfclattest/signatures/tqdm-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/tqdm-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/tqdm-0-0.sig
+263	tests/fixtures/hg_bfclattest/signatures/tqdm-0-0.statement.json
+1799	tests/fixtures/hg_bfclattest/signatures/truststore-0-0.der
+312	tests/fixtures/hg_bfclattest/signatures/truststore-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/truststore-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/truststore-0-0.sig
+269	tests/fixtures/hg_bfclattest/signatures/truststore-0-0.statement.json
+1891	tests/fixtures/hg_bfclattest/signatures/typing-extensions-0-0.der
+319	tests/fixtures/hg_bfclattest/signatures/typing-extensions-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/typing-extensions-0-0.pub.pem
+70	tests/fixtures/hg_bfclattest/signatures/typing-extensions-0-0.sig
+276	tests/fixtures/hg_bfclattest/signatures/typing-extensions-0-0.statement.json
+1839	tests/fixtures/hg_bfclattest/signatures/typing-inspection-0-0.der
+318	tests/fixtures/hg_bfclattest/signatures/typing-inspection-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/typing-inspection-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/typing-inspection-0-0.sig
+275	tests/fixtures/hg_bfclattest/signatures/typing-inspection-0-0.statement.json
+1779	tests/fixtures/hg_bfclattest/signatures/urllib3-0-0.der
+308	tests/fixtures/hg_bfclattest/signatures/urllib3-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/urllib3-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/urllib3-0-0.sig
+265	tests/fixtures/hg_bfclattest/signatures/urllib3-0-0.statement.json
+1789	tests/fixtures/hg_bfclattest/signatures/websockets-0-0.der
+393	tests/fixtures/hg_bfclattest/signatures/websockets-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/websockets-0-0.pub.pem
+72	tests/fixtures/hg_bfclattest/signatures/websockets-0-0.sig
+350	tests/fixtures/hg_bfclattest/signatures/websockets-0-0.statement.json
+1755	tests/fixtures/hg_bfclattest/signatures/yarl-0-0.der
+370	tests/fixtures/hg_bfclattest/signatures/yarl-0-0.pae
+178	tests/fixtures/hg_bfclattest/signatures/yarl-0-0.pub.pem
+71	tests/fixtures/hg_bfclattest/signatures/yarl-0-0.sig
+327	tests/fixtures/hg_bfclattest/signatures/yarl-0-0.statement.json
+322	tests/fixtures/hg_bfclattest/summary.jsonl
+2604	tests/fixtures/hg_bfclattest/supplement.py
+105135	tests/fixtures/hg_bfclattest/system.jsonl
+22322	tests/fixtures/hg_bfclattest/update.py
+7647	tests/fixtures/hg_bfclattest/validate.py
+1558	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-01e6ff6a9b4ec0098ae7.txt
+11336	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-0380f4f1c60e6f5c7bce.txt
+1593	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-05f3b88351988ecfad10.txt
+1089	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-063294001c3d523dbacb.txt
+10142	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-09e8a9bcec8067104652.txt
+1543	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-0a9e78156ae8b96caf1b.txt
+10174	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-0d542e0c8804e39aa7f3.txt
+3511	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-103166b62b80443afb9e.txt
+47721	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-1107b0c831e918d4f1db.txt
+1093	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-130e3a64d5fdd5d096a7.txt
+11339	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-14214b7bbb6952ada76a.txt
+1493	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-154759c1e9eb58e42643.txt
+1541	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-1a9a4f0e3d479a27240d.txt
+1088	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-1af0790543fffac99dd3.txt
+12657	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-295f8538c94ae5c30433.txt
+1089	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-29e0fd62e929850e86eb.txt
+1334	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2aad5fc00f705c4a1add.txt
+1080	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2afdd30d54b4d62b6f48.txt
+1068	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2b9e0bc1cebf8ddbb272.txt
+387	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2c889c721ec8ae6d7664.txt
+1513	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2dc35496ce53a7307915.txt
+1080	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2e0110e07abef7c2548b.txt
+11313	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-2e4be5fc6c4c72a466fc.txt
+1057	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-314e4e91be3baa93c0fb.txt
+1086	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-33be7b7e8fa4fd19b176.txt
+1124	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-37db5bb85926db28a427.txt
+13936	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-3b2f81fe21d181c499c5.txt
+1475	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-3b49dcee4105eb37bac1.txt
+1514	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-3d6a0c050d8bec52faba.txt
+197	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-3e0c7c091a948b82533b.txt
+1046	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-3e6dae555eb92787fc82.txt
+1078	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-418cb499b436128d653d.txt
+1057	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-42dcd63495f87b4eb7c7.txt
+1066	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-4375ba20e2b9c6c4e7ca.txt
+1062	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-44dacccab1bb49645b3c.txt
+1475	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-489a8e1108509ed98a37.txt
+1078	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-4a2260d6e2cd0f5a151a.txt
+1508	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-4ec59d544f12b5f539a3.txt
+1057	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-4f92a015a13c4d1a040b.txt
+1069	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-52ed137b039cd9c46409.txt
+1081	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-5361ac9dc58f2ef5fd2e.txt
+609	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-56d6ac6c8105c0a51304.txt
+12762	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-5789881b8aeb9c91f583.txt
+1086	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-58992cebcf8dfb6e40c4.txt
+11357	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-58d1e17ffe5109a7ae29.txt
+1123	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-5ba24ddc57067f9249ad.txt
+1532	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-602c4c7482de6479dd2e.txt
+1088	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-608c89d5060ae9921adc.txt
+1069	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-628168d68bb5a8a17e0b.txt
+11336	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-636eb7d79da9bb6d515a.txt
+185	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-652c878488d1456361e0.txt
+1212	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-672179752e109134a3fb.txt
+1071	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-6d0d41bfe170ac6c7dc2.txt
+11332	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-6fd5243e92dd7f98ec69.txt
+11048	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-71a83872ad82f57be692.txt
+1073	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-792c48c5a849a15fdf9e.txt
+2338	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-7c605df6e28667a96031.txt
+1091	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-7c7134b9f7b978c03fca.txt
+1589	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-7e7d6dbaf7fe160d39fd.txt
+1090	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-804b59b25f2c31bd278f.txt
+1556	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-80619b7049f08c81683a.txt
+1109	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-882115c95dfc2af1eeb6.txt
+1056	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-8bf96984ff8bcfae7e48.txt
+1068	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-8c476dd3b7a145504f7f.txt
+1101	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-8d3928f9dc4490fd6357.txt
+1072	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-94bf7ae4ea6833b0853a.txt
+174	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-94f6449fdd56f6890429.txt
+1475	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-9a8ad106a394e853bfe2.txt
+1080	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-9c0428f0c3b4779850cf.txt
+1204	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-a50450da1d53cd777b80.txt
+1331	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-a9d66f1d526df02e29dc.txt
+1129	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-a9e186f3ca16b5eef843.txt
+11360	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-aac73b3148f6d1d7111d.txt
+11340	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-ad4b50ffd183d0ec8b3e.txt
+1066	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-b2b7f0743f8853b405ac.txt
+1344	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-b70e7e9b742f1cc6f948.txt
+1072	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-b80816b0d530b8accb4c.txt
+2889	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-ba00f51a0d92823b5a1c.txt
+1543	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-bca354e6392b2421ffb1.txt
+1072	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-beec67e4ee83a7af26f2.txt
+563	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-bfba85f87792074b6593.txt
+11584	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-bff55ef4cdcc8c14ce25.txt
+1599	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-c4df125c807b0613501e.txt
+11357	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-c71d239df91726fc519c.txt
+197	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-cad1ef5bd340d73e074b.txt
+11325	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-cb5e8e7e5f4a3988e106.txt
+11358	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-cfc7749b96f63bd31c3c.txt
+1102	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-d049388552adb1f2a94d.txt
+1050	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-db3f0246b1f9278f1584.txt
+1056	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-deed7c17a4318158190a.txt
+14728	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-e2127cbdb467d31a1cbb.txt
+989	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-e93716da6b9c0d5a4a1d.txt
+468	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-f1c6b0af1a57f0d2311c.txt
+751	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-f388fd38cad13112c1dc.txt
+38	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-f5110972dedad2b4e9d3.txt
+16726	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-fab3dd6bdab226f1c086.txt
+1018	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-fbc539f47d0cf83bc613.txt
+1985	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-fcff87c3a47ce8028a85.txt
+1518	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-fdcb59154c74cbaba16a.txt
+1083	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-fe1049884b1a0d934290.txt
+1086	tests/fixtures/hg_bfclrt/licenses/w-bfclmem-fff170779a6acbf65abd.txt
+770787	tests/fixtures/hg_bfclrt/runtime-gaps-001.jsonl
+680956	tests/fixtures/hg_bfclrt/runtime-gaps-003.jsonl
+148146	tests/fixtures/hg_bfclrt/w-bfclmem-archives.jsonl
+285	tests/fixtures/hg_bfclrt/w-bfclmem-binding-summary.jsonl
+699534	tests/fixtures/hg_bfclrt/w-bfclmem-bindings-001.jsonl
+61651	tests/fixtures/hg_bfclrt/w-bfclmem-bindings-002.jsonl
+279817	tests/fixtures/hg_bfclrt/w-bfclmem-dependencies.jsonl
+1556	tests/fixtures/hg_bfclrt/w-bfclmem-environment.jsonl
+50446	tests/fixtures/hg_bfclrt/w-bfclmem-licenses.jsonl
+91380	tests/fixtures/hg_bfclrt/w-bfclmem-links.jsonl
+699884	tests/fixtures/hg_bfclrt/w-bfclmem-members-001.jsonl
+699931	tests/fixtures/hg_bfclrt/w-bfclmem-members-002.jsonl
+403355	tests/fixtures/hg_bfclrt/w-bfclmem-members-003.jsonl
+699545	tests/fixtures/hg_bfclrt/w-bfclmem-native-001.jsonl
+291264	tests/fixtures/hg_bfclrt/w-bfclmem-native-002.jsonl
+28188	tests/fixtures/hg_bfclrt/w-bfclmem-smoke.jsonl
+699933	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-001.jsonl
+699769	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-002.jsonl
+699992	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-003.jsonl
+699840	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-004.jsonl
+699775	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-005.jsonl
+699867	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-006.jsonl
+699593	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-007.jsonl
+699982	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-008.jsonl
+699821	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-009.jsonl
+699980	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-010.jsonl
+699854	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-011.jsonl
+699819	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-012.jsonl
+699929	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-013.jsonl
+699987	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-014.jsonl
+476	tests/fixtures/hg_bfclrt/w-bfclmem-source-edges-015.jsonl
+699978	tests/fixtures/hg_bfclrt/w-bfclmem-source-modules-001.jsonl
+406046	tests/fixtures/hg_bfclrt/w-bfclmem-source-modules-002.jsonl
+207	tests/fixtures/hg_bfclrt/w-bfclmem-source-summary.jsonl
+9136	tests/fixtures/hg_bfclrt/w_bfclmem.py
+4364	tests/fixtures/hg_bfclrt/w_bfclmem_bindings.py
+6464	tests/fixtures/hg_bfclrt/w_bfclmem_smoke.py
+3106	tests/fixtures/hg_bfclrt/w_bfclmem_source.py
+3765	tests/fixtures/hg_bfclrt/w_bfclmem_validate.py
