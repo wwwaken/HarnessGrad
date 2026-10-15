@@ -299,7 +299,9 @@ def test_real_engine_replaces_authored_stale_caches(tmp_path):
     wb.active.title = "Synthetic"
     wb.active["A1"], wb.active["A2"] = 2, 3
     wb.active["B1"], wb.active["B2"] = "=SUM(A1:A2)", "=B1*2"
-    candidate = tmp_path / "result.xlsx"
+    work = tmp_path / "frozen-task"
+    work.mkdir()
+    candidate = work / "result.xlsx"
     wb.save(candidate)
     with zipfile.ZipFile(candidate) as src:
         entries = {n: src.read(n) for n in src.namelist()}
@@ -312,28 +314,33 @@ def test_real_engine_replaces_authored_stale_caches(tmp_path):
         for name, content in entries.items():
             dst.writestr(name, content)
     wb.active["B1"], wb.active["B2"] = 5, 10
-    wb.save(tmp_path / "golden.xlsx")
+    wb.save(work / "golden.xlsx")
     wb.close()
     cached = openpyxl.load_workbook(candidate, data_only=True)
     assert [cached.active["B1"].value, cached.active["B2"].value] == [999, 888]
     cached.close()
-    (tmp_path / "task.json").write_text(json.dumps({
+    (work / "task.json").write_text(json.dumps({
         "task_id": "spreadcache-authored", "answer_position": "Synthetic!B1:B2"}))
-    (tmp_path / "answer.txt").write_text("result.xlsx\n")
+    (work / "answer.txt").write_text("result.xlsx\n")
+    frozen = {p.name: p.read_bytes() for p in work.iterdir()}
     scratch = tmp_path / "scratch"
     scratch.mkdir()
     cmd = [shutil.which("bwrap"), "--unshare-net", "--ro-bind", "/", "/",
            "--bind", str(tmp_path), "/tmp",
+           "--ro-bind", str(work), "/tmp/frozen-task",
            "--proc", "/proc", "--", sys.executable,
            str(ROOT / "data/datasets/spreadsheetbench/verify/check.py"),
-           "--workdir", "/tmp", "--reward-file", "/tmp/reward.txt",
+           "--workdir", "/tmp/frozen-task", "--reward-file", "/tmp/reward.txt",
            "--evidence-file", "/tmp/evidence.json"]
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=240,
                           env=dict(os.environ, TMPDIR="/tmp/scratch", PYTHONDONTWRITEBYTECODE="1"))
     assert proc.returncode == 0, (proc.stdout, proc.stderr)
     cached = openpyxl.load_workbook(candidate, data_only=True)
-    assert [cached.active["B1"].value, cached.active["B2"].value] == [5, 10]
+    # The score observes [5, 10] in scratch; the submitted stale artifact stays frozen.
+    assert [cached.active["B1"].value, cached.active["B2"].value] == [999, 888]
     cached.close()
+    assert {p.name: p.read_bytes() for p in work.iterdir()} == frozen
+    assert list(scratch.iterdir()) == []
     evidence = json.loads((tmp_path / "evidence.json").read_text())
     assert evidence["recalculated"] is True and evidence["measured"] is True
     assert evidence["score"] == 1.0 and (tmp_path / "reward.txt").read_text() == "1\n"

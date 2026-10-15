@@ -48,6 +48,7 @@ import sys
 import tempfile
 import traceback
 import zipfile
+from contextlib import ExitStack
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -246,7 +247,7 @@ def soffice_path() -> str | None:
 
 
 def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, str]:
-    """Re-evaluate `workbook`'s formulas and cache the results, in place.
+    """Re-evaluate a private scratch workbook and cache the results, in place.
 
     Conversion alone can preserve stale caches. Force recalculation on OOXML load, remove
     formula caches from a private ZIP copy, and require the engine to repopulate them. Thus
@@ -435,26 +436,33 @@ def _score(args, inputs, receipt) -> int:
     phase = "formula detection"
     evidence["recalculated"] = False
     try:
-        # Recalculate before comparing: data_only=True reads cached formula values.
-        if workbook_has_formulas(candidate):
-            phase = "LibreOffice recalculation"
-            soffice = soffice_path()
-            if soffice is None:
-                raise RuntimeError("the result workbook holds formulas and no LibreOffice is "
-                                   "installed, so its values cannot be computed; the check "
-                                   "will not score an unevaluated workbook")
-            with tempfile.TemporaryDirectory(prefix="sb-recalc-") as scratch:
-                ok, why = recalculate(candidate, scratch=Path(scratch), soffice=soffice)
-            evidence["recalculated"] = ok
-            if not ok:
-                raise RuntimeError(f"could not recalculate the workbook: {why}")
-        else:
-            evidence["recalculated"] = False
+        # Keep the evaluated copy alive through comparison. The task artifact is frozen
+        # (INTERFACE.md §2.2), so recalculate's in-place publication must target scratch.
+        with ExitStack() as scratch_stack:
+            evaluated = candidate
+            if workbook_has_formulas(candidate):
+                phase = "LibreOffice recalculation"
+                soffice = soffice_path()
+                if soffice is None:
+                    raise RuntimeError("the result workbook holds formulas and no LibreOffice is "
+                                       "installed, so its values cannot be computed; the check "
+                                       "will not score an unevaluated workbook")
+                scratch = Path(scratch_stack.enter_context(
+                    tempfile.TemporaryDirectory(prefix="sb-recalc-")))
+                evaluated = scratch / candidate.name
+                shutil.copyfile(candidate, evaluated)
+                ok, why = recalculate(evaluated, scratch=scratch, soffice=soffice)
+                evidence["recalculated"] = ok
+                if not ok:
+                    raise RuntimeError(f"could not recalculate the workbook: {why}")
 
-        phase = "comparison"
-        ok, message = compare_workbooks(str(golden_path), str(candidate),
-                                        spec.get("instruction_type"),
-                                        str(spec["answer_position"]))
+            phase = "comparison"
+            ok, message = compare_workbooks(str(golden_path), str(evaluated),
+                                            spec.get("instruction_type"),
+                                            str(spec["answer_position"]))
+            # A scratch cleanup failure remains an unmeasured recalculation failure.
+            if evidence["recalculated"]:
+                phase = "LibreOffice recalculation"
     except Exception as exc:  # noqa: BLE001 - a failed tool/comparator is not a zero
         evidence.update(measured=False, error=f"{phase} failed: {type(exc).__name__}: {exc}",
                         traceback=traceback.format_exc()[-2000:])
