@@ -1,0 +1,629 @@
+{
+  "revision": "0f7faf33a3908546c6fd5b73a660e0f8ff173c2f",
+  "scope": "Partial acquisition only; no official Domain/VerifiedEval filtering; no answers decoded.",
+  "range_receipts": [
+    {
+      "path": "rc.nocontext/test-00000-of-00001.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc.nocontext__test-00000-of-00001.parquet/http-receipts.json",
+      "receipt_sha256": "5bb79348978c94ac3832d724a501d1fc82baf6ae39df7529a5a7ee51fe7685e4",
+      "requests": 22,
+      "bytes": 142249
+    },
+    {
+      "path": "rc.nocontext/validation-00000-of-00001.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc.nocontext__validation-00000-of-00001.parquet/http-receipts.json",
+      "receipt_sha256": "ed778cff07748b4d4a282a148360a6838f243f37c131d33f52521fd354fd260d",
+      "requests": 32,
+      "bytes": 183378
+    },
+    {
+      "path": "rc.web.nocontext/test-00000-of-00001.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc.web.nocontext__test-00000-of-00001.parquet/http-receipts.json",
+      "receipt_sha256": "d568469a77d12a7b1df7dd866974c7d0a30ae11886c3b352b326e997dc3c973d",
+      "requests": 20,
+      "bytes": 86494
+    },
+    {
+      "path": "rc.web.nocontext/train-00000-of-00001.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc.web.nocontext__train-00000-of-00001.parquet/http-receipts.json",
+      "receipt_sha256": "978632fa85e212dc8bfdc42e16936ba87b52e5f53bbcaedfaba45309d99ce792",
+      "requests": 9,
+      "bytes": 185748
+    },
+    {
+      "path": "rc.wikipedia/validation-00000-of-00001.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc.wikipedia__validation-00000-of-00001.parquet/http-receipts.json",
+      "receipt_sha256": "3ce0b46487ebfeca9fd63da3ecbfa58a0fe93696304706c1f364fabfbe398047",
+      "requests": 3,
+      "bytes": 44117
+    },
+    {
+      "path": "rc/validation-00002-of-00004.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00002-of-00004.parquet/http-receipts.json",
+      "receipt_sha256": "f1d33b253a0052943944eef690b710a8b41267d37cd9ad4b8386f6d647c7f103",
+      "requests": 27,
+      "bytes": 235718
+    },
+    {
+      "path": "rc/validation-00003-of-00004.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00003-of-00004.parquet/http-receipts.json",
+      "receipt_sha256": "4c96b0de88134ee2b2c65a891dc206e6ea97941b4725fa6a62d649b97c4c76ec",
+      "requests": 27,
+      "bytes": 182977
+    },
+    {
+      "path": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered.nocontext__validation-00000-of-00001.parquet/http-receipts.json",
+      "receipt_sha256": "0de3d0c19288a6f01117ed57f2a6dfede7f6aa0403f77a6e9a3b30fa313f1ee1",
+      "requests": 62,
+      "bytes": 106019
+    },
+    {
+      "path": "unfiltered/validation-00001-of-00007.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00001-of-00007.parquet/http-receipts.json",
+      "receipt_sha256": "f093596e3a999f90f9482dbd46cf097e8defbcf3d504f4b30ca4f7f1d9267b11",
+      "requests": 3,
+      "bytes": 20448
+    },
+    {
+      "path": "unfiltered/validation-00002-of-00007.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00002-of-00007.parquet/http-receipts.json",
+      "receipt_sha256": "87157405ca0f3441974f2c2bd4f313b4ebf53619afe15416236688dda7aa4e9e",
+      "requests": 3,
+      "bytes": 24615
+    },
+    {
+      "path": "unfiltered/validation-00003-of-00007.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00003-of-00007.parquet/http-receipts.json",
+      "receipt_sha256": "3df8c4d27dff0ed3ca595d5a922a0c28f17e72848101f5bc8f5a00fe13082d00",
+      "requests": 12,
+      "bytes": 262040
+    },
+    {
+      "path": "unfiltered/validation-00004-of-00007.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00004-of-00007.parquet/http-receipts.json",
+      "receipt_sha256": "163eae3ee065143eff9b6ad77a09eb5f8ef8be1c9bda22c1eb57284c136054aa",
+      "requests": 1,
+      "bytes": 8
+    },
+    {
+      "path": "unfiltered/validation-00005-of-00007.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00005-of-00007.parquet/http-receipts.json",
+      "receipt_sha256": "30a025e4eac161e05bbb14599699240e8268a0759f69b27b9f1333bbff72b0ae",
+      "requests": 3,
+      "bytes": 26291
+    },
+    {
+      "path": "unfiltered/validation-00006-of-00007.parquet",
+      "receipt_file": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00006-of-00007.parquet/http-receipts.json",
+      "receipt_sha256": "feaa38a6f8cb5d0c03d0c602e72f2f201f4b3f171149e6267e536ca6077d1e0e",
+      "requests": 4,
+      "bytes": 55909
+    }
+  ],
+  "footers": [
+    {
+      "path": "rc.nocontext/test-00000-of-00001.parquet",
+      "rows": 17210,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "rc.nocontext/validation-00000-of-00001.parquet",
+      "rows": 17944,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "rc.web.nocontext/test-00000-of-00001.parquet",
+      "rows": 9509,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "rc.web.nocontext/train-00000-of-00001.parquet",
+      "rows": 76496,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "rc.wikipedia/validation-00000-of-00001.parquet",
+      "rows": 7993,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "rc/validation-00002-of-00004.parquet",
+      "rows": 4486,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "rc/validation-00003-of-00004.parquet",
+      "rows": 4486,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "rows": 11313,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "unfiltered/validation-00001-of-00007.parquet",
+      "rows": 1616,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "unfiltered/validation-00002-of-00007.parquet",
+      "rows": 1616,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "unfiltered/validation-00003-of-00007.parquet",
+      "rows": 1616,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "unfiltered/validation-00005-of-00007.parquet",
+      "rows": 1616,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    },
+    {
+      "path": "unfiltered/validation-00006-of-00007.parquet",
+      "rows": 1616,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "human_answer_field_present": false,
+      "verification_or_domain_field_present": false
+    }
+  ],
+  "key_inventories": [
+    {
+      "path": "rc/validation-00002-of-00004.parquet",
+      "rows": 4486,
+      "distinct_question_ids": 4486,
+      "question_id_duplicate_excess": 0,
+      "candidate_doc_key_occurrences": 12837,
+      "distinct_candidate_doc_keys": 12837,
+      "candidate_doc_key_duplicate_excess": 0,
+      "document_source_label_counts": {
+        "Search": 1420,
+        "TagMe": 6400
+      },
+      "question_source_counts": {
+        "http://billturnbull.quiz4free.com/": 253,
+        "http://quiz4free.com/": 312,
+        "http://www.businessballs.com/": 633,
+        "http://www.quizballs.com/": 812,
+        "http://www.quizwise.com/": 730,
+        "http://www.triviacountry.com/": 204,
+        "http://www.wrexhamquizleague.co.uk/": 352,
+        "https://derbyshirepubquizleague.wordpress.com/": 436,
+        "https://quizguy.wordpress.com/": 414,
+        "https://www.quiz-zone.co.uk/": 340
+      },
+      "inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00002-of-00004.parquet/identity-inventory.jsonl",
+        "bytes": 1120808,
+        "sha256": "797c046c2bebbfd7a1ad9a7e6a4e4cba29a38c714cae9668aa44ad74778d2daa"
+      }
+    },
+    {
+      "path": "rc/validation-00003-of-00004.parquet",
+      "rows": 4486,
+      "distinct_question_ids": 4486,
+      "question_id_duplicate_excess": 0,
+      "candidate_doc_key_occurrences": 7810,
+      "distinct_candidate_doc_keys": 7810,
+      "candidate_doc_key_duplicate_excess": 0,
+      "document_source_label_counts": {
+        "Search": 1406,
+        "TagMe": 6404
+      },
+      "question_source_counts": {
+        "http://billturnbull.quiz4free.com/": 283,
+        "http://quiz4free.com/": 234,
+        "http://triviabug.com/q-and-a-quizzes/": 107,
+        "http://www.odquiz.org.uk/": 1042,
+        "http://www.quizwise.com/": 252,
+        "https://quizguy.wordpress.com/": 350,
+        "www.jetpunk.com": 348,
+        "www.sfquiz.org.uk": 1870
+      },
+      "inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00003-of-00004.parquet/identity-inventory.jsonl",
+        "bytes": 991913,
+        "sha256": "ab5a98a2561948317586a5ea4afe927128484ab170de887c398c01262c110be3"
+      }
+    },
+    {
+      "path": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "rows": 11313,
+      "distinct_question_ids": 11313,
+      "question_id_duplicate_excess": 0,
+      "candidate_doc_key_occurrences": 0,
+      "distinct_candidate_doc_keys": 0,
+      "candidate_doc_key_duplicate_excess": 0,
+      "document_source_label_counts": {},
+      "question_source_counts": {
+        "http://billturnbull.quiz4free.com/": 469,
+        "http://quiz4free.com/": 373,
+        "http://triviabug.com/q-and-a-quizzes/": 231,
+        "http://www.businessballs.com/": 942,
+        "http://www.odquiz.org.uk/": 1453,
+        "http://www.quizballs.com/": 1048,
+        "http://www.quizwise.com/": 1409,
+        "http://www.triviacountry.com/": 312,
+        "http://www.wrexhamquizleague.co.uk/": 467,
+        "https://derbyshirepubquizleague.wordpress.com/": 675,
+        "https://quizguy.wordpress.com/": 479,
+        "https://www.quiz-zone.co.uk/": 493,
+        "www.jetpunk.com": 457,
+        "www.sfquiz.org.uk": 2505
+      },
+      "inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered.nocontext__validation-00000-of-00001.parquet/identity-inventory.jsonl",
+        "bytes": 1972444,
+        "sha256": "3736e9b17630dc1fb9300f6d6e5d06be31ace647befaf1851a9b3a3fb729642b"
+      }
+    },
+    {
+      "path": "unfiltered/validation-00003-of-00007.parquet",
+      "rows": 1616,
+      "distinct_question_ids": 1616,
+      "question_id_duplicate_excess": 0,
+      "candidate_doc_key_occurrences": 19017,
+      "distinct_candidate_doc_keys": 19017,
+      "candidate_doc_key_duplicate_excess": 0,
+      "document_source_label_counts": {
+        "Search": 795,
+        "TagMe": 3146
+      },
+      "question_source_counts": {
+        "http://www.quizwise.com/": 497,
+        "www.jetpunk.com": 457,
+        "www.sfquiz.org.uk": 662
+      },
+      "inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00003-of-00007.parquet/identity-inventory.jsonl",
+        "bytes": 687578,
+        "sha256": "853d1047366421eea517f54ef8fd7f4c6729290f829175e08661d186ae7f77a4"
+      }
+    }
+  ],
+  "intersections": [
+    {
+      "a": "rc/validation-00002-of-00004.parquet",
+      "b": "rc/validation-00003-of-00004.parquet",
+      "shared_question_ids": 770,
+      "shared_candidate_doc_keys": 1339
+    },
+    {
+      "a": "rc/validation-00002-of-00004.parquet",
+      "b": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "shared_question_ids": 4484,
+      "shared_candidate_doc_keys": 0
+    },
+    {
+      "a": "rc/validation-00002-of-00004.parquet",
+      "b": "unfiltered/validation-00003-of-00007.parquet",
+      "shared_question_ids": 66,
+      "shared_candidate_doc_keys": 124
+    },
+    {
+      "a": "rc/validation-00003-of-00004.parquet",
+      "b": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "shared_question_ids": 4479,
+      "shared_candidate_doc_keys": 0
+    },
+    {
+      "a": "rc/validation-00003-of-00004.parquet",
+      "b": "unfiltered/validation-00003-of-00007.parquet",
+      "shared_question_ids": 1090,
+      "shared_candidate_doc_keys": 1850
+    },
+    {
+      "a": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "b": "unfiltered/validation-00003-of-00007.parquet",
+      "shared_question_ids": 1616,
+      "shared_candidate_doc_keys": 0
+    }
+  ],
+  "two_rc_shards": {
+    "rows": 8972,
+    "distinct_question_ids": 8202,
+    "shared_question_ids": 770
+  },
+  "official_numeric_denominator": "UNKNOWN",
+  "human_answers_input_incidence_preservation_redundancy": "UNKNOWN"
+}

@@ -1,0 +1,229 @@
+{
+  "revision": "0f7faf33a3908546c6fd5b73a660e0f8ff173c2f",
+  "declarations": [
+    {
+      "name": "rc",
+      "counts": {
+        "train": 138384,
+        "validation": 17944,
+        "test": 17210
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "rc/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "rc/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "rc/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "rc.nocontext",
+      "counts": {
+        "train": 138384,
+        "validation": 17944,
+        "test": 17210
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "rc.nocontext/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "rc.nocontext/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "rc.nocontext/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "rc.web",
+      "counts": {
+        "train": 76496,
+        "validation": 9951,
+        "test": 9509
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "rc.web/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "rc.web/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "rc.web/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "rc.web.nocontext",
+      "counts": {
+        "train": 76496,
+        "validation": 9951,
+        "test": 9509
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "rc.web.nocontext/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "rc.web.nocontext/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "rc.web.nocontext/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "rc.wikipedia",
+      "counts": {
+        "train": 61888,
+        "validation": 7993,
+        "test": 7701
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "rc.wikipedia/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "rc.wikipedia/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "rc.wikipedia/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "rc.wikipedia.nocontext",
+      "counts": {
+        "train": 61888,
+        "validation": 7993,
+        "test": 7701
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "rc.wikipedia.nocontext/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "rc.wikipedia.nocontext/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "rc.wikipedia.nocontext/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "unfiltered",
+      "counts": {
+        "train": 87622,
+        "validation": 11313,
+        "test": 10832
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "unfiltered/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "unfiltered/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "unfiltered/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "unfiltered.nocontext",
+      "counts": {
+        "train": 87622,
+        "validation": 11313,
+        "test": 10832
+      },
+      "export_routes": [
+        {
+          "split": "train",
+          "path": "unfiltered.nocontext/train-*"
+        },
+        {
+          "split": "validation",
+          "path": "unfiltered.nocontext/validation-*"
+        },
+        {
+          "split": "test",
+          "path": "unfiltered.nocontext/test-*"
+        }
+      ],
+      "export_directory": true
+    },
+    {
+      "name": "unfiltered.web",
+      "counts": {
+        "train": null,
+        "validation": null,
+        "test": null
+      },
+      "export_routes": null,
+      "export_directory": false
+    },
+    {
+      "name": "unfiltered.web.nocontext",
+      "counts": {
+        "train": null,
+        "validation": null,
+        "test": null
+      },
+      "export_routes": null,
+      "export_directory": false
+    },
+    {
+      "name": "unfiltered.wikipedia",
+      "counts": {
+        "train": null,
+        "validation": null,
+        "test": null
+      },
+      "export_routes": null,
+      "export_directory": false
+    },
+    {
+      "name": "unfiltered.wikipedia.nocontext",
+      "counts": {
+        "train": null,
+        "validation": null,
+        "test": null
+      },
+      "export_routes": null,
+      "export_directory": false
+    }
+  ]
+}

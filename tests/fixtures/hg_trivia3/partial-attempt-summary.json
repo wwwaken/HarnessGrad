@@ -1,0 +1,347 @@
+{
+  "revision": "0f7faf33a3908546c6fd5b73a660e0f8ff173c2f",
+  "pyarrow_version": "23.0.0",
+  "results": [
+    {
+      "path": "rc/validation-00002-of-00004.parquet",
+      "config": "rc",
+      "split": "validation",
+      "declared_lfs_sha256": "b36b4db70a66277b7a4d0d75eaa6b6710a2ed352550fb56396486a0566205906",
+      "whole_file_sha256_measured": false,
+      "bytes": 184077305,
+      "footer_row_count": 4486,
+      "row_groups": 5,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "read_column_paths": [
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "search_results.filename.list.item"
+      ],
+      "qid_count": 4486,
+      "distinct_qids": 4486,
+      "duplicate_qid_values": 0,
+      "duplicate_qid_excess": 0,
+      "question_source_counts": {
+        "http://billturnbull.quiz4free.com/": 253,
+        "http://quiz4free.com/": 312,
+        "http://www.businessballs.com/": 633,
+        "http://www.quizballs.com/": 812,
+        "http://www.quizwise.com/": 730,
+        "http://www.triviacountry.com/": 204,
+        "http://www.wrexhamquizleague.co.uk/": 352,
+        "https://derbyshirepubquizleague.wordpress.com/": 436,
+        "https://quizguy.wordpress.com/": 414,
+        "https://www.quiz-zone.co.uk/": 340
+      },
+      "identity_inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00002-of-00004.parquet/identity-inventory.jsonl",
+        "bytes": 1120808,
+        "sha256": "797c046c2bebbfd7a1ad9a7e6a4e4cba29a38c714cae9668aa44ad74778d2daa"
+      },
+      "http_receipts": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00002-of-00004.parquet/http-receipts.json",
+      "http_requests": 27,
+      "http_bytes_read": 235718
+    },
+    {
+      "path": "rc/validation-00003-of-00004.parquet",
+      "config": "rc",
+      "split": "validation",
+      "declared_lfs_sha256": "4e8b3254106a1245310c3226e05296293a7ccc646ce5c695084cc59054e07477",
+      "whole_file_sha256_measured": false,
+      "bytes": 129269443,
+      "footer_row_count": 4486,
+      "row_groups": 5,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "read_column_paths": [
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "search_results.filename.list.item"
+      ],
+      "qid_count": 4486,
+      "distinct_qids": 4486,
+      "duplicate_qid_values": 0,
+      "duplicate_qid_excess": 0,
+      "question_source_counts": {
+        "http://billturnbull.quiz4free.com/": 283,
+        "http://quiz4free.com/": 234,
+        "http://triviabug.com/q-and-a-quizzes/": 107,
+        "http://www.odquiz.org.uk/": 1042,
+        "http://www.quizwise.com/": 252,
+        "https://quizguy.wordpress.com/": 350,
+        "www.jetpunk.com": 348,
+        "www.sfquiz.org.uk": 1870
+      },
+      "identity_inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00003-of-00004.parquet/identity-inventory.jsonl",
+        "bytes": 991913,
+        "sha256": "ab5a98a2561948317586a5ea4afe927128484ab170de887c398c01262c110be3"
+      },
+      "http_receipts": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/rc__validation-00003-of-00004.parquet/http-receipts.json",
+      "http_requests": 27,
+      "http_bytes_read": 182977
+    },
+    {
+      "path": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+      "config": "unfiltered.nocontext",
+      "split": "validation",
+      "declared_lfs_sha256": "58925ac87e2e2031154899e9c1226f15d81e1675237da1a308e234b77b7bdcaf",
+      "whole_file_sha256_measured": false,
+      "bytes": 4390956,
+      "footer_row_count": 11313,
+      "row_groups": 12,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "read_column_paths": [
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "search_results.filename.list.item"
+      ],
+      "qid_count": 11313,
+      "distinct_qids": 11313,
+      "duplicate_qid_values": 0,
+      "duplicate_qid_excess": 0,
+      "question_source_counts": {
+        "http://billturnbull.quiz4free.com/": 469,
+        "http://quiz4free.com/": 373,
+        "http://triviabug.com/q-and-a-quizzes/": 231,
+        "http://www.businessballs.com/": 942,
+        "http://www.odquiz.org.uk/": 1453,
+        "http://www.quizballs.com/": 1048,
+        "http://www.quizwise.com/": 1409,
+        "http://www.triviacountry.com/": 312,
+        "http://www.wrexhamquizleague.co.uk/": 467,
+        "https://derbyshirepubquizleague.wordpress.com/": 675,
+        "https://quizguy.wordpress.com/": 479,
+        "https://www.quiz-zone.co.uk/": 493,
+        "www.jetpunk.com": 457,
+        "www.sfquiz.org.uk": 2505
+      },
+      "identity_inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered.nocontext__validation-00000-of-00001.parquet/identity-inventory.jsonl",
+        "bytes": 1972444,
+        "sha256": "3736e9b17630dc1fb9300f6d6e5d06be31ace647befaf1851a9b3a3fb729642b"
+      },
+      "http_receipts": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered.nocontext__validation-00000-of-00001.parquet/http-receipts.json",
+      "http_requests": 62,
+      "http_bytes_read": 106019
+    },
+    {
+      "path": "unfiltered/validation-00003-of-00007.parquet",
+      "config": "unfiltered",
+      "split": "validation",
+      "declared_lfs_sha256": "d3ed1268821a5a56c9f929e7f238dd1b44a5ee667659da9994462007dcdf1e88",
+      "whole_file_sha256_measured": false,
+      "bytes": 226278147,
+      "footer_row_count": 1616,
+      "row_groups": 2,
+      "physical_column_paths": [
+        "question",
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "entity_pages.title.list.item",
+        "entity_pages.wiki_context.list.item",
+        "search_results.description.list.item",
+        "search_results.filename.list.item",
+        "search_results.rank.list.item",
+        "search_results.title.list.item",
+        "search_results.url.list.item",
+        "search_results.search_context.list.item",
+        "answer.aliases.list.item",
+        "answer.normalized_aliases.list.item",
+        "answer.matched_wiki_entity_name",
+        "answer.normalized_matched_wiki_entity_name",
+        "answer.normalized_value",
+        "answer.type",
+        "answer.value"
+      ],
+      "read_column_paths": [
+        "question_id",
+        "question_source",
+        "entity_pages.doc_source.list.item",
+        "entity_pages.filename.list.item",
+        "search_results.filename.list.item"
+      ],
+      "qid_count": 1616,
+      "distinct_qids": 1616,
+      "duplicate_qid_values": 0,
+      "duplicate_qid_excess": 0,
+      "question_source_counts": {
+        "http://www.quizwise.com/": 497,
+        "www.jetpunk.com": 457,
+        "www.sfquiz.org.uk": 662
+      },
+      "identity_inventory": {
+        "path": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00003-of-00007.parquet/identity-inventory.jsonl",
+        "bytes": 687578,
+        "sha256": "853d1047366421eea517f54ef8fd7f4c6729290f829175e08661d186ae7f77a4"
+      },
+      "http_receipts": "/mnt/20t/xubuqiang/hg-work/trivia3/ranges/unfiltered__validation-00003-of-00007.parquet/http-receipts.json",
+      "http_requests": 12,
+      "http_bytes_read": 262040
+    }
+  ],
+  "errors": [
+    {
+      "path": "rc.nocontext/train-00000-of-00001.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "rc.nocontext/test-00000-of-00001.parquet",
+      "error": "ProxyError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.nocontext/test-00000-of-00001.parquet?hg_trivia3_range=1124984-1131453 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "path": "rc.web.nocontext/test-00000-of-00001.parquet",
+      "error": "ProxyError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.web.nocontext/test-00000-of-00001.parquet?hg_trivia3_range=393389-393498 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "path": "rc.nocontext/validation-00000-of-00001.parquet",
+      "error": "ProxyError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.nocontext/validation-00000-of-00001.parquet?hg_trivia3_range=2141332-2141457 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "path": "rc.web.nocontext/train-00000-of-00001.parquet",
+      "error": "ProxyError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.web.nocontext/train-00000-of-00001.parquet?hg_trivia3_range=1152336-1158057 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "path": "rc.web/validation-00001-of-00003.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.web/validation-00001-of-00003.parquet?hg_trivia3_range=237198603-237198610 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.web/validation-00002-of-00003.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.web/validation-00002-of-00003.parquet?hg_trivia3_range=234814567-234814574 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.web/validation-00000-of-00003.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.web/validation-00000-of-00003.parquet?hg_trivia3_range=224808020-224808027 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.web.nocontext/validation-00000-of-00001.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.web.nocontext/validation-00000-of-00001.parquet?hg_trivia3_range=4040310-4040317 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.wikipedia.nocontext/test-00000-of-00001.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.wikipedia.nocontext/test-00000-of-00001.parquet?hg_trivia3_range=541844-541851 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.wikipedia.nocontext/train-00000-of-00001.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.wikipedia.nocontext/train-00000-of-00001.parquet?hg_trivia3_range=24953639-24953646 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.wikipedia/validation-00000-of-00001.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.wikipedia/validation-00000-of-00001.parquet?hg_trivia3_range=234778386-234778393 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc.wikipedia.nocontext/validation-00000-of-00001.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc.wikipedia.nocontext/validation-00000-of-00001.parquet?hg_trivia3_range=3308443-3308450 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc/validation-00001-of-00004.parquet",
+      "error": "SSLError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /datasets/mandarjoshi/trivia_qa/resolve/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/rc/validation-00001-of-00004.parquet?hg_trivia3_range=296373489-296373496 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)')))"
+    },
+    {
+      "path": "rc/validation-00000-of-00004.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered.nocontext/test-00000-of-00001.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered.nocontext/train-00000-of-00001.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered/validation-00000-of-00007.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered/validation-00001-of-00007.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered/validation-00002-of-00007.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered/validation-00004-of-00007.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered/validation-00005-of-00007.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    },
+    {
+      "path": "unfiltered/validation-00006-of-00007.parquet",
+      "error": "ReadTimeout: HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"
+    }
+  ]
+}
