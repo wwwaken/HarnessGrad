@@ -1,0 +1,64 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x68c0
+There are 9 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0270a8 0x0270a8 R E 0x200000
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_EH_FRAME   0x023180 0x0000000000023180 0x0000000000023180 0x000a9c 0x000a9c R   0x4
+  NOTE           0x026d08 0x0000000000026d08 0x0000000000026d08 0x0003a0 0x0003a0 R   0x8
+  LOAD           0x027850 0x0000000000227850 0x0000000000227850 0x001038 0x001c10 RW  0x200000
+  GNU_RELRO      0x027850 0x0000000000227850 0x0000000000227850 0x0007b0 0x0007b0 R   0x1
+  NOTE           0x03c000 0x000000000022a000 0x000000000022a000 0x000024 0x000024 R   0x4
+  LOAD           0x03c000 0x000000000022a000 0x000000000022a000 0x002388 0x002388 RW  0x1000
+  DYNAMIC        0x03e138 0x000000000022c138 0x000000000022c138 0x000250 0x000250 RW  0x8
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .gnu.hash .dynsym .gnu.version .gnu.version_d .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame_hdr .eh_frame .note.gnu.property 
+   01     
+   02     .eh_frame_hdr 
+   03     .note.gnu.property 
+   04     .init_array .fini_array .jcr .data.rel.ro .got .data .bss 
+   05     .init_array .fini_array .jcr .data.rel.ro .got 
+   06     .note.gnu.build-id 
+   07     .note.gnu.build-id .hash .dynstr .dynamic 
+   08     .dynamic 
+
+Dynamic section at offset 0x3e138 contains 33 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libiompstubs5.so]
+ 0x000000000000000c (INIT)               0x6690
+ 0x000000000000000d (FINI)               0x20e30
+ 0x0000000000000019 (INIT_ARRAY)         0x227850
+ 0x000000000000001b (INIT_ARRAYSZ)       16 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x227860
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x0000000000000004 (HASH)               0x22a028
+ 0x000000006ffffef5 (GNU_HASH)           0xce8
+ 0x0000000000000005 (STRTAB)             0x22aae8
+ 0x0000000000000006 (SYMTAB)             0x1928
+ 0x000000000000000a (STRSZ)              5709 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x227ea8
+ 0x0000000000000002 (PLTRELSZ)           720 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x63c0
+ 0x0000000000000007 (RELA)               0x5cb8
+ 0x0000000000000008 (RELASZ)             1800 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffc (VERDEF)             0x5a48
+ 0x000000006ffffffd (VERDEFNUM)          16
+ 0x0000000000000018 (BIND_NOW)           
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffffe (VERNEED)            0x5c68
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x56fc
+ 0x000000006ffffff9 (RELACOUNT)          67
+ 0x0000000000000000 (NULL)               0x0

@@ -1,0 +1,61 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x202bf0
+There are 10 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x1d2308 0x1d2308 R   0x1000
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  LOAD           0x1d3000 0x00000000001d3000 0x00000000001d3000 0x17d5ff5 0x17d5ff5 R E 0x1000
+  LOAD           0x19a9000 0x00000000019a9000 0x00000000019a9000 0x1a15cc 0x1a15cc R   0x1000
+  GNU_EH_FRAME   0x19bb564 0x00000000019bb564 0x00000000019bb564 0x025624 0x025624 R   0x4
+  LOAD           0x1b4ac00 0x0000000001b4bc00 0x0000000001b4bc00 0x04ff08 0x050538 RW  0x1000
+  GNU_RELRO      0x1b4ac00 0x0000000001b4bc00 0x0000000001b4bc00 0x003400 0x003400 R   0x1
+  NOTE           0x1d98000 0x0000000001b9d000 0x0000000001b9d000 0x000024 0x000024 R   0x4
+  LOAD           0x1d98000 0x0000000001b9d000 0x0000000001b9d000 0x0e2c90 0x0e2c90 RW  0x1000
+  DYNAMIC        0x1e7aa90 0x0000000001c7fa90 0x0000000001c7fa90 0x000200 0x000200 RW  0x8
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .gnu.hash .dynsym .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   01     
+   02     .init .plt .plt.got .text .fini 
+   03     .rodata .itt_notify_tab .eh_frame_hdr .eh_frame 
+   04     .eh_frame_hdr 
+   05     .init_array .fini_array .jcr .got .got.plt .data .bss 
+   06     .init_array .fini_array .jcr .got 
+   07     .note.gnu.build-id 
+   08     .note.gnu.build-id .hash .dynstr .dynamic 
+   09     .dynamic 
+
+Dynamic section at offset 0x1e7aa90 contains 28 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x000000000000000e (SONAME)             Library soname: [libmkl_gnu_thread.so.2]
+ 0x000000000000000c (INIT)               0x1d3000
+ 0x000000000000000d (FINI)               0x19a8fec
+ 0x0000000000000019 (INIT_ARRAY)         0x1b4bc00
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x1b4bc08
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x0000000000000004 (HASH)               0x1b9d028
+ 0x000000006ffffef5 (GNU_HASH)           0x22b68
+ 0x0000000000000005 (STRTAB)             0x1bbf930
+ 0x0000000000000006 (SYMTAB)             0x371a8
+ 0x000000000000000a (STRSZ)              786780 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x1b4f000
+ 0x0000000000000002 (PLTRELSZ)           284304 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x18cc78
+ 0x0000000000000007 (RELA)               0x16fae8
+ 0x0000000000000008 (RELASZ)             119184 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0x16faa8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x16665a
+ 0x000000006ffffff9 (RELACOUNT)          4
+ 0x0000000000000000 (NULL)               0x0

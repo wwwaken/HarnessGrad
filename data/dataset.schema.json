@@ -54,7 +54,7 @@
     "kinds": ["answer", "command"],
     "command_required": ["argv", "reward_file"],
     "command_optional": ["cwd", "inputs", "pass_when", "stdout", "timeout_s", "evidence_file", "image", "scorer_input", "native_runtime"],
-    "native_runtime": "BIRD-only trusted dataset/manifest/sha256 binding. Requires sandbox=True, a files command check, exact sealed runtime bytes, closed Python/loader resolution and a native_runtime receipt; any admission mismatch is unmeasured with no ambient fallback.",
+    "native_runtime": "Explicit bird_minidev/jericho/alfworld trusted dataset/manifest/sha256 binding. Requires sandbox=True, a files command check, exact sealed runtime bytes, closed Python/loader resolution and a native_runtime receipt; any admission mismatch is unmeasured with no ambient fallback.",
     "scorer_input": "Optional trusted task_id/path/sha256 binding, with a files path-to-SHA256 inventory for native multi-file inputs. Native dispatch compares task_id to the selected task and requires matching verified scorer-input evidence (including files when declared) before accepting a reward.",
     "absolute_paths": ["reward_file", "evidence_file"],
     "image": "optional pinned verifier image for an exec command; defaults to the task image",

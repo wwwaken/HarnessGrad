@@ -1,0 +1,139 @@
+     1	r"""The shared pieces for a Jericho episode: the environment, the log, and the reduction.
+     2	
+     3	Both the agent's CLI and the check import this module, so "the game the agent played" and
+     4	"the game being scored" are built by **exactly one** code path -- the same argument ALFWorld
+     5	records in §6 of the skill, and the reason the two cannot quietly disagree about what an
+     6	action does.
+     7	
+     8	The game's identity lives in the workdir
+     9	----------------------------------------
+    10	`jer_game.json` (written by `SETUP`, re-materialized by `VERIFY.inputs`) names the ROM and its
+    11	official seed. Neither side takes the game from the other's argv, and the check reads it from
+    12	a copy the platform rewrites immediately before grading.
+    13	
+    14	Why the seed matters
+    15	--------------------
+    16	`game_info.py` gives each game a default seed, and `FrotzEnv.get_walkthrough()` is only valid
+    17	at that seed -- the walkthroughs are generated runs, not abstract solutions. Resetting with a
+    18	different seed moves the objects and the reference solution stops working, which would look
+    19	exactly like an unreachable check.
+    20	"""
+    21	from __future__ import annotations
+    22	
+    23	import json
+    24	from pathlib import Path
+    25	
+    26	#: The filename `SETUP` writes with the game's identity, and the log the CLI appends to.
+    27	GAME_FILENAME = "jer_game.json"
+    28	LOG_FILENAME = "jer_actions.jsonl"
+    29	
+    30	
+    31	def make_env(rom: Path, *, seed: int):
+    32	    """A `FrotzEnv` for `rom`, reset at `seed`.
+    33	
+    34	    Imported inside the function so `data/datasets/jericho.py` stays importable on a machine without
+    35	    the package (`data/scaffolds/registry.py::published` imports every adapter to decide what the
+    36	    chooser offers).
+    37	    """
+    38	    from jericho import FrotzEnv
+    39	
+    40	    # The seed is a **constructor** argument, not a `reset` one (measured:
+    41	    # `FrotzEnv(sf, seed=None)` and `reset(self)`). A seed that failed to apply would move the
+    42	    # objects and break the walkthrough, and the resulting 0 would look like an unreachable
+    43	    # check -- so the env is constructed with the seed and then reset, in that order.
+    44	    env = FrotzEnv(str(rom), seed=seed)
+    45	    env.reset()
+    46	    return env
+    47	
+    48	
+    49	def load_game(workdir: Path, *, rom_dir: Path | None = None,
+    50	              config_path: Path | None = None, rom_path: Path | None = None):
+    51	    """Build and reset the game named by `jer_game.json`. Returns the live env.
+    52	
+    53	    `rom_dir` defaults to the workdir, which is where `VERIFY.inputs` puts the ROM for the
+    54	    check; the CLI's workdir has it too, because `SETUP` ships it there as well.
+    55	    """
+    56	    spec = json.loads((config_path or workdir / GAME_FILENAME).read_text())
+    57	    rom = rom_path or (rom_dir or workdir) / spec["rom"]
+    58	    if not rom.is_file():
+    59	        raise FileNotFoundError(f"no ROM at {rom}")
+    60	    return make_env(rom, seed=int(spec.get("seed") or 0))
+    61	
+    62	
+    63	def action_log_records(path: Path) -> list[dict]:
+    64	    """Every parseable record in the log; blank and broken lines are skipped.
+    65	
+    66	    A truncated final line can only come from a crash mid-append, and a crash means the
+    67	    episode is over. The check counts what it skipped so the evidence says so rather than
+    68	    silently grading a shorter episode.
+    69	    """
+    70	    if not path.is_file():
+    71	        return []
+    72	    records = []
+    73	    for line in path.read_text(errors="replace").splitlines():
+    74	        if not line.strip():
+    75	            continue
+    76	        try:
+    77	            record = json.loads(line)
+    78	        except ValueError:
+    79	            continue
+    80	        if isinstance(record, dict):
+    81	            records.append(record)
+    82	    return records
+    83	
+    84	
+    85	def actions_in(records: list[dict]) -> list[str]:
+    86	    return [str(r["action"]) for r in records
+    87	            if r.get("kind") == "action" and isinstance(r.get("action"), str)]
+    88	
+    89	
+    90	def append_action(path: Path, action: str, step: int) -> None:
+    91	    """Append one action. Raises on failure: a dropped append changes the episode."""
+    92	    path.parent.mkdir(parents=True, exist_ok=True)
+    93	    with path.open("a") as handle:
+    94	        handle.write(json.dumps({"kind": "action", "step": step, "action": action},
+    95	                                ensure_ascii=False) + "\n")
+    96	
+    97	
+    98	def append_marker(path: Path, kind: str, step: int) -> None:
+    99	    path.parent.mkdir(parents=True, exist_ok=True)
+   100	    with path.open("a") as handle:
+   101	        handle.write(json.dumps({"kind": kind, "step": step}) + "\n")
+   102	
+   103	
+   104	def replay(env, actions: list[str]) -> list[dict]:
+   105	    """Apply `actions` in order. Returns one record per action that the game accepted.
+   106	
+   107	    Stops early when the game reports `done` -- Zork can end, and continuing to act in a
+   108	    finished game is not what the reference solution does.
+   109	    """
+   110	    steps = []
+   111	    for index, action in enumerate(actions):
+   112	        try:
+   113	            observation, reward, done, info = env.step(action)
+   114	        except Exception:  # noqa: BLE001 - a game that rejects an action ends the replay there
+   115	            break
+   116	        steps.append({
+   117	            "step": index,
+   118	            "action": action,
+   119	            "score": int(info.get("score", 0)),
+   120	            "moves": int(info.get("moves", 0)),
+   121	            "reward": int(reward),
+   122	            "done": bool(done),
+   123	            "observation": str(observation)[:400],
+   124	        })
+   125	        if done:
+   126	            break
+   127	    return steps
+   128	
+   129	
+   130	def score_fraction(score: int, maximum: int) -> float:
+   131	    """The dataset's reduction: the game's own points over the game's own maximum.
+   132	
+   133	    `get_max_score()` is a number the game states about itself, so the denominator does not
+   134	    depend on a solution. A game whose maximum is 0 (none in this suite, but a guard) scores
+   135	    0.0 rather than dividing by zero, and the evidence carries the pair either way.
+   136	    """
+   137	    if maximum <= 0:
+   138	        return 0.0
+   139	    return max(0, min(int(score), int(maximum))) / float(maximum)

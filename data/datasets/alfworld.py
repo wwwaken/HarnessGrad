@@ -361,6 +361,8 @@ def _verifier(record: dict) -> dict:
         "evidence_file": EVIDENCE_FILE,
         "timeout_s": 300,
     }
+    from data.runtimes import NATIVE_PINS
+    spec["native_runtime"] = NATIVE_PINS["alfworld"].copy()
     return bind_scorer_input(spec, record["task_id"], [GAME_IN_WORKDIR])
 
 

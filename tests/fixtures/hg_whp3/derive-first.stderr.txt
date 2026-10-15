@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/tmp/hg-hp3/tests/fixtures/hg_whp3/derive.py", line 165, in <module>
+    direct = module_site(target, dataset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-hp3/tests/fixtures/hg_whp3/derive.py", line 87, in module_site
+    return cite(SITE / path, needle)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-hp3/tests/fixtures/hg_whp3/derive.py", line 23, in cite
+    number = next(i for i, line in enumerate(lines, 1) if needle in line)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration

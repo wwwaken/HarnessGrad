@@ -1,0 +1,2216 @@
+     1	# subprocess - Subprocesses with accessible I/O streams
+     2	#
+     3	# For more information about this module, see PEP 324.
+     4	#
+     5	# Copyright (c) 2003-2005 by Peter Astrand <astrand@lysator.liu.se>
+     6	#
+     7	# Licensed to PSF under a Contributor Agreement.
+     8	
+     9	r"""Subprocesses with accessible I/O streams
+    10	
+    11	This module allows you to spawn processes, connect to their
+    12	input/output/error pipes, and obtain their return codes.
+    13	
+    14	For a complete description of this module see the Python documentation.
+    15	
+    16	Main API
+    17	========
+    18	run(...): Runs a command, waits for it to complete, then returns a
+    19	          CompletedProcess instance.
+    20	Popen(...): A class for flexibly executing a command in a new process
+    21	
+    22	Constants
+    23	---------
+    24	DEVNULL: Special value that indicates that os.devnull should be used
+    25	PIPE:    Special value that indicates a pipe should be created
+    26	STDOUT:  Special value that indicates that stderr should go to stdout
+    27	
+    28	
+    29	Older API
+    30	=========
+    31	call(...): Runs a command, waits for it to complete, then returns
+    32	    the return code.
+    33	check_call(...): Same as call() but raises CalledProcessError()
+    34	    if return code is not 0
+    35	check_output(...): Same as check_call() but returns the contents of
+    36	    stdout instead of a return code
+    37	getoutput(...): Runs a command in the shell, waits for it to complete,
+    38	    then returns the output
+    39	getstatusoutput(...): Runs a command in the shell, waits for it to complete,
+    40	    then returns a (exitcode, output) tuple
+    41	"""
+    42	
+    43	import builtins
+    44	import errno
+    45	import io
+    46	import locale
+    47	import os
+    48	import time
+    49	import signal
+    50	import sys
+    51	import threading
+    52	import warnings
+    53	import contextlib
+    54	from time import monotonic as _time
+    55	import types
+    56	
+    57	try:
+    58	    import fcntl
+    59	except ImportError:
+    60	    fcntl = None
+    61	
+    62	
+    63	__all__ = ["Popen", "PIPE", "STDOUT", "call", "check_call", "getstatusoutput",
+    64	           "getoutput", "check_output", "run", "CalledProcessError", "DEVNULL",
+    65	           "SubprocessError", "TimeoutExpired", "CompletedProcess"]
+    66	           # NOTE: We intentionally exclude list2cmdline as it is
+    67	           # considered an internal implementation detail.  issue10838.
+    68	
+    69	# use presence of msvcrt to detect Windows-like platforms (see bpo-8110)
+    70	try:
+    71	    import msvcrt
+    72	except ModuleNotFoundError:
+    73	    _mswindows = False
+    74	else:
+    75	    _mswindows = True
+    76	
+    77	# wasm32-emscripten and wasm32-wasi do not support processes
+    78	_can_fork_exec = sys.platform not in {"emscripten", "wasi"}
+    79	
+    80	if _mswindows:
+    81	    import _winapi
+    82	    from _winapi import (CREATE_NEW_CONSOLE, CREATE_NEW_PROCESS_GROUP,
+    83	                         STD_INPUT_HANDLE, STD_OUTPUT_HANDLE,
+    84	                         STD_ERROR_HANDLE, SW_HIDE,
+    85	                         STARTF_USESTDHANDLES, STARTF_USESHOWWINDOW,
+    86	                         ABOVE_NORMAL_PRIORITY_CLASS, BELOW_NORMAL_PRIORITY_CLASS,
+    87	                         HIGH_PRIORITY_CLASS, IDLE_PRIORITY_CLASS,
+    88	                         NORMAL_PRIORITY_CLASS, REALTIME_PRIORITY_CLASS,
+    89	                         CREATE_NO_WINDOW, DETACHED_PROCESS,
+    90	                         CREATE_DEFAULT_ERROR_MODE, CREATE_BREAKAWAY_FROM_JOB)
+    91	
+    92	    __all__.extend(["CREATE_NEW_CONSOLE", "CREATE_NEW_PROCESS_GROUP",
+    93	                    "STD_INPUT_HANDLE", "STD_OUTPUT_HANDLE",
+    94	                    "STD_ERROR_HANDLE", "SW_HIDE",
+    95	                    "STARTF_USESTDHANDLES", "STARTF_USESHOWWINDOW",
+    96	                    "STARTUPINFO",
+    97	                    "ABOVE_NORMAL_PRIORITY_CLASS", "BELOW_NORMAL_PRIORITY_CLASS",
+    98	                    "HIGH_PRIORITY_CLASS", "IDLE_PRIORITY_CLASS",
+    99	                    "NORMAL_PRIORITY_CLASS", "REALTIME_PRIORITY_CLASS",
+   100	                    "CREATE_NO_WINDOW", "DETACHED_PROCESS",
+   101	                    "CREATE_DEFAULT_ERROR_MODE", "CREATE_BREAKAWAY_FROM_JOB"])
+   102	else:
+   103	    if _can_fork_exec:
+   104	        from _posixsubprocess import fork_exec as _fork_exec
+   105	        # used in methods that are called by __del__
+   106	        _waitpid = os.waitpid
+   107	        _waitstatus_to_exitcode = os.waitstatus_to_exitcode
+   108	        _WIFSTOPPED = os.WIFSTOPPED
+   109	        _WSTOPSIG = os.WSTOPSIG
+   110	        _WNOHANG = os.WNOHANG
+   111	    else:
+   112	        _fork_exec = None
+   113	        _waitpid = None
+   114	        _waitstatus_to_exitcode = None
+   115	        _WIFSTOPPED = None
+   116	        _WSTOPSIG = None
+   117	        _WNOHANG = None
+   118	    import select
+   119	    import selectors
+   120	
+   121	
+   122	# Exception classes used by this module.
+   123	class SubprocessError(Exception): pass
+   124	
+   125	
+   126	class CalledProcessError(SubprocessError):
+   127	    """Raised when run() is called with check=True and the process
+   128	    returns a non-zero exit status.
+   129	
+   130	    Attributes:
+   131	      cmd, returncode, stdout, stderr, output
+   132	    """
+   133	    def __init__(self, returncode, cmd, output=None, stderr=None):
+   134	        self.returncode = returncode
+   135	        self.cmd = cmd
+   136	        self.output = output
+   137	        self.stderr = stderr
+   138	
+   139	    def __str__(self):
+   140	        if self.returncode and self.returncode < 0:
+   141	            try:
+   142	                return "Command '%s' died with %r." % (
+   143	                        self.cmd, signal.Signals(-self.returncode))
+   144	            except ValueError:
+   145	                return "Command '%s' died with unknown signal %d." % (
+   146	                        self.cmd, -self.returncode)
+   147	        else:
+   148	            return "Command '%s' returned non-zero exit status %d." % (
+   149	                    self.cmd, self.returncode)
+   150	
+   151	    @property
+   152	    def stdout(self):
+   153	        """Alias for output attribute, to match stderr"""
+   154	        return self.output
+   155	
+   156	    @stdout.setter
+   157	    def stdout(self, value):
+   158	        # There's no obvious reason to set this, but allow it anyway so
+   159	        # .stdout is a transparent alias for .output
+   160	        self.output = value
+   161	
+   162	
+   163	class TimeoutExpired(SubprocessError):
+   164	    """This exception is raised when the timeout expires while waiting for a
+   165	    child process.
+   166	
+   167	    Attributes:
+   168	        cmd, output, stdout, stderr, timeout
+   169	    """
+   170	    def __init__(self, cmd, timeout, output=None, stderr=None):
+   171	        self.cmd = cmd
+   172	        self.timeout = timeout
+   173	        self.output = output
+   174	        self.stderr = stderr
+   175	
+   176	    def __str__(self):
+   177	        return ("Command '%s' timed out after %s seconds" %
+   178	                (self.cmd, self.timeout))
+   179	
+   180	    @property
+   181	    def stdout(self):
+   182	        return self.output
+   183	
+   184	    @stdout.setter
+   185	    def stdout(self, value):
+   186	        # There's no obvious reason to set this, but allow it anyway so
+   187	        # .stdout is a transparent alias for .output
+   188	        self.output = value
+   189	
+   190	
+   191	if _mswindows:
+   192	    class STARTUPINFO:
+   193	        def __init__(self, *, dwFlags=0, hStdInput=None, hStdOutput=None,
+   194	                     hStdError=None, wShowWindow=0, lpAttributeList=None):
+   195	            self.dwFlags = dwFlags
+   196	            self.hStdInput = hStdInput
+   197	            self.hStdOutput = hStdOutput
+   198	            self.hStdError = hStdError
+   199	            self.wShowWindow = wShowWindow
+   200	            self.lpAttributeList = lpAttributeList or {"handle_list": []}
+   201	
+   202	        def copy(self):
+   203	            attr_list = self.lpAttributeList.copy()
+   204	            if 'handle_list' in attr_list:
+   205	                attr_list['handle_list'] = list(attr_list['handle_list'])
+   206	
+   207	            return STARTUPINFO(dwFlags=self.dwFlags,
+   208	                               hStdInput=self.hStdInput,
+   209	                               hStdOutput=self.hStdOutput,
+   210	                               hStdError=self.hStdError,
+   211	                               wShowWindow=self.wShowWindow,
+   212	                               lpAttributeList=attr_list)
+   213	
+   214	
+   215	    class Handle(int):
+   216	        closed = False
+   217	
+   218	        def Close(self, CloseHandle=_winapi.CloseHandle):
+   219	            if not self.closed:
+   220	                self.closed = True
+   221	                CloseHandle(self)
+   222	
+   223	        def Detach(self):
+   224	            if not self.closed:
+   225	                self.closed = True
+   226	                return int(self)
+   227	            raise ValueError("already closed")
+   228	
+   229	        def __repr__(self):
+   230	            return "%s(%d)" % (self.__class__.__name__, int(self))
+   231	
+   232	        __del__ = Close
+   233	else:
+   234	    # When select or poll has indicated that the file is writable,
+   235	    # we can write up to _PIPE_BUF bytes without risk of blocking.
+   236	    # POSIX defines PIPE_BUF as >= 512.
+   237	    _PIPE_BUF = getattr(select, 'PIPE_BUF', 512)
+   238	
+   239	    # poll/select have the advantage of not requiring any extra file
+   240	    # descriptor, contrarily to epoll/kqueue (also, they require a single
+   241	    # syscall).
+   242	    if hasattr(selectors, 'PollSelector'):
+   243	        _PopenSelector = selectors.PollSelector
+   244	    else:
+   245	        _PopenSelector = selectors.SelectSelector
+   246	
+   247	
+   248	if _mswindows:
+   249	    # On Windows we just need to close `Popen._handle` when we no longer need
+   250	    # it, so that the kernel can free it. `Popen._handle` gets closed
+   251	    # implicitly when the `Popen` instance is finalized (see `Handle.__del__`,
+   252	    # which is calling `CloseHandle` as requested in [1]), so there is nothing
+   253	    # for `_cleanup` to do.
+   254	    #
+   255	    # [1] https://docs.microsoft.com/en-us/windows/desktop/ProcThread/
+   256	    # creating-processes
+   257	    _active = None
+   258	
+   259	    def _cleanup():
+   260	        pass
+   261	else:
+   262	    # This lists holds Popen instances for which the underlying process had not
+   263	    # exited at the time its __del__ method got called: those processes are
+   264	    # wait()ed for synchronously from _cleanup() when a new Popen object is
+   265	    # created, to avoid zombie processes.
+   266	    _active = []
+   267	
+   268	    def _cleanup():
+   269	        if _active is None:
+   270	            return
+   271	        for inst in _active[:]:
+   272	            res = inst._internal_poll(_deadstate=sys.maxsize)
+   273	            if res is not None:
+   274	                try:
+   275	                    _active.remove(inst)
+   276	                except ValueError:
+   277	                    # This can happen if two threads create a new Popen instance.
+   278	                    # It's harmless that it was already removed, so ignore.
+   279	                    pass
+   280	
+   281	PIPE = -1
+   282	STDOUT = -2
+   283	DEVNULL = -3
+   284	
+   285	
+   286	# XXX This function is only used by multiprocessing and the test suite,
+   287	# but it's here so that it can be imported when Python is compiled without
+   288	# threads.
+   289	
+   290	def _optim_args_from_interpreter_flags():
+   291	    """Return a list of command-line arguments reproducing the current
+   292	    optimization settings in sys.flags."""
+   293	    args = []
+   294	    value = sys.flags.optimize
+   295	    if value > 0:
+   296	        args.append('-' + 'O' * value)
+   297	    return args
+   298	
+   299	
+   300	def _args_from_interpreter_flags():
+   301	    """Return a list of command-line arguments reproducing the current
+   302	    settings in sys.flags, sys.warnoptions and sys._xoptions."""
+   303	    flag_opt_map = {
+   304	        'debug': 'd',
+   305	        # 'inspect': 'i',
+   306	        # 'interactive': 'i',
+   307	        'dont_write_bytecode': 'B',
+   308	        'no_site': 'S',
+   309	        'verbose': 'v',
+   310	        'bytes_warning': 'b',
+   311	        'quiet': 'q',
+   312	        # -O is handled in _optim_args_from_interpreter_flags()
+   313	    }
+   314	    args = _optim_args_from_interpreter_flags()
+   315	    for flag, opt in flag_opt_map.items():
+   316	        v = getattr(sys.flags, flag)
+   317	        if v > 0:
+   318	            args.append('-' + opt * v)
+   319	
+   320	    if sys.flags.isolated:
+   321	        args.append('-I')
+   322	    else:
+   323	        if sys.flags.ignore_environment:
+   324	            args.append('-E')
+   325	        if sys.flags.no_user_site:
+   326	            args.append('-s')
+   327	        if sys.flags.safe_path:
+   328	            args.append('-P')
+   329	
+   330	    # -W options
+   331	    warnopts = sys.warnoptions[:]
+   332	    xoptions = getattr(sys, '_xoptions', {})
+   333	    bytes_warning = sys.flags.bytes_warning
+   334	    dev_mode = sys.flags.dev_mode
+   335	
+   336	    if bytes_warning > 1:
+   337	        warnopts.remove("error::BytesWarning")
+   338	    elif bytes_warning:
+   339	        warnopts.remove("default::BytesWarning")
+   340	    if dev_mode:
+   341	        warnopts.remove('default')
+   342	    for opt in warnopts:
+   343	        args.append('-W' + opt)
+   344	
+   345	    # -X options
+   346	    if dev_mode:
+   347	        args.extend(('-X', 'dev'))
+   348	    for opt in ('faulthandler', 'tracemalloc', 'importtime',
+   349	                'frozen_modules', 'showrefcount', 'utf8'):
+   350	        if opt in xoptions:
+   351	            value = xoptions[opt]
+   352	            if value is True:
+   353	                arg = opt
+   354	            else:
+   355	                arg = '%s=%s' % (opt, value)
+   356	            args.extend(('-X', arg))
+   357	
+   358	    return args
+   359	
+   360	
+   361	def _text_encoding():
+   362	    # Return default text encoding and emit EncodingWarning if
+   363	    # sys.flags.warn_default_encoding is true.
+   364	    if sys.flags.warn_default_encoding:
+   365	        f = sys._getframe()
+   366	        filename = f.f_code.co_filename
+   367	        stacklevel = 2
+   368	        while f := f.f_back:
+   369	            if f.f_code.co_filename != filename:
+   370	                break
+   371	            stacklevel += 1
+   372	        warnings.warn("'encoding' argument not specified.",
+   373	                      EncodingWarning, stacklevel)
+   374	
+   375	    if sys.flags.utf8_mode:
+   376	        return "utf-8"
+   377	    else:
+   378	        return locale.getencoding()
+   379	
+   380	
+   381	def call(*popenargs, timeout=None, **kwargs):
+   382	    """Run command with arguments.  Wait for command to complete or
+   383	    timeout, then return the returncode attribute.
+   384	
+   385	    The arguments are the same as for the Popen constructor.  Example:
+   386	
+   387	    retcode = call(["ls", "-l"])
+   388	    """
+   389	    with Popen(*popenargs, **kwargs) as p:
+   390	        try:
+   391	            return p.wait(timeout=timeout)
+   392	        except:  # Including KeyboardInterrupt, wait handled that.
+   393	            p.kill()
+   394	            # We don't call p.wait() again as p.__exit__ does that for us.
+   395	            raise
+   396	
+   397	
+   398	def check_call(*popenargs, **kwargs):
+   399	    """Run command with arguments.  Wait for command to complete.  If
+   400	    the exit code was zero then return, otherwise raise
+   401	    CalledProcessError.  The CalledProcessError object will have the
+   402	    return code in the returncode attribute.
+   403	
+   404	    The arguments are the same as for the call function.  Example:
+   405	
+   406	    check_call(["ls", "-l"])
+   407	    """
+   408	    retcode = call(*popenargs, **kwargs)
+   409	    if retcode:
+   410	        cmd = kwargs.get("args")
+   411	        if cmd is None:
+   412	            cmd = popenargs[0]
+   413	        raise CalledProcessError(retcode, cmd)
+   414	    return 0
+   415	
+   416	
+   417	def check_output(*popenargs, timeout=None, **kwargs):
+   418	    r"""Run command with arguments and return its output.
+   419	
+   420	    If the exit code was non-zero it raises a CalledProcessError.  The
+   421	    CalledProcessError object will have the return code in the returncode
+   422	    attribute and output in the output attribute.
+   423	
+   424	    The arguments are the same as for the Popen constructor.  Example:
+   425	
+   426	    >>> check_output(["ls", "-l", "/dev/null"])
+   427	    b'crw-rw-rw- 1 root root 1, 3 Oct 18  2007 /dev/null\n'
+   428	
+   429	    The stdout argument is not allowed as it is used internally.
+   430	    To capture standard error in the result, use stderr=STDOUT.
+   431	
+   432	    >>> check_output(["/bin/sh", "-c",
+   433	    ...               "ls -l non_existent_file ; exit 0"],
+   434	    ...              stderr=STDOUT)
+   435	    b'ls: non_existent_file: No such file or directory\n'
+   436	
+   437	    There is an additional optional argument, "input", allowing you to
+   438	    pass a string to the subprocess's stdin.  If you use this argument
+   439	    you may not also use the Popen constructor's "stdin" argument, as
+   440	    it too will be used internally.  Example:
+   441	
+   442	    >>> check_output(["sed", "-e", "s/foo/bar/"],
+   443	    ...              input=b"when in the course of fooman events\n")
+   444	    b'when in the course of barman events\n'
+   445	
+   446	    By default, all communication is in bytes, and therefore any "input"
+   447	    should be bytes, and the return value will be bytes.  If in text mode,
+   448	    any "input" should be a string, and the return value will be a string
+   449	    decoded according to locale encoding, or by "encoding" if set. Text mode
+   450	    is triggered by setting any of text, encoding, errors or universal_newlines.
+   451	    """
+   452	    for kw in ('stdout', 'check'):
+   453	        if kw in kwargs:
+   454	            raise ValueError(f'{kw} argument not allowed, it will be overridden.')
+   455	
+   456	    if 'input' in kwargs and kwargs['input'] is None:
+   457	        # Explicitly passing input=None was previously equivalent to passing an
+   458	        # empty string. That is maintained here for backwards compatibility.
+   459	        if kwargs.get('universal_newlines') or kwargs.get('text') or kwargs.get('encoding') \
+   460	                or kwargs.get('errors'):
+   461	            empty = ''
+   462	        else:
+   463	            empty = b''
+   464	        kwargs['input'] = empty
+   465	
+   466	    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+   467	               **kwargs).stdout
+   468	
+   469	
+   470	class CompletedProcess(object):
+   471	    """A process that has finished running.
+   472	
+   473	    This is returned by run().
+   474	
+   475	    Attributes:
+   476	      args: The list or str args passed to run().
+   477	      returncode: The exit code of the process, negative for signals.
+   478	      stdout: The standard output (None if not captured).
+   479	      stderr: The standard error (None if not captured).
+   480	    """
+   481	    def __init__(self, args, returncode, stdout=None, stderr=None):
+   482	        self.args = args
+   483	        self.returncode = returncode
+   484	        self.stdout = stdout
+   485	        self.stderr = stderr
+   486	
+   487	    def __repr__(self):
+   488	        args = ['args={!r}'.format(self.args),
+   489	                'returncode={!r}'.format(self.returncode)]
+   490	        if self.stdout is not None:
+   491	            args.append('stdout={!r}'.format(self.stdout))
+   492	        if self.stderr is not None:
+   493	            args.append('stderr={!r}'.format(self.stderr))
+   494	        return "{}({})".format(type(self).__name__, ', '.join(args))
+   495	
+   496	    __class_getitem__ = classmethod(types.GenericAlias)
+   497	
+   498	
+   499	    def check_returncode(self):
+   500	        """Raise CalledProcessError if the exit code is non-zero."""
+   501	        if self.returncode:
+   502	            raise CalledProcessError(self.returncode, self.args, self.stdout,
+   503	                                     self.stderr)
+   504	
+   505	
+   506	def run(*popenargs,
+   507	        input=None, capture_output=False, timeout=None, check=False, **kwargs):
+   508	    """Run command with arguments and return a CompletedProcess instance.
+   509	
+   510	    The returned instance will have attributes args, returncode, stdout and
+   511	    stderr. By default, stdout and stderr are not captured, and those attributes
+   512	    will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+   513	    or pass capture_output=True to capture both.
+   514	
+   515	    If check is True and the exit code was non-zero, it raises a
+   516	    CalledProcessError. The CalledProcessError object will have the return code
+   517	    in the returncode attribute, and output & stderr attributes if those streams
+   518	    were captured.
+   519	
+   520	    If timeout is given, and the process takes too long, a TimeoutExpired
+   521	    exception will be raised.
+   522	
+   523	    There is an optional argument "input", allowing you to
+   524	    pass bytes or a string to the subprocess's stdin.  If you use this argument
+   525	    you may not also use the Popen constructor's "stdin" argument, as
+   526	    it will be used internally.
+   527	
+   528	    By default, all communication is in bytes, and therefore any "input" should
+   529	    be bytes, and the stdout and stderr will be bytes. If in text mode, any
+   530	    "input" should be a string, and stdout and stderr will be strings decoded
+   531	    according to locale encoding, or by "encoding" if set. Text mode is
+   532	    triggered by setting any of text, encoding, errors or universal_newlines.
+   533	
+   534	    The other arguments are the same as for the Popen constructor.
+   535	    """
+   536	    if input is not None:
+   537	        if kwargs.get('stdin') is not None:
+   538	            raise ValueError('stdin and input arguments may not both be used.')
+   539	        kwargs['stdin'] = PIPE
+   540	
+   541	    if capture_output:
+   542	        if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+   543	            raise ValueError('stdout and stderr arguments may not be used '
+   544	                             'with capture_output.')
+   545	        kwargs['stdout'] = PIPE
+   546	        kwargs['stderr'] = PIPE
+   547	
+   548	    with Popen(*popenargs, **kwargs) as process:
+   549	        try:
+   550	            stdout, stderr = process.communicate(input, timeout=timeout)
+   551	        except TimeoutExpired as exc:
+   552	            process.kill()
+   553	            if _mswindows:
+   554	                # Windows accumulates the output in a single blocking
+   555	                # read() call run on child threads, with the timeout
+   556	                # being done in a join() on those threads.  communicate()
+   557	                # _after_ kill() is required to collect that and add it
+   558	                # to the exception.
+   559	                exc.stdout, exc.stderr = process.communicate()
+   560	            else:
+   561	                # POSIX _communicate already populated the output so
+   562	                # far into the TimeoutExpired exception.
+   563	                process.wait()
+   564	            raise
+   565	        except:  # Including KeyboardInterrupt, communicate handled that.
+   566	            process.kill()
+   567	            # We don't call process.wait() as .__exit__ does that for us.
+   568	            raise
+   569	        retcode = process.poll()
+   570	        if check and retcode:
+   571	            raise CalledProcessError(retcode, process.args,
+   572	                                     output=stdout, stderr=stderr)
+   573	    return CompletedProcess(process.args, retcode, stdout, stderr)
+   574	
+   575	
+   576	def list2cmdline(seq):
+   577	    """
+   578	    Translate a sequence of arguments into a command line
+   579	    string, using the same rules as the MS C runtime:
+   580	
+   581	    1) Arguments are delimited by white space, which is either a
+   582	       space or a tab.
+   583	
+   584	    2) A string surrounded by double quotation marks is
+   585	       interpreted as a single argument, regardless of white space
+   586	       contained within.  A quoted string can be embedded in an
+   587	       argument.
+   588	
+   589	    3) A double quotation mark preceded by a backslash is
+   590	       interpreted as a literal double quotation mark.
+   591	
+   592	    4) Backslashes are interpreted literally, unless they
+   593	       immediately precede a double quotation mark.
+   594	
+   595	    5) If backslashes immediately precede a double quotation mark,
+   596	       every pair of backslashes is interpreted as a literal
+   597	       backslash.  If the number of backslashes is odd, the last
+   598	       backslash escapes the next double quotation mark as
+   599	       described in rule 3.
+   600	    """
+   601	
+   602	    # See
+   603	    # http://msdn.microsoft.com/en-us/library/17w5ykft.aspx
+   604	    # or search http://msdn.microsoft.com for
+   605	    # "Parsing C++ Command-Line Arguments"
+   606	    result = []
+   607	    needquote = False
+   608	    for arg in map(os.fsdecode, seq):
+   609	        bs_buf = []
+   610	
+   611	        # Add a space to separate this argument from the others
+   612	        if result:
+   613	            result.append(' ')
+   614	
+   615	        needquote = (" " in arg) or ("\t" in arg) or not arg
+   616	        if needquote:
+   617	            result.append('"')
+   618	
+   619	        for c in arg:
+   620	            if c == '\\':
+   621	                # Don't know if we need to double yet.
+   622	                bs_buf.append(c)
+   623	            elif c == '"':
+   624	                # Double backslashes.
+   625	                result.append('\\' * len(bs_buf)*2)
+   626	                bs_buf = []
+   627	                result.append('\\"')
+   628	            else:
+   629	                # Normal char
+   630	                if bs_buf:
+   631	                    result.extend(bs_buf)
+   632	                    bs_buf = []
+   633	                result.append(c)
+   634	
+   635	        # Add remaining backslashes, if any.
+   636	        if bs_buf:
+   637	            result.extend(bs_buf)
+   638	
+   639	        if needquote:
+   640	            result.extend(bs_buf)
+   641	            result.append('"')
+   642	
+   643	    return ''.join(result)
+   644	
+   645	
+   646	# Various tools for executing commands and looking at their output and status.
+   647	#
+   648	
+   649	def getstatusoutput(cmd, *, encoding=None, errors=None):
+   650	    """Return (exitcode, output) of executing cmd in a shell.
+   651	
+   652	    Execute the string 'cmd' in a shell with 'check_output' and
+   653	    return a 2-tuple (status, output). The locale encoding is used
+   654	    to decode the output and process newlines.
+   655	
+   656	    A trailing newline is stripped from the output.
+   657	    The exit status for the command can be interpreted
+   658	    according to the rules for the function 'wait'. Example:
+   659	
+   660	    >>> import subprocess
+   661	    >>> subprocess.getstatusoutput('ls /bin/ls')
+   662	    (0, '/bin/ls')
+   663	    >>> subprocess.getstatusoutput('cat /bin/junk')
+   664	    (1, 'cat: /bin/junk: No such file or directory')
+   665	    >>> subprocess.getstatusoutput('/bin/junk')
+   666	    (127, 'sh: /bin/junk: not found')
+   667	    >>> subprocess.getstatusoutput('/bin/kill $$')
+   668	    (-15, '')
+   669	    """
+   670	    try:
+   671	        data = check_output(cmd, shell=True, text=True, stderr=STDOUT,
+   672	                            encoding=encoding, errors=errors)
+   673	        exitcode = 0
+   674	    except CalledProcessError as ex:
+   675	        data = ex.output
+   676	        exitcode = ex.returncode
+   677	    if data[-1:] == '\n':
+   678	        data = data[:-1]
+   679	    return exitcode, data
+   680	
+   681	def getoutput(cmd, *, encoding=None, errors=None):
+   682	    """Return output (stdout or stderr) of executing cmd in a shell.
+   683	
+   684	    Like getstatusoutput(), except the exit status is ignored and the return
+   685	    value is a string containing the command's output.  Example:
+   686	
+   687	    >>> import subprocess
+   688	    >>> subprocess.getoutput('ls /bin/ls')
+   689	    '/bin/ls'
+   690	    """
+   691	    return getstatusoutput(cmd, encoding=encoding, errors=errors)[1]
+   692	
+   693	
+   694	
+   695	def _use_posix_spawn():
+   696	    """Check if posix_spawn() can be used for subprocess.
+   697	
+   698	    subprocess requires a posix_spawn() implementation that properly reports
+   699	    errors to the parent process, & sets errno on the following failures:
+   700	
+   701	    * Process attribute actions failed.
+   702	    * File actions failed.
+   703	    * exec() failed.
+   704	
+   705	    Prefer an implementation which can use vfork() in some cases for best
+   706	    performance.
+   707	    """
+   708	    if _mswindows or not hasattr(os, 'posix_spawn'):
+   709	        # os.posix_spawn() is not available
+   710	        return False
+   711	
+   712	    if sys.platform in ('darwin', 'sunos5'):
+   713	        # posix_spawn() is a syscall on both macOS and Solaris,
+   714	        # and properly reports errors
+   715	        return True
+   716	
+   717	    # Check libc name and runtime libc version
+   718	    try:
+   719	        ver = os.confstr('CS_GNU_LIBC_VERSION')
+   720	        # parse 'glibc 2.28' as ('glibc', (2, 28))
+   721	        parts = ver.split(maxsplit=1)
+   722	        if len(parts) != 2:
+   723	            # reject unknown format
+   724	            raise ValueError
+   725	        libc = parts[0]
+   726	        version = tuple(map(int, parts[1].split('.')))
+   727	
+   728	        if sys.platform == 'linux' and libc == 'glibc' and version >= (2, 24):
+   729	            # glibc 2.24 has a new Linux posix_spawn implementation using vfork
+   730	            # which properly reports errors to the parent process.
+   731	            return True
+   732	        # Note: Don't use the implementation in earlier glibc because it doesn't
+   733	        # use vfork (even if glibc 2.26 added a pipe to properly report errors
+   734	        # to the parent process).
+   735	    except (AttributeError, ValueError, OSError):
+   736	        # os.confstr() or CS_GNU_LIBC_VERSION value not available
+   737	        pass
+   738	
+   739	    # By default, assume that posix_spawn() does not properly report errors.
+   740	    return False
+   741	
+   742	
+   743	# These are primarily fail-safe knobs for negatives. A True value does not
+   744	# guarantee the given libc/syscall API will be used.
+   745	_USE_POSIX_SPAWN = _use_posix_spawn()
+   746	_USE_VFORK = True
+   747	
+   748	
+   749	class Popen:
+   750	    """ Execute a child program in a new process.
+   751	
+   752	    For a complete description of the arguments see the Python documentation.
+   753	
+   754	    Arguments:
+   755	      args: A string, or a sequence of program arguments.
+   756	
+   757	      bufsize: supplied as the buffering argument to the open() function when
+   758	          creating the stdin/stdout/stderr pipe file objects
+   759	
+   760	      executable: A replacement program to execute.
+   761	
+   762	      stdin, stdout and stderr: These specify the executed programs' standard
+   763	          input, standard output and standard error file handles, respectively.
+   764	
+   765	      preexec_fn: (POSIX only) An object to be called in the child process
+   766	          just before the child is executed.
+   767	
+   768	      close_fds: Controls closing or inheriting of file descriptors.
+   769	
+   770	      shell: If true, the command will be executed through the shell.
+   771	
+   772	      cwd: Sets the current directory before the child is executed.
+   773	
+   774	      env: Defines the environment variables for the new process.
+   775	
+   776	      text: If true, decode stdin, stdout and stderr using the given encoding
+   777	          (if set) or the system default otherwise.
+   778	
+   779	      universal_newlines: Alias of text, provided for backwards compatibility.
+   780	
+   781	      startupinfo and creationflags (Windows only)
+   782	
+   783	      restore_signals (POSIX only)
+   784	
+   785	      start_new_session (POSIX only)
+   786	
+   787	      process_group (POSIX only)
+   788	
+   789	      group (POSIX only)
+   790	
+   791	      extra_groups (POSIX only)
+   792	
+   793	      user (POSIX only)
+   794	
+   795	      umask (POSIX only)
+   796	
+   797	      pass_fds (POSIX only)
+   798	
+   799	      encoding and errors: Text mode encoding and error handling to use for
+   800	          file objects stdin, stdout and stderr.
+   801	
+   802	    Attributes:
+   803	        stdin, stdout, stderr, pid, returncode
+   804	    """
+   805	    _child_created = False  # Set here since __del__ checks it
+   806	
+   807	    def __init__(self, args, bufsize=-1, executable=None,
+   808	                 stdin=None, stdout=None, stderr=None,
+   809	                 preexec_fn=None, close_fds=True,
+   810	                 shell=False, cwd=None, env=None, universal_newlines=None,
+   811	                 startupinfo=None, creationflags=0,
+   812	                 restore_signals=True, start_new_session=False,
+   813	                 pass_fds=(), *, user=None, group=None, extra_groups=None,
+   814	                 encoding=None, errors=None, text=None, umask=-1, pipesize=-1,
+   815	                 process_group=None):
+   816	        """Create new Popen instance."""
+   817	        if not _can_fork_exec:
+   818	            raise OSError(
+   819	                errno.ENOTSUP, f"{sys.platform} does not support processes."
+   820	            )
+   821	
+   822	        _cleanup()
+   823	        # Held while anything is calling waitpid before returncode has been
+   824	        # updated to prevent clobbering returncode if wait() or poll() are
+   825	        # called from multiple threads at once.  After acquiring the lock,
+   826	        # code must re-check self.returncode to see if another thread just
+   827	        # finished a waitpid() call.
+   828	        self._waitpid_lock = threading.Lock()
+   829	
+   830	        self._input = None
+   831	        self._communication_started = False
+   832	        if bufsize is None:
+   833	            bufsize = -1  # Restore default
+   834	        if not isinstance(bufsize, int):
+   835	            raise TypeError("bufsize must be an integer")
+   836	
+   837	        if pipesize is None:
+   838	            pipesize = -1  # Restore default
+   839	        if not isinstance(pipesize, int):
+   840	            raise TypeError("pipesize must be an integer")
+   841	
+   842	        if _mswindows:
+   843	            if preexec_fn is not None:
+   844	                raise ValueError("preexec_fn is not supported on Windows "
+   845	                                 "platforms")
+   846	        else:
+   847	            # POSIX
+   848	            if pass_fds and not close_fds:
+   849	                warnings.warn("pass_fds overriding close_fds.", RuntimeWarning)
+   850	                close_fds = True
+   851	            if startupinfo is not None:
+   852	                raise ValueError("startupinfo is only supported on Windows "
+   853	                                 "platforms")
+   854	            if creationflags != 0:
+   855	                raise ValueError("creationflags is only supported on Windows "
+   856	                                 "platforms")
+   857	
+   858	        self.args = args
+   859	        self.stdin = None
+   860	        self.stdout = None
+   861	        self.stderr = None
+   862	        self.pid = None
+   863	        self.returncode = None
+   864	        self.encoding = encoding
+   865	        self.errors = errors
+   866	        self.pipesize = pipesize
+   867	
+   868	        # Validate the combinations of text and universal_newlines
+   869	        if (text is not None and universal_newlines is not None
+   870	            and bool(universal_newlines) != bool(text)):
+   871	            raise SubprocessError('Cannot disambiguate when both text '
+   872	                                  'and universal_newlines are supplied but '
+   873	                                  'different. Pass one or the other.')
+   874	
+   875	        self.text_mode = encoding or errors or text or universal_newlines
+   876	        if self.text_mode and encoding is None:
+   877	            self.encoding = encoding = _text_encoding()
+   878	
+   879	        # How long to resume waiting on a child after the first ^C.
+   880	        # There is no right value for this.  The purpose is to be polite
+   881	        # yet remain good for interactive users trying to exit a tool.
+   882	        self._sigint_wait_secs = 0.25  # 1/xkcd221.getRandomNumber()
+   883	
+   884	        self._closed_child_pipe_fds = False
+   885	
+   886	        if self.text_mode:
+   887	            if bufsize == 1:
+   888	                line_buffering = True
+   889	                # Use the default buffer size for the underlying binary streams
+   890	                # since they don't support line buffering.
+   891	                bufsize = -1
+   892	            else:
+   893	                line_buffering = False
+   894	
+   895	        if process_group is None:
+   896	            process_group = -1  # The internal APIs are int-only
+   897	
+   898	        gid = None
+   899	        if group is not None:
+   900	            if not hasattr(os, 'setregid'):
+   901	                raise ValueError("The 'group' parameter is not supported on the "
+   902	                                 "current platform")
+   903	
+   904	            elif isinstance(group, str):
+   905	                try:
+   906	                    import grp
+   907	                except ImportError:
+   908	                    raise ValueError("The group parameter cannot be a string "
+   909	                                     "on systems without the grp module")
+   910	
+   911	                gid = grp.getgrnam(group).gr_gid
+   912	            elif isinstance(group, int):
+   913	                gid = group
+   914	            else:
+   915	                raise TypeError("Group must be a string or an integer, not {}"
+   916	                                .format(type(group)))
+   917	
+   918	            if gid < 0:
+   919	                raise ValueError(f"Group ID cannot be negative, got {gid}")
+   920	
+   921	        gids = None
+   922	        if extra_groups is not None:
+   923	            if not hasattr(os, 'setgroups'):
+   924	                raise ValueError("The 'extra_groups' parameter is not "
+   925	                                 "supported on the current platform")
+   926	
+   927	            elif isinstance(extra_groups, str):
+   928	                raise ValueError("Groups must be a list, not a string")
+   929	
+   930	            gids = []
+   931	            for extra_group in extra_groups:
+   932	                if isinstance(extra_group, str):
+   933	                    try:
+   934	                        import grp
+   935	                    except ImportError:
+   936	                        raise ValueError("Items in extra_groups cannot be "
+   937	                                         "strings on systems without the "
+   938	                                         "grp module")
+   939	
+   940	                    gids.append(grp.getgrnam(extra_group).gr_gid)
+   941	                elif isinstance(extra_group, int):
+   942	                    gids.append(extra_group)
+   943	                else:
+   944	                    raise TypeError("Items in extra_groups must be a string "
+   945	                                    "or integer, not {}"
+   946	                                    .format(type(extra_group)))
+   947	
+   948	            # make sure that the gids are all positive here so we can do less
+   949	            # checking in the C code
+   950	            for gid_check in gids:
+   951	                if gid_check < 0:
+   952	                    raise ValueError(f"Group ID cannot be negative, got {gid_check}")
+   953	
+   954	        uid = None
+   955	        if user is not None:
+   956	            if not hasattr(os, 'setreuid'):
+   957	                raise ValueError("The 'user' parameter is not supported on "
+   958	                                 "the current platform")
+   959	
+   960	            elif isinstance(user, str):
+   961	                try:
+   962	                    import pwd
+   963	                except ImportError:
+   964	                    raise ValueError("The user parameter cannot be a string "
+   965	                                     "on systems without the pwd module")
+   966	                uid = pwd.getpwnam(user).pw_uid
+   967	            elif isinstance(user, int):
+   968	                uid = user
+   969	            else:
+   970	                raise TypeError("User must be a string or an integer")
+   971	
+   972	            if uid < 0:
+   973	                raise ValueError(f"User ID cannot be negative, got {uid}")
+   974	
+   975	        # Input and output objects. The general principle is like
+   976	        # this:
+   977	        #
+   978	        # Parent                   Child
+   979	        # ------                   -----
+   980	        # p2cwrite   ---stdin--->  p2cread
+   981	        # c2pread    <--stdout---  c2pwrite
+   982	        # errread    <--stderr---  errwrite
+   983	        #
+   984	        # On POSIX, the child objects are file descriptors.  On
+   985	        # Windows, these are Windows file handles.  The parent objects
+   986	        # are file descriptors on both platforms.  The parent objects
+   987	        # are -1 when not using PIPEs. The child objects are -1
+   988	        # when not redirecting.
+   989	
+   990	        (p2cread, p2cwrite,
+   991	         c2pread, c2pwrite,
+   992	         errread, errwrite) = self._get_handles(stdin, stdout, stderr)
+   993	
+   994	        # From here on, raising exceptions may cause file descriptor leakage
+   995	
+   996	        # We wrap OS handles *before* launching the child, otherwise a
+   997	        # quickly terminating child could make our fds unwrappable
+   998	        # (see #8458).
+   999	
+  1000	        if _mswindows:
+  1001	            if p2cwrite != -1:
+  1002	                p2cwrite = msvcrt.open_osfhandle(p2cwrite.Detach(), 0)
+  1003	            if c2pread != -1:
+  1004	                c2pread = msvcrt.open_osfhandle(c2pread.Detach(), 0)
+  1005	            if errread != -1:
+  1006	                errread = msvcrt.open_osfhandle(errread.Detach(), 0)
+  1007	
+  1008	        try:
+  1009	            if p2cwrite != -1:
+  1010	                self.stdin = io.open(p2cwrite, 'wb', bufsize)
+  1011	                if self.text_mode:
+  1012	                    self.stdin = io.TextIOWrapper(self.stdin, write_through=True,
+  1013	                            line_buffering=line_buffering,
+  1014	                            encoding=encoding, errors=errors)
+  1015	            if c2pread != -1:
+  1016	                self.stdout = io.open(c2pread, 'rb', bufsize)
+  1017	                if self.text_mode:
+  1018	                    self.stdout = io.TextIOWrapper(self.stdout,
+  1019	                            encoding=encoding, errors=errors)
+  1020	            if errread != -1:
+  1021	                self.stderr = io.open(errread, 'rb', bufsize)
+  1022	                if self.text_mode:
+  1023	                    self.stderr = io.TextIOWrapper(self.stderr,
+  1024	                            encoding=encoding, errors=errors)
+  1025	
+  1026	            self._execute_child(args, executable, preexec_fn, close_fds,
+  1027	                                pass_fds, cwd, env,
+  1028	                                startupinfo, creationflags, shell,
+  1029	                                p2cread, p2cwrite,
+  1030	                                c2pread, c2pwrite,
+  1031	                                errread, errwrite,
+  1032	                                restore_signals,
+  1033	                                gid, gids, uid, umask,
+  1034	                                start_new_session, process_group)
+  1035	        except:
+  1036	            # Cleanup if the child failed starting.
+  1037	            for f in filter(None, (self.stdin, self.stdout, self.stderr)):
+  1038	                try:
+  1039	                    f.close()
+  1040	                except OSError:
+  1041	                    pass  # Ignore EBADF or other errors.
+  1042	
+  1043	            if not self._closed_child_pipe_fds:
+  1044	                to_close = []
+  1045	                if stdin == PIPE:
+  1046	                    to_close.append(p2cread)
+  1047	                if stdout == PIPE:
+  1048	                    to_close.append(c2pwrite)
+  1049	                if stderr == PIPE:
+  1050	                    to_close.append(errwrite)
+  1051	                if hasattr(self, '_devnull'):
+  1052	                    to_close.append(self._devnull)
+  1053	                for fd in to_close:
+  1054	                    try:
+  1055	                        if _mswindows and isinstance(fd, Handle):
+  1056	                            fd.Close()
+  1057	                        else:
+  1058	                            os.close(fd)
+  1059	                    except OSError:
+  1060	                        pass
+  1061	
+  1062	            raise
+  1063	
+  1064	    def __repr__(self):
+  1065	        obj_repr = (
+  1066	            f"<{self.__class__.__name__}: "
+  1067	            f"returncode: {self.returncode} args: {self.args!r}>"
+  1068	        )
+  1069	        if len(obj_repr) > 80:
+  1070	            obj_repr = obj_repr[:76] + "...>"
+  1071	        return obj_repr
+  1072	
+  1073	    __class_getitem__ = classmethod(types.GenericAlias)
+  1074	
+  1075	    @property
+  1076	    def universal_newlines(self):
+  1077	        # universal_newlines as retained as an alias of text_mode for API
+  1078	        # compatibility. bpo-31756
+  1079	        return self.text_mode
+  1080	
+  1081	    @universal_newlines.setter
+  1082	    def universal_newlines(self, universal_newlines):
+  1083	        self.text_mode = bool(universal_newlines)
+  1084	
+  1085	    def _translate_newlines(self, data, encoding, errors):
+  1086	        data = data.decode(encoding, errors)
+  1087	        return data.replace("\r\n", "\n").replace("\r", "\n")
+  1088	
+  1089	    def __enter__(self):
+  1090	        return self
+  1091	
+  1092	    def __exit__(self, exc_type, value, traceback):
+  1093	        if self.stdout:
+  1094	            self.stdout.close()
+  1095	        if self.stderr:
+  1096	            self.stderr.close()
+  1097	        try:  # Flushing a BufferedWriter may raise an error
+  1098	            if self.stdin:
+  1099	                self.stdin.close()
+  1100	        finally:
+  1101	            if exc_type == KeyboardInterrupt:
+  1102	                # https://bugs.python.org/issue25942
+  1103	                # In the case of a KeyboardInterrupt we assume the SIGINT
+  1104	                # was also already sent to our child processes.  We can't
+  1105	                # block indefinitely as that is not user friendly.
+  1106	                # If we have not already waited a brief amount of time in
+  1107	                # an interrupted .wait() or .communicate() call, do so here
+  1108	                # for consistency.
+  1109	                if self._sigint_wait_secs > 0:
+  1110	                    try:
+  1111	                        self._wait(timeout=self._sigint_wait_secs)
+  1112	                    except TimeoutExpired:
+  1113	                        pass
+  1114	                self._sigint_wait_secs = 0  # Note that this has been done.
+  1115	                return  # resume the KeyboardInterrupt
+  1116	
+  1117	            # Wait for the process to terminate, to avoid zombies.
+  1118	            self.wait()
+  1119	
+  1120	    def __del__(self, _maxsize=sys.maxsize, _warn=warnings.warn):
+  1121	        if not self._child_created:
+  1122	            # We didn't get to successfully create a child process.
+  1123	            return
+  1124	        if self.returncode is None:
+  1125	            # Not reading subprocess exit status creates a zombie process which
+  1126	            # is only destroyed at the parent python process exit
+  1127	            _warn("subprocess %s is still running" % self.pid,
+  1128	                  ResourceWarning, source=self)
+  1129	        # In case the child hasn't been waited on, check if it's done.
+  1130	        self._internal_poll(_deadstate=_maxsize)
+  1131	        if self.returncode is None and _active is not None:
+  1132	            # Child is still running, keep us alive until we can wait on it.
+  1133	            _active.append(self)
+  1134	
+  1135	    def _get_devnull(self):
+  1136	        if not hasattr(self, '_devnull'):
+  1137	            self._devnull = os.open(os.devnull, os.O_RDWR)
+  1138	        return self._devnull
+  1139	
+  1140	    def _stdin_write(self, input):
+  1141	        if input:
+  1142	            try:
+  1143	                self.stdin.write(input)
+  1144	            except BrokenPipeError:
+  1145	                pass  # communicate() must ignore broken pipe errors.
+  1146	            except OSError as exc:
+  1147	                if exc.errno == errno.EINVAL:
+  1148	                    # bpo-19612, bpo-30418: On Windows, stdin.write() fails
+  1149	                    # with EINVAL if the child process exited or if the child
+  1150	                    # process is still running but closed the pipe.
+  1151	                    pass
+  1152	                else:
+  1153	                    raise
+  1154	
+  1155	        try:
+  1156	            self.stdin.close()
+  1157	        except BrokenPipeError:
+  1158	            pass  # communicate() must ignore broken pipe errors.
+  1159	        except OSError as exc:
+  1160	            if exc.errno == errno.EINVAL:
+  1161	                pass
+  1162	            else:
+  1163	                raise
+  1164	
+  1165	    def communicate(self, input=None, timeout=None):
+  1166	        """Interact with process: Send data to stdin and close it.
+  1167	        Read data from stdout and stderr, until end-of-file is
+  1168	        reached.  Wait for process to terminate.
+  1169	
+  1170	        The optional "input" argument should be data to be sent to the
+  1171	        child process, or None, if no data should be sent to the child.
+  1172	        communicate() returns a tuple (stdout, stderr).
+  1173	
+  1174	        By default, all communication is in bytes, and therefore any
+  1175	        "input" should be bytes, and the (stdout, stderr) will be bytes.
+  1176	        If in text mode (indicated by self.text_mode), any "input" should
+  1177	        be a string, and (stdout, stderr) will be strings decoded
+  1178	        according to locale encoding, or by "encoding" if set. Text mode
+  1179	        is triggered by setting any of text, encoding, errors or
+  1180	        universal_newlines.
+  1181	        """
+  1182	
+  1183	        if self._communication_started and input:
+  1184	            raise ValueError("Cannot send input after starting communication")
+  1185	
+  1186	        # Optimization: If we are not worried about timeouts, we haven't
+  1187	        # started communicating, and we have one or zero pipes, using select()
+  1188	        # or threads is unnecessary.
+  1189	        if (timeout is None and not self._communication_started and
+  1190	            [self.stdin, self.stdout, self.stderr].count(None) >= 2):
+  1191	            stdout = None
+  1192	            stderr = None
+  1193	            if self.stdin:
+  1194	                self._stdin_write(input)
+  1195	            elif self.stdout:
+  1196	                stdout = self.stdout.read()
+  1197	                self.stdout.close()
+  1198	            elif self.stderr:
+  1199	                stderr = self.stderr.read()
+  1200	                self.stderr.close()
+  1201	            self.wait()
+  1202	        else:
+  1203	            if timeout is not None:
+  1204	                endtime = _time() + timeout
+  1205	            else:
+  1206	                endtime = None
+  1207	
+  1208	            try:
+  1209	                stdout, stderr = self._communicate(input, endtime, timeout)
+  1210	            except KeyboardInterrupt:
+  1211	                # https://bugs.python.org/issue25942
+  1212	                # See the detailed comment in .wait().
+  1213	                if timeout is not None:
+  1214	                    sigint_timeout = min(self._sigint_wait_secs,
+  1215	                                         self._remaining_time(endtime))
+  1216	                else:
+  1217	                    sigint_timeout = self._sigint_wait_secs
+  1218	                self._sigint_wait_secs = 0  # nothing else should wait.
+  1219	                try:
+  1220	                    self._wait(timeout=sigint_timeout)
+  1221	                except TimeoutExpired:
+  1222	                    pass
+  1223	                raise  # resume the KeyboardInterrupt
+  1224	
+  1225	            finally:
+  1226	                self._communication_started = True
+  1227	
+  1228	            sts = self.wait(timeout=self._remaining_time(endtime))
+  1229	
+  1230	        return (stdout, stderr)
+  1231	
+  1232	
+  1233	    def poll(self):
+  1234	        """Check if child process has terminated. Set and return returncode
+  1235	        attribute."""
+  1236	        return self._internal_poll()
+  1237	
+  1238	
+  1239	    def _remaining_time(self, endtime):
+  1240	        """Convenience for _communicate when computing timeouts."""
+  1241	        if endtime is None:
+  1242	            return None
+  1243	        else:
+  1244	            return endtime - _time()
+  1245	
+  1246	
+  1247	    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+  1248	                       skip_check_and_raise=False):
+  1249	        """Convenience for checking if a timeout has expired."""
+  1250	        if endtime is None:
+  1251	            return
+  1252	        if skip_check_and_raise or _time() > endtime:
+  1253	            raise TimeoutExpired(
+  1254	                    self.args, orig_timeout,
+  1255	                    output=b''.join(stdout_seq) if stdout_seq else None,
+  1256	                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+  1257	
+  1258	
+  1259	    def wait(self, timeout=None):
+  1260	        """Wait for child process to terminate; returns self.returncode."""
+  1261	        if timeout is not None:
+  1262	            endtime = _time() + timeout
+  1263	        try:
+  1264	            return self._wait(timeout=timeout)
+  1265	        except KeyboardInterrupt:
+  1266	            # https://bugs.python.org/issue25942
+  1267	            # The first keyboard interrupt waits briefly for the child to
+  1268	            # exit under the common assumption that it also received the ^C
+  1269	            # generated SIGINT and will exit rapidly.
+  1270	            if timeout is not None:
+  1271	                sigint_timeout = min(self._sigint_wait_secs,
+  1272	                                     self._remaining_time(endtime))
+  1273	            else:
+  1274	                sigint_timeout = self._sigint_wait_secs
+  1275	            self._sigint_wait_secs = 0  # nothing else should wait.
+  1276	            try:
+  1277	                self._wait(timeout=sigint_timeout)
+  1278	            except TimeoutExpired:
+  1279	                pass
+  1280	            raise  # resume the KeyboardInterrupt
+  1281	
+  1282	    def _close_pipe_fds(self,
+  1283	                        p2cread, p2cwrite,
+  1284	                        c2pread, c2pwrite,
+  1285	                        errread, errwrite):
+  1286	        # self._devnull is not always defined.
+  1287	        devnull_fd = getattr(self, '_devnull', None)
+  1288	
+  1289	        with contextlib.ExitStack() as stack:
+  1290	            if _mswindows:
+  1291	                if p2cread != -1:
+  1292	                    stack.callback(p2cread.Close)
+  1293	                if c2pwrite != -1:
+  1294	                    stack.callback(c2pwrite.Close)
+  1295	                if errwrite != -1:
+  1296	                    stack.callback(errwrite.Close)
+  1297	            else:
+  1298	                if p2cread != -1 and p2cwrite != -1 and p2cread != devnull_fd:
+  1299	                    stack.callback(os.close, p2cread)
+  1300	                if c2pwrite != -1 and c2pread != -1 and c2pwrite != devnull_fd:
+  1301	                    stack.callback(os.close, c2pwrite)
+  1302	                if errwrite != -1 and errread != -1 and errwrite != devnull_fd:
+  1303	                    stack.callback(os.close, errwrite)
+  1304	
+  1305	            if devnull_fd is not None:
+  1306	                stack.callback(os.close, devnull_fd)
+  1307	
+  1308	        # Prevent a double close of these handles/fds from __init__ on error.
+  1309	        self._closed_child_pipe_fds = True
+  1310	
+  1311	    @contextlib.contextmanager
+  1312	    def _on_error_fd_closer(self):
+  1313	        """Helper to ensure file descriptors opened in _get_handles are closed"""
+  1314	        to_close = []
+  1315	        try:
+  1316	            yield to_close
+  1317	        except:
+  1318	            if hasattr(self, '_devnull'):
+  1319	                to_close.append(self._devnull)
+  1320	                del self._devnull
+  1321	            for fd in to_close:
+  1322	                try:
+  1323	                    if _mswindows and isinstance(fd, Handle):
+  1324	                        fd.Close()
+  1325	                    else:
+  1326	                        os.close(fd)
+  1327	                except OSError:
+  1328	                    pass
+  1329	            raise
+  1330	
+  1331	    if _mswindows:
+  1332	        #
+  1333	        # Windows methods
+  1334	        #
+  1335	        def _get_handles(self, stdin, stdout, stderr):
+  1336	            """Construct and return tuple with IO objects:
+  1337	            p2cread, p2cwrite, c2pread, c2pwrite, errread, errwrite
+  1338	            """
+  1339	            if stdin is None and stdout is None and stderr is None:
+  1340	                return (-1, -1, -1, -1, -1, -1)
+  1341	
+  1342	            p2cread, p2cwrite = -1, -1
+  1343	            c2pread, c2pwrite = -1, -1
+  1344	            errread, errwrite = -1, -1
+  1345	
+  1346	            with self._on_error_fd_closer() as err_close_fds:
+  1347	                if stdin is None:
+  1348	                    p2cread = _winapi.GetStdHandle(_winapi.STD_INPUT_HANDLE)
+  1349	                    if p2cread is None:
+  1350	                        p2cread, _ = _winapi.CreatePipe(None, 0)
+  1351	                        p2cread = Handle(p2cread)
+  1352	                        err_close_fds.append(p2cread)
+  1353	                        _winapi.CloseHandle(_)
+  1354	                elif stdin == PIPE:
+  1355	                    p2cread, p2cwrite = _winapi.CreatePipe(None, 0)
+  1356	                    p2cread, p2cwrite = Handle(p2cread), Handle(p2cwrite)
+  1357	                    err_close_fds.extend((p2cread, p2cwrite))
+  1358	                elif stdin == DEVNULL:
+  1359	                    p2cread = msvcrt.get_osfhandle(self._get_devnull())
+  1360	                elif isinstance(stdin, int):
+  1361	                    p2cread = msvcrt.get_osfhandle(stdin)
+  1362	                else:
+  1363	                    # Assuming file-like object
+  1364	                    p2cread = msvcrt.get_osfhandle(stdin.fileno())
+  1365	                p2cread = self._make_inheritable(p2cread)
+  1366	
+  1367	                if stdout is None:
+  1368	                    c2pwrite = _winapi.GetStdHandle(_winapi.STD_OUTPUT_HANDLE)
+  1369	                    if c2pwrite is None:
+  1370	                        _, c2pwrite = _winapi.CreatePipe(None, 0)
+  1371	                        c2pwrite = Handle(c2pwrite)
+  1372	                        err_close_fds.append(c2pwrite)
+  1373	                        _winapi.CloseHandle(_)
+  1374	                elif stdout == PIPE:
+  1375	                    c2pread, c2pwrite = _winapi.CreatePipe(None, 0)
+  1376	                    c2pread, c2pwrite = Handle(c2pread), Handle(c2pwrite)
+  1377	                    err_close_fds.extend((c2pread, c2pwrite))
+  1378	                elif stdout == DEVNULL:
+  1379	                    c2pwrite = msvcrt.get_osfhandle(self._get_devnull())
+  1380	                elif isinstance(stdout, int):
+  1381	                    c2pwrite = msvcrt.get_osfhandle(stdout)
+  1382	                else:
+  1383	                    # Assuming file-like object
+  1384	                    c2pwrite = msvcrt.get_osfhandle(stdout.fileno())
+  1385	                c2pwrite = self._make_inheritable(c2pwrite)
+  1386	
+  1387	                if stderr is None:
+  1388	                    errwrite = _winapi.GetStdHandle(_winapi.STD_ERROR_HANDLE)
+  1389	                    if errwrite is None:
+  1390	                        _, errwrite = _winapi.CreatePipe(None, 0)
+  1391	                        errwrite = Handle(errwrite)
+  1392	                        err_close_fds.append(errwrite)
+  1393	                        _winapi.CloseHandle(_)
+  1394	                elif stderr == PIPE:
+  1395	                    errread, errwrite = _winapi.CreatePipe(None, 0)
+  1396	                    errread, errwrite = Handle(errread), Handle(errwrite)
+  1397	                    err_close_fds.extend((errread, errwrite))
+  1398	                elif stderr == STDOUT:
+  1399	                    errwrite = c2pwrite
+  1400	                elif stderr == DEVNULL:
+  1401	                    errwrite = msvcrt.get_osfhandle(self._get_devnull())
+  1402	                elif isinstance(stderr, int):
+  1403	                    errwrite = msvcrt.get_osfhandle(stderr)
+  1404	                else:
+  1405	                    # Assuming file-like object
+  1406	                    errwrite = msvcrt.get_osfhandle(stderr.fileno())
+  1407	                errwrite = self._make_inheritable(errwrite)
+  1408	
+  1409	            return (p2cread, p2cwrite,
+  1410	                    c2pread, c2pwrite,
+  1411	                    errread, errwrite)
+  1412	
+  1413	
+  1414	        def _make_inheritable(self, handle):
+  1415	            """Return a duplicate of handle, which is inheritable"""
+  1416	            h = _winapi.DuplicateHandle(
+  1417	                _winapi.GetCurrentProcess(), handle,
+  1418	                _winapi.GetCurrentProcess(), 0, 1,
+  1419	                _winapi.DUPLICATE_SAME_ACCESS)
+  1420	            return Handle(h)
+  1421	
+  1422	
+  1423	        def _filter_handle_list(self, handle_list):
+  1424	            """Filter out console handles that can't be used
+  1425	            in lpAttributeList["handle_list"] and make sure the list
+  1426	            isn't empty. This also removes duplicate handles."""
+  1427	            # An handle with it's lowest two bits set might be a special console
+  1428	            # handle that if passed in lpAttributeList["handle_list"], will
+  1429	            # cause it to fail.
+  1430	            return list({handle for handle in handle_list
+  1431	                         if handle & 0x3 != 0x3
+  1432	                         or _winapi.GetFileType(handle) !=
+  1433	                            _winapi.FILE_TYPE_CHAR})
+  1434	
+  1435	
+  1436	        def _execute_child(self, args, executable, preexec_fn, close_fds,
+  1437	                           pass_fds, cwd, env,
+  1438	                           startupinfo, creationflags, shell,
+  1439	                           p2cread, p2cwrite,
+  1440	                           c2pread, c2pwrite,
+  1441	                           errread, errwrite,
+  1442	                           unused_restore_signals,
+  1443	                           unused_gid, unused_gids, unused_uid,
+  1444	                           unused_umask,
+  1445	                           unused_start_new_session, unused_process_group):
+  1446	            """Execute program (MS Windows version)"""
+  1447	
+  1448	            assert not pass_fds, "pass_fds not supported on Windows."
+  1449	
+  1450	            if isinstance(args, str):
+  1451	                pass
+  1452	            elif isinstance(args, bytes):
+  1453	                if shell:
+  1454	                    raise TypeError('bytes args is not allowed on Windows')
+  1455	                args = list2cmdline([args])
+  1456	            elif isinstance(args, os.PathLike):
+  1457	                if shell:
+  1458	                    raise TypeError('path-like args is not allowed when '
+  1459	                                    'shell is true')
+  1460	                args = list2cmdline([args])
+  1461	            else:
+  1462	                args = list2cmdline(args)
+  1463	
+  1464	            if executable is not None:
+  1465	                executable = os.fsdecode(executable)
+  1466	
+  1467	            # Process startup details
+  1468	            if startupinfo is None:
+  1469	                startupinfo = STARTUPINFO()
+  1470	            else:
+  1471	                # bpo-34044: Copy STARTUPINFO since it is modified above,
+  1472	                # so the caller can reuse it multiple times.
+  1473	                startupinfo = startupinfo.copy()
+  1474	
+  1475	            use_std_handles = -1 not in (p2cread, c2pwrite, errwrite)
+  1476	            if use_std_handles:
+  1477	                startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+  1478	                startupinfo.hStdInput = p2cread
+  1479	                startupinfo.hStdOutput = c2pwrite
+  1480	                startupinfo.hStdError = errwrite
+  1481	
+  1482	            attribute_list = startupinfo.lpAttributeList
+  1483	            have_handle_list = bool(attribute_list and
+  1484	                                    "handle_list" in attribute_list and
+  1485	                                    attribute_list["handle_list"])
+  1486	
+  1487	            # If we were given an handle_list or need to create one
+  1488	            if have_handle_list or (use_std_handles and close_fds):
+  1489	                if attribute_list is None:
+  1490	                    attribute_list = startupinfo.lpAttributeList = {}
+  1491	                handle_list = attribute_list["handle_list"] = \
+  1492	                    list(attribute_list.get("handle_list", []))
+  1493	
+  1494	                if use_std_handles:
+  1495	                    handle_list += [int(p2cread), int(c2pwrite), int(errwrite)]
+  1496	
+  1497	                handle_list[:] = self._filter_handle_list(handle_list)
+  1498	
+  1499	                if handle_list:
+  1500	                    if not close_fds:
+  1501	                        warnings.warn("startupinfo.lpAttributeList['handle_list'] "
+  1502	                                      "overriding close_fds", RuntimeWarning)
+  1503	
+  1504	                    # When using the handle_list we always request to inherit
+  1505	                    # handles but the only handles that will be inherited are
+  1506	                    # the ones in the handle_list
+  1507	                    close_fds = False
+  1508	
+  1509	            if shell:
+  1510	                startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+  1511	                startupinfo.wShowWindow = _winapi.SW_HIDE
+  1512	                if not executable:
+  1513	                    # gh-101283: without a fully-qualified path, before Windows
+  1514	                    # checks the system directories, it first looks in the
+  1515	                    # application directory, and also the current directory if
+  1516	                    # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+  1517	                    # to avoid executing unqualified "cmd.exe".
+  1518	                    comspec = os.environ.get('ComSpec')
+  1519	                    if not comspec:
+  1520	                        system_root = os.environ.get('SystemRoot', '')
+  1521	                        comspec = os.path.join(system_root, 'System32', 'cmd.exe')
+  1522	                        if not os.path.isabs(comspec):
+  1523	                            raise FileNotFoundError('shell not found: neither %ComSpec% nor %SystemRoot% is set')
+  1524	                    if os.path.isabs(comspec):
+  1525	                        executable = comspec
+  1526	                else:
+  1527	                    comspec = executable
+  1528	
+  1529	                args = '{} /c "{}"'.format (comspec, args)
+  1530	
+  1531	            if cwd is not None:
+  1532	                cwd = os.fsdecode(cwd)
+  1533	
+  1534	            sys.audit("subprocess.Popen", executable, args, cwd, env)
+  1535	
+  1536	            # Start the process
+  1537	            try:
+  1538	                hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+  1539	                                         # no special security
+  1540	                                         None, None,
+  1541	                                         int(not close_fds),
+  1542	                                         creationflags,
+  1543	                                         env,
+  1544	                                         cwd,
+  1545	                                         startupinfo)
+  1546	            finally:
+  1547	                # Child is launched. Close the parent's copy of those pipe
+  1548	                # handles that only the child should have open.  You need
+  1549	                # to make sure that no handles to the write end of the
+  1550	                # output pipe are maintained in this process or else the
+  1551	                # pipe will not close when the child process exits and the
+  1552	                # ReadFile will hang.
+  1553	                self._close_pipe_fds(p2cread, p2cwrite,
+  1554	                                     c2pread, c2pwrite,
+  1555	                                     errread, errwrite)
+  1556	
+  1557	            # Retain the process handle, but close the thread handle
+  1558	            self._child_created = True
+  1559	            self._handle = Handle(hp)
+  1560	            self.pid = pid
+  1561	            _winapi.CloseHandle(ht)
+  1562	
+  1563	        def _internal_poll(self, _deadstate=None,
+  1564	                _WaitForSingleObject=_winapi.WaitForSingleObject,
+  1565	                _WAIT_OBJECT_0=_winapi.WAIT_OBJECT_0,
+  1566	                _GetExitCodeProcess=_winapi.GetExitCodeProcess):
+  1567	            """Check if child process has terminated.  Returns returncode
+  1568	            attribute.
+  1569	
+  1570	            This method is called by __del__, so it can only refer to objects
+  1571	            in its local scope.
+  1572	
+  1573	            """
+  1574	            if self.returncode is None:
+  1575	                if _WaitForSingleObject(self._handle, 0) == _WAIT_OBJECT_0:
+  1576	                    self.returncode = _GetExitCodeProcess(self._handle)
+  1577	            return self.returncode
+  1578	
+  1579	
+  1580	        def _wait(self, timeout):
+  1581	            """Internal implementation of wait() on Windows."""
+  1582	            if timeout is None:
+  1583	                timeout_millis = _winapi.INFINITE
+  1584	            elif timeout <= 0:
+  1585	                timeout_millis = 0
+  1586	            else:
+  1587	                timeout_millis = int(timeout * 1000)
+  1588	            if self.returncode is None:
+  1589	                # API note: Returns immediately if timeout_millis == 0.
+  1590	                result = _winapi.WaitForSingleObject(self._handle,
+  1591	                                                     timeout_millis)
+  1592	                if result == _winapi.WAIT_TIMEOUT:
+  1593	                    raise TimeoutExpired(self.args, timeout)
+  1594	                self.returncode = _winapi.GetExitCodeProcess(self._handle)
+  1595	            return self.returncode
+  1596	
+  1597	
+  1598	        def _readerthread(self, fh, buffer):
+  1599	            buffer.append(fh.read())
+  1600	            fh.close()
+  1601	
+  1602	
+  1603	        def _communicate(self, input, endtime, orig_timeout):
+  1604	            # Start reader threads feeding into a list hanging off of this
+  1605	            # object, unless they've already been started.
+  1606	            if self.stdout and not hasattr(self, "_stdout_buff"):
+  1607	                self._stdout_buff = []
+  1608	                self.stdout_thread = \
+  1609	                        threading.Thread(target=self._readerthread,
+  1610	                                         args=(self.stdout, self._stdout_buff))
+  1611	                self.stdout_thread.daemon = True
+  1612	                self.stdout_thread.start()
+  1613	            if self.stderr and not hasattr(self, "_stderr_buff"):
+  1614	                self._stderr_buff = []
+  1615	                self.stderr_thread = \
+  1616	                        threading.Thread(target=self._readerthread,
+  1617	                                         args=(self.stderr, self._stderr_buff))
+  1618	                self.stderr_thread.daemon = True
+  1619	                self.stderr_thread.start()
+  1620	
+  1621	            if self.stdin:
+  1622	                self._stdin_write(input)
+  1623	
+  1624	            # Wait for the reader threads, or time out.  If we time out, the
+  1625	            # threads remain reading and the fds left open in case the user
+  1626	            # calls communicate again.
+  1627	            if self.stdout is not None:
+  1628	                self.stdout_thread.join(self._remaining_time(endtime))
+  1629	                if self.stdout_thread.is_alive():
+  1630	                    raise TimeoutExpired(self.args, orig_timeout)
+  1631	            if self.stderr is not None:
+  1632	                self.stderr_thread.join(self._remaining_time(endtime))
+  1633	                if self.stderr_thread.is_alive():
+  1634	                    raise TimeoutExpired(self.args, orig_timeout)
+  1635	
+  1636	            # Collect the output from and close both pipes, now that we know
+  1637	            # both have been read successfully.
+  1638	            stdout = None
+  1639	            stderr = None
+  1640	            if self.stdout:
+  1641	                stdout = self._stdout_buff
+  1642	                self.stdout.close()
+  1643	            if self.stderr:
+  1644	                stderr = self._stderr_buff
+  1645	                self.stderr.close()
+  1646	
+  1647	            # All data exchanged.  Translate lists into strings.
+  1648	            stdout = stdout[0] if stdout else None
+  1649	            stderr = stderr[0] if stderr else None
+  1650	
+  1651	            return (stdout, stderr)
+  1652	
+  1653	        def send_signal(self, sig):
+  1654	            """Send a signal to the process."""
+  1655	            # Don't signal a process that we know has already died.
+  1656	            if self.returncode is not None:
+  1657	                return
+  1658	            if sig == signal.SIGTERM:
+  1659	                self.terminate()
+  1660	            elif sig == signal.CTRL_C_EVENT:
+  1661	                os.kill(self.pid, signal.CTRL_C_EVENT)
+  1662	            elif sig == signal.CTRL_BREAK_EVENT:
+  1663	                os.kill(self.pid, signal.CTRL_BREAK_EVENT)
+  1664	            else:
+  1665	                raise ValueError("Unsupported signal: {}".format(sig))
+  1666	
+  1667	        def terminate(self):
+  1668	            """Terminates the process."""
+  1669	            # Don't terminate a process that we know has already died.
+  1670	            if self.returncode is not None:
+  1671	                return
+  1672	            try:
+  1673	                _winapi.TerminateProcess(self._handle, 1)
+  1674	            except PermissionError:
+  1675	                # ERROR_ACCESS_DENIED (winerror 5) is received when the
+  1676	                # process already died.
+  1677	                rc = _winapi.GetExitCodeProcess(self._handle)
+  1678	                if rc == _winapi.STILL_ACTIVE:
+  1679	                    raise
+  1680	                self.returncode = rc
+  1681	
+  1682	        kill = terminate
+  1683	
+  1684	    else:
+  1685	        #
+  1686	        # POSIX methods
+  1687	        #
+  1688	        def _get_handles(self, stdin, stdout, stderr):
+  1689	            """Construct and return tuple with IO objects:
+  1690	            p2cread, p2cwrite, c2pread, c2pwrite, errread, errwrite
+  1691	            """
+  1692	            p2cread, p2cwrite = -1, -1
+  1693	            c2pread, c2pwrite = -1, -1
+  1694	            errread, errwrite = -1, -1
+  1695	
+  1696	            with self._on_error_fd_closer() as err_close_fds:
+  1697	                if stdin is None:
+  1698	                    pass
+  1699	                elif stdin == PIPE:
+  1700	                    p2cread, p2cwrite = os.pipe()
+  1701	                    err_close_fds.extend((p2cread, p2cwrite))
+  1702	                    if self.pipesize > 0 and hasattr(fcntl, "F_SETPIPE_SZ"):
+  1703	                        fcntl.fcntl(p2cwrite, fcntl.F_SETPIPE_SZ, self.pipesize)
+  1704	                elif stdin == DEVNULL:
+  1705	                    p2cread = self._get_devnull()
+  1706	                elif isinstance(stdin, int):
+  1707	                    p2cread = stdin
+  1708	                else:
+  1709	                    # Assuming file-like object
+  1710	                    p2cread = stdin.fileno()
+  1711	
+  1712	                if stdout is None:
+  1713	                    pass
+  1714	                elif stdout == PIPE:
+  1715	                    c2pread, c2pwrite = os.pipe()
+  1716	                    err_close_fds.extend((c2pread, c2pwrite))
+  1717	                    if self.pipesize > 0 and hasattr(fcntl, "F_SETPIPE_SZ"):
+  1718	                        fcntl.fcntl(c2pwrite, fcntl.F_SETPIPE_SZ, self.pipesize)
+  1719	                elif stdout == DEVNULL:
+  1720	                    c2pwrite = self._get_devnull()
+  1721	                elif isinstance(stdout, int):
+  1722	                    c2pwrite = stdout
+  1723	                else:
+  1724	                    # Assuming file-like object
+  1725	                    c2pwrite = stdout.fileno()
+  1726	
+  1727	                if stderr is None:
+  1728	                    pass
+  1729	                elif stderr == PIPE:
+  1730	                    errread, errwrite = os.pipe()
+  1731	                    err_close_fds.extend((errread, errwrite))
+  1732	                    if self.pipesize > 0 and hasattr(fcntl, "F_SETPIPE_SZ"):
+  1733	                        fcntl.fcntl(errwrite, fcntl.F_SETPIPE_SZ, self.pipesize)
+  1734	                elif stderr == STDOUT:
+  1735	                    if c2pwrite != -1:
+  1736	                        errwrite = c2pwrite
+  1737	                    else: # child's stdout is not set, use parent's stdout
+  1738	                        errwrite = sys.__stdout__.fileno()
+  1739	                elif stderr == DEVNULL:
+  1740	                    errwrite = self._get_devnull()
+  1741	                elif isinstance(stderr, int):
+  1742	                    errwrite = stderr
+  1743	                else:
+  1744	                    # Assuming file-like object
+  1745	                    errwrite = stderr.fileno()
+  1746	
+  1747	            return (p2cread, p2cwrite,
+  1748	                    c2pread, c2pwrite,
+  1749	                    errread, errwrite)
+  1750	
+  1751	
+  1752	        def _posix_spawn(self, args, executable, env, restore_signals,
+  1753	                         p2cread, p2cwrite,
+  1754	                         c2pread, c2pwrite,
+  1755	                         errread, errwrite):
+  1756	            """Execute program using os.posix_spawn()."""
+  1757	            if env is None:
+  1758	                env = os.environ
+  1759	
+  1760	            kwargs = {}
+  1761	            if restore_signals:
+  1762	                # See _Py_RestoreSignals() in Python/pylifecycle.c
+  1763	                sigset = []
+  1764	                for signame in ('SIGPIPE', 'SIGXFZ', 'SIGXFSZ'):
+  1765	                    signum = getattr(signal, signame, None)
+  1766	                    if signum is not None:
+  1767	                        sigset.append(signum)
+  1768	                kwargs['setsigdef'] = sigset
+  1769	
+  1770	            file_actions = []
+  1771	            for fd in (p2cwrite, c2pread, errread):
+  1772	                if fd != -1:
+  1773	                    file_actions.append((os.POSIX_SPAWN_CLOSE, fd))
+  1774	            for fd, fd2 in (
+  1775	                (p2cread, 0),
+  1776	                (c2pwrite, 1),
+  1777	                (errwrite, 2),
+  1778	            ):
+  1779	                if fd != -1:
+  1780	                    file_actions.append((os.POSIX_SPAWN_DUP2, fd, fd2))
+  1781	            if file_actions:
+  1782	                kwargs['file_actions'] = file_actions
+  1783	
+  1784	            self.pid = os.posix_spawn(executable, args, env, **kwargs)
+  1785	            self._child_created = True
+  1786	
+  1787	            self._close_pipe_fds(p2cread, p2cwrite,
+  1788	                                 c2pread, c2pwrite,
+  1789	                                 errread, errwrite)
+  1790	
+  1791	        def _execute_child(self, args, executable, preexec_fn, close_fds,
+  1792	                           pass_fds, cwd, env,
+  1793	                           startupinfo, creationflags, shell,
+  1794	                           p2cread, p2cwrite,
+  1795	                           c2pread, c2pwrite,
+  1796	                           errread, errwrite,
+  1797	                           restore_signals,
+  1798	                           gid, gids, uid, umask,
+  1799	                           start_new_session, process_group):
+  1800	            """Execute program (POSIX version)"""
+  1801	
+  1802	            if isinstance(args, (str, bytes)):
+  1803	                args = [args]
+  1804	            elif isinstance(args, os.PathLike):
+  1805	                if shell:
+  1806	                    raise TypeError('path-like args is not allowed when '
+  1807	                                    'shell is true')
+  1808	                args = [args]
+  1809	            else:
+  1810	                args = list(args)
+  1811	
+  1812	            if shell:
+  1813	                # On Android the default shell is at '/system/bin/sh'.
+  1814	                unix_shell = ('/system/bin/sh' if
+  1815	                          hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+  1816	                args = [unix_shell, "-c"] + args
+  1817	                if executable:
+  1818	                    args[0] = executable
+  1819	
+  1820	            if executable is None:
+  1821	                executable = args[0]
+  1822	
+  1823	            sys.audit("subprocess.Popen", executable, args, cwd, env)
+  1824	
+  1825	            if (_USE_POSIX_SPAWN
+  1826	                    and os.path.dirname(executable)
+  1827	                    and preexec_fn is None
+  1828	                    and not close_fds
+  1829	                    and not pass_fds
+  1830	                    and cwd is None
+  1831	                    and (p2cread == -1 or p2cread > 2)
+  1832	                    and (c2pwrite == -1 or c2pwrite > 2)
+  1833	                    and (errwrite == -1 or errwrite > 2)
+  1834	                    and not start_new_session
+  1835	                    and process_group == -1
+  1836	                    and gid is None
+  1837	                    and gids is None
+  1838	                    and uid is None
+  1839	                    and umask < 0):
+  1840	                self._posix_spawn(args, executable, env, restore_signals,
+  1841	                                  p2cread, p2cwrite,
+  1842	                                  c2pread, c2pwrite,
+  1843	                                  errread, errwrite)
+  1844	                return
+  1845	
+  1846	            orig_executable = executable
+  1847	
+  1848	            # For transferring possible exec failure from child to parent.
+  1849	            # Data format: "exception name:hex errno:description"
+  1850	            # Pickle is not used; it is complex and involves memory allocation.
+  1851	            errpipe_read, errpipe_write = os.pipe()
+  1852	            # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+  1853	            low_fds_to_close = []
+  1854	            while errpipe_write < 3:
+  1855	                low_fds_to_close.append(errpipe_write)
+  1856	                errpipe_write = os.dup(errpipe_write)
+  1857	            for low_fd in low_fds_to_close:
+  1858	                os.close(low_fd)
+  1859	            try:
+  1860	                try:
+  1861	                    # We must avoid complex work that could involve
+  1862	                    # malloc or free in the child process to avoid
+  1863	                    # potential deadlocks, thus we do all this here.
+  1864	                    # and pass it to fork_exec()
+  1865	
+  1866	                    if env is not None:
+  1867	                        env_list = []
+  1868	                        for k, v in env.items():
+  1869	                            k = os.fsencode(k)
+  1870	                            if b'=' in k:
+  1871	                                raise ValueError("illegal environment variable name")
+  1872	                            env_list.append(k + b'=' + os.fsencode(v))
+  1873	                    else:
+  1874	                        env_list = None  # Use execv instead of execve.
+  1875	                    executable = os.fsencode(executable)
+  1876	                    if os.path.dirname(executable):
+  1877	                        executable_list = (executable,)
+  1878	                    else:
+  1879	                        # This matches the behavior of os._execvpe().
+  1880	                        executable_list = tuple(
+  1881	                            os.path.join(os.fsencode(dir), executable)
+  1882	                            for dir in os.get_exec_path(env))
+  1883	                    fds_to_keep = set(pass_fds)
+  1884	                    fds_to_keep.add(errpipe_write)
+  1885	                    self.pid = _fork_exec(
+  1886	                            args, executable_list,
+  1887	                            close_fds, tuple(sorted(map(int, fds_to_keep))),
+  1888	                            cwd, env_list,
+  1889	                            p2cread, p2cwrite, c2pread, c2pwrite,
+  1890	                            errread, errwrite,
+  1891	                            errpipe_read, errpipe_write,
+  1892	                            restore_signals, start_new_session,
+  1893	                            process_group, gid, gids, uid, umask,
+  1894	                            preexec_fn, _USE_VFORK)
+  1895	                    self._child_created = True
+  1896	                finally:
+  1897	                    # be sure the FD is closed no matter what
+  1898	                    os.close(errpipe_write)
+  1899	
+  1900	                self._close_pipe_fds(p2cread, p2cwrite,
+  1901	                                     c2pread, c2pwrite,
+  1902	                                     errread, errwrite)
+  1903	
+  1904	                # Wait for exec to fail or succeed; possibly raising an
+  1905	                # exception (limited in size)
+  1906	                errpipe_data = bytearray()
+  1907	                while True:
+  1908	                    part = os.read(errpipe_read, 50000)
+  1909	                    errpipe_data += part
+  1910	                    if not part or len(errpipe_data) > 50000:
+  1911	                        break
+  1912	            finally:
+  1913	                # be sure the FD is closed no matter what
+  1914	                os.close(errpipe_read)
+  1915	
+  1916	            if errpipe_data:
+  1917	                try:
+  1918	                    pid, sts = os.waitpid(self.pid, 0)
+  1919	                    if pid == self.pid:
+  1920	                        self._handle_exitstatus(sts)
+  1921	                    else:
+  1922	                        self.returncode = sys.maxsize
+  1923	                except ChildProcessError:
+  1924	                    pass
+  1925	
+  1926	                try:
+  1927	                    exception_name, hex_errno, err_msg = (
+  1928	                            errpipe_data.split(b':', 2))
+  1929	                    # The encoding here should match the encoding
+  1930	                    # written in by the subprocess implementations
+  1931	                    # like _posixsubprocess
+  1932	                    err_msg = err_msg.decode()
+  1933	                except ValueError:
+  1934	                    exception_name = b'SubprocessError'
+  1935	                    hex_errno = b'0'
+  1936	                    err_msg = 'Bad exception data from child: {!r}'.format(
+  1937	                                  bytes(errpipe_data))
+  1938	                child_exception_type = getattr(
+  1939	                        builtins, exception_name.decode('ascii'),
+  1940	                        SubprocessError)
+  1941	                if issubclass(child_exception_type, OSError) and hex_errno:
+  1942	                    errno_num = int(hex_errno, 16)
+  1943	                    if err_msg == "noexec:chdir":
+  1944	                        err_msg = ""
+  1945	                        # The error must be from chdir(cwd).
+  1946	                        err_filename = cwd
+  1947	                    elif err_msg == "noexec":
+  1948	                        err_msg = ""
+  1949	                        err_filename = None
+  1950	                    else:
+  1951	                        err_filename = orig_executable
+  1952	                    if errno_num != 0:
+  1953	                        err_msg = os.strerror(errno_num)
+  1954	                    if err_filename is not None:
+  1955	                        raise child_exception_type(errno_num, err_msg, err_filename)
+  1956	                    else:
+  1957	                        raise child_exception_type(errno_num, err_msg)
+  1958	                raise child_exception_type(err_msg)
+  1959	
+  1960	
+  1961	        def _handle_exitstatus(self, sts,
+  1962	                               _waitstatus_to_exitcode=_waitstatus_to_exitcode,
+  1963	                               _WIFSTOPPED=_WIFSTOPPED,
+  1964	                               _WSTOPSIG=_WSTOPSIG):
+  1965	            """All callers to this function MUST hold self._waitpid_lock."""
+  1966	            # This method is called (indirectly) by __del__, so it cannot
+  1967	            # refer to anything outside of its local scope.
+  1968	            if _WIFSTOPPED(sts):
+  1969	                self.returncode = -_WSTOPSIG(sts)
+  1970	            else:
+  1971	                self.returncode = _waitstatus_to_exitcode(sts)
+  1972	
+  1973	        def _internal_poll(self, _deadstate=None, _waitpid=_waitpid,
+  1974	                _WNOHANG=_WNOHANG, _ECHILD=errno.ECHILD):
+  1975	            """Check if child process has terminated.  Returns returncode
+  1976	            attribute.
+  1977	
+  1978	            This method is called by __del__, so it cannot reference anything
+  1979	            outside of the local scope (nor can any methods it calls).
+  1980	
+  1981	            """
+  1982	            if self.returncode is None:
+  1983	                if not self._waitpid_lock.acquire(False):
+  1984	                    # Something else is busy calling waitpid.  Don't allow two
+  1985	                    # at once.  We know nothing yet.
+  1986	                    return None
+  1987	                try:
+  1988	                    if self.returncode is not None:
+  1989	                        return self.returncode  # Another thread waited.
+  1990	                    pid, sts = _waitpid(self.pid, _WNOHANG)
+  1991	                    if pid == self.pid:
+  1992	                        self._handle_exitstatus(sts)
+  1993	                except OSError as e:
+  1994	                    if _deadstate is not None:
+  1995	                        self.returncode = _deadstate
+  1996	                    elif e.errno == _ECHILD:
+  1997	                        # This happens if SIGCLD is set to be ignored or
+  1998	                        # waiting for child processes has otherwise been
+  1999	                        # disabled for our process.  This child is dead, we
+  2000	                        # can't get the status.
+  2001	                        # http://bugs.python.org/issue15756
+  2002	                        self.returncode = 0
+  2003	                finally:
+  2004	                    self._waitpid_lock.release()
+  2005	            return self.returncode
+  2006	
+  2007	
+  2008	        def _try_wait(self, wait_flags):
+  2009	            """All callers to this function MUST hold self._waitpid_lock."""
+  2010	            try:
+  2011	                (pid, sts) = os.waitpid(self.pid, wait_flags)
+  2012	            except ChildProcessError:
+  2013	                # This happens if SIGCLD is set to be ignored or waiting
+  2014	                # for child processes has otherwise been disabled for our
+  2015	                # process.  This child is dead, we can't get the status.
+  2016	                pid = self.pid
+  2017	                sts = 0
+  2018	            return (pid, sts)
+  2019	
+  2020	
+  2021	        def _wait(self, timeout):
+  2022	            """Internal implementation of wait() on POSIX."""
+  2023	            if self.returncode is not None:
+  2024	                return self.returncode
+  2025	
+  2026	            if timeout is not None:
+  2027	                endtime = _time() + timeout
+  2028	                # Enter a busy loop if we have a timeout.  This busy loop was
+  2029	                # cribbed from Lib/threading.py in Thread.wait() at r71065.
+  2030	                delay = 0.0005 # 500 us -> initial delay of 1 ms
+  2031	                while True:
+  2032	                    if self._waitpid_lock.acquire(False):
+  2033	                        try:
+  2034	                            if self.returncode is not None:
+  2035	                                break  # Another thread waited.
+  2036	                            (pid, sts) = self._try_wait(os.WNOHANG)
+  2037	                            assert pid == self.pid or pid == 0
+  2038	                            if pid == self.pid:
+  2039	                                self._handle_exitstatus(sts)
+  2040	                                break
+  2041	                        finally:
+  2042	                            self._waitpid_lock.release()
+  2043	                    remaining = self._remaining_time(endtime)
+  2044	                    if remaining <= 0:
+  2045	                        raise TimeoutExpired(self.args, timeout)
+  2046	                    delay = min(delay * 2, remaining, .05)
+  2047	                    time.sleep(delay)
+  2048	            else:
+  2049	                while self.returncode is None:
+  2050	                    with self._waitpid_lock:
+  2051	                        if self.returncode is not None:
+  2052	                            break  # Another thread waited.
+  2053	                        (pid, sts) = self._try_wait(0)
+  2054	                        # Check the pid and loop as waitpid has been known to
+  2055	                        # return 0 even without WNOHANG in odd situations.
+  2056	                        # http://bugs.python.org/issue14396.
+  2057	                        if pid == self.pid:
+  2058	                            self._handle_exitstatus(sts)
+  2059	            return self.returncode
+  2060	
+  2061	
+  2062	        def _communicate(self, input, endtime, orig_timeout):
+  2063	            if self.stdin and not self._communication_started:
+  2064	                # Flush stdio buffer.  This might block, if the user has
+  2065	                # been writing to .stdin in an uncontrolled fashion.
+  2066	                try:
+  2067	                    self.stdin.flush()
+  2068	                except BrokenPipeError:
+  2069	                    pass  # communicate() must ignore BrokenPipeError.
+  2070	                if not input:
+  2071	                    try:
+  2072	                        self.stdin.close()
+  2073	                    except BrokenPipeError:
+  2074	                        pass  # communicate() must ignore BrokenPipeError.
+  2075	
+  2076	            stdout = None
+  2077	            stderr = None
+  2078	
+  2079	            # Only create this mapping if we haven't already.
+  2080	            if not self._communication_started:
+  2081	                self._fileobj2output = {}
+  2082	                if self.stdout:
+  2083	                    self._fileobj2output[self.stdout] = []
+  2084	                if self.stderr:
+  2085	                    self._fileobj2output[self.stderr] = []
+  2086	
+  2087	            if self.stdout:
+  2088	                stdout = self._fileobj2output[self.stdout]
+  2089	            if self.stderr:
+  2090	                stderr = self._fileobj2output[self.stderr]
+  2091	
+  2092	            self._save_input(input)
+  2093	
+  2094	            if self._input:
+  2095	                input_view = memoryview(self._input)
+  2096	
+  2097	            with _PopenSelector() as selector:
+  2098	                if self.stdin and input:
+  2099	                    selector.register(self.stdin, selectors.EVENT_WRITE)
+  2100	                if self.stdout and not self.stdout.closed:
+  2101	                    selector.register(self.stdout, selectors.EVENT_READ)
+  2102	                if self.stderr and not self.stderr.closed:
+  2103	                    selector.register(self.stderr, selectors.EVENT_READ)
+  2104	
+  2105	                while selector.get_map():
+  2106	                    timeout = self._remaining_time(endtime)
+  2107	                    if timeout is not None and timeout < 0:
+  2108	                        self._check_timeout(endtime, orig_timeout,
+  2109	                                            stdout, stderr,
+  2110	                                            skip_check_and_raise=True)
+  2111	                        raise RuntimeError(  # Impossible :)
+  2112	                            '_check_timeout(..., skip_check_and_raise=True) '
+  2113	                            'failed to raise TimeoutExpired.')
+  2114	
+  2115	                    ready = selector.select(timeout)
+  2116	                    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  2117	
+  2118	                    # XXX Rewrite these to use non-blocking I/O on the file
+  2119	                    # objects; they are no longer using C stdio!
+  2120	
+  2121	                    for key, events in ready:
+  2122	                        if key.fileobj is self.stdin:
+  2123	                            chunk = input_view[self._input_offset :
+  2124	                                               self._input_offset + _PIPE_BUF]
+  2125	                            try:
+  2126	                                self._input_offset += os.write(key.fd, chunk)
+  2127	                            except BrokenPipeError:
+  2128	                                selector.unregister(key.fileobj)
+  2129	                                key.fileobj.close()
+  2130	                            else:
+  2131	                                if self._input_offset >= len(self._input):
+  2132	                                    selector.unregister(key.fileobj)
+  2133	                                    key.fileobj.close()
+  2134	                        elif key.fileobj in (self.stdout, self.stderr):
+  2135	                            data = os.read(key.fd, 32768)
+  2136	                            if not data:
+  2137	                                selector.unregister(key.fileobj)
+  2138	                                key.fileobj.close()
+  2139	                            self._fileobj2output[key.fileobj].append(data)
+  2140	
+  2141	            self.wait(timeout=self._remaining_time(endtime))
+  2142	
+  2143	            # All data exchanged.  Translate lists into strings.
+  2144	            if stdout is not None:
+  2145	                stdout = b''.join(stdout)
+  2146	            if stderr is not None:
+  2147	                stderr = b''.join(stderr)
+  2148	
+  2149	            # Translate newlines, if requested.
+  2150	            # This also turns bytes into strings.
+  2151	            if self.text_mode:
+  2152	                if stdout is not None:
+  2153	                    stdout = self._translate_newlines(stdout,
+  2154	                                                      self.stdout.encoding,
+  2155	                                                      self.stdout.errors)
+  2156	                if stderr is not None:
+  2157	                    stderr = self._translate_newlines(stderr,
+  2158	                                                      self.stderr.encoding,
+  2159	                                                      self.stderr.errors)
+  2160	
+  2161	            return (stdout, stderr)
+  2162	
+  2163	
+  2164	        def _save_input(self, input):
+  2165	            # This method is called from the _communicate_with_*() methods
+  2166	            # so that if we time out while communicating, we can continue
+  2167	            # sending input if we retry.
+  2168	            if self.stdin and self._input is None:
+  2169	                self._input_offset = 0
+  2170	                self._input = input
+  2171	                if input is not None and self.text_mode:
+  2172	                    self._input = self._input.encode(self.stdin.encoding,
+  2173	                                                     self.stdin.errors)
+  2174	
+  2175	
+  2176	        def send_signal(self, sig):
+  2177	            """Send a signal to the process."""
+  2178	            # bpo-38630: Polling reduces the risk of sending a signal to the
+  2179	            # wrong process if the process completed, the Popen.returncode
+  2180	            # attribute is still None, and the pid has been reassigned
+  2181	            # (recycled) to a new different process. This race condition can
+  2182	            # happens in two cases.
+  2183	            #
+  2184	            # Case 1. Thread A calls Popen.poll(), thread B calls
+  2185	            # Popen.send_signal(). In thread A, waitpid() succeed and returns
+  2186	            # the exit status. Thread B calls kill() because poll() in thread A
+  2187	            # did not set returncode yet. Calling poll() in thread B prevents
+  2188	            # the race condition thanks to Popen._waitpid_lock.
+  2189	            #
+  2190	            # Case 2. waitpid(pid, 0) has been called directly, without
+  2191	            # using Popen methods: returncode is still None is this case.
+  2192	            # Calling Popen.poll() will set returncode to a default value,
+  2193	            # since waitpid() fails with ProcessLookupError.
+  2194	            self.poll()
+  2195	            if self.returncode is not None:
+  2196	                # Skip signalling a process that we know has already died.
+  2197	                return
+  2198	
+  2199	            # The race condition can still happen if the race condition
+  2200	            # described above happens between the returncode test
+  2201	            # and the kill() call.
+  2202	            try:
+  2203	                os.kill(self.pid, sig)
+  2204	            except ProcessLookupError:
+  2205	                # Suppress the race condition error; bpo-40550.
+  2206	                pass
+  2207	
+  2208	        def terminate(self):
+  2209	            """Terminate the process with SIGTERM
+  2210	            """
+  2211	            self.send_signal(signal.SIGTERM)
+  2212	
+  2213	        def kill(self):
+  2214	            """Kill the process with SIGKILL
+  2215	            """
+  2216	            self.send_signal(signal.SIGKILL)

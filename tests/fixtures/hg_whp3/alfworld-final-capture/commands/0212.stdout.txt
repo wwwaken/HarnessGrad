@@ -1,0 +1,58 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x104700
+There are 10 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0f8970 0x0f8970 R   0x1000
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  LOAD           0x0f9000 0x00000000000f9000 0x00000000000f9000 0x2b694b5 0x2b694b5 R E 0x1000
+  LOAD           0x2c63000 0x0000000002c63000 0x0000000002c63000 0x2574ac 0x2574ac R   0x1000
+  GNU_EH_FRAME   0x2cbddf0 0x0000000002cbddf0 0x0000000002cbddf0 0x01b37c 0x01b37c R   0x4
+  LOAD           0x2eba800 0x0000000002ebb800 0x0000000002ebb800 0x014597 0x015a48 RW  0x1000
+  GNU_RELRO      0x2eba800 0x0000000002ebb800 0x0000000002ebb800 0x006800 0x006800 R   0x1
+  NOTE           0x2fe8000 0x0000000002ed2000 0x0000000002ed2000 0x000024 0x000024 R   0x4
+  LOAD           0x2fe8000 0x0000000002ed2000 0x0000000002ed2000 0x07f328 0x07f328 RW  0x1000
+  DYNAMIC        0x3067158 0x0000000002f51158 0x0000000002f51158 0x0001d0 0x0001d0 RW  0x8
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .gnu.hash .dynsym .rela.dyn .rela.plt 
+   01     
+   02     .init .plt .plt.got .text .fini 
+   03     .rodata .itt_notify_tab .eh_frame_hdr .eh_frame 
+   04     .eh_frame_hdr 
+   05     .init_array .fini_array .jcr .data.rel.ro .got .got.plt .data .bss 
+   06     .init_array .fini_array .jcr .data.rel.ro .got 
+   07     .note.gnu.build-id 
+   08     .note.gnu.build-id .hash .dynstr .dynamic 
+   09     .dynamic 
+
+Dynamic section at offset 0x3067158 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x0000000000000001 (NEEDED)             Shared library: [libmkl_core.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libmkl_avx2.so.2]
+ 0x000000000000000c (INIT)               0xf9000
+ 0x000000000000000d (FINI)               0x2c624ac
+ 0x0000000000000019 (INIT_ARRAY)         0x2ebb800
+ 0x000000000000001b (INIT_ARRAYSZ)       48 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x2ebb830
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x0000000000000004 (HASH)               0x2ed2028
+ 0x000000006ffffef5 (GNU_HASH)           0x13768
+ 0x0000000000000005 (STRTAB)             0x2ee5530
+ 0x0000000000000006 (SYMTAB)             0x28508
+ 0x000000000000000a (STRSZ)              441381 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x2ec2000
+ 0x0000000000000002 (PLTRELSZ)           69552 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0xe79c0
+ 0x0000000000000007 (RELA)               0xd7d78
+ 0x0000000000000008 (RELASZ)             64584 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          995
+ 0x0000000000000000 (NULL)               0x0

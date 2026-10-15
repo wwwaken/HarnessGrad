@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python3",
+    "tools/build_bird_native_runtime.py",
+    "--dataset",
+    "jericho",
+    "--out",
+    "tests/fixtures/hg_whp3/jericho-final-capture",
+    "--manifest",
+    "data/runtimes/jericho-native.json",
+    "--store",
+    "/tmp/hg-hp3-store"
+  ],
+  "returncode": 0
+}

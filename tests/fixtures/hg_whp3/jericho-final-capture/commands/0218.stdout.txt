@@ -1,0 +1,56 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0xe640
+There are 10 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x00c3a8 0x00c3a8 R   0x1000
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  LOAD           0x00d000 0x000000000000d000 0x000000000000d000 0x0510e1 0x0510e1 R E 0x1000
+  LOAD           0x05f000 0x000000000005f000 0x000000000005f000 0x017754 0x017754 R   0x1000
+  GNU_EH_FRAME   0x0623e4 0x00000000000623e4 0x00000000000623e4 0x000f14 0x000f14 R   0x4
+  LOAD           0x076b88 0x0000000000077b88 0x0000000000077b88 0x001180 0x001210 RW  0x1000
+  GNU_RELRO      0x076b88 0x0000000000077b88 0x0000000000077b88 0x000478 0x000478 R   0x1
+  NOTE           0x083000 0x0000000000079000 0x0000000000079000 0x000024 0x000024 R   0x4
+  LOAD           0x083000 0x0000000000079000 0x0000000000079000 0x003310 0x003310 RW  0x1000
+  DYNAMIC        0x086160 0x000000000007c160 0x000000000007c160 0x0001b0 0x0001b0 RW  0x8
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .gnu.hash .dynsym .rela.dyn .rela.plt 
+   01     
+   02     .init .plt .plt.got .text .fini 
+   03     .rodata .eh_frame_hdr .eh_frame 
+   04     .eh_frame_hdr 
+   05     .init_array .fini_array .jcr .got .got.plt .data .bss 
+   06     .init_array .fini_array .jcr .got 
+   07     .note.gnu.build-id 
+   08     .note.gnu.build-id .hash .dynstr .dynamic 
+   09     .dynamic 
+
+Dynamic section at offset 0x86160 contains 23 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x000000000000000e (SONAME)             Library soname: [libmkl_blacs_openmpi_ilp64.so.2]
+ 0x000000000000000c (INIT)               0xd000
+ 0x000000000000000d (FINI)               0x5e0d8
+ 0x0000000000000019 (INIT_ARRAY)         0x77b88
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x77b90
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x0000000000000004 (HASH)               0x79028
+ 0x000000006ffffef5 (GNU_HASH)           0x1740
+ 0x0000000000000005 (STRTAB)             0x7a508
+ 0x0000000000000006 (SYMTAB)             0x2ca0
+ 0x000000000000000a (STRSZ)              7253 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x78000
+ 0x0000000000000002 (PLTRELSZ)           8160 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0xa3c8
+ 0x0000000000000007 (RELA)               0x9528
+ 0x0000000000000008 (RELASZ)             3744 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000000 (NULL)               0x0

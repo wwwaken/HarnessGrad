@@ -1,0 +1,118 @@
+     1	"""Bisection algorithms."""
+     2	
+     3	
+     4	def insort_right(a, x, lo=0, hi=None, *, key=None):
+     5	    """Insert item x in list a, and keep it sorted assuming a is sorted.
+     6	
+     7	    If x is already in a, insert it to the right of the rightmost x.
+     8	
+     9	    Optional args lo (default 0) and hi (default len(a)) bound the
+    10	    slice of a to be searched.
+    11	
+    12	    A custom key function can be supplied to customize the sort order.
+    13	    """
+    14	    if key is None:
+    15	        lo = bisect_right(a, x, lo, hi)
+    16	    else:
+    17	        lo = bisect_right(a, key(x), lo, hi, key=key)
+    18	    a.insert(lo, x)
+    19	
+    20	
+    21	def bisect_right(a, x, lo=0, hi=None, *, key=None):
+    22	    """Return the index where to insert item x in list a, assuming a is sorted.
+    23	
+    24	    The return value i is such that all e in a[:i] have e <= x, and all e in
+    25	    a[i:] have e > x.  So if x already appears in the list, a.insert(i, x) will
+    26	    insert just after the rightmost x already there.
+    27	
+    28	    Optional args lo (default 0) and hi (default len(a)) bound the
+    29	    slice of a to be searched.
+    30	
+    31	    A custom key function can be supplied to customize the sort order.
+    32	    """
+    33	
+    34	    if lo < 0:
+    35	        raise ValueError('lo must be non-negative')
+    36	    if hi is None:
+    37	        hi = len(a)
+    38	    # Note, the comparison uses "<" to match the
+    39	    # __lt__() logic in list.sort() and in heapq.
+    40	    if key is None:
+    41	        while lo < hi:
+    42	            mid = (lo + hi) // 2
+    43	            if x < a[mid]:
+    44	                hi = mid
+    45	            else:
+    46	                lo = mid + 1
+    47	    else:
+    48	        while lo < hi:
+    49	            mid = (lo + hi) // 2
+    50	            if x < key(a[mid]):
+    51	                hi = mid
+    52	            else:
+    53	                lo = mid + 1
+    54	    return lo
+    55	
+    56	
+    57	def insort_left(a, x, lo=0, hi=None, *, key=None):
+    58	    """Insert item x in list a, and keep it sorted assuming a is sorted.
+    59	
+    60	    If x is already in a, insert it to the left of the leftmost x.
+    61	
+    62	    Optional args lo (default 0) and hi (default len(a)) bound the
+    63	    slice of a to be searched.
+    64	
+    65	    A custom key function can be supplied to customize the sort order.
+    66	    """
+    67	
+    68	    if key is None:
+    69	        lo = bisect_left(a, x, lo, hi)
+    70	    else:
+    71	        lo = bisect_left(a, key(x), lo, hi, key=key)
+    72	    a.insert(lo, x)
+    73	
+    74	def bisect_left(a, x, lo=0, hi=None, *, key=None):
+    75	    """Return the index where to insert item x in list a, assuming a is sorted.
+    76	
+    77	    The return value i is such that all e in a[:i] have e < x, and all e in
+    78	    a[i:] have e >= x.  So if x already appears in the list, a.insert(i, x) will
+    79	    insert just before the leftmost x already there.
+    80	
+    81	    Optional args lo (default 0) and hi (default len(a)) bound the
+    82	    slice of a to be searched.
+    83	
+    84	    A custom key function can be supplied to customize the sort order.
+    85	    """
+    86	
+    87	    if lo < 0:
+    88	        raise ValueError('lo must be non-negative')
+    89	    if hi is None:
+    90	        hi = len(a)
+    91	    # Note, the comparison uses "<" to match the
+    92	    # __lt__() logic in list.sort() and in heapq.
+    93	    if key is None:
+    94	        while lo < hi:
+    95	            mid = (lo + hi) // 2
+    96	            if a[mid] < x:
+    97	                lo = mid + 1
+    98	            else:
+    99	                hi = mid
+   100	    else:
+   101	        while lo < hi:
+   102	            mid = (lo + hi) // 2
+   103	            if key(a[mid]) < x:
+   104	                lo = mid + 1
+   105	            else:
+   106	                hi = mid
+   107	    return lo
+   108	
+   109	
+   110	# Overwrite above definitions with a fast C implementation
+   111	try:
+   112	    from _bisect import *
+   113	except ImportError:
+   114	    pass
+   115	
+   116	# Create aliases
+   117	bisect = bisect_right
+   118	insort = insort_right

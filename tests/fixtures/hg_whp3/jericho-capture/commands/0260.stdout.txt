@@ -1,0 +1,58 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0xf6300
+There are 10 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0ea570 0x0ea570 R   0x1000
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  LOAD           0x0eb000 0x00000000000eb000 0x00000000000eb000 0x2c1b361 0x2c1b361 R E 0x1000
+  LOAD           0x2d07000 0x0000000002d07000 0x0000000002d07000 0x1e1e2c 0x1e1e2c R   0x1000
+  GNU_EH_FRAME   0x2d50374 0x0000000002d50374 0x0000000002d50374 0x01b3bc 0x01b3bc R   0x4
+  LOAD           0x2ee9268 0x0000000002eea268 0x0000000002eea268 0x00bf3d 0x00c720 RW  0x1000
+  GNU_RELRO      0x2ee9268 0x0000000002eea268 0x0000000002eea268 0x004d98 0x004d98 R   0x1
+  NOTE           0x3010000 0x0000000002ef7000 0x0000000002ef7000 0x000024 0x000024 R   0x4
+  LOAD           0x3010000 0x0000000002ef7000 0x0000000002ef7000 0x077588 0x077588 RW  0x1000
+  DYNAMIC        0x30873b8 0x0000000002f6e3b8 0x0000000002f6e3b8 0x0001d0 0x0001d0 RW  0x8
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .gnu.hash .dynsym .rela.dyn .rela.plt 
+   01     
+   02     .init .plt .plt.got .text .fini 
+   03     .rodata .itt_notify_tab .eh_frame_hdr .eh_frame 
+   04     .eh_frame_hdr 
+   05     .init_array .fini_array .jcr .data.rel.ro .got .got.plt .data .bss 
+   06     .init_array .fini_array .jcr .data.rel.ro .got 
+   07     .note.gnu.build-id 
+   08     .note.gnu.build-id .hash .dynstr .dynamic 
+   09     .dynamic 
+
+Dynamic section at offset 0x30873b8 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x0000000000000001 (NEEDED)             Shared library: [libmkl_core.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libmkl_mc3.so.2]
+ 0x000000000000000c (INIT)               0xeb000
+ 0x000000000000000d (FINI)               0x2d06358
+ 0x0000000000000019 (INIT_ARRAY)         0x2eea268
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x2eea270
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x0000000000000004 (HASH)               0x2ef7028
+ 0x000000006ffffef5 (GNU_HASH)           0x130c0
+ 0x0000000000000005 (STRTAB)             0x2f09e88
+ 0x0000000000000006 (SYMTAB)             0x27808
+ 0x000000000000000a (STRSZ)              410921 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x2eef000
+ 0x0000000000000002 (PLTRELSZ)           67632 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0xd9d40
+ 0x0000000000000007 (RELA)               0xcd1a0
+ 0x0000000000000008 (RELASZ)             52128 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          968
+ 0x0000000000000000 (NULL)               0x0

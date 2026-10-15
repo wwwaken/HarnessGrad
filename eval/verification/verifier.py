@@ -463,16 +463,18 @@ def _copy_relative_input(name: str, entry: dict, staging: Path,
     _materialize(target, [entry], PLATFORM_ROOT)
     container_mod.cp_in(name, target / rel, f"{task_mount}/{rel}")
 def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
-    """Bind BIRD's selected native pin to execution and to the returned verdict."""
+    """Bind a supported host scorer's native pin to execution and verdict."""
     spec = verifier or {}
     if "native_runtime" not in spec:
         return _verify_existing(workdir, verifier, answer, **options)
-    from eval.verification.native_runtime import admit, NativeRuntimeUnavailable
+    from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS
     binding = spec["native_runtime"]
     receipt = {"verified": False, "sha256": binding.get("sha256") if isinstance(binding, dict) else None}
     try:
         if not options.get("sandbox"):
             raise NativeRuntimeUnavailable("native runtime requires sandbox=True")
+        if not isinstance(binding, dict) or binding.get('dataset') not in SUPPORTED_DATASETS:
+            raise NativeRuntimeUnavailable("native runtime dataset is outside supported host scope")
         if ((options.get("env") or {}).get("kind", "files") != "files"
                 or options.get("service_specs") or options.get("running")
                 or spec.get("kind") != "command"
@@ -481,7 +483,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dic
                 or spec.get("reward_file") != "/verifier/reward.txt"
                 or spec.get("evidence_file") != "/verifier/evidence.json"
                 or spec.get("argv", [])[:2] != ["python3", "check.py"]):
-            raise NativeRuntimeUnavailable("native runtime binding requires the BIRD host check route")
+            raise NativeRuntimeUnavailable("native runtime binding requires the supported host check route")
         with admit(binding) as runtime:
             receipt = runtime.receipt
             verdict = _verify_existing(workdir, verifier, answer,

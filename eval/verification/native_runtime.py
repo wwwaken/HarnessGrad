@@ -1,4 +1,4 @@
-"""A deliberately bounded native userland pin for the BIRD stdlib/SQLite scorer.
+"""Sealed native userland pins for explicitly supported host scorer routes.
 
 Hash while copying into sealed memfds; execute only those snapshots in an empty
 bubblewrap root. Never hash then execute a mutable source path. Missing bytes,
@@ -18,6 +18,7 @@ import platform
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
+SUPPORTED_DATASETS = frozenset({'bird_minidev', 'jericho', 'alfworld'})
 
 
 class NativeRuntimeUnavailable(RuntimeError):
@@ -58,7 +59,7 @@ def _snapshot(source: Path, expected: str) -> int:
 class FrozenRuntime:
     def __init__(self, manifest: dict, digest: str, fds: dict[str, int], launcher: int):
         self.manifest, self.fds, self.launcher = manifest, fds, launcher
-        self.receipt = {'dataset': 'bird_minidev', 'sha256': digest, 'verified': True,
+        self.receipt = {'dataset': manifest['dataset'], 'sha256': digest, 'verified': True,
                         'mechanism': 'sealed-memfd-private-root-v1',
                         'identity': manifest['identity'], 'files': len(fds)}
 
@@ -72,7 +73,13 @@ class FrozenRuntime:
         for name, value in self.manifest['environment'].items():
             plan += ['--setenv', name, value]
         for target, fd in self.fds.items():
-            plan += ['--perms', '0555', '--ro-bind-data', str(fd), target]
+            os.lseek(fd, 0, os.SEEK_SET)
+            # Only ELF payloads need execute permission. Data/code files use
+            # bwrap's default 0600, still on read-only mounts. Omitting the two
+            # mode args for those files keeps larger closures under its arg cap.
+            if os.pread(fd, 4, 0) == b'\x7fELF':
+                plan += ['--perms', '0555']
+            plan += ['--ro-bind-data', str(fd), target]
         # Even the interpreter's first loader/cache resolution is explicit. Child
         # sys.executable launches use PT_INTERP in the same closed namespace.
         interpreter = self.manifest['interpreter']
@@ -81,6 +88,17 @@ class FrozenRuntime:
                    *self.manifest['python_flags'], *argv[1:]]
         if argv[1] == 'check.py':
             command[command.index('check.py')] = '/scorer/check.py'
+        if self.manifest.get('python_path'):
+            # -I -S excludes ambient sites. Add only digest-bound package roots.
+            # The child control uses the same explicit bootstrap when it needs
+            # packages; ordinary sys.executable retains isolated stdlib defaults.
+            bootstrap = ('import runpy,sys; sys.path[:0]='
+                         + repr(self.manifest['python_path'])
+                         + '; args=sys.argv[1:]; sys.argv=args; '
+                         + 'exec(args[1]) if args[0]=="-c" else '
+                         + 'runpy.run_path(args[0],run_name="__main__")')
+            offset = command.index(interpreter) + 1 + len(self.manifest['python_flags'])
+            command[offset:] = ['-c', bootstrap, *command[offset:]]
         plan += ['--', *command]
         return subprocess.run(plan, pass_fds=(*self.fds.values(), self.launcher),
                               capture_output=True, text=True, timeout=timeout_s,
@@ -93,8 +111,8 @@ def admit(binding: dict):
     fds = {}
     launcher = None
     try:
-        if binding['dataset'] != 'bird_minidev':
-            raise NativeRuntimeUnavailable('native runtime dataset is outside BIRD scope')
+        if binding['dataset'] not in SUPPORTED_DATASETS:
+            raise NativeRuntimeUnavailable('native runtime dataset is outside supported host scope')
         path = Path(binding['manifest'])
         raw = (path if path.is_absolute() else ROOT / path).read_bytes()
         digest = hashlib.sha256(raw).hexdigest()

@@ -1,0 +1,123 @@
+     1	"""Task-bound native scorer inputs, under trusted spec/check custody.
+     2	
+     3	The digest names a canonical path -> byte-digest inventory. Native consumers get
+     4	private copies hashed while copying, never a reopened actor path. Runtime/code
+     5	custody and upstream provenance are separate obligations.
+     6	
+     7	The byte-only inventory cannot authenticate SQLite WAL dependencies. Bound
+     8	consumers refuse WAL-format main files, including already copied or checkpointed
+     9	ones: their headers cannot prove that an omitted WAL was empty. Preparing a
+    10	single-file database is a separate trusted operation, never an implicit conversion.
+    11	"""
+    12	from __future__ import annotations
+    13	
+    14	import hashlib
+    15	import json
+    16	import sys
+    17	import tempfile
+    18	from functools import lru_cache
+    19	from pathlib import Path
+    20	
+    21	
+    22	def inventory_digest(files: dict) -> str:
+    23	    return hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    24	
+    25	
+    26	@lru_cache(maxsize=128)
+    27	def _file_digest(path: str, stat_identity: tuple) -> str:
+    28	    # Reuse source identities while building many specs for the same static DB/JAR.
+    29	    # The consuming check always hashes its own private copy without this cache.
+    30	    digest = hashlib.sha256()
+    31	    with Path(path).open("rb") as stream:
+    32	        for block in iter(lambda: stream.read(1024 * 1024), b""):
+    33	            digest.update(block)
+    34	    return digest.hexdigest()
+    35	
+    36	
+    37	def bind(spec: dict, task_id: str, paths: list[str]) -> dict:
+    38	    entries = {e["path"]: e for e in spec["inputs"]}
+    39	    files = {}
+    40	    for path in paths:
+    41	        entry = entries[path]
+    42	        if "content" in entry:
+    43	            files[path] = hashlib.sha256(entry["content"].encode("utf-8")).hexdigest()
+    44	        else:
+    45	            source = Path(entry["from"])
+    46	            stat = source.stat()
+    47	            files[path] = _file_digest(str(source), (stat.st_dev, stat.st_ino, stat.st_size,
+    48	                                                     stat.st_mtime_ns, stat.st_ctime_ns))
+    49	    digest = inventory_digest(files)
+    50	    spec["scorer_input"] = {"task_id": task_id, "path": "native-inputs",
+    51	                            "sha256": digest, "files": files}
+    52	    spec["argv"] += ["--task-id", task_id, "--scorer-input-sha256", digest,
+    53	                     "--scorer-input-files", json.dumps(files, sort_keys=True)]
+    54	    helper = Path(__file__).resolve()
+    55	    spec["inputs"] += [{"path": "data/__init__.py", "content": ""},
+    56	                       {"path": "data/scaffolds/__init__.py", "content": ""},
+    57	                       {"path": "data/scaffolds/scorer_input.py", "from": str(helper)}]
+    58	    return spec
+    59	
+    60	
+    61	def add_arguments(parser) -> None:
+    62	    parser.add_argument("--task-id")
+    63	    parser.add_argument("--scorer-input-sha256")
+    64	    parser.add_argument("--scorer-input-files")
+    65	
+    66	
+    67	def run_bound(args, paths: dict[str, Path], score) -> int:
+    68	    """Validate exact consumed inventory before reaching any scoring boundary.
+    69	
+    70	    Legacy manual calls remain explicitly unbound, as in the QA check; a selected
+    71	    bound spec cannot accept their receipt through native dispatch.
+    72	    """
+    73	    receipt = {"task_id": args.task_id, "path": "native-inputs", "sha256": None,
+    74	               "expected_sha256": args.scorer_input_sha256, "verified": False, "files": {}}
+    75	    if all(v is None for v in (args.task_id, args.scorer_input_sha256, args.scorer_input_files)):
+    76	        return score(paths, receipt)
+    77	    with tempfile.TemporaryDirectory(prefix="hg-scorer-input-") as scratch:
+    78	        try:
+    79	            copies = {}
+    80	            for name, path in paths.items():
+    81	                # Preserve relative names for file-format dispatch and CSV dataset lookup.
+    82	                rel = Path(name)
+    83	                if rel.is_absolute() or ".." in rel.parts:
+    84	                    raise ValueError("input inventory path must stay relative")
+    85	                target = Path(scratch) / rel
+    86	                target.parent.mkdir(parents=True, exist_ok=True)
+    87	                digest = hashlib.sha256()
+    88	                header = b""
+    89	                with Path(path).open("rb") as src, target.open("wb") as dst:
+    90	                    for block in iter(lambda: src.read(1024 * 1024), b""):
+    91	                        if not header:
+    92	                            header = block[:20]
+    93	                        digest.update(block)
+    94	                        dst.write(block)
+    95	                # Inspect the same bytes that were copied and hashed, not a second
+    96	                # open or neighboring actor paths. SQLite header bytes 18/19 are
+    97	                # the write/read format versions (2 denotes WAL). A missing WAL
+    98	                # is indistinguishable here from a cleanly checkpointed database;
+    99	                # matching main-file digests cannot establish logical equivalence.
+   100	                if (header[:16] == b"SQLite format 3\x00"
+   101	                        and 2 in header[18:20]):
+   102	                    raise ValueError(
+   103	                        f"SQLite WAL input {name!r} requires a database-aware snapshot; "
+   104	                        "main-file-only binding is unsupported (including checkpointed WAL mode)")
+   105	                copies[name] = target
+   106	                receipt["files"][name] = digest.hexdigest()
+   107	            receipt["sha256"] = inventory_digest(receipt["files"])
+   108	            expected = json.loads(args.scorer_input_files or "null")
+   109	            receipt["verified"] = bool(args.task_id and isinstance(expected, dict)
+   110	                                        and expected == receipt["files"]
+   111	                                        and args.scorer_input_sha256 == receipt["sha256"])
+   112	            if not receipt["verified"]:
+   113	                raise ValueError("task/digest inventory mismatch")
+   114	        except (OSError, ValueError) as exc:
+   115	            evidence = {"measured": False, "error": f"scorer input binding refused: {exc}",
+   116	                        "scorer_input": receipt}
+   117	            output = Path(args.evidence_file)
+   118	            output.parent.mkdir(parents=True, exist_ok=True)
+   119	            output.write_text(json.dumps(evidence, sort_keys=True) + "\n", encoding="utf-8")
+   120	            print(evidence["error"], file=sys.stderr)
+   121	            return 3
+   122	        # Keep the authenticated copies alive, preserving route-specific exceptions.
+   123	        return score(copies, receipt)

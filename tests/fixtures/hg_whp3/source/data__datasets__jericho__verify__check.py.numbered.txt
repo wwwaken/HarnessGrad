@@ -1,0 +1,183 @@
+     1	#!/usr/bin/env python3
+     2	r"""The Jericho check: replay the agent's commands in a fresh game and read the game's score.
+     3	
+     4	It reads one thing from the agent: the ordered commands in `jer_actions.jsonl`. It then
+     5	rebuilds the game from a trusted copy of `jer_game.json` **and a trusted copy of the ROM**
+     6	(both re-materialized by the platform immediately before this runs), replays the commands, and
+     7	reports the game's own score over the game's own maximum.
+     8	
+     9	The rule, precisely
+    10	-------------------
+    11	    reward = info['score'] / env.get_max_score()
+    12	
+    13	`info['score']` is the points the game awards, which is what Jericho's own documentation prints
+    14	("Total Score", "Scored X out of Y"), and `get_max_score()` is a number the game states about
+    15	itself. The raw pair, the per-step trace, and the score the reference walkthrough would reach
+    16	are all in the evidence, so "0.42" can be read back into "147 of 350".
+    17	
+    18	**No `done` gate.** A game ends when the game says so; `jer done` exists so a harness can stop
+    19	and is recorded, not required -- the same reading as ALFWorld's and ScienceWorld's. §2.
+    20	
+    21	What makes this check trustworthy
+    22	---------------------------------
+    23	* The game file, the ROM and this script are re-materialized by the platform before the check
+    24	  runs, so editing any of them in the workdir changes nothing.
+    25	* The seed is the game's official one, from the same file the agent was given, so the check
+    26	  replays the episode the agent actually played rather than a different arrangement.
+    27	* A check that cannot measure -- no game file, no ROM, an interpreter that will not start --
+    28	  writes **no reward file**, writes evidence saying `measured: false`, and exits 3.
+    29	
+    30	Outputs
+    31	-------
+    32	    reward file    0.0-1.0   (`/verifier/reward.txt` by default)
+    33	    evidence file  JSON      why: every step, its score, the maximum, the fraction
+    34	    stdout         why, in one line, so the platform's verdict detail carries it too
+    35	"""
+    36	from __future__ import annotations
+    37	
+    38	import argparse
+    39	import json
+    40	import sys
+    41	import traceback
+    42	from pathlib import Path
+    43	
+    44	# Resolve helpers beside trusted code, including in the sealed /scorer root.
+    45	sys.path.insert(0, str(Path(__file__).resolve().parent))
+    46	from data.scaffolds.scorer_input import add_arguments, run_bound
+    47	
+    48	import jer_env  # noqa: E402
+    49	
+    50	DEFAULT_REWARD_FILE = "/verifier/reward.txt"
+    51	DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
+    52	
+    53	
+    54	def parse_args(argv):
+    55	    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    56	    parser.add_argument("--workdir", default=".")
+    57	    parser.add_argument("--game", default=None, help="the trusted game file")
+    58	    parser.add_argument("--rom", default=None, help="the ROM name, for evidence")
+    59	    parser.add_argument("--log", default=None)
+    60	    parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
+    61	    parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
+    62	    add_arguments(parser)
+    63	    args = parser.parse_args(argv)
+    64	    workdir = Path(args.workdir)
+    65	    args.game = Path(args.game) if args.game else workdir / jer_env.GAME_FILENAME
+    66	    args.log = Path(args.log) if args.log else workdir / jer_env.LOG_FILENAME
+    67	    args.reward_file = Path(args.reward_file)
+    68	    args.evidence_file = Path(args.evidence_file)
+    69	    args.workdir = workdir
+    70	    return args
+    71	
+    72	
+    73	def write_reward(path: Path, score: float) -> None:
+    74	    path.parent.mkdir(parents=True, exist_ok=True)
+    75	    path.write_text(f"{score:g}\n")
+    76	
+    77	
+    78	def write_evidence(path: Path, evidence: dict) -> None:
+    79	    """Evidence is for a reader, never for the score: failing to write it is not fatal."""
+    80	    try:
+    81	        path.parent.mkdir(parents=True, exist_ok=True)
+    82	        path.write_text(json.dumps(evidence, indent=1, sort_keys=True,
+    83	                                   ensure_ascii=False) + "\n")
+    84	    except OSError as exc:
+    85	        print(f"could not write evidence: {exc}", file=sys.stderr)
+    86	
+    87	
+    88	def main(argv) -> int:
+    89	    args = parse_args(argv)
+    90	    if args.rom is None:
+    91	        args.rom = (json.loads(args.game.read_text())["rom"]
+    92	                    if args.game.is_file() else "missing-rom")
+    93	    return run_bound(args, {str(args.game): args.game, args.rom: args.workdir / args.rom},
+    94	                     lambda inputs, receipt: _score(args, inputs, receipt))
+    95	
+    96	
+    97	def _score(args, inputs, receipt) -> int:
+    98	    evidence: dict = {
+    99	        "scorer_input": receipt,
+   100	        "game_file": str(args.game),
+   101	        "rom": args.rom,
+   102	        "action_log": str(args.log),
+   103	    }
+   104	
+   105	    if not args.game.is_file():
+   106	        evidence.update(measured=False, error=f"no game file at {args.game}")
+   107	        write_evidence(args.evidence_file, evidence)
+   108	        print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+   109	        return 3
+   110	
+   111	    records = jer_env.action_log_records(args.log)
+   112	    actions = jer_env.actions_in(records)
+   113	    declared_done = any(r.get("kind") == "done" for r in records)
+   114	    blank_or_broken = sum(
+   115	        1 for line in (args.log.read_text(errors="replace").splitlines()
+   116	                       if args.log.is_file() else []) if line.strip()) - len(records)
+   117	    evidence.update(actions_in_log=len(actions), log_records=len(records),
+   118	                    unparseable_lines=max(0, blank_or_broken),
+   119	                    agent_declared_done=declared_done)
+   120	
+   121	    try:
+   122	        env = jer_env.load_game(args.workdir, config_path=inputs[str(args.game)],
+   123	                                rom_path=inputs[args.rom])
+   124	    except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+   125	        evidence.update(measured=False, error=f"could not start the game: {exc}",
+   126	                        traceback=traceback.format_exc()[-2000:])
+   127	        write_evidence(args.evidence_file, evidence)
+   128	        print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+   129	        return 3
+   130	
+   131	    try:
+   132	        maximum = int(env.get_max_score())
+   133	        spec = json.loads(inputs[str(args.game)].read_text())
+   134	        steps = jer_env.replay(env, actions)
+   135	    except Exception as exc:  # noqa: BLE001
+   136	        evidence.update(measured=False, error=f"the game died mid-episode: {exc}",
+   137	                        traceback=traceback.format_exc()[-2000:])
+   138	        write_evidence(args.evidence_file, evidence)
+   139	        print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+   140	        return 3
+   141	
+   142	    score = steps[-1]["score"] if steps else 0
+   143	    moves = steps[-1]["moves"] if steps else 0
+   144	    fraction = jer_env.score_fraction(score, maximum)
+   145	    evidence.update(
+   146	        measured=True,
+   147	        reward=fraction,
+   148	        score=score,
+   149	        max_score=maximum,
+   150	        moves=moves,
+   151	        seed=int(spec.get("seed") or 0),
+   152	        actions_replayed=len(steps),
+   153	        actions_not_replayed=len(actions) - len(steps),
+   154	        game_over=bool(steps and steps[-1]["done"]),
+   155	        solved=bool(maximum > 0 and score >= maximum),
+   156	        steps=steps,
+   157	    )
+   158	    if score >= maximum and maximum > 0:
+   159	        why = f"the game is finished: {score}/{maximum} points in {moves} moves"
+   160	    elif not actions:
+   161	        why = "the log holds no actions, so no points were scored"
+   162	    elif not steps:
+   163	        why = (f"none of the {len(actions)} logged action(s) replayed; the game is still at "
+   164	               f"{score}/{maximum}")
+   165	    else:
+   166	        why = (f"{score}/{maximum} points ({fraction:.3f}) after {moves} moves; the game is "
+   167	               f"not finished")
+   168	    evidence["why"] = why
+   169	    write_evidence(args.evidence_file, evidence)
+   170	
+   171	    write_reward(args.reward_file, fraction)
+   172	    print(f"reward {fraction:g}: {why}")
+   173	    return 0 if fraction >= 1.0 else 1
+   174	
+   175	
+   176	if __name__ == "__main__":
+   177	    try:
+   178	        raise SystemExit(main(sys.argv[1:]))
+   179	    except SystemExit:
+   180	        raise
+   181	    except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+   182	        traceback.print_exc()
+   183	        raise SystemExit(4)

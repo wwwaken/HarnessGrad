@@ -1,0 +1,774 @@
+     1	"""Run a task's check, and read its verdict.
+     2	
+     3	Split out of `eval/run/runner.py` (stage 4). This is the half of the runner that decides **what
+     4	a task's score is**, and it is deliberately the half that is hardest to change by accident:
+     5	it runs the check in the environment the task declares, copies out the report the check
+     6	wrote, parses it, and turns it into the verdict a curve point carries.
+     7	
+     8	It is also where the platform's *second* signal lives -- `test_rate_of` reads the check's own
+     9	test tally, which the reward file collapses to a pass or a fail (stage 0, `d853a10`).
+    10	
+    11	The seam: everything here takes a task, an environment and a finished harness run, and
+    12	returns a verdict. It does not decide *which* tasks a round measures, whether to retry, or
+    13	how per-task scores become a curve -- those stay in `eval/run/runner.py`.
+    14	"""
+    15	from __future__ import annotations
+    16	
+    17	from contextlib import ExitStack
+    18	
+    19	import json
+    20	import os
+    21	import subprocess
+    22	import tempfile
+    23	from pathlib import Path
+    24	
+    25	import eval.containers.container as container_mod
+    26	import eval.containers.sandbox as sandbox_mod
+    27	import eval.service.services as services_mod
+    28	from eval.service.services import label
+    29	from eval.run.integrity import PLATFORM_ROOT
+    30	from eval.observe.tracing import _materialize
+    31	from eval.policy.runtime_policy import phase_timeout
+    32	from eval.verification.isolation import declared_class, record_class
+    33	
+    34	def _verifier_env(workdir: Path) -> dict:
+    35	    """A minimal environment for the check.
+    36	
+    37	    Deliberately **not** `harness_env()`: the verifier has no business holding the
+    38	    agent's API key, and a grade that can call a model is a grade that can vary
+    39	    between runs.
+    40	    """
+    41	    env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+    42	           "HOME": str(workdir), "LANG": os.environ.get("LANG", "C.UTF-8"),
+    43	           "PYTHONDONTWRITEBYTECODE": "1"}
+    44	    return env
+    45	
+    46	
+    47	def _verifier_env_container() -> dict:
+    48	    """The check's environment inside a container.
+    49	
+    50	    No `PATH`: the image has its own and the host's names directories that do not
+    51	    exist inside. `HOME` and `TMPDIR` point at the container's tmpfs, not at the task
+    52	    mount, because the task mount is bound **read-only** for the check -- a check that
+    53	    writes into the tree it is grading is one whose verdict depends on its own
+    54	    leftovers. `PYTHONDONTWRITEBYTECODE` is kept for the same reason.
+    55	
+    56	    And, as on the host: no agent credentials, because a grade that can call a model
+    57	    is a grade that can vary between runs.
+    58	    """
+    59	    return {"HOME": "/tmp", "TMPDIR": "/tmp",
+    60	            "LANG": os.environ.get("LANG", "C.UTF-8"),
+    61	            "PYTHONDONTWRITEBYTECODE": "1"}
+    62	
+    63	#: How much of a check's own output goes into its verdict.
+    64	#:
+    65	#: 600 was the number, and it was measured to be too small for a reason worth writing
+    66	#: down: the real task set reaches its test runner by `apt-get install`-ing it, so the
+    67	#: last 600 characters of stdout can be package-manager noise printed *after* the test
+    68	#: report -- and the report is the only part that says which check failed and why. A
+    69	#: method reads this field to decide what to change; a verdict it cannot learn from is a
+    70	#: round it cannot use. Measured on `cancel-async-tasks`: the whole detail was
+    71	#: `Setting up libcurl4 ... Processing triggers for libc-bin`, and the improver's round-2
+    72	#: edit had to guess.
+    73	VERDICT_STDOUT_TAIL = 2000
+    74	VERDICT_STDERR_TAIL = 800
+    75	VERDICT_FAILED_TESTS = 8
+    76	VERDICT_DETAIL_LIMIT = 6000
+    77	
+    78	
+    79	#: The egress proxy the platform's **checks** may use, if the operator configured one.
+    80	#:
+    81	#: Not for the harness, and the difference matters. A harness reaches its model through the
+    82	#: platform -- the model gateway when the endpoint is host-local -- and pushing those calls
+    83	#: through an HTTP proxy breaks them. A *check* is different: it runs after the harness has
+    84	#: stopped, calls no model, and on this host 83 of 89 Terminal-Bench checks bootstrap their
+    85	#: own test runner with `curl https://astral.sh/uv/... | sh`. When that fetch cannot leave
+    86	#: the machine, the check never runs -- and a check that never ran was recorded as a task
+    87	#: the harness failed, which is the wrong attribution and a wasted round.
+    88	#:
+    89	#: Measured on this host: `astral.sh` is unreachable directly (403 in a container, TLS
+    90	#: handshake timeout from the shell) while `pypi.org` is fine; with
+    91	#: `HG_EGRESS_PROXY=http://172.17.0.1:17890` (see `docs/egress.md`) the task's own
+    92	#: `test.sh` runs to completion and writes its `ctrf.json`. Unset, nothing about a run
+    93	#: changes.
+    94	EGRESS_PROXY_ENV = "HG_EGRESS_PROXY"
+    95	
+    96	def _check_env() -> dict[str, str]:
+    97	    """What the check's process is told about how to leave the machine, if anything.
+    98	
+    99	    All four spellings, because the tools disagree: `apt` reads the lowercase ones, `curl`
+   100	    prefers the uppercase, and `uv` honours both. `NO_PROXY` keeps anything local (a
+   101	    service, a package mirror on the bridge) from being pushed through the proxy.
+   102	    """
+   103	    proxy = (os.environ.get(EGRESS_PROXY_ENV) or "").strip()
+   104	    if not proxy:
+   105	        return {}
+   106	    local = "localhost,127.0.0.1,::1"
+   107	    return {"HTTP_PROXY": proxy, "HTTPS_PROXY": proxy, "http_proxy": proxy,
+   108	            "https_proxy": proxy, "NO_PROXY": local, "no_proxy": local}
+   109	
+   110	
+   111	def _read_json(path: Path) -> dict | None:
+   112	    """Parse a file another program wrote. `None` on anything unexpected."""
+   113	    try:
+   114	        loaded = json.loads(path.read_text(errors="replace"))
+   115	    except (OSError, ValueError):
+   116	        return None
+   117	    return loaded if isinstance(loaded, dict) else None
+   118	
+   119	
+   120	def _clear_verdict_file(path: Path) -> None:
+   121	    """Remove a stale host verdict without following a subject-created symlink."""
+   122	    if path.is_symlink() or path.is_file():
+   123	        path.unlink()
+   124	
+   125	
+   126	def _verdict_parent_is_safe(path: Path, workdir: Path) -> bool:
+   127	    """Ensure a host verdict path cannot escape through a pre-existing symlink."""
+   128	    try:
+   129	        relative = path.relative_to(workdir)
+   130	    except ValueError:
+   131	        return False
+   132	    current = workdir
+   133	    for part in relative.parts[:-1]:
+   134	        current /= part
+   135	        if current.is_symlink():
+   136	            return False
+   137	    return True
+   138	
+   139	def test_rate_of(verdict: dict | None) -> float | None:
+   140	    """How much of the check's own test suite the artifact satisfied, or `None`.
+   141	
+   142	    **A second signal beside `score`, and the finer one.** A `command` check usually
+   143	    reports "4 passed 1 failed" and the reward file collapses that to 0. Measured on this
+   144	    platform: `large-scale-text-editing` passed 4 of 5 tests for a binary 0.0, and a harness
+   145	    edit took it to 3 of 5 -- also a binary 0.0. The curve said the edit changed nothing
+   146	    while the artifact got *worse*. Ten all-or-nothing tasks have a resolution of 0.1 and,
+   147	    measured here, a noise band of about +/-0.1: the instrument cannot see the effect it
+   148	    exists to measure, and this number was already parsed and thrown away
+   149	    (`_test_report_failures` has returned it since 2026-10-04; `_save_verdicts` dropped it).
+   150	
+   151	    `None` is not zero. It means this check reports no per-test tally -- most `command`
+   152	    checks outside pytest, and every check without an `evidence_file`. Averaging those in
+   153	    as failures would invent a number the check never produced.
+   154	
+   155	    The denominator is `passed + failed`: tests that *ran*. A skipped test was not
+   156	    measured, and counting it as a failure would blame the artifact for the check's own
+   157	    skip. `summary["tests"]` is deliberately not used -- it counts skipped and pending
+   158	    tests, so it answers a different question.
+   159	    """
+   160	    tests = ((verdict or {}).get("tests"))
+   161	    if not isinstance(tests, dict):
+   162	        return None
+   163	    passed, failed = tests.get("passed"), tests.get("failed")
+   164	    if not isinstance(passed, int) or not isinstance(failed, int):
+   165	        return None
+   166	    ran = passed + failed
+   167	    return (passed / ran) if ran > 0 else None
+   168	def _test_report_failures(report: dict | None) -> tuple[list[str], str, dict]:
+   169	    """Failing tests from a CTRF report, a one-line summary, and the counts as numbers.
+   170	
+   171	    A check may write a machine-readable report beside its reward file (the real task
+   172	    set passes `--ctrf /logs/verifier/ctrf.json` to pytest). That report is the
+   173	    difference between `reward 0` and
+   174	    `test_out_html_bypasses_filter: the XSS bypass failed`, and only the second is
+   175	    something a method can act on.
+   176	
+   177	    **The counts come back as numbers too, not only as a sentence.** Measured on the local
+   178	    model (2026-10-04): `large-scale-text-editing` failed `test_input_equiv_expected` in
+   179	    **12 of 12** measurements while passing the other four -- a permanent floor, visible
+   180	    only to someone who parses "4 passed 1 failed" out of a detail string. Under an
+   181	    all-or-nothing reward that task contributes a constant 0, so a task set containing it
+   182	    has one fewer usable task than it looks like it has. `verdict["tests"]` is that fact in
+   183	    a form the platform can act on (task selection) and a reader can check.
+   184	
+   185	    Parsed defensively: it is another project's format, and a report this cannot read
+   186	    must not take the verdict down with it. An empty list is a fact too -- it means the
+   187	    report was there and nothing failed.
+   188	    """
+   189	    results = (report or {}).get("results")
+   190	    if not isinstance(results, dict):
+   191	        return [], "", {}
+   192	    summary = results.get("summary") if isinstance(results.get("summary"), dict) else {}
+   193	    counts = " ".join(
+   194	        f"{summary[key]} {name}" for key, name in
+   195	        (("passed", "passed"), ("failed", "failed"), ("skipped", "skipped"))
+   196	        if isinstance(summary.get(key), int) and summary[key])
+   197	    numbers = {key: summary[key]
+   198	               for key in ("tests", "passed", "failed", "skipped", "pending", "other")
+   199	               if isinstance(summary.get(key), int)}
+   200	    failures: list[str] = []
+   201	    failed_names: list[str] = []
+   202	    tests = results.get("tests")
+   203	    for test in tests if isinstance(tests, list) else []:
+   204	        if not isinstance(test, dict) or test.get("status") != "failed":
+   205	            continue
+   206	        name = str(test.get("name") or "?")
+   207	        failed_names.append(name)
+   208	        # The assertion, not the summary. `pytest-json-ctrf` fills `message` with
+   209	        # "The test failed in the call phase due to an assertion error" -- true, and
+   210	        # useless to a method deciding what to change. The assertion itself is in
+   211	        # `trace`, on the `E ` lines pytest prints.
+   212	        assertion = ""
+   213	        for line in str(test.get("trace") or "").splitlines():
+   214	            stripped = line.strip()
+   215	            if stripped.startswith("E ") and len(stripped) > 2:
+   216	                assertion = " ".join(stripped[2:].split())
+   217	        if not assertion:
+   218	            lines = str(test.get("message") or "").splitlines()
+   219	            assertion = " ".join(lines[0].split()) if lines else ""
+   220	        failures.append(f"{name}: {assertion[:240]}" if assertion else name)
+   221	    if len(failures) > VERDICT_FAILED_TESTS:
+   222	        rest = len(failures) - VERDICT_FAILED_TESTS
+   223	        failures = failures[:VERDICT_FAILED_TESTS] + [f"... and {rest} more"]
+   224	    if failed_names:
+   225	        numbers["failed_names"] = failed_names
+   226	    return failures, counts, numbers
+   227	def _check_output_detail(out: str, err: str) -> str:
+   228	    """Both of the check's streams, labelled and bounded.
+   229	
+   230	    `stderr` used to be dropped entirely, which is where a check that *could not run*
+   231	    says so: measured on `break-filter-js-from-html`, `uvx: command not found` went to
+   232	    stderr while stdout held apt's progress, so the verdict read as a failed task rather
+   233	    than a check that never tested anything.
+   234	    """
+   235	    parts = []
+   236	    if out and out.strip():
+   237	        parts.append(f"stdout {out.strip()[-VERDICT_STDOUT_TAIL:]}")
+   238	    if err and err.strip():
+   239	        parts.append(f"stderr {err.strip()[-VERDICT_STDERR_TAIL:]}")
+   240	    return " | ".join(parts)
+   241	def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
+   242	                            staging: Path, timeout_s: int, run_id: str,
+   243	                            task_id: str, network: str = "none",
+   244	                            declared_network: str = "none",
+   245	                            limits: dict | None = None,
+   246	                            expected_snapshot: str | None = None) -> dict:
+   247	    if declared_class(verifier) not in ("unknown", "snapshot-service"):
+   248	        return record_class({"kind": "command", "passed": False, "score": None,
+   249	                             "unmeasured": "scorer declaration cannot run on actor snapshot"},
+   250	                            verifier, "unknown")
+   251	    try:
+   252	        container_mod.require_snapshot_identity(snapshot, expected_snapshot)
+   253	        verdict = _verify_container_state_inner(
+   254	            snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,
+   255	            run_id=run_id, task_id=task_id, network=network,
+   256	            declared_network=declared_network, limits=limits,
+   257	            expected_snapshot=expected_snapshot)
+   258	    except container_mod.SnapshotUnavailable as exc:
+   259	        verdict = {"kind": "command", "passed": False, "score": None,
+   260	                   "outcome": "unmeasured", "unmeasured": str(exc)}
+   261	    return record_class(verdict, verifier, "snapshot-service")
+   262	
+   263	
+   264	def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
+   265	                                  staging: Path, timeout_s: int, run_id: str,
+   266	                                  task_id: str, network: str = "none",
+   267	                                  declared_network: str = "none",
+   268	                                  limits: dict | None = None,
+   269	                                  expected_snapshot: str) -> dict:
+   270	    """Steps 5-9: a fresh container from the snapshot, the check's inputs copied in
+   271	    afterwards, and the score read from the file the check writes.
+   272	
+   273	    The container is fresh, so nothing the harness left running is present. The inputs go
+   274	    in at step 6 and the reward directory at step 7, both after the harness stopped --
+   275	    which is why this is a re-materialization and not a snapshot of the harness's view.
+   276	    """
+   277	    spec = verifier or {"kind": "answer", "expected": None}
+   278	    kind = spec.get("kind", "answer")
+   279	    timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"))
+   280	    name = label(f"hg-verify-{run_id}-{task_id}")
+   281	    created = False
+   282	    startup = ExitStack()
+   283	    verdict_dir: Path | None = None
+   284	    try:
+   285	        reward_file = spec.get("reward_file")
+   286	        if reward_file:
+   287	            # The snapshot is harness-owned state.  Reward/evidence files must be
+   288	            # created in a fresh directory owned by the platform, then mounted only
+   289	            # for this check; otherwise a harness can pre-seed a passing verdict.
+   290	            verdict_dir = staging / "verdict"
+   291	            verdict_dir.mkdir(parents=True, exist_ok=True)
+   292	        extra_mounts = ()
+   293	        if verdict_dir is not None:
+   294	            extra_mounts = ("--mount",
+   295	                            f"type=bind,src={verdict_dir},dst={Path(reward_file).parent}")
+   296	        # The environment's network, not `none`. Measured: the real task set installs
+   297	        # its own test dependencies at verification time -- all 89 `test.sh` files
+   298	        # `apt-get install` or `pip install` before running anything -- so a check given
+   299	        # no network cannot run at all, and reports a reward of 0 that looks exactly like
+   300	        # a harness that failed the task. The oracle control is what found this.
+   301	        entrypoint, idle_mounts = startup.enter_context(container_mod.snapshot_startup())
+   302	        container_mod.create(name, image=snapshot, limits=limits or {},
+   303	                            network=network, extra_mounts=extra_mounts + idle_mounts,
+   304	                            startup_entrypoint=entrypoint,
+   305	                            run_id=run_id or "", task_id=task_id or "")
+   306	        created = True
+   307	        container_mod.require_snapshot_container(name, expected_snapshot)
+   308	        # Match the actor's declared-network attachment in
+   309	        # eval/containers/container_state.py:111-112: its internal model network alone
+   310	        # hid declared bridge egress from the verifier. Keep that network, adding bridge
+   311	        # only when declared (allow_internet maps to it in data/datasets/terminal_bench.py:35).
+   312	        if declared_network == "bridge" and network != "bridge":
+   313	            container_mod.network_connect(name, "bridge")
+   314	
+   315	        _copy_verifier_inputs(name, spec, staging, task_mount)
+   316	
+   317	        container_mod.start(name)
+   318	
+   319	        # Step 7's directory already exists via the fresh bind. Do not exec an
+   320	        # actor-owned `mkdir` before the checker: it could mutate committed inputs.
+   321	        argv = [str(a) for a in spec.get("argv") or []]
+   322	        if not argv:
+   323	            return {"kind": kind, "passed": False,
+   324	                    "detail": "a command verifier with state='container' needs `argv`"}
+   325	        try:
+   326	            proc = container_mod.exec_in(name, argv,
+   327	                                         cwd=spec.get("cwd") or task_mount,
+   328	                                         env=_check_env() or None,
+   329	                                         timeout_s=timeout_s)
+   330	            code, out, err = proc.returncode, proc.stdout, proc.stderr
+   331	        except subprocess.TimeoutExpired:
+   332	            detail = f"the verifier timed out after {timeout_s}s"
+   333	            return {"kind": kind, "passed": False,
+   334	                    "outcome": "timeout", "unmeasured": detail, "detail": detail}
+   335	
+   336	        # Step 9. `reward_file` first: the real task set writes 1/0 into a file and exits
+   337	        # 0 either way, so the exit code is not a fallback, it is noise.
+   338	        if reward_file:
+   339	            got = staging / "reward.txt"
+   340	            if not container_mod.cp_out(name, reward_file, got):
+   341	                return {"kind": kind, "passed": False,
+   342	                        "detail": f"the check wrote no {reward_file}; exit {code}, "
+   343	                                  + (_check_output_detail(out, err)
+   344	                                     or "and printed nothing at all")}
+   345	            raw = got.read_text().strip()
+   346	            try:
+   347	                score = float(raw)
+   348	            except ValueError:
+   349	                return {"kind": kind, "passed": False,
+   350	                        "detail": f"{reward_file} held {raw!r}, which is not a number"}
+   351	            # The check's own output goes in the detail, because with a `reward_file`
+   352	            # the exit code says nothing and a bare "reward 0" leaves a reader with no
+   353	            # way to tell a wrong answer from a check that could not run at all. It
+   354	            # cost a full debugging round to learn that: the oracle solved the task,
+   355	            # the reward was still 0, and the reason was only in this output.
+   356	            #
+   357	            # **The report comes first, and the streams after it.** A method reads the
+   358	            # detail to decide what to change, so the part that names the failing check
+   359	            # has to survive the truncation; raw output is evidence of last resort.
+   360	            detail = [f"reward {score:g} from {reward_file} (exit {code})"]
+   361	            #: Set when the platform can *prove* the check never tested anything: it was
+   362	            #: supposed to leave a machine-readable report and did not. The caller turns
+   363	            #: this into an `invalid` task rather than a zero -- a reward of 0 written by a
+   364	            #: check whose tests never ran is not a failed harness (measured: `uvx: command
+   365	            #: not found` inside the container, before this host had an egress proxy).
+   366	            unmeasured = ""
+   367	            #: The check's own tally, empty until a report is read. **Initialised, not
+   368	            #: conditional**: this is read after the branch below, so a check that declares
+   369	            #: no `evidence_file` -- most `command` verifiers, and every container-state
+   370	            #: task in the test set -- hit `UnboundLocalError` at the verdict instead of
+   371	            #: returning a score. Caught by the full suite, not by the file that exercises
+   372	            #: the path, which is the argument for running the whole suite.
+   373	            numbers: dict = {}
+   374	            report_path = spec.get("evidence_file")
+   375	            if report_path:
+   376	                got_report = staging / Path(str(report_path)).name
+   377	                if container_mod.cp_out(name, str(report_path), got_report):
+   378	                    failures, counts, numbers = _test_report_failures(
+   379	                        _read_json(got_report))
+   380	                    detail.append(f"check_report {report_path}"
+   381	                                  + (f" ({counts})" if counts else ""))
+   382	                    detail.extend(f"FAILED {line}" for line in failures)
+   383	                    if not failures:
+   384	                        detail.append("check_report lists no failing test")
+   385	                else:
+   386	                    unmeasured = (f"the check wrote no {report_path}: its tests did not "
+   387	                                  f"run, so this task was not measured")
+   388	                    detail.append(unmeasured)
+   389	            detail.append(_check_output_detail(out, err))
+   390	            verdict = {"kind": kind, "passed": bool(score), "score": score,
+   391	                       "detail": " | ".join(p for p in detail if p)[:VERDICT_DETAIL_LIMIT]}
+   392	            # The check's own tally, structured. `passed` is `bool(score)` and the score
+   393	            # is what the task is worth; this is *how much* of it the artifact satisfied,
+   394	            # which the reward file collapses. Present only when the check wrote a report
+   395	            # -- absent is "this check does not report", not "zero tests passed".
+   396	            if numbers:
+   397	                verdict["tests"] = numbers
+   398	            if unmeasured:
+   399	                verdict["unmeasured"] = unmeasured
+   400	            return verdict
+   401	
+   402	        pass_when = spec.get("pass_when", "exit0")
+   403	        passed = code == 0
+   404	        detail = f"exit {code}"
+   405	        if pass_when == "exit0_stdout":
+   406	            want = str(spec.get("stdout", ""))
+   407	            passed = passed and out.strip() == want.strip()
+   408	            detail = f"exit {code}, stdout {out.strip()[:80]!r} vs {want[:80]!r}"
+   409	        if not passed and out.strip():
+   410	            detail += f" | {out.strip()[-200:]}"
+   411	        return {"kind": kind, "passed": passed, "detail": detail}
+   412	    finally:
+   413	        if created:
+   414	            container_mod.remove_container(name)
+   415	        startup.close()
+   416	def _input_source(entry: dict, staging: Path) -> Path:
+   417	    """The host path behind a verifier input, for `docker cp`."""
+   418	    if "content" in entry and entry["content"] is not None:
+   419	        written = staging / f"input-{abs(hash(entry.get('dst') or entry.get('path')))}"
+   420	        written.parent.mkdir(parents=True, exist_ok=True)
+   421	        written.write_text(str(entry["content"]))
+   422	        return written
+   423	    source = Path(str(entry["from"]))
+   424	    if not source.is_absolute():
+   425	        source = PLATFORM_ROOT / source
+   426	    if not source.exists():
+   427	        raise ValueError(f"verifier input source {source} does not exist")
+   428	    return source
+   429	def _copy_verifier_inputs(name: str, spec: dict, staging: Path, task_mount: str) -> None:
+   430	    """Step 6: put a check's inputs where the check expects them.
+   431	
+   432	    `dst` is a container path; `path` remains the original relative-to-the-workdir form, so
+   433	    nothing that worked before changes. Split out of `_verify_container_state` so the
+   434	    *decision* below can be tested without a docker daemon -- the decision is what was wrong.
+   435	    """
+   436	    for entry in spec.get("inputs") or []:
+   437	        if entry.get("dst"):
+   438	            # **`src/.`, not `src`.** `docker cp <dir> <ctr>:<dst>` *nests* when `dst`
+   439	            # already exists, and whether it exists is not the platform's to assume: the
+   440	            # container is built from the snapshot, which is the **harness's** filesystem.
+   441	            # Measured (`break-filter-js-from-html`): the harness ran
+   442	            # `mkdir -p /tests && cp /app/filter.py /tests/filter.py` while probing the
+   443	            # task's filter -- its own business -- so the check's inputs landed at
+   444	            # `/tests/tests/test.sh`, the check died with
+   445	            # `bash: /tests/test.sh: No such file or directory`, and the platform recorded
+   446	            # that as a task the *harness* failed. In the same round a harness that
+   447	            # happened not to touch `/tests` verified normally, which is what made this
+   448	            # look like a flaky task rather than a staging bug.
+   449	            #
+   450	            # `src/.` copies the *contents* into the destination and is correct whether or
+   451	            # not it exists (measured both ways on a real container). A file input keeps
+   452	            # the plain form: `docker cp <file> <ctr>:<dst>` overwrites rather than nests.
+   453	            source = _input_source(entry, staging)
+   454	            container_mod.cp_in(name, source, str(entry["dst"]),
+   455	                                contents=source.is_dir())
+   456	        else:
+   457	            _copy_relative_input(name, entry, staging, task_mount)
+   458	def _copy_relative_input(name: str, entry: dict, staging: Path,
+   459	                         task_mount: str) -> None:
+   460	    """An input with `path` (not `dst`): materialize it into the container's workdir."""
+   461	    rel = str(entry["path"])
+   462	    target = staging / "rel"
+   463	    _materialize(target, [entry], PLATFORM_ROOT)
+   464	    container_mod.cp_in(name, target / rel, f"{task_mount}/{rel}")
+   465	def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
+   466	    """Bind a supported host scorer's native pin to execution and verdict."""
+   467	    spec = verifier or {}
+   468	    if "native_runtime" not in spec:
+   469	        return _verify_existing(workdir, verifier, answer, **options)
+   470	    from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS
+   471	    binding = spec["native_runtime"]
+   472	    receipt = {"verified": False, "sha256": binding.get("sha256") if isinstance(binding, dict) else None}
+   473	    try:
+   474	        if not options.get("sandbox"):
+   475	            raise NativeRuntimeUnavailable("native runtime requires sandbox=True")
+   476	        if not isinstance(binding, dict) or binding.get('dataset') not in SUPPORTED_DATASETS:
+   477	            raise NativeRuntimeUnavailable("native runtime dataset is outside supported host scope")
+   478	        if ((options.get("env") or {}).get("kind", "files") != "files"
+   479	                or options.get("service_specs") or options.get("running")
+   480	                or spec.get("kind") != "command"
+   481	                or declared_class(spec) not in ("unknown", "actor-workdir")
+   482	                or spec.get("cwd") not in (None, ".")
+   483	                or spec.get("reward_file") != "/verifier/reward.txt"
+   484	                or spec.get("evidence_file") != "/verifier/evidence.json"
+   485	                or spec.get("argv", [])[:2] != ["python3", "check.py"]):
+   486	            raise NativeRuntimeUnavailable("native runtime binding requires the supported host check route")
+   487	        with admit(binding) as runtime:
+   488	            receipt = runtime.receipt
+   489	            verdict = _verify_existing(workdir, verifier, answer,
+   490	                                       native_runtime=runtime, **options)
+   491	            return {**verdict, "native_runtime": receipt}
+   492	    except NativeRuntimeUnavailable as exc:
+   493	        return record_class({"kind": "command", "passed": False, "score": None,
+   494	                             "outcome": "unmeasured", "unmeasured": str(exc),
+   495	                             "native_runtime": {**receipt, "verified": False}}, spec, "actor-workdir")
+   496	
+   497	
+   498	def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
+   499	            *, sandbox: bool, timeout_s: int,
+   500	            env: dict | None = None,
+   501	            service_specs: list[dict] | None = None,
+   502	            running=None, task_id: str | None = None,
+   503	            run_id: str | None = None, trial_id: str | None = None,
+   504	            native_runtime=None) -> dict:
+   505	    """Run a verifier with platform-owned output storage for exec reward checks."""
+   506	    spec = verifier or {"kind": "answer", "expected": None}
+   507	    env_spec = env or {"kind": "files"}
+   508	    timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"), env_spec.get("verify_timeout_s"))
+   509	    declared = declared_class(spec)
+   510	    actual = ("in-process" if spec.get("kind", "answer") == "answer" else
+   511	              "snapshot-service" if running is not None or service_specs else "actor-workdir")
+   512	    if declared == "pristine-offline":
+   513	        if actual != "actor-workdir" or spec.get("reward_file") or spec.get("pass_when", "exit0") != "exit0":
+   514	            return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+   515	                                 "unmeasured": "pristine scorer requires artifact command with exit0 protocol"},
+   516	                                spec, "unknown")
+   517	        from eval.verification.pristine import verify, enforce_verdict_binding
+   518	        verdict = verify(workdir, spec, timeout_s=timeout_s, task_id=task_id,
+   519	                         run_id=run_id, trial_id=trial_id)
+   520	        return enforce_verdict_binding(verdict, task_id=task_id, run_id=run_id, trial_id=trial_id)
+   521	    if declared not in ("unknown", actual):
+   522	        return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+   523	                             "unmeasured": "scorer declaration incompatible with runtime route"},
+   524	                            spec, "unknown")
+   525	    binding = spec.get("scorer_input")
+   526	    if binding is not None and (not isinstance(binding, dict) or not task_id
+   527	                                or binding.get("task_id") != task_id):
+   528	        return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+   529	                             "unmeasured": "scorer input does not belong to selected task"},
+   530	                            spec, actual)
+   531	    if spec.get("kind") == "command" and spec.get("reward_file") \
+   532	            and env_spec.get("kind") == "exec":
+   533	        with tempfile.TemporaryDirectory(prefix="hg-verdict-",
+   534	                                          dir=str(workdir.parent)) as verdict_dir:
+   535	            verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
+   536	                                 timeout_s=timeout_s, env=env,
+   537	                                 service_specs=service_specs, running=running,
+   538	                                 verdict_dir=Path(verdict_dir), native_runtime=native_runtime)
+   539	            return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
+   540	    verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
+   541	                         timeout_s=timeout_s, env=env,
+   542	                         service_specs=service_specs, running=running, native_runtime=native_runtime)
+   543	    return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
+   544	
+   545	
+   546	def _enforce_scorer_input(verdict: dict, binding: dict | None) -> dict:
+   547	    """Consume a check's input receipt only against the independently selected spec.
+   548	
+   549	    These are consistency checks under trusted spec/check custody, not authentication
+   550	    of arbitrary scorer JSON. Other verifier routes retain their existing contracts.
+   551	    """
+   552	    if binding is None:
+   553	        return verdict
+   554	    evidence = verdict.get("evidence")
+   555	    receipt = evidence.get("scorer_input") if isinstance(evidence, dict) else None
+   556	    if (isinstance(receipt, dict) and receipt.get("verified") is True
+   557	            and all(receipt.get(k) == binding.get(k) for k in ("task_id", "path", "sha256"))
+   558	            and receipt.get("expected_sha256") == binding.get("sha256")
+   559	            and ("files" not in binding or receipt.get("files") == binding["files"])):
+   560	        return verdict
+   561	    return {**verdict, "passed": False, "score": None,
+   562	            "unmeasured": verdict.get("unmeasured") or "scorer input receipt mismatch or missing"}
+   563	
+   564	
+   565	def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
+   566	            *, sandbox: bool, timeout_s: int,
+   567	            env: dict | None = None,
+   568	            service_specs: list[dict] | None = None,
+   569	            running=None, verdict_dir: Path | None = None, native_runtime=None) -> dict:
+   570	    """Decide whether the task was completed. Returns {kind, passed, detail}.
+   571	
+   572	    `answer` is the legacy path and stays byte-for-byte what it was: stripped,
+   573	    lowercased, compared to `expected`. A dataset that declares only `SCORABLE`
+   574	    reaches exactly this branch, which is what makes adding verifiers a change that
+   575	    did not touch any existing dataset's numbers.
+   576	    """
+   577	    spec = verifier or {"kind": "answer", "expected": None}
+   578	    kind = spec.get("kind", "answer")
+   579	    env_spec = env or {"kind": "files"}
+   580	    is_exec = env_spec.get("kind") == "exec"
+   581	    #: A `files` check that declares a `reward_file`. The file channels used to be
+   582	    #: reachable only from a container snapshot (`_verify_container_state`); this is the
+   583	    #: host spelling of the same contract, added so a no-Docker dataset can keep its
+   584	    #: evidence. See the block below the command run for what it does.
+   585	    host_reward = bool(spec.get("reward_file"))
+   586	    task_mount = env_spec.get("workdir") or container_mod.DEFAULT_WORKDIR
+   587	    service_specs = list(service_specs or [])
+   588	
+   589	    if kind == "answer":
+   590	        expected = spec.get("expected")
+   591	        passed = bool(expected is not None
+   592	                      and answer.strip().lower() == str(expected).strip().lower())
+   593	        return {"kind": "answer", "passed": passed,
+   594	                "detail": f"answer {answer.strip()[:80]!r} vs {str(expected)[:80]!r}"}
+   595	
+   596	    if kind != "command":
+   597	        raise ValueError(f"unknown verifier kind {kind!r}")
+   598	
+   599	    # Re-materialize the check's inputs, overwriting whatever the harness left there.
+   600	    try:
+   601	        _materialize(workdir, spec.get("inputs"), PLATFORM_ROOT)
+   602	    except (ValueError, OSError) as exc:
+   603	        return {"kind": "command", "passed": False,
+   604	                "detail": f"could not stage the verifier's inputs: {exc}"}
+   605	
+   606	    argv = [str(a) for a in spec["argv"]]
+   607	    cwd = workdir / spec["cwd"] if spec.get("cwd") else workdir
+   608	
+   609	    # A host check that declares a `reward_file` is given its verdict directory back
+   610	    # writable (`writable_paths` below), even though verification freezes the rest of the
+   611	    # task tree. Created here rather than by the check because bwrap binds a path that
+   612	    # must already exist, and because the platform -- not the subject -- decides where a
+   613	    # verdict may be written.
+   614	    reward_rel = str(spec["reward_file"]).lstrip("/") if host_reward else ""
+   615	    exec_verdict_dir = verdict_dir if (host_reward and is_exec) else None
+   616	    reward_dir = (exec_verdict_dir if is_exec else workdir / Path(reward_rel).parent) if host_reward else None
+   617	    host_reward_path = (workdir / reward_rel) if (host_reward and not is_exec) else None
+   618	    host_evidence_path = None
+   619	    if host_reward and not is_exec and spec.get("evidence_file"):
+   620	        host_evidence_path = workdir / str(spec["evidence_file"]).lstrip("/")
+   621	    if host_reward and not is_exec:
+   622	        if (not _verdict_parent_is_safe(host_reward_path, workdir)
+   623	                or (host_evidence_path is not None
+   624	                    and not _verdict_parent_is_safe(host_evidence_path, workdir))):
+   625	            return {"kind": kind, "passed": False, "score": 0.0,
+   626	                    "detail": "verdict path uses a subject-controlled symlink"}
+   627	        _clear_verdict_file(host_reward_path)
+   628	        if host_evidence_path is not None:
+   629	            _clear_verdict_file(host_evidence_path)
+   630	    if reward_dir is not None:
+   631	        reward_dir.mkdir(parents=True, exist_ok=True)
+   632	
+   633	    try:
+   634	        if native_runtime is not None:
+   635	            proc = native_runtime.run(argv, workdir=workdir, reward_dir=reward_dir,
+   636	                                      timeout_s=timeout_s)
+   637	            if proc.returncode and not host_reward_path.is_file():
+   638	                from eval.verification.native_runtime import NativeRuntimeUnavailable
+   639	                raise NativeRuntimeUnavailable("native runtime check did not produce a reward: "
+   640	                                               + _check_output_detail(proc.stdout, proc.stderr))
+   641	        elif is_exec:
+   642	            # A **fresh** container from the same image, sharing only the task bind
+   643	            # mount -- see `eval/container.run` for why the check does not reuse the
+   644	            # harness's container. Its `cwd` and its `argv` are container paths, and
+   645	            # it is handed no host environment at all.
+   646	            #
+   647	            # With services, the check **joins the task's internal network and they are
+   648	            # still up** (INTERFACE.md §2.5.7 step 6): §2.2 already allows a check that
+   649	            # needs a database in a particular state, and a check that needs to ask the
+   650	            # mock API what it was sent has the same shape. `running` being None here
+   651	            # would be a caller bug -- a service task whose check silently could not
+   652	            # reach its service would fail the task for a reason nothing records.
+   653	            verifier_mounts = list(services_mod.mounts_for(
+   654	                    "verifier", service_specs,
+   655	                    running.recordings if running else {}))
+   656	            if exec_verdict_dir is not None:
+   657	                verifier_mounts += ["--mount",
+   658	                                    f"type=bind,src={exec_verdict_dir},dst={Path(spec['reward_file']).parent}"]
+   659	            proc = container_mod.run(
+   660	                argv, image=spec.get("image") or env_spec["image"], task_dir=workdir,
+   661	                task_mount=task_mount, cwd=container_mod.to_container(
+   662	                    cwd, workdir, task_mount),
+   663	                env=_verifier_env_container(),
+   664	                timeout_s=timeout_s,
+   665	                network=(running.network if running is not None
+   666	                         else env_spec.get("network", "none")),
+   667	                task_dir_writable=False,
+   668	                extra_mounts=tuple(verifier_mounts))
+   669	        elif sandbox:
+   670	            # A host check whose verdict is a file still runs sandboxed: `writable_paths`
+   671	            # re-opens exactly its verdict directory on top of the read-only task tree,
+   672	            # so the reward-file contract does not require switching the namespace off.
+   673	            # (An unsandboxed check runs with the harness's workdir as `sys.path[0]`,
+   674	            # which is a route from the subject into a process that can read the
+   675	            # platform -- the failure this module exists to prevent.)
+   676	            work_root = Path(os.environ.get("HARNESSGRAD_WORK_ROOT")
+   677	                             or workdir.parent.parent)
+   678	            # The namespace freezes the task tree and gives the check a private tmpfs at
+   679	            # `/tmp`, so HOME/TMPDIR point **there** and not at the workdir. Measured on
+   680	            # ALFWorld: a check whose toolchain writes `$HOME/.cache` against a read-only
+   681	            # workdir dies with `[Errno 30] Read-only file system` before it can grade
+   682	            # anything, and the failure would have been recorded as a harness failure.
+   683	            check_env = _verifier_env(workdir)
+   684	            check_env.update({"HOME": "/tmp", "TMPDIR": "/tmp"})
+   685	            proc = sandbox_mod.run(argv, platform=PLATFORM_ROOT, work_root=work_root,
+   686	                                   task_dir=workdir, env=check_env,
+   687	                                   timeout_s=timeout_s,
+   688	                                   cwd=cwd, repo=workdir, task_dir_writable=False,
+   689	                                   writable_paths=(reward_dir,) if reward_dir else ())
+   690	        else:
+   691	            proc = subprocess.run(argv, capture_output=True, text=True,
+   692	                                  timeout=timeout_s, cwd=cwd,
+   693	                                  env=_verifier_env(workdir))
+   694	        code, out = proc.returncode, proc.stdout
+   695	    except FileNotFoundError as exc:
+   696	        return {"kind": "command", "passed": False,
+   697	                "detail": f"the verifier command does not exist: {exc}"}
+   698	    except subprocess.TimeoutExpired:
+   699	        detail = f"the verifier timed out after {timeout_s}s"
+   700	        return {"kind": "command", "passed": False,
+   701	                "outcome": "timeout", "unmeasured": detail, "detail": detail}
+   702	
+   703	    # ---- a host (`files`) check's reward and evidence files ------------------
+   704	    #
+   705	    # The absolute paths in `reward_file`/`evidence_file` are the container contract.
+   706	    # A `files` environment has no container, so the path is resolved against the task
+   707	    # workdir -- which *is* that environment's root -- and the check's own `argv` is
+   708	    # given the same location in the relative spelling its working directory
+   709	    # understands. `workdir / "verifier/reward.txt"` is therefore where both sides meet.
+   710	    #
+   711	    # Before this, the host branch read only the exit code, so a dataset that could not
+   712	    # use Docker had no way to keep the per-item evidence the contract asks for: the
+   713	    # run record would carry a bare `exit 1` and nothing a method could learn from.
+   714	    # **No existing dataset changes**: no dataset declared `reward_file` on a non-exec
+   715	    # environment before ALFWorld (measured 2026-10-08).
+   716	    if host_reward:
+   717	        got = ((exec_verdict_dir / Path(reward_rel).name)
+   718	               if exec_verdict_dir is not None else host_reward_path)
+   719	        evidence_path = spec.get("evidence_file")
+   720	        evidence_file = ((exec_verdict_dir / Path(str(evidence_path)).name)
+   721	                         if exec_verdict_dir is not None and evidence_path
+   722	                         else (None if not evidence_path
+   723	                               else host_evidence_path))
+   724	        evidence = (None if evidence_file is None or evidence_file.is_symlink()
+   725	                    else _read_json(evidence_file))
+   726	
+   727	        if got is None or got.is_symlink() or not got.is_file():
+   728	            # No reward file: the check did not reach a verdict. If it also left no
+   729	            # evidence, the platform cannot say what happened; if it left evidence that
+   730	            # says `measured: false`, the task was not measured rather than failed --
+   731	            # the same distinction the container path draws, and the reason a bare 0 is
+   732	            # not an acceptable output.
+   733	            why = f"the check wrote no {spec['reward_file']} (looked for {got}), exit {code}"
+   734	            verdict = {"kind": kind, "passed": False, "score": 0.0,
+   735	                       "detail": " | ".join(p for p in
+   736	                                            [why, _check_output_detail(out, proc.stderr)]
+   737	                                            if p)[:VERDICT_DETAIL_LIMIT]}
+   738	            if evidence is not None:
+   739	                verdict["evidence"] = evidence
+   740	                if evidence.get("measured") is False:
+   741	                    verdict["unmeasured"] = str(
+   742	                        evidence.get("error") or "the check could not measure the task")
+   743	            return verdict
+   744	
+   745	        raw = got.read_text().strip()
+   746	        try:
+   747	            score = float(raw)
+   748	        except ValueError:
+   749	            return {"kind": kind, "passed": False, "score": 0.0,
+   750	                    "detail": f"{spec['reward_file']} held {raw!r}, which is not a number"}
+   751	
+   752	        detail = [f"reward {score:g} from {spec['reward_file']} (exit {code})"]
+   753	        if evidence is not None and evidence.get("why"):
+   754	            detail.append(str(evidence["why"]))
+   755	        detail.append(_check_output_detail(out, proc.stderr))
+   756	        verdict = {"kind": kind, "passed": bool(score), "score": score,
+   757	                   "detail": " | ".join(p for p in detail if p)[:VERDICT_DETAIL_LIMIT]}
+   758	        if evidence is not None:
+   759	            verdict["evidence"] = evidence
+   760	        if evidence_path and evidence is None:
+   761	            verdict["unmeasured"] = (f"the check wrote no {evidence_path}: its tests did "
+   762	                                     f"not run, so this task was not measured")
+   763	        return verdict
+   764	
+   765	    pass_when = spec.get("pass_when", "exit0")
+   766	    passed = code == 0
+   767	    detail = f"exit {code}"
+   768	    if pass_when == "exit0_stdout":
+   769	        want = str(spec.get("stdout", ""))
+   770	        passed = passed and out.strip() == want.strip()
+   771	        detail = f"exit {code}, stdout {out.strip()[:80]!r} vs {want[:80]!r}"
+   772	    if not passed and out.strip():
+   773	        detail += f" | {out.strip()[-200:]}"
+   774	    return {"kind": "command", "passed": passed, "detail": detail}

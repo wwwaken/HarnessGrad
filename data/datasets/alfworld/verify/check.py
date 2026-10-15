@@ -58,11 +58,10 @@ import sys
 import traceback
 from pathlib import Path
 
-# Native staging supplies this dependency at the task root.
-sys.path.insert(0, str(Path.cwd()))
+# Resolve helpers beside trusted code, including in the sealed /scorer root.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from data.scaffolds.scorer_input import add_arguments, run_bound
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gym_env  # noqa: E402
 
 #: The container contract's locations. On a host (`files`) environment these are

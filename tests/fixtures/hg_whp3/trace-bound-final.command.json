@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "strace",
+    "--seccomp-bpf",
+    "-f",
+    "-yy",
+    "-s",
+    "20000",
+    "-e",
+    "trace=execve,mmap",
+    "-o",
+    "tests/fixtures/hg_whp3/bound-replay-final.strace.txt",
+    "python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "tests/quality/test_native_runtime_hp3.py",
+    "-k",
+    "actual_bound_replay or parent_and_child",
+    "--basetemp=/tmp/hg-hp3-pytest-trace-final"
+  ],
+  "returncode": 0
+}

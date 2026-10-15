@@ -1,0 +1,50 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x0
+There are 8 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x001440 0x001440 R   0x1000
+  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x0012a2 0x0012a2 R E 0x1000
+  LOAD           0x004000 0x0000000000004000 0x0000000000004000 0x0008dc 0x0008dc R   0x1000
+  LOAD           0x004ce0 0x0000000000005ce0 0x0000000000005ce0 0x000660 0x000670 RW  0x1000
+  DYNAMIC        0x004d18 0x0000000000005d18 0x0000000000005d18 0x000190 0x000190 RW  0x8
+  GNU_EH_FRAME   0x0042d0 0x00000000000042d0 0x00000000000042d0 0x00010c 0x00010c R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x004ce0 0x0000000000005ce0 0x0000000000005ce0 0x000320 0x000320 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .hash .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn 
+   01     .init .plt .plt.got .text .fini 
+   02     .rodata .eh_frame_hdr .eh_frame 
+   03     .ctors .dtors .data.rel.ro .dynamic .got .data .bss 
+   04     .dynamic 
+   05     .eh_frame_hdr 
+   06     
+   07     .ctors .dtors .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x4d18 contains 21 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/../..]
+ 0x000000000000000c (INIT)               0x2000
+ 0x000000000000000d (FINI)               0x3294
+ 0x0000000000000004 (HASH)               0x200
+ 0x000000006ffffef5 (GNU_HASH)           0x3d8
+ 0x0000000000000005 (STRTAB)             0x818
+ 0x0000000000000006 (SYMTAB)             0x410
+ 0x000000000000000a (STRSZ)              1073 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x5ea8
+ 0x0000000000000007 (RELA)               0xcf0
+ 0x0000000000000008 (RELASZ)             1872 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x0000000000000018 (BIND_NOW)           
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffffe (VERNEED)            0xca0
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0xc4a
+ 0x000000006ffffff9 (RELACOUNT)          39
+ 0x0000000000000000 (NULL)               0x0

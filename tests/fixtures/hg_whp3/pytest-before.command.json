@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/quality/test_native_runtime_hp3.py",
+    "--basetemp=/tmp/hg-hp3-pytest-before"
+  ],
+  "returncode": 1
+}

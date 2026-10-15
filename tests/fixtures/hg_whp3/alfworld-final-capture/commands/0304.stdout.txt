@@ -1,0 +1,56 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x56cb0
+There are 9 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x055db8 0x055db8 R   0x1000
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  LOAD           0x056000 0x0000000000056000 0x0000000000056000 0x8c4b70 0x8c4b70 R E 0x1000
+  LOAD           0x91b000 0x000000000091b000 0x000000000091b000 0x492344 0x492344 R   0x1000
+  LOAD           0xdae060 0x0000000000daf060 0x0000000000daf060 0x01e35c 0x01f610 RW  0x1000
+  TLS            0xdae060 0x0000000000daf060 0x0000000000daf060 0x000000 0x000020 R   0x8
+  GNU_RELRO      0xdae060 0x0000000000daf060 0x0000000000daf060 0x002fa0 0x002fa0 R   0x1
+  LOAD           0xe22000 0x0000000000dcf000 0x0000000000dcf000 0x01e018 0x01e018 RW  0x1000
+  DYNAMIC        0xe3fe48 0x0000000000dece48 0x0000000000dece48 0x0001d0 0x0001d0 RW  0x8
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .gnu.hash .dynsym .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   01     
+   02     .plt .text 
+   03     .rodata .itt_notify_tab .eh_frame 
+   04     .data.rel.ro .got .data .bss 
+   05     .tbss 
+   06     .data.rel.ro .got 
+   07     .hash .dynstr .dynamic 
+   08     .dynamic 
+
+Dynamic section at offset 0xe3fe48 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/.]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libmkl_core.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libmkl_vml_mc.so.2]
+ 0x0000000000000004 (HASH)               0xdcf000
+ 0x000000006ffffef5 (GNU_HASH)           0x8280
+ 0x0000000000000005 (STRTAB)             0xdd7080
+ 0x0000000000000006 (SYMTAB)             0xf250
+ 0x000000000000000a (STRSZ)              89538 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0xdb0b30
+ 0x0000000000000002 (PLTRELSZ)           4848 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x54ac8
+ 0x0000000000000007 (RELA)               0x3f2e8
+ 0x0000000000000008 (RELASZ)             88032 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x0000000000000018 (BIND_NOW)           
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffffe (VERNEED)            0x3f2c8
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x3d290
+ 0x000000006ffffff9 (RELACOUNT)          575
+ 0x0000000000000000 (NULL)               0x0

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python3",
+    "tools/build_bird_native_runtime.py",
+    "--dataset",
+    "alfworld",
+    "--out",
+    "tests/fixtures/hg_whp3/alfworld-final-capture",
+    "--manifest",
+    "data/runtimes/alfworld-native.json",
+    "--store",
+    "/tmp/hg-hp3-store"
+  ],
+  "returncode": 0
+}
