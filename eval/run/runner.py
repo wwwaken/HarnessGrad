@@ -14,6 +14,7 @@ from pathlib import Path
 import eval.containers.container as container_mod
 import eval.containers.harness_runtime as harness_runtime
 import eval.service.modelgate as modelgate_mod
+from eval.service.native_model_route import NativeModelRoute
 import eval.observe.progress as progress_mod
 import eval.containers.sandbox as sandbox_mod
 import eval.service.services as services_mod
@@ -192,8 +193,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     keep the same spelling they would have had unsandboxed -- a translated path is
     a place where a harness's own record stops matching the filesystem it ran on.
 
-    Native tasks can declare network='none'; live model backends are refused for
-    those tasks before launch. See `eval/containers/sandbox.py`.
+    Native network='none' agents use a fixed platform model route over AF_UNIX
+    and namespace-local HTTP, without exposing a task network capability.
     """
     # Resolve before the subprocess switches cwd: a relative repo path would
     # otherwise be interpreted against the sandbox directory and the harness
@@ -440,6 +441,16 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 # the mechanism: `HG_AGENT_*` is the contract it already reads.
                 child_env["HG_AGENT_BASE_URL"] = model_gateway.base_url
 
+        elif env_spec.get("network") == "none" \
+                and os.environ.get("HG_AGENT_BACKEND", "mock") != "mock":
+            try:
+                base = child_env.get("HG_AGENT_BASE_URL")
+                if not base:
+                    raise modelgate_mod.GatewayUnavailable("live offline agent needs HG_AGENT_BASE_URL")
+                model_gateway = NativeModelRoute(base).start()
+            except (modelgate_mod.GatewayUnavailable, ValueError) as exc:
+                return _invalid(task, exc, stage="native model route admission", service=None)
+
         # How the harness finds the services, and the whole of what it is told about
         # them. `HG_SVC_*` rather than `HG_ENV_*`: the environment's own model,
         # credential and seed go to the service containers only (§2.5.7).
@@ -506,6 +517,10 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                    runtime_paths=runtime_paths,
                                    visible_paths=((stepwise_dir,) if stepwise_dir else ()),
                                    network=env_spec.get("network"),
+                                   model_socket=(model_gateway.socket_path
+                                                 if isinstance(model_gateway, NativeModelRoute) else None),
+                                   model_path=(model_gateway.path
+                                               if isinstance(model_gateway, NativeModelRoute) else ""),
                                    package_overlays=package_overlays,
                                    immutable_runtimes=immutable_runtimes)
 
@@ -521,6 +536,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
             exit_code, stderr = proc.returncode, proc.stderr[-2000:]
         except subprocess.TimeoutExpired:
             exit_code, stderr = -1, f"timeout after {timeout_s}s"
+        except modelgate_mod.GatewayUnavailable as exc:
+            return _invalid(task, exc, stage="native model route launch", service=None)
         except ImmutableRuntimeUnavailable as exc:
             return _invalid(task, exc, stage="immutable runtime launch", service=None)
         except OSError:

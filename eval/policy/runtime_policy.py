@@ -8,15 +8,14 @@ from eval.observe.tracing import _materialize
 
 
 def admit_native_network(env: dict, manifest: dict, agent_backend: str) -> None:
-    """Refuse a declared offline task before launching a network-dependent agent."""
+    """Admit only network policies the native mount/transport path can honour.
+
+    Live offline agents use the platform's AF_UNIX model route inside unshare-net;
+    role and backend no longer determine whether that network policy is possible.
+    """
     network = env.get("network")
     if network not in (None, "none"):
         raise ValueError(f"unsupported native sandbox network policy: {network!r}")
-    if network == "none" and manifest.get("role") != "control" \
-            and agent_backend != "mock":
-        raise ValueError(
-            "network='none' cannot run a live agent backend; use an offline control "
-            "or the mock backend")
 
 
 def phase_timeout(*limits, default: float = 3600) -> float:

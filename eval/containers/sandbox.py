@@ -69,6 +69,7 @@ import tempfile
 from pathlib import Path
 
 from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targets
+from eval.containers import model_route
 
 from ckpt.git_state import STATE_DIRNAME
 from harnessgrad.config import current as current_config
@@ -77,7 +78,7 @@ from harnessgrad.config import current as current_config
 #: A curve made under plan 1 and one made under plan 2 are measurements of a
 #: harness in two different worlds, so `run_meta.json` records this number and
 #: `tools/plot_curve.py` refuses to put them on the same axis without saying so.
-PLAN_VERSION = 3  # Explicit read-only task-relative immutable runtime projections.
+PLAN_VERSION = 4  # Offline model socket and trusted namespace-local HTTP bootstrap.
 
 #: Runtime trees a subject may need, bound read-only at their host paths. Kept as
 #: a short explicit list rather than "the whole host": the point of the namespace
@@ -180,6 +181,8 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
             visible_paths: tuple[Path, ...] = (),
             writable_paths: tuple[Path, ...] = (),
             network: str | None = None,
+            model_socket: Path | None = None,
+            model_path: str = "",
             package_overlays: tuple[tuple[Path, Path], ...] = (),
             immutable_runtimes: tuple[tuple[Path, str], ...] = ()) -> list[str]:
     """Wrap `argv` so it runs with the platform off its disk.
@@ -372,6 +375,19 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
         # runtime binds stay read-only, and the verdict directory stays writable.
         plan += ["--remount-ro", str(task_dir)]
 
+    if model_socket is not None:
+        # After every parent bind/hide and immutable projection: no later mount
+        # may cover or reopen the infrastructure socket or trusted bootstrap.
+        # Fixed destinations cannot alias task state or immutable-runtime targets.
+        plan += model_route.mounts(
+            model_socket, network=network,
+            exposed_paths=(platform, work_root, repo, task_dir, *runtime_paths,
+                           *visible_paths, *writable_paths, *state_dirs,
+                           *(target for _, target in package_overlays),
+                           *(task_dir / rel for _, rel in immutable_runtimes)),
+            writable_paths=(task_dir, *writable_paths, *state_dirs))
+        argv = model_route.bootstrap(argv, model_path)
+
     #: Variables the platform itself sets to a filesystem path. Only these are
     #: checked against the hidden tree, and the list is explicit because guessing
     #: is what went wrong twice: `HG_AGENT_MODEL=deepseek-flash` is not a path, but
@@ -417,6 +433,8 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
         writable_paths: tuple[Path, ...] = (),
         input_text: str | None = None,
         network: str | None = None,
+        model_socket: Path | None = None,
+        model_path: str = "",
         package_overlays: tuple[tuple[Path, Path], ...] = (),
         immutable_runtimes: tuple[tuple[Path, str], ...] = ()):
     """`subprocess.run` with the namespace in place. Same return type.
@@ -435,6 +453,7 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
                           visible_paths=visible_paths,
                           writable_paths=writable_paths,
                           network=network, package_overlays=package_overlays,
+                          model_socket=model_socket, model_path=model_path,
                           immutable_runtimes=immutable_runtimes)
     except SandboxUnavailable as exc:
         if immutable_runtimes:

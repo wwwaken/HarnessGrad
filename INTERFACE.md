@@ -821,11 +821,21 @@ this happened.
 
 | situation | what the platform does |
 | --- | --- |
-| `files` environment | nothing: the harness runs on the host and reaches the model directly |
+| `files`, network omitted | the native sandbox inherits the host network and reaches the model directly |
+| `files`, `network: none`, live backend | keeps `--unshare-net`; binds one read-only AF_UNIX model socket and a trusted loopback forwarder, hands the client an ordinary HTTP URL; native plan 4 |
 | `exec`, model on this host | creates the internal network if the task has none, publishes the endpoint, rewrites `HG_AGENT_BASE_URL` for the container |
 | `exec`, model **not** on this host, `network: bridge` | nothing: the harness reaches it over the internet, which the task asked for |
 | `exec`, model **not** on this host, any other network | **refused** — the harness would have no model at all, so every score would be a zero that means nothing, and it would look like a weak harness |
 | `mock` backend | nothing: nothing is called |
+
+The native offline route forwards only to the configured platform model endpoint;
+it does not give the task a bridge, DNS or external TCP route. It requires a plain
+HTTP base URL (including its path); TLS, URL userinfo, queries and fragments fail
+closed. The harness client, prompts and budgets are unchanged. The socket and
+forwarder are infrastructure mounts, never setup files or task capability metadata,
+and are not projected into verification. Native `bridge` and `services` remain
+unsupported and refused; omitted native network still means inherited host network.
+The separate backend-observation admission gate continues to apply.
 
 `env.model_gateway` is `{"published": true, "target": "<host>:<port>"}`, or `null`. It is
 recorded because "the model was reachable from inside the container" is a fact about the

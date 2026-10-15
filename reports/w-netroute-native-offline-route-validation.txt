@@ -1,0 +1,842 @@
+w-netroute native offline model route: exact validation observations
+Pre-commit base observed by git rev-parse: be29c8514d8f9373a2ebe30ba42c62df1f73f59c
+Commands below ran in /mnt/20t/xubuqiang/hg-wt/w-netroute unless an absolute path says otherwise.
+No dataset/H0 receipt is claimed. Live calls are metadata GETs, not inference.
+
+=== live-backend.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp python3 tests/quality/native_model_route_control.py
+{"admission": "ADMITTED", "backend": "openai", "env": {"kind": "files", "network": "none"}, "inference_requested": false, "model_endpoint": "http://127.0.0.1:8002/v1"}
+{"control": "isolated", "returncode": 0, "stderr": "", "stdout": "{\"backend\": \"openai\", \"client_base_url\": \"http://127.0.0.1:33769/v1\", \"dns_example_com\": {\"error\": \"gaierror: [Errno -3] Temporary failure in name resolution\", \"ok\": false}, \"model_metadata\": {\"ok\": true, \"value\": {\"model_ids\": [\"qwen3.5-9b-local\"], \"status\": 200}}, \"network_namespace\": \"net:[4026535754]\", \"public_tcp\": {\"error\": \"OSError: [Errno 101] Network is unreachable\", \"ok\": false}}"}
+{"control": "same_mounts_without_unshare_net", "returncode": 0, "stderr": "", "stdout": "{\"backend\": \"openai\", \"client_base_url\": \"http://127.0.0.1:42957/v1\", \"dns_example_com\": {\"ok\": true, \"value\": [\"104.20.23.154\", \"172.66.147.243\", \"2606:4700:10::6814:179a\", \"2606:4700:10::ac42:93f3\"]}, \"model_metadata\": {\"ok\": true, \"value\": {\"model_ids\": [\"qwen3.5-9b-local\"], \"status\": 200}}, \"network_namespace\": \"net:[4026531840]\", \"public_tcp\": {\"ok\": true, \"value\": \"connected to 1.1.1.1:80\"}}"}
+{"relay": {"bytes_to_client": 1248, "bytes_to_upstream": 256, "client_closed_first": 0, "connections": 2, "read_errors": [], "transport": "unix+isolated-loopback", "upstream_closed_first": 2, "upstream_connect_error": null, "upstream_connect_failed": 0}}
+{"relay_directory_removed": true}
+{"result": "PASS", "temporary_control_directory_removed": true}
+exit_code=0
+
+=== before.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ python3 -m pytest -q --tb=short --basetemp=/tmp/netroute-before tests/quality/test_isolation.py tests/quality/test_services.py tests/quality/test_boundaries.py tests/quality/test_stop_semantics.py tests/quality/test_unix_model_relay.py tests/quality/test_sandbox.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_eval_package_compat.py tests/quality/test_jericho_runtime_admission.py tests/quality/test_sharedrt_immutable_runtimes.py tests/quality/test_runtime_blocker_evidence_b7.py
+..F.........F........................................................... [ 29%]
+........................................................FFFFFFF.....F... [ 59%]
+........................................................................ [ 88%]
+.........................ss                                              [100%]
+=================================== FAILURES ===================================
+______________ test_snapshot_covers_the_referee_not_the_candidate ______________
+tests/quality/test_isolation.py:156: in test_snapshot_covers_the_referee_not_the_candidate
+    assert ".env" in snap, "the credentials pay for the measurement"
+E   AssertionError: the credentials pay for the measurement
+E   assert '.env' in {'INTERFACE.md': '1fc63c3bd9ac235f06ca81ec867e0d504420309b2a3e39c9b15f4cc4fb8fc9a0', 'ckpt/git_state.py': '85ce26bc78e...b4d3e2c5d6', 'data/aggregation_policies.json': '7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163', ...}
+___________ test_the_harness_cannot_read_the_platform_or_its_answers ___________
+tests/quality/test_isolation.py:639: in test_the_harness_cannot_read_the_platform_or_its_answers
+    assert first["platform_listing"] == [], (
+E   AssertionError: 平台的沙箱里还有东西:None
+E   assert None == []
+________________ test_the_platform_is_not_on_the_subjects_disk _________________
+tests/quality/test_sandbox.py:83: in test_the_platform_is_not_on_the_subjects_disk
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+__________________ test_the_subject_keeps_its_own_credentials __________________
+tests/quality/test_sandbox.py:119: in test_the_subject_keeps_its_own_credentials
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+________________ test_host_variables_are_not_mistaken_for_paths ________________
+tests/quality/test_sandbox.py:134: in test_host_variables_are_not_mistaken_for_paths
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+____________ test_the_work_root_survives_and_the_platform_does_not _____________
+tests/quality/test_sandbox.py:152: in test_the_work_root_survives_and_the_platform_does_not
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+_______________ test_a_harness_can_actually_work_in_its_workdir ________________
+tests/quality/test_sandbox.py:200: in test_a_harness_can_actually_work_in_its_workdir
+    seen = inside({"TD": str(tmp_path)}, tmp_path, script)
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+____________________ test_the_harness_tree_stays_read_only _____________________
+tests/quality/test_sandbox.py:215: in test_the_harness_tree_stays_read_only
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________
+tests/quality/test_sandbox.py:242: in test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+    seen = inside({"HARNESSGRAD_STATE": str(state), "TD": str(tmp_path)},
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+__________________ test_self_check_notices_a_plan_that_leaks ___________________
+tests/quality/test_sandbox.py:338: in test_self_check_notices_a_plan_that_leaks
+    assert sandbox.self_check(PLATFORM, WORK_ROOT)["ok"] is True
+E   assert False is True
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+FAILED tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers
+FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+10 failed, 231 passed, 2 skipped in 137.27s (0:02:17)
+exit_code=1
+
+=== after.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp python3 -m pytest -q --tb=short --basetemp=/tmp/netroute-after tests/quality/test_isolation.py tests/quality/test_services.py tests/quality/test_boundaries.py tests/quality/test_stop_semantics.py tests/quality/test_unix_model_relay.py tests/quality/test_sandbox.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_eval_package_compat.py tests/quality/test_jericho_runtime_admission.py tests/quality/test_sharedrt_immutable_runtimes.py tests/quality/test_runtime_blocker_evidence_b7.py tests/quality/test_native_model_route.py
+..F.........F........................................................... [ 28%]
+........................................................FFFFFFF.....F... [ 56%]
+........................................................................ [ 84%]
+.........................ss..............                                [100%]
+=================================== FAILURES ===================================
+______________ test_snapshot_covers_the_referee_not_the_candidate ______________
+tests/quality/test_isolation.py:156: in test_snapshot_covers_the_referee_not_the_candidate
+    assert ".env" in snap, "the credentials pay for the measurement"
+E   AssertionError: the credentials pay for the measurement
+E   assert '.env' in {'INTERFACE.md': '6814c4a8960e549c7e6925112b3cfbdff6eb9cd8b68b95d6bee6f4e1c0cb4098', 'ckpt/git_state.py': '85ce26bc78e...b4d3e2c5d6', 'data/aggregation_policies.json': '7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163', ...}
+___________ test_the_harness_cannot_read_the_platform_or_its_answers ___________
+tests/quality/test_isolation.py:639: in test_the_harness_cannot_read_the_platform_or_its_answers
+    assert first["platform_listing"] == [], (
+E   AssertionError: 平台的沙箱里还有东西:None
+E   assert None == []
+________________ test_the_platform_is_not_on_the_subjects_disk _________________
+tests/quality/test_sandbox.py:83: in test_the_platform_is_not_on_the_subjects_disk
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+__________________ test_the_subject_keeps_its_own_credentials __________________
+tests/quality/test_sandbox.py:119: in test_the_subject_keeps_its_own_credentials
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+________________ test_host_variables_are_not_mistaken_for_paths ________________
+tests/quality/test_sandbox.py:134: in test_host_variables_are_not_mistaken_for_paths
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+____________ test_the_work_root_survives_and_the_platform_does_not _____________
+tests/quality/test_sandbox.py:152: in test_the_work_root_survives_and_the_platform_does_not
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+_______________ test_a_harness_can_actually_work_in_its_workdir ________________
+tests/quality/test_sandbox.py:200: in test_a_harness_can_actually_work_in_its_workdir
+    seen = inside({"TD": str(tmp_path)}, tmp_path, script)
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+____________________ test_the_harness_tree_stays_read_only _____________________
+tests/quality/test_sandbox.py:215: in test_the_harness_tree_stays_read_only
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________
+tests/quality/test_sandbox.py:242: in test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+    seen = inside({"HARNESSGRAD_STATE": str(state), "TD": str(tmp_path)},
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+__________________ test_self_check_notices_a_plan_that_leaks ___________________
+tests/quality/test_sandbox.py:338: in test_self_check_notices_a_plan_that_leaks
+    assert sandbox.self_check(PLATFORM, WORK_ROOT)["ok"] is True
+E   assert False is True
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+FAILED tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers
+FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+10 failed, 245 passed, 2 skipped in 147.94s (0:02:27)
+exit_code=1
+
+=== configured-after.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q --tb=short --basetemp=/tmp/netroute-configured-after --deselect=tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate --deselect=tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers tests/quality/test_isolation.py tests/quality/test_services.py tests/quality/test_boundaries.py tests/quality/test_stop_semantics.py tests/quality/test_unix_model_relay.py tests/quality/test_sandbox.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_eval_package_compat.py tests/quality/test_jericho_runtime_admission.py tests/quality/test_sharedrt_immutable_runtimes.py tests/quality/test_runtime_blocker_evidence_b7.py tests/quality/test_native_model_route.py
+........................................................................ [ 28%]
+........................................................................ [ 56%]
+........................................................................ [ 84%]
+.......................ss..............                                  [100%]
+253 passed, 2 skipped, 2 deselected in 139.06s (0:02:19)
+exit_code=0
+
+=== sandbox-fixture-before-proc.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp /usr/bin/bwrap --die-with-parent --ro-bind / / --proc /proc --dev /dev --bind /tmp /tmp --bind /mnt/20t/xubuqiang/hg-work/netroute /mnt/20t/xubuqiang/hg-work/netroute --ro-bind /mnt/20t/xubuqiang/hg-work/netroute/baseline-sandbox.py /mnt/20t/xubuqiang/hg-wt/w-netroute/eval/containers/sandbox.py -- python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q -p no:cacheprovider --tb=short --basetemp=/tmp/netroute-sandbox-before tests/quality/test_sandbox.py
+.............                                                            [100%]
+13 passed in 0.65s
+exit_code=0
+
+=== sandbox-fixture-after-proc.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp /usr/bin/bwrap --die-with-parent --ro-bind / / --proc /proc --dev /dev --bind /tmp /tmp --bind /mnt/20t/xubuqiang/hg-work/netroute /mnt/20t/xubuqiang/hg-work/netroute -- python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q -p no:cacheprovider --tb=short --basetemp=/tmp/netroute-sandbox-after tests/quality/test_sandbox.py
+.............                                                            [100%]
+13 passed in 0.66s
+exit_code=0
+
+=== final-checks.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ git branch --show-current
+wg-netroute
+exit_code=0
+
+$ git rev-parse HEAD
+be29c8514d8f9373a2ebe30ba42c62df1f73f59c
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ git diff --check
+exit_code=0
+
+$ git diff -- tests/quality/test_isolation.py tests/quality/test_services.py tests/quality/test_boundaries.py tests/quality/test_stop_semantics.py tests/quality/test_unix_model_relay.py tests/quality/test_sandbox.py tests/quality/test_scienceworld_platform_writes_codex186.py tests/quality/test_eval_package_compat.py tests/quality/test_jericho_runtime_admission.py tests/quality/test_sharedrt_immutable_runtimes.py tests/quality/test_runtime_blocker_evidence_b7.py
+exit_code=0
+
+$ git diff -- AGENTS.md registry/dataset-blockers.json docs/adapter-integration-journal.md base_harness eval/containers/immutable_runtime.py eval/containers/container.py
+exit_code=0
+
+$ rg -l 'admit_native_network|sandbox.command|unshare-net|unix_model_relay' tests/quality --glob 'test_*.py'
+tests/quality/test_unix_model_relay.py
+tests/quality/test_sandbox.py
+tests/quality/test_scienceworld_platform_writes_codex186.py
+tests/quality/test_native_model_route.py
+tests/quality/test_jericho_runtime_admission.py
+tests/quality/test_runtime_blocker_evidence_b7.py
+tests/quality/test_eval_package_compat.py
+tests/quality/test_sharedrt_immutable_runtimes.py
+exit_code=0
+
+$ python3 -c 'from pathlib import Path; import json; print(json.dumps({p: Path(p).exists() for p in ['"'"'/tmp/netroute-before'"'"','"'"'/tmp/netroute-after'"'"','"'"'/tmp/netroute-new'"'"','"'"'/tmp/netroute-sandbox-before'"'"','"'"'/tmp/netroute-sandbox-after'"'"']}))'
+{"/tmp/netroute-before": false, "/tmp/netroute-after": false, "/tmp/netroute-new": false, "/tmp/netroute-sandbox-before": false, "/tmp/netroute-sandbox-after": false}
+exit_code=0
+
+=== review-checks.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ git diff --check
+exit_code=0
+
+$ git diff --unified=0 -- INTERFACE.md eval/containers/sandbox.py eval/policy/runtime_policy.py eval/run/runner.py
+diff --git a/INTERFACE.md b/INTERFACE.md
+index 263b5d53..08f8efcb 100644
+--- a/INTERFACE.md
++++ b/INTERFACE.md
+@@ -824 +824,2 @@ this happened.
+-| `files` environment | nothing: the harness runs on the host and reaches the model directly |
++| `files`, network omitted | the native sandbox inherits the host network and reaches the model directly |
++| `files`, `network: none`, live backend | keeps `--unshare-net`; binds one read-only AF_UNIX model socket and a trusted loopback forwarder, hands the client an ordinary HTTP URL; native plan 4 |
+@@ -829,0 +831,9 @@ this happened.
++The native offline route forwards only to the configured platform model endpoint;
++it does not give the task a bridge, DNS or external TCP route. It requires a plain
++HTTP base URL (including its path); TLS, URL userinfo, queries and fragments fail
++closed. The harness client, prompts and budgets are unchanged. The socket and
++forwarder are infrastructure mounts, never setup files or task capability metadata,
++and are not projected into verification. Native `bridge` and `services` remain
++unsupported and refused; omitted native network still means inherited host network.
++The separate backend-observation admission gate continues to apply.
++
+diff --git a/eval/containers/sandbox.py b/eval/containers/sandbox.py
+index c46d34db..ec7a19a4 100644
+--- a/eval/containers/sandbox.py
++++ b/eval/containers/sandbox.py
+@@ -71,0 +72 @@ from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targe
++from eval.containers import model_route
+@@ -80 +81 @@ from harnessgrad.config import current as current_config
+-PLAN_VERSION = 3  # Explicit read-only task-relative immutable runtime projections.
++PLAN_VERSION = 4  # Offline model socket and trusted namespace-local HTTP bootstrap.
+@@ -182,0 +184,2 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
++            model_socket: Path | None = None,
++            model_path: str = "",
+@@ -374,0 +378,13 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
++    if model_socket is not None:
++        # After every parent bind/hide and immutable projection: no later mount
++        # may cover or reopen the infrastructure socket or trusted bootstrap.
++        # Fixed destinations cannot alias task state or immutable-runtime targets.
++        plan += model_route.mounts(
++            model_socket, network=network,
++            exposed_paths=(platform, work_root, repo, task_dir, *runtime_paths,
++                           *visible_paths, *writable_paths, *state_dirs,
++                           *(target for _, target in package_overlays),
++                           *(task_dir / rel for _, rel in immutable_runtimes)),
++            writable_paths=(task_dir, *writable_paths, *state_dirs))
++        argv = model_route.bootstrap(argv, model_path)
++
+@@ -419,0 +436,2 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
++        model_socket: Path | None = None,
++        model_path: str = "",
+@@ -437,0 +456 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
++                          model_socket=model_socket, model_path=model_path,
+diff --git a/eval/policy/runtime_policy.py b/eval/policy/runtime_policy.py
+index 88218b5f..8e05e5ca 100644
+--- a/eval/policy/runtime_policy.py
++++ b/eval/policy/runtime_policy.py
+@@ -11 +11,5 @@ def admit_native_network(env: dict, manifest: dict, agent_backend: str) -> None:
+-    """Refuse a declared offline task before launching a network-dependent agent."""
++    """Admit only network policies the native mount/transport path can honour.
++
++    Live offline agents use the platform's AF_UNIX model route inside unshare-net;
++    role and backend no longer determine whether that network policy is possible.
++    """
+@@ -15,5 +18,0 @@ def admit_native_network(env: dict, manifest: dict, agent_backend: str) -> None:
+-    if network == "none" and manifest.get("role") != "control" \
+-            and agent_backend != "mock":
+-        raise ValueError(
+-            "network='none' cannot run a live agent backend; use an offline control "
+-            "or the mock backend")
+diff --git a/eval/run/runner.py b/eval/run/runner.py
+index f5b7645e..abb4d931 100644
+--- a/eval/run/runner.py
++++ b/eval/run/runner.py
+@@ -16,0 +17 @@ import eval.service.modelgate as modelgate_mod
++from eval.service.native_model_route import NativeModelRoute
+@@ -195,2 +196,2 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
+-    Native tasks can declare network='none'; live model backends are refused for
+-    those tasks before launch. See `eval/containers/sandbox.py`.
++    Native network='none' agents use a fixed platform model route over AF_UNIX
++    and namespace-local HTTP, without exposing a task network capability.
+@@ -442,0 +444,10 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
++        elif env_spec.get("network") == "none" \
++                and os.environ.get("HG_AGENT_BACKEND", "mock") != "mock":
++            try:
++                base = child_env.get("HG_AGENT_BASE_URL")
++                if not base:
++                    raise modelgate_mod.GatewayUnavailable("live offline agent needs HG_AGENT_BASE_URL")
++                model_gateway = NativeModelRoute(base).start()
++            except (modelgate_mod.GatewayUnavailable, ValueError) as exc:
++                return _invalid(task, exc, stage="native model route admission", service=None)
++
+@@ -508,0 +520,4 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
++                                   model_socket=(model_gateway.socket_path
++                                                 if isinstance(model_gateway, NativeModelRoute) else None),
++                                   model_path=(model_gateway.path
++                                               if isinstance(model_gateway, NativeModelRoute) else ""),
+@@ -523,0 +539,2 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
++        except modelgate_mod.GatewayUnavailable as exc:
++            return _invalid(task, exc, stage="native model route launch", service=None)
+exit_code=0
+
+$ python3 -c 'from pathlib import Path; import json; print(json.dumps({p: Path(p).exists() for p in ['"'"'/tmp/netroute-before'"'"','"'"'/tmp/netroute-after'"'"','"'"'/tmp/netroute-new'"'"','"'"'/tmp/netroute-sandbox-before'"'"','"'"'/tmp/netroute-sandbox-after'"'"','"'"'/tmp/netroute-configured-after'"'"','"'"'/mnt/20t/xubuqiang/hg-work/netroute/sandbox-fixture-work'"'"']}))'
+{"/tmp/netroute-before": false, "/tmp/netroute-after": false, "/tmp/netroute-new": false, "/tmp/netroute-sandbox-before": false, "/tmp/netroute-sandbox-after": false, "/tmp/netroute-configured-after": false, "/mnt/20t/xubuqiang/hg-work/netroute/sandbox-fixture-work": false}
+exit_code=0
+
+$ python3 -c 'import hashlib, subprocess; from pathlib import Path; raw=subprocess.check_output(['"'"'git'"'"','"'"'show'"'"','"'"'HEAD:eval/containers/sandbox.py'"'"']); saved=Path('"'"'/mnt/20t/xubuqiang/hg-work/netroute/baseline-sandbox.py'"'"').read_bytes(); print('"'"'baseline_matches_HEAD='"'"'+str(raw==saved)); print('"'"'baseline_sha256='"'"'+hashlib.sha256(saved).hexdigest())'
+baseline_matches_HEAD=True
+baseline_sha256=36ec0142077d2d7f37be270e3b99a64c0179d90dd90bf434d09fbdd46f48f265
+exit_code=0
+
+=== live.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp python3 tests/quality/native_model_route_control.py
+{"admission": "ADMITTED", "backend": "openai", "env": {"kind": "files", "network": "none"}, "inference_requested": false, "model_endpoint": "http://127.0.0.1:8002/v1"}
+{"control": "isolated", "returncode": 0, "stderr": "", "stdout": "{\"client_base_url\": \"http://127.0.0.1:60327/v1\", \"dns_example_com\": {\"error\": \"gaierror: [Errno -3] Temporary failure in name resolution\", \"ok\": false}, \"model_metadata\": {\"ok\": true, \"value\": {\"model_ids\": [\"qwen3.5-9b-local\"], \"status\": 200}}, \"network_namespace\": \"net:[4026535630]\", \"public_tcp\": {\"error\": \"OSError: [Errno 101] Network is unreachable\", \"ok\": false}}"}
+{"control": "same_mounts_without_unshare_net", "returncode": 0, "stderr": "", "stdout": "{\"client_base_url\": \"http://127.0.0.1:37295/v1\", \"dns_example_com\": {\"ok\": true, \"value\": [\"104.20.23.154\", \"172.66.147.243\", \"2606:4700:10::6814:179a\", \"2606:4700:10::ac42:93f3\"]}, \"model_metadata\": {\"ok\": true, \"value\": {\"model_ids\": [\"qwen3.5-9b-local\"], \"status\": 200}}, \"network_namespace\": \"net:[4026531840]\", \"public_tcp\": {\"error\": \"TimeoutError: timed out\", \"ok\": false}}"}
+{"relay_directory_removed": true}
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-netroute/tests/quality/native_model_route_control.py", line 92, in <module>
+    main()
+  File "/mnt/20t/xubuqiang/hg-wt/w-netroute/tests/quality/native_model_route_control.py", line 80, in main
+    assert inherited["dns_example_com"]["ok"] and inherited["public_tcp"]["ok"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+exit_code=1
+
+=== live-port80.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp python3 tests/quality/native_model_route_control.py
+{"admission": "ADMITTED", "backend": "openai", "env": {"kind": "files", "network": "none"}, "inference_requested": false, "model_endpoint": "http://127.0.0.1:8002/v1"}
+{"control": "isolated", "returncode": 0, "stderr": "", "stdout": "{\"client_base_url\": \"http://127.0.0.1:42475/v1\", \"dns_example_com\": {\"error\": \"gaierror: [Errno -3] Temporary failure in name resolution\", \"ok\": false}, \"model_metadata\": {\"ok\": true, \"value\": {\"model_ids\": [\"qwen3.5-9b-local\"], \"status\": 200}}, \"network_namespace\": \"net:[4026535626]\", \"public_tcp\": {\"error\": \"OSError: [Errno 101] Network is unreachable\", \"ok\": false}}"}
+{"control": "same_mounts_without_unshare_net", "returncode": 0, "stderr": "", "stdout": "{\"client_base_url\": \"http://127.0.0.1:35385/v1\", \"dns_example_com\": {\"ok\": true, \"value\": [\"104.20.23.154\", \"172.66.147.243\", \"2606:4700:10::6814:179a\", \"2606:4700:10::ac42:93f3\"]}, \"model_metadata\": {\"ok\": true, \"value\": {\"model_ids\": [\"qwen3.5-9b-local\"], \"status\": 200}}, \"network_namespace\": \"net:[4026531840]\", \"public_tcp\": {\"ok\": true, \"value\": \"connected to 1.1.1.1:80\"}}"}
+{"relay": {"bytes_to_client": 1248, "bytes_to_upstream": 256, "client_closed_first": 0, "connections": 2, "read_errors": [], "transport": "unix+isolated-loopback", "upstream_closed_first": 2, "upstream_connect_error": null, "upstream_connect_failed": 0}}
+{"relay_directory_removed": true}
+{"result": "PASS", "temporary_control_directory_removed": true}
+exit_code=0
+
+=== sandbox-fixture-before.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp /usr/bin/bwrap --die-with-parent --ro-bind / / --bind /tmp /tmp --bind /mnt/20t/xubuqiang/hg-work/netroute /mnt/20t/xubuqiang/hg-work/netroute --ro-bind /mnt/20t/xubuqiang/hg-work/netroute/baseline-sandbox.py /mnt/20t/xubuqiang/hg-wt/w-netroute/eval/containers/sandbox.py -- python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q --tb=short --basetemp=/tmp/netroute-sandbox-before tests/quality/test_sandbox.py
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py", line 6, in <module>
+    raise SystemExit(pytest.main(sys.argv[1:], plugins=[sys.modules[__name__]]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 150, in main
+    config = _prepareconfig(args, plugins)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 331, in _prepareconfig
+    config = pluginmanager.hook.pytest_cmdline_parse(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_hooks.py", line 265, in __call__
+    return self._hookexec(self.name, self.get_hookimpls(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_manager.py", line 80, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 55, in _multicall
+    gen.send(outcome)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/helpconfig.py", line 104, in pytest_cmdline_parse
+    config: Config = outcome.get_result()
+                     ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_result.py", line 60, in get_result
+    raise ex[1].with_traceback(ex[2])
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 39, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1075, in pytest_cmdline_parse
+    self.parse(args)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1425, in parse
+    self._preparse(args, addopts=addopts)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1327, in _preparse
+    self.hook.pytest_load_initial_conftests(
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_hooks.py", line 265, in __call__
+    return self._hookexec(self.name, self.get_hookimpls(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_manager.py", line 80, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 60, in _multicall
+    return outcome.get_result()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_result.py", line 60, in get_result
+    raise ex[1].with_traceback(ex[2])
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 34, in _multicall
+    next(gen)  # first yield
+    ^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 149, in pytest_load_initial_conftests
+    capman.start_global_capturing()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 750, in start_global_capturing
+    self._global_capturing = _get_multicapture(self._method)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 692, in _get_multicapture
+    return MultiCapture(in_=FDCapture(0), out=FDCapture(1), err=FDCapture(2))
+                            ^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 462, in __init__
+    self.tmpfile = open(os.devnull, encoding="utf-8")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/dev/null'
+exit_code=1
+
+=== sandbox-fixture-after.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp /usr/bin/bwrap --die-with-parent --ro-bind / / --bind /tmp /tmp --bind /mnt/20t/xubuqiang/hg-work/netroute /mnt/20t/xubuqiang/hg-work/netroute -- python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q --tb=short --basetemp=/tmp/netroute-sandbox-after tests/quality/test_sandbox.py
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py", line 6, in <module>
+    raise SystemExit(pytest.main(sys.argv[1:], plugins=[sys.modules[__name__]]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 150, in main
+    config = _prepareconfig(args, plugins)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 331, in _prepareconfig
+    config = pluginmanager.hook.pytest_cmdline_parse(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_hooks.py", line 265, in __call__
+    return self._hookexec(self.name, self.get_hookimpls(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_manager.py", line 80, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 55, in _multicall
+    gen.send(outcome)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/helpconfig.py", line 104, in pytest_cmdline_parse
+    config: Config = outcome.get_result()
+                     ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_result.py", line 60, in get_result
+    raise ex[1].with_traceback(ex[2])
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 39, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1075, in pytest_cmdline_parse
+    self.parse(args)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1425, in parse
+    self._preparse(args, addopts=addopts)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1327, in _preparse
+    self.hook.pytest_load_initial_conftests(
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_hooks.py", line 265, in __call__
+    return self._hookexec(self.name, self.get_hookimpls(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_manager.py", line 80, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 60, in _multicall
+    return outcome.get_result()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_result.py", line 60, in get_result
+    raise ex[1].with_traceback(ex[2])
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pluggy/_callers.py", line 34, in _multicall
+    next(gen)  # first yield
+    ^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 149, in pytest_load_initial_conftests
+    capman.start_global_capturing()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 750, in start_global_capturing
+    self._global_capturing = _get_multicapture(self._method)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 692, in _get_multicapture
+    return MultiCapture(in_=FDCapture(0), out=FDCapture(1), err=FDCapture(2))
+                            ^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/capture.py", line 462, in __init__
+    self.tmpfile = open(os.devnull, encoding="utf-8")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/dev/null'
+exit_code=1
+
+=== sandbox-fixture-before-dev.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp /usr/bin/bwrap --die-with-parent --ro-bind / / --dev /dev --bind /tmp /tmp --bind /mnt/20t/xubuqiang/hg-work/netroute /mnt/20t/xubuqiang/hg-work/netroute --ro-bind /mnt/20t/xubuqiang/hg-work/netroute/baseline-sandbox.py /mnt/20t/xubuqiang/hg-wt/w-netroute/eval/containers/sandbox.py -- python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q --tb=short --basetemp=/tmp/netroute-sandbox-before tests/quality/test_sandbox.py
+FFFFFFF.....F                                                            [100%]
+=================================== FAILURES ===================================
+________________ test_the_platform_is_not_on_the_subjects_disk _________________
+tests/quality/test_sandbox.py:83: in test_the_platform_is_not_on_the_subjects_disk
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...latform_is_not_on_th0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+__________________ test_the_subject_keeps_its_own_credentials __________________
+tests/quality/test_sandbox.py:119: in test_the_subject_keeps_its_own_credentials
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...ubject_keeps_its_own0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+________________ test_host_variables_are_not_mistaken_for_paths ________________
+tests/quality/test_sandbox.py:134: in test_host_variables_are_not_mistaken_for_paths
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...variables_are_not_mi0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+____________ test_the_work_root_survives_and_the_platform_does_not _____________
+tests/quality/test_sandbox.py:152: in test_the_work_root_survives_and_the_platform_does_not
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...ork_root_survives_an0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+_______________ test_a_harness_can_actually_work_in_its_workdir ________________
+tests/quality/test_sandbox.py:200: in test_a_harness_can_actually_work_in_its_workdir
+    seen = inside({"TD": str(tmp_path)}, tmp_path, script)
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...ness_can_actually_wo0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+____________________ test_the_harness_tree_stays_read_only _____________________
+tests/quality/test_sandbox.py:215: in test_the_harness_tree_stays_read_only
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...arness_tree_stays_re0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________
+tests/quality/test_sandbox.py:242: in test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+    seen = inside({"HARNESSGRAD_STATE": str(state), "TD": str(tmp_path)},
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...arness_gets_a_writab0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+__________________ test_self_check_notices_a_plan_that_leaks ___________________
+tests/quality/test_sandbox.py:338: in test_self_check_notices_a_plan_that_leaks
+    assert sandbox.self_check(PLATFORM, WORK_ROOT)["ok"] is True
+E   assert False is True
+=============================== warnings summary ===============================
+../../../../8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/cacheprovider.py:451
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/cacheprovider.py:451: PytestCacheWarning: cache could not write path /mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+../../../../8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/stepwise.py:56
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/stepwise.py:56: PytestCacheWarning: cache could not write path /mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/stepwise: [Errno 30] Read-only file system: '/mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/stepwise'
+    session.config.cache.set(STEPWISE_CACHE_DIR, [])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+8 failed, 5 passed, 2 warnings in 0.10s
+exit_code=1
+
+=== sandbox-fixture-after-dev.txt (retained stdout/stderr; JSON_LINE markers encode trailing whitespace) ===
+$ TMPDIR=/tmp /usr/bin/bwrap --die-with-parent --ro-bind / / --dev /dev --bind /tmp /tmp --bind /mnt/20t/xubuqiang/hg-work/netroute /mnt/20t/xubuqiang/hg-work/netroute -- python3 -B /mnt/20t/xubuqiang/hg-work/netroute/sandbox_fixture_pytest.py -q --tb=short --basetemp=/tmp/netroute-sandbox-after tests/quality/test_sandbox.py
+FFFFFFF.....F                                                            [100%]
+=================================== FAILURES ===================================
+________________ test_the_platform_is_not_on_the_subjects_disk _________________
+tests/quality/test_sandbox.py:83: in test_the_platform_is_not_on_the_subjects_disk
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...latform_is_not_on_th0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+__________________ test_the_subject_keeps_its_own_credentials __________________
+tests/quality/test_sandbox.py:119: in test_the_subject_keeps_its_own_credentials
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...ubject_keeps_its_own0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+________________ test_host_variables_are_not_mistaken_for_paths ________________
+tests/quality/test_sandbox.py:134: in test_host_variables_are_not_mistaken_for_paths
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...variables_are_not_mi0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+____________ test_the_work_root_survives_and_the_platform_does_not _____________
+tests/quality/test_sandbox.py:152: in test_the_work_root_survives_and_the_platform_does_not
+    seen = inside(env, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...ork_root_survives_an0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+_______________ test_a_harness_can_actually_work_in_its_workdir ________________
+tests/quality/test_sandbox.py:200: in test_a_harness_can_actually_work_in_its_workdir
+    seen = inside({"TD": str(tmp_path)}, tmp_path, script)
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...ness_can_actually_wo0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+____________________ test_the_harness_tree_stays_read_only _____________________
+tests/quality/test_sandbox.py:215: in test_the_harness_tree_stays_read_only
+    seen = inside({}, tmp_path, (
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...arness_tree_stays_re0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________
+tests/quality/test_sandbox.py:242: in test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+    seen = inside({"HARNESSGRAD_STATE": str(state), "TD": str(tmp_path)},
+tests/quality/test_sandbox.py:52: in inside
+    assert proc.returncode == 0, proc.stderr[-800:]
+E   AssertionError: bwrap: setting up uid map: Read-only file system
+JSON_LINE: "E     "
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...arness_gets_a_writab0/probe.py'], returncode=1, stdout='', stderr='bwrap: setting up uid map: Read-only file system\n').returncode
+__________________ test_self_check_notices_a_plan_that_leaks ___________________
+tests/quality/test_sandbox.py:338: in test_self_check_notices_a_plan_that_leaks
+    assert sandbox.self_check(PLATFORM, WORK_ROOT)["ok"] is True
+E   assert False is True
+=============================== warnings summary ===============================
+../../../../8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/cacheprovider.py:451
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/cacheprovider.py:451: PytestCacheWarning: cache could not write path /mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+../../../../8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/stepwise.py:56
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_pytest/stepwise.py:56: PytestCacheWarning: cache could not write path /mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/stepwise: [Errno 30] Read-only file system: '/mnt/20t/xubuqiang/hg-wt/w-netroute/.pytest_cache/v/cache/stepwise'
+    session.config.cache.set(STEPWISE_CACHE_DIR, [])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+8 failed, 5 passed, 2 warnings in 0.15s
+exit_code=1
+
+=== Fixture wrapper source (used by exact commands above) ===
+import pathlib, pytest, sys
+def pytest_collection_modifyitems(items):
+    for item in items:
+        if item.module.__name__ == 'test_sandbox':
+            item.module.WORK_ROOT = pathlib.Path('/mnt/20t/xubuqiang/hg-work/netroute/sandbox-fixture-work')
+raise SystemExit(pytest.main(sys.argv[1:], plugins=[sys.modules[__name__]]))
+
+The wrapper only changes test_sandbox.WORK_ROOT to the explicitly created scratch directory.
+No test function or assertion is replaced. The two --deselect arguments in configured-after.txt
+are the two explicitly identified isolation conditions; raw runs above include both failures.
+The outer bwrap used in the targeted before/after proof mounts the old sandbox source
+from git show HEAD:eval/containers/sandbox.py for the before side only.
+
+=== Initial new-test development run (exact command; observed failure output) ===
+$ TMPDIR=/tmp python3 -m pytest -q --tb=short --basetemp=/tmp/netroute-new tests/quality/test_native_model_route.py
+=================================== FAILURES ===================================
+_______________________ test_private_socket_and_cleanup ________________________
+tests/quality/test_native_model_route.py:99: in test_private_socket_and_cleanup
+    assert client.recv(1) == b""
+E   ConnectionResetError: [Errno 104] Connection reset by peer
+_____________ test_offline_without_sandbox_fails_before_execution ______________
+tests/quality/test_native_model_route.py:199: in test_offline_without_sandbox_fails_before_execution
+    result = run_one(repo, {"task_id":"synthetic"}, env={"kind":"files", "network":"none"},
+eval/run/runner.py:167: in run_one
+    result = refusal if refusal is not None else _run_one(
+eval/run/runner.py:240: in _run_one
+    raise ValueError("declared native runtime/network isolation requires sandbox=True")
+E   ValueError: declared native runtime/network isolation requires sandbox=True
+=========================== short test summary info ============================
+FAILED tests/quality/test_native_model_route.py::test_private_socket_and_cleanup
+FAILED tests/quality/test_native_model_route.py::test_offline_without_sandbox_fails_before_execution
+2 failed, 12 passed in 7.94s
+exit_code=1
+The new cleanup assertion now accepts kernel EOF or reset; the new negative runner test
+asserts the existing ValueError. No inherited assertion was edited (git diff evidence above).
+The full subsequent raw and configured runs include all 14 new cases.
+
+=== Source identities after tests ===
+$ python3 -c 'import hashlib, json; from pathlib import Path; names=['"'"'INTERFACE.md'"'"', '"'"'eval/containers/sandbox.py'"'"', '"'"'eval/containers/model_route.py'"'"', '"'"'eval/policy/runtime_policy.py'"'"', '"'"'eval/run/runner.py'"'"', '"'"'eval/service/native_model_route.py'"'"', '"'"'eval/service/native_model_forwarder.py'"'"', '"'"'tests/quality/test_native_model_route.py'"'"', '"'"'tests/quality/native_model_route_control.py'"'"']; print(json.dumps({n: hashlib.sha256(Path(n).read_bytes()).hexdigest() for n in names}, sort_keys=True))'
+{"INTERFACE.md": "6814c4a8960e549c7e6925112b3cfbdff6eb9cd8b68b95d6bee6f4e1c0cb4098", "eval/containers/model_route.py": "522353cd369872b5ae3db0dc6c3e47907d2f30b2972a824862e296956f979fdc", "eval/containers/sandbox.py": "932729a65eccd467ab9161841e991f045fc8382f685977116b5c028e2cc00de9", "eval/policy/runtime_policy.py": "aae1973459e6f7108574fa0e93f0b2963a360f1f76bec41d8693d5acf498e9bb", "eval/run/runner.py": "0335a34e15781ac15b4fb2dcfbf786f170b78f4f022b6deadb34b8f797e554d0", "eval/service/native_model_forwarder.py": "19dde5e28bfbfafcd16e7bd12fbc950378690cd5d672d7d9d7f5acd99bdb7ac5", "eval/service/native_model_route.py": "6dd402bd6eda4af69833c1e1e253c9e8657ffe716c8ac505dbb0c1ae67eef40a", "tests/quality/native_model_route_control.py": "cd7638e8e0be7549d5306da6abd9b1d165919b4eb5cc17e62b1f27da2c1719a9", "tests/quality/test_native_model_route.py": "f951bb989695a04027431630fc488e5cf021d27221a21d821f85c46e9bfdd68f"}
+exit_code=0
+
+=== Explicitly NOT verified / UNKNOWN ===
+- Real chat generation, OpenAI SDK requests to the live model, and live streamed generation.
+- Any dataset, benchmark, official scorer, pilot, H0 score, dataset split/manifest identity, or production authorization.
+- Docker/exec execution and TLS model transports. Docker code is unchanged; TLS URLs fail closed.
+- Broad adversarial namespace/kernel escape resistance; controls cover the named DNS/TCP probes, mount validation, fixed upstream routing, and synthetic runner launch only.
+- A before baseline for the 14 newly introduced tests (they did not exist); baseline covers the 243 inherited cases.
+
+=== Staged evidence formatting check before encoding whitespace ===
+$ git diff --cached --check
+reports/w-netroute-native-offline-route-validation.txt:39: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:48: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:57: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:66: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:75: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:84: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:93: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:137: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:146: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:155: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:164: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:173: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:182: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:191: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:545: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:554: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:563: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:572: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:581: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:590: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:599: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:638: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:647: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:656: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:665: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:674: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:683: trailing whitespace.
+JSON_LINE: "+E     "
+reports/w-netroute-native-offline-route-validation.txt:692: trailing whitespace.
+JSON_LINE: "+E     "
+exit_code=2
+
+JSON_LINE: <JSON string> is a lossless representation of one output line with trailing whitespace.
+Decode the JSON string and append a newline to reconstruct that exact original line.
+Only captured output lines are encoded; the original scratch receipts remain unchanged.
+
+=== Staged check after lossless output encoding ===
+$ git diff --cached --check
+exit_code=0
+
+=== File sizes of every committed file, in bytes (all must be < 1000000) ===
+$ python3 -c 'import json; from pathlib import Path; names=['"'"'INTERFACE.md'"'"', '"'"'eval/containers/sandbox.py'"'"', '"'"'eval/containers/model_route.py'"'"', '"'"'eval/policy/runtime_policy.py'"'"', '"'"'eval/run/runner.py'"'"', '"'"'eval/service/native_model_route.py'"'"', '"'"'eval/service/native_model_forwarder.py'"'"', '"'"'tests/quality/test_native_model_route.py'"'"', '"'"'tests/quality/native_model_route_control.py'"'"', '"'"'reports/w-netroute-native-offline-route.md'"'"', '"'"'reports/w-netroute-native-offline-route-validation.txt'"'"']; print(json.dumps({n: Path(n).stat().st_size for n in names}, sort_keys=True))'
+{"INTERFACE.md": 156218, "eval/containers/model_route.py": 1738, "eval/containers/sandbox.py": 31740, "eval/policy/runtime_policy.py": 3075, "eval/run/runner.py": 84523, "eval/service/native_model_forwarder.py": 2065, "eval/service/native_model_route.py": 4066, "reports/w-netroute-native-offline-route-validation.txt": 68427, "reports/w-netroute-native-offline-route.md": 8520, "tests/quality/native_model_route_control.py": 4404, "tests/quality/test_native_model_route.py": 9256}
+exit_code=0
