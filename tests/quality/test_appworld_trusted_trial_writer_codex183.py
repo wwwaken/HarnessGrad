@@ -234,7 +234,7 @@ def test_explicit_empty_history_is_preserved_for_reader_refusal(tmp_path):
 
 
 def test_registry_closes_only_the_saved_writer_blocker():
-    registry = json.loads((ROOT / "docs/dataset-blockers.json").read_text())
+    registry = json.loads((ROOT / "registry/dataset-blockers.json").read_text())
     appworld = next(row for row in registry["datasets"] if row["dataset"] == "appworld")
     assert "trusted-trial-evidence-writer" not in {b["id"] for b in appworld["blockers"]}
     assert "successful-task-evidence" in {b["id"] for b in appworld["blockers"]}

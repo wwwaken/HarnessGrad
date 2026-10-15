@@ -105,9 +105,9 @@ assert not before_absent
 
 baseline = next(r['stdout'].strip() for r in rows['preflight']
                 if r.get('argv') == ['git', 'rev-parse', 'HEAD'])
-old = json.loads(subprocess.run(['git', 'show', baseline + ':docs/dataset-blockers.json'], cwd=root,
+old = json.loads(subprocess.run(['git', 'show', baseline + ':registry/dataset-blockers.json'], cwd=root,
                                text=True, capture_output=True, check=True).stdout)
-new = json.loads((root / 'docs/dataset-blockers.json').read_text())
+new = json.loads((root / 'registry/dataset-blockers.json').read_text())
 assert old['datasets'] == new['datasets'] and old['review'] == new['review']
 for left, right in zip(old['shared_blockers'], new['shared_blockers'], strict=True):
     if left['id'] != 'artifact-only-state-export':

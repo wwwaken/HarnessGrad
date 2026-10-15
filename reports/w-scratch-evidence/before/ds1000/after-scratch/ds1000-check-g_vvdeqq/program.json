@@ -1,1 +1,0 @@
-"def test_execution(code):\n    scope = {}\n    exec(code, scope)\n    assert scope[\"result\"] == 3\n\ncode = 'import time\\ntime.sleep(0.5)\\nresult = 1 + 2\\n'\ntest_execution(code)\n"

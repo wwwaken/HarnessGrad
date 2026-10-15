@@ -196,7 +196,7 @@ def test_offline_install_origin_and_file_receipt_do_not_assert_runtime_closure()
     assert closure["artifact_provenance_verified"] and closure["wheel_record_verified"] and closure["offline_install_verified"]
     for key in ["fresh_native_import_verified", "loader_resolution_attested", "transitive_native_closure_attested", "supported_image_attested", "runtime_closed", "production_authorized"]:
         assert closure[key] is False
-    registry = json.loads((ROOT / "docs/dataset-blockers.json").read_bytes())
+    registry = json.loads((ROOT / "registry/dataset-blockers.json").read_bytes())
     assert registry["review"]["production_authorized"] is False
     dataset = next(item for item in registry["datasets"] if item["dataset"] == "twowikimultihopqa")
     blocker = next(item for item in dataset["blockers"] if item["id"] == "ujson-native-offline-closure")

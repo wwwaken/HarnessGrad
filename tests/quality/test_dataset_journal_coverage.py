@@ -24,7 +24,7 @@ _KNOWN_JOURNAL_GAPS = frozenset({
 
 
 def _journal_entries():
-    registry = json.loads((ROOT / "docs/dataset-blockers.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "registry/dataset-blockers.json").read_text(encoding="utf-8"))
     return [(row["dataset"], blocker)
             for row in registry["datasets"]
             for blocker in row["blockers"]

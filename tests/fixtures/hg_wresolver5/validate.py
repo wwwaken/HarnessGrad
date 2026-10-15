@@ -147,7 +147,7 @@ assert read(HERE/'raw/negative-inventory.json')['retained_candidates']==len(reco
 negative=(HERE/'raw/negative.stdout.txt').read_text()+(HERE/'raw/negative.stderr.txt').read_text()
 assert 'flatbuffers' in negative and 'ResolutionImpossible' in negative
 boundary=read(HERE/'boundary-before.json')
-registry=read(ROOT/'docs/dataset-blockers.json')
+registry=read(ROOT/'registry/dataset-blockers.json')
 shared_before=read(HERE/'shared-before.json')
 for blocker in registry['shared_blockers']:
     if blocker['id']=='scorer-offline-closure':

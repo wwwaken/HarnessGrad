@@ -1,4 +1,0 @@
-  File "/tmp/hg-tb89d/reports/w-tb89d-evidence/prepare_supplement.py", line 5
-    'fix-code-vulnerability':('command -v bash; command -v sh; command -v python; command -v pip; command -v git; test -s /app/bottle.py; test -d /app/test', 'pip install pytest==8.4.1 pytest-json-ctrf==0.3.5\npython -m pytest --version\npython -c "import pytest,importlib.metadata; print(pytest.__version__); print(importlib.metadata.version('pytest-json-ctrf')); print([str(e) for e in importlib.metadata.entry_points(group='pytest11') if 'ctrf' in str(e)])"'),
-                                                                                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-SyntaxError: invalid syntax. Perhaps you forgot a comma?

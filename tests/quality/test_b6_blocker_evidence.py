@@ -158,7 +158,7 @@ def test_official_code_and_planning_receipt_do_not_become_a_smoke_execution():
 
 
 def test_active_registry_retires_reviews_without_promoting_historical_results():
-    registry = json.loads((ROOT / "docs/dataset-blockers.json").read_bytes())
+    registry = json.loads((ROOT / "registry/dataset-blockers.json").read_bytes())
     rows = {r["dataset"]: r for r in registry["datasets"]}
     assert {b["id"] for b in rows["twowikimultihopqa"]["blockers"]} == {"hub-data-provenance", "ujson-native-offline-closure"}
     assert {b["id"] for b in rows["livecodebench"]["blockers"]} == {"row-attestation"}

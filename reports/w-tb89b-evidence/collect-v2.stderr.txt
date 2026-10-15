@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/hg-tb89b/reports/w-tb89b-evidence/collect.py", line 80, in <module>
-    write(out,dict(source=ref(p),encoding='utf-8',text=p.read_text()))
-                                                       ^^^^^^^^^^^^^
-  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1028, in read_text
-    return f.read()
-           ^^^^^^^^
-  File "<frozen codecs>", line 322, in decode
-UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf3 in position 0: invalid continuation byte

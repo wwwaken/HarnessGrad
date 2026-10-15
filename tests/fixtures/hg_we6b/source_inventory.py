@@ -13,7 +13,7 @@ pattern = re.compile(
     r'\.wait\(|\.join\(|\.close\(|signal\.|conn(?:ection)?\.|scorer_bundle|QASpec\(|scorer_input|'
     r'remove_container\(|remove_image\(|remove_network\(|mounts_for\(|\.stop\(|\.start\(|'
     r'container_mod\.(?:run|create|commit|exec_in)|api_calls\.jsonl|sqlite3\.connect|replay\(|load_task\(|load_game\()')
-registry = json.loads((root / 'docs/dataset-blockers.json').read_text())
+registry = json.loads((root / 'registry/dataset-blockers.json').read_text())
 participants = [d['dataset'] for d in registry['datasets'] if 'artifact-only-state-export' in d['shared_blockers']]
 print(json.dumps({'shared_dataset_count': len(participants), 'shared_datasets': participants,
                   'source_file_count': len(paths)}))

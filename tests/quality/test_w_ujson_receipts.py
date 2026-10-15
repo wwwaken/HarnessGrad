@@ -139,7 +139,7 @@ def test_unchanged_synthetic_evaluators_and_remaining_custody_gap():
     assert summary['blocker_closed'] is summary['production_authorized'] is False
     assert (FIXTURE / 'pypi-build-attestation.stdout.txt').read_text() == '404\n'
     assert 'No provenance available' in (FIXTURE / 'pypi-build-attestation.body').read_text()
-    document = json.loads((ROOT / 'docs/dataset-blockers.json').read_text())
+    document = json.loads((ROOT / 'registry/dataset-blockers.json').read_text())
     dataset = next(d for d in document['datasets'] if d['dataset'] == 'twowikimultihopqa')
     blocker = next(b for b in dataset['blockers'] if b['id'] == 'ujson-native-offline-closure')
     assert blocker['status'] == 'external'

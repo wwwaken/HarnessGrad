@@ -1,3 +1,0 @@
-{
-  "code_context": "def test_execution(code):\n    scope = {}\n    exec(code, scope)\n    assert scope[\"result\"] == 3\n"
-}

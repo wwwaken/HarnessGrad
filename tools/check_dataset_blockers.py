@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REGISTRY = ROOT / "docs/dataset-blockers.json"
+REGISTRY = ROOT / "registry/dataset-blockers.json"
 HISTORY = ROOT / "tests/fixtures/dataset_blockers/history-codex178.json"
 # Pin the review baseline independently of the editable registry.
 HISTORY_SHA256 = "4c778d435f4147eb04dbcee4e37a2bac3f0ac5a55584e3adf252ab12972d1300"

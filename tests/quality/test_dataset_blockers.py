@@ -537,7 +537,7 @@ def test_chess_future_launch_guidance_requires_new_ids_and_preserves_history(doc
         item["record"] for item in baseline["records"]
         if item["dataset"] == "chessbench_puzzles"
     ]
-    journal = (ROOT / "docs/adapter-integration-journal.md").read_text(encoding="utf-8")
+    journal = (ROOT / "registry/adapter-integration-journal.md").read_text(encoding="utf-8")
     audit = next(line for line in journal.splitlines()
                  if line.startswith("- Interruption audit: termination authority is undetermined"))
     guidance = (ROOT / "docs/dataset-blockers.md").read_text(encoding="utf-8")

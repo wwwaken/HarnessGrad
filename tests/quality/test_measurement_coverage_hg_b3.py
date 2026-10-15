@@ -155,7 +155,7 @@ def test_ds1000_timeout_result_needs_classification_beyond_measured_flag(monkeyp
     ("hotpotqa", "historical-comparison-receipts", "measurement", "timeout-aggregation-admission"),
 ])
 def test_review_preserves_unresolved_gates_and_original_history(dataset, active_id, status, retired):
-    document = json.loads((ROOT / "docs/dataset-blockers.json").read_text())
+    document = json.loads((ROOT / "registry/dataset-blockers.json").read_text())
     baseline = json.loads((ROOT / "tests/fixtures/dataset_blockers/history-codex178.json").read_text())
     target = next(row for row in document["datasets"] if row["dataset"] == dataset)
     blockers = {item["id"]: item for item in target["blockers"]}

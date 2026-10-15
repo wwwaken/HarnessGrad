@@ -1,3 +1,0 @@
-#!/bin/sh
-cd /tmp/hg-c2
-env HG_AGENT_BACKEND=openai HG_AGENT_BASE_URL=http://127.0.0.1:8002/v1 HG_AGENT_MODEL=qwen3.5-9b-local HG_AGENT_API_KEY=local python driver.py --dataset agentdojo --harness loop --sampling diagnostic --side train --trials 1 --jobs 1 --rounds 0 --improver none --run-id c2-agentdojo-unobserved-20261014T174551Z-a633f67f --policy-evidence /tmp/hg-c2/reports/c2-agentdojo-diagnostic/policy-evidence.json --authorize-unobserved-diagnostic 'Operator ruling in task C2: one agentdojo execution-evidence diagnostic; enforcement unobserved; no scientific claim or production authorization' --runs-root /tmp/hg-c2/reports/c2-agentdojo-diagnostic/attempts --work-root /tmp/hg-c2-agent-work

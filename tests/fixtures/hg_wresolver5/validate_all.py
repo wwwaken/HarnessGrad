@@ -13,7 +13,7 @@ commands=[
     [sys.executable,'tests/fixtures/hg_wresolver5/validate.py'],
     [sys.executable,'tests/fixtures/hg_wresolver5_tb/validate.py'],
     [sys.executable,'-m','pytest','-q','tests/quality/test_dataset_blockers.py','tests/quality/test_dataset_journal_coverage.py','--basetemp=/tmp/harnessgrad-pytest-w-resolver5'],
-    ['git','diff','--cached','--check','--','docs/dataset-blockers.json','docs/adapter-integration-journal.md','reports/w-resolver5-payloads.md',
+    ['git','diff','--cached','--check','--','registry/dataset-blockers.json','registry/adapter-integration-journal.md','reports/w-resolver5-payloads.md',
      'tests/fixtures/hg_wresolver5/*.py'],
 ]
 with out.open('x') as stream:

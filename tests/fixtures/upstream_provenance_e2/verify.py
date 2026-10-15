@@ -146,8 +146,8 @@ def derive():
 
 
 def scope():
-    baseline = json.loads(subprocess.check_output(['git', 'show', BASE + ':docs/dataset-blockers.json'], cwd=ROOT))
-    current = read('docs/dataset-blockers.json')
+    baseline = json.loads(subprocess.check_output(['git', 'show', BASE + ':registry/dataset-blockers.json'], cwd=ROOT))
+    current = read('registry/dataset-blockers.json')
     owned = {('livecodebench', 'row-attestation'), ('twowikimultihopqa', 'hub-data-provenance')}
     for old_dataset, new_dataset in zip(baseline['datasets'], current['datasets'], strict=True):
         assert old_dataset['dataset'] == new_dataset['dataset']
