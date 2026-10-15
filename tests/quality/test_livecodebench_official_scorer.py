@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -112,11 +113,19 @@ def test_the_verifier_ships_the_tests_and_the_executor_for_its_own_task():
     for task_id in (CONTROL_TASK, dataset.task_id(0)):
         row = dataset._row_for({"task_id": task_id})
         inputs = {entry["path"]: entry for entry in dataset.VERIFY[task_id]["inputs"]}
-        assert set(inputs) == {"verify/check.py", "tests.json", "testing_util.py",
-                               "pass_k_utils.py"}
+        # Pin the scorer's dependencies and their sources; allow additive platform inputs.
+        assert {"verify/check.py", "tests.json", "testing_util.py", "pass_k_utils.py",
+                "data/__init__.py", "data/scaffolds/__init__.py",
+                "data/scaffolds/scorer_input.py"} <= inputs.keys()
+        assert inputs["verify/check.py"]["from"] == str(CHECK)
         assert inputs["tests.json"]["from"] == str(
             dataset.DATASET_ROOT / dataset.TESTS_DIR / f"{row['question_id']}.json")
         assert inputs["testing_util.py"]["from"] == str(dataset.DATASET_ROOT / dataset.EXECUTOR)
+        assert inputs["pass_k_utils.py"]["from"] == str(dataset.DATASET_ROOT / dataset.PASS_K)
+        assert inputs["data/scaffolds/scorer_input.py"]["from"] == str(
+            ROOT / "data/scaffolds/scorer_input.py")
+        for path in ("data/__init__.py", "data/scaffolds/__init__.py"):
+            assert inputs[path]["content"] == ""
         assert dataset.VERIFY[task_id]["argv"][:2] == ["python3", "verify/check.py"]
         # The prompt carries the counts and never the tests.
         tests = json.loads((dataset.DATASET_ROOT / dataset.TESTS_DIR
@@ -124,6 +133,11 @@ def test_the_verifier_ships_the_tests_and_the_executor_for_its_own_task():
         setup = json.dumps(dataset.SETUP[task_id])
         assert tests["inputs"][0][:20] not in setup
         assert tests["outputs"][0][:20] not in setup
+        reference = dataset.references().get(row["question_id"])
+        if reference is not None:
+            assert reference not in setup
+        assert not {"tests.json", "testing_util.py", "pass_k_utils.py", "solution.py"} & {
+            entry["path"] for entry in dataset.SETUP[task_id]["files"]}
         metadata = json.loads(dataset.SETUP[task_id]["files"][0]["content"])
         assert metadata["n_public_tests"] == row["n_public"]
         assert metadata["n_private_tests"] == row["n_private"]
@@ -177,13 +191,16 @@ def test_a_task_without_a_reference_refuses_rather_than_pretending():
 
 def _run_check(work: Path, tests: str, solution: str | None) -> tuple[int, str | None, dict]:
     """The check, materialized the way the platform materializes it."""
-    (work / "verify").mkdir(parents=True, exist_ok=True)
-    (work / "verify" / "check.py").write_text(CHECK.read_text(encoding="utf-8"))
+    for entry in dataset.VERIFY[CONTROL_TASK]["inputs"]:
+        target = work / entry["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if "content" in entry:
+            target.write_text(entry["content"], encoding="utf-8")
+        else:
+            shutil.copy2(entry["from"], target)
+    # These scorer unit cases deliberately replace the tests (including an invalid file),
+    # so retain the manual, unbound argv below rather than the task's bound digest flags.
     (work / "tests.json").write_text(tests, encoding="utf-8")
-    (work / "testing_util.py").write_text(
-        (dataset.DATASET_ROOT / dataset.EXECUTOR).read_text(encoding="utf-8"), encoding="utf-8")
-    (work / "pass_k_utils.py").write_text(
-        (dataset.DATASET_ROOT / dataset.PASS_K).read_text(encoding="utf-8"), encoding="utf-8")
     if solution is not None:
         (work / "solution.py").write_text(solution, encoding="utf-8")
     proc = subprocess.run(

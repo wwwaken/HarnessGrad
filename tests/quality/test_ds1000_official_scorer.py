@@ -195,8 +195,23 @@ def test_gold_stays_out_of_setup_and_the_tests_travel_in_verify_inputs():
     task_id = dataset.task_id(index)
     setup = json.dumps(dataset.SETUP[task_id])
     assert dataset._raw()[index]["reference_code"] not in setup
-    paths = {entry["path"] for entry in dataset.VERIFY[task_id]["inputs"]}
-    assert paths == {"verify/check.py", "execution.py", "seaborn-data"}
+    inputs = {entry["path"]: entry for entry in dataset.VERIFY[task_id]["inputs"]}
+    # Pin the official evaluator and each offline CSV, allowing additive platform inputs.
+    sources = {
+        "verify/check.py": dataset.CHECK_FILE,
+        "execution.py": EXECUTION,
+        "data/scaffolds/scorer_input.py": ROOT / "data/scaffolds/scorer_input.py",
+        **{f"seaborn-data/{name}": dataset.SEABORN_DIR / name
+           for name in dataset.SEABORN_CSVS},
+    }
+    assert sources.keys() | {"context.json", "data/__init__.py",
+                            "data/scaffolds/__init__.py"} <= inputs.keys()
+    for path, source in sources.items():
+        assert inputs[path]["from"] == str(source)
+    for path in ("data/__init__.py", "data/scaffolds/__init__.py"):
+        assert inputs[path]["content"] == ""
+    assert json.loads(inputs["context.json"]["content"]) == {
+        "code_context": dataset._raw()[index]["code_context"]}
     for entry in dataset.VERIFY[task_id]["inputs"]:
         if "from" in entry:
             assert Path(entry["from"]).exists(), entry

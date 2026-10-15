@@ -91,16 +91,20 @@ def run_check(workdir: Path, record: dict, *, budget: int) -> tuple[int, str]:
     `<workdir>/game.tw-pddl`, and it is why this function does not simply trust the
     copies `materialize()` wrote.
     """
-    shutil.copy2(alfworld.VERIFY_DIR / "check.py", workdir / "check.py")
-    shutil.copy2(alfworld.LIB_DIR / "gym_env.py", workdir / "gym_env.py")
-    (workdir / alfworld.GAME_IN_WORKDIR).write_text(record["stripped_game"])
-    argv = [sys.executable, "check.py",
-            "--workdir", ".",
-            "--game", alfworld.GAME_IN_WORKDIR,
-            "--log", alfworld.LOG_IN_WORKDIR,
-            "--reward-file", alfworld.REWARD_REL,
-            "--evidence-file", alfworld.EVIDENCE_REL,
-            "--budget", str(budget)]
+    verifier = alfworld.VERIFY[record["task_id"]]
+    for entry in verifier["inputs"]:
+        target = workdir / entry["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if "content" in entry:
+            target.write_text(entry["content"], encoding="utf-8")
+        else:
+            source = Path(entry["from"])
+            if source.is_dir():
+                shutil.copytree(source, target, dirs_exist_ok=True)
+            else:
+                shutil.copy2(source, target)
+    argv = [sys.executable, *verifier["argv"][1:]]
+    argv[argv.index("--budget") + 1] = str(budget)
     proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)
     reward_path = workdir / alfworld.REWARD_REL
     reward = int(reward_path.read_text().strip()) if reward_path.is_file() else -1
@@ -115,6 +119,7 @@ def run_check(workdir: Path, record: dict, *, budget: int) -> tuple[int, str]:
         "actions_replayed": evidence.get("actions_replayed"),
         "official_game_points": evidence.get("official_game_points"),
         "stdout": proc.stdout.strip(),
+        "stderr": proc.stderr.strip(),
     }
     return reward, json.dumps(verdict, indent=1, sort_keys=True)
 

@@ -167,6 +167,10 @@ def test_our_reward_equals_the_official_reduction_on_a_real_win(task_type, alfwo
     control.drive(workdir, actions, budget=alfworld.STEP_BUDGET)
     reward, detail = control.run_check(workdir, record, budget=alfworld.STEP_BUDGET)
     assert reward == official, detail
+    evidence = json.loads((workdir / alfworld.EVIDENCE_REL).read_text())
+    assert evidence["measured"] is True
+    assert evidence["scorer_input"]["verified"] is True
+    assert evidence["scorer_input"]["task_id"] == record["task_id"]
 
 
 def test_an_empty_episode_is_zero_for_our_check(alfworld, control, tmp_path):
@@ -185,7 +189,7 @@ def test_an_empty_episode_is_zero_for_our_check(alfworld, control, tmp_path):
     workdir = tmp_path / "noop"
     control.materialize(record, workdir)
     reward, detail = control.run_check(workdir, record, budget=alfworld.STEP_BUDGET)
-    assert reward == 0
+    assert reward == 0, detail
     assert "no actions" in detail
 
 
