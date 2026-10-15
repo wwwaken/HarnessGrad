@@ -70,12 +70,17 @@ git, so "never materialised here" and "removed later" are indistinguishable from
 exactly the shape the workers recorded for the Reasoning Gym and HotpotQA receipts. What *is* measured
 is that they were never committed in either history.
 
-**The one with test impact is `external_provenance_b5`, and it is mechanically restorable.** All 87 of
-its missing entries are `responses/*.body`; the packet is fully tracked; the 100 matching
-`responses/*.receipt.json` files are present and each records the request URL, method, headers, UTC
-times, status, response headers, byte count and SHA-256; and `SHA256SUMS` pins every body. One body is
-recorded with the SHA-256 of the empty string, which is what its `HEAD` request legitimately produces.
-Restoration is therefore a replay-and-verify operation, and `w-b5restore` is doing it.
+**The one with test impact is `external_provenance_b5`; most of it is restorable, but not all of it,
+and the residue is not a rate limit.** All 87 of its missing entries are `responses/*.body`; the packet
+is fully tracked; the 100 matching `responses/*.receipt.json` files are present and each records the
+request URL, method, headers, UTC times, status, response headers, byte count and SHA-256; and
+`SHA256SUMS` pins every body. One body is recorded with the SHA-256 of the empty string, which is what
+its `HEAD` request legitimately produces. Restoration is therefore a replay-and-verify operation, and
+`w-b5restore` ran it: **55 of the 87 are restored and digest-verified** (54 fetched + that empty `HEAD`).
+The other **32 are not retryable as recorded** - 23 of them pin a single shared 279-byte rate-limit error
+payload, 3 are live dynamic endpoints, 1 is an upstream 404, and only 5 were ever merely rate-limited.
+The measurement is in "The B5 packet's residue is not a rate limit" below; the "70 of 75 are transient
+403" line under round 101 was read off a pass that never opened the receipts and is **superseded**.
 
 **Test impact.** Most of these packets are not read by the suite. The ones that are fail without a skip
 guard: `test_external_provenance_b5.py` (6 failures, all `FileNotFoundError` on
@@ -649,7 +654,7 @@ The five reds, all previously recorded and none new:
 | --- | --- | --- |
 | `test_appworld_official_scorer.py` | 2 failed, 12 passed (1538.6 s) | the long-standing `test_platform_control_arms` admission conflict, filed above |
 | `test_chessbench_stepwise_runner.py` | 2 failed, 16 passed (28.8 s) | **concurrency-sensitive, cause UNKNOWN**: 18 passed when re-run alone, and 18 passed again under 24 `while True: pass` CPU loops, so "load-induced" was a guess and is withdrawn. Both are socket-deadline tests (`test_reconnect_cannot_reset_session_allowance` with `timeout_s=1`, `test_trickled_partial_frame_cannot_extend_absolute_socket_deadline` with `timeout_s=0.2`) and both failed in the two sweeps that ran beside the operator's 40-job AgentDojo pass, so sub-second deadlines meeting I/O and scheduler contention is the leading hypothesis - **not established**, and not a licence to retune either deadline to make it pass |
-| `test_external_provenance_b5.py` | 5 failed, 1 passed | 71 raw bodies still unrestored; the replay is paused because it writes `tests/fixtures/` while a sweep reads it |
+| `test_external_provenance_b5.py` | 5 failed, 1 passed | bodies unrestored at sweep time (71 then); the replay wrote to `tests/fixtures/` while a sweep read it. Now 32, of which 27 are unrecoverable - see "The B5 packet's residue is not a rate limit" |
 | `test_isolation.py` | 1 failed, 15 passed (184.2 s) | known pre-existing |
 | `test_we5_equivalence.py` | 1 failed, 22 passed | the preserved packet that exists nowhere; enumerated limit |
 
@@ -663,3 +668,56 @@ loops, `load average 1.27` at start - the loops had not yet bitten - and the fil
 the honest state is "fails beside a 40-job I/O-heavy pass, passes alone and under CPU load, cause UNKNOWN".
 Changing the two deadlines would be tuning a test to make a number look better while its actual trigger is
 unknown; if it fails again, capture the assertion text before touching it.
+
+## The B5 packet's residue is not a rate limit - 27 of the 87 entries are unrecoverable as recorded
+
+Round 101 recorded `external_provenance_b5` as "12 of 87 restored ... 70 of the 75 are HTTP 403 with
+`X-RateLimit-Remaining: 0` - transient ... not unobtainable", and the inventory above called the packet
+"mechanically restorable". Both were read off the *fetch outcomes* and never off the *receipts*. Opening
+the 100 receipts says something different, and the difference is not cosmetic: **a rate limit is a
+retry, and 27 of these are not retries.**
+
+Measured 2026-10-16T02:0xZ against the packet at `179aa62e`, after `w-b5restore`'s replay had run all 87:
+
+| outcome | n | receipt's `status` | what it is |
+| --- | --- | --- | --- |
+| `restored_verified` | 54 | 200 | fetched, digest equals the pin |
+| `restored_deliberately_empty` | 1 | 200 | `responses/bfcl-archive-head.body`, the legitimate empty `HEAD` body |
+| `mismatch` | 17 | 14x403, 3x200 | replay got a **real** body; the pin is not that body |
+| `fetch_failure` | 15 | 9x403, 5x200, 1x404 | 13 `rate limit exceeded`, 1 `Not Found`, 1 with no reason |
+
+**The 23 `bfcl-handler-local_inference-*.body` entries do not pin upstream blobs.** Every one of their
+receipts records `status: 403` with a **279-byte** `response_body`, and every one pins the *same* digest
+`fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b` - identically in `SHA256SUMS` and in
+the receipt. That is GitHub's unauthenticated rate-limit JSON. Twenty-three distinct upstream blobs
+cannot share a digest, so the pin is provably not a pin of the artifact; the packet is self-consistent
+and records an error page. Note the shape of the trap: the receipt records `status`, so this is
+*auditable*, but `SHA256SUMS` records only the digest, so a verifier that checks digests alone sees
+nothing wrong. Replay now returns 200 with the real blob for these URLs (e.g.
+`local_inference-minicpm` 1,463 bytes) and the replay correctly **refuses to overwrite** `recorded_sha256`
+rather than laundering a new body into an old pin. They can only be restored by *re-pinning*, which
+changes the evidence rather than restoring it - a decision, not a retry.
+
+**Three more are live dynamic resources and can never be digest-restored.** The replay fetched all three
+at 200 and got different bytes: `triviaqa-dns-alidns.body` (191 -> 192 bytes) and
+`triviaqa-dns-dohpub.body` (391 -> 391 bytes) are DNS-over-HTTPS answers for `huggingface.co`, whose
+addresses change, and `triviaqa-conversion-discussion.body` (13,106 -> 13,106 bytes) is a served Hugging
+Face discussion page. Same-plus-one and same-count-different-digest are the signatures of a moving
+resource, not of a corrupted one.
+
+**One is gone.** `triviaqa-mirror-loader.body` was recorded `404` with a 15-byte body, and still 404s.
+Nothing can be reconstructed from a digest of an error page.
+
+**Five are genuinely transient** - `bfcl-release`, `bfcl-root-tree`, `bfcl-tag`, `bfcl-tree`,
+`bfcl-web-bitagent`, all recorded 200 with a real digest, four of them blocked only by the shared-IP rate
+limit and one by an unrecorded failure. These are the only entries for which "retry it" is the right
+answer, and they are stable GitHub API JSON, not live queries.
+
+So the residue is `23 + 3 + 1 = 27` structurally unrecoverable, `5` retryable, and `27 + 5 = 32` bodies
+absent - consistent with the `202 present / 234 pinned` count in the inventory. Two consequences:
+
+* **The packet cannot be made whole by more fetching**, so "the restoration is running" is retired as a
+  status. What the suite can honestly assert is a per-entry disposition: 202 verified, 5 pending a
+  retry, 27 with a reason that is not a rate limit.
+* **`test_external_provenance_b5.py`'s 5 failures will not clear on their own.** They are `FileNotFoundError`
+  on absent bodies, and for at least the 23 they name an artifact that the packet never captured.
