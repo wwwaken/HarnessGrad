@@ -70,7 +70,7 @@ def _has_pip(image: str, python: str) -> bool:
         proc = subprocess.run(
             ["docker", "run", "--rm", "--network", "none", "--entrypoint", python,
              image, "-m", "pip", "--version"],
-            capture_output=True, text=True, timeout=180)
+            capture_output=True, text=True, errors="replace", timeout=180)
     except (subprocess.TimeoutExpired, OSError):
         return False
     return proc.returncode == 0
@@ -182,7 +182,7 @@ def _clear(overlay: Path, image: str, python: str) -> None:
     subprocess.run(
         ["docker", "run", "--rm", "-v", f"{overlay}:/out", "--entrypoint", "sh",
          image, "-c", "rm -rf /out/* /out/.[!.]* 2>/dev/null; true"],
-        capture_output=True, text=True, timeout=300)
+        capture_output=True, text=True, errors="replace", timeout=300)
 
 
 def build_one(harness: Path, install: tuple[str, str], version: str,
@@ -221,7 +221,7 @@ def build_one(harness: Path, install: tuple[str, str], version: str,
          "--entrypoint", python, pinned,
          "-m", "pip", "install", "--no-cache-dir", "--target", "/out",
          "-r", "/requirements.txt"],
-        capture_output=True, text=True, timeout=1800)
+        capture_output=True, text=True, errors="replace", timeout=1800)
     if proc.returncode != 0:
         # Leave nothing behind. An empty directory would read as "built" to `--list` and
         # would make `lookup` probe an interpreter for an overlay that is not there.
@@ -270,7 +270,7 @@ def verify_one(harness: Path, install: tuple[str, str], version: str,
         ["docker", "run", "--rm", "--network", "none",
          "-v", f"{overlay}:/overlay:ro", "-e", "PYTHONPATH=/overlay",
          "--entrypoint", python, pinned, "-c", script],
-        capture_output=True, text=True, timeout=300)
+        capture_output=True, text=True, errors="replace", timeout=300)
     bad = proc.stdout.strip()
     if proc.returncode != 0 or bad:
         return False, f"{version}: {bad or proc.stderr.strip()[-500:]}"

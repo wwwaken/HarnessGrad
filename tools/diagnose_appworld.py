@@ -37,7 +37,7 @@ with (work / 'trace.jsonl').open('w', buffering=1) as trace:
                  ['action', '--task', tid, '--code',
                   'print(apis.api_docs.show_app_descriptions())']]:
         p = subprocess.run([sys.executable, str(work / 'aw'), *args],
-                           capture_output=True, text=True, timeout=120)
+                           capture_output=True, text=True, errors="replace", timeout=120)
         trace.write(json.dumps({'argv': args, 'exit_code': p.returncode,
                                'stdout': p.stdout, 'stderr': p.stderr}) + '\\n')
         if p.returncode:

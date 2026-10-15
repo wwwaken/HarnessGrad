@@ -108,7 +108,7 @@ def collect_source(repo: Path, commit: str, *, require_checkout: bool = False) -
             result = subprocess.run(
                 ["git", "--no-replace-objects", "-C", str(repo),
                  "-c", "core.fsmonitor=false", *args],
-                check=True, capture_output=True, text=True, timeout=30)
+                check=True, capture_output=True, text=True, errors="replace", timeout=30)
         except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
             raise CompatibilityError("source metadata unavailable") from exc
         return result.stdout

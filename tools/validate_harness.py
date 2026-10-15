@@ -170,7 +170,7 @@ def _smoke(base: Path, entry: Path) -> list[str]:
             proc = subprocess.run(
                 [sys.executable, str(entry.resolve()), "--task", str(task),
                  "--workdir", str(tmpd)],
-                capture_output=True, text=True, timeout=120, cwd=tmpd,
+                capture_output=True, text=True, errors="replace", timeout=120, cwd=tmpd,
             )
         except subprocess.TimeoutExpired:
             return ["smoke run timed out after 120s"]

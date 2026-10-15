@@ -397,14 +397,14 @@ def _platform_record() -> dict:
     try:
         import subprocess
         git_sha = subprocess.run(["git", "-C", str(PLATFORM_ROOT), "rev-parse", "HEAD"],
-                                 capture_output=True, text=True, timeout=10).stdout.strip()
+                                 capture_output=True, text=True, errors="replace", timeout=10).stdout.strip()
     except Exception:                                                 # noqa: BLE001
         git_sha = ""
     if git_sha:
         record["git_sha"] = git_sha
     try:
         dirty = subprocess.run(["git", "-C", str(PLATFORM_ROOT), "status", "--porcelain"],
-                               capture_output=True, text=True, timeout=10).stdout.strip()
+                               capture_output=True, text=True, errors="replace", timeout=10).stdout.strip()
     except Exception:                                                 # noqa: BLE001
         dirty = ""
     # A fact a reader needs: the content hash covers uncommitted edits, but knowing
@@ -673,7 +673,7 @@ def _save_round_diff(run_dir: Path, round_no: int, work: Path,
     """
     def git(*args: str) -> str:
         return subprocess.run(["git", "-C", str(work), *args],
-                              capture_output=True, text=True).stdout
+                              capture_output=True, text=True, errors="replace").stdout
 
     diff = git("diff", prev_sha, sha)
     stat = git("diff", "--numstat", prev_sha, sha)

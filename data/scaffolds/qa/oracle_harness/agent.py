@@ -52,7 +52,7 @@ def main() -> int:
                            "submit-json" if structured else "submit",
                            "@.oracle/prediction.json" if structured else
                            oracle.read_text(encoding="utf-8")],
-                          cwd=work, capture_output=True, text=True)
+                          cwd=work, capture_output=True, text=True, errors="replace")
     if proc.returncode != 0:
         print(f"qa-oracle: `qa submit` exited {proc.returncode}: "
               f"{proc.stderr[-400:]}", file=sys.stderr)

@@ -39,14 +39,14 @@ def main() -> int:
     ran = 0
     for action in actions:
         proc = subprocess.run([sys.executable, str(work / "alf"), "do", action],
-                              cwd=work, capture_output=True, text=True)
+                              cwd=work, capture_output=True, text=True, errors="replace")
         if proc.returncode != 0:
             print(f"oracle harness: `alf do {action!r}` exited {proc.returncode}: "
                   f"{proc.stderr[-400:]}", file=sys.stderr)
             break
         ran += 1
     subprocess.run([sys.executable, str(work / "alf"), "done"], cwd=work,
-                   capture_output=True, text=True)
+                   capture_output=True, text=True, errors="replace")
 
     (work / "trace.jsonl").write_text(json.dumps({
         "harness_identity": {"agent_model": "oracle", "harness": "alfworld-oracle 1"},

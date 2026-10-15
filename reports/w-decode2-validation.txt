@@ -1,0 +1,654 @@
+w-decode2 validation evidence
+All commands ran from /mnt/20t/xubuqiang/hg-wt/w-decode2.
+Only this assigned worktree and this worker's scratch were written.
+The following are exact validation commands and observed outputs, including failing controls.
+No claim that the complete required suite is green is made.
+Log entries below are JSON-quoted lines, preserving exact newlines and trailing spaces.
+Decode each quoted line with json.loads and concatenate to recover the original log.
+
+=== provenance-cleanup ===
+"$ git rev-parse HEAD\n"
+"e0c1cd3254e0168c9e9e1a7dabee750772ddc868\n"
+"EXIT_CODE=0\n"
+"\n"
+"$ git branch --show-current\n"
+"wg-w-decode2\n"
+"EXIT_CODE=0\n"
+"\n"
+"$ git ls-tree --name-only e0c1cd3254e0168c9e9e1a7dabee750772ddc868 -- tests/quality/test_harness_decoding.py\n"
+"EXIT_CODE=0\n"
+"\n"
+"$ git rev-parse edf943f9\n"
+"edf943f95a535d65d935ecfcf05c0ca1b21b2602\n"
+"EXIT_CODE=0\n"
+"\n"
+"$ git diff --name-only -- 'data/**/verify/check.py' AGENTS.md registry/dataset-blockers.json registry/withdrawn-requirements.md docs/adapter-integration-journal.md base_harness legacy current_harness\n"
+"EXIT_CODE=0\n"
+"\n"
+"Cleanup: /tmp/decode2-tmp was empty and removed; no /tmp/decode2-* paths remain.\n"
+
+=== baseline-checker ===
+"$ python3 tools/check_dataset_blockers.py\n"
+"{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 0, \"historical_records\": 11, \"production_authorized\": false}\n"
+"CHECKER_EXIT_CODE=0\n"
+
+=== baseline-fast ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_verifier.py tests/quality/test_sandbox.py tests/quality/test_integrity.py tests/quality/test_parallel_tasks.py --basetemp=/tmp/decode2-baseline-fast\n"
+".......................FFFFFFF.....FF................                    [100%]\n"
+"=================================== FAILURES ===================================\n"
+"________________ test_the_platform_is_not_on_the_subjects_disk _________________\n"
+"tests/quality/test_sandbox.py:83: in test_the_platform_is_not_on_the_subjects_disk\n"
+"    seen = inside({}, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"__________________ test_the_subject_keeps_its_own_credentials __________________\n"
+"tests/quality/test_sandbox.py:119: in test_the_subject_keeps_its_own_credentials\n"
+"    seen = inside(env, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"________________ test_host_variables_are_not_mistaken_for_paths ________________\n"
+"tests/quality/test_sandbox.py:134: in test_host_variables_are_not_mistaken_for_paths\n"
+"    seen = inside(env, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"____________ test_the_work_root_survives_and_the_platform_does_not _____________\n"
+"tests/quality/test_sandbox.py:152: in test_the_work_root_survives_and_the_platform_does_not\n"
+"    seen = inside(env, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"_______________ test_a_harness_can_actually_work_in_its_workdir ________________\n"
+"tests/quality/test_sandbox.py:200: in test_a_harness_can_actually_work_in_its_workdir\n"
+"    seen = inside({\"TD\": str(tmp_path)}, tmp_path, script)\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"____________________ test_the_harness_tree_stays_read_only _____________________\n"
+"tests/quality/test_sandbox.py:215: in test_the_harness_tree_stays_read_only\n"
+"    seen = inside({}, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________\n"
+"tests/quality/test_sandbox.py:242: in test_the_harness_gets_a_writable_hole_in_a_read_only_tree\n"
+"    seen = inside({\"HARNESSGRAD_STATE\": str(state), \"TD\": str(tmp_path)},\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"__________________ test_self_check_notices_a_plan_that_leaks ___________________\n"
+"tests/quality/test_sandbox.py:338: in test_self_check_notices_a_plan_that_leaks\n"
+"    assert sandbox.self_check(PLATFORM, WORK_ROOT)[\"ok\"] is True\n"
+"E   assert False is True\n"
+"___________________ test_every_top_level_entry_is_classified ___________________\n"
+"tests/quality/test_integrity.py:46: in test_every_top_level_entry_is_classified\n"
+"    assert not unclassified, (\n"
+"E   AssertionError: 这些顶层条目既不在 PLATFORM 里、也没有理由说明它为什么不在: ['registry']。要么把它加进 PLATFORM(eval/run/integrity.py),要么在 NOT_PLATFORM 里写下理由。\n"
+"E   assert not ['registry']\n"
+"=========================== short test summary info ============================\n"
+"FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk\n"
+"FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials\n"
+"FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths\n"
+"FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not\n"
+"FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir\n"
+"FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only\n"
+"FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree\n"
+"FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks\n"
+"FAILED tests/quality/test_integrity.py::test_every_top_level_entry_is_classified\n"
+"9 failed, 44 passed in 7.90s\n"
+"\n"
+"PYTEST_EXIT_CODE=1\n"
+
+=== baseline-container-services ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_container.py tests/quality/test_services.py --basetemp=/tmp/decode2-baseline-slow\n"
+".....................................................................    [100%]\n"
+"69 passed in 65.70s (0:01:05)\n"
+"\n"
+"PYTEST_EXIT_CODE=0\n"
+
+=== baseline-guard ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_harness_decoding.py --basetemp=/tmp/decode2-baseline-guard\n"
+"..                                                                       [100%]\n"
+"2 passed in 0.04s\n"
+"\n"
+"PYTEST_EXIT_CODE=0\n"
+
+=== baseline-sandbox-setup ===
+"$ TMPDIR=/tmp/decode2-tmp PYTHONPATH=/mnt/20t/xubuqiang/hg-wt/w-decode2 python3 /mnt/20t/xubuqiang/hg-work/decode2/sandbox_setup.py\n"
+".............                                                            [100%]\n"
+"13 passed in 0.77s\n"
+"\n"
+"PYTEST_EXIT_CODE=0\n"
+
+=== expanded-red ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_harness_decoding.py --basetemp=/tmp/decode2-expanded-red\n"
+"F.                                                                       [100%]\n"
+"=================================== FAILURES ===================================\n"
+"__________ test_every_text_subprocess_in_a_harness_says_how_to_decode __________\n"
+"tests/quality/test_harness_decoding.py:101: in test_every_text_subprocess_in_a_harness_says_how_to_decode\n"
+"    assert not offenders, (\n"
+"E   AssertionError: these harness calls request text without `errors=`, so a command that prints one non-UTF-8 byte raises UnicodeDecodeError inside the harness and ends the episode as a zero:\n"
+"E       eval/admission/pilot_admission.py:272\n"
+"E       eval/containers/container.py:230\n"
+"E       eval/containers/container.py:277\n"
+"E       eval/containers/container.py:650\n"
+"E       eval/containers/harness_runtime.py:156\n"
+"E       eval/containers/sandbox.py:463\n"
+"E       eval/policy/gaia_snapshot_attestation.py:108\n"
+"E       eval/run/runner.py:506\n"
+"E       eval/verification/native_runtime.py:118\n"
+"E       eval/verification/verifier.py:722\n"
+"E       data/datasets/alfworld/control.py:81\n"
+"E       data/datasets/alfworld/control.py:108\n"
+"E       data/datasets/alfworld/control.py:79\n"
+"E       data/datasets/alfworld/oracle_harness/agent.py:48\n"
+"E       data/datasets/alfworld/oracle_harness/agent.py:41\n"
+"E       data/datasets/appworld/control.py:42\n"
+"E       data/datasets/appworld/control.py:51\n"
+"E       data/datasets/jericho/oracle_harness/agent.py:48\n"
+"E       data/datasets/jericho/oracle_harness/agent.py:41\n"
+"E       data/datasets/scienceworld/control.py:138\n"
+"E       data/datasets/scienceworld/control.py:155\n"
+"E       data/datasets/scienceworld/control.py:134\n"
+"E       data/datasets/scienceworld/oracle_harness/agent.py:48\n"
+"E       data/datasets/scienceworld/oracle_harness/agent.py:41\n"
+"E       data/datasets/spreadsheetbench/control.py:109\n"
+"E       data/datasets/spreadsheetbench/oracle_harness/agent.py:36\n"
+"E       data/scaffolds/command_control.py:147\n"
+"E       data/scaffolds/qa/control.py:162\n"
+"E       data/scaffolds/qa/control.py:187\n"
+"E       data/scaffolds/qa/oracle_harness/agent.py:51\n"
+"E       harnessgrad/methods.py:253\n"
+"E       harnessgrad/methods.py:196\n"
+"E       harnessgrad/records.py:675\n"
+"E       harnessgrad/records.py:399\n"
+"E       harnessgrad/records.py:406\n"
+"E       harnessgrad/runtime/compat.py:71\n"
+"E       tools/apply_blocker_proposal.py:234\n"
+"E       tools/build_bird_native_runtime.py:35\n"
+"E       tools/build_tau_bench_gt.py:236\n"
+"E       tools/configure_harness.py:182\n"
+"E       tools/configure_harness.py:216\n"
+"E       tools/configure_harness.py:269\n"
+"E       tools/configure_harness.py:70\n"
+"E       tools/datasets.py:229\n"
+"E       tools/diagnose_appworld.py:39\n"
+"E       tools/export_harnesses.py:35\n"
+"E       tools/export_harnesses.py:134\n"
+"E       tools/import_env.py:60\n"
+"E       tools/improver.py:278\n"
+"E       tools/improver.py:557\n"
+"E       tools/merge_blocker_registry.py:31\n"
+"E       tools/run_tests.py:169\n"
+"E       tools/serve_ui.py:529\n"
+"E       tools/serve_ui.py:881\n"
+"E       tools/validate_harness.py:170\n"
+"E       tools/validate_method.py:125\n"
+"E       tools/validate_method.py:222\n"
+"E     Add `errors=\"replace\"` (lossy on the offending byte, but the trace stays valid UTF-8) or record the site in EXCEPTIONS with the reason it must stay strict.\n"
+"E   assert not ['eval/admission/pilot_admission.py:272', 'eval/containers/container.py:230', 'eval/containers/container.py:277', 'eval/containers/container.py:650', 'eval/containers/harness_runtime.py:156', 'eval/containers/sandbox.py:463', ...]\n"
+"=========================== short test summary info ============================\n"
+"FAILED tests/quality/test_harness_decoding.py::test_every_text_subprocess_in_a_harness_says_how_to_decode\n"
+"1 failed, 1 passed in 0.82s\n"
+"\n"
+"PYTEST_EXIT_CODE=1\n"
+
+=== expanded-controls-red ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_harness_decoding.py --basetemp=/tmp/decode2-expanded-controls-red\n"
+"F.FF                                                                     [100%]\n"
+"=================================== FAILURES ===================================\n"
+"__________ test_every_text_subprocess_in_a_harness_says_how_to_decode __________\n"
+"tests/quality/test_harness_decoding.py:105: in test_every_text_subprocess_in_a_harness_says_how_to_decode\n"
+"    assert not offenders, (\n"
+"E   AssertionError: these harness calls request text without `errors=`, so a command that prints one non-UTF-8 byte raises UnicodeDecodeError inside the harness and ends the episode as a zero:\n"
+"E       eval/admission/pilot_admission.py:272\n"
+"E       eval/containers/container.py:230\n"
+"E       eval/containers/container.py:277\n"
+"E       eval/containers/container.py:650\n"
+"E       eval/containers/harness_runtime.py:156\n"
+"E       eval/containers/sandbox.py:463\n"
+"E       eval/policy/gaia_snapshot_attestation.py:108\n"
+"E       eval/run/runner.py:506\n"
+"E       eval/verification/native_runtime.py:118\n"
+"E       eval/verification/verifier.py:722\n"
+"E       data/datasets/alfworld/control.py:81\n"
+"E       data/datasets/alfworld/control.py:108\n"
+"E       data/datasets/alfworld/control.py:79\n"
+"E       data/datasets/alfworld/oracle_harness/agent.py:48\n"
+"E       data/datasets/alfworld/oracle_harness/agent.py:41\n"
+"E       data/datasets/appworld/control.py:42\n"
+"E       data/datasets/appworld/control.py:51\n"
+"E       data/datasets/jericho/oracle_harness/agent.py:48\n"
+"E       data/datasets/jericho/oracle_harness/agent.py:41\n"
+"E       data/datasets/scienceworld/control.py:138\n"
+"E       data/datasets/scienceworld/control.py:155\n"
+"E       data/datasets/scienceworld/control.py:134\n"
+"E       data/datasets/scienceworld/oracle_harness/agent.py:48\n"
+"E       data/datasets/scienceworld/oracle_harness/agent.py:41\n"
+"E       data/datasets/spreadsheetbench/control.py:109\n"
+"E       data/datasets/spreadsheetbench/oracle_harness/agent.py:36\n"
+"E       data/scaffolds/command_control.py:147\n"
+"E       data/scaffolds/qa/control.py:162\n"
+"E       data/scaffolds/qa/control.py:187\n"
+"E       data/scaffolds/qa/oracle_harness/agent.py:51\n"
+"E       harnessgrad/methods.py:253\n"
+"E       harnessgrad/methods.py:196\n"
+"E       harnessgrad/records.py:675\n"
+"E       harnessgrad/records.py:399\n"
+"E       harnessgrad/records.py:406\n"
+"E       harnessgrad/runtime/compat.py:71\n"
+"E       tools/apply_blocker_proposal.py:234\n"
+"E       tools/build_bird_native_runtime.py:35\n"
+"E       tools/build_tau_bench_gt.py:236\n"
+"E       tools/configure_harness.py:182\n"
+"E       tools/configure_harness.py:216\n"
+"E       tools/configure_harness.py:269\n"
+"E       tools/configure_harness.py:70\n"
+"E       tools/datasets.py:229\n"
+"E       tools/diagnose_appworld.py:39\n"
+"E       tools/export_harnesses.py:35\n"
+"E       tools/export_harnesses.py:134\n"
+"E       tools/import_env.py:60\n"
+"E       tools/improver.py:278\n"
+"E       tools/improver.py:557\n"
+"E       tools/merge_blocker_registry.py:31\n"
+"E       tools/run_tests.py:169\n"
+"E       tools/serve_ui.py:529\n"
+"E       tools/serve_ui.py:881\n"
+"E       tools/validate_harness.py:170\n"
+"E       tools/validate_method.py:125\n"
+"E       tools/validate_method.py:222\n"
+"E     Add `errors=\"replace\"` (lossy on the offending byte, but the trace stays valid UTF-8) or record the site in EXCEPTIONS with the reason it must stay strict.\n"
+"E   assert not ['eval/admission/pilot_admission.py:272', 'eval/containers/container.py:230', 'eval/containers/container.py:277', 'eval/containers/container.py:650', 'eval/containers/harness_runtime.py:156', 'eval/containers/sandbox.py:463', ...]\n"
+"___ test_real_platform_capture_preserves_invalid_bytes_as_utf8_text[capture] ___\n"
+"tests/quality/test_harness_decoding.py:136: in test_real_platform_capture_preserves_invalid_bytes_as_utf8_text\n"
+"    proc = (_run(argv, timeout=10) if mode == \"capture\"\n"
+"tools/import_env.py:60: in _run\n"
+"    proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)\n"
+"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/subprocess.py:550: in run\n"
+"    stdout, stderr = process.communicate(input, timeout=timeout)\n"
+"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/subprocess.py:1209: in communicate\n"
+"    stdout, stderr = self._communicate(input, endtime, timeout)\n"
+"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/subprocess.py:2153: in _communicate\n"
+"    stdout = self._translate_newlines(stdout,\n"
+"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/subprocess.py:1086: in _translate_newlines\n"
+"    data = data.decode(encoding, errors)\n"
+"E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position 6: invalid start byte\n"
+"___ test_real_platform_capture_preserves_invalid_bytes_as_utf8_text[stream] ____\n"
+"tests/quality/test_harness_decoding.py:139: in test_real_platform_capture_preserves_invalid_bytes_as_utf8_text\n"
+"    assert proc.stdout == \"before\\ufffd\\ufffdafter\\n\"\n"
+"E   AssertionError: assert '' == 'before��after\\n'\n"
+"E     - before��after\n"
+"=========================== short test summary info ============================\n"
+"FAILED tests/quality/test_harness_decoding.py::test_every_text_subprocess_in_a_harness_says_how_to_decode\n"
+"FAILED tests/quality/test_harness_decoding.py::test_real_platform_capture_preserves_invalid_bytes_as_utf8_text[capture]\n"
+"FAILED tests/quality/test_harness_decoding.py::test_real_platform_capture_preserves_invalid_bytes_as_utf8_text[stream]\n"
+"3 failed, 1 passed in 0.96s\n"
+"\n"
+"PYTEST_EXIT_CODE=1\n"
+
+=== after-fast ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_verifier.py tests/quality/test_sandbox.py tests/quality/test_integrity.py tests/quality/test_parallel_tasks.py tests/quality/test_harness_decoding.py --basetemp=/tmp/decode2-after-fast\n"
+".......................FFFFFFF.....FF....................                [100%]\n"
+"=================================== FAILURES ===================================\n"
+"________________ test_the_platform_is_not_on_the_subjects_disk _________________\n"
+"tests/quality/test_sandbox.py:83: in test_the_platform_is_not_on_the_subjects_disk\n"
+"    seen = inside({}, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"__________________ test_the_subject_keeps_its_own_credentials __________________\n"
+"tests/quality/test_sandbox.py:119: in test_the_subject_keeps_its_own_credentials\n"
+"    seen = inside(env, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"________________ test_host_variables_are_not_mistaken_for_paths ________________\n"
+"tests/quality/test_sandbox.py:134: in test_host_variables_are_not_mistaken_for_paths\n"
+"    seen = inside(env, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"____________ test_the_work_root_survives_and_the_platform_does_not _____________\n"
+"tests/quality/test_sandbox.py:152: in test_the_work_root_survives_and_the_platform_does_not\n"
+"    seen = inside(env, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"_______________ test_a_harness_can_actually_work_in_its_workdir ________________\n"
+"tests/quality/test_sandbox.py:200: in test_a_harness_can_actually_work_in_its_workdir\n"
+"    seen = inside({\"TD\": str(tmp_path)}, tmp_path, script)\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"____________________ test_the_harness_tree_stays_read_only _____________________\n"
+"tests/quality/test_sandbox.py:215: in test_the_harness_tree_stays_read_only\n"
+"    seen = inside({}, tmp_path, (\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________\n"
+"tests/quality/test_sandbox.py:242: in test_the_harness_gets_a_writable_hole_in_a_read_only_tree\n"
+"    seen = inside({\"HARNESSGRAD_STATE\": str(state), \"TD\": str(tmp_path)},\n"
+"tests/quality/test_sandbox.py:52: in inside\n"
+"    assert proc.returncode == 0, proc.stderr[-800:]\n"
+"E   AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n"
+"E     \n"
+"E   assert 1 == 0\n"
+"E    +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr=\"bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\\n\").returncode\n"
+"__________________ test_self_check_notices_a_plan_that_leaks ___________________\n"
+"tests/quality/test_sandbox.py:338: in test_self_check_notices_a_plan_that_leaks\n"
+"    assert sandbox.self_check(PLATFORM, WORK_ROOT)[\"ok\"] is True\n"
+"E   assert False is True\n"
+"___________________ test_every_top_level_entry_is_classified ___________________\n"
+"tests/quality/test_integrity.py:46: in test_every_top_level_entry_is_classified\n"
+"    assert not unclassified, (\n"
+"E   AssertionError: 这些顶层条目既不在 PLATFORM 里、也没有理由说明它为什么不在: ['registry']。要么把它加进 PLATFORM(eval/run/integrity.py),要么在 NOT_PLATFORM 里写下理由。\n"
+"E   assert not ['registry']\n"
+"=========================== short test summary info ============================\n"
+"FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk\n"
+"FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials\n"
+"FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths\n"
+"FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not\n"
+"FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir\n"
+"FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only\n"
+"FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree\n"
+"FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks\n"
+"FAILED tests/quality/test_integrity.py::test_every_top_level_entry_is_classified\n"
+"9 failed, 48 passed in 8.75s\n"
+"\n"
+"PYTEST_EXIT_CODE=1\n"
+
+=== after-container-services ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest -q -ra --tb=short tests/quality/test_container.py tests/quality/test_services.py --basetemp=/tmp/decode2-after-slow\n"
+".....................................................................    [100%]\n"
+"69 passed in 62.98s (0:01:02)\n"
+"\n"
+"PYTEST_EXIT_CODE=0\n"
+
+=== after-setup ===
+"$ TMPDIR=/tmp/decode2-tmp PYTHONPATH=/mnt/20t/xubuqiang/hg-wt/w-decode2 python3 /mnt/20t/xubuqiang/hg-work/decode2/after_setup.py\n"
+"....................................F....................                [100%]\n"
+"=================================== FAILURES ===================================\n"
+"___________________ test_every_top_level_entry_is_classified ___________________\n"
+"tests/quality/test_integrity.py:46: in test_every_top_level_entry_is_classified\n"
+"    assert not unclassified, (\n"
+"E   AssertionError: 这些顶层条目既不在 PLATFORM 里、也没有理由说明它为什么不在: ['registry']。要么把它加进 PLATFORM(eval/run/integrity.py),要么在 NOT_PLATFORM 里写下理由。\n"
+"E   assert not ['registry']\n"
+"=========================== short test summary info ============================\n"
+"FAILED tests/quality/test_integrity.py::test_every_top_level_entry_is_classified\n"
+"1 failed, 56 passed in 9.36s\n"
+"\n"
+"PYTEST_EXIT_CODE=1\n"
+
+=== audit ===
+"$ python3 /mnt/20t/xubuqiang/hg-work/decode2/audit.py\n"
+"Text calls by root: {\"base_harness\": 8, \"data\": 20, \"eval\": 11, \"harnessgrad\": 6, \"tools\": 21}\n"
+"Text calls checked: 66\n"
+"Before strict: 59\n"
+"After strict: 2\n"
+"Patched calls: 57\n"
+"Changed production/helper files: 36\n"
+"Production/helper diff limited to adding errors=\"replace\": True\n"
+"Strict sites: [\"base_harness/dsh_agent/agent.py:201\", \"eval/containers/harness_runtime.py:173\"]\n"
+"Excluded scorer files identical to before and baseline: 12\n"
+"Protected-path diff bytes: 0\n"
+"EXIT_CODE=0\n"
+
+=== control ===
+"$ PYTHONPATH=/mnt/20t/xubuqiang/hg-wt/w-decode2 python3 /mnt/20t/xubuqiang/hg-work/decode2/control.py\n"
+"strict: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position 6: invalid start byte\n"
+"tools.import_env._run: {'returncode': 0, 'stdout': 'before\\ufffd\\ufffdafter\\n', 'stderr': 'err\\ufffd\\ufffd\\n'}\n"
+"UTF-8 JSON round trip: True\n"
+"eval.containers.container._run_streaming: {'returncode': 0, 'stdout': 'before\\ufffd\\ufffdafter\\n', 'stderr': 'err\\ufffd\\ufffd\\n'}\n"
+"UTF-8 JSON round trip: True\n"
+"EXIT_CODE=0\n"
+
+=== collection ===
+"$ TMPDIR=/tmp/decode2-tmp python3 -m pytest --collect-only -q -q tests/quality/test_verifier.py tests/quality/test_sandbox.py tests/quality/test_container.py tests/quality/test_services.py tests/quality/test_harness_decoding.py tests/quality/test_integrity.py tests/quality/test_parallel_tasks.py\n"
+"tests/quality/test_container.py: 26\n"
+"tests/quality/test_harness_decoding.py: 4\n"
+"tests/quality/test_integrity.py: 5\n"
+"tests/quality/test_parallel_tasks.py: 12\n"
+"tests/quality/test_sandbox.py: 13\n"
+"tests/quality/test_services.py: 43\n"
+"tests/quality/test_verifier.py: 23\n"
+"\n"
+"EXIT_CODE=0\n"
+
+=== after-checker ===
+"$ python3 tools/check_dataset_blockers.py\n"
+"{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 0, \"historical_records\": 11, \"production_authorized\": false}\n"
+"EXIT_CODE=0\n"
+
+=== diff-check ===
+"$ git diff --check\n"
+"EXIT_CODE=0\n"
+
+=== Source of exact scratch commands (retained under the worker scratch path) ===
+$ cat /mnt/20t/xubuqiang/hg-work/decode2/sandbox_setup.py
+from pathlib import Path
+import pytest
+class WorkRoot:
+    def pytest_collection_modifyitems(self, items):
+        root = Path('/tmp/decode2-tmp/sandbox-work-root')
+        root.mkdir(exist_ok=True)
+        for item in items:
+            if item.module.__name__.endswith('test_sandbox'):
+                item.module.WORK_ROOT = root
+raise SystemExit(pytest.main(['-q', '-ra', '--tb=short', 'tests/quality/test_sandbox.py', '--basetemp=/tmp/decode2-sandbox-setup'], plugins=[WorkRoot()]))
+
+$ cat /mnt/20t/xubuqiang/hg-work/decode2/after_setup.py
+from pathlib import Path
+import pytest
+class WorkRoot:
+    def pytest_collection_modifyitems(self, items):
+        root = Path('/tmp/decode2-tmp/sandbox-work-root')
+        root.mkdir(exist_ok=True)
+        for item in items:
+            if item.module.__name__.endswith('test_sandbox'):
+                item.module.WORK_ROOT = root
+raise SystemExit(pytest.main(['-q', '-ra', '--tb=short', 'tests/quality/test_verifier.py', 'tests/quality/test_sandbox.py', 'tests/quality/test_integrity.py', 'tests/quality/test_parallel_tasks.py', 'tests/quality/test_harness_decoding.py', '--basetemp=/tmp/decode2-after-setup'], plugins=[WorkRoot()]))
+
+$ cat /mnt/20t/xubuqiang/hg-work/decode2/audit.py
+import ast
+from collections import Counter
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+scratch = Path('/mnt/20t/xubuqiang/hg-work/decode2')
+baseline = 'e0c1cd3254e0168c9e9e1a7dabee750772ddc868'
+before = json.loads((scratch / 'inventory-before.json').read_text())
+after = []
+for root in ('base_harness', 'eval', 'data', 'harnessgrad', 'tools'):
+    for path in sorted(Path(root).rglob('*.py')):
+        if root == 'data' and path.parts[-2:] == ('verify', 'check.py'):
+            continue
+        trees = [(ast.parse(path.read_text(encoding='utf-8')), 0, None)]
+        if str(path) == 'tools/diagnose_appworld.py':
+            value = next(n.value for n in trees[0][0].body if isinstance(n, ast.Assign)
+                         and any(isinstance(t, ast.Name) and t.id == 'ACTOR' for t in n.targets))
+            trees.append((ast.parse(value.value), value.lineno - 1, 'ACTOR'))
+        for tree, offset, embedded in trees:
+            for node in sorted(ast.walk(tree), key=lambda n: getattr(n, 'lineno', 0)):
+                if not isinstance(node, ast.Call):
+                    continue
+                name = getattr(node.func, 'attr', None) or getattr(node.func, 'id', None)
+                if name not in ('run', 'Popen', 'check_output', 'check_call', 'call'):
+                    continue
+                if not any((kw.arg == 'text' and getattr(kw.value, 'value', None) is True)
+                           or kw.arg in ('universal_newlines', 'encoding') for kw in node.keywords):
+                    continue
+                after.append({'file': str(path), 'line': node.lineno + offset, 'embedded': embedded,
+                              'has_errors': any(kw.arg == 'errors' for kw in node.keywords),
+                              'call': ast.unparse(node)})
+assert [(r['file'], r['line']) for r in before] == [(r['file'], r['line']) for r in after]
+counts = dict(Counter(r['file'].split('/')[0] for r in after))
+assert counts == {'base_harness': 8, 'eval': 11, 'data': 20, 'harnessgrad': 6, 'tools': 21}
+changed_calls = sum(a['call'] != b['call'] for a, b in zip(before, after))
+assert changed_calls == 57
+changed = subprocess.run(['git', 'diff', baseline, '--name-only'], capture_output=True, text=True, check=True).stdout.splitlines()
+code_paths = [p for p in changed if p.startswith(('eval/', 'data/', 'harnessgrad/', 'tools/'))]
+assert len(code_paths) == 36
+for name in code_paths:
+    old = subprocess.run(['git', 'show', f'{baseline}:{name}'], capture_output=True, check=True).stdout.decode().splitlines(keepends=True)
+    new = Path(name).read_text().splitlines(keepends=True)
+    assert len(old) == len(new), name
+    for a, b in zip(old, new):
+        assert a == b or b == a.replace('text=True', 'text=True, errors="replace"', 1), name
+scorer_paths = sorted(Path('data').rglob('verify/check.py'))
+old_hashes = json.loads((scratch / 'scorer-hashes-before.json').read_text())
+new_hashes = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in scorer_paths}
+assert new_hashes == old_hashes
+for path in scorer_paths:
+    observed = subprocess.run(['git', 'show', f'{baseline}:{path}'], capture_output=True, check=True).stdout
+    assert observed == path.read_bytes(), str(path)
+protected = ['AGENTS.md', 'registry/dataset-blockers.json', 'registry/withdrawn-requirements.md',
+             'docs/adapter-integration-journal.md', 'base_harness', 'legacy', 'current_harness',
+             'data/**/verify/check.py']
+diff = subprocess.run(['git', 'diff', baseline, '--', *protected], capture_output=True, check=True)
+assert not diff.stdout
+print('Text calls by root:', json.dumps(counts, sort_keys=True))
+print('Text calls checked:', len(after))
+print('Before strict:', sum(not r['has_errors'] for r in before))
+print('After strict:', sum(not r['has_errors'] for r in after))
+print('Patched calls:', changed_calls)
+print('Changed production/helper files:', len(code_paths))
+print('Production/helper diff limited to adding errors="replace": True')
+print('Strict sites:', json.dumps([f"{r['file']}:{r['line']}" for r in after if not r['has_errors']]))
+print('Excluded scorer files identical to before and baseline:', len(new_hashes))
+print('Protected-path diff bytes:', len(diff.stdout))
+(scratch / 'inventory-after.json').write_text(json.dumps(after, indent=2) + '\n')
+
+$ cat /mnt/20t/xubuqiang/hg-work/decode2/control.py
+import json
+import subprocess
+import sys
+from eval.containers.container import _run_streaming
+from tools.import_env import _run
+
+argv = [sys.executable, '-c', "import os; os.write(1, b'before\\xc0\\xffafter\\n'); os.write(2, b'err\\xc0\\xff\\n')"]
+try:
+    subprocess.run(argv, capture_output=True, text=True, timeout=10)
+except UnicodeDecodeError as exc:
+    print('strict:', type(exc).__name__ + ': ' + str(exc))
+for name, call in (('tools.import_env._run', _run), ('eval.containers.container._run_streaming', _run_streaming)):
+    proc = call(argv, timeout=10)
+    payload = {'stdout': proc.stdout, 'stderr': proc.stderr}
+    encoded = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+    print(name + ':', ascii({'returncode': proc.returncode, **payload}))
+    print('UTF-8 JSON round trip:', json.loads(encoded) == payload)
+
+=== Observed before/after scorer byte identity ===
+audit.py compares each current file to both its observed before hash and git-show baseline bytes.
+{
+  "data/datasets/agentdojo/verify/check.py": "b04a292c0e3f0f07973b880e7e3b7147384c925e6981944768f03ea2f12b21b0",
+  "data/datasets/alfworld/verify/check.py": "c4978ec4af63cf1df8cdacf8000f182307a6a2281f513791a7d6f7a46b56b741",
+  "data/datasets/appworld/verify/check.py": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+  "data/datasets/bird_minidev/verify/check.py": "fee968528375ed5dc129a40ce68995bf763d9f5e0c2f39559690caf4f279a575",
+  "data/datasets/ds1000/verify/check.py": "ffcb9ce4913dc944417fc0dc0828b236f1d17c65e7dd9242ae838db4ee15d5d6",
+  "data/datasets/gaia/verify/check.py": "59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e",
+  "data/datasets/jericho/verify/check.py": "ae73450376dcbb51c6a74d0e6fd5ebc63ffdd0b232fae8ef9e01601a306b2742",
+  "data/datasets/livecodebench/verify/check.py": "f0db2c5986cb05c308c2917a6ee1a44b748bbec37c5bd21f04c3b576b5950ca6",
+  "data/datasets/scienceworld/verify/check.py": "1acecbf19c1bb96b95e796fa2dff20b8d73e208b06f42c24214e0b06bce03a3e",
+  "data/datasets/spreadsheetbench/verify/check.py": "e7131a2649a89d818a73b6b83e1b66892e41b93c53a7fee8330749146ad3ee46",
+  "data/datasets/tau_bench/verify/check.py": "b2cad46a3f541eae927334961a76c91c79e3dbb730b5016f0dc325a544dad6ec",
+  "data/scaffolds/qa/verify/check.py": "ec603e0d7fc655473dde92260d70cefefc0dd107eaa0d9273df1e7eeb0d0763c"
+}
+
+=== What was NOT verified ===
+- No production dataset, scorer, pilot, model, GPU, paid API or held-out task was executed.
+- The required quality suites exercise their authored synthetic harness/check/service fixtures.
+- No actual sealed native-runtime launch was attempted by the decoding controls.
+- Most patched CLI commands were source-audited, not individually executed.
+- Byte-for-byte recovery of malformed output is impossible under replacement decoding.
+- Semantics of malformed bytes inside otherwise parseable JSON strings were not verified.
+- No all-green integrity-suite result: registry/ classification already fails in the baseline.
+- No independent inspection of frozen historical receipts or the main checkout was performed.
+- No registry-state transition is proposed; the source-only checker is not production authorization.
+
+=== File sizes of every file to commit (bytes) ===
+   11168  data/datasets/alfworld/control.py
+    2415  data/datasets/alfworld/oracle_harness/agent.py
+    5813  data/datasets/appworld/control.py
+    2484  data/datasets/jericho/oracle_harness/agent.py
+   13024  data/datasets/scienceworld/control.py
+    2477  data/datasets/scienceworld/oracle_harness/agent.py
+    9849  data/datasets/spreadsheetbench/control.py
+    2172  data/datasets/spreadsheetbench/oracle_harness/agent.py
+   11832  data/scaffolds/command_control.py
+   14503  data/scaffolds/qa/control.py
+    3404  data/scaffolds/qa/oracle_harness/agent.py
+   29472  eval/admission/pilot_admission.py
+   51763  eval/containers/container.py
+   13770  eval/containers/harness_runtime.py
+   31758  eval/containers/sandbox.py
+    8615  eval/policy/gaia_snapshot_attestation.py
+   84541  eval/run/runner.py
+    8867  eval/verification/native_runtime.py
+   46752  eval/verification/verifier.py
+   13990  harnessgrad/methods.py
+   40780  harnessgrad/records.py
+    8684  harnessgrad/runtime/compat.py
+   45832  reports/w-decode2-inventory.json
+   41201  reports/w-decode2-validation.txt
+   40574  reports/w-decode2.md
+    7472  tests/quality/test_harness_decoding.py
+   11274  tools/apply_blocker_proposal.py
+   15242  tools/build_bird_native_runtime.py
+   14563  tools/build_tau_bench_gt.py
+   19795  tools/configure_harness.py
+   20374  tools/datasets.py
+    5863  tools/diagnose_appworld.py
+    9679  tools/export_harnesses.py
+   18701  tools/import_env.py
+   32519  tools/improver.py
+    5938  tools/merge_blocker_registry.py
+   16796  tools/run_tests.py
+   80471  tools/serve_ui.py
+    8733  tools/validate_harness.py
+   12494  tools/validate_method.py
+Total files: 40; every file < 1,000,000 bytes.

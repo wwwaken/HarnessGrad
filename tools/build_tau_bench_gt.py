@@ -234,7 +234,7 @@ def _git_commit(checkout: Path) -> str:
     import subprocess
     try:
         proc = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"],
-                              capture_output=True, text=True, timeout=10)
+                              capture_output=True, text=True, errors="replace", timeout=10)
     except (OSError, subprocess.SubprocessError):
         return ""
     return proc.stdout.strip() if proc.returncode == 0 else ""

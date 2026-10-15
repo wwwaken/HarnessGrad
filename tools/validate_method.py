@@ -124,7 +124,7 @@ def check_invocation(method: Path, harness: Path, rep: Report,
 
         proc = subprocess.run(
             [sys.executable, str(entry)], input=json.dumps(request),
-            capture_output=True, text=True, timeout=timeout, cwd=str(ROOT))
+            capture_output=True, text=True, errors="replace", timeout=timeout, cwd=str(ROOT))
 
         if proc.returncode != 0:
             detail = (proc.stderr or proc.stdout or "").strip()[-600:]
@@ -225,7 +225,7 @@ def check_smoke(method: Path, harness: Path, rep: Report, timeout: int) -> None:
              "--run-id", run_id, "--dataset", "demo", "--sampling", "below_0.5",
              "--method-entrypoint", f"{sys.executable} {method / 'run.py'}",
              "--runs-root", tmp, "--work-root", str(Path(tmp) / "work")],
-            capture_output=True, text=True, timeout=timeout, cwd=str(ROOT))
+            capture_output=True, text=True, errors="replace", timeout=timeout, cwd=str(ROOT))
         # 没跑出曲线通常是"没有合规候选",这本身是校验要看的信息,不是崩溃
         if proc.returncode == 0:
             rep.add(OK, "平台完整跑通了一轮(冒烟)")

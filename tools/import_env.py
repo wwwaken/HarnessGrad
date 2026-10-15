@@ -57,7 +57,7 @@ import eval.containers.container as container
 
 
 def _run(argv: list[str], *, timeout: int = 1800) -> subprocess.CompletedProcess:
-    proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
+    proc = subprocess.run(argv, capture_output=True, text=True, errors="replace", timeout=timeout)
     if proc.returncode != 0:
         raise SystemExit(f"{' '.join(argv[:3])} failed:\n"
                          f"{(proc.stderr or proc.stdout).strip()[-1500:]}")

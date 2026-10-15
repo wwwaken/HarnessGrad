@@ -159,7 +159,7 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
     env = dict(os.environ, PYTHONPATH=str(workdir) + os.pathsep
                + os.environ.get("PYTHONPATH", ""))
     argv = [sys.executable, *verifier["argv"][1:]]
-    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True, env=env)
+    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True, errors="replace", env=env)
     reward_path = workdir / base.REWARD_REL
     reward = float(reward_path.read_text().strip()) if reward_path.is_file() else -1.0
     evidence_path = workdir / base.EVIDENCE_REL
@@ -186,7 +186,7 @@ def run_local(module, record: dict, *, oracle: bool, workdir: Path) -> int:
             cli_args = ["submit", (workdir / ".oracle" / "answer.txt").read_text(encoding="utf-8")]
         submitted = subprocess.run(
             [sys.executable, f"{base.CLI_REL}/{base.CLI_FILE}", *cli_args],
-            cwd=workdir, capture_output=True, text=True)
+            cwd=workdir, capture_output=True, text=True, errors="replace")
         if submitted.returncode != 0:
             print(f"the CLI refused the reference answer: {submitted.stderr}",
                   file=sys.stderr)

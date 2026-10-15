@@ -39,7 +39,7 @@ def _local(task: dict, oracle: bool, workdir: Path) -> int:
         "    print(world.output_logs_directory)\n",
         encoding="utf-8",
     )
-    proc = subprocess.run([str(AW_PYTHON), str(probe)], cwd=workdir, text=True, capture_output=True)
+    proc = subprocess.run([str(AW_PYTHON), str(probe)], cwd=workdir, text=True, errors="replace", capture_output=True)
     if proc.returncode:
         print(proc.stdout + proc.stderr, file=sys.stderr)
         return 1
@@ -48,7 +48,7 @@ def _local(task: dict, oracle: bool, workdir: Path) -> int:
     check.write_text((ROOT / "data/datasets/appworld/verify/check.py").read_text(), encoding="utf-8")
     cmd = [str(AW_PYTHON), str(check), "--task-id", task["task_id"], "--log", str(log),
            "--reward-file", str(workdir / "reward.txt"), "--evidence-file", str(workdir / "evidence.json")]
-    checked = subprocess.run(cmd, cwd=workdir, text=True, capture_output=True)
+    checked = subprocess.run(cmd, cwd=workdir, text=True, errors="replace", capture_output=True)
     reward = (workdir / "reward.txt").read_text().strip() if (workdir / "reward.txt").is_file() else "missing"
     evidence = json.loads((workdir / "evidence.json").read_text()) if (workdir / "evidence.json").is_file() else {}
     # Keep the shared control harness's integer reward spelling while retaining the

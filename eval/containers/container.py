@@ -228,7 +228,7 @@ def _run_streaming(argv: list[str], timeout: int, _label: str = ""):
     else:
         deadline = None
     proc = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            text=True, bufsize=1)
+                            text=True, errors="replace", bufsize=1)
     out_chunks: list[str] = []
     err_chunks: list[str] = []
     readers = [threading.Thread(target=_drain, args=(proc.stdout, out_chunks),
@@ -274,7 +274,7 @@ def docker(*args: str, timeout: int = 120) -> subprocess.CompletedProcess:
     from eval.observe import progress as progress_mod
 
     if progress_mod.task_of() is None:
-        return subprocess.run(["docker", *args], capture_output=True, text=True,
+        return subprocess.run(["docker", *args], capture_output=True, text=True, errors="replace",
                               timeout=timeout)
     return _run_streaming(["docker", *args], timeout, f"docker {args[0]}")
 
@@ -647,7 +647,7 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
     cmd[2:2] = ["--name", name]
     try:
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+            proc = subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=timeout_s)
         except OSError as exc:
             if immutable_runtimes:
                 raise ImmutableRuntimeUnavailable(str(exc)) from exc

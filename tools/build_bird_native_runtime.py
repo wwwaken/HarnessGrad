@@ -32,7 +32,7 @@ def main():
     commands = []
 
     def capture(argv):
-        result = subprocess.run(argv, capture_output=True, text=True,
+        result = subprocess.run(argv, capture_output=True, text=True, errors="replace",
                                 env={'PATH': '/usr/bin:/bin', 'LANG': 'C'})
         name = f'{len(commands):04d}'
         (raw / f'{name}.stdout.txt').write_text(result.stdout)

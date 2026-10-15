@@ -166,7 +166,7 @@ def run_one(path: Path, basetemp_root: Path, extra: list[str],
     env = {**os.environ, "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
            "PYTHONDONTWRITEBYTECODE": "1"}
     started = time.time()
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, env=env)
+    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, errors="replace", env=env)
     if not keep:
         shutil.rmtree(tmp, ignore_errors=True)
     tail = [ln for ln in proc.stdout.splitlines() if ln.strip()]

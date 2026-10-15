@@ -506,7 +506,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                         "harness", service_specs,
                         running.recordings if running else {})))
             if not sandbox:
-                return subprocess.run(argv, capture_output=True, text=True,
+                return subprocess.run(argv, capture_output=True, text=True, errors="replace",
                                       timeout=timeout_s, cwd=workdir, env=child_env)
             # `repo` is `<work_root>/<run-id>/workspace`, so the work root -- the one
             # tree that must stay visible -- is two levels up. Read from the

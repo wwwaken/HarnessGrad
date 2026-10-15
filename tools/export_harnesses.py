@@ -33,7 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def git(repo: Path, *args: str) -> str:
     return subprocess.run(["git", "-C", str(repo), *args],
-                          capture_output=True, text=True).stdout
+                          capture_output=True, text=True, errors="replace").stdout
 
 
 def read_curve(run_dir: Path) -> list[dict]:
@@ -132,7 +132,7 @@ def export_point(run_dir: Path, point: dict, dest_root: Path, name: str,
 
     for rel in listing.splitlines():
         blob = subprocess.run(["git", "-C", str(work), "show", f"{sha}:{rel}"],
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, errors="replace")
         if blob.returncode != 0:
             continue
         target = dest / rel

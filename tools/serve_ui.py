@@ -527,7 +527,7 @@ def step_diff(run_id: str, round_no: int) -> dict:
             a = points[round_no - 1]["identity"]["harness_sha"]
             b = points[round_no]["identity"]["harness_sha"]
             r = subprocess.run(["git", "-C", str(work), "diff", a, b],
-                               capture_output=True, text=True)
+                               capture_output=True, text=True, errors="replace")
             if r.returncode == 0:
                 patch = r.stdout
 
@@ -881,7 +881,7 @@ def model_service(action: str = "status", model_dir: str = "",
         pid = subprocess.run(["bash", "-c",
                               f"ss -ltnp 2>/dev/null | grep ':{target} ' | "
                               f"grep -oP 'pid=\\K[0-9]+' | head -1"],
-                             capture_output=True, text=True).stdout.strip()
+                             capture_output=True, text=True, errors="replace").stdout.strip()
         live = False
         if pid:
             try:

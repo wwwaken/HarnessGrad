@@ -77,9 +77,9 @@ def drive(workdir: Path, actions: list[str], *, budget: int) -> None:
     """Act through the CLI exactly as an agent would, stopping at the budget."""
     for action in actions[:budget]:
         subprocess.run([sys.executable, "alf", "do", action], cwd=workdir,
-                       check=True, capture_output=True, text=True)
+                       check=True, capture_output=True, text=True, errors="replace")
     subprocess.run([sys.executable, "alf", "done"], cwd=workdir,
-                   check=True, capture_output=True, text=True)
+                   check=True, capture_output=True, text=True, errors="replace")
 
 
 def run_check(workdir: Path, record: dict, *, budget: int) -> tuple[int, str]:
@@ -105,7 +105,7 @@ def run_check(workdir: Path, record: dict, *, budget: int) -> tuple[int, str]:
                 shutil.copy2(source, target)
     argv = [sys.executable, *verifier["argv"][1:]]
     argv[argv.index("--budget") + 1] = str(budget)
-    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)
+    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True, errors="replace")
     reward_path = workdir / alfworld.REWARD_REL
     reward = int(reward_path.read_text().strip()) if reward_path.is_file() else -1
     evidence_path = workdir / alfworld.EVIDENCE_REL

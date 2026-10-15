@@ -156,7 +156,7 @@ def interpreter_version(python: str, *, image: str | None = None,
             proc = subprocess.run(
                 ["docker", "run", "--rm", "--network", "none", "--entrypoint", python,
                  image, "-c", expr],
-                capture_output=True, text=True, timeout=180)
+                capture_output=True, text=True, errors="replace", timeout=180)
             out = proc.stdout.strip()
             return out.splitlines()[-1].strip() if out else None
 

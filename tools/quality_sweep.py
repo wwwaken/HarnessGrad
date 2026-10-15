@@ -69,7 +69,8 @@ def run_one(path: Path, timeout_s: int, tmp_root: Path) -> dict:
     started = time.time()
     timed_out = False
     try:
-        proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=timeout_s)
+        proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True,
+                              errors="replace", timeout=timeout_s)
         output, returncode = proc.stdout + proc.stderr, proc.returncode
     except subprocess.TimeoutExpired as exc:
         raw = exc.stdout or ""

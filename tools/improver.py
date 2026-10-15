@@ -275,7 +275,7 @@ def _run_version(path: Path, timeout: int = 60) -> tuple[bool, str, str]:
     session, and the broken install's failure mode is exactly this command.
     """
     try:
-        proc = subprocess.run([str(path), "--version"], capture_output=True, text=True,
+        proc = subprocess.run([str(path), "--version"], capture_output=True, text=True, errors="replace",
                               timeout=timeout)
     except subprocess.TimeoutExpired:
         return False, "", f"`--version` timed out after {timeout}s"
@@ -554,7 +554,7 @@ def _smoke(resolved: dict, workdir: Path, timeout: int) -> dict:
             "--sandbox", "danger-full-access", "-C", str(workdir), prompt]
     env = {**os.environ, "CODEX_HOME": str(home)}
     try:
-        proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout,
+        proc = subprocess.run(argv, capture_output=True, text=True, errors="replace", timeout=timeout,
                               env=env, cwd=str(workdir))
     except subprocess.TimeoutExpired:
         return {"ok": False, "reason": f"the smoke session did not finish in {timeout}s"}

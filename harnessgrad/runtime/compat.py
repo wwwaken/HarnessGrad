@@ -68,7 +68,7 @@ class LegacyCompatibilityWrapper:
         response_art = None; stdout = stderr = ""; returncode = 1; execution_failure = None; output_error = None
         try:
             env = os.environ.copy(); env.update(self.env)
-            proc = subprocess.run(self.entrypoint, input=json.dumps(req), text=True,
+            proc = subprocess.run(self.entrypoint, input=json.dumps(req), text=True, errors="replace",
                                   capture_output=True, timeout=self.timeout, env=env,
                                   cwd=req.get("cwd") or None, check=False)
             stdout, stderr, returncode = _text(proc.stdout), _text(proc.stderr), proc.returncode

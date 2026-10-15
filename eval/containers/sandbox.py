@@ -460,7 +460,7 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
             raise ImmutableRuntimeUnavailable(str(exc)) from exc
         raise
     try:
-        proc = subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
+        proc = subprocess.run(wrapped, input=input_text, capture_output=True, text=True, errors="replace",
                               timeout=timeout_s, cwd=cwd, env=env)
     except OSError as exc:
         if immutable_runtimes:

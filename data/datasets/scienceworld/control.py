@@ -132,11 +132,11 @@ def drive(workdir: Path, actions: list[str], *, budget: int) -> None:
     """Act through the CLI exactly as an agent would, stopping at the budget."""
     for action in actions[:budget]:
         proc = subprocess.run([sys.executable, "scw", "do", action], cwd=workdir,
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, errors="replace")
         if proc.returncode != 0:
             raise SystemExit(f"the CLI refused {action!r}: {proc.stderr[-400:]}")
     subprocess.run([sys.executable, "scw", "done"], cwd=workdir, capture_output=True,
-                   text=True)
+                   text=True, errors="replace")
 
 
 def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
@@ -152,7 +152,7 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
         # mirrors it.
         _copy_entry(entry, workdir)
     argv = [sys.executable, *verifier["argv"][1:]]
-    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)
+    proc = subprocess.run(argv, cwd=workdir, capture_output=True, text=True, errors="replace")
     reward_path = workdir / module.REWARD_REL
     reward = float(reward_path.read_text().strip()) if reward_path.is_file() else -1.0
     evidence_path = workdir / module.EVIDENCE_REL

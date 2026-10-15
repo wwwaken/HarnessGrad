@@ -116,7 +116,7 @@ class FrozenRuntime:
         plan += ['--', *command]
         try:
             proc = subprocess.run(plan, pass_fds=(*self.fds.values(), self.launcher),
-                                  capture_output=True, text=True, timeout=timeout_s,
+                                  capture_output=True, text=True, errors="replace", timeout=timeout_s,
                                   env={'PATH': '/usr/bin:/bin', 'LANG': 'C'})
         except OSError as exc:
             if immutable_runtimes:

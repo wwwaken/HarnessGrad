@@ -28,7 +28,7 @@ LIST_OF_TEXTS = ("notes",)
 
 def load(ref: str) -> dict:
     if ref.startswith(":") or "/" not in ref or not Path(ref).exists():
-        out = subprocess.run(["git", "show", ref], capture_output=True, text=True)
+        out = subprocess.run(["git", "show", ref], capture_output=True, text=True, errors="replace")
         if out.returncode != 0:
             raise SystemExit(f"cannot read {ref!r}: {out.stderr.strip()}")
         text = out.stdout

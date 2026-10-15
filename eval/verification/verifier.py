@@ -719,7 +719,7 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
                                    immutable_runtimes=immutable_runtimes,
                                    writable_paths=(reward_dir,) if reward_dir else ())
         else:
-            proc = subprocess.run(argv, capture_output=True, text=True,
+            proc = subprocess.run(argv, capture_output=True, text=True, errors="replace",
                                   timeout=timeout_s, cwd=cwd,
                                   env=_verifier_env(workdir))
         code, out = proc.returncode, proc.stdout

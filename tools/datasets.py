@@ -229,7 +229,7 @@ def _download(url: str, target: Path, *, timeout: int = 600) -> None:
         proc = subprocess.run(
             ["curl", "-sSL", "--fail", "--retry", "2", "--max-time", str(timeout),
              "-o", str(tmp), url],
-            capture_output=True, text=True)
+            capture_output=True, text=True, errors="replace")
         if proc.returncode != 0:
             tmp.unlink(missing_ok=True)
             raise RuntimeError(f"curl exited {proc.returncode}: {proc.stderr.strip()[:200]}")

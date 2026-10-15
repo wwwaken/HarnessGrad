@@ -34,7 +34,7 @@ def main() -> int:
         return 0
     shutil.copy2(oracle, work / "result.xlsx")
     proc = subprocess.run([sys.executable, str(work / "qa" / "bin" / "qa"), "submit",
-                           "result.xlsx"], cwd=work, capture_output=True, text=True)
+                           "result.xlsx"], cwd=work, capture_output=True, text=True, errors="replace")
     if proc.returncode != 0:
         print(f"spreadsheetbench-oracle: the CLI exited {proc.returncode}: "
               f"{proc.stderr[-300:]}", file=sys.stderr)

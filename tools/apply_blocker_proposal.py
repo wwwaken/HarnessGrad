@@ -232,7 +232,7 @@ def main(argv: list[str] | None = None) -> int:
     args.registry.write_text(json.dumps(document, indent=2, ensure_ascii=False) + "\n",
                              encoding="utf-8")
     checked = subprocess.run([sys.executable, str(CHECKER), "--registry", str(args.registry)],
-                             capture_output=True, text=True, cwd=ROOT)
+                             capture_output=True, text=True, errors="replace", cwd=ROOT)
     output = (checked.stdout or checked.stderr).strip()
     print(f"  checker: {output}")
     if checked.returncode != 0 or '"valid": true' not in output:

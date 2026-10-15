@@ -107,7 +107,7 @@ def run_check(module, record: dict, workdir: Path) -> tuple[float, str]:
         else:
             shutil.copy2(entry["from"], target)
     proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=workdir,
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, errors="replace")
     reward_path = workdir / module.REWARD_REL
     reward = float(reward_path.read_text().strip()) if reward_path.is_file() else -1.0
     evidence_path = workdir / module.EVIDENCE_REL

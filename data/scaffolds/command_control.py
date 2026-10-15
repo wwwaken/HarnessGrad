@@ -145,7 +145,7 @@ def run_check(module, task: dict, workdir: Path) -> tuple[float, str]:
     env = dict(os.environ, PYTHONPATH=str(workdir) + os.pathsep
                + os.environ.get("PYTHONPATH", ""))
     proc = subprocess.run([sys.executable, *verifier["argv"][1:]], cwd=workdir,
-                          capture_output=True, text=True, env=env)
+                          capture_output=True, text=True, errors="replace", env=env)
     reward_path = workdir / REWARD_REL
     reward = float(reward_path.read_text().strip()) if reward_path.is_file() else -1.0
     evidence_path = workdir / EVIDENCE_REL

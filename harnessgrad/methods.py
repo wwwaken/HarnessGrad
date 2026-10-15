@@ -195,7 +195,7 @@ def _call_entrypoint(work: Path, argv: list[str], request: dict,
         else:
             proc = subprocess.run(
                 argv, cwd=where, input=payload, capture_output=True,
-                text=True, timeout=timeout_s, env=env,
+                text=True, errors="replace", timeout=timeout_s, env=env,
             )
     except subprocess.TimeoutExpired:
         return {"_error": f"entrypoint timed out after {timeout_s}s"}
@@ -252,7 +252,7 @@ def _touched_paths(work: Path, before: str, after: str) -> list[str]:
         return []
     out = subprocess.run(
         ["git", "-C", str(work), "diff", "--name-only", before, after],
-        capture_output=True, text=True,
+        capture_output=True, text=True, errors="replace",
     ).stdout
     return sorted(p for p in out.splitlines() if p.strip())
 

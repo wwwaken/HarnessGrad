@@ -270,7 +270,7 @@ class LocalDocker:
     def call(self, *args: str, timeout: int = 30) -> subprocess.CompletedProcess:
         env = {k: os.environ[k] for k in ("PATH", "LANG") if k in os.environ}
         return subprocess.run(["docker", "--host", "unix:///var/run/docker.sock", *args],
-                              env=env, capture_output=True, text=True, timeout=timeout)
+                              env=env, capture_output=True, text=True, errors="replace", timeout=timeout)
 
     def inspect_image(self, task: dict) -> dict:
         _task_pin(task)
