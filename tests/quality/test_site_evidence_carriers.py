@@ -18,6 +18,7 @@ correct.
 import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -108,3 +109,20 @@ def test_packet_stays_small_text():
         assert len(data) < 1_048_576, f"{path} exceeds the 1 MB committed-file limit"
         data.decode("utf-8")
     assert total < 4_000_000, f"carrier packet grew to {total} bytes"
+
+
+def test_every_carrier_is_tracked_in_git():
+    """A carrier that exists on disk but was never committed is not a carrier.
+
+    `.gitignore:289` narrowed `/docs/*` to a name whitelist and silently dropped three of the
+    restored documents from `git add -A`. The byte-identity test above reads the working tree,
+    so it still passed in the worktree while `main` shipped provenance entries pointing at
+    files that were not in the commit. Ask git directly instead.
+    """
+    for item in _provenance():
+        result = subprocess.run(["git", "ls-files", "--error-unmatch", "--", item["carrier"]],
+                                cwd=ROOT, capture_output=True, text=True)
+        assert result.returncode == 0, f"{item['carrier']} is not tracked in git"
+        result = subprocess.run(["git", "check-ignore", "-q", "--", item["carrier"]],
+                                cwd=ROOT, capture_output=True, text=True)
+        assert result.returncode != 0, f"{item['carrier']} is gitignored"
