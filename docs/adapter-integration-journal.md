@@ -3123,3 +3123,40 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Resource state: offline payload acquisition and network-denied installs in local containers only
   - no benchmark task, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is
   claimed. Historical runs, frozen receipts and archives were untouched.
+
+## 2026-10-15 Pristine source limitation and paired export equivalence - w-quiesce
+
+- Used the unchanged working w-prifix sealed addition control and unchanged production
+  verifier/admission/scorer code in registered `/tmp/hg-quiesce`, branch `wg-quiesce`.
+  Findings, exact commands, IDs, digests and raw paths: `reports/w-quiesce-receipts.md`.
+- **E4 remains PARTIAL.** Actual same-UID source mutation after both projection checks
+  and admission persisted through scoring: source42, exported/scored41, completed
+  measured0.0. Restoring source41 makes endpoint byte hashes match; timestamps still
+  change. This demonstrates the current path's inability to establish quiescence,
+  not a future-backend impossibility. Native task/contract/runtime-export binding
+  and wrong-task/run refusals are real; outer run/trial fields remain observer-only.
+  Trusted source custody through use and native run/trial inputs are still required.
+- **E5 gains real bounded pre/post-export evidence, remains PARTIAL.** A genuine
+  selected-only source projection was directly scored under its legitimate receipt,
+  then that exact root was the source of the production export/scorer path. Both
+  read private42/submitted41 and finish fail/exit1/score0.0 with equal selected bytes,
+  despite fresh path/inode and 0444-to-0640 permissions. The pair does not stand for
+  arbitrary actor state or applicable dataset/private-input/official-metric equivalence.
+  A same-size unsealed selected-byte edit is refused before start; a fresh legitimate
+  42 export scores1.0. The scorer and exact two-projection gate are unchanged.
+- The final packet has four native measured controls, one direct measured reference,
+  two deliberate unmeasured refusals, zero invalid measurements, six created/removed
+  containers with absent-object probes and transient projection removal. The earlier
+  packet retains one measured working control and one unstarted Env-order reference
+  refusal, both containers removed. Every attempt and original receipt is retained;
+  no old run ID resumed or `runs/` path touched. No benchmark aggregation is claimed.
+- Registry change appends the exact E4/E5 scope and two verbatim report locators to
+  `artifact-only-state-export` only. Both shared statuses/next_actions, all dataset
+  records, histories and prior evidence stay unchanged. E1/E2/E3/E4/E5/E6 remain
+  PARTIAL and no blocker closes. No model, GPU, endpoint or paid service was used.
+- Read-only independent review corroborated the interval, actual pre-state source
+  and disjoint counts. Focused audit tests include corrupted-byte/semantic negative
+  inputs; existing pristine/admission and registry checks are retained. Exact
+  checker/test outputs: `reports/w-quiesce-validation.txt`: registry valid,
+  **162 passed**, independent copy audit and all evidence seals match. Worktree-only commit;
+  parent review/merge remains separate.
