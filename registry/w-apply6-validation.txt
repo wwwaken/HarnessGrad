@@ -1,0 +1,76 @@
+Parent integration validation - apply w-bfclrt's offline runtime-custody packet.
+
+Source
+------
+Worker commit 908d3903 (branch wg-bfclrt), cherry-picked on top of main 6109a355. It adds
+`registry/proposals/w-bfclrt.json`, `registry/w-bfclrt-custody.md` (433 lines), its validation file,
+and a 285-file text evidence packet under `tests/fixtures/hg_bfclrt/`. It edited no registry field.
+
+Packet size and hygiene (checked before merging, because the repository has been burned by payloads)
+---------------------------------------------------------------------------------------------------
+$ python3 -c "...git ls-tree -r -l 908d3903 -- tests/fixtures/hg_bfclrt..."
+285 files, 14.34 MB total, largest single file 839,061 bytes
+  (tests/fixtures/hg_bfclrt/licenses/native-pydantic-core-2.14.6--e11200f29ecf8e82.txt)
+files >= 1 MB: none
+`.git` grows 38 MB -> 47 MB; the packet is text only (inventories, hashes, original source locations,
+verbatim license/notice copies, inspection output); no archive, wheel, ELF byte or dataset payload is
+committed.
+
+A secret scan over the packet for API-key, bearer-token, private-key and password shapes returned
+no matches. Six files carry `/home/xubuqiang/...` absolute paths, which is the point of the requested
+"resolved module path you imported it from" record rather than a leak.
+
+Independent parent verification of the load-bearing claims
+----------------------------------------------------------
+1. Counts. `tests/fixtures/hg_bfclrt/summary.jsonl:1` states `source_import_edges 419`,
+   `source_dynamic_call_sites 10`, `retained_python_files 81`, `elf_files_inspected 202`,
+   `native_exact_conda_archive_matches 142`, `native_conda_archive_mismatches 29`,
+   `metadata_dependency_edges 1047`, and deliberately `closure_complete false`,
+   `official_scorer_executed false`, `production_authorized false`. The proposal quotes these
+   correctly.
+2. The bounded ABSENT on Tree-sitter. The worker reports no pinned `tree_sitter==0.21.3`,
+   `tree-sitter-java==0.21.0` or `tree-sitter-javascript==0.21.4` artifact. The parent searched
+   independently: `find / -xdev -iname "*tree*sitter*"` returns only VS Code Copilot `.wasm`
+   grammars (JavaScript/WASM, not CPython `tree_sitter` wheels), and a search of
+   `/mnt/20t/xubuqiang` to depth 6 returns nothing. The absence is corroborated, and
+   `tests/fixtures/hg_bfclrt/search-scope.jsonl` enumerates 25 site-packages roots across the
+   host's Python environments with per-root entry counts, so the scope is named rather than vague.
+3. The packet's own README states the limits: text only, no package archive or ELF bytes copied,
+   inspection scripts do not install, download, call a model, construct a handler or execute a
+   scorer, `ABSENT` is bounded to `search-scope.jsonl`, and opaque pip bodies / unsearched
+   directories / unread import branches / exact compiled build provenance remain UNKNOWN.
+
+Applied change
+--------------
+`tools/apply_blocker_proposal.py` refused the worker's replacement for three sentences and accepted
+it once each was acknowledged. All three are carried in substance by the replacement:
+"Complete exact offline third-party/native runtime custody (...)" is carried and made *more* specific
+by the named remaining members and the ABI/grammar/license/NOTICE requirements;
+"Archive/tag/commit/member/root-license acquisition and the retained code-only graph review are
+established, but runtime closure and official execution remain unmet" is carried by "do not reacquire
+established archive/tag/commit/member/root-license custody" plus "No scorer execution or full-call
+differential was performed by w-bfclrt"; and "leave this blocker external. Preserve the name
+diagnostic and all historical receipts" is carried by "Preserve the function-name diagnostic and
+historical receipts; leave this blocker external/open".
+
+  bfcl_v3/simple-ast-contract   next_action 1029 -> 1736 chars
+                                observed    1076 -> 2145 chars
+  `git diff --numstat registry/dataset-blockers.json` = `2 2`
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+What this does NOT do
+---------------------
+- It closes nothing: `bfcl_v3 / simple-ast-contract` stays `external` and open, with the concrete
+  remaining member list (tree_sitter 0.21.3, tree-sitter-java 0.21.0, tree-sitter-javascript 0.21.4,
+  anthropic 0.53.0, cohere 5.13.3, mistralai 1.7.0, google-genai 1.24.0, datamodel-code-generator
+  0.25.7, a concrete qwen-agent version, writer-sdk>=2.1.0, and wandb 0.18.5 only if the optional
+  logging branch is selected) as the next gate.
+- No official scorer was executed, no full-call differential was fabricated, no handler was
+  constructed, and no package was installed or downloaded by the worker or the parent.
+- It does not assert that any of the absent members is or is not publicly obtainable; availability
+  outside the enumerated local scope is recorded as unobserved.
+- It edits no historical record, frozen receipt or run ID.
