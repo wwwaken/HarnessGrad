@@ -1,0 +1,327 @@
+w-spreadvacuous validation (authored workbook controls only)
+
+All shell commands below ran from the assigned worktree. Historical fixture directory
+tests/fixtures/hg_spreadvacuous was renamed to tracked tests/fixtures/spreadvacuous;
+the before/after receipts were copied byte-for-byte, not regenerated.
+
+$ TMPDIR=/tmp/spreadvacuous-tmp python3 - <<'PY'
+import importlib.util
+import tempfile
+from pathlib import Path
+import openpyxl
+spec = importlib.util.spec_from_file_location('check', 'data/datasets/spreadsheetbench/verify/check.py')
+check = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(check)
+with tempfile.TemporaryDirectory(prefix='reproduction-') as directory:
+    root = Path(directory)
+    for name, value in [('golden', 5), ('result', 999)]:
+        wb = openpyxl.Workbook()
+        wb.active.title = 'Sheet1'
+        wb.active['A1'] = value
+        wb.save(root / f'{name}.xlsx')
+        wb.close()
+    print("generate_cell_names('BD2:308') ->", check.generate_cell_names('BD2:308'))
+    print("parse_cell_range('BD2:308') ->", check.parse_cell_range('BD2:308'))
+    for position in ["'Sheet1'!BD2:308", "'Sheet1'!A1"]:
+        ok, msg = check.compare_workbooks(root / 'golden.xlsx', root / 'result.xlsx', '', position)
+        print(f'compare_workbooks(golden A1=5, result A1=999, position {position!r}) -> ok={ok!r} msg={msg!r}')
+PY
+generate_cell_names('BD2:308') -> []
+parse_cell_range('BD2:308') -> ((56, 2), (0, 308))
+compare_workbooks(golden A1=5, result A1=999, position "'Sheet1'!BD2:308") -> ok=True msg=''
+compare_workbooks(golden A1=5, result A1=999, position "'Sheet1'!A1") -> ok=False msg='value difference at A1: golden has 5, result has 999'
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadvacuous/controls.py controls
+{"checker_sha256": "e7131a2649a89d818a73b6b83e1b66892e41b93c53a7fee8330749146ad3ee46"}
+{"generate_cell_names": [], "parse_cell_range": [[56, 2], [0, 308]]}
+{"direct_message": "", "direct_ok": true, "task_id": "73-45"}
+{"exit": 0, "measured": true, "position": "'Sheet1'!BD2:308", "reason": "the named cells hold the reference values", "reward_file": "1\n", "score": 1.0, "stderr": "", "stdout": "reward 1: the named cells hold the reference values\n", "task_id": "73-45"}
+{"direct_message": "value difference at A1: golden has 5, result has 999", "direct_ok": false, "task_id": "single-cell"}
+{"exit": 1, "measured": true, "position": "'Sheet1'!A1", "reason": "workbook differs: value difference at A1: golden has 5, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A1: golden has 5, result has 999\n", "task_id": "single-cell"}
+{"direct_exception": "ValueError: b2b is not a valid coordinate or range", "task_id": "130-9"}
+{"exit": 3, "measured": false, "position": "'b2b, sez, de'!A5:V10", "reason": "comparison failed: ValueError: b2b is not a valid coordinate or range", "reward_file": null, "score": null, "stderr": "check cannot measure: comparison failed: ValueError: b2b is not a valid coordinate or range\n", "stdout": "", "task_id": "130-9"}
+{"direct_message": "official-equivalent measured zero: the task's answer_position \"Sheet3'!A:G\" is not a cell range the official parser can read: invalid literal for int() with base 10: ''", "direct_ok": false, "task_id": "283-32"}
+{"exit": 1, "measured": true, "position": "Sheet3'!A:G,'Sheet4'!A:G", "reason": "official-equivalent measured zero: the task's answer_position \"Sheet3'!A:G\" is not a cell range the official parser can read: invalid literal for int() with base 10: ''", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: official-equivalent measured zero: the task's answer_position \"Sheet3'!A:G\" is not a cell range the official parser can read: invalid literal for int() with base 10: ''\n", "task_id": "283-32"}
+{"direct_message": "worksheet 'Sheet1' not found in the result", "direct_ok": false, "task_id": "missing-result-sheet"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1", "reason": "workbook differs: worksheet 'Sheet1' not found in the result", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: worksheet 'Sheet1' not found in the result\n", "task_id": "missing-result-sheet"}
+{"direct_exception": "KeyError: 'Worksheet Absent does not exist.'", "task_id": "missing-golden-sheet"}
+{"exit": 3, "measured": false, "position": "Absent!A1", "reason": "comparison failed: KeyError: 'Worksheet Absent does not exist.'", "reward_file": null, "score": null, "stderr": "check cannot measure: comparison failed: KeyError: 'Worksheet Absent does not exist.'\n", "stdout": "", "task_id": "missing-golden-sheet"}
+{"direct_message": "value difference at A1: golden has 5, result has 999", "direct_ok": false, "task_id": "mixed-empty-last"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1,Sheet1!BD2:308", "reason": "workbook differs: value difference at A1: golden has 5, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A1: golden has 5, result has 999\n", "task_id": "mixed-empty-last"}
+{"direct_message": "", "direct_ok": true, "task_id": "normal-range-match"}
+{"exit": 0, "measured": true, "position": "Sheet1!A1:B2", "reason": "the named cells hold the reference values", "reward_file": "1\n", "score": 1.0, "stderr": "", "stdout": "reward 1: the named cells hold the reference values\n", "task_id": "normal-range-match"}
+{"direct_message": "value difference at A1: golden has 5, result has 999", "direct_ok": false, "task_id": "normal-range-diff-A1"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at A1: golden has 5, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A1: golden has 5, result has 999\n", "task_id": "normal-range-diff-A1"}
+{"direct_message": "value difference at A2: golden has 6, result has 999", "direct_ok": false, "task_id": "normal-range-diff-A2"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at A2: golden has 6, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A2: golden has 6, result has 999\n", "task_id": "normal-range-diff-A2"}
+{"direct_message": "value difference at B1: golden has 7, result has 999", "direct_ok": false, "task_id": "normal-range-diff-B1"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at B1: golden has 7, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at B1: golden has 7, result has 999\n", "task_id": "normal-range-diff-B1"}
+{"direct_message": "value difference at B2: golden has 8, result has 999", "direct_ok": false, "task_id": "normal-range-diff-B2"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at B2: golden has 8, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at B2: golden has 8, result has 999\n", "task_id": "normal-range-diff-B2"}
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_spreadsheetbench_classification_w_spread2.py tests/quality/test_spreadsheetbench_control_submit.py --basetemp=/tmp/spreadvacuous-before
+............................................                             [100%]
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 170 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 2 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 82 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 4 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+44 passed, 258 warnings in 11.49s
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadvacuous/controls.py controls
+{"checker_sha256": "8ffa30e92f500af5153ddd655c0bd4dff2c4f7b1f79cdba1e85a46f1490c88a7"}
+{"generate_cell_names": [], "parse_cell_range": [[56, 2], [0, 308]]}
+{"direct_exception": "ValueError: the task's answer_position \"'Sheet1'!BD2:308\" component \"'Sheet1'!BD2:308\" has an empty expansion (zero cells)", "task_id": "73-45"}
+{"exit": 3, "measured": false, "position": "'Sheet1'!BD2:308", "reason": "comparison failed: ValueError: the task's answer_position \"'Sheet1'!BD2:308\" component \"'Sheet1'!BD2:308\" has an empty expansion (zero cells)", "reward_file": null, "score": null, "stderr": "check cannot measure: comparison failed: ValueError: the task's answer_position \"'Sheet1'!BD2:308\" component \"'Sheet1'!BD2:308\" has an empty expansion (zero cells)\n", "stdout": "", "task_id": "73-45"}
+{"direct_message": "value difference at A1: golden has 5, result has 999", "direct_ok": false, "task_id": "single-cell"}
+{"exit": 1, "measured": true, "position": "'Sheet1'!A1", "reason": "workbook differs: value difference at A1: golden has 5, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A1: golden has 5, result has 999\n", "task_id": "single-cell"}
+{"direct_exception": "ValueError: the task's answer_position \"'b2b, sez, de'!A5:V10\" component \"'b2b\" is not addressable: b2b is not a valid coordinate or range", "task_id": "130-9"}
+{"exit": 3, "measured": false, "position": "'b2b, sez, de'!A5:V10", "reason": "comparison failed: ValueError: the task's answer_position \"'b2b, sez, de'!A5:V10\" component \"'b2b\" is not addressable: b2b is not a valid coordinate or range", "reward_file": null, "score": null, "stderr": "check cannot measure: comparison failed: ValueError: the task's answer_position \"'b2b, sez, de'!A5:V10\" component \"'b2b\" is not addressable: b2b is not a valid coordinate or range\n", "stdout": "", "task_id": "130-9"}
+{"direct_message": "official-equivalent measured zero: the task's answer_position \"Sheet3'!A:G\" is not a cell range the official parser can read: invalid literal for int() with base 10: ''", "direct_ok": false, "task_id": "283-32"}
+{"exit": 1, "measured": true, "position": "Sheet3'!A:G,'Sheet4'!A:G", "reason": "official-equivalent measured zero: the task's answer_position \"Sheet3'!A:G\" is not a cell range the official parser can read: invalid literal for int() with base 10: ''", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: official-equivalent measured zero: the task's answer_position \"Sheet3'!A:G\" is not a cell range the official parser can read: invalid literal for int() with base 10: ''\n", "task_id": "283-32"}
+{"direct_message": "worksheet 'Sheet1' not found in the result", "direct_ok": false, "task_id": "missing-result-sheet"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1", "reason": "workbook differs: worksheet 'Sheet1' not found in the result", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: worksheet 'Sheet1' not found in the result\n", "task_id": "missing-result-sheet"}
+{"direct_exception": "KeyError: 'Worksheet Absent does not exist.'", "task_id": "missing-golden-sheet"}
+{"exit": 3, "measured": false, "position": "Absent!A1", "reason": "comparison failed: KeyError: 'Worksheet Absent does not exist.'", "reward_file": null, "score": null, "stderr": "check cannot measure: comparison failed: KeyError: 'Worksheet Absent does not exist.'\n", "stdout": "", "task_id": "missing-golden-sheet"}
+{"direct_exception": "ValueError: the task's answer_position 'Sheet1!A1,Sheet1!BD2:308' component 'Sheet1!BD2:308' has an empty expansion (zero cells)", "task_id": "mixed-empty-last"}
+{"exit": 3, "measured": false, "position": "Sheet1!A1,Sheet1!BD2:308", "reason": "comparison failed: ValueError: the task's answer_position 'Sheet1!A1,Sheet1!BD2:308' component 'Sheet1!BD2:308' has an empty expansion (zero cells)", "reward_file": null, "score": null, "stderr": "check cannot measure: comparison failed: ValueError: the task's answer_position 'Sheet1!A1,Sheet1!BD2:308' component 'Sheet1!BD2:308' has an empty expansion (zero cells)\n", "stdout": "", "task_id": "mixed-empty-last"}
+{"direct_message": "", "direct_ok": true, "task_id": "normal-range-match"}
+{"exit": 0, "measured": true, "position": "Sheet1!A1:B2", "reason": "the named cells hold the reference values", "reward_file": "1\n", "score": 1.0, "stderr": "", "stdout": "reward 1: the named cells hold the reference values\n", "task_id": "normal-range-match"}
+{"direct_message": "value difference at A1: golden has 5, result has 999", "direct_ok": false, "task_id": "normal-range-diff-A1"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at A1: golden has 5, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A1: golden has 5, result has 999\n", "task_id": "normal-range-diff-A1"}
+{"direct_message": "value difference at A2: golden has 6, result has 999", "direct_ok": false, "task_id": "normal-range-diff-A2"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at A2: golden has 6, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at A2: golden has 6, result has 999\n", "task_id": "normal-range-diff-A2"}
+{"direct_message": "value difference at B1: golden has 7, result has 999", "direct_ok": false, "task_id": "normal-range-diff-B1"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at B1: golden has 7, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at B1: golden has 7, result has 999\n", "task_id": "normal-range-diff-B1"}
+{"direct_message": "value difference at B2: golden has 8, result has 999", "direct_ok": false, "task_id": "normal-range-diff-B2"}
+{"exit": 1, "measured": true, "position": "Sheet1!A1:B2", "reason": "workbook differs: value difference at B2: golden has 8, result has 999", "reward_file": "0\n", "score": 0.0, "stderr": "", "stdout": "reward 0: workbook differs: value difference at B2: golden has 8, result has 999\n", "task_id": "normal-range-diff-B2"}
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_spreadsheetbench_classification_w_spread2.py tests/quality/test_spreadsheetbench_control_submit.py --basetemp=/tmp/spreadvacuous-after
+..................................................                       [100%]
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 212 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 2 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 94 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 4 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+50 passed, 312 warnings in 13.46s
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadvacuous/controls.py metadata
+{"exceptions": [{"answer_position": "Sheet3'!A:G,'Sheet4'!A:G", "details": ["invalid literal for int() with base 10: ''"], "reference_class": "range_zero_policy_only", "task_id": "283-32"}, {"answer_position": "'Sheet1'!BD2:308", "details": ["[]"], "reference_class": "empty_expansion", "task_id": "73-45"}, {"answer_position": "'b2b, sez, de'!A5:V10", "details": ["ValueError: b2b is not a valid coordinate or range"], "reference_class": "unaddressable_component", "task_id": "130-9"}, {"answer_position": "G4:G6, G11:G13, G20:G22", "details": ["ValueError: '11' does not address a single cell"], "reference_class": "unaddressable_component", "task_id": "45944"}], "limit": "reference structure only; installed workbook loadability and measured coverage UNKNOWN", "metadata_sha256": "bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7", "reference_classes": {"addressable": 396, "empty_expansion": 1, "range_zero_policy_only": 1, "unaddressable_component": 2}, "rows": 400, "scope": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json"}
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/spreadvacuous/controls.py metadata
+{"exceptions": [{"answer_position": "Sheet3'!A:G,'Sheet4'!A:G", "details": ["invalid literal for int() with base 10: ''"], "reference_class": "range_zero_policy_only", "task_id": "283-32"}, {"answer_position": "'Sheet1'!BD2:308", "details": ["[]"], "reference_class": "empty_expansion", "task_id": "73-45"}, {"answer_position": "'b2b, sez, de'!A5:V10", "details": ["ValueError: b2b is not a valid coordinate or range"], "reference_class": "unaddressable_component", "task_id": "130-9"}], "limit": "reference expansion/worksheet lookup only; tuple-valued lookup is not rejected; installed workbook loadability and measured coverage UNKNOWN", "metadata_sha256": "bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7", "reference_classes": {"addressable": 397, "empty_expansion": 1, "range_zero_policy_only": 1, "unaddressable_component": 1}, "rows": 400, "scope": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json"}
+EXIT=0
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/spreadvacuous/integration.py
+{"mode": "before", "cache_commit": "e5aa274acc5c947d1d31a5d2737a4f831530c411", "patch_base": "e0c1cd3254e0168c9e9e1a7dabee750772ddc868", "checker_sha256": "5c247413ec7fe636cd6d417bc7d9bd76c1c7e8944cceae58635c7add10ba737d"}
+................................................F..                      [100%]
+=================================== FAILURES ===================================
+_______________ test_real_engine_replaces_authored_stale_caches ________________
+
+tmp_path = PosixPath('/tmp/spreadvacuous-tmp/spreadvacuous-cache-before-cx_cko05/pytest/test_real_engine_replaces_auth0')
+
+    @pytest.mark.skipif(os.environ.get("HG_SPREADCACHE_ENGINE_CONTROL") != "1",
+                        reason="opt-in authored real LibreOffice control (no dataset/model)")
+    def test_real_engine_replaces_authored_stale_caches(tmp_path):
+        """The original failing mathematical assertion, under explicit network isolation."""
+        assert shutil.which("bwrap") and shutil.which("soffice")
+        wb = openpyxl.Workbook()
+        wb.active.title = "Synthetic"
+        wb.active["A1"], wb.active["A2"] = 2, 3
+        wb.active["B1"], wb.active["B2"] = "=SUM(A1:A2)", "=B1*2"
+        candidate = tmp_path / "result.xlsx"
+        wb.save(candidate)
+        with zipfile.ZipFile(candidate) as src:
+            entries = {n: src.read(n) for n in src.namelist()}
+        ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+        sheet = ET.fromstring(entries["xl/worksheets/sheet1.xml"])
+        for name, stale in (("B1", 999), ("B2", 888)):
+            sheet.find(f".//{ns}c[@r='{name}']/{ns}v").text = str(stale)
+        entries["xl/worksheets/sheet1.xml"] = ET.tostring(sheet)
+        with zipfile.ZipFile(candidate, "w", zipfile.ZIP_DEFLATED) as dst:
+            for name, content in entries.items():
+                dst.writestr(name, content)
+        wb.active["B1"], wb.active["B2"] = 5, 10
+        wb.save(tmp_path / "golden.xlsx")
+        wb.close()
+        cached = openpyxl.load_workbook(candidate, data_only=True)
+        assert [cached.active["B1"].value, cached.active["B2"].value] == [999, 888]
+        cached.close()
+        (tmp_path / "task.json").write_text(json.dumps({
+            "task_id": "spreadcache-authored", "answer_position": "Synthetic!B1:B2"}))
+        (tmp_path / "answer.txt").write_text("result.xlsx\n")
+        scratch = tmp_path / "scratch"
+        scratch.mkdir()
+        cmd = [shutil.which("bwrap"), "--unshare-net", "--ro-bind", "/", "/",
+               "--bind", str(tmp_path), "/tmp",
+               "--proc", "/proc", "--", sys.executable,
+               str(ROOT / "data/datasets/spreadsheetbench/verify/check.py"),
+               "--workdir", "/tmp", "--reward-file", "/tmp/reward.txt",
+               "--evidence-file", "/tmp/evidence.json"]
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=240,
+                              env=dict(os.environ, TMPDIR="/tmp/scratch", PYTHONDONTWRITEBYTECODE="1"))
+>       assert proc.returncode == 0, (proc.stdout, proc.stderr)
+E       AssertionError: ('', "/mnt/8t/xubuqiang/anaconda3/bin/python3: can't open file '/tmp/spreadvacuous-tmp/spreadvacuous-cache-before-cx_cko05/data/datasets/spreadsheetbench/verify/check.py': [Errno 2] No such file or directory
+E         ")
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/usr/bin/bwrap', '--unshare-net', '--ro-bind', '/', '/', '--bind', '/tmp/spreadvacuous-tmp/spr...dvacuous-cache-before-cx_cko05/data/datasets/spreadsheetbench/verify/check.py': [Errno 2] No such file or directory\n").returncode
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:325: AssertionError
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 193 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 2 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 98 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 4 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_real_engine_replaces_authored_stale_caches
+1 failed, 50 passed, 297 warnings in 15.38s
+before_exit=1
+EXIT=1
+
+$ TMPDIR=/tmp/spreadvacuous-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/spreadvacuous/integration.py
+{"mode": "before", "cache_commit": "e5aa274acc5c947d1d31a5d2737a4f831530c411", "patch_base": "e0c1cd3254e0168c9e9e1a7dabee750772ddc868", "checker_sha256": "5c247413ec7fe636cd6d417bc7d9bd76c1c7e8944cceae58635c7add10ba737d"}
+...................................................                      [100%]
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 195 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 2 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 98 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 4 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+51 passed, 299 warnings in 16.41s
+before_exit=0
+{"mode": "after", "cache_commit": "e5aa274acc5c947d1d31a5d2737a4f831530c411", "patch_base": "e0c1cd3254e0168c9e9e1a7dabee750772ddc868", "checker_sha256": "98dd625481f091a8684dd4d7a66c17f07cf7a36c8bba160e27353e06988b1af7"}
+.........................................................                [100%]
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 237 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 2 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 110 warnings
+tests/quality/test_spreadsheetbench_control_submit.py: 4 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+57 passed, 353 warnings in 18.13s
+after_exit=0
+sparse_overlays_and_pytest_workbooks_removed=True
+EXIT=0
+
+Inherited observations, not a rerun of eligibility:
+COMMAND: git show 67cad8649254d253276d63d42c573822dcb14e3c:tests/fixtures/hg_spreadelig/summary.json
+PROJECTION: {"classes": {"not_gradable_as_installed": 5, "range_zero_policy_only": 1, "structurally_gradable": 394}, "not_gradable_ids": ["73-45", "130-9", "51090", "54590", "36764"], "policy_inclusive_candidate_denominator": 395, "range_zero_ids": ["283-32"], "structural_denominator": 394}
+COMMAND: git show 67cad8649254d253276d63d42c573822dcb14e3c:tests/fixtures/hg_spreadelig/eligibility.jsonl
+PROJECTION: {"answer_position": "Sheet3'!A:G,'Sheet4'!A:G", "classification": "range_zero_policy_only", "reason": "audited 283-32 A:G ValueError; policy zero only if reached", "task_id": "283-32"}
+PROJECTION: {"answer_position": "'Sheet1'!BD2:308", "classification": "not_gradable_as_installed", "reason": "reference: empty range; golden target unavailable: Sheet1: missing sheet or empty expansion", "task_id": "73-45"}
+PROJECTION: {"answer_position": "'b2b, sez, de'!A5:V10", "classification": "not_gradable_as_installed", "reason": "golden target unavailable: b2b, sez, de: ValueError: b2b is not a valid coordinate or range; golden target unavailable: b2b, sez, de: ValueError:  sez is not a valid coordinate or range; golden target unavailable:  de: missing sheet or empty expansion", "task_id": "130-9"}
+PROJECTION: {"answer_position": "Daily Numbers'!Q3:Q24", "classification": "not_gradable_as_installed", "reason": "init: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard; golden: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard", "task_id": "51090"}
+PROJECTION: {"answer_position": "GK29", "classification": "not_gradable_as_installed", "reason": "init: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard; golden: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard", "task_id": "54590"}
+PROJECTION: {"answer_position": "'Sheet1'!C2", "classification": "not_gradable_as_installed", "reason": "init: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard; golden: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard", "task_id": "36764"}
+PROJECTION: {"answer_position": "G4:G6, G11:G13, G20:G22", "classification": "structurally_gradable", "reason": "single pair readable; golden target cells addressable; parser accepts or bypasses", "task_id": "45944"}
+
+$ git rev-parse HEAD wg-w-spreadcache wg-w-spreadelig
+e0c1cd3254e0168c9e9e1a7dabee750772ddc868
+e5aa274acc5c947d1d31a5d2737a4f831530c411
+67cad8649254d253276d63d42c573822dcb14e3c
+EXIT=0
+
+$ sha256sum data/datasets/spreadsheetbench/verify/check.py
+8ffa30e92f500af5153ddd655c0bd4dff2c4f7b1f79cdba1e85a46f1490c88a7  data/datasets/spreadsheetbench/verify/check.py
+EXIT=0
+
+$ python3 tools/apply_blocker_proposal.py registry/proposals/w-spreadvacuous.json --dataset spreadsheetbench --blocker dataset-journal-gap
+spreadsheetbench/dataset-journal-gap
+  next_action  2315 -> 2547 chars
+  observed     8758 -> 9553 chars
+  dry run: nothing written (pass --apply)
+EXIT=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT=0
+
+$ git diff --check
+EXIT=0
+
+$ git diff e0c1cd3254e0168c9e9e1a7dabee750772ddc868 -- AGENTS.md registry/dataset-blockers.json registry/withdrawn-requirements.md docs/adapter-integration-journal.md
+EXIT=0
+
+The empty protected-file diff above establishes these files were not changed in this branch.
+Registry checker cannot be affected by a scorer-only code edit or standalone proposal.
+
+Observation from validate.py: unchanged ASTs = ["transform_value", "datetime_to_float", "compare_cell_value", "col_num2name", "col_name2num", "parse_cell_range", "generate_cell_names", "cell_level_compare"]
+
+Observation from validate.py: 47 report file:line citations checked for existence and bounds.
+
+CLEANUP via shutil.rmtree on task-owned path /tmp/spreadvacuous-before: exists=False
+
+CLEANUP via shutil.rmtree on task-owned path /tmp/spreadvacuous-after: exists=False
+
+CLEANUP via shutil.rmtree on task-owned path /tmp/spreadvacuous-tmp: exists=False
+
+Disposable assigned HDD source overlays remaining=[]
+
+NOT VERIFIED / NOT PERFORMED:
+- Actual parent merge and its final checker digest; parent must recompute custody.
+- Released workbook scorer execution, selected dataset/trial coverage or benchmark scores.
+- Full installed workbook eligibility, upstream execution or fresh upstream authentication.
+- Quote-aware comma repair (130-9 is detected/refused, not repaired).
+- Production sandbox, resource/cleanup quotas, held-out data or model/GPU/API execution.
+- Direct legacy invocation with a pre-existing reward file; controls use fresh directories.
+- Real-engine success on this standalone pre-cache branch: the opt-in test belongs to
+  cache worker bytes and was tested both before/after in the sparse combined overlay.
+- Any frozen run/receipt mutation, registry application, main write, push, merge or branch deletion.
+
+COMMIT FILE SIZES (all files, including this validation):
+data/datasets/spreadsheetbench/verify/check.py 18969 bytes
+registry/proposals/w-spreadvacuous.json 5208 bytes
+registry/w-spreadvacuous-divergence.md 12656 bytes
+registry/w-spreadvacuous-validation.txt 34246 bytes
+tests/fixtures/spreadvacuous/after-tests.txt 1240 bytes
+tests/fixtures/spreadvacuous/after.txt 6365 bytes
+tests/fixtures/spreadvacuous/before-tests.txt 1240 bytes
+tests/fixtures/spreadvacuous/before.txt 5534 bytes
+tests/fixtures/spreadvacuous/controls.py 5768 bytes
+tests/fixtures/spreadvacuous/inherited-eligibility.txt 3047 bytes
+tests/fixtures/spreadvacuous/integration-initial-tests.txt 5059 bytes
+tests/fixtures/spreadvacuous/integration-tests.txt 3003 bytes
+tests/fixtures/spreadvacuous/integration.py 2907 bytes
+tests/fixtures/spreadvacuous/metadata-strict-initial.txt 1089 bytes
+tests/fixtures/spreadvacuous/metadata.txt 965 bytes
+tests/fixtures/spreadvacuous/proposal-dry-run.txt 147 bytes
+tests/fixtures/spreadvacuous/validate.py 8978 bytes
+tests/quality/test_spreadsheetbench_classification_w_spread2.py 11674 bytes

@@ -35,6 +35,9 @@ def _module(name, path):
 CASES = [
     ("unparseable-range", 0.0, "not a cell range"),
     ("released-unparseable-range", 0.0, "official-equivalent measured zero"),
+    ("vacuous-reference", None, "empty expansion (zero cells)"),
+    ("mixed-vacuous-reference", None, "empty expansion (zero cells)"),
+    ("quoted-comma-reference", None, "is not addressable"),
     ("parser-exception", None, "synthetic parser failure"),
     ("result-vanished", None, "unavailable for comparison"),
     ("golden-load", None, "workbook load failed"),
@@ -100,6 +103,9 @@ def scenario(request, monkeypatch, tmp_path):
     if case == "result-load":
         (work / "result.xlsx").write_bytes(b"synthetic unreadable workbook")
     position = ("Sheet3'!A:G,'Sheet4'!A:G" if case == "released-unparseable-range" else
+                "S!BD2:308" if case == "vacuous-reference" else
+                "S!A1,S!BD2:308" if case == "mixed-vacuous-reference" else
+                "'b2b, sez, de'!A5:V10" if case == "quoted-comma-reference" else
                 "S!A:G" if case == "unparseable-range" else
                 "Absent!A1" if case == "golden-sheet-absent" else "S!A1")
     record = {"task_id": "283-32" if case == "released-unparseable-range" else "synthetic-spread", "golden_path": golden,
@@ -268,6 +274,8 @@ def test_classification_survives_verifier_persistence_and_aggregation(
     persisted = json.loads((tmp_path / f"progress/round-0/{task_id}.json").read_text())
     if score is None:
         assert reason in verdict["unmeasured"]
+        assert verdict.get("score") is None
+        assert not (work / "verifier/reward.txt").exists()
         assert result["per_task"] == result["per_task_trials"] == {}
         assert result["trial_verdicts"] == result["verdicts"] == {}
         assert result["invalid"][task_id]["stage"] == "check"

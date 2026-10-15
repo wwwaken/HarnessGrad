@@ -32,6 +32,9 @@ saying `measured: false`, and exits 3. A bare 0 is indistinguishable from a wron
 An absent result artifact and a completed value/sheet mismatch remain measured zero.
 An answer range rejected by the official parser also keeps its official-equivalent zero;
 this compatibility rule does not establish that any cells were compared.
+Deliberate upstream divergence (w-spreadvacuous): a reference component expanding to
+zero cells is unmeasured, never the upstream vacuous pass. Unaddressable comma-split
+components are also unmeasured; quoted sheet-name comma splitting is not repaired here.
 """
 from __future__ import annotations
 
@@ -60,6 +63,8 @@ DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
 # `evaluation/evaluation.py`, transcribed. The function bodies are upstream's; the only
 # changes are `print` -> return values, the module-level imports it assumed, and raising
 # measurement failures instead of returning the same False as a completed mismatch.
+# w-spreadvacuous additionally refuses empty cell expansions (upstream returns True
+# without comparing any cell). See registry/w-spreadvacuous-divergence.md.
 
 
 def transform_value(v):
@@ -207,7 +212,21 @@ def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
             cell_range = sheet_cell_range
         sheet_name = sheet_name.lstrip("'").rstrip("'")
         cell_range = cell_range.lstrip("'").rstrip("'")
-        result, msg = cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range)
+        # Deliberate divergence: BD2:308 parses but expands to [], so upstream's
+        # comparator publishes a pass without measuring anything. Never publish it.
+        # Keep the colon-ValueError compatibility zero above and missing-sheet policy.
+        if not generate_cell_names(cell_range):
+            raise ValueError(
+                f"the task's answer_position {answer_position!r} component "
+                f"{sheet_cell_range!r} has an empty expansion (zero cells)")
+        try:
+            result, msg = cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range)
+        except ValueError as exc:
+            # Keep literal upstream comma splitting, but name invalid metadata such
+            # as 130-9's quoted comma-containing sheet instead of publishing a score.
+            raise ValueError(
+                f"the task's answer_position {answer_position!r} component "
+                f"{sheet_cell_range!r} is not addressable: {exc}") from exc
         result_list.append(result)
         msg_list.append(msg)
     first_bad = next((m for r, m in zip(result_list, msg_list) if not r), "")
