@@ -5574,3 +5574,53 @@ measurement otherwise pointed outside the repository - the durability failure th
 47 restored provenance bodies turned out to be gitignored. Commits: `fe5d4186` (the measurement),
 `70dfb681` (landing it where the qualifications are read), `e4573f56` (the harness). Checker valid on all
 three; the committed copy reproduces the HEAD result (1,396 verdicts, 1,395 exact).
+
+## 2026-10-16 (goal round 9) — The rescore is now 3.3x larger, and the one LABEL-only dataset is the one that cannot be replayed
+
+**Round 8 measured five runs; there are ten.** The harness hardcoded its targets, so I rewrote it to
+**auto-discover** every census run that carries a `verdicts/` tree, a single recorded
+`evidence.scorer_module`, and an unredacted gold - the scaffold already records which module graded each
+task, so nothing needs to be assumed. The measurement grows from 1,396 to **4,578 verdicts**, and both
+trees are still identical:
+
+| tree | rescorable verdicts | agree | disagree |
+| --- | ---: | ---: | ---: |
+| pre-fix | 4,578 | **4,578** | **0** |
+| post-fix (HEAD) | 4,578 | **4,578** | **0** |
+
+Coverage is now `gsm8k` **4,465 across three runs** (a full eval run, a 40-task run, and a **3,106-task
+train resume**), `physicsquestions` 65 across three, and 12 each for `fever`, `reasoning_gym`, `triviaqa`
+and `2Wiki`.
+
+**The two new datasets are the most useful addition, because they are positive controls.** `reasoning_gym`
+and `triviaqa` were classified **LABEL/DISCLOSURE - no metric change**. A harness that agrees everywhere
+proves nothing if it never disagrees; a harness that agrees where nothing was supposed to change, *and*
+where four things were, is a harness whose zero delta means something. That is the difference between
+"my tool found no changes" and "my tool reproduces the archive".
+
+**A new structural finding: 813 of the 837 unrescorable verdicts are `musique`, and its gold is REDACTED.**
+The adapter declares `REDACT_EVIDENCE`, so `data/scaffolds/qa/verify/check.py:236-240` replaces the gold
+with `{"redacted": true}` on every evidence path. So the one dataset whose finding was purely about the
+metric's *name* - the single **LABEL-only** entry in the whole qualification - is precisely the one whose
+evidence cannot be replayed. That is not a coincidence to be waved away: it is *why* w-evidence could only
+corroborate `0.3064` from the current scorer rather than from historical verdicts, and the record now says
+so. `bfcl_v3` and `chessbench_puzzles` redact for the same kind of reason (12 verdicts each).
+
+**Two more traps, both of which had already produced a wrong number in my own record.**
+
+* **The receipt rounds official metrics to six decimals.** Comparing at `1e-12` reported a 2Wiki
+  disagreement (`0.142857` vs `0.142857142857…`) that is formatting, not scoring. The tolerance is now
+  `1e-6`, the precision the receipts actually carry, and the round-8 claim of "`2Wiki` 11/12" is corrected
+  to **12/12** in all three places it had been landed.
+* **A relative path in the reproduce recipe silently runs the wrong tree's copy of the harness.** The
+  pre-fix worktree is checked out at `HEAD`, so `python3 registry/rescore-census-verdicts.py` ran *that*
+  copy - the older, 1,396-verdict version - and the output looked like a complete result. The recipe now
+  uses the absolute path, and the trap is written into the document rather than only into this journal.
+
+Together with round 8's two errors (reading `verdict['reward']`, which does not exist, and rescoring one
+sample per multi-trial task), that is **four** occasions in two rounds where a proxy produced a
+plausible wrong answer about the very thing under test. All four are recorded, because the pattern is the
+phase's actual finding: **the number is easy to get; the reason it is the right number is the work.**
+
+Commits: `adc24a7b` (the extended measurement, the rewritten harness and the three updated landing notes).
+Checker valid.
