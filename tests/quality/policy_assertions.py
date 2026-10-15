@@ -5,9 +5,14 @@ These assertions never grant admission or turn an invalid task into a score.
 import json
 
 
+#: The fields an exec declaration is refused for. `env.agent_timeout_s` and
+#: `env.verify_timeout_s` are deliberately absent: they flow through `phase_timeout`
+#: to the platform's own subprocess deadlines, which this process applies, so they are
+#: not evidence an external backend must supply (`eval/run/runner.py:41-72`, corrected
+#: by `w-jerichoadm`). `env.network` is present because these fixtures declare
+#: `kind="exec"`; a native files declaration is refused for network alone.
 EXEC_POLICY_FIELDS = (
-    "env.agent_timeout_s", "env.cpus", "env.exec_defaults", "env.memory_mb",
-    "env.network", "env.verify_timeout_s",
+    "env.cpus", "env.exec_defaults", "env.memory_mb", "env.network",
 )
 
 

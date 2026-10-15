@@ -139,17 +139,32 @@ _JOURNAL_REVIEWS = {
 
 
 def test_every_journal_coverage_dataset_points_to_its_migrated_review(document):
+    """Every *open* journal-coverage blocker must point at its migrated review.
+
+    All six reviewed datasets closed their journal-coverage blocker on 2026-10-15, so `covered` is
+    empty today: the loop below now guards the *next* journal-coverage blocker rather than a live
+    set, and it refuses one whose review identity was never mapped instead of raising `KeyError`.
+    The non-vacuity check therefore moved to the mapping itself - every migrated review identity
+    must still name a published dataset, and there must still be all six of them, because the
+    parametrized content check below is driven by this same mapping and would shrink silently
+    with it.
+    """
+    published = {e["dataset"] for e in document["datasets"]}
+    assert set(_JOURNAL_REVIEWS) <= published, sorted(set(_JOURNAL_REVIEWS) - published)
+    assert len(_JOURNAL_REVIEWS) == 6, sorted(_JOURNAL_REVIEWS)
     covered = set()
     for entry in document["datasets"]:
         for blocker in entry["blockers"]:
             if blocker["family"] != "journal-coverage":
                 continue
             name = entry["dataset"]
+            assert name in _JOURNAL_REVIEWS, (
+                f"{name} carries an open journal-coverage blocker with no migrated review; add its "
+                "identity to _JOURNAL_REVIEWS")
             path, locator = _JOURNAL_REVIEWS[name]
             assert {"kind": "external-reference", "path": path,
                     "locator": locator} in blocker["evidence"], name
             covered.add(name)
-    assert covered, "journal-coverage guard must not silently become vacuous"
     expected = {e["dataset"] for e in document["datasets"]
                 for b in e["blockers"] if b["family"] == "journal-coverage"}
     assert covered == expected, \
