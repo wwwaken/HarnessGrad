@@ -4040,3 +4040,23 @@ clean; all four named deliverables present.
 - Admission hashes private copies into write-sealed memfds; bubblewrap mounts those bytes in an empty read-only namespace root. Absolute loader/interpreter, disabled cache/site resolution, a separate trusted scorer directory and private network close ambient resolution without rebuilding host handling. Manifest/payload drift, missing runtime and sandbox bypass are unmeasured; bound input/WAL and all existing gates remain enforced. Final task/per-trial verdict records retain native_runtime identity.
 - Final focused validation: **97 passed**; BIRD source/authored controls **11 passed / 7 deselected**. Initial six new controls and persistence regression failed before their fixes. Actual authored scorer trace accounts for **24 ELF destinations** including loader/interpreter; a separate child control proves inherited resolution. Two unchanged sandbox worktree-assumption failures reproduce; an unnecessarily broad mock demo-driver pass was interrupted, with all failed/interrupted outputs preserved and no matching driver left. No repository `runs/`, frozen receipt, model endpoint or server is used or changed.
 - Evidence: [receipts](../reports/w-hostpin-receipts.md), [validation](../reports/w-hostpin-validation.txt), [fixture packet](../tests/fixtures/hg_whostpin/README.md), [manifest](../data/runtimes/bird_minidev-native.json). Kernel/CPU, pre-namespace launch trust, resources, the remaining six native closures, provenance/export/scorer obligations and production authorization remain separate and open.
+## Parent review and merge — w-hostpin — 2026-10-15
+
+- Merged `1b76e806` (w-hostpin). Result `bb622b39`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`; sequencer clean; report present. 56
+  focused tests passed, and the worker reports 97 focused tests plus 11 BIRD checks.
+- **S3's "native host dependencies" item moved from an assertion to a mechanism.** BIRD now runs its
+  scorer inside a **digest-verified, sealed native closure**, **records that closure's identity in
+  the verdict**, and **refuses a mismatch**. Pinned native userland coverage is **1/7**, up from the
+  0/7 that the previous inventory measured. All blockers remain open, and the worker says so.
+- **The semantic registry merge tool resolved its first real conflict, with zero damage.** The
+  registry conflicted on this cherry-pick as it has on almost every one; instead of my textual
+  reconstruction - which produced malformed JSON four times and silently dropped an evidence `path`
+  twice - `tools/merge_blocker_registry.py` parsed all three versions, merged the values, and wrote
+  a registry that passed the checker on the first attempt (145,559 bytes, 2 shared blockers, no
+  malformed evidence entries). That is the seventh registry conflict of the phase and the first one
+  that cost nothing. The tool earns its place by refusing to merge rather than dropping a value,
+  which is the failure mode that actually bit six times.
+- Resource state: local containers and tests only - no model, GPU or endpoint call. GPU samples
+  stayed at 0 % and no utilisation is claimed. Historical runs, frozen receipts and archives were
+  untouched.
