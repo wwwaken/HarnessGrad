@@ -154,15 +154,20 @@ required: the metadata-only HumanAnswers / membership / duplicate / scorer-key /
 an enumerated re-inspection of the authoritative record for an immutable build/export execution receipt.
 Both are `w-trivia2`'s task; the withdrawn-gate boundary does not condition closure.
 
-**`hotpotqa / historical-comparison-receipts`** — `LIMIT-CANDIDATE`. The candidate v4 ID
+**`hotpotqa / historical-comparison-receipts`** — `LIMIT-RECORDED` (2026-10-15). The candidate v4 ID
 `hotpotqa-h0-10pct-v4` is recovered, and the historical `ls` listing proves the v4 split, console log and
 budget ledger **existed**; the original per-trial ledger is absent in the documented local scope and the
 binding to the reported 94/1382/1476 coverage is unresolved. Timeout classification is `SATISFIED` and
 the frozen record keeps `run_id=null` / `effect=null`. Unlike `bird_minidev` and `ds1000`, the files are
 not "not present in this repository and not published upstream" — they existed on this machine and are
 gone — so the existing withdrawal wording would overstate it and `w-hotpotrec` correctly refused to
-propose one. This is the clearest candidate for the operator's standing-limit rule, and it needs an
-explicit decision because the correct wording differs from the precedent.
+propose one. This was the clearest candidate for the operator's standing-limit rule, and it is now
+**recorded** under it in `registry/withdrawn-requirements.md` as
+`hotpotqa / historical-comparison-receipts / original-v4-receipts`, with wording that does not
+overstate the case: the receipts existed and were lost, the run was a local pilot so no upstream
+source can hold them, the enumerated scope is named, and the deletion cause is left unattributed.
+The candidate ID, the filenames and the enumerated absence stay recorded; the blocker's remaining
+obligations are unchanged and it stays open.
 
 ## What is not in doubt
 

@@ -71,6 +71,43 @@ locator `## Exact registry wording`; its carrier was the withdrawn shared blocke
 
 ## Dataset requirements withdrawn as unobtainable
 
+### `hotpotqa / historical-comparison-receipts / original-v4-receipts`
+**Former status:** `measurement` within an active blocker that stays open; this sub-requirement is
+withdrawn.
+**Asked for:** the original user-stopped v4 run's selected-ID/trial/error/timeout receipts and its
+source/split/manifest/model/harness provenance receipts, with measured/invalid/unmeasured counts and
+lifecycle/cleanup reconciliation.
+**Searched:** an enumerated on-machine scope. `w-hotpotrec` recorded a search over
+`~/.codex/sessions/**` (722 transcripts), the repository's full object store, history, reflog and
+stashes, `runs/`, `runs_discarded_*`, `.hashstate` state, `tests/fixtures/`, the named archives and
+`/mnt/20t/xubuqiang/hg-census/`, plus adaptive existence checks on `/tmp/codex` and
+`/tmp/harnessgrad-runs`. The parent re-checked on 2026-10-15: `HarnessGrad-evidence-archive/` holds
+only `chess/`, `codex/` and `qwen-baseline/`; the two stranded pre-rewrite clones hold adapter source
+only; and both `/tmp/codex` and `/tmp/harnessgrad-runs` are absent.
+**Result:** the historical `ls` listing proves the v4 split file, console log and 1,179-byte budget
+ledger **existed** at `/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4`, and a captured read of
+`qa-h0-incomplete-index.json` binds the candidate ID `hotpotqa-h0-10pct-v4` to the dataset, the
+`incomplete` status and that run directory. The files themselves are now absent over that scope and
+the binding of the candidate ID to the reported 94/1382/1476 coverage is unresolved. The deletion
+cause is **not** established and is not attributed: the recorded `/tmp` hygiene patterns
+(`/tmp/hg-task-*`, `/tmp/harnessgrad-pytest-*`, the `hg-w*` scratch sets) do not cover
+`/tmp/harnessgrad-runs` or `/tmp/codex`.
+**Why it cannot be advanced here:** the v4 run was a **local pilot of this platform** - its run
+directory is `/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4`, under this machine's own run-ID convention -
+so no upstream or third-party publication can hold its receipts. Every on-machine source has been
+enumerated and is empty. Unlike `bird_minidev` and `ds1000`, the wording "not present in this
+repository and not published upstream" would **overstate** this case: the receipts existed and were
+lost, rather than never being captured. The only conceivable remaining source is a machine-external
+backup of `/tmp` predating the loss, which is outside this repository's reach.
+**Retained:** the candidate ID, the historical filenames, the captured index tuple and the enumerated
+absence are recorded in `registry/w-hotpotrec-receipts.md` and `registry/w-hotpotrec-evidence.json`.
+`historical_runs` keeps `run_id=null` and `effect=null` and is never edited, resumed, rerun or
+overwritten; unknown outcomes stay unmeasured and never become zeros. The blocker's remaining
+obligations - current selected scorer/control admission, the retained first-five packet and the
+synthetic timeout closure - are unchanged, and any separately authorized future diagnostic still uses
+a fresh ID under the staged policy.
+
+
 ### `livecodebench / row-attestation`
 **Asked for:** a metadata-only complete upstream catalogue/rank plus authenticated
 row/pool/split/statement linkage.

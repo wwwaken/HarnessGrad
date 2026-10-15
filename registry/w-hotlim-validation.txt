@@ -1,0 +1,57 @@
+Parent application of the operator's standing-limit rule to the HotpotQA v4 receipts.
+
+Decision applied (operator rule, 2026-10-15): "requirements that are PROVEN unobtainable are
+withdrawn and recorded as limits with their search evidence, rather than left open."
+This is the first application of the rule inside a blocker that stays OPEN: the sub-requirement is
+withdrawn, the blocker and its remaining obligations are not.
+
+Why the sub-requirement qualifies (the scope is enumerated, not asserted)
+------------------------------------------------------------------------
+* The v4 run was a LOCAL pilot of this platform: its directory is
+  `/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4`, under this machine's own run-ID convention. No
+  upstream or third-party publication can hold its receipts, so "search the internet" is not a
+  remaining avenue.
+* The receipts EXISTED: the historical `ls` listing in
+  `~/.codex/sessions/2026/10/12/rollout-2026-10-12T13-14-44-01a12e88-...jsonl:16` prints
+  `hotpotqa-10pct-v4-split.json`, `hotpotqa-h0-10pct-v4-console.log` and
+  `hotpotqa-h0-10pct-v4-ledger.json` (1,179 bytes), and line 85 of the other transcript captures
+  `qa-h0-incomplete-index.json records [('hotpotqa', 'hotpotqa-h0-10pct-v4', 'incomplete',
+  '/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4'), ...]`.
+* They are absent over the enumerated on-machine scope: both `/tmp/codex` and `/tmp/harnessgrad-runs`
+  are gone; `HarnessGrad-evidence-archive/` holds only `chess/`, `codex/` and `qwen-baseline/`; the
+  two stranded pre-rewrite clones hold adapter source only; and `w-hotpotrec` already searched the
+  repository object store, history, reflog, stashes, `runs/`, `runs_discarded_*`, `tests/fixtures/`,
+  the named archives, `/mnt/20t/xubuqiang/hg-census/` and 722 session transcripts.
+* The deletion cause is NOT established and is NOT attributed. The recorded `/tmp` hygiene patterns
+  (`/tmp/hg-task-*`, `/tmp/harnessgrad-pytest-*`, the `hg-w*` scratch sets in
+  `/mnt/20t/xubuqiang/hg-census/tmp_cleanup.py:55-64`) do not cover `/tmp/harnessgrad-runs` or
+  `/tmp/codex`.
+* The wording therefore differs from the `bird_minidev` / `ds1000` precedent on purpose: those say
+  "not present in this repository and is not published upstream"; saying that here would overstate,
+  because the receipts existed on this machine and were lost.
+
+Change
+------
+* `registry/withdrawn-requirements.md`: new entry
+  `### `hotpotqa / historical-comparison-receipts / original-v4-receipts`` with Asked for / Searched /
+  Result / Why it cannot be advanced here / Retained.
+* `registry/dataset-blockers.json`: `hotpotqa / historical-comparison-receipts` `next_action`
+  1296 -> 1550 chars. The receipt requirement is now stated as withdrawn-with-evidence instead of as
+  work to do; every other obligation is preserved verbatim in substance (candidate ID and unresolved
+  binding as a comparability limit, incomplete/unknown-ID/effect=null preservation, never
+  resume/rerun/overwrite, reconcile if authentic receipts arrive from outside this machine, synthetic
+  timeout closure, the first-five packet and its limits, current selected scorer/control admission,
+  fresh-ID staged policy, withdrawn shared gates). `observed`, status, family, evidence and
+  `historical_runs` are untouched: `run_id` stays `null`, `effect` stays `null`.
+* `registry/blocker-closure-assessment.md`: the hotpotqa disposition becomes `LIMIT-RECORDED` and the
+  "needs an explicit decision" paragraph is replaced by what was recorded and why the wording differs.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest <the eleven registry-reading guard modules> -q
+163 passed, 12 skipped, 0 failed
+
+The blocker count is unchanged: 14 open blockers before and after. No blocker is closed, deleted or
+downgraded by this commit.
