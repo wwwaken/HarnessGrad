@@ -246,3 +246,40 @@ candidates" section is unchanged and still belongs to the operator; what changed
 **Method note.** A blocker can be gated by its family's contract as well as by its own `next_action`.
 Any future pass over this registry must read the family guards in `tests/quality/` alongside the
 registry text, and a strict `xfail` in those guards is debt, not a passing state.
+
+## Closure candidate, 2026-10-15 — `hotpotqa / historical-comparison-receipts`
+
+This one is filed as a **candidate**, not a closure, because it is the first time reading (A) would be
+applied to a `measurement-coverage` blocker rather than to a `dataset-journal-gap`, and because the
+earlier assessment deliberately left it open. The basis is that every clause of its current `next_action`
+is now satisfied, recorded as a limit, or a precondition on a future diagnostic — and the operator's
+standing rule is that a requirement which is **proven unobtainable is withdrawn and recorded as a limit
+rather than left open**. Leaving it open would reimpose, as an open blocker, a requirement this registry
+has already withdrawn, which is the failure mode that rule exists to prevent.
+
+| clause from the current `next_action` | class | where it stands |
+| --- | --- | --- |
+| The original v4 selected-ID/trial/error/timeout receipts, and its source/split/manifest/model/harness provenance receipts | `WITHDRAWN` | `registry/withdrawn-requirements.md` -> `hotpotqa / historical-comparison-receipts / original-v4-receipts`; enumerated scope: 722 `~/.codex/sessions` transcripts, the full object store/history/reflog/stash, `runs/`, `runs_discarded_*`, `.hashstate`, `tests/fixtures/`, the named archives and `/mnt/20t/xubuqiang/hg-census/` |
+| Historical measured/invalid/unmeasured counts and lifecycle/cleanup reconciliation for that run | `WITHDRAWN` | the same entry: they "go with" the receipts |
+| The candidate ID `hotpotqa-h0-10pct-v4` and its unresolved binding to the reported 94/1382/1476 coverage stay recorded as an explicit comparability limit | `LIMIT-RECORDED` | `registry/w-hotpotrec-receipts.md`, `registry/w-hotpotrec-evidence.json`; `historical_runs` keeps `run_id=null` and `effect=null` |
+| Preserve the old full-size protocol as incomplete; never resume, rerun or overwrite it | `SATISFIED` | pinned by `tests/quality/test_measurement_coverage_hg_b3.py:155-215` |
+| Timeout classification, persistence and aggregation | `SATISFIED` | synthetic closure; `/site/w-hotpot-timeout-closure.md`, cited in the blocker's evidence |
+| Retain the bounded first-five selected manifest/export and declared per-task sides | `SATISFIED` | `tests/fixtures/hg_wsel/hotpotqa.json`; mixed-side, not a diagnostic specification |
+| Current selected scorer/control admission for any separately authorized future diagnostic, with a fresh ID and the current staged policy | `PRE-DIAGNOSTIC` | statement only; **no diagnostic is authorized**, and nothing above waives it |
+| Withdrawn shared gates do not condition closure or admission | `WITHDRAWN` | `registry/withdrawn-requirements.md` |
+
+**What closing it would and would not mean.** It would close no measurement and assert no score: the v4
+run stays incomplete with `effect=null`, the 94/1382/1476 coverage stays unverified and unbound, and every
+diagnostic-time clause remains a requirement of any future diagnostic. What it would remove is a blocker
+whose only remaining content is a limit this registry already records.
+
+**It is not a free edit.** `tests/quality/test_measurement_coverage_hg_b3.py:155-215` parametrizes
+hotpotqa with `active_id="historical-comparison-receipts"` and asserts that blocker **exists** with status
+`measurement`, that its evidence cites the timeout-closure record, that `schema-timeout-measurement` is
+absent, and that its `shared_blockers` set tracks the live shared set. Closing means moving hotpotqa into
+that test's `withdrawn` branch beside `bird_minidev` and `ds1000`, giving it the same class of assertions
+over its withdrawal entry (`**Searched:**`, the enumerated scope, the retained `effect=null`) and moving -
+not deleting - the `historical_runs`, shared-set and timeout-closure assertions so they keep being checked
+against the cleared dataset. The reverse audit above would take the active set from 11 to **10**, and the
+`LIMIT-RECORDED` dispositions for `hotpotqa` in the summary table and in this document would become a
+closure section.
