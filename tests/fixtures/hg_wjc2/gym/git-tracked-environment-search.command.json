@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H %aI %s",
+    "-G",
+    "PYTHONHASHSEED|conda.*export|pip.*freeze",
+    "--",
+    "data/reasoning_gym",
+    "data/datasets/reasoning_gym",
+    "data/reasoning_gym.py",
+    "data/datasets/reasoning_gym.py",
+    "tests/quality/test_reasoning_gym_official_scorer.py"
+  ],
+  "cwd": "/tmp/hg-jc2-gym",
+  "started_utc": "2026-10-15T05:20:18.964496+00:00",
+  "returncode": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-c",
+    "from pathlib import Path; import json; p=Path(\"/mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl\"); rows=[(i,json.loads(x)) for i,x in enumerate(p.read_text().splitlines(),1)]; print(\"\\n\".join(json.dumps({\"line\":i,\"row\":x},sort_keys=True) for i,x in rows if x[\"family\"]==\"time_intervals\"))"
+  ],
+  "cwd": "/tmp/hg-jc2-gym",
+  "started_utc": "2026-10-15T05:17:53.977768+00:00",
+  "returncode": 0,
+  "stdout_sha256": "9c4440ca9ac3cf2493e3fd5bcf2efc217f71df34c6a4c82293ec1c3462870354",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

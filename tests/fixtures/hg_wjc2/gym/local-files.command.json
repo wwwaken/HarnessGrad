@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-c",
+    "from pathlib import Path; import os,json; p=Path(\"/mnt/20t/xubuqiang/datasets/reasoning_gym\"); print(json.dumps([{ \"path\": str(x), \"size\": x.stat().st_size,\"mtime_ns\": x.stat().st_mtime_ns,\"ctime_ns\": x.stat().st_ctime_ns} for x in sorted(p.iterdir())],indent=2))"
+  ],
+  "cwd": "/tmp/hg-jc2-gym",
+  "started_utc": "2026-10-15T05:17:53.839912+00:00",
+  "returncode": 0,
+  "stdout_sha256": "a3496cbe6e78ed141d03b115bd077406dd0fbb49c2bc620e0a1af3d970730c7d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

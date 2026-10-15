@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "rg",
+    "-n",
+    "VERSION =|SEED =|PER_FAMILY =|POOL_SHA256 =|PYTHONHASHSEED|dependency|environment|freeze|lock",
+    "tests/fixtures/hg_wjc2/gym/original-prepare.py",
+    "tests/fixtures/hg_wjc2/gym/original-reasoning_gym.py"
+  ],
+  "cwd": "/tmp/hg-jc2-gym",
+  "started_utc": "2026-10-15T05:21:13.849998+00:00",
+  "returncode": 0,
+  "stdout_sha256": "c83f00acc72723d09415094cbb01fe5ba19823bc24e70a0347f7f21c132b8412",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
