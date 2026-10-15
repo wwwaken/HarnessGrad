@@ -4838,3 +4838,45 @@ cases).
   (`P1=w-plat; P2=guard`) or use the bracket trick, and never to put the literal string anywhere else in
   the same command (an `echo` label was enough to re-trigger it a second time). The kill still worked, so
   the duplicate worker stopped and nothing was lost.
+
+## 2026-10-16 (later) — Six fidelity merges, one metric drift caught by the operator's own wording, and a packet refresh
+
+- **Range A1 landed as `f5af0f78`, and the worker's control is the model for this phase.** The checker
+  recalculated the workbook **inside the frozen task tree** (`_score` resolved the candidate from
+  `workdir`; `recalculate()` published with `shutil.move(converted, workbook)`), so on a real run the
+  write raised `[Errno 30] Read-only file system` and a formula-bearing task could not be scored at all.
+  It now copies into private scratch, recalculates that copy, and keeps it alive through comparison via
+  an `ExitStack` — a subtlety the naive fix misses, because the original `TemporaryDirectory` scope
+  closed **before** the comparison ran and the recalculated file would have vanished. The new control
+  fails pre-fix with the exact production error and passes after; the pre-existing real-engine control
+  was **strengthened**, not relaxed (read-only bind mount, frozen-byte snapshot, `[999,888]` stays in the
+  frozen tree, scratch asserted empty). Scorer custody moved `98dd6254...` → `4476b574c511898f7c88f20e95d5fd7f216ff9908813502b46b03b37abce16c8`,
+  recorded as a **new** review note so the closure note stays byte-identical. `w-sbfix2` refused to reopen
+  the closed blocker to make its own proposal apply and prepared a guarded `test`+`replace` patch
+  instead — correct behaviour, and the reason the parent applied an append rather than a rewrite.
+- **The operator's wording caught a real metric drift.** The goal's HotpotQA clause said "score answer
+  EM/F1", the operator noticed the ambiguity and specified **`reward = answer F1`, EM in the evidence**.
+  `w-hotpotqa` had implemented `reward = em` — the opposite. Its work was otherwise good (docstring
+  rewritten to say the number is *not* the official joint metric, `METRIC_NAME` added, joint demoted to
+  `diagnostic_only`, missing evidence no longer changing the answer reward, both guards strengthened with
+  an answer/EM/F1 matrix), so the branch is kept as reference and `w-hotpotf1` was launched to change the
+  one wrong thing rather than re-derive the rest. **The branch is deliberately NOT merged.**
+- **`w-metricfix` (`74f47680`) and `w-verifierfix` (`c7018165`) merged**: PhysicsQuestions now strips
+  trailing periods from **both** sides (the goal promised it and the code did not); SportsUnderstanding
+  resolves an immediately negated label to its complement, with the rule's limits written down (no double
+  negation, no intervening words, no post-label negation, no synonyms, no sarcasm); GSM8K uses the
+  **first** `####` marker when present and a malformed first marker is a zero rather than a silent
+  fallback to another number; LiveCodeBench drops the inner 600 s cap in favour of upstream's
+  `(timeout+1)*n+5`, which the adapter's existing 900 s verifier bound still contains; and the
+  reward-file-absent branch in `verifier.py` now sets `unmeasured` while keeping the check's stdout,
+  matching its cfrf sibling. Verified 152 passed across the new and existing suites.
+- **`w-adaptfid1` (`6b0c78ea`) merged, and it drifted two pinned packets — which is the point.**
+  `parse_prediction` now keeps a line only when it is a bare/dotted identifier or contains a call-shaped
+  identifier, so prose with no call no longer becomes a "predicted function" on the irrelevance subset;
+  2Wiki declares `EVIDENCE_AWARE = True` and refuses the shared pair schema that cannot express triples
+  with a named reason. Because it edits a platform file, `hg_bfclguard`'s reachability inventory
+  (`import_nodes` 2116 → 2117, target counters still 0) and `hg_bfclcontain`'s source pin (`bfcl_v3.py`,
+  28,188 → 28,684 bytes) both had to be refreshed; **before** the refresh the suites were 23 red, all at
+  the `retained source drift` assert rather than on a verdict, and **after** it they are 109 passed. No
+  fabricated outcome changed, so the refresh was mechanical — but the fact that it is the third such
+  refresh this session says adapter changes should expect to carry one.
