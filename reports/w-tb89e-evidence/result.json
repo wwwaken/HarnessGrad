@@ -1,0 +1,465 @@
+{
+  "preparation_inventory": {
+    "path": "/tmp/w-tb89e-raw-20261015T062756Z-d05d3fb5/preparation-artifact-inventory.json",
+    "bytes": 65791,
+    "sha256": "91820340c2d2d8ff56f3c723c04a4135f0f81470b49f14372609c0c9d682d1e2"
+  },
+  "raw_root": "/tmp/w-tb89e-raw-20261015T062756Z-d05d3fb5",
+  "runs_root": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f",
+  "inventory": {
+    "total_task_references": 89,
+    "cached_images": 86,
+    "missing_images": [
+      "mteb-leaderboard",
+      "pytorch-model-recovery",
+      "reshard-c4-data"
+    ]
+  },
+  "raw_counts": {
+    "selected_tasks": 3,
+    "expected_trials": 3,
+    "measured_tasks": 3,
+    "measured_trials": 3,
+    "invalid_tasks": 0,
+    "unmeasured_tasks": 0
+  },
+  "publication_counts": {
+    "eligible_tasks": 3,
+    "expected_trials": 3,
+    "invalid_tasks": 0,
+    "invalid_trials": 0,
+    "measured_tasks": 0,
+    "measured_trials": 0,
+    "selected_tasks": 3,
+    "unmeasured_tasks": 3,
+    "unmeasured_trials": 3
+  },
+  "prior_measured": [
+    "cancel-async-tasks",
+    "db-wal-recovery",
+    "extract-elf",
+    "fix-git",
+    "git-leak-recovery",
+    "openssl-selfsigned-cert",
+    "polyglot-c-py",
+    "regex-log",
+    "sanitize-git-repo",
+    "fix-code-vulnerability"
+  ],
+  "new_measured": [
+    "build-cython-ext",
+    "headless-terminal",
+    "largest-eigenval"
+  ],
+  "cumulative_unique": [
+    "build-cython-ext",
+    "cancel-async-tasks",
+    "db-wal-recovery",
+    "extract-elf",
+    "fix-code-vulnerability",
+    "fix-git",
+    "git-leak-recovery",
+    "headless-terminal",
+    "largest-eigenval",
+    "openssl-selfsigned-cert",
+    "polyglot-c-py",
+    "regex-log",
+    "sanitize-git-repo"
+  ],
+  "external_inventory": {
+    "path": "/tmp/w-tb89e-raw-20261015T062756Z-d05d3fb5/run-artifact-inventory.json",
+    "bytes": 518105,
+    "sha256": "f8d5baa864161710cad3c975017fe36aa02a7b6772374f6ac1206e398324d253"
+  },
+  "external_result": {
+    "path": "/tmp/w-tb89e-raw-20261015T062756Z-d05d3fb5/result.json",
+    "bytes": 37938,
+    "sha256": "c5693792e87aa8207bf4e315d705ee349bd1022aa849a25cd474a2359f270bb7"
+  },
+  "rows": [
+    {
+      "task_id": "build-cython-ext",
+      "run_id": "w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc",
+      "run_dir": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc",
+      "work_root": "/tmp/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-work",
+      "evidence_dir": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-evidence",
+      "image_id": "sha256:3612a38fadb89a96f74a1a951fb0b0af734198fd160571eeaba6401593234594",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/build-cython-ext@sha256:3612a38fadb89a96f74a1a951fb0b0af734198fd160571eeaba6401593234594",
+        "alexgshaw/build-cython-ext@sha256:3612a38fadb89a96f74a1a951fb0b0af734198fd160571eeaba6401593234594"
+      ],
+      "ctrf_produced": true,
+      "raw_measured": true,
+      "raw_score": 0.0,
+      "native_raw_score": 0.0,
+      "raw_invalid": {},
+      "raw_exclusion_reason": null,
+      "agent_timeout_observed": false,
+      "agent_tokens": {
+        "input": 188174,
+        "output": 2128,
+        "calls": 32,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc/progress/round-0/traces/build-cython-ext.trial1.jsonl"
+        ]
+      },
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 32,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 32,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 630823,
+        "bytes_to_client": 33402,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "hashes": {
+        "source": "92f4385497996464e8514d4be72910efec2d8ee24291d7412f97666b6ea0ebf2",
+        "split": "f674c2dc29b9cef6309765e30b60e33e04b52f35a0a39e525f10a6022c4d4067",
+        "manifest": "8fe370eaebd8ffb210d77ba4cbfb837b3433a90a7667c044bfffff79ffd12ea2",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "0156c9c4085258b696ce424cf1ce96cba44d1263c5d73bdf54083fd80237f915"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "cleanup_observed_absent": true,
+      "resource_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-evidence/resource-observation-receipt.json",
+        "sha256": "4a055018195f7bdd1c8cd84610bfe159f6922b1f87e4eaff6b8a45ddffa39317",
+        "bytes": 116456
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-evidence/snapshot-observation-receipt.json",
+        "sha256": "9520fe17892feb5c70e02f19189313a03f1a02ab176f5520863700cbeeab43f5",
+        "bytes": 972
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-evidence/cleanup-observation-receipt.json",
+        "sha256": "718c2366b8eccb19513e7893e6a8e1bececcd6b643567acaf1e7f75354351705",
+        "bytes": 4363
+      },
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T06:31:54.082888+00:00",
+        "ended_at": "2026-10-15T06:47:05.640550+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      },
+      "ctrf_files": [
+        {
+          "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-evidence/verifier-ctrf.json-c35a6fb77b34ca32f5d1176cfda28249ad1fe419aeed788f8c75c1d59693ce3d",
+          "sha256": "c35a6fb77b34ca32f5d1176cfda28249ad1fe419aeed788f8c75c1d59693ce3d",
+          "bytes": 11155,
+          "summary": {
+            "tests": 11,
+            "passed": 1,
+            "failed": 10,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1792046783.482473,
+            "stop": 1792046821.5936246
+          }
+        }
+      ],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-build-cython-ext-20261015T063134Z-078eb0fc-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ]
+    },
+    {
+      "task_id": "headless-terminal",
+      "run_id": "w-tb89e-headless-terminal-20261015T064705Z-c201448f",
+      "run_dir": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f",
+      "work_root": "/tmp/w-tb89e-headless-terminal-20261015T064705Z-c201448f-work",
+      "evidence_dir": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f-evidence",
+      "image_id": "sha256:eb7e209672bf6cef2785fafd9e13509b10626c327bcc2b37f5bf40ca83eaf3aa",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/headless-terminal@sha256:eb7e209672bf6cef2785fafd9e13509b10626c327bcc2b37f5bf40ca83eaf3aa",
+        "alexgshaw/headless-terminal@sha256:eb7e209672bf6cef2785fafd9e13509b10626c327bcc2b37f5bf40ca83eaf3aa"
+      ],
+      "ctrf_produced": true,
+      "raw_measured": true,
+      "raw_score": 0.0,
+      "native_raw_score": 0.0,
+      "raw_invalid": {},
+      "raw_exclusion_reason": null,
+      "agent_timeout_observed": false,
+      "agent_tokens": {
+        "input": 217834,
+        "output": 7318,
+        "calls": 32,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f/progress/round-0/traces/headless-terminal.trial1.jsonl"
+        ]
+      },
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 33,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 33,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 887698,
+        "bytes_to_client": 56668,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "hashes": {
+        "source": "a346e6d064e8417bc2b933ac501d29d569d0306b477c873705141ae69a365f5d",
+        "split": "8b3b3417dae026fc0bb73de212d4f50e9c493a330cc640ec084e321ce1315e17",
+        "manifest": "b61a0d39c4697f876ff362c51f6c57c95eec04d4c13a3ac80f3198c393bd9f48",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "bfaa32131cbbef985f9b0bbc3cb231ac51eb90579e6e3db55a2f09b5fa0f46b7"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "cleanup_observed_absent": true,
+      "resource_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f-evidence/resource-observation-receipt.json",
+        "sha256": "cd874d986799bf74a7a051514fd562a224caed978f3d7a0304f81be07c7c7d52",
+        "bytes": 34438
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f-evidence/snapshot-observation-receipt.json",
+        "sha256": "56273a16ec71ffe759c2b26d2b86e0c9b14dd012ad6c32f6cf9a0aa2a5e61e2f",
+        "bytes": 976
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f-evidence/cleanup-observation-receipt.json",
+        "sha256": "b946540db66ba7af13d255a45c136bf3b658844e89892dc270f5deb490ef6b33",
+        "bytes": 4376
+      },
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T06:47:30.096729+00:00",
+        "ended_at": "2026-10-15T06:51:41.355465+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      },
+      "ctrf_files": [
+        {
+          "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f-evidence/verifier-ctrf.json-acaae3ee0eee59e6d407de81bfc5f56ec0f291dd3c18a93a61eb2b278d3f67ae",
+          "sha256": "acaae3ee0eee59e6d407de81bfc5f56ec0f291dd3c18a93a61eb2b278d3f67ae",
+          "bytes": 21249,
+          "summary": {
+            "tests": 7,
+            "passed": 1,
+            "failed": 6,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1792047066.3817625,
+            "stop": 1792047096.842025
+          }
+        }
+      ],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-headless-terminal-20261015T064705Z-c201448f-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2,
+          "text": "0\n"
+        }
+      ]
+    },
+    {
+      "task_id": "largest-eigenval",
+      "run_id": "w-tb89e-largest-eigenval-20261015T065141Z-c10bebac",
+      "run_dir": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac",
+      "work_root": "/tmp/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-work",
+      "evidence_dir": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-evidence",
+      "image_id": "sha256:cb9e3e3b09d0783f3bbcfeec8d77bc32d3791204fb2be6650b19be4fbc082b2e",
+      "repo_digests": [
+        "docker.1panel.live/alexgshaw/largest-eigenval@sha256:cb9e3e3b09d0783f3bbcfeec8d77bc32d3791204fb2be6650b19be4fbc082b2e",
+        "alexgshaw/largest-eigenval@sha256:cb9e3e3b09d0783f3bbcfeec8d77bc32d3791204fb2be6650b19be4fbc082b2e"
+      ],
+      "ctrf_produced": true,
+      "raw_measured": true,
+      "raw_score": 1.0,
+      "native_raw_score": 1.0,
+      "raw_invalid": {},
+      "raw_exclusion_reason": null,
+      "agent_timeout_observed": false,
+      "agent_tokens": {
+        "input": 44218,
+        "output": 2431,
+        "calls": 16,
+        "source": "retained native trial trace usage",
+        "trace_paths": [
+          "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac/progress/round-0/traces/largest-eigenval.trial1.jsonl"
+        ]
+      },
+      "model_gateway": {
+        "published": true,
+        "target": "127.0.0.1:8002",
+        "connections": 16,
+        "upstream_connect_failed": 0,
+        "upstream_connect_error": null,
+        "upstream_closed_first": 16,
+        "client_closed_first": 0,
+        "bytes_to_upstream": 166473,
+        "bytes_to_client": 22778,
+        "read_errors": []
+      },
+      "identity_declared": {
+        "harness": "loop",
+        "config": {
+          "max_steps": 32,
+          "submit_retries": 2,
+          "parse_retries": 2,
+          "finish_nudge_steps": 4,
+          "repeat_nudge_limit": 2,
+          "output_limit": 4000,
+          "context_chars": 60000,
+          "shell": "/usr/bin/bash",
+          "shell_dialect": "Bash",
+          "max_output_tokens": 2048
+        },
+        "agent_model": "qwen3.5-9b-local",
+        "agent_backend": "openai"
+      },
+      "endpoint": "http://127.0.0.1:8002/v1",
+      "model": "qwen3.5-9b-local",
+      "model_weights_sha256": null,
+      "hashes": {
+        "source": "f429b7d31d15cab348df8f492b57413b418eb9bef57dba0e696c330e091f3c30",
+        "split": "79a7bbdcc1b8ceb2414826d8610ff467d34714f4d60f29529dbadfb35e1d3ea1",
+        "manifest": "c8e7938accbf6f3086127225a9443a87ab0db68870474477e86e753dc7abcff9",
+        "model": null,
+        "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+      },
+      "scorer": {
+        "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+        "scorer_sha256": "fc40868bee6cbcfd6e906b0522dda9a778064ea9876e64a40a377d66087a174b"
+      },
+      "declared_limits": {
+        "resource": {
+          "cpus": 1,
+          "memory_mb": 2048,
+          "agent_timeout_s": 900,
+          "verify_timeout_s": 900
+        },
+        "budget": null
+      },
+      "cleanup_observed_absent": true,
+      "resource_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-evidence/resource-observation-receipt.json",
+        "sha256": "e6fea1dcc06969c6a5fad57a7dec2be84e18bf2d753d3c1780d60413ad7f6f71",
+        "bytes": 22115
+      },
+      "snapshot_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-evidence/snapshot-observation-receipt.json",
+        "sha256": "6da861dba2e315d3a2c573c88c86120ee23de35b53ad0671ddfaa3f467554d9c",
+        "bytes": 972
+      },
+      "cleanup_receipt": {
+        "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-evidence/cleanup-observation-receipt.json",
+        "sha256": "f866c0315668cdde2e6ccea5af2f74da4fed4b364316f922201787de9cd1b9ee",
+        "bytes": 4363
+      },
+      "launch_observation": {
+        "returncode": 2,
+        "started_at": "2026-10-15T06:51:59.275710+00:00",
+        "ended_at": "2026-10-15T06:54:29.845043+00:00",
+        "endpoint": "http://127.0.0.1:8002/v1",
+        "model": "qwen3.5-9b-local"
+      },
+      "ctrf_files": [
+        {
+          "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-evidence/verifier-ctrf.json-6a85807f19831332c07eb7245da3465392d234ce14542b0983442e42e6585ed4",
+          "sha256": "6a85807f19831332c07eb7245da3465392d234ce14542b0983442e42e6585ed4",
+          "bytes": 1782,
+          "summary": {
+            "tests": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1792047264.5863552,
+            "stop": 1792047266.1849098
+          }
+        }
+      ],
+      "reward_files": [
+        {
+          "path": "/tmp/w-tb89e-runs-20261015T062928Z-d50bd09f/w-tb89e-largest-eigenval-20261015T065141Z-c10bebac-evidence/verifier-reward.txt-4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+          "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+          "bytes": 2,
+          "text": "1\n"
+        }
+      ]
+    }
+  ]
+}
