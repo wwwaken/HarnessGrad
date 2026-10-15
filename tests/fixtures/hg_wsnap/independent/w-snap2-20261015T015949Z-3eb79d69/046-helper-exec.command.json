@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-w",
+    "/app",
+    "hg-verify-w-snap2-20261015T015949Z-3eb79d69-changed",
+    "/bin/sh",
+    "-c",
+    "if test -f /app/binding-value; then cat /app/binding-value; else echo binding-value-absent; fi; readlink /proc/1/exe"
+  ],
+  "cwd": "/tmp/hg-snap2",
+  "started_utc": "2026-10-15T02:00:10.515805+00:00",
+  "timeout_s": 30,
+  "returncode": 0
+}

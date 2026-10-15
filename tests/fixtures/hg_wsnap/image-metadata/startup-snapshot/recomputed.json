@@ -1,0 +1,133 @@
+{
+  "image_id": "sha256:fcce98bf0114ee45a9d5e9e97b7ba2b733753484f4a69e32555cc6d2e0cfb183",
+  "manifest_sha256": "sha256:fcce98bf0114ee45a9d5e9e97b7ba2b733753484f4a69e32555cc6d2e0cfb183",
+  "config_sha256": "sha256:4b74ffd66ed3c113e5c4413a4c2c0688b36b5258c220aa2909cbac31ae9e630c",
+  "config_descriptor": {
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "digest": "sha256:4b74ffd66ed3c113e5c4413a4c2c0688b36b5258c220aa2909cbac31ae9e630c",
+    "size": 6370
+  },
+  "layers": [
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+        "digest": "sha256:b1badc6e50664185acfaa0ca255d8076061c2a9d881cecaaad281ae11af000ce",
+        "size": 28230255
+      },
+      "blob_sha256": "sha256:b1badc6e50664185acfaa0ca255d8076061c2a9d881cecaaad281ae11af000ce",
+      "uncompressed_sha256": "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+      "uncompressed_bytes": 77875200
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+        "digest": "sha256:7e88bf276da094b3c1c5d62775d85ae6e63c58165a5c759570bcecf8b52a4ce3",
+        "size": 3515854
+      },
+      "blob_sha256": "sha256:7e88bf276da094b3c1c5d62775d85ae6e63c58165a5c759570bcecf8b52a4ce3",
+      "uncompressed_sha256": "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+      "uncompressed_bytes": 9566208
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+        "digest": "sha256:d55dfff74d98ac204fa78f18533eecc39a8bd69bd9384a73572c6d09f06b11fc",
+        "size": 12418042
+      },
+      "blob_sha256": "sha256:d55dfff74d98ac204fa78f18533eecc39a8bd69bd9384a73572c6d09f06b11fc",
+      "uncompressed_sha256": "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+      "uncompressed_bytes": 37597696
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+        "digest": "sha256:e97853488aa5b877aa1248a8d146c75752543b00dced77518e40164d1badafd3",
+        "size": 250
+      },
+      "blob_sha256": "sha256:e97853488aa5b877aa1248a8d146c75752543b00dced77518e40164d1badafd3",
+      "uncompressed_sha256": "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+      "uncompressed_bytes": 5120
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+        "digest": "sha256:63ff33ad641b9f09475780c18fcae5aa35c92fed4207585d4e93c6070d6c2e0e",
+        "size": 92
+      },
+      "blob_sha256": "sha256:63ff33ad641b9f09475780c18fcae5aa35c92fed4207585d4e93c6070d6c2e0e",
+      "uncompressed_sha256": "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+      "uncompressed_bytes": 1536
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+        "digest": "sha256:0d61612c452df55617b5222f791e20a624942b2476f92af02c613054f80bb17e",
+        "size": 971
+      },
+      "blob_sha256": "sha256:0d61612c452df55617b5222f791e20a624942b2476f92af02c613054f80bb17e",
+      "uncompressed_sha256": "sha256:397ac7d9f86d323df835fa69cd3e62e127644b3214b664b7962cd4f33ec88ca4",
+      "uncompressed_bytes": 13824
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:9a333c5183da6b4341afd865b94498bc541fff4414e71ced65f9c5ccf1d01c83",
+        "size": 293
+      },
+      "blob_sha256": "sha256:9a333c5183da6b4341afd865b94498bc541fff4414e71ced65f9c5ccf1d01c83",
+      "uncompressed_sha256": "sha256:b99d5d2177fb8ee062007acd4573a6be355823f72bab3a9f3506c10f4a7473a5",
+      "uncompressed_bytes": 5120
+    }
+  ],
+  "all_archive_members": {
+    "blobs/sha256/0d61612c452df55617b5222f791e20a624942b2476f92af02c613054f80bb17e": {
+      "sha256": "sha256:0d61612c452df55617b5222f791e20a624942b2476f92af02c613054f80bb17e",
+      "size": 971
+    },
+    "blobs/sha256/4b74ffd66ed3c113e5c4413a4c2c0688b36b5258c220aa2909cbac31ae9e630c": {
+      "sha256": "sha256:4b74ffd66ed3c113e5c4413a4c2c0688b36b5258c220aa2909cbac31ae9e630c",
+      "size": 6370
+    },
+    "blobs/sha256/63ff33ad641b9f09475780c18fcae5aa35c92fed4207585d4e93c6070d6c2e0e": {
+      "sha256": "sha256:63ff33ad641b9f09475780c18fcae5aa35c92fed4207585d4e93c6070d6c2e0e",
+      "size": 92
+    },
+    "blobs/sha256/7e88bf276da094b3c1c5d62775d85ae6e63c58165a5c759570bcecf8b52a4ce3": {
+      "sha256": "sha256:7e88bf276da094b3c1c5d62775d85ae6e63c58165a5c759570bcecf8b52a4ce3",
+      "size": 3515854
+    },
+    "blobs/sha256/9a333c5183da6b4341afd865b94498bc541fff4414e71ced65f9c5ccf1d01c83": {
+      "sha256": "sha256:9a333c5183da6b4341afd865b94498bc541fff4414e71ced65f9c5ccf1d01c83",
+      "size": 293
+    },
+    "blobs/sha256/b1badc6e50664185acfaa0ca255d8076061c2a9d881cecaaad281ae11af000ce": {
+      "sha256": "sha256:b1badc6e50664185acfaa0ca255d8076061c2a9d881cecaaad281ae11af000ce",
+      "size": 28230255
+    },
+    "blobs/sha256/d55dfff74d98ac204fa78f18533eecc39a8bd69bd9384a73572c6d09f06b11fc": {
+      "sha256": "sha256:d55dfff74d98ac204fa78f18533eecc39a8bd69bd9384a73572c6d09f06b11fc",
+      "size": 12418042
+    },
+    "blobs/sha256/e97853488aa5b877aa1248a8d146c75752543b00dced77518e40164d1badafd3": {
+      "sha256": "sha256:e97853488aa5b877aa1248a8d146c75752543b00dced77518e40164d1badafd3",
+      "size": 250
+    },
+    "blobs/sha256/fcce98bf0114ee45a9d5e9e97b7ba2b733753484f4a69e32555cc6d2e0cfb183": {
+      "sha256": "sha256:fcce98bf0114ee45a9d5e9e97b7ba2b733753484f4a69e32555cc6d2e0cfb183",
+      "size": 1860
+    },
+    "index.json": {
+      "sha256": "sha256:4dbc780d5137c0decfe1a31c890fcfd72e047df10f5ca29ee27d585cc200c24b",
+      "size": 241
+    },
+    "manifest.json": {
+      "sha256": "sha256:2896cd937cf71188779bff2bf1bf070eb490690c050adaf8cfe6870799f30a47",
+      "size": 679
+    },
+    "oci-layout": {
+      "sha256": "sha256:18f0797eab35a4597c1e9624aa4f15fd91f6254e5538c1e0d193b2a95dd4acc6",
+      "size": 30
+    }
+  },
+  "layer_bytes_retained": false
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "manifest-bound observer receipt; not snapshot admission",
+  "binding": {
+    "adapter_id": "terminal_bench",
+    "run_id": "w-net-terminal-bench-20261014T200818Z-fd0c4d1e",
+    "trial_id": "openssl-selfsigned-cert:1",
+    "manifest_sha256": "27e0890e47bd3e1385e96590fe7d38f760bca5461e560230cb8dcecaf3ed5366"
+  },
+  "snapshots": [
+    {
+      "source": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e-launch-evidence/snapshot-inspect-00072.json",
+      "source_sha256": "1653176b5c88cca0eca27d1be9b86b54a7475cfb596253e93b593d8c47ac082d",
+      "id": "sha256:59c94f3462a248e5af5909b2249cba07e2e46574eee4fd362896d7c048eac779",
+      "repo_tags": [
+        "hg-snapshot:w-net-terminal-bench-20261014T200818Z-fd0c4d1e-openssl-selfsigned-cert"
+      ],
+      "size": 45791844,
+      "parent": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12"
+    }
+  ],
+  "events_path": "/tmp/hg-net/runs/w-net-terminal-bench-20261014T200818Z-fd0c4d1e/events.jsonl",
+  "events_sha256": "5a09e3242a7206267dc904ce79777c7412d4eafe083d47aafa1df5bd4d3ba3b4",
+  "driver_snapshot": {
+    "detail": "driver has no verified lifecycle receipt; trusted orchestration must attest",
+    "receipt_sha256": null,
+    "status": "unknown"
+  }
+}

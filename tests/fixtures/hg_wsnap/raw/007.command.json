@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "w-snap-20261015T014556Z-76c70b20-actor",
+    "--network",
+    "none",
+    "--label",
+    "harnessgrad.run=w-snap-20261015T014556Z-76c70b20",
+    "--label",
+    "harnessgrad.task=actor",
+    "--pids-limit",
+    "64",
+    "--memory",
+    "256m",
+    "--cpus",
+    "1",
+    "--tmpfs",
+    "/probe-tmp",
+    "--mount",
+    "type=bind,src=/tmp/hg-wsnap-_beee5v7/readonly,dst=/probe-ro,readonly",
+    "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+    "sleep",
+    "infinity"
+  ],
+  "cwd": "/tmp/hg-snap",
+  "started_utc": "2026-10-15T01:46:00.345433+00:00",
+  "timeout_s": 180,
+  "returncode": 0
+}

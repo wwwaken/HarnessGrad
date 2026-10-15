@@ -1,0 +1,56 @@
+[
+    {
+        "Architecture": "amd64",
+        "Config": {
+            "Cmd": [
+                "sleep",
+                "infinity"
+            ],
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a"
+            ],
+            "Labels": {
+                "com.docker.compose.project": "harbor-build-openssl-selfsigned-cert",
+                "com.docker.compose.service": "task",
+                "com.docker.compose.version": "2.35.1",
+                "harnessgrad.run": "w-snap2-20261015T015949Z-3eb79d69",
+                "harnessgrad.task": "actor"
+            },
+            "WorkingDir": "/app"
+        },
+        "Created": "2026-10-15T10:00:09.712377235+08:00",
+        "Descriptor": {
+            "digest": "sha256:33d1c7f4a146f09aea162703692670f96905a22f05e02a120fa82cdc5494a56f",
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "size": 1860
+        },
+        "Id": "sha256:33d1c7f4a146f09aea162703692670f96905a22f05e02a120fa82cdc5494a56f",
+        "Metadata": {
+            "LastTagTime": "2026-10-15T02:00:09.927104862Z"
+        },
+        "Os": "linux",
+        "Parent": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+        "RepoDigests": [
+            "hg-wsnap2@sha256:33d1c7f4a146f09aea162703692670f96905a22f05e02a120fa82cdc5494a56f"
+        ],
+        "RepoTags": [
+            "hg-wsnap2:w-snap2-20261015T015949Z-3eb79d69-changed"
+        ],
+        "RootFS": {
+            "Layers": [
+                "sha256:eb5f13bce9936c760b9fa73aeb1b608787daa36106cc888104132e353ed37252",
+                "sha256:2a9c7b727490d026db269bdf2bf74ce80e17abe26fc4dd99bd53b3d1686e58dc",
+                "sha256:1ce62254e2a41ba52d6f4edab1c02c6733a219d0b27ff7b0d495f2987fc165ad",
+                "sha256:56ffb1fa8b190de199776ee5e02b4c9d482f5300e4aaa162e66fe09778c1a243",
+                "sha256:bb90eb063b6e7bec0bb1f27ff7d6d84dbd5f9c1c3932cbec014527582d94733c",
+                "sha256:397ac7d9f86d323df835fa69cd3e62e127644b3214b664b7962cd4f33ec88ca4",
+                "sha256:0cfdf76a04c800ebcd5a237af9ab8946fcd755988d68161bf84ad69f29d3b476"
+            ],
+            "Type": "layers"
+        },
+        "Size": 44173992
+    }
+]
