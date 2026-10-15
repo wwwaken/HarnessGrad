@@ -1,0 +1,129 @@
+[
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "fever-dev",
+      "https://fever.ai/download/fever/shared_task_dev.jsonl"
+    ],
+    "stdout": "fever-dev.stdout.txt",
+    "stderr": "fever-dev.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "fever-download-page",
+      "https://fever.ai/dataset/fever.html"
+    ],
+    "stdout": "fever-download-page.stdout.txt",
+    "stderr": "fever-download-page.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "hub-commits-retry",
+      "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/a6b8d891d393e97a4efac791afffb2d7de5e57c6"
+    ],
+    "stdout": "hub-commits-retry.stdout.txt",
+    "stderr": "hub-commits-retry.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "hub-commits",
+      "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/a6b8d891d393e97a4efac791afffb2d7de5e57c6"
+    ],
+    "stdout": "hub-commits.stdout.txt",
+    "stderr": "hub-commits.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "original-zenodo",
+      "https://zenodo.org/api/files/91ad9fca-c15e-4069-80f9-bac6ec5c2d9b/shared_task_dev.jsonl"
+    ],
+    "stdout": "original-zenodo.stdout.txt",
+    "stderr": "original-zenodo.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "producer-issue5-comments",
+      "https://api.github.com/repos/copenlu/fever-adversarial-attacks/issues/5/comments"
+    ],
+    "stdout": "producer-issue5-comments.stdout.txt",
+    "stderr": "producer-issue5-comments.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "producer-issue5-retry",
+      "https://api.github.com/repos/copenlu/fever-adversarial-attacks/issues/5"
+    ],
+    "stdout": "producer-issue5-retry.stdout.txt",
+    "stderr": "producer-issue5-retry.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "producer-issue5",
+      "https://api.github.com/repos/copenlu/fever-adversarial-attacks/issues/5"
+    ],
+    "stdout": "producer-issue5.stdout.txt",
+    "stderr": "producer-issue5.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "producer-merge",
+      "https://raw.githubusercontent.com/copenlu/fever-adversarial-attacks/aaa126ec4f3cf7163f69b82a0a0976d2579a04a6/scripts/merge_nli_files.py"
+    ],
+    "stdout": "producer-merge.stdout.txt",
+    "stderr": "producer-merge.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "producer-nei",
+      "https://raw.githubusercontent.com/copenlu/fever-adversarial-attacks/aaa126ec4f3cf7163f69b82a0a0976d2579a04a6/scripts/aggregate_papelo_nei.py"
+    ],
+    "stdout": "producer-nei.stdout.txt",
+    "stderr": "producer-nei.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/acquire.py",
+      "producer-readme",
+      "https://raw.githubusercontent.com/copenlu/fever-adversarial-attacks/aaa126ec4f3cf7163f69b82a0a0976d2579a04a6/README.md"
+    ],
+    "stdout": "producer-readme.stdout.txt",
+    "stderr": "producer-readme.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/audit.py"
+    ],
+    "stdout": "audit.stdout.txt",
+    "stderr": "audit.stderr.txt"
+  },
+  {
+    "argv": [
+      "python3",
+      "tests/fixtures/hg_wjc2/fever/audit.py",
+      "--check"
+    ],
+    "stdout": "reproduction.stdout.txt",
+    "stderr": "reproduction.stderr.txt"
+  }
+]
