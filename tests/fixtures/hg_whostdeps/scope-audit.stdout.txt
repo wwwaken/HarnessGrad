@@ -1,0 +1,362 @@
+[
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 37,
+    "text": "  own CLI, and verification overwrites them. The check imports `gym_env` from the"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 52,
+    "text": "from __future__ import annotations"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 54,
+    "text": "import argparse"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 55,
+    "text": "import json"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 56,
+    "text": "import os"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 57,
+    "text": "import sys"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 58,
+    "text": "import traceback"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 59,
+    "text": "from pathlib import Path"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 63,
+    "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 66,
+    "text": "import gym_env  # noqa: E402"
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 125,
+    "text": "    verbatim copy of upstream's code -- the copy, not an import of their package."
+  },
+  {
+    "path": "data/datasets/alfworld/verify/check.py",
+    "line": 170,
+    "text": "        state = gym_env.replay(str(inputs[str(args.game)]), actions, args.budget)"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 36,
+    "text": "from __future__ import annotations"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 38,
+    "text": "import argparse"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 39,
+    "text": "import json"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 40,
+    "text": "import sys"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 41,
+    "text": "import traceback"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 42,
+    "text": "from pathlib import Path"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 46,
+    "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 49,
+    "text": "import jer_env  # noqa: E402"
+  },
+  {
+    "path": "data/datasets/jericho/verify/check.py",
+    "line": 135,
+    "text": "        steps = jer_env.replay(env, actions)"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 49,
+    "text": "from __future__ import annotations"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 51,
+    "text": "import argparse"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 52,
+    "text": "import json"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 53,
+    "text": "import os"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 54,
+    "text": "import sys"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 55,
+    "text": "import traceback"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 56,
+    "text": "from pathlib import Path"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 60,
+    "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 63,
+    "text": "import scw_env  # noqa: E402"
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 88,
+    "text": "    \"\"\"Set `JAVA_HOME`/`PATH` **before anything imports py4j**."
+  },
+  {
+    "path": "data/datasets/scienceworld/verify/check.py",
+    "line": 168,
+    "text": "        env = scw_env.load_task(workdir, step_budget=args.budget,"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 25,
+    "text": "from __future__ import annotations"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 27,
+    "text": "import argparse"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 28,
+    "text": "import json"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 29,
+    "text": "import signal"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 30,
+    "text": "import sqlite3"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 31,
+    "text": "import sys"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 32,
+    "text": "from pathlib import Path"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 36,
+    "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+  },
+  {
+    "path": "data/datasets/bird_minidev/verify/check.py",
+    "line": 116,
+    "text": "    connection = sqlite3.connect(str(inputs[args.db]))"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 9,
+    "text": "from __future__ import annotations"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 11,
+    "text": "import argparse"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 12,
+    "text": "import json"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 13,
+    "text": "import pathlib"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 14,
+    "text": "import re"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 15,
+    "text": "import subprocess"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 16,
+    "text": "import sys"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 17,
+    "text": "import tempfile"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 21,
+    "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 53,
+    "text": "    # program is passed via a temporary JSON file so the child can import the official runner."
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 60,
+    "text": "            \"import json, sys\\n\""
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 61,
+    "text": "            \"from execution import check_correctness\\n\""
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 70,
+    "text": "        import os"
+  },
+  {
+    "path": "data/datasets/ds1000/verify/check.py",
+    "line": 76,
+    "text": "        proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 36,
+    "text": "from __future__ import annotations"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 38,
+    "text": "import argparse"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 39,
+    "text": "import datetime"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 40,
+    "text": "import json"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 41,
+    "text": "import os"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 42,
+    "text": "import shutil"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 43,
+    "text": "import subprocess"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 44,
+    "text": "import sys"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 45,
+    "text": "import tempfile"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 46,
+    "text": "import traceback"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 47,
+    "text": "from pathlib import Path"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 51,
+    "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 59,
+    "text": "# changes are `print` -> return values, the module-level imports it assumed, and raising"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 169,
+    "text": "    import openpyxl"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 246,
+    "text": "        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 247,
+    "text": "    except subprocess.TimeoutExpired:"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 260,
+    "text": "    import openpyxl"
+  }
+]

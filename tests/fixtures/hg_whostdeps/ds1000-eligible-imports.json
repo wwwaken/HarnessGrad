@@ -1,0 +1,212 @@
+{
+  "all_external_import_roots": {
+    "PIL": {
+      "context_line": 3,
+      "file_line": 512,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "from PIL import Image"
+    },
+    "gensim": {
+      "context_line": 3,
+      "file_line": 937,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "from gensim.models import Word2Vec"
+    },
+    "matplotlib": {
+      "context_line": 2,
+      "file_line": 512,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import matplotlib.pyplot as plt"
+    },
+    "numpy": {
+      "context_line": 2,
+      "file_line": 1,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import numpy as np"
+    },
+    "pandas": {
+      "context_line": 1,
+      "file_line": 1,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import pandas as pd"
+    },
+    "scipy": {
+      "context_line": 3,
+      "file_line": 351,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import scipy.stats"
+    },
+    "seaborn": {
+      "context_line": 4,
+      "file_line": 513,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import seaborn as sns"
+    },
+    "sklearn": {
+      "context_line": 3,
+      "file_line": 487,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "from sklearn.preprocessing import MinMaxScaler"
+    },
+    "tensorflow": {
+      "context_line": 3,
+      "file_line": 380,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import tensorflow as tf"
+    },
+    "torch": {
+      "context_line": 3,
+      "file_line": 378,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import torch"
+    },
+    "xgboost": {
+      "context_line": 3,
+      "file_line": 838,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import xgboost.sklearn as xgb"
+    },
+    "yaml": {
+      "context_line": 3,
+      "file_line": 16,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import yaml"
+    }
+  },
+  "eligible_external_import_roots": {
+    "PIL": {
+      "context_line": 3,
+      "file_line": 512,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "from PIL import Image"
+    },
+    "matplotlib": {
+      "context_line": 2,
+      "file_line": 512,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import matplotlib.pyplot as plt"
+    },
+    "numpy": {
+      "context_line": 2,
+      "file_line": 1,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import numpy as np"
+    },
+    "pandas": {
+      "context_line": 1,
+      "file_line": 1,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import pandas as pd"
+    },
+    "scipy": {
+      "context_line": 3,
+      "file_line": 351,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import scipy.stats"
+    },
+    "seaborn": {
+      "context_line": 4,
+      "file_line": 513,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import seaborn as sns"
+    },
+    "sklearn": {
+      "context_line": 3,
+      "file_line": 487,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "from sklearn.preprocessing import MinMaxScaler"
+    },
+    "torch": {
+      "context_line": 3,
+      "file_line": 378,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import torch"
+    },
+    "yaml": {
+      "context_line": 3,
+      "file_line": 16,
+      "source": "/mnt/20t/xubuqiang/datasets/ds1000/_src/test.jsonl",
+      "text": "import yaml"
+    }
+  },
+  "eligible_rows": 926,
+  "excluded_rows": [
+    39,
+    40,
+    47,
+    48,
+    49,
+    195,
+    196,
+    199,
+    200,
+    201,
+    209,
+    210,
+    211,
+    220,
+    221,
+    222,
+    228,
+    282,
+    283,
+    379,
+    380,
+    666,
+    667,
+    668,
+    669,
+    670,
+    671,
+    672,
+    673,
+    674,
+    675,
+    676,
+    677,
+    678,
+    679,
+    680,
+    681,
+    682,
+    683,
+    684,
+    685,
+    686,
+    687,
+    688,
+    689,
+    690,
+    691,
+    692,
+    693,
+    694,
+    695,
+    696,
+    697,
+    698,
+    699,
+    700,
+    701,
+    702,
+    703,
+    704,
+    705,
+    706,
+    707,
+    708,
+    709,
+    710,
+    796,
+    819,
+    837,
+    838,
+    924,
+    925,
+    936,
+    937
+  ],
+  "scope": "trusted context imports only; arbitrary candidate imports/subprocesses remain unknown",
+  "sha256": "26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363",
+  "total_rows_read": 1000
+}

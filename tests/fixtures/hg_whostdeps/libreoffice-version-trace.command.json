@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "strace",
+    "-f",
+    "-e",
+    "trace=execve,openat",
+    "/usr/bin/soffice",
+    "--version"
+  ],
+  "elapsed_s": 0.19144940376281738,
+  "error": null,
+  "returncode": 0,
+  "start_utc": "2026-10-15T04:13:52Z",
+  "stderr": "libreoffice-version-trace.stderr.txt",
+  "stdout": "libreoffice-version-trace.stdout.txt"
+}

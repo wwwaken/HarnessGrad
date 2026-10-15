@@ -1,0 +1,60 @@
+{
+  "captures": [
+    {
+      "argv": [
+        "unshare",
+        "-Urn",
+        "python3",
+        "tests/fixtures/hg_whostdeps/collect.py"
+      ],
+      "returncode": 0,
+      "stdout": "collect.stdout.txt",
+      "stderr": "collect.stderr.txt"
+    },
+    {
+      "argv": [
+        "unshare",
+        "-Urn",
+        "python3",
+        "tests/fixtures/hg_whostdeps/supplement.py"
+      ],
+      "returncode": 0,
+      "stdout": "supplement.stdout.txt",
+      "stderr": "supplement.stderr.txt"
+    },
+    {
+      "argv": [
+        "python3",
+        "tests/fixtures/hg_whostdeps/derive.py"
+      ],
+      "returncode": 0,
+      "stdout": "derive.stdout.txt",
+      "stderr": "derive.stderr.txt"
+    },
+    {
+      "argv": [
+        "python3",
+        "tests/fixtures/hg_whostdeps/finalize.py"
+      ],
+      "returncode": 0,
+      "stdout": "finalize.stdout.txt",
+      "stderr": "finalize.stderr.txt"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/quality/test_dataset_blockers.py",
+        "tests/quality/test_dataset_journal_coverage.py",
+        "--basetemp=/tmp/harnessgrad-pytest-whostdeps"
+      ],
+      "returncode": 0,
+      "stdout": "pytest.stdout.txt",
+      "stderr": "pytest.stderr.txt"
+    }
+  ],
+  "status_source": "completed exec process results; raw captured output files retained",
+  "collection_scope": "no scoring, tasks, worlds, queries, workbook conversion, models, endpoint calls, or GPU computation"
+}
