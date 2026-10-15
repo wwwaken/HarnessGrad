@@ -131,3 +131,14 @@ exit_code=0
 $ git worktree remove /tmp/hg-offscorer3-worlds
 error: 无法删除 '/tmp/hg-offscorer3-worlds': 权限不够
 exit_code=255
+
+The worlds worktree removal failed on Docker-created ownership and already removed its registration. Only this new disposable child directory is corrected and removed; parent evidence and frozen copies are untouched.
+$ docker run --rm --network none --read-only --user 0 --mount type=bind,src=/tmp/hg-offscorer3-worlds,dst=/cleanup --entrypoint /bin/chown sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca -hR 1026:1026 /cleanup
+exit_code=0
+Python shutil.rmtree(/tmp/hg-offscorer3-worlds): completed; path absent; child branch refs retained.
+$ python3 tests/fixtures/hg_woffscorer3/verify.py
+{"closure": "S1/S3/S4/S6 remain PARTIAL", "manifest_members": 267, "new_component_dataset_count": 7, "production_source_pins_verified": 91, "registry_change_only": "scorer-offline-closure observed plus additive evidence", "valid": true}
+exit_code=0
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
