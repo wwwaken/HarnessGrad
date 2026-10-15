@@ -33,7 +33,12 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 #: 22 under `tools/` because `tools/quality_sweep.py` landed on `main` after this guard was written;
 #: parent integration counted it and gave it `errors="replace"` rather than exempting it.
-EXPECTED_CALLS = {"base_harness": 8, "eval": 11, "data": 20, "harnessgrad": 6, "tools": 22}
+#: 10 under `eval/` because w-banhung moved the two native launch sites (`sandbox.run` and the
+#: `--no-sandbox` path in `runner.py`) into the shared `eval/containers/process.py` launcher. Those
+#: two were matched here as `subprocess.*` calls and no longer are, but the call they became is
+#: matched in its new home - `process.run`'s `Popen` carries `errors="replace"` - so the property is
+#: unchanged and the smaller count is the accurate one, not a gap.
+EXPECTED_CALLS = {"base_harness": 8, "eval": 10, "data": 20, "harnessgrad": 6, "tools": 22}
 EMBEDDED_SOURCES = {"tools/diagnose_appworld.py": ("ACTOR",)}
 
 #: Sites that ask for text without `errors=`, each with the reason it is left strict.

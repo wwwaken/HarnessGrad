@@ -17,6 +17,7 @@ import eval.service.modelgate as modelgate_mod
 from eval.service.native_model_route import NativeModelRoute
 import eval.observe.progress as progress_mod
 import eval.containers.sandbox as sandbox_mod
+from eval.containers.process import run as run_process
 import eval.service.services as services_mod
 from eval.service.unix_stepwise_relay import StepwiseRelay
 from eval.run import chess_stepwise
@@ -233,7 +234,9 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     task_mount = env_spec.get("workdir") or container_mod.DEFAULT_WORKDIR
     # Declared per environment: the real task set spans 600-12000 s, and the module
     # default of 300 would report a harness failing a task it was never given time to
-    # attempt (INTERFACE.md §2.5.9).
+    # attempt (INTERFACE.md §2.5.9). `phase_timeout` already returns `min(explicit)` and
+    # falls back to 3600 only when *nothing* declares a bound, so a longer declared task
+    # deadline is never clamped here.
     timeout_s = phase_timeout(timeout_s, env_spec.get("agent_timeout_s"))
     verify_timeout_s = phase_timeout(verify_timeout_s, env_spec.get("verify_timeout_s"),
                                     (verifier or {}).get("timeout_s"))
@@ -507,8 +510,15 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                         "harness", service_specs,
                         running.recordings if running else {})))
             if not sandbox:
-                return subprocess.run(argv, capture_output=True, text=True, errors="replace",
-                                      timeout=timeout_s, cwd=workdir, env=child_env)
+                # Same launcher as the sandboxed path: a timed-out or killed launch must
+                # take its whole process group with it. `subprocess.run` reaps only the
+                # direct child, so a harness that spawned a daemon (a JVM, an engine, a
+                # `--die-with-parent` escapee) left that descendant running after the task
+                # was over. It did **not** make the call hang - on POSIX `run` calls
+                # `process.wait()` after killing the child, not an unbounded drain - so
+                # this is a cleanup fix, not a liveness one
+                # (`eval/containers/process.py`, `tests/quality/test_timeout_w_banhung.py`).
+                return run_process(argv, timeout_s=timeout_s, cwd=workdir, env=child_env)
             # `repo` is `<work_root>/<run-id>/workspace`, so the work root -- the one
             # tree that must stay visible -- is two levels up. Read from the
             # platform's own environment rather than guessed from the run id.

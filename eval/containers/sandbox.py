@@ -70,6 +70,7 @@ from pathlib import Path
 
 from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targets
 from eval.containers import model_route
+from eval.containers.process import run as run_process
 
 from ckpt.git_state import STATE_DIRNAME
 from harnessgrad.config import current as current_config
@@ -460,8 +461,8 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
             raise ImmutableRuntimeUnavailable(str(exc)) from exc
         raise
     try:
-        proc = subprocess.run(wrapped, input=input_text, capture_output=True, text=True, errors="replace",
-                              timeout=timeout_s, cwd=cwd, env=env)
+        proc = run_process(wrapped, input_text=input_text,
+                           timeout_s=timeout_s, cwd=cwd, env=env)
     except OSError as exc:
         if immutable_runtimes:
             raise ImmutableRuntimeUnavailable(str(exc)) from exc
