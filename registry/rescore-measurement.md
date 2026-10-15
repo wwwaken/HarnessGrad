@@ -1,6 +1,6 @@
 # Rescore measurement — the metric-identity fixes are score-neutral on every surviving run
 
-Parent record, 2026-10-16 (goal round 8). **No model, no GPU, no dataset run, no network.** The scorer is
+Parent record, 2026-10-16 (goal rounds 8-9). **No model, no GPU, no dataset run, no network.** The scorer is
 replayed over the per-task submissions and gold the platform already recorded, which is the calculation the
 objective's own reference note invites: *"most scorer fixes can be recomputed rather than re-run."*
 
@@ -8,34 +8,45 @@ objective's own reference note invites: *"most scorer fixes can be recomputed ra
 
 The plan (`/mnt/20t/xubuqiang/hg-work/eval-fidelity-plan.md:80`, `:198-199`) listed one open precondition
 before any rescore could be claimed: *"whether every dataset's trace carries a re-parseable submission. One
-cheap probe per dataset; until then the RESCORE/RERUN split in §2 is a plan, not a fact."* That probe is
-now done, and the rescore ran.
+cheap probe per dataset; until then the RESCORE/RERUN split in §2 is a plan, not a fact."* That probe is done
+and the rescore ran.
 
-Method: for each archived verdict, take the submission and gold that `evidence` records, and call the
+Method: for each archived verdict, take the submission and gold that `evidence` records and call the
 adapter's scorer exactly as `data/scaffolds/qa/verify/check.py:251-260` does - `score_prediction(structured,
 gold)` when a structured `prediction.json` was present and the adapter is `EVIDENCE_AWARE`, otherwise
 `score(prediction, gold)`. Verdicts are **multi-trial**, so each trial's own submission is rescored and the
-results averaged, which is what the archived `score` is.
+results averaged, which is what the archived `score` is. Script: `registry/rescore-census-verdicts.py`
+(auto-discovers every rescorable run from the `scorer_module` the scaffold recorded).
 
 **Harness validation, and why it is the load-bearing step:** the archived scores were produced by the
-*pre-fix* scorer, so a faithful harness must reproduce them in the pre-fix tree. It does, exactly:
+*pre-fix* scorer, so a faithful harness must reproduce them in a pre-fix tree. It does, exactly - and the
+post-fix tree reproduces them **identically**:
 
-| tree | gsm8k | physicsquestions | 2Wiki | fever |
-| --- | --- | --- | --- | --- |
-| **pre-fix** (scorers reverted to their pre-fix commits) | 1319 / 1319 | 16 / 16 and 37 / 37 | 11 / 12 | 12 / 12 |
-| **post-fix** (HEAD) | 1319 / 1319 | 16 / 16 and 37 / 37 | 11 / 12 | 12 / 12 |
+| tree | rescorable verdicts | agree | disagree |
+| --- | ---: | ---: | ---: |
+| **pre-fix** (scorers reverted to their pre-fix commits) | 4,578 | **4,578** | **0** |
+| **post-fix** (HEAD) | 4,578 | **4,578** | **0** |
 
-The single 2Wiki line is not a disagreement: the archived value is **rounded to six decimals**
-(`0.142857`) while the recomputation is exact (`0.142857142857…`). That is the receipt's own formatting, and
-it appears identically in both trees.
+**Result: the two trees are indistinguishable over 4,578 archived verdicts in 10 runs.** The
+metric-identity fixes change **not one** of them.
 
-**Result: the two trees are indistinguishable.** 1,396 archived verdicts across five runs, and the
-metric-identity fixes change **not one of them**.
+| dataset | runs | verdicts | pre-fix | post-fix |
+| --- | ---: | ---: | ---: | ---: |
+| `gsm8k` | 3 (`-qwen-t1-40`, `-t3-eval-full`, `-t3-train-resume-4367`) | 4,465 | 4465/4465 | 4465/4465 |
+| `physicsquestions` | 3 (`-eval`, `-probe`, `-train`) | 65 | 65/65 | 65/65 |
+| `fever` | 1 (`probe2-fever`) | 12 | 12/12 | 12/12 |
+| `reasoning_gym` | 1 (`probe2-reasoning_gym`) | 12 | 12/12 | 12/12 |
+| `triviaqa` | 1 (`probe2-triviaqa`) | 12 | 12/12 | 12/12 |
+| `twowikimultihopqa` | 1 (`probe2-twowikimultihopqa`) | 12 | 12/12 | 12/12 |
+
+`reasoning_gym` and `triviaqa` were classified **LABEL/DISCLOSURE, no metric change**, so their agreement is
+a *positive control*: the harness agrees where nothing was supposed to change, which is what makes the
+zero-delta on the five changed datasets meaningful rather than an artefact of a scorer that never disagrees.
 
 ## Why each fix is latent here - measured, not assumed
 
 A fix that changes no score has to be explained, or it looks like the fix did nothing. In each case the
-repaired code path was simply never exercised by these submissions:
+repaired code path was never exercised by these submissions:
 
 | dataset | what the fix changed | why it cannot fire here |
 | --- | --- | --- |
@@ -48,36 +59,37 @@ repaired code path was simply never exercised by these submissions:
 
 **Does establish:** on every run we still hold, the fixes are **score-neutral**. The disclosure obligation
 attached to those datasets - "earlier figures must not be reused as `<new metric name>`" - is therefore a
-**labelling** obligation in practice, not an observed numeric change. That is a stronger position than the
-qualification alone could support, because it is now measured rather than inferred from the diff.
+**labelling** obligation in practice, not an observed numeric change. That is stronger than the
+qualification alone could support, because it is measured rather than inferred from the diff.
 
 **Does not establish:** that the fixes are inert in general. They are **latent**: a future submission that
 puts a `####` in its answer, or ends a prediction with a period, or uses the structured channel, or has a
-multi-group gold, will be scored differently from before - correctly. The runs here simply contain no such
-submission.
+multi-group gold, will be scored differently - correctly. The runs here simply contain no such submission.
 
-**Scope of the evidence, stated plainly:** `gsm8k` is a **full eval run** (1,319 tasks x 3 trials), so its
-neutrality is strong. The other four are **probes**: 16 + 37 PhysicsQuestions, 12 2Wiki, 12 FEVER. Their
-neutrality is real for those tasks and should not be extended to the full pools.
+**Scope of the evidence, stated plainly:** `gsm8k` dominates it - 4,465 of the 4,578 verdicts, across three
+runs including a full eval run and a 3,106-task train resume - so GSM8K's neutrality is strong. The other
+five datasets contribute 113 verdicts between them, all from probes, and their neutrality is real for those
+tasks and must not be extended to the full pools.
 
-## Coverage: which datasets could not be rescored, and why
+## Coverage: 837 verdicts cannot be rescored, and 813 of them are one dataset
 
-| dataset | verdicts | why not |
-| --- | ---: | --- |
-| `bfcl_v3` | 12 | **gold is redacted by design** - `data/scaffolds/qa/verify/check.py:144` redacts for `bfcl_v3`, so the archived evidence contains `{"redacted": true}` and the scorer cannot be replayed |
-| `livecodebench` | 12 | **RERUN by nature**: the fix is a **timeout** (the 600 s clamp), and the child killed at 600 s recorded no per-test outcomes - no amount of rescoring recorded bytes recovers a run that needed more wall time. (Its evidence does carry `per_test`, `tests` and `metric`; the missing thing is a completed execution, not a string.) |
-| `ds1000` | 12 | **RERUN by nature**: the fix moved `context.json` out of the agent's `SETUP`, so the archived run answered a *different task*. Rescoring it would grade a submission against inputs it never saw. |
-| `spreadsheetbench` | 12 | the fix changed **where** the workbook is recalculated (private scratch). A wave-1 probe that already ran after the fix has no pre-fix score to revise, and the submission is a workbook rather than a recorded string |
-| `hotpotqa` | - | **no census run exists** for it |
-| `alfworld`, `agentdojo`, `scienceworld` | - | classified **RERUN**, not RESCORE (`eval-fidelity-plan.md:116-117`): the instrument changed, not only the scorer |
-| `sportsunderstanding` | - | no archived run at all (the plan already recorded "never run") |
-| `bird_minidev` | - | its census run has no `verdicts/` directory |
+| dataset | runs | verdicts | why not |
+| --- | ---: | ---: | --- |
+| **`musique`** | **7** | **813** | **its gold is redacted**: the adapter declares `REDACT_EVIDENCE`, so `data/scaffolds/qa/verify/check.py:236-240` replaces the gold with `{"redacted": true}` in every evidence path. This is the dataset classified **LABEL-only**, so the one dataset whose finding was purely about the metric's *name* is also the one whose evidence cannot be replayed - which is why w-evidence had to corroborate `0.3064` from the current scorer rather than from historical verdicts |
+| `bfcl_v3` | 1 | 12 | gold redacted by design (`data/scaffolds/qa/verify/check.py:144`, dataset set) |
+| `chessbench_puzzles` | 1 | 12 | gold redacted (adapter-declared, same path) |
+| `livecodebench` | 1 | 12 | **RERUN by nature**: the fix is a **timeout** (the 600 s clamp), and the child killed at 600 s recorded no per-test outcomes - no amount of rescoring recorded bytes recovers a run that needed more wall time. Its evidence does carry `per_test`, `tests` and `metric`; what is missing is a completed execution, not a string |
+| `ds1000` | 1 | 12 | **RERUN by nature**: the fix moved `context.json` out of the agent's `SETUP`, so the archived run answered a *different task*; rescoring would grade a submission against inputs it never saw |
+| `spreadsheetbench` | 1 | 12 | the fix changed **where** the workbook is recalculated; a wave-1 probe that already ran after the fix has no pre-fix score to revise, and the submission is a workbook, not a string |
+| `hotpotqa` | - | - | **no census run exists** |
+| `alfworld`, `agentdojo`, `scienceworld`, `jericho`, `bird_minidev` | - | - | `alfworld`/`agentdojo`/`scienceworld` are classified **RERUN** (`eval-fidelity-plan.md:116-117`: the instrument changed, not only the scorer); the other two have no verdicts with a recorded prediction |
+| `sportsunderstanding` | - | - | no archived run at all (the plan already recorded "never run") |
 
 ## Reproduce
 
 ```bash
 # post-fix
-cd /mnt/20t/xubuqiang/Study/HarnessGrad && python3 /mnt/20t/xubuqiang/hg-work/rescore/rescore.py
+cd /mnt/20t/xubuqiang/Study/HarnessGrad && python3 registry/rescore-census-verdicts.py
 
 # pre-fix: a detached worktree with only the scorers reverted, tests untouched
 git worktree add --detach /tmp/wr HEAD
@@ -85,12 +97,23 @@ cd /tmp/wr
 git checkout 74f47680^ -- data/datasets/gsm8k.py data/datasets/physicsquestions.py
 git checkout 6b0c78ea^ -- data/datasets/twowikimultihopqa.py
 git checkout 28e5dc67^ -- data/datasets/fever.py data/scaffolds/qa/evidence_scorers.py
-python3 /mnt/20t/xubuqiang/hg-work/rescore/rescore.py
+python3 /mnt/20t/xubuqiang/Study/HarnessGrad/registry/rescore-census-verdicts.py   # absolute path
+cd - && git worktree remove --force /tmp/wr
 ```
 
-Two traps worth recording, because the first run of this produced a meaningless result and looked
-plausible: the archived reward is the verdict's **`score`** (there is no top-level `reward` key), so reading
-`verdict['reward']` silently compares nothing and reports 100% disagreement; and the verdict is a **mean
-over trials**, so a single-sample rescore disagrees with every multi-trial task - which is how the first
-attempt "found" 37 GSM8K changes that do not exist. **Both errors pointed at the fixes rather than at the
-harness**, which is exactly the shape this phase keeps finding: a proxy read as a result.
+**Use the absolute path in the pre-fix step.** The worktree is checked out at `HEAD`, so a relative
+`registry/rescore-census-verdicts.py` runs *that* tree's copy - which is how the first attempt at this
+silently measured the older 1,396-verdict version and looked like a complete result.
+
+## Three traps, all of which produced a plausible wrong answer
+
+Each of these pointed at the fixes rather than at the harness, and each is the same shape this phase keeps
+finding - **a proxy read as a result**:
+
+* **The archived reward is the verdict's `score`**; there is no top-level `reward` key. Reading
+  `verdict['reward']` compares nothing and reported **0 of 1,319 agreement**.
+* **A verdict is a mean over trials.** Rescoring one sample per task "found" **37 GSM8K changes** that do
+  not exist; rescoring per trial and averaging reproduces the archive exactly.
+* **The receipt rounds official metrics to six decimals.** Comparing at `1e-12` reported a 2Wiki
+  disagreement (`0.142857` vs `0.142857142857…`) that is formatting, not scoring. The comparison tolerance
+  is `1e-6`, which is the precision the receipts actually carry.

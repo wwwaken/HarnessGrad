@@ -436,8 +436,9 @@ the code computes today. That sentence is the deliverable; the rest is provenanc
 
 **Measured addendum, 2026-10-16: for four of these the `NUMBER` change alters no surviving score.**
 Replaying the pre-fix and post-fix scorers over the submission and gold recorded in every archived verdict
-reproduces the archive exactly in **both** trees - `gsm8k` 1319/1319, `physicsquestions` 53/53, `fever`
-12/12, `2Wiki` 11/12 - so the fixes change none of 1,396 archived verdicts and are **latent** on the runs we
+reproduces the archive exactly in **both** trees - **4,578 of 4,578** archived
+verdicts across 10 runs and six datasets, zero disagreements in either tree - so the fixes change none of
+them and are **latent** on the runs we
 still hold (0 of 3,957 GSM8K trial-predictions carry a `####`; 0 of 53 PhysicsQuestions predictions end in
 `.`; 0 of 12 2Wiki verdicts used the structured channel). The labelling obligation below therefore stands as
 a *labelling* obligation, not as an observed numeric change. Method, harness validation and coverage gaps:

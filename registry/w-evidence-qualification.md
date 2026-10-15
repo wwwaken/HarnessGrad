@@ -9,8 +9,11 @@ surviving run.** The per-dataset "Effect" lines below say that earlier figures m
 new metric name. That obligation stands, but it is a **labelling** obligation rather than an observed
 numeric change, and that is now measured rather than inferred: replaying the pre-fix and post-fix scorers
 over the submission and gold recorded in every archived verdict reproduces the archive **exactly in both
-trees** - `gsm8k` 1319/1319, `physicsquestions` 16/16 and 37/37, `fever` 12/12, `2Wiki` 11/12 (the one gap
-is the receipt rounding `0.142857`) - so the fixes change **not one** of 1,396 archived scores. Each is
+trees** - **4,578 of 4,578** archived verdicts across 10 runs and six
+datasets, with zero disagreements in either tree - so the fixes change **not one** of them. The bulk is
+`gsm8k` (4,465 verdicts in three runs, including a full eval run and a 3,106-task train resume);
+`physicsquestions` contributes 65, and `fever`, `reasoning_gym` and `triviaqa` 12 each - the last two were
+classified LABEL-only, so their agreement is a positive control rather than a finding. Each is
 latent for a measured reason: 0 of 3,957 `gsm8k` trial-predictions carry a `####` marker, 0 of 53
 `physicsquestions` predictions end in `.`, 0 of 12 `2Wiki` verdicts used a structured `prediction.json`,
 and only 1 of 12 `fever` golds has more than one evidence group. A future submission that exercises a
