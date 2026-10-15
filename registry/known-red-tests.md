@@ -71,16 +71,18 @@ exactly the shape the workers recorded for the Reasoning Gym and HotpotQA receip
 is that they were never committed in either history.
 
 **The one with test impact is `external_provenance_b5`; most of it is restorable, but not all of it,
-and the residue is not a rate limit.** All 87 of its missing entries are `responses/*.body`; the packet
-is fully tracked; the 100 matching `responses/*.receipt.json` files are present and each records the
-request URL, method, headers, UTC times, status, response headers, byte count and SHA-256; and
-`SHA256SUMS` pins every body. One body is recorded with the SHA-256 of the empty string, which is what
-its `HEAD` request legitimately produces. Restoration is therefore a replay-and-verify operation, and
-`w-b5restore` ran it: **55 of the 87 are restored and digest-verified** (54 fetched + that empty `HEAD`).
-The other **32 are not retryable as recorded** - 23 of them pin a single shared 279-byte rate-limit error
-payload, 3 are live dynamic endpoints, 1 is an upstream 404, and only 5 were ever merely rate-limited.
-The measurement is in "The B5 packet's residue is not a rate limit" below; the "70 of 75 are transient
-403" line under round 101 was read off a pass that never opened the receipts and is **superseded**.
+and the residue is not a rate limit.** All 87 of its originally-missing entries are `responses/*.body`;
+the 100 matching `responses/*.receipt.json` files are present and each records the request URL, method,
+headers, UTC times, status, response headers, byte count and SHA-256; and `SHA256SUMS` pins all 234
+entries. One body is recorded with the SHA-256 of the empty string, which is what its `HEAD` request
+legitimately produces. Restoration is therefore a replay-and-verify operation, and `w-b5restore` ran it:
+**59 of the 87 are restored and digest-verified**, and **28 remain absent** - 23 pinning a single shared
+279-byte rate-limit error payload (all 23 now *measured* as mismatch), 3 live dynamic endpoints, 1 upstream
+404, and 1 still-retryable. Two corrections to what this paragraph used to say: the packet is **not** fully
+tracked (159 of its 234 pinned entries are tracked; the other 47 present bodies are gitignored - see the
+durability note below), and the measurement is in "The B5 packet's residue is not a rate limit" below,
+which supersedes the round-101 line "70 of 75 are transient 403" because that was read off a pass that
+never opened the receipts.
 
 **Test impact.** Most of these packets are not read by the suite. The ones that are fail without a skip
 guard: `test_external_provenance_b5.py` (6 failures, all `FileNotFoundError` on
@@ -677,14 +679,26 @@ Round 101 recorded `external_provenance_b5` as "12 of 87 restored ... 70 of the 
 the 100 receipts says something different, and the difference is not cosmetic: **a rate limit is a
 retry, and 27 of these are not retries.**
 
-Measured 2026-10-16T02:0xZ against the packet at `179aa62e`, after `w-b5restore`'s replay had run all 87:
+Measured 2026-10-16 against the packet, after `w-b5restore`'s replay had run the whole 87-entry
+residue and, in a second pass, re-attempted every still-absent path at a 120 s interval. The second pass
+settled the cohort that the first pass had left ambiguous, so the numbers below supersede the first
+measurement (which read `54 restored / 17 mismatch / 15 fetch_failure`):
 
 | outcome | n | receipt's `status` | what it is |
 | --- | --- | --- | --- |
-| `restored_verified` | 54 | 200 | fetched, digest equals the pin |
-| `restored_deliberately_empty` | 1 | 200 | `responses/bfcl-archive-head.body`, the legitimate empty `HEAD` body |
-| `mismatch` | 17 | 14x403, 3x200 | replay got a **real** body; the pin is not that body |
-| `fetch_failure` | 15 | 9x403, 5x200, 1x404 | 13 `rate limit exceeded`, 1 `Not Found`, 1 with no reason |
+| `restored_verified` | 33 | 200 | fetched in the second pass, digest equals the pin |
+| `restored_verified` (first pass, + the empty `HEAD`) | 26 | 200 | including `responses/bfcl-archive-head.body`, the legitimate empty `HEAD` body |
+| `mismatch` | 23 | all 403 | replay got a **real** body; the pin is not that body |
+| still absent | 28 | 23x403, 4x200, 1x404 | see the disposition table below |
+
+**Disposition of the 28, as measured:**
+
+| class | n | why it is not a retry |
+| --- | ---: | --- |
+| pinned error payload, now all 23 **measured** `mismatch` | 23 | the pin is GitHub's 279-byte rate-limit JSON, shared by all 23 paths |
+| live dynamic endpoint | 3 | `triviaqa-dns-alidns`, `triviaqa-dns-dohpub` (DNS-over-HTTPS answers for a name whose addresses move) and `triviaqa-conversion-discussion` (a served discussion page) |
+| upstream 404 | 1 | `triviaqa-mirror-loader.body`, recorded 404 with a 15-byte body and still 404 |
+| genuinely retryable, one left | 1 | `bfcl-web-bitagent`; `bfcl-{release,root-tree,tag,tree}` were restored by the second pass |
 
 **The 23 `bfcl-handler-local_inference-*.body` entries do not pin upstream blobs.** Every one of their
 receipts records `status: 403` with a **279-byte** `response_body`, and every one pins the *same* digest
@@ -696,6 +710,21 @@ checks digests alone sees nothing wrong. Replay now returns 200 with the real bl
 `local_inference-minicpm` 1,463 bytes) and the replay correctly **refuses to overwrite** `recorded_sha256`
 rather than laundering a new body into an old pin. They can only be restored by *re-pinning*, which
 changes the evidence rather than restoring it - a decision, not a retry.
+
+**The restoration is not durable, and that is a separate defect from the missing bytes.** 47 of the 206
+bodies now present on disk are **untracked and gitignored**: `.gitignore:365` ignores
+`tests/fixtures/**/*.body`. Only **159** of the 234 pinned entries are tracked. So of the 59 entries the
+replay restored (87 absent originally, 28 now), only **12 were ever committed** - the packet's tracked file
+count went from 148 to 160 - and **47 exist only in this checkout's working tree**. A fresh
+`git worktree add` or clone therefore does not have them, which is exactly why `w-knownred`, auditing from a
+fresh worktree at `27d2efaa`, counted `75 missing / 159 present / 160 tracked` where this checkout has
+`28 / 206 / 160`, and it is the mechanism behind this file's own "worktree-only failures" section. The same
+rule at `.gitignore:380` (`tests/fixtures/hg_*/`) is why `hg_wprov`, `hg_trivia` and `hg_bfcl` carry only
+**1, 1 and 2** tracked files: for those three, the manifests, the receipts and the bodies are not in
+version control at all, and their counts in the inventory above describe this machine rather than the
+repository. Making the B5 restoration durable needs `git add -f` on 47 bodies or a `.gitignore` change -
+**and that is a decision for the operator, not a cleanup**, because committing evidence that the manifest
+pins is precisely the kind of custody change that must be deliberate.
 
 **Two caveats on the reasoning, added 2026-10-16 after `w-provresidue` falsified the general rule.** The
 conclusion above rests on the *combination* - one 279-byte body, `status: 403`, shared by 23 unrelated
