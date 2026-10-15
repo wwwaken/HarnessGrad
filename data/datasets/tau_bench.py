@@ -25,10 +25,11 @@ the task's `outputs`. The environment here reproduces all three parts:
 
     the domain's tool implementations, the clean database, the wiki + rules
 
-and the agent's only way to act is the `tau` CLI
-(`list` / `call` / `policy` / `say` / `done`). It is one container image
-(`harnessgrad/tau-bench:20261006`) for both domains, with `state: "container"`
-because the mutated database is the state.
+and the agent's only way to act is the `./tau` CLI
+(`list` / `call` / `policy` / `say` / `done`), staged as `./tau`. A task-bound
+service owns the database and accepted event log in `/recordings/tau/episode.json`.
+The existing pinned image supplies the domain tools, clean data and policies; the
+service source is delivered through its declared command, without an image rebuild.
 
 Why SQL/args and not an LLM user simulator
 ------------------------------------------
@@ -42,7 +43,7 @@ either, so an agent that skips the authentication calls is not penalised for it.
 
 How `calculate_reward` is reproduced
 ------------------------------------
-* **Database state.** `verify/check.py` hashes `/app/db.json` with the hash
+* **Database state.** `verify/check.py` hashes the recorded service database with the hash
   functions extracted verbatim from `tau_bench/envs/base.py` and compares it with the
   hash of a clean database after the ground-truth actions are replayed through the
   same tool classes. Terminating actions are not replayed, exactly as upstream:
@@ -51,13 +52,15 @@ How `calculate_reward` is reproduced
   database.
 * **Done is required.** Upstream calls `calculate_reward()` only when `Env.step`
   sets `done`. There is no user simulator here that could send `###STOP###`, so
-  `tau done` records the agent's declaration in `/app/tau_calls.jsonl` and the check
-  requires it: no `done`, reward `0`, however good the database looks.
+  `./tau done` or the upstream terminating tool ends the service episode. The check
+  reads only through the first termination: no termination, reward `0`, however
+  good the database looks. The service refuses subsequent actions.
 * **`outputs` is required.** For every string in the task's `outputs`, upstream
   requires some respond content to contain it
   (`output.lower() in content.lower().replace(",", "")`). There is no interactive
-  user here, so `tau say '<text>'` records an utterance in the same log and the
+  user here, so `./tau say '<text>'` records an utterance in the service log and the
   check applies that rule to the recorded says; one missing string is reward `0`.
+  Local `db.json` and `tau_calls.jsonl` cannot supply grading evidence.
 
 The split
 ---------
@@ -71,7 +74,7 @@ Tasks that cannot discriminate
 Replaying all 165 ground truths with `measured_no_op_tasks()` shows 31 whose final
 database is byte-identical to the clean one. Five of those carry an `outputs`
 requirement, and are kept: `say` + `done` still make them discriminate. The other 26
-carry none, so after the done gate an agent that calls `tau done` immediately is a
+carry none, so after the done gate an agent that calls `./tau done` immediately is a
 full-credit solution and the task measures nothing about the database work. They are
 listed in `EXCLUDED_TASKS` and `load()` never returns them. They cannot merely be
 left off `SPLIT`: `data/scaffolds/registry.py` requires every returned task to be on exactly
@@ -118,6 +121,8 @@ GT_DIR = ASSETS / "gt"
 DB_DIR = ASSETS / "db"
 LIB_DIR = ASSETS / "lib"
 CHECK_SCRIPT = ASSETS / "verify" / "check.py"
+SERVICE_SCRIPT = ASSETS / "service.py"
+CLI_SCRIPT = ASSETS / "image" / "tau_cli.py"
 PROVENANCE = ASSETS / "PROVENANCE.json"
 
 #: The image. Built once from `data/datasets/tau_bench/Dockerfile`; the platform does not
@@ -151,7 +156,7 @@ TERMINATE_TOOLS = ("transfer_to_human_agents",)
 #: Tasks whose ground-truth replay leaves the database unchanged **and** which carry
 #: no `outputs` requirement. Such a task cannot discriminate: the database hash
 #: already matches before the agent does anything, the done gate is satisfied by an
-#: immediate `tau done`, and there is no output to say. They are removed from what
+#: immediate `./tau done`, and there is no output to say. They are removed from what
 #: `load()` returns -- not merely from `SPLIT`, because `data/scaffolds/registry.py` requires
 #: every returned task to be on exactly one side -- while their ground-truth files
 #: stay in `gt/` for audit. 7 retail, 19 airline.
@@ -175,20 +180,28 @@ EXCLUDED_TASKS = (
     "retail_065", "retail_106",
 )
 
-#: One environment for every task: same image, same writable workdir, no network.
-#: The tool implementations and the clean database are in the image; the task's own
-#: copy of the database is copied into `/app` by `SETUP`, so the agent mutates a file
-#: in its writable state rather than a read-only image path.
+#: The existing image contains /opt/tau/{lib,pristine,policy}. Supply service code
+#: as a declared command so no rebuilt image digest is asserted. SETUP supplies
+#: the matching HTTP client; neither service ground truth nor recording is exposed.
 ENV_BASE: dict = {
     "kind": "exec",
     "image": IMAGE,
     "workdir": WORKDIR,
-    "state": "container",
-    "network": "none",
+    "state": "mount",
+    "network": "services",
     "cpus": 2,
     "memory_mb": 4096,
     "placement": "inside",
-    "services": [],
+    "services": [{
+        "name": "tau", "image": IMAGE, "port": 8080,
+        "command": ["python3", "-c", SERVICE_SCRIPT.read_text()],
+        "health": {"argv": ["python3", "-c",
+                             "import urllib.request as u; "
+                             "u.urlopen('http://localhost:8080/health', timeout=2).read()"],
+                   "timeout_s": 60},
+        "record": True, "needs_model": False, "needs_seed": False,
+        "cpus": 2, "memory_mb": 4096,
+    }],
     "agent_timeout_s": AGENT_TIMEOUT_S,
     "verify_timeout_s": VERIFY_TIMEOUT_S,
 }
@@ -229,7 +242,7 @@ def _goal(record: dict) -> str:
     """The instruction, with a clearly-labelled preamble naming only the interface.
 
     Nothing here hints at the answer. It states the user id (which the reward makes
-    free -- see the module docstring), the policy is readable with `tau policy`, and
+    free -- see the module docstring), the policy is readable with `./tau policy`, and
     the CLI is how the task is acted on.
     """
     domain = record["domain"]
@@ -242,21 +255,22 @@ def _goal(record: dict) -> str:
         f"\n"
         f"## How to act\n"
         f"\n"
-        f"- You act on the database by calling tools through the `tau` command.\n"
+        f"- You act on the database by calling tools through the `./tau` command.\n"
         f"- You are acting for the user whose id is `{record['user_id']}`.\n"
-        f"- Read the policy you must follow first: `tau policy`.\n"
-        f"- List the available tools and their argument schemas: `tau list`.\n"
+        f"- Read the policy you must follow first: `./tau policy`.\n"
+        f"- List the available tools and their argument schemas: `./tau list`.\n"
         f"- Call one tool at a time and read its observation:\n"
-        f"      tau call <tool_name> '<json-arguments>'\n"
+        f"      ./tau call <tool_name> '<json-arguments>'\n"
         f"- There is no interactive user here. Anything you need to tell the user goes\n"
         f"  through:\n"
-        f"      tau say '<text>'\n"
+        f"      ./tau say '<text>'\n"
         f"  and no reply will come back.\n"
-        f"- When the task is finished, call `tau done`. The task is not treated as\n"
-        f"  finished until you do, and it is not scored before then.\n"
-        f"- The database is `/app/db.json` in your working directory. `tau call` reads\n"
-        f"  it, applies the tool and writes it back, so a tool call survives the\n"
-        f"  command; keep the file valid JSON if you touch it by any other means.\n"
+        f"- When the task is finished, call `./tau done`. The task is not treated as\n"
+        f"  finished until you do or call a terminating tool.\n"
+        f"- The service owns the database and records accepted calls and messages.\n"
+        f"  Use `./tau show` to inspect it. Local files do not change service state.\n"
+        f"- `./tau done` or `transfer_to_human_agents` ends the episode; later calls\n"
+        f"  and messages are refused.\n"
         f"- Every fact about the database (ids, prices, availability, balances) must\n"
         f"  come from a tool observation. Do not invent values.\n"
         f"\n"
@@ -320,9 +334,8 @@ def measured_no_op_tasks() -> list[str]:
 
 
 def _setup(record: dict) -> dict:
-    """`/app/db.json` -- the clean database, visible to the agent, which mutates it."""
-    return {"files": [{"path": "db.json",
-                       "from": str(_db_path(record["domain"]))}]}
+    """Stage the matching HTTP client; the database stays inside the service."""
+    return {"files": [{"path": "tau", "from": str(CLI_SCRIPT)}]}
 
 
 def _verifier(record: dict) -> dict:
@@ -332,13 +345,14 @@ def _verifier(record: dict) -> dict:
     before any run, and a `VERIFY.inputs` entry is materialized only at verification
     time, so the answer is not on the filesystem the agent explored. The tool library
     and the clean database travel the same way, which also means the replay cannot be
-    steered by anything the agent changed inside the container -- the snapshot supplies
-    the agent's database and nothing else the check trusts.
+    steered by anything the agent changed inside the container. The verifier reads
+    the service recording mounted read-only by the platform, never agent files.
     """
     tid = record["task_id"]
     return {
         "kind": "command",
-        "argv": ["python3", CHECK_IN_CONTAINER],
+        "argv": ["python3", CHECK_IN_CONTAINER,
+                 "--recording", "/recordings/tau/episode.json"],
         # **Top level, not `/verifier/...`, and that is not cosmetic.** The platform
         # copies these in *before* it starts the check's container, and it creates the
         # reward file's directory only *after* starting it (see `mkdir_in` in

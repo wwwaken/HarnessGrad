@@ -2,16 +2,17 @@
 #
 # What the agent can see
 # ---------------------
-#   /app                         workdir; SETUP lands db.json here and `tau call`
-#                                mutates it. It is the container's writable state,
-#                                which is what the verifier reads from the snapshot.
+#   /app                         workdir; SETUP stages the HTTP client as ./tau.
+#                                Database and episode log belong to the tau service,
+#                                not to the harness filesystem.
 #   /opt/tau/lib/tau_bench       the upstream tool implementations for both domains,
-#                                with the task definitions removed. `tau` imports
-#                                them; they are not secrets.
+#                                with the task definitions removed. The service
+#                                imports them; they are not secrets.
 #   /opt/tau/policy              `<domain>.txt` = wiki.md + rules.py; `tau policy`.
 #   /opt/tau/pristine            the clean database per domain, for reference. The
-#                                task's own copy is /app/db.json, not this one.
-#   /usr/local/bin/tau           the shim; the implementation is tau_cli.py beside it.
+#                                service loads its task-bound database from here.
+#   /usr/local/bin/tau           image shim; SETUP stages the matching client so
+#                                existing image pins need no rebuild.
 #
 # What the agent must **not** see
 # -------------------------------
@@ -37,8 +38,8 @@ COPY policy /opt/tau/policy
 COPY db /opt/tau/pristine
 COPY image/tau_cli.py /usr/local/bin/tau_cli.py
 
-# The shim is what the goal tells the agent to call; tau_cli.py stays runnable on its
-# own so a missing shim is not a dead end.
+# Future image builds include the HTTP client too. SETUP supplies ./tau independently
+# so the declared existing image can launch the service without an image rebuild.
 RUN printf '#!/bin/sh\nexec python3 /usr/local/bin/tau_cli.py "$@"\n' \
         > /usr/local/bin/tau \
  && chmod 0755 /usr/local/bin/tau /usr/local/bin/tau_cli.py \

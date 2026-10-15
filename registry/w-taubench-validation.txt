@@ -1,0 +1,370 @@
+w-taubench validation — commands and exact observed output
+
+Scope: local synthetic controls, not a benchmark run or runtime authorization.
+Captured outputs below are lossless JSON strings per line (including intermediate failures).
+The scratch runner used for baseline/final is reproduced in the committed
+ tests/fixtures/tau_bench_w_taubench_runner.py, with an added explanatory docstring.
+It replaces image resolution with an explicitly SYNTHETIC all-zero digest for
+service metadata unit tests, raises on unmocked Docker API calls, skips service
+lifecycle tests and skips three real sandbox cases. These passes do not attest
+image availability, Docker isolation, cleanup lifecycle or production execution.
+No model, GPU, image pull, container start/stop, benchmark run or frozen run ID.
+
+To reproduce the observations, extract the original checker with:
+git show 5e5441cc48f3ce79390895f8159e0666ff944587:data/datasets/tau_bench/verify/check.py > /mnt/20t/xubuqiang/hg-work/taubench/pre_check.py
+(original extraction used HEAD, whose observed full identity is captured below).
+Before each suite: mkdir -p /tmp/taubench-tmp
+After each suite, immediately executed (replace basetemp with the one just used):
+python3 -c "import shutil; shutil.rmtree('/tmp/taubench-final', ignore_errors=True); shutil.rmtree('/tmp/taubench-tmp', ignore_errors=True)"
+Observed output: empty; exit 0. Only this worker's named directories were removed.
+Direct observation controls use TemporaryDirectory under /tmp and remove it on exit.
+
+COMMAND: git branch --show-current
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"wg-w-taubench\n"
+END OUTPUT
+
+COMMAND: git rev-parse HEAD
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"5e5441cc48f3ce79390895f8159e0666ff944587\n"
+END OUTPUT
+
+COMMAND: git status --short
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"M  data/datasets/tau_bench.py\n"
+"M  data/datasets/tau_bench/Dockerfile\n"
+"M  data/datasets/tau_bench/image/tau_cli.py\n"
+"A  data/datasets/tau_bench/service.py\n"
+"M  data/datasets/tau_bench/verify/check.py\n"
+"A  registry/w-taubench-validation.txt\n"
+"A  registry/w-taubench.md\n"
+"A  tests/fixtures/tau_bench_w_taubench_runner.py\n"
+"A  tests/quality/test_tau_bench_recording_w_taubench.py\n"
+END OUTPUT
+
+COMMAND: bash -lc 'git show 5e5441cc48f3ce79390895f8159e0666ff944587:data/datasets/tau_bench/verify/check.py | nl -ba | sed -n '"'"'142,181p;282,311p'"'"''
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"   142\tdef read_agent_log(path: Path) -> dict:\n"
+"   143\t    \"\"\"The agent's own log, split into tool calls, says and the done declaration.\n"
+"   144\t\n"
+"   145\t    Returns counts and the say contents. It is the agent's file, so a missing or\n"
+"   146\t    malformed one never raises: a malformed line counts as `<unparseable>` and is\n"
+"   147\t    not evidence of anything, and no `done`/`say` record is found in it.\n"
+"   148\t    \"\"\"\n"
+"   149\t    info = {\"log_file\": str(path), \"log_present\": path.is_file(),\n"
+"   150\t            \"agent_events\": 0, \"agent_tool_calls\": None,\n"
+"   151\t            \"agent_tool_call_counts\": {}, \"agent_says\": [], \"agent_say_count\": 0,\n"
+"   152\t            \"agent_declared_done\": False}\n"
+"   153\t    if not path.is_file():\n"
+"   154\t        return info\n"
+"   155\t    counts: Counter = Counter()\n"
+"   156\t    total, says, done = 0, [], False\n"
+"   157\t    for line in path.read_text(errors=\"replace\").splitlines():\n"
+"   158\t        line = line.strip()\n"
+"   159\t        if not line:\n"
+"   160\t            continue\n"
+"   161\t        total += 1\n"
+"   162\t        try:\n"
+"   163\t            record = json.loads(line)\n"
+"   164\t        except ValueError:\n"
+"   165\t            record = None\n"
+"   166\t        if not isinstance(record, dict):\n"
+"   167\t            counts[\"<unparseable>\"] += 1\n"
+"   168\t            continue\n"
+"   169\t        kind, name = record.get(\"kind\"), record.get(\"name\", \"?\")\n"
+"   170\t        if kind == \"done\" or name == \"done\":\n"
+"   171\t            done = True\n"
+"   172\t        elif kind == \"say\" or name == RESPOND_ACTION_NAME:\n"
+"   173\t            arguments = record.get(\"arguments\")\n"
+"   174\t            content = arguments.get(\"content\", \"\") if isinstance(arguments, dict) else \"\"\n"
+"   175\t            says.append(str(content))\n"
+"   176\t        else:\n"
+"   177\t            counts[name] += 1\n"
+"   178\t    info.update(agent_events=total, agent_tool_calls=sum(counts.values()),\n"
+"   179\t                agent_tool_call_counts=dict(counts), agent_says=says,\n"
+"   180\t                agent_say_count=len(says), agent_declared_done=done)\n"
+"   181\t    return info\n"
+"   282\t    evidence[\"ground_truth_changes_database\"] = gt_hash != clean_hash\n"
+"   283\t\n"
+"   284\t    # ---- the agent's own log: evidence, and the `done`/`outputs` gates. ----\n"
+"   285\t    log = read_agent_log(paths[\"call_log\"])\n"
+"   286\t    evidence.update(log)\n"
+"   287\t    outputs_found, r_outputs = check_outputs(outputs, log[\"agent_says\"])\n"
+"   288\t    done = log[\"agent_declared_done\"]\n"
+"   289\t    evidence.update(outputs=outputs_found, r_outputs=r_outputs,\n"
+"   290\t                    outputs_satisfied=(r_outputs == 1.0))\n"
+"   291\t\n"
+"   292\t    # ---- the agent's database, which is the state being graded ----\n"
+"   293\t    try:\n"
+"   294\t        raw = paths[\"db\"].read_bytes()\n"
+"   295\t        agent_db = json.loads(raw)\n"
+"   296\t        if not isinstance(agent_db, dict):\n"
+"   297\t            raise ValueError(f\"database is a {type(agent_db).__name__}, \"\n"
+"   298\t                             f\"expected a JSON object\")\n"
+"   299\t    except (OSError, ValueError) as exc:\n"
+"   300\t        evidence.update(reward=0, database_hash_matched=False,\n"
+"   301\t                        agent_db_error=str(exc), agent_db_keys=[])\n"
+"   302\t        write_reward(paths[\"reward\"], 0)\n"
+"   303\t        write_evidence(paths[\"evidence\"], evidence)\n"
+"   304\t        print(f\"reward 0: the agent's database could not be read: {exc}\")\n"
+"   305\t        return 0\n"
+"   306\t\n"
+"   307\t    agent_hash = hash_of(agent_db)\n"
+"   308\t    matched = agent_hash == gt_hash\n"
+"   309\t    reward = int(matched and done and r_outputs == 1.0)\n"
+"   310\t    evidence.update(reward=reward, database_hash_matched=matched,\n"
+"   311\t                    agent_data_hash=agent_hash, agent_db_bytes=len(raw),\n"
+END OUTPUT
+
+COMMAND: bash -lc 'git show 5e5441cc48f3ce79390895f8159e0666ff944587:data/datasets/tau_bench/image/tau_cli.py | nl -ba | sed -n '"'"'30,33p'"'"''
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"    30\tEvery `tau call`, `tau say` and `tau done` is appended to `/app/tau_calls.jsonl`\n"
+"    31\tas a record (`\"kind\": \"call\" | \"say\" | \"done\"`). That file is the agent's own, so\n"
+"    32\tit is evidence and never the grade by itself: the verifier compares database\n"
+"    33\thashes, then reads the log for the `say`/`done` records.\n"
+END OUTPUT
+
+COMMAND: bash -lc 'git ls-tree -r --name-only 5e5441cc48f3ce79390895f8159e0666ff944587 -- tests/quality | rg '"'"'/[^/]*tau[^/]*$'"'"''
+EXIT: 1
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+END OUTPUT
+
+COMMAND: TMPDIR=/tmp/taubench-tmp PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/taubench/run_suites.py -q tests/quality/test_services.py tests/quality/test_verifier.py --basetemp=/tmp/taubench-before
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"................ssssss.....sss.....ssss..ssss...............sss.....     [100%]\n"
+"48 passed, 20 skipped in 5.25s\n"
+END OUTPUT
+
+COMMAND: TMPDIR=/tmp/taubench-tmp PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/taubench/run_suites.py -q tests/quality/test_tau_bench_recording_w_taubench.py tests/quality/test_services.py tests/quality/test_verifier.py --basetemp=/tmp/taubench-after
+EXIT: 1
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"................F................ssssss.....sss.....ssss..ssss.......... [ 84%]\n"
+".....sss.....                                                            [100%]\n"
+"=================================== FAILURES ===================================\n"
+"_____ test_adapter_declares_recording_boundary_and_stages_matching_client ______\n"
+"\n"
+"    def test_adapter_declares_recording_boundary_and_stages_matching_client():\n"
+"        adapter = load_module(\"tau_recording_adapter\", ROOT / \"data/datasets/tau_bench.py\")\n"
+"        from data.scaffolds import registry\n"
+"        from eval.service.services import mounts_for\n"
+">       registry._check_env(adapter.DEFAULT_ENV, \"retail_synthetic\", \"tau_bench\")\n"
+"\n"
+"tests/quality/test_tau_bench_recording_w_taubench.py:234: \n"
+"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n"
+"\n"
+"spec = {'agent_timeout_s': 900, 'cpus': 2, 'image': 'harnessgrad/tau-bench@sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23', 'kind': 'exec', ...}\n"
+"tid = 'retail_synthetic', name = 'tau_bench'\n"
+"\n"
+"    def _check_env(spec, tid: str, name: str) -> None:\n"
+"        if not isinstance(spec, dict):\n"
+"            raise ValueError(f\"dataset {name!r}: ENV[{tid!r}] must be a dict\")\n"
+"    \n"
+"        # Checked before the unknown-field rule so that naming a Dockerfile gets the\n"
+"        # explanation rather than \"unknown field 'dockerfile'\". The two say very different\n"
+"        # things: one is a typo, the other is a deliberate design boundary.\n"
+"        if spec.get(\"dockerfile\"):\n"
+"            raise ValueError(\n"
+"                f\"dataset {name!r}: ENV[{tid!r}] names a Dockerfile. Building is an \"\n"
+"                f\"import step, not a run step, so a dataset does not reference one: \"\n"
+"                f\"import it once and name the pinned image it produced (INTERFACE.md \"\n"
+"                f\"§2.5.5).\\n    python tools/import_env.py --dockerfile <path>\")\n"
+"    \n"
+"        unknown = set(spec) - set(ENV_FIELDS)\n"
+"        if unknown:\n"
+"            raise ValueError(\n"
+"                f\"dataset {name!r}: ENV[{tid!r}] has unknown field(s) {sorted(unknown)}; \"\n"
+"                f\"known fields are {list(ENV_FIELDS)}\")\n"
+"    \n"
+"        kind = spec.get(\"kind\", \"files\")\n"
+"        if kind not in ENV_KINDS:\n"
+"            raise ValueError(\n"
+"                f\"dataset {name!r}: ENV[{tid!r}] has kind {kind!r}; \"\n"
+"                f\"known kinds are {list(ENV_KINDS)}\")\n"
+"    \n"
+"        # Checked before the files/exec split so that a `files` env carrying `state` gets\n"
+"        # the \"only an exec environment uses this\" message rather than being waved through.\n"
+"        state = spec.get(\"state\", \"mount\")\n"
+"        if state not in STATES:\n"
+"            raise ValueError(\n"
+"                f\"dataset {name!r}: ENV[{tid!r}]['state'] must be one of {list(STATES)}, \"\n"
+"                f\"got {state!r}\")\n"
+"    \n"
+"        for field, minimum in ((\"cpus\", 1), (\"memory_mb\", 64),\n"
+"                               (\"agent_timeout_s\", 1), (\"verify_timeout_s\", 1)):\n"
+"            value = spec.get(field)\n"
+"            if value is None:\n"
+"                continue\n"
+"            if isinstance(value, bool) or not isinstance(value, (int, float)) \\\n"
+"                    or value < minimum:\n"
+"                raise ValueError(\n"
+"                    f\"dataset {name!r}: ENV[{tid!r}][{field!r}] must be a number >= \"\n"
+"                    f\"{minimum}, got {value!r}\")\n"
+"    \n"
+"        if state == \"container\" and spec.get(\"services\"):\n"
+"            # Refused rather than half-supported. A recording is a **bind mount**, and\n"
+"            # `docker commit` does not capture bind mounts -- so the check would look for\n"
+"            # evidence that silently did not travel. Nothing in the real task set needs both\n"
+"            # (measured: `mcp_servers` is empty for all 89), so this is a boundary, not a gap.\n"
+">           raise ValueError(\n"
+"                f\"dataset {name!r}: ENV[{tid!r}] asks for state='container' together with \"\n"
+"                f\"services. A service's recording travels by bind mount and a container \"\n"
+"                f\"snapshot does not capture one, so the check would read an empty recording \"\n"
+"                f\"and the failure would look like the harness's. Not supported yet.\")\n"
+"E           ValueError: dataset 'tau_bench': ENV['retail_synthetic'] asks for state='container' together with services. A service's recording travels by bind mount and a container snapshot does not capture one, so the check would read an empty recording and the failure would look like the harness's. Not supported yet.\n"
+"\n"
+"data/scaffolds/registry.py:347: ValueError\n"
+"=========================== short test summary info ============================\n"
+"FAILED tests/quality/test_tau_bench_recording_w_taubench.py::test_adapter_declares_recording_boundary_and_stages_matching_client\n"
+"1 failed, 64 passed, 20 skipped in 5.71s\n"
+END OUTPUT
+
+COMMAND: TMPDIR=/tmp/taubench-tmp PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/taubench/run_suites.py -q tests/quality/test_tau_bench_recording_w_taubench.py tests/quality/test_services.py tests/quality/test_verifier.py --basetemp=/tmp/taubench-after
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+".................................ssssss.....sss.....ssss..ssss.......... [ 84%]\n"
+".....sss.....                                                            [100%]\n"
+"65 passed, 20 skipped in 6.07s\n"
+END OUTPUT
+
+COMMAND: TMPDIR=/tmp/taubench-tmp PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/taubench/run_suites.py -q tests/quality/test_tau_bench_recording_w_taubench.py tests/quality/test_services.py tests/quality/test_verifier.py --basetemp=/tmp/taubench-final
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"..................................ssssss.....sss.....ssss..ssss......... [ 83%]\n"
+"......sss.....                                                           [100%]\n"
+"66 passed, 20 skipped in 5.98s\n"
+END OUTPUT
+
+COMMAND: TMPDIR=/tmp/taubench-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/tau_bench_w_taubench_runner.py -q tests/quality/test_adapter_image_pins.py -k tau_bench --basetemp=/tmp/taubench-pins
+EXIT: 5
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"\n"
+"6 deselected in 0.01s\n"
+END OUTPUT
+
+COMMAND: TMPDIR=/tmp/taubench-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/tau_bench_w_taubench_runner.py -q tests/quality/test_adapter_image_pins.py -k adapter1 --basetemp=/tmp/taubench-pins
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"...                                                                      [100%]\n"
+"3 passed, 3 deselected in 0.06s\n"
+END OUTPUT
+
+COMMAND: python3 tests/quality/test_tau_bench_recording_w_taubench.py --before-check /mnt/20t/xubuqiang/hg-work/taubench/pre_check.py
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"{\"control\": \"forged-local-log\", \"database_hash_matched\": true, \"done\": true, \"events\": 2, \"exit\": 0, \"phase\": \"pre-fix\", \"reward\": \"1\", \"says\": [\"confirmed\"], \"stdout\": \"reward 1: database hash matches the ground truth (c53430b91485..., 0 actions replayed), the agent declared done, and all 1 required output(s) were said\"}\n"
+"{\"control\": \"forged-local-log\", \"database_hash_matched\": true, \"done\": true, \"events\": 1, \"exit\": 0, \"phase\": \"post-fix\", \"reward\": \"0\", \"says\": [], \"stdout\": \"reward 0: required output(s) not said: ['confirmed']\"}\n"
+"{\"control\": \"terminate-tool\", \"database_hash_matched\": true, \"done\": false, \"events\": 2, \"exit\": 0, \"phase\": \"pre-fix\", \"reward\": \"0\", \"says\": [\"confirmed\"], \"stdout\": \"reward 0: the agent never declared done (no `tau done` in /tmp/taubench-observations-gw5kx1n9/terminate-tool/pre-fix/tau_calls.jsonl)\"}\n"
+"{\"control\": \"terminate-tool\", \"database_hash_matched\": true, \"done\": true, \"events\": 2, \"exit\": 0, \"phase\": \"post-fix\", \"reward\": \"1\", \"says\": [\"confirmed\"], \"stdout\": \"reward 1: database hash matches the ground truth (c53430b91485..., 0 actions replayed), the agent terminated, and all 1 required output(s) were said\"}\n"
+"{\"control\": \"post-done\", \"database_hash_matched\": true, \"done\": true, \"events\": 3, \"exit\": 0, \"phase\": \"pre-fix\", \"reward\": \"1\", \"says\": [\"confirmed\"], \"stdout\": \"reward 1: database hash matches the ground truth (c53430b91485..., 0 actions replayed), the agent declared done, and all 1 required output(s) were said\"}\n"
+"{\"control\": \"post-done\", \"database_hash_matched\": true, \"done\": true, \"events\": 1, \"exit\": 0, \"phase\": \"post-fix\", \"reward\": \"0\", \"says\": [], \"stdout\": \"reward 0: required output(s) not said: ['confirmed']\"}\n"
+END OUTPUT
+
+COMMAND: python3 tools/check_dataset_blockers.py
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 0, \"historical_records\": 11, \"production_authorized\": false}\n"
+END OUTPUT
+
+COMMAND: git diff --cached --check
+EXIT: 2
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"registry/w-taubench-validation.txt:51: trailing whitespace.\n"
+"+   144\t\n"
+"registry/w-taubench-validation.txt:90: trailing whitespace.\n"
+"+   283\t\n"
+"registry/w-taubench-validation.txt:98: trailing whitespace.\n"
+"+   291\t\n"
+"registry/w-taubench-validation.txt:113: trailing whitespace.\n"
+"+   306\t\n"
+"registry/w-taubench-validation.txt:156: trailing whitespace.\n"
+"+tests/quality/test_tau_bench_recording_w_taubench.py:234: \n"
+"registry/w-taubench-validation.txt:157: trailing whitespace.\n"
+"+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n"
+"registry/w-taubench-validation.txt:165: trailing whitespace.\n"
+"+    \n"
+"registry/w-taubench-validation.txt:175: trailing whitespace.\n"
+"+    \n"
+"registry/w-taubench-validation.txt:181: trailing whitespace.\n"
+"+    \n"
+"registry/w-taubench-validation.txt:187: trailing whitespace.\n"
+"+    \n"
+"registry/w-taubench-validation.txt:195: trailing whitespace.\n"
+"+    \n"
+"registry/w-taubench-validation.txt:206: trailing whitespace.\n"
+"+    \n"
+END OUTPUT
+
+COMMAND: python3 -c 'import hashlib, json, subprocess
+from pathlib import Path
+p='"'"'data/datasets/tau_bench/verify/check.py'"'"'
+base='"'"'5e5441cc48f3ce79390895f8159e0666ff944587'"'"'
+old=hashlib.sha256(subprocess.check_output(['"'"'git'"'"','"'"'show'"'"',base+'"'"':'"'"'+p])).hexdigest()
+new=hashlib.sha256(subprocess.check_output(['"'"'git'"'"','"'"'show'"'"','"'"':'"'"'+p])).hexdigest()
+registry=Path('"'"'registry/dataset-blockers.json'"'"').read_text()
+print('"'"'pre_check_sha256='"'"'+old)
+print('"'"'staged_check_blob_sha256='"'"'+new)
+print(json.dumps({'"'"'scope'"'"':['"'"'registry/dataset-blockers.json'"'"'],'"'"'contains_checker_path'"'"':p in registry,'"'"'contains_pre_checker_sha256'"'"':old in registry,'"'"'contains_new_checker_sha256'"'"':new in registry},sort_keys=True))
+print('"'"'active_tau_bench_registry_row='"'"'+json.dumps(next(row for row in json.loads(registry)['"'"'datasets'"'"'] if row['"'"'dataset'"'"']=='"'"'tau_bench'"'"'),sort_keys=True))
+print('"'"'local_clean_db_directory_exists='"'"'+str(Path('"'"'data/datasets/tau_bench/db'"'"').exists()))'
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"pre_check_sha256=b2cad46a3f541eae927334961a76c91c79e3dbb730b5016f0dc325a544dad6ec\n"
+"staged_check_blob_sha256=5298bbb2b39629ed25704f6113e58232bb2db8946b6b677a082ffc7b44e0c38e\n"
+"{\"contains_checker_path\": false, \"contains_new_checker_sha256\": false, \"contains_pre_checker_sha256\": false, \"scope\": [\"registry/dataset-blockers.json\"]}\n"
+"active_tau_bench_registry_row={\"blockers\": [], \"dataset\": \"tau_bench\", \"demand\": \"tool_use\", \"exercises\": [\"context\", \"tools\", \"control\", \"memory\", \"recovery\"], \"historical_runs\": [], \"shared_blockers\": [], \"surface\": \"tool_dialogue\"}\n"
+"local_clean_db_directory_exists=False\n"
+END OUTPUT
+
+COMMAND: git diff --name-only 5e5441cc48f3ce79390895f8159e0666ff944587 -- eval/service/services.py eval/verification/verifier.py AGENTS.md docs/adapter-integration-journal.md registry/dataset-blockers.json
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+END OUTPUT
+
+COMMAND: python3 -c 'from pathlib import Path
+paths=[Path('"'"'/tmp'"'"')/name for name in ('"'"'taubench-before'"'"','"'"'taubench-after'"'"','"'"'taubench-final'"'"','"'"'taubench-pins'"'"','"'"'taubench-tmp'"'"')]
+for p in paths: print(str(p)+'"'"' exists='"'"'+str(p.exists()))
+print('"'"'observation_temporaries='"'"'+repr(sorted(str(p) for p in Path('"'"'/tmp'"'"').glob('"'"'taubench-observations-*'"'"'))))'
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+"/tmp/taubench-before exists=False\n"
+"/tmp/taubench-after exists=False\n"
+"/tmp/taubench-final exists=False\n"
+"/tmp/taubench-pins exists=False\n"
+"/tmp/taubench-tmp exists=False\n"
+"observation_temporaries=[]\n"
+END OUTPUT
+
+COMMAND: git diff --cached --check
+EXIT: 0
+OUTPUT (exact, JSON-quoted lines; empty means no output):
+END OUTPUT
+
+NOT VERIFIED:
+- Real Docker service startup, health, network isolation, readonly mounts or teardown.
+- Actual content/availability of the declared pinned tau image, including its clean DBs.
+- Released tau tasks, original scorer execution equivalence on them, model behavior,
+  trial scores, selected manifests, quotas under load, timeout/snapshot lifecycle,
+  concurrent cross-process stress, disk-full/crash-durability behavior or production readiness.
+- Missing local data/datasets/tau_bench/db was not restored or downloaded.
+- No historical/frozen receipt was authenticated, rewritten, resumed or rerun.
+- No registry pin outside the explicitly searched active dataset-blockers.json scope
+  was claimed absent; archived custody artifacts and external state remain UNKNOWN.
+- No parent merge or registry/journal integration is performed by this worker.
+
+Committed-file byte inventory follows. The validation file includes its own final
+byte size, computed to a fixed point before staging. Each file is below 1 MB.
+data/datasets/tau_bench.py: 21067 bytes
+data/datasets/tau_bench/Dockerfile: 2705 bytes
+data/datasets/tau_bench/image/tau_cli.py: 2510 bytes
+data/datasets/tau_bench/service.py: 6106 bytes
+data/datasets/tau_bench/verify/check.py: 12978 bytes
+tests/quality/test_tau_bench_recording_w_taubench.py: 13728 bytes
+tests/fixtures/tau_bench_w_taubench_runner.py: 1382 bytes
+registry/w-taubench.md: 6961 bytes
+registry/w-taubench-validation.txt: 22937 bytes

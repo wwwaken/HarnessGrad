@@ -1,61 +1,16 @@
 #!/usr/bin/env python3
-"""The tau-bench check: replay the ground truth, compare database hashes, then
-require the episode to be finished and the task's required outputs to have been said.
+"""Replay ground truth and compare database hashes against a trusted tau recording.
 
-This runs **inside a snapshot of the agent's container**, after the agent stopped,
-with its inputs copied in by the platform only at that point. It is deliberately
-not a test of the agent's transcript: tau-bench's own scoring rule is a comparison
-of database states, so that is what is compared here.
+The service owns /recordings/tau/episode.json; the platform mounts it read-only
+in this verifier and never mounts it in the harness (INTERFACE.md section 2.5.7).
+The recording supplies the database and accepted calls/says/termination together.
+Agent-local db.json and tau_calls.jsonl are not inputs to grading.
 
-    1. read the agent's database from the workdir (`/app/db.json`);
-    2. import the domain's tool classes from `/verifier/lib` -- a host-staged copy
-       of the upstream implementations, so the replay cannot be steered by anything
-       the agent edited inside the container;
-    3. replay the ground-truth actions on a **clean** database, through those same
-       tool classes, skipping terminating actions exactly as
-       `tau_bench.envs.base.Env.calculate_reward` does;
-    4. hash both with `consistent_hash(to_hashable(...))` -- the functions
-       extracted verbatim from `tau_bench/envs/base.py`;
-    5. require the agent's log to contain a `done` record. Upstream only calls
-       `calculate_reward` when the episode is `done`
-       (`tau_bench/envs/base.py:step`), so an agent that never finishes is not
-       scored, however good its database looks;
-    6. require, for every string in the task's `outputs`, some recorded `say` whose
-       content contains it -- the same test, `output.lower() in
-       content.lower().replace(",", "")`, that upstream's
-       `RewardOutputInfo` applies to the agent's respond actions.
-
-The reward is `1` only when the hashes match **and** `done` was recorded **and**
-every output was found; otherwise `0`.
-
-Evidence
---------
-It also writes an evidence JSON naming *why*: whether the whole-database hash
-matched and which top-level table differs; `agent_declared_done`; the per-output
-found/not-found map plus `r_outputs`, mirroring upstream's `RewardOutputInfo`;
-how many ground-truth actions there were and how many replayed; any replay errors
--- both exceptions and the `Error: ...` strings a tool *returns* when it refuses
-an action; whether the ground truth changes the database at all (a ground-truth
-replay that is a no-op means a no-op agent passes the hash test, so it is worth
-saying out loud); and the agent's own log (`/app/tau_calls.jsonl`), split into
-tool calls, says and the done declaration.
-
-Failure modes are kept apart on purpose
----------------------------------------
-* The agent's database missing or unparseable is the agent's state: reward `0`,
-  with the reason in the evidence.
-* This check's own inputs missing (ground truth, clean database, tool library) is
-  not a measurement: no reward file is written, so the platform reports the task
-  as unmeasured rather than as a zero the agent earned.
-
-Inputs (paths overridable with the matching flag or environment variable):
-    /tau-gt.json              TAU_GT           ground truth for this task
-    /tau-clean-db.json        TAU_CLEAN_DB     the clean database
-    /tau-lib                  TAU_LIB          tau-bench tools + hash functions
-    /app/db.json              TAU_DB           the agent's database
-    /app/tau_calls.jsonl      TAU_CALL_LOG     the agent's calls, says and done
-    /verifier/reward.txt      TAU_REWARD       1 or 0
-    /verifier/evidence.json   TAU_EVIDENCE     why
+Ground-truth replay, consistent_hash(to_hashable(...)), and the upstream output
+substring rule are unchanged. Explicit done and transfer_to_human_agents end the
+episode; events after the first termination never contribute. An unavailable,
+malformed or differently task-bound recording is unmeasured (exit 3, no reward).
+A valid unfinished episode or unmet database/output condition earns zero.
 """
 from __future__ import annotations
 
@@ -76,10 +31,9 @@ DEFAULTS = {
     "gt": INPUT_DIR / "tau-gt.json",
     "clean_db": INPUT_DIR / "tau-clean-db.json",
     "lib": INPUT_DIR / "tau-lib",
-    "db": Path(os.environ.get("TAU_WORKDIR", "/app")) / "db.json",
     "reward": VERIFIER_DIR / "reward.txt",
     "evidence": VERIFIER_DIR / "evidence.json",
-    "call_log": Path(os.environ.get("TAU_WORKDIR", "/app")) / "tau_calls.jsonl",
+    "recording": Path("/recordings/tau/episode.json"),
 }
 
 #: `Mock*DomainEnv.terminate_tools` in the upstream environment. `calculate_reward`
@@ -102,9 +56,9 @@ def _env_path(flag_value, env_name: str, default: Path) -> Path:
 def parse_args(argv):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     for name, env_name in (("gt", "TAU_GT"), ("clean_db", "TAU_CLEAN_DB"),
-                           ("lib", "TAU_LIB"), ("db", "TAU_DB"),
+                           ("lib", "TAU_LIB"),
                            ("reward", "TAU_REWARD"), ("evidence", "TAU_EVIDENCE"),
-                           ("call_log", "TAU_CALL_LOG")):
+                           ("recording", "TAU_RECORDING")):
         parser.add_argument(f"--{name.replace('_', '-')}", default=None,
                             help=f"default: {DEFAULTS[name]} (${env_name})")
     args = parser.parse_args(argv)
@@ -139,46 +93,47 @@ def import_tools(lib: Path, domain: str) -> dict:
     return {cls.get_info()["function"]["name"]: cls for cls in module.ALL_TOOLS}
 
 
-def read_agent_log(path: Path) -> dict:
-    """The agent's own log, split into tool calls, says and the done declaration.
-
-    Returns counts and the say contents. It is the agent's file, so a missing or
-    malformed one never raises: a malformed line counts as `<unparseable>` and is
-    not evidence of anything, and no `done`/`say` record is found in it.
-    """
-    info = {"log_file": str(path), "log_present": path.is_file(),
-            "agent_events": 0, "agent_tool_calls": None,
-            "agent_tool_call_counts": {}, "agent_says": [], "agent_say_count": 0,
-            "agent_declared_done": False}
-    if not path.is_file():
-        return info
+def read_agent_log(events: list, path: Path) -> dict:
+    """Read service events only through the first explicit or tool termination."""
     counts: Counter = Counter()
     total, says, done = 0, [], False
-    for line in path.read_text(errors="replace").splitlines():
-        line = line.strip()
-        if not line:
-            continue
+    for record in events:
         total += 1
-        try:
-            record = json.loads(line)
-        except ValueError:
-            record = None
-        if not isinstance(record, dict):
-            counts["<unparseable>"] += 1
-            continue
-        kind, name = record.get("kind"), record.get("name", "?")
-        if kind == "done" or name == "done":
+        kind, name = record["kind"], record["name"]
+        if kind == "done" or name == "done" or name in TERMINATE_TOOLS:
+            if name in TERMINATE_TOOLS:
+                counts[name] += 1
             done = True
-        elif kind == "say" or name == RESPOND_ACTION_NAME:
-            arguments = record.get("arguments")
-            content = arguments.get("content", "") if isinstance(arguments, dict) else ""
-            says.append(str(content))
+            break
+        if kind == "say" or name == RESPOND_ACTION_NAME:
+            says.append(record["arguments"].get("content", ""))
         else:
             counts[name] += 1
-    info.update(agent_events=total, agent_tool_calls=sum(counts.values()),
-                agent_tool_call_counts=dict(counts), agent_says=says,
-                agent_say_count=len(says), agent_declared_done=done)
-    return info
+    return {"log_file": str(path), "log_present": True,
+            "agent_events": total, "agent_tool_calls": sum(counts.values()),
+            "agent_tool_call_counts": dict(counts), "agent_says": says,
+            "agent_say_count": len(says), "agent_declared_done": done}
+
+
+def read_recording(path: Path, task_id: str, domain: str) -> dict:
+    record = json.loads(path.read_text())
+    if (not isinstance(record, dict) or record.get("version") != 1
+            or record.get("task_id") != task_id or record.get("domain") != domain
+            or not isinstance(record.get("database"), dict)
+            or not isinstance(record.get("events"), list)
+            or not isinstance(record.get("done"), bool)):
+        raise ValueError("invalid recording schema or task/domain binding")
+    for event in record["events"]:
+        if (not isinstance(event, dict) or event.get("kind") not in ("call", "say", "done")
+                or not isinstance(event.get("name"), str)
+                or not isinstance(event.get("arguments"), dict)):
+            raise ValueError("invalid service event")
+        if (event["kind"] == "say" or event["name"] == RESPOND_ACTION_NAME) and not isinstance(
+                event["arguments"].get("content"), str):
+            raise ValueError("invalid service utterance")
+    if record["done"] != read_agent_log(record["events"], path)["agent_declared_done"]:
+        raise ValueError("recording termination state disagrees with events")
+    return record
 
 
 def check_outputs(outputs, says) -> tuple[dict, float]:
@@ -214,7 +169,8 @@ def main(argv) -> int:
     paths = parse_args(argv)
     evidence: dict = {"gt_file": str(paths["gt"]),
                       "clean_db_file": str(paths["clean_db"]),
-                      "agent_db_file": str(paths["db"]),
+                      "recording_file": str(paths["recording"]),
+                      "evidence_source": "service-recording",
                       "tool_lib": str(paths["lib"])}
 
     # ---- this check's own inputs: missing means the task was not measured. ----
@@ -281,28 +237,22 @@ def main(argv) -> int:
     evidence["ground_truth_data_hash"] = gt_hash
     evidence["ground_truth_changes_database"] = gt_hash != clean_hash
 
-    # ---- the agent's own log: evidence, and the `done`/`outputs` gates. ----
-    log = read_agent_log(paths["call_log"])
+    # ---- service-owned evidence: failure is unmeasured, never a synthetic zero. ----
+    try:
+        recording = read_recording(paths["recording"], gt.get("task_id"), domain)
+    except (OSError, ValueError) as exc:
+        evidence["error"] = f"service recording unavailable or invalid: {exc}"
+        write_evidence(paths["evidence"], evidence)
+        print(f"check cannot run: {evidence['error']}", file=sys.stderr)
+        return 3
+    log = read_agent_log(recording["events"], paths["recording"])
     evidence.update(log)
     outputs_found, r_outputs = check_outputs(outputs, log["agent_says"])
     done = log["agent_declared_done"]
     evidence.update(outputs=outputs_found, r_outputs=r_outputs,
                     outputs_satisfied=(r_outputs == 1.0))
-
-    # ---- the agent's database, which is the state being graded ----
-    try:
-        raw = paths["db"].read_bytes()
-        agent_db = json.loads(raw)
-        if not isinstance(agent_db, dict):
-            raise ValueError(f"database is a {type(agent_db).__name__}, "
-                             f"expected a JSON object")
-    except (OSError, ValueError) as exc:
-        evidence.update(reward=0, database_hash_matched=False,
-                        agent_db_error=str(exc), agent_db_keys=[])
-        write_reward(paths["reward"], 0)
-        write_evidence(paths["evidence"], evidence)
-        print(f"reward 0: the agent's database could not be read: {exc}")
-        return 0
+    agent_db = recording["database"]
+    raw = json.dumps(agent_db).encode()
 
     agent_hash = hash_of(agent_db)
     matched = agent_hash == gt_hash
@@ -318,7 +268,7 @@ def main(argv) -> int:
     if reward == 1:
         print(f"reward 1: database hash matches the ground truth "
               f"({gt_hash[:12]}..., {replayed} actions replayed), the agent "
-              f"declared done, and all {len(outputs)} required output(s) were said")
+              f"terminated, and all {len(outputs)} required output(s) were said")
         return 0
 
     reasons = []
@@ -328,8 +278,8 @@ def main(argv) -> int:
                        f"ground truth {gt_hash[:12]}...); differing tables: "
                        f"{differing}; replay errors: {errors}")
     if not done:
-        reasons.append("the agent never declared done (no `tau done` in "
-                       f"{paths['call_log']})")
+        reasons.append("the episode never terminated (no done or terminating tool in "
+                       f"{paths['recording']})")
     if r_outputs != 1.0:
         missing = [o for o, ok in outputs_found.items() if not ok]
         reasons.append(f"required output(s) not said: {missing}")
