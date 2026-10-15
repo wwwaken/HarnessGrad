@@ -1,0 +1,78 @@
+{
+  "valid": true,
+  "outputs": {
+    "sources.json": {
+      "sha256": "13caae39368bf1b1212ba6a3f06f537555feb6251f170c7777526d016f0a6778",
+      "bytes": 1164
+    },
+    "physicsquestions-gold-bindings.json": {
+      "sha256": "ff75af88480d42b9fb2e6fc5c63611cafe6d94d60046a10d2f5222c95abce5b2",
+      "bytes": 18121,
+      "dataset": "physicsquestions",
+      "input_path": "/mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv",
+      "input_bytes": 17953,
+      "input_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+      "loaded_rows": 53,
+      "default_split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212",
+      "default_side_counts": {
+        "train": 37,
+        "eval": 16
+      },
+      "source_sha256": "452d134d58a1900355112edb8dcc9837c39830c953d2d064db3b409d54c001cf",
+      "selection_packet": null,
+      "run_id": null,
+      "chosen_split_mode": null,
+      "chosen_side": null,
+      "selected_only_export": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null
+    },
+    "sportsunderstanding-gold-bindings.json": {
+      "sha256": "537dce7d6ac8144f22cd14010dfef6d86e0cc922b84483954b636085735f2812",
+      "bytes": 331337,
+      "dataset": "sportsunderstanding",
+      "input_path": "/mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv",
+      "input_bytes": 137846,
+      "input_sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+      "loaded_rows": 1000,
+      "default_split_sha256": "91207272facb1c63a51966f3e1815f3e0174d9857a2255f198dd85b68dfe232c",
+      "default_side_counts": {
+        "train": 663,
+        "eval": 337
+      },
+      "source_sha256": "e44f856dda4c2761737ffe9d0b0b3fca59e149c1ec12e7451be33872df5d86ad",
+      "selection_packet": null,
+      "run_id": null,
+      "chosen_split_mode": null,
+      "chosen_side": null,
+      "selected_only_export": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null
+    },
+    "strategyqa-gold-bindings.json": {
+      "sha256": "4409c4cb13f4ce8e29f8ab60d01afefdfad4f5104b5630b3e4f02048a21cc5ef",
+      "bytes": 739838,
+      "dataset": "strategyqa",
+      "input_path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+      "input_bytes": 200453,
+      "input_sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+      "loaded_rows": 2290,
+      "default_split_sha256": "c4baab58c4101d28b981a771a4bb1ef198f020e64764905eda23a7379f396969",
+      "default_side_counts": {
+        "train": 1520,
+        "eval": 770
+      },
+      "source_sha256": "eaad45dfb944241fad84eb575882560ffcf7243de40c9d34fd0766a40c16a50a",
+      "selection_packet": null,
+      "run_id": null,
+      "chosen_split_mode": null,
+      "chosen_side": null,
+      "selected_only_export": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null
+    }
+  }
+}

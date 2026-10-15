@@ -4151,3 +4151,47 @@ clean; all four named deliverables present.
 - Evidence: reports/w-resolver4-payloads.md, tests/fixtures/hg_wresolver4/README.md and reports/w-resolver4-validation.txt. Exact import sites, all public HTTP bodies/wheel digests, independent hashes, real process/refusal/network/cleanup receipts, static bundled-application import audit, every remaining gap and coverage arithmetic are retained. The new packet plus explicitly mapped prior committed payload locations supplies both wheel graphs. Static installer/source inspection does not establish CLI execution or installed source/image/native/runtime equivalence.
 - Platform lesson: choose tags/markers for each real interpreter, distinguish venv bootstrap failures from missing distributions, and prove refusal with the original mandatory transitive dependency absent even after installation. Update only scorer-offline-closure's additive observed/evidence fields; shared/dataset statuses, next_actions, references, history and gates unchanged. S1/S3/S4/S5/S6 remain PARTIAL.
 - Validation: python3 tools/check_dataset_blockers.py; python3 tests/fixtures/hg_wresolver4/validate.py; python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py --basetemp=/tmp/harnessgrad-pytest-w-resolver4. Changes committed only on registered /tmp/hg-resolver4 (wg-resolver4) for parent diff review and merge; main untouched by this worker.
+## 2026-10-15 Journal-coverage next-action custody follow-up - w-jc2
+
+- Continued the exact six next actions in reports/w-journalcov-review.md. All
+  six dataset-journal-gap blockers remain measurement/open; both shared blockers,
+  all statuses/next_actions/evidence locators/histories and production_authorized=false
+  remain unchanged. Only these six observed fields gain qualified evidence.
+- FEVER public original dev bytes independently bind every installed original_id,
+  claim, label and verifiable field; every non-NEI export row matches a complete
+  original evidence group. This advances real correspondence, not global group
+  preservation: 51 alternative groups for 42 represented non-NEI IDs are absent
+  from this validation export, and 1,395 rows have insufficient singleton evidence.
+  Collaborator/README/script corroboration does not supply the producing export
+  revision and ID/split/filter/NEI-input receipt. Local metric equivalence remains
+  unproved; original group semantics and current local singleton scoring stay distinct.
+- Reasoning Gym recovered original source pins and nine time-only rows' carried
+  effective date. The original producer's launch/hash-state/dependency environment
+  receipt remains missing in the inspected locations. Current dates, dependency
+  metadata and filesystem timestamps cannot authenticate that receipt. No pool
+  regeneration, altered seed/family/order or all-family scoring is attempted.
+- SpreadsheetBench's prior concrete mirror-mapping step is satisfied: pinned
+  canonical upstream release archive is byte-identical to the installed mirror;
+  exact metadata and all 800 chosen init/golden members map to both. The released
+  parser-rejected task, range-zero policy and single-variant identity are retained.
+  Authenticated gradable eligibility/coverage and actual scorer/offline/pristine
+  runtime/shared admission evidence still prevent dataset closure.
+- Physics Questions, Sports Understanding and StrategyQA now have whole-pool
+  ordered row/task/default-side-to-serialized-gold SHA-256 bindings from current
+  source-extracted projections. No adapter import, scorer execution or expected
+  answer export is implied. Their concrete selection action still requires the
+  independently authorized operator packet: fresh run ID, ordered task IDs,
+  explicit split mode/side and selected-only export. No packet is invented.
+- The primary worker reviewed and cherry-picked independent provenance fixture
+  commits from registered child worktrees, then rechecked their evidence. Raw
+  public responses, exact command output, recomputed digests, scoped failures and
+  successful custody reproductions are preserved. No run/frozen receipt, main
+  checkout, gate/admission/refusal or production source is changed. No model,
+  endpoint, model server, paid API or benchmark trial is used; trial fields stay null.
+- Deliverables: reports/w-jc2-review.md, tests/fixtures/hg_wjc2/ and
+  reports/w-jc2-validation.txt. Commits stay in registered wg-jc2 for parent review.
+- Focused checks pass: 59 tests, 3 pre-existing expected xfails. The inherited
+  w-journalcov root validator reproduces inventory then refuses its older
+  whole-registry baseline, which predates parent Resolver/AppWorld merges. Its
+  failure stays raw; independent inventory comparison and this task's exact
+  starting-HEAD scope check remain separate. No inherited evidence is rewritten.

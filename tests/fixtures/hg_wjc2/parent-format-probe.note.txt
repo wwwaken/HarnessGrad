@@ -1,0 +1,5 @@
+The first registry-format guard checked json.dumps(sort_keys=True) against the
+starting registry, which preserves mixed historical object-key order. Its
+assertion failed before any write. Exact stderr is retained alongside this note.
+No dataset/registry mutation occurred in that attempt. update_observed.py uses
+unique exact JSON-string replacement and checks the full semantic delta instead.

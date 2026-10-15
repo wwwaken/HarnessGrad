@@ -1,0 +1,2093 @@
+w-jc2 final parent validation; raw subprocess stdout/stderr follow.
+
+ARGV ["python3", "tools/check_dataset_blockers.py"]
+STDOUT
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/bind_inputs.py", "--check"]
+STDOUT
+{
+  "valid": true,
+  "outputs": {
+    "sources.json": {
+      "sha256": "13caae39368bf1b1212ba6a3f06f537555feb6251f170c7777526d016f0a6778",
+      "bytes": 1164
+    },
+    "physicsquestions-gold-bindings.json": {
+      "sha256": "ff75af88480d42b9fb2e6fc5c63611cafe6d94d60046a10d2f5222c95abce5b2",
+      "bytes": 18121,
+      "dataset": "physicsquestions",
+      "input_path": "/mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv",
+      "input_bytes": 17953,
+      "input_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+      "loaded_rows": 53,
+      "default_split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212",
+      "default_side_counts": {
+        "train": 37,
+        "eval": 16
+      },
+      "source_sha256": "452d134d58a1900355112edb8dcc9837c39830c953d2d064db3b409d54c001cf",
+      "selection_packet": null,
+      "run_id": null,
+      "chosen_split_mode": null,
+      "chosen_side": null,
+      "selected_only_export": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null
+    },
+    "sportsunderstanding-gold-bindings.json": {
+      "sha256": "537dce7d6ac8144f22cd14010dfef6d86e0cc922b84483954b636085735f2812",
+      "bytes": 331337,
+      "dataset": "sportsunderstanding",
+      "input_path": "/mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv",
+      "input_bytes": 137846,
+      "input_sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+      "loaded_rows": 1000,
+      "default_split_sha256": "91207272facb1c63a51966f3e1815f3e0174d9857a2255f198dd85b68dfe232c",
+      "default_side_counts": {
+        "train": 663,
+        "eval": 337
+      },
+      "source_sha256": "e44f856dda4c2761737ffe9d0b0b3fca59e149c1ec12e7451be33872df5d86ad",
+      "selection_packet": null,
+      "run_id": null,
+      "chosen_split_mode": null,
+      "chosen_side": null,
+      "selected_only_export": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null
+    },
+    "strategyqa-gold-bindings.json": {
+      "sha256": "4409c4cb13f4ce8e29f8ab60d01afefdfad4f5104b5630b3e4f02048a21cc5ef",
+      "bytes": 739838,
+      "dataset": "strategyqa",
+      "input_path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+      "input_bytes": 200453,
+      "input_sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+      "loaded_rows": 2290,
+      "default_split_sha256": "c4baab58c4101d28b981a771a4bb1ef198f020e64764905eda23a7379f396969",
+      "default_side_counts": {
+        "train": 1520,
+        "eval": 770
+      },
+      "source_sha256": "eaad45dfb944241fad84eb575882560ffcf7243de40c9d34fd0766a40c16a50a",
+      "selection_packet": null,
+      "run_id": null,
+      "chosen_split_mode": null,
+      "chosen_side": null,
+      "selected_only_export": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null
+    }
+  }
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/fever/audit.py", "--check"]
+STDOUT
+{
+  "scope": "full installed valid.jsonl versus public original dev; no admitted selection or run",
+  "installed_path": "/mnt/20t/xubuqiang/datasets/fever/valid.jsonl",
+  "installed_bytes": 6471611,
+  "installed_sha256": "5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9",
+  "installed_git_blob_sha1": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+  "original_body_sha256": "e89865bfe1b4dd054e03dd57d7241a6fde24862905f31117cf0cd719f7c78df7",
+  "original_body_md5": "4eecc1018b3d2bd46089ca36d886f439",
+  "official_download_and_linked_zenodo_bytes_equal": true,
+  "counts": {
+    "installed_rows": 15935,
+    "original_id_present": 15935,
+    "original_id_matches": 15935,
+    "claim_matches": 15935,
+    "label_matches": 15935,
+    "verifiable_matches": 15935,
+    "non_nei_rows": 9525,
+    "non_nei_complete_group_set_equal_rows": 9525,
+    "non_nei_complete_group_ordered_equal_rows": 9525,
+    "non_nei_multisentence_rows": 1400,
+    "non_nei_rows_with_original_insufficient_singleton": 1395,
+    "original_insufficient_export_singleton_occurrences": 3046,
+    "nei_rows": 6410,
+    "original_release_rows": 19998,
+    "installed_unique_original_ids": 9835,
+    "installed_unique_non_nei_original_ids": 6551,
+    "original_non_nei_distinct_groups_for_represented_ids": 9575,
+    "original_groups_absent_from_valid_for_represented_non_nei_ids": 51,
+    "represented_non_nei_ids_with_groups_absent_from_valid": 42
+  },
+  "normalization": "page Unicode NFC; line int; group pair-set equality and ordered equality reported separately",
+  "inventory_sha256": "aaea48decd7e67f10b7db4512cf9b15f32ee9f49c338c6dd1a187f78097daf55",
+  "inventory_gzip_sha256": "b3d77808ce7a5d2644bffbf5c3096ff81b17da4f21dfe5319862067bfe5511a5",
+  "source_sha256": {
+    "data/datasets/fever.py": "7c0cd67c7d82d9c71f2bde4c52e564f279930f6fc7f62aae4cdda5b7c27afcd0",
+    "data/scaffolds/qa/evidence_scorers.py": "a962f23e0c0f704b31294902ddaae3facee0e7496dfc43041bf973a912043729",
+    "tests/fixtures/hg_e1_review/fever-create-nli-dataset.py": "09054c04a53eb5f3f035d94fd2fe8a271a57bf69c5768eadd0535497f8cec884",
+    "tests/fixtures/hg_e1_review/fever-hub-proxy-tree.body": "120d602345fb2b5114cd28473d99b691a0f5a9e7505ff38c4ed49bbfa8dd9c75"
+  },
+  "producer_blobs": {
+    "producer-readme": {
+      "tree_path": "README.md",
+      "git_blob_sha1": "fdef54595fb47675cf5db2328dc92601b0f02cd5",
+      "sha256": "374052abccfd55c67e5d1a94f3c05b82de4426f2ce1c5e9efdd9c5daa7164a34",
+      "matches_preserved_pinned_tree": true
+    },
+    "producer-merge": {
+      "tree_path": "scripts/merge_nli_files.py",
+      "git_blob_sha1": "2191816140b9ec0738a305eb09b8f16f58d497dd",
+      "sha256": "960f0540bb4c1e1c80027c88f256906b3c5d2124d5629e1fea0fdd7f32e36cfd",
+      "matches_preserved_pinned_tree": true
+    },
+    "producer-nei": {
+      "tree_path": "scripts/aggregate_papelo_nei.py",
+      "git_blob_sha1": "dc75b530850d36bb9c706c9a4ca9d7305c91a6e0",
+      "sha256": "cf9d2d241577666b8cd7a52d041d3b09863d24dce8c503e3ce98c36f471a69fd",
+      "matches_preserved_pinned_tree": true
+    }
+  },
+  "acquisitions": [
+    {
+      "receipt": "fever-dev.receipt.json",
+      "status": 200,
+      "body_bytes": 4349935,
+      "body_sha256": "e89865bfe1b4dd054e03dd57d7241a6fde24862905f31117cf0cd719f7c78df7",
+      "error": null
+    },
+    {
+      "receipt": "fever-download-page.receipt.json",
+      "status": 200,
+      "body_bytes": 17217,
+      "body_sha256": "215843ee560afbcdcc6df00f6451cb62445c98bce7178821eb8da93f2a4ca723",
+      "error": null
+    },
+    {
+      "receipt": "hub-commits-retry.receipt.json",
+      "status": null,
+      "body_bytes": 0,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>"
+    },
+    {
+      "receipt": "hub-commits.receipt.json",
+      "status": null,
+      "body_bytes": 0,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>"
+    },
+    {
+      "receipt": "original-zenodo.receipt.json",
+      "status": 200,
+      "body_bytes": 4349935,
+      "body_sha256": "e89865bfe1b4dd054e03dd57d7241a6fde24862905f31117cf0cd719f7c78df7",
+      "error": null
+    },
+    {
+      "receipt": "producer-issue5-comments.receipt.json",
+      "status": 200,
+      "body_bytes": 2035,
+      "body_sha256": "b724d4363060b976e1f6c818a952522a708ab3438ad82505825c2ed0328139ba",
+      "error": null
+    },
+    {
+      "receipt": "producer-issue5-retry.receipt.json",
+      "status": 200,
+      "body_bytes": 3563,
+      "body_sha256": "9ebb7cad63b68d518fe071a14d347f6a27c7715ac522edd6453059fb1b48310a",
+      "error": null
+    },
+    {
+      "receipt": "producer-issue5.receipt.json",
+      "status": null,
+      "body_bytes": 0,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>"
+    },
+    {
+      "receipt": "producer-merge.receipt.json",
+      "status": 200,
+      "body_bytes": 1806,
+      "body_sha256": "960f0540bb4c1e1c80027c88f256906b3c5d2124d5629e1fea0fdd7f32e36cfd",
+      "error": null
+    },
+    {
+      "receipt": "producer-nei.receipt.json",
+      "status": 200,
+      "body_bytes": 2780,
+      "body_sha256": "cf9d2d241577666b8cd7a52d041d3b09863d24dce8c503e3ce98c36f471a69fd",
+      "error": null
+    },
+    {
+      "receipt": "producer-readme.receipt.json",
+      "status": 200,
+      "body_bytes": 6786,
+      "body_sha256": "374052abccfd55c67e5d1a94f3c05b82de4426f2ce1c5e9efdd9c5daa7164a34",
+      "error": null
+    }
+  ],
+  "producer_revision_bound_to_export": null,
+  "selected_manifest": null,
+  "run_id": null,
+  "scorer_executed": false,
+  "blocker_closed": false
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/gym/verify.py"]
+STDOUT
+{"command_receipts_verified": 29, "effective_start_dates": ["2026-10-08"], "effective_time_only_rows": 9, "original_generation_record_recovered": false, "pool_rows": 1780, "pool_sha256": "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177", "source_or_historical_files_verified": 12}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/spread/audit.py", "--check"]
+STDOUT
+{
+  "canonical_verified_400_archive": {
+    "path": "/tmp/hg-jc2-spread-canonical-verified_400.tar.gz",
+    "bytes": 14958255,
+    "sha256": "10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949",
+    "git_blob_sha1": "b6baaf0f23ef5adc1cd22078f4eeb3102b4a7c72"
+  },
+  "canonical_verified_400_commit": "49b73a94775fb489063f60ca1865e3a650079a79",
+  "canonical_verified_400_git_blob": "b6baaf0f23ef5adc1cd22078f4eeb3102b4a7c72",
+  "canonical_verified_400_archive_byte_equal_to_mirror": true,
+  "canonical_verified_400_readme": {
+    "sha256": "ba96370b14fa897a61d7a68f3ada6399391d0a4f5d4a8bb9be2a1a38a4316143",
+    "git_blob_sha1": "d5ae034cb14d8da4733cfc5f38a067eee792aef9"
+  },
+  "canonical_upstream_metadata_and_chosen_members_byte_equal": true,
+  "original_archive": {
+    "path": "/tmp/hg-jc2-spread-original-all_data_912.tar.gz",
+    "bytes": 96885260,
+    "sha256": "25d430f671613505232e47b143ddfd5a2ead87ec67ff25982f7a7dfb130fad18",
+    "git_blob_sha1": "19b7db466c0c229feba6a0d5436ee26d3f854fba"
+  },
+  "canonical_github_blob_identity_matches": true,
+  "mirror_archive": {
+    "path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/_src/spreadsheetbench_verified_400.tar.gz",
+    "bytes": 14958255,
+    "sha256": "10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949",
+    "git_blob_sha1": "b6baaf0f23ef5adc1cd22078f4eeb3102b4a7c72"
+  },
+  "canonical_hub_lfs_identity_matches": true,
+  "original_metadata_member": {
+    "member": "all_data_912/dataset.json",
+    "bytes": 665350,
+    "sha256": "e5137ecbec4273d91344a0c8feb2aff2d4a93d5881ac40e490250dfd8db227de"
+  },
+  "mirror_metadata": {
+    "path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json",
+    "member": "spreadsheetbench_verified_400/dataset.json",
+    "bytes": 306533,
+    "sha256": "bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7",
+    "archive_equal": true
+  },
+  "original_rows": 912,
+  "mirror_rows": 400,
+  "mirror_ids_missing_from_original": [],
+  "metadata_rows_equal": 174,
+  "metadata_rows_changed": 226,
+  "changed_field_counts": {
+    "answer_position": 4,
+    "answer_sheet": 1,
+    "exclude": 2,
+    "instruction": 226
+  },
+  "chosen_workbook_count": 800,
+  "chosen_workbooks_same_task_original_exact_match": 706,
+  "chosen_workbooks_same_task_original_unmatched": 94,
+  "chosen_workbooks_first_variant_exact_match": 706,
+  "actual_run_fields": {
+    "selected_manifest": null,
+    "run_id": null,
+    "chosen_split_mode": null,
+    "chosen_side": null,
+    "selected_only_export": null
+  },
+  "mirror_to_canonical_verified_400_mapping_authenticated": true,
+  "historical_912_transformation_record_authenticated": false,
+  "row_level_gradability_authenticated": false,
+  "production_authorized": false
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/spread/verify_preimages.py"]
+STDOUT
+Lossless wrappers and received response-body digests verified
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjournalcov/audit.py", "--check"]
+STDOUT
+
+STDERR
+Traceback (most recent call last):
+  File "/tmp/hg-jc2/tests/fixtures/hg_wjournalcov/audit.py", line 268, in <module>
+    main()
+  File "/tmp/hg-jc2/tests/fixtures/hg_wjournalcov/audit.py", line 262, in main
+    assert baseline == current, "Registry delta escaped the six observed fields"
+           ^^^^^^^^^^^^^^^^^^^
+AssertionError: Registry delta escaped the six observed fields
+
+EXIT 1
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/check_scope.py"]
+STDOUT
+{
+  "valid": true,
+  "observed_fields_changed": [
+    "fever",
+    "physicsquestions",
+    "reasoning_gym",
+    "sportsunderstanding",
+    "spreadsheetbench",
+    "strategyqa"
+  ],
+  "shared_blockers_unchanged": true,
+  "statuses_and_next_actions_unchanged": true,
+  "historical_records_unchanged": true,
+  "production_authorized": false,
+  "tracked_changed_paths": [
+    "docs/adapter-integration-journal.md",
+    "docs/dataset-blockers.json",
+    "reports/w-jc2-review.md",
+    "tests/fixtures/hg_wjc2/README.md",
+    "tests/fixtures/hg_wjc2/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/bind_inputs.py",
+    "tests/fixtures/hg_wjc2/check_scope.py",
+    "tests/fixtures/hg_wjc2/checksum.command.json",
+    "tests/fixtures/hg_wjc2/checksum.stderr.txt",
+    "tests/fixtures/hg_wjc2/child-worktree-cleanup.json",
+    "tests/fixtures/hg_wjc2/fever/REVIEW.md",
+    "tests/fixtures/hg_wjc2/fever/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/fever/acquire.py",
+    "tests/fixtures/hg_wjc2/fever/audit.py",
+    "tests/fixtures/hg_wjc2/fever/audit.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/audit.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/commands.json",
+    "tests/fixtures/hg_wjc2/fever/examples.json",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.body.gz",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.body.gz",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.lines.jsonl",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.body.gz",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.body.gz",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/independent-sources.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/independent-sources.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/observations.json",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.body.gz",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.body",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.body",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.lines.jsonl",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/registry-after.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/registry-before.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/reproduction.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/reproduction.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/row-correspondence.jsonl.gz",
+    "tests/fixtures/hg_wjc2/fever/source-examples.jsonl",
+    "tests/fixtures/hg_wjc2/fever/validation.json",
+    "tests/fixtures/hg_wjc2/fever/whitespace-initial.json",
+    "tests/fixtures/hg_wjc2/focused-tests.command.json",
+    "tests/fixtures/hg_wjc2/focused-tests.stderr.txt",
+    "tests/fixtures/hg_wjc2/focused-tests.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/REVIEW.md",
+    "tests/fixtures/hg_wjc2/gym/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/gym/capture.py",
+    "tests/fixtures/hg_wjc2/gym/checksum-final.command.json",
+    "tests/fixtures/hg_wjc2/gym/checksum-final.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/checksum-final.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.command.json",
+    "tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/corrected-source-locators.command.json",
+    "tests/fixtures/hg_wjc2/gym/corrected-source-locators.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/corrected-source-locators.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/current-record-search.command.json",
+    "tests/fixtures/hg_wjc2/gym/current-record-search.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/current-record-search.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-diff-check.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-diff-check.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-diff-check.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-registry.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-registry.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-registry.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-staged-check.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-staged-check.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-staged-check.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-status.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-status.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-status.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/generation-history.command.json",
+    "tests/fixtures/hg_wjc2/gym/generation-history.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/generation-history.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.command.json",
+    "tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-prepare-diff.command.json",
+    "tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-record-search.command.json",
+    "tests/fixtures/hg_wjc2/gym/historical-record-search.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-record-search.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/independent-digests.command.json",
+    "tests/fixtures/hg_wjc2/gym/independent-digests.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/independent-digests.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-final.command.json",
+    "tests/fixtures/hg_wjc2/gym/inspect-final.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-final.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-with-parser.command.json",
+    "tests/fixtures/hg_wjc2/gym/inspect-with-parser.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-with-parser.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect.command.json",
+    "tests/fixtures/hg_wjc2/gym/inspect.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect_provenance.py",
+    "tests/fixtures/hg_wjc2/gym/local-files.command.json",
+    "tests/fixtures/hg_wjc2/gym/local-files.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/local-files.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/observations.json",
+    "tests/fixtures/hg_wjc2/gym/old-provenance-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/old-provenance-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/old-provenance-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/original-pin-locators.command.json",
+    "tests/fixtures/hg_wjc2/gym/original-pin-locators.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/original-pin-locators.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/original-prepare.py",
+    "tests/fixtures/hg_wjc2/gym/original-reasoning_gym.py",
+    "tests/fixtures/hg_wjc2/gym/packet-complete-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/packet-complete-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-complete-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-final-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/packet-final-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-final-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/packet-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/parser-date-default.command.json",
+    "tests/fixtures/hg_wjc2/gym/parser-date-default.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/parser-date-default.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/pool-date-rows.command.json",
+    "tests/fixtures/hg_wjc2/gym/pool-date-rows.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/pool-date-rows.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-after.command.json",
+    "tests/fixtures/hg_wjc2/gym/registry-after.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-after.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-before.command.json",
+    "tests/fixtures/hg_wjc2/gym/registry-before.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-before.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/source-commit-names.command.json",
+    "tests/fixtures/hg_wjc2/gym/source-commit-names.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/source-commit-names.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/source-lines.txt",
+    "tests/fixtures/hg_wjc2/gym/source-locators.command.json",
+    "tests/fixtures/hg_wjc2/gym/source-locators.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/source-locators.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/staged-diff-check.command.json",
+    "tests/fixtures/hg_wjc2/gym/staged-diff-check.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/staged-diff-check.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/verify.py",
+    "tests/fixtures/hg_wjc2/independent-sha256sum.command.json",
+    "tests/fixtures/hg_wjc2/independent-sha256sum.stderr.txt",
+    "tests/fixtures/hg_wjc2/independent-sha256sum.stdout.txt",
+    "tests/fixtures/hg_wjc2/observed-additions.json",
+    "tests/fixtures/hg_wjc2/parent-0.command.json",
+    "tests/fixtures/hg_wjc2/parent-0.stderr.txt",
+    "tests/fixtures/hg_wjc2/parent-0.stdout.txt",
+    "tests/fixtures/hg_wjc2/parent-1.command.json",
+    "tests/fixtures/hg_wjc2/parent-1.stderr.txt",
+    "tests/fixtures/hg_wjc2/parent-1.stdout.txt",
+    "tests/fixtures/hg_wjc2/parent-format-probe.note.txt",
+    "tests/fixtures/hg_wjc2/parent-format-probe.stderr.txt",
+    "tests/fixtures/hg_wjc2/physicsquestions-gold-bindings.json",
+    "tests/fixtures/hg_wjc2/registry-before.json",
+    "tests/fixtures/hg_wjc2/registry-update.command.json",
+    "tests/fixtures/hg_wjc2/registry-update.stderr.txt",
+    "tests/fixtures/hg_wjc2/registry-update.stdout.txt",
+    "tests/fixtures/hg_wjc2/source-links.json",
+    "tests/fixtures/hg_wjc2/sources.json",
+    "tests/fixtures/hg_wjc2/sportsunderstanding-gold-bindings.json",
+    "tests/fixtures/hg_wjc2/spread/REVIEW.md",
+    "tests/fixtures/hg_wjc2/spread/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/spread/acquire.py",
+    "tests/fixtures/hg_wjc2/spread/audit.py",
+    "tests/fixtures/hg_wjc2/spread/command-00.json",
+    "tests/fixtures/hg_wjc2/spread/command-00.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-00.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-01.json",
+    "tests/fixtures/hg_wjc2/spread/command-01.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-01.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-02.json",
+    "tests/fixtures/hg_wjc2/spread/command-02.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-02.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-03.json",
+    "tests/fixtures/hg_wjc2/spread/command-03.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-03.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-04.json",
+    "tests/fixtures/hg_wjc2/spread/command-04.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-04.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-05.json",
+    "tests/fixtures/hg_wjc2/spread/command-05.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-05.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-06.json",
+    "tests/fixtures/hg_wjc2/spread/command-06.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-06.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-07.json",
+    "tests/fixtures/hg_wjc2/spread/command-07.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-07.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-08.json",
+    "tests/fixtures/hg_wjc2/spread/command-08.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-08.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-09.json",
+    "tests/fixtures/hg_wjc2/spread/command-09.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-09.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-10.json",
+    "tests/fixtures/hg_wjc2/spread/command-10.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-10.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-11.json",
+    "tests/fixtures/hg_wjc2/spread/command-11.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-11.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-12.json",
+    "tests/fixtures/hg_wjc2/spread/command-12.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-12.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-13.json",
+    "tests/fixtures/hg_wjc2/spread/command-13.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-13.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-14.json",
+    "tests/fixtures/hg_wjc2/spread/command-14.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-14.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-15.json",
+    "tests/fixtures/hg_wjc2/spread/command-15.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-15.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-16.json",
+    "tests/fixtures/hg_wjc2/spread/command-16.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-16.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-17.json",
+    "tests/fixtures/hg_wjc2/spread/command-17.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-17.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-18.json",
+    "tests/fixtures/hg_wjc2/spread/command-18.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-18.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-19.json",
+    "tests/fixtures/hg_wjc2/spread/command-19.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-19.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-20.json",
+    "tests/fixtures/hg_wjc2/spread/command-20.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-20.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-21.json",
+    "tests/fixtures/hg_wjc2/spread/command-21.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-21.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-22.json",
+    "tests/fixtures/hg_wjc2/spread/command-22.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-22.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-23.json",
+    "tests/fixtures/hg_wjc2/spread/command-23.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-23.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-24.json",
+    "tests/fixtures/hg_wjc2/spread/command-24.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-24.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-25.json",
+    "tests/fixtures/hg_wjc2/spread/command-25.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-25.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-26.json",
+    "tests/fixtures/hg_wjc2/spread/command-26.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-26.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-27.json",
+    "tests/fixtures/hg_wjc2/spread/command-27.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-27.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-28.json",
+    "tests/fixtures/hg_wjc2/spread/command-28.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-28.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-29.json",
+    "tests/fixtures/hg_wjc2/spread/command-30.json",
+    "tests/fixtures/hg_wjc2/spread/command-30.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-30.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-31.json",
+    "tests/fixtures/hg_wjc2/spread/command-31.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-31.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/encoded-preimages.json",
+    "tests/fixtures/hg_wjc2/spread/member-mapping.json",
+    "tests/fixtures/hg_wjc2/spread/parser-audit.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-main-commit.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-main-commit.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-main-commit.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-archive-proxy.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-archive.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.decoded.md",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.decoded.md",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-releases.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-releases.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-releases.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree-main.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree-main.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree-main.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-verified-archive-pinned-proxy.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.body",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.body",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.body.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-proxy.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-revision.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.body",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/summary.json",
+    "tests/fixtures/hg_wjc2/spread/verify_preimages.py",
+    "tests/fixtures/hg_wjc2/strategyqa-gold-bindings.json",
+    "tests/fixtures/hg_wjc2/update_observed.py",
+    "tests/fixtures/hg_wjc2/validate.py"
+  ]
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "-c", "import json,pathlib; p=pathlib.Path('tests/fixtures/hg_wjc2/source-links.json'); x=json.loads(p.read_text()); assert all(pathlib.Path(v['path']).read_text().splitlines()[v['line']-1]==v['verbatim'] for v in x); print(json.dumps({'source_anchors_valid':True,'anchors':x},indent=2))"]
+STDOUT
+{
+  "source_anchors_valid": true,
+  "anchors": [
+    {
+      "path": "data/datasets/physicsquestions.py",
+      "line": 103,
+      "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+    },
+    {
+      "path": "data/datasets/physicsquestions.py",
+      "line": 120,
+      "verbatim": "def _rows() -> list[dict]:"
+    },
+    {
+      "path": "data/datasets/physicsquestions.py",
+      "line": 135,
+      "verbatim": "def _gold(row: dict) -> dict:"
+    },
+    {
+      "path": "data/datasets/sportsunderstanding.py",
+      "line": 80,
+      "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+    },
+    {
+      "path": "data/datasets/sportsunderstanding.py",
+      "line": 101,
+      "verbatim": "def _rows() -> list[dict]:"
+    },
+    {
+      "path": "data/datasets/sportsunderstanding.py",
+      "line": 112,
+      "verbatim": "def _gold(row: dict) -> dict:"
+    },
+    {
+      "path": "data/datasets/strategyqa.py",
+      "line": 89,
+      "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+    },
+    {
+      "path": "data/datasets/strategyqa.py",
+      "line": 107,
+      "verbatim": "def _rows() -> list[dict]:"
+    },
+    {
+      "path": "data/datasets/strategyqa.py",
+      "line": 118,
+      "verbatim": "def _gold(row: dict) -> dict:"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "line": 215,
+      "verbatim": "    def records(self) -> list[dict]:"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "line": 290,
+      "verbatim": "    def division(self) -> dict:"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "line": 339,
+      "verbatim": "        gold_content = json.dumps(record[\"gold\"], ensure_ascii=False, sort_keys=True)"
+    },
+    {
+      "path": "data/scaffolds/qa/base.py",
+      "line": 340,
+      "verbatim": "        scorer_input = {\"task_id\": record[\"task_id\"], \"path\": GOLD_FILE,"
+    },
+    {
+      "path": "data/scaffolds/qa/verify/check.py",
+      "line": 171,
+      "verbatim": "        gold_bytes = gold_path.read_bytes()"
+    },
+    {
+      "path": "data/scaffolds/qa/verify/check.py",
+      "line": 172,
+      "verbatim": "        digest = hashlib.sha256(gold_bytes).hexdigest()"
+    },
+    {
+      "path": "data/scaffolds/qa/verify/check.py",
+      "line": 184,
+      "verbatim": "        gold = json.loads(gold_bytes.decode(\"utf-8\"))"
+    },
+    {
+      "path": "data/scaffolds/registry.py",
+      "line": 155,
+      "verbatim": "def split_sha(split: dict) -> str:"
+    },
+    {
+      "path": "data/scaffolds/registry.py",
+      "line": 167,
+      "verbatim": "def is_eval_id(task_id: str) -> bool:"
+    },
+    {
+      "path": "data/scaffolds/registry.py",
+      "line": 219,
+      "verbatim": "def official_split(name: str, tasks: list[dict]) -> dict:"
+    }
+  ]
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["sha256sum", "-c", "tests/fixtures/hg_wjc2/SHA256SUMS"]
+STDOUT
+tests/fixtures/hg_wjc2/README.md: 成功
+tests/fixtures/hg_wjc2/bind_inputs.py: 成功
+tests/fixtures/hg_wjc2/check_scope.py: 成功
+tests/fixtures/hg_wjc2/checksum.command.json: 成功
+tests/fixtures/hg_wjc2/checksum.stderr.txt: 成功
+tests/fixtures/hg_wjc2/child-worktree-cleanup.json: 成功
+tests/fixtures/hg_wjc2/fever/REVIEW.md: 成功
+tests/fixtures/hg_wjc2/fever/SHA256SUMS: 成功
+tests/fixtures/hg_wjc2/fever/acquire.py: 成功
+tests/fixtures/hg_wjc2/fever/audit.py: 成功
+tests/fixtures/hg_wjc2/fever/audit.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/audit.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/commands.json: 成功
+tests/fixtures/hg_wjc2/fever/examples.json: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.lines.jsonl: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/independent-sources.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/independent-sources.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/observations.json: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.lines.jsonl: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/registry-after.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/registry-before.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/reproduction.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/reproduction.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/row-correspondence.jsonl.gz: 成功
+tests/fixtures/hg_wjc2/fever/source-examples.jsonl: 成功
+tests/fixtures/hg_wjc2/fever/validation.json: 成功
+tests/fixtures/hg_wjc2/fever/whitespace-initial.json: 成功
+tests/fixtures/hg_wjc2/focused-tests.command.json: 成功
+tests/fixtures/hg_wjc2/focused-tests.stderr.txt: 成功
+tests/fixtures/hg_wjc2/focused-tests.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/REVIEW.md: 成功
+tests/fixtures/hg_wjc2/gym/SHA256SUMS: 成功
+tests/fixtures/hg_wjc2/gym/capture.py: 成功
+tests/fixtures/hg_wjc2/gym/checksum-final.command.json: 成功
+tests/fixtures/hg_wjc2/gym/checksum-final.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/checksum-final.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.command.json: 成功
+tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/corrected-source-locators.command.json: 成功
+tests/fixtures/hg_wjc2/gym/corrected-source-locators.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/corrected-source-locators.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/current-record-search.command.json: 成功
+tests/fixtures/hg_wjc2/gym/current-record-search.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/current-record-search.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-diff-check.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-diff-check.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-diff-check.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-registry.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-registry.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-registry.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-staged-check.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-staged-check.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-staged-check.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-status.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-status.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-status.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/generation-history.command.json: 成功
+tests/fixtures/hg_wjc2/gym/generation-history.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/generation-history.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.command.json: 成功
+tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-prepare-diff.command.json: 成功
+tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-record-search.command.json: 成功
+tests/fixtures/hg_wjc2/gym/historical-record-search.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-record-search.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/independent-digests.command.json: 成功
+tests/fixtures/hg_wjc2/gym/independent-digests.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/independent-digests.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-final.command.json: 成功
+tests/fixtures/hg_wjc2/gym/inspect-final.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-final.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-with-parser.command.json: 成功
+tests/fixtures/hg_wjc2/gym/inspect-with-parser.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-with-parser.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect.command.json: 成功
+tests/fixtures/hg_wjc2/gym/inspect.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect_provenance.py: 成功
+tests/fixtures/hg_wjc2/gym/local-files.command.json: 成功
+tests/fixtures/hg_wjc2/gym/local-files.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/local-files.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/observations.json: 成功
+tests/fixtures/hg_wjc2/gym/old-provenance-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/old-provenance-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/old-provenance-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/original-pin-locators.command.json: 成功
+tests/fixtures/hg_wjc2/gym/original-pin-locators.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/original-pin-locators.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/original-prepare.py: 成功
+tests/fixtures/hg_wjc2/gym/original-reasoning_gym.py: 成功
+tests/fixtures/hg_wjc2/gym/packet-complete-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/packet-complete-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-complete-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-final-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/packet-final-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-final-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/packet-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/parser-date-default.command.json: 成功
+tests/fixtures/hg_wjc2/gym/parser-date-default.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/parser-date-default.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/pool-date-rows.command.json: 成功
+tests/fixtures/hg_wjc2/gym/pool-date-rows.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/pool-date-rows.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-after.command.json: 成功
+tests/fixtures/hg_wjc2/gym/registry-after.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-after.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-before.command.json: 成功
+tests/fixtures/hg_wjc2/gym/registry-before.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-before.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-commit-names.command.json: 成功
+tests/fixtures/hg_wjc2/gym/source-commit-names.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-commit-names.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-lines.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-locators.command.json: 成功
+tests/fixtures/hg_wjc2/gym/source-locators.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-locators.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/staged-diff-check.command.json: 成功
+tests/fixtures/hg_wjc2/gym/staged-diff-check.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/staged-diff-check.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/verify.py: 成功
+tests/fixtures/hg_wjc2/independent-sha256sum.command.json: 成功
+tests/fixtures/hg_wjc2/independent-sha256sum.stderr.txt: 成功
+tests/fixtures/hg_wjc2/independent-sha256sum.stdout.txt: 成功
+tests/fixtures/hg_wjc2/observed-additions.json: 成功
+tests/fixtures/hg_wjc2/parent-0.command.json: 成功
+tests/fixtures/hg_wjc2/parent-0.stderr.txt: 成功
+tests/fixtures/hg_wjc2/parent-0.stdout.txt: 成功
+tests/fixtures/hg_wjc2/parent-1.command.json: 成功
+tests/fixtures/hg_wjc2/parent-1.stderr.txt: 成功
+tests/fixtures/hg_wjc2/parent-1.stdout.txt: 成功
+tests/fixtures/hg_wjc2/parent-format-probe.note.txt: 成功
+tests/fixtures/hg_wjc2/parent-format-probe.stderr.txt: 成功
+tests/fixtures/hg_wjc2/physicsquestions-gold-bindings.json: 成功
+tests/fixtures/hg_wjc2/registry-before.json: 成功
+tests/fixtures/hg_wjc2/registry-update.command.json: 成功
+tests/fixtures/hg_wjc2/registry-update.stderr.txt: 成功
+tests/fixtures/hg_wjc2/registry-update.stdout.txt: 成功
+tests/fixtures/hg_wjc2/source-links.json: 成功
+tests/fixtures/hg_wjc2/sources.json: 成功
+tests/fixtures/hg_wjc2/sportsunderstanding-gold-bindings.json: 成功
+tests/fixtures/hg_wjc2/spread/REVIEW.md: 成功
+tests/fixtures/hg_wjc2/spread/SHA256SUMS: 成功
+tests/fixtures/hg_wjc2/spread/acquire.py: 成功
+tests/fixtures/hg_wjc2/spread/audit.py: 成功
+tests/fixtures/hg_wjc2/spread/command-00.json: 成功
+tests/fixtures/hg_wjc2/spread/command-00.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-00.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-01.json: 成功
+tests/fixtures/hg_wjc2/spread/command-01.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-01.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-02.json: 成功
+tests/fixtures/hg_wjc2/spread/command-02.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-02.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-03.json: 成功
+tests/fixtures/hg_wjc2/spread/command-03.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-03.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-04.json: 成功
+tests/fixtures/hg_wjc2/spread/command-04.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-04.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-05.json: 成功
+tests/fixtures/hg_wjc2/spread/command-05.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-05.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-06.json: 成功
+tests/fixtures/hg_wjc2/spread/command-06.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-06.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-07.json: 成功
+tests/fixtures/hg_wjc2/spread/command-07.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-07.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-08.json: 成功
+tests/fixtures/hg_wjc2/spread/command-08.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-08.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-09.json: 成功
+tests/fixtures/hg_wjc2/spread/command-09.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-09.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-10.json: 成功
+tests/fixtures/hg_wjc2/spread/command-10.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-10.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-11.json: 成功
+tests/fixtures/hg_wjc2/spread/command-11.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-11.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-12.json: 成功
+tests/fixtures/hg_wjc2/spread/command-12.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-12.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-13.json: 成功
+tests/fixtures/hg_wjc2/spread/command-13.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-13.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-14.json: 成功
+tests/fixtures/hg_wjc2/spread/command-14.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-14.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-15.json: 成功
+tests/fixtures/hg_wjc2/spread/command-15.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-15.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-16.json: 成功
+tests/fixtures/hg_wjc2/spread/command-16.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-16.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-17.json: 成功
+tests/fixtures/hg_wjc2/spread/command-17.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-17.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-18.json: 成功
+tests/fixtures/hg_wjc2/spread/command-18.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-18.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-19.json: 成功
+tests/fixtures/hg_wjc2/spread/command-19.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-19.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-20.json: 成功
+tests/fixtures/hg_wjc2/spread/command-20.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-20.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-21.json: 成功
+tests/fixtures/hg_wjc2/spread/command-21.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-21.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-22.json: 成功
+tests/fixtures/hg_wjc2/spread/command-22.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-22.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-23.json: 成功
+tests/fixtures/hg_wjc2/spread/command-23.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-23.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-24.json: 成功
+tests/fixtures/hg_wjc2/spread/command-24.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-24.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-25.json: 成功
+tests/fixtures/hg_wjc2/spread/command-25.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-25.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-26.json: 成功
+tests/fixtures/hg_wjc2/spread/command-26.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-26.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-27.json: 成功
+tests/fixtures/hg_wjc2/spread/command-27.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-27.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-28.json: 成功
+tests/fixtures/hg_wjc2/spread/command-28.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-28.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-29.json: 成功
+tests/fixtures/hg_wjc2/spread/command-30.json: 成功
+tests/fixtures/hg_wjc2/spread/command-30.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-30.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-31.json: 成功
+tests/fixtures/hg_wjc2/spread/command-31.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-31.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/encoded-preimages.json: 成功
+tests/fixtures/hg_wjc2/spread/member-mapping.json: 成功
+tests/fixtures/hg_wjc2/spread/parser-audit.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-main-commit.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-main-commit.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-main-commit.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-archive-proxy.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-archive.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.decoded.md: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.decoded.md: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-releases.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-releases.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-releases.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree-main.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree-main.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree-main.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-verified-archive-pinned-proxy.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.body.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-proxy.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-revision.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/summary.json: 成功
+tests/fixtures/hg_wjc2/spread/verify_preimages.py: 成功
+tests/fixtures/hg_wjc2/strategyqa-gold-bindings.json: 成功
+tests/fixtures/hg_wjc2/update_observed.py: 成功
+tests/fixtures/hg_wjc2/validate.py: 成功
+
+STDERR
+
+EXIT 0
+
+ARGV ["sha256sum", "reports/w-jc2-review.md", "docs/dataset-blockers.json", "docs/adapter-integration-journal.md"]
+STDOUT
+a9b970e7bb14462f9b67ff035d1dd4509f753b48dd8a867340dbff0281744734  reports/w-jc2-review.md
+6071ee8be10fffc95ce4017461735bedd909f455ed3dcd93ba9476f89f8d344e  docs/dataset-blockers.json
+d81846bbebad28ae37c33bd232c617aaee6e835b1e7abbc1d054009a40b32a2b  docs/adapter-integration-journal.md
+
+STDERR
+
+EXIT 0
+
+ARGV ["git", "diff", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
+
+ARGV ["git", "diff", "--cached", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
+
+ARGV ["git", "status", "--short"]
+STDOUT
+M  docs/adapter-integration-journal.md
+M  docs/dataset-blockers.json
+A  reports/w-jc2-review.md
+A  tests/fixtures/hg_wjc2/README.md
+A  tests/fixtures/hg_wjc2/SHA256SUMS
+A  tests/fixtures/hg_wjc2/bind_inputs.py
+A  tests/fixtures/hg_wjc2/check_scope.py
+A  tests/fixtures/hg_wjc2/checksum.command.json
+A  tests/fixtures/hg_wjc2/checksum.stderr.txt
+A  tests/fixtures/hg_wjc2/child-worktree-cleanup.json
+A  tests/fixtures/hg_wjc2/focused-tests.command.json
+A  tests/fixtures/hg_wjc2/focused-tests.stderr.txt
+A  tests/fixtures/hg_wjc2/focused-tests.stdout.txt
+A  tests/fixtures/hg_wjc2/independent-sha256sum.command.json
+A  tests/fixtures/hg_wjc2/independent-sha256sum.stderr.txt
+A  tests/fixtures/hg_wjc2/independent-sha256sum.stdout.txt
+A  tests/fixtures/hg_wjc2/observed-additions.json
+A  tests/fixtures/hg_wjc2/parent-0.command.json
+A  tests/fixtures/hg_wjc2/parent-0.stderr.txt
+A  tests/fixtures/hg_wjc2/parent-0.stdout.txt
+A  tests/fixtures/hg_wjc2/parent-1.command.json
+A  tests/fixtures/hg_wjc2/parent-1.stderr.txt
+A  tests/fixtures/hg_wjc2/parent-1.stdout.txt
+A  tests/fixtures/hg_wjc2/parent-format-probe.note.txt
+A  tests/fixtures/hg_wjc2/parent-format-probe.stderr.txt
+A  tests/fixtures/hg_wjc2/physicsquestions-gold-bindings.json
+A  tests/fixtures/hg_wjc2/registry-before.json
+A  tests/fixtures/hg_wjc2/registry-update.command.json
+A  tests/fixtures/hg_wjc2/registry-update.stderr.txt
+A  tests/fixtures/hg_wjc2/registry-update.stdout.txt
+A  tests/fixtures/hg_wjc2/source-links.json
+A  tests/fixtures/hg_wjc2/sources.json
+A  tests/fixtures/hg_wjc2/sportsunderstanding-gold-bindings.json
+A  tests/fixtures/hg_wjc2/strategyqa-gold-bindings.json
+A  tests/fixtures/hg_wjc2/update_observed.py
+A  tests/fixtures/hg_wjc2/validate.py
+?? reports/w-jc2-validation.txt
+
+STDERR
+
+EXIT 0
+
+FOCUSED TESTS (captured after final registry observation edit)
+ARGV ["python3", "-m", "pytest", "-q", "tests/quality/test_dataset_blockers.py", "tests/quality/test_dataset_journal_coverage.py", "--basetemp=/tmp/harnessgrad-pytest-w-jc2"]
+STDOUT
+...........................................................xxx           [100%]
+59 passed, 3 xfailed in 7.70s
+
+STDERR
+
+EXIT 0
+
+{"failed_command_indices": [6], "valid": false}
+
+FINAL CURRENT-BASELINE VERIFICATION
+The inherited inventory matched before its final whole-registry check refused.
+That legacy failure is preserved above. The starting HEAD already differs
+from its baseline at AppWorld observed/evidence and shared scorer observed/evidence.
+The exact parsed delta is inherited-registry-baseline-delta.json. No inherited
+validator, baseline, registry rule or receipt is changed. Independent inventory
+comparison and current starting-HEAD registry scope are verified below.
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/replay_prior_inventory.py"]
+STDOUT
+{
+  "current_bytes_equal_prior_inventory": true,
+  "derived_files_compared": [
+    "fever-inventory.json",
+    "file-hashes.json",
+    "observations.json",
+    "physicsquestions-inventory.json",
+    "reasoning_gym-inventory.json",
+    "source-lines.txt",
+    "sportsunderstanding-inventory.json",
+    "spreadsheetbench-inventory.json",
+    "strategyqa-inventory.json"
+  ],
+  "datasets": [
+    "fever",
+    "physicsquestions",
+    "reasoning_gym",
+    "sportsunderstanding",
+    "spreadsheetbench",
+    "strategyqa"
+  ],
+  "inherited_registry_check": "failed: retained older baseline predates parent merges",
+  "replacement_registry_scope_check": "hg_wjc2/check_scope.py against exact starting HEAD",
+  "production_authorized": false
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tests/fixtures/hg_wjc2/check_scope.py"]
+STDOUT
+{
+  "valid": true,
+  "observed_fields_changed": [
+    "fever",
+    "physicsquestions",
+    "reasoning_gym",
+    "sportsunderstanding",
+    "spreadsheetbench",
+    "strategyqa"
+  ],
+  "shared_blockers_unchanged": true,
+  "statuses_and_next_actions_unchanged": true,
+  "historical_records_unchanged": true,
+  "production_authorized": false,
+  "tracked_changed_paths": [
+    "docs/adapter-integration-journal.md",
+    "docs/dataset-blockers.json",
+    "reports/w-jc2-review.md",
+    "tests/fixtures/hg_wjc2/README.md",
+    "tests/fixtures/hg_wjc2/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/bind_inputs.py",
+    "tests/fixtures/hg_wjc2/check_scope.py",
+    "tests/fixtures/hg_wjc2/checksum.command.json",
+    "tests/fixtures/hg_wjc2/checksum.stderr.txt",
+    "tests/fixtures/hg_wjc2/child-worktree-cleanup.json",
+    "tests/fixtures/hg_wjc2/fever/REVIEW.md",
+    "tests/fixtures/hg_wjc2/fever/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/fever/acquire.py",
+    "tests/fixtures/hg_wjc2/fever/audit.py",
+    "tests/fixtures/hg_wjc2/fever/audit.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/audit.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/commands.json",
+    "tests/fixtures/hg_wjc2/fever/examples.json",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.body.gz",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/fever-dev.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.body.gz",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.lines.jsonl",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/fever-download-page.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.body.gz",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits-retry.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.body.gz",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/hub-commits.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/independent-sources.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/independent-sources.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/observations.json",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.body.gz",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/original-zenodo.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-issue5.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.body",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-merge.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.body",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-nei.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.body.gz",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.lines.jsonl",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.receipt.json",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/producer-readme.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/registry-after.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/registry-before.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/reproduction.stderr.txt",
+    "tests/fixtures/hg_wjc2/fever/reproduction.stdout.txt",
+    "tests/fixtures/hg_wjc2/fever/row-correspondence.jsonl.gz",
+    "tests/fixtures/hg_wjc2/fever/source-examples.jsonl",
+    "tests/fixtures/hg_wjc2/fever/validation.json",
+    "tests/fixtures/hg_wjc2/fever/whitespace-initial.json",
+    "tests/fixtures/hg_wjc2/finalize_validation.py",
+    "tests/fixtures/hg_wjc2/focused-tests.command.json",
+    "tests/fixtures/hg_wjc2/focused-tests.stderr.txt",
+    "tests/fixtures/hg_wjc2/focused-tests.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/REVIEW.md",
+    "tests/fixtures/hg_wjc2/gym/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/gym/capture.py",
+    "tests/fixtures/hg_wjc2/gym/checksum-final.command.json",
+    "tests/fixtures/hg_wjc2/gym/checksum-final.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/checksum-final.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.command.json",
+    "tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/corrected-source-locators.command.json",
+    "tests/fixtures/hg_wjc2/gym/corrected-source-locators.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/corrected-source-locators.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/current-record-search.command.json",
+    "tests/fixtures/hg_wjc2/gym/current-record-search.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/current-record-search.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-diff-check.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-diff-check.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-diff-check.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-registry.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-registry.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-registry.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-staged-check.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-staged-check.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-staged-check.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/final-status.command.json",
+    "tests/fixtures/hg_wjc2/gym/final-status.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/final-status.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/generation-history.command.json",
+    "tests/fixtures/hg_wjc2/gym/generation-history.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/generation-history.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.command.json",
+    "tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-prepare-diff.command.json",
+    "tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-record-search.command.json",
+    "tests/fixtures/hg_wjc2/gym/historical-record-search.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/historical-record-search.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/independent-digests.command.json",
+    "tests/fixtures/hg_wjc2/gym/independent-digests.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/independent-digests.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-final.command.json",
+    "tests/fixtures/hg_wjc2/gym/inspect-final.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-final.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-with-parser.command.json",
+    "tests/fixtures/hg_wjc2/gym/inspect-with-parser.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect-with-parser.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect.command.json",
+    "tests/fixtures/hg_wjc2/gym/inspect.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/inspect_provenance.py",
+    "tests/fixtures/hg_wjc2/gym/local-files.command.json",
+    "tests/fixtures/hg_wjc2/gym/local-files.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/local-files.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/observations.json",
+    "tests/fixtures/hg_wjc2/gym/old-provenance-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/old-provenance-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/old-provenance-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/original-pin-locators.command.json",
+    "tests/fixtures/hg_wjc2/gym/original-pin-locators.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/original-pin-locators.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/original-prepare.py",
+    "tests/fixtures/hg_wjc2/gym/original-reasoning_gym.py",
+    "tests/fixtures/hg_wjc2/gym/packet-complete-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/packet-complete-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-complete-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-final-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/packet-final-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-final-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-verify.command.json",
+    "tests/fixtures/hg_wjc2/gym/packet-verify.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/packet-verify.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/parser-date-default.command.json",
+    "tests/fixtures/hg_wjc2/gym/parser-date-default.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/parser-date-default.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/pool-date-rows.command.json",
+    "tests/fixtures/hg_wjc2/gym/pool-date-rows.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/pool-date-rows.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-after.command.json",
+    "tests/fixtures/hg_wjc2/gym/registry-after.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-after.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-before.command.json",
+    "tests/fixtures/hg_wjc2/gym/registry-before.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/registry-before.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/source-commit-names.command.json",
+    "tests/fixtures/hg_wjc2/gym/source-commit-names.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/source-commit-names.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/source-lines.txt",
+    "tests/fixtures/hg_wjc2/gym/source-locators.command.json",
+    "tests/fixtures/hg_wjc2/gym/source-locators.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/source-locators.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/staged-diff-check.command.json",
+    "tests/fixtures/hg_wjc2/gym/staged-diff-check.stderr.txt",
+    "tests/fixtures/hg_wjc2/gym/staged-diff-check.stdout.txt",
+    "tests/fixtures/hg_wjc2/gym/verify.py",
+    "tests/fixtures/hg_wjc2/independent-sha256sum.command.json",
+    "tests/fixtures/hg_wjc2/independent-sha256sum.stderr.txt",
+    "tests/fixtures/hg_wjc2/independent-sha256sum.stdout.txt",
+    "tests/fixtures/hg_wjc2/inherited-registry-baseline-delta.json",
+    "tests/fixtures/hg_wjc2/observed-additions.json",
+    "tests/fixtures/hg_wjc2/parent-0.command.json",
+    "tests/fixtures/hg_wjc2/parent-0.stderr.txt",
+    "tests/fixtures/hg_wjc2/parent-0.stdout.txt",
+    "tests/fixtures/hg_wjc2/parent-1.command.json",
+    "tests/fixtures/hg_wjc2/parent-1.stderr.txt",
+    "tests/fixtures/hg_wjc2/parent-1.stdout.txt",
+    "tests/fixtures/hg_wjc2/parent-format-probe.note.txt",
+    "tests/fixtures/hg_wjc2/parent-format-probe.stderr.txt",
+    "tests/fixtures/hg_wjc2/physicsquestions-gold-bindings.json",
+    "tests/fixtures/hg_wjc2/registry-before.json",
+    "tests/fixtures/hg_wjc2/registry-update.command.json",
+    "tests/fixtures/hg_wjc2/registry-update.stderr.txt",
+    "tests/fixtures/hg_wjc2/registry-update.stdout.txt",
+    "tests/fixtures/hg_wjc2/replay_prior_inventory.py",
+    "tests/fixtures/hg_wjc2/source-links.json",
+    "tests/fixtures/hg_wjc2/sources.json",
+    "tests/fixtures/hg_wjc2/sportsunderstanding-gold-bindings.json",
+    "tests/fixtures/hg_wjc2/spread/REVIEW.md",
+    "tests/fixtures/hg_wjc2/spread/SHA256SUMS",
+    "tests/fixtures/hg_wjc2/spread/acquire.py",
+    "tests/fixtures/hg_wjc2/spread/audit.py",
+    "tests/fixtures/hg_wjc2/spread/command-00.json",
+    "tests/fixtures/hg_wjc2/spread/command-00.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-00.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-01.json",
+    "tests/fixtures/hg_wjc2/spread/command-01.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-01.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-02.json",
+    "tests/fixtures/hg_wjc2/spread/command-02.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-02.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-03.json",
+    "tests/fixtures/hg_wjc2/spread/command-03.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-03.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-04.json",
+    "tests/fixtures/hg_wjc2/spread/command-04.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-04.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-05.json",
+    "tests/fixtures/hg_wjc2/spread/command-05.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-05.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-06.json",
+    "tests/fixtures/hg_wjc2/spread/command-06.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-06.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-07.json",
+    "tests/fixtures/hg_wjc2/spread/command-07.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-07.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-08.json",
+    "tests/fixtures/hg_wjc2/spread/command-08.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-08.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-09.json",
+    "tests/fixtures/hg_wjc2/spread/command-09.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-09.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-10.json",
+    "tests/fixtures/hg_wjc2/spread/command-10.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-10.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-11.json",
+    "tests/fixtures/hg_wjc2/spread/command-11.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-11.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-12.json",
+    "tests/fixtures/hg_wjc2/spread/command-12.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-12.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-13.json",
+    "tests/fixtures/hg_wjc2/spread/command-13.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-13.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-14.json",
+    "tests/fixtures/hg_wjc2/spread/command-14.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-14.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-15.json",
+    "tests/fixtures/hg_wjc2/spread/command-15.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-15.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-16.json",
+    "tests/fixtures/hg_wjc2/spread/command-16.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-16.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-17.json",
+    "tests/fixtures/hg_wjc2/spread/command-17.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-17.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-18.json",
+    "tests/fixtures/hg_wjc2/spread/command-18.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-18.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-19.json",
+    "tests/fixtures/hg_wjc2/spread/command-19.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-19.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-20.json",
+    "tests/fixtures/hg_wjc2/spread/command-20.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-20.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-21.json",
+    "tests/fixtures/hg_wjc2/spread/command-21.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-21.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-22.json",
+    "tests/fixtures/hg_wjc2/spread/command-22.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-22.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-23.json",
+    "tests/fixtures/hg_wjc2/spread/command-23.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-23.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-24.json",
+    "tests/fixtures/hg_wjc2/spread/command-24.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-24.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-25.json",
+    "tests/fixtures/hg_wjc2/spread/command-25.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-25.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-26.json",
+    "tests/fixtures/hg_wjc2/spread/command-26.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-26.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-27.json",
+    "tests/fixtures/hg_wjc2/spread/command-27.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-27.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-28.json",
+    "tests/fixtures/hg_wjc2/spread/command-28.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-28.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-29.json",
+    "tests/fixtures/hg_wjc2/spread/command-30.json",
+    "tests/fixtures/hg_wjc2/spread/command-30.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-30.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/command-31.json",
+    "tests/fixtures/hg_wjc2/spread/command-31.stderr.txt",
+    "tests/fixtures/hg_wjc2/spread/command-31.stdout.txt",
+    "tests/fixtures/hg_wjc2/spread/encoded-preimages.json",
+    "tests/fixtures/hg_wjc2/spread/member-mapping.json",
+    "tests/fixtures/hg_wjc2/spread/parser-audit.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-main-commit.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-main-commit.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-main-commit.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-archive-proxy.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-archive.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.decoded.md",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-readme.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.decoded.md",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-releases.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-releases.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-releases.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree-main.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree-main.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree-main.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree.body",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-tree.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/github-verified-archive-pinned-proxy.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.body",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.body",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.body.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-readme-proxy.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-revision.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.body",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.headers.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/responses/hub-tree.receipt.json",
+    "tests/fixtures/hg_wjc2/spread/summary.json",
+    "tests/fixtures/hg_wjc2/spread/verify_preimages.py",
+    "tests/fixtures/hg_wjc2/strategyqa-gold-bindings.json",
+    "tests/fixtures/hg_wjc2/update_observed.py",
+    "tests/fixtures/hg_wjc2/validate.py"
+  ]
+}
+
+STDERR
+
+EXIT 0
+
+ARGV ["python3", "tools/check_dataset_blockers.py"]
+STDOUT
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+STDERR
+
+EXIT 0
+
+ARGV ["sha256sum", "-c", "tests/fixtures/hg_wjc2/SHA256SUMS"]
+STDOUT
+tests/fixtures/hg_wjc2/README.md: 成功
+tests/fixtures/hg_wjc2/bind_inputs.py: 成功
+tests/fixtures/hg_wjc2/check_scope.py: 成功
+tests/fixtures/hg_wjc2/checksum.command.json: 成功
+tests/fixtures/hg_wjc2/checksum.stderr.txt: 成功
+tests/fixtures/hg_wjc2/child-worktree-cleanup.json: 成功
+tests/fixtures/hg_wjc2/fever/REVIEW.md: 成功
+tests/fixtures/hg_wjc2/fever/SHA256SUMS: 成功
+tests/fixtures/hg_wjc2/fever/acquire.py: 成功
+tests/fixtures/hg_wjc2/fever/audit.py: 成功
+tests/fixtures/hg_wjc2/fever/audit.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/audit.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/commands.json: 成功
+tests/fixtures/hg_wjc2/fever/examples.json: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/fever-dev.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.lines.jsonl: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/fever-download-page.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits-retry.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/hub-commits.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/independent-sources.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/independent-sources.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/observations.json: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/original-zenodo.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-comments.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5-retry.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-issue5.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-merge.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.body: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-nei.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.body.gz: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.lines.jsonl: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.receipt.json: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/producer-readme.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/registry-after.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/registry-before.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/reproduction.stderr.txt: 成功
+tests/fixtures/hg_wjc2/fever/reproduction.stdout.txt: 成功
+tests/fixtures/hg_wjc2/fever/row-correspondence.jsonl.gz: 成功
+tests/fixtures/hg_wjc2/fever/source-examples.jsonl: 成功
+tests/fixtures/hg_wjc2/fever/validation.json: 成功
+tests/fixtures/hg_wjc2/fever/whitespace-initial.json: 成功
+tests/fixtures/hg_wjc2/finalize_validation.py: 成功
+tests/fixtures/hg_wjc2/focused-tests.command.json: 成功
+tests/fixtures/hg_wjc2/focused-tests.stderr.txt: 成功
+tests/fixtures/hg_wjc2/focused-tests.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/REVIEW.md: 成功
+tests/fixtures/hg_wjc2/gym/SHA256SUMS: 成功
+tests/fixtures/hg_wjc2/gym/capture.py: 成功
+tests/fixtures/hg_wjc2/gym/checksum-final.command.json: 成功
+tests/fixtures/hg_wjc2/gym/checksum-final.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/checksum-final.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.command.json: 成功
+tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/checksum-wrong-cwd.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/corrected-source-locators.command.json: 成功
+tests/fixtures/hg_wjc2/gym/corrected-source-locators.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/corrected-source-locators.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/current-record-search.command.json: 成功
+tests/fixtures/hg_wjc2/gym/current-record-search.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/current-record-search.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-diff-check.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-diff-check.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-diff-check.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-registry.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-registry.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-registry.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-staged-check.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-staged-check.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-staged-check.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-status.command.json: 成功
+tests/fixtures/hg_wjc2/gym/final-status.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/final-status.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/generation-history.command.json: 成功
+tests/fixtures/hg_wjc2/gym/generation-history.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/generation-history.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.command.json: 成功
+tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/git-tracked-environment-search.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-prepare-diff.command.json: 成功
+tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-prepare-diff.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-record-search.command.json: 成功
+tests/fixtures/hg_wjc2/gym/historical-record-search.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/historical-record-search.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/independent-digests.command.json: 成功
+tests/fixtures/hg_wjc2/gym/independent-digests.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/independent-digests.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-final.command.json: 成功
+tests/fixtures/hg_wjc2/gym/inspect-final.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-final.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-with-parser.command.json: 成功
+tests/fixtures/hg_wjc2/gym/inspect-with-parser.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect-with-parser.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect.command.json: 成功
+tests/fixtures/hg_wjc2/gym/inspect.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/inspect_provenance.py: 成功
+tests/fixtures/hg_wjc2/gym/local-files.command.json: 成功
+tests/fixtures/hg_wjc2/gym/local-files.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/local-files.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/observations.json: 成功
+tests/fixtures/hg_wjc2/gym/old-provenance-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/old-provenance-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/old-provenance-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/original-pin-locators.command.json: 成功
+tests/fixtures/hg_wjc2/gym/original-pin-locators.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/original-pin-locators.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/original-prepare.py: 成功
+tests/fixtures/hg_wjc2/gym/original-reasoning_gym.py: 成功
+tests/fixtures/hg_wjc2/gym/packet-complete-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/packet-complete-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-complete-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-final-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/packet-final-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-final-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-verify.command.json: 成功
+tests/fixtures/hg_wjc2/gym/packet-verify.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/packet-verify.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/parser-date-default.command.json: 成功
+tests/fixtures/hg_wjc2/gym/parser-date-default.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/parser-date-default.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/pool-date-rows.command.json: 成功
+tests/fixtures/hg_wjc2/gym/pool-date-rows.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/pool-date-rows.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-after.command.json: 成功
+tests/fixtures/hg_wjc2/gym/registry-after.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-after.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-before.command.json: 成功
+tests/fixtures/hg_wjc2/gym/registry-before.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/registry-before.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-commit-names.command.json: 成功
+tests/fixtures/hg_wjc2/gym/source-commit-names.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-commit-names.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-lines.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-locators.command.json: 成功
+tests/fixtures/hg_wjc2/gym/source-locators.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/source-locators.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/staged-diff-check.command.json: 成功
+tests/fixtures/hg_wjc2/gym/staged-diff-check.stderr.txt: 成功
+tests/fixtures/hg_wjc2/gym/staged-diff-check.stdout.txt: 成功
+tests/fixtures/hg_wjc2/gym/verify.py: 成功
+tests/fixtures/hg_wjc2/independent-sha256sum.command.json: 成功
+tests/fixtures/hg_wjc2/independent-sha256sum.stderr.txt: 成功
+tests/fixtures/hg_wjc2/independent-sha256sum.stdout.txt: 成功
+tests/fixtures/hg_wjc2/inherited-registry-baseline-delta.json: 成功
+tests/fixtures/hg_wjc2/observed-additions.json: 成功
+tests/fixtures/hg_wjc2/parent-0.command.json: 成功
+tests/fixtures/hg_wjc2/parent-0.stderr.txt: 成功
+tests/fixtures/hg_wjc2/parent-0.stdout.txt: 成功
+tests/fixtures/hg_wjc2/parent-1.command.json: 成功
+tests/fixtures/hg_wjc2/parent-1.stderr.txt: 成功
+tests/fixtures/hg_wjc2/parent-1.stdout.txt: 成功
+tests/fixtures/hg_wjc2/parent-format-probe.note.txt: 成功
+tests/fixtures/hg_wjc2/parent-format-probe.stderr.txt: 成功
+tests/fixtures/hg_wjc2/physicsquestions-gold-bindings.json: 成功
+tests/fixtures/hg_wjc2/registry-before.json: 成功
+tests/fixtures/hg_wjc2/registry-update.command.json: 成功
+tests/fixtures/hg_wjc2/registry-update.stderr.txt: 成功
+tests/fixtures/hg_wjc2/registry-update.stdout.txt: 成功
+tests/fixtures/hg_wjc2/replay_prior_inventory.py: 成功
+tests/fixtures/hg_wjc2/source-links.json: 成功
+tests/fixtures/hg_wjc2/sources.json: 成功
+tests/fixtures/hg_wjc2/sportsunderstanding-gold-bindings.json: 成功
+tests/fixtures/hg_wjc2/spread/REVIEW.md: 成功
+tests/fixtures/hg_wjc2/spread/SHA256SUMS: 成功
+tests/fixtures/hg_wjc2/spread/acquire.py: 成功
+tests/fixtures/hg_wjc2/spread/audit.py: 成功
+tests/fixtures/hg_wjc2/spread/command-00.json: 成功
+tests/fixtures/hg_wjc2/spread/command-00.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-00.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-01.json: 成功
+tests/fixtures/hg_wjc2/spread/command-01.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-01.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-02.json: 成功
+tests/fixtures/hg_wjc2/spread/command-02.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-02.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-03.json: 成功
+tests/fixtures/hg_wjc2/spread/command-03.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-03.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-04.json: 成功
+tests/fixtures/hg_wjc2/spread/command-04.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-04.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-05.json: 成功
+tests/fixtures/hg_wjc2/spread/command-05.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-05.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-06.json: 成功
+tests/fixtures/hg_wjc2/spread/command-06.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-06.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-07.json: 成功
+tests/fixtures/hg_wjc2/spread/command-07.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-07.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-08.json: 成功
+tests/fixtures/hg_wjc2/spread/command-08.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-08.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-09.json: 成功
+tests/fixtures/hg_wjc2/spread/command-09.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-09.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-10.json: 成功
+tests/fixtures/hg_wjc2/spread/command-10.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-10.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-11.json: 成功
+tests/fixtures/hg_wjc2/spread/command-11.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-11.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-12.json: 成功
+tests/fixtures/hg_wjc2/spread/command-12.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-12.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-13.json: 成功
+tests/fixtures/hg_wjc2/spread/command-13.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-13.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-14.json: 成功
+tests/fixtures/hg_wjc2/spread/command-14.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-14.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-15.json: 成功
+tests/fixtures/hg_wjc2/spread/command-15.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-15.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-16.json: 成功
+tests/fixtures/hg_wjc2/spread/command-16.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-16.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-17.json: 成功
+tests/fixtures/hg_wjc2/spread/command-17.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-17.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-18.json: 成功
+tests/fixtures/hg_wjc2/spread/command-18.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-18.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-19.json: 成功
+tests/fixtures/hg_wjc2/spread/command-19.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-19.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-20.json: 成功
+tests/fixtures/hg_wjc2/spread/command-20.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-20.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-21.json: 成功
+tests/fixtures/hg_wjc2/spread/command-21.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-21.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-22.json: 成功
+tests/fixtures/hg_wjc2/spread/command-22.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-22.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-23.json: 成功
+tests/fixtures/hg_wjc2/spread/command-23.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-23.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-24.json: 成功
+tests/fixtures/hg_wjc2/spread/command-24.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-24.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-25.json: 成功
+tests/fixtures/hg_wjc2/spread/command-25.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-25.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-26.json: 成功
+tests/fixtures/hg_wjc2/spread/command-26.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-26.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-27.json: 成功
+tests/fixtures/hg_wjc2/spread/command-27.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-27.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-28.json: 成功
+tests/fixtures/hg_wjc2/spread/command-28.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-28.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-29.json: 成功
+tests/fixtures/hg_wjc2/spread/command-30.json: 成功
+tests/fixtures/hg_wjc2/spread/command-30.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-30.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-31.json: 成功
+tests/fixtures/hg_wjc2/spread/command-31.stderr.txt: 成功
+tests/fixtures/hg_wjc2/spread/command-31.stdout.txt: 成功
+tests/fixtures/hg_wjc2/spread/encoded-preimages.json: 成功
+tests/fixtures/hg_wjc2/spread/member-mapping.json: 成功
+tests/fixtures/hg_wjc2/spread/parser-audit.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-main-commit.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-main-commit.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-main-commit.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-archive-proxy.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-archive.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-original-metadata.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.decoded.md: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-readme.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-archive-metadata-pinned.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.decoded.md: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-readme-pinned.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-release-tree-pinned.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-releases.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-releases.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-releases.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree-main.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree-main.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree-main.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-tree.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/github-verified-archive-pinned-proxy.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-revision.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-mirror-tree.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.body.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-mirror.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-readme-proxy.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-revision.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.body: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.headers.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree-proxy.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/responses/hub-tree.receipt.json: 成功
+tests/fixtures/hg_wjc2/spread/summary.json: 成功
+tests/fixtures/hg_wjc2/spread/verify_preimages.py: 成功
+tests/fixtures/hg_wjc2/strategyqa-gold-bindings.json: 成功
+tests/fixtures/hg_wjc2/update_observed.py: 成功
+tests/fixtures/hg_wjc2/validate.py: 成功
+
+STDERR
+
+EXIT 0
+
+ARGV ["sha256sum", "reports/w-jc2-review.md", "docs/dataset-blockers.json", "docs/adapter-integration-journal.md"]
+STDOUT
+39cab1080ee6a37f92e0f022ab008f3a2304bf3ba1fd4d935e190245ba62c8f6  reports/w-jc2-review.md
+6071ee8be10fffc95ce4017461735bedd909f455ed3dcd93ba9476f89f8d344e  docs/dataset-blockers.json
+a1526fa793bf7972cf47057475b531bbf097c0a2b8740a00e947a8a2ff88f052  docs/adapter-integration-journal.md
+
+STDERR
+
+EXIT 0
+
+ARGV ["git", "diff", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
+
+ARGV ["git", "diff", "--cached", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
+
+ARGV ["git", "log", "--oneline", "31ff5916..HEAD"]
+STDOUT
+110409c2 Audit FEVER original ID and evidence group correspondence for w-jc2
+0a0c53a0 Authenticate SpreadsheetBench mirror against canonical Verified release
+ab4b0b6a Record Reasoning Gym historical pins and effective-date provenance for w-jc2
+
+STDERR
+
+EXIT 0
+
+{"all_required_current_checks_pass": true, "failed_current_commands": [], "retained_legacy_registry_baseline_failure": true, "focused_tests": "59 passed, 3 expected xfails", "closed_dataset_or_shared_blockers": []}
+
+FINAL STAGED WHITESPACE
+ARGV ["git", "diff", "--cached", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
