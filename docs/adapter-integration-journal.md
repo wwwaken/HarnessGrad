@@ -5391,3 +5391,29 @@ handoff §3.4 made. Checking my own new text caught a citation I had introduced 
 the 2Wiki docstring as `:30-32` when the sentence is at `:29`. Fixed in the handoff, the journal's round-7
 entry and the corrections file. This is the fourth time this phase that verifying a citation against the
 file changed the text.
+
+### Goal round 6, addendum — A2's leftover was a live defect, and a phantom failure class
+
+**`w-endpointfix` merged as `ad6df083`.** `tools/check_local_model.py` was still defaulting `--base-url` to
+`http://127.0.0.1:8001/v1` - a port released on 2026-10-14 - while `diagnostic_policy.py:29` admits only
+8002, so the tool's out-of-the-box target was dead. The fix names the constant (`DEFAULT_BASE_URL`, `:34`,
+used `:49`) and the test asserts the **invariant** rather than the string, so the next endpoint move fails
+the test instead of the tool: `assert DEFAULT_BASE_URL in ENDPOINTS`. Parent-measured fail-before, with the
+constant present but set to the old value:
+`AssertionError: assert 'http://127.0.0.1:8001/v1' in ('http://127.0.0.1:8002/v1',)` → 1 failed;
+pass-after → 1 passed. `grep` confirms no `8001` default remains in `tools/` or `eval/`. The three
+look-alikes were deliberately left alone and the reasons are recorded in `registry/fidelity-acceptance.md`:
+the receipt schema's `endpoint` **enum** must keep `8001` or frozen receipts stop validating,
+`modelgate.py`'s `8001`s are measured failing **container** routes, and `test_services.py:732-746` uses
+8001 as an arbitrary address to test gateway *mapping*.
+
+**A phantom failure class, found because it bit me.** Verifying the merge, I ran `test_services.py` in the
+**foreground under the 60 s tool cap**; the harness SIGTERMed it mid-test, which leaked the Docker network
+`hg-gl-g01`, and the next run then failed with `network with name hg-gl-g01 already exists`. The name is
+`hg-gl-<task_id>` - **fixed for a fixed task, not run-scoped** - so this file has two phantom-red modes: a
+killed run leaks the network, and two concurrent runs (two worktrees, or beside a worker) collide on it.
+That it is environmental and not a regression is measured, not assumed: `docker network inspect` showed no
+attached containers, and after removing it the file was **45 passed in 63.94 s, rc=0, with no `hg-*`
+network left behind**. Recorded in `registry/known-red-tests.md` alongside the other "do not mistake these
+for regressions" entries. The lesson for my own behaviour is the one already in `AGENTS.md`: never run this
+file in the foreground under a short cap, and reap what a killed run left.
