@@ -5444,3 +5444,48 @@ Docker network left, checker `valid` on every commit.
 need a custody decision; and the optional B5 per-entry disposition guard was deliberately not done
 unilaterally. Nothing is blocked for a *third* round yet, so the goal stays active rather than being
 marked blocked.
+
+## 2026-10-16 (goal round 7) — decision 5 gets an exact patch, and its mechanism gets demonstrated
+
+**Item 21 / decision 5 asked for something nobody had produced.** The decision was "the fold scripts keep
+`verdicts/`", recorded in `registry/w-evidence-archive.md` as prose. But the change itself did not exist,
+and the scripts are outside this repository (`HarnessGrad_experiments_result/<dataset>/loop_qwen3.5-9b-local/`),
+under **no version control** through every ancestor, with ownership not established - so I wrote the patch
+and verified it rather than editing foreign files. `registry/fold-verdicts-retention.patch` (7 files,
+9,058 bytes) inserts one block before each `shutil.rmtree(src, ignore_errors=True)`, the single point of
+destruction, in two variants: stage 1 namespaces `src/verdicts/**` by run id, stage 2 carries that inner
+namespace through unchanged. Both raise `SystemExit` on an existing destination, so a collision is loud.
+`gsm8k/fold_to_full.py` does not exist at the exact requested path, so 7 of 8 files.
+
+**The mechanism is demonstrated, not inferred - and this is the round's real result.** w-evidence established
+the destruction by *reading* the scripts; a synthetic harness now reproduces it. Three fake source runs, one
+verdict each, both scripts run from a `/tmp` copy with the real directories untouched:
+
+| | pipeline | files in `full/` | verdicts in `full/` |
+| --- | --- | ---: | ---: |
+| shipped scripts | `fold_runs.py` → `fold_to_full.py`, rc=0 | 10 | **0** |
+| patched scripts | same, rc=0 | 13 | **3** |
+
+The three survivors land namespaced by **original run id**
+(`full/verdicts/agentdojo-qwen-t1-train4/rec1-verdict.json`, …), content byte-identical, and **nothing else
+moved**: progress records, traces, per-run `curve.<run-id>.jsonl` and `MERGE.md` are the same 10 files plus
+the 3 verdicts. Verified before hand-over: `patch -p1` dry-run and real apply both clean on copies of all 7,
+all 7 pass `py_compile`, and the anchor occurs **exactly once** in each. The write-up leads with the limit
+the operator specifically asked to be stated - the four archives keep **zero** verdict files, so this helps
+**future folds only** and re-running either script on an existing archive stays unauthorized - and adds the
+warning that a fix living only in a VCS-less file is as fragile as the evidence it protects, which this
+phase has already demonstrated once by losing 47 restored B5 bodies to a gitignore rule.
+
+**Two operator-facing details verified so the handed-over patches cannot be misapplied.** The MuSiQue
+relabel targets `HarnessGrad_experiments_result/musique/loop_qwen3.5-9b-local/README.md:38`, and that line
+**is** the before-block verbatim. More usefully, `0.3064` is now pinned down: the hop rows are 0.3272 (688),
+0.3077 (1251), 0.2730 (478), their task counts sum to **2417** - exactly the archived per-task record count
+- and the task-weighted mean is **0.306388**, i.e. 0.3064. It is the overall task-weighted mean across hops
+and **not a row of that table** (the unweighted mean would be 0.3026), so it cannot be attached to a hop row
+by mistake. And the registry landing now names the six datasets the source review marked `must-fix` as the
+triage list, while attributing the **severity** to the inherited handoff judgment rather than to a
+measurement here.
+
+**Commits:** `3561569f` (the fold patch and its record), `5f5cfa05` (the two verifications). Checker valid on
+both. Still operator-gated: the three open blockers' closure decisions, B5's 47 gitignored bodies, and the
+optional B5 per-entry disposition guard.
