@@ -3521,3 +3521,25 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Executed each unchanged released predicate on no-call, wrong-answer and gold-answer-only inputs through both direct official evaluate_task and the actual unchanged local check's replay/world.evaluate route. Nine numeric and nine full tracker comparisons agree; zero divergences, final route failures or unmeasured outputs. Each route records 36 checks (12 pass, 24 fail). Gold injection passes the two answer-only scorers but cannot satisfy the note-edit predicate. It is scorer-control evidence, never an authentic successful actor-task receipt.
 - Preserved two initial pre-scoring base-DB fixture FileExistsErrors and the official second-attempt collector's post-scoring `Exception: 0` exit caused by AppWorld's SystemExit alias. Corrected only staging/collector handling; raw attempts, commands and cleanup remain separate. Final execution has 18 real released-predicate calls, observed network=none/resource configuration and 18 removed/absent containers; four earlier attempt containers also have removal/absence receipts.
 - `reports/w-awp-released-predicates.md`, `tests/fixtures/hg_wawp/` and `reports/w-awp-validation.txt` provide full inventory/reachability, exact commands, selected predicate/gold/base-DB identities, controlled submissions, raw official/local outputs, comparisons, SHA-256 manifest and validation. Shared observed/evidence sharpened at 3/732 scope only. The remaining 729 (144 study, 585 held-out) are unexecuted; broad runtime/provenance/custody/equivalence gaps remain. S1/S3/S4/S6 remain PARTIAL, both shared blockers and all dataset blockers stay open, including AppWorld successful-task-evidence; production remains unauthorized. No benchmark run, model/GPU/endpoint call, runs/ access or frozen-receipt mutation.
+## Parent review and merge — w-awp — 2026-10-15
+
+- Merged `47484b0` (w-awp). Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`; sequencer clean; both named deliverables present. 56 tests passed
+  and all 583 manifest entries verify.
+- **S4's AppWorld gap is narrowed from "authored predicate" to real released predicates, with the
+  coverage fraction stated.** The bundle carries **732 released predicates**; w-awp exercised **3
+  across 9 controls** offline, and the official and local scores and trackers agree **9/9** with
+  zero divergences. Two fixture failures and one collector exit failure are preserved separately
+  rather than folded into the agreement count.
+- **729 predicates remain unexercised and the worker says so** instead of implying coverage. That
+  is the right shape for this phase: seven rounds ago the gap was "AppWorld's released predicates"
+  with no number attached; it is now "3 of 732 exercised, 9/9 agree, 729 remaining". S1/S3/S4/S6
+  remain PARTIAL, no blocker closed, and no successful actor-task receipt is claimed - which keeps
+  `appworld / successful-task-evidence` correctly open.
+- Still in flight and NOT merged: `w-snap2`, the corrected follow-up that independently validates
+  the snapshot-binding finding and produces the `SHA256SUMS` manifest whose absence kept the
+  original `w-snap` packet out of `main`. It has committed `1bea368`. Nothing about its result is
+  claimed here.
+- Resource state: bounded offline predicate execution and local container work only - no benchmark
+  scoring run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is claimed.
+  Historical runs, frozen receipts and archives were untouched.
