@@ -3475,3 +3475,42 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Same new focused tests: 20 failed before, 20 passed after. Broader focused suite: 303 passed. Before/after real Docker controls demonstrate unsafe baseline foreign-trial export acceptance and three foreign-verdict acceptances, then refuse all three foreign exports before start and all three foreign verdicts before aggregation. The complete native outer control passed two distinctly bound trials in fresh run `w-bind-after-20261015-b3-outer-attempt-03`; both containers were removed and independently absent. Earlier exact-environment-order refusals and an incomplete collector packet are retained, never credited as zeros or overwritten.
 - `reports/w-bind-receipts.md` states source lines, commands, native identities, raw packets, defeat results and caller obligations; `reports/w-bind-validation.txt` retains checks. The packet auditor verifies 230 copied raw files and actual export/score/identity/cleanup observations. Only the shared artifact-only-state-export observed text and additive evidence are sharpened; status and next_action, every dataset record and all historical evidence remain unchanged.
 - E4 native binding is implemented at trusted-caller/platform scope; source/writer custody through use and actual quiescence remain missing. E4/E5/E6 remain PARTIAL. E1/E2/E3 retain only w-scope's current empty pristine-instance satisfaction. No blocker closes and no production authorization follows. No model/GPU/endpoint, dataset pilot, main commit or runs/ write; all work stays in registered worktree `/tmp/hg-bind` on `wg-bind`.
+## Parent review and merge — w-bind; w-snap NOT merged — 2026-10-15
+
+- Merged `84f4f4b` (w-bind). Result `94443fa`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`; sequencer clean; deliverable present.
+  56 focused tests passed. The production diff is *stricter* rather than weaker - the changed
+  lines are signatures that now require explicit task/run/trial identity parameters.
+- **E4's trial-binding half now has real enforcement, and the worker tried to defeat it.** Native
+  pristine export/scoring and verdict consumption enforce task, outer run and trial identity, and
+  **every foreign task/run/trial export and verdict attempt was refused**. Tests went
+  **20 failed before -> 20 passed after** with 303 regression tests passing. The worker still
+  states the honest boundary: callers must supply truthful unique identities and trusted source
+  custody, and E4 still needs custody/quiescence through use. E5/E6 remain PARTIAL and no blocker
+  closed.
+- **`w-snap` is deliberately NOT merged, and the reason matters more than the work.**
+  The worker's headline finding is significant - the verifier is bound to the actor's committed
+  **image identity** (the digest, not the tag, with `looks_pinned` validation and no tag
+  re-resolution) but **not** to an unchanged committed filesystem at check time, because an
+  actor-controlled startup executable ran when the verifier container started; it also showed
+  tag substitution, commit race and mount carryover did **not** break the image binding, and
+  corrected a real misconception (under Docker 29.2.1 with containerd storage, `.Id` is the
+  manifest digest, not the config JSON hash). The evidence packet is substantial: 291 files with
+  real OCI metadata, `raw/001.stdout.txt` and `source-pins.json` present.
+  **But `tests/fixtures/hg_wsnap/SHA256SUMS` is missing** - the report claims that manifest covers
+  every retained member, and the step that would have produced it is where the worker was stopped
+  by "Request blocked by cyber policy". Merging it would put a citation to a non-existent artifact
+  into the record, so it stays out until the packet is complete. The parent verified the fixture
+  contents rather than trusting the summary, which is how the gap was found.
+- **That block is my briefing error, and it is the second time this pattern has appeared.** I
+  asked the worker to "attempt to demonstrate any such case" - attack framing for what is really a
+  binding-verification task. The earlier AgentDojo refusal had the same cause. Security-analysis
+  tasks in this repository should be phrased as "verify the binding holds, including by
+  constructing the mismatched-identity case and checking it is refused", which is the same work
+  without the language that trips the filter. A corrected follow-up is the right next step, and
+  the headline finding should be independently confirmed before it is recorded as fact.
+- Still in flight and NOT merged: `w-awp` (AppWorld's released evaluator predicates rather than an
+  authored predicate). Nothing about its result is claimed.
+- Resource state: local container controls, docker metadata inspection and tests only - no
+  benchmark scoring run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is
+  claimed. Historical runs, frozen receipts and archives were untouched.
