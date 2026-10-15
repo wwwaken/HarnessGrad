@@ -1,0 +1,1906 @@
+w-adaptfid1 validation transcript
+
+Scope: local scoring/parse code and pytest validation only. This is not a diagnostic,
+pilot, run receipt, full-call BFCL fidelity claim or production authorization.
+The two real 2Wiki platform-control tests were deselected to honor no dataset run.
+Existing test code also executes synthetic controls and upstream scorer unit tests;
+those pytest checks are distinct from a model/driver benchmark run.
+
+Output is verbatim; trailing-space lines use JSON_LINE <JSON string> (lossless encoding).
+The scratch runner sets TMPDIR and PYTHONDONTWRITEBYTECODE as printed, creates its
+own /tmp/adaptfid1-<label>, and removes that directory immediately after each command.
+Before = original existing suites. red/after = exploratory implementation (superseded).
+red-final = final regressions against git HEAD adapter sources loaded in memory.
+green/after-final = final code. No existing receipt, source pin, or old run ID changed.
+
+=== before ===
+$ TMPDIR=/tmp/adaptfid1-before PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/adaptfid1-before/pytest tests/quality/*bfcl*.py tests/quality/*twowiki*.py tests/quality/test_harness_decoding.py --deselect=tests/quality/test_twowikimultihopqa_official_scorer.py::test_platform_control
+........................................................................ [ 27%]
+.............................................sssssssssss................ [ 54%]
+........................................................................ [ 81%]
+.................................................                        [100%]
+=============================== warnings summary ===============================
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+  tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py:296: DeprecationWarning: ast.NameConstant is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    value, ast.NameConstant
+
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+  tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py:295: DeprecationWarning: ast.NameConstant is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    elif isinstance(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:41: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:63: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:70: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:81: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:93: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:112: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:121: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:134: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:144: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:153: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:167: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+254 passed, 11 skipped, 2 deselected, 4 warnings in 15.04s
+[exit_code=0]
+cleanup: /tmp/adaptfid1-before removed; exists=False
+
+=== red ===
+$ TMPDIR=/tmp/adaptfid1-red PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/adaptfid1-red/pytest tests/quality/test_bfcl_adaptfid1.py tests/quality/test_twowiki_adaptfid1.py
+FFFFF...........FFF.F.FFFF...                                            [100%]
+=================================== FAILURES ===================================
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[there is no suitable function] _
+
+text = 'there is no suitable function'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[No function is needed for this request.] _
+
+text = 'No function is needed for this request.'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[I can answer without using a tool.\nThere is no suitable function.] _
+
+text = 'I can answer without using a tool.\nThere is no suitable function.'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[```text\nthere is no suitable function\n```] _
+
+text = '```text\nthere is no suitable function\n```'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+__ test_irrelevance_prose_without_an_identifier_call_is_no_call[123invalid()] __
+
+text = '123invalid()'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_named_tools_and_identifier_calls_still_reject_irrelevance[fabricated_tool(value=1)-expected3] _
+
+text = 'fabricated_tool(value=1)', expected = ['fabricated_tool']
+
+    @pytest.mark.parametrize("text,expected", [
+        ("fabricated_tool", ["fabricated_tool"]),
+        ("namespace.fabricated_tool", ["namespace.fabricated_tool"]),
+        ("fabricated_tool,\nother_tool;", ["fabricated_tool", "other_tool"]),
+        ("fabricated_tool(value=1)", ["fabricated_tool"]),
+        ("Calling namespace.fabricated_tool(value=1).", ["namespace.fabricated_tool"]),
+        ("fabricated_tool(); other_tool()", ["fabricated_tool", "other_tool"]),
+        ("NONE\nfabricated_tool", ["fabricated_tool"]),
+        ("No suitable function.\nfabricated_tool", ["fabricated_tool"]),
+    ])
+    def test_named_tools_and_identifier_calls_still_reject_irrelevance(text, expected):
+>       assert dataset.parse_prediction(text) == expected
+E       AssertionError: assert ['fabricated_tool(value=1)'] == ['fabricated_tool']
+E         At index 0 diff: 'fabricated_tool(value=1)' != 'fabricated_tool'
+E         Use -v to get more diff
+
+tests/quality/test_bfcl_adaptfid1.py:41: AssertionError
+_ test_named_tools_and_identifier_calls_still_reject_irrelevance[Calling namespace.fabricated_tool(value=1).-expected4] _
+
+text = 'Calling namespace.fabricated_tool(value=1).'
+expected = ['namespace.fabricated_tool']
+
+    @pytest.mark.parametrize("text,expected", [
+        ("fabricated_tool", ["fabricated_tool"]),
+        ("namespace.fabricated_tool", ["namespace.fabricated_tool"]),
+        ("fabricated_tool,\nother_tool;", ["fabricated_tool", "other_tool"]),
+        ("fabricated_tool(value=1)", ["fabricated_tool"]),
+        ("Calling namespace.fabricated_tool(value=1).", ["namespace.fabricated_tool"]),
+        ("fabricated_tool(); other_tool()", ["fabricated_tool", "other_tool"]),
+        ("NONE\nfabricated_tool", ["fabricated_tool"]),
+        ("No suitable function.\nfabricated_tool", ["fabricated_tool"]),
+    ])
+    def test_named_tools_and_identifier_calls_still_reject_irrelevance(text, expected):
+>       assert dataset.parse_prediction(text) == expected
+E       AssertionError: assert ['Calling nam...ol(value=1).'] == ['namespace.fabricated_tool']
+E         At index 0 diff: 'Calling namespace.fabricated_tool(value=1).' != 'namespace.fabricated_tool'
+E         Use -v to get more diff
+
+tests/quality/test_bfcl_adaptfid1.py:41: AssertionError
+_ test_named_tools_and_identifier_calls_still_reject_irrelevance[fabricated_tool(); other_tool()-expected5] _
+
+text = 'fabricated_tool(); other_tool()'
+expected = ['fabricated_tool', 'other_tool']
+
+    @pytest.mark.parametrize("text,expected", [
+        ("fabricated_tool", ["fabricated_tool"]),
+        ("namespace.fabricated_tool", ["namespace.fabricated_tool"]),
+        ("fabricated_tool,\nother_tool;", ["fabricated_tool", "other_tool"]),
+        ("fabricated_tool(value=1)", ["fabricated_tool"]),
+        ("Calling namespace.fabricated_tool(value=1).", ["namespace.fabricated_tool"]),
+        ("fabricated_tool(); other_tool()", ["fabricated_tool", "other_tool"]),
+        ("NONE\nfabricated_tool", ["fabricated_tool"]),
+        ("No suitable function.\nfabricated_tool", ["fabricated_tool"]),
+    ])
+    def test_named_tools_and_identifier_calls_still_reject_irrelevance(text, expected):
+>       assert dataset.parse_prediction(text) == expected
+E       AssertionError: assert ['fabricated_...other_tool()'] == ['fabricated_... 'other_tool']
+E         At index 0 diff: 'fabricated_tool(); other_tool()' != 'fabricated_tool'
+E         Right contains one more item: 'other_tool'
+E         Use -v to get more diff
+
+tests/quality/test_bfcl_adaptfid1.py:41: AssertionError
+_ test_named_tools_and_identifier_calls_still_reject_irrelevance[No suitable function.\nfabricated_tool-expected7] _
+
+text = 'No suitable function.\nfabricated_tool', expected = ['fabricated_tool']
+
+    @pytest.mark.parametrize("text,expected", [
+        ("fabricated_tool", ["fabricated_tool"]),
+        ("namespace.fabricated_tool", ["namespace.fabricated_tool"]),
+        ("fabricated_tool,\nother_tool;", ["fabricated_tool", "other_tool"]),
+        ("fabricated_tool(value=1)", ["fabricated_tool"]),
+        ("Calling namespace.fabricated_tool(value=1).", ["namespace.fabricated_tool"]),
+        ("fabricated_tool(); other_tool()", ["fabricated_tool", "other_tool"]),
+        ("NONE\nfabricated_tool", ["fabricated_tool"]),
+        ("No suitable function.\nfabricated_tool", ["fabricated_tool"]),
+    ])
+    def test_named_tools_and_identifier_calls_still_reject_irrelevance(text, expected):
+>       assert dataset.parse_prediction(text) == expected
+E       AssertionError: assert ['No suitable...ricated_tool'] == ['fabricated_tool']
+E         At index 0 diff: 'No suitable function.' != 'fabricated_tool'
+E         Left contains one more item: 'fabricated_tool'
+E         Use -v to get more diff
+
+tests/quality/test_bfcl_adaptfid1.py:41: AssertionError
+_ test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs0] _
+
+tmp_path = PosixPath('/tmp/adaptfid1-red/pytest/test_shared_pair_evidence_is_r0')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+pairs = []
+
+    @pytest.mark.parametrize("pairs", [[], [["Fabricated Page", 0]], [["Wrong Page", 9]]])
+    def test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped(
+            tmp_path, gold, pairs):
+        pred = {"schema_version": 1, "answer": gold["answer"], "predicted_evidence": pairs}
+        code, reward, evidence = run_check(
+            tmp_path, gold, structured=pred, answer=gold["answer"])
+>       assert code == 3
+E       assert 0 == 3
+
+tests/quality/test_twowiki_adaptfid1.py:47: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+_ test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs1] _
+
+tmp_path = PosixPath('/tmp/adaptfid1-red/pytest/test_shared_pair_evidence_is_r1')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+pairs = [['Fabricated Page', 0]]
+
+    @pytest.mark.parametrize("pairs", [[], [["Fabricated Page", 0]], [["Wrong Page", 9]]])
+    def test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped(
+            tmp_path, gold, pairs):
+        pred = {"schema_version": 1, "answer": gold["answer"], "predicted_evidence": pairs}
+        code, reward, evidence = run_check(
+            tmp_path, gold, structured=pred, answer=gold["answer"])
+>       assert code == 3
+E       assert 0 == 3
+
+tests/quality/test_twowiki_adaptfid1.py:47: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+_ test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs2] _
+
+tmp_path = PosixPath('/tmp/adaptfid1-red/pytest/test_shared_pair_evidence_is_r2')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+pairs = [['Wrong Page', 9]]
+
+    @pytest.mark.parametrize("pairs", [[], [["Fabricated Page", 0]], [["Wrong Page", 9]]])
+    def test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped(
+            tmp_path, gold, pairs):
+        pred = {"schema_version": 1, "answer": gold["answer"], "predicted_evidence": pairs}
+        code, reward, evidence = run_check(
+            tmp_path, gold, structured=pred, answer=gold["answer"])
+>       assert code == 3
+E       assert 0 == 3
+
+tests/quality/test_twowiki_adaptfid1.py:47: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+______ test_shared_structured_answer_without_evidence_uses_joint_metrics _______
+
+tmp_path = PosixPath('/tmp/adaptfid1-red/pytest/test_shared_structured_answer_0')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+
+    def test_shared_structured_answer_without_evidence_uses_joint_metrics(tmp_path, gold):
+        code, reward, evidence = run_check(tmp_path, gold, structured={
+            "schema_version": 1, "answer": gold["answer"]})
+>       assert code == 1
+E       assert 0 == 1
+
+tests/quality/test_twowiki_adaptfid1.py:56: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+=========================== short test summary info ============================
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[there is no suitable function]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[No function is needed for this request.]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[I can answer without using a tool.\nThere is no suitable function.]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[```text\nthere is no suitable function\n```]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[123invalid()]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_named_tools_and_identifier_calls_still_reject_irrelevance[fabricated_tool(value=1)-expected3]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_named_tools_and_identifier_calls_still_reject_irrelevance[Calling namespace.fabricated_tool(value=1).-expected4]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_named_tools_and_identifier_calls_still_reject_irrelevance[fabricated_tool(); other_tool()-expected5]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_named_tools_and_identifier_calls_still_reject_irrelevance[No suitable function.\nfabricated_tool-expected7]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs0]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs1]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs2]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_structured_answer_without_evidence_uses_joint_metrics
+13 failed, 16 passed in 0.13s
+[exit_code=1]
+cleanup: /tmp/adaptfid1-red removed; exists=False
+
+=== after ===
+$ TMPDIR=/tmp/adaptfid1-after PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/adaptfid1-after/pytest tests/quality/*bfcl*.py tests/quality/*twowiki*.py tests/quality/test_harness_decoding.py --deselect=tests/quality/test_twowikimultihopqa_official_scorer.py::test_platform_control
+........................................................................ [ 24%]
+...F...............................................................sssss [ 48%]
+ssssssFFFFFFFFFFFFFFFFFFFFF......F.F.................................... [ 73%]
+........................................................................ [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_ test_function_name_metric_remains_an_explicit_nonofficial_diagnostic[compute(x=3)-0.0] _
+
+prediction = 'compute(x=3)', reward = 0.0
+
+    @pytest.mark.parametrize("prediction,reward", [
+        ("synthetic.compute", 1.0), ("compute", 1.0), ("compute(x=3)", 0.0),
+        ("compute\ncompute", 0.0), ("NONE", 0.0),
+    ])
+    def test_function_name_metric_remains_an_explicit_nonofficial_diagnostic(prediction, reward):
+        result = dataset.score(prediction, {"functions": ["synthetic.compute"], "subset": "simple"})
+>       assert result["reward"] == reward
+E       assert 1.0 == 0.0
+
+tests/quality/test_bfcl_selected.py:165: AssertionError
+___________ test_source_inventory_and_sink_frontier_have_not_drifted ___________
+
+    def test_source_inventory_and_sink_frontier_have_not_drifted():
+        rows, sinks = control.inventory()
+>       assert rows == json.loads((HERE / "source-inventory.json").read_text())
+E       AssertionError: assert [{'bytes': 38...9a8d8a'}, ...] == [{'bytes': 38...9a8d8a'}, ...]
+E         At index 2 diff: {'path': 'data/datasets/bfcl_v3.py', 'bytes': 28762, 'sha256': '8d207e765bcc21a28b80c58b3b7ed4f8559336f3209e72c02f15f6ffedf50703'} != {'path': 'data/datasets/bfcl_v3.py', 'bytes': 28188, 'sha256': 'de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17'}
+E         Use -v to get more diff
+
+tests/quality/test_bfclcontain_differential.py:23: AssertionError
+___________ test_fabricated_full_call_differential[fabricated_exact] ___________
+
+case = {'calls': [{'fabricated_echo': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [True, True], 'id': 'fabricated_exact', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+________ test_fabricated_full_call_differential[fabricated_wrong_value] ________
+
+case = {'calls': [{'fabricated_echo': {'value': 8}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_wrong_value', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+________ test_fabricated_full_call_differential[fabricated_wrong_type] _________
+
+case = {'calls': [{'fabricated_echo': {'value': '7'}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_wrong_type', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_____ test_fabricated_full_call_differential[fabricated_missing_required] ______
+
+case = {'calls': [{'fabricated_echo': {}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_missing_required', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+______ test_fabricated_full_call_differential[fabricated_extra_parameter] ______
+
+case = {'calls': [{'fabricated_echo': {'extra': 0, 'value': 7}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_extra_parameter', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+______ test_fabricated_full_call_differential[fabricated_wrong_function] _______
+
+case = {'calls': [{'fabricated_other': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [False, False], 'id': 'fabricated_wrong_function', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_____ test_fabricated_full_call_differential[fabricated_namespace_erasure] _____
+
+case = {'calls': [{'fabricated_ns.fabricated_echo': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_namespace_erasure', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+______ test_fabricated_full_call_differential[fabricated_duplicate_calls] ______
+
+case = {'calls': [{'fabricated_echo': {'value': 7}}, {'fabricated_echo': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [False, False], 'id': 'fabricated_duplicate_calls', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+________ test_fabricated_full_call_differential[fabricated_empty_calls] ________
+
+case = {'calls': [], 'category': 'simple', 'expected_verdicts': [False, False], 'id': 'fabricated_empty_calls', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_____ test_fabricated_full_call_differential[fabricated_multi_key_format] ______
+
+case = {'calls': [{'fabricated_echo': {'value': 7}, 'fabricated_other': {}}], 'category': 'simple', 'expected_verdicts': [False, False], 'id': 'fabricated_multi_key_format', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_____ test_fabricated_full_call_differential[fabricated_optional_omission] _____
+
+case = {'calls': [{'fabricated_echo': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [True, True], 'id': 'fabricated_optional_omission', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+__ test_fabricated_full_call_differential[fabricated_optional_without_empty] ___
+
+case = {'calls': [{'fabricated_echo': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_optional_without_empty', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_______ test_fabricated_full_call_differential[fabricated_int_to_float] ________
+
+case = {'calls': [{'fabricated_echo': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [True, True], 'id': 'fabricated_int_to_float', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_______ test_fabricated_full_call_differential[fabricated_bool_not_int] ________
+
+case = {'calls': [{'fabricated_echo': {'value': True}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_bool_not_int', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+________ test_fabricated_full_call_differential[fabricated_list_order] _________
+
+case = {'calls': [{'fabricated_echo': {'value': [2, 1]}}], 'category': 'simple', 'expected_verdicts': [True, False], 'id': 'fabricated_list_order', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+___ test_fabricated_full_call_differential[fabricated_string_normalization] ____
+
+case = {'calls': [{'fabricated_echo': {'value': 'FABRICATED VALUE'}}], 'category': 'simple', 'expected_verdicts': [True, True], 'id': 'fabricated_string_normalization', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+____ test_fabricated_full_call_differential[fabricated_quoted_code_is_data] ____
+
+case = {'calls': [{'fabricated_echo': {'value': '__bfclcontain_probe__()'}}], 'category': 'simple', 'expected_verdicts': [True, True], 'id': 'fabricated_quoted_code_is_data', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+______ test_fabricated_full_call_differential[fabricated_expression_name] ______
+
+case = {'calls': [{'(__bfclcontain_probe__())': {'value': 7}}], 'category': 'simple', 'expected_verdicts': [False, False], 'id': 'fabricated_expression_name', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+_____ test_fabricated_full_call_differential[fabricated_dict_alternatives] _____
+
+case = {'calls': [{'fabricated_echo': {'value': {'label': 'FABRICATED'}}}], 'category': 'simple', 'expected_verdicts': [True, True], 'id': 'fabricated_dict_alternatives', ...}
+
+    @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+    def test_fabricated_full_call_differential(case):
+>       actual = control.differential([case])[0]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:36: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+___________ test_containment_controls_and_uncontained_binop_finding ____________
+
+    def test_containment_controls_and_uncontained_binop_finding():
+        # In-memory canary only. This positively detects execution, rather than
+        # treating a happy-path result or exception as proof of a boundary.
+>       actual = [{"kind": "boundary", **row} for row in control.boundary_controls()]
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:44: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:158: in boundary_controls
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+______________ test_model_map_dependent_schema_is_a_loud_refusal _______________
+
+    def test_model_map_dependent_schema_is_a_loud_refusal():
+        case = json.loads(json.dumps(CASES[0]))
+        case["schema"][0]["name"] = "unbound.fabricated_echo"
+        with pytest.raises(AssertionError, match="model map would be required"):
+>           control.differential([case])
+
+JSON_LINE "tests/quality/test_bfclcontain_differential.py:72: "
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+JSON_LINE "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+path = 'data/datasets/bfcl_v3.py'
+names = {'bare_name', 'gold_names', 'parse_prediction', 'score'}
+
+    def load_slice(path, names=None):
+        """Compile exact retained nodes, preserving original bodies and line numbers.
+JSON_LINE "    "
+        CHECKER selects every function and its type constants; other slices
+        select named functions only. No module import, handler/config or runner is
+        instantiated, and no absent helper is replaced with an invented helper.
+        """
+        raw = (ROOT / path).read_bytes()
+        pins = json.loads((HERE / "source-inventory.json").read_text())
+        pin = next(row for row in pins if row["path"] == path)
+>       assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E       AssertionError: retained source drift
+
+tests/fixtures/hg_bfclcontain/control.py:81: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+    def test_model_map_dependent_schema_is_a_loud_refusal():
+        case = json.loads(json.dumps(CASES[0]))
+        case["schema"][0]["name"] = "unbound.fabricated_echo"
+>       with pytest.raises(AssertionError, match="model map would be required"):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'model map would be required'
+E        Input: 'retained source drift'
+
+tests/quality/test_bfclcontain_differential.py:71: AssertionError
+_________ test_complete_named_scope_graph_and_every_source_entrypoint __________
+
+    def test_complete_named_scope_graph_and_every_source_entrypoint():
+        result = analysis.analyze()
+        for key, actual in result.items():
+            expected = [json.loads(line) for line in (HERE / (key + ".jsonl")).read_text().splitlines()]
+>           assert actual == expected, f"review source/graph drift in {key}"
+E           AssertionError: review source/graph drift in sources
+E           assert [{'bytes': 10...o', ...}, ...] == [{'bytes': 10...o', ...}, ...]
+E             At index 25 diff: {'id': 25, 'path': 'data/datasets/bfcl_v3.py', 'module': 'data.datasets.bfcl_v3', 'bytes': 28762, 'sha256': '8d207e765bcc21a28b80c58b3b7ed4f8559336f3209e72c02f15f6ffedf50703'} != {'bytes': 28188, 'id': 25, 'module': 'data.datasets.bfcl_v3', 'path': 'data/datasets/bfcl_v3.py', 'sha256': 'de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17'}
+E             Use -v to get more diff
+
+tests/quality/test_bfclguard_reachability.py:55: AssertionError
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:41: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:63: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:70: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:81: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:93: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:112: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:121: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:134: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:144: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:153: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:167: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+FAILED tests/quality/test_bfcl_selected.py::test_function_name_metric_remains_an_explicit_nonofficial_diagnostic[compute(x=3)-0.0]
+FAILED tests/quality/test_bfclcontain_differential.py::test_source_inventory_and_sink_frontier_have_not_drifted
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_exact]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_wrong_value]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_wrong_type]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_missing_required]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_extra_parameter]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_wrong_function]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_namespace_erasure]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_duplicate_calls]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_empty_calls]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_multi_key_format]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_optional_omission]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_optional_without_empty]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_int_to_float]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_bool_not_int]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_list_order]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_string_normalization]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_quoted_code_is_data]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_expression_name]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_dict_alternatives]
+FAILED tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+FAILED tests/quality/test_bfclcontain_differential.py::test_model_map_dependent_schema_is_a_loud_refusal
+FAILED tests/quality/test_bfclguard_reachability.py::test_complete_named_scope_graph_and_every_source_entrypoint
+24 failed, 259 passed, 11 skipped, 2 deselected in 15.20s
+[exit_code=1]
+cleanup: /tmp/adaptfid1-after removed; exists=False
+
+=== red-final ===
+$ TMPDIR=/tmp/adaptfid1-red-final PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/adaptfid1/prefix_pytest.py -q -ra -p no:cacheprovider --basetemp=/tmp/adaptfid1-red-final/pytest tests/quality/test_bfcl_adaptfid1.py tests/quality/test_twowiki_adaptfid1.py
+FFFFF...............F.FFFF...                                            [100%]
+=================================== FAILURES ===================================
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[there is no suitable function] _
+
+text = 'there is no suitable function'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[No function is needed for this request.] _
+
+text = 'No function is needed for this request.'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[I can answer without using a tool.\nThere is no suitable function.] _
+
+text = 'I can answer without using a tool.\nThere is no suitable function.'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_irrelevance_prose_without_an_identifier_call_is_no_call[```text\nthere is no suitable function\n```] _
+
+text = '```text\nthere is no suitable function\n```'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+__ test_irrelevance_prose_without_an_identifier_call_is_no_call[123invalid()] __
+
+text = '123invalid()'
+
+    @pytest.mark.parametrize("text", [
+        "there is no suitable function",
+        "No function is needed for this request.",
+        "I can answer without using a tool.\nThere is no suitable function.",
+        "```text\nthere is no suitable function\n```",
+        "123invalid()",
+    ])
+    def test_irrelevance_prose_without_an_identifier_call_is_no_call(text):
+        verdict = dataset.score(text, {"functions": [], "subset": "irrelevance"})
+>       assert verdict["reward"] == 1.0
+E       assert 0.0 == 1.0
+
+tests/quality/test_bfcl_adaptfid1.py:16: AssertionError
+_ test_named_tools_and_identifier_calls_still_reject_irrelevance[No suitable function.\nfabricated_tool-expected7] _
+
+text = 'No suitable function.\nfabricated_tool', expected = ['fabricated_tool']
+
+    @pytest.mark.parametrize("text,expected", [
+        ("fabricated_tool", ["fabricated_tool"]),
+        ("namespace.fabricated_tool", ["namespace.fabricated_tool"]),
+        ("fabricated_tool,\nother_tool;", ["fabricated_tool", "other_tool"]),
+        ("fabricated_tool(value=1)", ["fabricated_tool(value=1)"]),
+        ("Calling namespace.fabricated_tool(value=1).", ["Calling namespace.fabricated_tool(value=1)."]),
+        ("fabricated_tool(); other_tool()", ["fabricated_tool(); other_tool()"]),
+        ("NONE\nfabricated_tool", ["fabricated_tool"]),
+        ("No suitable function.\nfabricated_tool", ["fabricated_tool"]),
+    ])
+    def test_named_tools_and_identifier_calls_still_reject_irrelevance(text, expected):
+>       assert dataset.parse_prediction(text) == expected
+E       AssertionError: assert ['No suitable...ricated_tool'] == ['fabricated_tool']
+E         At index 0 diff: 'No suitable function.' != 'fabricated_tool'
+E         Left contains one more item: 'fabricated_tool'
+E         Use -v to get more diff
+
+tests/quality/test_bfcl_adaptfid1.py:41: AssertionError
+_ test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs0] _
+
+tmp_path = PosixPath('/tmp/adaptfid1-red-final/pytest/test_shared_pair_evidence_is_r0')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+pairs = []
+
+    @pytest.mark.parametrize("pairs", [[], [["Fabricated Page", 0]], [["Wrong Page", 9]]])
+    def test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped(
+            tmp_path, gold, pairs):
+        pred = {"schema_version": 1, "answer": gold["answer"], "predicted_evidence": pairs}
+        code, reward, evidence = run_check(
+            tmp_path, gold, structured=pred, answer=gold["answer"])
+>       assert code == 3
+E       assert 0 == 3
+
+tests/quality/test_twowiki_adaptfid1.py:47: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+_ test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs1] _
+
+tmp_path = PosixPath('/tmp/adaptfid1-red-final/pytest/test_shared_pair_evidence_is_r1')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+pairs = [['Fabricated Page', 0]]
+
+    @pytest.mark.parametrize("pairs", [[], [["Fabricated Page", 0]], [["Wrong Page", 9]]])
+    def test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped(
+            tmp_path, gold, pairs):
+        pred = {"schema_version": 1, "answer": gold["answer"], "predicted_evidence": pairs}
+        code, reward, evidence = run_check(
+            tmp_path, gold, structured=pred, answer=gold["answer"])
+>       assert code == 3
+E       assert 0 == 3
+
+tests/quality/test_twowiki_adaptfid1.py:47: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+_ test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs2] _
+
+tmp_path = PosixPath('/tmp/adaptfid1-red-final/pytest/test_shared_pair_evidence_is_r2')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+pairs = [['Wrong Page', 9]]
+
+    @pytest.mark.parametrize("pairs", [[], [["Fabricated Page", 0]], [["Wrong Page", 9]]])
+    def test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped(
+            tmp_path, gold, pairs):
+        pred = {"schema_version": 1, "answer": gold["answer"], "predicted_evidence": pairs}
+        code, reward, evidence = run_check(
+            tmp_path, gold, structured=pred, answer=gold["answer"])
+>       assert code == 3
+E       assert 0 == 3
+
+tests/quality/test_twowiki_adaptfid1.py:47: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+______ test_shared_structured_answer_without_evidence_uses_joint_metrics _______
+
+tmp_path = PosixPath('/tmp/adaptfid1-red-final/pytest/test_shared_structured_answer_0')
+gold = {'aliases': [], 'answer': 'fictional blue', 'evidence_aliases': {}, 'evidences': [['Invented Subject', 'invented relation', 'Invented Object']], ...}
+
+    def test_shared_structured_answer_without_evidence_uses_joint_metrics(tmp_path, gold):
+        code, reward, evidence = run_check(tmp_path, gold, structured={
+            "schema_version": 1, "answer": gold["answer"]})
+>       assert code == 1
+E       assert 0 == 1
+
+tests/quality/test_twowiki_adaptfid1.py:56: AssertionError
+----------------------------- Captured stdout call -----------------------------
+reward 1: legacy answer-only: Ans F1=1, Ans EM=1; Sup/Evi/Joint are not reported in this mode
+=========================== short test summary info ============================
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[there is no suitable function]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[No function is needed for this request.]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[I can answer without using a tool.\nThere is no suitable function.]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[```text\nthere is no suitable function\n```]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_irrelevance_prose_without_an_identifier_call_is_no_call[123invalid()]
+FAILED tests/quality/test_bfcl_adaptfid1.py::test_named_tools_and_identifier_calls_still_reject_irrelevance[No suitable function.\nfabricated_tool-expected7]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs0]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs1]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_pair_evidence_is_refused_by_name_instead_of_silently_dropped[pairs2]
+FAILED tests/quality/test_twowiki_adaptfid1.py::test_shared_structured_answer_without_evidence_uses_joint_metrics
+10 failed, 19 passed in 0.07s
+[exit_code=1]
+cleanup: /tmp/adaptfid1-red-final removed; exists=False
+
+=== green ===
+$ TMPDIR=/tmp/adaptfid1-green PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra -p no:cacheprovider --basetemp=/tmp/adaptfid1-green/pytest tests/quality/test_bfcl_adaptfid1.py tests/quality/test_twowiki_adaptfid1.py
+.............................                                            [100%]
+29 passed in 0.09s
+[exit_code=0]
+cleanup: /tmp/adaptfid1-green removed; exists=False
+
+=== after-final ===
+$ TMPDIR=/tmp/adaptfid1-after-final PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -ra --tb=short -p no:cacheprovider --basetemp=/tmp/adaptfid1-after-final/pytest tests/quality/*bfcl*.py tests/quality/*twowiki*.py tests/quality/test_harness_decoding.py --deselect=tests/quality/test_twowikimultihopqa_official_scorer.py::test_platform_control
+........................................................................ [ 24%]
+...................................................................sssss [ 48%]
+ssssssFFFFFFFFFFFFFFFFFFFFF......F.F.................................... [ 73%]
+........................................................................ [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+___________ test_source_inventory_and_sink_frontier_have_not_drifted ___________
+tests/quality/test_bfclcontain_differential.py:23: in test_source_inventory_and_sink_frontier_have_not_drifted
+    assert rows == json.loads((HERE / "source-inventory.json").read_text())
+E   AssertionError: assert [{'bytes': 38...9a8d8a'}, ...] == [{'bytes': 38...9a8d8a'}, ...]
+E     At index 2 diff: {'path': 'data/datasets/bfcl_v3.py', 'bytes': 28684, 'sha256': '4c022a4cd6dfaa502fa48082e5f4509b7724d72edfb5476d2d668344f9a5b381'} != {'path': 'data/datasets/bfcl_v3.py', 'bytes': 28188, 'sha256': 'de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17'}
+E     Use -v to get more diff
+___________ test_fabricated_full_call_differential[fabricated_exact] ___________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+________ test_fabricated_full_call_differential[fabricated_wrong_value] ________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+________ test_fabricated_full_call_differential[fabricated_wrong_type] _________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_____ test_fabricated_full_call_differential[fabricated_missing_required] ______
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+______ test_fabricated_full_call_differential[fabricated_extra_parameter] ______
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+______ test_fabricated_full_call_differential[fabricated_wrong_function] _______
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_____ test_fabricated_full_call_differential[fabricated_namespace_erasure] _____
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+______ test_fabricated_full_call_differential[fabricated_duplicate_calls] ______
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+________ test_fabricated_full_call_differential[fabricated_empty_calls] ________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_____ test_fabricated_full_call_differential[fabricated_multi_key_format] ______
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_____ test_fabricated_full_call_differential[fabricated_optional_omission] _____
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+__ test_fabricated_full_call_differential[fabricated_optional_without_empty] ___
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_______ test_fabricated_full_call_differential[fabricated_int_to_float] ________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_______ test_fabricated_full_call_differential[fabricated_bool_not_int] ________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+________ test_fabricated_full_call_differential[fabricated_list_order] _________
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+___ test_fabricated_full_call_differential[fabricated_string_normalization] ____
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+____ test_fabricated_full_call_differential[fabricated_quoted_code_is_data] ____
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+______ test_fabricated_full_call_differential[fabricated_expression_name] ______
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+_____ test_fabricated_full_call_differential[fabricated_dict_alternatives] _____
+tests/quality/test_bfclcontain_differential.py:36: in test_fabricated_full_call_differential
+    actual = control.differential([case])[0]
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+___________ test_containment_controls_and_uncontained_binop_finding ____________
+tests/quality/test_bfclcontain_differential.py:44: in test_containment_controls_and_uncontained_binop_finding
+    actual = [{"kind": "boundary", **row} for row in control.boundary_controls()]
+tests/fixtures/hg_bfclcontain/control.py:158: in boundary_controls
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+______________ test_model_map_dependent_schema_is_a_loud_refusal _______________
+tests/quality/test_bfclcontain_differential.py:72: in test_model_map_dependent_schema_is_a_loud_refusal
+    control.differential([case])
+tests/fixtures/hg_bfclcontain/control.py:123: in differential
+    platform = load_slice(PLATFORM, PLATFORM_NAMES)
+tests/fixtures/hg_bfclcontain/control.py:81: in load_slice
+    assert hashlib.sha256(raw).hexdigest() == pin["sha256"], "retained source drift"
+E   AssertionError: retained source drift
+
+During handling of the above exception, another exception occurred:
+tests/quality/test_bfclcontain_differential.py:71: in test_model_map_dependent_schema_is_a_loud_refusal
+    with pytest.raises(AssertionError, match="model map would be required"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'model map would be required'
+E    Input: 'retained source drift'
+_________ test_complete_named_scope_graph_and_every_source_entrypoint __________
+tests/quality/test_bfclguard_reachability.py:55: in test_complete_named_scope_graph_and_every_source_entrypoint
+    assert actual == expected, f"review source/graph drift in {key}"
+E   AssertionError: review source/graph drift in sources
+E   assert [{'bytes': 10...o', ...}, ...] == [{'bytes': 10...o', ...}, ...]
+E     At index 25 diff: {'id': 25, 'path': 'data/datasets/bfcl_v3.py', 'module': 'data.datasets.bfcl_v3', 'bytes': 28684, 'sha256': '4c022a4cd6dfaa502fa48082e5f4509b7724d72edfb5476d2d668344f9a5b381'} != {'bytes': 28188, 'id': 25, 'module': 'data.datasets.bfcl_v3', 'path': 'data/datasets/bfcl_v3.py', 'sha256': 'de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17'}
+E     Use -v to get more diff
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:41: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:63: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:70: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:81: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:93: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:112: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:121: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:134: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:144: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:153: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+SKIPPED [1] tests/quality/test_bfcl_v3_dataset.py:167: no BFCL data under /mnt/20t/xubuqiang/datasets/bfcl-v3; run `python3 tools/datasets.py --fetch --dataset bfcl_v3`
+FAILED tests/quality/test_bfclcontain_differential.py::test_source_inventory_and_sink_frontier_have_not_drifted
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_exact]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_wrong_value]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_wrong_type]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_missing_required]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_extra_parameter]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_wrong_function]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_namespace_erasure]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_duplicate_calls]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_empty_calls]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_multi_key_format]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_optional_omission]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_optional_without_empty]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_int_to_float]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_bool_not_int]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_list_order]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_string_normalization]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_quoted_code_is_data]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_expression_name]
+FAILED tests/quality/test_bfclcontain_differential.py::test_fabricated_full_call_differential[fabricated_dict_alternatives]
+FAILED tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+FAILED tests/quality/test_bfclcontain_differential.py::test_model_map_dependent_schema_is_a_loud_refusal
+FAILED tests/quality/test_bfclguard_reachability.py::test_complete_named_scope_graph_and_every_source_entrypoint
+23 failed, 260 passed, 11 skipped, 2 deselected in 15.21s
+[exit_code=1]
+cleanup: /tmp/adaptfid1-after-final removed; exists=False
+
+=== audit ===
+$ TMPDIR=/tmp/adaptfid1-audit PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/adaptfid1/audit.py
+data/datasets/bfcl_v3.py: changed top-level function/class ASTs=['parse_prediction']
+data/datasets/bfcl_v3.py: _goal and all other top-level functions/classes unchanged=True
+data/datasets/twowikimultihopqa.py: changed top-level function/class ASTs=['score_prediction']
+data/datasets/twowikimultihopqa.py: _goal and all other top-level functions/classes unchanged=True
+UNCHANGED data/datasets/agentdojo/verify/check.py sha256=b04a292c0e3f0f07973b880e7e3b7147384c925e6981944768f03ea2f12b21b0 bytes=1742
+UNCHANGED data/datasets/alfworld/verify/check.py sha256=c4978ec4af63cf1df8cdacf8000f182307a6a2281f513791a7d6f7a46b56b741 bytes=11201
+UNCHANGED data/datasets/appworld/verify/check.py sha256=0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5 bytes=3490
+UNCHANGED data/datasets/bird_minidev/verify/check.py sha256=fee968528375ed5dc129a40ce68995bf763d9f5e0c2f39559690caf4f279a575 bytes=6342
+UNCHANGED data/datasets/ds1000/verify/check.py sha256=ffcb9ce4913dc944417fc0dc0828b236f1d17c65e7dd9242ae838db4ee15d5d6 bytes=4706
+UNCHANGED data/datasets/gaia/verify/check.py sha256=59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e bytes=4966
+UNCHANGED data/datasets/jericho/verify/check.py sha256=ae73450376dcbb51c6a74d0e6fd5ebc63ffdd0b232fae8ef9e01601a306b2742 bytes=7751
+UNCHANGED data/datasets/livecodebench/verify/check.py sha256=f0db2c5986cb05c308c2917a6ee1a44b748bbec37c5bd21f04c3b576b5950ca6 bytes=10594
+UNCHANGED data/datasets/scienceworld/verify/check.py sha256=1acecbf19c1bb96b95e796fa2dff20b8d73e208b06f42c24214e0b06bce03a3e bytes=10993
+UNCHANGED data/datasets/spreadsheetbench/verify/check.py sha256=98dd625481f091a8684dd4d7a66c17f07cf7a36c8bba160e27353e06988b1af7 bytes=22040
+UNCHANGED data/datasets/tau_bench/verify/check.py sha256=b2cad46a3f541eae927334961a76c91c79e3dbb730b5016f0dc325a544dad6ec bytes=15424
+UNCHANGED data/scaffolds/qa/verify/check.py sha256=ec603e0d7fc655473dde92260d70cefefc0dd107eaa0d9273df1e7eeb0d0763c bytes=14936
+UNCHANGED data/aggregation_policies.json sha256=7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163 bytes=3619
+UNCHANGED registry/dataset-blockers.json sha256=2081719a2fc8fb1d8d1cdedfc757a4634a06af300c2dd7185941c1b74c36d65a bytes=77389
+UNCHANGED docs/adapter-integration-journal.md sha256=5fa12b37e7c8dc50fcfd9fe7710aca69d8103f544bc267ac325adb33062c4258 bytes=667767
+UNCHANGED AGENTS.md sha256=c451af64f9c85585c4ba77f28b9434dd64284792093a84528249cdcd6c1ac6d6 bytes=5716
+Registry path search scope: git ls-files registry (114 tracked files)
+FOUND path reference registry/known-red-tests.md: occurrences=1
+FOUND path reference registry/proposals/w-metriccmp-merged.json: occurrences=4
+FOUND path reference registry/proposals/w-metriccmp.json: occurrences=4
+FOUND path reference registry/w-apply4-validation.txt: occurrences=1
+FOUND path reference registry/w-bfclcontain.md: occurrences=1
+FOUND path reference registry/w-bfclguard-validation.txt: occurrences=1
+FOUND path reference registry/w-bfclguard.md: occurrences=4
+FOUND path reference registry/w-fevconv-validation.txt: occurrences=1
+FOUND path reference registry/w-fevhub-validation.txt: occurrences=2
+FOUND path reference registry/w-fevobj-validation.txt: occurrences=5
+FOUND path reference registry/w-hotpotrec-validation.txt: occurrences=2
+FOUND path reference registry/w-metriccmp-comparability.md: occurrences=5
+FOUND path reference registry/w-metriccmp-validation.txt: occurrences=11
+FOUND path reference registry/w-stratqa-validation.txt: occurrences=1
+Exact current verifier SHA256 matches in tracked registry scope: []
+Exact verifier path in registry/dataset-blockers.json: False
+Historical source receipts preserved:
+tests/fixtures/hg_bfclcontain/source-inventory.json: unchanged=True
+{"actual_bytes": 28684, "actual_sha256": "4c022a4cd6dfaa502fa48082e5f4509b7724d72edfb5476d2d668344f9a5b381", "path": "data/datasets/bfcl_v3.py", "pinned_bytes": 28188, "pinned_sha256": "de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17"}
+{"actual_bytes": 14936, "actual_sha256": "ec603e0d7fc655473dde92260d70cefefc0dd107eaa0d9273df1e7eeb0d0763c", "path": "data/scaffolds/qa/verify/check.py", "pinned_bytes": 14936, "pinned_sha256": "ec603e0d7fc655473dde92260d70cefefc0dd107eaa0d9273df1e7eeb0d0763c"}
+tests/fixtures/hg_bfclguard/sources.jsonl: unchanged=True
+{"actual_bytes": 28684, "actual_sha256": "4c022a4cd6dfaa502fa48082e5f4509b7724d72edfb5476d2d668344f9a5b381", "path": "data/datasets/bfcl_v3.py", "pinned_bytes": 28188, "pinned_sha256": "de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17"}
+{"actual_bytes": 14936, "actual_sha256": "ec603e0d7fc655473dde92260d70cefefc0dd107eaa0d9273df1e7eeb0d0763c", "path": "data/scaffolds/qa/verify/check.py", "pinned_bytes": 14936, "pinned_sha256": "ec603e0d7fc655473dde92260d70cefefc0dd107eaa0d9273df1e7eeb0d0763c"}
+Dataset suites found:
+tests/quality/test_bfcl_adaptfid1.py
+tests/quality/test_bfcl_ast_source_contract.py
+tests/quality/test_bfcl_selected.py
+tests/quality/test_bfcl_v3_dataset.py
+tests/quality/test_bfclcontain_differential.py
+tests/quality/test_bfclguard_reachability.py
+tests/quality/test_harness_decoding.py
+tests/quality/test_twowiki_adaptfid1.py
+tests/quality/test_twowikimultihopqa_official_scorer.py
+tests/quality/test_twowikimultihopqa_provenance_codex197.py
+tests/quality/test_twowikimultihopqa_structured.py
+[exit_code=0]
+cleanup: /tmp/adaptfid1-audit removed; exists=False
+
+=== checker ===
+$ TMPDIR=/tmp/adaptfid1-checker PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+[exit_code=0]
+cleanup: /tmp/adaptfid1-checker removed; exists=False
+
+=== review ===
+$ TMPDIR=/tmp/adaptfid1-review PYTHONDONTWRITEBYTECODE=1 git diff --check && git diff --stat && git status --short && git rev-parse HEAD && git branch --show-current
+ data/datasets/bfcl_v3.py           | 19 +++++++++++++------
+ data/datasets/twowikimultihopqa.py | 11 +++++++++++
+ 2 files changed, 24 insertions(+), 6 deletions(-)
+ M data/datasets/bfcl_v3.py
+ M data/datasets/twowikimultihopqa.py
+?? tests/quality/test_bfcl_adaptfid1.py
+?? tests/quality/test_twowiki_adaptfid1.py
+38a302e5c5edb9d1b26b0e642a40301f013f5cad
+wg-w-adaptfid1
+[exit_code=0]
+cleanup: /tmp/adaptfid1-review removed; exists=False
+
+=== Reproduction helpers (exact source; external scratch only) ===
+--- /mnt/20t/xubuqiang/hg-work/adaptfid1/record.py ---
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+name, command = sys.argv[1:]
+root = Path('/mnt/20t/xubuqiang/hg-work/adaptfid1')
+temporary = Path('/tmp/adaptfid1-' + name)
+if temporary.exists():
+    raise RuntimeError(f'refusing to reuse scratch: {temporary}')
+temporary.mkdir()
+env = dict(os.environ, TMPDIR=str(temporary), PYTHONDONTWRITEBYTECODE='1')
+try:
+    proc = subprocess.run(command, shell=True, executable='/bin/bash', env=env,
+                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                          text=True, errors='replace')
+    output = (f'$ TMPDIR={temporary} PYTHONDONTWRITEBYTECODE=1 {command}\n'
+              + proc.stdout + f'[exit_code={proc.returncode}]\n')
+finally:
+    shutil.rmtree(temporary)
+output += f'cleanup: {temporary} removed; exists={temporary.exists()}\n'
+(root / (name + '.log')).write_text(output)
+print(output, end='')
+sys.exit(proc.returncode)
+
+--- /mnt/20t/xubuqiang/hg-work/adaptfid1/prefix_pytest.py ---
+"""Execute the unedited HEAD adapter sources before running final regression tests."""
+import subprocess
+import sys
+from types import ModuleType
+from pathlib import Path
+
+sys.path.insert(0, str(Path.cwd()))
+import data.datasets
+import pytest
+from data.scaffolds.qa import base
+
+for adapter in ('bfcl_v3', 'twowikimultihopqa'):
+    path = f'data/datasets/{adapter}.py'
+    source = subprocess.check_output(['git', 'show', f'HEAD:{path}'])
+    name = f'data.datasets.{adapter}'
+    module = ModuleType(name)
+    module.__file__ = str(Path(path).resolve())
+    sys.modules[name] = module
+    setattr(data.datasets, adapter, module)
+    exec(compile(source, module.__file__, 'exec'), module.__dict__)
+sys.exit(pytest.main(sys.argv[1:]))
+
+--- /mnt/20t/xubuqiang/hg-work/adaptfid1/audit.py ---
+import ast
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+
+
+def original(path):
+    return subprocess.check_output(['git', 'show', f'HEAD:{path}'])
+
+
+def functions(content):
+    return {n.name: ast.dump(n, include_attributes=False) for n in ast.parse(content).body
+            if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
+
+for path in ('data/datasets/bfcl_v3.py', 'data/datasets/twowikimultihopqa.py'):
+    before, after = functions(original(path)), functions(Path(path).read_bytes())
+    changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
+    print(f'{path}: changed top-level function/class ASTs={changed}')
+    allowed = ['parse_prediction'] if 'bfcl' in path else ['score_prediction']
+    assert changed == allowed
+    print(f'{path}: _goal and all other top-level functions/classes unchanged=True')
+
+paths = subprocess.check_output(['git', 'ls-files', 'data/**/verify/check.py']).decode().splitlines()
+paths += ['data/aggregation_policies.json', 'registry/dataset-blockers.json',
+          'docs/adapter-integration-journal.md', 'AGENTS.md']
+for path in paths:
+    raw = Path(path).read_bytes()
+    assert original(path) == raw
+    print(f'UNCHANGED {path} sha256={hashlib.sha256(raw).hexdigest()} bytes={len(raw)}')
+
+needle = 'data/scaffolds/qa/verify/check.py'
+files = subprocess.check_output(['git', 'ls-files', 'registry']).decode().splitlines()
+print(f'Registry path search scope: git ls-files registry ({len(files)} tracked files)')
+matched = []
+digest = hashlib.sha256(Path(needle).read_bytes()).hexdigest()
+exact_digest_matches = []
+for name in files:
+    text = Path(name).read_text(errors='replace')
+    count = text.count(needle)
+    if count:
+        matched.append(name)
+        print(f'FOUND path reference {name}: occurrences={count}')
+    if digest in text:
+        exact_digest_matches.append(name)
+print(f'Exact current verifier SHA256 matches in tracked registry scope: {exact_digest_matches}')
+print(f'Exact verifier path in registry/dataset-blockers.json: {needle in Path("registry/dataset-blockers.json").read_text()}')
+print('Historical source receipts preserved:')
+for path in ('tests/fixtures/hg_bfclcontain/source-inventory.json',
+             'tests/fixtures/hg_bfclguard/sources.jsonl'):
+    content = Path(path).read_bytes()
+    assert content == original(path)
+    rows = json.loads(content) if path.endswith('.json') else [json.loads(l) for l in content.splitlines()]
+    print(f'{path}: unchanged=True')
+    for row in rows:
+        if row.get('path') in ('data/datasets/bfcl_v3.py', needle):
+            actual = Path(row['path']).read_bytes()
+            print(json.dumps({'path': row['path'], 'pinned_sha256': row['sha256'],
+                              'actual_sha256': hashlib.sha256(actual).hexdigest(),
+                              'pinned_bytes': row['bytes'], 'actual_bytes': len(actual)}, sort_keys=True))
+print('Dataset suites found:')
+for p in sorted(Path('tests/quality').glob('*.py')):
+    if any(s in p.name for s in ('bfcl', 'twowiki', 'harness_decoding')):
+        print(p)
+
+=== Explicitly NOT verified ===
+- No model, GPU, model server, paid API, network provisioning or benchmark/driver run.
+- No real 2Wiki platform-control oracle/noop run (the two exact tests are deselected).
+- No fresh selected-task manifest, endpoint binding, resource/quota/snapshot/cleanup
+  runtime receipt, H0 admission, official BFCL full-call execution or full-call equivalence.
+- No successor custody receipt for the changed BFCL bytes. The 23 final full-scope
+  failures stop at historical source inventory/digest comparisons; their old downstream
+  containment/differential/reachability assertions therefore did not recertify this edit.
+- No proof that a lexical identifier+'(' detector is equivalent to upstream AST parsing.
+  Arguments remain neither parsed nor executed, and the metric stays nonofficial.
+- The 11 BFCL dataset-fixture tests skipped on their existing _RECORDS guard. Their
+  skip text is not independent proof that dataset payload files are absent on disk.
+- No changes to the registry blocker index, integration journal, AGENTS.md, frozen
+  receipts, prompts/inputs, aggregation declarations, or any verifier check.py.
+- No main checkout read-modify-write, push, merge, rebase, clone, or branch/worktree deletion.
+
+=== Receipt-format check (before lossless trailing-space encoding) ===
+$ git diff --cached --check
+registry/w-adaptfid1-validation.txt:353: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:354: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:357: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:364: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:384: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:385: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:388: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:395: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:415: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:416: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:419: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:426: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:446: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:447: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:450: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:457: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:477: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:478: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:481: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:488: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:508: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:509: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:512: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:519: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:539: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:540: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:543: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:550: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:570: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:571: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:574: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:581: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:601: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:602: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:605: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:612: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:632: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:633: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:636: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:643: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:663: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:664: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:667: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:674: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:694: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:695: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:698: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:705: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:725: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:726: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:729: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:736: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:756: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:757: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:760: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:767: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:787: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:788: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:791: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:798: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:818: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:819: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:822: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:829: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:849: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:850: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:853: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:860: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:880: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:881: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:884: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:891: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:911: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:36: "
+registry/w-adaptfid1-validation.txt:912: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:915: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:922: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:941: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:44: "
+registry/w-adaptfid1-validation.txt:942: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:945: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:952: trailing whitespace.
+JSON_LINE "+    "
+registry/w-adaptfid1-validation.txt:972: trailing whitespace.
+JSON_LINE "+tests/quality/test_bfclcontain_differential.py:72: "
+registry/w-adaptfid1-validation.txt:973: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:976: trailing whitespace.
+JSON_LINE "+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+registry/w-adaptfid1-validation.txt:983: trailing whitespace.
+JSON_LINE "+    "
+[exit_code=2]
+The captured pytest output contained trailing spaces. JSON_LINE encodes only
+those exact lines losslessly, so evidence is preserved and Git whitespace checks pass.
+
+Pre-fix replay note: prefix_pytest.py used HEAD before the worker commit.
+That observed HEAD was 38a302e5c5edb9d1b26b0e642a40301f013f5cad (review log).
+For replay after commit, select that revision instead of HEAD in git show.
+
+=== Final committed-file byte-size inventory ===
+Observed using stat; the transcript byte-size field is fixed width.
+$ python3 - <<'PY'
+from pathlib import Path
+for name in ['data/datasets/bfcl_v3.py', 'data/datasets/twowikimultihopqa.py', 'tests/quality/test_bfcl_adaptfid1.py', 'tests/quality/test_twowiki_adaptfid1.py', 'registry/w-adaptfid1.md', 'registry/w-adaptfid1-validation.txt']:
+    print(f'{Path(name).stat().st_size:12d} {name}')
+PY
+       28684 data/datasets/bfcl_v3.py
+       33243 data/datasets/twowikimultihopqa.py
+        2365 tests/quality/test_bfcl_adaptfid1.py
+        3403 tests/quality/test_twowiki_adaptfid1.py
+        7541 registry/w-adaptfid1.md
+      117808 registry/w-adaptfid1-validation.txt
+[exit_code=0]
+
+=== Final staged diff check ===
+$ git diff --cached --check
+[exit_code=0]

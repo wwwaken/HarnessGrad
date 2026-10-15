@@ -35,6 +35,10 @@ Plain text `answer.txt` and `score_answer_only` retain **legacy answer-only** An
 and Ans EM correctness. Their verdict explicitly omits Sup/Evi/Joint and must not be
 compared with a full structured run. The shared `qa submit-json` pair-only schema is not
 this adapter's triple contract; use `qa submit @submission.json`.
+Shared `prediction.json` objects with `predicted_evidence` pairs are refused as
+`twowiki_prediction_json_pair_schema_unsupported`, without a measured reward. They
+cannot express the triple channel. Shared answer-only objects use Joint metrics with
+missing support/evidence channels scored zero, rather than legacy answer-only reward.
 
 Two traps, both measured here
 -----------------------------
@@ -82,6 +86,8 @@ from pathlib import Path
 from data.scaffolds.qa import base
 
 KIND = "dataset"
+# Route shared prediction.json submissions to the structured scorer, including refusals.
+EVIDENCE_AWARE = True
 
 #: The oracle control submits the benchmark's own released reference; see
 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
@@ -479,6 +485,11 @@ def _prediction_metrics(prediction: dict, gold: dict) -> dict:
 
 def score_prediction(prediction: dict, gold: dict) -> dict:
     """All official v1.1 metrics; Joint F1 reward and Joint EM correctness."""
+    if isinstance(prediction, dict) and "predicted_evidence" in prediction:
+        raise ValueError(
+            "twowiki_prediction_json_pair_schema_unsupported: predicted_evidence pairs "
+            "cannot express 2Wiki evidence triples; submit supporting_facts and evidence "
+            "in answer.txt JSON via qa submit @submission.json")
     metrics = _prediction_metrics(prediction, gold)
     return {"reward": float(metrics["joint_f1"]), "correct": bool(metrics["joint_em"]),
             "official": {"metric": "2WikiMultihopQA Joint F1 (official v1.1 evaluator)",

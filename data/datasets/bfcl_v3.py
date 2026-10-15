@@ -197,12 +197,17 @@ def gold_names(ground_truth) -> list[str]:
 
 
 def parse_prediction(text: str) -> list[str]:
-    """The function names the agent named. `NONE` (any case) means the empty set.
+    """Accept bare/dotted ASCII function identifiers, one per line.
 
-    One name per line, which is the contract the goal states. Blank lines are ignored; a line
-    that is not a bare identifier is kept as-is so that a wrong answer is a *wrong answer*
-    rather than a parse failure the scorer hides.
+    Whitespace and surrounding commas/semicolons are stripped. Blank lines
+    and case-insensitive NONE/no tool/no function markers (optional space, underscore or
+    hyphen) mean no call. Prose without an identifier followed by '(' is ignored, as are
+    invalid identifiers. A line containing a call-shaped identifier is retained as-is:
+    call syntax is rejected by name-only equality and still fails irrelevance. Arguments
+    are neither parsed nor executed.
+    Names keep their case, order and duplicates; no available-function allowlist is used.
     """
+    identifier = r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
     names = []
     for line in str(text or "").splitlines():
         line = line.strip().strip(",;")
@@ -210,7 +215,9 @@ def parse_prediction(text: str) -> list[str]:
             continue
         if re.fullmatch(r"(?i)none|no[ _-]?tool|no[ _-]?function", line):
             continue
-        names.append(line)
+        if (re.fullmatch(identifier, line)
+                or re.search(rf"(?<![\w.]){identifier}\s*\(", line)):
+            names.append(line)
     return names
 
 
