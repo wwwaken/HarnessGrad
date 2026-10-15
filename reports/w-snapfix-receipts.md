@@ -22,7 +22,7 @@ The actor lifecycle and its startup are untouched. Dependency/service networks, 
 
 ## Raw before/after receipts
 
-All paths below are under `reports/w-snapfix-evidence/`. Its `SHA256SUMS` covers all 528 retained evidence files (excluding itself), with exhaustive membership and every listed hash independently checked. Live Docker commands retain exact argv/cwd/time/timeout/exit status and unmodified stdout/stderr; test commands retain argv/exit status and unmodified output.
+All paths below are under `reports/w-snapfix-evidence/`. Its `SHA256SUMS` covers all 531 retained evidence files (excluding itself), with exhaustive membership and every listed hash independently checked. Live Docker commands retain exact argv/cwd/time/timeout/exit status and unmodified stdout/stderr; test commands retain argv/exit status and unmodified output.
 
 - Unit regression: `unit-before-correct-pins.stdout.txt` is **9 failed, 1 passed** on unchanged production code; the final focused run `focused-final.stdout.txt` is **39 passed, 48 deselected**, including all **10** new controls. `option-b-final.stdout.txt` is **22 passed**. The corresponding `.command.json` files give exact invocations, with pytest basetemp outside the platform. Three old mocked snapshot callers now supply real retained commit pins and mock the new Docker inspect response; their existing assertions remain.
 - Baseline live case: `w-snapfix-before-20261015T022137Z-886469d1/` loads the exact archived baseline sources under `before/`, without changing this checkout. Both behavioral binding assertions fail (**0 passed, 2 failed**): foreign existing image reaches the observation command with no identity refusal; changed input reads `changed-during-start`. The observation command itself is a simple cat/string check, not a benchmark scorer, reward or fabricated passing result.
@@ -31,6 +31,8 @@ All paths below are under `reports/w-snapfix-evidence/`. Its `SHA256SUMS` covers
 - Host startup bytes: `006-host-busybox-sha256.stdout.txt` records the independently recomputed host binary hash; `005-host-busybox-elf.stdout.txt` preserves static ELF inspection. `validate.py` independently checks final raw identity, running state, bytes, command completion, limits, mounts, network, metadata hashes, preserved input packet and all capture cleanup observations.
 
 ## Preserved failures and cleanup
+
+The full diff whitespace audit reports 30 trailing-space lines from the three unmodified raw readelf outputs. Those bytes are deliberately preserved; `raw-whitespace.*` retains that audit. The source/docs/tests diff passes with the raw evidence directory excluded.
 
 The initial unit fixture hashed the Docker-save index instead of the raw image-manifest blob; it was corrected before production edits. `unit-before.*` retains that attempt; the authoritative before counts use `unit-before-correct-pins.*`, whose pins are rehashed actual image identities.
 

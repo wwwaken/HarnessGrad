@@ -222,3 +222,8 @@ exit=0
 $ python3 reports/w-snapfix-evidence/capture.py after
 {"checker_observed_committed_bytes": true, "checks_failed": 0, "checks_passed": 2, "committed_file_preserved": true, "foreign_refused": true, "run_id": "w-snapfix-after-20261015T022454Z-7fca9e19"}
 exit=0
+
+Full diff audit: exit 2, 30 trailing-space lines in exact raw readelf output only. Raw command/output: reports/w-snapfix-evidence/raw-whitespace.*
+$ git diff 04dcbd162893a81f61cec5dd1439d3c22d9d4619 --check -- . :(exclude)reports/w-snapfix-evidence/**
+exit=0
+Final independent retained evidence SHA-256 and exhaustive membership verification: 531 files valid.
