@@ -1,0 +1,19 @@
++ set -euo pipefail
++ packet=tests/fixtures/hg_woffscorer3/code_chess
++ export PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 JAX_PLATFORMS=cpu
++ PYTHONDONTWRITEBYTECODE=1
++ CUDA_VISIBLE_DEVICES=
++ OPENBLAS_NUM_THREADS=1
++ OMP_NUM_THREADS=1
++ JAX_PLATFORMS=cpu
++ python3 tests/fixtures/hg_woffscorer3/code_chess/prepare.py
++ timeout 150s python3 tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py tests/fixtures/hg_woffscorer3/code_chess/execute.py chess-official
++ timeout 150s python3 tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py tests/fixtures/hg_woffscorer3/code_chess/execute.py chess-local
++ timeout 150s python3 tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py tests/fixtures/hg_woffscorer3/code_chess/execute.py lcb-official
++ export HG_WOFFSCORER3_PARENT_NETNS
+++ readlink /proc/self/ns/net
++ HG_WOFFSCORER3_PARENT_NETNS='net:[4026531840]'
++ timeout 150s bwrap --unshare-net --die-with-parent --ro-bind / / --bind /tmp /tmp --proc /proc --dev /dev python3 tests/fixtures/hg_woffscorer3/code_chess/namespace_exec.py tests/fixtures/hg_woffscorer3/code_chess/execute.py lcb-official
++ timeout 150s python3 tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py tests/fixtures/hg_woffscorer3/code_chess/execute.py lcb-local
++ python3 tests/fixtures/hg_woffscorer3/code_chess/compare.py
+python3: can't open file '/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/compare.py': [Errno 2] No such file or directory

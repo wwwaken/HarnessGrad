@@ -1,0 +1,35 @@
+$ python3 tests/fixtures/hg_woffscorer3/code_chess/verify.py
+{
+  "comparisons": {
+    "chessbench_puzzles": {
+      "agreements": 6,
+      "divergences": 4,
+      "inputs": 15,
+      "local_unmeasured": 0,
+      "nonnumeric_inputs": 5,
+      "numeric_comparisons": 10,
+      "official_exceptions": 5
+    },
+    "livecodebench": {
+      "agreements": 10,
+      "divergences": 0,
+      "inputs": 12,
+      "local_unmeasured": 2,
+      "nonnumeric_inputs": 2,
+      "numeric_comparisons": 10,
+      "official_exceptions": 0
+    }
+  },
+  "guard_and_cleanup_checks": "passed",
+  "official_source_files": 19,
+  "unchanged_source_files": 5,
+  "verified_fixture_files": 106
+}
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ git diff --cached --check
+exit_code=0

@@ -1,0 +1,359 @@
+{
+  "cases": [
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "e7e5"
+        }
+      ],
+      "final_fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "gold": {
+        "answer": "e7e5",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-reference-short"
+      },
+      "id": "reference-short",
+      "prediction": "e7e5",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "e7e5"
+        },
+        {
+          "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+          "uci": "b8c6"
+        }
+      ],
+      "final_fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+      "gold": {
+        "answer": "e7e5 b8c6",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5",
+          "g1f3",
+          "b8c6"
+        ],
+        "puzzle_id": "authored-reference-long"
+      },
+      "id": "reference-long",
+      "prediction": "e7e5 b8c6",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "e7e5"
+        }
+      ],
+      "final_fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "gold": {
+        "answer": "e7e5",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-trailing-ignored"
+      },
+      "id": "trailing-ignored",
+      "prediction": "e7e5 a1a8 nonsense",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "d7d5"
+        }
+      ],
+      "final_fen": "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "gold": {
+        "answer": "e7e5",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-wrong-legal"
+      },
+      "id": "wrong-legal",
+      "prediction": "d7d5",
+      "returned": false,
+      "reward": 0.0
+    },
+    {
+      "engine_calls": [],
+      "error": {
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 62, in play\n    token=next(self.tokens)\n          ^^^^^^^^^^^^^^^^^\nStopIteration\n",
+        "type": "StopIteration"
+      },
+      "gold": {
+        "answer": "e7e5",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-missing-solver"
+      },
+      "id": "missing-solver",
+      "prediction": ""
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "e7e5"
+        }
+      ],
+      "error": {
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 62, in play\n    token=next(self.tokens)\n          ^^^^^^^^^^^^^^^^^\nStopIteration\n",
+        "type": "StopIteration"
+      },
+      "gold": {
+        "answer": "e7e5 b8c6",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5",
+          "g1f3",
+          "b8c6"
+        ],
+        "puzzle_id": "authored-missing-later"
+      },
+      "id": "missing-later",
+      "prediction": "e7e5"
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "not-uci"
+        }
+      ],
+      "error": {
+        "message": "expected uci string to be of length 4 or 5: 'not-uci'",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 64, in play\n    return chess.Move.from_uci(token)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 712, in from_uci\n    raise InvalidMoveError(f\"expected uci string to be of length 4 or 5: {uci!r}\")\nchess.InvalidMoveError: expected uci string to be of length 4 or 5: 'not-uci'\n",
+        "type": "InvalidMoveError"
+      },
+      "gold": {
+        "answer": "e7e5",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-malformed-solver"
+      },
+      "id": "malformed-solver",
+      "prediction": "not-uci"
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "e7e5"
+        }
+      ],
+      "final_fen": "rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "gold": {
+        "answer": "e7e5",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e5",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-illegal-reference-setup"
+      },
+      "id": "illegal-reference-setup",
+      "prediction": "e7e5",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+          "uci": "e7e4"
+        }
+      ],
+      "final_fen": "rnbqkbnr/pppp1ppp/8/8/4p3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "gold": {
+        "answer": "e7e4",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4",
+          "e7e4"
+        ],
+        "puzzle_id": "authored-illegal-reference-solver"
+      },
+      "id": "illegal-reference-solver",
+      "prediction": "e7e4",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [],
+      "final_fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+      "gold": {
+        "answer": "",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [
+          "e2e4"
+        ],
+        "puzzle_id": "authored-setup-only"
+      },
+      "id": "setup-only",
+      "prediction": "",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [],
+      "final_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "gold": {
+        "answer": "",
+        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "moves": [],
+        "puzzle_id": "authored-empty-reference"
+      },
+      "id": "empty-reference",
+      "prediction": "",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [],
+      "error": {
+        "message": "expected 8 rows in position part of fen: 'not-fen'",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 67, in chess_official\n    board=chess.Board(case['gold']['fen'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 1711, in __init__\n    self.set_fen(fen)\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 2646, in set_fen\n    self._set_board_fen(board_part)\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 1132, in _set_board_fen\n    raise ValueError(f\"expected 8 rows in position part of fen: {fen!r}\")\nValueError: expected 8 rows in position part of fen: 'not-fen'\n",
+        "type": "ValueError"
+      },
+      "gold": {
+        "answer": "e7e5",
+        "fen": "not-fen",
+        "moves": [
+          "e2e4",
+          "e7e5"
+        ],
+        "puzzle_id": "authored-invalid-fen"
+      },
+      "id": "invalid-fen",
+      "prediction": "e7e5"
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "7k/8/5KQ1/8/8/8/8/8 w - - 1 2",
+          "uci": "g6g7"
+        }
+      ],
+      "final_fen": "7k/6Q1/5K2/8/8/8/8/8 b - - 2 2",
+      "gold": {
+        "answer": "g6g7",
+        "fen": "6k1/8/5KQ1/8/8/8/8/8 b - - 0 1",
+        "moves": [
+          "g8h8",
+          "g6g7"
+        ],
+        "puzzle_id": "authored-reference-mate"
+      },
+      "id": "reference-mate",
+      "prediction": "g6g7",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "7k/5K2/6Q1/8/8/8/8/8 w - - 1 2",
+          "uci": "g6h6"
+        }
+      ],
+      "final_fen": "7k/5K2/7Q/8/8/8/8/8 b - - 2 2",
+      "gold": {
+        "answer": "g6g7",
+        "fen": "6k1/5K2/6Q1/8/8/8/8/8 b - - 0 1",
+        "moves": [
+          "g8h8",
+          "g6g7"
+        ],
+        "puzzle_id": "authored-alternate-mate"
+      },
+      "id": "alternate-mate",
+      "prediction": "g6h6",
+      "returned": true,
+      "reward": 1.0
+    },
+    {
+      "engine_calls": [
+        {
+          "fen": "7k/8/5KQ1/8/8/8/8/8 w - - 1 2",
+          "uci": "g6g7"
+        }
+      ],
+      "error": {
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 62, in play\n    token=next(self.tokens)\n          ^^^^^^^^^^^^^^^^^\nStopIteration\n",
+        "type": "StopIteration"
+      },
+      "gold": {
+        "answer": "g6g7 g7g8",
+        "fen": "6k1/8/5KQ1/8/8/8/8/8 b - - 0 1",
+        "moves": [
+          "g8h8",
+          "g6g7",
+          "h8g8",
+          "g7g8"
+        ],
+        "puzzle_id": "authored-immediate-mate-extra-reference"
+      },
+      "id": "immediate-mate-extra-reference",
+      "prediction": "g6g7"
+    }
+  ],
+  "dataset": "chessbench_puzzles",
+  "full_import_stderr": "",
+  "full_import_stdout": "",
+  "full_module_import": {
+    "error": {
+      "message": "No module named 'absl'",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 42, in chess_official\n    module=importlib.import_module('searchless_chess.src.puzzles')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 995, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 22, in <module>\n    from absl import app\nModuleNotFoundError: No module named 'absl'\n",
+      "type": "ModuleNotFoundError"
+    },
+    "successful": false
+  },
+  "mode": "official",
+  "runtime": {
+    "chess": {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py",
+      "sha256": "1fde6a8e932508d14b31f6a584497b49c2969fc3c7cdc675347f819f0d667a5b",
+      "version": "1.11.2"
+    },
+    "numpy": {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__init__.py",
+      "sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+      "version": "1.26.4"
+    }
+  },
+  "selected_function_execution": {
+    "body_modified": false,
+    "function": "evaluate_puzzle_from_board",
+    "selected_source_sha256": "5d6b4f54aa5bfdd7557682955cbcf1485f8ff90e546326247163755136ed2ce0"
+  }
+}

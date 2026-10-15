@@ -1,0 +1,543 @@
+{
+  "chessbench_puzzles": {
+    "counts": {
+      "agreements": 6,
+      "divergences": 4,
+      "inputs": 15,
+      "local_unmeasured": 0,
+      "nonnumeric_inputs": 5,
+      "numeric_comparisons": 10,
+      "official_exceptions": 5
+    },
+    "dataset": "chessbench_puzzles",
+    "per_input": [
+      {
+        "id": "reference-short",
+        "local_evidence": null,
+        "local_reward": 1.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "agree",
+        "strict_verdict": "reference_complete"
+      },
+      {
+        "id": "reference-long",
+        "local_evidence": null,
+        "local_reward": 1.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "agree",
+        "strict_verdict": "reference_complete"
+      },
+      {
+        "id": "trailing-ignored",
+        "local_evidence": null,
+        "local_reward": 1.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "agree",
+        "strict_verdict": "reference_complete"
+      },
+      {
+        "id": "wrong-legal",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 0.0,
+        "official_error": null,
+        "official_reward": 0.0,
+        "status": "agree",
+        "strict_verdict": "wrong_move"
+      },
+      {
+        "id": "missing-solver",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 0.0,
+        "official_error": {
+          "message": "",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 62, in play\n    token=next(self.tokens)\n          ^^^^^^^^^^^^^^^^^\nStopIteration\n",
+          "type": "StopIteration"
+        },
+        "official_reward": null,
+        "status": "nonnumeric",
+        "strict_verdict": "missing_move"
+      },
+      {
+        "id": "missing-later",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 0.0,
+        "official_error": {
+          "message": "",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 62, in play\n    token=next(self.tokens)\n          ^^^^^^^^^^^^^^^^^\nStopIteration\n",
+          "type": "StopIteration"
+        },
+        "official_reward": null,
+        "status": "nonnumeric",
+        "strict_verdict": "missing_move"
+      },
+      {
+        "id": "malformed-solver",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 0.0,
+        "official_error": {
+          "message": "expected uci string to be of length 4 or 5: 'not-uci'",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 64, in play\n    return chess.Move.from_uci(token)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 712, in from_uci\n    raise InvalidMoveError(f\"expected uci string to be of length 4 or 5: {uci!r}\")\nchess.InvalidMoveError: expected uci string to be of length 4 or 5: 'not-uci'\n",
+          "type": "InvalidMoveError"
+        },
+        "official_reward": null,
+        "status": "nonnumeric",
+        "strict_verdict": "invalid_move"
+      },
+      {
+        "id": "illegal-reference-setup",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "diverge",
+        "strict_verdict": "invalid_reference"
+      },
+      {
+        "id": "illegal-reference-solver",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "diverge",
+        "strict_verdict": "illegal_move"
+      },
+      {
+        "id": "setup-only",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "diverge",
+        "strict_verdict": "invalid_reference"
+      },
+      {
+        "id": "empty-reference",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 0.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "diverge",
+        "strict_verdict": "invalid_reference"
+      },
+      {
+        "id": "invalid-fen",
+        "local_evidence": null,
+        "local_reward": 0.0,
+        "local_upstream_reward": 0.0,
+        "official_error": {
+          "message": "expected 8 rows in position part of fen: 'not-fen'",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 67, in chess_official\n    board=chess.Board(case['gold']['fen'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 1711, in __init__\n    self.set_fen(fen)\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 2646, in set_fen\n    self._set_board_fen(board_part)\n  File \"/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py\", line 1132, in _set_board_fen\n    raise ValueError(f\"expected 8 rows in position part of fen: {fen!r}\")\nValueError: expected 8 rows in position part of fen: 'not-fen'\n",
+          "type": "ValueError"
+        },
+        "official_reward": null,
+        "status": "nonnumeric",
+        "strict_verdict": "invalid_reference"
+      },
+      {
+        "id": "reference-mate",
+        "local_evidence": null,
+        "local_reward": 1.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "agree",
+        "strict_verdict": "checkmate"
+      },
+      {
+        "id": "alternate-mate",
+        "local_evidence": null,
+        "local_reward": 1.0,
+        "local_upstream_reward": 1.0,
+        "official_error": null,
+        "official_reward": 1.0,
+        "status": "agree",
+        "strict_verdict": "alternate_mate_in_one"
+      },
+      {
+        "id": "immediate-mate-extra-reference",
+        "local_evidence": null,
+        "local_reward": 1.0,
+        "local_upstream_reward": 0.0,
+        "official_error": {
+          "message": "",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 68, in chess_official\n    row['returned']=evaluator(board,case['gold']['moves'],ScriptedEngine());row['reward']=float(row['returned']);row['final_fen']=board.fen()\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/source/chessbench_puzzles/searchless_chess/src/puzzles.py\", line 86, in evaluate_puzzle_from_board\n    predicted_move = engine.play(board=board).uci()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/execute.py\", line 62, in play\n    token=next(self.tokens)\n          ^^^^^^^^^^^^^^^^^\nStopIteration\n",
+          "type": "StopIteration"
+        },
+        "official_reward": null,
+        "status": "nonnumeric",
+        "strict_verdict": "checkmate"
+      }
+    ]
+  },
+  "lcb_strict_probe": {
+    "exceptions": 11,
+    "inputs": 11,
+    "numeric_scores": 0
+  },
+  "livecodebench": {
+    "counts": {
+      "agreements": 9,
+      "divergences": 0,
+      "inputs": 11,
+      "local_unmeasured": 2,
+      "nonnumeric_inputs": 2,
+      "numeric_comparisons": 9,
+      "official_exceptions": 0
+    },
+    "dataset": "livecodebench",
+    "per_input": [
+      {
+        "id": "stdio-pass",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            true,
+            true,
+            true
+          ],
+          "reward": 1.0,
+          "tests": {
+            "passed": 3,
+            "total": 3
+          },
+          "why": "all 3 released tests passed"
+        },
+        "local_per_test": [
+          true,
+          true,
+          true
+        ],
+        "local_reward": 1.0,
+        "official_error": null,
+        "official_metadata": {
+          "execution time": 0.00583338737487793
+        },
+        "official_per_test": [
+          true,
+          true,
+          true
+        ],
+        "official_reward": 1.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "stdio-wrong-first",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            -2
+          ],
+          "reward": 0.0,
+          "tests": {
+            "passed": 0,
+            "total": 3
+          },
+          "why": "0 of 3 released tests passed; executor metadata {'output': '0\\n', 'inputs': '1 2\\n', 'expected': '3\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 0 != 3'}"
+        },
+        "local_per_test": [
+          -2
+        ],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error_code": -2,
+          "error_message": "Wrong answer at output_line_idx=0: 0 != 3",
+          "expected": "3\n",
+          "inputs": "1 2\n",
+          "output": "0\n"
+        },
+        "official_per_test": [
+          -2
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "stdio-partial",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            true,
+            -2
+          ],
+          "reward": 0.0,
+          "tests": {
+            "passed": 1,
+            "total": 3
+          },
+          "why": "1 of 3 released tests passed; executor metadata {'output': '3\\n', 'inputs': '3 4\\n', 'expected': '7\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 3 != 7'}"
+        },
+        "local_per_test": [
+          true,
+          -2
+        ],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error_code": -2,
+          "error_message": "Wrong answer at output_line_idx=0: 3 != 7",
+          "expected": "7\n",
+          "inputs": "3 4\n",
+          "output": "3\n"
+        },
+        "official_per_test": [
+          true,
+          -2
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "stdio-runtime",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            -4
+          ],
+          "reward": 0.0,
+          "tests": {
+            "passed": 0,
+            "total": 3
+          },
+          "why": "0 of 3 released tests passed; executor metadata {'error': \"RuntimeError('authored-runtime-control')\", 'error_code': -4, 'error_message': 'Runtime Error', 'inputs': '1 2\\n', 'expected': '3\\n'}"
+        },
+        "local_per_test": [
+          -4
+        ],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error": "RuntimeError('authored-runtime-control')",
+          "error_code": -4,
+          "error_message": "Runtime Error",
+          "expected": "3\n",
+          "inputs": "1 2\n"
+        },
+        "official_per_test": [
+          -4
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "stdio-syntax",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            -4
+          ],
+          "reward": 0.0,
+          "tests": {
+            "passed": 0,
+            "total": 3
+          },
+          "why": "0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: invalid syntax (<string>, line 1)'}"
+        },
+        "local_per_test": [
+          -4
+        ],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error_code": -4,
+          "error_message": "Error during testing: invalid syntax (<string>, line 1)"
+        },
+        "official_per_test": [
+          -4
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "stdio-empty",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [],
+          "reward": 0.0,
+          "tests": {
+            "passed": 0,
+            "total": 3
+          },
+          "why": "no answer (measured zero): solution.py is missing or empty"
+        },
+        "local_per_test": [],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error_code": -4,
+          "error_message": "Error during testing: expected an indented block after function definition on line 38 (<string>, line 38)"
+        },
+        "official_per_test": [
+          -4
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": false,
+        "status": "agree"
+      },
+      {
+        "id": "call-pass",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            true,
+            true,
+            true
+          ],
+          "reward": 1.0,
+          "tests": {
+            "passed": 3,
+            "total": 3
+          },
+          "why": "all 3 released tests passed"
+        },
+        "local_per_test": [
+          true,
+          true,
+          true
+        ],
+        "local_reward": 1.0,
+        "official_error": null,
+        "official_metadata": {
+          "execution time": 4.0531158447265625e-06
+        },
+        "official_per_test": [
+          true,
+          true,
+          true
+        ],
+        "official_reward": 1.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "call-wrong",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            false
+          ],
+          "reward": 0.0,
+          "tests": {
+            "passed": 0,
+            "total": 3
+          },
+          "why": "0 of 3 released tests passed; executor metadata {'output': '3', 'inputs': '[[1, 2, 3]]', 'expected': '6', 'error_code': -2, 'error_message': 'Wrong Answer'}"
+        },
+        "local_per_test": [
+          false
+        ],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error_code": -2,
+          "error_message": "Wrong Answer",
+          "expected": "6",
+          "inputs": "[[1, 2, 3]]",
+          "output": "3"
+        },
+        "official_per_test": [
+          false
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "call-missing-method",
+        "local_evidence": {
+          "measured": true,
+          "metric": "pass@1 (one generation, all released tests)",
+          "per_test": [
+            -4
+          ],
+          "reward": 0.0,
+          "tests": {
+            "passed": 0,
+            "total": 3
+          },
+          "why": "0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: cannot unpack non-iterable NoneType object'}"
+        },
+        "local_per_test": [
+          -4
+        ],
+        "local_reward": 0.0,
+        "official_error": null,
+        "official_metadata": {
+          "error_code": -4,
+          "error_message": "Error during testing: cannot unpack non-iterable NoneType object"
+        },
+        "official_per_test": [
+          -4
+        ],
+        "official_reward": 0.0,
+        "per_test_equal": true,
+        "status": "agree"
+      },
+      {
+        "id": "empty-tests",
+        "local_evidence": {
+          "error": "0 inputs against 0 outputs",
+          "measured": false,
+          "metric": "pass@1"
+        },
+        "local_per_test": null,
+        "local_reward": null,
+        "official_error": null,
+        "official_metadata": {
+          "execution time": 0
+        },
+        "official_per_test": [],
+        "official_reward": 1.0,
+        "per_test_equal": null,
+        "status": "nonnumeric"
+      },
+      {
+        "id": "mismatched-tests",
+        "local_evidence": {
+          "error": "2 inputs against 1 outputs",
+          "measured": false,
+          "metric": "pass@1"
+        },
+        "local_per_test": null,
+        "local_reward": null,
+        "official_error": null,
+        "official_metadata": {
+          "execution time": 0.0028073787689208984
+        },
+        "official_per_test": [
+          true
+        ],
+        "official_reward": 1.0,
+        "per_test_equal": null,
+        "status": "nonnumeric"
+      }
+    ]
+  }
+}

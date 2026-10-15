@@ -1,0 +1,596 @@
+{
+  "cases": [
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-pass/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-pass/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-pass/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-pass/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          true,
+          true,
+          true
+        ],
+        "reward": 1.0,
+        "tests": {
+          "passed": 3,
+          "total": 3
+        },
+        "why": "all 3 released tests passed"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [true, true, true], \"reward\": 1.0, \"tests\": {\"passed\": 3, \"total\": 3}, \"why\": \"all 3 released tests passed\"}\n",
+      "exit_code": 0,
+      "id": "stdio-pass",
+      "reward": 1.0,
+      "reward_raw": "1\n",
+      "solution": "a,b=map(int,input().split()); print(a+b)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 1: all 3 released tests passed\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-wrong-first/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-wrong-first/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-wrong-first/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-wrong-first/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          -2
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "0 of 3 released tests passed; executor metadata {'output': '0\\n', 'inputs': '1 2\\n', 'expected': '3\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 0 != 3'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [-2], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"0 of 3 released tests passed; executor metadata {'output': '0\\\\n', 'inputs': '1 2\\\\n', 'expected': '3\\\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 0 != 3'}\"}\n",
+      "exit_code": 0,
+      "id": "stdio-wrong-first",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "print(0)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 0 of 3 released tests passed; executor metadata {'output': '0\\n', 'inputs': '1 2\\n', 'expected': '3\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 0 != 3'}\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-partial/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-partial/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-partial/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-partial/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          true,
+          -2
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 1,
+          "total": 3
+        },
+        "why": "1 of 3 released tests passed; executor metadata {'output': '3\\n', 'inputs': '3 4\\n', 'expected': '7\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 3 != 7'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [true, -2], \"reward\": 0.0, \"tests\": {\"passed\": 1, \"total\": 3}, \"why\": \"1 of 3 released tests passed; executor metadata {'output': '3\\\\n', 'inputs': '3 4\\\\n', 'expected': '7\\\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 3 != 7'}\"}\n",
+      "exit_code": 0,
+      "id": "stdio-partial",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "print(3)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 1 of 3 released tests passed; executor metadata {'output': '3\\n', 'inputs': '3 4\\n', 'expected': '7\\n', 'error_code': -2, 'error_message': 'Wrong answer at output_line_idx=0: 3 != 7'}\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-timeout/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-timeout/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-timeout/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-timeout/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          -3
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "0 of 3 released tests passed; executor metadata {'error': 'TimeoutException()', 'error_code': -3, 'error_message': 'Time Limit Exceeded', 'inputs': '1 2\\n', 'expected': '3\\n'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [-3], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"0 of 3 released tests passed; executor metadata {'error': 'TimeoutException()', 'error_code': -3, 'error_message': 'Time Limit Exceeded', 'inputs': '1 2\\\\n', 'expected': '3\\\\n'}\"}\n",
+      "exit_code": 0,
+      "id": "stdio-timeout",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "while True: pass\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 0 of 3 released tests passed; executor metadata {'error': 'TimeoutException()', 'error_code': -3, 'error_message': 'Time Limit Exceeded', 'inputs': '1 2\\n', 'expected': '3\\n'}\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-runtime/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-runtime/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-runtime/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-runtime/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          -4
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "0 of 3 released tests passed; executor metadata {'error': \"RuntimeError('authored-runtime-control')\", 'error_code': -4, 'error_message': 'Runtime Error', 'inputs': '1 2\\n', 'expected': '3\\n'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [-4], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"0 of 3 released tests passed; executor metadata {'error': \\\"RuntimeError('authored-runtime-control')\\\", 'error_code': -4, 'error_message': 'Runtime Error', 'inputs': '1 2\\\\n', 'expected': '3\\\\n'}\"}\n",
+      "exit_code": 0,
+      "id": "stdio-runtime",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "raise RuntimeError(\"authored-runtime-control\")\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 0 of 3 released tests passed; executor metadata {'error': \"RuntimeError('authored-runtime-control')\", 'error_code': -4, 'error_message': 'Runtime Error', 'inputs': '1 2\\n', 'expected': '3\\n'}\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-syntax/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-syntax/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-syntax/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-syntax/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          -4
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: invalid syntax (<string>, line 1)'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [-4], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: invalid syntax (<string>, line 1)'}\"}\n",
+      "exit_code": 0,
+      "id": "stdio-syntax",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "this is invalid python @\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: invalid syntax (<string>, line 1)'}\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-empty/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/stdio-empty/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-empty/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/stdio-empty/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "no answer (measured zero): solution.py is missing or empty"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"no answer (measured zero): solution.py is missing or empty\"}\n",
+      "exit_code": 0,
+      "id": "stdio-empty",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: no answer (measured zero): solution.py is missing or empty\n",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1 2\n",
+          "3 4\n",
+          "10 -3\n"
+        ],
+        "outputs": [
+          "3\n",
+          "7\n",
+          "7\n"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/call-pass/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/call-pass/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/call-pass/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/call-pass/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          true,
+          true,
+          true
+        ],
+        "reward": 1.0,
+        "tests": {
+          "passed": 3,
+          "total": 3
+        },
+        "why": "all 3 released tests passed"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [true, true, true], \"reward\": 1.0, \"tests\": {\"passed\": 3, \"total\": 3}, \"why\": \"all 3 released tests passed\"}\n",
+      "exit_code": 0,
+      "id": "call-pass",
+      "reward": 1.0,
+      "reward_raw": "1\n",
+      "solution": "class Solution:\n    def total(self, xs): return sum(xs)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 1: all 3 released tests passed\n",
+      "tests": {
+        "fn_name": "total",
+        "inputs": [
+          "[1,2,3]",
+          "[]",
+          "[-4,6]"
+        ],
+        "outputs": [
+          "6",
+          "0",
+          "2"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/call-wrong/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/call-wrong/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/call-wrong/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/call-wrong/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          false
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "0 of 3 released tests passed; executor metadata {'output': '3', 'inputs': '[[1, 2, 3]]', 'expected': '6', 'error_code': -2, 'error_message': 'Wrong Answer'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [false], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"0 of 3 released tests passed; executor metadata {'output': '3', 'inputs': '[[1, 2, 3]]', 'expected': '6', 'error_code': -2, 'error_message': 'Wrong Answer'}\"}\n",
+      "exit_code": 0,
+      "id": "call-wrong",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "class Solution:\n    def total(self, xs): return len(xs)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 0 of 3 released tests passed; executor metadata {'output': '3', 'inputs': '[[1, 2, 3]]', 'expected': '6', 'error_code': -2, 'error_message': 'Wrong Answer'}\n",
+      "tests": {
+        "fn_name": "total",
+        "inputs": [
+          "[1,2,3]",
+          "[]",
+          "[-4,6]"
+        ],
+        "outputs": [
+          "6",
+          "0",
+          "2"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/call-missing-method/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/call-missing-method/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/call-missing-method/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/call-missing-method/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "measured": true,
+        "metric": "pass@1 (one generation, all released tests)",
+        "per_test": [
+          -4
+        ],
+        "reward": 0.0,
+        "tests": {
+          "passed": 0,
+          "total": 3
+        },
+        "why": "0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: cannot unpack non-iterable NoneType object'}"
+      },
+      "evidence_raw": "{\"measured\": true, \"metric\": \"pass@1 (one generation, all released tests)\", \"per_test\": [-4], \"reward\": 0.0, \"tests\": {\"passed\": 0, \"total\": 3}, \"why\": \"0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: cannot unpack non-iterable NoneType object'}\"}\n",
+      "exit_code": 0,
+      "id": "call-missing-method",
+      "reward": 0.0,
+      "reward_raw": "0\n",
+      "solution": "class Solution:\n    def other(self, xs): return sum(xs)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "reward 0: 0 of 3 released tests passed; executor metadata {'error_code': -4, 'error_message': 'Error during testing: cannot unpack non-iterable NoneType object'}\n",
+      "tests": {
+        "fn_name": "total",
+        "inputs": [
+          "[1,2,3]",
+          "[]",
+          "[-4,6]"
+        ],
+        "outputs": [
+          "6",
+          "0",
+          "2"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/empty-tests/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/empty-tests/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/empty-tests/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/empty-tests/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "error": "0 inputs against 0 outputs",
+        "measured": false,
+        "metric": "pass@1"
+      },
+      "evidence_raw": "{\"error\": \"0 inputs against 0 outputs\", \"measured\": false, \"metric\": \"pass@1\"}\n",
+      "exit_code": 3,
+      "id": "empty-tests",
+      "reward_raw": null,
+      "solution": "print(0)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\ncheck cannot measure: 0 inputs against 0 outputs\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "",
+      "tests": {
+        "fn_name": null,
+        "inputs": [],
+        "outputs": []
+      }
+    },
+    {
+      "argv": [
+        "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/offline_exec.py",
+        "/tmp/hg-offscorer3-codechess/data/datasets/livecodebench/verify/check.py",
+        "--tests",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/mismatched-tests/tests.json",
+        "--solution",
+        "/tmp/hg-offscorer3-codechess/tests/fixtures/hg_woffscorer3/code_chess/inputs/livecodebench/mismatched-tests/solution.py",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/mismatched-tests/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-lcb-local-hn0udy61/mismatched-tests/evidence.json"
+      ],
+      "cwd": "/tmp/hg-woffscorer3-lcb-local-hn0udy61",
+      "evidence": {
+        "error": "2 inputs against 1 outputs",
+        "measured": false,
+        "metric": "pass@1"
+      },
+      "evidence_raw": "{\"error\": \"2 inputs against 1 outputs\", \"measured\": false, \"metric\": \"pass@1\"}\n",
+      "exit_code": 3,
+      "id": "mismatched-tests",
+      "reward_raw": null,
+      "solution": "print(0)\n",
+      "stderr": "{\"cpu_limit_seconds\": 120, \"denied_syscalls\": [\"socket\", \"socketpair\", \"connect\", \"bind\", \"listen\", \"accept\", \"accept4\", \"sendto\", \"recvfrom\", \"sendmsg\", \"recvmsg\", \"sendmmsg\", \"recvmmsg\", \"shutdown\", \"getsockname\", \"getpeername\", \"setsockopt\", \"getsockopt\", \"io_uring_setup\"], \"guard\": \"kernel seccomp EPERM; no inherited socket fd > 2\", \"interpreter\": \"/mnt/8t/xubuqiang/anaconda3/bin/python3.12\", \"interpreter_sha256\": \"0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb\", \"libseccomp\": \"/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3\", \"libseccomp_sha256\": \"d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587\", \"machine\": \"x86_64\", \"nofile_limit\": 256, \"production_runtime_observation\": false, \"python\": \"3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]\", \"socket_probes\": {\"1\": {\"errno\": 1, \"result\": \"denied\"}, \"10\": {\"errno\": 1, \"result\": \"denied\"}, \"2\": {\"errno\": 1, \"result\": \"denied\"}}}\ncheck cannot measure: 2 inputs against 1 outputs\n{\"blocked_external_dataset_reads\": []}\n",
+      "stdout": "",
+      "tests": {
+        "fn_name": null,
+        "inputs": [
+          "1\n",
+          "2\n"
+        ],
+        "outputs": [
+          "0\n"
+        ]
+      }
+    }
+  ],
+  "cleanup": {
+    "scratch_removed": true
+  },
+  "dataset": "livecodebench",
+  "mode": "local",
+  "runtime": {
+    "chess": {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/chess/__init__.py",
+      "sha256": "1fde6a8e932508d14b31f6a584497b49c2969fc3c7cdc675347f819f0d667a5b",
+      "version": "1.11.2"
+    },
+    "numpy": {
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__init__.py",
+      "sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+      "version": "1.26.4"
+    }
+  },
+  "scratch_root": "/tmp/hg-woffscorer3-lcb-local-hn0udy61"
+}
