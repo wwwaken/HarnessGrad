@@ -1,0 +1,514 @@
+w-trivia2 validation: source/metadata-only review
+All commands below ran in /mnt/20t/xubuqiang/hg-wt/w-trivia2.
+TMPDIR=/mnt/20t/xubuqiang/hg-work/trivia2/tmp for scratch-producing commands.
+No paid/model/GPU/scorer/benchmark/loader execution or dataset payload access.
+Acquisition responses are exact received bytes; JSON views are parsed copies.
+Initial acquisition stdout below is transcribed from observed per-request output; later stdout is retained capture.
+Only the new worker directory and named report/proposal/validation files are staged. No merge/push.
+
+COMMAND: python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-1.json
+OBSERVED OUTPUT:
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-revision", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-tree", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-refs", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-history", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-pr8", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-card", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-dataset-info", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "viewer-info", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "viewer-status", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 101] Network is unreachable>", "name": "hub-jobs", "sha256": null, "status": null}
+{"bytes": 2, "error": null, "name": "project-releases", "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945", "status": 200}
+{"bytes": 2, "error": null, "name": "project-tags", "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945", "status": 200}
+{"bytes": 36, "error": null, "name": "project-actions", "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915", "status": 200}
+{"bytes": 32, "error": null, "name": "project-artifacts", "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c", "status": 200}
+{"bytes": 3857, "error": null, "name": "project-tree", "sha256": "98247b28afec276da6f82a24f5715b3b91a95d0ff3e38d2627d933a4e32902e3", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>", "name": "project-readme", "sha256": null, "status": null}
+{"bytes": 692, "error": null, "name": "paper-record", "sha256": "dcaeb5cc3cefccd15df0aa29c4200e8faf692ebe43b7ca87dfcade4596cf37bc", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-2.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-2.stdout
+OBSERVED OUTPUT:
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-revision-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-tree-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-refs-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-history-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-pr8-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-card-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-dataset-info-proxy", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "viewer-info-proxy", "sha256": null, "status": null}
+{"bytes": 9, "error": null, "name": "viewer-status-proxy", "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5", "status": 404}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-jobs-proxy", "sha256": null, "status": null}
+{"bytes": 1691, "error": null, "name": "project-readme-proxy", "sha256": "27638c351153d1432b1aaa6188975d19a6e9d5c2522de6255b1535448724e908", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-3.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-3.stdout
+OBSERVED OUTPUT:
+{"bytes": 26668, "error": null, "name": "hub-card-proxy-retry", "sha256": "c177aa2d70c4fff3b3427317801c32803805a2c9185ffa081715e93028bf5a3c", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-dataset-info-proxy-retry", "sha256": null, "status": null}
+{"bytes": 7888, "error": null, "name": "hub-history-proxy-retry", "sha256": "0f1c890e59a5e2e69f8c46efe68eeefdf766a081a067bbd6339cf1b772c00396", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-jobs-proxy-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-pr8-proxy-retry", "sha256": null, "status": null}
+{"bytes": 343, "error": null, "name": "hub-refs-proxy-retry", "sha256": "aa641930a11ce65276eb77bbc0f4b38a68c03639a08080f9278f9cb54ccc9243", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-revision-proxy-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-tree-proxy-retry", "sha256": null, "status": null}
+{"bytes": 13017, "error": null, "name": "viewer-info-proxy-retry", "sha256": "7f99cca77133b93d460925ab1561f7ee9a9492f1448dbf5688916d12d9b8012d", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-4.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-4.stdout
+OBSERVED OUTPUT:
+{"bytes": 25259, "error": null, "name": "hub-revision-final", "sha256": "cd0d37fe4a3d59dcbe603d70719aaa5eeeb3d177321db92a8e365522da7ae0ae", "status": 200}
+{"bytes": 46138, "error": null, "name": "hub-tree-final", "sha256": "7e64db4f6e819643103cbb681778842a1aad623777d11cd4ab9dd18d3a7228c8", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-pr8-final", "sha256": null, "status": null}
+{"bytes": 15, "error": null, "name": "hub-dataset-info-final", "sha256": "f36668ddf22403a332f978057d527cf285b01468bc3431b04094a7bafa6aba59", "status": 404}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-revision", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-tree", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-history", "sha256": null, "status": null}
+{"bytes": 41, "error": null, "name": "hub-jobs-final", "sha256": "65842e3d84e6b7f62a470c85204e80b953bb8f944e9b69813130a9d7f3eaa1d8", "status": 401}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "project-converter-history", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "project-aggregation-history", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "project-converter-blob", "sha256": null, "status": null}
+{"bytes": 3138, "error": null, "name": "project-readme-current", "sha256": "3589ab7d8117b27362c6446a6f882bd6688a831dbf748a0b70ed19b8bd7eb358", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-5-hub.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-5-hub.stdout
+OBSERVED OUTPUT:
+{"bytes": 13106, "error": null, "name": "hub-pr8-success", "sha256": "7254bad8c17b9570d1556b16c8de84d8a1cee1b2c0a6d446f22ca5e05a35d8a8", "status": 200}
+{"bytes": 6771, "error": null, "name": "hub-generated-revision-retry", "sha256": "e7c76a168621a9adbb7f3e090ab8f91e1383a655c0515f692c91c2c87d2ea02d", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-tree-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-history-retry", "sha256": null, "status": null}
+{"bytes": 9773, "error": null, "name": "hub-conversion-history", "sha256": "c577899974387c8aa855a2dfd5337471cd2954818b2a28092dffc0904f3150e9", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-predecessor-tree", "sha256": null, "status": null}
+{"bytes": 15, "error": null, "name": "hub-predecessor-info", "sha256": "f36668ddf22403a332f978057d527cf285b01468bc3431b04094a7bafa6aba59", "status": 404}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-5-github.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-5-github.stdout
+OBSERVED OUTPUT:
+{"bytes": 6830, "error": null, "name": "project-converter-history-direct", "sha256": "880a78e8528b9a350672b16ba66450a3ea35d17ee782d8a71fd77a3e9bde7c65", "status": 200}
+{"bytes": 10233, "error": null, "name": "project-aggregation-history-direct", "sha256": "ddae79897b7cbb295d028336a360398a3d2844147690ae43f08b4da715c606ec", "status": 200}
+{"bytes": 5323, "error": null, "name": "project-converter-blob-direct", "sha256": "d5d2780c82be10a1001d2c37c14bfb91bd7076068885e3f74e7567710fda537f", "status": 200}
+{"bytes": 3857, "error": null, "name": "project-current-tree", "sha256": "98247b28afec276da6f82a24f5715b3b91a95d0ff3e38d2627d933a4e32902e3", "status": 200}
+{"bytes": 2, "error": null, "name": "project-tags-ref", "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-6.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-6.stdout
+OBSERVED OUTPUT:
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-tree-final", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-generated-history-final", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-predecessor-tree-final", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "hub-predecessor-source", "sha256": null, "status": null}
+{"bytes": 62, "error": null, "name": "hub-export-path-history", "sha256": "4f1d517745cabbba311752b8d9f602fe20433024713238869e5bd7ee092a2292", "status": 404}
+{"bytes": 62, "error": null, "name": "hub-loader-path-history", "sha256": "4f1d517745cabbba311752b8d9f602fe20433024713238869e5bd7ee092a2292", "status": 404}
+{"bytes": 40839, "error": null, "name": "paper-artifact-page", "sha256": "2cdf216bddb3f221583f7177f184f924d4815c0c8b9d34665e62b5ff59750525", "status": 200}
+{"bytes": 199, "error": null, "name": "project-data-index", "sha256": "5b13fb5957b84ef7bb9d0b6cd509c947ff6a37d67efdac2b896ddd3b908aad10", "status": 403}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-7.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-7.stdout
+OBSERVED OUTPUT:
+{"bytes": 47253, "error": null, "name": "generated-tree-attempt4", "sha256": "057690348708d4be9baf969769dc445403342384e3ae588e5b4c77a14001867d", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "generated-history-attempt4", "sha256": null, "status": null}
+{"bytes": 1012, "error": null, "name": "predecessor-tree-attempt3", "sha256": "96ce6e4673336fbfc5a5e48f8096d49f667d089e417cf921d07155520c4131ba", "status": 200}
+{"bytes": 13317, "error": null, "name": "predecessor-source-attempt2", "sha256": "b80c2307a37cfb261b66b7c73157de5495ae18add3f91f5f7d62f86620edc137", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-8-hub.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-8-hub.stdout
+OBSERVED OUTPUT:
+{"bytes": 1212, "error": null, "name": "generated-history-attempt5", "sha256": "602c93e638364e6fd88efae9a5da414c7ec69c3d1b3b34d7545bfcbab3db892e", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "initial-conversion-tree", "sha256": null, "status": null}
+{"bytes": 77, "error": null, "name": "viewer-valid", "sha256": "dc5cd5ccf17c2b437506a03db20f91b1f96c1d11acb46d8c21fb841b734a4aa5", "status": 200}
+{"bytes": 9, "error": null, "name": "viewer-pending", "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5", "status": 404}
+{"bytes": 1905, "error": null, "name": "viewer-splits", "sha256": "3617c323ad957bcca334a8fef453a94f7799920cb3ccaf000459a0b6bffb1c30", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-8-github.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-8-github.stdout
+OBSERVED OUTPUT:
+{"bytes": 6830, "error": null, "name": "project-key-aggregation-history", "sha256": "880a78e8528b9a350672b16ba66450a3ea35d17ee782d8a71fd77a3e9bde7c65", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-9-history-roots.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-9-history-roots.stdout
+OBSERVED OUTPUT:
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-0f7faf33a3908546c6fd5b73a660e0f8ff173c2f", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-d63a76f01c8226449f76b437dd512cf8b17adf5d", "sha256": null, "status": null}
+{"bytes": 405, "error": null, "name": "history-root-581155e8f913b60746006263beb49d4194dfe171", "sha256": "bc4a4156a89a510766c80e2e0a987043ea255c8a0f4b3cd3b419375c0b401d2a", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-88ce2dca1ab351ba11fe37dbc7a0a3bfde74fc09", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-35a534c59de67132b80dde63f37f9aed75aeef93", "sha256": null, "status": null}
+{"bytes": 405, "error": null, "name": "history-root-461a4265edc59265c7e397fbd3ca5aea6025ae2d", "sha256": "0e35236daae61869735f9cfcca959f365a7a4dd51b63b99cc30cd13bbaafa681", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-826e3a12bac7b0bc83ff0c9288658b71d3146e3f", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-d2a6a678b772b3d9a6d654bc6328ed674e2b6201", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-1da0cdd05b0e1fb24e72da5cb88318ab939a7895", "sha256": null, "status": null}
+{"bytes": 499, "error": null, "name": "history-root-07f3581e1c563c991c1222d83728fd90978cf96b", "sha256": "dd30351f9f487a75d44bb6eae32efad0062223eb947a4de32fd5ea7242e83481", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-5153029519c6f25035b24509ad0a388c057b2fca", "sha256": null, "status": null}
+{"bytes": 499, "error": null, "name": "history-root-996764ab35a7d49099df7ed1d90ff41c088d8b58", "sha256": "9f1cc3e3f394da80ebfa44a311b3e7a54ac92a571169dc8713e9a215e0a51f03", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-6e3476857693ccbcb40a7652d7f6822a0c0ac64f", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-fbee173b03cd6ab6ff763fd6c6456ad37b5d21d3", "sha256": null, "status": null}
+{"bytes": 498, "error": null, "name": "history-root-bb0a7772d06ed233d06508e4e8ebe126f7c39418", "sha256": "abbd78d53737ae51d7d33a81efdb6a9933f28c323334a2f3469080fd8f0f22be", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-c4e72ced5b8bd3d3a91ce5d24eeabd7b647bc0f8", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-667f81ce28168a8b41ce001b7862d13c4077c953", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-8dc2b82074533f20e92858f3577f10ff192f48cc", "sha256": null, "status": null}
+{"bytes": 1104, "error": null, "name": "history-root-f59b4da4d92cf18e0c8a9211c9d7376eaadccb1f", "sha256": "27a4a9881d318beafa4c178c9887fe4034b1a8d287755390e81296d2a3425b66", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-a0a1708169dbeefee25332a5c8eaebbc4d8726da", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-8d35a53732b44b4b615c00855fe40f965b8f13e9", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-2cc307f5321796c0ce8d4bab1b0c12b478844be9", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-a2820de3fe2f7e9159ddd2703649692a5f7af6dd", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-640d3785c8080b8c2cef6ddc1e083b4c3596add0", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-87a3c8085e004c925fba5a31831e5e7ffc2dda58", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-55b099b979da6a1857779c8f1df87105879a191a", "sha256": null, "status": null}
+{"bytes": 584, "error": null, "name": "history-root-279d93a6e999c93dc992e1a705389e350ba7f706", "sha256": "f85c7eada44f91df44201b99a870d2dfbdd23a91aa78b6c3cb78bc8dc11d88e5", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-6baa09772e6ddf7e7b5d629ea64f1a8c1df21c3c", "sha256": null, "status": null}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: HTTPS_PROXY=http://172.17.0.1:17890 HG_TRIVIA2_FETCH_WORKERS=1 python3 tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/plan-10-history-retry.json > /mnt/20t/xubuqiang/hg-work/trivia2/acquire-10-history-retry.stdout
+OBSERVED OUTPUT:
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-0f7faf33a3908546c6fd5b73a660e0f8ff173c2f-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-d63a76f01c8226449f76b437dd512cf8b17adf5d-retry", "sha256": null, "status": null}
+{"bytes": 405, "error": null, "name": "history-root-88ce2dca1ab351ba11fe37dbc7a0a3bfde74fc09-retry", "sha256": "ac133ebcf8990561aacc2e3a3128ac76c9b47fd9637e8982adad6ac70f71a05e", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-35a534c59de67132b80dde63f37f9aed75aeef93-retry", "sha256": null, "status": null}
+{"bytes": 499, "error": null, "name": "history-root-826e3a12bac7b0bc83ff0c9288658b71d3146e3f-retry", "sha256": "cd5a79952cd3f1da92006d14f4656dc11b34a6947bf12f1c2743e9a2a7a141cf", "status": 200}
+{"bytes": 499, "error": null, "name": "history-root-d2a6a678b772b3d9a6d654bc6328ed674e2b6201-retry", "sha256": "c856682ae3d4bfc184fc2ca6f17a2ab6ea84e429ec93deca8491d674e41b0560", "status": 200}
+{"bytes": 499, "error": null, "name": "history-root-1da0cdd05b0e1fb24e72da5cb88318ab939a7895-retry", "sha256": "b6148b5915a20e071d7b2086318549f3bdec858549b6607dc061b9fc67aa44aa", "status": 200}
+{"bytes": 499, "error": null, "name": "history-root-5153029519c6f25035b24509ad0a388c057b2fca-retry", "sha256": "3db7c908cb0c72e2714a2fc3861b4a0f1abffa890ab50cb9b152c4b7d55173e2", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-6e3476857693ccbcb40a7652d7f6822a0c0ac64f-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-fbee173b03cd6ab6ff763fd6c6456ad37b5d21d3-retry", "sha256": null, "status": null}
+{"bytes": 499, "error": null, "name": "history-root-c4e72ced5b8bd3d3a91ce5d24eeabd7b647bc0f8-retry", "sha256": "bc2fa4f2c76355f2234339ebe5b234a6785e46af7c8e2d52bb0ec1ae02888658", "status": 200}
+{"bytes": 402, "error": null, "name": "history-root-667f81ce28168a8b41ce001b7862d13c4077c953-retry", "sha256": "8adac3197c345f0bf9b10c46187342ce8aef7eb4bfe17c27d6665d759afe921a", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-8dc2b82074533f20e92858f3577f10ff192f48cc-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-a0a1708169dbeefee25332a5c8eaebbc4d8726da-retry", "sha256": null, "status": null}
+{"bytes": 1093, "error": null, "name": "history-root-8d35a53732b44b4b615c00855fe40f965b8f13e9-retry", "sha256": "a1f9525001f6f7c36941fbf2434e39699f28215348e18e071fe5af1dd26f7fc0", "status": 200}
+{"bytes": 992, "error": null, "name": "history-root-2cc307f5321796c0ce8d4bab1b0c12b478844be9-retry", "sha256": "afab53af482651ba904be4365bb677da853f4f05d3aa315ead9a3b012dce6f68", "status": 200}
+{"bytes": 887, "error": null, "name": "history-root-a2820de3fe2f7e9159ddd2703649692a5f7af6dd-retry", "sha256": "480791610c5284969df6ec5a2e33014414c1e5819c5bbab1ea063e38719ece47", "status": 200}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-640d3785c8080b8c2cef6ddc1e083b4c3596add0-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-87a3c8085e004c925fba5a31831e5e7ffc2dda58-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-55b099b979da6a1857779c8f1df87105879a191a-retry", "sha256": null, "status": null}
+{"bytes": null, "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>", "name": "history-root-6baa09772e6ddf7e7b5d629ea64f1a8c1df21c3c-retry", "sha256": null, "status": null}
+{"bytes": 11863, "error": null, "name": "initial-conversion-tree-retry", "sha256": "dfe035a0afdb8d22b2ffed999eb9dc4aecfcc22a5df048f1a881765a61065005", "status": 200}
+EXIT: 0 (failed HTTP/transport requests are retained records, not hidden exceptions)
+
+COMMAND: python3 tests/fixtures/hg_trivia2/build_evidence.py
+OBSERVED OUTPUT:
+{"indexed_history_root_attempts": 49, "indexed_requests": 129, "paper_link_count": 46}
+EXIT: 0
+
+COMMAND: python3 tests/fixtures/hg_trivia2/analyze.py --check
+OBSERVED OUTPUT:
+{"dataset_info_configs": 12, "inventory_matches": true, "retained_transport_failures": 73, "routed_configs": 8, "rows_accessed": 0, "tree_entries": 150, "verified_response_bodies": 56}
+EXIT: 0
+
+COMMAND: python3 tests/fixtures/hg_trivia2/check_review.py
+OBSERVED OUTPUT:
+{"decoded_converter_git_blob_match": true, "fixture_files_under_1MB": true, "observed_source_identities_verified": 5, "original_scorer_and_helper_pin_match": true, "proposal_keys_valid": true, "review_file_line_citations_checked": 126, "withdrawal_entry": null}
+EXIT: 0
+
+COMMAND: python3 tools/check_dataset_blockers.py
+OBSERVED OUTPUT:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT: 0
+
+COMMAND: git branch --show-current
+OBSERVED OUTPUT:
+wg-trivia2
+EXIT: 0
+
+COMMAND: git check-ignore -v --no-index tests/fixtures/hg_trivia2/acquire.py
+OBSERVED OUTPUT:
+.gitignore:379:tests/fixtures/hg_*/	tests/fixtures/hg_trivia2/acquire.py
+EXIT: 0
+
+OTHER MATERIAL OBSERVATIONS:
+COMMAND: python3 tests/fixtures/hg_trivia2/analyze.py
+OBSERVED OUTPUT:
+{"dataset_info_configs": 12, "inventory_matches": true, "retained_transport_failures": 73, "routed_configs": 8, "rows_accessed": 0, "tree_entries": 150, "verified_response_bodies": 56}
+EXIT: 0
+
+COMMAND: git add -f tests/fixtures/hg_trivia2
+OBSERVED OUTPUT: <empty stdout>
+EXIT: 0
+
+COMMAND: git add registry/w-trivia2-review.md registry/proposals/w-trivia2.json
+OBSERVED OUTPUT: <empty stdout>
+EXIT: 0
+
+NOTE: -f is necessary because .gitignore:379 ignores tests/fixtures/hg_*/. No ignore rule was edited.
+NOTE: urllib probe of the existing proxy observed verified HTTPS HTTP 200; no server/proxy was started or stopped.
+NOTE: source files were inspected with nl -ba/sed and metadata with Python JSON parsing; authoritative URLs/status/digests/excerpts are in the response catalog.
+
+COMMAND: git diff --cached --check -- tests/fixtures/hg_trivia2
+OBSERVED OUTPUT (JSON string encoding, decode for exact output):
+"tests/fixtures/hg_trivia2/decoded/project-current-README.md:5: trailing whitespace.\n+[TriviaQA: A Large Scale Distantly Supervised Challenge Dataset for Reading Comprehension][triviaqa-arxiv] \ntests/fixtures/hg_trivia2/responses/paper-record.body:18: new blank line at EOF.\ntests/fixtures/hg_trivia2/responses/project-readme-proxy.body:5: trailing whitespace.\n+[TriviaQA: A Large Scale Distantly Supervised Challenge Dataset for Reading Comprehension][triviaqa-arxiv] \n"
+EXIT: 2
+All three diagnostics refer to byte-preserved upstream README/BibTeX evidence (including decoded README). They are intentionally not rewritten.
+
+COMMAND: git diff --cached --check -- registry/w-trivia2-review.md registry/proposals/w-trivia2.json tests/fixtures/hg_trivia2/analyze.py tests/fixtures/hg_trivia2/build_evidence.py tests/fixtures/hg_trivia2/check_review.py tests/fixtures/hg_trivia2/acquire.py tests/fixtures/hg_trivia2/response-catalog.md tests/fixtures/hg_trivia2/inventory.json
+OBSERVED OUTPUT: <empty stdout>
+EXIT: 0
+
+NOT VERIFIED / NOT EXECUTED:
+- On-disk Parquet schemas, footers, rows, row IDs, questions, aliases, answers, gold or member lists.
+- Original HumanAnswers incidence, alias redundancy/containment, preservation or actual converter execution.
+- Actual Domain/VerifiedEval/source membership, unique question/document keys, row-key duplicates or writer behavior.
+- Numeric official denominator, run task/trial aggregation, missing prediction incidence, scorer execution or official leaderboard comparability.
+- Authenticated/private/deleted/expired Hub or GitHub build/job artifacts; supported historical-build/path-history APIs beyond the named attempted routes.
+- Root snapshots still unavailable in the named attempts, original project data index contents (403), project homepage body, arXiv/paper PDF/source, or uninspected maintainer artifacts.
+- Source/license/runtime/writer/consumed-input execution binding; no universal unobtainability claim.
+- First-five bound packet/payload was not opened, replaced, re-derived, run, or used as metadata provenance.
+- No registry proposal was applied, no registry/journal/frozen receipts changed, no production authorization.
+Registry checker cannot be affected semantically by these standalone additions; registry/dataset-blockers.json is unchanged.
+NO TEST SUITE RUN: this is a documentation/evidence-only task; meaningful verification is byte/schema/citation/proposal integrity, without scorer execution.
+
+FILES TO COMMIT (exact observed byte sizes, every file < 1000000 bytes):
+    5823 registry/proposals/w-trivia2.json
+   29465 registry/w-trivia2-review.md
+   55132 registry/w-trivia2-validation.txt
+    3057 tests/fixtures/hg_trivia2/acquire.py
+    7770 tests/fixtures/hg_trivia2/analyze.py
+    5369 tests/fixtures/hg_trivia2/build_evidence.py
+    2667 tests/fixtures/hg_trivia2/check_review.py
+    3646 tests/fixtures/hg_trivia2/decoded/project-converter.py
+    1691 tests/fixtures/hg_trivia2/decoded/project-current-README.md
+   28997 tests/fixtures/hg_trivia2/history-root-inventory.json
+   19837 tests/fixtures/hg_trivia2/inventory.json
+    1616 tests/fixtures/hg_trivia2/paper-link-inventory.json
+    2320 tests/fixtures/hg_trivia2/plan-1.json
+    4988 tests/fixtures/hg_trivia2/plan-10-history-retry.json
+    1616 tests/fixtures/hg_trivia2/plan-2.json
+    1369 tests/fixtures/hg_trivia2/plan-3.json
+    1915 tests/fixtures/hg_trivia2/plan-4.json
+     811 tests/fixtures/hg_trivia2/plan-5-github.json
+    1197 tests/fixtures/hg_trivia2/plan-5-hub.json
+    1288 tests/fixtures/hg_trivia2/plan-6.json
+     735 tests/fixtures/hg_trivia2/plan-7.json
+     175 tests/fixtures/hg_trivia2/plan-8-github.json
+     760 tests/fixtures/hg_trivia2/plan-8-hub.json
+    6219 tests/fixtures/hg_trivia2/plan-9-history-roots.json
+   54250 tests/fixtures/hg_trivia2/response-catalog.md
+     500 tests/fixtures/hg_trivia2/responses/generated-history-attempt4.receipt.json
+    1212 tests/fixtures/hg_trivia2/responses/generated-history-attempt5.body
+    2357 tests/fixtures/hg_trivia2/responses/generated-history-attempt5.receipt.json
+   47253 tests/fixtures/hg_trivia2/responses/generated-tree-attempt4.body
+    2350 tests/fixtures/hg_trivia2/responses/generated-tree-attempt4.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-07f3581e1c563c991c1222d83728fd90978cf96b.body
+    2438 tests/fixtures/hg_trivia2/responses/history-root-07f3581e1c563c991c1222d83728fd90978cf96b.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-0f7faf33a3908546c6fd5b73a660e0f8ff173c2f-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-0f7faf33a3908546c6fd5b73a660e0f8ff173c2f.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-1da0cdd05b0e1fb24e72da5cb88318ab939a7895-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-1da0cdd05b0e1fb24e72da5cb88318ab939a7895-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-1da0cdd05b0e1fb24e72da5cb88318ab939a7895.receipt.json
+     584 tests/fixtures/hg_trivia2/responses/history-root-279d93a6e999c93dc992e1a705389e350ba7f706.body
+    2438 tests/fixtures/hg_trivia2/responses/history-root-279d93a6e999c93dc992e1a705389e350ba7f706.receipt.json
+     992 tests/fixtures/hg_trivia2/responses/history-root-2cc307f5321796c0ce8d4bab1b0c12b478844be9-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-2cc307f5321796c0ce8d4bab1b0c12b478844be9-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-2cc307f5321796c0ce8d4bab1b0c12b478844be9.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-35a534c59de67132b80dde63f37f9aed75aeef93-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-35a534c59de67132b80dde63f37f9aed75aeef93.receipt.json
+     405 tests/fixtures/hg_trivia2/responses/history-root-461a4265edc59265c7e397fbd3ca5aea6025ae2d.body
+    2438 tests/fixtures/hg_trivia2/responses/history-root-461a4265edc59265c7e397fbd3ca5aea6025ae2d.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-5153029519c6f25035b24509ad0a388c057b2fca-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-5153029519c6f25035b24509ad0a388c057b2fca-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-5153029519c6f25035b24509ad0a388c057b2fca.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-55b099b979da6a1857779c8f1df87105879a191a-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-55b099b979da6a1857779c8f1df87105879a191a.receipt.json
+     405 tests/fixtures/hg_trivia2/responses/history-root-581155e8f913b60746006263beb49d4194dfe171.body
+    2438 tests/fixtures/hg_trivia2/responses/history-root-581155e8f913b60746006263beb49d4194dfe171.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-640d3785c8080b8c2cef6ddc1e083b4c3596add0-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-640d3785c8080b8c2cef6ddc1e083b4c3596add0.receipt.json
+     402 tests/fixtures/hg_trivia2/responses/history-root-667f81ce28168a8b41ce001b7862d13c4077c953-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-667f81ce28168a8b41ce001b7862d13c4077c953-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-667f81ce28168a8b41ce001b7862d13c4077c953.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-6baa09772e6ddf7e7b5d629ea64f1a8c1df21c3c-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-6baa09772e6ddf7e7b5d629ea64f1a8c1df21c3c.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-6e3476857693ccbcb40a7652d7f6822a0c0ac64f-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-6e3476857693ccbcb40a7652d7f6822a0c0ac64f.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-826e3a12bac7b0bc83ff0c9288658b71d3146e3f-retry.body
+    2454 tests/fixtures/hg_trivia2/responses/history-root-826e3a12bac7b0bc83ff0c9288658b71d3146e3f-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-826e3a12bac7b0bc83ff0c9288658b71d3146e3f.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-87a3c8085e004c925fba5a31831e5e7ffc2dda58-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-87a3c8085e004c925fba5a31831e5e7ffc2dda58.receipt.json
+     405 tests/fixtures/hg_trivia2/responses/history-root-88ce2dca1ab351ba11fe37dbc7a0a3bfde74fc09-retry.body
+    2455 tests/fixtures/hg_trivia2/responses/history-root-88ce2dca1ab351ba11fe37dbc7a0a3bfde74fc09-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-88ce2dca1ab351ba11fe37dbc7a0a3bfde74fc09.receipt.json
+    1093 tests/fixtures/hg_trivia2/responses/history-root-8d35a53732b44b4b615c00855fe40f965b8f13e9-retry.body
+    2458 tests/fixtures/hg_trivia2/responses/history-root-8d35a53732b44b4b615c00855fe40f965b8f13e9-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-8d35a53732b44b4b615c00855fe40f965b8f13e9.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-8dc2b82074533f20e92858f3577f10ff192f48cc-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-8dc2b82074533f20e92858f3577f10ff192f48cc.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-996764ab35a7d49099df7ed1d90ff41c088d8b58.body
+    2438 tests/fixtures/hg_trivia2/responses/history-root-996764ab35a7d49099df7ed1d90ff41c088d8b58.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-a0a1708169dbeefee25332a5c8eaebbc4d8726da-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-a0a1708169dbeefee25332a5c8eaebbc4d8726da.receipt.json
+     887 tests/fixtures/hg_trivia2/responses/history-root-a2820de3fe2f7e9159ddd2703649692a5f7af6dd-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-a2820de3fe2f7e9159ddd2703649692a5f7af6dd-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-a2820de3fe2f7e9159ddd2703649692a5f7af6dd.receipt.json
+     498 tests/fixtures/hg_trivia2/responses/history-root-bb0a7772d06ed233d06508e4e8ebe126f7c39418.body
+    2438 tests/fixtures/hg_trivia2/responses/history-root-bb0a7772d06ed233d06508e4e8ebe126f7c39418.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-c4e72ced5b8bd3d3a91ce5d24eeabd7b647bc0f8-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-c4e72ced5b8bd3d3a91ce5d24eeabd7b647bc0f8-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-c4e72ced5b8bd3d3a91ce5d24eeabd7b647bc0f8.receipt.json
+     499 tests/fixtures/hg_trivia2/responses/history-root-d2a6a678b772b3d9a6d654bc6328ed674e2b6201-retry.body
+    2456 tests/fixtures/hg_trivia2/responses/history-root-d2a6a678b772b3d9a6d654bc6328ed674e2b6201-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-d2a6a678b772b3d9a6d654bc6328ed674e2b6201.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-d63a76f01c8226449f76b437dd512cf8b17adf5d-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-d63a76f01c8226449f76b437dd512cf8b17adf5d.receipt.json
+    1104 tests/fixtures/hg_trivia2/responses/history-root-f59b4da4d92cf18e0c8a9211c9d7376eaadccb1f.body
+    2440 tests/fixtures/hg_trivia2/responses/history-root-f59b4da4d92cf18e0c8a9211c9d7376eaadccb1f.receipt.json
+     557 tests/fixtures/hg_trivia2/responses/history-root-fbee173b03cd6ab6ff763fd6c6456ad37b5d21d3-retry.receipt.json
+     551 tests/fixtures/hg_trivia2/responses/history-root-fbee173b03cd6ab6ff763fd6c6456ad37b5d21d3.receipt.json
+   26668 tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body
+    2551 tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.receipt.json
+     446 tests/fixtures/hg_trivia2/responses/hub-card-proxy.receipt.json
+     387 tests/fixtures/hg_trivia2/responses/hub-card.receipt.json
+    9773 tests/fixtures/hg_trivia2/responses/hub-conversion-history.body
+    2303 tests/fixtures/hg_trivia2/responses/hub-conversion-history.receipt.json
+      15 tests/fixtures/hg_trivia2/responses/hub-dataset-info-final.body
+    2352 tests/fixtures/hg_trivia2/responses/hub-dataset-info-final.receipt.json
+     469 tests/fixtures/hg_trivia2/responses/hub-dataset-info-proxy-retry.receipt.json
+     463 tests/fixtures/hg_trivia2/responses/hub-dataset-info-proxy.receipt.json
+     404 tests/fixtures/hg_trivia2/responses/hub-dataset-info.receipt.json
+      62 tests/fixtures/hg_trivia2/responses/hub-export-path-history.body
+    2376 tests/fixtures/hg_trivia2/responses/hub-export-path-history.receipt.json
+     457 tests/fixtures/hg_trivia2/responses/hub-generated-history-final.receipt.json
+     457 tests/fixtures/hg_trivia2/responses/hub-generated-history-retry.receipt.json
+     451 tests/fixtures/hg_trivia2/responses/hub-generated-history.receipt.json
+    6771 tests/fixtures/hg_trivia2/responses/hub-generated-revision-retry.body
+    2276 tests/fixtures/hg_trivia2/responses/hub-generated-revision-retry.receipt.json
+     453 tests/fixtures/hg_trivia2/responses/hub-generated-revision.receipt.json
+     477 tests/fixtures/hg_trivia2/responses/hub-generated-tree-final.receipt.json
+     477 tests/fixtures/hg_trivia2/responses/hub-generated-tree-retry.receipt.json
+     471 tests/fixtures/hg_trivia2/responses/hub-generated-tree.receipt.json
+    7888 tests/fixtures/hg_trivia2/responses/hub-history-proxy-retry.body
+    2305 tests/fixtures/hg_trivia2/responses/hub-history-proxy-retry.receipt.json
+     447 tests/fixtures/hg_trivia2/responses/hub-history-proxy.receipt.json
+     388 tests/fixtures/hg_trivia2/responses/hub-history.receipt.json
+      41 tests/fixtures/hg_trivia2/responses/hub-jobs-final.body
+    2287 tests/fixtures/hg_trivia2/responses/hub-jobs-final.receipt.json
+     387 tests/fixtures/hg_trivia2/responses/hub-jobs-proxy-retry.receipt.json
+     381 tests/fixtures/hg_trivia2/responses/hub-jobs-proxy.receipt.json
+     322 tests/fixtures/hg_trivia2/responses/hub-jobs.receipt.json
+      62 tests/fixtures/hg_trivia2/responses/hub-loader-path-history.body
+    2376 tests/fixtures/hg_trivia2/responses/hub-loader-path-history.receipt.json
+     408 tests/fixtures/hg_trivia2/responses/hub-pr8-final.receipt.json
+     414 tests/fixtures/hg_trivia2/responses/hub-pr8-proxy-retry.receipt.json
+     408 tests/fixtures/hg_trivia2/responses/hub-pr8-proxy.receipt.json
+   13106 tests/fixtures/hg_trivia2/responses/hub-pr8-success.body
+    2167 tests/fixtures/hg_trivia2/responses/hub-pr8-success.receipt.json
+     349 tests/fixtures/hg_trivia2/responses/hub-pr8.receipt.json
+      15 tests/fixtures/hg_trivia2/responses/hub-predecessor-info.body
+    2348 tests/fixtures/hg_trivia2/responses/hub-predecessor-info.receipt.json
+     457 tests/fixtures/hg_trivia2/responses/hub-predecessor-source.receipt.json
+     479 tests/fixtures/hg_trivia2/responses/hub-predecessor-tree-final.receipt.json
+     473 tests/fixtures/hg_trivia2/responses/hub-predecessor-tree.receipt.json
+     343 tests/fixtures/hg_trivia2/responses/hub-refs-proxy-retry.body
+    2158 tests/fixtures/hg_trivia2/responses/hub-refs-proxy-retry.receipt.json
+     400 tests/fixtures/hg_trivia2/responses/hub-refs-proxy.receipt.json
+     341 tests/fixtures/hg_trivia2/responses/hub-refs.receipt.json
+   25259 tests/fixtures/hg_trivia2/responses/hub-revision-final.body
+    2248 tests/fixtures/hg_trivia2/responses/hub-revision-final.receipt.json
+     455 tests/fixtures/hg_trivia2/responses/hub-revision-proxy-retry.receipt.json
+     449 tests/fixtures/hg_trivia2/responses/hub-revision-proxy.receipt.json
+     390 tests/fixtures/hg_trivia2/responses/hub-revision.receipt.json
+   46138 tests/fixtures/hg_trivia2/responses/hub-tree-final.body
+    2280 tests/fixtures/hg_trivia2/responses/hub-tree-final.receipt.json
+     473 tests/fixtures/hg_trivia2/responses/hub-tree-proxy-retry.receipt.json
+     467 tests/fixtures/hg_trivia2/responses/hub-tree-proxy.receipt.json
+     408 tests/fixtures/hg_trivia2/responses/hub-tree.receipt.json
+   11863 tests/fixtures/hg_trivia2/responses/initial-conversion-tree-retry.body
+    2369 tests/fixtures/hg_trivia2/responses/initial-conversion-tree-retry.receipt.json
+     520 tests/fixtures/hg_trivia2/responses/initial-conversion-tree.receipt.json
+   40839 tests/fixtures/hg_trivia2/responses/paper-artifact-page.body
+     957 tests/fixtures/hg_trivia2/responses/paper-artifact-page.receipt.json
+     692 tests/fixtures/hg_trivia2/responses/paper-record.body
+     771 tests/fixtures/hg_trivia2/responses/paper-record.receipt.json
+   13317 tests/fixtures/hg_trivia2/responses/predecessor-source-attempt2.body
+    2621 tests/fixtures/hg_trivia2/responses/predecessor-source-attempt2.receipt.json
+    1012 tests/fixtures/hg_trivia2/responses/predecessor-tree-attempt3.body
+    2353 tests/fixtures/hg_trivia2/responses/predecessor-tree-attempt3.receipt.json
+      36 tests/fixtures/hg_trivia2/responses/project-actions.body
+    2603 tests/fixtures/hg_trivia2/responses/project-actions.receipt.json
+   10233 tests/fixtures/hg_trivia2/responses/project-aggregation-history-direct.body
+    2813 tests/fixtures/hg_trivia2/responses/project-aggregation-history-direct.receipt.json
+     464 tests/fixtures/hg_trivia2/responses/project-aggregation-history.receipt.json
+      32 tests/fixtures/hg_trivia2/responses/project-artifacts.body
+    2618 tests/fixtures/hg_trivia2/responses/project-artifacts.receipt.json
+    5323 tests/fixtures/hg_trivia2/responses/project-converter-blob-direct.body
+    2705 tests/fixtures/hg_trivia2/responses/project-converter-blob-direct.receipt.json
+     448 tests/fixtures/hg_trivia2/responses/project-converter-blob.receipt.json
+    6830 tests/fixtures/hg_trivia2/responses/project-converter-history-direct.body
+    2803 tests/fixtures/hg_trivia2/responses/project-converter-history-direct.receipt.json
+     461 tests/fixtures/hg_trivia2/responses/project-converter-history.receipt.json
+    3857 tests/fixtures/hg_trivia2/responses/project-current-tree.body
+    2703 tests/fixtures/hg_trivia2/responses/project-current-tree.receipt.json
+     199 tests/fixtures/hg_trivia2/responses/project-data-index.body
+     839 tests/fixtures/hg_trivia2/responses/project-data-index.receipt.json
+    6830 tests/fixtures/hg_trivia2/responses/project-key-aggregation-history.body
+    2801 tests/fixtures/hg_trivia2/responses/project-key-aggregation-history.receipt.json
+    3138 tests/fixtures/hg_trivia2/responses/project-readme-current.body
+    2663 tests/fixtures/hg_trivia2/responses/project-readme-current.receipt.json
+    1691 tests/fixtures/hg_trivia2/responses/project-readme-proxy.body
+    2244 tests/fixtures/hg_trivia2/responses/project-readme-proxy.receipt.json
+     394 tests/fixtures/hg_trivia2/responses/project-readme.receipt.json
+       2 tests/fixtures/hg_trivia2/responses/project-releases.body
+    2595 tests/fixtures/hg_trivia2/responses/project-releases.receipt.json
+       2 tests/fixtures/hg_trivia2/responses/project-tags-ref.body
+    2722 tests/fixtures/hg_trivia2/responses/project-tags-ref.receipt.json
+       2 tests/fixtures/hg_trivia2/responses/project-tags.body
+    2648 tests/fixtures/hg_trivia2/responses/project-tags.receipt.json
+    3857 tests/fixtures/hg_trivia2/responses/project-tree.body
+    2751 tests/fixtures/hg_trivia2/responses/project-tree.receipt.json
+   13017 tests/fixtures/hg_trivia2/responses/viewer-info-proxy-retry.body
+    1388 tests/fixtures/hg_trivia2/responses/viewer-info-proxy-retry.receipt.json
+     416 tests/fixtures/hg_trivia2/responses/viewer-info-proxy.receipt.json
+     357 tests/fixtures/hg_trivia2/responses/viewer-info.receipt.json
+       9 tests/fixtures/hg_trivia2/responses/viewer-pending.body
+    1246 tests/fixtures/hg_trivia2/responses/viewer-pending.receipt.json
+    1905 tests/fixtures/hg_trivia2/responses/viewer-splits.body
+    1404 tests/fixtures/hg_trivia2/responses/viewer-splits.receipt.json
+       9 tests/fixtures/hg_trivia2/responses/viewer-status-proxy.body
+    1200 tests/fixtures/hg_trivia2/responses/viewer-status-proxy.receipt.json
+     361 tests/fixtures/hg_trivia2/responses/viewer-status.receipt.json
+      77 tests/fixtures/hg_trivia2/responses/viewer-valid.body
+    1401 tests/fixtures/hg_trivia2/responses/viewer-valid.receipt.json
+     897 tests/fixtures/hg_trivia2/source-identities.json
+    1449 tests/fixtures/hg_trivia2/views/generated-history-attempt5.json
+   58185 tests/fixtures/hg_trivia2/views/generated-tree-attempt4.json
+     651 tests/fixtures/hg_trivia2/views/history-root-07f3581e1c563c991c1222d83728fd90978cf96b.json
+     651 tests/fixtures/hg_trivia2/views/history-root-1da0cdd05b0e1fb24e72da5cb88318ab939a7895-retry.json
+     766 tests/fixtures/hg_trivia2/views/history-root-279d93a6e999c93dc992e1a705389e350ba7f706.json
+    1294 tests/fixtures/hg_trivia2/views/history-root-2cc307f5321796c0ce8d4bab1b0c12b478844be9-retry.json
+     527 tests/fixtures/hg_trivia2/views/history-root-461a4265edc59265c7e397fbd3ca5aea6025ae2d.json
+     651 tests/fixtures/hg_trivia2/views/history-root-5153029519c6f25035b24509ad0a388c057b2fca-retry.json
+     527 tests/fixtures/hg_trivia2/views/history-root-581155e8f913b60746006263beb49d4194dfe171.json
+     524 tests/fixtures/hg_trivia2/views/history-root-667f81ce28168a8b41ce001b7862d13c4077c953-retry.json
+     651 tests/fixtures/hg_trivia2/views/history-root-826e3a12bac7b0bc83ff0c9288658b71d3146e3f-retry.json
+     527 tests/fixtures/hg_trivia2/views/history-root-88ce2dca1ab351ba11fe37dbc7a0a3bfde74fc09-retry.json
+    1425 tests/fixtures/hg_trivia2/views/history-root-8d35a53732b44b4b615c00855fe40f965b8f13e9-retry.json
+     651 tests/fixtures/hg_trivia2/views/history-root-996764ab35a7d49099df7ed1d90ff41c088d8b58.json
+    1159 tests/fixtures/hg_trivia2/views/history-root-a2820de3fe2f7e9159ddd2703649692a5f7af6dd-retry.json
+     650 tests/fixtures/hg_trivia2/views/history-root-bb0a7772d06ed233d06508e4e8ebe126f7c39418.json
+     651 tests/fixtures/hg_trivia2/views/history-root-c4e72ced5b8bd3d3a91ce5d24eeabd7b647bc0f8-retry.json
+     651 tests/fixtures/hg_trivia2/views/history-root-d2a6a678b772b3d9a6d654bc6328ed674e2b6201-retry.json
+    1436 tests/fixtures/hg_trivia2/views/history-root-f59b4da4d92cf18e0c8a9211c9d7376eaadccb1f.json
+   11800 tests/fixtures/hg_trivia2/views/hub-conversion-history.json
+      68 tests/fixtures/hg_trivia2/views/hub-export-path-history.json
+    9413 tests/fixtures/hg_trivia2/views/hub-generated-revision-retry.json
+    9165 tests/fixtures/hg_trivia2/views/hub-history-proxy-retry.json
+      47 tests/fixtures/hg_trivia2/views/hub-jobs-final.json
+      68 tests/fixtures/hg_trivia2/views/hub-loader-path-history.json
+   18282 tests/fixtures/hg_trivia2/views/hub-pr8-success.json
+     465 tests/fixtures/hg_trivia2/views/hub-refs-proxy-retry.json
+   50253 tests/fixtures/hg_trivia2/views/hub-revision-final.json
+   56380 tests/fixtures/hg_trivia2/views/hub-tree-final.json
+   14571 tests/fixtures/hg_trivia2/views/initial-conversion-tree-retry.json
+    1276 tests/fixtures/hg_trivia2/views/predecessor-tree-attempt3.json
+      46 tests/fixtures/hg_trivia2/views/project-actions.json
+   12161 tests/fixtures/hg_trivia2/views/project-aggregation-history-direct.json
+      42 tests/fixtures/hg_trivia2/views/project-artifacts.json
+    5349 tests/fixtures/hg_trivia2/views/project-converter-blob-direct.json
+    8116 tests/fixtures/hg_trivia2/views/project-converter-history-direct.json
+    4782 tests/fixtures/hg_trivia2/views/project-current-tree.json
+    8116 tests/fixtures/hg_trivia2/views/project-key-aggregation-history.json
+    3209 tests/fixtures/hg_trivia2/views/project-readme-current.json
+       3 tests/fixtures/hg_trivia2/views/project-releases.json
+       3 tests/fixtures/hg_trivia2/views/project-tags-ref.json
+       3 tests/fixtures/hg_trivia2/views/project-tags.json
+    4782 tests/fixtures/hg_trivia2/views/project-tree.json
+   27294 tests/fixtures/hg_trivia2/views/viewer-info-proxy-retry.json
+    2738 tests/fixtures/hg_trivia2/views/viewer-splits.json
+      99 tests/fixtures/hg_trivia2/views/viewer-valid.json

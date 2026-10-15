@@ -1,0 +1,64 @@
+{
+  "name": "viewer-info-proxy-retry",
+  "url": "https://datasets-server.huggingface.co/info?dataset=mandarjoshi%2Ftrivia_qa",
+  "method": "GET",
+  "requested_at_utc": "2026-10-15T09:23:53.978169+00:00",
+  "tls_verification": "Python default verified HTTPS",
+  "response_limit_bytes": 950000,
+  "status": 200,
+  "final_url": "https://datasets-server.huggingface.co/info?dataset=mandarjoshi%2Ftrivia_qa",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json"
+    ],
+    [
+      "Content-Length",
+      "13017"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:23:55 GMT"
+    ],
+    [
+      "vary",
+      "Accept-Encoding"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "cache-control",
+      "max-age=120"
+    ],
+    [
+      "x-revision",
+      "0f7faf33a3908546c6fd5b73a660e0f8ff173c2f"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 220478e0525c4434ce17762e6adfaedc.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P11"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "x-BLAYaCpxOjJn0gRL_ZILFhTbW5D5BRl4cwjk9Q1c7ECQEGYZn2aw=="
+    ]
+  ],
+  "bytes": 13017,
+  "sha256": "7f99cca77133b93d460925ab1561f7ee9a9492f1448dbf5688916d12d9b8012d",
+  "body": "responses/viewer-info-proxy-retry.body",
+  "view": "views/viewer-info-proxy-retry.json"
+}

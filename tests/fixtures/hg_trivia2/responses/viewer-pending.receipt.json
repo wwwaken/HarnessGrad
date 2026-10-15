@@ -1,0 +1,56 @@
+{
+  "name": "viewer-pending",
+  "url": "https://datasets-server.huggingface.co/pending-jobs?dataset=mandarjoshi%2Ftrivia_qa",
+  "method": "GET",
+  "requested_at_utc": "2026-10-15T09:31:07.827814+00:00",
+  "tls_verification": "Python default verified HTTPS",
+  "response_limit_bytes": 950000,
+  "https_proxy": "http://172.17.0.1:17890",
+  "status": 404,
+  "final_url": "https://datasets-server.huggingface.co/pending-jobs?dataset=mandarjoshi%2Ftrivia_qa",
+  "headers": [
+    [
+      "Content-Type",
+      "text/plain; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "9"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:31:09 GMT"
+    ],
+    [
+      "vary",
+      "Accept-Encoding"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "X-Cache",
+      "Error from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 121e4f23a8dc87c5e7f14fb52c388482.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P11"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "DY8SI9-BKqq7gH3EXBK00_8WqkHAk3JPh1kPFwKEuqliJo3f4OthBQ=="
+    ]
+  ],
+  "bytes": 9,
+  "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
+  "body": "responses/viewer-pending.body"
+}

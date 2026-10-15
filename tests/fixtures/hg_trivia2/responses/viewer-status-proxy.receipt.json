@@ -1,0 +1,55 @@
+{
+  "name": "viewer-status-proxy",
+  "url": "https://datasets-server.huggingface.co/status?dataset=mandarjoshi%2Ftrivia_qa",
+  "method": "GET",
+  "requested_at_utc": "2026-10-15T09:22:48.503670+00:00",
+  "tls_verification": "Python default verified HTTPS",
+  "response_limit_bytes": 950000,
+  "status": 404,
+  "final_url": "https://datasets-server.huggingface.co/status?dataset=mandarjoshi%2Ftrivia_qa",
+  "headers": [
+    [
+      "Content-Type",
+      "text/plain; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "9"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:22:51 GMT"
+    ],
+    [
+      "vary",
+      "Accept-Encoding"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "X-Cache",
+      "Error from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 dba91ecad9f349fee0b93c56ed43ad3a.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P11"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "hEthu4w8-2S67F1209823abupreTqZPDLVthLqK3ggJkmRGjriIISg=="
+    ]
+  ],
+  "bytes": 9,
+  "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
+  "body": "responses/viewer-status-proxy.body"
+}
