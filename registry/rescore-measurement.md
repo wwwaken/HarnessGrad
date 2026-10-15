@@ -65,9 +65,9 @@ neutrality is real for those tasks and should not be extended to the full pools.
 | dataset | verdicts | why not |
 | --- | ---: | --- |
 | `bfcl_v3` | 12 | **gold is redacted by design** - `data/scaffolds/qa/verify/check.py:144` redacts for `bfcl_v3`, so the archived evidence contains `{"redacted": true}` and the scorer cannot be replayed |
-| `livecodebench` | 12 | verdict evidence holds only `reward` and `why`; the "submission" is a solution artifact, not a recorded string |
-| `spreadsheetbench` | 12 | same - the submission is a workbook |
-| `ds1000` | 12 | holds `official` and `why` but no recorded prediction or gold |
+| `livecodebench` | 12 | **RERUN by nature**: the fix is a **timeout** (the 600 s clamp), and the child killed at 600 s recorded no per-test outcomes - no amount of rescoring recorded bytes recovers a run that needed more wall time. (Its evidence does carry `per_test`, `tests` and `metric`; the missing thing is a completed execution, not a string.) |
+| `ds1000` | 12 | **RERUN by nature**: the fix moved `context.json` out of the agent's `SETUP`, so the archived run answered a *different task*. Rescoring it would grade a submission against inputs it never saw. |
+| `spreadsheetbench` | 12 | the fix changed **where** the workbook is recalculated (private scratch). A wave-1 probe that already ran after the fix has no pre-fix score to revise, and the submission is a workbook rather than a recorded string |
 | `hotpotqa` | - | **no census run exists** for it |
 | `alfworld`, `agentdojo`, `scienceworld` | - | classified **RERUN**, not RESCORE (`eval-fidelity-plan.md:116-117`): the instrument changed, not only the scorer |
 | `sportsunderstanding` | - | no archived run at all (the plan already recorded "never run") |
