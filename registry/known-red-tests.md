@@ -155,3 +155,19 @@ blind assertion edits.
 * That audit then reaches `tests/fixtures/hg_wpristine/closure/sh`, recorded in the packet's `SHA256SUMS` as `b3c1009e1b5c927e...` and **absent everywhere**: not on disk, and not in git in either the current or the pre-rewrite history, because that whole packet has zero tracked files. Nothing can be reconstructed from a digest, so the check now **skips explicitly** naming the absent file and its digest, following the B6/ujson convention. 1 failed -> 17 passed, 1 skipped.
 * **`tests/fixtures/external_provenance_b5`**: 12 of 87 missing bodies are restored and independently verified, and the residue is **enumerated per body with a reason**. 70 of the 75 are HTTP 403 with `X-RateLimit-Remaining: 0` - **transient** unauthenticated GitHub rate limiting on a shared IP, not unobtainable. A first long-interval retry immediately restored and verified `responses/bfcl-blob-base_oss_handler.body` (23,199 bytes, digest match), so the rest are being retried at 120 s intervals in the background.
 * **`test_livecodebench_official_scorer.py`** is slow enough that a single-file run does not finish in 60 s, and **`test_qa_dataset_contract.py`** takes minutes; both need a background run to triage rather than a foreground one.
+
+## Correcting the sweep: batches that hit their timeout produce spurious failures
+
+Three of the sweep's batches exited `rc=124`, meaning the 240 s per-batch timeout killed pytest rather
+than pytest finishing. Failures reported from those batches are **not** reliable: the in-flight tests
+are disrupted and appear in the summary.
+
+Confirmed case: `test_qa_dataset_contract.py` was listed with **6 failures** by the sweep, but run on its
+own in the main checkout it is **133 passed, 12 skipped, rc=0** in 152 s. A 12-file batch containing it
+cannot fit in 240 s, so the batch was killed mid-file. The same caveat applies to anything else reported
+from batch 12, 36 or 72 until it is re-run alone.
+
+Two consequences for how this file is used: read the `=== batch N rc=` line before trusting that batch's
+failures, and re-run every failure **on its own** before classifying it. `test_livecodebench_official_scorer.py`
+is in the same position - a single-file run does not finish in 60 s, so it needs a background run to
+triage rather than a foreground one.
