@@ -5294,3 +5294,48 @@ referee side no longer has unexempted strict sites; `dsh_agent/agent.py:202` is 
 site counts moved), and independently reproduced the SpreadsheetBench digest drift that round 7 recorded.
 
 **Merged this round:** `527512f3` (w-knownred), `87541c7b` (the B5 correction and durability note).
+
+## 2026-10-16 (round 12) — The disclosure record is corrected, the qualification is landed, and B5 has a floor
+
+**The B5 replay is finished, and it has a number.** `test_external_provenance_b5.py` is **2 failed,
+4 passed** - it was 5 failed, 1 passed when the sweeps ran. The restorations unblocked four tests,
+`test_bfcl_tag_signed_commit_and_all_original_git_trees` among them (it needed `bfcl-tag`, `-release`,
+`-root-tree` and `-tree`; `bfcl-tree` verifies at 161,306 bytes). The two survivors are precisely the two
+classes that cannot be fixed by fetching: the inventory walk over the 23 error-pinned blobs, and the
+triviaqa history test that needs a served discussion page which returns 200 with different bytes every
+time. So the packet is not "still being restored" - it is restored as far as it can be, and it sits at a
+floor that only a **re-pin** decision or an **abandonment** decision can move. Both are the operator's.
+
+**The disclosure record is corrected against `main`, not against the pre-fix tree.** `w-evidence2` merged
+as `18054949` with a clean tally - 14 CURRENT / 13 STALE / 1 UNVERIFIABLE - and it found **three** stale
+rows my own list did not have (`physicsquestions`, `sportsunderstanding`, `spreadsheetbench`) plus the
+`tau_bench` break. I applied its payloads mechanically with a script that refuses on any old text that does
+not match exactly once: **71 replacements, 34 cells and 37 paragraphs, all matching exactly once, zero
+unmatched.** It had produced qualification passages for only 8 of the 13 stale datasets, so I verified and
+closed the other six myself from its own row-level evidence - `twowikimultihopqa` (`EVIDENCE_AWARE = True`
+at `:90`, pair schema now refused as unmeasured), `scienceworld` (`STEP_BUDGET = 100` at `scw_env.py:45`,
+plus the new observed-type macro), `sportsunderstanding` (immediate negators mapped at `:95-107`),
+`physicsquestions` (symmetric normalization at `:94-108`), `spreadsheetbench` (locator drift only) and
+`tau_bench` (the service-owned recording). The tautology guard now passes: **20 affected datasets, 13
+leading with `NUMBER`**, and 199 in-range citations with zero out-of-range across the two documents.
+
+**Two instructions of mine were refused or improved by workers, and both times they were right.** The
+B5 brief generalised a rule that `hg_trivia` falsifies (round 10). And `w-evidence2` refused the blanket
+preamble sentence I asked for - "every 'no official execution' is only a platform-scope limit" - because
+`eval/verification/verifier.py:573-589` describes receipt consistency under trusted custody rather than
+arbitrary-JSON authentication, and `bfcl_v3` retains a dataset-specific preflight obligation. It wrote a
+narrower sentence, and that is what landed. A brief that cannot be corrected is a brief that launders its
+author's errors into the record.
+
+**D18 is landed, and it was the wrong shape as planned.** "Apply the qualification to the 17 affected
+closed blockers in the registry" cannot be done: `registry/dataset-blockers.json` has exactly 7
+`datasets[*].blockers` entries, all open. The qualification therefore lands as a dated section in
+`registry/blocker-closure-assessment.md` plus `review.notes[22]` - **no status change, no closure
+reopened, no measurement claimed** - and it states the operative consequence plainly: because this phase
+runs no re-runs, **every `NUMBER` row's archived value was produced by the pre-fix instrument** and must
+not be reported under the new metric name.
+
+**Commits this round:** `18054949` (w-evidence2 merge), `a874f91b` (the 71 corrections plus the six
+uncovered qualifications), `97fce629` (D18 landing), `59785475` (bfcl_v3's corrected qualification append,
+additive, all four obligations preserved), `086e06c8` (the B5 floor). All four workers have now landed and
+merged; the b5 replay has exited. Nothing is running.
