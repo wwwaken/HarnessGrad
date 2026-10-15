@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/tmp/hg-mkl2/tests/fixtures/hg_wmkl2/offline.py", line 25, in <module>
+    save(HERE / 'offline/network.json', net)
+  File "/tmp/hg-mkl2/tests/fixtures/hg_wmkl2/common.py", line 14, in save
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1047, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-mkl2/tests/fixtures/hg_wmkl2/offline/network.json'

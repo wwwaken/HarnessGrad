@@ -1,0 +1,281 @@
+   1	"""DS-1000 code generation: the slice of the simplified test split this host can execute.
+   2	
+   3	Official source: xlang-ai/DS-1000@b39aab71 (`test_ds1000.py` and `execution.py`).
+   4	Data: `xlangai/DS-1000@4416080ac5cb80bdf7576aefb8f9a0b4d5426a44/test.jsonl`, 1000 rows.
+   5	
+   6	The official construction is used unchanged: `code_context + code = repr(candidate)`, then
+   7	`test_execution(code)`, plus `test_string(code)` only when the context declares that helper,
+   8	each candidate in its own process with the upstream 120-second timeout and the upstream
+   9	deliberately-disabled `reliability_guard`. `reference_code` is gold and travels only through
+  10	`oracle_files()`; it never enters SETUP.
+  11	
+  12	**926 of the 1000 released rows are offered; 74 are excluded, and every exclusion is a
+  13	measurement.** This is a coverage fact, reported rather than hidden. No substitute metric is
+  14	published under the benchmark's name.
+  15	
+  16	* **47 rows: the official test code imports `tensorflow`** (45 labelled `Tensorflow`, plus 2
+  17	  labelled `Numpy` whose prompts are tensorflow conversions). This interpreter has
+  18	  pandas/numpy/scipy/sklearn/matplotlib/seaborn/torch but no `tensorflow`. Measured: under
+  19	  `--platform` the verification namespace starts from an empty root and binds only `/usr`,
+  20	  the interpreter prefix, the work root and the task directory, so a dataset-local Python
+  21	  tree outside the work root is not visible (`FileNotFoundError` on an absolute dataset
+  22	  path, `HOME=/tmp`). TensorFlow is therefore reachable only by mutating the shared platform
+  23	  environment or by copying a multi-gigabyte tree into every task's workdir; neither is
+  24	  acceptable here. This group is recomputed from `code_context`, so it cannot drift.
+  25	* **27 rows: the released gold and test code target an older library stack** than the one
+  26	  installed. Measured by running every offered row's `reference_code` through the official
+  27	  construction on 2026-10-07: **926 passed, 27 failed**, and each failure names its cause in
+  28	  `MEASURED_EXCLUSIONS`. They are pandas 1.x APIs removed in pandas 2.2.2 (`DataFrame.append`,
+  29	  positional `str.split`/`str.rsplit`/`drop`, `set_axis(inplace=)`, date-format inference,
+  30	  dtype comparison, index-insert semantics), scipy 1.13 removals (`dok_matrix._update`,
+  31	  `scipy.linalg.triu`), one absent optional package (`xgboost`), and one row whose official
+  32	  test fetches over the network (`HTTP 403`). DS-1000 ships an `environment.yml` pinning the
+  33	  versions its numbers came from; these rows are where that pin differs from this host.
+  34	
+  35	Two further notes for whoever picks this up. The official tests' only *network* dependency
+  36	was 14 Matplotlib rows calling `sns.load_dataset(...)`; those are provisioned offline here
+  37	from a pinned copy of `mwaskom/seaborn-data` and are **included**, because caching the same
+  38	fixed data does not change what the metric computes. And an included set is only trustworthy
+  39	because every included row's gold was actually run: `_src/oracle-sweep.json` (outside git)
+  40	holds the per-row result, and `MEASURED_EXCLUSIONS` is derived from it.
+  41	"""
+  42	from __future__ import annotations
+  43	
+  44	from data.scaffolds.scorer_input import bind as bind_scorer_input
+  45	
+  46	import json
+  47	import re
+  48	from pathlib import Path
+  49	
+  50	from data.scaffolds import command_control
+  51	from data.scaffolds.qa.base import is_eval
+  52	
+  53	KIND = "dataset"
+  54	
+  55	#: The oracle control submits the benchmark's own released reference; see
+  56	#: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+  57	ORACLE_SOURCE = "released"
+  58	
+  59	#: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+  60	#: to it**. The pool is the official simplified test split **minus** the 74 rows measured as unrunnable on this host; every row that remains is an official evaluation row. The pool is therefore not the whole of the official set, and `None` says only that nothing in it is study material.
+  61	#:
+  62	#: `None` is the accurate value only because nothing in the pool is study material -- it does
+  63	#: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+  64	#: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+  65	#: no study material in it. `--split declared` keeps this adapter's own division.
+  66	OFFICIAL_EVAL = None
+  67	
+  68	DATASET_ROOT = Path("/mnt/20t/xubuqiang/datasets/ds1000")
+  69	DATA_FILE = DATASET_ROOT / "_src" / "test.jsonl"
+  70	SOURCE_DIR = DATASET_ROOT / "_src" / "DS-1000-b39aab71"
+  71	SEABORN_DIR = DATASET_ROOT / "seaborn-data"
+  72	ASSETS = Path(__file__).resolve().parent / "ds1000"
+  73	CHECK_FILE = ASSETS / "verify" / "check.py"
+  74	EXECUTION_FILE = SOURCE_DIR / "execution.py"
+  75	REVISION = "4416080ac5cb80bdf7576aefb8f9a0b4d5426a44"
+  76	DATA_SHA256 = "26a492838b05f9d030b2f08a5715c6bafecafb601c157da912bf417fd8b0d363"
+  77	SOURCE_COMMIT = "b39aab71"
+  78	SOURCE_TARBALL_SHA256 = "b14f1a2b0fb20ef55f0693019122f22c82b03ef6647faabf0e6e8ae1272a1dc0"
+  79	SEABORN_COMMIT = "71e2436a092d714350de0fc409ca8a8714e7e78f"
+  80	SEABORN_TARBALL_SHA256 = "ac7ed3e81e634c8febecac42975456280b089bd5bcae3d54bc6be11d8cec1532"
+  81	SEABORN_CSVS = {
+  82	    "tips.csv": "e54cc4d2ce1bff65d32ca60b3e4b802e06bde1d7e7caf6f796f6bf7370e863b0",
+  83	    "planets.csv": "a6d10044887e17396974525a366f5fa2e4b34df70f491e64eb9943de0e3d3825",
+  84	    "penguins.csv": "e07636bd8af74260099ea2f8678e2eabbf35def579940cc76f67061ee16c06c1",
+  85	    "exercise.csv": "d67ff5896d7d262bba3ec0bd7a8db410e56afc96a0436e08dfe53016d5f1e4e6",
+  86	}
+  87	
+  88	#: Rows whose `reference_code` was *run* through the official construction and failed because
+  89	#: the installed library stack is newer than the one DS-1000 pinned. The value is the cause
+  90	#: as the runner reported it. Frozen from `_src/oracle-sweep.json`; do not edit by hand --
+  91	#: re-run `tools/`-free sweep in `tests/quality/test_ds1000_official_scorer.py` and regenerate.
+  92	MEASURED_EXCLUSIONS: dict[str, tuple[int, ...]] = {
+  93	    "pandas2-append": (47, 48, 49, 228),
+  94	    "pandas2-str-split-positional": (199, 200, 201),
+  95	    "pandas2-str-rsplit-positional": (220, 221, 222),
+  96	    "pandas2-drop-positional": (195, 196),
+  97	    "pandas2-set-axis-inplace": (282, 283),
+  98	    "pandas2-date-format": (209, 210, 211),
+  99	    "pandas2-dtype-compare": (39, 40),
+ 100	    "pandas2-index-insert": (924, 925),
+ 101	    "scipy-dok-update": (796,),
+ 102	    "scipy-triu-moved": (936, 937),
+ 103	    "missing-xgboost": (837, 838),
+ 104	    "network-fetch-403": (819,),
+ 105	}
+ 106	
+ 107	#: The largest exclusion group is a *criterion* rather than a frozen table: what the released
+ 108	#: test code imports. Recomputing it keeps the frozen table from drifting away from the data.
+ 109	_TF_PATTERN = re.compile(r"\b(import tensorflow|from tensorflow|tf\.)")
+ 110	
+ 111	
+ 112	def _read() -> list[dict]:
+ 113	    with DATA_FILE.open(encoding="utf-8") as handle:
+ 114	        rows = [json.loads(line) for line in handle if line.strip()]
+ 115	    if len(rows) != 1000:
+ 116	        raise ValueError(f"DS-1000 expected 1000 rows, got {len(rows)}")
+ 117	    if any(not row.get("reference_code") for row in rows):
+ 118	        raise ValueError("DS-1000 row without reference_code")
+ 119	    return rows
+ 120	
+ 121	
+ 122	_RAW: list[dict] | None = None
+ 123	_INCLUDED: list[int] | None = None
+ 124	
+ 125	
+ 126	def _raw() -> list[dict]:
+ 127	    global _RAW
+ 128	    if _RAW is None:
+ 129	        _RAW = _read()
+ 130	    return _RAW
+ 131	
+ 132	
+ 133	def tensorflow_indices() -> set[int]:
+ 134	    """Rows whose official test code imports tensorflow, recomputed from the release."""
+ 135	    return {i for i, row in enumerate(_raw()) if _TF_PATTERN.search(row["code_context"])}
+ 136	
+ 137	
+ 138	def measured_exclusions() -> dict[int, str]:
+ 139	    """The frozen per-row version-drift exclusions, as `{row index: cause}`."""
+ 140	    return {index: cause
+ 141	            for cause, indices in MEASURED_EXCLUSIONS.items()
+ 142	            for index in indices}
+ 143	
+ 144	
+ 145	def excluded_indices() -> set[int]:
+ 146	    """Every row this adapter does not offer, with the reason recorded in the module."""
+ 147	    return tensorflow_indices() | set(measured_exclusions())
+ 148	
+ 149	
+ 150	def included_indices() -> list[int]:
+ 151	    global _INCLUDED
+ 152	    if _INCLUDED is None:
+ 153	        excluded = excluded_indices()
+ 154	        _INCLUDED = [i for i in range(len(_raw())) if i not in excluded]
+ 155	    return _INCLUDED
+ 156	
+ 157	
+ 158	def task_id(index: int) -> str:
+ 159	    return f"ds1000/{index}"
+ 160	
+ 161	
+ 162	#: DS-1000 ships no train/eval division -- the released `test.jsonl` is one exam-like pool --
+ 163	#: so the platform imposes one with the same rule every other adapter uses: a deterministic
+ 164	#: third by hash of the task id. Measured after the change: the two sides carry the same
+ 165	#: library mix to within 0.8 percentage points, and a row's side is a pure function of its
+ 166	#: released index, so adding an exclusion cannot reshuffle the rows that remain.
+ 167	SPLIT = {"train": [task_id(i) for i in included_indices() if not is_eval(task_id(i))],
+ 168	         "eval": [task_id(i) for i in included_indices() if is_eval(task_id(i))]}
+ 169	
+ 170	ENV = {task_id(i): {"kind": "files"} for i in included_indices()}
+ 171	
+ 172	
+ 173	def task_for(index: int) -> dict:
+ 174	    """A task dict for any released row, included or not.
+ 175	
+ 176	    Excluded rows are still buildable so that a test can re-run the official construction
+ 177	    against them and re-observe the recorded failure. They are never offered by `load()`.
+ 178	    """
+ 179	    return {"task_id": task_id(index), "goal": _raw()[index]["prompt"], "inputs": []}
+ 180	
+ 181	
+ 182	def setup_for(index: int) -> dict:
+ 183	    row = _raw()[index]
+ 184	    return {"files": [
+ 185	        {"path": "task.json", "content": json.dumps(
+ 186	            {"task_id": task_id(index), "prompt": row["prompt"]}, ensure_ascii=False)},
+ 187	        # The official context carries the tests, and the released benchmark hands it to the
+ 188	        # solver as part of the problem. The gold `reference_code` is not in it.
+ 189	        {"path": "context.json", "content": json.dumps(
+ 190	            {"code_context": row["code_context"]}, ensure_ascii=False)},
+ 191	    ]}
+ 192	
+ 193	
+ 194	def verify_for(index: int) -> dict:
+ 195	    spec = {
+ 196	        "kind": "command",
+ 197	        "argv": ["python3", "verify/check.py",
+ 198	                 "--reward-file", command_control.REWARD_REL,
+ 199	                 "--evidence-file", command_control.EVIDENCE_REL],
+ 200	        "inputs": [
+ 201	            {"path": "verify/check.py", "from": str(CHECK_FILE)},
+ 202	            {"path": "context.json", "content": json.dumps(
+ 203	                {"code_context": _raw()[index]["code_context"]}, ensure_ascii=False)},
+ 204	            {"path": "execution.py", "from": str(EXECUTION_FILE)},
+ 205	            # Removes the official tests' only network fetch; see the module docstring.
+ 206	            *[{"path": f"seaborn-data/{name}", "from": str(SEABORN_DIR / name)}
+ 207	              for name in sorted(SEABORN_CSVS)],
+ 208	        ],
+ 209	        "reward_file": command_control.REWARD_FILE,
+ 210	        "evidence_file": command_control.EVIDENCE_FILE,
+ 211	    }
+ 212	    return bind_scorer_input(spec, task_id(index),
+ 213	                             ["context.json", *[f"seaborn-data/{name}"
+ 214	                                                for name in sorted(SEABORN_CSVS)]])
+ 215	
+ 216	
+ 217	SETUP = {task_id(i): setup_for(i) for i in included_indices()}
+ 218	VERIFY = {task_id(i): verify_for(i) for i in included_indices()}
+ 219	
+ 220	
+ 221	def load():
+ 222	    tasks = []
+ 223	    for index in included_indices():
+ 224	        tasks.append({"task_id": task_id(index), "goal": _raw()[index]["prompt"] + (
+ 225	            "\n\nWrite your completed Python solution to solution.py in this directory. "
+ 226	            "The task context and its tests are in context.json. Do not include markdown "
+ 227	            "fences; only the solution body is executed.")})
+ 228	    return tasks, {task["task_id"]: "code" for task in tasks}
+ 229	
+ 230	
+ 231	def _row_for_task(task: dict) -> dict:
+ 232	    return _raw()[int(task["task_id"].rsplit("/", 1)[1])]
+ 233	
+ 234	
+ 235	def oracle_files(task: dict) -> dict[str, str]:
+ 236	    return {"solution.py": _row_for_task(task)["reference_code"]}
+ 237	
+ 238	
+ 239	def downloads():
+ 240	    return [
+ 241	        {"kind": "hf-dataset", "name": "DS-1000 simplified test.jsonl",
+ 242	         "repo": "xlangai/DS-1000", "version": REVISION,
+ 243	         "size": "3,439,876 bytes (1000 rows)", "files": ["test.jsonl"], "dst": "_src",
+ 244	         "sha256": {"test.jsonl": DATA_SHA256},
+ 245	         "note": "Canonical HF simplified format. Trap: the tests live inside code_context "
+ 246	                 "and reference_code is gold. 926 of the 1000 rows are offered here; the 74 "
+ 247	                 "exclusions are measured and named in data/datasets/ds1000.py."},
+ 248	        {"kind": "http", "name": "DS-1000 official source archive", "version": SOURCE_COMMIT,
+ 249	         "url": "https://codeload.github.com/xlang-ai/DS-1000/tar.gz/b39aab71",
+ 250	         "size": "787 KB measured archive", "sha256": SOURCE_TARBALL_SHA256,
+ 251	         "dst": "_src/ds1000-repo.tar.gz", "extract_to": "_src",
+ 252	         "note": "Pins test_ds1000.py and execution.py for verbatim transcription. The "
+ 253	                 "official runner deliberately leaves reliability_guard disabled because "
+ 254	                 "data-science libraries need filesystem operations; each candidate runs in "
+ 255	                 "its own process with a 120-second timeout."},
+ 256	        {"kind": "http", "name": "seaborn example datasets (offline)",
+ 257	         "version": SEABORN_COMMIT,
+ 258	         "url": "https://codeload.github.com/mwaskom/seaborn-data/tar.gz/" + SEABORN_COMMIT,
+ 259	         "size": "5,076,306 bytes tarball; 4 CSVs (~72 KB) staged",
+ 260	         "sha256": SEABORN_TARBALL_SHA256,
+ 261	         "dst": "_src/seaborn-data.tar.gz",
+ 262	         "note": "14 official Matplotlib rows call sns.load_dataset(...), which otherwise "
+ 263	                 "fetches from GitHub at evaluation time (raw.githubusercontent is blocked "
+ 264	                 "on this machine, so those rows failed with connection reset). The four "
+ 265	                 "CSVs seaborn needs are staged under seaborn-data/ and shipped in "
+ 266	                 "VERIFY.inputs; SEABORN_DATA points the official code at them. This is "
+ 267	                 "provisioning the same fixed data, not changing the metric."},
+ 268	    ]
+ 269	
+ 270	
+ 271	def provision_status():
+ 272	    needed = [DATA_FILE, EXECUTION_FILE, CHECK_FILE,
+ 273	              SEABORN_DIR / "tips.csv", SEABORN_DIR / "penguins.csv"]
+ 274	    present = [str(path) for path in needed if path.is_file()]
+ 275	    return {"root": str(DATASET_ROOT), "present": len(present) == len(needed),
+ 276	            "split_dir": str(DATASET_ROOT), "files": [str(p) for p in needed],
+ 277	            "present_files": present,
+ 278	            "tasks": len(included_indices()),
+ 279	            "excluded": len(excluded_indices()),
+ 280	            "excluded_tensorflow": len(tensorflow_indices()),
+ 281	            "excluded_measured": len(measured_exclusions())}

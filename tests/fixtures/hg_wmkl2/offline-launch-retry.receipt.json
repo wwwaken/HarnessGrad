@@ -1,0 +1,11 @@
+{
+  "command": [
+    "unshare",
+    "-Urn",
+    "python3",
+    "tests/fixtures/hg_wmkl2/offline.py"
+  ],
+  "cwd": "/tmp/hg-mkl2",
+  "exit_code": 1,
+  "elapsed_seconds": 129.482
+}

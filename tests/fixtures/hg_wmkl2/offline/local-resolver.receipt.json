@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/tmp/hg-wmkl2-offline-6tui16wg/ds1000/bin/python",
+    "-m",
+    "pip",
+    "install",
+    "--dry-run",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--find-links",
+    "/tmp/hg-wmkl2-payloads-2rjzdzfz",
+    "--find-links",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "--constraint",
+    "/tmp/hg-mkl2/tests/fixtures/hg_wmkl2/existing-pins.constraints.txt",
+    "--report",
+    "/tmp/hg-mkl2/tests/fixtures/hg_wmkl2/offline/plan.json",
+    "gensim==4.3.2",
+    "scipy==1.12.0",
+    "numpy==1.26.4",
+    "tensorflow-cpu==2.16.1",
+    "xgboost==2.0.3"
+  ],
+  "cwd": "/tmp/hg-mkl2",
+  "exit_code": 0,
+  "elapsed_seconds": 2.88
+}

@@ -1,0 +1,119 @@
+{
+  "released_rows": 1000,
+  "excluded_rows": 74,
+  "offered_rows": 926,
+  "tensorflow_exclusion_rows": 47,
+  "measured_exclusion_rows": 27,
+  "imports": {
+    "gensim": {
+      "released_rows": 2,
+      "offered_rows": 0,
+      "row_indices": [
+        936,
+        937
+      ]
+    },
+    "tensorflow": {
+      "released_rows": 47,
+      "offered_rows": 0,
+      "row_indices": [
+        379,
+        380,
+        666,
+        667,
+        668,
+        669,
+        670,
+        671,
+        672,
+        673,
+        674,
+        675,
+        676,
+        677,
+        678,
+        679,
+        680,
+        681,
+        682,
+        683,
+        684,
+        685,
+        686,
+        687,
+        688,
+        689,
+        690,
+        691,
+        692,
+        693,
+        694,
+        695,
+        696,
+        697,
+        698,
+        699,
+        700,
+        701,
+        702,
+        703,
+        704,
+        705,
+        706,
+        707,
+        708,
+        709,
+        710
+      ]
+    },
+    "xgboost": {
+      "released_rows": 2,
+      "offered_rows": 0,
+      "row_indices": [
+        837,
+        838
+      ]
+    }
+  }
+}
+{
+  "executable": "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+  "python": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+  "packages": {
+    "gensim": {
+      "version": "4.3.2"
+    },
+    "scipy": {
+      "version": "1.13.1"
+    },
+    "tensorflow": {
+      "error": "No package metadata was found for tensorflow",
+      "exception": "PackageNotFoundError('tensorflow')"
+    },
+    "tensorflow-cpu": {
+      "error": "No package metadata was found for tensorflow-cpu",
+      "exception": "PackageNotFoundError('tensorflow-cpu')"
+    },
+    "tensorflow-gpu": {
+      "error": "No package metadata was found for tensorflow-gpu",
+      "exception": "PackageNotFoundError('tensorflow-gpu')"
+    },
+    "tf-nightly": {
+      "error": "No package metadata was found for tf-nightly",
+      "exception": "PackageNotFoundError('tf-nightly')"
+    },
+    "tf-nightly-cpu": {
+      "error": "No package metadata was found for tf-nightly-cpu",
+      "exception": "PackageNotFoundError('tf-nightly-cpu')"
+    },
+    "xgboost": {
+      "error": "No package metadata was found for xgboost",
+      "exception": "PackageNotFoundError('xgboost')"
+    }
+  },
+  "specs": {
+    "tensorflow": "None",
+    "xgboost": "None"
+  }
+}

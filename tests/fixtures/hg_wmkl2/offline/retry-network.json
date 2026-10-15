@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "tests/fixtures/hg_wmkl2/retry.py"
+  ],
+  "namespace": "net:[4026535651]",
+  "interfaces": [
+    [
+      1,
+      "lo"
+    ]
+  ],
+  "routes": "",
+  "errno": 101,
+  "exception": "OSError(101, 'Network is unreachable')"
+}

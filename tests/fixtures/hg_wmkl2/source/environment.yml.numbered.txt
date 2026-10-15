@@ -1,0 +1,22 @@
+   1	name: ds1000-3.10
+   2	channels:
+   3	  - defaults
+   4	  - conda-forge
+   5	  - pytorch
+   6	dependencies:
+   7	  - pip
+   8	  - python=3.10
+   9	  - gensim==4.3.2
+  10	  - matplotlib==3.8.4
+  11	  - numpy==1.26.4
+  12	  - pandas==1.5.3
+  13	  - pytorch::cpuonly
+  14	  - pytorch::pytorch==2.2.0
+  15	  - seaborn==0.13.2
+  16	  - scikit-learn==1.4.0
+  17	  - scipy==1.12.0
+  18	  - statsmodels==0.14.1
+  19	  - xgboost==2.0.3
+  20	  - yaml
+  21	  - pip:
+  22	      - tensorflow-cpu==2.16.1

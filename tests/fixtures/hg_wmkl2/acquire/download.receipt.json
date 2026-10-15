@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+    "-m",
+    "pip",
+    "download",
+    "--index-url",
+    "https://pypi.org/simple",
+    "--only-binary=:all:",
+    "--no-cache-dir",
+    "--timeout",
+    "45",
+    "--retries",
+    "1",
+    "--dest",
+    "/tmp/hg-wmkl2-payloads-2rjzdzfz",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu/gensim-4.3.2-cp312-cp312-linux_x86_64.whl",
+    "scipy==1.12.0",
+    "numpy==1.26.4",
+    "tensorflow-cpu==2.16.1",
+    "xgboost==2.0.3"
+  ],
+  "cwd": "/tmp/hg-mkl2",
+  "exit_code": 0,
+  "elapsed_seconds": 51.216
+}
