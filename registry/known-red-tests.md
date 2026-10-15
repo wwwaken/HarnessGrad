@@ -648,10 +648,18 @@ The five reds, all previously recorded and none new:
 | file | result | standing |
 | --- | --- | --- |
 | `test_appworld_official_scorer.py` | 2 failed, 12 passed (1538.6 s) | the long-standing `test_platform_control_arms` admission conflict, filed above |
-| `test_chessbench_stepwise_runner.py` | 2 failed, 16 passed (28.8 s) | load-induced: **18 passed in 31.8 s** when re-run alone. Both are socket-deadline tests (`test_reconnect_cannot_reset_session_allowance`, `test_trickled_partial_frame_cannot_extend_absolute_socket_deadline`), i.e. wall-clock assertions measured on a machine that was running the operator's 40-job pass |
+| `test_chessbench_stepwise_runner.py` | 2 failed, 16 passed (28.8 s) | **concurrency-sensitive, cause UNKNOWN**: 18 passed when re-run alone, and 18 passed again under 24 `while True: pass` CPU loops, so "load-induced" was a guess and is withdrawn. Both are socket-deadline tests (`test_reconnect_cannot_reset_session_allowance` with `timeout_s=1`, `test_trickled_partial_frame_cannot_extend_absolute_socket_deadline` with `timeout_s=0.2`) and both failed in the two sweeps that ran beside the operator's 40-job AgentDojo pass, so sub-second deadlines meeting I/O and scheduler contention is the leading hypothesis - **not established**, and not a licence to retune either deadline to make it pass |
 | `test_external_provenance_b5.py` | 5 failed, 1 passed | 71 raw bodies still unrestored; the replay is paused because it writes `tests/fixtures/` while a sweep reads it |
 | `test_isolation.py` | 1 failed, 15 passed (184.2 s) | known pre-existing |
 | `test_we5_equivalence.py` | 1 failed, 22 passed | the preserved packet that exists nowhere; enumerated limit |
 
 Zero unexplained reds across 193 files, and `ran == selected == discovered` - which is the only property
 that makes the number mean anything.
+
+**Method note on this one.** The first version of the row above called it "load-induced" on the strength of the
+pass-in-isolation result alone. That is the same inference pattern this file warns about elsewhere: it reads a
+*consistent with* observation as a cause. A CPU-load reproduction was attempted and **failed** (24 busy
+loops, `load average 1.27` at start - the loops had not yet bitten - and the file passed 18/18 in 24.3 s), so
+the honest state is "fails beside a 40-job I/O-heavy pass, passes alone and under CPU load, cause UNKNOWN".
+Changing the two deadlines would be tuning a test to make a number look better while its actual trigger is
+unknown; if it fails again, capture the assertion text before touching it.
