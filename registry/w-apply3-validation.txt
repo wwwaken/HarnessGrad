@@ -1,0 +1,73 @@
+Parent integration validation - apply w-fevconv's absence audit and comparability result.
+
+Source
+------
+Worker commit d9d6cbc2 (branch wg-fevconv), cherry-picked on top of main 26b52f44. Three added
+files, no registry edit. Its own baseline checker note records the pre-existing fresh-worktree
+failure, which the carrier-restoration commits already fixed.
+
+Independent parent verification of the load-bearing claims
+----------------------------------------------------------
+1. Local converter code. `data/scaffolds/qa/evidence_scorers.py:156-166` was read directly: the
+   flat Hub-mirror branch does `groups = [[item] for item in groups]` (`:160`), i.e. each retained
+   sentence becomes its own independently sufficient group. The worker's characterisation of the
+   local singleton conversion is correct.
+2. Installed bytes and exposure counts. The worker's parser
+   (`/mnt/20t/xubuqiang/hg-work/fevconv/parse-installed.py`) was **re-run by the parent**. It only
+   parses installed bytes; it imports and calls no scorer. Observed:
+   `sha256 5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9`, 6,471,611 bytes,
+   `rows 15935`, `non_NEI 9525`, `NEI 6410`, `non_NEI_pair_count_ne_distinct 0`,
+   `non_NEI_missing_pair_fields 0`, `non_NEI_line_fields_not_strings 0`, size distribution
+   `{1:8125, 2:1186, 3:134, 4:33, 5:16, 6:10, 7:6, 8:8, 9:1, 10:3, 12:1, 15:1, 25:1}`.
+   That independently reproduces 1,400 rows with more than one distinct pair and 31 with 6-25, and
+   the installed validation digest matches the value the registry already records. Independent
+   `sha256sum` of the same file agrees.
+3. Claimed boundary. The worker states plainly that its producing-execution search is **local**
+   (session/history transcripts, git object/history/reflog/stash, run/state/fixture/census, named
+   archives) and that it claims "bounded absence, not global impossibility". The parent agrees and
+   therefore does **not** adopt its attached withdrawal proposal.
+
+Applied change
+--------------
+Cherry-picked: `registry/proposals/w-fevconv.json`, `registry/w-fevconv-receipts.md`,
+`registry/w-fevconv-validation.txt`. Two fields of `fever / dataset-journal-gap` change
+(`2 2` in `git diff --numstat registry/dataset-blockers.json`):
+* `observed` 4576 -> 5802 chars: additive append recording the bounded searched-absence of the
+  producing-execution fields, the established custody that is **not** re-requested, and the
+  source-level comparability determination.
+* `next_action` 1317 -> 2333 chars: parent-written. It records the comparability conclusion and the
+  metric choice that remains, keeps the producing-conversion/ID-assignment/split-filter-omission/NEI
+  binding, states explicitly that the local search **cannot** support a standing limit and that an
+  upstream search is required first, and preserves every other obligation. A mechanical check
+  asserts 11 required obligation phrases survive.
+
+Deliberately NOT applied
+------------------------
+`withdrawal_entry` is **not** written to `registry/withdrawn-requirements.md`. The requirement at
+issue is about an *upstream* producing conversion, and the search that found it absent was local
+only, so the operator's standing-limit rule ("no amount of further work in this repository can
+satisfy it") is not yet established. Instead the parent launched `w-fevhub` (branch `wg-fevhub`) to
+perform the upstream provenance search over the Hub dataset repository history, generated-ref
+metadata and build records, the NEI aggregation input, and the upstream release/paper artefacts,
+with FOUND / enumerated-ABSENT / UNKNOWN states and retained response digests. Any withdrawal
+decision waits on that result.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py \
+    tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py \
+    tests/quality/test_site_evidence_carriers.py -q
+102 passed, 15 skipped, 3 xfailed
+
+What this does NOT do
+---------------------
+- It closes nothing: `fever / dataset-journal-gap` stays open with every named obligation intact.
+- It withdraws nothing and adds no entry to `withdrawn-requirements.md`.
+- It does not score anything, does not import a scorer, does not run the converter, and does not
+  claim the historical export was ever scored under the pinned scorer.
+- It does not claim the original-FEVER aggregate is comparable; it records the opposite - that the
+  metric must be chosen and named first.
+- It does not touch any historical record, frozen receipt or run ID, and does not reinstate a
+  withdrawn shared gate.
