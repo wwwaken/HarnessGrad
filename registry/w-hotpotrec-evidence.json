@@ -1,0 +1,1021 @@
+{
+  "worker": "w-hotpotrec",
+  "search_base_commit_observed": "eada00fc072d7006fb08cf7f4a750dbaa1437174",
+  "scratch": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence",
+  "filesystem_scope": [
+    {
+      "bytes": 1669692534,
+      "errors": [],
+      "files": 11886,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad/runs",
+      "excluded_count": 0
+    },
+    {
+      "bytes": 2355604,
+      "errors": [],
+      "files": 953,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad/runs_discarded_20260929-004559",
+      "excluded_count": 1
+    },
+    {
+      "bytes": 15,
+      "errors": [],
+      "files": 3,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad/.harnessgrad-state",
+      "excluded_count": 0
+    },
+    {
+      "bytes": 1554930,
+      "errors": [],
+      "files": 168,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive",
+      "excluded_count": 0
+    },
+    {
+      "bytes": 10592,
+      "errors": [],
+      "files": 5,
+      "root": "/mnt/20t/xubuqiang/Study/hg-backup-20261014",
+      "excluded_count": 1
+    },
+    {
+      "bytes": 41,
+      "errors": [],
+      "files": 1,
+      "root": "/mnt/20t/xubuqiang/Study/hg-backup-20261014-pre-rewrite",
+      "excluded_count": 1
+    },
+    {
+      "bytes": 100998,
+      "errors": [],
+      "files": 6,
+      "root": "/mnt/20t/xubuqiang/Study/hg-logs",
+      "excluded_count": 0
+    },
+    {
+      "bytes": 147320,
+      "errors": [],
+      "files": 31,
+      "root": "/mnt/20t/xubuqiang/harnessgrad_work",
+      "excluded_count": 3
+    },
+    {
+      "bytes": 39140393,
+      "errors": [],
+      "files": 1535,
+      "root": "/mnt/20t/xubuqiang/Study/harnessgrad_work",
+      "excluded_count": 139
+    },
+    {
+      "bytes": 3820,
+      "errors": [],
+      "files": 1,
+      "root": "/mnt/20t/xubuqiang/Study/harnessgrad_cli",
+      "excluded_count": 0
+    },
+    {
+      "bytes": 35208,
+      "errors": [],
+      "files": 4,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad-real-work-20261117",
+      "excluded_count": 1
+    },
+    {
+      "bytes": 62905,
+      "errors": [],
+      "files": 5,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad-real-work-20261117c",
+      "excluded_count": 1
+    },
+    {
+      "bytes": 17056098,
+      "errors": [],
+      "files": 770,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117",
+      "excluded_count": 3
+    },
+    {
+      "bytes": 16990786,
+      "errors": [],
+      "files": 899,
+      "root": "/mnt/20t/xubuqiang/Study/HarnessGrad-gaia-controls-20261117",
+      "excluded_count": 3
+    },
+    {
+      "bytes": 420364636,
+      "errors": [],
+      "files": 64859,
+      "root": "/mnt/20t/xubuqiang/hg-census",
+      "excluded_count": 0
+    }
+  ],
+  "transcript_inventory_observed": {
+    "transcript_bytes": 3054290948,
+    "transcript_files": 734
+  },
+  "git_command_observations": [
+    {
+      "command": [
+        "git",
+        "for-each-ref",
+        "--format=%(refname:short) %(objectname)",
+        "refs/heads"
+      ],
+      "exit": 0,
+      "name": "branches",
+      "stderr": "",
+      "stdout_bytes": 7484,
+      "stdout_lines": 137,
+      "stdout_sha256": "8d8f82a6d9239f5baec696468f2fe14a996f1a598b29858fb12a1da54bd19b4f"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s"
+      ],
+      "exit": 0,
+      "name": "log-all",
+      "stderr": "",
+      "stdout_bytes": 74692,
+      "stdout_lines": 718,
+      "stdout_sha256": "d0a44069a01883e5131c0fb1a3c50573c50212338f8c0023a804985d060a1539"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-Shotpot",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-hotpot",
+      "stderr": "",
+      "stdout_bytes": 17622,
+      "stdout_lines": 163,
+      "stdout_sha256": "1c12647dd82f433b678a7a778bb3af655f4a14d0086a63a894fe227a5eef2d9b"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-Shotpotqa",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-hotpotqa",
+      "stderr": "",
+      "stdout_bytes": 14257,
+      "stdout_lines": 132,
+      "stdout_sha256": "85eaa1793a0523153b535d5080da39fae3da42549b07b1bf732d26afaefab623"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-S492",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-492",
+      "stderr": "",
+      "stdout_bytes": 25588,
+      "stdout_lines": 234,
+      "stdout_sha256": "1bb48a8a4d3db6aa32460db15024b73ebd47b80c2862285208c6733576b83059"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-S1476",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-1476",
+      "stderr": "",
+      "stdout_bytes": 11347,
+      "stdout_lines": 104,
+      "stdout_sha256": "913efb2d89c04ac13d8ea56c237ddd72b8d5eb5d871c1ae93792c20d9493d18c"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-S1382",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-1382",
+      "stderr": "",
+      "stdout_bytes": 11642,
+      "stdout_lines": 106,
+      "stdout_sha256": "7b830c175b084b236216b5d3b38778e4e59bb3e57e525bf81d50ee22b5efa664"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-S94/",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-94_",
+      "stderr": "",
+      "stdout_bytes": 9349,
+      "stdout_lines": 86,
+      "stdout_sha256": "4f48b15226d4c671421f05d1cf7a330fc374a5fec5184d37e68efe8d01341965"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "--pickaxe-all",
+        "-Sv4",
+        "--",
+        ":(exclude)data/datasets/api_bank/**",
+        ":(exclude)data/datasets/nestful/**",
+        ":(exclude)data/datasets/sotuqa/**",
+        ":(exclude)data/datasets/tau2_bench/**"
+      ],
+      "exit": 0,
+      "name": "pickaxe-v4",
+      "stderr": "",
+      "stdout_bytes": 18336,
+      "stdout_lines": 169,
+      "stdout_sha256": "fa675164e970a1aebad8e1f658a02fe25159acea89ed083a5b9c5c161d10268d"
+    },
+    {
+      "command": [
+        "git",
+        "stash",
+        "list"
+      ],
+      "exit": 0,
+      "name": "stash",
+      "stderr": "",
+      "stdout_bytes": 0,
+      "stdout_lines": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "git",
+        "reflog",
+        "--all",
+        "--format=%H %gs"
+      ],
+      "exit": 0,
+      "name": "reflog",
+      "stderr": "",
+      "stdout_bytes": 11139,
+      "stdout_lines": 109,
+      "stdout_sha256": "82b1329e5963423435bea5e044208003b0f3972b7208c5d61309956f9397941a"
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "--batch-all-objects",
+        "--batch-check"
+      ],
+      "exit": 0,
+      "name": "objects",
+      "stderr": "",
+      "stdout_bytes": 1203874,
+      "stdout_lines": 23773,
+      "stdout_sha256": "b47b1af0344169092026c1ddb4987d5fd0573481e772fcd172db41c2984e5e72"
+    },
+    {
+      "command": [
+        "git",
+        "rev-list",
+        "--objects",
+        "--all"
+      ],
+      "exit": 0,
+      "name": "reachable",
+      "stderr": "",
+      "stdout_bytes": 2273836,
+      "stdout_lines": 23700,
+      "stdout_sha256": "2cdd4d19200290eab8e84ce19d152d2193f3ba05f0575c6d48ea80179aac4862"
+    }
+  ],
+  "frozen_git_command_observations": [
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014/dot-git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "exit": 0,
+      "name": "store0-refs",
+      "stderr": "",
+      "stdout_bytes": 1668,
+      "stdout_lines": 22,
+      "stdout_sha256": "5c07b135d8e36621af395bda19b2e4e24f02c776ce981cb09625fced02d761b2"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014/dot-git",
+        "log",
+        "--all",
+        "--format=%H %s"
+      ],
+      "exit": 0,
+      "name": "store0-log",
+      "stderr": "",
+      "stdout_bytes": 36485,
+      "stdout_lines": 369,
+      "stdout_sha256": "ba711b3ee1b899c75dcd667f94ebaf5c5e3c0d505ea6f5210c436d40bee9d02d"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014/dot-git",
+        "rev-list",
+        "--objects",
+        "--all"
+      ],
+      "exit": 0,
+      "name": "store0-paths",
+      "stderr": "",
+      "stdout_bytes": 245641,
+      "stdout_lines": 3965,
+      "stdout_sha256": "f5c54eb100f4992756ced0d642ac1168baed3bfedf9fa5b89a2e2f8421828fab"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014/dot-git",
+        "cat-file",
+        "--batch-all-objects",
+        "--batch-check"
+      ],
+      "exit": 0,
+      "name": "store0-objects",
+      "stderr": "",
+      "stdout_bytes": 214473,
+      "stdout_lines": 4208,
+      "stdout_sha256": "d5c644f31983d60cbcb3f0e0b784ece27951583021a95f02fc611ddca89f86d2"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014-pre-rewrite/dot-git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "exit": 0,
+      "name": "store1-refs",
+      "stderr": "",
+      "stdout_bytes": 1668,
+      "stdout_lines": 22,
+      "stdout_sha256": "5ff2b4f890d2e284bf116df68d9378a799986ef19db3c598945395900be7838a"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014-pre-rewrite/dot-git",
+        "log",
+        "--all",
+        "--format=%H %s"
+      ],
+      "exit": 0,
+      "name": "store1-log",
+      "stderr": "",
+      "stdout_bytes": 38339,
+      "stdout_lines": 388,
+      "stdout_sha256": "8282075f8037f6e4404b732e67e023d6da6e91da65d573578284ef336728fc1d"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014-pre-rewrite/dot-git",
+        "rev-list",
+        "--objects",
+        "--all"
+      ],
+      "exit": 0,
+      "name": "store1-paths",
+      "stderr": "",
+      "stdout_bytes": 253845,
+      "stdout_lines": 4102,
+      "stdout_sha256": "48086a48c397e2a93496e313d1b7977af5b358bb3271f6fbe58a5e3367a1aa6b"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/hg-backup-20261014-pre-rewrite/dot-git",
+        "cat-file",
+        "--batch-all-objects",
+        "--batch-check"
+      ],
+      "exit": 0,
+      "name": "store1-objects",
+      "stderr": "",
+      "stdout_bytes": 222333,
+      "stdout_lines": 4361,
+      "stdout_sha256": "877f1c255ad36e17e042e0dd63ee16fec9bfc5412c62fa6194a6146239931169"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/.git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "exit": 0,
+      "name": "store2-refs",
+      "stderr": "",
+      "stdout_bytes": 57,
+      "stdout_lines": 1,
+      "stdout_sha256": "64d232bafa2be87888b4238208ac1a85703a189ad8ef837e9f1890c0cfacd7b8"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/.git",
+        "log",
+        "--all",
+        "--format=%H %s"
+      ],
+      "exit": 0,
+      "name": "store2-log",
+      "stderr": "",
+      "stdout_bytes": 13539,
+      "stdout_lines": 132,
+      "stdout_sha256": "684b676e11915a622fd7477c70630d4a9cee1e4f34e7e0accb8e5968efd39bcf"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/.git",
+        "rev-list",
+        "--objects",
+        "--all"
+      ],
+      "exit": 0,
+      "name": "store2-paths",
+      "stderr": "",
+      "stdout_bytes": 173520,
+      "stdout_lines": 2559,
+      "stdout_sha256": "7479c383cdf58a39672465547188164acf3d0d0f3f33b4fef75fa7c378b9e9b0"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/.git",
+        "cat-file",
+        "--batch-all-objects",
+        "--batch-check"
+      ],
+      "exit": 0,
+      "name": "store2-objects",
+      "stderr": "",
+      "stdout_bytes": 137521,
+      "stdout_lines": 2707,
+      "stdout_sha256": "10e09b9929139acb303f6ed7d9e87881d3640d388e73988ac15523a0510a71fa"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-gaia-controls-20261117/.git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "exit": 0,
+      "name": "store3-refs",
+      "stderr": "",
+      "stdout_bytes": 57,
+      "stdout_lines": 1,
+      "stdout_sha256": "4707525b60c5020d4b9290c895e5318aab89472c097b292e4ee9223129291d2f"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-gaia-controls-20261117/.git",
+        "log",
+        "--all",
+        "--format=%H %s"
+      ],
+      "exit": 0,
+      "name": "store3-log",
+      "stderr": "",
+      "stdout_bytes": 12932,
+      "stdout_lines": 125,
+      "stdout_sha256": "99fc17b5f472d7b9adb3323410cc7709aae45b4ee8f1a6359f24c01fbd8cf7a2"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-gaia-controls-20261117/.git",
+        "rev-list",
+        "--objects",
+        "--all"
+      ],
+      "exit": 0,
+      "name": "store3-paths",
+      "stderr": "",
+      "stdout_bytes": 134107,
+      "stdout_lines": 2146,
+      "stdout_sha256": "b53784424de7a54e5c228c333b0e005bc2749145411d3a93c505823237ed1f06"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir=/mnt/20t/xubuqiang/Study/HarnessGrad-gaia-controls-20261117/.git",
+        "cat-file",
+        "--batch-all-objects",
+        "--batch-check"
+      ],
+      "exit": 0,
+      "name": "store3-objects",
+      "stderr": "",
+      "stdout_bytes": 219460,
+      "stdout_lines": 4307,
+      "stdout_sha256": "f9b245b883b7d2e2089e18fd6d8d67f37f1475b462cae16db3018d59f086bbe2"
+    }
+  ],
+  "unique_blob_scan_observations": [
+    {
+      "batch_exit": 0,
+      "bytes": 330057578,
+      "excluded_refused_blobs": 13,
+      "matching_blobs": 944,
+      "scanned_unique_blobs": 17479,
+      "store": "worktree-common-git"
+    },
+    {
+      "batch_exit": 0,
+      "bytes": 21935768,
+      "excluded_refused_blobs": 7,
+      "matching_blobs": 65,
+      "scanned_unique_blobs": 318,
+      "store": "/mnt/20t/xubuqiang/Study/hg-backup-20261014/dot-git"
+    },
+    {
+      "batch_exit": 0,
+      "bytes": 781775,
+      "excluded_refused_blobs": 7,
+      "matching_blobs": 8,
+      "scanned_unique_blobs": 21,
+      "store": "/mnt/20t/xubuqiang/Study/hg-backup-20261014-pre-rewrite/dot-git"
+    },
+    {
+      "batch_exit": 0,
+      "bytes": 135956652,
+      "excluded_refused_blobs": 6,
+      "matching_blobs": 0,
+      "scanned_unique_blobs": 235,
+      "store": "/mnt/20t/xubuqiang/Study/HarnessGrad-appworld-controls-20261117/.git"
+    },
+    {
+      "batch_exit": 0,
+      "bytes": 208351,
+      "excluded_refused_blobs": 6,
+      "matching_blobs": 1,
+      "scanned_unique_blobs": 22,
+      "store": "/mnt/20t/xubuqiang/Study/HarnessGrad-gaia-controls-20261117/.git"
+    }
+  ],
+  "filesystem_rg_observation": {
+    "pattern": "hotpot(?:qa)?|1,?476|1,?382",
+    "rg_chunk_exit_counts": {
+      "0": 113,
+      "1": 158
+    },
+    "stderr": ""
+  },
+  "transcript_rg_observation": {
+    "pattern": "hotpot(?:qa)?|1,?476|1,?382",
+    "rg_chunk_exit_counts": {
+      "0": 3
+    },
+    "stderr": ""
+  },
+  "filesystem_match_count_observed": 1149,
+  "filesystem_hotpot_content_file_count_observed": 33,
+  "transcript_match_count_observed": 499,
+  "branches_observed": [
+    "codex/103-appworld-service-launch 7e70d54c8069f565c1d81ae0b19160f68571bef8",
+    "codex/104-appworld-actor-protocol b5d6709504c302c81481a05c8e5cfc41de1a2981",
+    "codex/105-loop-robustness 6da4e2d17b172c85e99610c3b5f08ae3b83377ce",
+    "codex/appworld d8c2b0703b10432f72a92dbc3e676879a02164c3",
+    "codex/archive-alignment d1291ca37127215dea049c203e227c89f4f10d0b",
+    "codex/budget-dispatcher-integration a9f25d9740600656d4c8b9dcb5d5466b896cb2c6",
+    "codex/budget-guard 71601ee89dc1ab44b72edfa7364e82f2d39eb958",
+    "codex/eight-stage-runtime 1906e4e36f8c63d28aaa47a252cca284ed5a195a",
+    "codex/integration-22 e624a838152aee402d526986dafb3a76355747ab",
+    "codex/merge-alignment c9bc73cf0004d96a4c44732fd606bfeb68c2e075",
+    "codex/musique-launch-readiness 9fdf03f3de3eac12876787d5adee73868c16c52b",
+    "codex/pinchbench a735b8071ca16c0c63c4b29fb66259af863fb842",
+    "codex/qa-evidence-answer 5689716ee48bcdb818449fea5be0218cc97606db",
+    "codex/rrsi-alignment f5a5e0ca7151277879302f6ceb560d838fcdb3ea",
+    "codex/trusted-budget-dispatcher e4d7846e44659262f02744e3b7d714e749e9dd68",
+    "codex/trusted-runner-correction f1fdcac5f08dab54506c95510c51fe65915a11c3",
+    "codex/trusted-runner-facade 2f5611ffe08d5640bab1f1ce08540a40ea7ea7c6",
+    "codex/w-shared-topology 140d360b05aeed6a0b1f973e69214e5946b6799c",
+    "codex/web-gateway 195668f317acce331d4c73672c708dcdc848a6a4",
+    "fix/qa-json-recovery-codex119 8525181797ab3626d9b9e0db299d1a2d50ff506b",
+    "main eada00fc072d7006fb08cf7f4a750dbaa1437174",
+    "migrate-docs-out c4e4ab800abe2542c11b5ba7414ac5fb7b34b68a",
+    "w-hp3-alfprobe a6236457e078988caaf3e37cbda0d79c72ccaf2c",
+    "w-mig-fixture-skips e59aea25a82ef7fe449c6042b98caca9f269f5cc",
+    "w-offscorer2-spread b243f24d181dbc60da2642a1c4fb36f2abe3d139",
+    "wg-2wiki 81859c1c801d99101e09190eb1ef1067e5ec5d94",
+    "wg-alf b8045e142e2f7fd702797687c5dacd3465b8f9d2",
+    "wg-appworld 7110c4d7603d8311e534019ea524d53c56315e63",
+    "wg-appworld2 43504adc7c04a2099a77177304f081e5ac7a9cde",
+    "wg-assess d2d4cab7c2a714cef026c47421098e823079c1e6",
+    "wg-awp 0a8a0516ff586da5bc543bcfd44432eef9f93109",
+    "wg-bfcl db42c897e53bf6b95cd3739dd4de9e09c34d50b5",
+    "wg-bfclroute 1f3b2c1a7e1a2f5e19daa370fa03e8682db14301",
+    "wg-bfclrt eada00fc072d7006fb08cf7f4a750dbaa1437174",
+    "wg-bind d27e44c7307ead0300f28bac1c9eea905c3a0878",
+    "wg-caps a4c1ef27fac9c294b819652a5056df1a72cfea57",
+    "wg-chess 3a01fc5714477c9e3d9329e07c401d3faceb8d3d",
+    "wg-chess2 ffeabcc626fd820dacf4f5d2a5a6cae335d7964b",
+    "wg-chess3 1c2b4abb8e00912c34aa8f7c253db1c420cfe654",
+    "wg-clo 48da4939efbad9765bfe40daa466807de2a90be2",
+    "wg-clo2 eb0acc35450e275465e7b5b7d537a2ab6d01f498",
+    "wg-clo2-native c01bf96d9ee7cda0516eb795cb145d8ad63373f9",
+    "wg-clo2-qa 255bcfdffd52e804f959e1e95f51ea158e1fc6ef",
+    "wg-clo2-snapshot 66704bdd4bcf7f94becc352badb0ea0b0b82f8fc",
+    "wg-e5 f27c708d8ace62d501f45e08441d7a7376add4fb",
+    "wg-e6 cdf6ffa0809b7b57c4a3a63d265f234329d6589e",
+    "wg-e6b d6c562d1a48f4932f2fd89c07928a7a365748fc2",
+    "wg-e6fix 15a9895f64c40679c4310cacdd116479c83ecb5c",
+    "wg-fevconv eada00fc072d7006fb08cf7f4a750dbaa1437174",
+    "wg-fix e7428c53c0b1209a58d0ddec45f71377bb276184",
+    "wg-hostdeps c16b4628d41d7a31f857f0311037dd8edb6530e9",
+    "wg-hostpin c41960fe69149930ad953a6d8192528181824952",
+    "wg-hostpin2 0408edc2119f073b8d1a910128f76796711c0937",
+    "wg-hotpot a614e21c855a0c2ba11167209093622f9ac6c067",
+    "wg-hotpotrec eada00fc072d7006fb08cf7f4a750dbaa1437174",
+    "wg-hp3 eaa47ac6f324a6383d66df272e3b992fe9671f1e",
+    "wg-hp4 74f601938f1485b456527e9d893d1537c091b8df",
+    "wg-hp4-routes 6a6bb324d498341e7ca21bc1f9df2c59f7032535",
+    "wg-img f8d86bd8cdba99b1f228e2ff3a887a518e039abd",
+    "wg-jc2 49406ec283a1703b85eba2535dcc3a3b7250b1ff",
+    "wg-jc2-fever d7f7de40f91792286f0d30226ba655d5cb34e5a7",
+    "wg-jc2-gym b73a2bc5290d4975301ddf44757dc1bfe41a3ec1",
+    "wg-jc2-spread 452930baa8f7c041fe35e7769ad3cc346beafcf5",
+    "wg-journalcov ceffec8b88d06ff329ab671c2a8370dfb79679d9",
+    "wg-jvm 209b3d98148f8ffa7f4f2ccbccdfb2cabd74b455",
+    "wg-lcb 7df039d8a1f789fbb9fbef9d0c9e14ec05054a2a",
+    "wg-mkl bcb8a766b8740510c57f5ba27cf14ceb1ad7a0c2",
+    "wg-mkl2 cac279f69025de3d50a79f6696b3d205ec32b9a9",
+    "wg-net 9968ea4cdfb2303c19b41a78606879735e0ae4ae",
+    "wg-obs 95efcd71ac3f7b499ff348cc78ae7ce20fbc6277",
+    "wg-offscorer 14f44c568fe2c9861c1fe64d9fa0f2312ea83c60",
+    "wg-offscorer-bigbench 2fda6b48acb008369e9354dc3c350fea09a8faed",
+    "wg-offscorer-numeric b6ea7367941e4f5007a5ddb960c9c49b953c38c9",
+    "wg-offscorer-public 9c3e1840b44ce9cd18ee43bd1a742632a9338a75",
+    "wg-offscorer2 05d4cc1bd7334f9880eda379f903edbbca976b7a",
+    "wg-offscorer2-sqlds 7f9129c015befcfcb87c3f7b51203fd153728683",
+    "wg-offscorer2-worlds f5ca6cb1a122adb86aa47ffd96b597ed1b3a3cbf",
+    "wg-offscorer3 4f3cb789b4c04f942104ffa5f56cc92848ba4b6b",
+    "wg-offscorer3-bfcl 152bead53b537ace7bcd62bf852b0e80c8fd854e",
+    "wg-offscorer3-codechess 56bca2d6a5a6df50458c88b03e5111839b122451",
+    "wg-offscorer3-worlds 19abc579298a8b200717ed4b043faff316d47507",
+    "wg-pin 2353151fa8917878fecf1881e0872ba5e0837b0c",
+    "wg-prifix 709bc78790f1d46037cd18ba4bf283925354654f",
+    "wg-pristine 88f8ea233b1b75e813b44ff663cc79150287df54",
+    "wg-prov 0fe018337c268ba5a1dfcbacf07b49c523a9e543",
+    "wg-quiesce 87b3feb1fed30db4ba0c3410f44641493e57a731",
+    "wg-quiesce2 268bce220e1686bcb070b1cc26d5e83e14fadb18",
+    "wg-reassess 0f24ec8b8e2aeb587c86f94138141a85294048d9",
+    "wg-reassess2 6bbc36be651e0621984bf16e4b162c55aa32ad06",
+    "wg-recgym eada00fc072d7006fb08cf7f4a750dbaa1437174",
+    "wg-resolver 53454ca81bc895060efa58bcdf86e9b0511f1eda",
+    "wg-resolver2 b678986e54f809782de5a53227940e79e2830ddf",
+    "wg-resolver3 5fa25e6abcf6df97042e5c779fd50c2bdff46934",
+    "wg-resolver4 4726bdb60716175058e640c00bf8c7af2b493cb9",
+    "wg-resolver5 d2da2ac264ed0c009e7b4ba776e98648dea62a4a",
+    "wg-resolver5-tb c6c6bcdfe55648468febe048c4bc7a7c0de8303f",
+    "wg-s6 00db0acc49a3abd3d97796c942a5686a82147ade",
+    "wg-scope 30cacc9bf6c13e54abe999be21010f9b57fda7ab",
+    "wg-scratch 2c21f55d06355405624197ed09f04d991da3d4da",
+    "wg-sel eaca23616a99cc441c89bc7f78af0c6b17e7f28c",
+    "wg-shared d9d2c0beaa11ebf9815b0d121570d50b91f7f939",
+    "wg-snap 1dd9c2166ea480cbc2c401d5b275520a9dc3a792",
+    "wg-snap2 d9aa891a52a7a439329023ced6e6057331230a6f",
+    "wg-snapfix 7888ca113ea427b16e3518f2e9de3fcec169cd80",
+    "wg-spread c213cf5f6f2e56462163a68be1c2ddbfbe2829c7",
+    "wg-spread2 9a28809948813b019505e63c0db491153ff1eece",
+    "wg-stalepoint eada00fc072d7006fb08cf7f4a750dbaa1437174",
+    "wg-tb89 a88c2dec3e581a4d3e884f02cb151b8a48fc8131",
+    "wg-tb89b acbc125d4384be7850f478764f9b3b7e70ee5d0f",
+    "wg-tb89c bc0204fa3ebd9429b40d5fd8ffa91996fdb27404",
+    "wg-tb89d 41ca773b6dd6212f788310d49567b6c53771026a",
+    "wg-tb89e ff8c1e5474a0cd2d0c06b77fff8053853d03387d",
+    "wg-tbdep 11d2f41cae0a8c9476a63a0b3e60fb3d31257c55",
+    "wg-tbi 91754baa1d3416e15477887148cfaedc1c7ac999",
+    "wg-tbi2 f8c435509c128a45dd612b9d768b79be4fdec0cd",
+    "wg-tbi2-audit da9fe8c54dc5fd447203928bc03ed540a9c82196",
+    "wg-tbi2-tests 862bbb4f24b0ab742425cb26812ac2333c25b784",
+    "wg-tbrun 903782aa0367e738ba0affdf6f7318d869c11545",
+    "wg-tbrun2 9e7ad7dc984af513646a96db499610cffdb4634f",
+    "wg-tbrun3 dc4ec20b70e599ee7cab2bbb635682d71c05ff4b",
+    "wg-tbrun4 6fee7cdd4a328b68b7cfe9fdfc7c8d1e6ed91c2c",
+    "wg-trivia 69ff41bc053c912e22e5f40a0971aeac07ad4cac",
+    "wg-ujson 3e7361d18d58988e9282adf0240e5d2bc2a62c21",
+    "wg-ujson2 58eec67528fb6524c5b8e8bcb299fe552209cb24",
+    "wg-uvx cfb04ed5d3d1d249825a6cdfae97aaeb1323720a",
+    "wg-verify cf6e456631b8e43114fdb069caf29e91f65f5241",
+    "wg-verify-images 528b7d1098e5e319f3102807124aa59a01f62768",
+    "wg-verify-net 95c75c30c4a9af5699fbcff41898134ea4da1eb4",
+    "wg-verify-scorers-extra 14f1c6db523fbee440ae5978d62618477f3520bd",
+    "wg-wal 873deb752451cf41d78cdc265d72e705eb46aafb",
+    "wg-wd2 2e410a2d3f969948abe5433951ae79a26c269961",
+    "wg-wheelhouse ae33e284728ec7d8d6c264660f1f1d823b78f9f7",
+    "wg-wsel-review 4556a9a5f386cf303128a2477d80fd31688f167e",
+    "wg-wtbdep-python 72bbc7f3510d94ac0980c8f325cbd52fdbf5ccd3",
+    "wg-wtbdep-runtime 10ae57fe742801b9f4c91592abb7852d7836d83c",
+    "wg-wtbdep-scope f5098a1e380c610038195070128e73788ebe2461",
+    "withdraw-unobtainable dc090d519b083e0253f92f2f5addb087655637a1"
+  ],
+  "scratch_artifacts": [
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/filesystem-files.json",
+      "bytes": 9091661,
+      "sha256_observed": "21c335647accef87cefcc5d32e4d20004b3d620fbfabd63671dacaa7ee0e3c49"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/transcript-files.json",
+      "bytes": 87188,
+      "sha256_observed": "cc96ca8e11215ab0c2cb1c0f9b6923a722a51337193ffe5eca7e32407b76fe5f"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/inventory.txt",
+      "bytes": 17704,
+      "sha256_observed": "60eb0905f7e2398d53935f31f8a093a54edff46135ed68bb21b539b6c14741ad"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/filesystem.txt",
+      "bytes": 114412,
+      "sha256_observed": "0c206ad6a167644fc7f117def3c2cf8d3b5048a04058e35d07f6814e8507e829"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/transcripts.txt",
+      "bytes": 58417,
+      "sha256_observed": "31f6932066b4f242f0fba1a6aa4123046baa6af5ee502e1b2143b107777b52ca"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/git.txt",
+      "bytes": 4362,
+      "sha256_observed": "8fc625e0a5eab42d7838e2f67e5b81bc2f2d5e93d4a4aa751da553e1ec18a15e"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/gitstores.txt",
+      "bytes": 5082,
+      "sha256_observed": "9716028475f3a2a3f964328ac5d44c21b5440b060813db44b9a685850d75aace"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/blob-scan.txt",
+      "bytes": 912,
+      "sha256_observed": "54079dc6908c0969d01c8236523c92a082370688ceeabd056d8bb0f9df78bce0"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/branches.stdout",
+      "bytes": 7484,
+      "sha256_observed": "8d8f82a6d9239f5baec696468f2fe14a996f1a598b29858fb12a1da54bd19b4f"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/log-all.stdout",
+      "bytes": 74692,
+      "sha256_observed": "d0a44069a01883e5131c0fb1a3c50573c50212338f8c0023a804985d060a1539"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/stash.stdout",
+      "bytes": 0,
+      "sha256_observed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/reflog.stdout",
+      "bytes": 11139,
+      "sha256_observed": "82b1329e5963423435bea5e044208003b0f3972b7208c5d61309956f9397941a"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/objects.stdout",
+      "bytes": 1203874,
+      "sha256_observed": "b47b1af0344169092026c1ddb4987d5fd0573481e772fcd172db41c2984e5e72"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/reachable.stdout",
+      "bytes": 2273836,
+      "sha256_observed": "2cdd4d19200290eab8e84ce19d152d2193f3ba05f0575c6d48ea80179aac4862"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/filesystem-matches.stdout",
+      "bytes": 110842,
+      "sha256_observed": "7139266eeb99a461dd75b52feaa773bfa8838c788fb833a85a40d7ba02be0588"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/transcripts-matches.stdout",
+      "bytes": 56809,
+      "sha256_observed": "0b3463e5123be2ad571a5e9a31773ca5fcf49eff3efb24ddabce4c625f095423"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/execution-excerpts.jsonl",
+      "bytes": 9034942,
+      "sha256_observed": "2106da4fa5cc5bf00ddba2bd947ad2e2df2d6bf94d9bc9e9bb722c7c42cd0439"
+    },
+    {
+      "path": "/mnt/20t/xubuqiang/hg-work/hotpotrec/evidence/recovered-v5-train.json",
+      "bytes": 16340,
+      "sha256_observed": "03da33898ea287fdf3060db62f669308696a0ae18013fa9bac33f260fa429479"
+    }
+  ],
+  "transcript_excerpts": [
+    {
+      "file": "/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-19-24-01a12e8d-26bd-7c90-ab31-5ab4e04eaaa8.jsonl",
+      "line": 85,
+      "timestamp_observed": "2026-10-12T05:21:35.318Z",
+      "command_observed": [
+        "/bin/bash",
+        "-lc",
+        "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nfor n in ['59-local-preflight.json','59-preflight-status.json']:\n d=json.loads((Path('/tmp/codex')/n).read_text())\n for r in d:\n  if r.get('dataset',r.get('id',r.get('name'))) in {'jericho','agentdojo','alfworld'}: print(n,json.dumps(r,indent=2)[:6500])\nfor n in ['qa-h0-archive-v4/index.json','qa-h0-incomplete-index.json']:\n d=json.loads((Path('/tmp/codex')/n).read_text())\n print(n,'records',[(r.get('dataset'),r.get('run_id'),r.get('status'),r.get('run_dir')) for r in d['records']])\n for r in d['records']:\n  if r.get('dataset')=='alfworld':\n   print('alfworld keys',list(r))\n   print(json.dumps({k:v for k,v in r.items() if k not in {'run_artifacts','task_records','tasks','task_results','traces','requests'}},indent=2)[:9000])\nPY"
+      ],
+      "exit_observed": 0,
+      "stdout_verbatim_selected_lines": [
+        "qa-h0-incomplete-index.json records [('bird_minidev', 'bird-minidev-h0-10pct-v4', 'incomplete', '/tmp/harnessgrad-runs/bird-minidev-h0-10pct-v4'), ('fever', 'fever-h0-10pct-v4', 'incomplete', '/tmp/harnessgrad-runs/fever-h0-10pct-v4'), ('hotpotqa', 'hotpotqa-h0-10pct-v4', 'incomplete', '/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4')]"
+      ],
+      "scope_limit": "Selected verbatim stdout lines; complete command stdout remains in the source transcript."
+    },
+    {
+      "file": "/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-19-24-01a12e8d-26bd-7c90-ab31-5ab4e04eaaa8.jsonl",
+      "line": 102,
+      "timestamp_observed": "2026-10-12T05:22:24.825Z",
+      "command_observed": [
+        "/bin/bash",
+        "-lc",
+        "python3 - <<'PY'\nimport json,hashlib\nfrom pathlib import Path\nmain=Path('/mnt/20t/xubuqiang/Study/HarnessGrad'); wt=Path('/tmp/codex/51/worktree')\nfor n in ['jericho','agentdojo','alfworld']:\n for rel in [f'data/{n}.py',f'data/{n}/control.py',f'data/{n}/verify/check.py']:\n  hashes=[hashlib.sha256((root/rel).read_bytes()).hexdigest() if (root/rel).exists() else None for root in [main,wt]]\n  print(rel,'main/task51 identical',hashes[0]==hashes[1],hashes)\nfor n in ['alfworld-h0-10pct-v4','scienceworld-h0-10pct-v4','bird-minidev-h0-10pct-v5','hotpotqa-h0-10pct-v5','ds1000-h0-10pct-v4']:\n root=Path('/tmp/harnessgrad-runs')/n\n print(n,'aggregate files',[(x,(root/x).exists(),(root/x).stat().st_size if (root/x).exists() else None) for x in ['run_meta.json','run_state.json','status.json','curve.jsonl','events.jsonl']])\n p=root/'run_meta.json'\n if p.exists():\n  d=json.loads(p.read_text()); print('meta keys',list(d));print('selected meta',json.dumps({k:v for k,v in d.items() if k in ['dataset','run_id','status','method','model','model_backend','n_trials','jobs','split_source','split','side','schema','framework_version','budget','started_at','ended_at']}))\nPY"
+      ],
+      "exit_observed": 0,
+      "stdout_verbatim_selected_lines": [
+        "hotpotqa-h0-10pct-v5 aggregate files [('run_meta.json', True, 232296), ('run_state.json', False, None), ('status.json', False, None), ('curve.jsonl', False, None), ('events.jsonl', True, 230711)]"
+      ],
+      "scope_limit": "Selected verbatim stdout lines; complete command stdout remains in the source transcript."
+    },
+    {
+      "file": "/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-19-24-01a12e8d-26bd-7c90-ab31-5ab4e04eaaa8.jsonl",
+      "line": 119,
+      "timestamp_observed": "2026-10-12T05:23:08.969Z",
+      "command_observed": [
+        "/bin/bash",
+        "-lc",
+        "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nfor p in [Path('/tmp/harnessgrad-runs/alfworld-h0-10pct-v4/run_meta.json'),Path('/tmp/harnessgrad-runs/scienceworld-h0-10pct-v4/run_meta.json'),Path('/tmp/harnessgrad-runs/bird-minidev-h0-10pct-v5/run_meta.json'),Path('/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v5/run_meta.json')]:\n if not p.exists(): continue\n d=json.loads(p.read_text());print(p.parent.name, {k:d.get(k) for k in ['sampling_policy','split_source','split_sha','split_declared','sandbox','agent_model','agent_backend','trials','jobs']}, 'split_counts',{k:len(v) for k,v in d.get('split',{}).items()},'env keys',list(d.get('env',{})))\np=Path('/tmp/harnessgrad-runs/alfworld-h0-10pct-v4/curve.jsonl'); d=json.loads(p.read_text().splitlines()[0]);print('ALF curve keys',list(d)); print('aggregate',{k:d.get(k) for k in ['round','score','train_score','n','cost','harness_cost','model_calls','tokens','unmeasured','label']})\nPY"
+      ],
+      "exit_observed": 0,
+      "stdout_verbatim_selected_lines": [
+        "hotpotqa-h0-10pct-v5 {'sampling_policy': 'all', 'split_source': 'file:/tmp/codex/hotpotqa-10pct-v4-split.json', 'split_sha': 'a0ee939df43c61c0f5354f766515f0751d6d719ff7efac55edec3513fc239936', 'split_declared': True, 'sandbox': {'requested': True, 'active': True, 'plan_version': 1, 'detail': 'bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v1; /usr/bin/bwrap'}, 'agent_model': 'qwen3.5-9b-local', 'agent_backend': 'openai', 'trials': 3, 'jobs': 1} split_counts {'train': 492, 'eval': 6913} env keys ['kind', 'image_digest', 'network', 'placement', 'services', 'model_gateway', 'model', 'seed']"
+      ],
+      "scope_limit": "Selected verbatim stdout lines; complete command stdout remains in the source transcript."
+    },
+    {
+      "file": "/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-19-24-01a12e8d-26bd-7c90-ab31-5ab4e04eaaa8.jsonl",
+      "line": 129,
+      "timestamp_observed": "2026-10-12T05:23:39.233Z",
+      "command_observed": [
+        "/bin/bash",
+        "-lc",
+        "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nfor name in ['alfworld-h0-10pct-v4','scienceworld-h0-10pct-v4','bird-minidev-h0-10pct-v5','hotpotqa-h0-10pct-v5','ds1000-h0-10pct-v4']:\n p=Path('/tmp/harnessgrad-runs')/name/'events.jsonl'\n if not p.exists(): continue\n lines=p.read_text().splitlines();rows=[json.loads(l) for l in lines if l.strip()]\n print(name,'events',len(rows),'first keys',list(rows[0]) if rows else [],'last metadata',{k:v for k,v in (rows[-1] if rows else {}).items() if k in ['event','kind','type','timestamp','timestamp_utc','ts','phase','status','round']},'curve exists',(p.parent/'curve.jsonl').exists())\n from collections import Counter\n print('event kinds',Counter(r.get('event',r.get('type',r.get('kind'))) for r in rows))\nPY"
+      ],
+      "exit_observed": 0,
+      "stdout_verbatim_selected_lines": [
+        "hotpotqa-h0-10pct-v5 events 182 first keys ['seq', 'kind', 'level', 'message'] last metadata {'kind': 'beat', 'phase': 'agent', 'round': 0} curve exists False",
+        "event kinds Counter({'beat': 116, 'phase': 51, 'task': 13, 'note': 1, 'header': 1})"
+      ],
+      "scope_limit": "Selected verbatim stdout lines; complete command stdout remains in the source transcript."
+    },
+    {
+      "file": "/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-14-44-01a12e88-df36-7711-a286-2fb124e3416d.jsonl",
+      "line": 16,
+      "timestamp_observed": "2026-10-12T05:14:56.060Z",
+      "command_observed": [
+        "/bin/bash",
+        "-lc",
+        "ls -la /tmp/codex"
+      ],
+      "exit_observed": 0,
+      "stdout_verbatim_selected_lines": [
+        "-rw-rw-r--    1 xubuqiang xubuqiang   15694 Oct 12 10:30 hotpotqa-10pct-v3-split.json",
+        "-rw-rw-r--    1 xubuqiang xubuqiang  235885 Oct 12 10:33 hotpotqa-10pct-v4-split.json",
+        "-rw-rw-r--    1 xubuqiang xubuqiang  192708 Oct 12 10:30 hotpotqa-h0-10pct-v3-console.log",
+        "-rw-rw-r--    1 xubuqiang xubuqiang     290 Oct 12 10:40 hotpotqa-h0-10pct-v4-console.log",
+        "-rw-------    1 xubuqiang xubuqiang    1179 Oct 12 10:34 hotpotqa-h0-10pct-v4-ledger.json",
+        "-rw-rw-r--    1 xubuqiang xubuqiang       0 Oct 12 10:34 hotpotqa-h0-10pct-v4-ledger.json.lock",
+        "-rw-rw-r--    1 xubuqiang xubuqiang       0 Oct 12 13:03 hotpotqa-h0-10pct-v5-console.log",
+        "-rw-------    1 xubuqiang xubuqiang    1179 Oct 12 13:03 hotpotqa-h0-10pct-v5-ledger.json",
+        "-rw-rw-r--    1 xubuqiang xubuqiang       0 Oct 12 13:03 hotpotqa-h0-10pct-v5-ledger.json.lock",
+        "-rw-rw-r--    1 xubuqiang xubuqiang    6417 Oct 12 11:02 qa-h0-incomplete-index.json"
+      ]
+    },
+    {
+      "file": "/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T20-22-36-01a13010-98b4-7080-8469-ecc8e991627c.jsonl",
+      "line": 73,
+      "command_observed": [
+        "/bin/bash",
+        "-lc",
+        "python -B - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/tmp/codex/66/evidence/h0_snapshot.json')\nd=json.loads(p.read_text())\nprint(json.dumps(d,indent=2)[:14000])\nPY"
+      ],
+      "exit_observed": 0,
+      "json_decoded_hotpotqa_record": {
+        "curve_present": false,
+        "dataset": "hotpotqa",
+        "driver_pids_seen": [
+          3212548
+        ],
+        "events_snapshot": {
+          "bytes": 235976,
+          "envelopes": 214,
+          "kind_counts": {
+            "beat": 148,
+            "header": 1,
+            "note": 1,
+            "phase": 51,
+            "task": 13
+          },
+          "last_kind": "beat",
+          "mutable": true,
+          "sha256": "c665416e6ed81729d802776f1fa944dec59eefda2ec229196773285b4284d5e2"
+        },
+        "metadata": {
+          "agent_backend": "openai",
+          "agent_model": "qwen3.5-9b-local",
+          "jobs": 1,
+          "sampling_policy": "all",
+          "sandbox": {
+            "active": true,
+            "detail": "bwrap active; 2 trees hidden; source read-only; .state/ writable; artifacts frozen for verification; plan v1; /usr/bin/bwrap",
+            "plan_version": 1,
+            "requested": true
+          },
+          "split_declared": true,
+          "split_sha": "a0ee939df43c61c0f5354f766515f0751d6d719ff7efac55edec3513fc239936",
+          "split_source": "file:/tmp/codex/hotpotqa-10pct-v4-split.json",
+          "trials": 3
+        },
+        "observation_only": true,
+        "run_dir": "/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v5",
+        "run_id": "hotpotqa-h0-10pct-v5",
+        "run_meta_sha256": "85fba1e281b4e1eaf74cb8a99d9c762ad7df70051c9367e18ee8f5b5e443c949",
+        "run_split_counts": {
+          "eval": 6913,
+          "train": 492
+        },
+        "status": "active_at_snapshot",
+        "timestamp_utc": "2026-10-12T05:29:03.671294+00:00"
+      },
+      "scope_limit": "v5 observation only; no underlying run_meta/events bytes or hash verification recovered."
+    }
+  ]
+}
