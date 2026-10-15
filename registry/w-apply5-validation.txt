@@ -1,0 +1,77 @@
+Parent integration validation - apply w-appworld's generic protocol review.
+
+Source
+------
+Worker commit 4092f6f3 (branch wg-appworld3), cherry-picked on top of main 098b8974. It adds
+`registry/proposals/w-appworld.json`, `registry/w-appworld-protocol-review.md` and its validation
+file (328 lines total), and edits no registry field.
+
+Independent parent verification of the load-bearing source claims
+----------------------------------------------------------------
+Every quoted line was read directly in this worktree:
+
+* `data/datasets/appworld.py:234-236` - the prompt passage quoted in the review is verbatim:
+  "Perform the requested changes through these API actions, inspect their results, then give your
+  final answer through your harness. A local script, plain text answer or print-only snippet does
+  not change the world."
+* `data/datasets/appworld/cli/aw:11` - `MARKER = pathlib.Path(".appworld_task")`, relative to the
+  process working directory; `:50-52` - `if not MARKER.is_file() or MARKER.read_text(...) != args.task:
+  post("/initialize", ...)`, i.e. implicit re-initialisation when the marker is missing or mismatched.
+* `data/datasets/appworld/verify/check.py:45-56` - the checker opens a fresh `AppWorld` in
+  `ground_truth_mode="minimal"`, replays each recorded `call` through `world.execute(...)` after
+  stripping `?` from the URL, and then evaluates. It consumes only recorded requests.
+
+The gap the review reports is therefore real at source level: the prompt points the actor at a
+harness-side final answer, while scoring replays in-world API calls only, so a correct-state task that
+omits the in-world completion can still be a measured zero. The review states explicitly that this is
+a task-independent mechanism, that supervisor completion rows are ABSENT over the enumerated retained
+logs while discovery does advertise `complete_task`, that the marker hazard is source-level with
+UNKNOWN occurrence, and that no additional generic defect was demonstrated at that scope.
+
+Applied change
+--------------
+The current `next_action` was the original 153-character two-clause sentence, so the worker's proposal
+needed no drop acknowledgements - `tools/apply_blocker_proposal.py` accepted a strengthened
+replacement with zero refusals and then reported the checker valid on the file it had written.
+
+  appworld/successful-task-evidence   next_action  153 -> 1966 chars
+                                      observed    1862 -> 2749 chars
+  `git diff --numstat registry/dataset-blockers.json` = `2 2`
+
+The replacement keeps the gate OPEN, keeps both the raw-TGC and staged-`score=null` classifications
+distinct, records the completion-guidance gap and the marker hazard with their `file:line`, names the
+three task-independent fabricated controls the review proposes (state-plus-separate-completion world
+with live/replayed readback, marker/working-directory persistence control, live-versus-replayed
+recording differential), and states that source review, API activity and synthetic controls cannot
+satisfy the gate - only a genuine successful measured actor task under the staged pilot policy can.
+It authorizes no run and no expansion, and re-imposes neither withdrawn shared requirement.
+
+Deliberately NOT done
+---------------------
+The review identifies a plausible **harness-side** remedy (making the in-world completion boundary
+explicit to the actor). The parent did **not** change the production prompt or any actor guidance:
+that is a change to the measurement instrument affecting every AppWorld run and every historical
+comparison, it is not authorized here, and it is exactly the kind of "make the number look better"
+edit the objective forbids. It is recorded as a finding for the operator, not applied.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py \
+    tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py \
+    tests/quality/test_site_evidence_carriers.py tests/quality/test_apply_blocker_proposal.py -q
+115 passed, 15 skipped, 3 xfailed
+
+The worker's validation file records the pre-existing fresh-worktree checker failure
+(`missing evidence tests/fixtures/hg_bfcl/README.md`); that baseline problem was fixed by the carrier
+restoration commits and the checker is valid here before and after this change.
+
+What this does NOT do
+---------------------
+- It closes nothing: `appworld / successful-task-evidence` stays open and is satisfied only by a
+  genuine successful measured actor task.
+- It records no new measurement, no execution and no budget change; no run, model server, endpoint,
+  GPU or scorer is touched.
+- It does not edit a frozen receipt or run ID, and does not reclassify any retained loss as invalid or
+  unmeasured on speculation - the review says so and this integration preserves it.
