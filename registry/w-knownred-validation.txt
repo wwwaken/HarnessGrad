@@ -1,0 +1,691 @@
+w-knownred offline validation
+Working directory for every evidence command: /mnt/20t/xubuqiang/hg-wt/w-knownred
+Assigned branch: wg-w-knownred. Evidence IDs below are commands, not executions of tests.
+The python3 -B -c bodies below are the exact argv sources executed, followed by exact captured stdout/stderr and return code. Output containing trailing spaces is losslessly JSON-encoded rather than trimmed; all other output is verbatim.
+Read-only source exploration also used cat/nl/sed/rg/find/git ls-files on the cited ledger, source, fixture and report paths; conclusions use the reproducible observations below or file:line citations.
+No network, GPU, model, endpoint, dataset run, pytest test function or fixture execution was performed.
+E07 invokes pytest ONLY with --collect-only, disables plugin autoload, blocks network connects and child-process launches, excludes B5 entirely and deletes its own /tmp/knownred-collect-* directory in finally.
+E03's final enumeration failed on an unrelated protected /tmp/models entry; E06 corrects its ordering to filter names before stat. Its earlier log counts remain observed. No permission error is interpreted as absence.
+
+E00
+$ python3 -B -c '
+from pathlib import Path
+import subprocess,hashlib
+for argv in [['"'"'git'"'"','"'"'rev-parse'"'"','"'"'HEAD'"'"'],['"'"'git'"'"','"'"'branch'"'"','"'"'--show-current'"'"'],['"'"'git'"'"','"'"'status'"'"','"'"'--porcelain=v1'"'"']]:
+ p=subprocess.run(argv,text=True,capture_output=True);print('"'"' '"'"'.join(argv),repr(p.stdout),p.returncode)
+p=Path('"'"'registry/known-red-tests.md'"'"');print(str(p),'"'"'bytes'"'"',p.stat().st_size,'"'"'sha256'"'"',hashlib.sha256(p.read_bytes()).hexdigest())
+'
+STDOUT (verbatim):
+git rev-parse HEAD '27d2efaac8864bcdd690657c3676f7b9145fd5db\n' 0
+git branch --show-current 'wg-w-knownred\n' 0
+git status --porcelain=v1 '' 0
+registry/known-red-tests.md bytes 54761 sha256 471306cbf635dded884ed2c7c23138e16e5518aefe4cc7ee2a708e74f398aa95
+STDERR (verbatim):
+RETURN CODE: 0
+
+E01
+$ python3 -B -c '
+from pathlib import Path
+import subprocess,hashlib,json,re
+manifests=sorted(Path('"'"'tests/fixtures'"'"').rglob('"'"'SHA256SUMS'"'"'))
+summary=[]
+for manifest in manifests:
+ root=manifest.parent; entries=[]
+ tracked=set(subprocess.check_output(['"'"'git'"'"','"'"'ls-files'"'"','"'"'--'"'"',str(root)],text=True).splitlines())
+ for line in manifest.read_text().splitlines():
+  if not line.strip():continue
+  digest,name=re.split(r'"'"'\s+'"'"',line,maxsplit=1);name=name.lstrip('"'"'*'"'"')
+  candidates=[root/name,Path(name)]
+  p=next((p for p in candidates if p.is_file()),None)
+  entries.append((name,digest,p))
+ missing=[(n,d) for n,d,p in entries if p is None]
+ drift=[n for n,d,p in entries if p is not None and hashlib.sha256(p.read_bytes()).hexdigest()!=d]
+ row={'"'"'packet'"'"':str(root),'"'"'entries'"'"':len(entries),'"'"'missing'"'"':len(missing),'"'"'present'"'"':len(entries)-len(missing),'"'"'tracked'"'"':len(tracked),'"'"'digest_mismatches'"'"':drift}
+ summary.append(row);print(json.dumps(row,sort_keys=True))
+print('"'"'TOTAL'"'"',json.dumps({'"'"'manifests'"'"':len(summary),'"'"'gap_packets'"'"':sum(bool(r['"'"'missing'"'"']) for r in summary),'"'"'missing'"'"':sum(r['"'"'missing'"'"'] for r in summary),'"'"'present'"'"':sum(r['"'"'present'"'"'] for r in summary),'"'"'entirely_untracked_gap_packets'"'"':sum(bool(r['"'"'missing'"'"']) and r['"'"'tracked'"'"']==0 for r in summary),'"'"'partially_tracked_gap_packets'"'"':sum(bool(r['"'"'missing'"'"']) and r['"'"'tracked'"'"']>0 for r in summary)},sort_keys=True))
+for name in ['"'"'external_provenance_b5'"'"','"'"'e3_bfcl_source'"'"','"'"'hg_wprov'"'"','"'"'upstream_provenance_e2'"'"','"'"'hg_trivia'"'"','"'"'hg_bfcl'"'"']:
+ root=Path('"'"'tests/fixtures'"'"')/name;manifest=root/'"'"'SHA256SUMS'"'"'
+ tracked=set(subprocess.check_output(['"'"'git'"'"','"'"'ls-files'"'"','"'"'--'"'"',str(root)],text=True).splitlines())
+ files=sorted(p for p in root.rglob('"'"'*'"'"') if p.is_file())
+ # Receipt schemas: B5 response_body.path; E3 response_body.path; E2 directory receipt list with hop index.
+ receipts={};receipt_files=[]
+ for p in files:
+  if p.suffix!='"'"'.json'"'"':continue
+  j=json.loads(p.read_text())
+  if isinstance(j,dict) and isinstance(j.get('"'"'response_body'"'"'),dict) and '"'"'path'"'"' in j['"'"'response_body'"'"']:
+   raw=j['"'"'response_body'"'"']['"'"'path'"'"']; target=Path(raw) if raw.startswith('"'"'tests/'"'"') else root/raw
+   receipts[str(target)]=str(p);receipt_files.append(str(p))
+  elif p.name=='"'"'receipt.json'"'"' and isinstance(j,list):
+   for i,hop in enumerate(j):
+    if isinstance(hop,dict) and '"'"'method'"'"' in hop and '"'"'status'"'"' in hop:receipts[str(p.parent/f'"'"'hop-{i}.body'"'"')]=str(p)
+   receipt_files.append(str(p))
+ missing=[]
+ if manifest.is_file():
+  for line in manifest.read_text().splitlines():
+   d,n=re.split(r'"'"'\s+'"'"',line,maxsplit=1);n=n.lstrip('"'"'*'"'"')
+   if not (root/n).is_file() and not Path(n).is_file():missing.append(str(root/n) if not n.startswith('"'"'tests/'"'"') else n)
+ print('"'"'SIX'"'"',json.dumps({'"'"'packet'"'"':name,'"'"'manifest'"'"':'"'"'FOUND'"'"' if manifest.is_file() else '"'"'ABSENT'"'"','"'"'tracked'"'"':len(tracked),'"'"'disk_files'"'"':len(files),'"'"'missing'"'"':len(missing) if manifest.is_file() else '"'"'UNKNOWN'"'"','"'"'missing_with_receipt'"'"':sum(n in receipts for n in missing) if manifest.is_file() else '"'"'UNKNOWN (no absent-entry list)'"'"','"'"'on_disk_receipt_files'"'"':len(set(receipt_files)),'"'"'missing_tracked'"'"':sum(n in tracked for n in missing) if manifest.is_file() else '"'"'UNKNOWN'"'"'},sort_keys=True))
+ if not manifest.is_file():print('"'"'ENUMERATED_PACKET_FILES'"'"',json.dumps([str(p) for p in files]))
+ print('"'"'RECEIPT_ASSOCIATION_RULE'"'"',name,'"'"'response_body.path or numbered hop under receipt.json; no content/recoverability conclusion'"'"')
+for p in ['"'"'registry/w-provresidue.md'"'"','"'"'registry/w-provresidue-validation.txt'"'"']:
+ print(p,'"'"'FOUND'"'"' if Path(p).is_file() else '"'"'ABSENT'"'"')
+'
+STDOUT (verbatim):
+{"digest_mismatches": [], "entries": 87, "missing": 24, "packet": "tests/fixtures/e3_bfcl_source", "present": 63, "tracked": 64}
+{"digest_mismatches": [], "entries": 23, "missing": 0, "packet": "tests/fixtures/e3_ds1000_review", "present": 23, "tracked": 24}
+{"digest_mismatches": [], "entries": 234, "missing": 75, "packet": "tests/fixtures/external_provenance_b5", "present": 159, "tracked": 160}
+{"digest_mismatches": ["runtime-gaps-001.jsonl"], "entries": 283, "missing": 0, "packet": "tests/fixtures/hg_bfclrt", "present": 283, "tracked": 424}
+{"digest_mismatches": ["validate.py", "validate_all.py", "write_report.py"], "entries": 89, "missing": 0, "packet": "tests/fixtures/hg_wresolver5", "present": 89, "tracked": 90}
+{"digest_mismatches": [], "entries": 14, "missing": 0, "packet": "tests/fixtures/hg_wsel", "present": 14, "tracked": 15}
+{"digest_mismatches": ["verify.py"], "entries": 47, "missing": 15, "packet": "tests/fixtures/upstream_provenance_e2", "present": 32, "tracked": 33}
+TOTAL {"entirely_untracked_gap_packets": 0, "gap_packets": 3, "manifests": 7, "missing": 114, "partially_tracked_gap_packets": 3, "present": 663}
+SIX {"disk_files": 160, "manifest": "FOUND", "missing": 75, "missing_tracked": 0, "missing_with_receipt": 75, "on_disk_receipt_files": 87, "packet": "external_provenance_b5", "tracked": 160}
+RECEIPT_ASSOCIATION_RULE external_provenance_b5 response_body.path or numbered hop under receipt.json; no content/recoverability conclusion
+SIX {"disk_files": 64, "manifest": "FOUND", "missing": 24, "missing_tracked": 0, "missing_with_receipt": 24, "on_disk_receipt_files": 24, "packet": "e3_bfcl_source", "tracked": 64}
+RECEIPT_ASSOCIATION_RULE e3_bfcl_source response_body.path or numbered hop under receipt.json; no content/recoverability conclusion
+SIX {"disk_files": 1, "manifest": "ABSENT", "missing": "UNKNOWN", "missing_tracked": "UNKNOWN", "missing_with_receipt": "UNKNOWN (no absent-entry list)", "on_disk_receipt_files": 0, "packet": "hg_wprov", "tracked": 1}
+ENUMERATED_PACKET_FILES ["tests/fixtures/hg_wprov/README.md"]
+RECEIPT_ASSOCIATION_RULE hg_wprov response_body.path or numbered hop under receipt.json; no content/recoverability conclusion
+SIX {"disk_files": 33, "manifest": "FOUND", "missing": 15, "missing_tracked": 0, "missing_with_receipt": 15, "on_disk_receipt_files": 12, "packet": "upstream_provenance_e2", "tracked": 33}
+RECEIPT_ASSOCIATION_RULE upstream_provenance_e2 response_body.path or numbered hop under receipt.json; no content/recoverability conclusion
+SIX {"disk_files": 1, "manifest": "ABSENT", "missing": "UNKNOWN", "missing_tracked": "UNKNOWN", "missing_with_receipt": "UNKNOWN (no absent-entry list)", "on_disk_receipt_files": 0, "packet": "hg_trivia", "tracked": 1}
+ENUMERATED_PACKET_FILES ["tests/fixtures/hg_trivia/README.md"]
+RECEIPT_ASSOCIATION_RULE hg_trivia response_body.path or numbered hop under receipt.json; no content/recoverability conclusion
+SIX {"disk_files": 2, "manifest": "ABSENT", "missing": "UNKNOWN", "missing_tracked": "UNKNOWN", "missing_with_receipt": "UNKNOWN (no absent-entry list)", "on_disk_receipt_files": 0, "packet": "hg_bfcl", "tracked": 2}
+ENUMERATED_PACKET_FILES ["tests/fixtures/hg_bfcl/README.md", "tests/fixtures/hg_bfcl/inventory.json"]
+RECEIPT_ASSOCIATION_RULE hg_bfcl response_body.path or numbered hop under receipt.json; no content/recoverability conclusion
+registry/w-provresidue.md ABSENT
+registry/w-provresidue-validation.txt ABSENT
+STDERR (verbatim):
+RETURN CODE: 0
+
+E02
+$ python3 -B -c '
+from pathlib import Path
+import subprocess,re,json
+sets={}
+for rev in ['"'"'HEAD'"'"','"'"'ce5c1dae'"'"','"'"'f66cd83f'"'"','"'"'5e8fcfd'"'"']:
+ p=subprocess.run(['"'"'git'"'"','"'"'ls-tree'"'"','"'"'-r'"'"','"'"'--name-only'"'"',rev,'"'"'--'"'"','"'"'tests/quality'"'"'],capture_output=True,text=True)
+ if p.returncode:print(rev,'"'"'UNKNOWN'"'"',repr(p.stderr.strip()));continue
+ files={x for x in p.stdout.splitlines() if re.fullmatch(r'"'"'tests/quality/test_[^/]+\.py'"'"',x)};sets[rev]=files;print(rev,len(files))
+print('"'"'current_disk'"'"',len(list(Path('"'"'tests/quality'"'"').glob('"'"'test_*.py'"'"'))))
+print('"'"'191_to_193_added'"'"',json.dumps(sorted(sets['"'"'f66cd83f'"'"']-sets['"'"'ce5c1dae'"'"'])))
+print('"'"'193_to_HEAD_added'"'"',json.dumps(sorted(sets['"'"'HEAD'"'"']-sets['"'"'f66cd83f'"'"'])))
+print('"'"'193_to_HEAD_removed'"'"',json.dumps(sorted(sets['"'"'f66cd83f'"'"']-sets['"'"'HEAD'"'"'])))
+ledger=Path('"'"'registry/known-red-tests.md'"'"').read_text();names=sorted(set(re.findall(r'"'"'test_[\w]+\.py'"'"',ledger)))
+print('"'"'named_files'"'"',len(names))
+print('"'"'named_absent'"'"',json.dumps([n for n in names if not (Path('"'"'tests/quality'"'"')/n).is_file()]))
+for rev in ['"'"'ce5c1dae'"'"','"'"'f66cd83f'"'"']:
+ print(rev,'"'"'named_not_in_revision'"'"',json.dumps([n for n in names if '"'"'tests/quality/'"'"'+n not in sets[rev]]))
+'
+STDOUT (verbatim):
+HEAD 204
+ce5c1dae 191
+f66cd83f 193
+5e8fcfd UNKNOWN 'fatal: Not a valid object name 5e8fcfd'
+current_disk 204
+191_to_193_added ["tests/quality/test_signal_termination.py", "tests/quality/test_timeout_w_banhung.py"]
+193_to_HEAD_added ["tests/quality/test_alfworld_fidelity.py", "tests/quality/test_bfcl_adaptfid1.py", "tests/quality/test_bfclcontain_differential.py", "tests/quality/test_bfclguard_reachability.py", "tests/quality/test_fever_w_fever.py", "tests/quality/test_launch_failure_outcome.py", "tests/quality/test_spreadsheetbench_readonly_w_sbfix2.py", "tests/quality/test_tau_bench_recording_w_taubench.py", "tests/quality/test_twowiki_adaptfid1.py", "tests/quality/test_verifier_reward_absence_w_verifierfix.py", "tests/quality/test_w_metricfix.py"]
+193_to_HEAD_removed []
+named_files 48
+named_absent []
+ce5c1dae named_not_in_revision ["test_signal_termination.py", "test_timeout_w_banhung.py"]
+f66cd83f named_not_in_revision []
+STDERR (verbatim):
+RETURN CODE: 0
+
+E03
+$ python3 -B -c '
+from pathlib import Path
+import re,json,collections,hashlib
+p=Path('"'"'/tmp/hg-allper.log'"'"');raw=p.read_bytes();text=raw.decode();rows=[line for line in text.splitlines() if re.match(r'"'"'tests/quality/test_\w+\.py \| rc='"'"',line)]
+print(str(p),'"'"'bytes'"'"',len(raw),'"'"'sha256'"'"',hashlib.sha256(raw).hexdigest())
+print('"'"'entries'"'"',len(rows),'"'"'returncodes'"'"',json.dumps(dict(collections.Counter(re.search(r'"'"'rc=(\d+)'"'"',r).group(1) for r in rows)),sort_keys=True),'"'"'ALLPER_DONE'"'"',text.rstrip().endswith('"'"'ALLPER_DONE'"'"'))
+for row in rows:print(json.dumps(row))
+print('"'"'SCRIPT'"'"',Path('"'"'/tmp/hg-allper.sh'"'"').read_text())
+# Explicit bounded receipt search: tracked registry/reports names, plus top-level /tmp filenames only.
+import subprocess
+paths=subprocess.check_output(['"'"'git'"'"','"'"'ls-files'"'"','"'"'--'"'"','"'"'registry'"'"','"'"'reports'"'"'],text=True).splitlines()
+print('"'"'tracked_registry_reports_sweep_names'"'"',json.dumps([p for p in paths if any(x in Path(p).name.lower() for x in ['"'"'sweep'"'"','"'"'allper'"'"'])]))
+print('"'"'tmp_top_level_sweep_allper_files'"'"',json.dumps([str(p) for p in sorted(Path('"'"'/tmp'"'"').iterdir()) if p.is_file() and any(x in p.name.lower() for x in ['"'"'sweep'"'"','"'"'allper'"'"'])]))
+# Do not read v5_sweep_final.json: unrelated dataset receipt. No broader filesystem search claimed.
+'
+STDOUT (verbatim):
+/tmp/hg-allper.log bytes 4381 sha256 3b73bc8ce0eadd59bd09a0b89963d5c02663eca621ccf28fb36188e7a6c6ef2c
+entries 14 returncodes {"1": 12, "124": 1, "5": 1} ALLPER_DONE True
+"tests/quality/test_agentdojo_metadata_privacy.py | rc=1 | 6 failed, 57 passed in 0.24s"
+"tests/quality/test_appworld_official_scorer.py | rc=124 | ......."
+"tests/quality/test_claims_doc.py | rc=5 | 1 skipped in 0.00s"
+"tests/quality/test_console.py | rc=1 | 2 failed, 11 passed in 78.99s (0:01:18)"
+"tests/quality/test_data_layout.py | rc=1 | 1 failed, 6 passed in 0.32s"
+"tests/quality/test_dataset_controls.py | rc=1 | 1 failed, 24 passed, 1 skipped in 144.24s (0:02:24)"
+"tests/quality/test_external_provenance_b5.py | rc=1 | 5 failed, 1 passed in 0.21s"
+"tests/quality/test_import_direction.py | rc=1 | 2 failed, 8 passed in 16.00s"
+"tests/quality/test_integrity.py | rc=1 | 1 failed, 4 passed in 4.95s"
+"tests/quality/test_isolation.py | rc=1 | 1 failed, 15 passed in 151.23s (0:02:31)"
+"tests/quality/test_jericho_dataset.py | rc=1 | \u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007"
+"tests/quality/test_quiesce_evidence.py | rc=1 | 8 failed, 2 passed in 0.62s"
+"tests/quality/test_unified_budget.py | rc=1 | 1 failed, 2 passed in 99.01s (0:01:39)"
+"tests/quality/test_we5_equivalence.py | rc=1 | 1 failed, 22 passed in 0.15s"
+SCRIPT #!/bin/bash
+# Per-file pass over every tests/quality file, so a collection error in one file cannot skip others.
+cd /mnt/20t/xubuqiang/Study/HarnessGrad
+export TMPDIR=/tmp
+: > /tmp/hg-allper.log
+for f in $(ls tests/quality/test_*.py); do
+  out=$(timeout 300 python3 -m pytest -q -p no:cacheprovider "$f" --basetemp=/tmp/hg-apf 2>&1)
+  rc=$?
+  rm -rf /tmp/hg-apf
+  line=$(printf '%s\n' "$out" | tail -1)
+  if [ "$rc" != "0" ]; then
+    echo "$f | rc=$rc | $line" >> /tmp/hg-allper.log
+    printf '%s\n' "$out" | grep -E "^(FAILED|ERROR)" | head -20 >> /tmp/hg-allper.log
+  fi
+done
+echo ALLPER_DONE >> /tmp/hg-allper.log
+
+tracked_registry_reports_sweep_names []
+STDERR (verbatim):
+Traceback (most recent call last):
+  File "<string>", line 13, in <module>
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 892, in is_file
+    return S_ISREG(self.stat().st_mode)
+                   ^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 840, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/tmp/models'
+RETURN CODE: 1
+
+E04
+$ python3 -B -c '
+from pathlib import Path
+import re,ast,json,hashlib,subprocess
+for folder in ['"'"'reports/w-quiesce2-evidence'"'"','"'"'reports/w-quiesce-evidence'"'"','"'"'reports/w-chess3-control'"'"','"'"'reports/w-e6-evidence'"'"']:
+ ps=[p for p in Path(folder).rglob('"'"'*'"'"') if p.is_file()];print(folder,'"'"'files'"'"',len(ps),'"'"'bytes'"'"',sum(p.stat().st_size for p in ps),'"'"'largest'"'"',max((p.stat().st_size for p in ps),default=None),'"'"'tracked'"'"',len(subprocess.check_output(['"'"'git'"'"','"'"'ls-files'"'"','"'"'--'"'"',folder],text=True).splitlines()))
+manifest=Path('"'"'reports/w-e6-evidence/SHA256SUMS'"'"');missing=[];drift=[]
+for line in manifest.read_text().splitlines():
+ d,n=re.split(r'"'"'\s+'"'"',line,maxsplit=1);p=Path(n.lstrip('"'"'*'"'"'))
+ if not p.is_file():missing.append(str(p))
+ elif hashlib.sha256(p.read_bytes()).hexdigest()!=d:drift.append(str(p))
+print('"'"'e6_missing'"'"',json.dumps(missing));print('"'"'e6_drift'"'"',json.dumps(drift))
+for p in ['"'"'tests/fixtures/hg_we5'"'"','"'"'tests/fixtures/hg_we5/preservation.json'"'"','"'"'tests/fixtures/hg_we5/evidence/source-pins.json'"'"','"'"'tests/fixtures/hg_wpristine/closure/sh'"'"','"'"'docs/claims.md'"'"','"'"'reports/w-b5restore-replay2-20261015.jsonl'"'"']:
+ q=Path(p);print(p,'"'"'FOUND'"'"' if q.exists() else '"'"'ABSENT'"'"',q.stat().st_size if q.is_file() else '"'"''"'"')
+# Only the three explicitly named recovered copies; no main checkout access.
+for name in ['"'"'main-s8/bt/test_the_driver_exits_nonzero_0'"'"','"'"'main-s8c/bt/test_the_driver_exits_nonzero_0'"'"','"'"'race/test_isolation/test_the_driver_exits_nonzero_0'"'"']:
+ p=Path('"'"'/mnt/20t/xubuqiang/.hg-pytest'"'"')/name/'"'"'platform/docs/claims.md'"'"'
+ print(str(p),'"'"'FOUND'"'"' if p.is_file() else '"'"'ABSENT'"'"',('"'"'bytes '"'"'+str(p.stat().st_size)+'"'"' sha256 '"'"'+hashlib.sha256(p.read_bytes()).hexdigest()) if p.is_file() else '"'"''"'"')
+'
+STDOUT (exact JSON string; decode escapes to recover observed output including trailing spaces):
+"reports/w-quiesce2-evidence files 85 bytes 698666 largest 44917 tracked 85\nreports/w-quiesce-evidence files 98 bytes 591634 largest 41015 tracked 98\nreports/w-chess3-control files 2 bytes 3408 largest 3166 tracked 2\nreports/w-e6-evidence files 829 bytes 4211065 largest 473039 tracked 829\ne6_missing [\"reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/appworld/recordings-retained/cf6abd2_2/appworld/service.log\", \"reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/samples.jsonl\", \"reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/appworld/recordings-retained/cf6abd2_2/appworld/service.log\", \"reports/w-e6-lifecycle.md\", \"tests/fixtures/hg_we6/audit_packet.py\", \"tests/fixtures/hg_we6/collect.py\", \"tests/fixtures/hg_we6/native_collect.py\", \"tests/fixtures/hg_we6/native_entry.py\", \"tests/fixtures/hg_we6/preflight.py\", \"tests/fixtures/hg_we6/probe.py\", \"tests/fixtures/hg_we6/source_audit.py\"]\ne6_drift []\ntests/fixtures/hg_we5 ABSENT \ntests/fixtures/hg_we5/preservation.json ABSENT \ntests/fixtures/hg_we5/evidence/source-pins.json ABSENT \ntests/fixtures/hg_wpristine/closure/sh ABSENT \ndocs/claims.md ABSENT \nreports/w-b5restore-replay2-20261015.jsonl FOUND 34869\n/mnt/20t/xubuqiang/.hg-pytest/main-s8/bt/test_the_driver_exits_nonzero_0/platform/docs/claims.md FOUND bytes 44827 sha256 baa79fb748f9b4bd132623cbabe95f2a02cb12316c3ac8b931049315fb4ed78d\n/mnt/20t/xubuqiang/.hg-pytest/main-s8c/bt/test_the_driver_exits_nonzero_0/platform/docs/claims.md FOUND bytes 44827 sha256 baa79fb748f9b4bd132623cbabe95f2a02cb12316c3ac8b931049315fb4ed78d\n/mnt/20t/xubuqiang/.hg-pytest/race/test_isolation/test_the_driver_exits_nonzero_0/platform/docs/claims.md FOUND bytes 44827 sha256 baa79fb748f9b4bd132623cbabe95f2a02cb12316c3ac8b931049315fb4ed78d\n"
+STDERR (verbatim):
+RETURN CODE: 0
+
+E05
+$ python3 -B -c '
+from pathlib import Path
+import ast,json
+roots=['"'"'base_harness'"'"','"'"'eval'"'"','"'"'data'"'"','"'"'harnessgrad'"'"','"'"'tools'"'"','"'"'current_harness'"'"']
+def calls(source,embedded=False):
+ t=ast.parse(source);out=[]
+ for n in ast.walk(t):
+  if not isinstance(n,ast.Call):continue
+  name=getattr(n.func,'"'"'attr'"'"',None) or getattr(n.func,'"'"'id'"'"',None)
+  if name not in ('"'"'run'"'"','"'"'Popen'"'"','"'"'check_output'"'"','"'"'check_call'"'"','"'"'call'"'"'):continue
+  kw={k.arg:k.value for k in n.keywords if k.arg}
+  if not (getattr(kw.get('"'"'text'"'"'),'"'"'value'"'"',None) is True or '"'"'universal_newlines'"'"' in kw or '"'"'encoding'"'"' in kw):continue
+  out.append((n.lineno,'"'"'errors'"'"' in kw))
+ return out
+for root in roots:
+ found=[];scored=[];strict=[]
+ for p in sorted(Path(root).rglob('"'"'*.py'"'"')):
+  if '"'"'__pycache__'"'"' in p.parts:continue
+  sites=calls(p.read_text())
+  if p.parts[-2:]==('"'"'verify'"'"','"'"'check.py'"'"') and root=='"'"'data'"'"':
+   scored += [(str(p),n,e) for n,e in sites];continue
+  found += [(str(p),n,e) for n,e in sites]
+  strict += [f'"'"'{p}:{n}'"'"' for n,e in sites if not e]
+  if str(p)=='"'"'tools/diagnose_appworld.py'"'"':
+   tree=ast.parse(p.read_text())
+   actor=next(n.value.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=='"'"'ACTOR'"'"' for x in n.targets))
+   found += [(str(p)+'"'"':ACTOR'"'"',n,e) for n,e in calls(actor)]
+ print(root,json.dumps({'"'"'text_calls_excluding_scored'"'"':len(found),'"'"'without_errors'"'"':strict,'"'"'scored_text_calls'"'"':len(scored),'"'"'scored_files'"'"':sorted({p for p,n,e in scored})},sort_keys=True))
+path=Path('"'"'tests/quality/policy_assertions.py'"'"');tree=ast.parse(path.read_text())
+for n in tree.body:
+ if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=='"'"'EXEC_POLICY_FIELDS'"'"' for x in n.targets):
+  value=ast.literal_eval(n.value);print('"'"'EXEC_POLICY_FIELDS'"'"',len(value),json.dumps(sorted(value)))
+print('"'"'EXEC_POLICY_FIELDS_direct_importers'"'"',json.dumps([str(p) for p in sorted(Path('"'"'tests/quality'"'"').glob('"'"'test_*.py'"'"')) if any(isinstance(n,ast.ImportFrom) and n.module=='"'"'policy_assertions'"'"' and any(x.name=='"'"'EXEC_POLICY_FIELDS'"'"' for x in n.names) for n in ast.walk(ast.parse(p.read_text())))]))
+registry=json.loads(Path('"'"'registry/dataset-blockers.json'"'"').read_text());live=[e['"'"'dataset'"'"'] for e in registry['"'"'datasets'"'"'] for b in e['"'"'blockers'"'"'] if b['"'"'family'"'"']=='"'"'journal-coverage'"'"']
+print('"'"'live_journal_coverage_blockers'"'"',len(live),json.dumps(live))
+source=Path('"'"'tests/quality/test_dataset_blockers.py'"'"').read_text();t=ast.parse(source)
+value=next(n.value for n in t.body if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=='"'"'_JOURNAL_REVIEWS'"'"' for x in n.targets))
+# Evaluate only this self-contained data literal/comprehension, never import tests.
+mapping=eval(compile(ast.Expression(value),'"'"'<_JOURNAL_REVIEWS literal>'"'"','"'"'eval'"'"'),{'"'"'__builtins__'"'"':{}})
+print('"'"'journal_review_mapping'"'"',len(mapping),json.dumps(sorted(mapping)))
+'
+STDOUT (verbatim):
+base_harness {"scored_files": [], "scored_text_calls": 0, "text_calls_excluding_scored": 8, "without_errors": []}
+eval {"scored_files": [], "scored_text_calls": 0, "text_calls_excluding_scored": 10, "without_errors": ["eval/containers/harness_runtime.py:173"]}
+data {"scored_files": ["data/datasets/agentdojo/verify/check.py", "data/datasets/ds1000/verify/check.py", "data/datasets/spreadsheetbench/verify/check.py"], "scored_text_calls": 3, "text_calls_excluding_scored": 20, "without_errors": []}
+harnessgrad {"scored_files": [], "scored_text_calls": 0, "text_calls_excluding_scored": 6, "without_errors": []}
+tools {"scored_files": [], "scored_text_calls": 0, "text_calls_excluding_scored": 22, "without_errors": []}
+current_harness {"scored_files": [], "scored_text_calls": 0, "text_calls_excluding_scored": 0, "without_errors": []}
+EXEC_POLICY_FIELDS 4 ["env.cpus", "env.exec_defaults", "env.memory_mb", "env.network"]
+EXEC_POLICY_FIELDS_direct_importers ["tests/quality/test_container_state.py"]
+live_journal_coverage_blockers 0 []
+journal_review_mapping 6 ["fever", "physicsquestions", "reasoning_gym", "sportsunderstanding", "spreadsheetbench", "strategyqa"]
+STDERR (verbatim):
+RETURN CODE: 0
+
+E06
+$ python3 -B -c '
+from pathlib import Path
+import json
+matches=[]
+for p in sorted(Path('"'"'/tmp'"'"').iterdir()):
+ if not any(x in p.name.lower() for x in ['"'"'sweep'"'"','"'"'allper'"'"']):continue
+ try:
+  if p.is_file():matches.append(str(p))
+ except OSError as exc:print('"'"'UNKNOWN'"'"',str(p),type(exc).__name__)
+print('"'"'tmp_top_level_sweep_allper_files'"'"',json.dumps(matches))
+print('"'"'exact_receipt_search_scope'"'"','"'"'git ls-files registry reports names containing sweep/allper; /tmp immediate names containing sweep/allper only; no recursion'"'"')
+'
+STDOUT (verbatim):
+tmp_top_level_sweep_allper_files ["/tmp/hg-allper.log", "/tmp/hg-allper.sh", "/tmp/hg-sweep-failures.txt", "/tmp/hg-sweep.log", "/tmp/hg-sweep.sh", "/tmp/v5_sweep_final.json"]
+exact_receipt_search_scope git ls-files registry reports names containing sweep/allper; /tmp immediate names containing sweep/allper only; no recursion
+STDERR (verbatim):
+RETURN CODE: 0
+
+E07
+$ python3 -B -c '
+from pathlib import Path
+import ast,collections,contextlib,io,json,os,re,shutil,socket,subprocess,tempfile
+# Collection only; prevent imports from opening network sockets or launching child programs.
+os.environ['"'"'PYTEST_DISABLE_PLUGIN_AUTOLOAD'"'"']='"'"'1'"'"'
+os.environ['"'"'PYTHONDONTWRITEBYTECODE'"'"']='"'"'1'"'"'
+os.environ['"'"'TMPDIR'"'"']='"'"'/tmp'"'"'
+def forbidden(*a,**kw):raise RuntimeError('"'"'knownred read-only collection: network/child process forbidden'"'"')
+socket.socket.connect=forbidden;socket.socket.connect_ex=forbidden;socket.create_connection=forbidden;subprocess.Popen=forbidden
+import pytest
+names=sorted(set(re.findall(r'"'"'test_[\w]+\.py'"'"',Path('"'"'registry/known-red-tests.md'"'"').read_text()))-{'"'"'test_external_provenance_b5.py'"'"'})
+base=tempfile.mkdtemp(prefix='"'"'knownred-collect-'"'"',dir='"'"'/tmp'"'"')
+out=io.StringIO()
+try:
+ with contextlib.redirect_stdout(out),contextlib.redirect_stderr(out):
+  rc=pytest.main(['"'"'--collect-only'"'"','"'"'-q'"'"','"'"'-p'"'"','"'"'no:cacheprovider'"'"','"'"'--continue-on-collection-errors'"'"',f'"'"'--basetemp={base}'"'"',*[f'"'"'tests/quality/{n}'"'"' for n in names]])
+finally:shutil.rmtree(base)
+raw=out.getvalue();Path('"'"'/mnt/20t/xubuqiang/hg-work/knownred/collection.txt'"'"').write_text(raw)
+counts=collections.Counter(re.match(r'"'"'(tests/quality/test_\w+\.py)::'"'"',line).group(1) for line in raw.splitlines() if re.match(r'"'"'tests/quality/test_\w+\.py::'"'"',line))
+print('"'"'collection_exit'"'"',int(rc),'"'"'named_selected'"'"',len(names),'"'"'named_collected'"'"',len(counts),'"'"'nodeids'"'"',sum(counts.values()))
+for name in names:print(name,counts['"'"'tests/quality/'"'"'+name])
+print('"'"'B5 not imported or collected: explicit no-run constraint; source-only existence check E02'"'"')
+print('"'"'COLLECTION_DIAGNOSTICS_BEGIN'"'"')
+print(raw[raw.find('"'"'==================================== ERRORS'"'"'): ] if '"'"'==================================== ERRORS'"'"' in raw else '"'"'\n'"'"'.join(raw.splitlines()[-3:]))
+print('"'"'COLLECTION_DIAGNOSTICS_END'"'"')
+print('"'"'temp_removed'"'"',not Path(base).exists())
+'
+STDOUT (verbatim):
+collection_exit 0 named_selected 47 named_collected 44 nodeids 1311
+test_agentdojo_metadata_privacy.py 63
+test_alfworld_dataset.py 8
+test_alfworld_official_scorer.py 5
+test_appworld_official_scorer.py 14
+test_appworld_service_diagnosis.py 6
+test_candidate_apply.py 32
+test_chess3_diagnostic_actor.py 2
+test_chessbench_puzzles_strict_replay.py 34
+test_chessbench_selected_control.py 23
+test_chessbench_stepwise_runner.py 18
+test_claims_doc.py 0
+test_console.py 13
+test_container.py 26
+test_container_state.py 19
+test_data_layout.py 7
+test_dataset_controls.py 26
+test_dgm_rule.py 5
+test_ds1000_official_scorer.py 26
+test_gaia_preflight_codex175.py 18
+test_gaia_snapshot_attestation.py 88
+test_harness_decoding.py 4
+test_import_direction.py 10
+test_integrity.py 5
+test_isolation.py 16
+test_jericho_dataset.py 16
+test_jericho_runtime_admission.py 13
+test_livecodebench_official_scorer.py 15
+test_musique_official_scorer.py 106
+test_onboarding_doc.py 11
+test_parallel_tasks.py 12
+test_qa_dataset_contract.py 145
+test_quality_sweep.py 7
+test_quiesce2_regressions.py 18
+test_quiesce_evidence.py 0
+test_sandbox.py 13
+test_services.py 45
+test_signal_termination.py 10
+test_spreadsheetbench_classification_w_spread2.py 55
+test_stop_semantics.py 4
+test_task_bound_native_inputs_w_tbi2.py 106
+test_task_bound_scorer_inputs_w_tbi.py 156
+test_timeout_w_banhung.py 34
+test_unified_budget.py 3
+test_verifier.py 23
+test_w_e6fix_cleanup.py 8
+test_we5_equivalence.py 0
+test_web_gateway.py 43
+B5 not imported or collected: explicit no-run constraint; source-only existence check E02
+COLLECTION_DIAGNOSTICS_BEGIN
+tests/quality/test_web_gateway.py::test_driver_writes_real_run_meta_before_task_launch[none-None]
+
+1311 tests collected in 13.84s
+COLLECTION_DIAGNOSTICS_END
+temp_removed True
+STDERR (verbatim):
+RETURN CODE: 0
+
+E08
+$ python3 -B -c '
+from pathlib import Path
+import ast,json,os
+paths=['"'"'.env'"'"','"'"'docs/claims.md'"'"','"'"'data/scaffolds/scorer_isolation.py'"'"','"'"'data/scaffolds/qa/base.py'"'"','"'"'tests/fixtures/hg_we5/preserved-initial-evidence.zip'"'"','"'"'tests/fixtures/hg_we5/preserved-initial-partial.zip'"'"']
+for p in paths:print(p,'"'"'FOUND'"'"' if Path(p).exists() else '"'"'ABSENT'"'"')
+for p in ['"'"'tests/quality/test_console.py'"'"','"'"'tests/quality/test_quiesce_evidence.py'"'"','"'"'tests/quality/test_parallel_tasks.py'"'"','"'"'tests/quality/test_isolation.py'"'"','"'"'data/datasets/jericho/control.py'"'"']:
+ lines=Path(p).read_text().splitlines()
+ for i,line in enumerate(lines,1):
+  if any(s in line for s in ['"'"'120'"'"','"'"'deadline'"'"','"'"'_require_sealed_packet'"'"','"'"'scorer_isolation'"'"','"'"'task_id=record'"'"','"'"'test_snapshot_covers'"'"','"'"'test_the_harness_cannot'"'"']):print(f'"'"'{p}:{i}:{line}'"'"')
+for p in Path('"'"'tests/quality'"'"').glob('"'"'test_*.py'"'"'):
+ lines=p.read_text().splitlines()
+ for i,line in enumerate(lines,1):
+  if '"'"'EXEC_POLICY_FIELDS'"'"' in line:print(f'"'"'{p}:{i}:{line}'"'"')
+for n in ['"'"'tests/fixtures/hg_wprov'"'"','"'"'tests/fixtures/hg_trivia'"'"','"'"'tests/fixtures/hg_bfcl'"'"']:
+ print(n,'"'"'all_JSON_receipt_candidates'"'"',json.dumps([str(p) for p in Path(n).rglob('"'"'*.json'"'"')]))
+'
+STDOUT (verbatim):
+.env ABSENT
+docs/claims.md ABSENT
+data/scaffolds/scorer_isolation.py FOUND
+data/scaffolds/qa/base.py FOUND
+tests/fixtures/hg_we5/preserved-initial-evidence.zip ABSENT
+tests/fixtures/hg_we5/preserved-initial-partial.zip ABSENT
+tests/quality/test_console.py:195:    assert log.startswith("$ "), f"日志第一行应该是启动命令:{log[:120]!r}"
+tests/quality/test_console.py:320:    # The method sleeps, so the run *cannot* finish before the curve is written; the deadline only has
+tests/quality/test_console.py:321:    # to outlast a slow start. Measured 2026-10-15: a 6 s deadline flaked once this box was carrying a
+tests/quality/test_console.py:326:    deadline = time.time() + 120
+tests/quality/test_console.py:327:    while time.time() < deadline and not curve.exists() and proc.poll() is None:
+tests/quality/test_quiesce_evidence.py:54:def _require_sealed_packet():
+tests/quality/test_quiesce_evidence.py:62:    _require_sealed_packet()
+tests/quality/test_quiesce_evidence.py:112:    _require_sealed_packet()
+tests/quality/test_parallel_tasks.py:61:                                          "scorer_isolation_class": "actor-workdir",
+tests/quality/test_parallel_tasks.py:177:                "verdict": {"scorer_isolation_class": "actor-workdir"},
+tests/quality/test_parallel_tasks.py:256:    for name in ("__init__.py", "registry.py", "aggregation.py", "scorer_isolation.py"):
+tests/quality/test_isolation.py:145:def test_snapshot_covers_the_referee_not_the_candidate():
+tests/quality/test_isolation.py:235:        cwd=ROOT, capture_output=True, text=True, timeout=120,
+tests/quality/test_isolation.py:630:def test_the_harness_cannot_read_the_platform_or_its_answers(tmp_path):
+data/datasets/jericho/control.py:91:    deadline = time.monotonic() + phase_timeout(timeout_s)
+data/datasets/jericho/control.py:95:            remaining = deadline - time.monotonic()
+data/datasets/jericho/control.py:124:                          task_id=record["task_id"],
+tests/quality/test_container_state.py:30:from policy_assertions import EXEC_POLICY_FIELDS, assert_policy_refusal
+tests/quality/test_container_state.py:366:    assert_policy_refusal(result, (*EXEC_POLICY_FIELDS, "env.state=container"))
+tests/quality/test_container_state.py:410:    assert_policy_refusal(result, (*EXEC_POLICY_FIELDS, "env.state=container"))
+tests/fixtures/hg_wprov all_JSON_receipt_candidates []
+tests/fixtures/hg_trivia all_JSON_receipt_candidates []
+tests/fixtures/hg_bfcl all_JSON_receipt_candidates ["tests/fixtures/hg_bfcl/inventory.json"]
+STDERR (verbatim):
+RETURN CODE: 0
+
+E09
+$ python3 -B -c '
+from pathlib import Path
+import ast,json,subprocess,re
+lines=Path('"'"'.gitignore'"'"').read_text().splitlines();docs=[(i,l) for i,l in enumerate(lines,1) if l.startswith('"'"'!/docs/'"'"') or l.startswith('"'"'!docs/'"'"')]
+print('"'"'docs_whitelist_lines'"'"',len(docs),json.dumps(docs))
+for p in ['"'"'tests/fixtures/hg_we5/preserved-initial-evidence.zip'"'"','"'"'tests/fixtures/hg_we5/preserved-initial-partial.zip'"'"','"'"'tests/fixtures/hg_wpristine/closure/sh'"'"']:
+ proc=subprocess.run(['"'"'git'"'"','"'"'log'"'"','"'"'--all'"'"','"'"'--format=%H'"'"','"'"'--'"'"',p],capture_output=True,text=True)
+ print('"'"'git log --all --format=%H -- '"'"'+p,'"'"'stdout'"'"',repr(proc.stdout),'"'"'stderr'"'"',repr(proc.stderr),'"'"'rc'"'"',proc.returncode)
+for p in ['"'"'registry/w-docs2-validation.txt'"'"','"'"'registry/w-vfix-validation.txt'"'"','"'"'registry/w-close7-validation.txt'"'"']:
+ print('"'"'REFERENCE_BEGIN'"'"',p)
+ for i,line in enumerate(Path(p).read_text().splitlines(),1):
+  if any(word in line for word in ['"'"'passed'"'"','"'"'skipped'"'"','"'"'pytest'"'"','"'"'valid'"'"','"'"'stat'"'"','"'"'byte'"'"']):print(f'"'"'{p}:{i}:{line}'"'"')
+ print('"'"'REFERENCE_END'"'"',p)
+# Named root check only, not an inference about references elsewhere on the machine.
+for n in ['"'"'hg_whp3'"'"','"'"'hg_wtbdep'"'"','"'"'hg_woffscorer'"'"','"'"'hg_woffscorer2'"'"']:
+ p=Path('"'"'tests/fixtures'"'"')/n
+ print(str(p),'"'"'FOUND'"'"' if p.exists() else '"'"'ABSENT'"'"','"'"'manifest'"'"','"'"'FOUND'"'"' if (p/'"'"'SHA256SUMS'"'"').is_file() else '"'"'ABSENT'"'"','"'"'tracked'"'"',len(subprocess.check_output(['"'"'git'"'"','"'"'ls-files'"'"','"'"'--'"'"',str(p)],text=True).splitlines()))
+# Enumerate the ledger'"'"'s own table and list claims; do not infer success from them.
+text=Path('"'"'registry/known-red-tests.md'"'"').read_text().splitlines()
+print('"'"'six_files_table_rows'"'"',sum(l.startswith('"'"'| `test_'"'"') for l in text[406:414]))
+print('"'"'latest_red_table_rows'"'"',sum(l.startswith('"'"'| `test_'"'"') for l in text[652:659]))
+print('"'"'latest_red_table_UNKNOWN_rows'"'"',sum(l.startswith('"'"'| `test_'"'"') and '"'"'UNKNOWN'"'"' in l for l in text[652:659]))
+'
+STDOUT (verbatim):
+docs_whitelist_lines 24 [[290, "!/docs/writing_a_harness.md"], [291, "!/docs/dataset-onboarding.md"], [292, "!/docs/dataset-first-day.md"], [293, "!/docs/egress.md"], [294, "!/docs/moving-docker-data-root.md"], [295, "!/docs/architecture.md"], [296, "!/docs/import-direction.md"], [297, "!/docs/test-suite.md"], [298, "!/docs/data-split-plan.md"], [302, "!/docs/eval-split-design.md"], [306, "!/docs/test-lanes.md"], [308, "!/docs/dataset-reviews/"], [309, "!/docs/musique-output-contract.md"], [310, "!/docs/w-fix-unknown-isolation-records.md"], [311, "!/docs/w-obs-runtime-review.md"], [312, "!/docs/w-shared-verifier-review.md"], [318, "!/docs/tau-bench-vendoring.md"], [319, "!/docs/data-layout-open-items.md"], [320, "!/docs/registry-discovery-order.md"], [321, "!/docs/eval-split-design.md"], [325, "!/docs/filesystem-quota-decision.md"], [329, "!/docs/enforcement-proof-decision.md"], [333, "!/docs/independent-review-deferred.md"], [336, "!/docs/terminal-bench-runtime-admission.md"]]
+git log --all --format=%H -- tests/fixtures/hg_we5/preserved-initial-evidence.zip stdout '' stderr '' rc 0
+git log --all --format=%H -- tests/fixtures/hg_we5/preserved-initial-partial.zip stdout '' stderr '' rc 0
+git log --all --format=%H -- tests/fixtures/hg_wpristine/closure/sh stdout '' stderr '' rc 0
+REFERENCE_BEGIN registry/w-docs2-validation.txt
+registry/w-docs2-validation.txt:8:   `test_musique_official_scorer.py`: 10 failed / 96 passed -> **106 passed**.
+registry/w-docs2-validation.txt:17:   minimal. `test_parallel_tasks.py`: 1 failed / 11 passed -> **12 passed**.
+registry/w-docs2-validation.txt:21:remains `{"valid": true, ...}`.
+REFERENCE_END registry/w-docs2-validation.txt
+REFERENCE_BEGIN registry/w-vfix-validation.txt
+registry/w-vfix-validation.txt:8:    {"kind": ..., "passed": False, "score": 0.0, "detail": ...}
+registry/w-vfix-validation.txt:16:    verdict passed     : False
+registry/w-vfix-validation.txt:26:`_verify_container_state_inner` returns a verdict with **no score key at all** when `cp_out` fails, and
+registry/w-vfix-validation.txt:27:`runner.py:1120-1131` states the rule in prose - "A check that never ran is not a zero ... recording 0.0
+registry/w-vfix-validation.txt:53:$ python3 -m pytest tests/quality/test_verifier.py -q
+registry/w-vfix-validation.txt:54:23 passed
+registry/w-vfix-validation.txt:55:$ python3 -m pytest tests/quality/test_verifier.py tests/quality/test_trials_and_unmeasured.py \
+registry/w-vfix-validation.txt:58:170 passed, 9 skipped, 2 failed
+REFERENCE_END registry/w-vfix-validation.txt
+REFERENCE_BEGIN registry/w-close7-validation.txt
+registry/w-close7-validation.txt:41:* The one-released-variant named-cell metric statement and the official-range-zero compatibility policy ->
+registry/w-close7-validation.txt:47:* eligible/selected/task/trial/invalid/unmeasured coverage -> PRE-DIAGNOSTIC under the operator's decision,
+registry/w-close7-validation.txt:48:  not a closure condition. `measured`/`selected`/`trial`/`invalid`/`unmeasured` and `run_id` stay null.
+registry/w-close7-validation.txt:114:    {"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+registry/w-close7-validation.txt:116:    $ TMPDIR=/tmp/... python3 -m pytest -q tests/quality/test_spreadsheetbench_classification_w_spread2.py \
+registry/w-close7-validation.txt:118:    57 passed, 353 warnings in 107.26s
+registry/w-close7-validation.txt:120:    $ TMPDIR=/tmp/... python3 -m pytest -q tests/quality/test_closure_assessment.py \
+registry/w-close7-validation.txt:122:    90 passed in 5.10s
+registry/w-close7-validation.txt:125:    round-trips byte-exactly: True
+registry/w-close7-validation.txt:147:* No upstream evaluator was re-authenticated or re-executed; the metric statement's upstream side rests on
+registry/w-close7-validation.txt:149:* The `[999,888] -> [5,10]` engine control ran as part of the 57-passed suite above, but the parent did not
+REFERENCE_END registry/w-close7-validation.txt
+tests/fixtures/hg_whp3 ABSENT manifest ABSENT tracked 0
+tests/fixtures/hg_wtbdep ABSENT manifest ABSENT tracked 0
+tests/fixtures/hg_woffscorer ABSENT manifest ABSENT tracked 0
+tests/fixtures/hg_woffscorer2 ABSENT manifest ABSENT tracked 0
+six_files_table_rows 5
+latest_red_table_rows 5
+latest_red_table_UNKNOWN_rows 1
+STDERR (verbatim):
+RETURN CODE: 0
+
+E10
+$ python3 tools/check_dataset_blockers.py
+STDOUT (verbatim):
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+STDERR (verbatim):
+RETURN CODE: 0
+
+E11
+$ python3 -B -c '
+from pathlib import Path
+import ast,hashlib,json,datetime,zoneinfo,re,subprocess
+for root in ['"'"'base_harness'"'"','"'"'eval'"'"','"'"'data'"'"','"'"'harnessgrad'"'"','"'"'tools'"'"','"'"'current_harness'"'"']:
+ print('"'"'ROOT'"'"',root,'"'"'FOUND'"'"' if Path(root).is_dir() else '"'"'ABSENT'"'"')
+for name in ['"'"'main-s8/bt/test_the_driver_exits_nonzero_0'"'"','"'"'main-s8c/bt/test_the_driver_exits_nonzero_0'"'"','"'"'race/test_isolation/test_the_driver_exits_nonzero_0'"'"']:
+ p=Path('"'"'/mnt/20t/xubuqiang/.hg-pytest'"'"')/name/'"'"'platform/docs/claims.md'"'"'
+ if p.is_file():print(str(p),'"'"'mtime_Asia/Shanghai'"'"',datetime.datetime.fromtimestamp(p.stat().st_mtime,zoneinfo.ZoneInfo('"'"'Asia/Shanghai'"'"')).isoformat())
+p=Path('"'"'data/datasets/spreadsheetbench/verify/check.py'"'"');print(str(p),'"'"'sha256'"'"',hashlib.sha256(p.read_bytes()).hexdigest())
+p=Path('"'"'tests/fixtures/external_provenance_b5/responses'"'"');print('"'"'B5_receipt_filenames'"'"',len(list(p.glob('"'"'*.receipt.json'"'"'))))
+# Current whitelist paths differ from repeated whitelist lines.
+lines=[l for l in Path('"'"'.gitignore'"'"').read_text().splitlines() if l.startswith('"'"'!/docs/'"'"') or l.startswith('"'"'!docs/'"'"')]
+print('"'"'docs_whitelist_distinct_paths'"'"',len(set(lines)))
+for p in ['"'"'tests/quality/test_quiesce_evidence.py'"'"','"'"'tests/quality/test_claims_doc.py'"'"','"'"'tests/quality/test_we5_equivalence.py'"'"']:
+ lines=Path(p).read_text().splitlines()
+ for i,l in enumerate(lines,1):
+  if '"'"'pytest.skip'"'"' in l or '"'"'is_dir()'"'"' in l or '"'"'is_file()'"'"' in l:print(f'"'"'{p}:{i}:{l}'"'"')
+# Count syntactic production _verify call sites separately from adapter-local definitions.
+for p in sorted(Path('"'"'data'"'"').rglob('"'"'*.py'"'"')):
+ try:t=ast.parse(p.read_text())
+ except (SyntaxError,UnicodeError):continue
+ for n in ast.walk(t):
+  if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='"'"'_verify'"'"':print('"'"'_verify_CALL'"'"',str(p),n.lineno,'"'"'keywords'"'"',json.dumps([k.arg for k in n.keywords]))
+'
+STDOUT (verbatim):
+ROOT base_harness FOUND
+ROOT eval FOUND
+ROOT data FOUND
+ROOT harnessgrad FOUND
+ROOT tools FOUND
+ROOT current_harness ABSENT
+/mnt/20t/xubuqiang/.hg-pytest/main-s8/bt/test_the_driver_exits_nonzero_0/platform/docs/claims.md mtime_Asia/Shanghai 2026-10-13T22:08:40.961582+08:00
+/mnt/20t/xubuqiang/.hg-pytest/main-s8c/bt/test_the_driver_exits_nonzero_0/platform/docs/claims.md mtime_Asia/Shanghai 2026-10-13T22:08:40.961582+08:00
+/mnt/20t/xubuqiang/.hg-pytest/race/test_isolation/test_the_driver_exits_nonzero_0/platform/docs/claims.md mtime_Asia/Shanghai 2026-10-13T22:08:40.961582+08:00
+data/datasets/spreadsheetbench/verify/check.py sha256 4476b574c511898f7c88f20e95d5fd7f216ff9908813502b46b03b37abce16c8
+B5_receipt_filenames 100
+docs_whitelist_distinct_paths 23
+tests/quality/test_quiesce_evidence.py:12:if not EVIDENCE.is_dir():
+tests/quality/test_quiesce_evidence.py:13:    pytest.skip("reports/w-quiesce-evidence is internal (see .gitignore) and absent from this clone",
+tests/quality/test_quiesce_evidence.py:15:if not (ROOT / "tests/fixtures/hg_wpristine").is_dir():
+tests/quality/test_quiesce_evidence.py:16:    pytest.skip("tests/fixtures/hg_wpristine is internal (see .gitignore) and absent from this clone",
+tests/quality/test_quiesce_evidence.py:56:    if not pristine.is_file():
+tests/quality/test_quiesce_evidence.py:57:        pytest.skip("tests/fixtures/hg_wpristine/closure/sh is absent (untracked packet, recorded "
+tests/quality/test_quiesce_evidence.py:100:                   for p in sorted(packet.rglob("*")) if p.is_file() and p != path))
+tests/quality/test_claims_doc.py:39:if not CLAIMS.is_file():
+tests/quality/test_claims_doc.py:40:    pytest.skip("docs/claims.md is internal (see .gitignore) and absent from this clone",
+tests/quality/test_we5_equivalence.py:12:if not HERE.is_dir():
+tests/quality/test_we5_equivalence.py:13:    pytest.skip("tests/fixtures/hg_we5 is internal (see .gitignore) and absent from this clone",
+_verify_CALL data/datasets/bird_minidev.py 282 keywords []
+_verify_CALL data/datasets/gaia.py 249 keywords []
+_verify_CALL data/datasets/jericho/control.py 123 keywords ["sandbox", "task_id", "timeout_s", "env"]
+_verify_CALL data/datasets/livecodebench.py 302 keywords []
+STDERR (verbatim):
+RETURN CODE: 0
+
+E12
+$ python3 -B -c '
+from pathlib import Path
+import ast,json,re
+p=Path('"'"'tests/quality/test_w_ujson_receipts.py'"'"');t=ast.parse(p.read_text())
+for n in t.body:
+ if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef)) and n.name.startswith('"'"'test_'"'"'):
+  calls=[c.lineno for c in ast.walk(n) if isinstance(c,ast.Call) and isinstance(c.func,ast.Name) and c.func.id=='"'"'_require_present'"'"']
+  if calls:print('"'"'ujson_skip_helper_caller'"'"',n.name,n.lineno,json.dumps(calls))
+p=Path('"'"'tests/quality/test_verifier.py'"'"');t=ast.parse(p.read_text())
+for n in t.body:
+ if isinstance(n,ast.FunctionDef) and n.name in ['"'"'test_exec_verdict_ignores_precreated_reward_and_evidence'"'"','"'"'test_exec_verdict_does_not_follow_subject_symlink'"'"','"'"'test_host_verdict_clears_precreated_files_and_rejects_symlink_parent'"'"']:
+  print('"'"'security_property_test'"'"',n.name,n.lineno)
+  for c in ast.walk(n):
+   if isinstance(c,ast.Assert) and '"'"'score'"'"' in ast.unparse(c.test):print('"'"'score_assertion'"'"',c.lineno,ast.unparse(c.test))
+p=Path('"'"'tests/quality/test_chessbench_stepwise_runner.py'"'"')
+for i,l in enumerate(p.read_text().splitlines(),1):
+ if '"'"'timeout_s=1'"'"' in l or '"'"'timeout_s=0.2'"'"' in l:print(f'"'"'{p}:{i}:{l}'"'"')
+# Search summaries in all tracked registry validation texts, filtering out the ledger transcript.
+patterns=['"'"'136 passed'"'"','"'"'18 passed in 31.84'"'"','"'"'115 passed / 3 skipped'"'"','"'"'63 passed'"'"','"'"'16 passed in 204'"'"','"'"'88 passed'"'"','"'"'discovered 191'"'"','"'"'discovered 193'"'"']
+import subprocess
+paths=[p for p in subprocess.check_output(['"'"'git'"'"','"'"'ls-files'"'"','"'"'--'"'"','"'"'registry'"'"'],text=True).splitlines() if p.endswith('"'"'-validation.txt'"'"')]
+found=[]
+for name in paths:
+ for i,l in enumerate(Path(name).read_text().splitlines(),1):
+  if any(s in l for s in patterns):found.append((name,i,l))
+print('"'"'validation_text_search_files'"'"',len(paths))
+for name,i,l in found:print(f'"'"'{name}:{i}:{l}'"'"')
+'
+STDOUT (verbatim):
+ujson_skip_helper_caller test_manifest_covers_every_receipt_and_distribution_input 43 [46]
+ujson_skip_helper_caller test_recursive_symbols_include_python_tls_and_kernel_providers 111 [116]
+security_property_test test_exec_verdict_ignores_precreated_reward_and_evidence 34
+score_assertion 51 verdict['score'] is None and verdict['passed'] is False
+security_property_test test_exec_verdict_does_not_follow_subject_symlink 56
+score_assertion 72 verdict['score'] is None and verdict['outcome'] == 'unmeasured'
+security_property_test test_host_verdict_clears_precreated_files_and_rejects_symlink_parent 135
+score_assertion 151 verdict['passed'] is False and verdict['score'] is None
+tests/quality/test_chessbench_stepwise_runner.py:359:        timeout_s=1).start()
+tests/quality/test_chessbench_stepwise_runner.py:406:        timeout_s=0.2).start()
+validation_text_search_files 58
+registry/w-evidence-validation.txt:1731:| `test_agentdojo_metadata_privacy.py` | 6 failed | `14c3a764` added `"immutable": True` to `agentdojo.SETUP`/`VERIFY`, and this privacy control pins the exact selected-lookup metadata | 63 passed |
+registry/w-evidence-validation.txt:1800:  `test_unified_budget.py` + `test_console.py` = **16 passed in 204 s**.
+registry/w-evidence-validation.txt:1812:briefed on - four files, reported as 115 passed / 3 skipped, and independently reproduced by the parent.
+registry/w-evidence-validation.txt:1825:test_parallel_tasks.py` = **136 passed**.
+registry/w-evidence-validation.txt:1849:during it, and `data/`/`tests/` are hashed `PLATFORM` paths). Result: `discovered 191, selected 191,
+registry/w-evidence-validation.txt:1860:  **18 passed in 31.84 s** when re-run alone. Neither is a defect; both are re-run in a quiet tree and the
+registry/w-evidence-validation.txt:1961:`--timeout 1800` instead of 400. Result: `discovered 193, selected 193, ran 193, missing [], interrupted
+registry/w-evidence-validation.txt:1965:register turned a skip into real assertions), `test_gaia_snapshot_attestation.py` **88 passed** (was 7
+registry/w-hotlim-validation.txt:54:163 passed, 12 skipped, 0 failed
+STDERR (verbatim):
+RETURN CODE: 0
+
+E13
+$ python3 -B -c '
+from pathlib import Path
+import collections,hashlib,json,re,subprocess
+p=Path('"'"'registry/w-knownred.md'"'"');text=p.read_text();rows=[l for l in text.splitlines() if l.startswith('"'"'| “'"'"')]
+print('"'"'claim_rows'"'"',len(rows),'"'"'classes'"'"',json.dumps(dict(collections.Counter(re.search(r'"'"'\| (REPRODUCES|DIFFERS|PROXY-ONLY|UNVERIFIABLE) \|'"'"',l).group(1) for l in rows)),sort_keys=True))
+ledger=Path('"'"'registry/known-red-tests.md'"'"');print('"'"'ledger_sha256'"'"',hashlib.sha256(ledger.read_bytes()).hexdigest())
+print('"'"'all_committed_candidates_below_1MB'"'"',all(Path(p).stat().st_size<1000000 for p in ['"'"'registry/w-knownred.md'"'"','"'"'registry/w-knownred-validation.txt'"'"']))
+validation=Path('"'"'registry/w-knownred-validation.txt'"'"').read_text().splitlines()
+for label,n in re.findall(r'"'"'\[(E\d+)\]\(w-knownred-validation.txt:(\d+)\)'"'"',text):assert validation[int(n)-1]==label,(label,n)
+print('"'"'all_evidence_links_point_to_record_ids'"'"',True)
+for argv in [['"'"'git'"'"','"'"'diff'"'"','"'"'--name-only'"'"'],['"'"'git'"'"','"'"'status'"'"','"'"'--short'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--check'"'"']]:
+ p=subprocess.run(argv,text=True,capture_output=True);print('"'"' '"'"'.join(argv),'"'"'stdout'"'"',repr(p.stdout),'"'"'stderr'"'"',repr(p.stderr),'"'"'rc'"'"',p.returncode)
+'
+STDOUT (verbatim):
+claim_rows 121 classes {"DIFFERS": 27, "PROXY-ONLY": 7, "REPRODUCES": 30, "UNVERIFIABLE": 57}
+ledger_sha256 471306cbf635dded884ed2c7c23138e16e5518aefe4cc7ee2a708e74f398aa95
+all_committed_candidates_below_1MB True
+all_evidence_links_point_to_record_ids True
+git diff --name-only stdout '' stderr '' rc 0
+git status --short stdout '?? registry/w-knownred-validation.txt\n?? registry/w-knownred.md\n' stderr '' rc 0
+git diff --check stdout '' stderr '' rc 0
+STDERR (verbatim):
+RETURN CODE: 0
+
+E14
+$ python3 -B -c '
+import subprocess
+commands=[['"'"'git'"'"','"'"'add'"'"','"'"'--'"'"','"'"'registry/w-knownred.md'"'"','"'"'registry/w-knownred-validation.txt'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--check'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--stat'"'"']]
+for argv in commands:
+ p=subprocess.run(argv,text=True,capture_output=True)
+ print('"'"'COMMAND'"'"',repr(argv),'"'"'STDOUT'"'"',repr(p.stdout),'"'"'STDERR'"'"',repr(p.stderr),'"'"'RETURN_CODE'"'"',p.returncode)
+ if p.returncode:raise SystemExit(p.returncode)
+'
+STDOUT (verbatim):
+COMMAND ['git', 'add', '--', 'registry/w-knownred.md', 'registry/w-knownred-validation.txt'] STDOUT '' STDERR '' RETURN_CODE 0
+COMMAND ['git', 'diff', '--cached', '--check'] STDOUT 'registry/w-knownred-validation.txt:226: trailing whitespace.\n+tests/fixtures/hg_we5 ABSENT \nregistry/w-knownred-validation.txt:227: trailing whitespace.\n+tests/fixtures/hg_we5/preservation.json ABSENT \nregistry/w-knownred-validation.txt:228: trailing whitespace.\n+tests/fixtures/hg_we5/evidence/source-pins.json ABSENT \nregistry/w-knownred-validation.txt:229: trailing whitespace.\n+tests/fixtures/hg_wpristine/closure/sh ABSENT \nregistry/w-knownred-validation.txt:230: trailing whitespace.\n+docs/claims.md ABSENT \n' STDERR '' RETURN_CODE 2
+STDERR (verbatim):
+RETURN CODE: 2
+
+E15
+$ python3 -B -c '
+import subprocess
+commands=[['"'"'git'"'"','"'"'add'"'"','"'"'--'"'"','"'"'registry/w-knownred.md'"'"','"'"'registry/w-knownred-validation.txt'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--check'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"'],['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--stat'"'"']]
+for argv in commands:
+ p=subprocess.run(argv,text=True,capture_output=True)
+ print('"'"'COMMAND'"'"',repr(argv),'"'"'STDOUT'"'"',repr(p.stdout),'"'"'STDERR'"'"',repr(p.stderr),'"'"'RETURN_CODE'"'"',p.returncode)
+ if p.returncode:raise SystemExit(p.returncode)
+'
+STDOUT (verbatim):
+COMMAND ['git', 'add', '--', 'registry/w-knownred.md', 'registry/w-knownred-validation.txt'] STDOUT '' STDERR '' RETURN_CODE 0
+COMMAND ['git', 'diff', '--cached', '--check'] STDOUT '' STDERR '' RETURN_CODE 0
+COMMAND ['git', 'diff', '--cached', '--name-only'] STDOUT 'registry/w-knownred-validation.txt\nregistry/w-knownred.md\n' STDERR '' RETURN_CODE 0
+COMMAND ['git', 'diff', '--cached', '--stat'] STDOUT ' registry/w-knownred-validation.txt | 674 +++++++++++++++++++++++++++++++++++++\n registry/w-knownred.md             | 171 ++++++++++\n 2 files changed, 845 insertions(+)\n' STDERR '' RETURN_CODE 0
+STDERR (verbatim):
+RETURN CODE: 0
+
+Explicitly NOT verified:
+- No pass/fail reruns, no full-suite collection, no test_external_provenance_b5.py import/collection/execution, no task/scorer execution, no network recovery.
+- No current or historical main checkout contents read or modified. Registered git objects and the assigned worktree were inspected; the three explicitly named .hg-pytest backup documents and /tmp historical logs were read only.
+- No original 191/193-file sweep JSON/result list was recovered in the bounded filename search E03/E06. Arbitrarily named files, nested /tmp directories and other users' files were not searched. /tmp/v5_sweep_final.json was not opened: it is not established as a quality-sweep receipt.
+- The 5e8fcfd object was unavailable. No inference about all pre-rewrite history, all machine copies, deletion causes, or unrecoverability everywhere is made.
+- The ignored manifests of hg_wprov/hg_trivia/hg_bfcl and hg_we5 packet contents are unavailable in this worktree. Their historical absent-entry denominators, pin drift counts and content recovery were not reconstructed.
+- The parallel w-provresidue deliverables were absent at the exact assigned-worktree paths in E01. No other worker worktree was read and no per-entry disposition analysis was duplicated.
+- The corrected B5 residue analysis at known-red-tests.md:672-723 was not re-audited; only requested inventory/receipt availability and checkout-scope counts were checked.
+- Collection and AST inventories do not establish assertions passed, source authenticity, original dataset eligibility, receipt semantic validity, or causality.
+- No claim that the ledger inventory matches the operator's uncommitted/ignored material or the background replay state elsewhere is made.
+- No registry proposal is warranted by this audit: the parent owns ledger/registry/journal integration.
+The added Markdown/text files cannot alter dataset-blocker semantics. E10's required checker returned valid=true.
+
+Committed-file byte sizes (self-size solved to a fixed point):
+registry/w-knownred.md: 48922 bytes
+registry/w-knownred-validation.txt: 55480 bytes
