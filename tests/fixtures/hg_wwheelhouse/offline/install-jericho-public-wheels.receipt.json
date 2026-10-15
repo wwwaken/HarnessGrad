@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/tmp/hg-wwheelhouse-install-sa29ixrb/jericho-public-wheels/bin/python",
+    "-m",
+    "pip",
+    "install",
+    "--no-index",
+    "--no-cache-dir",
+    "--no-deps",
+    "--require-hashes",
+    "--find-links",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "-r",
+    "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/jericho-public-wheels.lock"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 2.359
+}

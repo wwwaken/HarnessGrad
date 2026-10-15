@@ -1,0 +1,4454 @@
+{
+  "requested": [
+    "textworld.gym",
+    "alfworld.agents.environment.alfred_tw_env"
+  ],
+  "errors": {},
+  "modules": [
+    {
+      "name": "__future__",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/__future__.py",
+      "preexisting": false
+    },
+    {
+      "name": "__main__",
+      "path": "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/audit.py",
+      "preexisting": true
+    },
+    {
+      "name": "__mp_main__",
+      "path": "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/audit.py",
+      "preexisting": false
+    },
+    {
+      "name": "_asyncio",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_asyncio.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_bisect",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_blake2",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_bz2",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_collections_abc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/_collections_abc.py",
+      "preexisting": true
+    },
+    {
+      "name": "_compat_pickle",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/_compat_pickle.py",
+      "preexisting": false
+    },
+    {
+      "name": "_compression",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/_compression.py",
+      "preexisting": true
+    },
+    {
+      "name": "_contextvars",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_csv",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_ctypes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_datetime",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_distutils_hack",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/_distutils_hack/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "_elementtree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_elementtree.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_frozen_importlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/_bootstrap.py",
+      "preexisting": true
+    },
+    {
+      "name": "_frozen_importlib_external",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/_bootstrap_external.py",
+      "preexisting": true
+    },
+    {
+      "name": "_hashlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_heapq",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_heapq.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_json",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_lzma",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_opcode",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_pickle",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_posixsubprocess",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_queue",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_queue.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_random",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_sha2",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_sitebuiltins",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/_sitebuiltins.py",
+      "preexisting": true
+    },
+    {
+      "name": "_socket",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_ssl",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_struct",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "_uuid",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/_uuid.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "_weakrefset",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/_weakrefset.py",
+      "preexisting": true
+    },
+    {
+      "name": "abc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/abc.py",
+      "preexisting": true
+    },
+    {
+      "name": "alfworld",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.environment",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/environment/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.environment.alfred_tw_env",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/environment/alfred_tw_env.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.expert",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/expert/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.expert.handcoded_expert",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/expert/handcoded_expert.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.expert.handcoded_expert_thor",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/expert/handcoded_expert_thor.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.expert.handcoded_expert_tw",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/expert/handcoded_expert_tw.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/utils/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.agents.utils.misc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/agents/utils/misc.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.gen",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/gen/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.gen.constants",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/gen/constants.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.gen.goal_library",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/gen/goal_library.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.info",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/info.py",
+      "preexisting": false
+    },
+    {
+      "name": "alfworld.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/alfworld/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "argparse",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/argparse.py",
+      "preexisting": false
+    },
+    {
+      "name": "array",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "ast",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ast.py",
+      "preexisting": true
+    },
+    {
+      "name": "asyncio",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.base_events",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/base_events.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.base_futures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/base_futures.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.base_subprocess",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/base_subprocess.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.base_tasks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/base_tasks.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.constants",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/constants.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.coroutines",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/coroutines.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.events",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/events.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.exceptions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/exceptions.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.format_helpers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/format_helpers.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.futures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/futures.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.locks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/locks.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.log",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/log.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.mixins",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/mixins.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.protocols",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/protocols.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.queues",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/queues.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.runners",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/runners.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.selector_events",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/selector_events.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.sslproto",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/sslproto.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.staggered",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/staggered.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.streams",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/streams.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.subprocess",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/subprocess.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.taskgroups",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/taskgroups.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.tasks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/tasks.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.threads",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/threads.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.timeouts",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/timeouts.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.transports",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/transports.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.trsock",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/trsock.py",
+      "preexisting": false
+    },
+    {
+      "name": "asyncio.unix_events",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/unix_events.py",
+      "preexisting": false
+    },
+    {
+      "name": "base64",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/base64.py",
+      "preexisting": true
+    },
+    {
+      "name": "binascii",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "bisect",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/bisect.py",
+      "preexisting": true
+    },
+    {
+      "name": "bz2",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/bz2.py",
+      "preexisting": true
+    },
+    {
+      "name": "calendar",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/calendar.py",
+      "preexisting": true
+    },
+    {
+      "name": "codecs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/codecs.py",
+      "preexisting": true
+    },
+    {
+      "name": "collections",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/collections/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "collections.abc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/collections/abc.py",
+      "preexisting": true
+    },
+    {
+      "name": "colorsys",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/colorsys.py",
+      "preexisting": false
+    },
+    {
+      "name": "concurrent",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/concurrent/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "concurrent.futures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/concurrent/futures/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "concurrent.futures._base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/concurrent/futures/_base.py",
+      "preexisting": false
+    },
+    {
+      "name": "contextlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/contextlib.py",
+      "preexisting": true
+    },
+    {
+      "name": "contextvars",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/contextvars.py",
+      "preexisting": false
+    },
+    {
+      "name": "copy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/copy.py",
+      "preexisting": false
+    },
+    {
+      "name": "copyreg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/copyreg.py",
+      "preexisting": true
+    },
+    {
+      "name": "csv",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/csv.py",
+      "preexisting": true
+    },
+    {
+      "name": "ctypes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ctypes/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "ctypes._endian",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ctypes/_endian.py",
+      "preexisting": false
+    },
+    {
+      "name": "dataclasses",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/dataclasses.py",
+      "preexisting": false
+    },
+    {
+      "name": "datetime",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/datetime.py",
+      "preexisting": true
+    },
+    {
+      "name": "dis",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/dis.py",
+      "preexisting": true
+    },
+    {
+      "name": "email",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "email._encoded_words",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/_encoded_words.py",
+      "preexisting": true
+    },
+    {
+      "name": "email._parseaddr",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/_parseaddr.py",
+      "preexisting": true
+    },
+    {
+      "name": "email._policybase",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/_policybase.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.base64mime",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/base64mime.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.charset",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/charset.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.encoders",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/encoders.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.errors",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/errors.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.header",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/header.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.iterators",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/iterators.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.message",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/message.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.quoprimime",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/quoprimime.py",
+      "preexisting": true
+    },
+    {
+      "name": "email.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/email/utils.py",
+      "preexisting": true
+    },
+    {
+      "name": "encodings",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/encodings/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "encodings.aliases",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/encodings/aliases.py",
+      "preexisting": true
+    },
+    {
+      "name": "encodings.utf_8",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/encodings/utf_8.py",
+      "preexisting": true
+    },
+    {
+      "name": "encodings.utf_8_sig",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/encodings/utf_8_sig.py",
+      "preexisting": true
+    },
+    {
+      "name": "enum",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/enum.py",
+      "preexisting": true
+    },
+    {
+      "name": "fast_downward",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/fast_downward/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "fast_downward.interface",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/fast_downward/interface.py",
+      "preexisting": false
+    },
+    {
+      "name": "fast_downward.translate",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/fast_downward/translate/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "fcntl",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "fnmatch",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/fnmatch.py",
+      "preexisting": true
+    },
+    {
+      "name": "functools",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/functools.py",
+      "preexisting": true
+    },
+    {
+      "name": "genericpath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/genericpath.py",
+      "preexisting": true
+    },
+    {
+      "name": "gettext",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/gettext.py",
+      "preexisting": false
+    },
+    {
+      "name": "glob",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/glob.py",
+      "preexisting": false
+    },
+    {
+      "name": "gzip",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/gzip.py",
+      "preexisting": false
+    },
+    {
+      "name": "hashlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/hashlib.py",
+      "preexisting": true
+    },
+    {
+      "name": "heapq",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/heapq.py",
+      "preexisting": false
+    },
+    {
+      "name": "hmac",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/hmac.py",
+      "preexisting": false
+    },
+    {
+      "name": "html",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/html/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "html.entities",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/html/entities.py",
+      "preexisting": false
+    },
+    {
+      "name": "importlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib._abc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/_abc.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib._bootstrap",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/_bootstrap.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib._bootstrap_external",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/_bootstrap_external.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.abc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/abc.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.machinery",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/machinery.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata._adapters",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/_adapters.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata._collections",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/_collections.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata._functools",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/_functools.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata._itertools",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/_itertools.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata._meta",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/_meta.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.metadata._text",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/metadata/_text.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.readers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/readers.py",
+      "preexisting": false
+    },
+    {
+      "name": "importlib.resources",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.resources._adapters",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/_adapters.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.resources._common",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/_common.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.resources._itertools",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/_itertools.py",
+      "preexisting": false
+    },
+    {
+      "name": "importlib.resources._legacy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/_legacy.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.resources.abc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/abc.py",
+      "preexisting": true
+    },
+    {
+      "name": "importlib.resources.readers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/resources/readers.py",
+      "preexisting": false
+    },
+    {
+      "name": "importlib.util",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/importlib/util.py",
+      "preexisting": true
+    },
+    {
+      "name": "inspect",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/inspect.py",
+      "preexisting": true
+    },
+    {
+      "name": "io",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/io.py",
+      "preexisting": true
+    },
+    {
+      "name": "ipaddress",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ipaddress.py",
+      "preexisting": true
+    },
+    {
+      "name": "jericho",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "jericho.defines",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/defines.py",
+      "preexisting": false
+    },
+    {
+      "name": "jericho.game_info",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/game_info.py",
+      "preexisting": false
+    },
+    {
+      "name": "jericho.jericho",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/jericho.py",
+      "preexisting": false
+    },
+    {
+      "name": "jericho.template_action_generator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/template_action_generator.py",
+      "preexisting": false
+    },
+    {
+      "name": "jericho.util",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/util.py",
+      "preexisting": false
+    },
+    {
+      "name": "jericho.version",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/version.py",
+      "preexisting": false
+    },
+    {
+      "name": "json",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/json/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "json.decoder",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/json/decoder.py",
+      "preexisting": true
+    },
+    {
+      "name": "json.encoder",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/json/encoder.py",
+      "preexisting": true
+    },
+    {
+      "name": "json.scanner",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/json/scanner.py",
+      "preexisting": true
+    },
+    {
+      "name": "keyword",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/keyword.py",
+      "preexisting": true
+    },
+    {
+      "name": "linecache",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/linecache.py",
+      "preexisting": true
+    },
+    {
+      "name": "locale",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/locale.py",
+      "preexisting": true
+    },
+    {
+      "name": "logging",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/logging/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "lzma",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lzma.py",
+      "preexisting": true
+    },
+    {
+      "name": "math",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "mementos",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mementos/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "mementos.core",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mementos/core.py",
+      "preexisting": false
+    },
+    {
+      "name": "mkl",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "mkl._mklinit",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_mklinit.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "mkl._py_mkl_service",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/_py_mkl_service.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "multiprocessing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/multiprocessing/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "multiprocessing.context",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/multiprocessing/context.py",
+      "preexisting": false
+    },
+    {
+      "name": "multiprocessing.process",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/multiprocessing/process.py",
+      "preexisting": false
+    },
+    {
+      "name": "multiprocessing.reduction",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/multiprocessing/reduction.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.clique",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/clique.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.clustering_coefficient",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/clustering_coefficient.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.connectivity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/connectivity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.distance_measures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/distance_measures.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.dominating_set",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/dominating_set.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.kcomponents",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/kcomponents.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.matching",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/matching.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.maxcut",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/maxcut.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.ramsey",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/ramsey.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.steinertree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/steinertree.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.traveling_salesman",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/traveling_salesman.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.treewidth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/treewidth.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.approximation.vertex_cover",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/approximation/vertex_cover.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.assortativity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/assortativity/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.assortativity.connectivity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/assortativity/connectivity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.assortativity.correlation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/assortativity/correlation.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.assortativity.mixing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/assortativity/mixing.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.assortativity.neighbor_degree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/assortativity/neighbor_degree.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.assortativity.pairs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/assortativity/pairs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.asteroidal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/asteroidal.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.basic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/basic.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.centrality",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/centrality.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.cluster",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/cluster.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.covering",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/covering.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.edgelist",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/edgelist.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.extendability",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/extendability.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.generators",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/generators.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.matching",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/matching.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.matrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/matrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.projection",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/projection.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.redundancy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/redundancy.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bipartite.spectral",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bipartite/spectral.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.boundary",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/boundary.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.bridges",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/bridges.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.broadcasting",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/broadcasting.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.betweenness",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/betweenness.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.betweenness_subset",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/betweenness_subset.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.closeness",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/closeness.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.current_flow_betweenness",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/current_flow_betweenness.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.current_flow_betweenness_subset",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/current_flow_betweenness_subset.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.current_flow_closeness",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/current_flow_closeness.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.degree_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/degree_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.dispersion",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/dispersion.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.eigenvector",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/eigenvector.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.flow_matrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/flow_matrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.group",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/group.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.harmonic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/harmonic.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.katz",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/katz.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.laplacian",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/laplacian.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.load",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/load.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.percolation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/percolation.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.reaching",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/reaching.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.second_order",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/second_order.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.subgraph_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/subgraph_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.trophic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/trophic.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.centrality.voterank_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/centrality/voterank_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.chains",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/chains.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.chordal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/chordal.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.clique",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/clique.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.cluster",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/cluster.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.coloring",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/coloring/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.coloring.equitable_coloring",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/coloring/equitable_coloring.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.coloring.greedy_coloring",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/coloring/greedy_coloring.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.communicability_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/communicability_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.asyn_fluid",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/asyn_fluid.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.centrality",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/centrality.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.community_utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/community_utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.divisive",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/divisive.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.kclique",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/kclique.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.kernighan_lin",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/kernighan_lin.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.label_propagation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/label_propagation.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.louvain",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/louvain.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.lukes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/lukes.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.modularity_max",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/modularity_max.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.community.quality",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/community/quality.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components.attracting",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/attracting.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components.biconnected",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/biconnected.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components.connected",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/connected.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components.semiconnected",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/semiconnected.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components.strongly_connected",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/strongly_connected.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.components.weakly_connected",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/components/weakly_connected.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.connectivity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/connectivity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.cuts",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/cuts.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.disjoint_paths",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/disjoint_paths.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.edge_augmentation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/edge_augmentation.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.edge_kcomponents",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/edge_kcomponents.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.kcomponents",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/kcomponents.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.kcutsets",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/kcutsets.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.stoerwagner",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/stoerwagner.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.connectivity.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/connectivity/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.core",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/core.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.covering",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/covering.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.cuts",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/cuts.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.cycles",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/cycles.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.d_separation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/d_separation.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.dag",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/dag.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.distance_measures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/distance_measures.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.distance_regular",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/distance_regular.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.dominance",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/dominance.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.dominating",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/dominating.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.efficiency_measures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/efficiency_measures.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.euler",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/euler.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.boykovkolmogorov",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/boykovkolmogorov.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.capacityscaling",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/capacityscaling.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.dinitz_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/dinitz_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.edmondskarp",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/edmondskarp.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.gomory_hu",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/gomory_hu.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.maxflow",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/maxflow.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.mincost",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/mincost.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.networksimplex",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/networksimplex.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.preflowpush",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/preflowpush.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.shortestaugmentingpath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/shortestaugmentingpath.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.flow.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/flow/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.graph_hashing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/graph_hashing.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.graphical",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/graphical.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.hierarchy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/hierarchy.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.hybrid",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/hybrid.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isolate",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isolate.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.ismags",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/ismags.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.isomorph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/isomorph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.isomorphvf2",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/isomorphvf2.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.matchhelpers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/matchhelpers.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.temporalisomorphvf2",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/temporalisomorphvf2.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.tree_isomorphism",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/tree_isomorphism.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.vf2pp",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/vf2pp.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.isomorphism.vf2userfunc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/isomorphism/vf2userfunc.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.link_analysis",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/link_analysis/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.link_analysis.hits_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/link_analysis/hits_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.link_analysis.pagerank_alg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/link_analysis/pagerank_alg.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.link_prediction",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/link_prediction.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.lowest_common_ancestors",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/lowest_common_ancestors.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.matching",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/matching.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.minors",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/minors/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.minors.contraction",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/minors/contraction.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.mis",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/mis.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.moral",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/moral.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.node_classification",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/node_classification.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.non_randomness",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/non_randomness.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.operators",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/operators/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.operators.all",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/operators/all.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.operators.binary",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/operators/binary.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.operators.product",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/operators/product.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.operators.unary",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/operators/unary.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.planar_drawing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/planar_drawing.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.planarity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/planarity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.polynomials",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/polynomials.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.reciprocity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/reciprocity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.regular",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/regular.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.richclub",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/richclub.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.shortest_paths",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/shortest_paths/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.shortest_paths.astar",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/shortest_paths/astar.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.shortest_paths.dense",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/shortest_paths/dense.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.shortest_paths.generic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/shortest_paths/generic.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.shortest_paths.unweighted",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/shortest_paths/unweighted.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.shortest_paths.weighted",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/shortest_paths/weighted.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.similarity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/similarity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.simple_paths",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/simple_paths.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.smallworld",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/smallworld.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.smetric",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/smetric.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.sparsifiers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/sparsifiers.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.structuralholes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/structuralholes.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.summarization",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/summarization.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.swap",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/swap.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.time_dependent",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/time_dependent.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tournament",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tournament.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.traversal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/traversal/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.traversal.beamsearch",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/traversal/beamsearch.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.traversal.breadth_first_search",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/traversal/breadth_first_search.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.traversal.depth_first_search",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/traversal/depth_first_search.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.traversal.edgebfs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/traversal/edgebfs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.traversal.edgedfs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/traversal/edgedfs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree.branchings",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/branchings.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree.coding",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/coding.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree.decomposition",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/decomposition.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree.mst",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/mst.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree.operations",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/operations.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.tree.recognition",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/tree/recognition.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.triads",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/triads.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.vitality",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/vitality.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.voronoi",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/voronoi.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.walks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/walks.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.algorithms.wiener",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/algorithms/wiener.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.coreviews",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/coreviews.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.digraph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/digraph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.filters",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/filters.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.function",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/function.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.graph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/graph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.graphviews",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/graphviews.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.multidigraph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/multidigraph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.multigraph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/multigraph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.classes.reportviews",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/classes/reportviews.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.convert",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/convert.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.convert_matrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/convert_matrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.drawing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/drawing/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.drawing.layout",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/drawing/layout.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.drawing.nx_agraph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/drawing/nx_agraph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.drawing.nx_latex",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/drawing/nx_latex.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.drawing.nx_pydot",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/drawing/nx_pydot.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.drawing.nx_pylab",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/drawing/nx_pylab.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.exception",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/exception.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.atlas",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/atlas.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.classic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/classic.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.cographs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/cographs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.community",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/community.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.degree_seq",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/degree_seq.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.directed",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/directed.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.duplication",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/duplication.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.ego",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/ego.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.expanders",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/expanders.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.geometric",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/geometric.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.harary_graph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/harary_graph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.internet_as_graphs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/internet_as_graphs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.intersection",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/intersection.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.interval_graph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/interval_graph.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.joint_degree_seq",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/joint_degree_seq.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.lattice",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/lattice.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.line",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/line.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.mycielski",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/mycielski.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.nonisomorphic_trees",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/nonisomorphic_trees.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.random_clustered",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/random_clustered.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.random_graphs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/random_graphs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.small",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/small.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.social",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/social.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.spectral_graph_forge",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/spectral_graph_forge.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.stochastic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/stochastic.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.sudoku",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/sudoku.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.time_series",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/time_series.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.trees",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/trees.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.generators.triads",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/generators/triads.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.lazy_imports",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/lazy_imports.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.algebraicconnectivity",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/algebraicconnectivity.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.attrmatrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/attrmatrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.bethehessianmatrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/bethehessianmatrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.graphmatrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/graphmatrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.laplacianmatrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/laplacianmatrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.modularitymatrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/modularitymatrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.linalg.spectrum",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/linalg/spectrum.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.adjlist",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/adjlist.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.edgelist",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/edgelist.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.gexf",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/gexf.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.gml",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/gml.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.graph6",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/graph6.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.graphml",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/graphml.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.json_graph",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/json_graph/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.json_graph.adjacency",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/json_graph/adjacency.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.json_graph.cytoscape",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/json_graph/cytoscape.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.json_graph.node_link",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/json_graph/node_link.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.json_graph.tree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/json_graph/tree.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.leda",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/leda.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.multiline_adjlist",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/multiline_adjlist.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.pajek",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/pajek.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.sparse6",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/sparse6.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.readwrite.text",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/readwrite/text.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.relabel",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/relabel.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.backends",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/backends.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.configs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/configs.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.decorators",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/decorators.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.heaps",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/heaps.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.mapped_queue",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/mapped_queue.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.misc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/misc.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.random_sequence",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/random_sequence.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.rcm",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/rcm.py",
+      "preexisting": false
+    },
+    {
+      "name": "networkx.utils.union_find",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/networkx/utils/union_find.py",
+      "preexisting": false
+    },
+    {
+      "name": "ntpath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ntpath.py",
+      "preexisting": true
+    },
+    {
+      "name": "numbers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/numbers.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.__config__",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__config__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._distributor_init",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_distributor_init.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._globals",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_globals.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._pytesttester",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_pytesttester.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._array_like",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_array_like.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._char_codes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_char_codes.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._dtype_like",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_dtype_like.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._nbit",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_nbit.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._nested_sequence",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_nested_sequence.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._scalars",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_scalars.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._typing._shape",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_typing/_shape.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_utils/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._utils._convertions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_utils/_convertions.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy._utils._inspect",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_utils/_inspect.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.compat",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/compat/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.compat.py3k",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/compat/py3k.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._add_newdocs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_add_newdocs.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._add_newdocs_scalars",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_add_newdocs_scalars.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._asarray",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_asarray.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._dtype",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_dtype.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._dtype_ctypes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_dtype_ctypes.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._exceptions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_exceptions.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._internal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_internal.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._machar",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_machar.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._methods",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_methods.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._multiarray_tests",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._multiarray_umath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._string_helpers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_string_helpers.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._type_aliases",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_type_aliases.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core._ufunc_config",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/_ufunc_config.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.arrayprint",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/arrayprint.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.defchararray",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/defchararray.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.einsumfunc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/einsumfunc.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.fromnumeric",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/fromnumeric.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.function_base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/function_base.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.getlimits",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/getlimits.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.memmap",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/memmap.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.multiarray",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/multiarray.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.numeric",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/numeric.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.numerictypes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/numerictypes.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.overrides",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/overrides.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.records",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/records.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.shape_base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/shape_base.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.core.umath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/core/umath.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.ctypeslib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ctypeslib.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.dtypes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/dtypes.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.exceptions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/exceptions.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.fft",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.fft._pocketfft",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/_pocketfft.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.fft._pocketfft_internal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.fft.helper",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/fft/helper.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib._datasource",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/_datasource.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib._iotools",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/_iotools.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib._version",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/_version.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.arraypad",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/arraypad.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.arraysetops",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/arraysetops.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.arrayterator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/arrayterator.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.format",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/format.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.function_base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/function_base.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.histograms",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/histograms.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.index_tricks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/index_tricks.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.mixins",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/mixins.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.nanfunctions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/nanfunctions.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.npyio",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/npyio.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.polynomial",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/polynomial.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.scimath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/scimath.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.shape_base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/shape_base.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.stride_tricks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/stride_tricks.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.twodim_base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/twodim_base.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.type_check",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/type_check.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.ufunclike",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/ufunclike.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.lib.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/lib/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.linalg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.linalg._umath_linalg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.linalg.linalg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/linalg/linalg.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.ma",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ma/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.ma.core",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ma/core.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.ma.extras",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/ma/extras.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.matrixlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/matrixlib/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.matrixlib.defmatrix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/matrixlib/defmatrix.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial._polybase",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/_polybase.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.chebyshev",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/chebyshev.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.hermite",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/hermite.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.hermite_e",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/hermite_e.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.laguerre",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/laguerre.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.legendre",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/legendre.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.polynomial",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/polynomial.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.polynomial.polyutils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/polynomial/polyutils.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._bounded_integers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._common",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._generator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._mt19937",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._pcg64",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._philox",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._pickle",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_pickle.py",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random._sfc64",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random.bit_generator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.random.mtrand",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "numpy.version",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/version.py",
+      "preexisting": false
+    },
+    {
+      "name": "opcode",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/opcode.py",
+      "preexisting": true
+    },
+    {
+      "name": "operator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/operator.py",
+      "preexisting": true
+    },
+    {
+      "name": "os",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/os.py",
+      "preexisting": true
+    },
+    {
+      "name": "os.path",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/posixpath.py",
+      "preexisting": true
+    },
+    {
+      "name": "pathlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py",
+      "preexisting": true
+    },
+    {
+      "name": "pickle",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pickle.py",
+      "preexisting": false
+    },
+    {
+      "name": "platform",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/platform.py",
+      "preexisting": true
+    },
+    {
+      "name": "posixpath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/posixpath.py",
+      "preexisting": true
+    },
+    {
+      "name": "prompt_toolkit",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.application",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/application/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.application.application",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/application/application.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.application.current",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/application/current.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.application.dummy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/application/dummy.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.application.run_in_terminal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/application/run_in_terminal.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.auto_suggest",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/auto_suggest.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.buffer",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/buffer.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.cache",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/cache.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.clipboard",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/clipboard/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.clipboard.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/clipboard/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.clipboard.in_memory",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/clipboard/in_memory.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion.deduplicate",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/deduplicate.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion.filesystem",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/filesystem.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion.fuzzy_completer",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/fuzzy_completer.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion.nested",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/nested.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.completion.word_completer",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/completion/word_completer.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.cursor_shapes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/cursor_shapes.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.data_structures",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/data_structures.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.document",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/document.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.enums",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/enums.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.eventloop",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/eventloop/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.eventloop.async_generator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/eventloop/async_generator.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.eventloop.inputhook",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/eventloop/inputhook.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.eventloop.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/eventloop/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.filters",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/filters/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.filters.app",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/filters/app.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.filters.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/filters/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.filters.cli",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/filters/cli.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.filters.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/filters/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.formatted_text",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/formatted_text/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.formatted_text.ansi",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/formatted_text/ansi.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.formatted_text.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/formatted_text/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.formatted_text.html",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/formatted_text/html.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.formatted_text.pygments",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/formatted_text/pygments.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.formatted_text.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/formatted_text/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.history",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/history.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.input",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/input/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.input.ansi_escape_sequences",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/input/ansi_escape_sequences.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.input.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/input/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.input.defaults",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/input/defaults.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.input.typeahead",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/input/typeahead.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.input.vt100_parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/input/vt100_parser.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.auto_suggest",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/auto_suggest.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.basic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/basic.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.completion",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/completion.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.cpr",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/cpr.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.emacs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/emacs.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.focus",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/focus.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.mouse",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/mouse.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.named_commands",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/named_commands.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.open_in_editor",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/open_in_editor.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.page_navigation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/page_navigation.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.scroll",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/scroll.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.bindings.vi",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/bindings/vi.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.defaults",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/defaults.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.digraphs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/digraphs.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.emacs_state",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/emacs_state.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.key_bindings",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_bindings.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.key_processor",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.key_binding.vi_state",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/key_binding/vi_state.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.keys",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/keys.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.containers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/containers.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.controls",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/controls.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.dimension",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/dimension.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.dummy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/dummy.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.layout",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/layout.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.margins",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/margins.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.menus",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/menus.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.mouse_handlers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/mouse_handlers.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.processors",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/processors.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.screen",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/screen.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.scrollable_pane",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/scrollable_pane.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.layout.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/layout/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.lexers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/lexers/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.lexers.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/lexers/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.lexers.pygments",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/lexers/pygments.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.mouse_events",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/mouse_events.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output.color_depth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/color_depth.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output.defaults",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/defaults.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output.flush_stdout",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/flush_stdout.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output.plain_text",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/plain_text.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.output.vt100",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/output/vt100.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.renderer",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/renderer.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.search",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/search.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.selection",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/selection.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts.dialogs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/dialogs.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts.progress_bar",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/progress_bar/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts.progress_bar.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/progress_bar/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts.progress_bar.formatters",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/progress_bar/formatters.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts.prompt",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/prompt.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.shortcuts.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/shortcuts/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles.defaults",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/defaults.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles.named_colors",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/named_colors.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles.pygments",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/pygments.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles.style",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/style.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.styles.style_transformation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/styles/style_transformation.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.validation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/validation.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.widgets",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/widgets/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.widgets.base",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/widgets/base.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.widgets.dialogs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/widgets/dialogs.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.widgets.menus",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/widgets/menus.py",
+      "preexisting": false
+    },
+    {
+      "name": "prompt_toolkit.widgets.toolbars",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/prompt_toolkit/widgets/toolbars.py",
+      "preexisting": false
+    },
+    {
+      "name": "psutil",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "psutil._common",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_common.py",
+      "preexisting": false
+    },
+    {
+      "name": "psutil._compat",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_compat.py",
+      "preexisting": false
+    },
+    {
+      "name": "psutil._pslinux",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_pslinux.py",
+      "preexisting": false
+    },
+    {
+      "name": "psutil._psposix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psposix.py",
+      "preexisting": false
+    },
+    {
+      "name": "psutil._psutil_linux",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psutil_linux.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "psutil._psutil_posix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/psutil/_psutil_posix.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "pyexpat",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/pyexpat.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "queue",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/queue.py",
+      "preexisting": false
+    },
+    {
+      "name": "quopri",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/quopri.py",
+      "preexisting": true
+    },
+    {
+      "name": "random",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/random.py",
+      "preexisting": true
+    },
+    {
+      "name": "re",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/re/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "re._casefix",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/re/_casefix.py",
+      "preexisting": true
+    },
+    {
+      "name": "re._compiler",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/re/_compiler.py",
+      "preexisting": true
+    },
+    {
+      "name": "re._constants",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/re/_constants.py",
+      "preexisting": true
+    },
+    {
+      "name": "re._parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/re/_parser.py",
+      "preexisting": true
+    },
+    {
+      "name": "readline",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/readline.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "reprlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/reprlib.py",
+      "preexisting": true
+    },
+    {
+      "name": "resource",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/resource.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "secrets",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/secrets.py",
+      "preexisting": false
+    },
+    {
+      "name": "select",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "selectors",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/selectors.py",
+      "preexisting": true
+    },
+    {
+      "name": "shlex",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/shlex.py",
+      "preexisting": false
+    },
+    {
+      "name": "shutil",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/shutil.py",
+      "preexisting": true
+    },
+    {
+      "name": "signal",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/signal.py",
+      "preexisting": true
+    },
+    {
+      "name": "site",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site.py",
+      "preexisting": true
+    },
+    {
+      "name": "socket",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/socket.py",
+      "preexisting": true
+    },
+    {
+      "name": "ssl",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ssl.py",
+      "preexisting": false
+    },
+    {
+      "name": "stat",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/stat.py",
+      "preexisting": true
+    },
+    {
+      "name": "string",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/string.py",
+      "preexisting": true
+    },
+    {
+      "name": "struct",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/struct.py",
+      "preexisting": true
+    },
+    {
+      "name": "subprocess",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/subprocess.py",
+      "preexisting": true
+    },
+    {
+      "name": "sysconfig",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/sysconfig.py",
+      "preexisting": true
+    },
+    {
+      "name": "tatsu",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu._config",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/_config.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu._version",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/_version.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.ast",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/ast.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.bootstrap",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/bootstrap.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.buffering",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/buffering.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.codegen",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/codegen/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.codegen.cgbase",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/codegen/cgbase.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.codegen.objectmodel",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/codegen/objectmodel.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.codegen.python",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/codegen/python.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.collections",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/collections/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.collections.orderedset",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/collections/orderedset.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.collections.tail",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/collections/tail.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.color",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/color.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.contexts",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/contexts.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.exceptions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/exceptions.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.grammars",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/grammars.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.infos",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/infos.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.leftrec",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/leftrec.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.model",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/model.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.objectmodel",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/objectmodel.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/parser.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.parser_semantics",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/parser_semantics.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.parsing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/parsing.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.rendering",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/rendering.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.semantics",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/semantics.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.synth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/synth.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.tokenizing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/tokenizing.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.tool",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/tool.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.util",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/util/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.util._common",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/util/_common.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.util.misc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/util/misc.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.util.unicode_characters",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/util/unicode_characters.py",
+      "preexisting": false
+    },
+    {
+      "name": "tatsu.walkers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tatsu/walkers.py",
+      "preexisting": false
+    },
+    {
+      "name": "tempfile",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/tempfile.py",
+      "preexisting": true
+    },
+    {
+      "name": "termcolor",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/termcolor/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "termcolor.termcolor",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/termcolor/termcolor.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.agents",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/agents/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.agents.human",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/agents/human.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.agents.random",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/agents/random.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.agents.simple",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/agents/simple.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.agents.walkthrough",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/agents/walkthrough.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.core",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/core.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.batch",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/batch/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.batch.batch_env",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/batch/batch_env.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.logic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/logic/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.logic.model",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/logic/model.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.logic.parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/logic/parser.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.pddl",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/pddl.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.textgen",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/textgen/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.textgen.model",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/textgen/model.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.pddl.textgen.parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/pddl/textgen/parser.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.tw",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/tw.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.wrappers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/wrappers/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.wrappers.filter",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/wrappers/filter.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.wrappers.generic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/wrappers/generic.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.wrappers.limit",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/wrappers/limit.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.wrappers.recorder",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/wrappers/recorder.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.wrappers.tw_inform7",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/wrappers/tw_inform7.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.zmachine",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/zmachine/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.envs.zmachine.jericho",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/envs/zmachine/jericho.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.chaining",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/chaining.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.data",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/data/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.dependency_tree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/dependency_tree.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.game",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/game.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.graph_networks",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/graph_networks.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.inform7",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/inform7/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.inform7.world2inform7",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/inform7/world2inform7.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.logger",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/logger.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.maker",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/maker.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.text_generation",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/text_generation.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.text_grammar",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/text_grammar.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.vtypes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/vtypes.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.generator.world",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/generator/world.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym.core",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/core.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym.envs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/envs/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym.envs.textworld",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/envs/textworld.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym.envs.textworld_batch",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/envs/textworld_batch.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym.envs.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/envs/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.gym.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/gym/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.helpers",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/helpers.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.logic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/logic/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.logic.model",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/logic/model.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.logic.parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/logic/parser.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.textgen",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/textgen/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.textgen.model",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/textgen/model.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.textgen.parser",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/textgen/parser.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "textworld.version",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/textworld/version.py",
+      "preexisting": false
+    },
+    {
+      "name": "textwrap",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/textwrap.py",
+      "preexisting": true
+    },
+    {
+      "name": "threading",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/threading.py",
+      "preexisting": true
+    },
+    {
+      "name": "token",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/token.py",
+      "preexisting": true
+    },
+    {
+      "name": "tokenize",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/tokenize.py",
+      "preexisting": true
+    },
+    {
+      "name": "tqdm",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm._dist_ver",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/_dist_ver.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm._monitor",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/_monitor.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm._tqdm_pandas",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/_tqdm_pandas.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm.cli",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/cli.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm.gui",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/gui.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm.std",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/std.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm.utils",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/utils.py",
+      "preexisting": false
+    },
+    {
+      "name": "tqdm.version",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/tqdm/version.py",
+      "preexisting": false
+    },
+    {
+      "name": "traceback",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/traceback.py",
+      "preexisting": false
+    },
+    {
+      "name": "types",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/types.py",
+      "preexisting": true
+    },
+    {
+      "name": "typing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/typing.py",
+      "preexisting": true
+    },
+    {
+      "name": "unicodedata",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/unicodedata.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": false
+    },
+    {
+      "name": "urllib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/urllib/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "urllib.parse",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/urllib/parse.py",
+      "preexisting": true
+    },
+    {
+      "name": "uuid",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/uuid.py",
+      "preexisting": false
+    },
+    {
+      "name": "warnings",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/warnings.py",
+      "preexisting": true
+    },
+    {
+      "name": "wcwidth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth._clip",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_clip.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth._constants",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_constants.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth._wcswidth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_wcswidth.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth._wcwidth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_wcwidth.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth._width",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/_width.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.align",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/align.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.bisearch",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/bisearch.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.control_codes",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/control_codes.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.escape_sequences",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/escape_sequences.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.grapheme",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/grapheme.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.hyperlink",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/hyperlink.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.sgr_state",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/sgr_state.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_ambiguous",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_ambiguous.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_grapheme",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_grapheme.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_grapheme_overrides",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_grapheme_overrides/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_grapheme_overrides._registry",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_grapheme_overrides/_registry.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_mc",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_mc.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_overrides",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_overrides.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_term_programs",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_term_programs.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_vs15",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_vs15.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_vs16",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_vs16.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_wide",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_wide.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.table_zero",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/table_zero.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.text_sizing",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/text_sizing.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.textwrap",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/textwrap.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.unicode_versions",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/unicode_versions.py",
+      "preexisting": false
+    },
+    {
+      "name": "wcwidth.wcwidth",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/wcwidth/wcwidth.py",
+      "preexisting": false
+    },
+    {
+      "name": "weakref",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/weakref.py",
+      "preexisting": true
+    },
+    {
+      "name": "xml",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.dom",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/dom/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.dom.NodeFilter",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/dom/NodeFilter.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.dom.domreg",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/dom/domreg.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.dom.minicompat",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/dom/minicompat.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.dom.minidom",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/dom/minidom.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.dom.xmlbuilder",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/dom/xmlbuilder.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.etree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/etree/__init__.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.etree.ElementPath",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/etree/ElementPath.py",
+      "preexisting": false
+    },
+    {
+      "name": "xml.etree.ElementTree",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/xml/etree/ElementTree.py",
+      "preexisting": false
+    },
+    {
+      "name": "zipfile",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/zipfile/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "zipfile._path",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/zipfile/_path/__init__.py",
+      "preexisting": true
+    },
+    {
+      "name": "zipfile._path.glob",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/zipfile/_path/glob.py",
+      "preexisting": true
+    },
+    {
+      "name": "zipimport",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/zipimport.py",
+      "preexisting": true
+    },
+    {
+      "name": "zlib",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+      "preexisting": true
+    },
+    {
+      "name": "zope",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/zope/__init__.py",
+      "preexisting": true
+    }
+  ]
+}

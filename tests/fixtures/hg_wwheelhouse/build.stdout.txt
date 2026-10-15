@@ -1,0 +1,26 @@
+{"netns": "net:[4026535618]", "route": "", "interfaces": ["eno2", "lo", "eno1", "veth93cf75e", "veth3e2ac29", "br-5b5da34683f1", "docker0", "enxbe3af2b6059f"], "command": "python3 tests/fixtures/hg_wwheelhouse/offline.py build", "external_connect_error": "OSError(101, 'Network is unreachable')", "errno": 101}
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/build-tools.lock
+build-bootstrap exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/bottleneck /tmp/hg-wwheelhouse-payloads-e5uywviu/Bottleneck-1.3.7.tar.gz
+build-bottleneck exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/cellpylib /tmp/hg-wwheelhouse-payloads-e5uywviu/cellpylib-2.4.0.tar.gz
+build-cellpylib exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/chess /tmp/hg-wwheelhouse-payloads-e5uywviu/chess-1.11.2.tar.gz
+build-chess exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/fast-downward-textworld /tmp/hg-wwheelhouse-payloads-e5uywviu/fast_downward_textworld-20.6.4.tar.gz
+build-fast-downward-textworld exit_code 1
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/gensim /tmp/hg-wwheelhouse-payloads-e5uywviu/gensim-4.3.2.tar.gz
+build-gensim exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/jericho /tmp/hg-wwheelhouse-payloads-e5uywviu/jericho-3.3.1.tar.gz
+build-jericho exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/kiwisolver /tmp/hg-wwheelhouse-payloads-e5uywviu/kiwisolver-1.4.4.tar.gz
+build-kiwisolver exit_code 1
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/lz4 /tmp/hg-wwheelhouse-payloads-e5uywviu/lz4-4.3.2.tar.gz
+build-lz4 exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/psutil /tmp/hg-wwheelhouse-payloads-e5uywviu/psutil-5.9.0.tar.gz
+build-psutil exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/pycosat /tmp/hg-wwheelhouse-payloads-e5uywviu/pycosat-0.6.6.tar.gz
+build-pycosat exit_code 0
++ /tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-h7xmsohq/zss /tmp/hg-wwheelhouse-payloads-e5uywviu/zss-1.2.0.tar.gz
+build-zss exit_code 0
+work_directory /tmp/hg-wwheelhouse-build-h7xmsohq

@@ -1,0 +1,40 @@
+{"netns": "net:[4026535618]", "route": "", "interfaces": [[1, "lo"]], "command": "python3 tests/fixtures/hg_wwheelhouse/offline.py install", "external_connect_error": "OSError(101, 'Network is unreachable')", "errno": 101}
++ /tmp/hg-wwheelhouse-install-sa29ixrb/chessbench_puzzles/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/chessbench_puzzles.lock
+install-chessbench_puzzles exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/chessbench_puzzles/bin/python -c 'import importlib, json; mods=['"'"'chess'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-chessbench_puzzles exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/scienceworld/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/scienceworld.lock
+install-scienceworld exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/scienceworld/bin/python -c 'import importlib, json; mods=['"'"'scienceworld'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-scienceworld exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/livecodebench-public-numpy/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/livecodebench-public-numpy.lock
+install-livecodebench-public-numpy exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/livecodebench-public-numpy/bin/python -c 'import importlib, json; mods=['"'"'numpy'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-livecodebench-public-numpy exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/qa-parquet-public-wheels/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/qa-parquet-public-wheels.lock
+install-qa-parquet-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/qa-parquet-public-wheels/bin/python -c 'import importlib, json; mods=['"'"'pyarrow.parquet'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-qa-parquet-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/jericho-public-wheels/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/jericho-public-wheels.lock
+install-jericho-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/jericho-public-wheels/bin/python -c 'import importlib, json; mods=['"'"'jericho'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-jericho-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/alfworld-partial-public-wheels/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/alfworld-partial-public-wheels.lock
+install-alfworld-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/alfworld-partial-public-wheels/bin/python -c 'import importlib, json; mods=['"'"'textworld.gym'"'"', '"'"'alfworld.agents.environment.alfred_tw_env'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-alfworld-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/reasoning_gym-partial-public-wheels/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/reasoning_gym-partial-public-wheels.lock
+install-reasoning_gym-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/reasoning_gym-partial-public-wheels/bin/python -c 'import importlib, json; mods=['"'"'reasoning_gym'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-reasoning_gym-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/spreadsheetbench-partial-public-wheels/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/spreadsheetbench-partial-public-wheels.lock
+install-spreadsheetbench-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/spreadsheetbench-partial-public-wheels/bin/python -c 'import importlib, json; mods=['"'"'openpyxl'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-spreadsheetbench-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/ds1000-partial-public-wheels/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/ds1000-partial-public-wheels.lock
+install-ds1000-partial-public-wheels exit_code 0
++ /tmp/hg-wwheelhouse-install-sa29ixrb/ds1000-partial-public-wheels/bin/python -c 'import importlib, json; mods=['"'"'numpy'"'"', '"'"'pandas'"'"', '"'"'scipy'"'"', '"'"'sklearn'"'"', '"'"'matplotlib.pyplot'"'"', '"'"'seaborn'"'"', '"'"'torch'"'"', '"'"'gensim'"'"']; [importlib.import_module(x) for x in mods]; print(json.dumps({"imports":mods,"ok":True}))'
+import-ds1000-partial-public-wheels exit_code 1
++ /tmp/hg-wwheelhouse-install-sa29ixrb/ds1000-partial-public-wheels/bin/python -m pip list --format=json
+final-list exit_code 0
+work_directory /tmp/hg-wwheelhouse-install-sa29ixrb

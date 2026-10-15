@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python",
+    "-m",
+    "pip",
+    "install",
+    "--no-index",
+    "--no-cache-dir",
+    "--no-deps",
+    "--require-hashes",
+    "--find-links",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "-r",
+    "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/build-tools.lock"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 2.612
+}

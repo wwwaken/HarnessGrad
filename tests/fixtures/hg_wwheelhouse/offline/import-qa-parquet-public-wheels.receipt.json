@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/tmp/hg-wwheelhouse-install-sa29ixrb/qa-parquet-public-wheels/bin/python",
+    "-c",
+    "import importlib, json; mods=['pyarrow.parquet']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.206
+}

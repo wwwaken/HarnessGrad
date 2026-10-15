@@ -1,0 +1,66 @@
+w-wheelhouse validation; cwd=/tmp/hg-wheelhouse
+Acquisition/build/install commands actually executed earlier (raw output retained at these paths):
+python3 tests/fixtures/hg_wwheelhouse/audit.py > tests/fixtures/hg_wwheelhouse/audit-summary.txt 2> tests/fixtures/hg_wwheelhouse/audit-stderr.txt
+python3 tests/fixtures/hg_wwheelhouse/obtain.py > tests/fixtures/hg_wwheelhouse/obtain.stdout.txt 2> tests/fixtures/hg_wwheelhouse/obtain.stderr.txt
+python3 tests/fixtures/hg_wwheelhouse/supplement.py > tests/fixtures/hg_wwheelhouse/supplement.stdout.txt 2> tests/fixtures/hg_wwheelhouse/supplement.stderr.txt
+unshare -Urn python3 tests/fixtures/hg_wwheelhouse/offline.py build > tests/fixtures/hg_wwheelhouse/build.stdout.txt 2> tests/fixtures/hg_wwheelhouse/build.stderr.txt
+unshare -Urn python3 tests/fixtures/hg_wwheelhouse/offline.py build-retry > tests/fixtures/hg_wwheelhouse/build-retry.stdout.txt 2> tests/fixtures/hg_wwheelhouse/build-retry.stderr.txt
+unshare -Urn python3 tests/fixtures/hg_wwheelhouse/offline.py install > tests/fixtures/hg_wwheelhouse/install.stdout.txt 2> tests/fixtures/hg_wwheelhouse/install.stderr.txt
+python3 tests/fixtures/hg_wwheelhouse/native_providers.py > tests/fixtures/hg_wwheelhouse/native-providers.stdout.txt 2> tests/fixtures/hg_wwheelhouse/native-providers.stderr.txt
+python3 tests/fixtures/hg_wwheelhouse/retry_downloads.py > tests/fixtures/hg_wwheelhouse/retry-downloads.stdout.txt 2> tests/fixtures/hg_wwheelhouse/retry-downloads.stderr.txt
+unshare -Urn python3 tests/fixtures/hg_wwheelhouse/torch_retry.py > tests/fixtures/hg_wwheelhouse/torch-retry.stdout.txt 2> tests/fixtures/hg_wwheelhouse/torch-retry.stderr.txt
+python3 tests/fixtures/hg_wwheelhouse/refine_witnesses.py > tests/fixtures/hg_wwheelhouse/refined-witnesses.txt
+python3 tests/fixtures/hg_wwheelhouse/coverage.py > tests/fixtures/hg_wwheelhouse/coverage-summary.txt
+python3 tests/fixtures/hg_wwheelhouse/render_report.py
+
+Inner pip/wheel/import/check command arrays, exit codes and unedited stdout/stderr: tests/fixtures/hg_wwheelhouse/offline/.
+Independent full sha256sum command and its raw output: tests/fixtures/hg_wwheelhouse/sha256sum.command.json and sha256sum.payloads.txt.
+The initial obtain attempt failed on an absent build-tool metadata lookup before any transfer; preserved in obtain-first-attempt.stderr.txt. Three native-provider truncated transfers and initial source-build/import failures remain retained and excluded from successful artifact claims.
+
+Fresh final checks (command, raw stdout/stderr, exit code):
+$ python3 tests/fixtures/hg_wwheelhouse/validate.py
+{
+  "payloads_rehashed_twice": 130,
+  "total_bytes": 3110412863,
+  "sources_rehashed": 4435,
+  "wheel_identity_and_host_tag_checks": "PASS",
+  "unavailable": [
+    "mkl-service"
+  ],
+  "builds": {
+    "bottleneck": "built-offline",
+    "cellpylib": "built-offline",
+    "chess": "built-offline",
+    "fast-downward-textworld": "built-offline",
+    "gensim": "built-offline",
+    "jericho": "built-offline",
+    "kiwisolver": "built-offline",
+    "lz4": "built-offline",
+    "psutil": "built-offline",
+    "pycosat": "built-offline",
+    "zss": "built-offline"
+  }
+}
+exit_code=0
+
+$ python3 tests/fixtures/hg_wwheelhouse/review_scope.py
+{
+  "registry_scope": "shared observed + two evidence anchors only",
+  "all_statuses_next_actions_dataset_history_unchanged": true,
+  "journal_append_only": true,
+  "registered_worktree": "/tmp/hg-wheelhouse",
+  "branch": "wg-wheelhouse",
+  "coverage": "2 nonempty complete Python import profiles / 8 empty / 9 partial",
+  "offline_install_receipts": 9,
+  "initial_successful_import_profiles": 8,
+  "torch_retry": "import repaired; Gensim failure retained",
+  "production_authorized": false
+}
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ git diff --cached --check
+exit_code=0

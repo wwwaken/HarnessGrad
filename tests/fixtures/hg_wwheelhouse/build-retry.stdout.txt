@@ -1,0 +1,10 @@
+{"netns": "net:[4026535618]", "route": "", "interfaces": [[1, "lo"]], "command": "python3 tests/fixtures/hg_wwheelhouse/offline.py build-retry", "external_connect_error": "OSError(101, 'Network is unreachable')", "errno": 101}
++ /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/venv/bin/python -m pip install --no-index --no-cache-dir --no-deps --require-hashes --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu -r /tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/retry-build-tools.lock
+retry-build-bootstrap exit_code 0
++ /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/fast-downward-textworld /tmp/hg-wwheelhouse-payloads-e5uywviu/fast_downward_textworld-20.6.4.tar.gz
+retry-build-fast-downward-textworld exit_code 0
++ /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/kiwisolver /tmp/hg-wwheelhouse-payloads-e5uywviu/kiwisolver-1.4.4.tar.gz
+retry-build-kiwisolver exit_code 0
++ /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/venv/bin/python -m pip wheel --no-index --no-cache-dir --no-deps --no-build-isolation --find-links /tmp/hg-wwheelhouse-payloads-e5uywviu --wheel-dir /tmp/hg-wwheelhouse-build-retry-yy3x8jlp/lz4 /tmp/hg-wwheelhouse-payloads-e5uywviu/lz4-4.3.2.tar.gz
+retry-build-lz4 exit_code 0
+work_directory /tmp/hg-wwheelhouse-build-retry-yy3x8jlp

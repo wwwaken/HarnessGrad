@@ -1,0 +1,17 @@
+{
+  "netns": "net:[4026535618]",
+  "route": "",
+  "interfaces": [
+    "eno2",
+    "lo",
+    "eno1",
+    "veth93cf75e",
+    "veth3e2ac29",
+    "br-5b5da34683f1",
+    "docker0",
+    "enxbe3af2b6059f"
+  ],
+  "command": "python3 tests/fixtures/hg_wwheelhouse/offline.py build",
+  "external_connect_error": "OSError(101, 'Network is unreachable')",
+  "errno": 101
+}

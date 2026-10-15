@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/tmp/hg-wwheelhouse-build-h7xmsohq/venv/bin/python",
+    "-m",
+    "pip",
+    "wheel",
+    "--no-index",
+    "--no-cache-dir",
+    "--no-deps",
+    "--no-build-isolation",
+    "--find-links",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "--wheel-dir",
+    "/tmp/hg-wwheelhouse-build-h7xmsohq/chess",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu/chess-1.11.2.tar.gz"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 1.181
+}

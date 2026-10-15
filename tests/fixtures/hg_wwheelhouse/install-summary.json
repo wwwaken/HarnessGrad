@@ -1,0 +1,272 @@
+{
+  "chessbench_puzzles": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/chessbench_puzzles/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/chessbench_puzzles.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.698
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/chessbench_puzzles/bin/python",
+        "-c",
+        "import importlib, json; mods=['chess']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.091
+    },
+    "status": "installed-and-imported"
+  },
+  "scienceworld": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/scienceworld/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/scienceworld.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.565
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/scienceworld/bin/python",
+        "-c",
+        "import importlib, json; mods=['scienceworld']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.059
+    },
+    "status": "installed-and-imported"
+  },
+  "livecodebench-public-numpy": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/livecodebench-public-numpy/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/livecodebench-public-numpy.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.204
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/livecodebench-public-numpy/bin/python",
+        "-c",
+        "import importlib, json; mods=['numpy']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.158
+    },
+    "status": "installed-and-imported"
+  },
+  "qa-parquet-public-wheels": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/qa-parquet-public-wheels/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/qa-parquet-public-wheels.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.248
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/qa-parquet-public-wheels/bin/python",
+        "-c",
+        "import importlib, json; mods=['pyarrow.parquet']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.206
+    },
+    "status": "installed-and-imported"
+  },
+  "jericho-public-wheels": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/jericho-public-wheels/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/jericho-public-wheels.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.359
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/jericho-public-wheels/bin/python",
+        "-c",
+        "import importlib, json; mods=['jericho']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.172
+    },
+    "status": "installed-and-imported"
+  },
+  "alfworld-partial-public-wheels": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/alfworld-partial-public-wheels/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/alfworld-partial-public-wheels.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.073
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/alfworld-partial-public-wheels/bin/python",
+        "-c",
+        "import importlib, json; mods=['textworld.gym', 'alfworld.agents.environment.alfred_tw_env']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.98
+    },
+    "status": "installed-and-imported"
+  },
+  "reasoning_gym-partial-public-wheels": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/reasoning_gym-partial-public-wheels/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/reasoning_gym-partial-public-wheels.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 10.163
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/reasoning_gym-partial-public-wheels/bin/python",
+        "-c",
+        "import importlib, json; mods=['reasoning_gym']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.179
+    },
+    "status": "installed-and-imported"
+  },
+  "spreadsheetbench-partial-public-wheels": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/spreadsheetbench-partial-public-wheels/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/spreadsheetbench-partial-public-wheels.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.692
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/spreadsheetbench-partial-public-wheels/bin/python",
+        "-c",
+        "import importlib, json; mods=['openpyxl']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.261
+    },
+    "status": "installed-and-imported"
+  },
+  "ds1000-partial-public-wheels": {
+    "install": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/ds1000-partial-public-wheels/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-cache-dir",
+        "--no-deps",
+        "--require-hashes",
+        "--find-links",
+        "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+        "-r",
+        "/tmp/hg-wheelhouse/tests/fixtures/hg_wwheelhouse/ds1000-partial-public-wheels.lock"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 39.823
+    },
+    "import": {
+      "command": [
+        "/tmp/hg-wwheelhouse-install-sa29ixrb/ds1000-partial-public-wheels/bin/python",
+        "-c",
+        "import importlib, json; mods=['numpy', 'pandas', 'scipy', 'sklearn', 'matplotlib.pyplot', 'seaborn', 'torch', 'gensim']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 1.621
+    },
+    "status": "failed"
+  }
+}

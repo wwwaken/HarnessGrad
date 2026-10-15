@@ -1,0 +1,13 @@
+{
+  "netns": "net:[4026535618]",
+  "route": "",
+  "interfaces": [
+    [
+      1,
+      "lo"
+    ]
+  ],
+  "command": "python3 tests/fixtures/hg_wwheelhouse/offline.py install",
+  "external_connect_error": "OSError(101, 'Network is unreachable')",
+  "errno": 101
+}
