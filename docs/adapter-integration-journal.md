@@ -4532,3 +4532,26 @@ cases).
 - **Merge hygiene, because this repository has been burned by payloads.** The packet is 285 text files, 14.34 MB, largest file 839,061 bytes, none at or above the 1 MB limit, no archive/wheel/ELF/dataset byte, and a secret scan for API-key, bearer-token, private-key and password shapes returned no matches. `.git` grows 38 MB -> 47 MB. Six files carry `/home/xubuqiang/...` absolute paths, which is the requested "resolved module path" record rather than a leak.
 - **The next gate is now a concrete list, not a category.** The worker named the remaining members - `tree_sitter==0.21.3`, `tree-sitter-java==0.21.0`, `tree-sitter-javascript==0.21.4`, `anthropic==0.53.0`, `cohere==5.13.3`, `mistralai==1.7.0`, `google-genai==1.24.0`, `datamodel-code-generator==0.25.7`, a concrete `qwen-agent` version, `writer-sdk>=2.1.0`, and `wandb==0.18.5` only if the optional logging branch is selected - together with the ABI, grammar/API-binding, linked/dlopen, license/NOTICE and exact-compiled-build requirements each one needs. Availability outside the enumerated local scope is recorded as unobserved, not as unobtainable.
 - The applier refused the worker's replacement for three sentences and accepted it once each was acknowledged; all three are carried in substance and made more specific. `next_action` 1029 -> 1736 chars, `observed` 1076 -> 2145, `git diff --numstat` = `2 2`. **No scorer executed, no full-call differential fabricated, no handler constructed, no package installed or downloaded**, and the blocker stays `external` and open. Checker valid; focused set 118 passed, 15 skipped, 3 xfailed. Merged as 908d3903 and df08c044.
+
+## 2026-10-15 — Two more workers launched on the assessment's repo-local and upstream gaps (in flight)
+
+- The closure assessment identified exactly two obligations that are neither done nor blocked on an
+  authorization, so they were dispatched rather than left as prose.
+- `w-stratqa` (`wg-stratqa`) chases the single remaining clause of `strategyqa / dataset-journal-gap`:
+  the authoritative **original** StrategyQA scorer and split definitions, over named upstream sources,
+  reported as FOUND with URL/digest/verbatim excerpt or as ABSENT over an enumerated scope or as
+  UNKNOWN - and explicitly forbidden from reconstructing an unavailable rule from the paper's prose,
+  from the ReWOO vendored copy or from a similarly named script. It must not execute either scorer; a
+  discriminating example, if the definitions are found, is computed by hand from the definitions.
+- `w-gymelig` (`wg-gymelig`) does the repo-local clause of `reasoning_gym / dataset-journal-gap`:
+  "independently establish behavioral reference=1/empty=0 family eligibility". For all 89 declared
+  families it calls the family's own scoring entry point twice - once with the row's reference answer
+  (expect full credit) and once with an empty answer (expect zero) - and records per family the entry
+  point identity, both verdicts, exceptions as their own outcome class rather than as zeros, and the
+  pool/package SHAs used. It is CPU-only, must not regenerate or overwrite the frozen pool, must not
+  touch the GPU or any model, and must not export pool content beyond the minimum needed to explain a
+  failure. A two-point synthetic behavioural control cannot itself satisfy the gate, and that is
+  written into its brief.
+- Neither worker may edit the registry or the journal; both emit a standalone evidence file plus
+  `registry/proposals/<worker>.json`. This paragraph records their launch and is not a claim that
+  either has been reviewed or merged.
