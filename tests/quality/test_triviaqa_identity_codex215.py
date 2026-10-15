@@ -29,7 +29,11 @@ def test_materialized_verifier_preserves_scorer_identity(
         triviaqa, tmp_path, channel, prediction, expected):
     gold = triviaqa._gold({"answer": {
         "value": "Invented Blue Town", "normalized_aliases": ["invented blue town"]}})
-    spec = triviaqa._SPEC.verifier({"gold": gold})
+    # `63606f42` made the QA scaffold bind the spec to the selected task identity
+    # (`data/scaffolds/qa/base.py:339-341`), so a hand-built record must carry one.
+    # Fabricated like the answer: this test is about scorer identity surviving
+    # materialization, and no dataset row is read.
+    spec = triviaqa._SPEC.verifier({"task_id": "triviaqa/test/0", "gold": gold})
     for entry in spec["inputs"]:
         target = tmp_path / entry["path"]
         target.parent.mkdir(parents=True, exist_ok=True)
