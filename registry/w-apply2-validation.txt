@@ -1,0 +1,77 @@
+Parent integration validation - apply w-hotpotrec's partial historical-metadata recovery.
+
+Source
+------
+Worker commit ac7e5675 (branch wg-hotpotrec), cherry-picked on top of main 98e4d9a7. The worker
+added six small text files and edited no registry field. Its own `registry_checker_observed` records
+the pre-existing fresh-worktree failure
+`{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}`; that
+baseline problem is already fixed by the carrier restoration commits 2f2fe43a / f8f9eb82, and the
+checker is valid in this worktree before and after this change.
+
+Independent parent verification of the worker's load-bearing claims
+-------------------------------------------------------------------
+1. Candidate run ID. `sed -n '85p'` of
+   `/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-19-24-01a12e8d-26bd-7c90-ab31-5ab4e04eaaa8.jsonl`
+   contains, verbatim:
+   `qa-h0-incomplete-index.json records [('bird_minidev', 'bird-minidev-h0-10pct-v4', 'incomplete', '/tmp/harnessgrad-runs/bird-minidev-h0-10pct-v4'), ('fever', 'fever-h0-10pct-v4', 'incomplete', '/tmp/harnessgrad-runs/fever-h0-10pct-v4'), ('hotpotqa', 'hotpotqa-h0-10pct-v4', 'incomplete', '/tmp/harnessgrad-runs/hotpotqa-h0-10pct-v4')]`
+   The tuple is real; it binds dataset/status/run-directory and **not** the 94/1382/1476 report.
+2. Historical filenames. `sed -n '16p'` of
+   `/home/xubuqiang/.codex/sessions/2026/10/12/rollout-2026-10-12T13-14-44-01a12e88-df36-7711-a286-2fb124e3416d.jsonl`
+   contains `hotpotqa-10pct-v4-split.json`, `hotpotqa-h0-10pct-v4-console.log`,
+   `hotpotqa-h0-10pct-v4-ledger.json` and `qa-h0-incomplete-index.json`. So the files existed; the
+   bird/DS-1000 wording "not present in this repository and not published upstream" would overstate
+   this case and the worker correctly refused to propose a withdrawal.
+3. v5 ID list. `registry/w-hotpotrec-v5-train-ids.json` holds 492 train IDs, all unique, first
+   `hotpotqa/validation/7168`, with an explicit `binding_limit` that it is **not** evidence for the v4
+   run and `recovery` noting no original split file was recovered.
+
+Applied change (parent-strengthened)
+------------------------------------
+Cherry-picked files: `registry/proposals/w-hotpotrec.json`, `registry/w-hotpotrec-receipts.md`,
+`registry/w-hotpotrec-evidence.json`, `registry/w-hotpotrec-search.py`,
+`registry/w-hotpotrec-v5-train-ids.json`, `registry/w-hotpotrec-validation.txt`.
+
+Two fields of `hotpotqa / historical-comparison-receipts` change (`2 2` in
+`git diff --numstat registry/dataset-blockers.json`):
+* `observed` 2781 -> 3713 chars: an additive append recording the candidate ID, the historical
+  filenames, the enumerated-absence scope for the original v4 trial ledger, the separate v5 recovery,
+  and the explicit UNKNOWN items.
+* `next_action` 897 -> 1296 chars. The parent did **not** take the worker's 618-character replacement
+  verbatim: it dropped the enumerated evidence list the blocker exists to name. The applied value keeps
+  every original obligation and adds the new finding, and a mechanical check asserts all
+17 obligation keywords survive (`selected-ID`, `trial`, `error`, `timeout`, `source`, `split`,
+`manifest`, `model`, `harness`, `measured`, `invalid`, `unmeasured`, `lifecycle`, `cleanup`,
+`effect=null`, `fresh ID`, `scorer/control`).
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py \
+    tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py \
+    tests/quality/test_site_evidence_carriers.py -q
+101 passed, 15 skipped, 3 xfailed
+
+What this does NOT do
+---------------------
+- It closes nothing. `hotpotqa / historical-comparison-receipts` stays open and every named evidence
+  kind remains required.
+- It does not edit any `historical_runs` record. The pinned record keeps `run_id=null` and
+  `effect=null`; the candidate ID is recorded in the active blocker's `observed` as a candidate with an
+  explicit unresolved binding, never substituted for the pinned value.
+- It does not claim the 94/1382/1476 numbers are reconciled, verified or corrected.
+- It does not resume, rerun or overwrite any historical run, and it does not substitute v5 metadata for
+  v4 receipts.
+- It reverses no withdrawal and reinstates no withdrawn shared gate.
+
+Correction to the order of operations
+-------------------------------------
+The first version of this commit was made on top of main 98e4d9a7 while the focused run actually
+returned `3 failed, 98 passed, 15 skipped, 3 xfailed`: all three failures were in
+`tests/quality/test_site_evidence_carriers.py`, because main at that commit was itself broken by
+`.gitignore:289` (`/docs/*`) silently excluding three restored citation carriers, so their
+`PROVENANCE.json` entries pointed at files that were never committed. That is a defect in the
+preceding carrier commit, not in this change, and it is fixed by `0bf43fca`. This branch is now
+rebased onto `0bf43fca` and the command above is the observed result in this worktree, not a prior
+claim.
