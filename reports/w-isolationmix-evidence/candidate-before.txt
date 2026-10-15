@@ -1,0 +1,119 @@
+..............F................F                                         [100%]
+=================================== FAILURES ===================================
+______________ test_a_bad_candidate_is_unmeasured_not_scored_zero ______________
+
+tmp_path = PosixPath('/tmp/isolationmix-before-pytest/test_a_bad_candidate_is_unmeas0')
+
+    def test_a_bad_candidate_is_unmeasured_not_scored_zero(tmp_path):
+        """**平台不能把「我产出的东西不是 harness」记成「我得了 0 分」。**
+    
+        这是本轮的核心。三件事在旧代码里长得一样:方法决定不改、edit 没 apply 上、产出的
+        东西根本不是 harness。现在第二、三种会带着**具名的问题**记成 unmeasured —— 没有测量
+        可报,而不是报一个会被读成「这只 harness 很弱」的 0.000。
+        """
+        import os
+        import subprocess
+    
+        method = tmp_path / "bad_method.py"
+        method.write_text(_BAD_METHOD, encoding="utf-8")
+        runs = tmp_path / "runs"
+        proc = subprocess.run(
+            [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+             "--rounds", "1", "--run-id", "bad-candidate", "--dataset", "demo",
+             "--sampling", "all", "--side", "train",
+             "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+             "--method-entrypoint", f"{sys.executable} {method}"],
+            cwd=ROOT, capture_output=True, text=True, timeout=600,
+            env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+        combined = proc.stdout + proc.stderr
+    
+        points = [json.loads(l) for l in
+                  (runs / "bad-candidate" / "curve.jsonl").read_text().splitlines() if l.strip()]
+        broken = [p for p in points if p.get("unmeasured")]
+>       assert broken, f"坏候选没有被记成 unmeasured:\n{combined[-1500:]}"
+E       AssertionError: 坏候选没有被记成 unmeasured:
+E          0 · 第 3/4 题 t03 — done (0s)
+E           ✓ round 0 · 第 4/4 题 t04 — done (0s)
+E           ! this run scores 4 tasks — the score moves in steps of 0.250
+E           round 0  H0 (base harness)           train 0.000
+E           ✗ check · round 0 · t01 — answer '' vs 'alpha'
+E           ✗ check · round 0 · t02 — answer '' vs 'beta'
+E           ✗ check · round 0 · t03 — answer '' vs 'gamma'
+E           ✗ check · round 0 · t04 — answer '' vs 'delta'
+E         Traceback (most recent call last):
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1306, in <module>
+E             sys.exit(main())
+E                      ^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1291, in main
+E             result = _main(attempt)
+E                      ^^^^^^^^^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1271, in _main
+E             curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
+E                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/loops/mode_a.py", line 624, in _run_mode_a
+E             _write_curve(run_dir / "curve.jsonl", curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/records.py", line 619, in _write_curve
+E             common_class(observed_class(point) for point in curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/eval/verification/isolation.py", line 29, in common_class
+E             raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+E         eval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown
+E         
+E       assert []
+
+tests/quality/test_candidate_apply.py:261: AssertionError
+________ test_a_candidate_that_does_not_compile_is_unmeasured_not_zero _________
+
+tmp_path = PosixPath('/tmp/isolationmix-before-pytest/test_a_candidate_that_does_not0')
+
+    def test_a_candidate_that_does_not_compile_is_unmeasured_not_zero(tmp_path):
+        """端到端:`B2-llm` 的形状 —— 编译不过的候选不能记成"五道题都失败了"。"""
+        import os
+        import subprocess
+    
+        method = tmp_path / "breaks_python.py"
+        method.write_text(_BREAKS_PYTHON, encoding="utf-8")
+        runs = tmp_path / "runs"
+        proc = subprocess.run(
+            [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+             "--rounds", "1", "--run-id", "breaks-python", "--dataset", "demo",
+             "--sampling", "all", "--side", "train",
+             "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+             "--method-entrypoint", f"{sys.executable} {method}"],
+            cwd=ROOT, capture_output=True, text=True, timeout=600,
+            env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+>       assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+E       AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E         breaks-python
+E         
+E           harness   loop_plain 0.1.0-control
+E           mode      unified · method drives its own loop
+E           data      demo · 4 tasks on the train side · train 4 / eval 4
+E           model     (none) · mock   ← not a live model
+E           sandbox   bwrap active — the harness cannot see this directory
+E         
+E           ✓ round 0 · 第 1/4 题 t01 — done (0s)
+E           ✓ round 0 · 第 2/4 题 t02 — done (0s)
+E           ✓ round 0 · 第 3/4 题 t03 — done (0s)
+E           ✓ round 0 · 第 4/4 题 t04 — done (0s)
+E           ! this run scores 4 tasks — the score moves in steps of 0.250
+E           round 0  H0 (base harness)           train 0.000
+E         
+E         -wt/w-isolationmix/driver.py", line 1271, in _main
+E             curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
+E                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/loops/mode_a.py", line 624, in _run_mode_a
+E             _write_curve(run_dir / "curve.jsonl", curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/records.py", line 619, in _write_curve
+E             common_class(observed_class(point) for point in curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/eval/verification/isolation.py", line 29, in common_class
+E             raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+E         eval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...rted(values)))\neval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown\n').returncode
+
+tests/quality/test_candidate_apply.py:755: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_candidate_apply.py::test_a_bad_candidate_is_unmeasured_not_scored_zero
+FAILED tests/quality/test_candidate_apply.py::test_a_candidate_that_does_not_compile_is_unmeasured_not_zero
+2 failed, 30 passed in 24.00s

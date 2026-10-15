@@ -616,7 +616,14 @@ def _save_verdicts(run_dir: Path, round_no: int, res: dict | None,
                     level="error" if not scores.get(tid) else "info")
 
 def _write_curve(path: Path, curve: list[dict]) -> None:
-    common_class(observed_class(point) for point in curve)
+    # A rejected candidate is evidence, but contributes no score to this axis.
+    # Empty rounds retain a numeric placeholder, so use measurement coverage too.
+    # Missing legacy fields prove nothing: keep those observations in the guard,
+    # including unknown topology on a real zero score.
+    common_class(observed_class(point) for point in curve
+                 if point.get("score", ...) is not None
+                 and point.get("measured_by_platform") is not False
+                 and point.get("n_scored") != 0)
     with path.open("w") as fh:
         for point in curve:
             # External/legacy points need the same explicit label as new points.

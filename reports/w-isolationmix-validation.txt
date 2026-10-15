@@ -1,0 +1,463 @@
+w-isolationmix validation
+Working directory: /mnt/20t/xubuqiang/hg-wt/w-isolationmix
+
+$ mkdir -p /mnt/20t/xubuqiang/hg-work/isolationmix /tmp/isolationmix-before-tmp && set -o pipefail && TMPDIR=/tmp/isolationmix-before-tmp python3 -m pytest -q tests/quality/test_candidate_apply.py --basetemp=/tmp/isolationmix-before-pytest 2>&1 | tee /mnt/20t/xubuqiang/hg-work/isolationmix/candidate-before.txt
+exit_code: 1
+Exact observed output:
+..............F................F                                         [100%]
+=================================== FAILURES ===================================
+______________ test_a_bad_candidate_is_unmeasured_not_scored_zero ______________
+
+tmp_path = PosixPath('/tmp/isolationmix-before-pytest/test_a_bad_candidate_is_unmeas0')
+
+    def test_a_bad_candidate_is_unmeasured_not_scored_zero(tmp_path):
+        """**平台不能把「我产出的东西不是 harness」记成「我得了 0 分」。**
+    
+        这是本轮的核心。三件事在旧代码里长得一样:方法决定不改、edit 没 apply 上、产出的
+        东西根本不是 harness。现在第二、三种会带着**具名的问题**记成 unmeasured —— 没有测量
+        可报,而不是报一个会被读成「这只 harness 很弱」的 0.000。
+        """
+        import os
+        import subprocess
+    
+        method = tmp_path / "bad_method.py"
+        method.write_text(_BAD_METHOD, encoding="utf-8")
+        runs = tmp_path / "runs"
+        proc = subprocess.run(
+            [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+             "--rounds", "1", "--run-id", "bad-candidate", "--dataset", "demo",
+             "--sampling", "all", "--side", "train",
+             "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+             "--method-entrypoint", f"{sys.executable} {method}"],
+            cwd=ROOT, capture_output=True, text=True, timeout=600,
+            env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+        combined = proc.stdout + proc.stderr
+    
+        points = [json.loads(l) for l in
+                  (runs / "bad-candidate" / "curve.jsonl").read_text().splitlines() if l.strip()]
+        broken = [p for p in points if p.get("unmeasured")]
+>       assert broken, f"坏候选没有被记成 unmeasured:\n{combined[-1500:]}"
+E       AssertionError: 坏候选没有被记成 unmeasured:
+E          0 · 第 3/4 题 t03 — done (0s)
+E           ✓ round 0 · 第 4/4 题 t04 — done (0s)
+E           ! this run scores 4 tasks — the score moves in steps of 0.250
+E           round 0  H0 (base harness)           train 0.000
+E           ✗ check · round 0 · t01 — answer '' vs 'alpha'
+E           ✗ check · round 0 · t02 — answer '' vs 'beta'
+E           ✗ check · round 0 · t03 — answer '' vs 'gamma'
+E           ✗ check · round 0 · t04 — answer '' vs 'delta'
+E         Traceback (most recent call last):
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1306, in <module>
+E             sys.exit(main())
+E                      ^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1291, in main
+E             result = _main(attempt)
+E                      ^^^^^^^^^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1271, in _main
+E             curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
+E                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/loops/mode_a.py", line 624, in _run_mode_a
+E             _write_curve(run_dir / "curve.jsonl", curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/records.py", line 619, in _write_curve
+E             common_class(observed_class(point) for point in curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/eval/verification/isolation.py", line 29, in common_class
+E             raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+E         eval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown
+E         
+E       assert []
+
+tests/quality/test_candidate_apply.py:261: AssertionError
+________ test_a_candidate_that_does_not_compile_is_unmeasured_not_zero _________
+
+tmp_path = PosixPath('/tmp/isolationmix-before-pytest/test_a_candidate_that_does_not0')
+
+    def test_a_candidate_that_does_not_compile_is_unmeasured_not_zero(tmp_path):
+        """端到端:`B2-llm` 的形状 —— 编译不过的候选不能记成"五道题都失败了"。"""
+        import os
+        import subprocess
+    
+        method = tmp_path / "breaks_python.py"
+        method.write_text(_BREAKS_PYTHON, encoding="utf-8")
+        runs = tmp_path / "runs"
+        proc = subprocess.run(
+            [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+             "--rounds", "1", "--run-id", "breaks-python", "--dataset", "demo",
+             "--sampling", "all", "--side", "train",
+             "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+             "--method-entrypoint", f"{sys.executable} {method}"],
+            cwd=ROOT, capture_output=True, text=True, timeout=600,
+            env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+>       assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+E       AssertionError:   ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+E         breaks-python
+E         
+E           harness   loop_plain 0.1.0-control
+E           mode      unified · method drives its own loop
+E           data      demo · 4 tasks on the train side · train 4 / eval 4
+E           model     (none) · mock   ← not a live model
+E           sandbox   bwrap active — the harness cannot see this directory
+E         
+E           ✓ round 0 · 第 1/4 题 t01 — done (0s)
+E           ✓ round 0 · 第 2/4 题 t02 — done (0s)
+E           ✓ round 0 · 第 3/4 题 t03 — done (0s)
+E           ✓ round 0 · 第 4/4 题 t04 — done (0s)
+E           ! this run scores 4 tasks — the score moves in steps of 0.250
+E           round 0  H0 (base harness)           train 0.000
+E         
+E         -wt/w-isolationmix/driver.py", line 1271, in _main
+E             curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
+E                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/loops/mode_a.py", line 624, in _run_mode_a
+E             _write_curve(run_dir / "curve.jsonl", curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/records.py", line 619, in _write_curve
+E             common_class(observed_class(point) for point in curve)
+E           File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/eval/verification/isolation.py", line 29, in common_class
+E             raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+E         eval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/mnt/8t/xubuqiang/anaconda3/bin/python3', 'driver.py', '--harness', 'loop_plain', '--mode', 'A...rted(values)))\neval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown\n').returncode
+
+tests/quality/test_candidate_apply.py:755: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_candidate_apply.py::test_a_bad_candidate_is_unmeasured_not_scored_zero
+FAILED tests/quality/test_candidate_apply.py::test_a_candidate_that_does_not_compile_is_unmeasured_not_zero
+2 failed, 30 passed in 24.00s
+
+$ mkdir -p /tmp/isolationmix-pins-before-tmp && set -o pipefail && TMPDIR=/tmp/isolationmix-pins-before-tmp python3 -m pytest -q tests/quality/test_runtime_observations_w_obs.py tests/quality/test_scorer_isolation_option_b.py --basetemp=/tmp/isolationmix-pins-before-pytest 2>&1 | tee /mnt/20t/xubuqiang/hg-work/isolationmix/isolation-pins-before.txt
+exit_code: 0
+Exact observed output:
+.........................................s............                   [100%]
+53 passed, 1 skipped in 16.32s
+
+Development control run below used an incorrect new expectation that an empty _curve_point already had a null score. It is not an existing assertion weakened by this patch. The final approach leaves that numeric placeholder unchanged and uses measurement coverage.
+
+$ mkdir -p /tmp/isolationmix-controls-tmp && set -o pipefail && TMPDIR=/tmp/isolationmix-controls-tmp python3 -m pytest -q -s tests/quality/test_isolation_aggregate_w_isolationmix.py --basetemp=/tmp/isolationmix-controls-pytest 2>&1 | tee reports/w-isolationmix-evidence/aggregate-controls.txt
+exit_code: 1
+Exact observed output:
+.............FFREFUSED: scorer isolation class mismatch: in-process, snapshot-service
+WROTE: [{"score": 1.0, "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true}, {"measured_by_platform": false, "score": null, "scorer_isolation_class": "unknown", "scorer_isolation_comparable": false}, {"score": 1.0, "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true}]
+.
+=================================== FAILURES ===================================
+__________ test_runner_and_point_aggregate_only_scored_tasks[invalid] __________
+
+tmp_path = PosixPath('/tmp/isolationmix-controls-pytest/test_runner_and_point_aggregat0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7391653d5c10>
+failure = 'invalid'
+
+    @pytest.mark.parametrize("failure", ["invalid", "unmeasured"])
+    def test_runner_and_point_aggregate_only_scored_tasks(tmp_path, monkeypatch, failure):
+        def run_one(_repo, task, **_kwargs):
+            if task["task_id"] == "good":
+                return dict(verdict=dict(score=0.0, scorer_isolation_class="in-process"),
+                            trace="", stderr="", exit_code=0)
+            if failure == "invalid":
+                return dict(invalid=dict(stage="test", detail="synthetic nonmeasurement"))
+            return dict(verdict=dict(score=None, unmeasured="synthetic nonmeasurement"),
+                        trace="", stderr="", exit_code=0)
+    
+        monkeypatch.setattr(runner, "run_one", run_one)
+        tasks = [dict(task_id=tid) for tid in ["good", "bad"]]
+        cache = {}
+        measured = runner._evaluate(tmp_path, tasks, {}, cache=cache, progress_dir=tmp_path)
+        assert measured["per_task"] == {"good": 0.0}
+        assert measured["per_task_scorer_isolation"] == {"good": "in-process"}
+        assert measured["scorer_isolation_class"] == "in-process"
+        assert "bad" in measured["invalid"]
+        progress = tmp_path / "progress/round-0"
+        assert json.loads((progress / "good.json").read_text())["scorer_isolation_class"] == "in-process"
+        invalid = json.loads((progress / "bad.json").read_text())
+        assert invalid["invalid"] and "score" not in invalid
+        assert set(cache) == {":good:1"}
+        cached = runner._evaluate(tmp_path, [tasks[0]], {}, cache=cache)
+        assert cached["per_task_scorer_isolation"] == {"good": "in-process"}
+        point = _curve_point(run_id="synthetic-isolationmix", round_index=0,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=list(measured["per_task"].values()),
+                             task_ids=list(measured["per_task"]),
+                             per_task_scorer_isolation=measured["per_task_scorer_isolation"])
+        assert point["score"] == 0.0 and point["scorer_isolation_class"] == "in-process"
+        empty = _curve_point(run_id="synthetic-isolationmix", round_index=1,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=[], task_ids=[],
+                             per_task_scorer_isolation={"bad": "snapshot-service"})
+>       assert empty["score"] is None and empty["scorer_isolation_class"] == "unknown"
+E       assert (0.0 is None)
+
+tests/quality/test_isolation_aggregate_w_isolationmix.py:110: AssertionError
+________ test_runner_and_point_aggregate_only_scored_tasks[unmeasured] _________
+
+tmp_path = PosixPath('/tmp/isolationmix-controls-pytest/test_runner_and_point_aggregat1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7391653d6210>
+failure = 'unmeasured'
+
+    @pytest.mark.parametrize("failure", ["invalid", "unmeasured"])
+    def test_runner_and_point_aggregate_only_scored_tasks(tmp_path, monkeypatch, failure):
+        def run_one(_repo, task, **_kwargs):
+            if task["task_id"] == "good":
+                return dict(verdict=dict(score=0.0, scorer_isolation_class="in-process"),
+                            trace="", stderr="", exit_code=0)
+            if failure == "invalid":
+                return dict(invalid=dict(stage="test", detail="synthetic nonmeasurement"))
+            return dict(verdict=dict(score=None, unmeasured="synthetic nonmeasurement"),
+                        trace="", stderr="", exit_code=0)
+    
+        monkeypatch.setattr(runner, "run_one", run_one)
+        tasks = [dict(task_id=tid) for tid in ["good", "bad"]]
+        cache = {}
+        measured = runner._evaluate(tmp_path, tasks, {}, cache=cache, progress_dir=tmp_path)
+        assert measured["per_task"] == {"good": 0.0}
+        assert measured["per_task_scorer_isolation"] == {"good": "in-process"}
+        assert measured["scorer_isolation_class"] == "in-process"
+        assert "bad" in measured["invalid"]
+        progress = tmp_path / "progress/round-0"
+        assert json.loads((progress / "good.json").read_text())["scorer_isolation_class"] == "in-process"
+        invalid = json.loads((progress / "bad.json").read_text())
+        assert invalid["invalid"] and "score" not in invalid
+        assert set(cache) == {":good:1"}
+        cached = runner._evaluate(tmp_path, [tasks[0]], {}, cache=cache)
+        assert cached["per_task_scorer_isolation"] == {"good": "in-process"}
+        point = _curve_point(run_id="synthetic-isolationmix", round_index=0,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=list(measured["per_task"].values()),
+                             task_ids=list(measured["per_task"]),
+                             per_task_scorer_isolation=measured["per_task_scorer_isolation"])
+        assert point["score"] == 0.0 and point["scorer_isolation_class"] == "in-process"
+        empty = _curve_point(run_id="synthetic-isolationmix", round_index=1,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=[], task_ids=[],
+                             per_task_scorer_isolation={"bad": "snapshot-service"})
+>       assert empty["score"] is None and empty["scorer_isolation_class"] == "unknown"
+E       assert (0.0 is None)
+
+tests/quality/test_isolation_aggregate_w_isolationmix.py:110: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation_aggregate_w_isolationmix.py::test_runner_and_point_aggregate_only_scored_tasks[invalid]
+FAILED tests/quality/test_isolation_aggregate_w_isolationmix.py::test_runner_and_point_aggregate_only_scored_tasks[unmeasured]
+2 failed, 14 passed in 1.62s
+
+$ mkdir -p /tmp/isolationmix-after-tmp && set -o pipefail && TMPDIR=/tmp/isolationmix-after-tmp python3 -m pytest -q tests/quality/test_candidate_apply.py --basetemp=/tmp/isolationmix-after-pytest 2>&1 | tee reports/w-isolationmix-evidence/candidate-after.txt
+exit_code: 0
+Exact observed output:
+................................                                         [100%]
+32 passed in 23.66s
+
+$ mkdir -p /tmp/isolationmix-final-controls-tmp && set -o pipefail && TMPDIR=/tmp/isolationmix-final-controls-tmp python3 -m pytest -q -s tests/quality/test_isolation_aggregate_w_isolationmix.py --basetemp=/tmp/isolationmix-final-controls-pytest 2>&1 | tee reports/w-isolationmix-evidence/aggregate-controls.txt
+exit_code: 0
+Exact observed output:
+...........................REFUSED: scorer isolation class mismatch: in-process, snapshot-service
+WROTE: [{"score": 1.0, "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true}, {"measured_by_platform": false, "n_scored": 0, "score": 0.0, "scorer_isolation_class": "unknown", "scorer_isolation_comparable": false}, {"score": 1.0, "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true}]
+.
+28 passed in 2.48s
+
+$ mkdir -p /tmp/isolationmix-pins-after-tmp && set -o pipefail && TMPDIR=/tmp/isolationmix-pins-after-tmp python3 -m pytest -q tests/quality/test_runtime_observations_w_obs.py tests/quality/test_scorer_isolation_option_b.py --basetemp=/tmp/isolationmix-pins-after-pytest 2>&1 | tee reports/w-isolationmix-evidence/isolation-pins-after.txt
+exit_code: 0
+Exact observed output:
+.........................................s............                   [100%]
+53 passed, 1 skipped in 15.08s
+
+$ set -o pipefail && python3 tools/check_dataset_blockers.py 2>&1 | tee reports/w-isolationmix-evidence/dataset-blockers.txt && git diff --check
+exit_code: 0
+Exact observed output:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+$ set -o pipefail && python3 reports/w-isolationmix-evidence/capture_before.py 2>&1 | tee reports/w-isolationmix-evidence/before-capture-summary.txt
+exit_code: 0
+Exact observed output:
+BASELINE records.py: 2525a653efd3383c25601109ab22c22129664b53
+FRESH RUN ID: isolationmix-before-47615e69ec49449eb9690715bb38924d
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "score": 0.0, "scorer_isolation_class": "in-process", "unmeasured": null}
+{"measured_by_platform": false, "n_scored": 0, "round": 1, "score": 0.0, "scorer_isolation_class": "unknown", "unmeasured": {"harness_dir": "/tmp/isolationmix-capture-1yx2ah0t/hg-method-isolationmix-before-47615e69ec49449eb9690715bb38924d-37ehu6ku/round1_ws/candidate", "problems": ["harness.json is not valid JSON: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)"], "reason": "the candidate harness is not one the platform can measure, so there is no measurement to report"}}
+ORIGINAL GUARD RAISED: scorer isolation class mismatch: in-process, unknown
+DELETED /tmp/isolationmix-capture-1yx2ah0t
+
+The successful capture above preceded the later output-overwrite preflight addition. The driver traceback uses original compiled source line numbers but Python can display current source text for records.py; the original module bytes come from the git-show command in capture_before.py. The guard itself was not bypassed.
+
+Two earlier instrumentation attempts were not counted as valid mismatch evidence. Their observed summary output and partial snapshots remain under /mnt/20t/xubuqiang/hg-work/isolationmix/:
+
+Command for that attempt: set -o pipefail && python3 reports/w-isolationmix-evidence/capture_before.py 2>&1 | tee reports/w-isolationmix-evidence/before-capture-summary.txt
+Preserved output (/mnt/20t/xubuqiang/hg-work/isolationmix/capture-initial-summary.txt):
+DELETED /tmp/isolationmix-capture-_qr2gbey
+
+Command for that attempt: set -o pipefail && python3 reports/w-isolationmix-evidence/capture_before.py 2>&1 | tee reports/w-isolationmix-evidence/before-capture-summary.txt
+Preserved output (/mnt/20t/xubuqiang/hg-work/isolationmix/capture-nested-tmp-failed/before-capture-summary.txt):
+BASELINE records.py: 2525a653efd3383c25601109ab22c22129664b53
+FRESH RUN ID: isolationmix-before-d2b78ee0fff54aee9c597f9bdca4e33b
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "score": 0.0, "scorer_isolation_class": "in-process", "unmeasured": null}
+DELETED /tmp/isolationmix-capture-ar0ymq68
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/reports/w-isolationmix-evidence/capture_before.py", line 67, in <module>
+    assert "IsolationMismatch: scorer isolation class mismatch: in-process, unknown" in captured.getvalue()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+The first attempt did not retain detailed driver output, so its precise cause is UNKNOWN. The second retained driver output at /mnt/20t/xubuqiang/hg-work/isolationmix/capture-nested-tmp-failed/before-capture-driver.txt; its method failed on a read-only filesystem because the method input parent also contained its scratch workspace. The final script puts the input in a separate subdirectory. No prior run ID was resumed.
+
+$ git rev-parse HEAD
+exit_code: 0
+Exact observed output:
+2525a653efd3383c25601109ab22c22129664b53
+
+$ git branch --show-current
+exit_code: 0
+Exact observed output:
+wg-w-isolationmix
+
+$ rg -n 'common_class\(' harnessgrad eval tests/quality/test_runtime_observations_w_obs.py tests/quality/test_scorer_isolation_option_b.py
+exit_code: 0
+Exact observed output:
+tests/quality/test_runtime_observations_w_obs.py:38:        common_class(iter(classes))
+tests/quality/test_runtime_observations_w_obs.py:155:    assert common_class(iter([])) == "unknown"
+eval/verification/isolation.py:20:def common_class(classes) -> str:
+eval/verification/isolation.py:34:    isolation = common_class([observed_class(left), observed_class(right)])
+harnessgrad/records.py:163:    isolation = common_class(isolation_by_task.values())
+harnessgrad/records.py:623:    common_class(observed_class(point) for point in curve
+eval/observe/tracing.py:409:        isolation = common_class(observed_class(r.get("verdict")) for r in measured)
+eval/run/runner.py:1214:            per_task_scorer_isolation[tid] = common_class(observed_class(v) for v in cached_verdicts)
+eval/run/runner.py:1262:        per_task_scorer_isolation[tid] = common_class(
+eval/run/runner.py:1389:    scorer_isolation_class = common_class(per_task_scorer_isolation.values())
+
+$ git diff --exit-code -- tests/quality/test_runtime_observations_w_obs.py tests/quality/test_scorer_isolation_option_b.py eval/verification/isolation.py eval/observe/tracing.py eval/run/runner.py registry/dataset-blockers.json docs/adapter-integration-journal.md AGENTS.md
+exit_code: 0
+Exact observed output:
+(empty)
+
+$ git diff --check
+exit_code: 0
+Exact observed output:
+(empty)
+
+$ python3 reports/w-isolationmix-evidence/capture_before.py
+exit_code: 1
+Exact observed output:
+Refusing to overwrite evidence; pass a fresh output directory.
+
+$ python3 -c 'from pathlib import Path
+import json
+for path in sorted(Path('"'"'reports/w-isolationmix-evidence'"'"').glob('"'"'*.curve.jsonl'"'"')):
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    print(f'"'"'{path}: {len(rows)} points'"'"')
+    for row in rows:
+        print(json.dumps({key: row.get(key) for key in ('"'"'round'"'"', '"'"'measured_by_platform'"'"', '"'"'n_scored'"'"', '"'"'scorer_isolation_class'"'"')}, sort_keys=True))
+'
+exit_code: 0
+Exact observed output:
+reports/w-isolationmix-evidence/after-bad-candidate.curve.jsonl: 2 points
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "scorer_isolation_class": "in-process"}
+{"measured_by_platform": false, "n_scored": 0, "round": 1, "scorer_isolation_class": "unknown"}
+reports/w-isolationmix-evidence/after-breaks-python.curve.jsonl: 2 points
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "scorer_isolation_class": "in-process"}
+{"measured_by_platform": false, "n_scored": 0, "round": 1, "scorer_isolation_class": "unknown"}
+reports/w-isolationmix-evidence/before-attempted-bad-candidate.curve.jsonl: 2 points
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "scorer_isolation_class": "in-process"}
+{"measured_by_platform": false, "n_scored": 0, "round": 1, "scorer_isolation_class": "unknown"}
+reports/w-isolationmix-evidence/before-bad-candidate.curve.jsonl: 1 points
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "scorer_isolation_class": "in-process"}
+reports/w-isolationmix-evidence/before-breaks-python.curve.jsonl: 1 points
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "scorer_isolation_class": "in-process"}
+reports/w-isolationmix-evidence/before-capture-persisted.curve.jsonl: 1 points
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "scorer_isolation_class": "in-process"}
+
+Evidence copy and cleanup commands used Python pathlib/shutil. Original test curves were copied byte-for-byte, then the owned pytest basetemps and TMPDIRs were removed. The first before-copy glob included pytest symlinks and failed with AssertionError before copying anything; resolving paths removed that duplication. No original receipt was edited.
+Original -> committed copy:
+/tmp/isolationmix-before-pytest/test_a_bad_candidate_is_unmeas0/runs/bad-candidate/curve.jsonl -> reports/w-isolationmix-evidence/before-bad-candidate.curve.jsonl
+/tmp/isolationmix-before-pytest/test_a_candidate_that_does_not0/runs/breaks-python/curve.jsonl -> reports/w-isolationmix-evidence/before-breaks-python.curve.jsonl
+/tmp/isolationmix-after-pytest/test_a_bad_candidate_is_unmeas0/runs/bad-candidate/curve.jsonl -> reports/w-isolationmix-evidence/after-bad-candidate.curve.jsonl
+/tmp/isolationmix-after-pytest/test_a_candidate_that_does_not0/runs/breaks-python/curve.jsonl -> reports/w-isolationmix-evidence/after-breaks-python.curve.jsonl
+
+The repeated fixture IDs above belong to fresh, separate run roots, not resumed runs. The additional original-writer capture uses its observed UUID run ID in before-capture-summary.txt.
+
+$ python3 -c 'from pathlib import Path
+for p in sorted(Path('"'"'/tmp'"'"').glob('"'"'isolationmix-*'"'"')):
+    print(p)
+'
+exit_code: 0
+Exact observed output:
+(empty)
+
+NOT VERIFIED:
+- Full repository suite and tests owned by other workers.
+- Downstream plotting/reporting treatment of the existing unmeasured score=0.0 placeholder.
+- Arbitrarily malformed/contradictory foreign curve or cache payloads.
+- Real model/API behavior, GPU state, production datasets/pilots, actual Docker/kernel isolation.
+- The existing optional skipped isolation test was not forced to run.
+- Main checkout state was not inspected or modified; no merge or push performed.
+- No registry change is needed/proposed for this recording-only fix; checker validity does not authorize production.
+
+Committed-file sizes in bytes (all must be < 1,000,000):
+   40726  harnessgrad/records.py
+   37972  tests/quality/test_candidate_apply.py
+    6793  tests/quality/test_isolation_aggregate_w_isolationmix.py
+   10421  reports/w-isolationmix.md
+   30187  reports/w-isolationmix-validation.txt
+    5490  reports/w-isolationmix-evidence/after-bad-candidate.curve.jsonl
+    5420  reports/w-isolationmix-evidence/after-breaks-python.curve.jsonl
+    6558  reports/w-isolationmix-evidence/aggregate-controls-initial.txt
+     450  reports/w-isolationmix-evidence/aggregate-controls.txt
+    5616  reports/w-isolationmix-evidence/before-attempted-bad-candidate.curve.jsonl
+    2354  reports/w-isolationmix-evidence/before-bad-candidate.curve.jsonl
+    2354  reports/w-isolationmix-evidence/before-breaks-python.curve.jsonl
+    2699  reports/w-isolationmix-evidence/before-capture-driver.txt
+    2393  reports/w-isolationmix-evidence/before-capture-persisted.curve.jsonl
+     885  reports/w-isolationmix-evidence/before-capture-summary.txt
+     100  reports/w-isolationmix-evidence/candidate-after.txt
+    7494  reports/w-isolationmix-evidence/candidate-before.txt
+    3522  reports/w-isolationmix-evidence/capture_before.py
+     112  reports/w-isolationmix-evidence/dataset-blockers.txt
+     111  reports/w-isolationmix-evidence/isolation-pins-after.txt
+     111  reports/w-isolationmix-evidence/isolation-pins-before.txt
+
+Staged review: verbatim pytest evidence retains original trailing whitespace. Do not trim observed output to satisfy diff formatting.
+
+$ git diff --cached --check
+exit_code: 2
+Exact observed output:
+reports/w-isolationmix-evidence/aggregate-controls-initial.txt:21: trailing whitespace.
++    
+reports/w-isolationmix-evidence/aggregate-controls-initial.txt:67: trailing whitespace.
++    
+reports/w-isolationmix-evidence/candidate-before.txt:9: trailing whitespace.
++    
+reports/w-isolationmix-evidence/candidate-before.txt:16: trailing whitespace.
++    
+reports/w-isolationmix-evidence/candidate-before.txt:29: trailing whitespace.
++    
+reports/w-isolationmix-evidence/candidate-before.txt:60: trailing whitespace.
++E         
+reports/w-isolationmix-evidence/candidate-before.txt:72: trailing whitespace.
++    
+reports/w-isolationmix-evidence/candidate-before.txt:87: trailing whitespace.
++E         
+reports/w-isolationmix-evidence/candidate-before.txt:93: trailing whitespace.
++E         
+reports/w-isolationmix-evidence/candidate-before.txt:100: trailing whitespace.
++E         
+reports/w-isolationmix-evidence/candidate-before.txt:111: trailing whitespace.
++E         
+reports/w-isolationmix-validation.txt:15: trailing whitespace.
++    
+reports/w-isolationmix-validation.txt:22: trailing whitespace.
++    
+reports/w-isolationmix-validation.txt:35: trailing whitespace.
++    
+reports/w-isolationmix-validation.txt:66: trailing whitespace.
++E         
+reports/w-isolationmix-validation.txt:78: trailing whitespace.
++    
+reports/w-isolationmix-validation.txt:93: trailing whitespace.
++E         
+reports/w-isolationmix-validation.txt:99: trailing whitespace.
++E         
+reports/w-isolationmix-validation.txt:106: trailing whitespace.
++E         
+reports/w-isolationmix-validation.txt:117: trailing whitespace.
++E         
+reports/w-isolationmix-validation.txt:158: trailing whitespace.
++    
+reports/w-isolationmix-validation.txt:204: trailing whitespace.
++    
+
+$ git diff --cached --check -- harnessgrad/records.py tests/quality/test_candidate_apply.py tests/quality/test_isolation_aggregate_w_isolationmix.py reports/w-isolationmix.md reports/w-isolationmix-evidence/capture_before.py
+exit_code: 0
+Exact observed output:
+(empty)

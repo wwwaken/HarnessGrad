@@ -1,0 +1,100 @@
+.............FFREFUSED: scorer isolation class mismatch: in-process, snapshot-service
+WROTE: [{"score": 1.0, "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true}, {"measured_by_platform": false, "score": null, "scorer_isolation_class": "unknown", "scorer_isolation_comparable": false}, {"score": 1.0, "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true}]
+.
+=================================== FAILURES ===================================
+__________ test_runner_and_point_aggregate_only_scored_tasks[invalid] __________
+
+tmp_path = PosixPath('/tmp/isolationmix-controls-pytest/test_runner_and_point_aggregat0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7391653d5c10>
+failure = 'invalid'
+
+    @pytest.mark.parametrize("failure", ["invalid", "unmeasured"])
+    def test_runner_and_point_aggregate_only_scored_tasks(tmp_path, monkeypatch, failure):
+        def run_one(_repo, task, **_kwargs):
+            if task["task_id"] == "good":
+                return dict(verdict=dict(score=0.0, scorer_isolation_class="in-process"),
+                            trace="", stderr="", exit_code=0)
+            if failure == "invalid":
+                return dict(invalid=dict(stage="test", detail="synthetic nonmeasurement"))
+            return dict(verdict=dict(score=None, unmeasured="synthetic nonmeasurement"),
+                        trace="", stderr="", exit_code=0)
+    
+        monkeypatch.setattr(runner, "run_one", run_one)
+        tasks = [dict(task_id=tid) for tid in ["good", "bad"]]
+        cache = {}
+        measured = runner._evaluate(tmp_path, tasks, {}, cache=cache, progress_dir=tmp_path)
+        assert measured["per_task"] == {"good": 0.0}
+        assert measured["per_task_scorer_isolation"] == {"good": "in-process"}
+        assert measured["scorer_isolation_class"] == "in-process"
+        assert "bad" in measured["invalid"]
+        progress = tmp_path / "progress/round-0"
+        assert json.loads((progress / "good.json").read_text())["scorer_isolation_class"] == "in-process"
+        invalid = json.loads((progress / "bad.json").read_text())
+        assert invalid["invalid"] and "score" not in invalid
+        assert set(cache) == {":good:1"}
+        cached = runner._evaluate(tmp_path, [tasks[0]], {}, cache=cache)
+        assert cached["per_task_scorer_isolation"] == {"good": "in-process"}
+        point = _curve_point(run_id="synthetic-isolationmix", round_index=0,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=list(measured["per_task"].values()),
+                             task_ids=list(measured["per_task"]),
+                             per_task_scorer_isolation=measured["per_task_scorer_isolation"])
+        assert point["score"] == 0.0 and point["scorer_isolation_class"] == "in-process"
+        empty = _curve_point(run_id="synthetic-isolationmix", round_index=1,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=[], task_ids=[],
+                             per_task_scorer_isolation={"bad": "snapshot-service"})
+>       assert empty["score"] is None and empty["scorer_isolation_class"] == "unknown"
+E       assert (0.0 is None)
+
+tests/quality/test_isolation_aggregate_w_isolationmix.py:110: AssertionError
+________ test_runner_and_point_aggregate_only_scored_tasks[unmeasured] _________
+
+tmp_path = PosixPath('/tmp/isolationmix-controls-pytest/test_runner_and_point_aggregat1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7391653d6210>
+failure = 'unmeasured'
+
+    @pytest.mark.parametrize("failure", ["invalid", "unmeasured"])
+    def test_runner_and_point_aggregate_only_scored_tasks(tmp_path, monkeypatch, failure):
+        def run_one(_repo, task, **_kwargs):
+            if task["task_id"] == "good":
+                return dict(verdict=dict(score=0.0, scorer_isolation_class="in-process"),
+                            trace="", stderr="", exit_code=0)
+            if failure == "invalid":
+                return dict(invalid=dict(stage="test", detail="synthetic nonmeasurement"))
+            return dict(verdict=dict(score=None, unmeasured="synthetic nonmeasurement"),
+                        trace="", stderr="", exit_code=0)
+    
+        monkeypatch.setattr(runner, "run_one", run_one)
+        tasks = [dict(task_id=tid) for tid in ["good", "bad"]]
+        cache = {}
+        measured = runner._evaluate(tmp_path, tasks, {}, cache=cache, progress_dir=tmp_path)
+        assert measured["per_task"] == {"good": 0.0}
+        assert measured["per_task_scorer_isolation"] == {"good": "in-process"}
+        assert measured["scorer_isolation_class"] == "in-process"
+        assert "bad" in measured["invalid"]
+        progress = tmp_path / "progress/round-0"
+        assert json.loads((progress / "good.json").read_text())["scorer_isolation_class"] == "in-process"
+        invalid = json.loads((progress / "bad.json").read_text())
+        assert invalid["invalid"] and "score" not in invalid
+        assert set(cache) == {":good:1"}
+        cached = runner._evaluate(tmp_path, [tasks[0]], {}, cache=cache)
+        assert cached["per_task_scorer_isolation"] == {"good": "in-process"}
+        point = _curve_point(run_id="synthetic-isolationmix", round_index=0,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=list(measured["per_task"].values()),
+                             task_ids=list(measured["per_task"]),
+                             per_task_scorer_isolation=measured["per_task_scorer_isolation"])
+        assert point["score"] == 0.0 and point["scorer_isolation_class"] == "in-process"
+        empty = _curve_point(run_id="synthetic-isolationmix", round_index=1,
+                             identity={}, sampling={}, cost={}, cumulative={},
+                             scores=[], task_ids=[],
+                             per_task_scorer_isolation={"bad": "snapshot-service"})
+>       assert empty["score"] is None and empty["scorer_isolation_class"] == "unknown"
+E       assert (0.0 is None)
+
+tests/quality/test_isolation_aggregate_w_isolationmix.py:110: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation_aggregate_w_isolationmix.py::test_runner_and_point_aggregate_only_scored_tasks[invalid]
+FAILED tests/quality/test_isolation_aggregate_w_isolationmix.py::test_runner_and_point_aggregate_only_scored_tasks[unmeasured]
+2 failed, 14 passed in 1.62s

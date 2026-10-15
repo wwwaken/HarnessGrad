@@ -1,0 +1,44 @@
+  ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+isolationmix-before-47615e69ec49449eb9690715bb38924d
+
+  harness   loop_plain 0.1.0-control
+  mode      unified · method drives its own loop
+  data      demo · 4 tasks on the train side · train 4 / eval 4
+  model     (none) · mock   ← not a live model
+  sandbox   bwrap active — the harness cannot see this directory
+
+  ✓ round 0 · 第 1/4 题 t01 — done (0s)
+  ✓ round 0 · 第 2/4 题 t02 — done (0s)
+  ✓ round 0 · 第 3/4 题 t03 — done (0s)
+  ✓ round 0 · 第 4/4 题 t04 — done (0s)
+  ! this run scores 4 tasks — the score moves in steps of 0.250
+  round 0  H0 (base harness)           train 0.000
+  ✗ check · round 0 · t01 — answer '' vs 'alpha'
+  ✗ check · round 0 · t02 — answer '' vs 'beta'
+  ✗ check · round 0 · t03 — answer '' vs 'gamma'
+  ✗ check · round 0 · t04 — answer '' vs 'delta'
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/reports/w-isolationmix-evidence/capture_before.py", line 56, in <module>
+    runpy.run_path(str(ROOT / "driver.py"), run_name="__main__")
+  File "<frozen runpy>", line 286, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1306, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1291, in main
+    result = _main(attempt)
+             ^^^^^^^^^^^^^^
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/driver.py", line 1271, in _main
+    curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/loops/mode_a.py", line 624, in _run_mode_a
+    _write_curve(run_dir / "curve.jsonl", curve)
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/reports/w-isolationmix-evidence/capture_before.py", line 40, in capture
+    original(path, curve)
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/harnessgrad/records.py", line 619, in _write_curve
+    # A rejected candidate is evidence, but contributes no score to this axis.
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/20t/xubuqiang/hg-wt/w-isolationmix/eval/verification/isolation.py", line 29, in common_class
+    raise IsolationMismatch("scorer isolation class mismatch: " + ", ".join(sorted(values)))
+eval.verification.isolation.IsolationMismatch: scorer isolation class mismatch: in-process, unknown

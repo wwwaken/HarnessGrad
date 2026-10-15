@@ -255,12 +255,15 @@ def test_a_bad_candidate_is_unmeasured_not_scored_zero(tmp_path):
         env={**os.environ, "HG_AGENT_BACKEND": "mock"})
     combined = proc.stdout + proc.stderr
 
+    assert proc.returncode == 0, combined[-1500:]
     points = [json.loads(l) for l in
               (runs / "bad-candidate" / "curve.jsonl").read_text().splitlines() if l.strip()]
     broken = [p for p in points if p.get("unmeasured")]
     assert broken, f"坏候选没有被记成 unmeasured:\n{combined[-1500:]}"
     point = broken[-1]
     assert point["measured_by_platform"] is False
+    assert point["n_scored"] == 0 and point["per_task"] == {}
+    assert point["scorer_isolation_class"] == "unknown"
     problems = point["unmeasured"]["problems"]
     assert problems, "unmeasured 却没说是哪里不对"
     assert any("JSON" in p or "entrypoint" in p or "manifest" in p for p in problems), \
@@ -763,3 +766,5 @@ def test_a_candidate_that_does_not_compile_is_unmeasured_not_zero(tmp_path):
     problems = broken[-1]["unmeasured"]["problems"]
     assert any("does not compile" in p for p in problems), problems
     assert broken[-1]["measured_by_platform"] is False
+    assert broken[-1]["n_scored"] == 0 and broken[-1]["per_task"] == {}
+    assert broken[-1]["scorer_isolation_class"] == "unknown"

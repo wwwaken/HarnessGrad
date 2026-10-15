@@ -1,0 +1,6 @@
+BASELINE records.py: 2525a653efd3383c25601109ab22c22129664b53
+FRESH RUN ID: isolationmix-before-47615e69ec49449eb9690715bb38924d
+{"measured_by_platform": true, "n_scored": 4, "round": 0, "score": 0.0, "scorer_isolation_class": "in-process", "unmeasured": null}
+{"measured_by_platform": false, "n_scored": 0, "round": 1, "score": 0.0, "scorer_isolation_class": "unknown", "unmeasured": {"harness_dir": "/tmp/isolationmix-capture-1yx2ah0t/hg-method-isolationmix-before-47615e69ec49449eb9690715bb38924d-37ehu6ku/round1_ws/candidate", "problems": ["harness.json is not valid JSON: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)"], "reason": "the candidate harness is not one the platform can measure, so there is no measurement to report"}}
+ORIGINAL GUARD RAISED: scorer isolation class mismatch: in-process, unknown
+DELETED /tmp/isolationmix-capture-1yx2ah0t
