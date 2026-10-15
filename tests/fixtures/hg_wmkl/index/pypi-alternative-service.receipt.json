@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/pypi-alternative-service.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/mkl_service-2.4.2-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+    "https://files.pythonhosted.org/packages/a7/25/bec8f6415e3e3f96336c8215e708812419b1ceacc2f498803d2c49d6e73a/mkl_service-2.4.2-0-cp312-cp312-manylinux_2_28_x86_64.whl"
+  ],
+  "exit_code": 0,
+  "url": "https://files.pythonhosted.org/packages/a7/25/bec8f6415e3e3f96336c8215e708812419b1ceacc2f498803d2c49d6e73a/mkl_service-2.4.2-0-cp312-cp312-manylinux_2_28_x86_64.whl",
+  "bytes": 79033,
+  "sha256": "d6c46e525babf5514c5ab7b8568a81865f107142c276228416c6057b4e332928"
+}

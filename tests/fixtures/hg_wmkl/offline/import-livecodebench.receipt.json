@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/tmp/hg-wmkl-offline-r11a1n5y/livecodebench/bin/python",
+    "-I",
+    "-c",
+    "import importlib,json,pathlib,sys\nmods=['numpy']\nresults={}\nfor name in ['mkl']+mods:\n try:\n  m=importlib.import_module(name)\n  results[name]={'ok':True,'version':getattr(m,'__version__',None),'path':getattr(m,'__file__',None)}\n except Exception as e:results[name]={'ok':False,'error':repr(e)}\nimport mkl,numpy\nprefix=pathlib.Path(sys.prefix)\nassert pathlib.Path(mkl.__file__).is_relative_to(prefix)\nassert pathlib.Path(numpy.__file__).is_relative_to(prefix)\nassert mkl.__version__=='2.4.0' and numpy.__version__=='1.26.4'\nassert numpy.__mkl_version__=='2023.1.0'\nmaps=pathlib.Path('/proc/self/maps').read_text().splitlines()\nproviders=sorted(set(line.split()[-1] for line in maps if any(x in line for x in ['libmkl','libiomp','libtbb','libstdc++','libgcc_s'])))\nassert any('libmkl' in x for x in providers)\nassert all(pathlib.Path(x).is_relative_to(prefix) for x in providers if any(k in x for k in ['libmkl','libiomp','libtbb']))\nassert not any(str(pathlib.Path(sys.base_prefix)/'lib/python3.12/site-packages') in line for line in maps)\nprint(json.dumps({'imports':results,'mkl_version':mkl.get_version(),'numpy_mkl_version':numpy.__mkl_version__,\n 'native_providers':providers,'prefix':sys.prefix,'base_prefix':sys.base_prefix,'sys_path':sys.path},indent=2))\nraise SystemExit(any(not r['ok'] for r in results.values()))\n"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 0.154
+}

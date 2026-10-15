@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/artifact-intel-openmp.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/intel-openmp-2023.1.0-hdb19cb5_46306.conda",
+    "https://repo.anaconda.com/pkgs/main/linux-64/intel-openmp-2023.1.0-hdb19cb5_46306.conda"
+  ],
+  "exit_code": 0,
+  "url": "https://repo.anaconda.com/pkgs/main/linux-64/intel-openmp-2023.1.0-hdb19cb5_46306.conda",
+  "bytes": 18012149,
+  "sha256": "b73c169115156c76d439211b956b3a12e69f9ad533ba46b8444693f1c9941277"
+}

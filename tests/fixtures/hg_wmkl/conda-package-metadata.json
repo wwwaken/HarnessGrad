@@ -1,0 +1,239 @@
+{
+  "mkl-service": {
+    "arch": "x86_64",
+    "build": "py312h5eee18b_1",
+    "build_number": 1,
+    "depends": [
+      "libgcc-ng >=11.2.0",
+      "mkl >=2023.1.0,<2024.0a0",
+      "python >=3.12,<3.13.0a0"
+    ],
+    "license": "BSD-3-Clause",
+    "license_family": "BSD",
+    "name": "mkl-service",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1698805476126,
+    "version": "2.4.0"
+  },
+  "mkl": {
+    "arch": "x86_64",
+    "build": "h213fc3f_46344",
+    "build_number": 46344,
+    "constrains": [
+      "__glibc >=2.17"
+    ],
+    "depends": [
+      "intel-openmp 2023.*",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "tbb 2021.*"
+    ],
+    "license": "LicenseRef-ProprietaryIntel",
+    "license_family": "Proprietary",
+    "name": "mkl",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1699648006088,
+    "version": "2023.1.0"
+  },
+  "intel-openmp": {
+    "arch": "x86_64",
+    "build": "hdb19cb5_46306",
+    "build_number": 46306,
+    "constrains": [
+      "__glibc >=2.17"
+    ],
+    "depends": [
+      "libffi >=3.4,<3.5",
+      "libffi >=3.4,<4.0a0",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "zlib >=1.2.13,<1.2.14",
+      "zlib >=1.2.13,<1.3.0a0"
+    ],
+    "license": "LicenseRef-ProprietaryIntel",
+    "license_family": "Proprietary",
+    "name": "intel-openmp",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1699647799237,
+    "version": "2023.1.0"
+  },
+  "tbb": {
+    "arch": "x86_64",
+    "build": "hdb19cb5_0",
+    "build_number": 0,
+    "depends": [
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0"
+    ],
+    "license": "Apache-2.0",
+    "license_family": "Apache",
+    "name": "tbb",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1680167274961,
+    "version": "2021.8.0"
+  },
+  "numpy": {
+    "arch": "x86_64",
+    "build": "py312hc5e2394_0",
+    "build_number": 0,
+    "depends": [
+      "blas 1.0 mkl",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "mkl >=2023.1.0,<2024.0a0",
+      "mkl-service >=2.3.0,<3.0a0",
+      "mkl_fft",
+      "mkl_random",
+      "numpy-base 1.26.4 py312h0da6c21_0",
+      "python >=3.12,<3.13.0a0"
+    ],
+    "license": "BSD-3-Clause",
+    "license_family": "BSD",
+    "name": "numpy",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1708639368341,
+    "version": "1.26.4"
+  },
+  "numpy-base": {
+    "arch": "x86_64",
+    "build": "py312h0da6c21_0",
+    "build_number": 0,
+    "depends": [
+      "blas 1.0 mkl",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "mkl >=2023.1.0,<2024.0a0",
+      "mkl-service >=2.3.0,<3.0a0",
+      "python >=3.12,<3.13.0a0"
+    ],
+    "license": "BSD-3-Clause",
+    "license_family": "BSD",
+    "name": "numpy-base",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1708639351867,
+    "version": "1.26.4"
+  },
+  "libgcc-ng": {
+    "arch": "x86_64",
+    "build": "h1234567_1",
+    "build_number": 1,
+    "constrains": [
+      "_libgcc_mutex 0.1 main",
+      "_openmp_mutex",
+      "libgomp 11.2.0 h1234567_1"
+    ],
+    "depends": [
+      "_libgcc_mutex 0.1 main",
+      "_openmp_mutex"
+    ],
+    "license": "GPL-3.0-only WITH GCC-exception-3.1",
+    "name": "libgcc-ng",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1654090827491,
+    "version": "11.2.0"
+  },
+  "libstdcxx-ng": {
+    "arch": "x86_64",
+    "build": "h1234567_1",
+    "build_number": 1,
+    "depends": [],
+    "license": "GPL-3.0-only WITH GCC-exception-3.1",
+    "name": "libstdcxx-ng",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1654090800863,
+    "version": "11.2.0"
+  },
+  "libgomp": {
+    "arch": "x86_64",
+    "build": "h1234567_1",
+    "build_number": 1,
+    "depends": [
+      "_libgcc_mutex 0.1 main"
+    ],
+    "license": "GPL-3.0-only WITH GCC-exception-3.1",
+    "name": "libgomp",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1654090775721,
+    "version": "11.2.0"
+  },
+  "libffi": {
+    "arch": "x86_64",
+    "build": "h6a678d5_1",
+    "build_number": 1,
+    "depends": [
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0"
+    ],
+    "license": "MIT",
+    "license_family": "MIT",
+    "name": "libffi",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1714483282916,
+    "version": "3.4.4"
+  },
+  "zlib": {
+    "arch": "x86_64",
+    "build": "h5eee18b_1",
+    "build_number": 1,
+    "depends": [
+      "libgcc-ng >=11.2.0"
+    ],
+    "license": "Zlib",
+    "license_family": "Other",
+    "name": "zlib",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1714510716441,
+    "version": "1.2.13"
+  },
+  "_openmp_mutex": {
+    "arch": "x86_64",
+    "build": "1_gnu",
+    "build_number": 0,
+    "constrains": [
+      "openmp_impl 9999"
+    ],
+    "depends": [
+      "_libgcc_mutex 0.1 main",
+      "libgomp >=7.5.0"
+    ],
+    "license": "BSD-3-Clause",
+    "name": "_openmp_mutex",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1652859733309,
+    "version": "5.1"
+  },
+  "_libgcc_mutex": {
+    "arch": "x86_64",
+    "build": "main",
+    "build_number": 0,
+    "depends": [],
+    "name": "_libgcc_mutex",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1562011674792,
+    "version": "0.1"
+  },
+  "blas": {
+    "arch": "x86_64",
+    "build": "mkl",
+    "build_number": 1,
+    "depends": [],
+    "name": "blas",
+    "platform": "linux",
+    "subdir": "linux-64",
+    "timestamp": 1528122042945,
+    "version": "1.0"
+  }
+}

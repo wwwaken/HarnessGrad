@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/pypi-mkl.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/pypi-mkl.json",
+    "https://pypi.org/pypi/mkl/json"
+  ],
+  "exit_code": 0,
+  "url": "https://pypi.org/pypi/mkl/json",
+  "bytes": 93997,
+  "sha256": "d74c08687aae149a04eaa81c2d895ed9f27e124644c0ede70cfda1d665c54ae1"
+}

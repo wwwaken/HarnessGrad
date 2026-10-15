@@ -1,0 +1,110 @@
+[
+  {
+    "name": "mkl-service",
+    "version": "2.4.0",
+    "build": "py312h5eee18b_1",
+    "subdir": "linux-64",
+    "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/mkl-service-2.4.0-py312h5eee18b_1.conda",
+    "fn": "mkl-service-2.4.0-py312h5eee18b_1.conda",
+    "sha256": "4b83fa638e1be68f0772b9cc1b0d453fa607dd4fa1863d52ea5a04b2d8e8346b",
+    "md5": "cbcf902f69dde50490e8e7254070fbc6",
+    "depends": [
+      "libgcc-ng >=11.2.0",
+      "mkl >=2023.1.0,<2024.0a0",
+      "python >=3.12,<3.13.0a0"
+    ]
+  },
+  {
+    "name": "mkl",
+    "version": "2023.1.0",
+    "build": "h213fc3f_46344",
+    "subdir": "linux-64",
+    "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/mkl-2023.1.0-h213fc3f_46344.conda",
+    "fn": "mkl-2023.1.0-h213fc3f_46344.conda",
+    "sha256": "74453e0d9e072ef8e60e48a734380c238f9df2cf0191ad9a2db6dbf9f8391034",
+    "md5": "83e5adf5b75242d8d7634615fed37c72",
+    "depends": [
+      "intel-openmp 2023.*",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "tbb 2021.*"
+    ]
+  },
+  {
+    "name": "intel-openmp",
+    "version": "2023.1.0",
+    "build": "hdb19cb5_46306",
+    "subdir": "linux-64",
+    "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/intel-openmp-2023.1.0-hdb19cb5_46306.conda",
+    "fn": "intel-openmp-2023.1.0-hdb19cb5_46306.conda",
+    "sha256": "b73c169115156c76d439211b956b3a12e69f9ad533ba46b8444693f1c9941277",
+    "md5": "8c3c1916f770196bf998c8310178ae55",
+    "depends": [
+      "libffi >=3.4,<3.5",
+      "libffi >=3.4,<4.0a0",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "zlib >=1.2.13,<1.2.14",
+      "zlib >=1.2.13,<1.3.0a0"
+    ]
+  },
+  {
+    "name": "tbb",
+    "version": "2021.8.0",
+    "build": "hdb19cb5_0",
+    "subdir": "linux-64",
+    "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/tbb-2021.8.0-hdb19cb5_0.conda",
+    "fn": "tbb-2021.8.0-hdb19cb5_0.conda",
+    "sha256": "c4667f31fd0f7ed35796f2f9b4e7f00bf2ec6ccafb67bd8fe1bd9dd488ad8f75",
+    "md5": "869373905a6bfacbb967abc98516dd85",
+    "depends": [
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0"
+    ]
+  },
+  {
+    "name": "numpy",
+    "version": "1.26.4",
+    "build": "py312hc5e2394_0",
+    "subdir": "linux-64",
+    "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/numpy-1.26.4-py312hc5e2394_0.conda",
+    "fn": "numpy-1.26.4-py312hc5e2394_0.conda",
+    "sha256": "0207cc348f64b8adf828454b7b3488de082bb25c1965058b46585b4117367a11",
+    "md5": "8ac8a89fbffe69a59f2d22ef58a81b0b",
+    "depends": [
+      "blas 1.0 mkl",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "mkl >=2023.1.0,<2024.0a0",
+      "mkl-service >=2.3.0,<3.0a0",
+      "mkl_fft",
+      "mkl_random",
+      "numpy-base 1.26.4 py312h0da6c21_0",
+      "python >=3.12,<3.13.0a0"
+    ]
+  },
+  {
+    "name": "numpy-base",
+    "version": "1.26.4",
+    "build": "py312h0da6c21_0",
+    "subdir": "linux-64",
+    "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/numpy-base-1.26.4-py312h0da6c21_0.conda",
+    "fn": "numpy-base-1.26.4-py312h0da6c21_0.conda",
+    "sha256": "6cbb90df64063ef66000a63e7920951abf0ec635c9c361197710c35bf47709ea",
+    "md5": "888045b50966bd832bd93204480f222a",
+    "depends": [
+      "blas 1.0 mkl",
+      "libgcc-ng >=11.2.0",
+      "libstdcxx-ng >=11.2.0",
+      "mkl >=2023.1.0,<2024.0a0",
+      "mkl-service >=2.3.0,<3.0a0",
+      "python >=3.12,<3.13.0a0"
+    ]
+  }
+]

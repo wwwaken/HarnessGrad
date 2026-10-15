@@ -1,0 +1,57 @@
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:1: # Copyright (c) 2018-2019, Intel Corporation
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:2: #
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:3: # Redistribution and use in source and binary forms, with or without
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:4: # modification, are permitted provided that the following conditions are met:
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:5: #
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:6: #     * Redistributions of source code must retain the above copyright notice,
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:7: #       this list of conditions and the following disclaimer.
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:8: #     * Redistributions in binary form must reproduce the above copyright
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:9: #       notice, this list of conditions and the following disclaimer in the
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:10: #       documentation and/or other materials provided with the distribution.
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:11: #     * Neither the name of Intel Corporation nor the names of its contributors
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:12: #       may be used to endorse or promote products derived from this software
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:13: #       without specific prior written permission.
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:14: #
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:15: # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:16: # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:17: # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:18: # DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:19: # FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:20: # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:21: # SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:22: # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:23: # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:24: # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:25: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:26: import sys
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:27: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:28: class RTLD_for_MKL():
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:29:     def __init__(self):
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:30:         self.saved_rtld = None
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:31: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:32:     def __enter__(self):
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:33:         import ctypes
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:34:         try:
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:35:             self.saved_rtld = sys.getdlopenflags()
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:36:             # python loads libraries with RTLD_LOCAL, but MKL requires RTLD_GLOBAL
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:37:             # pre-load MKL with RTLD_GLOBAL before loading the native extension
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:38:             sys.setdlopenflags(self.saved_rtld | ctypes.RTLD_GLOBAL)
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:39:         except AttributeError:
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:40:             pass
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:41:         del ctypes
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:42: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:43:     def __exit__(self, *args):
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:44:         if self.saved_rtld:
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:45:             sys.setdlopenflags(self.saved_rtld)
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:46:             self.saved_rtld = None
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:47: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:48: with RTLD_for_MKL():
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:49:     from . import _mklinit
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:50: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:51: del RTLD_for_MKL
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:52: del sys
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:53: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:54: from ._py_mkl_service import *
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:55: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:56: 
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl/__init__.py:57: __version__ = '2.4.0'

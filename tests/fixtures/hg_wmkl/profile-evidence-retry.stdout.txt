@@ -1,0 +1,28 @@
+{
+  "affected_recorded_groups": [
+    "alfworld",
+    "ds1000",
+    "jericho",
+    "livecodebench",
+    "reasoning_gym",
+    "spreadsheetbench",
+    "qa_parquet_startup"
+  ],
+  "provider": {
+    "name": "mkl-service",
+    "version": "2.4.0",
+    "installed_wheel": null,
+    "direct_url": null,
+    "requirements": [],
+    "import_roots": [
+      "mkl"
+    ],
+    "source_witnesses": [
+      {
+        "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/_distributor_init.py",
+        "line": 13,
+        "text": "import mkl"
+      }
+    ]
+  }
+}

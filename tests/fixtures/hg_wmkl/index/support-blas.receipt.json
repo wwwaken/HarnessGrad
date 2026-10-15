@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/support-blas.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/blas-1.0-mkl.conda",
+    "https://repo.anaconda.com/pkgs/main/linux-64/blas-1.0-mkl.conda"
+  ],
+  "exit_code": 0,
+  "url": "https://repo.anaconda.com/pkgs/main/linux-64/blas-1.0-mkl.conda",
+  "bytes": 6031,
+  "sha256": "05f806e9b610f80e15f2c8d7b4e9a7a2817ed4870b85427acb2a89a1db44ec0e"
+}

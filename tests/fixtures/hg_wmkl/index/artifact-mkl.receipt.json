@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/artifact-mkl.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/mkl-2023.1.0-h213fc3f_46344.conda",
+    "https://repo.anaconda.com/pkgs/main/linux-64/mkl-2023.1.0-h213fc3f_46344.conda"
+  ],
+  "exit_code": 28,
+  "url": "https://repo.anaconda.com/pkgs/main/linux-64/mkl-2023.1.0-h213fc3f_46344.conda",
+  "bytes": 4054878,
+  "sha256": "6866e1bdf22c1d05ffad3f1a16de423146b821d703761a5047f9973855156996"
+}

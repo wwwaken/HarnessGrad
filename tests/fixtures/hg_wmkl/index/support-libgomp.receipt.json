@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/support-libgomp.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/libgomp-11.2.0-h1234567_1.conda",
+    "https://repo.anaconda.com/pkgs/main/linux-64/libgomp-11.2.0-h1234567_1.conda"
+  ],
+  "exit_code": 0,
+  "url": "https://repo.anaconda.com/pkgs/main/linux-64/libgomp-11.2.0-h1234567_1.conda",
+  "bytes": 485145,
+  "sha256": "a1c6e599df45e116af81c36ec4c9efb1793fa3a0b854dd90dd6c8813cd476e90"
+}

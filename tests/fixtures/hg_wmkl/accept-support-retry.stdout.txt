@@ -1,0 +1,59 @@
+{
+  "name": "libstdcxx-ng",
+  "version": "11.2.0",
+  "build": "h1234567_1",
+  "subdir": "linux-64",
+  "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+  "url": "https://repo.anaconda.com/pkgs/main/linux-64/libstdcxx-ng-11.2.0-h1234567_1.conda",
+  "fn": "libstdcxx-ng-11.2.0-h1234567_1.conda",
+  "sha256": "4da22842de544990e623ed38dfd9b468cc26cc592a102e41bcf45c91bcce9aa2",
+  "md5": "57623d10a70e09e1d048c2b2b6f4e2dd",
+  "depends": [
+    "__glibc >=2.17"
+  ],
+  "acquisition": {
+    "command": [
+      "curl",
+      "--location",
+      "--fail-with-body",
+      "--silent",
+      "--show-error",
+      "--connect-timeout",
+      "15",
+      "--max-time",
+      "180",
+      "--dump-header",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/support-libstdcxx-api-retry.headers.txt",
+      "--output",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/libstdcxx-api-retry.conda",
+      "https://api.anaconda.org/download/anaconda/libstdcxx-ng/11.2.0/linux-64/libstdcxx-ng-11.2.0-h1234567_1.conda"
+    ],
+    "exit_code": 0,
+    "url": "https://api.anaconda.org/download/anaconda/libstdcxx-ng/11.2.0/linux-64/libstdcxx-ng-11.2.0-h1234567_1.conda",
+    "bytes": 4919942,
+    "sha256": "4da22842de544990e623ed38dfd9b468cc26cc592a102e41bcf45c91bcce9aa2"
+  },
+  "verified": true,
+  "prior_acquisition": {
+    "command": [
+      "curl",
+      "--location",
+      "--fail-with-body",
+      "--silent",
+      "--show-error",
+      "--connect-timeout",
+      "15",
+      "--max-time",
+      "180",
+      "--dump-header",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/support-libstdcxx-ng.headers.txt",
+      "--output",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/libstdcxx-ng-11.2.0-h1234567_1.conda",
+      "https://repo.anaconda.com/pkgs/main/linux-64/libstdcxx-ng-11.2.0-h1234567_1.conda"
+    ],
+    "exit_code": 28,
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/libstdcxx-ng-11.2.0-h1234567_1.conda",
+    "bytes": 3734293,
+    "sha256": "c65bd6f364cdc1369ccb5c8c7246cf676205f154d19c5c6674aadaedab341a17"
+  }
+}

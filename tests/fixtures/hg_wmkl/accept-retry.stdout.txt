@@ -1,0 +1,62 @@
+{
+  "name": "mkl",
+  "version": "2023.1.0",
+  "build": "h213fc3f_46344",
+  "subdir": "linux-64",
+  "channel": "https://repo.anaconda.com/pkgs/main/linux-64",
+  "url": "https://repo.anaconda.com/pkgs/main/linux-64/mkl-2023.1.0-h213fc3f_46344.conda",
+  "fn": "mkl-2023.1.0-h213fc3f_46344.conda",
+  "sha256": "74453e0d9e072ef8e60e48a734380c238f9df2cf0191ad9a2db6dbf9f8391034",
+  "md5": "83e5adf5b75242d8d7634615fed37c72",
+  "depends": [
+    "intel-openmp 2023.*",
+    "libgcc-ng >=11.2.0",
+    "libstdcxx-ng >=11.2.0",
+    "tbb 2021.*"
+  ],
+  "acquisition": {
+    "command": [
+      "curl",
+      "--location",
+      "--fail-with-body",
+      "--silent",
+      "--show-error",
+      "--connect-timeout",
+      "15",
+      "--max-time",
+      "180",
+      "--dump-header",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/mkl-api-retry.headers.txt",
+      "--output",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/mkl-api-retry.conda",
+      "https://api.anaconda.org/download/anaconda/mkl/2023.1.0/linux-64/mkl-2023.1.0-h213fc3f_46344.conda"
+    ],
+    "exit_code": 0,
+    "url": "https://api.anaconda.org/download/anaconda/mkl/2023.1.0/linux-64/mkl-2023.1.0-h213fc3f_46344.conda",
+    "bytes": 179871206,
+    "sha256": "74453e0d9e072ef8e60e48a734380c238f9df2cf0191ad9a2db6dbf9f8391034"
+  },
+  "verified": true,
+  "prior_acquisition": {
+    "command": [
+      "curl",
+      "--location",
+      "--fail-with-body",
+      "--silent",
+      "--show-error",
+      "--connect-timeout",
+      "15",
+      "--max-time",
+      "180",
+      "--dump-header",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/artifact-mkl.headers.txt",
+      "--output",
+      "/tmp/hg-mkl/tests/fixtures/hg_wmkl/artifacts/mkl-2023.1.0-h213fc3f_46344.conda",
+      "https://repo.anaconda.com/pkgs/main/linux-64/mkl-2023.1.0-h213fc3f_46344.conda"
+    ],
+    "exit_code": 28,
+    "url": "https://repo.anaconda.com/pkgs/main/linux-64/mkl-2023.1.0-h213fc3f_46344.conda",
+    "bytes": 4054878,
+    "sha256": "6866e1bdf22c1d05ffad3f1a16de423146b821d703761a5047f9973855156996"
+  }
+}

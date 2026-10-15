@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/hg-mkl/tests/fixtures/hg_wmkl/offline.py", line 54, in <module>
+    assert len(net['route'].splitlines())==1,net
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'command': ['python3', 'tests/fixtures/hg_wmkl/offline.py'], 'netns': 'net:[4026535619]', 'route': '', 'interfaces': [(1, 'lo')], 'error': "OSError(101, 'Network is unreachable')", 'errno': 101}

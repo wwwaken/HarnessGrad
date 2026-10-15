@@ -1,0 +1,22 @@
+{
+  "command": [
+    "curl",
+    "--location",
+    "--fail-with-body",
+    "--silent",
+    "--show-error",
+    "--connect-timeout",
+    "15",
+    "--max-time",
+    "180",
+    "--dump-header",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/anaconda-mkl-service.headers.txt",
+    "--output",
+    "/tmp/hg-mkl/tests/fixtures/hg_wmkl/index/anaconda-mkl-service.json",
+    "https://api.anaconda.org/package/anaconda/mkl-service"
+  ],
+  "exit_code": 0,
+  "url": "https://api.anaconda.org/package/anaconda/mkl-service",
+  "bytes": 724220,
+  "sha256": "c7e8b2fe3376d54d1cb2c72314a2b89e3a9311c9066a20dceaeeea0a6aa689a2"
+}
