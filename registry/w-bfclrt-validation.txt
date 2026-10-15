@@ -1,0 +1,420 @@
+w-bfclrt validation record
+
+All commands below ran in /mnt/20t/xubuqiang/hg-wt/w-bfclrt unless explicitly stated.
+Scratch/TMPDIR: /mnt/20t/xubuqiang/hg-work/bfclrt/tmp. No download/install/model/scorer command was run.
+
+INITIAL REQUIRED CHECK (before exact local baseline restoration):
+$ python3 tools/check_dataset_blockers.py
+exit_code=2
+stdout: {"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}
+stderr: (empty)
+
+Baseline inspection commands and exact observed output:
+$ git ls-tree -r --name-only HEAD tests/fixtures/hg_bfcl
+(empty output; exit_code=0)
+$ git log --all --oneline -- tests/fixtures/hg_bfcl/README.md
+f8f9eb82 registry: force-add the four observation files the checker requires
+a3f2fe42 untrack the per-worker evidence packets: keep the digest manifests, keep the captures on disk
+6735a2e6 Record BFCL v1.3 archive custody and Simple code review
+db42c897 Record BFCL v1.3 archive custody and Simple code review
+
+The four exact local Git objects listed in baseline-restoration.jsonl were restored
+as ignored local files. For each, the exact read command was git show
+f8f9eb82220ee2fda0b689bdfc62513b08586423:<path>; stdout bytes have the recorded size/SHA-256.
+Those files are not part of this worker commit. Parent integration must retain that independent
+baseline repair; a fresh checkout of this worker branch alone still lacks those four evidence files.
+
+REPRODUCTION COMMANDS AND EXACT OBSERVED OUTPUT CARRIERS:
+Common environment: export TMPDIR=/mnt/20t/xubuqiang/hg-work/bfclrt/tmp; export PYTHONDONTWRITEBYTECODE=1
+$ python3 -u tests/fixtures/hg_bfclrt/collect.py graph
+source-modules.jsonl: 81 records
+source-edges.jsonl: 429 records
+$ python3 -B -u tests/fixtures/hg_bfclrt/collect.py closure
+observed-distribution-owners.jsonl: 52 records
+selected-distributions.jsonl: 84 records
+metadata-edges.jsonl: 1047 records
+The closure command was repeated after the smoke to include actually observed optional owners.
+Earlier exploratory traversal (not the final evidence): selected-distributions.jsonl: 61 records;
+metadata-edges.jsonl: 916 records. Final counts above supersede that partial traversal.
+
+$ python3 -B -u tests/fixtures/hg_bfclrt/smoke.py base > tests/fixtures/hg_bfclrt/smoke-base.jsonl
+$ /mnt/8t/xubuqiang/anaconda3/envs/Efficient-MAS/bin/python -B -u tests/fixtures/hg_bfclrt/smoke.py tree > tests/fixtures/hg_bfclrt/smoke-tree.jsonl
+Both exited 0; stderr empty. Exact stdout is retained verbatim in the named files.
+These are offline import smoke tests, NOT scorer execution; network/process audit events are refused.
+Projection preparation: each source-modules.jsonl original_path was symlinked under
+/mnt/20t/xubuqiang/hg-work/bfclrt/projection; observed stdout: scratch source symlinks: 81
+
+$ python3 -B -u tests/fixtures/hg_bfclrt/collect.py search
+exit_code=0
+exact combined stdout/stderr:
+search-scope.jsonl: 25 records
+candidates-001.jsonl: 614 records
+candidates-002.jsonl: 750 records
+candidates-003.jsonl: 41 records
+
+
+$ python3 -B -u -W ignore::SyntaxWarning tests/fixtures/hg_bfclrt/collect.py files
+exit_code=0
+exact combined stdout/stderr:
+installed-files-001.jsonl: 1856 records
+installed-files-002.jsonl: 1497 records
+installed-edges-001.jsonl: 281 records
+installed-edges-002.jsonl: 566 records
+installed-edges-003.jsonl: 479 records
+installed-edges-004.jsonl: 569 records
+installed-edges-005.jsonl: 293 records
+installed-edges-006.jsonl: 358 records
+native-members.jsonl: 124 records
+licenses.jsonl: 103 records
+inspection-errors.jsonl: 0 records
+
+
+$ python3 -B -u tests/fixtures/hg_bfclrt/native.py
+exit_code=0
+exact combined stdout/stderr:
+elf-001.jsonl: 154 records
+elf-002.jsonl: 48 records
+native-links.jsonl: 754 records
+ELF files inspected: 202
+
+
+$ python3 -B -u tests/fixtures/hg_bfclrt/artifacts.py
+exit_code=0
+exact combined stdout/stderr:
+archive-licenses.jsonl: 133 records
+archive-native-001.jsonl: 132 records
+native-owners.jsonl: 202 records
+native-license-search.jsonl: 12 records
+native-licenses.jsonl: 48 records
+
+
+$ python3 -B -u tests/fixtures/hg_bfclrt/summarize.py
+exit_code=0
+exact combined stdout/stderr:
+/mnt/20t/xubuqiang/hg-wt/w-bfclrt/tests/fixtures/hg_bfclrt/summarize.py:239: SyntaxWarning: invalid escape sequence '\['
+  declared_name = norm(re.split('[<>=!~\[]', declared)[0])
+module-frontier-001.jsonl: 833 records
+module-resolution-index.jsonl: 2627 records
+summary.jsonl: 1 records
+license-index.jsonl: 284 records
+direct-status.jsonl: 21 records
+runtime-gaps-001.jsonl: 996 records
+runtime-gaps-002.jsonl: 86 records
+registry/w-bfclrt-custody.md: written from observed records
+
+
+ELF commands: every exact argv, LC_ALL=C override, return code, stdout, stderr and version-needs
+excerpt is in elf-*.jsonl; full readelf -V output is hashed and retained under the named scratch path.
+Import/metadata/native/artifact searches are scripts committed with this packet; their output identities
+and original file:line locations are the evidence. No bare module-name-to-distribution guess is used.
+
+FINAL FOCUSED CHECKS (exact results):
+{"command_argv": ["python3", "-B", "tests/fixtures/hg_bfclrt/validate.py"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-bfclrt", "environment_overrides": {"PYTHONDONTWRITEBYTECODE": "1", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/bfclrt/tmp"}, "exit_code": 0, "stderr": "", "stdout": "{\"jsonl_records\": 18736, \"max_packet_file_bytes\": 839061, \"packet_text_files\": 285, \"report_file_line_citations_checked\": 541, \"scope\": \"packet integrity and bounded citations; not complete runtime/scorer validation\", \"source_hashes_rechecked\": 81, \"valid\": true}\n"}
+{"command_argv": ["python3", "tools/check_dataset_blockers.py"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-bfclrt", "environment_overrides": {"PYTHONDONTWRITEBYTECODE": "1", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/bfclrt/tmp"}, "exit_code": 0, "stderr": "", "stdout": "{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 0, \"historical_records\": 11, \"production_authorized\": false}\n"}
+{"command_argv": ["git", "diff", "--check"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-bfclrt", "environment_overrides": {"PYTHONDONTWRITEBYTECODE": "1", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/bfclrt/tmp"}, "exit_code": 0, "stderr": "", "stdout": ""}
+{"command_argv": ["git", "diff", "HEAD", "--", "registry/dataset-blockers.json", "docs/adapter-integration-journal.md", "AGENTS.md"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-bfclrt", "environment_overrides": {"PYTHONDONTWRITEBYTECODE": "1", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/bfclrt/tmp"}, "exit_code": 0, "stderr": "", "stdout": ""}
+{"command_argv": ["git", "branch", "--show-current"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-bfclrt", "environment_overrides": {"PYTHONDONTWRITEBYTECODE": "1", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/bfclrt/tmp"}, "exit_code": 0, "stderr": "", "stdout": "wg-bfclrt\n"}
+{"command_argv": ["git", "diff", "--cached", "--name-only", "--", "registry/dataset-blockers.json", "docs/adapter-integration-journal.md", "AGENTS.md", "tests/fixtures/hg_bfcl", "tests/fixtures/hg_trivia", "tests/fixtures/hg_wprov"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-bfclrt", "environment_overrides": {"PYTHONDONTWRITEBYTECODE": "1", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/bfclrt/tmp"}, "exit_code": 0, "stderr": "", "stdout": ""}
+
+WHAT WAS NOT VERIFIED:
+- Official scorer execution, full-call scoring/differential, metric equivalence, production readiness.
+- A concrete local-model handler/model-config/response grammar, inference, GPU/server/endpoint behavior.
+- Complete transitive import/dynamic/optional branch graph; module-frontier and runtime-gaps enumerate UNKNOWNs.
+- Package contents of opaque non-ZIP pip bodies, unenumerated wheelhouses/environments/users/source archives.
+- Exact build Python patch/interpreter/toolchain of every compiled member; tags/ELF are partial evidence only.
+- Complete dlopen/relocation/loader binding closure; unique mapped SONAME candidates do not prove relocations.
+- Installed-member equivalence where native archive comparisons differ, including prefix rewriting and stale conda records.
+- Clean environment reconstruction or package installation; no installation was attempted.
+- Complete bundled-component license scope/redistribution compliance; missing-pin licenses remain UNKNOWN.
+- Independent re-verification of established BFCL public archive/tag/commit custody; retained source hashes were recomputed.
+- Clean-base blocker checker success without the separate f8f9eb82 four-file baseline repair.
+
+FILE SIZES OF EVERY FILE TO COMMIT (bytes):
+1546  tests/fixtures/hg_bfclrt/README.md
+31216  tests/fixtures/hg_bfclrt/SHA256SUMS
+73311  tests/fixtures/hg_bfclrt/archive-licenses.jsonl
+97457  tests/fixtures/hg_bfclrt/archive-native-001.jsonl
+7953  tests/fixtures/hg_bfclrt/artifacts.py
+1087  tests/fixtures/hg_bfclrt/baseline-restoration.jsonl
+749812  tests/fixtures/hg_bfclrt/candidates-001.jsonl
+749295  tests/fixtures/hg_bfclrt/candidates-002.jsonl
+27904  tests/fixtures/hg_bfclrt/candidates-003.jsonl
+19366  tests/fixtures/hg_bfclrt/collect.py
+16392  tests/fixtures/hg_bfclrt/direct-status.jsonl
+747016  tests/fixtures/hg_bfclrt/elf-001.jsonl
+248332  tests/fixtures/hg_bfclrt/elf-002.jsonl
+2211  tests/fixtures/hg_bfclrt/final-checks.jsonl
+8258  tests/fixtures/hg_bfclrt/finalize.py
+0  tests/fixtures/hg_bfclrt/inspection-errors.jsonl
+749926  tests/fixtures/hg_bfclrt/installed-edges-001.jsonl
+749836  tests/fixtures/hg_bfclrt/installed-edges-002.jsonl
+749463  tests/fixtures/hg_bfclrt/installed-edges-003.jsonl
+604107  tests/fixtures/hg_bfclrt/installed-edges-004.jsonl
+746354  tests/fixtures/hg_bfclrt/installed-edges-005.jsonl
+517468  tests/fixtures/hg_bfclrt/installed-edges-006.jsonl
+749882  tests/fixtures/hg_bfclrt/installed-files-001.jsonl
+524033  tests/fixtures/hg_bfclrt/installed-files-002.jsonl
+127572  tests/fixtures/hg_bfclrt/license-index.jsonl
+1083  tests/fixtures/hg_bfclrt/licenses/annotated-types--fe1049884b1a0d93.txt
+1056  tests/fixtures/hg_bfclrt/licenses/anthropic--8bf96984ff8bcfae.txt
+1056  tests/fixtures/hg_bfclrt/licenses/anthropic-archive-0.109.1--8bf96984ff8bcfae.txt
+1081  tests/fixtures/hg_bfclrt/licenses/anyio--5361ac9dc58f2ef5.txt
+1081  tests/fixtures/hg_bfclrt/licenses/anyio-archive-4.13.0--5361ac9dc58f2ef5.txt
+10850  tests/fixtures/hg_bfclrt/licenses/bcrypt--8173d5c29b4f956d.txt
+83  tests/fixtures/hg_bfclrt/licenses/boto3--04fb1e61484a7810.txt
+10174  tests/fixtures/hg_bfclrt/licenses/boto3--0d542e0c8804e39a.txt
+83  tests/fixtures/hg_bfclrt/licenses/boto3-archive-1.42.49--04fb1e61484a7810.txt
+10174  tests/fixtures/hg_bfclrt/licenses/boto3-archive-1.42.49--0d542e0c8804e39a.txt
+10174  tests/fixtures/hg_bfclrt/licenses/botocore--0d542e0c8804e39a.txt
+2467  tests/fixtures/hg_bfclrt/licenses/botocore--1d1c5a6f3d68cb11.txt
+10174  tests/fixtures/hg_bfclrt/licenses/botocore-archive-1.42.49--0d542e0c8804e39a.txt
+2467  tests/fixtures/hg_bfclrt/licenses/botocore-archive-1.42.49--1d1c5a6f3d68cb11.txt
+1361  tests/fixtures/hg_bfclrt/licenses/bottleneck--f196618c1d51dfe6.txt
+1084  tests/fixtures/hg_bfclrt/licenses/brotli--3d180008e36922a4.txt
+1084  tests/fixtures/hg_bfclrt/licenses/brotli-archive-1.2.0--3d180008e36922a4.txt
+0  tests/fixtures/hg_bfclrt/licenses/brotli-archive-1.2.0--e3b0c44298fc1c14.txt
+989  tests/fixtures/hg_bfclrt/licenses/certifi--e93716da6b9c0d5a.txt
+1294  tests/fixtures/hg_bfclrt/licenses/cffi--04b80f5b077bbed6.txt
+26432  tests/fixtures/hg_bfclrt/licenses/chardet--6095e9ffa777dd22.txt
+1070  tests/fixtures/hg_bfclrt/licenses/charset-normalizer--eb31a0c5a4fb09b8.txt
+1475  tests/fixtures/hg_bfclrt/licenses/click--9a8ad106a394e853.txt
+1475  tests/fixtures/hg_bfclrt/licenses/click-archive-8.3.3--9a8ad106a394e853.txt
+1754  tests/fixtures/hg_bfclrt/licenses/cloudpickle--3029ea34173e9fdc.txt
+1491  tests/fixtures/hg_bfclrt/licenses/colorama--cac35c02686e5d04.txt
+1541  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--1a9a4f0e3d479a27.txt
+11313  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--2e4be5fc6c4c72a4.txt
+13936  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--3b2f81fe21d181c4.txt
+2804  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--4a7b1a9f6a9cecb3.txt
+609  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--56d6ac6c8105c0a5.txt
+1067  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--6244b13e9bf25cfd.txt
+1069  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--628168d68bb5a8a1.txt
+11332  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--6fd5243e92dd7f98.txt
+1109  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--882115c95dfc2af1.txt
+611  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--93d11a968e2f0f36.txt
+11  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--9a2dd24a9033abc1.txt
+1548  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--b89c063b3786e28e.txt
+1491  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--cac35c02686e5d04.txt
+11358  tests/fixtures/hg_bfclrt/licenses/colorama-archive-0.4.6--cfc7749b96f63bd3.txt
+197  tests/fixtures/hg_bfclrt/licenses/cryptography--3e0c7c091a948b82.txt
+1532  tests/fixtures/hg_bfclrt/licenses/cryptography--602c4c7482de6479.txt
+11360  tests/fixtures/hg_bfclrt/licenses/cryptography--aac73b3148f6d1d7.txt
+11325  tests/fixtures/hg_bfclrt/licenses/distro--cb5e8e7e5f4a3988.txt
+11325  tests/fixtures/hg_bfclrt/licenses/distro-archive-1.9.0--cb5e8e7e5f4a3988.txt
+1084  tests/fixtures/hg_bfclrt/licenses/docstring-parser--dfe514a337ae8417.txt
+1084  tests/fixtures/hg_bfclrt/licenses/docstring-parser-archive-0.18.0--dfe514a337ae8417.txt
+1088  tests/fixtures/hg_bfclrt/licenses/filelock--608c89d5060ae992.txt
+1088  tests/fixtures/hg_bfclrt/licenses/filelock-archive-3.23.0--608c89d5060ae992.txt
+1513  tests/fixtures/hg_bfclrt/licenses/fsspec--2dc35496ce53a730.txt
+1984  tests/fixtures/hg_bfclrt/licenses/gitdb--efd29f596a08e885.txt
+1503  tests/fixtures/hg_bfclrt/licenses/gitpython--86fc94c321a9afbc.txt
+1124  tests/fixtures/hg_bfclrt/licenses/h11--37db5bb85926db28.txt
+1124  tests/fixtures/hg_bfclrt/licenses/h11-archive-0.16.0--37db5bb85926db28.txt
+11357  tests/fixtures/hg_bfclrt/licenses/hf-xet--c71d239df91726fc.txt
+11357  tests/fixtures/hg_bfclrt/licenses/hf-xet-archive-1.2.0--c71d239df91726fc.txt
+1518  tests/fixtures/hg_bfclrt/licenses/httpcore--fdcb59154c74cbab.txt
+1518  tests/fixtures/hg_bfclrt/licenses/httpcore-archive-1.0.9--fdcb59154c74cbab.txt
+1508  tests/fixtures/hg_bfclrt/licenses/httpx--4ec59d544f12b5f5.txt
+1508  tests/fixtures/hg_bfclrt/licenses/httpx-archive-0.28.1--4ec59d544f12b5f5.txt
+11357  tests/fixtures/hg_bfclrt/licenses/huggingface-hub--c71d239df91726fc.txt
+11357  tests/fixtures/hg_bfclrt/licenses/huggingface-hub-archive-0.36.2--c71d239df91726fc.txt
+1541  tests/fixtures/hg_bfclrt/licenses/idna--a59f0b0ef3635874.txt
+1091  tests/fixtures/hg_bfclrt/licenses/jiter--7c7134b9f7b978c0.txt
+1091  tests/fixtures/hg_bfclrt/licenses/jiter-archive-0.13.0--7c7134b9f7b978c0.txt
+1084  tests/fixtures/hg_bfclrt/licenses/jmespath--66b313cce80ed062.txt
+1078  tests/fixtures/hg_bfclrt/licenses/markdown-it-py--4a2260d6e2cd0f5a.txt
+1073  tests/fixtures/hg_bfclrt/licenses/markdown-it-py--792c48c5a849a15f.txt
+2338  tests/fixtures/hg_bfclrt/licenses/mdurl--7c605df6e28667a9.txt
+10850  tests/fixtures/hg_bfclrt/licenses/native-bcrypt-3.2.0--8173d5c29b4f956d.txt
+1361  tests/fixtures/hg_bfclrt/licenses/native-bottleneck-1.3.7--f196618c1d51dfe6.txt
+1084  tests/fixtures/hg_bfclrt/licenses/native-brotli-python-1.0.9--3d180008e36922a4.txt
+1896  tests/fixtures/hg_bfclrt/licenses/native-bzip2-1.0.8--c6dbbf828498be84.txt
+1294  tests/fixtures/hg_bfclrt/licenses/native-cffi-1.16.0--04b80f5b077bbed6.txt
+197  tests/fixtures/hg_bfclrt/licenses/native-cryptography-42.0.5--3e0c7c091a948b82.txt
+1532  tests/fixtures/hg_bfclrt/licenses/native-cryptography-42.0.5--602c4c7482de6479.txt
+11360  tests/fixtures/hg_bfclrt/licenses/native-cryptography-42.0.5--aac73b3148f6d1d7.txt
+1144  tests/fixtures/hg_bfclrt/licenses/native-expat-2.6.2--122f2c27000472a2.txt
+4105  tests/fixtures/hg_bfclrt/licenses/native-intel-openmp-2023.1.0--7721633d0ddff43f.txt
+1132  tests/fixtures/hg_bfclrt/licenses/native-libffi-3.4.4--2c9c2acb9743e6b0.txt
+1391  tests/fixtures/hg_bfclrt/licenses/native-libuuid-1.41.5--9b718a9460fed595.txt
+4105  tests/fixtures/hg_bfclrt/licenses/native-mkl-2023.1.0--7721633d0ddff43f.txt
+1505  tests/fixtures/hg_bfclrt/licenses/native-mkl-service-2.4.0--cb32bb41c51efbb1.txt
+1447  tests/fixtures/hg_bfclrt/licenses/native-ncurses-6.4--63de87399e9fc886.txt
+1214  tests/fixtures/hg_bfclrt/licenses/native-numexpr-2.8.7--4a725d188360ece5.txt
+1543  tests/fixtures/hg_bfclrt/licenses/native-numpy-base-1.26.4--263223390c43a9d4.txt
+952  tests/fixtures/hg_bfclrt/licenses/native-numpy-base-1.26.4--37ce73ee1f411de2.txt
+10175  tests/fixtures/hg_bfclrt/licenses/native-openssl-3.0.14--7d5450cb2d142651.txt
+10175  tests/fixtures/hg_bfclrt/licenses/native-openssl-3.0.19--7d5450cb2d142651.txt
+1634  tests/fixtures/hg_bfclrt/licenses/native-pandas-2.2.2--533eb6d0b98e5be3.txt
+110091  tests/fixtures/hg_bfclrt/licenses/native-pyarrow-14.0.2--a0c27079753df460.txt
+1080  tests/fixtures/hg_bfclrt/licenses/native-pydantic-core-2.14.6--2afdd30d54b4d62b.txt
+839061  tests/fixtures/hg_bfclrt/licenses/native-pydantic-core-2.14.6--e11200f29ecf8e82.txt
+13936  tests/fixtures/hg_bfclrt/licenses/native-python-3.11.14--3b2f81fe21d181c4.txt
+13936  tests/fixtures/hg_bfclrt/licenses/native-python-3.12.4--3b2f81fe21d181c4.txt
+1101  tests/fixtures/hg_bfclrt/licenses/native-pyyaml-6.0.1--8d3928f9dc4490fd.txt
+11584  tests/fixtures/hg_bfclrt/licenses/native-regex-2023.10.3--bff55ef4cdcc8c14.txt
+11358  tests/fixtures/hg_bfclrt/licenses/native-tornado-6.4.1--cfc7749b96f63bd3.txt
+11325  tests/fixtures/hg_bfclrt/licenses/native-unicodedata2-15.1.0--cb5e8e7e5f4a3988.txt
+3347  tests/fixtures/hg_bfclrt/licenses/native-xz-5.4.6--29a1e305b2e34eef.txt
+97323  tests/fixtures/hg_bfclrt/licenses/native-zlib-1.2.13--a980a0d104198a53.txt
+2070  tests/fixtures/hg_bfclrt/licenses/native-zope.interface-5.4.0--3e671db11df68751.txt
+1549  tests/fixtures/hg_bfclrt/licenses/native-zstandard-0.22.0--7055266497633c90.txt
+1484  tests/fixtures/hg_bfclrt/licenses/native-zstandard-0.22.0--788fe85e53724a40.txt
+1549  tests/fixtures/hg_bfclrt/licenses/native-zstd-1.5.5--7055266497633c90.txt
+1214  tests/fixtures/hg_bfclrt/licenses/numexpr--4a725d188360ece5.txt
+1593  tests/fixtures/hg_bfclrt/licenses/numpy--05f3b88351988ecf.txt
+3511  tests/fixtures/hg_bfclrt/licenses/numpy--103166b62b80443a.txt
+1543  tests/fixtures/hg_bfclrt/licenses/numpy--263223390c43a9d4.txt
+1018  tests/fixtures/hg_bfclrt/licenses/numpy--fbc539f47d0cf83b.txt
+1593  tests/fixtures/hg_bfclrt/licenses/numpy-archive-1.26.4--05f3b88351988ecf.txt
+3511  tests/fixtures/hg_bfclrt/licenses/numpy-archive-1.26.4--103166b62b80443a.txt
+47721  tests/fixtures/hg_bfclrt/licenses/numpy-archive-1.26.4--1107b0c831e918d4.txt
+1018  tests/fixtures/hg_bfclrt/licenses/numpy-archive-1.26.4--fbc539f47d0cf83b.txt
+11336  tests/fixtures/hg_bfclrt/licenses/openai--636eb7d79da9bb6d.txt
+11336  tests/fixtures/hg_bfclrt/licenses/openai-archive-2.21.0--636eb7d79da9bb6d.txt
+11358  tests/fixtures/hg_bfclrt/licenses/overrides--c6596eb7be8581c1.txt
+10174  tests/fixtures/hg_bfclrt/licenses/packaging--0d542e0c8804e39a.txt
+1344  tests/fixtures/hg_bfclrt/licenses/packaging--b70e7e9b742f1cc6.txt
+197  tests/fixtures/hg_bfclrt/licenses/packaging--cad1ef5bd340d73e.txt
+10174  tests/fixtures/hg_bfclrt/licenses/packaging-archive-23.2--0d542e0c8804e39a.txt
+1344  tests/fixtures/hg_bfclrt/licenses/packaging-archive-23.2--b70e7e9b742f1cc6.txt
+197  tests/fixtures/hg_bfclrt/licenses/packaging-archive-23.2--cad1ef5bd340d73e.txt
+1634  tests/fixtures/hg_bfclrt/licenses/pandas--533eb6d0b98e5be3.txt
+1089  tests/fixtures/hg_bfclrt/licenses/platformdirs--29e0fd62e929850e.txt
+1732  tests/fixtures/hg_bfclrt/licenses/protobuf--6e5e117324afd944.txt
+1732  tests/fixtures/hg_bfclrt/licenses/protobuf-archive-6.33.6--6e5e117324afd944.txt
+1536  tests/fixtures/hg_bfclrt/licenses/pycparser--3e7df25b8dfb658c.txt
+1129  tests/fixtures/hg_bfclrt/licenses/pydantic--a9e186f3ca16b5ee.txt
+1129  tests/fixtures/hg_bfclrt/licenses/pydantic-archive-2.13.4--a9e186f3ca16b5ee.txt
+1080  tests/fixtures/hg_bfclrt/licenses/pydantic-core--2afdd30d54b4d62b.txt
+1080  tests/fixtures/hg_bfclrt/licenses/pydantic-core-archive-2.46.4--2afdd30d54b4d62b.txt
+1331  tests/fixtures/hg_bfclrt/licenses/pygments--a9d66f1d526df02e.txt
+11358  tests/fixtures/hg_bfclrt/licenses/pyopenssl--cfc7749b96f63bd3.txt
+1401  tests/fixtures/hg_bfclrt/licenses/pysocks--7027e214e014eb78.txt
+1401  tests/fixtures/hg_bfclrt/licenses/pysocks-archive-1.7.1--7027e214e014eb78.txt
+2889  tests/fixtures/hg_bfclrt/licenses/python-dateutil--ba00f51a0d92823b.txt
+2889  tests/fixtures/hg_bfclrt/licenses/python-dateutil-archive-2.9.0.post0--ba00f51a0d92823b.txt
+1556  tests/fixtures/hg_bfclrt/licenses/python-dotenv--80619b7049f08c81.txt
+1556  tests/fixtures/hg_bfclrt/licenses/python-dotenv-archive-1.2.2--80619b7049f08c81.txt
+1088  tests/fixtures/hg_bfclrt/licenses/pytz--be8b1a37ebe26c59.txt
+1101  tests/fixtures/hg_bfclrt/licenses/pyyaml--8d3928f9dc4490fd.txt
+1101  tests/fixtures/hg_bfclrt/licenses/pyyaml-archive-6.0.3--8d3928f9dc4490fd.txt
+0  tests/fixtures/hg_bfclrt/licenses/pyyaml-archive-6.0.3--e3b0c44298fc1c14.txt
+11584  tests/fixtures/hg_bfclrt/licenses/regex--bff55ef4cdcc8c14.txt
+10142  tests/fixtures/hg_bfclrt/licenses/requests--09e8a9bcec806710.txt
+1056  tests/fixtures/hg_bfclrt/licenses/rich--deed7c17a4318158.txt
+1056  tests/fixtures/hg_bfclrt/licenses/rich-archive-15.0.0--deed7c17a4318158.txt
+11358  tests/fixtures/hg_bfclrt/licenses/s3transfer--cfc7749b96f63bd3.txt
+83  tests/fixtures/hg_bfclrt/licenses/s3transfer--d8354e0fa7fb762d.txt
+11358  tests/fixtures/hg_bfclrt/licenses/s3transfer-archive-0.16.0--cfc7749b96f63bd3.txt
+83  tests/fixtures/hg_bfclrt/licenses/s3transfer-archive-0.16.0--d8354e0fa7fb762d.txt
+11357  tests/fixtures/hg_bfclrt/licenses/safetensors--c71d239df91726fc.txt
+11357  tests/fixtures/hg_bfclrt/licenses/safetensors-archive-0.7.0--c71d239df91726fc.txt
+1093  tests/fixtures/hg_bfclrt/licenses/sentry-sdk--2a140d660f462812.txt
+1093  tests/fixtures/hg_bfclrt/licenses/sentry-sdk-archive-2.52.0--2a140d660f462812.txt
+1053  tests/fixtures/hg_bfclrt/licenses/setuptools--09f1c8c9e941af3e.txt
+10174  tests/fixtures/hg_bfclrt/licenses/setuptools--0d542e0c8804e39a.txt
+1089  tests/fixtures/hg_bfclrt/licenses/setuptools--29e0fd62e929850e.txt
+493  tests/fixtures/hg_bfclrt/licenses/setuptools--2dddf08818297a3b.txt
+1107  tests/fixtures/hg_bfclrt/licenses/setuptools--30c23618679108f3.txt
+10278  tests/fixtures/hg_bfclrt/licenses/setuptools--458502e12d97bbf6.txt
+1076  tests/fixtures/hg_bfclrt/licenses/setuptools--5a57cb4db85e2a2d.txt
+18737  tests/fixtures/hg_bfclrt/licenses/setuptools--5d300dbfa643138b.txt
+1023  tests/fixtures/hg_bfclrt/licenses/setuptools--86da0f01aeae4634.txt
+1076  tests/fixtures/hg_bfclrt/licenses/setuptools--9755a18519666e5f.txt
+7634  tests/fixtures/hg_bfclrt/licenses/setuptools--ade78d04982d6997.txt
+1344  tests/fixtures/hg_bfclrt/licenses/setuptools--b70e7e9b742f1cc6.txt
+1072  tests/fixtures/hg_bfclrt/licenses/setuptools--b80816b0d530b8ac.txt
+197  tests/fixtures/hg_bfclrt/licenses/setuptools--cad1ef5bd340d73e.txt
+1053  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--09f1c8c9e941af3e.txt
+10174  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--0d542e0c8804e39a.txt
+1089  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--29e0fd62e929850e.txt
+493  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--2dddf08818297a3b.txt
+1107  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--30c23618679108f3.txt
+10278  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--458502e12d97bbf6.txt
+1076  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--5a57cb4db85e2a2d.txt
+18737  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--5d300dbfa643138b.txt
+1023  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--86da0f01aeae4634.txt
+1076  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--9755a18519666e5f.txt
+7634  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--ade78d04982d6997.txt
+1344  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--b70e7e9b742f1cc6.txt
+1072  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--b80816b0d530b8ac.txt
+197  tests/fixtures/hg_bfclrt/licenses/setuptools-archive-82.0.0--cad1ef5bd340d73e.txt
+10375  tests/fixtures/hg_bfclrt/licenses/simplejson--fcaa1e313a993043.txt
+0  tests/fixtures/hg_bfclrt/licenses/simplejson-archive-4.1.1--e3b0c44298fc1c14.txt
+10375  tests/fixtures/hg_bfclrt/licenses/simplejson-archive-4.1.1--fcaa1e313a993043.txt
+1066  tests/fixtures/hg_bfclrt/licenses/six--8bb850c565aa389f.txt
+1519  tests/fixtures/hg_bfclrt/licenses/smmap--88e9d93f708d110b.txt
+1046  tests/fixtures/hg_bfclrt/licenses/sniffio--3e6dae555eb92787.txt
+185  tests/fixtures/hg_bfclrt/licenses/sniffio--652c878488d14563.txt
+11358  tests/fixtures/hg_bfclrt/licenses/sniffio--cfc7749b96f63bd3.txt
+2228  tests/fixtures/hg_bfclrt/licenses/system-libbz2-1.0--832ed535ff3c3d02.txt
+26462  tests/fixtures/hg_bfclrt/licenses/system-libc6--d3c95b56fa33e28b.txt
+1756  tests/fixtures/hg_bfclrt/licenses/system-libexpat1--60919fe1a156395f.txt
+3440  tests/fixtures/hg_bfclrt/licenses/system-libffi8--7258c8acc378030d.txt
+68194  tests/fixtures/hg_bfclrt/licenses/system-libgcc-s1--da8191658b3452ce.txt
+15465  tests/fixtures/hg_bfclrt/licenses/system-liblzma5--a2dc8fac0f496e1c.txt
+4670  tests/fixtures/hg_bfclrt/licenses/system-libncursesw6--f0974fb41778e23c.txt
+2543  tests/fixtures/hg_bfclrt/licenses/system-libssl3--6a7da622fe0637a3.txt
+68194  tests/fixtures/hg_bfclrt/licenses/system-libstdc++6--da8191658b3452ce.txt
+4670  tests/fixtures/hg_bfclrt/licenses/system-libtinfo6--f0974fb41778e23c.txt
+23045  tests/fixtures/hg_bfclrt/licenses/system-libuuid1--2c447817698777e3.txt
+2920  tests/fixtures/hg_bfclrt/licenses/system-zlib1g--d77204eee8828072.txt
+11357  tests/fixtures/hg_bfclrt/licenses/tenacity--58d1e17ffe5109a7.txt
+11357  tests/fixtures/hg_bfclrt/licenses/tenacity-archive-8.5.0--58d1e17ffe5109a7.txt
+11358  tests/fixtures/hg_bfclrt/licenses/tornado--cfc7749b96f63bd3.txt
+1985  tests/fixtures/hg_bfclrt/licenses/tqdm--dc33252e829015e3.txt
+11418  tests/fixtures/hg_bfclrt/licenses/transformers--77fd4710def9ec3c.txt
+11418  tests/fixtures/hg_bfclrt/licenses/transformers-archive-4.45.2--77fd4710def9ec3c.txt
+1088  tests/fixtures/hg_bfclrt/licenses/tree-sitter-archive-0.24.0--1af0790543fffac9.txt
+13936  tests/fixtures/hg_bfclrt/licenses/typing-extensions--3b2f81fe21d181c4.txt
+13936  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--3b2f81fe21d181c4.txt
+2804  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--4a7b1a9f6a9cecb3.txt
+609  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--56d6ac6c8105c0a5.txt
+1067  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--6244b13e9bf25cfd.txt
+11332  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--6fd5243e92dd7f98.txt
+1109  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--882115c95dfc2af1.txt
+611  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--93d11a968e2f0f36.txt
+11  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--9a2dd24a9033abc1.txt
+588  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--9f80d0db7d755a94.txt
+1541  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--b7a336abf3b04e18.txt
+1548  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--b89c063b3786e28e.txt
+1491  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--cac35c02686e5d04.txt
+11358  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--cfc7749b96f63bd3.txt
+1105  tests/fixtures/hg_bfclrt/licenses/typing-extensions-archive-4.15.0--ebca854e0134cd25.txt
+1090  tests/fixtures/hg_bfclrt/licenses/typing-inspection--804b59b25f2c31bd.txt
+1090  tests/fixtures/hg_bfclrt/licenses/typing-inspection-archive-0.4.2--804b59b25f2c31bd.txt
+592  tests/fixtures/hg_bfclrt/licenses/tzdata--33e8e5002d3512d3.txt
+11357  tests/fixtures/hg_bfclrt/licenses/tzdata--c71d239df91726fc.txt
+11325  tests/fixtures/hg_bfclrt/licenses/unicodedata2--cb5e8e7e5f4a3988.txt
+1093  tests/fixtures/hg_bfclrt/licenses/urllib3--130e3a64d5fdd5d0.txt
+1081  tests/fixtures/hg_bfclrt/licenses/wandb--8b338a449a463b1d.txt
+1081  tests/fixtures/hg_bfclrt/licenses/wandb-archive-0.25.0--8b338a449a463b1d.txt
+0  tests/fixtures/hg_bfclrt/licenses/wandb-archive-0.25.0--e3b0c44298fc1c14.txt
+2070  tests/fixtures/hg_bfclrt/licenses/zope-interface--3e671db11df68751.txt
+1484  tests/fixtures/hg_bfclrt/licenses/zstandard--788fe85e53724a40.txt
+42850  tests/fixtures/hg_bfclrt/licenses.jsonl
+383714  tests/fixtures/hg_bfclrt/metadata-edges.jsonl
+287308  tests/fixtures/hg_bfclrt/module-frontier-001.jsonl
+435999  tests/fixtures/hg_bfclrt/module-resolution-index.jsonl
+1460  tests/fixtures/hg_bfclrt/native-license-search.jsonl
+25952  tests/fixtures/hg_bfclrt/native-licenses.jsonl
+358627  tests/fixtures/hg_bfclrt/native-links.jsonl
+52575  tests/fixtures/hg_bfclrt/native-members.jsonl
+264913  tests/fixtures/hg_bfclrt/native-owners.jsonl
+3502  tests/fixtures/hg_bfclrt/native.py
+12489  tests/fixtures/hg_bfclrt/observed-distribution-owners.jsonl
+749692  tests/fixtures/hg_bfclrt/runtime-gaps-001.jsonl
+43156  tests/fixtures/hg_bfclrt/runtime-gaps-002.jsonl
+5952  tests/fixtures/hg_bfclrt/search-scope.jsonl
+99067  tests/fixtures/hg_bfclrt/selected-distributions.jsonl
+787747  tests/fixtures/hg_bfclrt/smoke-base.jsonl
+24126  tests/fixtures/hg_bfclrt/smoke-tree.jsonl
+4218  tests/fixtures/hg_bfclrt/smoke.py
+157071  tests/fixtures/hg_bfclrt/source-edges.jsonl
+42113  tests/fixtures/hg_bfclrt/source-modules.jsonl
+31712  tests/fixtures/hg_bfclrt/summarize.py
+647  tests/fixtures/hg_bfclrt/summary.jsonl
+2802  tests/fixtures/hg_bfclrt/validate.py
+2950  registry/proposals/w-bfclrt.json
+107043  registry/w-bfclrt-custody.md
+30130  registry/w-bfclrt-validation.txt
