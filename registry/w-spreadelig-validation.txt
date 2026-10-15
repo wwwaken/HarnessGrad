@@ -1,0 +1,129 @@
+w-spreadelig validation — observed commands and exact output
+Scope: assigned registered worktree only; ordinary source discovery is cited in the report.
+The following are the substantive structural passes and independent validation commands.
+No scorer, comparator, engine, model, GPU, endpoint or dataset run was invoked.
+
+Analysis pass 1
+$ TMPDIR=/tmp/spreadelig-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadelig/audit.py --out tests/fixtures/hg_spreadelig > /mnt/20t/xubuqiang/hg-work/spreadelig/audit-pass1.txt 2>&1
+exit_code=0
+Exact redirected stdout/stderr:
+{"classes": {"not_gradable_as_installed": 5, "range_zero_policy_only": 1, "structurally_gradable": 394}, "declared_exclusions": {"56225": "ignore, initial file already passes verification", "56274": "golden has data validation dropdown set to a completely different value"}, "default_sides": {"eval": 109, "train": 291}, "inventory_bytes": 847149, "inventory_sha256": "d33081ad0951a2d2c67a093e02a8b5830ff781fb16b3b0ccbe4fa11588b956d0", "missing_target_sheets": {"golden": {}, "init": {"178-22": ["Sheet2"], "395-36": ["MyResult"], "402-43": ["Sheet2"]}}, "nonstring_formula_rows": {"golden": ["12307", "33722", "34033", "38703", "38823", "39432", "39515", "39903", "39931", "41410", "41601", "42526", "44389", "45896", "48080", "48257", "48365", "48588", "48608", "48620", "48924", "48975", "49333", "49667", "50193", "50324", "50526", "50768", "50952", "51262", "51359", "52216", "53167", "54144", "1818", "2768", "3413", "6698", "7902", "8942", "9111", "9391", "9726", "10452", "11842", "13284", "14240", "15387", "17111", "18935", "31011", "31746", "32789", "33157", "35747", "37378", "37462", "37554", "37456", "40757", "40892", "41265", "41420", "42181", "42216", "42354", "42515", "44296", "45738", "45944", "48527", "50051", "50250", "50521", "50683", "50811", "50971", "52305", "52532", "53161", "53994", "54085", "54638", "54925", "55049", "55085", "55427", "55817", "55965", "56274", "56378", "56419", "56921", "57033", "57232", "57445", "57590", "57743", "58147", "58949", "42902", "43657", "44913", "45707", "47827", "55421", "55468", "55976", "56427", "56563", "56915", "56953", "57558", "57989", "58032", "58499", "58687", "58904", "59129", "59358", "59734", "59884", "59902"], "init": ["17-35", "44389", "45896", "48608", "50193", "9111", "9726", "13284", "37462", "37554", "37456", "42181", "45738", "50051", "50971", "53994", "54925", "55049", "57743", "43657", "55468", "56915", "56953", "57989", "59129", "59734", "59884"]}, "rows": 400, "single_variant_rows": 400, "workbooks_opened": 794, "xml_array_rows": {"golden": ["12307", "33722", "34033", "38703", "38823", "39432", "39515", "39903", "39931", "41410", "41601", "42526", "44389", "45896", "48080", "48257", "48365", "48588", "48608", "48620", "48924", "48975", "49333", "49667", "50193", "50324", "50526", "50768", "50952", "51262", "51359", "52216", "53167", "54144", "1818", "2768", "3413", "6698", "7902", "8942", "9111", "9391", "9726", "10452", "11842", "13284", "14240", "15387", "17111", "18935", "31011", "31746", "32789", "33157", "35747", "37378", "37462", "37554", "37456", "40757", "40892", "41265", "41420", "42181", "42216", "42354", "42515", "44296", "45738", "45944", "48527", "50051", "50250", "50521", "50683", "50811", "50971", "52305", "52532", "53161", "53994", "54085", "54638", "54925", "55049", "55085", "55427", "55817", "55965", "56274", "56378", "56419", "56921", "57033", "57232", "57445", "57590", "57743", "58147", "58949", "42902", "43657", "44913", "45707", "47827", "55421", "55468", "55976", "56427", "56563", "56915", "56953", "57558", "57989", "58032", "58499", "58687", "58904", "59129", "59358", "59734", "59884", "59902"], "init": ["17-35", "44389", "45896", "48608", "50193", "9111", "9726", "13284", "37462", "37554", "37456", "42181", "45738", "50051", "50971", "53994", "54925", "55049", "57743", "43657", "55468", "56915", "56953", "57989", "59129", "59734", "59884"]}}
+
+Analysis pass 2
+$ TMPDIR=/tmp/spreadelig-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadelig/audit.py --out tests/fixtures/hg_spreadelig > /mnt/20t/xubuqiang/hg-work/spreadelig/audit-pass2.txt 2>&1
+exit_code=0
+Exact redirected stdout/stderr:
+{"classes": {"not_gradable_as_installed": 5, "range_zero_policy_only": 1, "structurally_gradable": 394}, "declared_exclusions": {"56225": "ignore, initial file already passes verification", "56274": "golden has data validation dropdown set to a completely different value"}, "default_sides": {"eval": 109, "train": 291}, "eligibility_by_default_side": {"eval": {"not_gradable_as_installed": 1, "structurally_gradable": 108}, "train": {"not_gradable_as_installed": 4, "range_zero_policy_only": 1, "structurally_gradable": 286}}, "formula_routes": {"golden": {"array_only_detector_bypass": 69, "engine_required": 167, "engine_required_array_also_present": 54, "no_formula_observed": 107, "workbook_load_refusal": 3}, "init": {"array_only_detector_bypass": 7, "engine_required": 132, "engine_required_array_also_present": 20, "no_formula_observed": 238, "workbook_load_refusal": 3}}, "inventory_bytes": 786706, "inventory_sha256": "f5c87729c9ad305346b9df7d202f573fb6ee593854f7773e6471a0ff3764a13d", "missing_target_sheets": {"golden": {"130-9": [" de"]}, "init": {"130-9": [" de"], "178-22": ["Sheet2"], "395-36": ["MyResult"], "402-43": ["Sheet2"]}}, "policy_inclusive_candidate_denominator": 395, "rows": 400, "single_variant_rows": 400, "structural_denominator": 394, "workbooks_opened": 794}
+
+Analysis pass 3
+$ TMPDIR=/tmp/spreadelig-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadelig/audit.py --out tests/fixtures/hg_spreadelig > /mnt/20t/xubuqiang/hg-work/spreadelig/audit-pass3.txt 2>&1
+exit_code=0
+Exact redirected stdout/stderr:
+{"classes": {"not_gradable_as_installed": 5, "range_zero_policy_only": 1, "structurally_gradable": 394}, "declared_exclusions": {"56225": "ignore, initial file already passes verification", "56274": "golden has data validation dropdown set to a completely different value"}, "default_sides": {"eval": 109, "train": 291}, "eligibility_by_default_side": {"eval": {"not_gradable_as_installed": 1, "structurally_gradable": 108}, "train": {"not_gradable_as_installed": 4, "range_zero_policy_only": 1, "structurally_gradable": 286}}, "formula_routes": {"golden": {"array_only_detector_bypass": 69, "engine_required": 167, "engine_required_array_also_present": 54, "no_formula_observed": 107, "workbook_load_refusal": 3}, "init": {"array_only_detector_bypass": 7, "engine_required": 132, "engine_required_array_also_present": 20, "no_formula_observed": 238, "workbook_load_refusal": 3}}, "inventory_bytes": 819533, "inventory_sha256": "c8e029d34173c01d5f6a1380abc51e56d427493479bc3cd96b1a9c29ad15761e", "missing_target_sheets": {"golden": {"130-9": [" de"]}, "init": {"130-9": [" de"], "178-22": ["Sheet2"], "395-36": ["MyResult"], "402-43": ["Sheet2"]}}, "policy_inclusive_candidate_denominator": 395, "rows": 400, "single_variant_rows": 400, "structural_denominator": 394, "workbooks_opened": 794}
+
+Passes 1/2 are exploratory field refinements, preserved above, not frozen dataset receipts.
+Only pass 3 uses final audit.py and produces the committed inventory.
+
+$ TMPDIR=/tmp/spreadelig-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_spreadelig/verify.py
+exit_code=0
+stdout:
+{"classes": {"not_gradable_as_installed": 5, "range_zero_policy_only": 1, "structurally_gradable": 394}, "formula_routes": {"golden": {"array_only_detector_bypass": 69, "engine_required": 167, "engine_required_array_also_present": 54, "no_formula_observed": 107, "workbook_load_refusal": 3}, "init": {"array_only_detector_bypass": 7, "engine_required": 132, "engine_required_array_also_present": 20, "no_formula_observed": 238, "workbook_load_refusal": 3}}, "inventory_bytes": 819533, "inventory_sha256": "c8e029d34173c01d5f6a1380abc51e56d427493479bc3cd96b1a9c29ad15761e", "not_gradable": {"130-9": "golden target unavailable: b2b, sez, de: ValueError: b2b is not a valid coordinate or range; golden target unavailable: b2b, sez, de: ValueError:  sez is not a valid coordinate or range; golden target unavailable:  de: missing sheet or empty expansion", "36764": "init: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard; golden: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard", "51090": "init: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard; golden: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard", "54590": "init: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard; golden: formula_open: ValueError: Value must be either numerical or a string containing a wildcard; cached_open: ValueError: Value must be either numerical or a string containing a wildcard", "73-45": "reference: empty range; golden target unavailable: Sheet1: missing sheet or empty expansion"}, "range_zero_tasks": ["283-32"], "rows": 400, "valid": true, "workbooks_rehashed": 800}
+stderr:
+
+$ python3 tools/check_dataset_blockers.py
+exit_code=0
+stdout:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+stderr:
+
+$ python3 -c 'from pathlib import Path; import json; paths=["tests/fixtures/hg_wjc2", "tests/fixtures/hg_wjournalcov"]; print(json.dumps({p: {"exists": Path(p).exists(), "is_dir": Path(p).is_dir()} for p in paths},sort_keys=True))'
+exit_code=0
+stdout:
+{"tests/fixtures/hg_wjc2": {"exists": false, "is_dir": false}, "tests/fixtures/hg_wjournalcov": {"exists": false, "is_dir": false}}
+stderr:
+
+$ sha256sum AGENTS.md registry/dataset-blockers.json registry/withdrawn-requirements.md docs/adapter-integration-journal.md reports/w-journalcov-review.md reports/w-jc2-review.md registry/w-metriccmp-comparability.md registry/w-metriccmp-sources/spreadsheetbench-prior-audit.txt tests/fixtures/hg_migration_site/w-spread2-reconciliation.md registry/w-spreadrt-runtime.md tests/fixtures/hg_spreadrt/scorer-custody-output.txt tests/quality/test_spreadsheetbench_classification_w_spread2.py data/datasets/spreadsheetbench.py data/datasets/spreadsheetbench/verify/check.py tools/check_dataset_blockers.py
+exit_code=0
+stdout:
+c451af64f9c85585c4ba77f28b9434dd64284792093a84528249cdcd6c1ac6d6  AGENTS.md
+ab7ba23a73dfa09ac0df1086e090e0ecded1f6f51710c1cf6ec41906841ed8d0  registry/dataset-blockers.json
+a53ebd5a9d22fc794cfbe83eeea7edb118b3b9de858660cc665b010946433348  registry/withdrawn-requirements.md
+e650be292943f89666f59f565756b94745817894850d553994278665d4d749ab  docs/adapter-integration-journal.md
+13aecaaf16541311fb703bce01246d6ea7e822d079c1be8ea5d0ff17deedac38  reports/w-journalcov-review.md
+39cab1080ee6a37f92e0f022ab008f3a2304bf3ba1fd4d935e190245ba62c8f6  reports/w-jc2-review.md
+eb9e5228d548bfdbe969799295c357838dac4f4d0ee6d31f7a625a112e10e143  registry/w-metriccmp-comparability.md
+792d1ff14b10cffa8e0cfd4bbb1737aa6e099494dc3e0639d37b5e9d6a18c193  registry/w-metriccmp-sources/spreadsheetbench-prior-audit.txt
+e141574d3f6bf31eee828c4de761a9f63f0dc60e83837265e28b1c49bb2de60d  tests/fixtures/hg_migration_site/w-spread2-reconciliation.md
+925a6132cb1ff734e344711000679c0cfee7d2ea2d8422e8111046d8ea18ba0c  registry/w-spreadrt-runtime.md
+a60e4d16363ea62527150491282bd47ffa12e54419dff18e5303d5411dddcfcd  tests/fixtures/hg_spreadrt/scorer-custody-output.txt
+06ed5d1694809de40d1edc8a064e01fd69fae22806f33496ab42862a301fd03f  tests/quality/test_spreadsheetbench_classification_w_spread2.py
+1ed36abf71ff84f489d9be1cd9b231180d18e45c60ea514c9b4baf34add2ab9e  data/datasets/spreadsheetbench.py
+e7131a2649a89d818a73b6b83e1b66892e41b93c53a7fee8330749146ad3ee46  data/datasets/spreadsheetbench/verify/check.py
+efe9304a754731e70e8721580ab5285143ce839a9c953dcd2a36cbc6894f381e  tools/check_dataset_blockers.py
+stderr:
+
+$ git branch --show-current
+exit_code=0
+stdout:
+wg-w-spreadelig
+stderr:
+
+$ git diff --exit-code -- AGENTS.md registry/dataset-blockers.json registry/withdrawn-requirements.md docs/adapter-integration-journal.md
+exit_code=0
+stdout:
+stderr:
+
+$ git diff --check
+exit_code=0
+stdout:
+stderr:
+
+Proposal checks observed: current next_action base digest matches; complete suffix after first sentence retained byte-for-byte.
+
+What was NOT verified (UNKNOWN, not ABSENT):
+- Any task score, measured trial/task coverage, selection, diagnostic or production admission.
+- Real-row comparator execution, value transforms, cache correctness, formula/array/LibreOffice execution or refusal.
+- Initial-workbook passing claims and data-validation claims carried by the two metadata exclude annotations.
+- New upstream release authentication or the unavailable hg_wjc2/hg_wjournalcov raw packets; existing report mapping is reused.
+- The task-supplied alternate checker digest 5c247413ec7fe636cd6d417bc7d9bd76c1c7e8944cceae58635c7add10ba737d or behavior of other checker bytes/library versions.
+- Source-selected export/runtime/snapshot/cleanup execution, arbitrary submission behavior and paper three-variant aggregates.
+No pytest or classification/scoring test ran: those could invoke a prohibited comparator. The independent verifier only checks fixture consistency and byte custody.
+This change cannot alter blocker-checker state: it creates only worker evidence/report/proposal files; protected file diff is empty.
+
+Final staged diff review and scratch cleanup confirmation:
+
+$ git diff --cached --name-status
+exit_code=0
+stdout:
+A	registry/proposals/w-spreadelig.json
+A	registry/w-spreadelig-eligibility.md
+A	registry/w-spreadelig-validation.txt
+A	tests/fixtures/hg_spreadelig/audit.py
+A	tests/fixtures/hg_spreadelig/eligibility.jsonl
+A	tests/fixtures/hg_spreadelig/source-identities.json
+A	tests/fixtures/hg_spreadelig/summary.json
+A	tests/fixtures/hg_spreadelig/verify.py
+stderr:
+
+$ git diff --cached --check
+exit_code=0
+stdout:
+stderr:
+
+$ python3 -c 'from pathlib import Path; import json; print(json.dumps({"/tmp/spreadelig-tmp_exists":Path("/tmp/spreadelig-tmp").exists()}))'
+exit_code=0
+stdout:
+{"/tmp/spreadelig-tmp_exists": false}
+stderr:
+
+Scratch cleanup command observed: rmdir /tmp/spreadelig-tmp (no output; subsequent existence probe above is false). Only worker-owned scratch was removed.
+
+Committed-file byte sizes (literal stat().st_size; each < 1,000,000 bytes):
+18666	tests/fixtures/hg_spreadelig/audit.py
+3273	tests/fixtures/hg_spreadelig/verify.py
+819533	tests/fixtures/hg_spreadelig/eligibility.jsonl
+14412	tests/fixtures/hg_spreadelig/summary.json
+2284	tests/fixtures/hg_spreadelig/source-identities.json
+14762	registry/w-spreadelig-eligibility.md
+5969	registry/proposals/w-spreadelig.json
+15216	registry/w-spreadelig-validation.txt
