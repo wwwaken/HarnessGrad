@@ -34,7 +34,7 @@ the artefact.
 | `appworld / successful-task-evidence` | measurement | open | `PENDING-RUN`; one authorized diagnostic ran and did **not** confirm the guidance hypothesis; completion-aware control now implemented |
 | `spreadsheetbench / dataset-journal-gap` | measurement | open | `PENDING-RUN`, `PENDING-WORK` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
-| `fever / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM` (w-fevhub in flight) |
+| `fever / dataset-journal-gap` | measurement | open | metric DETERMINED; upstream producing-execution search done and **bounded** ABSENT (two historical objects still unread); metric choice outstanding |
 | `strategyqa / dataset-journal-gap` | measurement | open | original scorer FOUND and DIFFERENT; split membership `PENDING-UPSTREAM` |
 | `reasoning_gym / dataset-journal-gap` | measurement | open | generation receipt `LIMIT-RECORDED`; behavioural eligibility DONE |
 | `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |

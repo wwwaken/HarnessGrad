@@ -1,0 +1,46 @@
+Parent integration of w-fevhub: the FEVER upstream producing-execution search.
+
+Source commit 629d4605 cherry-picked onto main. The packet is 411 text files, 2.29 MB, largest
+428,346 bytes, fully tracked (`git ls-files` count equals the on-disk count), no file at or above 1 MB.
+
+Parent verification of the shape of the claim
+---------------------------------------------
+The worker's `standing_limit_argument` is the load-bearing part and the parent agrees with it: the
+retrieved scope supports a **bounded** public-source absence, not a categorical finding that no further
+work here can satisfy the historical producing-execution requirement, because two requested historical
+objects were not read - the historical loader at `1776db7e9abab525eae8e59c5015e3589dfe371b` and the
+generated tree `ad8321607bcad0e534c243ec8c108a5787cea6c8` - and private, unindexed or producer-held
+records remain UNKNOWN. It therefore recommends recovering those two objects and seeking a
+maintainer-published execution/input/output binding **before** recording a standing limit, and notes
+that a new local conversion cannot authenticate the historical run. No withdrawal entry is proposed and
+none is recorded here.
+
+Applied change
+--------------
+* `fever / dataset-journal-gap` `observed` 4576 -> 6428 chars: additive append recording the bounded
+  upstream ABSENT over the enumerated scope, the two unread objects, and the FOUND NEI recipe
+  paths/aggregation source/Papelo Gitlinks with the still-ABSENT hash-bound NEI input revision.
+* `fever / dataset-journal-gap` `next_action` 2333 -> 3569 chars. The worker's draft replaced the whole
+  action with three sentences and the applier refused it for **five** dropped load-bearing clauses, all
+  of which the parent restored: the flat-versus-singleton determination and its exact disagreement
+  condition, the exposure counts (1,400 of 9,525 non-NEI rows, 1,369 with 2-5 pairs and 31 with 6-25)
+  and the fact that the first five selected rows do not exercise the branch, the requirement to choose
+  and name the metric, the producing-conversion binding (now updated with the upstream result and the
+  bounded-absence caveat), and the 51 omitted groups / 42 represented IDs / NEI-input limits.
+* `registry/blocker-closure-assessment.md`: the fever row now records the metric as determined, the
+  upstream search as done and bounded-ABSENT, and the metric choice as the outstanding item.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_closure_assessment.py \
+    tests/quality/test_withdrawn_requirements_not_reimposed.py tests/quality/test_apply_blocker_proposal.py \
+    tests/quality/test_site_evidence_carriers.py -q
+101 passed
+
+What this does NOT do
+---------------------
+* No blocker closes and no standing limit is recorded for fever: open blockers stay at **12**.
+* No converter, scorer, model, benchmark or dataset row was executed by the worker or the parent.
+* No historical record, frozen receipt or run ID is touched, and no withdrawn shared gate is reinstated.
