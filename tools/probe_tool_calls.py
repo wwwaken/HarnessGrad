@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Can this endpoint emit **standard** tool_calls?
 
-    python tools/probe_tool_calls.py --base-url http://127.0.0.1:8001/v1 \
+    python tools/probe_tool_calls.py --base-url http://127.0.0.1:8002/v1 \
         --model qwen3.5-9b-local --api-key local
 
 Exit 0 and `{"tool_calls": true, ...}` when the model answers a tool definition with a
