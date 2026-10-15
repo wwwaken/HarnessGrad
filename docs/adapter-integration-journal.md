@@ -4360,3 +4360,51 @@ provenance and the resolver convention only - it does not re-authenticate the un
 Focused set with the new file: **101 passed, 15 skipped, 3 xfailed** (the 15 skips are the 11 B6 payload
 skips plus four optional archived-review skips; the 3 xfails are the pre-existing strict journal-gap
 cases).
+
+## 2026-10-15 — Six parallel workers launched on the remaining tail (in flight, not merged)
+
+- Following the operator's instruction to keep more Codex sessions running in parallel, six
+  independent workers were launched in registered worktrees under `/mnt/20t/xubuqiang/hg-wt/`,
+  each on its own branch from `eada00fc`, each with a unique deliverable name and with an explicit
+  rule that **they must not edit `registry/dataset-blockers.json` or the journal**: they emit a
+  standalone evidence file plus a machine-readable proposal fragment under
+  `registry/proposals/<worker>.json`, and the parent integrates. This paragraph records their
+  launch and is **not** a claim that any of them has been reviewed or merged.
+- `w-recgym` (`wg-recgym`): the exhaustive machine-level search the earlier `w-jc2` explicitly did
+  not perform, for the original Reasoning Gym pool generation receipt (invocation, interpreter,
+  dependency lock, effective clock, hash-order setting) or an enumerated absence over
+  `~/.codex/sessions/**` (722 transcripts, ~2.9 GB), the repo's full history and stashes, and every
+  other on-machine copy under `/mnt/20t/xubuqiang/Study/`.
+- `w-fevconv` (`wg-fevconv`): FEVER producing-conversion execution provenance (same enumerated
+  search) plus the source-level flat-conjunction-versus-singleton metric comparability analysis
+  against the pinned `sheffieldnlp/fever-scorer@4801615` five-pair/complete-group rules.
+- `w-hotpotrec` (`wg-hotpotrec`): the HotpotQA historical run ID and receipts. **Preliminary
+  (unreviewed) result from its own transcript work:** the candidate ID `hotpotqa-h0-10pct-v4` is
+  observed in a captured read of `/tmp/codex/qa-h0-incomplete-index.json` - the same index that also
+  lists `bird-minidev-h0-10pct-v4` and `fever-h0-10pct-v4` - together with a v4 split file, console
+  log and 1,179-byte budget ledger; all of those original files are now gone from `/tmp`. It also
+  recovered the **v5** selected 492 ordered train IDs, the v5 split hash
+  `a0ee939df43c61c0f5354f766515f0751d6d719ff7efac55edec3513fc239936` and model/framework identity,
+  while stating plainly that v5 identity does not bind the v4 run. This material has **not** been
+  applied to the registry or to any historical record and the parent has not yet verified it.
+- `w-bfclrt` (`wg-bfclrt`): the exact runtime closure the retained BFCL v3 Simple-AST path needs -
+  the full import graph with `file:line` edges, each member resolved to an exact artifact plus
+  SHA-256 **from artifacts already on this machine only**, the Python build/ABI/platform facts,
+  a third-party license/notice inventory, and the concrete remaining-gap list. No download, no
+  install into the platform tree, no official scorer execution.
+- `w-metriccmp` (`wg-metriccmp`): the local-versus-upstream comparability determination for
+  `physicsquestions`, `sportsunderstanding`, `strategyqa` and `spreadsheetbench`. Its draft reports
+  `different-and-why` with constructed discriminating examples for physicsquestions,
+  sportsunderstanding and spreadsheetbench, and
+  `undetermined-because-original-metric-and-split-source-unavailable-in-searched-scope` for
+  strategyqa. Unreviewed.
+- `w-appworld` (`wg-appworld`, branch `wg-appworld3` because `wg-appworld` was already taken):
+  the task-facing protocol review the AppWorld blocker's own `next_action` asks for, at its
+  permitted scope - generic, not tuned to task `cf6abd2_2`, with no budget change - plus a
+  generic-defect analysis and explicit statement of what a source review cannot establish.
+- Two environment notes from this batch. First, the pre-existing checker baseline problem these
+  workers hit (`{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}`
+  in a fresh worktree) is now fixed by the carrier restoration above, so it should not recur.
+  Second, `pytest tests/quality --collect-only` does not complete within 60 s, so the whole-directory
+  run is not a usable gate; the focused four-file set plus `test_site_evidence_carriers.py` is the
+  acceptance command (101 passed, 15 skipped, 3 xfailed).
