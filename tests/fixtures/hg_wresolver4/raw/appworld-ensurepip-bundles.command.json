@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "python3.11",
+    "-c",
+    "import ensurepip,pathlib; print(ensurepip.__file__); print(list(pathlib.Path(ensurepip.__file__).parent.rglob(\"*.whl\")))"
+  ],
+  "elapsed_seconds": 0.046737306751310825,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

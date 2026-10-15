@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver4-offline-_2o9kuvs/appworld/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--find-links",
+    "/tmp/hg-wresolver4-appworld-payloads-6ss2xjk8/wheels",
+    "--require-hashes",
+    "-r",
+    "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/appworld/resolved.lock"
+  ],
+  "elapsed_seconds": 14.234745854511857,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

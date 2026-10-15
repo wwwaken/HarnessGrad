@@ -1,0 +1,153 @@
+{
+  "gaia": {
+    "argv": [
+      "/tmp/hg-wresolver4-offline-dvdf7eor/gaia/bin/python",
+      "-m",
+      "pip",
+      "--isolated",
+      "--disable-pip-version-check",
+      "install",
+      "--ignore-installed",
+      "--no-index",
+      "--no-cache-dir",
+      "--only-binary=:all:",
+      "--dry-run",
+      "-vv",
+      "--find-links",
+      "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels",
+      "--report",
+      "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/raw/gaia.pip-report.json",
+      "-r",
+      "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/roots.in",
+      "-c",
+      "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/constraints.txt"
+    ],
+    "check": {
+      "argv": [
+        "/tmp/hg-wresolver4-offline-dvdf7eor/gaia/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "elapsed_seconds": 0.43108031805604696,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "elapsed_seconds": 0.8603350380435586,
+    "exit_code": 0,
+    "install": {
+      "argv": [
+        "/tmp/hg-wresolver4-offline-dvdf7eor/gaia/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--find-links",
+        "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels",
+        "--require-hashes",
+        "-r",
+        "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/resolved.lock"
+      ],
+      "elapsed_seconds": 6.605966246686876,
+      "exit_code": 0,
+      "timeout_seconds": 180
+    },
+    "negative": {
+      "argv": [
+        "/tmp/hg-wresolver4-offline-dvdf7eor/gaia/bin/python",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--ignore-installed",
+        "--no-index",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--dry-run",
+        "--find-links",
+        "/tmp/hg-wresolver4-offline-dvdf7eor/missing-gaia-et-xmlfile",
+        "-r",
+        "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/roots.in",
+        "-c",
+        "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/constraints.txt"
+      ],
+      "elapsed_seconds": 0.6647650459781289,
+      "exit_code": 1,
+      "timeout_seconds": 180
+    },
+    "selected": [
+      {
+        "name": "numpy",
+        "sha256": "675d61ffbfa78604709862923189bad94014bef562cc35cf61d3a07bba02a7ed",
+        "version": "1.26.4"
+      },
+      {
+        "name": "openpyxl",
+        "sha256": "f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5",
+        "version": "3.1.2"
+      },
+      {
+        "name": "pillow",
+        "sha256": "ff61bfd9253c3915e6d41c651d5f962da23eda633cf02262990094a18a55371a",
+        "version": "10.3.0"
+      },
+      {
+        "name": "requests",
+        "sha256": "fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c",
+        "version": "2.32.2"
+      },
+      {
+        "name": "beautifulsoup4",
+        "sha256": "b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed",
+        "version": "4.12.3"
+      },
+      {
+        "name": "lxml",
+        "sha256": "f0a1bc63a465b6d72569a9bba9f2ef0334c4e03958e043da1920299100bc7c08",
+        "version": "5.2.1"
+      },
+      {
+        "name": "pyarrow",
+        "sha256": "b73519f8b52ae28127000986bf228fda781e81d3095cd2d3ece76eb5cf760e1b",
+        "version": "23.0.0"
+      },
+      {
+        "name": "certifi",
+        "sha256": "ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56",
+        "version": "2024.6.2"
+      },
+      {
+        "name": "charset-normalizer",
+        "sha256": "0c8911edd15d19223366a194a513099a302055a962bca2cec0f54b8b63175d8b",
+        "version": "2.0.4"
+      },
+      {
+        "name": "idna",
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "version": "3.7"
+      },
+      {
+        "name": "soupsieve",
+        "sha256": "eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7",
+        "version": "2.5"
+      },
+      {
+        "name": "urllib3",
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "version": "2.2.2"
+      },
+      {
+        "name": "et-xmlfile",
+        "sha256": "a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada",
+        "version": "1.1.0"
+      }
+    ],
+    "timeout_seconds": 180
+  }
+}

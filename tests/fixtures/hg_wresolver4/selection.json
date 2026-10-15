@@ -1,0 +1,19 @@
+{
+  "bounds": {
+    "execution_concurrency": 1,
+    "model_endpoint_used": false,
+    "online_discovery": "One wheel-only pip download command bounded by 180 seconds; file count/bytes checked afterward before exact HTTP reacquisition, not an enforced pip download byte quota.",
+    "per_http_artifact_bytes": 67108864,
+    "per_http_timeout_seconds": 45,
+    "per_index_json_bytes": 8388608,
+    "per_profile_max_payload_bytes": 335544320,
+    "per_profile_max_wheels": 120,
+    "per_subprocess_timeout_seconds": 180
+  },
+  "candidate_policy": {
+    "appworld": "Keep source exact appworld==0.1.3.post1 and uvicorn<1; bounded Python3.11 wheel-only pip discovery supplies candidate versions for unconstrained transitive requirements, then reacquire each exact selected public artifact via versioned PyPI JSON and freeze exact constraints. No root version substitution, sdists/builds/dependency omission.",
+    "gaia": "Fresh host-observed exact versions of source bare requirements; actual public wheel metadata derives transitive graph; no upstream exact pins claimed."
+  },
+  "selection_record": "Rule stated in session before offline probes; this record is written after completed captures and does not pretend to be a preregistration.",
+  "selection_rule": "The two remaining nonempty profiles with finite declared scorer/service/image/preparation Python roots and an available matching local interpreter minor version: gaia and appworld. Do not invent nonempty N/A solves or treat a per-task dynamic/mixed-package-manager manifest as an import-derived complete graph. Remaining DS1000, Terminal-Bench and nine N/A routes receive fresh source audit."
+}

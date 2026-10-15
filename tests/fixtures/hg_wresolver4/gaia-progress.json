@@ -1,0 +1,718 @@
+{
+  "artifacts": [
+    {
+      "bytes": 17950613,
+      "key": "numpy",
+      "matching_tags": [
+        "cp312-cp312-manylinux2014_x86_64",
+        "cp312-cp312-manylinux_2_17_x86_64"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "numpy-1.26.4.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/numpy/METADATA",
+          "sha256": "b09734a7fed44e84b4c8161934ce532dff1e779ec6822d415644d117f6381070"
+        },
+        "WHEEL": {
+          "member": "numpy-1.26.4.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/numpy/WHEEL",
+          "sha256": "dea2037170a4e7bec05e22b7a4389f3be804f54fcc61660682d0fbf202dadbf5"
+        }
+      },
+      "name": "numpy",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "source_sha256": "675d61ffbfa78604709862923189bad94014bef562cc35cf61d3a07bba02a7ed"
+      },
+      "requires_dist": [],
+      "requires_python": ">=3.9",
+      "sha256": "675d61ffbfa78604709862923189bad94014bef562cc35cf61d3a07bba02a7ed",
+      "tags": [
+        "cp312-cp312-manylinux2014_x86_64",
+        "cp312-cp312-manylinux_2_17_x86_64"
+      ],
+      "version": "1.26.4"
+    },
+    {
+      "bytes": 249985,
+      "key": "openpyxl",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "openpyxl-3.1.2.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/openpyxl/METADATA",
+          "sha256": "40d8cc40162f1f8183a77c44953e746ff8f2532502dcdc8718e4e232cfc189c4"
+        },
+        "WHEEL": {
+          "member": "openpyxl-3.1.2.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/openpyxl/WHEEL",
+          "sha256": "5b367c7308e1f25d23b542cd8d8ab51e9afe582a824603ebfbe4d7e0fe48d56a"
+        }
+      },
+      "name": "openpyxl",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/openpyxl-3.1.2-py2.py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/openpyxl-3.1.2-py2.py3-none-any.whl",
+        "source_sha256": "f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5"
+      },
+      "requires_dist": [
+        "et-xmlfile"
+      ],
+      "requires_python": ">=3.6",
+      "sha256": "f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5",
+      "tags": [
+        "py2-none-any",
+        "py3-none-any"
+      ],
+      "version": "3.1.2"
+    },
+    {
+      "bytes": 4514536,
+      "key": "pillow",
+      "matching_tags": [
+        "cp312-cp312-manylinux_2_28_x86_64"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "pillow-10.3.0.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/pillow/METADATA",
+          "sha256": "cfba9585acaec185ac5c33a48332ea1f4d1adc75d2d6540667c19e9c03af063a"
+        },
+        "WHEEL": {
+          "member": "pillow-10.3.0.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/pillow/WHEEL",
+          "sha256": "87985cf2d21208aa6bff172501f2e85b4b43407d2073c6f7c28c4bf2927d0866"
+        }
+      },
+      "name": "pillow",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/pillow-10.3.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/pillow-10.3.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "source_sha256": "ff61bfd9253c3915e6d41c651d5f962da23eda633cf02262990094a18a55371a"
+      },
+      "requires_dist": [
+        "furo ; extra == 'docs'",
+        "olefile ; extra == 'docs'",
+        "sphinx >=2.4 ; extra == 'docs'",
+        "sphinx-copybutton ; extra == 'docs'",
+        "sphinx-inline-tabs ; extra == 'docs'",
+        "sphinx-removed-in ; extra == 'docs'",
+        "sphinxext-opengraph ; extra == 'docs'",
+        "olefile ; extra == 'fpx'",
+        "olefile ; extra == 'mic'",
+        "check-manifest ; extra == 'tests'",
+        "coverage ; extra == 'tests'",
+        "defusedxml ; extra == 'tests'",
+        "markdown2 ; extra == 'tests'",
+        "olefile ; extra == 'tests'",
+        "packaging ; extra == 'tests'",
+        "pyroma ; extra == 'tests'",
+        "pytest ; extra == 'tests'",
+        "pytest-cov ; extra == 'tests'",
+        "pytest-timeout ; extra == 'tests'",
+        "typing-extensions ; (python_version < \"3.10\") and extra == 'typing'",
+        "defusedxml ; extra == 'xmp'"
+      ],
+      "requires_python": ">=3.8",
+      "sha256": "ff61bfd9253c3915e6d41c651d5f962da23eda633cf02262990094a18a55371a",
+      "tags": [
+        "cp312-cp312-manylinux_2_28_x86_64"
+      ],
+      "version": "10.3.0"
+    },
+    {
+      "bytes": 63902,
+      "key": "requests",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "requests-2.32.2.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/requests/METADATA",
+          "sha256": "307858c3f1de080f5577e6468d76b97dcc05cd370ded8277e172fcf1b1c49a2d"
+        },
+        "WHEEL": {
+          "member": "requests-2.32.2.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/requests/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        }
+      },
+      "name": "requests",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/requests-2.32.2-py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/requests-2.32.2-py3-none-any.whl",
+        "source_sha256": "fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c"
+      },
+      "requires_dist": [
+        "charset-normalizer <4,>=2",
+        "idna <4,>=2.5",
+        "urllib3 <3,>=1.21.1",
+        "certifi >=2017.4.17",
+        "PySocks !=1.5.7,>=1.5.6 ; extra == 'socks'",
+        "chardet <6,>=3.0.2 ; extra == 'use_chardet_on_py3'"
+      ],
+      "requires_python": ">=3.8",
+      "sha256": "fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "2.32.2"
+    },
+    {
+      "bytes": 147925,
+      "key": "beautifulsoup4",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "beautifulsoup4-4.12.3.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/beautifulsoup4/METADATA",
+          "sha256": "524392d64a088e56a4232f50d6edb208dc03105394652acb72c6d5fa64c89f3e"
+        },
+        "WHEEL": {
+          "member": "beautifulsoup4-4.12.3.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/beautifulsoup4/WHEEL",
+          "sha256": "99161210bdc887a8396bf095308730885fffd007b8fe02d8874d5814dc22ab59"
+        }
+      },
+      "name": "beautifulsoup4",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/beautifulsoup4-4.12.3-py3-none-any.whl",
+      "provenance": {
+        "advertised_sha256": "b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed",
+        "index_url": "https://pypi.org/pypi/beautifulsoup4/4.12.3/json",
+        "kind": "pypi-exact-version",
+        "url": "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl"
+      },
+      "requires_dist": [
+        "soupsieve>1.2",
+        "cchardet; extra == 'cchardet'",
+        "chardet; extra == 'chardet'",
+        "charset-normalizer; extra == 'charset-normalizer'",
+        "html5lib; extra == 'html5lib'",
+        "lxml; extra == 'lxml'"
+      ],
+      "requires_python": ">=3.6.0",
+      "sha256": "b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "4.12.3"
+    },
+    {
+      "bytes": 4939879,
+      "key": "lxml",
+      "matching_tags": [
+        "cp312-cp312-manylinux_2_28_x86_64"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "lxml-5.2.1.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/lxml/METADATA",
+          "sha256": "80eb89821fbeb88d58ba1af32bc5284c6fa804c249075b658dd1161fe63dfc0c"
+        },
+        "WHEEL": {
+          "member": "lxml-5.2.1.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/lxml/WHEEL",
+          "sha256": "87985cf2d21208aa6bff172501f2e85b4b43407d2073c6f7c28c4bf2927d0866"
+        }
+      },
+      "name": "lxml",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/lxml-5.2.1-cp312-cp312-manylinux_2_28_x86_64.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/lxml-5.2.1-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "source_sha256": "f0a1bc63a465b6d72569a9bba9f2ef0334c4e03958e043da1920299100bc7c08"
+      },
+      "requires_dist": [
+        "cssselect >=0.7 ; extra == 'cssselect'",
+        "html5lib ; extra == 'html5'",
+        "lxml-html-clean ; extra == 'html_clean'",
+        "BeautifulSoup4 ; extra == 'htmlsoup'",
+        "Cython >=3.0.10 ; extra == 'source'"
+      ],
+      "requires_python": ">=3.6",
+      "sha256": "f0a1bc63a465b6d72569a9bba9f2ef0334c4e03958e043da1920299100bc7c08",
+      "tags": [
+        "cp312-cp312-manylinux_2_28_x86_64"
+      ],
+      "version": "5.2.1"
+    },
+    {
+      "bytes": 47557396,
+      "key": "pyarrow",
+      "matching_tags": [
+        "cp312-cp312-manylinux_2_28_x86_64"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "pyarrow-23.0.0.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/pyarrow/METADATA",
+          "sha256": "ba5f60d5fd106b548b2800ea3a66402d616375d3b21b13a280a1ee9313c82f22"
+        },
+        "WHEEL": {
+          "member": "pyarrow-23.0.0.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/pyarrow/WHEEL",
+          "sha256": "557bcd2a7ea715e08ce3918452b34b24e3bf27f7be70d269846b7dad6171c84d"
+        }
+      },
+      "name": "pyarrow",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/pyarrow-23.0.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/pyarrow-23.0.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "source_sha256": "b73519f8b52ae28127000986bf228fda781e81d3095cd2d3ece76eb5cf760e1b"
+      },
+      "requires_dist": [],
+      "requires_python": ">=3.10",
+      "sha256": "b73519f8b52ae28127000986bf228fda781e81d3095cd2d3ece76eb5cf760e1b",
+      "tags": [
+        "cp312-cp312-manylinux_2_28_x86_64"
+      ],
+      "version": "23.0.0"
+    },
+    {
+      "bytes": 4688,
+      "key": "et-xmlfile",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "et_xmlfile-1.1.0.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/et-xmlfile/METADATA",
+          "sha256": "079855e545b81aa9961a0c005b8e02da87d9644995d0c4674c453df24cdc506c"
+        },
+        "WHEEL": {
+          "member": "et_xmlfile-1.1.0.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/et-xmlfile/WHEEL",
+          "sha256": "3aa464174798e461ecb0ca2b16395b4c8ab4ef6be91e917ad1f21003a952f710"
+        }
+      },
+      "name": "et-xmlfile",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/et_xmlfile-1.1.0-py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/et_xmlfile-1.1.0-py3-none-any.whl",
+        "source_sha256": "a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"
+      },
+      "requires_dist": [],
+      "requires_python": ">=3.6",
+      "sha256": "a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "1.1.0"
+    },
+    {
+      "bytes": 36415,
+      "key": "charset-normalizer",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "charset_normalizer-2.0.4.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/charset-normalizer/METADATA",
+          "sha256": "88669260a01b5bb765b4b7cefec226df8ed7b02e64a8a885aef477207a250e2a"
+        },
+        "WHEEL": {
+          "member": "charset_normalizer-2.0.4.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/charset-normalizer/WHEEL",
+          "sha256": "3aa464174798e461ecb0ca2b16395b4c8ab4ef6be91e917ad1f21003a952f710"
+        }
+      },
+      "name": "charset-normalizer",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/charset_normalizer-2.0.4-py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/charset_normalizer-2.0.4-py3-none-any.whl",
+        "source_sha256": "0c8911edd15d19223366a194a513099a302055a962bca2cec0f54b8b63175d8b"
+      },
+      "requires_dist": [
+        "unicodedata2 ; extra == 'unicode_backport'"
+      ],
+      "requires_python": ">=3.5.0",
+      "sha256": "0c8911edd15d19223366a194a513099a302055a962bca2cec0f54b8b63175d8b",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "2.0.4"
+    },
+    {
+      "bytes": 66836,
+      "key": "idna",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "idna-3.7.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/idna/METADATA",
+          "sha256": "3a2c4293e74a2d990fcbe31fbe23a688fbf02753b62bff2ba82ac58c2feec72e"
+        },
+        "WHEEL": {
+          "member": "idna-3.7.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/idna/WHEEL",
+          "sha256": "1196c6921ec87b83e865f450f08d19b8ff5592537f4ef719e83484e546abe33e"
+        }
+      },
+      "name": "idna",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/idna-3.7-py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/idna-3.7-py3-none-any.whl",
+        "source_sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0"
+      },
+      "requires_dist": [],
+      "requires_python": ">=3.5",
+      "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "3.7"
+    },
+    {
+      "bytes": 121444,
+      "key": "urllib3",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "urllib3-2.2.2.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/urllib3/METADATA",
+          "sha256": "d6516612ed8a4abbd3bb38c37ff510c61377866e5d1e852851ef225f45e92b6d"
+        },
+        "WHEEL": {
+          "member": "urllib3-2.2.2.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/urllib3/WHEEL",
+          "sha256": "cc431c46bf4aaf4df1d68cc6c20e6ff4d4012a7de49dda7a2d2a1295583e8e15"
+        }
+      },
+      "name": "urllib3",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/urllib3-2.2.2-py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/urllib3-2.2.2-py3-none-any.whl",
+        "source_sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472"
+      },
+      "requires_dist": [
+        "brotli>=1.0.9; (platform_python_implementation == 'CPython') and extra == 'brotli'",
+        "brotlicffi>=0.8.0; (platform_python_implementation != 'CPython') and extra == 'brotli'",
+        "h2<5,>=4; extra == 'h2'",
+        "pysocks!=1.5.7,<2.0,>=1.5.6; extra == 'socks'",
+        "zstandard>=0.18.0; extra == 'zstd'"
+      ],
+      "requires_python": ">=3.8",
+      "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "2.2.2"
+    },
+    {
+      "bytes": 164433,
+      "key": "certifi",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "certifi-2024.6.2.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/certifi/METADATA",
+          "sha256": "d09bca4ad19dd2b9fc4331021f7acdeb0730fba66636d47af2e72229d5de5665"
+        },
+        "WHEEL": {
+          "member": "certifi-2024.6.2.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/certifi/WHEEL",
+          "sha256": "189eedfe4581172c1b6a02b97a8f48a14c0b5baa3239e4ca990fbd8871553714"
+        }
+      },
+      "name": "certifi",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/certifi-2024.6.2-py3-none-any.whl",
+      "provenance": {
+        "kind": "retained-w-resolver3",
+        "source": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/certifi-2024.6.2-py3-none-any.whl",
+        "source_sha256": "ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56"
+      },
+      "requires_dist": [],
+      "requires_python": ">=3.6",
+      "sha256": "ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "2024.6.2"
+    },
+    {
+      "bytes": 36131,
+      "key": "soupsieve",
+      "matching_tags": [
+        "py3-none-any"
+      ],
+      "metadata": {
+        "METADATA": {
+          "member": "soupsieve-2.5.dist-info/METADATA",
+          "path": "tests/fixtures/hg_wresolver4/metadata/soupsieve/METADATA",
+          "sha256": "12c697bf18cee0f76342665c3b58b1a818d8678d91ad19d71803d3c8eb0cf881"
+        },
+        "WHEEL": {
+          "member": "soupsieve-2.5.dist-info/WHEEL",
+          "path": "tests/fixtures/hg_wresolver4/metadata/soupsieve/WHEEL",
+          "sha256": "f5006e1e183a14d5bb969a5ba05daf2956c2193573b05ca48114238e56a3ae10"
+        }
+      },
+      "name": "soupsieve",
+      "path": "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels/soupsieve-2.5-py3-none-any.whl",
+      "provenance": {
+        "advertised_sha256": "eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7",
+        "index_url": "https://pypi.org/pypi/soupsieve/2.5/json",
+        "kind": "pypi-exact-version",
+        "url": "https://files.pythonhosted.org/packages/4c/f3/038b302fdfbe3be7da016777069f26ceefe11a681055ea1f7817546508e3/soupsieve-2.5-py3-none-any.whl"
+      },
+      "requires_dist": [],
+      "requires_python": ">=3.8",
+      "sha256": "eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7",
+      "tags": [
+        "py3-none-any"
+      ],
+      "version": "2.5"
+    }
+  ],
+  "edges": [
+    {
+      "active": true,
+      "parent": "openpyxl",
+      "requirement": "et-xmlfile"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "furo ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "olefile ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "sphinx >=2.4 ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "sphinx-copybutton ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "sphinx-inline-tabs ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "sphinx-removed-in ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "sphinxext-opengraph ; extra == 'docs'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "olefile ; extra == 'fpx'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "olefile ; extra == 'mic'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "check-manifest ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "coverage ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "defusedxml ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "markdown2 ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "olefile ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "packaging ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "pyroma ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "pytest ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "pytest-cov ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "pytest-timeout ; extra == 'tests'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "typing-extensions ; (python_version < \"3.10\") and extra == 'typing'"
+    },
+    {
+      "active": false,
+      "parent": "pillow",
+      "requirement": "defusedxml ; extra == 'xmp'"
+    },
+    {
+      "active": true,
+      "parent": "requests",
+      "requirement": "charset-normalizer <4,>=2"
+    },
+    {
+      "active": true,
+      "parent": "requests",
+      "requirement": "idna <4,>=2.5"
+    },
+    {
+      "active": true,
+      "parent": "requests",
+      "requirement": "urllib3 <3,>=1.21.1"
+    },
+    {
+      "active": true,
+      "parent": "requests",
+      "requirement": "certifi >=2017.4.17"
+    },
+    {
+      "active": false,
+      "parent": "requests",
+      "requirement": "PySocks !=1.5.7,>=1.5.6 ; extra == 'socks'"
+    },
+    {
+      "active": false,
+      "parent": "requests",
+      "requirement": "chardet <6,>=3.0.2 ; extra == 'use_chardet_on_py3'"
+    },
+    {
+      "active": true,
+      "parent": "beautifulsoup4",
+      "requirement": "soupsieve>1.2"
+    },
+    {
+      "active": false,
+      "parent": "beautifulsoup4",
+      "requirement": "cchardet; extra == 'cchardet'"
+    },
+    {
+      "active": false,
+      "parent": "beautifulsoup4",
+      "requirement": "chardet; extra == 'chardet'"
+    },
+    {
+      "active": false,
+      "parent": "beautifulsoup4",
+      "requirement": "charset-normalizer; extra == 'charset-normalizer'"
+    },
+    {
+      "active": false,
+      "parent": "beautifulsoup4",
+      "requirement": "html5lib; extra == 'html5lib'"
+    },
+    {
+      "active": false,
+      "parent": "beautifulsoup4",
+      "requirement": "lxml; extra == 'lxml'"
+    },
+    {
+      "active": false,
+      "parent": "lxml",
+      "requirement": "cssselect >=0.7 ; extra == 'cssselect'"
+    },
+    {
+      "active": false,
+      "parent": "lxml",
+      "requirement": "html5lib ; extra == 'html5'"
+    },
+    {
+      "active": false,
+      "parent": "lxml",
+      "requirement": "lxml-html-clean ; extra == 'html_clean'"
+    },
+    {
+      "active": false,
+      "parent": "lxml",
+      "requirement": "BeautifulSoup4 ; extra == 'htmlsoup'"
+    },
+    {
+      "active": false,
+      "parent": "lxml",
+      "requirement": "Cython >=3.0.10 ; extra == 'source'"
+    },
+    {
+      "active": false,
+      "parent": "charset-normalizer",
+      "requirement": "unicodedata2 ; extra == 'unicode_backport'"
+    },
+    {
+      "active": false,
+      "parent": "urllib3",
+      "requirement": "brotli>=1.0.9; (platform_python_implementation == 'CPython') and extra == 'brotli'"
+    },
+    {
+      "active": false,
+      "parent": "urllib3",
+      "requirement": "brotlicffi>=0.8.0; (platform_python_implementation != 'CPython') and extra == 'brotli'"
+    },
+    {
+      "active": false,
+      "parent": "urllib3",
+      "requirement": "h2<5,>=4; extra == 'h2'"
+    },
+    {
+      "active": false,
+      "parent": "urllib3",
+      "requirement": "pysocks!=1.5.7,<2.0,>=1.5.6; extra == 'socks'"
+    },
+    {
+      "active": false,
+      "parent": "urllib3",
+      "requirement": "zstandard>=0.18.0; extra == 'zstd'"
+    }
+  ],
+  "pending": []
+}

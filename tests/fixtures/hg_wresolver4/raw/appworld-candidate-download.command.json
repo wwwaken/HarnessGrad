@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "python3.11",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "download",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dest",
+    "/tmp/hg-wresolver4-appworld-candidates",
+    "appworld==0.1.3.post1",
+    "uvicorn<1"
+  ],
+  "elapsed_seconds": 38.678714538924396,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

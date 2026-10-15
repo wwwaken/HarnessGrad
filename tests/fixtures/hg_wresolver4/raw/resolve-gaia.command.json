@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver4-offline-dvdf7eor/gaia/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "-vv",
+    "--find-links",
+    "/tmp/hg-wresolver4-gaia-payloads-bpv5ex8g/wheels",
+    "--report",
+    "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/raw/gaia.pip-report.json",
+    "-r",
+    "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/roots.in",
+    "-c",
+    "/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/profiles/gaia/constraints.txt"
+  ],
+  "elapsed_seconds": 0.8603350380435586,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

@@ -1,0 +1,120 @@
+source-sha256sum exit_code 0
+{
+  "profiles": {
+    "appworld": {
+      "derivation": "Verifier line 44 and service line 15 import AppWorld; service lines 13/14 import fastapi/munch; Dockerfile line 4 declares appworld/uvicorn on Python 3.11 and line 5 invokes CLI install. Python default dependency graph and CLI installed source must both be accounted for before complete dataset credit.",
+      "roots": [
+        "appworld==0.1.3.post1",
+        "uvicorn<1"
+      ]
+    },
+    "gaia": {
+      "derivation": "Verifier imports upstream scorer, whose line 6 imports numpy. Dockerfile line 22 declares six image roots; prepare.py line 113 conditionally imports pyarrow.parquet. Union is a finite metadata reconstruction; native apt/image installed-byte equivalence remains unclaimed. Bare source roots use freshly host-observed exact candidates, not upstream pins.",
+      "roots": [
+        "numpy",
+        "openpyxl",
+        "pillow",
+        "requests",
+        "beautifulsoup4",
+        "lxml",
+        "pyarrow"
+      ]
+    }
+  },
+  "sources": 11
+}
+f9f95f1aef2a3f5ad66be7c10a648dfaed43b8db3f30912760df2c0f4f1f28bb data/datasets/gaia.py
+data/datasets/gaia.py:25: step away from at all times.
+data/datasets/gaia.py:37: `question_scorer(model_answer, ground_truth) -> bool` from the official leaderboard Space
+data/datasets/gaia.py:57: from __future__ import annotations
+data/datasets/gaia.py:59: import json
+data/datasets/gaia.py:60: import os
+data/datasets/gaia.py:61: from pathlib import Path
+data/datasets/gaia.py:63: from data.scaffolds import registry
+data/datasets/gaia.py:76: #: and `2023/test`, and a `dst` taken from the basename made one overwrite the other (measured).
+data/datasets/gaia.py:93: #: Built once from `data/datasets/gaia/Dockerfile`; the platform will not build it during a run.
+data/datasets/gaia.py:237:     `pool.jsonl` from `data/datasets/gaia/prepare.py`). The policy one: `data/scaffolds/registry.py::published()`
+data/datasets/gaia.py:254:         raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
+data/datasets/gaia.py:275:          "note": "The scored pool. Gated (`gated: auto`), so `--fetch` needs HF_TOKEN in the environment or in ~/.cache/huggingface/token; the URL goes through hf-mirror.com because huggingface.co is unreachable from this host. `prepare.py` reads it and writes pool.jsonl, whose own digest transitively pins the 42 validation attachments (each carries its size and sha256 in the pool header)."},
+data/datasets/gaia.py:285:          "note": "`question_scorer` / `normalize_str` / `normalize_number_str` / `split_string`, pinned from the official leaderboard Space at its revision. Copied into the verification namespace as a VERIFY.inputs entry and imported there, so the reward is upstream's function rather than a transcription -- the three branches (float, comma list, string) normalize differently and an exact-match re-implementation gets them wrong. Never enters an agent SETUP."},
+ce6d3c70ad7cca60142737c0a9e29a36c795f57bb84bc513bb2a7061c99d77fd data/datasets/gaia/Dockerfile
+data/datasets/gaia/Dockerfile:16: FROM python:3.12-slim
+data/datasets/gaia/Dockerfile:22: RUN pip install --no-cache-dir numpy openpyxl pillow requests beautifulsoup4 lxml
+bdc147ce1f385eb15a950efa7c7e0ef6939ee7695570ab49b41228b2e8d277f6 data/datasets/gaia/prepare.py
+data/datasets/gaia/prepare.py:10: `2023/test/`. Reading a parquet at import would put `pyarrow` between the adapter and every
+data/datasets/gaia/prepare.py:32: files return 403 without one. The token is read from `HF_TOKEN`, else from the standard
+data/datasets/gaia/prepare.py:34: is unreachable from this host, so downloads go through `hf-mirror.com`, which honours the same
+data/datasets/gaia/prepare.py:37: from __future__ import annotations
+data/datasets/gaia/prepare.py:39: import argparse
+data/datasets/gaia/prepare.py:40: import hashlib
+data/datasets/gaia/prepare.py:41: import json
+data/datasets/gaia/prepare.py:42: import os
+data/datasets/gaia/prepare.py:43: import pathlib
+data/datasets/gaia/prepare.py:44: import sys
+data/datasets/gaia/prepare.py:45: import urllib.request
+data/datasets/gaia/prepare.py:50: import data.datasets.gaia as adapter  # noqa: E402
+data/datasets/gaia/prepare.py:113:     import pyarrow.parquet as pq
+59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e data/datasets/gaia/verify/check.py
+data/datasets/gaia/verify/check.py:5: was pinned by sha256 from the official leaderboard Space. This script therefore runs upstream's
+data/datasets/gaia/verify/check.py:24: from __future__ import annotations
+data/datasets/gaia/verify/check.py:26: import argparse
+data/datasets/gaia/verify/check.py:27: import contextlib
+data/datasets/gaia/verify/check.py:28: import io
+data/datasets/gaia/verify/check.py:29: import json
+data/datasets/gaia/verify/check.py:30: import sys
+data/datasets/gaia/verify/check.py:31: from pathlib import Path
+data/datasets/gaia/verify/check.py:72:         from scorer import question_scorer
+504107fa806f533c4067f4d1c3bed3102f0f0f376692a0a4543fc0e1e3eb493e data/datasets/appworld.py
+data/datasets/appworld.py:23: test tasks raise from ``oracle_files`` rather than receiving an empty reference.
+data/datasets/appworld.py:25: from __future__ import annotations
+data/datasets/appworld.py:27: import hashlib
+data/datasets/appworld.py:28: import io
+data/datasets/appworld.py:29: import json
+data/datasets/appworld.py:30: import os
+data/datasets/appworld.py:31: import shlex
+data/datasets/appworld.py:32: import shutil
+data/datasets/appworld.py:33: import zipfile
+data/datasets/appworld.py:34: from pathlib import Path
+data/datasets/appworld.py:36: from eval.policy.appworld_reporting import make_manifest
+data/datasets/appworld.py:62:     "HG_APPWORLD_VERIFIER_IMAGE",
+data/datasets/appworld.py:73:     from cryptography.hazmat.primitives import hashes
+data/datasets/appworld.py:74:     from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+data/datasets/appworld.py:75:     from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+data/datasets/appworld.py:183:             f"import json\ncalls = json.loads({calls!r})\n" +
+data/datasets/appworld.py:253:     """Trusted, selected-only reporting metadata derived from public IDs/splits.
+data/datasets/appworld.py:313:                     "import urllib.request as u; u.urlopen('http://localhost:8000/').read()",
+c37e2347cfacce1d46a9cdffa0ff20997590de457e4d28528ac6a10d1e2c723c data/datasets/appworld/Dockerfile
+data/datasets/appworld/Dockerfile:3: FROM docker.m.daocloud.io/library/python:3.11-slim
+data/datasets/appworld/Dockerfile:4: RUN python -m pip install --no-cache-dir "appworld==0.1.3.post1" "uvicorn<1" && \
+data/datasets/appworld/Dockerfile:5:     python -m appworld.cli install --no-repo
+25a888682103f8211a1c28c79dbf8789ab52b70ff5c25fe3f682de2716e9d30a data/datasets/appworld/Dockerfile.agent
+data/datasets/appworld/Dockerfile.agent:3: FROM docker.m.daocloud.io/library/python:3.11-slim
+c99019172d073ed9b8e8df260e94894f2a2b7c2cd1c87bed8ea30a7745055cd8 data/datasets/appworld/service.py
+data/datasets/appworld/service.py:8: from __future__ import annotations
+data/datasets/appworld/service.py:10: import os
+data/datasets/appworld/service.py:11: from typing import Any
+data/datasets/appworld/service.py:13: from fastapi import Body, FastAPI, HTTPException
+data/datasets/appworld/service.py:14: from munch import unmunchify
+data/datasets/appworld/service.py:15: from appworld import AppWorld
+494ac67d025b7fcd733c641e5de95b85dc29f87e5829e11f4bfb198bca3fd5e4 data/datasets/appworld/server.sh
+data/datasets/appworld/server.sh:4: # The service process is task-scoped.  The image is assembled from the release for
+data/datasets/appworld/server.sh:10: import os
+data/datasets/appworld/server.sh:11: import re
+data/datasets/appworld/server.sh:12: import shutil
+data/datasets/appworld/server.sh:13: from pathlib import Path
+data/datasets/appworld/server.sh:30: exec python -m uvicorn appworld_service:app --host 0.0.0.0 --port 8000
+0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5 data/datasets/appworld/verify/check.py
+data/datasets/appworld/verify/check.py:3: from __future__ import annotations
+data/datasets/appworld/verify/check.py:4: import argparse
+data/datasets/appworld/verify/check.py:5: import json
+data/datasets/appworld/verify/check.py:6: import os
+data/datasets/appworld/verify/check.py:7: from pathlib import Path
+data/datasets/appworld/verify/check.py:8: import tempfile
+data/datasets/appworld/verify/check.py:9: import sys
+data/datasets/appworld/verify/check.py:44:         from appworld import AppWorld
+0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2 /mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py
+/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py:1: import json
+/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py:2: import re
+/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py:3: import string
+/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py:4: import warnings
+/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py:6: import numpy as np

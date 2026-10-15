@@ -1,0 +1,1073 @@
+COMMAND ["python3", "tools/check_dataset_blockers.py"]
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+{"exit_code": 0, "elapsed_seconds": 0.25600494258105755}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver4/validate.py", "--seal"]
+{"bounded_coverage": "13/13", "candidate_wheels": 93, "complete_nonempty_python_coverage": "12/23", "fresh_profiles": 2, "missing_wheel_refusals": 2, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.7944585233926773}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver4/validate.py"]
+{"bounded_coverage": "13/13", "candidate_wheels": 93, "complete_nonempty_python_coverage": "12/23", "fresh_profiles": 2, "missing_wheel_refusals": 2, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.7771128928288817}
+
+COMMAND ["git", "diff", "--check"]
+{"exit_code": 0, "elapsed_seconds": 0.02496607694774866}
+
+Completed focused pytest command (earlier capture; not rerun): ["python3", "-m", "pytest", "-q", "tests/quality/test_dataset_blockers.py", "tests/quality/test_dataset_journal_coverage.py", "--basetemp=/tmp/harnessgrad-pytest-w-resolver4"]
+...........................................................xxx           [100%]
+59 passed, 3 xfailed in 7.37s
+Raw stdout/stderr were captured by the completed exec process; observed process exit_code: 0.
+
+Evidence caveat: capture-recovery.json discloses the unavailable first-attempt pre-resolution runtime; exported original tool outputs preserve verbatim first-attempt network/cleanup. Successful retry receipts are complete. Initial independent-validator AssertionError/FileNotFoundError logs are retained; no production gate or requirement was weakened.
+
+Staged scope audit (before final validation log refresh): {"agent_main_writes": false, "branch": "wg-resolver4", "fixture_files": 697, "new_wheel_files": 87, "registered_worktree": "/tmp/hg-resolver4", "scope_valid": true, "staged_paths": 701}
+
+COMMAND ["python3", "tools/check_dataset_blockers.py"]
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+{"exit_code": 0, "elapsed_seconds": 0.2986301193013787}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver4/validate.py"]
+{"bounded_coverage": "13/13", "candidate_wheels": 93, "complete_nonempty_python_coverage": "12/23", "fresh_profiles": 2, "missing_wheel_refusals": 2, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.5128429858013988}
+
+COMMAND ["git", "diff", "--cached", "--check"]
+tests/fixtures/hg_wresolver4/appworld-wheel-source/appworld/cli.py:340: trailing whitespace.
++            "is/are not avilable. Note that you need the GitHub repo only for the 'run' command." 
+tests/fixtures/hg_wresolver4/metadata-appworld/anyio/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/appworld/METADATA:107: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/asttokens/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/certifi/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/cffi/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/charset-normalizer/WHEEL:7: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/click/METADATA:83: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/cryptography/METADATA:145: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/cryptography/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/decorator/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/email-validator/METADATA:178: trailing whitespace.
++    
+tests/fixtures/hg_wresolver4/metadata-appworld/email-validator/METADATA:438: trailing whitespace.
++pip install -r test_requirements.txt 
+tests/fixtures/hg_wresolver4/metadata-appworld/email-validator/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/executing/METADATA:125: trailing whitespace.
++    
+tests/fixtures/hg_wresolver4/metadata-appworld/executing/METADATA:136: trailing whitespace.
++ 
+tests/fixtures/hg_wresolver4/metadata-appworld/executing/METADATA:142: trailing whitespace.
++Furthermore, `executing` checks that the instructions compiled from the modified AST exactly match the original code save for a few small known exceptions. This accounts for all the quirks and optimisations in the interpreter. 
+tests/fixtures/hg_wresolver4/metadata-appworld/executing/METADATA:147: trailing whitespace.
++ 
+tests/fixtures/hg_wresolver4/metadata-appworld/executing/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/faker/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/fastapi-login/METADATA:192: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/freezegun/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/greenlet/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/h11/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/idna/METADATA:123: trailing whitespace.
++are set. 
+tests/fixtures/hg_wresolver4/metadata-appworld/idna/METADATA:176: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/inflection/METADATA:48: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/inflection/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/iniconfig/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/ipython-pygments-lexers/METADATA:26: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/ipython/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/jedi/METADATA:250: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/jedi/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/jsonref/METADATA:71: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:6: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:10: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:22: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:26: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:28: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:30: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:32: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:34: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:41: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:44: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:52: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:54: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:56: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:61: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:70: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:76: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:83: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:88: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:91: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:97: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:101: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:103: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:105: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:107: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/METADATA:331: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/libcst/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/markdown-it-py/METADATA:221: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/matplotlib-inline/METADATA:76: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/mdurl/METADATA:32: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/munch/METADATA:209: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/munch/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/orjson/METADATA:1144: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:1: trailing whitespace.
++Metadata-Version: 2.1
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:2: trailing whitespace.
++Name: outcome
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:3: trailing whitespace.
++Version: 1.3.0.post0
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:4: trailing whitespace.
++Summary: Capture the outcome of Python function calls.
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:5: trailing whitespace.
++Home-page: https://github.com/python-trio/outcome
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:6: trailing whitespace.
++Author: Frazer McLean
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:7: trailing whitespace.
++Author-email: frazer@frazermclean.co.uk
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:8: trailing whitespace.
++License: MIT OR Apache-2.0
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:9: trailing whitespace.
++Project-URL: Documentation, https://outcome.readthedocs.io/en/latest/
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:10: trailing whitespace.
++Project-URL: Chat, https://gitter.im/python-trio/general
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:11: trailing whitespace.
++Project-URL: Changelog, https://outcome.readthedocs.io/en/latest/history.html
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:12: trailing whitespace.
++Keywords: result
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:13: trailing whitespace.
++Classifier: Development Status :: 5 - Production/Stable
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:14: trailing whitespace.
++Classifier: Framework :: Trio
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:15: trailing whitespace.
++Classifier: Intended Audience :: Developers
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:16: trailing whitespace.
++Classifier: License :: OSI Approved :: MIT License
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:17: trailing whitespace.
++Classifier: License :: OSI Approved :: Apache Software License
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:18: trailing whitespace.
++Classifier: Operating System :: POSIX :: Linux
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:19: trailing whitespace.
++Classifier: Operating System :: MacOS :: MacOS X
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:20: trailing whitespace.
++Classifier: Operating System :: Microsoft :: Windows
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:21: trailing whitespace.
++Classifier: Programming Language :: Python :: 3.7
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:22: trailing whitespace.
++Classifier: Programming Language :: Python :: 3.8
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:23: trailing whitespace.
++Classifier: Programming Language :: Python :: 3.9
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:24: trailing whitespace.
++Classifier: Programming Language :: Python :: 3.10
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:25: trailing whitespace.
++Classifier: Programming Language :: Python :: Implementation :: CPython
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:26: trailing whitespace.
++Classifier: Programming Language :: Python :: Implementation :: PyPy
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:27: trailing whitespace.
++Classifier: Typing :: Typed
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:28: trailing whitespace.
++Requires-Python: >=3.7
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:29: trailing whitespace.
++Description-Content-Type: text/x-rst
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:30: trailing whitespace.
++License-File: LICENSE
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:31: trailing whitespace.
++License-File: LICENSE.APACHE2
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:32: trailing whitespace.
++License-File: LICENSE.MIT
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:33: trailing whitespace.
++Requires-Dist: attrs >=19.2.0
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:34: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:35: trailing whitespace.
++.. image:: https://img.shields.io/badge/chat-join%20now-blue.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:36: trailing whitespace.
++   :target: https://gitter.im/python-trio/general
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:37: trailing whitespace.
++   :alt: Join chatroom
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:38: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:39: trailing whitespace.
++.. image:: https://img.shields.io/badge/docs-read%20now-blue.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:40: trailing whitespace.
++   :target: https://outcome.readthedocs.io/en/latest/?badge=latest
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:41: trailing whitespace.
++   :alt: Documentation Status
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:42: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:43: trailing whitespace.
++.. image:: https://travis-ci.org/python-trio/trio.svg?branch=master
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:44: trailing whitespace.
++   :target: https://travis-ci.org/python-trio/outcome
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:45: trailing whitespace.
++   :alt: Automated test status (Linux and MacOS)
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:46: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:47: trailing whitespace.
++.. image:: https://ci.appveyor.com/api/projects/status/c54uu4rxlgs2usmj/branch/master?svg=true
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:48: trailing whitespace.
++   :target: https://ci.appveyor.com/project/RazerM/outcome/history
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:49: trailing whitespace.
++   :alt: Automated test status (Windows)
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:50: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:51: trailing whitespace.
++.. image:: https://codecov.io/gh/python-trio/trio/branch/master/graph/badge.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:52: trailing whitespace.
++   :target: https://codecov.io/gh/python-trio/outcome
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:53: trailing whitespace.
++   :alt: Test coverage
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:54: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:55: trailing whitespace.
++outcome
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:56: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:56: trailing whitespace.
++=======
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:57: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:58: trailing whitespace.
++Welcome to `outcome <https://github.com/python-trio/outcome>`__!
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:59: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:60: trailing whitespace.
++Capture the outcome of Python function calls. Extracted from the
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:61: trailing whitespace.
++`Trio <https://github.com/python-trio/trio>`__ project.
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:62: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/METADATA:63: trailing whitespace.
++License: Your choice of MIT or Apache License 2.0
+tests/fixtures/hg_wresolver4/metadata-appworld/outcome/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/packaging/METADATA:112: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/parso/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pendulum/METADATA:197: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pexpect/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pluggy/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/prompt-toolkit/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/psutil/METADATA:144: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/psutil/METADATA:166: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/psutil/METADATA:528: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/psutil/WHEEL:8: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/ptyprocess/METADATA:37: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pure-eval/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pycparser/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:312: trailing whitespace.
++* Prevent long (length > `4_300`) strings/bytes as input to int fields, see 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:313: trailing whitespace.
++  [python/cpython#95778](https://github.com/python/cpython/issues/95778) and 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:351: trailing whitespace.
++* Allow type checkers to infer inner type of `Json` type. `Json[list[str]]` will be now inferred as `list[str]`, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:423: trailing whitespace.
++deep copied by default, this release reverts the default behaviour to match _v1.9.0_ and before, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:427: trailing whitespace.
++  `'none'`, `'deep'`, or `'shallow'` corresponding to not copying, deep copy & shallow copy; default `'shallow'`, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:433: trailing whitespace.
++@tiangolo, [@stellargraph](https://github.com/stellargraph), [@JonasKs](https://github.com/JonasKs), [@grillazz](https://github.com/grillazz), [@Mazyod](https://github.com/Mazyod), [@kevinalh](https://github.com/kevinalh), [@chdsbd](https://github.com/chdsbd), [@povilasb](https://github.com/povilasb), [@povilasb](https://github.com/povilasb), [@jina-ai](https://github.com/jina-ai), 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:434: trailing whitespace.
++@mainframeindustries, [@robusta-dev](https://github.com/robusta-dev), [@SendCloud](https://github.com/SendCloud), [@rszamszur](https://github.com/rszamszur), [@jodal](https://github.com/jodal), [@hardbyte](https://github.com/hardbyte), [@corleyma](https://github.com/corleyma), [@daddycocoaman](https://github.com/daddycocoaman), 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:435: trailing whitespace.
++@Rehket, [@jokull](https://github.com/jokull), [@reillysiemens](https://github.com/reillysiemens), [@westonsteimel](https://github.com/westonsteimel), [@primer-io](https://github.com/primer-io), [@koxudaxi](https://github.com/koxudaxi), [@browniebroke](https://github.com/browniebroke), [@stradivari96](https://github.com/stradivari96), 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:439: trailing whitespace.
++* Limit the size of `generics._generic_types_cache` and `generics._assigned_parameters` 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:463: trailing whitespace.
++@es3n1n, [@jokull](https://github.com/jokull), [@JonasKs](https://github.com/JonasKs), [@Rehket](https://github.com/Rehket), [@corleyma](https://github.com/corleyma), [@daddycocoaman](https://github.com/daddycocoaman), [@hardbyte](https://github.com/hardbyte), [@datarootsio](https://github.com/datarootsio), [@jodal](https://github.com/jodal), [@aminalaee](https://github.com/aminalaee), [@rafsaf](https://github.com/rafsaf), 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:496: trailing whitespace.
++* Add support for `Decimal`-specific validation configurations in `Field()`, additionally to using `condecimal()`, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:504: trailing whitespace.
++* Changed the validator method name in the [Custom Errors example](https://docs.pydantic.dev/usage/models/#custom-errors) 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:522: trailing whitespace.
++* Make `SecretsSettingsSource` parse values being assigned to fields of complex types when sourced from a secrets file, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:525: trailing whitespace.
++* Make `pydantic-mypy` plugin compatible with `pyproject.toml` configuration, consistent with `mypy` changes. 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:530: trailing whitespace.
++* Clarify documentation about _pydantic_'s support for custom validation and strict type checking, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:534: trailing whitespace.
++* Fix postponed annotation resolution for `NamedTuple` and `TypedDict` when they're used directly as the type of fields 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:557: trailing whitespace.
++* Documentation update how to custom compile pydantic when using pip install, small change in `setup.py` 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:570: trailing whitespace.
++* add `Config.smart_union` to prevent coercion in `Union` if possible, see 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:587: trailing whitespace.
++* **Security fix:** Fix `date` and `datetime` parsing so passing either `'infinity'` or `float('inf')` 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:588: trailing whitespace.
++  (or their negative values) does not cause an infinite loop, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:600: trailing whitespace.
++Bug fixes for regressions and new features from `v1.8` 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:614: trailing whitespace.
++@jorgecarleitao, [@BCarley](https://github.com/BCarley), [@chdsbd](https://github.com/chdsbd), [@tiangolo](https://github.com/tiangolo), [@matin](https://github.com/matin), [@linusg](https://github.com/linusg), [@kevinalh](https://github.com/kevinalh), [@koxudaxi](https://github.com/koxudaxi), [@timdrijvers](https://github.com/timdrijvers), [@mkeen](https://github.com/mkeen), [@meadsteve](https://github.com/meadsteve), 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:615: trailing whitespace.
++@ginomempin, [@primer-io](https://github.com/primer-io), [@and-semakin](https://github.com/and-semakin), [@tomthorogood](https://github.com/tomthorogood), [@AjitZK](https://github.com/AjitZK), [@westonsteimel](https://github.com/westonsteimel), [@Mazyod](https://github.com/Mazyod), [@christippett](https://github.com/christippett), [@CarlosDomingues](https://github.com/CarlosDomingues), 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:706: trailing whitespace.
++* **Security fix:** Fix `date` and `datetime` parsing so passing either `'infinity'` or `float('inf')` 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:745: trailing whitespace.
++@timdrijvers, [@BCarley](https://github.com/BCarley), [@chdsbd](https://github.com/chdsbd), [@tiangolo](https://github.com/tiangolo), [@matin](https://github.com/matin), [@linusg](https://github.com/linusg), [@kevinalh](https://github.com/kevinalh), [@jorgecarleitao](https://github.com/jorgecarleitao), [@koxudaxi](https://github.com/koxudaxi), [@primer-api](https://github.com/primer-api) 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:760: trailing whitespace.
++* Allows subclasses of generic models to make some, or all, of the superclass's type parameters concrete, while 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:781: trailing whitespace.
++* Allows timezone information to be added to strings to be formatted as time objects. Permitted formats are `Z` for UTC 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:786: trailing whitespace.
++* Change default value of `__module__` argument of `create_model` from `None` to `'pydantic.main'`. 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:787: trailing whitespace.
++  Set reference of created concrete model to it's module to allow pickling (not applied to models created in 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:791: trailing whitespace.
++* Allow descendant Settings models to override env variable names for the fields defined in parent Settings models with 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:801: trailing whitespace.
++* **Security fix:** Fix `date` and `datetime` parsing so passing either `'infinity'` or `float('inf')` 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/METADATA:870: trailing whitespace.
++* Move all testing and build to github actions, add windows and macos binaries, 
+tests/fixtures/hg_wresolver4/metadata-appworld/pydantic/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pyjwt/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pytest-xdist/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pytest/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/python-dateutil/METADATA:193: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/python-dateutil/METADATA:198: leftover conflict marker
+tests/fixtures/hg_wresolver4/metadata-appworld/python-dateutil/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/python-dotenv/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/pyyaml/WHEEL:7: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/registrable/METADATA:61: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/registrable/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/requests/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/rich/METADATA:473: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/shellingham/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/six/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:1: trailing whitespace.
++Metadata-Version: 2.1
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:2: trailing whitespace.
++Name: sniffio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:3: trailing whitespace.
++Version: 1.3.1
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:4: trailing whitespace.
++Summary: Sniff out which async library your code is running under
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:5: trailing whitespace.
++Author-email: "Nathaniel J. Smith" <njs@pobox.com>
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:6: trailing whitespace.
++License: MIT OR Apache-2.0
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:7: trailing whitespace.
++Project-URL: Homepage, https://github.com/python-trio/sniffio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:8: trailing whitespace.
++Project-URL: Documentation, https://sniffio.readthedocs.io/
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:9: trailing whitespace.
++Project-URL: Changelog, https://sniffio.readthedocs.io/en/latest/history.html
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:10: trailing whitespace.
++Keywords: async,trio,asyncio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:11: trailing whitespace.
++Classifier: License :: OSI Approved :: MIT License
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:12: trailing whitespace.
++Classifier: License :: OSI Approved :: Apache Software License
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:13: trailing whitespace.
++Classifier: Framework :: Trio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:14: trailing whitespace.
++Classifier: Framework :: AsyncIO
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:15: trailing whitespace.
++Classifier: Operating System :: POSIX :: Linux
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:16: trailing whitespace.
++Classifier: Operating System :: MacOS :: MacOS X
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:17: trailing whitespace.
++Classifier: Operating System :: Microsoft :: Windows
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:18: trailing whitespace.
++Classifier: Programming Language :: Python :: 3 :: Only
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:19: trailing whitespace.
++Classifier: Programming Language :: Python :: Implementation :: CPython
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:20: trailing whitespace.
++Classifier: Programming Language :: Python :: Implementation :: PyPy
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:21: trailing whitespace.
++Classifier: Intended Audience :: Developers
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:22: trailing whitespace.
++Classifier: Development Status :: 5 - Production/Stable
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:23: trailing whitespace.
++Requires-Python: >=3.7
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:24: trailing whitespace.
++Description-Content-Type: text/x-rst
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:25: trailing whitespace.
++License-File: LICENSE
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:26: trailing whitespace.
++License-File: LICENSE.APACHE2
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:27: trailing whitespace.
++License-File: LICENSE.MIT
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:28: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:29: trailing whitespace.
++.. image:: https://img.shields.io/badge/chat-join%20now-blue.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:30: trailing whitespace.
++   :target: https://gitter.im/python-trio/general
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:31: trailing whitespace.
++   :alt: Join chatroom
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:32: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:33: trailing whitespace.
++.. image:: https://img.shields.io/badge/docs-read%20now-blue.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:34: trailing whitespace.
++   :target: https://sniffio.readthedocs.io/en/latest/?badge=latest
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:35: trailing whitespace.
++   :alt: Documentation Status
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:36: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:37: trailing whitespace.
++.. image:: https://img.shields.io/pypi/v/sniffio.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:38: trailing whitespace.
++   :target: https://pypi.org/project/sniffio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:39: trailing whitespace.
++   :alt: Latest PyPi version
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:40: trailing whitespace.
++   
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:41: trailing whitespace.
++.. image:: https://img.shields.io/conda/vn/conda-forge/sniffio.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:42: trailing whitespace.
++   :target: https://anaconda.org/conda-forge/sniffio 
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:43: trailing whitespace.
++   :alt: Latest conda-forge version   
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:44: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:45: trailing whitespace.
++.. image:: https://travis-ci.org/python-trio/sniffio.svg?branch=master
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:46: trailing whitespace.
++   :target: https://travis-ci.org/python-trio/sniffio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:47: trailing whitespace.
++   :alt: Automated test status
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:48: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:49: trailing whitespace.
++.. image:: https://codecov.io/gh/python-trio/sniffio/branch/master/graph/badge.svg
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:50: trailing whitespace.
++   :target: https://codecov.io/gh/python-trio/sniffio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:51: trailing whitespace.
++   :alt: Test coverage
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:52: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:53: trailing whitespace.
++=================================================================
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:54: trailing whitespace.
++sniffio: Sniff out which async library your code is running under
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:55: trailing whitespace.
++=================================================================
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:56: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:57: trailing whitespace.
++You're writing a library. You've decided to be ambitious, and support
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:58: trailing whitespace.
++multiple async I/O packages, like `Trio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:59: trailing whitespace.
++<https://trio.readthedocs.io>`__, and `asyncio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:60: trailing whitespace.
++<https://docs.python.org/3/library/asyncio.html>`__, and ... You've
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:61: trailing whitespace.
++written a bunch of clever code to handle all the differences. But...
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:62: trailing whitespace.
++how do you know *which* piece of clever code to run?
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:63: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:64: trailing whitespace.
++This is a tiny package whose only purpose is to let you detect which
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:65: trailing whitespace.
++async library your code is running under.
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:66: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:67: trailing whitespace.
++* Documentation: https://sniffio.readthedocs.io
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:68: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:69: trailing whitespace.
++* Bug tracker and source code: https://github.com/python-trio/sniffio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:70: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:71: trailing whitespace.
++* License: MIT or Apache License 2.0, your choice
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:72: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:73: trailing whitespace.
++* Contributor guide: https://trio.readthedocs.io/en/latest/contributing.html
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:74: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:75: trailing whitespace.
++* Code of conduct: Contributors are requested to follow our `code of
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:76: trailing whitespace.
++  conduct
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:77: trailing whitespace.
++  <https://trio.readthedocs.io/en/latest/code-of-conduct.html>`_
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:78: trailing whitespace.
++  in all project spaces.
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:79: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:80: trailing whitespace.
++This library is maintained by the Trio project, as a service to the
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:81: trailing whitespace.
++async Python community as a whole.
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:82: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:83: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:84: trailing whitespace.
++Quickstart
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:85: trailing whitespace.
++----------
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:86: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:87: trailing whitespace.
++.. code-block:: python3
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:88: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:89: trailing whitespace.
++   from sniffio import current_async_library
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:90: trailing whitespace.
++   import trio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:91: trailing whitespace.
++   import asyncio
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:92: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:93: trailing whitespace.
++   async def print_library():
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:94: trailing whitespace.
++       library = current_async_library()
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:95: trailing whitespace.
++       print("This is:", library)
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:96: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:97: trailing whitespace.
++   # Prints "This is trio"
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:98: trailing whitespace.
++   trio.run(print_library)
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:99: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:100: trailing whitespace.
++   # Prints "This is asyncio"
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:101: trailing whitespace.
++   asyncio.run(print_library())
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:102: trailing whitespace.
++
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:103: trailing whitespace.
++For more details, including how to add support to new async libraries,
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/METADATA:104: trailing whitespace.
++`please peruse our fine manual <https://sniffio.readthedocs.io>`__.
+tests/fixtures/hg_wresolver4/metadata-appworld/sniffio/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sortedcontainers/METADATA:263: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sortedcontainers/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sqlalchemy-utils/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sqlalchemy/METADATA:252: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sqlalchemy/WHEEL:8: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sqlalchemy2-stubs/METADATA:71: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sqlalchemy2-stubs/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/sqlmodel/METADATA:250: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/stack-data/METADATA:44: trailing whitespace.
++    
+tests/fixtures/hg_wresolver4/metadata-appworld/stack-data/METADATA:288: trailing whitespace.
++        return "<b>", "</b>"        
+tests/fixtures/hg_wresolver4/metadata-appworld/stack-data/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:465: trailing whitespace.
++* iterable  : iterable, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:468: trailing whitespace.
++* desc  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:470: trailing whitespace.
++* total  : int or float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:478: trailing whitespace.
++* leave  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:482: trailing whitespace.
++* file  : ``io.TextIOWrapper`` or ``io.StringIO``, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:486: trailing whitespace.
++* ncols  : int, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:492: trailing whitespace.
++* mininterval  : float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:494: trailing whitespace.
++* maxinterval  : float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:499: trailing whitespace.
++* miniters  : int or float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:507: trailing whitespace.
++* ascii  : bool or str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:510: trailing whitespace.
++* disable  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:513: trailing whitespace.
++* unit  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:516: trailing whitespace.
++* unit_scale  : bool or int or float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:522: trailing whitespace.
++* dynamic_ncols  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:525: trailing whitespace.
++* smoothing  : float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:529: trailing whitespace.
++* bar_format  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:542: trailing whitespace.
++* initial  : int or float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:546: trailing whitespace.
++* position  : int, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:550: trailing whitespace.
++* postfix  : dict or ``*``, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:553: trailing whitespace.
++* unit_divisor  : float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:555: trailing whitespace.
++* write_bytes  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:557: trailing whitespace.
++* lock_args  : tuple, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:560: trailing whitespace.
++* nrows  : int, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:564: trailing whitespace.
++* colour  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:566: trailing whitespace.
++* delay  : float, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:572: trailing whitespace.
++* delim  : chr, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:575: trailing whitespace.
++* buf_size  : int, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:578: trailing whitespace.
++* bytes  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:581: trailing whitespace.
++* tee  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:583: trailing whitespace.
++* update  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:587: trailing whitespace.
++* update_to  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:591: trailing whitespace.
++* null  : bool, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:593: trailing whitespace.
++* manpath  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:595: trailing whitespace.
++* comppath  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:597: trailing whitespace.
++* log  : str, optional  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/METADATA:603: trailing whitespace.
++* out  : decorated iterator.  
+tests/fixtures/hg_wresolver4/metadata-appworld/tqdm/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:11: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:13: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:15: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:18: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:21: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:25: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/traitlets/METADATA:29: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata-appworld/trio/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/typing-extensions/METADATA:73: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/tzdata/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/uvloop/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/wcwidth/METADATA:589: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/wcwidth/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata-appworld/xxhash/METADATA:76: trailing whitespace.
++   
+tests/fixtures/hg_wresolver4/metadata-appworld/xxhash/WHEEL:7: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/beautifulsoup4/METADATA:122: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/certifi/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/charset-normalizer/METADATA:81: trailing whitespace.
++*\*\* : They are clearly using specific code for a specific encoding even if covering most of used one*<br> 
+tests/fixtures/hg_wresolver4/metadata/charset-normalizer/METADATA:235: trailing whitespace.
++What I want is to get readable text, the best I can. 
+tests/fixtures/hg_wresolver4/metadata/charset-normalizer/METADATA:274: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/charset-normalizer/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/et-xmlfile/METADATA:36: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/et-xmlfile/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/idna/METADATA:243: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/lxml/METADATA:88: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/lxml/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:10: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:14: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:17: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:22: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:26: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:38: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:40: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:43: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:48: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:53: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:58: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:63: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:64: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:67: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:72: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:77: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:79: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:81: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:82: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:90: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:94: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:97: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:106: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:117: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:118: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:131: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:133: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:135: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:137: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:141: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:144: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:149: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:153: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:160: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:172: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:173: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:180: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:185: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:190: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:194: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:199: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:201: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:205: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:207: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:209: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:211: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:213: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:216: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:222: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:228: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:230: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:235: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:240: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:244: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:251: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:259: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:265: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:267: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:274: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:276: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:280: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:282: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:285: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:289: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:291: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:294: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:303: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:310: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:315: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:321: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:325: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:331: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:342: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:349: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:352: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:354: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:356: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:358: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:361: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:365: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:370: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:373: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:380: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:384: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:393: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:395: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:399: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:404: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:415: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:428: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:432: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:435: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:437: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:445: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:456: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:460: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:462: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:468: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:476: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:478: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:486: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:489: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:491: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:495: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:498: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:503: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:511: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:516: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:526: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:528: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:533: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:538: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:550: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:556: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:569: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:574: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:578: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:591: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:599: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:610: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:618: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:624: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:626: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:635: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:642: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:646: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:649: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:653: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:657: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:660: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:663: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:669: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:679: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:684: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:688: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:690: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:696: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:703: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:710: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:716: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:718: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:727: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:729: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:734: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:744: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:752: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:754: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:758: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:768: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:773: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:780: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:794: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:802: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:817: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:821: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:823: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:833: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:835: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:844: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:846: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:851: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:860: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:865: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:870: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:872: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:881: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:883: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:893: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:895: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:902: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:904: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:906: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:910: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:915: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:918: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:923: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:928: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:931: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:933: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:936: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:941: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:945: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:950: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:957: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:963: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:967: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:973: trailing whitespace.
++        
+tests/fixtures/hg_wresolver4/metadata/numpy/METADATA:1077: trailing whitespace.
++For more information about the ways you can contribute to NumPy, visit [our website](https://numpy.org/contribute/). 
+tests/fixtures/hg_wresolver4/metadata/numpy/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/openpyxl/WHEEL:6: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/pillow/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/pyarrow/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/metadata/requests/WHEEL:5: new blank line at EOF.
+tests/fixtures/hg_wresolver4/raw/appworld-ensurepip-source.stdout.txt:294: new blank line at EOF.
+tests/fixtures/hg_wresolver4/raw/appworld-retry-negative-appworld.stdout.txt:25: new blank line at EOF.
+tests/fixtures/hg_wresolver4/raw/negative-gaia.stdout.txt:18: new blank line at EOF.
+tests/fixtures/hg_wresolver4/remainder-audit.stdout.txt:1078: trailing whitespace.
++/mnt/20t/xubuqiang/datasets/terminal-bench/qemu-alpine-ssh/environment/Dockerfile:2: FROM debian:bullseye-slim 
+tests/fixtures/hg_wresolver4/remainder-audit.stdout.txt:1087: trailing whitespace.
++/mnt/20t/xubuqiang/datasets/terminal-bench/qemu-startup/environment/Dockerfile:2: FROM debian:bullseye-slim 
+tests/fixtures/hg_wresolver4/source/external/gaia/scorer.py:39: trailing whitespace.
++        
+{"exit_code": 2, "elapsed_seconds": 0.05011387914419174}

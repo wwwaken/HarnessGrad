@@ -1,0 +1,742 @@
+{
+  "profiles": {
+    "appworld": {
+      "derivation": "Verifier line 44 and service line 15 import AppWorld; service lines 13/14 import fastapi/munch; Dockerfile line 4 declares appworld/uvicorn on Python 3.11 and line 5 invokes CLI install. Python default dependency graph and CLI installed source must both be accounted for before complete dataset credit.",
+      "roots": [
+        "appworld==0.1.3.post1",
+        "uvicorn<1"
+      ]
+    },
+    "gaia": {
+      "derivation": "Verifier imports upstream scorer, whose line 6 imports numpy. Dockerfile line 22 declares six image roots; prepare.py line 113 conditionally imports pyarrow.parquet. Union is a finite metadata reconstruction; native apt/image installed-byte equivalence remains unclaimed. Bare source roots use freshly host-observed exact candidates, not upstream pins.",
+      "roots": [
+        "numpy",
+        "openpyxl",
+        "pillow",
+        "requests",
+        "beautifulsoup4",
+        "lxml",
+        "pyarrow"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "bytes": 14867,
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "step away from at all times."
+        },
+        {
+          "line": 37,
+          "text": "`question_scorer(model_answer, ground_truth) -> bool` from the official leaderboard Space"
+        },
+        {
+          "line": 57,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 59,
+          "text": "import json"
+        },
+        {
+          "line": 60,
+          "text": "import os"
+        },
+        {
+          "line": 61,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 63,
+          "text": "from data.scaffolds import registry"
+        },
+        {
+          "line": 76,
+          "text": "#: and `2023/test`, and a `dst` taken from the basename made one overwrite the other (measured)."
+        },
+        {
+          "line": 93,
+          "text": "#: Built once from `data/datasets/gaia/Dockerfile`; the platform will not build it during a run."
+        },
+        {
+          "line": 237,
+          "text": "    `pool.jsonl` from `data/datasets/gaia/prepare.py`). The policy one: `data/scaffolds/registry.py::published()`"
+        },
+        {
+          "line": 254,
+          "text": "        raise AttributeError(f\"module {__name__!r} has no attribute {name!r}\") from None"
+        },
+        {
+          "line": 275,
+          "text": "         \"note\": \"The scored pool. Gated (`gated: auto`), so `--fetch` needs HF_TOKEN in the environment or in ~/.cache/huggingface/token; the URL goes through hf-mirror.com because huggingface.co is unreachable from this host. `prepare.py` reads it and writes pool.jsonl, whose own digest transitively pins the 42 validation attachments (each carries its size and sha256 in the pool header).\"},"
+        },
+        {
+          "line": 285,
+          "text": "         \"note\": \"`question_scorer` / `normalize_str` / `normalize_number_str` / `split_string`, pinned from the official leaderboard Space at its revision. Copied into the verification namespace as a VERIFY.inputs entry and imported there, so the reward is upstream's function rather than a transcription -- the three branches (float, comma list, string) normalize differently and an exact-match re-implementation gets them wrong. Never enters an agent SETUP.\"},"
+        }
+      ],
+      "imports": [
+        {
+          "ast": "ImportFrom(module='__future__', names=[alias(name='annotations')], level=0)",
+          "line": 57,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "ast": "Import(names=[alias(name='json')])",
+          "line": 59,
+          "text": "import json"
+        },
+        {
+          "ast": "Import(names=[alias(name='os')])",
+          "line": 60,
+          "text": "import os"
+        },
+        {
+          "ast": "ImportFrom(module='pathlib', names=[alias(name='Path')], level=0)",
+          "line": 61,
+          "text": "from pathlib import Path"
+        },
+        {
+          "ast": "ImportFrom(module='data.scaffolds', names=[alias(name='registry')], level=0)",
+          "line": 63,
+          "text": "from data.scaffolds import registry"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/gaia.py",
+      "sha256": "f9f95f1aef2a3f5ad66be7c10a648dfaed43b8db3f30912760df2c0f4f1f28bb",
+      "source": "data/datasets/gaia.py"
+    },
+    {
+      "bytes": 1380,
+      "excerpts": [
+        {
+          "line": 16,
+          "text": "FROM python:3.12-slim"
+        },
+        {
+          "line": 22,
+          "text": "RUN pip install --no-cache-dir numpy openpyxl pillow requests beautifulsoup4 lxml"
+        }
+      ],
+      "imports": [],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/gaia/Dockerfile",
+      "sha256": "ce6d3c70ad7cca60142737c0a9e29a36c795f57bb84bc513bb2a7061c99d77fd",
+      "source": "data/datasets/gaia/Dockerfile"
+    },
+    {
+      "bytes": 9678,
+      "excerpts": [
+        {
+          "line": 10,
+          "text": "`2023/test/`. Reading a parquet at import would put `pyarrow` between the adapter and every"
+        },
+        {
+          "line": 32,
+          "text": "files return 403 without one. The token is read from `HF_TOKEN`, else from the standard"
+        },
+        {
+          "line": 34,
+          "text": "is unreachable from this host, so downloads go through `hf-mirror.com`, which honours the same"
+        },
+        {
+          "line": 37,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 39,
+          "text": "import argparse"
+        },
+        {
+          "line": 40,
+          "text": "import hashlib"
+        },
+        {
+          "line": 41,
+          "text": "import json"
+        },
+        {
+          "line": 42,
+          "text": "import os"
+        },
+        {
+          "line": 43,
+          "text": "import pathlib"
+        },
+        {
+          "line": 44,
+          "text": "import sys"
+        },
+        {
+          "line": 45,
+          "text": "import urllib.request"
+        },
+        {
+          "line": 50,
+          "text": "import data.datasets.gaia as adapter  # noqa: E402"
+        },
+        {
+          "line": 113,
+          "text": "    import pyarrow.parquet as pq"
+        }
+      ],
+      "imports": [
+        {
+          "ast": "ImportFrom(module='__future__', names=[alias(name='annotations')], level=0)",
+          "line": 37,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "ast": "Import(names=[alias(name='argparse')])",
+          "line": 39,
+          "text": "import argparse"
+        },
+        {
+          "ast": "Import(names=[alias(name='hashlib')])",
+          "line": 40,
+          "text": "import hashlib"
+        },
+        {
+          "ast": "Import(names=[alias(name='json')])",
+          "line": 41,
+          "text": "import json"
+        },
+        {
+          "ast": "Import(names=[alias(name='os')])",
+          "line": 42,
+          "text": "import os"
+        },
+        {
+          "ast": "Import(names=[alias(name='pathlib')])",
+          "line": 43,
+          "text": "import pathlib"
+        },
+        {
+          "ast": "Import(names=[alias(name='sys')])",
+          "line": 44,
+          "text": "import sys"
+        },
+        {
+          "ast": "Import(names=[alias(name='urllib.request')])",
+          "line": 45,
+          "text": "import urllib.request"
+        },
+        {
+          "ast": "Import(names=[alias(name='data.datasets.gaia', asname='adapter')])",
+          "line": 50,
+          "text": "import data.datasets.gaia as adapter  # noqa: E402"
+        },
+        {
+          "ast": "Import(names=[alias(name='pyarrow.parquet', asname='pq')])",
+          "line": 113,
+          "text": "    import pyarrow.parquet as pq"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/gaia/prepare.py",
+      "sha256": "bdc147ce1f385eb15a950efa7c7e0ef6939ee7695570ab49b41228b2e8d277f6",
+      "source": "data/datasets/gaia/prepare.py"
+    },
+    {
+      "bytes": 4966,
+      "excerpts": [
+        {
+          "line": 5,
+          "text": "was pinned by sha256 from the official leaderboard Space. This script therefore runs upstream's"
+        },
+        {
+          "line": 24,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 26,
+          "text": "import argparse"
+        },
+        {
+          "line": 27,
+          "text": "import contextlib"
+        },
+        {
+          "line": 28,
+          "text": "import io"
+        },
+        {
+          "line": 29,
+          "text": "import json"
+        },
+        {
+          "line": 30,
+          "text": "import sys"
+        },
+        {
+          "line": 31,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 72,
+          "text": "        from scorer import question_scorer"
+        }
+      ],
+      "imports": [
+        {
+          "ast": "ImportFrom(module='__future__', names=[alias(name='annotations')], level=0)",
+          "line": 24,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "ast": "Import(names=[alias(name='argparse')])",
+          "line": 26,
+          "text": "import argparse"
+        },
+        {
+          "ast": "Import(names=[alias(name='contextlib')])",
+          "line": 27,
+          "text": "import contextlib"
+        },
+        {
+          "ast": "Import(names=[alias(name='io')])",
+          "line": 28,
+          "text": "import io"
+        },
+        {
+          "ast": "Import(names=[alias(name='json')])",
+          "line": 29,
+          "text": "import json"
+        },
+        {
+          "ast": "Import(names=[alias(name='sys')])",
+          "line": 30,
+          "text": "import sys"
+        },
+        {
+          "ast": "ImportFrom(module='pathlib', names=[alias(name='Path')], level=0)",
+          "line": 31,
+          "text": "from pathlib import Path"
+        },
+        {
+          "ast": "ImportFrom(module='scorer', names=[alias(name='question_scorer')], level=0)",
+          "line": 72,
+          "text": "        from scorer import question_scorer"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/gaia/verify/check.py",
+      "sha256": "59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e",
+      "source": "data/datasets/gaia/verify/check.py"
+    },
+    {
+      "bytes": 14440,
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "test tasks raise from ``oracle_files`` rather than receiving an empty reference."
+        },
+        {
+          "line": 25,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 27,
+          "text": "import hashlib"
+        },
+        {
+          "line": 28,
+          "text": "import io"
+        },
+        {
+          "line": 29,
+          "text": "import json"
+        },
+        {
+          "line": 30,
+          "text": "import os"
+        },
+        {
+          "line": 31,
+          "text": "import shlex"
+        },
+        {
+          "line": 32,
+          "text": "import shutil"
+        },
+        {
+          "line": 33,
+          "text": "import zipfile"
+        },
+        {
+          "line": 34,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 36,
+          "text": "from eval.policy.appworld_reporting import make_manifest"
+        },
+        {
+          "line": 62,
+          "text": "    \"HG_APPWORLD_VERIFIER_IMAGE\","
+        },
+        {
+          "line": 73,
+          "text": "    from cryptography.hazmat.primitives import hashes"
+        },
+        {
+          "line": 74,
+          "text": "    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes"
+        },
+        {
+          "line": 75,
+          "text": "    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC"
+        },
+        {
+          "line": 183,
+          "text": "            f\"import json\\ncalls = json.loads({calls!r})\\n\" +"
+        },
+        {
+          "line": 253,
+          "text": "    \"\"\"Trusted, selected-only reporting metadata derived from public IDs/splits."
+        },
+        {
+          "line": 313,
+          "text": "                    \"import urllib.request as u; u.urlopen('http://localhost:8000/').read()\","
+        }
+      ],
+      "imports": [
+        {
+          "ast": "ImportFrom(module='__future__', names=[alias(name='annotations')], level=0)",
+          "line": 25,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "ast": "Import(names=[alias(name='hashlib')])",
+          "line": 27,
+          "text": "import hashlib"
+        },
+        {
+          "ast": "Import(names=[alias(name='io')])",
+          "line": 28,
+          "text": "import io"
+        },
+        {
+          "ast": "Import(names=[alias(name='json')])",
+          "line": 29,
+          "text": "import json"
+        },
+        {
+          "ast": "Import(names=[alias(name='os')])",
+          "line": 30,
+          "text": "import os"
+        },
+        {
+          "ast": "Import(names=[alias(name='shlex')])",
+          "line": 31,
+          "text": "import shlex"
+        },
+        {
+          "ast": "Import(names=[alias(name='shutil')])",
+          "line": 32,
+          "text": "import shutil"
+        },
+        {
+          "ast": "Import(names=[alias(name='zipfile')])",
+          "line": 33,
+          "text": "import zipfile"
+        },
+        {
+          "ast": "ImportFrom(module='pathlib', names=[alias(name='Path')], level=0)",
+          "line": 34,
+          "text": "from pathlib import Path"
+        },
+        {
+          "ast": "ImportFrom(module='eval.policy.appworld_reporting', names=[alias(name='make_manifest')], level=0)",
+          "line": 36,
+          "text": "from eval.policy.appworld_reporting import make_manifest"
+        },
+        {
+          "ast": "ImportFrom(module='cryptography.hazmat.primitives', names=[alias(name='hashes')], level=0)",
+          "line": 73,
+          "text": "    from cryptography.hazmat.primitives import hashes"
+        },
+        {
+          "ast": "ImportFrom(module='cryptography.hazmat.primitives.ciphers', names=[alias(name='Cipher'), alias(name='algorithms'), alias(name='modes')], level=0)",
+          "line": 74,
+          "text": "    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes"
+        },
+        {
+          "ast": "ImportFrom(module='cryptography.hazmat.primitives.kdf.pbkdf2', names=[alias(name='PBKDF2HMAC')], level=0)",
+          "line": 75,
+          "text": "    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/appworld.py",
+      "sha256": "504107fa806f533c4067f4d1c3bed3102f0f0f376692a0a4543fc0e1e3eb493e",
+      "source": "data/datasets/appworld.py"
+    },
+    {
+      "bytes": 795,
+      "excerpts": [
+        {
+          "line": 3,
+          "text": "FROM docker.m.daocloud.io/library/python:3.11-slim"
+        },
+        {
+          "line": 4,
+          "text": "RUN python -m pip install --no-cache-dir \"appworld==0.1.3.post1\" \"uvicorn<1\" && \\"
+        },
+        {
+          "line": 5,
+          "text": "    python -m appworld.cli install --no-repo"
+        }
+      ],
+      "imports": [],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/appworld/Dockerfile",
+      "sha256": "c37e2347cfacce1d46a9cdffa0ff20997590de457e4d28528ac6a10d1e2c723c",
+      "source": "data/datasets/appworld/Dockerfile"
+    },
+    {
+      "bytes": 309,
+      "excerpts": [
+        {
+          "line": 3,
+          "text": "FROM docker.m.daocloud.io/library/python:3.11-slim"
+        }
+      ],
+      "imports": [],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/appworld/Dockerfile.agent",
+      "sha256": "25a888682103f8211a1c28c79dbf8789ab52b70ff5c25fe3f682de2716e9d30a",
+      "source": "data/datasets/appworld/Dockerfile.agent"
+    },
+    {
+      "bytes": 2720,
+      "excerpts": [
+        {
+          "line": 8,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 10,
+          "text": "import os"
+        },
+        {
+          "line": 11,
+          "text": "from typing import Any"
+        },
+        {
+          "line": 13,
+          "text": "from fastapi import Body, FastAPI, HTTPException"
+        },
+        {
+          "line": 14,
+          "text": "from munch import unmunchify"
+        },
+        {
+          "line": 15,
+          "text": "from appworld import AppWorld"
+        }
+      ],
+      "imports": [
+        {
+          "ast": "ImportFrom(module='__future__', names=[alias(name='annotations')], level=0)",
+          "line": 8,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "ast": "Import(names=[alias(name='os')])",
+          "line": 10,
+          "text": "import os"
+        },
+        {
+          "ast": "ImportFrom(module='typing', names=[alias(name='Any')], level=0)",
+          "line": 11,
+          "text": "from typing import Any"
+        },
+        {
+          "ast": "ImportFrom(module='fastapi', names=[alias(name='Body'), alias(name='FastAPI'), alias(name='HTTPException')], level=0)",
+          "line": 13,
+          "text": "from fastapi import Body, FastAPI, HTTPException"
+        },
+        {
+          "ast": "ImportFrom(module='munch', names=[alias(name='unmunchify')], level=0)",
+          "line": 14,
+          "text": "from munch import unmunchify"
+        },
+        {
+          "ast": "ImportFrom(module='appworld', names=[alias(name='AppWorld')], level=0)",
+          "line": 15,
+          "text": "from appworld import AppWorld"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/appworld/service.py",
+      "sha256": "c99019172d073ed9b8e8df260e94894f2a2b7c2cd1c87bed8ea30a7745055cd8",
+      "source": "data/datasets/appworld/service.py"
+    },
+    {
+      "bytes": 1041,
+      "excerpts": [
+        {
+          "line": 4,
+          "text": "# The service process is task-scoped.  The image is assembled from the release for"
+        },
+        {
+          "line": 10,
+          "text": "import os"
+        },
+        {
+          "line": 11,
+          "text": "import re"
+        },
+        {
+          "line": 12,
+          "text": "import shutil"
+        },
+        {
+          "line": 13,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 30,
+          "text": "exec python -m uvicorn appworld_service:app --host 0.0.0.0 --port 8000"
+        }
+      ],
+      "imports": [],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/appworld/server.sh",
+      "sha256": "494ac67d025b7fcd733c641e5de95b85dc29f87e5829e11f4bfb198bca3fd5e4",
+      "source": "data/datasets/appworld/server.sh"
+    },
+    {
+      "bytes": 3490,
+      "excerpts": [
+        {
+          "line": 3,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 4,
+          "text": "import argparse"
+        },
+        {
+          "line": 5,
+          "text": "import json"
+        },
+        {
+          "line": 6,
+          "text": "import os"
+        },
+        {
+          "line": 7,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 8,
+          "text": "import tempfile"
+        },
+        {
+          "line": 9,
+          "text": "import sys"
+        },
+        {
+          "line": 44,
+          "text": "        from appworld import AppWorld"
+        }
+      ],
+      "imports": [
+        {
+          "ast": "ImportFrom(module='__future__', names=[alias(name='annotations')], level=0)",
+          "line": 3,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "ast": "Import(names=[alias(name='argparse')])",
+          "line": 4,
+          "text": "import argparse"
+        },
+        {
+          "ast": "Import(names=[alias(name='json')])",
+          "line": 5,
+          "text": "import json"
+        },
+        {
+          "ast": "Import(names=[alias(name='os')])",
+          "line": 6,
+          "text": "import os"
+        },
+        {
+          "ast": "ImportFrom(module='pathlib', names=[alias(name='Path')], level=0)",
+          "line": 7,
+          "text": "from pathlib import Path"
+        },
+        {
+          "ast": "Import(names=[alias(name='tempfile')])",
+          "line": 8,
+          "text": "import tempfile"
+        },
+        {
+          "ast": "Import(names=[alias(name='sys')])",
+          "line": 9,
+          "text": "import sys"
+        },
+        {
+          "ast": "ImportFrom(module='appworld', names=[alias(name='AppWorld')], level=0)",
+          "line": 44,
+          "text": "        from appworld import AppWorld"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/data/datasets/appworld/verify/check.py",
+      "sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+      "source": "data/datasets/appworld/verify/check.py"
+    },
+    {
+      "bytes": 3212,
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "import json"
+        },
+        {
+          "line": 2,
+          "text": "import re"
+        },
+        {
+          "line": 3,
+          "text": "import string"
+        },
+        {
+          "line": 4,
+          "text": "import warnings"
+        },
+        {
+          "line": 6,
+          "text": "import numpy as np"
+        }
+      ],
+      "imports": [
+        {
+          "ast": "Import(names=[alias(name='json')])",
+          "line": 1,
+          "text": "import json"
+        },
+        {
+          "ast": "Import(names=[alias(name='re')])",
+          "line": 2,
+          "text": "import re"
+        },
+        {
+          "ast": "Import(names=[alias(name='string')])",
+          "line": 3,
+          "text": "import string"
+        },
+        {
+          "ast": "Import(names=[alias(name='warnings')])",
+          "line": 4,
+          "text": "import warnings"
+        },
+        {
+          "ast": "Import(names=[alias(name='numpy', asname='np')])",
+          "line": 6,
+          "text": "import numpy as np"
+        }
+      ],
+      "preimage": "tests/fixtures/hg_wresolver4/source/external/gaia/scorer.py",
+      "sha256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2",
+      "source": "/mnt/20t/xubuqiang/datasets/gaia/_src/scorer.py"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "client_authored": false,
+    "fallback_token_limit_override": 12000
+  },
+  "ordinal": 168,
+  "payload": {
+    "call_id": "call_wfqiexxGv2l9ZfsAXnq0GBZZ",
+    "id": "ctco_01a13e04-23cf-7932-a445-bf0840c47336",
+    "internal_chat_message_metadata_passthrough": {
+      "create_time": 1792041821.1356544,
+      "turn_id": "01a13dfc-5289-7523-8edd-59c6d62e627a"
+    },
+    "output": [
+      {
+        "text": "Script completed\nWall time 2.8 seconds\nOutput:\n",
+        "type": "input_text"
+      },
+      {
+        "text": "{\"chunk_id\":\"fc44d0\",\"wall_time_seconds\":0.000006964,\"exit_code\":0,\"original_token_count\":761,\"output\":\"Traceback (most recent call last):\\n  File \\\"/tmp/hg-resolver4/tests/fixtures/hg_wresolver4/probe-appworld.py\\\", line 41, in <module>\\n    venv.EnvBuilder(with_pip=True, system_site_packages=False).create(directory)\\n  File \\\"/home/xubuqiang/.local/share/uv/python/cpython-3.11.15-linux-x86_64-gnu/lib/python3.11/venv/__init__.py\\\", line 77, in create\\n    self._setup_pip(context)\\n  File \\\"/home/xubuqiang/.local/share/uv/python/cpython-3.11.15-linux-x86_64-gnu/lib/python3.11/venv/__init__.py\\\", line 359, in _setup_pip\\n    self._call_new_python(context, '-m', 'ensurepip', '--upgrade',\\n  File \\\"/home/xubuqiang/.local/share/uv/python/cpython-3.11.15-linux-x86_64-gnu/lib/python3.11/venv/__init__.py\\\", line 355, in _call_new_python\\n    subprocess.check_output(args, **kwargs)\\n  File \\\"/home/xubuqiang/.local/share/uv/python/cpython-3.11.15-linux-x86_64-gnu/lib/python3.11/subprocess.py\\\", line 466, in check_output\\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/home/xubuqiang/.local/share/uv/python/cpython-3.11.15-linux-x86_64-gnu/lib/python3.11/subprocess.py\\\", line 571, in run\\n    raise CalledProcessError(retcode, process.args,\\nsubprocess.CalledProcessError: Command '['/tmp/hg-wresolver4-offline-pnanzcrd/appworld/bin/python3.11', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.\\n{\\n  \\\"errno\\\": 101,\\n  \\\"error\\\": \\\"[Errno 101] Network is unreachable\\\",\\n  \\\"interfaces\\\": [\\n    [\\n      1,\\n      \\\"lo\\\"\\n    ]\\n  ],\\n  \\\"netns\\\": \\\"net:[4026535805]\\\",\\n  \\\"route\\\": \\\"\\\"\\n}\\n\\\"\\\"\\\"Dependency-aware wheel resolution in a kernel-denied network namespace.\\\"\\\"\\\"\\nimport json\\nimport os\\nfrom pathlib import Path\\nimport shutil\\nimport socket\\nimport sys\\nimport sysconfig\\nimport tempfile\\nimport venv\\n\\nfrom common import HERE, digest, save, run, clean_env\\n\\nassert not (HERE / 'results-appworld.json').exists(), 'Never overwrite a capture'\\ninputs = json.loads((HERE / 'inputs-appworld.json').read_text())\\nassert inputs['artifacts']\\nwork = Path(tempfile.mkdtemp(prefix='hg-wresolver4-offline-'))\\nenv = clean_env(work)\\nroute = Path('/proc/net/route').read_text()\\nnetwork = {'netns': os.readlink('/proc/self/ns/net'), 'route': route,\\n           'interfaces': socket.if_nameindex()}\\nwith socket.socket() as connection:\\n    connection.settimeout(1)\\n    try:\\n        connection.connect(('198.51.100.1', 443))\\n        raise AssertionError('Unexpected external route')\\n    except OSError as exc:\\n        network.update(errno=exc.errno, error=str(exc))\\nsave(HERE / 'raw/appworld-network.json', network)\\nassert network['errno'] == 101 and not route.splitlines()[1:]\\nassert network['interfaces'] == [(1, 'lo')]\\nsave(HERE / 'raw/appworld-runtime.json', {'sys_version': sys.version,\\n     'executable': sys.executable, 'executable_sha256': digest(sys.executable),\\n     'SOABI': sysconfig.get_config_var('SOABI'), 'work_directory': str(work),\\n     'environment': {k: v for k, v in env.items() if k in ['HOME', 'XDG_CACHE_HOME', 'PIP_CONFIG_FILE', 'CUDA_VISIBLE_DEVICES']}})\\n\"}",
+        "type": "input_text"
+      }
+    ],
+    "type": "custom_tool_call_output"
+  },
+  "timestamp": "2026-10-15T05:23:41.135Z",
+  "type": "response_item"
+}
