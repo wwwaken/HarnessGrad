@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "inspect",
+    "sha256:b4db956bf1344b780714584de8b92310e9274ee8027aa8ee553442510466e755"
+  ],
+  "returncode": 0,
+  "stdout": "[\n    {\n        \"Architecture\": \"amd64\",\n        \"Config\": {\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Labels\": {\n                \"com.docker.compose.project\": \"harbor-build-regex-log\",\n                \"com.docker.compose.service\": \"task\",\n                \"com.docker.compose.version\": \"2.35.1\",\n                \"harnessgrad.run\": \"w-tb89b-regex-log-20261015T041744Z-f072be85\",\n                \"harnessgrad.task\": \"regex-log\",\n                \"org.opencontainers.image.ref.name\": \"ubuntu\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"WorkingDir\": \"/app\"\n        },\n        \"Created\": \"2026-10-15T12:18:06.974368806+08:00\",\n        \"Descriptor\": {\n            \"digest\": \"sha256:b4db956bf1344b780714584de8b92310e9274ee8027aa8ee553442510466e755\",\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"size\": 972\n        },\n        \"Id\": \"sha256:b4db956bf1344b780714584de8b92310e9274ee8027aa8ee553442510466e755\",\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-15T04:18:07.146947128Z\"\n        },\n        \"Os\": \"linux\",\n        \"Parent\": \"sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9\",\n        \"RepoDigests\": [\n            \"hg-snapshot@sha256:b4db956bf1344b780714584de8b92310e9274ee8027aa8ee553442510466e755\"\n        ],\n        \"RepoTags\": [\n            \"hg-snapshot:w-tb89b-regex-log-20261015T041744Z-f072be85-regex-log\"\n        ],\n        \"RootFS\": {\n            \"Layers\": [\n                \"sha256:073ec47a8c22dcaa4d6e5758799ccefe2f9bde943685830b1bf6fd2395f5eabc\",\n                \"sha256:e54d39dd357723fa47bd55e1fcadadd4e4882e84f0c323ad63413edd1a650020\",\n                \"sha256:8643bc1571d60d19f9caee5f070b56293c4a7f0d08dea5653326bc508dba76ca\"\n            ],\n            \"Type\": \"layers\"\n        },\n        \"Size\": 29727572\n    }\n]\n",
+  "stderr": ""
+}

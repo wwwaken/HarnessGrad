@@ -1,0 +1,35 @@
+{
+  "kind": "observer pre-execution binding; not admission evidence",
+  "run_id": "w-tb89b-regex-log-20261015T041744Z-f072be85",
+  "task_id": "regex-log",
+  "trial": 1,
+  "image_id": "sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9",
+  "repo_digests": [
+    "alexgshaw/regex-log@sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9"
+  ],
+  "platform_commit": "c7f3b83bc1ca1cac06b7ef72ee2181c4e8897a7b",
+  "dataset_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+  "source_sha256": "3a0dbe403a73661ab196b4b66a19bdd8a9d9e640bc5f47dcb8dedbdbe1389341",
+  "split_sha256": "9793fbb16141fe0bd2a1e0d0861ec27f8d2c5c3c4e99b8b9b2fd268ccb5d3069",
+  "harness_sha256": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "environment": {
+    "HG_EGRESS_PROXY": "http://172.17.0.1:17890",
+    "HG_TB_TASKS": "regex-log",
+    "HG_TB_SPLIT": "none",
+    "HG_AGENT_BACKEND": "openai",
+    "HG_AGENT_MODEL": "qwen3.5-9b-local",
+    "HG_AGENT_BASE_URL": "http://127.0.0.1:8002/v1",
+    "HG_AGENT_API_KEY": "local"
+  },
+  "limits": {
+    "cpus": 1,
+    "memory_mb": 2048,
+    "agent_timeout_s": 900,
+    "verify_timeout_s": 900
+  },
+  "selection_rule": "Retain the previous four preselected tasks for async code, Git/file state, CSV aggregation and regex output; require a freshly inspected cached image, complete verifier source, zero GPU, no MCP/service dependency, <=1 CPU and <=2048 MiB. Four serial one-task diagnostics; no result-dependent substitutions. Not random or representative of benchmark performance.",
+  "platform_source_sha256": "19608bfade77ac8d129f70318443efbac9516d153921bdd453ed2458d8eca6b4",
+  "model_weights_sha256": null
+}

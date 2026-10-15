@@ -1,0 +1,197 @@
+{
+  "run_id": "w-tb89b-regex-log-20261015T041744Z-f072be85",
+  "task_id": "regex-log",
+  "run_dir": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85",
+  "work_root": "/tmp/w-tb89b-regex-log-20261015T041744Z-f072be85-work",
+  "evidence_dir": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85-evidence",
+  "image_id": "sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9",
+  "repo_digests": [
+    "alexgshaw/regex-log@sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9"
+  ],
+  "ctrf_produced": true,
+  "raw_measured": true,
+  "verifier_verdict": {
+    "kind": "command",
+    "passed": false,
+    "score": 0.0,
+    "detail": "reward 0 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (1 failed) | FAILED test_outputs.py::test_regex_matches_dates: + where exists = PosixPath('/app/regex.txt').exists | stdout g triggers for libc-bin (2.39-0ubuntu8.6) ...\nProcessing triggers for ca-certificates (20260601~24.04.1) ...\nUpdating certificates in /etc/ssl/certs...\n0 added, 0 removed; done.\nRunning hooks in /etc/ca-certificates/update.d...\ndone.\nno checksums to verify\ninstalling to /root/.local/bin\n  uv\n  uvx\neverything's installed!\n\nTo add $HOME/.local/bin to your PATH, either restart your shell or run:\n\n    source $HOME/.local/bin/env (sh, bash, zsh)\n    source $HOME/.local/bin/env.fish (fish)\n============================= test session starts ==============================\nplatform linux -- Python 3.13.9, pytest-8.4.1, pluggy-1.6.0\nrootdir: /tests\nplugins: json-ctrf-0.3.5\ncollected 1 item\n\n../tests/test_outputs.py F                                               [100%]\n\n=================================== FAILURES ===================================\n___________________________ test_regex_matches_dates ___________________________\n\n    def test_regex_matches_dates():\n        \"\"\"\n        Test that the agent created a file with a regex, that the regex is valid,\n        and that it correctly matches (the last) dates in log lines containing at least one\n        valid IPv4 address.\n    \n        Checks:\n        1. The regex file exists.\n        2. The regex can be compiled (i.e., is valid).\n        3. Correct matching of dates in various scenarios.\n        \"\"\"\n    \n        # Ensure the regex file exists\n        regex_file = Path(\"/app/regex.txt\")\n>       assert regex_file.exists(), f\"Regex file {regex_file} does not exist\"\nE       AssertionError: Regex file /app/regex.txt does not exist\nE       assert False\nE        +  where False = exists()\nE        +    where exists = PosixPath('/app/regex.txt').exists\n\n/tests/test_outputs.py:22: AssertionError\n=========================== short test summary info ============================\nFAILED ../tests/test_outputs.py::test_regex_matches_dates - AssertionError: R...\n============================== 1 failed in 0.10s =============================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading cpython-3.13.9-linux-x86_64-gnu (download) (32.0MiB)\n Downloading cpython-3.13.9-linux-x86_64-gnu (download)\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 6 packages in 19ms",
+    "tests": {
+      "tests": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0,
+      "failed_names": [
+        "test_outputs.py::test_regex_matches_dates"
+      ]
+    },
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "snapshot-service"
+  },
+  "raw_score": 0.0,
+  "raw_invalid": {},
+  "raw_not_run": [],
+  "ctrf_files": [
+    {
+      "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85-evidence/verifier-ctrf.json-8d7f39ad94fb08458ed45f1bf4573cb2f1f0fa0671d67606117590dd52b8754d",
+      "sha256": "8d7f39ad94fb08458ed45f1bf4573cb2f1f0fa0671d67606117590dd52b8754d",
+      "bytes": 1768,
+      "summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1792037957.2875764,
+        "stop": 1792037957.3881607
+      }
+    }
+  ],
+  "reward_files": [
+    {
+      "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85-evidence/verifier-reward.txt-9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2,
+      "text": "0\n"
+    }
+  ],
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "model_weights_sha256": null,
+  "model_gateway": {
+    "published": true,
+    "target": "127.0.0.1:8002",
+    "connections": 3,
+    "upstream_connect_failed": 0,
+    "upstream_connect_error": null,
+    "upstream_closed_first": 3,
+    "client_closed_first": 0,
+    "bytes_to_upstream": 9378,
+    "bytes_to_client": 3146,
+    "read_errors": []
+  },
+  "identity_declared": {
+    "harness": "loop",
+    "config": {
+      "max_steps": 32,
+      "submit_retries": 2,
+      "parse_retries": 2,
+      "finish_nudge_steps": 4,
+      "repeat_nudge_limit": 2,
+      "output_limit": 4000,
+      "context_chars": 60000,
+      "shell": "/usr/bin/bash",
+      "shell_dialect": "Bash",
+      "max_output_tokens": 2048
+    },
+    "agent_model": "qwen3.5-9b-local",
+    "agent_backend": "openai"
+  },
+  "agent_tokens": {
+    "input": 1815,
+    "output": 338,
+    "calls": 3,
+    "source": "retained native trial trace usage",
+    "trace_paths": [
+      "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85/progress/round-0/traces/regex-log.trial1.jsonl"
+    ]
+  },
+  "native_aggregate_tokens": {
+    "input": 1815,
+    "output": 338,
+    "calls": 3,
+    "tasks_reported": 1
+  },
+  "env_usage": {
+    "input": 0,
+    "output": 0,
+    "calls": 0,
+    "services_reported": 0
+  },
+  "trace_usage": {
+    "calls": 3,
+    "input_tokens": 1815,
+    "output_tokens": 338,
+    "retries": 0,
+    "context_trims": 0
+  },
+  "publication": {
+    "score": null,
+    "coverage": {
+      "eligible_tasks": 1,
+      "expected_trials": 1,
+      "invalid_tasks": 0,
+      "invalid_trials": 0,
+      "measured_tasks": 0,
+      "measured_trials": 0,
+      "selected_tasks": 1,
+      "unmeasured_tasks": 1,
+      "unmeasured_trials": 1
+    },
+    "outcomes": [
+      {
+        "reason": "policy_enforcement_not_observed",
+        "score": null,
+        "status": "unmeasured",
+        "task_id": "regex-log",
+        "trial": 1
+      }
+    ],
+    "enforcement": {
+      "stage": "diagnostic",
+      "run_id": "w-tb89b-regex-log-20261015T041744Z-f072be85",
+      "task_id": "regex-log",
+      "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+      "policy_enforcement_observed": false,
+      "measured": false,
+      "production_authorized": false,
+      "comparable": false,
+      "non_comparable_reason": "policy_enforcement_not_observed"
+    }
+  },
+  "hashes": {
+    "source": "3a0dbe403a73661ab196b4b66a19bdd8a9d9e640bc5f47dcb8dedbdbe1389341",
+    "split": "9793fbb16141fe0bd2a1e0d0861ec27f8d2c5c3c4e99b8b9b2fd268ccb5d3069",
+    "manifest": "846acd44bdec7246fe73ba5ff5f52b51887c06ce863a6954106b5bf6e94580a2",
+    "model": null,
+    "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+  },
+  "scorer": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+  },
+  "declared_limits": {
+    "resource": {
+      "cpus": 1,
+      "memory_mb": 2048,
+      "agent_timeout_s": 900,
+      "verify_timeout_s": 900
+    },
+    "budget": null
+  },
+  "resource_receipt": {
+    "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85-evidence/resource-observation-receipt.json",
+    "sha256": "c4274b366eb158c07c5c903f229c175caa09cd72c45b141c057c93516eb044c6",
+    "bytes": 13403
+  },
+  "snapshot_receipt": {
+    "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85-evidence/snapshot-observation-receipt.json",
+    "sha256": "6fcf88d1b12e7b17834cfc6b4ce0eae2b7a3fb02ecff1a4b13f5c8cc88f0625b",
+    "bytes": 936
+  },
+  "cleanup_receipt": {
+    "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-regex-log-20261015T041744Z-f072be85-evidence/cleanup-observation-receipt.json",
+    "sha256": "77664f55fff1ed9a7a21e576b89d0b86288a791bc57beae9ef506d17a7690505",
+    "bytes": 4272
+  },
+  "cleanup_observed_absent": true,
+  "launch_observation": {
+    "returncode": 2,
+    "started_at": "2026-10-15T04:17:47.060119+00:00",
+    "ended_at": "2026-10-15T04:19:20.855635+00:00",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "model": "qwen3.5-9b-local"
+  }
+}

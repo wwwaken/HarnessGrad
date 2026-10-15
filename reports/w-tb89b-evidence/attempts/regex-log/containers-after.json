@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "ps",
+    "-a",
+    "--filter",
+    "label=harnessgrad.run=w-tb89b-regex-log-20261015T041744Z-f072be85",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

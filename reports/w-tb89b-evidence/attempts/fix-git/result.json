@@ -1,0 +1,195 @@
+{
+  "run_id": "w-tb89b-fix-git-20261015T041433Z-e497dc78",
+  "task_id": "fix-git",
+  "run_dir": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78",
+  "work_root": "/tmp/w-tb89b-fix-git-20261015T041433Z-e497dc78-work",
+  "evidence_dir": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78-evidence",
+  "image_id": "sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+  "repo_digests": [
+    "docker.1panel.live/alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+    "alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119"
+  ],
+  "ctrf_produced": true,
+  "raw_measured": true,
+  "verifier_verdict": {
+    "kind": "command",
+    "passed": true,
+    "score": 1.0,
+    "detail": "reward 1 from /logs/verifier/reward.txt (exit 0) | check_report /logs/verifier/ctrf.json (2 passed) | check_report lists no failing test | stdout %\n(Reading database ... 25%\n(Reading database ... 30%\n(Reading database ... 35%\n(Reading database ... 40%\n(Reading database ... 45%\n(Reading database ... 50%\n(Reading database ... 55%\n(Reading database ... 60%\n(Reading database ... 65%\n(Reading database ... 70%\n(Reading database ... 75%\n(Reading database ... 80%\n(Reading database ... 85%\n(Reading database ... 90%\n(Reading database ... 95%\n(Reading database ... 100%\n(Reading database ... 10322 files and directories currently installed.)\nPreparing to unpack .../libcurl4_7.88.1-10+deb12u15_amd64.deb ...\nUnpacking libcurl4:amd64 (7.88.1-10+deb12u15) ...\nSelecting previously unselected package curl.\nPreparing to unpack .../curl_7.88.1-10+deb12u15_amd64.deb ...\nUnpacking curl (7.88.1-10+deb12u15) ...\nPreparing to unpack .../libcurl3-gnutls_7.88.1-10+deb12u15_amd64.deb ...\nUnpacking libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) over (7.88.1-10+deb12u14) ...\nSetting up libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...\nSetting up libcurl4:amd64 (7.88.1-10+deb12u15) ...\nSetting up curl (7.88.1-10+deb12u15) ...\nProcessing triggers for libc-bin (2.36-9+deb12u10) ...\nno checksums to verify\ninstalling to /root/.local/bin\n  uv\n  uvx\neverything's installed!\n\nTo add $HOME/.local/bin to your PATH, either restart your shell or run:\n\n    source $HOME/.local/bin/env (sh, bash, zsh)\n    source $HOME/.local/bin/env.fish (fish)\n============================= test session starts ==============================\nplatform linux -- Python 3.13.7, pytest-8.4.1, pluggy-1.6.0\nrootdir: /tests\nplugins: json-ctrf-0.3.5\ncollected 2 items\n\n../../tests/test_outputs.py ..                                           [100%]\n\n==================================== PASSES ====================================\n=========================== short test summary info ============================\nPASSED ../../tests/test_outputs.py::test_about_file\nPASSED ../../tests/test_outputs.py::test_layout_file\n============================== 2 passed in 0.03s =============================== | stderr debconf: delaying package configuration, since apt-utils is not installed\ndownloading uv 0.9.5 x86_64-unknown-linux-gnu\nDownloading pygments (1.2MiB)\n Downloading pygments\nInstalled 6 packages in 20ms",
+    "tests": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0
+    },
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "snapshot-service"
+  },
+  "raw_score": 1.0,
+  "raw_invalid": {},
+  "raw_not_run": [],
+  "ctrf_files": [
+    {
+      "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78-evidence/verifier-ctrf.json-362f59b1d4ac4d23e8e633dba5aa9e604b6339234776aaaae401dc137432db7a",
+      "sha256": "362f59b1d4ac4d23e8e633dba5aa9e604b6339234776aaaae401dc137432db7a",
+      "bytes": 1091,
+      "summary": {
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1792037720.0876439,
+        "stop": 1792037720.1165156
+      }
+    }
+  ],
+  "reward_files": [
+    {
+      "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78-evidence/verifier-reward.txt-4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2,
+      "text": "1\n"
+    }
+  ],
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "model_weights_sha256": null,
+  "model_gateway": {
+    "published": true,
+    "target": "127.0.0.1:8002",
+    "connections": 11,
+    "upstream_connect_failed": 0,
+    "upstream_connect_error": null,
+    "upstream_closed_first": 11,
+    "client_closed_first": 0,
+    "bytes_to_upstream": 50607,
+    "bytes_to_client": 10787,
+    "read_errors": []
+  },
+  "identity_declared": {
+    "harness": "loop",
+    "config": {
+      "max_steps": 32,
+      "submit_retries": 2,
+      "parse_retries": 2,
+      "finish_nudge_steps": 4,
+      "repeat_nudge_limit": 2,
+      "output_limit": 4000,
+      "context_chars": 60000,
+      "shell": "/usr/bin/bash",
+      "shell_dialect": "Bash",
+      "max_output_tokens": 2048
+    },
+    "agent_model": "qwen3.5-9b-local",
+    "agent_backend": "openai"
+  },
+  "agent_tokens": {
+    "input": 12780,
+    "output": 500,
+    "calls": 11,
+    "source": "retained native trial trace usage",
+    "trace_paths": [
+      "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78/progress/round-0/traces/fix-git.trial1.jsonl"
+    ]
+  },
+  "native_aggregate_tokens": {
+    "input": 12780,
+    "output": 500,
+    "calls": 11,
+    "tasks_reported": 1
+  },
+  "env_usage": {
+    "input": 0,
+    "output": 0,
+    "calls": 0,
+    "services_reported": 0
+  },
+  "trace_usage": {
+    "calls": 11,
+    "input_tokens": 12780,
+    "output_tokens": 500,
+    "retries": 0,
+    "context_trims": 0
+  },
+  "publication": {
+    "score": null,
+    "coverage": {
+      "eligible_tasks": 1,
+      "expected_trials": 1,
+      "invalid_tasks": 0,
+      "invalid_trials": 0,
+      "measured_tasks": 0,
+      "measured_trials": 0,
+      "selected_tasks": 1,
+      "unmeasured_tasks": 1,
+      "unmeasured_trials": 1
+    },
+    "outcomes": [
+      {
+        "reason": "policy_enforcement_not_observed",
+        "score": null,
+        "status": "unmeasured",
+        "task_id": "fix-git",
+        "trial": 1
+      }
+    ],
+    "enforcement": {
+      "stage": "diagnostic",
+      "run_id": "w-tb89b-fix-git-20261015T041433Z-e497dc78",
+      "task_id": "fix-git",
+      "operator_authorization": "Operator explicitly authorizes a bounded handful of fresh cached Terminal-Bench live-local-model diagnostics for S4 broader execution evidence. This is one preselected task, qwen3.5-9b-local at http://127.0.0.1:8002/v1, jobs=1, HG_TB_SPLIT=none, documented egress proxy; unknown enforcement remains unknown. Raw CTRF/scorer evidence only, no comparable score publication, pilot expansion, blocker closure or production authorization.",
+      "policy_enforcement_observed": false,
+      "measured": false,
+      "production_authorized": false,
+      "comparable": false,
+      "non_comparable_reason": "policy_enforcement_not_observed"
+    }
+  },
+  "hashes": {
+    "source": "a1dead1b3401bd0a4adaef76daf3aa7671093e291af23a0dbf6010a0266f1f84",
+    "split": "b50cf1f1f536eac1eacb0356ae63798be43973ca99ab136467be17fe14cf1937",
+    "manifest": "78de6dff54fb84fb3f909c962c84f3eb170a1e2776db42b908c4a71c77006168",
+    "model": null,
+    "harness": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2"
+  },
+  "scorer": {
+    "name": "Terminal-Bench reward_file /logs/verifier/reward.txt",
+    "scorer_sha256": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334"
+  },
+  "declared_limits": {
+    "resource": {
+      "cpus": 1,
+      "memory_mb": 2048,
+      "agent_timeout_s": 900,
+      "verify_timeout_s": 900
+    },
+    "budget": null
+  },
+  "resource_receipt": {
+    "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78-evidence/resource-observation-receipt.json",
+    "sha256": "a4189b60df6463cf6780af54ddb479b2267f62b427b980838c699da26b6e1574",
+    "bytes": 7153
+  },
+  "snapshot_receipt": {
+    "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78-evidence/snapshot-observation-receipt.json",
+    "sha256": "fe061bd03799d1681a6cb31f63bacede4703a2b2daf11af5935f92b3f222f49d",
+    "bytes": 927
+  },
+  "cleanup_receipt": {
+    "path": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46/w-tb89b-fix-git-20261015T041433Z-e497dc78-evidence/cleanup-observation-receipt.json",
+    "sha256": "d1aad86d38687d7249584d1895918096020fde58a6dfc9cbba94873796225ed2",
+    "bytes": 4246
+  },
+  "cleanup_observed_absent": true,
+  "launch_observation": {
+    "returncode": 2,
+    "started_at": "2026-10-15T04:14:43.902318+00:00",
+    "ended_at": "2026-10-15T04:15:23.670681+00:00",
+    "endpoint": "http://127.0.0.1:8002/v1",
+    "model": "qwen3.5-9b-local"
+  }
+}

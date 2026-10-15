@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "image",
+    "ls",
+    "--filter",
+    "reference=hg-snapshot:*w-tb89b-fix-git-20261015T041433Z-e497dc78*",
+    "--no-trunc",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

@@ -1,0 +1,13 @@
+{
+  "runs_root": "/tmp/w-tb89b-runs-20261015T041111Z-0b0fcf46",
+  "selected": [
+    "cancel-async-tasks",
+    "fix-git",
+    "log-summary-date-ranges",
+    "regex-log"
+  ],
+  "selection_rule": "Retain the previous four preselected tasks for async code, Git/file state, CSV aggregation and regex output; require a freshly inspected cached image, complete verifier source, zero GPU, no MCP/service dependency, <=1 CPU and <=2048 MiB. Four serial one-task diagnostics; no result-dependent substitutions. Not random or representative of benchmark performance.",
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "total_serial_tasks": 4
+}

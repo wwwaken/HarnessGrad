@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "volume",
+    "ls",
+    "--filter",
+    "label=harnessgrad.run=w-tb89b-cancel-async-tasks-20261015T041323Z-1c4a4e29",
+    "--format",
+    "{{json .}}"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

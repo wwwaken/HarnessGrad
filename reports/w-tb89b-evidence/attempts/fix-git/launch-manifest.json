@@ -1,0 +1,36 @@
+{
+  "kind": "observer pre-execution binding; not admission evidence",
+  "run_id": "w-tb89b-fix-git-20261015T041433Z-e497dc78",
+  "task_id": "fix-git",
+  "trial": 1,
+  "image_id": "sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+  "repo_digests": [
+    "docker.1panel.live/alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+    "alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119"
+  ],
+  "platform_commit": "c7f3b83bc1ca1cac06b7ef72ee2181c4e8897a7b",
+  "dataset_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+  "source_sha256": "a1dead1b3401bd0a4adaef76daf3aa7671093e291af23a0dbf6010a0266f1f84",
+  "split_sha256": "b50cf1f1f536eac1eacb0356ae63798be43973ca99ab136467be17fe14cf1937",
+  "harness_sha256": "84664d6cd2efc596b01dd915e39417f656d92fe01d2c6eb666332d5477a545f2",
+  "endpoint": "http://127.0.0.1:8002/v1",
+  "model": "qwen3.5-9b-local",
+  "environment": {
+    "HG_EGRESS_PROXY": "http://172.17.0.1:17890",
+    "HG_TB_TASKS": "fix-git",
+    "HG_TB_SPLIT": "none",
+    "HG_AGENT_BACKEND": "openai",
+    "HG_AGENT_MODEL": "qwen3.5-9b-local",
+    "HG_AGENT_BASE_URL": "http://127.0.0.1:8002/v1",
+    "HG_AGENT_API_KEY": "local"
+  },
+  "limits": {
+    "cpus": 1,
+    "memory_mb": 2048,
+    "agent_timeout_s": 900,
+    "verify_timeout_s": 900
+  },
+  "selection_rule": "Retain the previous four preselected tasks for async code, Git/file state, CSV aggregation and regex output; require a freshly inspected cached image, complete verifier source, zero GPU, no MCP/service dependency, <=1 CPU and <=2048 MiB. Four serial one-task diagnostics; no result-dependent substitutions. Not random or representative of benchmark performance.",
+  "platform_source_sha256": "19608bfade77ac8d129f70318443efbac9516d153921bdd453ed2458d8eca6b4",
+  "model_weights_sha256": null
+}
