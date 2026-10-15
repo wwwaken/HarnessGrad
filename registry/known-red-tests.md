@@ -43,3 +43,43 @@ bad options: leaving them undocumented, or deleting the assertions.
 
 Sweep 1 is still running; later batches append to this table. `SWEEP_DONE` in the sweep log marks the
 end of a pass, and this file should be rewritten from the log rather than hand-edited.
+
+## Packet-gap audit - 2026-10-15
+
+Each `tests/fixtures/**/SHA256SUMS` was reconciled against the files on disk. **Manifests disagree about
+path convention** - some store paths relative to the manifest's own directory, some relative to the
+repository root - and a first pass that assumed only the former reported nonsense such as
+`hg_whp3: 4045 missing / 0 present` for a packet that is in fact 4041/4045 present. The corrected
+audit accepts either convention; the numbers below are from the corrected run.
+
+    packets with a real gap: 38
+    manifest entries present: 15,330
+    manifest entries missing:  1,626
+
+Split by whether the missing path is a class the recorded payload-strip removed
+(`.whl .conda .tar.gz .tgz .zip .deb .body .body.gz .strace.txt .readelf.stdout.txt .incomplete
+.tar.bz2 .so .gz .bin .pt`):
+
+| class | count | reading |
+| --- | --- | --- |
+| stripped payload class | 525 | Consistent with the recorded payload-strip. Some are recoverable **with digest verification** - the 53,686-byte ujson wheel came back byte-exact from the pre-rewrite object store, and the PyPI provenance 404 body re-fetched to its recorded SHA-256 - and some are not (the 44 `hg_wujson` command-output captures, and the ELF providers whose host copies have drifted). |
+| **not** a payload class | 1,101 | **Not explained by the payload strip.** Dominated by three packets: `hg_wtbdep` (685 - `datasets/*.json`, `packages/torch.json`, `python/SHA256SUMS`), `hg_woffscorer` (207 + 18 - `bigbench/acquire_sports.py`, `commands.txt`), `hg_woffscorer2` (131 - `bird_ds/SHA256SUMS`, `bird-local.json`). Extensions are `.txt` 427, `.json` 231, none 97, `.sh` 95, `.toml` 90, `.py` 59. |
+
+**Cause of the 1,101 is undetermined and is not attributed here.** What is measured is that a whole
+subtree is absent in each of the three packets while the packet's `SHA256SUMS` lists it, and that
+`tests/fixtures/hg_*/` is blanket-ignored, so a subtree whose files were never force-added would look
+exactly like this in a fresh checkout - as would one removed afterwards. Distinguishing those needs the
+packets' own provenance records, which is a separate task.
+
+**Test impact.** Most of these packets are not read by the suite. The ones that are fail without a skip
+guard: `test_external_provenance_b5.py` (6 failures, all `FileNotFoundError` on
+`responses/*.body`) and `test_ds1000_official_scorer.py` / `test_dgm_rule.py` (1 each, not yet
+diagnosed). The two `hg_wujson` checks that depend on gone artifacts now **skip explicitly** instead
+(commit earlier in this phase).
+
+## Sweep 1 - continuing
+
+Batches 0-60 of 16 done. Failures so far: the five ALFWorld-native, four `test_candidate_apply`, two
+`test_chess3_diagnostic_actor`, one `test_chessbench_puzzles_strict_replay`, six
+`test_external_provenance_b5`, one `test_ds1000_official_scorer`, one `test_dgm_rule` - **20 in total,
+all in files untouched by any commit in this phase**, and all but the last three classified above.
