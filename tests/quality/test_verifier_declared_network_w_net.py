@@ -40,6 +40,15 @@ def test_snapshot_verifier_honours_declared_network(tmp_path, monkeypatch, decla
 
     monkeypatch.setattr(container, "create", create)
     monkeypatch.setattr(container, "network_connect", connect)
+    # `af80c96d` made verification refuse a snapshot that is not pinned to a content
+    # address, and made the verifier container prove it consumed that same image. Both
+    # guards talk to the real daemon (`docker inspect`) and cannot be satisfied by this
+    # control's synthetic tag, so the verifier container was never created and the parity
+    # assertion below read as a missing network. The property under test is *network
+    # attachment parity* between actor and verifier; the identity gate has its own tests
+    # and stubbing it here bypasses no routing decision.
+    monkeypatch.setattr(container, "require_snapshot_identity", lambda *a, **kw: None)
+    monkeypatch.setattr(container, "require_snapshot_container", lambda *a, **kw: None)
     for operation in ("start", "stop", "mkdir_in", "cp_in", "remove_container", "remove_image"):
         monkeypatch.setattr(container, operation,
                             lambda name, *a, _op=operation, **kw: events.append((_op, name)))
