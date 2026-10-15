@@ -1,0 +1,100 @@
+{
+  "agentdojo": {
+    "fold_sources": [
+      {
+        "fold_source": "train_t1/agentdojo-qwen-t1-train4",
+        "archive_source_exists": false,
+        "census_exists": false,
+        "census_verdict_files": 0
+      },
+      {
+        "fold_source": "train_t1/agentdojo-qwen-t1-train4-retry",
+        "archive_source_exists": false,
+        "census_exists": false,
+        "census_verdict_files": 0
+      },
+      {
+        "fold_source": "eval_t1/agentdojo-qwen-t1-eval4",
+        "archive_source_exists": false,
+        "census_exists": false,
+        "census_verdict_files": 0
+      }
+    ],
+    "version_control_markers_in_ancestors": []
+  },
+  "alfworld": {
+    "fold_sources": [
+      {
+        "fold_source": "train_t1/alfworld-qwen-t1-train2",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 81
+      },
+      {
+        "fold_source": "eval_t1/alfworld-qwen-t1-eval2",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 53
+      }
+    ],
+    "version_control_markers_in_ancestors": []
+  },
+  "gsm8k": {
+    "fold_sources": [
+      {
+        "fold_source": "train_t3/gsm8k-qwen-t3-train-full",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 0
+      },
+      {
+        "fold_source": "train_t3/gsm8k-qwen-t3-train-resume-4367",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 3106
+      },
+      {
+        "fold_source": "eval_t3/gsm8k-qwen-t3-eval-full",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 1319
+      }
+    ],
+    "version_control_markers_in_ancestors": []
+  },
+  "musique": {
+    "fold_sources": [
+      {
+        "fold_source": "train_t1/musique-full-qwen-t1-train",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 0
+      },
+      {
+        "fold_source": "train_t1/musique-full-qwen-t1-train-resume-915",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 712
+      },
+      {
+        "fold_source": "eval_t1/musique-full-qwen-t1-eval",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 0
+      },
+      {
+        "fold_source": "eval_t1/musique-full-qwen-t1-eval-resume-191",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 0
+      },
+      {
+        "fold_source": "eval_t1/musique-full-qwen-t1-eval-last1",
+        "archive_source_exists": false,
+        "census_exists": true,
+        "census_verdict_files": 1
+      }
+    ],
+    "version_control_markers_in_ancestors": []
+  }
+}
