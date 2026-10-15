@@ -1,0 +1,207 @@
+w-appworld protocol review validation
+
+Scope: read-only source/retained-JSON inspection and small text processing; only the
+three requested deliverables are to be committed. No tests requiring a service were
+run. No AppWorld, official scorer, model/API request, GPU, server/container lifecycle,
+download, retained-receipt mutation, runtime code change or budget change occurred.
+
+Workspace discrepancy: initial `git branch --show-current` output was exactly
+wg-appworld3
+`git log -1 --format='%H %s'` output was exactly
+eada00fc072d7006fb08cf7f4a750dbaa1437174 Bind operator first-five dataset selections and selected-only input exports (w-sel)
+The user brief said wg-appworld, but the actual registered assigned worktree is
+on wg-appworld3; existing wg-appworld/wg-appworld2 refs are preserved. No branch,
+worktree or main checkout was rewritten, merged, deleted, fetched or pushed.
+
+Required checker result is NOT passing. This review cannot affect it: the registry
+and journal are byte-unchanged in this worktree, and the missing non-AppWorld
+repository-evidence README is not in HEAD. No fixture was fabricated, no checker
+was weakened, and no registry edit was made to manufacture valid=true. Parent
+integration must resolve this pre-existing citation/materialization failure.
+
+Initial validation attempt:
+COMMAND:
+export TMPDIR=/mnt/20t/xubuqiang/hg-work/appworld/tmp
+PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/appworld/validate_review.py > /mnt/20t/xubuqiang/hg-work/appworld/validation-output.txt
+Observed failure at the original checker's return-code assertion (script line 71):
+COMMAND ["python3", "tools/check_dataset_blockers.py"] exit 2
+{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}
+AssertionError
+The final audit explicitly expects and reports that exit 2, without changing the
+checker. The initial completion-route audit also labeled any supervisor request
+as completion, returning supervisor_completion_rows=[9] for the credential read;
+it was corrected to match completion paths only. Both full route lists are retained
+below. No underlying evidence was changed.
+
+Final audit command (exit 0, stderr empty):
+export TMPDIR=/mnt/20t/xubuqiang/hg-work/appworld/tmp
+PYTHONDONTWRITEBYTECODE=1 python3 /mnt/20t/xubuqiang/hg-work/appworld/validate_review.py > /mnt/20t/xubuqiang/hg-work/appworld/validation-output.txt 2> /mnt/20t/xubuqiang/hg-work/appworld/validation-stderr.txt
+
+Exact final audit program (reproducible Python; no adapters imported):
+from pathlib import Path
+import ast, hashlib, json, re, subprocess
+
+ROOT = Path.cwd()
+SCRATCH = Path('/mnt/20t/xubuqiang/hg-work/appworld/retained')
+print('WORKTREE', ROOT)
+print('BRANCH', subprocess.check_output(['git','branch','--show-current'],text=True).strip())
+print('BASE', subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip())
+for name,commit,digest in [
+ ('w-appworld','fc27c44a2e11b8a0311ec8dabdd6486244bd73f5','0666239fd29ec703b538231a2b11a5cb644733b10f433555d4dfbdcc00fcacdb'),
+ ('w-appworld2','83c04d847fb95f775ef7d29daecc6adf72ea44d6','e6f59180c1dd5424b36dba3ffff54bae4facf5b7fc5ad5eee987802f8ac4804a')]:
+ prefix=f'reports/{name}-evidence/'
+ p=SCRATCH/name
+ relatives=['execution/diagnostic_receipt.json','execution/diagnostic_execution.json',
+  'execution/progress/round-0/traces/cf6abd2_2.trial1.jsonl',
+  'execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl',
+  'verifier-evidence.json-'+digest,'driver-result.json','policy-input.json']
+ for rel in relatives:
+  argv=['git','show',commit+':'+prefix+rel]
+  b=subprocess.check_output(argv)
+  assert b==(p/rel).read_bytes()
+  print('COMMAND',json.dumps(argv),'bytes',len(b),'sha256',hashlib.sha256(b).hexdigest(),'scratch_equal',True)
+ receipt=json.loads((p/relatives[0]).read_text())
+ execution=json.loads((p/relatives[1]).read_text())
+ evidence=json.loads((p/relatives[4]).read_text())
+ verdict=execution['verdicts']['cf6abd2_2']
+ assert verdict['evidence']==evidence
+ assert evidence['measured'] is True and evidence['success'] is False and verdict['score']==0.0
+ print('RAW',name,json.dumps({'metric':evidence['metric'],'measured':evidence['measured'],'success':evidence['success'],'score':verdict['score'],'num_tests':evidence['num_tests'],'pass_count':len(evidence['passes']),'failure_requirements':[x['requirement'] for x in evidence['failures']],'invalid':execution['invalid']},sort_keys=True))
+ print('STAGED',name,json.dumps({'run_id':receipt['run_id'],'score':receipt['score'],'coverage':receipt['coverage'],'outcomes':receipt['outcomes'],'lifecycle':receipt['lifecycle'],'cleanup':receipt['cleanup']['status'],'snapshot':receipt['snapshot']['status'],'reason':receipt['enforcement']['non_comparable_reason']},sort_keys=True))
+ print('BINDING',name,json.dumps({'endpoint':receipt['context']['endpoint'],'limits':receipt['context']['limits'],'model_hash':receipt['context']['hashes']['model'],'identity':execution['identity_declared'],'tokens':execution['tokens']},sort_keys=True))
+ trace=[json.loads(x) for x in (p/relatives[2]).read_text().splitlines()]
+ calls=[json.loads(x) for x in (p/relatives[3]).read_text().splitlines() if x.strip()]
+ print('LOG_SCOPE',commit+':'+prefix+relatives[3],json.dumps({'nonempty_rows':len(calls),'method_urls':[(x.get('method'),x['url']) for x in calls],'supervisor_completion_rows':[i+1 for i,x in enumerate(calls) if 'complete_task' in x['url'] or '/supervisor/complete' in x['url']]},sort_keys=True))
+ print('TRACE',name,json.dumps({'commands':sum('command' in x for x in trace),'submitted':[(i+1,x['step']) for i,x in enumerate(trace) if x.get('submitted')],'docs_complete_task_rows':[i+1 for i,x in enumerate(trace) if 'complete_task' in str(x)],'usage':[x['usage'] for x in trace if 'usage' in x]},sort_keys=True))
+ print('DRIVER',name,json.dumps(json.loads((p/relatives[5]).read_text()),sort_keys=True))
+for v in (6,7):
+ p=Path(f'/mnt/20t/xubuqiang/Study/appworld-smoke-final-v{v}/runs/appworld-smoke-final-v{v}-20261117')
+ scope=sorted(str(x.relative_to(p)) for x in p.rglob('*') if x.is_file())
+ print('ENUMERATED_RUN_SCOPE',str(p),json.dumps(scope))
+ wanted={'evidence.json','reward.txt','diagnostic_receipt.json'}
+ print('ABSENT_SEARCH',str(p),'basenames',sorted(wanted),'matches',[x for x in scope if Path(x).name in wanted])
+ for rel in ('verdicts/round-0/07b42fd_1.json','progress/round-0/07b42fd_1.json'):
+  print('READ',str(p/rel),json.dumps(json.loads((p/rel).read_text()),sort_keys=True))
+ log=p/'recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl'
+ calls=[json.loads(x) for x in log.read_text().splitlines() if x.strip()]
+ print('API',str(log),'bytes',log.stat().st_size,'rows',len(calls),'method_urls',json.dumps([(x.get('method'),x['url']) for x in calls]))
+ tracepath=p/'progress/round-0/traces/07b42fd_1.trial1.jsonl'
+ trace=[json.loads(x) for x in tracepath.read_text().splitlines()]
+ print('TRACE',str(tracepath),json.dumps({'rows':len(trace),'commands':sum('command' in x for x in trace),'submitted':[(i+1,x['step']) for i,x in enumerate(trace) if x.get('submitted')],'usage':[x['usage'] for x in trace if 'usage' in x],'wall_clock':[x['wall_clock_s'] for x in trace if 'wall_clock_s' in x]},sort_keys=True))
+path=Path('tests/quality/test_appworld_actor_protocol.py')
+tree=ast.parse(path.read_text())
+print('SYNTHETIC_SCOPE',str(path),'functions',json.dumps([(x.name,x.lineno) for x in tree.body if isinstance(x,ast.FunctionDef)]))
+b9='c8228c968f7238acbd20ddf1132e95514680a462:reports/b9-appworld-protocol-and-pilot-guidance-review.md'
+b=subprocess.check_output(['git','show',b9]);print('COMMAND',json.dumps(['git','show',b9]),'bytes',len(b),'sha256',hashlib.sha256(b).hexdigest())
+print('B9_CITED_LINES',json.dumps({i:l for i,l in enumerate(b.decode().splitlines(),1) if 27<=i<=33 or 137<=i<=141}))
+proposal=json.loads(Path('registry/proposals/w-appworld.json').read_text())
+assert set(proposal)=={'worker','dataset','blocker','generic_defect_finding','observed_append','next_action_replacement'}
+assert proposal['worker']=='w-appworld' and proposal['dataset']=='appworld' and proposal['blocker']=='successful-task-evidence'
+print('PROPOSAL_SHAPE valid')
+review=Path('registry/w-appworld-protocol-review.md').read_text()
+citations=re.findall(r'((?:data/|eval/|base_harness/|tests/|registry/|AGENTS\.md)[A-Za-z0-9_./-]*):(\d+)(?:[–-](\d+))?',review)
+for filename,start,end in citations:
+ p=Path(filename);assert p.is_file(),filename
+ assert 1<=int(start)<=len(p.read_text().splitlines()),(filename,start)
+ if end: assert int(start)<=int(end)<=len(p.read_text().splitlines()),(filename,end)
+print('CURRENT_PATH_CITATIONS',len(citations),'all_paths_and_line_bounds_valid (semantic review remains manual)')
+argv=['git','diff','HEAD','--','registry/dataset-blockers.json','docs/adapter-integration-journal.md']
+p=subprocess.run(argv,text=True,capture_output=True);print('COMMAND',json.dumps(argv),'exit',p.returncode,'stdout',repr(p.stdout),'stderr',repr(p.stderr));assert p.returncode==0 and p.stdout==''
+for argv in (['python3','tools/check_dataset_blockers.py'],['git','diff','--check']):
+ p=subprocess.run(argv,text=True,capture_output=True);print('COMMAND',json.dumps(argv),'exit',p.returncode);print(p.stdout,end='');print(p.stderr,end='');assert p.returncode==(2 if argv[0]=='python3' else 0)
+print('VERIFICATION_BOUNDARY: No AppWorld/scorer/model/GPU/Docker/server/test execution. Source and JSON/text inspection only plus registry checker.')
+
+Exact observed final audit stdout:
+WORKTREE /mnt/20t/xubuqiang/hg-wt/w-appworld
+BRANCH wg-appworld3
+BASE eada00fc072d7006fb08cf7f4a750dbaa1437174
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/execution/diagnostic_receipt.json"] bytes 3642 sha256 32a758d0049121b38d21a568d79557e690773dea2334d7f4c2ab8dcc49aea724 scratch_equal True
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/execution/diagnostic_execution.json"] bytes 33740 sha256 c721257083f80b32c095dd5af246874714fb4f5d27b5850eef96d55b16a50385 scratch_equal True
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/execution/progress/round-0/traces/cf6abd2_2.trial1.jsonl"] bytes 22831 sha256 702f60b45076992aa82c56b4df5bf7169bc8895e3d96f2643f85419ade8ed04a scratch_equal True
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl"] bytes 2421 sha256 26c2f5fdd26f7e114f73bbfbcfc81b7e083efd2a71f932206aa1f0c8d5243e9f scratch_equal True
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/verifier-evidence.json-0666239fd29ec703b538231a2b11a5cb644733b10f433555d4dfbdcc00fcacdb"] bytes 1383 sha256 0666239fd29ec703b538231a2b11a5cb644733b10f433555d4dfbdcc00fcacdb scratch_equal True
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/driver-result.json"] bytes 317 sha256 f2bbc3d5bfe42177fed753f9e6dab17df3af90d3806dbdcef16d38a10a515940 scratch_equal True
+COMMAND ["git", "show", "fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/policy-input.json"] bytes 1778 sha256 3081c58b5c33de6504012d606069894b42d5c553b52f92392b294665a0425a4a scratch_equal True
+RAW w-appworld {"failure_requirements": ["assert answers match."], "invalid": {}, "measured": true, "metric": "appworld.task_goal_completion", "num_tests": 8, "pass_count": 7, "score": 0.0, "success": false}
+STAGED w-appworld {"cleanup": "unknown", "coverage": {"eligible_tasks": 147, "expected_trials": 1, "invalid_tasks": 0, "invalid_trials": 0, "measured_tasks": 0, "measured_trials": 0, "selected_tasks": 1, "unmeasured_tasks": 1, "unmeasured_trials": 1}, "lifecycle": null, "outcomes": [{"reason": "policy_enforcement_not_observed", "score": null, "status": "unmeasured", "task_id": "cf6abd2_2", "trial": 1}], "reason": "policy_enforcement_not_observed", "run_id": "w-appworld-20261014T225023Z-f02d7cd5", "score": null, "snapshot": "unknown"}
+BINDING w-appworld {"endpoint": "http://127.0.0.1:8002/v1", "identity": {"agent_backend": "openai", "agent_model": "qwen3.5-9b-local", "config": {"context_chars": 60000, "finish_nudge_steps": 4, "max_output_tokens": 2048, "max_steps": 32, "output_limit": 4000, "parse_retries": 2, "repeat_nudge_limit": 2, "shell": "/usr/bin/bash", "shell_dialect": "Bash", "submit_retries": 2}, "harness": "loop"}, "limits": {"budget": {"max_output_tokens_per_call": 2048, "max_steps": 32}, "resource": {"agent_timeout_s": 900, "cpus": 2, "memory_mb": 4096, "pids": 1024, "verify_timeout_s": 900}}, "model_hash": null, "tokens": {"calls": 16, "input": 56264, "output": 1286, "tasks_reported": 1}}
+LOG_SCOPE fc27c44a2e11b8a0311ec8dabdd6486244bd73f5:reports/w-appworld-evidence/execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl {"method_urls": [["get", "/api_docs/app_descriptions"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/supervisor/account_passwords"], ["post", "/simple_note/auth/token"], ["get", "/simple_note/notes"], ["get", "/simple_note/notes/3041"], ["patch", "/simple_note/notes/3041"], ["get", "/simple_note/notes/3041"]], "nonempty_rows": 14, "supervisor_completion_rows": []}
+TRACE w-appworld {"commands": 15, "docs_complete_task_rows": [17], "submitted": [[33, 15]], "usage": [{"calls": 16, "context_trims": 0, "input_tokens": 56264, "output_tokens": 1286, "retries": 0}]}
+DRIVER w-appworld {"ended_at": "2026-10-14T22:51:15.294647+00:00", "returncode": 2, "run_id": "w-appworld-20261014T225023Z-f02d7cd5", "run_root": "/tmp/hg-appworld/runs/w-appworld-20261014T225023Z-f02d7cd5", "started_at": "2026-10-14T22:50:24.183437+00:00", "work_root": "/tmp/w-appworld-20261014T225023Z-f02d7cd5-work"}
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/execution/diagnostic_receipt.json"] bytes 3702 sha256 67fb0cc5c518da0a07a091b4547a319a5ef74d9cbb0768bcba81169c2d51381a scratch_equal True
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/execution/diagnostic_execution.json"] bytes 35713 sha256 8f2acf569af2bdb7a7dfe6950f0c62925381851f7428437b09e48b2a8519fcc8 scratch_equal True
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/execution/progress/round-0/traces/cf6abd2_2.trial1.jsonl"] bytes 22570 sha256 f647536a4b954b3d2bda3cbd405b0f8fc87a44936df124c7e1fc1eedf01ff1ed scratch_equal True
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl"] bytes 2421 sha256 24ad71fd9e0b428ad1ca43e9a58388996f416ce909869b022233c11f27fff7b2 scratch_equal True
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/verifier-evidence.json-e6f59180c1dd5424b36dba3ffff54bae4facf5b7fc5ad5eee987802f8ac4804a"] bytes 3629 sha256 e6f59180c1dd5424b36dba3ffff54bae4facf5b7fc5ad5eee987802f8ac4804a scratch_equal True
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/driver-result.json"] bytes 330 sha256 77ea28657510f292b31f5faf2e198e575233468fd2dbda81be62cccd1cf3799b scratch_equal True
+COMMAND ["git", "show", "83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/policy-input.json"] bytes 1869 sha256 919525bdfdccbd4c79ed4061949579c2af728aef45e94edebc0db2c1deab5e03 scratch_equal True
+RAW w-appworld2 {"failure_requirements": ["assert answers match.", "assert the updated note's content rest of the lines after stripping\nmatches data.private.note_body_lines (normalize_text=True)."], "invalid": {}, "measured": true, "metric": "appworld.task_goal_completion", "num_tests": 8, "pass_count": 6, "score": 0.0, "success": false}
+STAGED w-appworld2 {"cleanup": "unknown", "coverage": {"eligible_tasks": 147, "expected_trials": 1, "invalid_tasks": 0, "invalid_trials": 0, "measured_tasks": 0, "measured_trials": 0, "selected_tasks": 1, "unmeasured_tasks": 1, "unmeasured_trials": 1}, "lifecycle": null, "outcomes": [{"reason": "policy_enforcement_not_observed", "score": null, "status": "unmeasured", "task_id": "cf6abd2_2", "trial": 1}], "reason": "policy_enforcement_not_observed", "run_id": "w-appworld2-20261015T050036Z-a6d55a63", "score": null, "snapshot": "unknown"}
+BINDING w-appworld2 {"endpoint": "http://127.0.0.1:8002/v1", "identity": {"agent_backend": "openai", "agent_model": "qwen3.5-9b-local", "config": {"context_chars": 60000, "finish_nudge_steps": 4, "max_output_tokens": 2048, "max_steps": 32, "output_limit": 4000, "parse_retries": 2, "repeat_nudge_limit": 2, "shell": "/usr/bin/bash", "shell_dialect": "Bash", "submit_retries": 2}, "harness": "loop"}, "limits": {"budget": {"max_output_tokens_per_call": 2048, "max_steps": 32}, "resource": {"agent_timeout_s": 900, "cpus": 2, "memory_mb": 4096, "pids": 1024, "verify_timeout_s": 900}}, "model_hash": null, "tokens": {"calls": 16, "input": 56180, "output": 1246, "tasks_reported": 1}}
+LOG_SCOPE 83c04d847fb95f775ef7d29daecc6adf72ea44d6:reports/w-appworld2-evidence/execution/recordings/cf6abd2_2/appworld/experiments/outputs/harness/tasks/cf6abd2_2/logs/api_calls.jsonl {"method_urls": [["get", "/api_docs/app_descriptions"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/supervisor/account_passwords"], ["post", "/simple_note/auth/token"], ["get", "/simple_note/notes"], ["get", "/simple_note/notes/3041"], ["patch", "/simple_note/notes/3041"], ["get", "/simple_note/notes/3041"]], "nonempty_rows": 14, "supervisor_completion_rows": []}
+TRACE w-appworld2 {"commands": 15, "docs_complete_task_rows": [17], "submitted": [[33, 15]], "usage": [{"calls": 16, "context_trims": 0, "input_tokens": 56180, "output_tokens": 1246, "retries": 0}]}
+DRIVER w-appworld2 {"ended_at": "2026-10-15T05:02:13.514997+00:00", "returncode": 2, "run_id": "w-appworld2-20261015T050036Z-a6d55a63", "run_root": "/tmp/hg-appworld2-run-artifacts/w-appworld2-20261015T050036Z-a6d55a63", "started_at": "2026-10-15T05:00:39.093463+00:00", "work_root": "/tmp/w-appworld2-20261015T050036Z-a6d55a63-work"}
+ENUMERATED_RUN_SCOPE /mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117 ["curve.jsonl", "events.jsonl", "progress/round-0/07b42fd_1.json", "progress/round-0/traces/07b42fd_1.trial1.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/admin.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/amazon.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/api_docs.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/file_system.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/gmail.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/model_hashes.json", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/phone.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/simple_note.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/splitwise.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/spotify.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/supervisor.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/todoist.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/venmo.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/environment_io.md", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/version/code.txt", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/version/data.txt", "recordings/07b42fd_1/appworld/service.log", "round0_traces/.sides.json", "round0_traces/07b42fd_1.jsonl", "run_meta.json", "state_after_round0/.gitignore", "state_after_round0/__pycache__/agent.cpython-312.pyc", "state_after_round0/agent.py", "state_after_round0/harness.json", "state_after_round0/requirements.txt", "verdicts/round-0/07b42fd_1.json"]
+ABSENT_SEARCH /mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117 basenames ['diagnostic_receipt.json', 'evidence.json', 'reward.txt'] matches []
+READ /mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117/verdicts/round-0/07b42fd_1.json {"detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0", "harness": {"exit_code": 0, "stderr": ""}, "kind": "command", "passed": false, "round": 0, "score": 0.0, "task_id": "07b42fd_1"}
+READ /mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117/progress/round-0/07b42fd_1.json {"complete": true, "detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0", "kind": "command", "n_trials": 1, "passed": false, "round": 0, "score": 0.0, "task_id": "07b42fd_1", "tests": null, "trial_scores": [0.0], "wall_clock_s": 24.9}
+API /mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117/recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl bytes 1507 rows 15 method_urls [["get", "/api_docs/app_descriptions"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/app_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"]]
+TRACE /mnt/20t/xubuqiang/Study/appworld-smoke-final-v6/runs/appworld-smoke-final-v6-20261117/progress/round-0/traces/07b42fd_1.trial1.jsonl {"commands": 16, "rows": 44, "submitted": [], "usage": [{"calls": 16, "context_trims": 0, "input_tokens": 43406, "output_tokens": 739, "retries": 0}], "wall_clock": [{"commands": 10.5, "model": 14.3, "total": 24.9}]}
+ENUMERATED_RUN_SCOPE /mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117 ["curve.jsonl", "events.jsonl", "progress/round-0/07b42fd_1.json", "progress/round-0/traces/07b42fd_1.trial1.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/admin.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/amazon.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/api_docs.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/file_system.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/gmail.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/model_hashes.json", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/phone.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/simple_note.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/splitwise.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/spotify.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/supervisor.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/todoist.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/dbs/venmo.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/environment_io.md", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/version/code.txt", "recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/version/data.txt", "recordings/07b42fd_1/appworld/service.log", "round0_traces/.sides.json", "round0_traces/07b42fd_1.jsonl", "run_meta.json", "state_after_round0/.gitignore", "state_after_round0/__pycache__/agent.cpython-312.pyc", "state_after_round0/agent.py", "state_after_round0/harness.json", "state_after_round0/requirements.txt", "verdicts/round-0/07b42fd_1.json"]
+ABSENT_SEARCH /mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117 basenames ['diagnostic_receipt.json', 'evidence.json', 'reward.txt'] matches []
+READ /mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117/verdicts/round-0/07b42fd_1.json {"detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0", "harness": {"exit_code": 0, "stderr": ""}, "kind": "command", "passed": false, "round": 0, "score": 0.0, "task_id": "07b42fd_1"}
+READ /mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117/progress/round-0/07b42fd_1.json {"complete": true, "detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0", "kind": "command", "n_trials": 1, "passed": false, "round": 0, "score": 0.0, "task_id": "07b42fd_1", "tests": null, "trial_scores": [0.0], "wall_clock_s": 42.0}
+API /mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117/recordings/07b42fd_1/appworld/experiments/outputs/harness/tasks/07b42fd_1/logs/api_calls.jsonl bytes 2638 rows 26 method_urls [["get", "/api_docs/app_descriptions"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_descriptions"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/api_docs/api_doc"], ["get", "/spotify/genres"], ["get", "/spotify/artists"], ["get", "/spotify/artists"], ["post", "/spotify/auth/token"], ["get", "/spotify/profile"], ["get", "/spotify/profile"], ["get", "/spotify/account"], ["get", "/spotify/artists"], ["get", "/spotify/artists"], ["get", "/spotify/artists"], ["get", "/spotify/artists"], ["get", "/spotify/artists"], ["get", "/spotify/artists"]]
+TRACE /mnt/20t/xubuqiang/Study/appworld-smoke-final-v7/runs/appworld-smoke-final-v7-20261117/progress/round-0/traces/07b42fd_1.trial1.jsonl {"commands": 27, "rows": 72, "submitted": [[70, 27]], "usage": [{"calls": 28, "context_trims": 0, "input_tokens": 92127, "output_tokens": 1370, "retries": 0}], "wall_clock": [{"commands": 15.4, "model": 26.6, "total": 42.0}]}
+SYNTHETIC_SCOPE tests/quality/test_appworld_actor_protocol.py functions [["adapter_contract", 29], ["test_invalid_runtime_prompt_is_rejected", 41], ["test_public_prompt_crosses_boundary_without_source_paths_or_verifier_metadata", 48], ["test_appworld_contract_is_task_independent_and_shell_quotes_opaque_ids", 62], ["test_all_runtime_paths_deliver_prompt_to_goal_only_harness", 81], ["synthetic_service", 141], ["test_unchanged_loop_discovers_cli_and_executes_api_with_persistent_state", 197], ["test_cli_help_explains_remote_namespace_without_initializing_world", 246], ["test_one_action_forwards_multiple_api_calls_and_control_flow", 254]]
+COMMAND ["git", "show", "c8228c968f7238acbd20ddf1132e95514680a462:reports/b9-appworld-protocol-and-pilot-guidance-review.md"] bytes 12385 sha256 a2d86676823e4820853ce493c1b0b1dd8579b3361273f4a13211777b4853a9f2
+B9_CITED_LINES {"27": "- `tests/quality/test_appworld_actor_protocol.py:29` extracts only public helper", "28": "  ASTs rather than importing the AppWorld task pool. Tests at `:48` and `:62`", "29": "  check public-field delivery, task independence and shell quoting. Tests at", "30": "  `:197` and `:254` use a scripted actor and fabricated local service to check", "31": "  discovery, state persistence and multi-call snippet forwarding. Their success", "32": "  cannot establish real-model behavior or official scorer execution. The exec", "33": "  cases at `:80` assert current admission refusal, not live container delivery.", "137": "Result: **68 passed in 6.77s**, no failures or skips. Pytest used its default", "138": "temporary directory outside the platform tree. Protocol tests used fabricated", "139": "inputs/scripted replies and a local synthetic HTTP service, with no model,", "140": "production service, Docker or official evaluator. Registry validation printed", "141": "`{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 8, \"historical_records\": 11, \"production_authorized\": false}`."}
+PROPOSAL_SHAPE valid
+CURRENT_PATH_CITATIONS 65 all_paths_and_line_bounds_valid (semantic review remains manual)
+COMMAND ["git", "diff", "HEAD", "--", "registry/dataset-blockers.json", "docs/adapter-integration-journal.md"] exit 0 stdout '' stderr ''
+COMMAND ["python3", "tools/check_dataset_blockers.py"] exit 2
+{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}
+COMMAND ["git", "diff", "--check"] exit 0
+VERIFICATION_BOUNDARY: No AppWorld/scorer/model/GPU/Docker/server/test execution. Source and JSON/text inspection only plus registry checker.
+
+Exact observed final audit stderr:
+''
+
+COMMAND: git ls-tree HEAD tests/fixtures/hg_bfcl/README.md
+exit=0
+stdout=''
+stderr=''
+
+COMMAND: python3 tools/check_dataset_blockers.py
+exit=2
+stdout='{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}\n'
+stderr=''
+
+COMMAND: git diff --check
+exit=0
+stdout=''
+stderr=''
+
+What was NOT verified (UNKNOWN unless a bounded absence is printed above):
+- A successful measured actor task, success-rate estimates, or whether a model
+  given clarified generic completion guidance would succeed under the same budget.
+- The causal effect of the guidance gap, marker/cwd resets in the historical runs,
+  arbitrary-request replay equivalence, or every upstream exception/logging rule.
+- Current deployed images/services, model weights, host/GPU state, active endpoint,
+  network isolation, trusted lifecycle/enforcement, effective quotas, or cleanup.
+  Historical receipts preserve their original observations; none is newly attested.
+- Raw official requirement evidence or modern staged counts for V6/V7 outside the
+  exact enumerated run roots. Earlier repaired/protocol/eight-step journal summaries
+  were not promoted to authenticated receipts. No held-out task/gold pool was opened.
+- A fix for the unrelated missing BFCL repository-evidence citation or full registry
+  validity on the eventual parent integration tree. No registry/journal edit belongs
+  to this worker; the proposal is advisory and keeps successful-task-evidence open.
+- No pytest, AppWorld control, Docker probe, official evaluation or benchmark run.
+
+Final size command: python3 stat().st_size for exactly the three paths below.
+The self-referential validation-file size is stabilized before writing.
+
+FILE_SIZES_BYTES
+26578 registry/w-appworld-protocol-review.md
+2396 registry/proposals/w-appworld.json
+31750 registry/w-appworld-validation.txt
