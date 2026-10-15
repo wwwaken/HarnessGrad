@@ -1,0 +1,169 @@
+--- a/agentdojo/loop_qwen3.5-9b-local/fold_runs.py
++++ b/agentdojo/loop_qwen3.5-9b-local/fold_runs.py
+@@ -73,6 +73,22 @@
+             if f.exists():
+                 stem, suffix = name.split(".", 1)
+                 shutil.move(str(f), str(target / f"{stem}.{run_id}.{suffix}"))
++        # Preserve the per-task verdicts, namespaced by their original run id.
++        # Before this, only progress/ and the three metadata files were folded and the
++        # source was then deleted outright, so every verdict byte was destroyed -- the
++        # four existing archives contain zero verdict files for exactly that reason.
++        # This helps FUTURE folds only; it cannot recreate what was already deleted.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            dst_verdicts = target / "verdicts" / run_id
++            for f in sorted(src_verdicts.rglob("*")):
++                if not f.is_file():
++                    continue
++                dst = dst_verdicts / f.relative_to(src_verdicts)
++                dst.parent.mkdir(parents=True, exist_ok=True)
++                if dst.exists():
++                    raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     return stats
+--- a/agentdojo/loop_qwen3.5-9b-local/fold_to_full.py
++++ b/agentdojo/loop_qwen3.5-9b-local/fold_to_full.py
+@@ -78,6 +78,20 @@
+         for meta in per_run_metadata(src):
+             shutil.move(str(meta), str(target / meta.name))
+             runs.append(meta.name)
++        # Carry the per-run verdicts through unchanged. fold_runs already namespaced them
++        # by original run id; do not re-namespace or flatten. Before this the second stage
++        # also deleted its source, so the verdicts died here as well.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            for run_dir in sorted(p for p in src_verdicts.iterdir() if p.is_dir()):
++                for f in sorted(run_dir.rglob("*")):
++                    if not f.is_file():
++                        continue
++                    dst = target / "verdicts" / run_dir.name / f.relative_to(run_dir)
++                    dst.parent.mkdir(parents=True, exist_ok=True)
++                    if dst.exists():
++                        raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                    shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     # drop the now-empty side directories
+--- a/alfworld/loop_qwen3.5-9b-local/fold_runs.py
++++ b/alfworld/loop_qwen3.5-9b-local/fold_runs.py
+@@ -73,6 +73,22 @@
+             if f.exists():
+                 stem, suffix = name.split(".", 1)
+                 shutil.move(str(f), str(target / f"{stem}.{run_id}.{suffix}"))
++        # Preserve the per-task verdicts, namespaced by their original run id.
++        # Before this, only progress/ and the three metadata files were folded and the
++        # source was then deleted outright, so every verdict byte was destroyed -- the
++        # four existing archives contain zero verdict files for exactly that reason.
++        # This helps FUTURE folds only; it cannot recreate what was already deleted.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            dst_verdicts = target / "verdicts" / run_id
++            for f in sorted(src_verdicts.rglob("*")):
++                if not f.is_file():
++                    continue
++                dst = dst_verdicts / f.relative_to(src_verdicts)
++                dst.parent.mkdir(parents=True, exist_ok=True)
++                if dst.exists():
++                    raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     return stats
+--- a/alfworld/loop_qwen3.5-9b-local/fold_to_full.py
++++ b/alfworld/loop_qwen3.5-9b-local/fold_to_full.py
+@@ -78,6 +78,20 @@
+         for meta in per_run_metadata(src):
+             shutil.move(str(meta), str(target / meta.name))
+             runs.append(meta.name)
++        # Carry the per-run verdicts through unchanged. fold_runs already namespaced them
++        # by original run id; do not re-namespace or flatten. Before this the second stage
++        # also deleted its source, so the verdicts died here as well.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            for run_dir in sorted(p for p in src_verdicts.iterdir() if p.is_dir()):
++                for f in sorted(run_dir.rglob("*")):
++                    if not f.is_file():
++                        continue
++                    dst = target / "verdicts" / run_dir.name / f.relative_to(run_dir)
++                    dst.parent.mkdir(parents=True, exist_ok=True)
++                    if dst.exists():
++                        raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                    shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     # drop the now-empty side directories
+--- a/gsm8k/loop_qwen3.5-9b-local/fold_runs.py
++++ b/gsm8k/loop_qwen3.5-9b-local/fold_runs.py
+@@ -74,6 +74,22 @@
+             if f.exists():
+                 stem, suffix = name.split(".", 1)
+                 shutil.move(str(f), str(target / f"{stem}.{run_id}.{suffix}"))
++        # Preserve the per-task verdicts, namespaced by their original run id.
++        # Before this, only progress/ and the three metadata files were folded and the
++        # source was then deleted outright, so every verdict byte was destroyed -- the
++        # four existing archives contain zero verdict files for exactly that reason.
++        # This helps FUTURE folds only; it cannot recreate what was already deleted.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            dst_verdicts = target / "verdicts" / run_id
++            for f in sorted(src_verdicts.rglob("*")):
++                if not f.is_file():
++                    continue
++                dst = dst_verdicts / f.relative_to(src_verdicts)
++                dst.parent.mkdir(parents=True, exist_ok=True)
++                if dst.exists():
++                    raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     return stats
+--- a/musique/loop_qwen3.5-9b-local/fold_runs.py
++++ b/musique/loop_qwen3.5-9b-local/fold_runs.py
+@@ -75,6 +75,22 @@
+             if f.exists():
+                 stem, suffix = name.split(".", 1)
+                 shutil.move(str(f), str(target / f"{stem}.{run_id}.{suffix}"))
++        # Preserve the per-task verdicts, namespaced by their original run id.
++        # Before this, only progress/ and the three metadata files were folded and the
++        # source was then deleted outright, so every verdict byte was destroyed -- the
++        # four existing archives contain zero verdict files for exactly that reason.
++        # This helps FUTURE folds only; it cannot recreate what was already deleted.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            dst_verdicts = target / "verdicts" / run_id
++            for f in sorted(src_verdicts.rglob("*")):
++                if not f.is_file():
++                    continue
++                dst = dst_verdicts / f.relative_to(src_verdicts)
++                dst.parent.mkdir(parents=True, exist_ok=True)
++                if dst.exists():
++                    raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     return stats
+--- a/musique/loop_qwen3.5-9b-local/fold_to_full.py
++++ b/musique/loop_qwen3.5-9b-local/fold_to_full.py
+@@ -77,6 +77,20 @@
+         for meta in per_run_metadata(src):
+             shutil.move(str(meta), str(target / meta.name))
+             runs.append(meta.name)
++        # Carry the per-run verdicts through unchanged. fold_runs already namespaced them
++        # by original run id; do not re-namespace or flatten. Before this the second stage
++        # also deleted its source, so the verdicts died here as well.
++        src_verdicts = src / "verdicts"
++        if src_verdicts.is_dir():
++            for run_dir in sorted(p for p in src_verdicts.iterdir() if p.is_dir()):
++                for f in sorted(run_dir.rglob("*")):
++                    if not f.is_file():
++                        continue
++                    dst = target / "verdicts" / run_dir.name / f.relative_to(run_dir)
++                    dst.parent.mkdir(parents=True, exist_ok=True)
++                    if dst.exists():
++                        raise SystemExit(f"verdict collision at {dst} -- refusing to overwrite")
++                    shutil.move(str(f), str(dst))
+         shutil.rmtree(src, ignore_errors=True)
+ 
+     # drop the now-empty side directories
