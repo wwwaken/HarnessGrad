@@ -680,9 +680,13 @@ the 100 receipts says something different, and the difference is not cosmetic: *
 retry, and 27 of these are not retries.**
 
 Measured 2026-10-16 against the packet, after `w-b5restore`'s replay had run the whole 87-entry
-residue and, in a second pass, re-attempted every still-absent path at a 120 s interval. The second pass
-settled the cohort that the first pass had left ambiguous, so the numbers below supersede the first
-measurement (which read `54 restored / 17 mismatch / 15 fetch_failure`):
+residue and then re-attempted the still-absent paths at a 120 s interval. The second pass settled the
+cohort the first pass had left ambiguous, so the numbers below supersede the first measurement (which
+read `54 restored / 17 mismatch / 15 fetch_failure`). **Scope of the second pass, stated exactly:** it
+attempted 60 of its 61 targets and then exited without writing an `rc` line; the two paths it did not
+reach, `triviaqa-dns-dohpub.body` and `triviaqa-mirror-loader.body`, are a live DNS answer and the
+recorded 404 - the same two classes as their measured siblings - so **no disposition below depends on
+them**, and neither was written:
 
 | outcome | n | receipt's `status` | what it is |
 | --- | --- | --- | --- |
