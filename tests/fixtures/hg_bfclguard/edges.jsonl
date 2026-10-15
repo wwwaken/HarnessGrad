@@ -1130,10 +1130,11 @@
 {"destinations": [], "kind": "import", "line": 17, "outside_scope": [], "source": 183, "statement": "import json", "targets": ["json"]}
 {"destinations": [], "kind": "import", "line": 18, "outside_scope": [], "source": 183, "statement": "import os", "targets": ["os"]}
 {"destinations": [], "kind": "import", "line": 19, "outside_scope": [], "source": 183, "statement": "import shutil", "targets": ["shutil"]}
-{"destinations": [], "kind": "import", "line": 20, "outside_scope": [], "source": 183, "statement": "import sys", "targets": ["sys"]}
-{"destinations": [], "kind": "from", "line": 21, "outside_scope": [], "source": 183, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
-{"destinations": [162, 166], "kind": "from", "line": 23, "outside_scope": [], "source": 183, "statement": "from eval.containers.immutable_runtime import projections", "targets": ["eval.containers.immutable_runtime", "eval.containers.immutable_runtime.projections"]}
-{"destinations": [224, 225], "kind": "from", "line": 456, "outside_scope": [], "source": 183, "statement": "from eval.verification.isolation import common_class, observed_class", "targets": ["eval.verification.isolation", "eval.verification.isolation.common_class", "eval.verification.isolation.observed_class"]}
+{"destinations": [], "kind": "import", "line": 20, "outside_scope": [], "source": 183, "statement": "import signal", "targets": ["signal"]}
+{"destinations": [], "kind": "import", "line": 21, "outside_scope": [], "source": 183, "statement": "import sys", "targets": ["sys"]}
+{"destinations": [], "kind": "from", "line": 22, "outside_scope": [], "source": 183, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
+{"destinations": [162, 166], "kind": "from", "line": 24, "outside_scope": [], "source": 183, "statement": "from eval.containers.immutable_runtime import projections", "targets": ["eval.containers.immutable_runtime", "eval.containers.immutable_runtime.projections"]}
+{"destinations": [224, 225], "kind": "from", "line": 479, "outside_scope": [], "source": 183, "statement": "from eval.verification.isolation import common_class, observed_class", "targets": ["eval.verification.isolation", "eval.verification.isolation.common_class", "eval.verification.isolation.observed_class"]}
 {"destinations": [], "kind": "import", "line": 6, "outside_scope": [], "source": 184, "statement": "import sys as _sys", "targets": ["sys"]}
 {"destinations": [178, 180], "kind": "from", "line": 7, "outside_scope": [], "source": 184, "statement": "from eval.observe import phases as _implementation", "targets": ["eval.observe", "eval.observe.phases"]}
 {"destinations": [], "kind": "import", "line": 6, "outside_scope": [], "source": 185, "statement": "import sys as _sys", "targets": ["sys"]}
@@ -1231,7 +1232,7 @@
 {"destinations": [224, 227], "kind": "from", "line": 39, "outside_scope": [], "source": 199, "statement": "from eval.verification.pristine import enforce_verdict_binding", "targets": ["eval.verification.pristine", "eval.verification.pristine.enforce_verdict_binding"]}
 {"destinations": [186, 192], "kind": "from", "line": 40, "outside_scope": [], "source": 199, "statement": "from eval.policy.unobserved_diagnostic import Authorization", "targets": ["eval.policy.unobserved_diagnostic", "eval.policy.unobserved_diagnostic.Authorization"]}
 {"destinations": [297], "kind": "from", "line": 142, "outside_scope": [], "source": 199, "statement": "from tools.improver import load_config", "targets": ["tools.improver", "tools.improver.load_config"]}
-{"destinations": [178, 179], "kind": "from", "line": 851, "outside_scope": [], "source": 199, "statement": "from eval.observe.console import CONSOLE", "targets": ["eval.observe.console", "eval.observe.console.CONSOLE"]}
+{"destinations": [178, 179], "kind": "from", "line": 884, "outside_scope": [], "source": 199, "statement": "from eval.observe.console import CONSOLE", "targets": ["eval.observe.console", "eval.observe.console.CONSOLE"]}
 {"destinations": [194], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 200, "statement": "<implicit parent package initialization>", "targets": ["eval.run"]}
 {"destinations": [], "kind": "from", "line": 2, "outside_scope": [], "source": 200, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [], "kind": "import", "line": 6, "outside_scope": [], "source": 201, "statement": "import sys as _sys", "targets": ["sys"]}
