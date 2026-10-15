@@ -347,3 +347,47 @@ count is promoted, no local conversion is treated as authenticating the historic
 metric is a definition that is **not implemented** in the current local flat branch. Every diagnostic-time
 clause above remains a requirement of any future diagnostic, which still needs its own authorization, a
 fresh run ID, a split/side binding and the staged pilot policy.
+
+## Closure candidate, 2026-10-15 — `spreadsheetbench / dataset-journal-gap`, and a soundness hole found with it
+
+Three of this blocker's obligations moved today, and the one that remains needs the operator's reading.
+
+| clause from the current `next_action` | class | where it stands |
+| --- | --- | --- |
+| Establish authenticated row-level gradable eligibility | `SATISFIED` | `registry/w-spreadelig-eligibility.md`: 394 of 400 rows are structurally gradable without a run, 1 is retained only by the explicit official-range-zero policy (`283-32`), 5 are not gradable as installed with a per-row reason; 794/800 workbooks open in both openpyxl modes and all 800 ZIP/XML structures are readable |
+| Review/fix the synthetic stale-cache formula-conversion failure | `SATISFIED` | `w-spreadcache`: the cause was LibreOffice's own load policy (default `OOXMLRecalcMode=1` at `/usr/lib/libreoffice/share/registry/main.xcd:724`); the check now forces mode 0 in a private profile, strips scalar formula caches from a private ZIP copy, and requires regenerated caches before replacing the candidate; the opt-in real-engine control preserves the authored `[999,888] -> [5,10]` bar and the classification suite is 51 passed |
+| Complete installed workbook/mirror authentication and bounded first-five custody | `SATISFIED` | `registry/w-jc2-review.md`, `registry/w-spreadrt-runtime.md`, `tests/fixtures/hg_wsel/spreadsheetbench.json` |
+| The one-released-variant named-cell metric statement and the official-range-zero compatibility policy | `SATISFIED` | `registry/w-metriccmp-comparability.md`, `registry/w-spread2-reconciliation.md` |
+| Preserve failed receipts, missing engine archives and conditional runtime/replay observations as bounded limits | `SATISFIED` | `registry/w-spreadcache` / `registry/w-spreadrt-runtime.md` |
+| eligible/selected/task/trial/invalid/unmeasured coverage | `PENDING-RUN` | needs a diagnostic; **no diagnostic is authorized** |
+| **Found today, not previously in any list** - a reference that expands to zero cells publishes a vacuous pass | `PENDING-WORK` | reproduced by the parent with authored workbooks; `w-spreadvacuous` is fixing it (below) |
+
+**The vacuous-pass hole is a soundness defect, not a bookkeeping gap.** `cell_level_compare` iterates
+`generate_cell_names(cell_range)`; for `'Sheet1'!BD2:308` that list is **empty** (`parse_cell_range` gives
+an end column of 0), so the loop body never executes and the function returns `True`. The parent
+reproduced it with two authored workbooks whose only real cell differs (`golden A1=5`, `result A1=999`):
+
+```
+generate_cell_names('BD2:308') -> []
+compare_workbooks(..., "'Sheet1'!BD2:308") -> ok=True  msg=''
+compare_workbooks(..., "'Sheet1'!A1")      -> ok=False msg='value difference at A1: golden has 5, result has 999'
+```
+
+So a released row whose `answer_position` has a range end without column letters scored **1.0 for any
+submission**, recorded as a measured pass. `w-spreadelig` had already classified released row `73-45` as
+`not_gradable_as_installed` for exactly this reason, and flagged `130-9` as the quoted-sheet-name-with-commas
+variant. This is the outcome the platform must never publish, so the fix is `w-spreadvacuous`: make an
+empty expansion **unmeasured** (exit 3, no reward file, a named reason), keep the released colon-range
+`ValueError` measured zero exactly as it is, and record the divergence from the upstream transcription
+together with the new checker digest and the per-row denominator effect.
+
+**The closure question, stated so it can be answered in one line.** The only remaining clause is
+`eligible/selected/task/trial/invalid/unmeasured coverage`, which is `PENDING-RUN`. Reading (A) treats a
+diagnostic-time clause as a precondition on a future, separately authorized diagnostic rather than a
+condition on closure - which is precisely how `reasoning_gym` closed with no measured run at all. If the
+operator reads `measured coverage` that way here, `spreadsheetbench` is the sixth closure once the
+vacuous-pass fix lands, with the eligibility inventory, the fixed formula runtime, the metric statement
+and the range-zero policy all recorded and the coverage obligation retained as a diagnostic-time
+requirement. If they do not, the blocker stays open and this record should say that coverage is being held
+as a **condition** rather than a precondition - which would also be the first journal-coverage blocker held
+that way. The parent makes no change to the blocker on this question.
