@@ -1,0 +1,355 @@
+{
+  "upstream_git_revision": null,
+  "distribution": "appworld",
+  "version": "0.1.3.post1",
+  "appworld_version": "0.1.3.post1",
+  "image_id": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+  "files": [
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/__init__.py",
+      "copy": "source/appworld/__init__.py",
+      "sha256": "cf69e62b1dc3f6274332ae5bcebc6331a4de92319a95ab7f4d2356e428bd62ba",
+      "bytes": 742
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/evaluator.py",
+      "copy": "source/appworld/evaluator.py",
+      "sha256": "4e773fb91cdad3ad10deeacde2d0b1f717454be599e6758419e8e1bb88b75cba",
+      "bytes": 24232
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/environment.py",
+      "copy": "source/appworld/environment.py",
+      "sha256": "ad650588158727c4ebe72a080638ec0174c33af8a8b9e9b81f3d9bfda55d3fd9",
+      "bytes": 34148
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/task.py",
+      "copy": "source/appworld/task.py",
+      "sha256": "6b74420e30579e27c36cf2ace41f743d3d5f0640af4d15cae13df0419b42d5ea",
+      "bytes": 11711
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py",
+      "copy": "source/appworld/ground_truth.py",
+      "sha256": "b956f31eb82d3af9c3ccdae7acec9adeb5f8735b5efe77859d62248ec7655f32",
+      "bytes": 16253
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/collections/models.py",
+      "copy": "source/appworld/collections/models.py",
+      "sha256": "8466cf8efd13450dfc81d57b013ba96fde0a4ba47955def585c34f36af1a31ec",
+      "bytes": 23794
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/common/utils.py",
+      "copy": "source/appworld/common/utils.py",
+      "sha256": "e7007b689413e176d852c462ba67f29d8897d17fa78029a9ce5c65047c7c0b0c",
+      "bytes": 161515
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/apps/supervisor/apis.py",
+      "copy": "source/appworld/apps/supervisor/apis.py",
+      "sha256": "d9796e20cd5f4ebe21e06f7347f73ab399164d73451edbaa658cd7ff66ddaaf5",
+      "bytes": 4911
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/apps/supervisor/models.py",
+      "copy": "source/appworld/apps/supervisor/models.py",
+      "sha256": "8c6848a1d97b384b36460ce5669b9f4eb707b24aa80bf8488241c2ce7fc71d68",
+      "bytes": 7091
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld/apps/model_lib.py",
+      "copy": "source/appworld/apps/model_lib.py",
+      "sha256": "183a19463be31cd1a40a11022e24349f232595ca4b3612fa9d4b3a33bcf6c172",
+      "bytes": 107067
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld-0.1.3.post1.dist-info/METADATA",
+      "copy": "source/appworld-dist-info/METADATA",
+      "sha256": "f4ff155fa03998a256725f4b76a5464e8d93b399553b508c85a6ab86eb3f51ed",
+      "bytes": 6013
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld-0.1.3.post1.dist-info/WHEEL",
+      "copy": "source/appworld-dist-info/WHEEL",
+      "sha256": "909091253fe0d1a75f009cd3c761943264bcd2b4c92151d109f1b40d080bab7a",
+      "bytes": 88
+    },
+    {
+      "path": "/usr/local/lib/python3.11/site-packages/appworld-0.1.3.post1.dist-info/RECORD",
+      "copy": "source/appworld-dist-info/RECORD",
+      "sha256": "091de90e6dc6c2ac0a86b39178e74ae1ef6f61e29a0bbd97cfdda1f158ab6fce",
+      "bytes": 5689
+    }
+  ],
+  "controlled_archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+  "controlled_members": [
+    {
+      "path": "api_docs/function_calling/amazon.json",
+      "sha256": "641103cdbfa64da0832bf73b7db4e846bcf99f649bf10641d508d2e006a67f5b",
+      "bytes": 71084
+    },
+    {
+      "path": "api_docs/function_calling/api_docs.json",
+      "sha256": "5b08688dd5b4dec208f4251b5c33269b3049517c7c4451fd98d49c67477e291e",
+      "bytes": 2851
+    },
+    {
+      "path": "api_docs/function_calling/file_system.json",
+      "sha256": "68b087cb4c15677e87e772448a28eca85e01ebf4fdfeec313696d0778f068ad5",
+      "bytes": 28587
+    },
+    {
+      "path": "api_docs/function_calling/gmail.json",
+      "sha256": "4a0ee65205fb5e5363d24f7e9e5ba8884063b23f2a28e5d7b7da4829e3974553",
+      "bytes": 57474
+    },
+    {
+      "path": "api_docs/function_calling/phone.json",
+      "sha256": "afd6a33ebf9ea91aeb738f840bc607e5af57b86c944f96c9d871467ef6d225a9",
+      "bytes": 36693
+    },
+    {
+      "path": "api_docs/function_calling/simple_note.json",
+      "sha256": "53414bc70fbece5ba2ce5f1e6f5a50a41084704a410ce45597130350ab773a3f",
+      "bytes": 17069
+    },
+    {
+      "path": "api_docs/function_calling/splitwise.json",
+      "sha256": "d52b852f982c9a4ccd1eb453a5cb035af8128875eab9fa85b0fbbe8606cc16b2",
+      "bytes": 76551
+    },
+    {
+      "path": "api_docs/function_calling/spotify.json",
+      "sha256": "7194c0cc18a48e479f65192ba732e098174498ccc904cdb2dfa4d371e365d9c3",
+      "bytes": 97846
+    },
+    {
+      "path": "api_docs/function_calling/supervisor.json",
+      "sha256": "e9b6c983f7b92686d530349e7d4d7afb8a3332e24ff2219789e6380d8c136ce9",
+      "bytes": 3599
+    },
+    {
+      "path": "api_docs/function_calling/todoist.json",
+      "sha256": "88b67e50dec1f6ae8dc3ac82a5a1a0d9ec91e11ea004fe9bdeeca0572de90086",
+      "bytes": 65862
+    },
+    {
+      "path": "api_docs/function_calling/venmo.json",
+      "sha256": "dc69706b9c8ccc59fa8e28740abe36c35d3fc2cf3dca37cdd501ad413f37f615",
+      "bytes": 57173
+    },
+    {
+      "path": "api_docs/openapi/amazon.json",
+      "sha256": "1306d4ac5c1f021114b6d9ba5e43a9358524b04b690a6d92ca7a0cd9fe37f70d",
+      "bytes": 470996
+    },
+    {
+      "path": "api_docs/openapi/api_docs.json",
+      "sha256": "1f95a3d7a2fda10f63167617c5131759c801539445c302919f553da639428b6b",
+      "bytes": 41445
+    },
+    {
+      "path": "api_docs/openapi/file_system.json",
+      "sha256": "cf8917b210b44ed248d98eaef8af94f01e48c7df0c6f23773159499536407865",
+      "bytes": 161963
+    },
+    {
+      "path": "api_docs/openapi/gmail.json",
+      "sha256": "b8ed212f5a28942f70bfb6adeef9b5f2af7da5901e553fa9831bf30e951e569f",
+      "bytes": 346288
+    },
+    {
+      "path": "api_docs/openapi/phone.json",
+      "sha256": "aa9257f59d8fc3f6912f2ba1f43cf7a03282d8b4c85aeb12bd89b8bcab78e37d",
+      "bytes": 226634
+    },
+    {
+      "path": "api_docs/openapi/simple_note.json",
+      "sha256": "d4cb920e5b171fdcb746127efa316246862f28badeb086be5fe28e4a91872126",
+      "bytes": 108239
+    },
+    {
+      "path": "api_docs/openapi/splitwise.json",
+      "sha256": "e9ba3b09a9ef030898961e088972c09a838038dd479361603a136aa498bcf62c",
+      "bytes": 493873
+    },
+    {
+      "path": "api_docs/openapi/spotify.json",
+      "sha256": "20715cca82ca18c304661f70a0ea33650b44e5355f77c0603c4287baf372ed13",
+      "bytes": 645928
+    },
+    {
+      "path": "api_docs/openapi/supervisor.json",
+      "sha256": "63e4df8f36e56197ed73d51a34eb3b9b946da9d00ac86409797088095ea64ac3",
+      "bytes": 37468
+    },
+    {
+      "path": "api_docs/openapi/todoist.json",
+      "sha256": "751fbd692b343131d1a25eed3a90f8dd01673090116fe2f20f84d9a5ca2e1ada",
+      "bytes": 421976
+    },
+    {
+      "path": "api_docs/openapi/venmo.json",
+      "sha256": "cc5b8460f92f867e9ab247c863bfba41804291d4f111ed7b7b71b70fb5b4cd12",
+      "bytes": 371112
+    },
+    {
+      "path": "api_docs/standard/amazon.json",
+      "sha256": "861de558da60362f54a0c988b699010c3f819852cc4662e0ff59d3acecfa193b",
+      "bytes": 107072
+    },
+    {
+      "path": "api_docs/standard/api_docs.json",
+      "sha256": "3e372889cb736f46d0db3793a5fdfb96cda58995135070be887c502c52d33c52",
+      "bytes": 5753
+    },
+    {
+      "path": "api_docs/standard/file_system.json",
+      "sha256": "5a8c956e16d7c9c77b466ed1d15422d9caa4d8a9097b6d3bf1c269aa80435f6b",
+      "bytes": 39819
+    },
+    {
+      "path": "api_docs/standard/gmail.json",
+      "sha256": "ca148872e2d6008b5863fab3dd7c12969272a8c39ed485ba6f955ae9a059078e",
+      "bytes": 87738
+    },
+    {
+      "path": "api_docs/standard/phone.json",
+      "sha256": "50db5f08b0b87cd9ee60c9c05c31a0c058fbadb6be480cd717294c5c048bea84",
+      "bytes": 53970
+    },
+    {
+      "path": "api_docs/standard/simple_note.json",
+      "sha256": "d0e3155726ef151d6035db7c146b835b8dc7855155e4ff9786d392513b3ddb30",
+      "bytes": 24704
+    },
+    {
+      "path": "api_docs/standard/splitwise.json",
+      "sha256": "f300328cce3c3ec17319543c1e3def61ab59325eacff4db230bf29b72cc09381",
+      "bytes": 116289
+    },
+    {
+      "path": "api_docs/standard/spotify.json",
+      "sha256": "cf630ccff1aedf0c055b2bcb3b81a43882e35f066e615be49bc251dba3f09be1",
+      "bytes": 147341
+    },
+    {
+      "path": "api_docs/standard/supervisor.json",
+      "sha256": "a829691be9050223cc6ce0735fd201ab1563e24c9b36acfdcc5509036d2f97fb",
+      "bytes": 5126
+    },
+    {
+      "path": "api_docs/standard/todoist.json",
+      "sha256": "347582910cdeedf52480d34fac9ba5a55afa0177d2fdc3b1f239fd408b34c5dc",
+      "bytes": 99149
+    },
+    {
+      "path": "api_docs/standard/venmo.json",
+      "sha256": "ec9e9d637d5ec93c38bb84aae6008bf507d23367b5854f75b03184de5726b8a2",
+      "bytes": 85805
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/admin.db",
+      "sha256": "250266a0c857e44b143af3a4c2b3f520c54f06d1264585fbf96dc72f078cff53",
+      "bytes": 110592
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/amazon.db",
+      "sha256": "fcb5d5ce4a1e7408196dcde1a20f397977e656fcd22a8e0d626251d5d124d6f1",
+      "bytes": 274432
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/api_docs.db",
+      "sha256": "a4eab57f676a7d54f8d67a6a57ab5d95178fa9986d27269901bf452229d5b36f",
+      "bytes": 40960
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/file_system.db",
+      "sha256": "099340380180060b53801df473ceac4bcae0ca531f54e766000f6dbb7134a7b7",
+      "bytes": 32768
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/gmail.db",
+      "sha256": "b31792ed6675b02512c82af1003c5e739e57e1f9fd5c778b5740276a79545e0e",
+      "bytes": 114688
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/phone.db",
+      "sha256": "098a904efd7e755a248fffcd264652955075173c22412bab2ecf1948cda0d6ac",
+      "bytes": 126976
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/simple_note.db",
+      "sha256": "f8781635f006a9a6793a2f9388032e17aff09204201dcdfb9c37f261893bda1d",
+      "bytes": 45056
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/splitwise.db",
+      "sha256": "68fe15faaec2ef8ec39f456a57cfa92bce992954225e270bdc186010b59bc755",
+      "bytes": 126976
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/spotify.db",
+      "sha256": "bac396dbf78b6ea5b5267e70082b5298e079253c084fa8439c5317f551d85dd6",
+      "bytes": 339968
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/supervisor.db",
+      "sha256": "61fa1ab054c686ee1debb588469054ca384be68a0434ad57361276ac6637739d",
+      "bytes": 45056
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/todoist.db",
+      "sha256": "9a411a053efe0597748a3d70379eaa1e175cda254d90fe782502cc2c95025b43",
+      "bytes": 139264
+    },
+    {
+      "path": "tasks/hgcontrol_1/dbs/venmo.db",
+      "sha256": "d4b55fab0779c54340b7b8460289e5fad37463d5c3e27aab12f038fc438e310b",
+      "bytes": 118784
+    },
+    {
+      "path": "tasks/hgcontrol_1/ground_truth/answer.json",
+      "sha256": "49f07ff8400bd71c424dcba0f361247825e8e5c0a6ad00b6a5f5f0f4ded87fa3",
+      "bytes": 5
+    },
+    {
+      "path": "tasks/hgcontrol_1/ground_truth/evaluation.py",
+      "sha256": "c36596659c0f279d518e43a919f8da18b645cb08e26a49ed3226dafe59b85130",
+      "bytes": 301
+    },
+    {
+      "path": "tasks/hgcontrol_1/ground_truth/metadata.json",
+      "sha256": "c2e7801d1f47023f7a1c798e0475fa17272cd9e062182bf2f2233878c9a87281",
+      "bytes": 131
+    },
+    {
+      "path": "tasks/hgcontrol_1/ground_truth/private_data.json",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "bytes": 3
+    },
+    {
+      "path": "tasks/hgcontrol_1/ground_truth/public_data.json",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "bytes": 3
+    },
+    {
+      "path": "tasks/hgcontrol_1/ground_truth/test_data.json",
+      "sha256": "3cadf4981dbaafd10ac48dec580863aad2786e96e20ae5b09bf928e7c59a48f4",
+      "bytes": 86
+    },
+    {
+      "path": "tasks/hgcontrol_1/specs.json",
+      "sha256": "5fbabb1000ae9884a4e3e9ef924949d2d985978197b3d8a01efc1cb8f3a1004e",
+      "bytes": 267
+    },
+    {
+      "path": "version.txt",
+      "sha256": "6ad9613a455798d6d92e5f5f390ab4baa70596bc869ed6b17f5cdd2b28635f06",
+      "bytes": 5
+    }
+  ]
+}

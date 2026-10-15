@@ -1,0 +1,12 @@
+{
+  "scope": "Wholly authored task/database/evaluation predicate; installed official generic AppWorld evaluator and replay, no released task scorer",
+  "task_id": "hgcontrol_1",
+  "cases": [
+    {"id":"correct-answer", "calls":[{"url":"/supervisor/message","method":"post","data":{"answer":"42"}}]},
+    {"id":"wrong-answer", "calls":[{"url":"/supervisor/message","method":"post","data":{"answer":"41"}}]},
+    {"id":"no-calls", "calls":[]},
+    {"id":"numeric-answer", "calls":[{"url":"/supervisor/message","method":"post","data":{"answer":42}}]},
+    {"id":"wrong-then-correct", "calls":[{"url":"/supervisor/message","method":"post","data":{"answer":"41"}},{"url":"/supervisor/message","method":"post","data":{"answer":"42"}}]},
+    {"id":"invalid-api", "calls":[{"url":"/supervisor/not-a-real-endpoint","method":"post","data":{}}]}
+  ]
+}

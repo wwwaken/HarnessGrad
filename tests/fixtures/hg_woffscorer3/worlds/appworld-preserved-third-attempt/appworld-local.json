@@ -1,0 +1,418 @@
+{
+  "mode": "local",
+  "children": [
+    {
+      "id": "correct-answer",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "local",
+        "correct-answer"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"local\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"correct-answer\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"42\"\n          }\n        }\n      ],\n      \"exit_code\": 3,\n      \"evidence\": {\n        \"task_id\": \"hgcontrol_1\",\n        \"source_split\": \"train\",\n        \"metric\": \"appworld.task_goal_completion\",\n        \"metric_name\": \"TGC\",\n        \"measured\": false,\n        \"error\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-el_z4t47/data/tasks/hgcontrol_1) doesn't exist.\"\n      },\n      \"argv\": [\n        \"/fixture/appworld-local-check.py\",\n        \"--task-id\",\n        \"hgcontrol_1\",\n        \"--source-split\",\n        \"train\",\n        \"--log\",\n        \"/tmp/hg-woffscorer3-appworld-24p7ymmh/calls.jsonl\",\n        \"--reward-file\",\n        \"/tmp/hg-woffscorer3-appworld-24p7ymmh/reward.txt\",\n        \"--evidence-file\",\n        \"/tmp/hg-woffscorer3-appworld-24p7ymmh/evidence.json\"\n      ],\n      \"measured\": false,\n      \"stdout\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-el_z4t47/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"stderr\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-el_z4t47/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "local",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "correct-answer",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "42"
+                }
+              }
+            ],
+            "exit_code": 3,
+            "evidence": {
+              "task_id": "hgcontrol_1",
+              "source_split": "train",
+              "metric": "appworld.task_goal_completion",
+              "metric_name": "TGC",
+              "measured": false,
+              "error": "environment failure: Exception: The task directory (/tmp/appworld-verify-el_z4t47/data/tasks/hgcontrol_1) doesn't exist."
+            },
+            "argv": [
+              "/fixture/appworld-local-check.py",
+              "--task-id",
+              "hgcontrol_1",
+              "--source-split",
+              "train",
+              "--log",
+              "/tmp/hg-woffscorer3-appworld-24p7ymmh/calls.jsonl",
+              "--reward-file",
+              "/tmp/hg-woffscorer3-appworld-24p7ymmh/reward.txt",
+              "--evidence-file",
+              "/tmp/hg-woffscorer3-appworld-24p7ymmh/evidence.json"
+            ],
+            "measured": false,
+            "stdout": "environment failure: Exception: The task directory (/tmp/appworld-verify-el_z4t47/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "stderr": "environment failure: Exception: The task directory (/tmp/appworld-verify-el_z4t47/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "wrong-answer",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "local",
+        "wrong-answer"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"local\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"wrong-answer\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"41\"\n          }\n        }\n      ],\n      \"exit_code\": 3,\n      \"evidence\": {\n        \"task_id\": \"hgcontrol_1\",\n        \"source_split\": \"train\",\n        \"metric\": \"appworld.task_goal_completion\",\n        \"metric_name\": \"TGC\",\n        \"measured\": false,\n        \"error\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-l6h77_3f/data/tasks/hgcontrol_1) doesn't exist.\"\n      },\n      \"argv\": [\n        \"/fixture/appworld-local-check.py\",\n        \"--task-id\",\n        \"hgcontrol_1\",\n        \"--source-split\",\n        \"train\",\n        \"--log\",\n        \"/tmp/hg-woffscorer3-appworld-uf_v_xxv/calls.jsonl\",\n        \"--reward-file\",\n        \"/tmp/hg-woffscorer3-appworld-uf_v_xxv/reward.txt\",\n        \"--evidence-file\",\n        \"/tmp/hg-woffscorer3-appworld-uf_v_xxv/evidence.json\"\n      ],\n      \"measured\": false,\n      \"stdout\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-l6h77_3f/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"stderr\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-l6h77_3f/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "local",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "wrong-answer",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "41"
+                }
+              }
+            ],
+            "exit_code": 3,
+            "evidence": {
+              "task_id": "hgcontrol_1",
+              "source_split": "train",
+              "metric": "appworld.task_goal_completion",
+              "metric_name": "TGC",
+              "measured": false,
+              "error": "environment failure: Exception: The task directory (/tmp/appworld-verify-l6h77_3f/data/tasks/hgcontrol_1) doesn't exist."
+            },
+            "argv": [
+              "/fixture/appworld-local-check.py",
+              "--task-id",
+              "hgcontrol_1",
+              "--source-split",
+              "train",
+              "--log",
+              "/tmp/hg-woffscorer3-appworld-uf_v_xxv/calls.jsonl",
+              "--reward-file",
+              "/tmp/hg-woffscorer3-appworld-uf_v_xxv/reward.txt",
+              "--evidence-file",
+              "/tmp/hg-woffscorer3-appworld-uf_v_xxv/evidence.json"
+            ],
+            "measured": false,
+            "stdout": "environment failure: Exception: The task directory (/tmp/appworld-verify-l6h77_3f/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "stderr": "environment failure: Exception: The task directory (/tmp/appworld-verify-l6h77_3f/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-calls",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "local",
+        "no-calls"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"local\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"no-calls\",\n      \"calls\": [],\n      \"exit_code\": 3,\n      \"evidence\": {\n        \"task_id\": \"hgcontrol_1\",\n        \"source_split\": \"train\",\n        \"metric\": \"appworld.task_goal_completion\",\n        \"metric_name\": \"TGC\",\n        \"measured\": false,\n        \"error\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-rpx82l7u/data/tasks/hgcontrol_1) doesn't exist.\"\n      },\n      \"argv\": [\n        \"/fixture/appworld-local-check.py\",\n        \"--task-id\",\n        \"hgcontrol_1\",\n        \"--source-split\",\n        \"train\",\n        \"--log\",\n        \"/tmp/hg-woffscorer3-appworld-upie9es5/calls.jsonl\",\n        \"--reward-file\",\n        \"/tmp/hg-woffscorer3-appworld-upie9es5/reward.txt\",\n        \"--evidence-file\",\n        \"/tmp/hg-woffscorer3-appworld-upie9es5/evidence.json\"\n      ],\n      \"measured\": false,\n      \"stdout\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-rpx82l7u/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"stderr\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-rpx82l7u/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "local",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "no-calls",
+            "calls": [],
+            "exit_code": 3,
+            "evidence": {
+              "task_id": "hgcontrol_1",
+              "source_split": "train",
+              "metric": "appworld.task_goal_completion",
+              "metric_name": "TGC",
+              "measured": false,
+              "error": "environment failure: Exception: The task directory (/tmp/appworld-verify-rpx82l7u/data/tasks/hgcontrol_1) doesn't exist."
+            },
+            "argv": [
+              "/fixture/appworld-local-check.py",
+              "--task-id",
+              "hgcontrol_1",
+              "--source-split",
+              "train",
+              "--log",
+              "/tmp/hg-woffscorer3-appworld-upie9es5/calls.jsonl",
+              "--reward-file",
+              "/tmp/hg-woffscorer3-appworld-upie9es5/reward.txt",
+              "--evidence-file",
+              "/tmp/hg-woffscorer3-appworld-upie9es5/evidence.json"
+            ],
+            "measured": false,
+            "stdout": "environment failure: Exception: The task directory (/tmp/appworld-verify-rpx82l7u/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "stderr": "environment failure: Exception: The task directory (/tmp/appworld-verify-rpx82l7u/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "numeric-answer",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "local",
+        "numeric-answer"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"local\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"numeric-answer\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": 42\n          }\n        }\n      ],\n      \"exit_code\": 3,\n      \"evidence\": {\n        \"task_id\": \"hgcontrol_1\",\n        \"source_split\": \"train\",\n        \"metric\": \"appworld.task_goal_completion\",\n        \"metric_name\": \"TGC\",\n        \"measured\": false,\n        \"error\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-ixaflyr4/data/tasks/hgcontrol_1) doesn't exist.\"\n      },\n      \"argv\": [\n        \"/fixture/appworld-local-check.py\",\n        \"--task-id\",\n        \"hgcontrol_1\",\n        \"--source-split\",\n        \"train\",\n        \"--log\",\n        \"/tmp/hg-woffscorer3-appworld-mpe7m99c/calls.jsonl\",\n        \"--reward-file\",\n        \"/tmp/hg-woffscorer3-appworld-mpe7m99c/reward.txt\",\n        \"--evidence-file\",\n        \"/tmp/hg-woffscorer3-appworld-mpe7m99c/evidence.json\"\n      ],\n      \"measured\": false,\n      \"stdout\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-ixaflyr4/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"stderr\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-ixaflyr4/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "local",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "numeric-answer",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": 42
+                }
+              }
+            ],
+            "exit_code": 3,
+            "evidence": {
+              "task_id": "hgcontrol_1",
+              "source_split": "train",
+              "metric": "appworld.task_goal_completion",
+              "metric_name": "TGC",
+              "measured": false,
+              "error": "environment failure: Exception: The task directory (/tmp/appworld-verify-ixaflyr4/data/tasks/hgcontrol_1) doesn't exist."
+            },
+            "argv": [
+              "/fixture/appworld-local-check.py",
+              "--task-id",
+              "hgcontrol_1",
+              "--source-split",
+              "train",
+              "--log",
+              "/tmp/hg-woffscorer3-appworld-mpe7m99c/calls.jsonl",
+              "--reward-file",
+              "/tmp/hg-woffscorer3-appworld-mpe7m99c/reward.txt",
+              "--evidence-file",
+              "/tmp/hg-woffscorer3-appworld-mpe7m99c/evidence.json"
+            ],
+            "measured": false,
+            "stdout": "environment failure: Exception: The task directory (/tmp/appworld-verify-ixaflyr4/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "stderr": "environment failure: Exception: The task directory (/tmp/appworld-verify-ixaflyr4/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "wrong-then-correct",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "local",
+        "wrong-then-correct"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"local\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"wrong-then-correct\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"41\"\n          }\n        },\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"42\"\n          }\n        }\n      ],\n      \"exit_code\": 3,\n      \"evidence\": {\n        \"task_id\": \"hgcontrol_1\",\n        \"source_split\": \"train\",\n        \"metric\": \"appworld.task_goal_completion\",\n        \"metric_name\": \"TGC\",\n        \"measured\": false,\n        \"error\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-phttof_c/data/tasks/hgcontrol_1) doesn't exist.\"\n      },\n      \"argv\": [\n        \"/fixture/appworld-local-check.py\",\n        \"--task-id\",\n        \"hgcontrol_1\",\n        \"--source-split\",\n        \"train\",\n        \"--log\",\n        \"/tmp/hg-woffscorer3-appworld-_c6gmz9o/calls.jsonl\",\n        \"--reward-file\",\n        \"/tmp/hg-woffscorer3-appworld-_c6gmz9o/reward.txt\",\n        \"--evidence-file\",\n        \"/tmp/hg-woffscorer3-appworld-_c6gmz9o/evidence.json\"\n      ],\n      \"measured\": false,\n      \"stdout\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-phttof_c/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"stderr\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-phttof_c/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "local",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "wrong-then-correct",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "41"
+                }
+              },
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "42"
+                }
+              }
+            ],
+            "exit_code": 3,
+            "evidence": {
+              "task_id": "hgcontrol_1",
+              "source_split": "train",
+              "metric": "appworld.task_goal_completion",
+              "metric_name": "TGC",
+              "measured": false,
+              "error": "environment failure: Exception: The task directory (/tmp/appworld-verify-phttof_c/data/tasks/hgcontrol_1) doesn't exist."
+            },
+            "argv": [
+              "/fixture/appworld-local-check.py",
+              "--task-id",
+              "hgcontrol_1",
+              "--source-split",
+              "train",
+              "--log",
+              "/tmp/hg-woffscorer3-appworld-_c6gmz9o/calls.jsonl",
+              "--reward-file",
+              "/tmp/hg-woffscorer3-appworld-_c6gmz9o/reward.txt",
+              "--evidence-file",
+              "/tmp/hg-woffscorer3-appworld-_c6gmz9o/evidence.json"
+            ],
+            "measured": false,
+            "stdout": "environment failure: Exception: The task directory (/tmp/appworld-verify-phttof_c/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "stderr": "environment failure: Exception: The task directory (/tmp/appworld-verify-phttof_c/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "invalid-api",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "local",
+        "invalid-api"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"local\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"invalid-api\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/not-a-real-endpoint\",\n          \"method\": \"post\",\n          \"data\": {}\n        }\n      ],\n      \"exit_code\": 3,\n      \"evidence\": {\n        \"task_id\": \"hgcontrol_1\",\n        \"source_split\": \"train\",\n        \"metric\": \"appworld.task_goal_completion\",\n        \"metric_name\": \"TGC\",\n        \"measured\": false,\n        \"error\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-o5pioti3/data/tasks/hgcontrol_1) doesn't exist.\"\n      },\n      \"argv\": [\n        \"/fixture/appworld-local-check.py\",\n        \"--task-id\",\n        \"hgcontrol_1\",\n        \"--source-split\",\n        \"train\",\n        \"--log\",\n        \"/tmp/hg-woffscorer3-appworld-tpvjrm8m/calls.jsonl\",\n        \"--reward-file\",\n        \"/tmp/hg-woffscorer3-appworld-tpvjrm8m/reward.txt\",\n        \"--evidence-file\",\n        \"/tmp/hg-woffscorer3-appworld-tpvjrm8m/evidence.json\"\n      ],\n      \"measured\": false,\n      \"stdout\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-o5pioti3/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"stderr\": \"environment failure: Exception: The task directory (/tmp/appworld-verify-o5pioti3/data/tasks/hgcontrol_1) doesn't exist.\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "local",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "invalid-api",
+            "calls": [
+              {
+                "url": "/supervisor/not-a-real-endpoint",
+                "method": "post",
+                "data": {}
+              }
+            ],
+            "exit_code": 3,
+            "evidence": {
+              "task_id": "hgcontrol_1",
+              "source_split": "train",
+              "metric": "appworld.task_goal_completion",
+              "metric_name": "TGC",
+              "measured": false,
+              "error": "environment failure: Exception: The task directory (/tmp/appworld-verify-o5pioti3/data/tasks/hgcontrol_1) doesn't exist."
+            },
+            "argv": [
+              "/fixture/appworld-local-check.py",
+              "--task-id",
+              "hgcontrol_1",
+              "--source-split",
+              "train",
+              "--log",
+              "/tmp/hg-woffscorer3-appworld-tpvjrm8m/calls.jsonl",
+              "--reward-file",
+              "/tmp/hg-woffscorer3-appworld-tpvjrm8m/reward.txt",
+              "--evidence-file",
+              "/tmp/hg-woffscorer3-appworld-tpvjrm8m/evidence.json"
+            ],
+            "measured": false,
+            "stdout": "environment failure: Exception: The task directory (/tmp/appworld-verify-o5pioti3/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "stderr": "environment failure: Exception: The task directory (/tmp/appworld-verify-o5pioti3/data/tasks/hgcontrol_1) doesn't exist.\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    }
+  ],
+  "interpreter": "/usr/local/bin/python",
+  "interpreter_sha256": "92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79"
+}

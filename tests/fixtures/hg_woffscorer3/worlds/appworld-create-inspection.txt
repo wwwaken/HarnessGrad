@@ -1,0 +1,40 @@
+{'record_hash': ModelField(name='record_hash', type=Optional[str], required=False, default=None), 'id': ModelField(name='id', type=Optional[int], required=False, default=None), 'first_name': ModelField(name='first_name', type=str, required=True), 'last_name': ModelField(name='last_name', type=str, required=True), 'email': ModelField(name='email', type=EmailStr, required=True), 'phone_number': ModelField(name='phone_number', type=str, required=True), 'birthday': ModelField(name='birthday', type=str, required=True), 'sex': ModelField(name='sex', type=Optional[Literal['male', 'female']], required=False, default=None)}
+['create', 'create_db', 'create_save']
+    @classmethod
+    def create_save(cls, **kwargs: Any) -> Self:
+        created_object = cls.create(**kwargs)
+        created_object.save()
+        return created_object
+
+def save_local_dbs(
+    from_db_home_path: str,
+    to_db_home_path: str,
+    format: Literal["full", "changes"] = "full",
+    app_names: list[str] | None = None,
+    delete_if_exists: bool = False,
+    skip_mandatory_apps: bool = False,
+    save_model_hashes: bool = False,
+    vaccum: bool = False,
+):
+    if format not in ["full", "changes"]:
+        raise Exception(f"format must be either 'full' or 'changes'. Found {format}.")
+    if vaccum and format != "full":
+        raise Exception("vaccum can only be used with format='full'.")
+    if os.path.exists(to_db_home_path) and os.listdir(to_db_home_path) and not delete_if_exists:
+        raise Exception(f"The db_home_path {to_db_home_path} exists and is not empty.")
+    shutil.rmtree(to_db_home_path, ignore_errors=True)
+    os.makedirs(to_db_home_path, exist_ok=True)
+    if not skip_mandatory_apps:
+        mandatory_apps = ["admin", "supervisor"]
+        for app in mandatory_apps:
+            if app not in app_names:
+                app_names.append(app)
+    if save_model_hashes:
+        ModelHashHandler.save(from_db_home_path, to_db_home_path)
+    for app_name in app_names:
+        models = import_models_module(app_name)
+        saved_db_path = db_home_to_app_path(to_db_home_path, app_name, format=format)
+        models.SQLModel.db.save(format, saved_db_path)
+        if vaccum:
+            vacuum_sqlite_database(saved_db_path)
+

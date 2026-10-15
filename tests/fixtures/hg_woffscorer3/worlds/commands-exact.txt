@@ -1,0 +1,38 @@
++ set -euo pipefail
++++ dirname -- tests/fixtures/hg_woffscorer3/worlds/commands.sh
+++ cd -- tests/fixtures/hg_woffscorer3/worlds
+++ pwd
++ F=/tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds
+++ git -C /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds rev-parse --show-toplevel
++ R=/tmp/hg-offscorer3-worlds
++ cd /tmp/hg-offscorer3-worlds
++ export PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
++ PYTHONDONTWRITEBYTECODE=1
++ CUDA_VISIBLE_DEVICES=
++ OPENBLAS_NUM_THREADS=1
++ OMP_NUM_THREADS=1
++ python3 /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds/prepare_alfworld.py
++ for side in official local
++ timeout 150s python3 /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds/offline_exec.py /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds/run_alfworld.py official
++ for side in official local
++ timeout 150s python3 /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds/offline_exec.py /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds/run_alfworld.py local
++ IMAGE=sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca
++ docker image inspect sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca
++ names=()
++ trap cleanup EXIT
++ for side in official local
++ name=hg-woffscorer3-worlds-official-660438
++ names+=("$name")
++ timeout 150s docker run --rm --name hg-woffscorer3-worlds-official-660438 --network none --read-only --tmpfs /tmp:rw,nosuid,size=256m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 1g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds,dst=/fixture,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/appworld_parent.py official
++ docker inspect hg-woffscorer3-worlds-official-660438
++ for side in official local
++ name=hg-woffscorer3-worlds-local-660438
++ names+=("$name")
++ timeout 150s docker run --rm --name hg-woffscorer3-worlds-local-660438 --network none --read-only --tmpfs /tmp:rw,nosuid,size=256m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 1g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds,dst=/fixture,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/appworld_parent.py local
++ docker inspect hg-woffscorer3-worlds-local-660438
++ python3 /tmp/hg-offscorer3-worlds/tests/fixtures/hg_woffscorer3/worlds/compare.py
++ cleanup
++ for name in "${names[@]}"
++ docker rm -f hg-woffscorer3-worlds-official-660438
++ for name in "${names[@]}"
++ docker rm -f hg-woffscorer3-worlds-local-660438

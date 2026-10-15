@@ -1,0 +1,402 @@
+{
+  "mode": "official",
+  "children": [
+    {
+      "id": "correct-answer",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "official",
+        "correct-answer"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"official\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"correct-answer\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"42\"\n          }\n        }\n      ],\n      \"measured\": true,\n      \"reward\": 1.0,\n      \"tracker\": {\n        \"success\": true,\n        \"difficulty\": 1,\n        \"num_tests\": 1,\n        \"passes\": [\n          {\n            \"requirement\": \"authored answer equals 42\",\n            \"label\": \"no_op_fail\"\n          }\n        ],\n        \"failures\": []\n      },\n      \"responses\": [\n        {\n          \"message\": \"Marked the active task complete.\"\n        }\n      ],\n      \"world_closed\": true,\n      \"stdout\": \"\",\n      \"stderr\": \"/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\\n  warn(\\\"IPython parent '{0}' is not a writable location,\\\"\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "official",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "correct-answer",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "42"
+                }
+              }
+            ],
+            "measured": true,
+            "reward": 1.0,
+            "tracker": {
+              "success": true,
+              "difficulty": 1,
+              "num_tests": 1,
+              "passes": [
+                {
+                  "requirement": "authored answer equals 42",
+                  "label": "no_op_fail"
+                }
+              ],
+              "failures": []
+            },
+            "responses": [
+              {
+                "message": "Marked the active task complete."
+              }
+            ],
+            "world_closed": true,
+            "stdout": "",
+            "stderr": "/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\n  warn(\"IPython parent '{0}' is not a writable location,\"\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "wrong-answer",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "official",
+        "wrong-answer"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"official\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"wrong-answer\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"41\"\n          }\n        }\n      ],\n      \"measured\": true,\n      \"reward\": 0.0,\n      \"tracker\": {\n        \"success\": false,\n        \"difficulty\": 1,\n        \"num_tests\": 1,\n        \"passes\": [],\n        \"failures\": [\n          {\n            \"requirement\": \"authored answer equals 42\",\n            \"trace\": \"```python\\nwith test(\\\"authored answer equals 42\\\"):\\n```\\n----------\\nAssertionError:  '41' == '42'\",\n            \"label\": \"no_op_fail\"\n          }\n        ]\n      },\n      \"responses\": [\n        {\n          \"message\": \"Marked the active task complete.\"\n        }\n      ],\n      \"world_closed\": true,\n      \"stdout\": \"\",\n      \"stderr\": \"/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\\n  warn(\\\"IPython parent '{0}' is not a writable location,\\\"\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "official",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "wrong-answer",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "41"
+                }
+              }
+            ],
+            "measured": true,
+            "reward": 0.0,
+            "tracker": {
+              "success": false,
+              "difficulty": 1,
+              "num_tests": 1,
+              "passes": [],
+              "failures": [
+                {
+                  "requirement": "authored answer equals 42",
+                  "trace": "```python\nwith test(\"authored answer equals 42\"):\n```\n----------\nAssertionError:  '41' == '42'",
+                  "label": "no_op_fail"
+                }
+              ]
+            },
+            "responses": [
+              {
+                "message": "Marked the active task complete."
+              }
+            ],
+            "world_closed": true,
+            "stdout": "",
+            "stderr": "/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\n  warn(\"IPython parent '{0}' is not a writable location,\"\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-calls",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "official",
+        "no-calls"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"official\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"no-calls\",\n      \"calls\": [],\n      \"measured\": true,\n      \"reward\": 0.0,\n      \"tracker\": {\n        \"success\": false,\n        \"difficulty\": 1,\n        \"num_tests\": 1,\n        \"passes\": [],\n        \"failures\": [\n          {\n            \"requirement\": \"authored answer equals 42\",\n            \"trace\": \"```python\\nwith test(\\\"authored answer equals 42\\\"):\\n```\\n----------\\nAssertionError:  '<<not_given>>' == '42'\",\n            \"label\": \"no_op_fail\"\n          }\n        ]\n      },\n      \"responses\": [],\n      \"world_closed\": true,\n      \"stdout\": \"\",\n      \"stderr\": \"/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\\n  warn(\\\"IPython parent '{0}' is not a writable location,\\\"\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "official",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "no-calls",
+            "calls": [],
+            "measured": true,
+            "reward": 0.0,
+            "tracker": {
+              "success": false,
+              "difficulty": 1,
+              "num_tests": 1,
+              "passes": [],
+              "failures": [
+                {
+                  "requirement": "authored answer equals 42",
+                  "trace": "```python\nwith test(\"authored answer equals 42\"):\n```\n----------\nAssertionError:  '<<not_given>>' == '42'",
+                  "label": "no_op_fail"
+                }
+              ]
+            },
+            "responses": [],
+            "world_closed": true,
+            "stdout": "",
+            "stderr": "/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\n  warn(\"IPython parent '{0}' is not a writable location,\"\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "numeric-answer",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "official",
+        "numeric-answer"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"official\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"numeric-answer\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": 42\n          }\n        }\n      ],\n      \"measured\": true,\n      \"reward\": 1.0,\n      \"tracker\": {\n        \"success\": true,\n        \"difficulty\": 1,\n        \"num_tests\": 1,\n        \"passes\": [\n          {\n            \"requirement\": \"authored answer equals 42\",\n            \"label\": \"no_op_fail\"\n          }\n        ],\n        \"failures\": []\n      },\n      \"responses\": [\n        {\n          \"message\": \"Marked the active task complete.\"\n        }\n      ],\n      \"world_closed\": true,\n      \"stdout\": \"\",\n      \"stderr\": \"/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\\n  warn(\\\"IPython parent '{0}' is not a writable location,\\\"\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "official",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "numeric-answer",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": 42
+                }
+              }
+            ],
+            "measured": true,
+            "reward": 1.0,
+            "tracker": {
+              "success": true,
+              "difficulty": 1,
+              "num_tests": 1,
+              "passes": [
+                {
+                  "requirement": "authored answer equals 42",
+                  "label": "no_op_fail"
+                }
+              ],
+              "failures": []
+            },
+            "responses": [
+              {
+                "message": "Marked the active task complete."
+              }
+            ],
+            "world_closed": true,
+            "stdout": "",
+            "stderr": "/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\n  warn(\"IPython parent '{0}' is not a writable location,\"\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "wrong-then-correct",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "official",
+        "wrong-then-correct"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"official\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"wrong-then-correct\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"41\"\n          }\n        },\n        {\n          \"url\": \"/supervisor/message\",\n          \"method\": \"post\",\n          \"data\": {\n            \"answer\": \"42\"\n          }\n        }\n      ],\n      \"measured\": true,\n      \"reward\": 1.0,\n      \"tracker\": {\n        \"success\": true,\n        \"difficulty\": 1,\n        \"num_tests\": 1,\n        \"passes\": [\n          {\n            \"requirement\": \"authored answer equals 42\",\n            \"label\": \"no_op_fail\"\n          }\n        ],\n        \"failures\": []\n      },\n      \"responses\": [\n        {\n          \"message\": \"Marked the active task complete.\"\n        },\n        {\n          \"message\": \"Marked the active task complete.\"\n        }\n      ],\n      \"world_closed\": true,\n      \"stdout\": \"\",\n      \"stderr\": \"/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\\n  warn(\\\"IPython parent '{0}' is not a writable location,\\\"\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "official",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "wrong-then-correct",
+            "calls": [
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "41"
+                }
+              },
+              {
+                "url": "/supervisor/message",
+                "method": "post",
+                "data": {
+                  "answer": "42"
+                }
+              }
+            ],
+            "measured": true,
+            "reward": 1.0,
+            "tracker": {
+              "success": true,
+              "difficulty": 1,
+              "num_tests": 1,
+              "passes": [
+                {
+                  "requirement": "authored answer equals 42",
+                  "label": "no_op_fail"
+                }
+              ],
+              "failures": []
+            },
+            "responses": [
+              {
+                "message": "Marked the active task complete."
+              },
+              {
+                "message": "Marked the active task complete."
+              }
+            ],
+            "world_closed": true,
+            "stdout": "",
+            "stderr": "/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\n  warn(\"IPython parent '{0}' is not a writable location,\"\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "invalid-api",
+      "argv": [
+        "/usr/local/bin/python",
+        "/fixture/run_appworld.py",
+        "official",
+        "invalid-api"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"mode\": \"official\",\n  \"network\": {\n    \"interfaces\": \"Inter-|   Receive                                                |  Transmit\\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\\n\",\n    \"routes\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT                                                       \\n\",\n    \"external_probe\": {\n      \"type\": \"OSError\",\n      \"errno\": 101,\n      \"message\": \"[Errno 101] Network is unreachable\"\n    },\n    \"namespace\": \"net:[4026535622]\"\n  },\n  \"inputs_sha256\": \"21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f\",\n  \"archive_sha256\": \"0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43\",\n  \"local_check_sha256\": \"0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5\",\n  \"blocked_released_task_reads\": [],\n  \"results\": [\n    {\n      \"id\": \"invalid-api\",\n      \"calls\": [\n        {\n          \"url\": \"/supervisor/not-a-real-endpoint\",\n          \"method\": \"post\",\n          \"data\": {}\n        }\n      ],\n      \"measured\": true,\n      \"reward\": 0.0,\n      \"tracker\": {\n        \"success\": false,\n        \"difficulty\": 1,\n        \"num_tests\": 1,\n        \"passes\": [],\n        \"failures\": [\n          {\n            \"requirement\": \"authored answer equals 42\",\n            \"trace\": \"```python\\nwith test(\\\"authored answer equals 42\\\"):\\n```\\n----------\\nAssertionError:  '<<not_given>>' == '42'\",\n            \"label\": \"no_op_fail\"\n          }\n        ]\n      },\n      \"responses\": [\n        {\n          \"message\": \"API not found or some of the passed parameters are invalid.\"\n        }\n      ],\n      \"world_closed\": true,\n      \"stdout\": \"\",\n      \"stderr\": \"/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\\n  warn(\\\"IPython parent '{0}' is not a writable location,\\\"\\n\",\n      \"scratch_removed\": true\n    }\n  ]\n}\n",
+      "stderr": "",
+      "output": {
+        "mode": "official",
+        "network": {
+          "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+          "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+          "external_probe": {
+            "type": "OSError",
+            "errno": 101,
+            "message": "[Errno 101] Network is unreachable"
+          },
+          "namespace": "net:[4026535622]"
+        },
+        "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+        "archive_sha256": "0ec0c7e565474d437edbd40050a9e0dbb0602629800e49f38e9c2f1e0057db43",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "blocked_released_task_reads": [],
+        "results": [
+          {
+            "id": "invalid-api",
+            "calls": [
+              {
+                "url": "/supervisor/not-a-real-endpoint",
+                "method": "post",
+                "data": {}
+              }
+            ],
+            "measured": true,
+            "reward": 0.0,
+            "tracker": {
+              "success": false,
+              "difficulty": 1,
+              "num_tests": 1,
+              "passes": [],
+              "failures": [
+                {
+                  "requirement": "authored answer equals 42",
+                  "trace": "```python\nwith test(\"authored answer equals 42\"):\n```\n----------\nAssertionError:  '<<not_given>>' == '42'",
+                  "label": "no_op_fail"
+                }
+              ]
+            },
+            "responses": [
+              {
+                "message": "API not found or some of the passed parameters are invalid."
+              }
+            ],
+            "world_closed": true,
+            "stdout": "",
+            "stderr": "/usr/local/lib/python3.11/site-packages/IPython/paths.py:66: UserWarning: IPython parent '/root' is not a writable location, using a temp directory.\n  warn(\"IPython parent '{0}' is not a writable location,\"\n",
+            "scratch_removed": true
+          }
+        ]
+      }
+    }
+  ],
+  "interpreter": "/usr/local/bin/python",
+  "interpreter_sha256": "92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79"
+}

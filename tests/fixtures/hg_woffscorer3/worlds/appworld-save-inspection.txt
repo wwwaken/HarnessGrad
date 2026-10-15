@@ -1,0 +1,25 @@
+{'record_hash': ModelField(name='record_hash', type=Optional[str], required=False, default=None), 'id': ModelField(name='id', type=Optional[int], required=False, default=None), 'first_name': ModelField(name='first_name', type=str, required=True), 'last_name': ModelField(name='last_name', type=str, required=True), 'email': ModelField(name='email', type=str, required=True), 'phone_number': ModelField(name='phone_number', type=str, required=True), 'birthday': ModelField(name='birthday', type=str, required=True), 'sex': ModelField(name='sex', type=Optional[Literal['male', 'female']], required=False, default=None)}
+    def save(
+        self,
+        db_home_path: str,
+        format: Literal["full", "changes"] = "full",
+        app_names: list[str] | None = None,
+        delete_if_exists: bool = False,
+        skip_mandatory_apps: bool = False,
+        save_model_hashes: bool = False,
+        vaccum: bool = False,
+    ) -> None:
+        app_names = app_names or self.app_names
+        save_local_dbs(
+            from_db_home_path=self.to_db_home_path,
+            to_db_home_path=db_home_path,
+            format=format,
+            app_names=app_names,
+            delete_if_exists=delete_if_exists,
+            skip_mandatory_apps=skip_mandatory_apps,
+            save_model_hashes=save_model_hashes,
+            vaccum=vaccum,
+        )
+
+[PosixPath('/appworld/data/tasks'), PosixPath('/appworld/data/LICENSE'), PosixPath('/appworld/data/README_BEFORE_SHARING.md'), PosixPath('/appworld/data/base_dbs'), PosixPath('/appworld/data/datasets'), PosixPath('/appworld/data/version.txt'), PosixPath('/appworld/data/api_docs')]
+{'record_hash': ModelField(name='record_hash', type=Optional[str], required=False, default=None), 'id': ModelField(name='id', type=Optional[int], required=False, default=None), 'project_id': ModelField(name='project_id', type=int, required=True), 'section_id': ModelField(name='section_id', type=Optional[int], required=False, default=None), 'user_id': ModelField(name='user_id', type=int, required=True), 'title': ModelField(name='title', type=ConstrainedStrValue, required=True), 'description': ModelField(name='description', type=Optional[str], required=False, default=None), 'due_date': ModelField(name='due_date', type=Optional[datetime], required=False, default=None), 'priority': ModelField(name='priority', type=Literal['high', 'medium', 'low'], required=True), 'is_completed': ModelField(name='is_completed', type=bool, required=False, default=False), 'duration': ModelField(name='duration', type=Optional[float], required=False, default=None), 'duration_unit': ModelField(name='duration_unit', type=Optional[Literal['minutes', 'hours', 'days']], required=False, default=None), 'order_index': ModelField(name='order_index', type=ConstrainedIntValue, required=True), 'assignee_id': ModelField(name='assignee_id', type=Optional[int], required=False, default=None), 'assigner_id': ModelField(name='assigner_id', type=Optional[int], required=False, default=None), 'created_at': ModelField(name='created_at', type=datetime, required=False, default_factory='<function now>')}

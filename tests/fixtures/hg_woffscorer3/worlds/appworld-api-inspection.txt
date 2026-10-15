@@ -1,0 +1,58 @@
+@app.post("/message", **ResponseModel.response_args("message"))
+def complete_task(
+    answer: AnswerType = Body(
+        None,
+        description=(
+            "The answer to the task instruction. "
+            "Pass it if and only if the task requests an answer, e.g., 'How many songs are in the Spotify queue?'. "
+            "The answer must be concise, such as a number, a yes/no, or a specific entity, name, etc, "
+            "e.g., '10' in this case. If the task is not a question, e.g., 'Start my Spotify music player.', "
+            "the answer must be left to the default value, i.e., None."
+        ),
+    ),
+    status: TASK_STATUS_LITERAL = Body("success", description="Mark the task complete."),
+) -> ListOrDict:
+    """
+    description: Mark the currently active task as complete with the given answer.
+    model: Task
+    ---
+    {"message": "string"}
+    """
+    active_tasks = models.Task.all()
+    if not active_tasks:
+        raise_http_exception("No active task found.")
+    active_task = active_tasks[0]
+    active_task.answer = json.dumps(answer)
+    active_task.status = status
+    active_task.save()
+    return {"message": "Marked the active task complete."}
+
+{'record_hash': ModelField(name='record_hash', type=Optional[str], required=False, default=None), 'id': ModelField(name='id', type=Optional[int], required=False, default=None), 'supervisor_id': ModelField(name='supervisor_id', type=int, required=True), 'instruction': ModelField(name='instruction', type=ConstrainedStrValue, required=True), 'status': ModelField(name='status', type=Optional[Literal['success', 'fail']], required=False, default=None), 'answer': ModelField(name='answer', type=ConstrainedStrValue, required=False, default='"<<NOT_GIVEN>>"')}
+{'record_hash': ModelField(name='record_hash', type=Optional[str], required=False, default=None), 'id': ModelField(name='id', type=Optional[int], required=False, default=None), 'supervisor_id': ModelField(name='supervisor_id', type=int, required=True), 'account_name': ModelField(name='account_name', type=ConstrainedStrValue, required=True), 'password': ModelField(name='password', type=ConstrainedStrValue, required=True)}
+0.1.0
+    @classmethod
+    @cache
+    def load(
+        cls,
+        load_apps: tuple[str] | None = None,
+        include_response_schemas: bool = True,
+    ) -> Self:
+        api_docs_directory = os.path.join(path_store.data, "api_docs")
+        app_to_api_name_to_doc: dict[str, dict[str, dict]] = {}
+        if load_apps is None:
+            load_apps = get_all_apps(skip_admin=True)
+        for app_name in load_apps:
+            file_path = os.path.join(api_docs_directory, "standard", app_name + ".json")
+            api_name_to_docs = read_json(file_path)
+            for api_name, docs in api_name_to_docs.items():
+                if include_response_schemas and "response_schemas" not in docs:
+                    raise Exception(
+                        "Asked to include response_schemas but the api_docs file does not have it. "
+                        f"The issue is in {app_name}.{api_name}."
+                    )
+                if not include_response_schemas and "response_schemas" in docs:
+                    docs.pop("response_schemas")
+                docs.pop("canary_string")
+            app_to_api_name_to_doc[app_name] = api_name_to_docs
+        return cls._from_dict(app_to_api_name_to_doc)
+

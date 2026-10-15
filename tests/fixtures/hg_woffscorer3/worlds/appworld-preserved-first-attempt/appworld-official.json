@@ -1,0 +1,142 @@
+{
+  "mode": "official",
+  "network": {
+    "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+    "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+    "external_probe": {
+      "type": "OSError",
+      "errno": 101,
+      "message": "[Errno 101] Network is unreachable"
+    },
+    "namespace": "net:[4026535622]"
+  },
+  "inputs_sha256": "21aeb6981c5ad8e242fda28b84ea8f645fbc5ec93953bce8d7e68878d6e46e7f",
+  "archive_sha256": "bea695b31c422cfacb9802d5bb3e9ee720d00e5274bf934cf3c29e019b7861de",
+  "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+  "blocked_released_task_reads": [],
+  "results": [
+    {
+      "id": "correct-answer",
+      "calls": [
+        {
+          "url": "/supervisor/message",
+          "method": "post",
+          "data": {
+            "answer": "42"
+          }
+        }
+      ],
+      "measured": false,
+      "error": {
+        "type": "TypeError",
+        "message": "object of type 'NoneType' has no len()",
+        "traceback": "Traceback (most recent call last):\n  File \"/fixture/run_appworld.py\", line 32, in <module>\n    with AppWorld(task_id=inputs['task_id'],experiment_name='official-control',raise_on_failure=False,ground_truth_mode='minimal') as world:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/environment.py\", line 214, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/task.py\", line 137, in load\n    task.ground_truth = GroundTruth.load(\n                        ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 253, in load\n    ground_truth = GroundTruth(\n                   ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 70, in __init__\n    metadata[\"num_apps\"] = len(self.required_apps)\n                           ^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: object of type 'NoneType' has no len()\n"
+      },
+      "stdout": "",
+      "stderr": "",
+      "scratch_removed": true
+    },
+    {
+      "id": "wrong-answer",
+      "calls": [
+        {
+          "url": "/supervisor/message",
+          "method": "post",
+          "data": {
+            "answer": "41"
+          }
+        }
+      ],
+      "measured": false,
+      "error": {
+        "type": "TypeError",
+        "message": "object of type 'NoneType' has no len()",
+        "traceback": "Traceback (most recent call last):\n  File \"/fixture/run_appworld.py\", line 32, in <module>\n    with AppWorld(task_id=inputs['task_id'],experiment_name='official-control',raise_on_failure=False,ground_truth_mode='minimal') as world:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/environment.py\", line 214, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/task.py\", line 137, in load\n    task.ground_truth = GroundTruth.load(\n                        ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 253, in load\n    ground_truth = GroundTruth(\n                   ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 70, in __init__\n    metadata[\"num_apps\"] = len(self.required_apps)\n                           ^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: object of type 'NoneType' has no len()\n"
+      },
+      "stdout": "",
+      "stderr": "",
+      "scratch_removed": true
+    },
+    {
+      "id": "no-calls",
+      "calls": [],
+      "measured": false,
+      "error": {
+        "type": "TypeError",
+        "message": "object of type 'NoneType' has no len()",
+        "traceback": "Traceback (most recent call last):\n  File \"/fixture/run_appworld.py\", line 32, in <module>\n    with AppWorld(task_id=inputs['task_id'],experiment_name='official-control',raise_on_failure=False,ground_truth_mode='minimal') as world:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/environment.py\", line 214, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/task.py\", line 137, in load\n    task.ground_truth = GroundTruth.load(\n                        ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 253, in load\n    ground_truth = GroundTruth(\n                   ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 70, in __init__\n    metadata[\"num_apps\"] = len(self.required_apps)\n                           ^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: object of type 'NoneType' has no len()\n"
+      },
+      "stdout": "",
+      "stderr": "",
+      "scratch_removed": true
+    },
+    {
+      "id": "numeric-answer",
+      "calls": [
+        {
+          "url": "/supervisor/message",
+          "method": "post",
+          "data": {
+            "answer": 42
+          }
+        }
+      ],
+      "measured": false,
+      "error": {
+        "type": "TypeError",
+        "message": "object of type 'NoneType' has no len()",
+        "traceback": "Traceback (most recent call last):\n  File \"/fixture/run_appworld.py\", line 32, in <module>\n    with AppWorld(task_id=inputs['task_id'],experiment_name='official-control',raise_on_failure=False,ground_truth_mode='minimal') as world:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/environment.py\", line 214, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/task.py\", line 137, in load\n    task.ground_truth = GroundTruth.load(\n                        ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 253, in load\n    ground_truth = GroundTruth(\n                   ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 70, in __init__\n    metadata[\"num_apps\"] = len(self.required_apps)\n                           ^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: object of type 'NoneType' has no len()\n"
+      },
+      "stdout": "",
+      "stderr": "",
+      "scratch_removed": true
+    },
+    {
+      "id": "wrong-then-correct",
+      "calls": [
+        {
+          "url": "/supervisor/message",
+          "method": "post",
+          "data": {
+            "answer": "41"
+          }
+        },
+        {
+          "url": "/supervisor/message",
+          "method": "post",
+          "data": {
+            "answer": "42"
+          }
+        }
+      ],
+      "measured": false,
+      "error": {
+        "type": "TypeError",
+        "message": "object of type 'NoneType' has no len()",
+        "traceback": "Traceback (most recent call last):\n  File \"/fixture/run_appworld.py\", line 32, in <module>\n    with AppWorld(task_id=inputs['task_id'],experiment_name='official-control',raise_on_failure=False,ground_truth_mode='minimal') as world:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/environment.py\", line 214, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/task.py\", line 137, in load\n    task.ground_truth = GroundTruth.load(\n                        ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 253, in load\n    ground_truth = GroundTruth(\n                   ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 70, in __init__\n    metadata[\"num_apps\"] = len(self.required_apps)\n                           ^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: object of type 'NoneType' has no len()\n"
+      },
+      "stdout": "",
+      "stderr": "",
+      "scratch_removed": true
+    },
+    {
+      "id": "invalid-api",
+      "calls": [
+        {
+          "url": "/supervisor/not-a-real-endpoint",
+          "method": "post",
+          "data": {}
+        }
+      ],
+      "measured": false,
+      "error": {
+        "type": "TypeError",
+        "message": "object of type 'NoneType' has no len()",
+        "traceback": "Traceback (most recent call last):\n  File \"/fixture/run_appworld.py\", line 32, in <module>\n    with AppWorld(task_id=inputs['task_id'],experiment_name='official-control',raise_on_failure=False,ground_truth_mode='minimal') as world:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/environment.py\", line 214, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/task.py\", line 137, in load\n    task.ground_truth = GroundTruth.load(\n                        ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 253, in load\n    ground_truth = GroundTruth(\n                   ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packages/appworld/ground_truth.py\", line 70, in __init__\n    metadata[\"num_apps\"] = len(self.required_apps)\n                           ^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: object of type 'NoneType' has no len()\n"
+      },
+      "stdout": "",
+      "stderr": "",
+      "scratch_removed": true
+    }
+  ]
+}
