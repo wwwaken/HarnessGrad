@@ -9,7 +9,15 @@ import subprocess
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "reports/b6-blocker-evidence"
+EVIDENCE = ROOT / "tests/fixtures/hg_migration_site/b6-blocker-evidence"
+
+
+@pytest.fixture(autouse=True)
+def optional_evidence_packet(request):
+    if request.node.name == "test_active_registry_retires_reviews_without_promoting_historical_results":
+        return
+    if not EVIDENCE.is_dir():
+        pytest.skip("B6 exported evidence packet absent from this clone")
 
 
 def read(path):
@@ -165,6 +173,18 @@ def test_active_registry_retires_reviews_without_promoting_historical_results():
     for name in ("twowikimultihopqa", "livecodebench"):
         assert all(b["status"] == "external" for b in rows[name]["blockers"])
     assert registry["review"]["production_authorized"] is False
+    # Pin the exported review identity without pretending /site is a local file.
+    for name, blocker_id, locator in (
+        ("twowikimultihopqa", "ujson-native-offline-closure", "## 2Wiki: ujson-native-offline-closure"),
+        ("twowikimultihopqa", "hub-data-provenance", "## 2Wiki: hub-data-provenance"),
+        ("livecodebench", "row-attestation", "## LiveCodeBench: row-attestation"),
+    ):
+        blocker = next(b for b in rows[name]["blockers"] if b["id"] == blocker_id)
+        assert {"kind": "external-reference", "path": "/site/b6-dataset-blocker-review.md",
+                "locator": locator} in blocker["evidence"]
+
+
+def test_archived_review_does_not_authorize_execution():
     review = read("review.json")
     assert review["production_authorized"] is review["benchmark_execution"] is False
     assert review["model_calls"] == 0

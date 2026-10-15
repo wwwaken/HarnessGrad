@@ -9,7 +9,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / 'tests/fixtures/hg_wujson'
-if not FIXTURE.is_dir():
+if not (FIXTURE / 'SHA256SUMS').is_file():
     pytest.skip("tests/fixtures/hg_wujson is internal (see .gitignore) and absent from this clone",
                 allow_module_level=True)
 
@@ -63,7 +63,7 @@ def test_image_manifest_and_denied_container_bind_the_successful_receipts():
     assert denial['errno_name'] == 'ENETUNREACH'
 
 
-def test_exact_wheel_installed_members_and_notices_are_in_the_image():
+def test_exact_wheel_installed_members_and_notices_are_in_the_image(site_archive):
     wheel = next((FIXTURE / 'deployment-v6').glob('*.whl'))
     assert sha(wheel) == WHEEL_SHA256
     pip = read('runtime-v9/pip-install-report.json')
@@ -83,7 +83,7 @@ def test_exact_wheel_installed_members_and_notices_are_in_the_image():
             assert native['installed_members'][name]['sha256'] == expected
             assert deployed['installed_members'][name]['sha256'] == expected
     for name in ('ujson-LICENSE.txt', 'double-conversion-LICENSE'):
-        original = ROOT / 'reports/b6-blocker-evidence/ujson-supplemental-notices' / name
+        original = site_archive('/site/b6-blocker-evidence/ujson-supplemental-notices/' + name)
         distributed = FIXTURE / 'deployment-v6/notices' / name
         assert original.read_bytes() == distributed.read_bytes()
         path = '/usr/local/share/licenses/hg-wujson/' + name
@@ -149,4 +149,5 @@ def test_unchanged_synthetic_evaluators_and_remaining_custody_gap():
     dataset = next(d for d in document['datasets'] if d['dataset'] == 'twowikimultihopqa')
     blocker = next(b for b in dataset['blockers'] if b['id'] == 'ujson-native-offline-closure')
     assert blocker['status'] == 'external'
-    assert 'reports/w-ujson-receipts.md' in {e['path'] for e in blocker['evidence']}
+    assert {'kind': 'external-reference', 'path': '/site/w-ujson-receipts.md',
+            'locator': '## Remaining source/build custody requirement'} in blocker['evidence']

@@ -54,7 +54,7 @@ def row(document, name):
     return next(item for item in document["datasets"] if item["dataset"] == name)
 
 
-def test_source_inventory_and_taxonomy_cover_every_publishable_dataset(document):
+def test_source_inventory_and_taxonomy_cover_every_publishable_dataset(document, blocker_repository_evidence):
     counts = checker.validate(document)
     taxonomy = checker.literal_declarations(ROOT / "tools/dataset_classes.py", {"CAPABILITY"})
     assert {entry["dataset"] for entry in document["datasets"]} == set(taxonomy["CAPABILITY"])
@@ -116,66 +116,61 @@ def test_pristine_scope_finding_preserves_residual_requirements_and_open_blocker
         "artifact-only-state-export remains OPEN/code-solvable with its full next_action unchanged",
     ):
         assert boundary in observed
-    assert {"kind": "repository", "path": "reports/w-scope-pristine-applicability.md",
+    assert {"kind": "external-reference", "path": "/site/w-scope-pristine-applicability.md",
             "locator": "## Exact registry wording"} in blocker["evidence"]
     assert shared["scorer-offline-closure"]["status"] == "code-solvable"
     assert document["review"]["production_authorized"] is False
 
 
-def test_every_journal_coverage_dataset_points_to_a_checked_in_review(document):
-    """Every `journal-coverage` closure must point at a review that states its disposition.
+# Exact migrated review identities, including the two original filing conventions.
+_JOURNAL_REVIEWS = {
+    "fever": ("/site/dataset-reviews/fever.md", "# FEVER source-only journal review"),
+    "physicsquestions": ("/site/dataset-reviews/physicsquestions.md", "# Physics Questions source-only journal review"),
+    "reasoning_gym": ("/site/dataset-reviews/reasoning_gym.md", "# Reasoning Gym source-only journal review"),
+    **{name: ("/site/dataset-source-reviews-b2.md", f"## {name} source-only review")
+       for name in ("sportsunderstanding", "spreadsheetbench", "strategyqa")},
+}
 
-    Deliberately convention-free about *how* the review is filed. Two reviews landed in
-    parallel and named things differently -- one file per dataset with `Closed:`/`Next:`,
-    one file with per-dataset sections using `CLOSED:`/`OPEN:` -- and a guard that demanded
-    one worker's heading text would have reported the other worker's real work as missing,
-    which is how a guard gets weakened later. What is actually required is that the review
-    exists, is checked in, is about *this* dataset, and says both what it closed and what it
-    left open. Those four things are checked; the wording is not.
-    """
-    CLOSED = ("CLOSED:", "Closed:", "Closed at source-review level:")
-    OPEN = ("OPEN:", "Next:", "Still open")
+
+def test_every_journal_coverage_dataset_points_to_its_migrated_review(document):
     covered = set()
     for entry in document["datasets"]:
         for blocker in entry["blockers"]:
             if blocker["family"] != "journal-coverage":
                 continue
             name = entry["dataset"]
-            reviews = []
-            for evidence in blocker["evidence"]:
-                if evidence["kind"] != "repository":
-                    continue
-                relative = Path(evidence["path"])
-                if not (relative.parts and relative.parts[0] == "docs"
-                        and relative.suffix == ".md"):
-                    continue
-                assert not relative.is_absolute() and ".." not in relative.parts
-                path = ROOT / relative
-                assert path.resolve().is_relative_to(ROOT.resolve())
-                assert path.is_file(), f"{name}: missing checked-in review {relative}"
-                source = path.read_text(encoding="utf-8")
-                headings = [line for line in source.splitlines()
-                            if line.lstrip().startswith("#")]
-                # Dataset names and prose titles differ in word breaks (`physicsquestions`
-                # against "Physics Questions"), so compare on a normalised form rather than
-                # requiring one spelling.
-                def _norm(text):
-                    return "".join(ch for ch in text.lower() if ch.isalnum())
-                assert any(_norm(name) in _norm(h) for h in headings), \
-                    f"{name}: {relative} has no heading naming this dataset"
-                assert any(m in source for m in CLOSED), \
-                    f"{name}: {relative} does not say what it closed"
-                assert any(m in source for m in OPEN), \
-                    f"{name}: {relative} does not say what it left open"
-                reviews.append(path)
-                break
-            assert reviews, f"{name}: registry must point at its checked-in source review"
+            path, locator = _JOURNAL_REVIEWS[name]
+            assert {"kind": "external-reference", "path": path,
+                    "locator": locator} in blocker["evidence"], name
             covered.add(name)
     assert covered, "journal-coverage guard must not silently become vacuous"
     expected = {e["dataset"] for e in document["datasets"]
                 for b in e["blockers"] if b["family"] == "journal-coverage"}
     assert covered == expected, \
         f"guard did not reach every journal-coverage dataset: {sorted(expected - covered)}"
+
+
+@pytest.mark.parametrize("name", sorted(_JOURNAL_REVIEWS))
+def test_archived_journal_review_still_states_closed_and_open_work(name, site_archive):
+    """Retain content checks when optional exported source records are provisioned."""
+    reference, _ = _JOURNAL_REVIEWS[name]
+    path = site_archive(reference)
+    relative = path.relative_to(ROOT)
+    assert not relative.is_absolute() and ".." not in relative.parts
+    assert path.resolve().is_relative_to(ROOT.resolve())
+    assert path.is_file(), f"{name}: missing review {relative}"
+    source = path.read_text(encoding="utf-8")
+    headings = [line for line in source.splitlines() if line.lstrip().startswith("#")]
+
+    def _norm(text):
+        return "".join(ch for ch in text.lower() if ch.isalnum())
+
+    assert any(_norm(name) in _norm(h) for h in headings), \
+        f"{name}: {relative} has no heading naming this dataset"
+    assert any(m in source for m in ("CLOSED:", "Closed:", "Closed at source-review level:")), \
+        f"{name}: {relative} does not say what it closed"
+    assert any(m in source for m in ("OPEN:", "Next:", "Still open")), \
+        f"{name}: {relative} does not say what it left open"
 
 
 def test_new_declared_dataset_fails_coverage_even_when_its_import_would_fail(document, tmp_path):
@@ -218,7 +213,7 @@ def test_fixtures_are_not_published_and_metadata_is_never_executed(tmp_path):
     ("escape-path", "must stay inside root"),
     ("authorize", "cannot authorize production"),
 ])
-def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message):
+def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message, blocker_repository_evidence):
     # `bfcl_v3` rather than the previously-used `jericho`: jericho's only blocker was closed
     # with measured evidence and it now legitimately carries none, and this test mutates
     # `blockers[0]`. A dataset with an empty list is a supported state since
@@ -227,6 +222,8 @@ def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, m
     # blocker to satisfy a test, or letting this guard quietly stop testing anything.
     target = row(document, "bfcl_v3")
     blocker = target["blockers"][0]
+    repository_evidence = next(item for item in blocker["evidence"]
+                               if item["kind"] == "repository")
     if mutation == "missing":
         document["datasets"].remove(target)
     elif mutation == "duplicate":
@@ -252,11 +249,11 @@ def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, m
     elif mutation == "missing-evidence":
         blocker["evidence"] = []
     elif mutation == "stale-anchor":
-        blocker["evidence"][0]["locator"] = "fabricated absent journal entry"
+        repository_evidence["locator"] = "fabricated absent journal entry"
     elif mutation == "missing-path":
-        blocker["evidence"][0]["path"] = "docs/does-not-exist.txt"
+        repository_evidence["path"] = "docs/does-not-exist.txt"
     elif mutation == "escape-path":
-        blocker["evidence"][0]["path"] = "../external-receipt.json"
+        repository_evidence["path"] = "../external-receipt.json"
     elif mutation == "authorize":
         document["review"]["production_authorized"] = True
     with pytest.raises(checker.RegistryError, match=message):
@@ -290,7 +287,12 @@ def test_agentdojo_production_gate_is_revoked_and_the_privacy_closure_stands(doc
     assert [item["id"] for item in target["blockers"]] == [], (
         "the production gate was revoked; if a blocker has returned, name it here and say why")
     assert document["review"]["production_authorized"] is False
-    closure = ROOT / "reports/agentdojo-metadata-privacy-codex180-report.md"
+    journal = (ROOT / "docs/adapter-integration-journal.md").read_text()
+    assert "../reports/agentdojo-metadata-privacy-codex180-report.md" in journal
+
+
+def test_archived_agentdojo_privacy_closure(site_archive):
+    closure = site_archive("/site/agentdojo-metadata-privacy-codex180-report.md")
     assert closure.is_file(), "the metadata privacy closure record is gone"
     assert "Metadata review closure and production boundary" in closure.read_text(
         encoding="utf-8")
@@ -341,8 +343,8 @@ def test_b7_local_runtime_closures_retain_all_shared_gates(document):
     That was **not** merged: its content is the shared gate the entry already lists under
     `shared_blockers`, and duplicating a shared requirement per dataset is how a registry
     grows two sources of truth for one fact. The evidence is not lost with it -- the reports
-    are still checked in and pinned below, because measured evidence outlives the gate it was
-    gathered for.
+    retain journal citations below, because measured evidence outlives the gate it was
+    gathered for. Exported source contents are checked separately when provisioned.
     """
     shared = [item["id"] for item in document["shared_blockers"]]
     for name in ("jericho", "scienceworld"):
@@ -351,11 +353,17 @@ def test_b7_local_runtime_closures_retain_all_shared_gates(document):
         assert target["blockers"] == [], (
             f"{name}: a dataset-local blocker has returned; if that is deliberate, name it "
             "here and say why, rather than re-adding the shared duplicate")
-    for report in ("reports/runtime-blockers-b7.md", "reports/jericho-runtime-b7.json",
-                   "reports/scienceworld-runtime-b7.json",
-                   "tests/quality/test_runtime_blocker_evidence_b7.py"):
-        assert (ROOT / report).is_file(), f"{report}: the evidence behind the closure is gone"
+    assert (ROOT / "tests/quality/test_runtime_blocker_evidence_b7.py").is_file()
+    journal = (ROOT / "docs/adapter-integration-journal.md").read_text()
+    for name in ("runtime-blockers-b7.md", "jericho-runtime-b7.json", "scienceworld-runtime-b7.json"):
+        assert f"../reports/{name}" in journal
     assert document["review"]["production_authorized"] is False
+
+
+@pytest.mark.parametrize("report", ["/site/runtime-blockers-b7.md", "/site/jericho-runtime-b7.json",
+                                  "/site/scienceworld-runtime-b7.json"])
+def test_archived_b7_closure_evidence(report, site_archive):
+    assert site_archive(report).is_file(), f"{report}: the evidence behind the closure is gone"
 
 
 def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(document):
@@ -377,12 +385,17 @@ def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(d
     ast_contract = blockers["simple-ast-contract"]
     assert ast_contract["status"] == "external"
     assert ast_contract["family"] == "official-scorer-execution"
-    assert "tests/fixtures/bfcl_ast_source/README.md" in {
-        item["path"] for item in ast_contract["evidence"]}
-    deferral = ROOT / "docs/independent-review-deferred.md"
+    assert {"kind": "repository", "path": "tests/fixtures/bfcl_ast_source/README.md",
+            "locator": "external source/provenance blocker remains open"} in ast_contract["evidence"]
+    assert {"kind": "external-reference", "path": "/site/independent-review-deferred.md",
+            "locator": "revoked as a blocker"} in ast_contract["evidence"]
+    assert document["review"]["production_authorized"] is False
+
+
+def test_archived_bfcl_review_deferral(site_archive):
+    deferral = site_archive("/site/independent-review-deferred.md")
     assert deferral.is_file(), "the deferral record is gone; the review would be lost"
     assert "release-index-custody" in deferral.read_text(encoding="utf-8")
-    assert document["review"]["production_authorized"] is False
 
 
 def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(document):
@@ -397,9 +410,10 @@ def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(documen
         blocker = blockers[blocker_id]
         assert blocker["status"] == "external"
         assert blocker["family"] == family
-        assert "docs/task-206-twowiki-provenance-review.md" in {
-            item["path"] for item in blocker["evidence"]
-        }
+        locator = ("38 passed in 0.24s" if blocker_id == "ujson-native-offline-closure"
+                   else "Hub/data provenance remains blocked")
+        assert {"kind": "external-reference", "path": "/site/task-206-twowiki-provenance-review.md",
+                "locator": locator} in blocker["evidence"]
 
 
 def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
@@ -428,10 +442,9 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     }
     assert "pristine-verifier" not in {b["id"] for b in document["shared_blockers"]}
     assert "runtime-observations" not in {b["id"] for b in document["shared_blockers"]}
-    review = (ROOT / "docs/w-shared-verifier-review.md").read_text(encoding="utf-8")
-    assert "## CLOSED: pristine-verifier - opt-in runtime identity review completed" in review
-    review = (ROOT / "docs/w-obs-runtime-review.md").read_text(encoding="utf-8")
-    assert "## CLOSED: runtime-observations - observed topology required before aggregation" in review
+    notes = "\n".join(document["review"]["notes"])
+    assert "pristine-verifier review action closed" in notes
+    assert "runtime-observations source-review action closed" in notes
     for gone in ("paired-filesystem-quotas", "pilot-guidance-conflict",
                  "official-scorer-identity", "snapshot-owned-cleanup"):
         assert gone not in target["shared_blockers"]
@@ -440,8 +453,8 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     # original history must still remain partial with no effect. So the blocker is gone and
     # the evidence for closing it is pinned by name rather than left as a claim.
     assert "recovery-comparability" not in {item["id"] for item in target["blockers"]}
-    review = (ROOT / "reports/b6-dataset-blocker-review.md").read_text()
-    assert "recovery-comparability — review closed; combined comparison rejected" in review
+    journal = (ROOT / "docs/adapter-integration-journal.md").read_text()
+    assert "close recovery-comparability and smoke-scorer-comparability as completed historical reviews" in journal
     baseline = checker.read_json(checker.HISTORY)
     assert target["historical_runs"] == [
         item["record"] for item in baseline["records"]
@@ -458,6 +471,15 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     assert document["review"]["production_authorized"] is False
 
 
+@pytest.mark.parametrize("reference, heading", [
+    ("/site/w-shared-verifier-review.md", "## CLOSED: pristine-verifier - opt-in runtime identity review completed"),
+    ("/site/w-obs-runtime-review.md", "## CLOSED: runtime-observations - observed topology required before aggregation"),
+    ("/site/b6-dataset-blocker-review.md", "recovery-comparability — review closed; combined comparison rejected"),
+])
+def test_archived_shared_and_comparability_closure_headings(reference, heading, site_archive):
+    assert heading in site_archive(reference).read_text(encoding="utf-8")
+
+
 def test_twowiki_task_capability_is_separate_from_harness_exercises(document):
     target = row(document, "twowikimultihopqa")
     assert (target["demand"], target["surface"]) == ("evidence", "information_seeking")
@@ -467,7 +489,7 @@ def test_twowiki_task_capability_is_separate_from_harness_exercises(document):
 
 
 @pytest.mark.parametrize("mutation", ["remove", "complete", "zero", "coverage", "path", "id", "move"])
-def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation):
+def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(document, mutation, blocker_repository_evidence):
     target = row(document, "chessbench_puzzles")
     history = target["historical_runs"][-1]
     if mutation == "remove":
@@ -489,7 +511,7 @@ def test_historical_incompletes_cannot_be_removed_reclassified_or_rescored(docum
         checker.validate(document)
 
 
-def test_history_baseline_pin_is_independent_and_checked(document, monkeypatch):
+def test_history_baseline_pin_is_independent_and_checked(document, monkeypatch, blocker_repository_evidence):
     assert hashlib.sha256(checker.HISTORY.read_bytes()).hexdigest() == checker.HISTORY_SHA256
     monkeypatch.setattr(checker, "HISTORY_SHA256", "0" * 64)
     with pytest.raises(checker.RegistryError, match="baseline pin changed"):
@@ -502,7 +524,7 @@ def test_history_baseline_pin_is_independent_and_checked(document, monkeypatch):
     "gaia-v2-incomplete", "gaia-v3-incomplete", "hotpot-v4-incomplete",
     "scienceworld-v4-incomplete", "twowiki-original-invalid-pilot",
 ])
-def test_every_reviewed_historical_record_is_required(document, record_id):
+def test_every_reviewed_historical_record_is_required(document, record_id, blocker_repository_evidence):
     for entry in document["datasets"]:
         entry["historical_runs"] = [record for record in entry["historical_runs"]
                                     if record["record_id"] != record_id]
@@ -510,7 +532,7 @@ def test_every_reviewed_historical_record_is_required(document, record_id):
         checker.validate(document)
 
 
-def test_history_can_append_without_overwriting_old_records(document):
+def test_history_can_append_without_overwriting_old_records(document, blocker_repository_evidence):
     target = row(document, "chessbench_puzzles")
     new = copy.deepcopy(target["historical_runs"][-1])
     new["record_id"] = "new-independent-interruption"
@@ -519,7 +541,7 @@ def test_history_can_append_without_overwriting_old_records(document):
     assert checker.validate(document)["historical_records"] == 12
 
 
-def test_new_historical_record_cannot_reuse_an_existing_run_id(document):
+def test_new_historical_record_cannot_reuse_an_existing_run_id(document, blocker_repository_evidence):
     target = row(document, "chessbench_puzzles")
     new = copy.deepcopy(target["historical_runs"][-1])
     new["record_id"] = "different-record-same-run"
@@ -537,17 +559,27 @@ def test_chess_future_launch_guidance_requires_new_ids_and_preserves_history(doc
         item["record"] for item in baseline["records"]
         if item["dataset"] == "chessbench_puzzles"
     ]
-    journal = (ROOT / "registry/adapter-integration-journal.md").read_text(encoding="utf-8")
+    journal = (ROOT / "docs/adapter-integration-journal.md").read_text(encoding="utf-8")
     audit = next(line for line in journal.splitlines()
                  if line.startswith("- Interruption audit: termination authority is undetermined"))
-    guidance = (ROOT / "docs/dataset-blockers.md").read_text(encoding="utf-8")
-    for text in (audit, " ".join(guidance.split())):
-        assert "Every future attempt must use a genuinely new unique run ID" in text
-        assert "never resume or overwrite any used run ID" in text
-        for history in target["historical_runs"]:
-            assert history["status"] == "incomplete" and history["effect"] is None
-            assert f'`{history["run_id"]}`' in text
-            assert f'launch a fresh `{history["run_id"]}`' not in journal
+    assert "Every future attempt must use a genuinely new unique run ID" in audit
+    assert "never resume or overwrite any used run ID" in audit
+    for history in target["historical_runs"]:
+        assert history["status"] == "incomplete" and history["effect"] is None
+        assert f'`{history["run_id"]}`' in audit
+        assert f'launch a fresh `{history["run_id"]}`' not in journal
+
+
+def test_archived_chess_launch_guidance(document, site_archive):
+    target = row(document, "chessbench_puzzles")
+    journal = (ROOT / "docs/adapter-integration-journal.md").read_text(encoding="utf-8")
+    text = " ".join(site_archive("/site/dataset-blockers.md").read_text(encoding="utf-8").split())
+    assert "Every future attempt must use a genuinely new unique run ID" in text
+    assert "never resume or overwrite any used run ID" in text
+    for history in target["historical_runs"]:
+        assert history["status"] == "incomplete" and history["effect"] is None
+        assert f'`{history["run_id"]}`' in text
+        assert f'launch a fresh `{history["run_id"]}`' not in journal
 
 
 @pytest.mark.parametrize("raw", ['{"datasets": [], "datasets": []}', '{"score": NaN}'])
@@ -558,7 +590,7 @@ def test_noncanonical_json_is_rejected(tmp_path, raw):
         checker.read_json(path)
 
 
-def test_cli_produces_counts_and_nonzero_invalid_result(document, tmp_path, capsys):
+def test_cli_produces_counts_and_nonzero_invalid_result(document, tmp_path, capsys, blocker_repository_evidence):
     assert checker.main([]) == 0
     output = json.loads(capsys.readouterr().out)
     assert output["valid"] is True and output["production_authorized"] is False
