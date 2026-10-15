@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
+from types import SimpleNamespace
 
 import openpyxl
 import pytest
@@ -110,7 +112,7 @@ def scenario(request, monkeypatch, tmp_path):
             return compare(gt_file, proc_file, *args)
         monkeypatch.setattr(check, "compare_workbooks", vanished_result)
     if case in {"recalc-scratch", "recalc-cleanup"}:
-        temporary_directory = check.tempfile.TemporaryDirectory
+        temporary_directory = tempfile.TemporaryDirectory
         @contextmanager
         def failed_scratch(*args, **kwargs):
             if case == "recalc-scratch":
@@ -118,7 +120,15 @@ def scenario(request, monkeypatch, tmp_path):
             with temporary_directory(*args, **kwargs) as scratch:
                 yield scratch
             raise OSError("synthetic scratch cleanup failure")
-        monkeypatch.setattr(check.tempfile, "TemporaryDirectory", failed_scratch)
+        # Replace the *check's* reference to the module, not the attribute on the shared
+        # `tempfile` module. `check.tempfile` **is** `tempfile`, so patching the attribute
+        # also broke `data/scaffolds/scorer_input.py:77`, whose own TemporaryDirectory is
+        # what validates the scorer-input receipt before the check scores anything. The
+        # check then crashed with exit 4 before it could write evidence, and the reason the
+        # test was looking for never reached the verdict. This injects the fault at the
+        # check's scratch step and nowhere else.
+        monkeypatch.setattr(check, "tempfile",
+                            SimpleNamespace(TemporaryDirectory=failed_scratch))
     if case == "comparator-exception":
         def broken_compare(*args, **kwargs):
             raise RuntimeError("synthetic comparator failure")
