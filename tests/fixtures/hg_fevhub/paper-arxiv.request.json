@@ -1,0 +1,85 @@
+{
+  "name": "paper-arxiv",
+  "url": "https://arxiv.org/abs/2009.08205",
+  "method": "GET",
+  "proxy": null,
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:23:59.829480+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://arxiv.org/abs/2009.08205",
+  "headers": [
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Content-Length",
+      "41852"
+    ],
+    [
+      "server",
+      "Google Frontend"
+    ],
+    [
+      "content-security-policy",
+      "frame-ancestors 'none'"
+    ],
+    [
+      "content-type",
+      "text/html; charset=utf-8"
+    ],
+    [
+      "x-frame-options",
+      "SAMEORIGIN"
+    ],
+    [
+      "via",
+      "1.1 google, 1.1 varnish, 1.1 varnish, 1.1 varnish"
+    ],
+    [
+      "cache-control",
+      "max-age=3600"
+    ],
+    [
+      "x-cloud-trace-context",
+      "160cfa61bd8c2d8e94091e37f9b1af0a"
+    ],
+    [
+      "last-modified",
+      "Mon, 24 Aug 2026 22:26:52 GMT"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "Age",
+      "556608"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:24:00 GMT"
+    ],
+    [
+      "X-Served-By",
+      "cache-lga-kjfk8660079-LGA, cache-lga-kjfk8660079-LGA, cache-lga-kjfk8660062-LGA, cache-sin-wsss1830063-SIN"
+    ],
+    [
+      "X-Cache",
+      "MISS, HIT, MISS"
+    ],
+    [
+      "X-Timer",
+      "S1792056240.061381,VS0,VE249"
+    ]
+  ],
+  "bytes": 41852,
+  "sha256": "901a261eb366425f0760d96fea77d658ec3edb2730d71e173c174def2433948d",
+  "body": "paper-arxiv.body",
+  "finished_utc": "2026-10-15T09:24:00.427569+00:00"
+}

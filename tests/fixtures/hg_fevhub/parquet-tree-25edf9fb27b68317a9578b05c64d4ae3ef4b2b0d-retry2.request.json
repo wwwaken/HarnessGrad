@@ -1,0 +1,105 @@
+{
+  "name": "parquet-tree-25edf9fb27b68317a9578b05c64d4ae3ef4b2b0d-retry2",
+  "url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/25edf9fb27b68317a9578b05c64d4ae3ef4b2b0d?recursive=true",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:25:43.118930+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/25edf9fb27b68317a9578b05c64d4ae3ef4b2b0d?recursive=true",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "1108"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:25:46 GMT"
+    ],
+    [
+      "ETag",
+      "W/\"454-7hk55yP1AGbZO59D6458jrm2TSg\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad09c1a-6f6acaa63d9a63476b1896b3"
+    ],
+    [
+      "RateLimit",
+      "\"api\";r=491;t=262"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"api\";q=500;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 9a7106deb28dfd2ab51b2cf73a38e2f8.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P7"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "PelOdKf9mG_UoYmFiv-OZlfUcAPwhnqFUQUUpQVKIw15sCrXwQcFJA=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "bytes": 1108,
+  "sha256": "ccad37af0d0f601cf637d980494bec096dc816f44feacd2e66eaa72bfa99f00c",
+  "body": "parquet-tree-25edf9fb27b68317a9578b05c64d4ae3ef4b2b0d-retry2.body",
+  "finished_utc": "2026-10-15T09:25:46.641216+00:00"
+}

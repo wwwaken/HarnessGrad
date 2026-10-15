@@ -1,0 +1,113 @@
+{
+  "name": "hub-parquet-commits",
+  "url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/refs%2Fconvert%2Fparquet",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:21:12.525662+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/refs%2Fconvert%2Fparquet",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "14105"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:21:13 GMT"
+    ],
+    [
+      "ETag",
+      "W/\"3719-g5cRRcrvnETeGQ3dRT5V3Pxs85E\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad09b08-599617b903c3ed43420ded80"
+    ],
+    [
+      "RateLimit",
+      "\"api\";r=492;t=236"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"api\";q=500;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Total-Count",
+      "59"
+    ],
+    [
+      "Link",
+      "<https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/refs%2Fconvert%2Fparquet?p=1&limit=50>; rel=\"next\""
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 520feb0cee3b19c4d035792d1e87781c.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN3-P1"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "RgB7Kt3m1iBA7kBmLJEged8asCgrW2zGTRRGivjxB30kuvJDAgvFdA=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "bytes": 14105,
+  "sha256": "e4576389f63786446a2d8e4475fc8e96b783174628fded69cb73226aa56dbbb0",
+  "body": "hub-parquet-commits.body",
+  "finished_utc": "2026-10-15T09:21:13.297374+00:00"
+}

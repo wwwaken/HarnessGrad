@@ -1,0 +1,101 @@
+{
+  "name": "zenodo-project-public",
+  "url": "https://zenodo.org/api/records?q=%22fever-adversarial-attacks%22&size=25",
+  "method": "GET",
+  "proxy": null,
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:25:25.953209+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://zenodo.org/api/records?q=%22fever-adversarial-attacks%22&size=25",
+  "headers": [
+    [
+      "server",
+      "nginx"
+    ],
+    [
+      "date",
+      "Thu, 15 Oct 2026 09:25:26 GMT"
+    ],
+    [
+      "content-type",
+      "application/json"
+    ],
+    [
+      "content-length",
+      "457"
+    ],
+    [
+      "vary",
+      "Accept-Encoding"
+    ],
+    [
+      "access-control-allow-origin",
+      "*"
+    ],
+    [
+      "access-control-expose-headers",
+      "Content-Type, ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset"
+    ],
+    [
+      "x-ratelimit-limit",
+      "30"
+    ],
+    [
+      "x-ratelimit-remaining",
+      "27"
+    ],
+    [
+      "x-ratelimit-reset",
+      "1792056387"
+    ],
+    [
+      "retry-after",
+      "60"
+    ],
+    [
+      "permissions-policy",
+      "interest-cohort=()"
+    ],
+    [
+      "x-frame-options",
+      "sameorigin"
+    ],
+    [
+      "x-xss-protection",
+      "1; mode=block"
+    ],
+    [
+      "x-content-type-options",
+      "nosniff"
+    ],
+    [
+      "content-security-policy",
+      "default-src 'self' fonts.googleapis.com *.gstatic.com data: 'unsafe-inline' 'unsafe-eval' blob: zenodo-broker.web.cern.ch zenodo-broker-qa.web.cern.ch maxcdn.bootstrapcdn.com cdnjs.cloudflare.com ajax.googleapis.com webanalytics.web.cern.ch"
+    ],
+    [
+      "strict-transport-security",
+      "max-age=31556926; includeSubDomains"
+    ],
+    [
+      "referrer-policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "x-source",
+      "api"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "bytes": 457,
+  "sha256": "25eeef38fac515da4475144bfc5637af1e3b1bc91645615f2eccd31dfe7d871f",
+  "body": "zenodo-project-public.body",
+  "finished_utc": "2026-10-15T09:25:26.844287+00:00"
+}

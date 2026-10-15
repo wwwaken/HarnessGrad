@@ -1,0 +1,125 @@
+{
+  "name": "gh-branches",
+  "url": "https://api.github.com/repos/copenlu/fever-adversarial-attacks/branches?per_page=100",
+  "method": "GET",
+  "proxy": null,
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:21:10.229390+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://api.github.com/repos/copenlu/fever-adversarial-attacks/branches?per_page=100",
+  "headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:21:10 GMT"
+    ],
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Cache-Control",
+      "public, max-age=60, s-maxage=60"
+    ],
+    [
+      "Vary",
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    [
+      "ETag",
+      "W/\"f501f1b22d8e807a6a850494ef3c429f27e9f6519436e4a9234162e422c33fe8\""
+    ],
+    [
+      "X-GitHub-Media-Type",
+      "github.v3; format=json"
+    ],
+    [
+      "x-github-api-version-selected",
+      "2022-11-28"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "*"
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    [
+      "X-Frame-Options",
+      "deny"
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff"
+    ],
+    [
+      "X-XSS-Protection",
+      "0"
+    ],
+    [
+      "Referrer-Policy",
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    [
+      "Content-Security-Policy",
+      "default-src 'none'"
+    ],
+    [
+      "Server",
+      "github.com"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "X-RateLimit-Limit",
+      "60"
+    ],
+    [
+      "X-RateLimit-Remaining",
+      "55"
+    ],
+    [
+      "X-RateLimit-Used",
+      "5"
+    ],
+    [
+      "X-RateLimit-Resource",
+      "core"
+    ],
+    [
+      "X-RateLimit-Reset",
+      "1792059626"
+    ],
+    [
+      "Content-Length",
+      "935"
+    ],
+    [
+      "X-GitHub-Request-Id",
+      "80B8:35B397:61588F:964A9C:6AD09B06"
+    ],
+    [
+      "x-github-edge-region",
+      "southeastasia"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "bytes": 935,
+  "sha256": "f501f1b22d8e807a6a850494ef3c429f27e9f6519436e4a9234162e422c33fe8",
+  "body": "gh-branches.body",
+  "finished_utc": "2026-10-15T09:21:10.820701+00:00"
+}

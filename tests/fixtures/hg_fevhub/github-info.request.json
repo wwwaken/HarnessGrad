@@ -1,0 +1,105 @@
+{
+  "name": "github-info",
+  "url": "https://api.github.com/repos/copenlu/fever-adversarial-attacks",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:20:14.966166+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 403,
+  "final_url": "https://api.github.com/repos/copenlu/fever-adversarial-attacks",
+  "headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:20:18 GMT"
+    ],
+    [
+      "Server",
+      "Varnish"
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff"
+    ],
+    [
+      "X-Frame-Options",
+      "deny"
+    ],
+    [
+      "X-XSS-Protection",
+      "1; mode=block"
+    ],
+    [
+      "Content-Security-Policy",
+      "default-src 'none'; style-src 'unsafe-inline'"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "*"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-RateLimit-Used, X-RateLimit-Resource, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset"
+    ],
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Referrer-Policy",
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    [
+      "X-GitHub-Media-Type",
+      "github.v3; format=json"
+    ],
+    [
+      "X-RateLimit-Limit",
+      "60"
+    ],
+    [
+      "X-RateLimit-Remaining",
+      "0"
+    ],
+    [
+      "X-RateLimit-Used",
+      "60"
+    ],
+    [
+      "X-RateLimit-Resource",
+      "core"
+    ],
+    [
+      "X-RateLimit-Reset",
+      "1792059378"
+    ],
+    [
+      "Content-Length",
+      "280"
+    ],
+    [
+      "X-GitHub-Request-Id",
+      "B87A:30C817:4B12D6F:F6970A1:6AD09AD1"
+    ],
+    [
+      "x-github-edge-region",
+      "iad"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "bytes": 280,
+  "sha256": "96e53cfc36e2836ca2682450a962bff755c2e50978e79f5e863ad9b2af0c32e6",
+  "body": "github-info.body",
+  "finished_utc": "2026-10-15T09:20:18.932548+00:00"
+}

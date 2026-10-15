@@ -1,0 +1,105 @@
+{
+  "name": "hub-tree",
+  "url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/main?recursive=true&expand=true",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:20:12.539669+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/main?recursive=true&expand=true",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "3250"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:20:13 GMT"
+    ],
+    [
+      "ETag",
+      "W/\"cb2-3lvRC0bequIKGwWJaI/la9mSwpA\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad09acd-6c87ed2478b3dbc361f65750"
+    ],
+    [
+      "RateLimit",
+      "\"api\";r=498;t=295"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"api\";q=500;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 4ce1dffd975b96d2d87df79a02b45ada.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN3-P1"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "l-cMYrhB6lkNqU3rWhkb8Aq1z8NhdeTxeGrdEfiDXAX2Vq2XaV3z9g=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "bytes": 3250,
+  "sha256": "566adf1fbc6d2916acad10875e6aecad151dbf80919cbea5bc7bda85840d0661",
+  "body": "hub-tree.body",
+  "finished_utc": "2026-10-15T09:20:13.434035+00:00"
+}

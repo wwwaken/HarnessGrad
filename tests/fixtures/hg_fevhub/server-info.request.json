@@ -1,0 +1,69 @@
+{
+  "name": "server-info",
+  "url": "https://datasets-server.huggingface.co/info?dataset=copenlu%2Ffever_gold_evidence",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:20:18.991356+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://datasets-server.huggingface.co/info?dataset=copenlu%2Ffever_gold_evidence",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json"
+    ],
+    [
+      "Content-Length",
+      "1453"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:20:24 GMT"
+    ],
+    [
+      "vary",
+      "Accept-Encoding"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "cache-control",
+      "max-age=120"
+    ],
+    [
+      "x-revision",
+      "a6b8d891d393e97a4efac791afffb2d7de5e57c6"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 112765d4ef8d4a2b4474fac716037a2e.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P11"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "Dzt6oKaaAzgxa5mTMjiD8teblbV2X5UdCiXps25UKluEopz0fKMWsA=="
+    ]
+  ],
+  "bytes": 1453,
+  "sha256": "a0342ee859fc4e9cf1a6a9f12795490b9c2eb89a78a7bda375bcb6451cd86534",
+  "body": "server-info.body",
+  "finished_utc": "2026-10-15T09:20:25.081228+00:00"
+}

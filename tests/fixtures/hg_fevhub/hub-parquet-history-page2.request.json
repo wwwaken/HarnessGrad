@@ -1,0 +1,109 @@
+{
+  "name": "hub-parquet-history-page2",
+  "url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/refs%2Fconvert%2Fparquet?p=1&limit=50",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:24:40.202763+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/commits/refs%2Fconvert%2Fparquet?p=1&limit=50",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "2419"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:24:41 GMT"
+    ],
+    [
+      "ETag",
+      "W/\"973-bH36EX7Ui7Cb3LDLl7IqIcw0Cz8\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad09bd9-78b822ee30cb23563fbc5491"
+    ],
+    [
+      "RateLimit",
+      "\"api\";r=442;t=27"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"api\";q=500;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Total-Count",
+      "59"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 c106f05f2975ff09883b7e0cd3024cee.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P7"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "AH-dfkZP2HKrqqUJAbRLkQHjsWioOra8zihOGzn4QO-LhXIERAlxCw=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "bytes": 2419,
+  "sha256": "2a4e02ac184b1d3e1dc357993ae340418db455fbb07bcd864f42a8207ebc7b7d",
+  "body": "hub-parquet-history-page2.body",
+  "finished_utc": "2026-10-15T09:24:42.065787+00:00"
+}

@@ -1,0 +1,93 @@
+{
+  "name": "zenodo-title",
+  "url": "https://zenodo.org/api/records?q=%22Generating%20Label%20Cohesive%20and%20Well-Formed%20Adversarial%20Claims%22&size=100",
+  "method": "GET",
+  "proxy": null,
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:23:59.848928+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 400,
+  "final_url": "https://zenodo.org/api/records?q=%22Generating%20Label%20Cohesive%20and%20Well-Formed%20Adversarial%20Claims%22&size=100",
+  "headers": [
+    [
+      "server",
+      "nginx"
+    ],
+    [
+      "date",
+      "Thu, 15 Oct 2026 09:24:00 GMT"
+    ],
+    [
+      "content-type",
+      "application/json"
+    ],
+    [
+      "content-length",
+      "207"
+    ],
+    [
+      "access-control-allow-origin",
+      "*"
+    ],
+    [
+      "access-control-expose-headers",
+      "Content-Type, ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset"
+    ],
+    [
+      "x-ratelimit-limit",
+      "30"
+    ],
+    [
+      "x-ratelimit-remaining",
+      "29"
+    ],
+    [
+      "x-ratelimit-reset",
+      "1792056301"
+    ],
+    [
+      "retry-after",
+      "60"
+    ],
+    [
+      "permissions-policy",
+      "interest-cohort=()"
+    ],
+    [
+      "x-frame-options",
+      "sameorigin"
+    ],
+    [
+      "x-xss-protection",
+      "1; mode=block"
+    ],
+    [
+      "x-content-type-options",
+      "nosniff"
+    ],
+    [
+      "content-security-policy",
+      "default-src 'self' fonts.googleapis.com *.gstatic.com data: 'unsafe-inline' 'unsafe-eval' blob: zenodo-broker.web.cern.ch zenodo-broker-qa.web.cern.ch maxcdn.bootstrapcdn.com cdnjs.cloudflare.com ajax.googleapis.com webanalytics.web.cern.ch"
+    ],
+    [
+      "strict-transport-security",
+      "max-age=31556926; includeSubDomains"
+    ],
+    [
+      "referrer-policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "bytes": 207,
+  "sha256": "8105c5098c3b8051ed4e35cc510a7c4af8dcca8edb46986c9a37ba5469c6985c",
+  "body": "zenodo-title.body",
+  "finished_utc": "2026-10-15T09:24:00.695432+00:00"
+}

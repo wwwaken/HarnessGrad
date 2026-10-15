@@ -1,0 +1,598 @@
+         Generating Label Cohesive and Well-Formed Adversarial Claims
+
+                     Pepa Atanasova∗ and Dustin Wright∗ and Isabelle Augenstein
+                                      Dept. of Computer Science
+                                      University of Copenhagen
+                                               Denmark
+                               {pepa|dw|augenstein}@di.ku.dk
+
+
+
+                          Abstract                                 EVIDENCE                        CLAIM
+                                                                                                  Dissociative identity
+                                                                    Dissociative disorders
+                                                                                                disorder, or DID, may be
+    Adversarial attacks reveal important vulnera-                  have been attributed to
+                                                                                                  the result of memory
+                                                                    disruptions in memory
+    bilities and flaws of trained models. One po-                 caused by trauma or other    disruptions that have been
+                                                                       forms of stress.         induced by psychological
+    tent type of attack are universal adversarial                                                        trauma.
+    triggers, which are individual n-grams that,
+    when appended to instances of a class under                               Trigger Generation
+
+    attack, can trick a model into predicting a tar-                            SUPPORTS           REFUTES
+    get class. However, for inference tasks such
+                                                                               TRIGGERS
+    as fact checking, these triggers often inadver-
+                                                                               don,already,more,during,home
+    tently invert the meaning of instances they are
+    inserted in. In addition, such attacks produce                               GPT-2 Claim Generation
+    semantically nonsensical inputs, as they sim-
+    ply concatenate triggers to existing samples.                Dissociative disorders have been attributed to disrupted
+    Here, we investigate how to generate adversar-                brain activity during trauma or other forms of stress.
+
+    ial attacks against fact checking systems that
+    preserve the ground truth meaning and are se-              Figure 1: High level overview of our method. First,
+    mantically valid. We extend the HotFlip attack             universal triggers are discovered for flipping a source to
+    algorithm used for universal trigger genera-               a target label (e.g. SUPPORTS → REFUTES). These
+    tion by jointly minimizing the target class loss           triggers are then used to condition the GPT-2 language
+    of a fact checking model and the entailment                model to generate novel claims with the original label,
+    class loss of an auxiliary natural language in-            including at least one of the found triggers.
+    ference model. We then train a conditional
+    language model to generate semantically valid
+    statements, which include the found universal              construct universal adversarial triggers (Wallace
+    triggers. We find that the generated attacks               et al., 2019) – single n-grams appended to the input
+    maintain the directionality and semantic valid-            text that can shift the prediction of a model from
+    ity of the claim better than previous work.                a source class to a target one. Such adversarial
+1   Introduction                                               examples are of particular concern, as they can
+                                                               apply to a large number of input instances.
+Adversarial examples (Goodfellow et al., 2015;                    However, we find that the triggers also change
+Szegedy et al., 2013) are deceptive model inputs               the meaning of the claim such that the true label
+designed to mislead an ML system into making                   is in fact the target class. For example, when at-
+the wrong prediction. They expose regions of the               tacking a claim-evidence pair with a ‘SUPPORTS’
+input space that are outside the training data distri-         label, a common unigram found to be a universal
+bution where the model is unstable. It is important            trigger when switching the label to ‘REFUTES’ is
+to reveal such vulnerabilities and correct for them,           ‘none’. Prepending this token to the claim drasti-
+especially for tasks such as fact checking (FC).               cally changes the meaning of the claim such that
+   In this paper, we explore the vulnerabilities of            the new claim is in fact a valid ‘REFUTES’ claim
+FC models trained on the FEVER dataset (Thorne                 as opposed to an adversarial ‘SUPPORTS’ claim.
+et al., 2018), where the inference between a claim             Furthermore, we find adversarial examples con-
+and evidence text is predicted. We particularly                structed in this way to be nonsensical, as a new
+    ∗
+        denotes equal contribution                             token is simply being attached to an existing claim.
+
+                                                          3168
+         Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, pages 3168–3177,
+                          November 16–20, 2020. c 2020 Association for Computational Linguistics
+   Our contributions are as follows. We preserve                  method by including an auxiliary Semantic Textual
+the meaning of the source text and improve the se-                Similarity (STS) objective. We additionally use the
+mantic validity of universal adversarial triggers to              extracted universal adversarial triggers to generate
+automatically construct more potent adversarial ex-               adversarial examples with low perplexity.
+amples. This is accomplished via: 1) a novel exten-
+sion to the HotFlip attack (Ebrahimi et al., 2018),               2.2    Fact Checking
+where we jointly minimize the target class loss of                Fact checking systems consist of components to
+a FC model and the attacked class loss of a natural               identify check-worthy claims (Atanasova et al.,
+language inference model; 2) a conditional lan-                   2018; Hansen et al., 2019; Wright and Augenstein,
+guage model trained using GPT-2 (Radford et al.,                  2020), retrieve and rank evidence documents (Yin
+2019), which takes trigger tokens and a piece of ev-              and Roth, 2018; Allein et al., 2020), determine
+idence, and generates a semantically coherent new                 the relationship between claims and evidence doc-
+claim containing at least one trigger. The resulting              uments (Bowman et al., 2015; Augenstein et al.,
+triggers maintain potency against a FC model while                2016; Baly et al., 2018), and finally predict the
+preserving the original claim label. Moreover, the                claims’ veracity (Thorne et al., 2018; Augenstein
+conditional language model produces semantically                  et al., 2019). As this is a relatively involved task,
+coherent adversarial examples containing triggers,                models easily overfit to shallow textual patterns,
+on which a FC model performs 23.8% worse than                     necessitating the need for adversarial examples to
+with the original FEVER claims. The code for the                  evaluate the limits of their performance.
+paper is publicly available.1                                        Thorne et al. (2019a) are the first to propose
+                                                                  hand-crafted adversarial attacks. They follow up
+2       Related Work                                              on this with the FEVER 2.0 task (Thorne et al.,
+2.1       Adversarial Examples                                    2019b), where participants design adversarial at-
+                                                                  tacks for existing FC systems. The first two win-
+Adversarial examples for NLP systems can be
+                                                                  ning systems (Niewinski et al., 2019; Hidey et al.,
+constructed as automatically generated text (Ren
+                                                                  2020) produce claims requiring multi-hop reason-
+et al., 2019) or perturbations of existing input in-
+                                                                  ing, which has been shown to be challenging for
+stances (Jin et al.; Ebrahimi et al., 2018). For a de-
+                                                                  fact checking models (Ostrowski et al., 2020). The
+tailed literature overview, see Zhang et al. (2019).
+                                                                  other remaining system (Kim and Allan, 2019) gen-
+   One potent type of adversarial techniques are
+                                                                  erates adversarial attacks manually. We instead find
+universal adversarial attacks (Gao and Oates, 2019;
+                                                                  universal adversarial attacks that can be applied to
+Wallace et al., 2019) – single perturbation changes
+                                                                  most existing inputs while markedly decreasing
+that can be applied to a large number of input in-
+                                                                  fact checking performance. Niewinski et al. (2019)
+stances and that cause significant performance de-
+                                                                  additionally feed a pre-trained GPT-2 model with
+creases of the model under attack. Wallace et al.
+                                                                  the target label of the instance along with the text
+(2019) find universal adversarial triggers that can
+                                                                  for conditional adversarial claim generation. Condi-
+change the prediction of the model using the Hot-
+                                                                  tional language generation has also been employed
+Flip algorithm (Ebrahimi et al., 2018).
+                                                                  by Keskar et al. (2019) to control the style, content,
+   However, for NLI tasks, they also change the
+                                                                  and the task-specific behavior of a Transformer.
+meaning of the instance they are appended to,
+and the prediction of the model remains correct.
+                                                                  3     Methods
+Michel et al. (2019) address this by exploring
+only perturbed instances in the neighborhood of                   3.1    Models
+the original one. Their approach is for instance-                 We take a RoBERTa (Liu et al., 2019) model pre-
+dependent attacks, whereas we suggest finding uni-                trained with a LM objective and fine-tune it to clas-
+versal adversarial triggers that also preserve the                sify claim-evidence pairs from the FEVER dataset
+original meaning of input instances. Another ap-                  as SUPPORTS, REFUTES, and NOT ENOUGH
+proach to this are rule-based perturbations of the                INFO (NEI). The evidence used is the gold evi-
+input (Ribeiro et al., 2018) or imposing adversar-                dence, available for the SUPPORTS and REFUTES
+ial constraints on the produced perturbations (Dia                classes. For NEI claims, we use the system of
+et al., 2019). By contrast, we extend the HotFlip                 Malon (2018) to retrieve evidence sentences. To
+    1
+        https://github.com/copenlu/fever-adversarial-attacks      measure the semantic similarity between the claim
+
+                                                               3169
+before and after prepending a trigger, we use a                    3.3    Claim Generation
+large RoBERTa model fine-tuned on the Semantic                     In addition to finding highly potent adversarial trig-
+Textual Similarity Task.2 For further details, we                  gers, it is also of interest to generate coherent state-
+refer the reader to §A.1.                                          ments containing the triggers. To accomplish this,
+                                                                   we use the HuggingFace implementation of the
+3.2      Universal Adversarial Triggers Method
+                                                                   GPT-2 language model (Radford et al., 2019; Wolf
+The Universal Adversarial Triggers method is de-                   et al., 2019), a large transformer-based language
+veloped to find n-gram trigger tokens tα , which,                  model trained on 40GB of text. The objective is
+appended to the original input x, f (x) = y, cause                 to generate a coherent claim, which either entails,
+the model to predict a target class ye : f (tα , x) = ye.          refutes, or is unrelated a given piece of evidence,
+In our work, we generate unigram triggers, as gen-                 while also including trigger words.
+erating longer triggers would require additional                      The language model is first fine tuned on the
+objectives to later produce well-formed adversarial                FEVER FC corpus with a specific input format.
+claims. We start by initializing the triggers with                 FEVER consists of claims and evidence with the
+the token ‘a’. Then, we update the embeddings of                   labels SUPPORTS, REFUTES, or NOT ENOUGH
+the initial trigger tokens eα with embeddings ewi                  INFO (NEI). We first concatenate evidence and
+of candidate adversarial trigger tokens wi that min-               claims with a special token. Next, to encourage gen-
+imize the loss L for the target class ye. Following                eration of claims with certain tokens, a sequence
+the HotFlip algorithm, we reduce the brute-force                   of tokens separated by commas is prepended to
+optimization problem using a first-order Taylor ap-                the input. For training, the sequence consists of a
+proximation around the initial trigger embeddings:                 single token randomly selected from the original
+                                                                   claim, and four random tokens from the vocabu-
+               arg min [ewi − eα ]> ∇eα L                 (1)      lary. This encourages the model to only select the
+                 wi ∈V
+                                                                   one token most likely to form a coherent and cor-
+where V is the vocabulary of the RoBERTa model                     rect claim. The final input format is [trigger
+and ∇eα L is the average gradient of the task loss                 tokens]||[evidence]||[claim]. Adversar-
+accumulated for all batches. This approximation                    ial claims are then generated by providing an initial
+allows for a O(|V|) space complexity of the brute-                 input of a series of five comma-separated trigger
+force candidate trigger search.                                    tokens plus evidence, and progressively generating
+   While HotFlip finds universal adversarial trig-                 the rest of the sequence. Subsequently, the set of
+gers that successfully fool the model for many in-                 generated claims is pruned to include only those
+stances, we find that the most potent triggers are of-             which contain a trigger token, and constitute the
+ten negation words, e.g., ‘not’, ‘neither’, ‘nowhere’.             desired label. The latter is ensured by passing both
+Such triggers change the meaning of the text, mak-                 evidence and claim through an external NLI model
+ing the prediction of the target class correct. Ideally,           trained on SNLI (Bowman et al., 2015).
+adversarial triggers would preserve the original la-
+bel of the claim. To this end, we propose to include               4     Results
+an auxiliary STS model objective when searching                    We present results for universal adversarial trig-
+for candidate triggers. The additional objective is                ger generation and coherent claim generation. Re-
+used to minimize the loss L0 for the maximum simi-                 sults are measured using the original FC model on
+larity score (5 out of 0w) between the original claim              claims with added triggers and generated claims
+and the claim with the prepended trigger. Thus, we                 (macro F1). We also measure how well the added
+arrive at the combined optimization problem:                       triggers maintain the claim’s original label (seman-
+                                                                   tic similarity score), the perplexity (PPL) of the
+  arg min([ewi − eα ]> ∇eα L + [owi − oα ]> ∇oα L0 ) (2)
+   wi ∈V                                                           claims with prepended triggers, and the semantic
+                                                                   quality of generated claims (manual annotation).
+where ow is the STS model embedding of word w.                     PPL is measured with a pretrained RoBERTa LM.
+For the initial trigger token, we use “[MASK]” as
+STS selects candidates from the neighborhood of                    4.1    Adversarial Triggers
+the initial token.                                                 Table 1 presents the results of applying universal
+   2
+       https://huggingface.co/SparkBeyond/roberta-large-sts-b      adversarial triggers to claims from the source class.
+
+                                                                3170
+The top-performing triggers for each direction are         Class     F1             STS             PPL
+found in §A.2. The adversarial method with a sin-                                No Triggers
+gle FC objective successfully deteriorates model           All       .866          5.139            11.92 (±45.92)
+                                                           S         .938          5.130            12.22 (±40.34)
+performance by a margin of 0.264 F1 score over-            R         .846          5.139            12.14 (±37.70)
+all. The biggest performance decrease is when the          NEI       .817          5.147            14.29 (±84.45)
+adversarial triggers are constructed to flip the pre-                          FC Objective
+dicted class from SUPPORTS to REFUTES. We                  All       .602 (±.289) 4.586 (±.328)     12.96 (±55.37)
+also find that 8 out of 18 triggers from the top-          S→R       .060 (±.034) 4.270 (±.295)     12.44 (±41.74)
+                                                           S→NEI     .611 (±.360) 4.502 (±.473)     12.75 (±40.50)
+3 triggers for each direction, are negation words          R→S       .749 (±.027) 4.738 (±.052)     11.91 (±36.53)
+such as ‘nothing’, ‘nobody’, ‘neither’, ‘nowhere’          R→NEI     .715 (±.026) 4.795 (±.094)     11.77 (±36.98)
+                                                           NEI→R     .685 (±.030) 4.378 (±.232)     14.20 (±83.32)
+(see Table 4 in the appendix). The first of these          NEI→S     .793 (±.054) 4.832 (±.146)     14.72 (±93.15)
+triggers decreases the performance of the model
+                                                                            FC+STS Objectives
+to 0.014 in F1. While this is a significant perfor-        All       .763 (±.123) 4.786 (±.156)     12.97 (±58.30)
+mance drop, these triggers also flip the meaning           S→R       .702 (±.237) 4.629 (±.186)     12.62 (±41.91)
+of the text. The latter is again indicated by the de-      S→NEI     .717 (±.161) 4.722 (±.152)     12.41 (±39.66)
+                                                           R→S       .778 (±.010) 4.814 (±.141)     11.93 (±37.04)
+crease of the semantic similarity between the claim        R→NEI     .779 (±.009) 4.855 (±.098)     12.20 (±37.67)
+before and after prepending a trigger token, which         NEI→R     .780 (±.078) 4.894 (±.115)     15.27 (±111.2)
+                                                           NEI→S     .821 (±.008) 4.800 (±.085)     13.42 (±82.30)
+is the largest for the SUPPORTS to REFUTES di-
+rection. We hypothesise that the success of the best
+                                                         Table 1: Universal Adversarial Trigger method perfor-
+performing triggers is partly due to the meaning of      mance. Triggers are generated given claims from a
+the text being flipped.                                  source class to fool the classifier to predict a target class
+   Including the auxiliary STS objective increases       (column Class, with SUPPORTS (S), REFUTES (R),
+the similarity between the claim before and after        NEI). The results are averaged over the top 10 triggers.
+prepending the trigger for five out of six directions.
+Moreover, we find that now only one out of the
+                                                         coherent. The macro F1 of the generative model
+18 top-3 triggers for each direction are negation
+                                                         w.r.t. the intended label is 58.9 overall. For the
+words. Intuitively, these adversarial triggers are
+                                                         model without the STS objective, the macro F1 is
+worse at fooling the FC model as they also have
+                                                         56.6, and for the model with the STS objective, it
+to preserve the label of the original claim. No-
+                                                         is 60.7, meaning that using triggers found with the
+tably, for the SUPPORTS to REFUTES direction
+                                                         STS objective helps the generated claims to retain
+the trigger performance is decreased with a mar-
+                                                         their intended label.
+gin of 0.642 compared to the single FC objective.
+We conclude that including the STS objective for            We measure the performance of the original FC
+generating Universal Adversarial triggers helps to       model on generated claims (Table 3). We compare
+preserve semantic similarity with the original claim,    between using triggers that are generated with the
+but also makes it harder to both find triggers pre-      STS objective (Ex2) and without (Ex1). In both
+serving the label of the claim while substantially       cases, the adversarial claims effectively fool the FC
+decreasing the performance of the model.                 model, which performs 38.4% worse and 23.8%
+                                                         worse on Ex1 and Ex2, respectively. Additionally,
+                                                         the overall sentence quality increases when the trig-
+4.2   Generation
+                                                         gers are found with the STS objective (Ex2). The
+We use the method described in §3.3 to generate          FC model’s performance is higher on claims using
+156 claims using triggers found with the additional      triggers generated with the STS objective but still
+STS objective, and 156 claims without. 52 claims         significantly worse than on the original claims. We
+are generated for each class (26 flipping to one         provide examples of generated claims with their
+class, 26 flipping to the other). A different GPT-2      evidence in Table 2.
+model is trained to generate claims for each specific       Comparing FC performance with our generated
+class, with triggers specific to attacking that class    claims vs. those from the development set of ad-
+used as input. The generated claims are annotated        versarial claims from the FEVER shared task , we
+manually (see §B.3 for the procedure). The over-         see similar drops in performance (0.600 and 0.644
+all average claim quality is 4.48, indicating that       macro F1, respectively). While the adversarial trig-
+most generated statements are highly semantically        gers from FEVER cause a larger performance drop,
+
+                                                    3171
+    Evidence                                                         Triggers                  Generated Claim
+
+                                                         SUPPORTS Claims
+    Since the 19th century, some Romani have also         don,already,more,during,home         Romani have moved to the Americas
+    migrated to the Americas.                                                                  during the 19th century.
+    Cyprus is a major tourist destination in the            foreign,biggest,major,every,       Cyprus is a major tourist destination.
+    Mediterranean.                                                     friends
+    The first Nobel Prize in Chemistry was awarded       later,already,quite,altern, whereas   Henricus Van’t Hoff was already
+    in 1901 to Jacobus Henricus van’t Hoff, of the                                             awarded the Nobel Prize.
+    Netherlands, “for his discovery of the laws of
+    chemical dynamics and osmotic pressure in so-
+    lutions.”
+
+                                                          REFUTES Claims
+    California Attorney General Kamala Harris de-          phys,incarn,not,occasionally,       Kamala Harris did not defeat
+    feated Sanchez , 61.6% to 38.4%.                                something                  Sanchez, 61.6% to 38.4%.
+    Uganda is in the African Great Lakes region.            unless,endorsed,picks,pref,        Uganda is against the African Great
+                                                                      against                  Lakes region.
+    Times Higher Education World University Rank-             interested,reward,visit,         Times Higher Education World Uni-
+    ings is an annual publication of university rank-          consumer,conclusion             versity Rankings is a consumer mag-
+    ings by Times Higher Education (THE) maga-                                                 azine.
+    zine.
+
+                                                  NOT ENOUGH INFO Claims
+ The KGB was a military service and was gov-          nowhere,only,none,no,nothing             The KGB was only controlled by a
+ erned by army laws and regulations, similar to                                                military service.
+ the Soviet Army or MVD Internal Troops.
+ The series revolves around Frank Castle, who              says,said,take,say,is               Take Me High is about Frank Cas-
+ uses lethal methods to fight crime as the vigilante                                           tle’s use of lethal techniques to fight
+ “the Punisher”, with Jon Bernthal reprising the                                               crime.
+ role from Daredevil.
+ The Suite Life of Zack & Cody is an Amer-            whilst,interest,applic,someone,          The Suite Life of Zack & Cody was
+ ican sitcom created by Danny Kallis and Jim                    nevertheless                   created by someone who never had
+ Geoghan.                                                                                      the chance to work in television.
+
+Table 2: Examples of generated adversarial claims. These are all claims which the FC model incorrectly classified.
+
+
+    Target            F1       Avg Quality       # Examples           construct valid claims containing a trigger word.
+                        FC Objective                                  Our method is fully automatic, whereas previous
+    Overall          0.534     4.33                     156           work on generating claims for fact checking is gen-
+    SUPPORTS         0.486     4.79                      39
+    REFUTES          0.494     4.70                      32           erally rule-based or requires manual intervention.
+    NEI              0.621     3.98                      85           As FC is only one test bed for adversarial attacks,
+                     FC+STS Objectives                                it would be interesting to test this method on other
+    Overall          0.635    4.63                      156           NLP tasks requiring semantic understanding such
+    SUPPORTS         0.617    4.77                       67           as question answering to better understand short-
+    REFUTES          0.642    4.68                       28
+    NEI              0.647    4.44                      61            comings of models.
+
+      Table 3: FC performance for generated claims.                   Acknowledgements
+
+                                                                                   This project has received funding from
+they were manually selected to meet the label co-                     the European Union’s Horizon 2020 research
+herence and grammatical correctness requirements.                     and innovation programme under the Marie
+Conversely, we automatically generate claims that                     Skłodowska-Curie grant agreement No 801199.
+meet these requirements.
+
+5      Conclusion
+We present a method for automatically generating
+highly potent, well-formed, label cohesive claims
+for FC. We improve upon previous work on uni-
+versal adversarial triggers by determining how to
+
+                                                                 3172
+References                                                 Christopher Hidey, Tuhin Chakrabarty, Tariq Alhindi,
+                                                             Siddharth Varia, Kriste Krstovski, Mona Diab, and
+Liesbeth Allein, Isabelle Augenstein, and Marie-             Smaranda Muresan. 2020. DeSePtion: Dual se-
+  Francine Moens. 2020.     Time-Aware Evidence              quence prediction and adversarial examples for im-
+  Ranking for Fact-Checking.       arXiv preprint            proved fact-checking. In Proceedings of the 58th An-
+  arXiv:2009.06402.                                          nual Meeting of the Association for Computational
+Pepa Atanasova, Alberto Barron-Cedeno, Tamer El-             Linguistics, pages 8593–8606, Online. Association
+  sayed, Reem Suwaileh, Wajdi Zaghouani, Spas                for Computational Linguistics.
+  Kyuchukov, Giovanni Da San Martino, and Preslav
+                                                           Di Jin, Zhijing Jin, Joey Tianyi Zhou, and Peter
+  Nakov. 2018. Overview of the CLEF-2018 Check-
+                                                             Szolovits. TextFool: Fool your Model with Natural
+  That! Lab on Automatic Identification and Verifica-
+                                                             Adversarial Text.
+  tion of Political Claims. Task 1: Check-Worthiness.
+  arXiv preprint arXiv:1808.05542.
+                                                           Nitish Shirish Keskar, Bryan McCann, Lav R Varshney,
+Isabelle Augenstein, Christina Lioma, Dongsheng              Caiming Xiong, and Richard Socher. 2019. Ctrl: A
+   Wang, Lucas Chaves Lima, Casper Hansen, Chris-            conditional transformer language model for control-
+   tian Hansen, and Jakob Grue Simonsen. 2019. Mul-          lable generation. arXiv preprint arXiv:1909.05858.
+   tifc: A real-world multi-domain dataset for evidence-
+   based fact checking of claims. In EMNLP. Associa-       Youngwoo Kim and James Allan. 2019. FEVER
+   tion for Computational Linguistics.                       breaker’s run of team NbAuzDrLqg. In Proceed-
+                                                             ings of the Second Workshop on Fact Extraction and
+Isabelle Augenstein, Tim Rocktäschel, Andreas Vla-          VERification (FEVER), pages 99–104, Hong Kong,
+   chos, and Kalina Bontcheva. 2016. Stance Detec-           China. Association for Computational Linguistics.
+   tion with Bidirectional Conditional Encoding. In
+   EMNLP, pages 876–885. The Association for Com-          Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Man-
+   putational Linguistics.                                   dar Joshi, Danqi Chen, Omer Levy, Mike Lewis,
+                                                             Luke Zettlemoyer, and Veselin Stoyanov. 2019.
+Ramy Baly, Mitra Mohtarami, James R. Glass, Llus             Roberta: A robustly optimized bert pretraining ap-
+  Mrquez, Alessandro Moschitti, and Preslav Nakov.           proach. arXiv preprint arXiv:1907.11692.
+  2018. Integrating Stance Detection and Fact Check-
+  ing in a Unified Corpus. In NAACL-HLT (2), pages         Christopher Malon. 2018.      Team Papelo: Trans-
+  21–27. Association for Computational Linguistics.          former Networks at FEVER. In Proceedings of the
+                                                             First Workshop on Fact Extraction and VERification
+Samuel R. Bowman, Gabor Angeli, Christopher Potts,           (FEVER), pages 109–113.
+  and Christopher D. Manning. 2015. A large anno-
+  tated corpus for learning natural language inference.    Paul Michel, Xian Li, Graham Neubig, and
+  In Proceedings of the 2015 Conference on Empirical         Juan Miguel Pino. 2019. On Evaluation of Ad-
+  Methods in Natural Language Processing (EMNLP).            versarial Perturbations for Sequence-to-Sequence
+  Association for Computational Linguistics.                 Models. In Proceedings of NAACL-HLT, pages
+                                                             3103–3114.
+Ousmane Amadou Dia, Elnaz Barshan, and Reza Ba-
+  banezhad. 2019. Semantics Preserving Adversarial         Piotr Niewinski, Maria Pszona, and Maria Janicka.
+  Learning. arXiv preprint arXiv:1903.03905.                  2019. GEM: Generative enhanced model for adver-
+                                                              sarial attacks. In Proceedings of the Second Work-
+Javid Ebrahimi, Anyi Rao, Daniel Lowd, and Dejing
+                                                              shop on Fact Extraction and VERification (FEVER),
+   Dou. 2018. HotFlip: White-Box Adversarial Exam-
+                                                              pages 20–26, Hong Kong, China. Association for
+   ples for Text Classification. In Proceedings of the
+                                                              Computational Linguistics.
+   56th Annual Meeting of the Association for Compu-
+   tational Linguistics (Volume 2: Short Papers), pages
+                                                           Wojciech Ostrowski, Arnav Arora, Pepa Atanasova,
+   31–36.
+                                                            and Isabelle Augenstein. 2020. Multi-Hop Fact
+Hang Gao and Tim Oates. 2019. Universal Adversarial         Checking of Political Claims.    arXiv preprint
+  Perturbation for Text Classification. arXiv preprint      arXiv:2009.06401.
+  arXiv:1910.04618.
+                                                           Alec Radford, Jeffrey Wu, Rewon Child, David Luan,
+Ian J Goodfellow, Jonathon Shlens, and Christian             Dario Amodei, and Ilya Sutskever. 2019. Language
+   Szegedy. 2015. Explaining and Harnessing Adver-           models are unsupervised multitask learners. OpenAI
+   sarial Examples. stat, 1050:20.                           Blog, 1(8):9.
+
+Casper Hansen, Christian Hansen, Stephen Alstrup,          Shuhuai Ren, Yihe Deng, Kun He, and Wanxiang Che.
+  Jakob Grue Simonsen, and Christina Lioma. 2019.            2019. Generating natural language adversarial ex-
+  Neural Check-Worthiness Ranking With Weak Su-              amples through probability weighted word saliency.
+  pervision: Finding Sentences for Fact-Checking. In         In Proceedings of the 57th Annual Meeting of the
+  Companion Proceedings of the 2019 World Wide               Association for Computational Linguistics, pages
+  Web Conference, pages 994–1000.                            1085–1097.
+
+                                                      3173
+Marco Tulio Ribeiro, Sameer Singh, and Carlos
+ Guestrin. 2018. Semantically equivalent adversar-
+ ial rules for debugging nlp models. In Proceedings
+ of the 56th Annual Meeting of the Association for
+ Computational Linguistics (Volume 1: Long Papers),
+ pages 856–865.
+Christian Szegedy, Wojciech Zaremba, Ilya Sutskever,
+  Joan Bruna, Dumitru Erhan, Ian Goodfellow, and
+  Rob Fergus. 2013. Intriguing properties of neural
+  networks. arXiv preprint arXiv:1312.6199.
+James Thorne,       Andreas Vlachos,        Christos
+  Christodoulopoulos, and Arpit Mittal. 2018.
+  FEVER: a Large-scale Dataset for Fact Extraction
+  and VERification. In Proceedings of the 2018
+  Conference of the North American Chapter of the
+  Association for Computational Linguistics: Human
+  Language Technologies, Volume 1 (Long Papers),
+  pages 809–819.
+James Thorne,        Andreas Vlachos,     Christos
+  Christodoulopoulos, and Arpit Mittal. 2019a.
+  Evaluating adversarial attacks against multiple
+  fact verification systems. In Proceedings of the
+  2019 Conference on Empirical Methods in Natural
+  Language Processing and the 9th International
+  Joint Conference on Natural Language Processing
+  (EMNLP-IJCNLP), pages 2937–2946.
+James Thorne, Andreas Vlachos, Oana Cocarascu,
+  Christos Christodoulopoulos, and Arpit Mittal.
+  2019b. The FEVER2.0 shared task. In Proceed-
+  ings of the Second Workshop on Fact Extraction
+  and VERification (FEVER), pages 1–6, Hong Kong,
+  China. Association for Computational Linguistics.
+Eric Wallace, Shi Feng, Nikhil Kandpal, Matt Gard-
+   ner, and Sameer Singh. 2019. Universal Adversarial
+  Triggers for Attacking and Analyzing NLP. In Pro-
+   ceedings of the 2019 Conference on Empirical Meth-
+   ods in Natural Language Processing and the 9th In-
+   ternational Joint Conference on Natural Language
+  Processing (EMNLP-IJCNLP), pages 2153–2162.
+Thomas Wolf, Lysandre Debut, Victor Sanh, Julien
+  Chaumond, Clement Delangue, Anthony Moi, Pier-
+  ric Cistac, Tim Rault, R’emi Louf, Morgan Funtow-
+  icz, and Jamie Brew. 2019. Huggingface’s trans-
+  formers: State-of-the-art natural language process-
+  ing. ArXiv, abs/1910.03771.
+Dustin Wright and Isabelle Augenstein. 2020. Claim
+  Check-Worthiness Detection as Positive Unlabelled
+  Learning. In Findings of EMNLP. Association for
+  Computational Linguistics.
+Wenpeng Yin and Dan Roth. 2018. TwoWingOS:
+ A Two-Wing Optimization Strategy for Evidential
+  Claim Verification. In EMNLP, pages 105–114. As-
+  sociation for Computational Linguistics.
+Wei Emma Zhang, Quan Z. Sheng, Ahoud Alhazmi,
+  and Chenliang Li. 2019. Adversarial Attacks on
+  Deep Learning Models in Natural Language Process-
+  ing: A Survey.
+
+
+                                                    3174
+A     Appendices                                        the top few triggers are selected.
+                                                           The adversarial triggers method is run for 28.75
+A.1    Implementation Details
+                                                        (± 1.47) minutes for with the FC objective and
+Models. The RoBERTa FC model (125M parame-              168.6(± 28.44) minutes for the FC+STS objective.
+ters) is fine-tuned with a batch size of 8, learning    We perform the trigger generation with a batch size
+rate of 2e-5 and for a total of 4 epochs, where the     of four. We additionally normalize the loss for each
+epoch with the best performance is saved. We used       objective to be in the range [0,1] and also re-weight
+the implementation provided by HuggingFace li-          the losses with a wieht of 0.6 for the FC loss and a
+brary. We performed a grid hyper-parameter search       weight of 0.4 for the SST loss as when generated
+for the learning rate between the values 1e-5, 2e-5,    with an equal weight, the SST loss tends to preserve
+and 3e-5. The average time for training a model         the same initial token in all epochs.
+with one set of hyperparameters is 155 minutes             Datasets. The datasets used for training the FC
+(±3). The average accuracy over the different hy-       model consist of 161,249 SUPPORTS, 60,227 RE-
+perparameter runs is 0.862(± 0.005) F1 score on         FUTES, and 69,885 NEI claims for the training
+the validation set.                                     split; 6,207 SUPPORTS, 6,235 REFUTES, and
+   For the models that measure the perplexity and       6,554 NEI claims for the dev set; 6,291 SUP-
+the semantical similarity we use the pretrained         PORTS, 5,992 REFUTES, and 6522 NEI claims.
+models provided by HuggingFace– RoBERTa large           The evidence for each claim is the gold evidence
+model (125M parameters) fine tuned on the STS-b         provided from the FEVER dataset, which is avail-
+task and RoBERTa base model (355M parameters)           able for REFUTES and SUPPORTS claims. When
+pretrained on a LM objective.                           there is more than one annotation of different evi-
+   We used the HuggingFace implementation of the        dence sentences for an instance, we include them as
+small GPT-2 model, which consists of 124,439,808        separate instances in the datasets. For NEI claims,
+parameters and is fine-tuned with a batch size of 4,    we use the system of Malon (2018) to retrieve evi-
+learning rate of 3e-5, and for a total of 20 epochs.    dence sentences.
+We perform early stopping on the loss of the model
+on a set of validation data. The average validation     A.2    Top Adversarial Triggers
+loss is 0.910. The average runtime for training one     Table 4 presents the top adversarial triggers for
+of the models is 31 hours and 28 minutes.               each direction found with the Universal Adversarial
+   We note that, the intermediate models used in        Triggers method. It offers an additional way of
+this work and described in this section, are trained    estimating the effectiveness of the STS objective by
+on large relatively general-purpose datasets. While,    comparing the number of negation words generated
+they can make some mistakes, they work well             by the basic model (8) and the STS objective (2) in
+enough and using them, we don’t have to rely on         the top-3 triggers for each direction.
+additional human annotations for the intermediate
+task.                                                   B     Supplemental Material
+   Adversarial Triggers. The adversarial triggers
+are generated based on instances from the valida-       B.1    Computing Infrastructure
+tion set. We run the algorithm for three epochs to      All experiments were run on a shared cluster. Re-
+allow for the adversarial triggers to converge. At      quested jobs consisted of 16GB of RAM and 4 Intel
+each epoch the initial trigger is updated with the      Xeon Silver 4110 CPUs. We used two NVIDIA
+best performing trigger for the epoch (according to     Titan RTX GPUs with 12GB of RAM for training
+the loss of the FC or FC+STS objective). At the         GPT-2 and one NVIDIA Titan X GPU with 8GB
+last step, we select only the top 10 triggers and re-   of RAM for training the FC models and finding the
+move any that have a negative loss. We choose the       universal adversarial triggers.
+top 10 triggers as those are the most potent ones,
+adding more than top ten of the triggers preserves      B.2    Evaluation Metrics
+the same tendencies in the results, but smooths         The primary evaluation metric used was macro-F1
+them as further down the list of adversarial attacks,   score. We used the sklearn implementation
+the triggers do not decrease the performance of the     of precision recall fscore support,
+model substantially. This is also supported by re-      which can be found here: https://scikit-learn.
+lated literature (Wallace et al., 2019), where only     org/stable/modules/generated/sklearn.
+
+                                                   3175
+metrics.precision_recall_fscore_support.
+html. Briefly:
+
+                            tp
+                   p=
+                         tp + f p
+                            tp
+                   r=
+                         tp + f n
+                         2∗p∗r
+                  F1 =
+                          p+r
+where tp are true positives, f p are false positives,
+and f n are false negatives.
+
+B.3   Manual Evaluation
+After generating the claims, two independent an-
+notators label the overall claim quality (score of
+1-5) and the true label for the claim. The inter-
+annotator agreement for the quality label using
+Krippendorff’s alpha is 0.54 for the quality score
+and 0.38 for the claim label. Given this, we take
+the average of the two annotator’s scores for the
+final quality score and have a third expert annotator
+examine and select the best label for each contested
+claim label.
+
+
+
+
+                                                    3176
+                          Class      Trigger           F1      STS     PPL
+                                          FC Objective
+                          S→R   only         0.014 4.628 11.660 (36.191)
+                          S→R   nothing      0.017 4.286 13.109 (56.882)
+                          S→R   nobody       0.036 4.167 12.784 (37.390)
+                          S→NEI neither      0.047 3.901 11.509 (31.413)
+                          S→NEI none         0.071 4.016 13.136 (39.894)
+                          S→NEI Neither      0.155 3.641 11.957 (44.274)
+                          R→S   some         0.687 4.694 11.902 (33.348)
+                          R→S   Sometimes    0.724 4.785 10.813 (32.058)
+                          R→S   Some         0.743 4.713 11.477 (37.243)
+                          R→NEI recommended 0.658 4.944 12.658 (36.658)
+                          R→NEI Recommend 0.686 4.789 10.854 (32.432)
+                          R→NEI Supported    0.710 4.739 11.972 (40.267)
+                          NEI→R Only         0.624 4.668 12.939 (57.666)
+                          NEI→R nothing      0.638 4.476 11.481 (48.781)
+                          NEI→R nobody       0.678 4.361 16.345 (111.60)
+                          NEI→S nothing      0.638 4.476 18.070 (181.85)
+                          NEI→S existed      0.800 4.950 15.552 (79.823)
+                          NEI→S area         0.808 4.834 13.857 (93.295)
+                                        FC+STS Objectives
+                          S→R   never        0.048 4.267 12.745 (50.272)
+                          S→R   every        0.637 4.612 13.714 (51.244)
+                          S→R   didn         0.719 4.986 12.416 (41.080)
+                          S→NEI always       0.299 4.774 11.906 (35.686)
+                          S→NEI every        0.637 4.612 12.222 (38.440)
+                          S→NEI investors    0.696 4.920 12.920 (42.567)
+                          R→S   over         0.761 4.741 12.139 (33.611)
+                          R→S   about        0.765 4.826 12.052 (37.677)
+                          R→S   her          0.774 4.513 12.624 (41.350)
+                          R→NEI top          0.757 4.762 12.787 (39.418)
+                          R→NEI also         0.770 5.034 11.751 (35.670)
+                          R→NEI when         0.776 4.843 12.444 (37.658)
+                          NEI→R only         0.562 4.677 14.372 (83.059)
+                          NEI→R there        0.764 4.846 11.574 (42.949)
+                          NEI→R just         0.786 4.916 16.879 (135.73)
+                          NEI→S of           0.802 4.917 11.844 (55.871)
+                          NEI→S is           0.815 4.931 17.507 (178.55)
+                          NEI→S A            0.818 4.897 12.526 (67.880)
+
+Table 4: Top-3 triggers found with the Universal Adversarial Triggers methods. The triggers are generated given
+claims from a source class (column Class), so that the classifier is fooled to predict a different target class. The
+classes are SUPPORTS (S), REFUTES (R), NOT ENOUGH INFO (NEI).
+
+
+
+
+                                                       3177
+

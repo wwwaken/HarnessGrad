@@ -1,0 +1,69 @@
+{
+  "name": "server-splits",
+  "url": "https://datasets-server.huggingface.co/splits?dataset=copenlu%2Ffever_gold_evidence",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:21:18.971204+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 200,
+  "final_url": "https://datasets-server.huggingface.co/splits?dataset=copenlu%2Ffever_gold_evidence",
+  "headers": [
+    [
+      "Content-Type",
+      "application/json"
+    ],
+    [
+      "Content-Length",
+      "272"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:21:19 GMT"
+    ],
+    [
+      "vary",
+      "Accept-Encoding"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "cache-control",
+      "max-age=120"
+    ],
+    [
+      "x-revision",
+      "a6b8d891d393e97a4efac791afffb2d7de5e57c6"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 99593f4af61be34fdb409aabe600d200.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN2-P11"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "vdBHgFoqXqOEc9zTUpf7toYK4ocU1OXLWixedfALF203aXbajt5Fwg=="
+    ]
+  ],
+  "bytes": 272,
+  "sha256": "45dde79f95fd82b127f924f6f038bae77c3a93fb30fd708b2ca7d885ac5300eb",
+  "body": "server-splits.body",
+  "finished_utc": "2026-10-15T09:21:19.940639+00:00"
+}

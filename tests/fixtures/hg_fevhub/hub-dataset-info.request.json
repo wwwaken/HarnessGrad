@@ -1,0 +1,113 @@
+{
+  "name": "hub-dataset-info",
+  "url": "https://huggingface.co/datasets/copenlu/fever_gold_evidence/raw/main/dataset_infos.json",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T09:21:13.356861+00:00",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevhub-provenance/1",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "status": 404,
+  "final_url": "https://huggingface.co/datasets/copenlu/fever_gold_evidence/raw/main/dataset_infos.json",
+  "headers": [
+    [
+      "Content-Type",
+      "text/plain; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "15"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:21:21 GMT"
+    ],
+    [
+      "ETag",
+      "W/\"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad09b11-2bdd961b2022f7a13476d1a7"
+    ],
+    [
+      "RateLimit",
+      "\"resolvers\";r=2997;t=227"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"resolvers\";q=3000;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Error-Code",
+      "EntryNotFound"
+    ],
+    [
+      "X-Error-Message",
+      "Entry not found"
+    ],
+    [
+      "X-Cache",
+      "Error from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 5d84e84cd52089d57c69fd340344e3d2.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN3-P1"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "6EfvVywErXdaJT-64tN9HjFKc63kl1qglzxXJBkYLWxNuAcnMtSSUQ=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "bytes": 15,
+  "sha256": "f36668ddf22403a332f978057d527cf285b01468bc3431b04094a7bafa6aba59",
+  "body": "hub-dataset-info.body",
+  "finished_utc": "2026-10-15T09:21:21.862144+00:00"
+}
